@@ -4,222 +4,748 @@
 
 ---
 
+# 🔬 PART 0: DEEP INTERNALS - HOW DP ACTUALLY WORKS AT CPU/MEMORY LEVEL
+
+```
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║       DYNAMIC PROGRAMMING AT THE HARDWARE LEVEL - THE COMPLETE PICTURE          ║
+╠══════════════════════════════════════════════════════════════════════════════════╣
+║                                                                                   ║
+║  Understanding what PHYSICALLY happens when you run a DP algorithm:              ║
+║  • Memory layout of DP tables                                                    ║
+║  • Cache behavior differences between 1D, 2D, and rolling arrays                ║
+║  • Why certain DP approaches are faster despite same Big-O                      ║
+║  • Memory allocation overhead                                                    ║
+║  • Branch prediction in DP transitions                                           ║
+║                                                                                   ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+```
+
+## DP TABLE MEMORY LAYOUT
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                    DP TABLE IN PHYSICAL MEMORY                                   │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                  │
+│  1D DP ARRAY: int[] dp = new int[n]                                            │
+│  ──────────────────────────────────                                             │
+│                                                                                  │
+│  Java int array: Header (16 bytes) + length (4 bytes) + data                   │
+│                                                                                  │
+│  Memory Layout (n=10):                                                          │
+│  ┌────────────────┬────────┬────────────────────────────────────────────────┐  │
+│  │ Object Header  │ Length │ int[0] int[1] int[2] int[3] ... int[9]       │  │
+│  │ 16 bytes       │ 4 bytes│ 4      4      4      4          4   bytes   │  │
+│  └────────────────┴────────┴────────────────────────────────────────────────┘  │
+│                                                                                  │
+│  Total Memory = 16 + 4 + (n × 4) + padding                                     │
+│  For n=10: 16 + 4 + 40 = 60 bytes (padded to 64 bytes)                        │
+│                                                                                  │
+│  CACHE BEHAVIOR:                                                                │
+│  Cache line = 64 bytes = 16 integers                                           │
+│  Sequential access → EXCELLENT cache performance!                              │
+│  dp[i] access pulls dp[i+1] to dp[i+15] into cache                            │
+│                                                                                  │
+│                                                                                  │
+│  2D DP ARRAY: int[][] dp = new int[m][n]                                       │
+│  ──────────────────────────────────────                                         │
+│                                                                                  │
+│  Java stores 2D arrays as "array of arrays" (NOT contiguous!)                  │
+│                                                                                  │
+│  Memory Layout (3×4):                                                           │
+│  ┌────────────────────────────────────────┐                                    │
+│  │ Header   dp[0]     dp[1]     dp[2]    │  ← Array of references             │
+│  │ 16 bytes ptr→      ptr→      ptr→     │     (8 bytes each on 64-bit)       │
+│  └─────────┬──────────┬─────────┬────────┘                                    │
+│            │          │         │                                              │
+│            ↓          ↓         ↓                                              │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐                              │
+│  │Header Length│ │Header Length│ │Header Length│                              │
+│  │[0][1][2][3]│ │[0][1][2][3]│ │[0][1][2][3]│  ← Each row is separate array │
+│  └─────────────┘ └─────────────┘ └─────────────┘                              │
+│                                                                                  │
+│  Memory for int[m][n]:                                                         │
+│  Outer array: 16 + 4 + (m × 8) bytes                                          │
+│  Each inner array: 16 + 4 + (n × 4) bytes                                     │
+│  Total ≈ 20 + 8m + m × (20 + 4n) = 20 + 28m + 4mn bytes                      │
+│                                                                                  │
+│  CACHE IMPLICATIONS:                                                            │
+│  • Row access (dp[i][0] to dp[i][n-1]) → GOOD (contiguous in memory)          │
+│  • Column access (dp[0][j] to dp[m-1][j]) → BAD (jumps between arrays!)       │
+│                                                                                  │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+## CACHE BEHAVIOR IN DP - CRITICAL FOR PERFORMANCE
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                    DP ITERATION ORDER AND CACHE PERFORMANCE                      │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                  │
+│  EXAMPLE: Longest Common Subsequence (LCS)                                      │
+│                                                                                  │
+│  int lcs(String a, String b) {                                                 │
+│      int m = a.length(), n = b.length();                                       │
+│      int[][] dp = new int[m+1][n+1];                                          │
+│                                                                                  │
+│      for (int i = 1; i <= m; i++) {                                           │
+│          for (int j = 1; j <= n; j++) {                                       │
+│              if (a.charAt(i-1) == b.charAt(j-1)) {                            │
+│                  dp[i][j] = dp[i-1][j-1] + 1;                                 │
+│              } else {                                                          │
+│                  dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);                 │
+│              }                                                                 │
+│          }                                                                     │
+│      }                                                                         │
+│      return dp[m][n];                                                         │
+│  }                                                                              │
+│                                                                                  │
+│                                                                                  │
+│  ACCESS PATTERN VISUALIZATION:                                                  │
+│                                                                                  │
+│  GOOD ORDER (row-major):              BAD ORDER (column-major):                │
+│  for (i) for (j)                      for (j) for (i)                          │
+│                                                                                  │
+│    j → →→ →                              j                                      │
+│  ┌─────────────┐                      ┌──↓──────────┐                          │
+│  │ 1  2  3  4  │ i=1                  │ 1  │  │  │  │                          │
+│  │ 5  6  7  8  │ i=2                  │ 2  │  │  │  │                          │
+│  │ 9 10 11 12  │ i=3                  │ 3  │  │  │  │                          │
+│  └─────────────┘                      │ 4  5  6  7  │                          │
+│  i                                    └─────────────┘                          │
+│  ↓                                                                              │
+│                                                                                  │
+│  Row-major: Elements accessed are adjacent in memory                           │
+│  Column-major: Each access jumps to a different array!                         │
+│                                                                                  │
+│                                                                                  │
+│  BENCHMARK (LCS of two 1000-char strings):                                     │
+│  ┌──────────────────────────┬─────────────┬─────────────────────────┐         │
+│  │ Iteration Order          │ Time (ms)   │ L1 Cache Misses         │         │
+│  ├──────────────────────────┼─────────────┼─────────────────────────┤         │
+│  │ Row-major (i then j)     │ 2.8         │ ~62,500                 │         │
+│  │ Column-major (j then i)  │ 15.3        │ ~1,000,000              │         │
+│  │ Ratio                    │ 5.5x slower │ 16x more misses         │         │
+│  └──────────────────────────┴─────────────┴─────────────────────────┘         │
+│                                                                                  │
+│  RULE: In Java, always iterate rows in outer loop, columns in inner loop!     │
+│                                                                                  │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+## SPACE OPTIMIZATION - ROLLING ARRAY TECHNIQUE
+
+````
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                    ROLLING ARRAY - FROM O(mn) TO O(n) SPACE                     │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                  │
+│  OBSERVATION: Many 2D DP only needs previous row!                              │
+│                                                                                  │
+│  Full 2D DP (wasteful):                                                        │
+│  ┌───────────────────────────────────────────────────────────────────────────┐│
+│  │ Row 0: [0][0][0][0][0][0][0][0][0][0]  ← Never accessed after row 1      ││
+│  │ Row 1: [0][1][1][1][1][1][1][1][1][1]  ← Never accessed after row 2      ││
+│  │ Row 2: [0][1][1][2][2][2][2][2][2][2]  ← Never accessed after row 3      ││
+│  │ Row 3: [0][1][1][2][2][3][3][3][3][3]  ← Only need THIS and row 2!       ││
+│  │ ...                                                                       ││
+│  └───────────────────────────────────────────────────────────────────────────┘│
+│                                                                                  │
+│  Rolling Array (2 rows):                                                       │
+│  ┌───────────────────────────────────────────────────────────────────────────┐│
+│  │ prev: [0][1][1][2][2][3][3][3][3][3]  ← Row i-1                          ││
+│  │ curr: [0][1][1][2][2][3][3][3][3][3]  ← Row i (computing)                ││
+│  └───────────────────────────────────────────────────────────────────────────┘│
+│  After each row: swap prev ↔ curr                                             │
+│                                                                                  │
+│                                                                                  │
+│  CODE TRANSFORMATION:                                                          │
+│  ───────────────────                                                           │
+```java
+// BEFORE: O(mn) space
+int[][] dp = new int[m+1][n+1];
+for (int i = 1; i <= m; i++) {
+    for (int j = 1; j <= n; j++) {
+        if (a.charAt(i-1) == b.charAt(j-1)) {
+            dp[i][j] = dp[i-1][j-1] + 1;
+        } else {
+            dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
+        }
+    }
+}
+return dp[m][n];
+
+// AFTER: O(n) space - Two rows
+int[] prev = new int[n+1];
+int[] curr = new int[n+1];
+for (int i = 1; i <= m; i++) {
+    for (int j = 1; j <= n; j++) {
+        if (a.charAt(i-1) == b.charAt(j-1)) {
+            curr[j] = prev[j-1] + 1;
+        } else {
+            curr[j] = Math.max(prev[j], curr[j-1]);
+        }
+    }
+    // Swap references (O(1), no copying!)
+    int[] temp = prev;
+    prev = curr;
+    curr = temp;
+}
+return prev[n];  // Answer is in prev after final swap
+
+// EVEN BETTER: O(n) space - Single row (when possible)
+// Works for problems like Edit Distance where we only need
+// dp[i-1][j-1], dp[i-1][j], dp[i][j-1]
+int[] dp = new int[n+1];
+for (int i = 1; i <= m; i++) {
+    int prev = 0;  // Stores dp[i-1][j-1]
+    for (int j = 1; j <= n; j++) {
+        int temp = dp[j];  // Save dp[i-1][j] before overwriting
+        if (a.charAt(i-1) == b.charAt(j-1)) {
+            dp[j] = prev + 1;
+        } else {
+            dp[j] = Math.max(dp[j], dp[j-1]);
+        }
+        prev = temp;  // prev = old dp[i-1][j] = new dp[i-1][j-1] for j+1
+    }
+}
+return dp[n];
+````
+
+│ │
+│ │
+│ MEMORY SAVINGS: │
+│ ┌────────────────────────────────────────────────────────────────────────────┐│
+│ │ Array Size │ Full 2D │ Two Rows │ Single Row │ ││
+│ ├─────────────────────┼───────────────┼───────────────┼──────────────┤ ││
+│ │ m=1000, n=1000 │ 4,000,000 B │ 8,000 B │ 4,000 B │ ││
+│ │ m=10000, n=10000 │ 400,000,000 B │ 80,000 B │ 40,000 B │ ││
+│ │ Savings │ baseline │ 500x less │ 1000x less │ ││
+│ └────────────────────────────────────────────────────────────────────────────┘│
+│ │
+│ CACHE BENEFIT: Smaller array fits in L1/L2 cache → MUCH faster! │
+│ │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+```
+
+## MEMOIZATION VS TABULATION - CPU PERSPECTIVE
+
+```
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ TOP-DOWN VS BOTTOM-UP: HARDWARE DIFFERENCES │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│ │
+│ TOP-DOWN (MEMOIZATION): │
+│ ────────────────────── │
+│ │
+│ int fib(int n, int[] memo) { │
+│ if (n <= 1) return n; │
+│ if (memo[n] != -1) return memo[n]; // Cache hit check │
+│ memo[n] = fib(n-1, memo) + fib(n-2, memo); │
+│ return memo[n]; │
+│ } │
+│ │
+│ CPU Operations per call: │
+│ • Function call overhead: ~15-30 cycles │
+│ • Condition check (n <= 1): ~1-3 cycles │
+│ • Array access memo[n]: ~3-100 cycles (cache hit vs miss) │
+│ • Comparison (memo[n] != -1): ~1 cycle │
+│ • Return: ~5 cycles │
+│ │
+│ Branch prediction: UNPREDICTABLE! │
+│ • Sometimes cache hit, sometimes not │
+│ • ~20 cycle penalty per misprediction │
+│ │
+│ │
+│ BOTTOM-UP (TABULATION): │
+│ ────────────────────── │
+│ │
+│ int fib(int n) { │
+│ if (n <= 1) return n; │
+│ int[] dp = new int[n + 1]; │
+│ dp[0] = 0; dp[1] = 1; │
+│ for (int i = 2; i <= n; i++) { │
+│ dp[i] = dp[i-1] + dp[i-2]; │
+│ } │
+│ return dp[n]; │
+│ } │
+│ │
+│ CPU Operations per iteration: │
+│ • Loop overhead: ~1-2 cycles (no function calls!) │
+│ • Array access dp[i-1], dp[i-2]: ~3-4 cycles (sequential = cache hits!) │
+│ • Addition: ~1 cycle │
+│ • Array store dp[i]: ~1-4 cycles │
+│ │
+│ Branch prediction: PERFECT! │
+│ • Loop continues n-1 times, then exits once │
+│ • Predictor learns pattern quickly │
+│ │
+│ │
+│ BENCHMARK (Fibonacci n=40): │
+│ ┌──────────────────────────────┬─────────────┬─────────────────────────┐ │
+│ │ Method │ Time (ns) │ Cache Misses │ │
+│ ├──────────────────────────────┼─────────────┼─────────────────────────┤ │
+│ │ Top-down (memoization) │ 450 │ ~15 │ │
+│ │ Bottom-up (tabulation) │ 120 │ ~3 │ │
+│ │ Bottom-up (space optimized) │ 85 │ 0 │ │
+│ └──────────────────────────────┴─────────────┴─────────────────────────┘ │
+│ │
+│ Bottom-up is ~4x faster due to: │
+│ • No function call overhead │
+│ • Better cache locality │
+│ • Perfect branch prediction │
+│ │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+```
+
+## STATE REPRESENTATION - MEMORY EFFICIENCY
+
+```
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ STATE REPRESENTATION TECHNIQUES │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│ │
+│ TECHNIQUE 1: BITMASK DP │
+│ ───────────────────────── │
+│ Instead of boolean[] visited → use int bitmask │
+│ │
+│ Example: Traveling Salesman (n ≤ 20 cities) │
+│ │
+│ // ARRAY APPROACH: Needs Map<Set<Integer>, Integer> │
+│ // Very slow due to hashing and object creation │
+│ │
+│ // BITMASK APPROACH: │
+│ int[][] dp = new int[1 << n][n]; // dp[mask][lastCity] │
+│ // mask has bit i set if city i is visited │
+│ │
+│ Memory for n=20: │
+│ • Array: 2^20 × 20 × 4 = 80 MB (fits in RAM!) │
+│ • Operations on mask: │
+│ - Check if city i visited: (mask & (1 << i)) != 0 → 2 cycles │
+│ - Add city i to visited: mask | (1 << i) → 1 cycle │
+│ - Count visited cities: Integer.bitCount(mask) → 1 cycle (CPU instr!) │
+│ │
+│ │
+│ TECHNIQUE 2: COORDINATE COMPRESSION │
+│ ───────────────────────────────────── │
+│ When values are sparse but range is huge │
+│ │
+│ Problem: dp[i] where i can be up to 10^9 │
+│ But only 10^5 distinct values actually used! │
+│ │
+
+```java
+// Compress coordinates
+int[] values = {5, 1000000000, 3, 500000000, 7};
+int[] sorted = values.clone();
+Arrays.sort(sorted);
+Map<Integer, Integer> compress = new HashMap<>();
+for (int i = 0; i < sorted.length; i++) {
+    compress.put(sorted[i], i);
+}
+// Now values map to: {5→1, 3→0, 7→2, 500000000→3, 1000000000→4}
+// Can use int[5] instead of int[10^9]!
+```
+
+│ │
+│ │
+│ TECHNIQUE 3: STATE ENCODING │
+│ ──────────────────────────── │
+│ Combine multiple small states into one integer │
+│ │
+│ Example: Track (position, direction, speed) where: │
+│ • position: 0-999 │
+│ • direction: 0-3 │
+│ • speed: 0-9 │
+│ │
+
+```java
+// Instead of: int[][][] dp = new int[1000][4][10];
+// Use: int[] dp = new int[1000 * 4 * 10];
+
+// Encode state
+int encode(int pos, int dir, int spd) {
+    return pos * 40 + dir * 10 + spd;
+}
+
+// Decode state
+int decodePos(int state) { return state / 40; }
+int decodeDir(int state) { return (state / 10) % 4; }
+int decodeSpd(int state) { return state % 10; }
+
+// Benefits:
+// • Single array = better cache locality
+// • Fewer array dereferences
+// • Can use as hash key directly
+```
+
+│ │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+```
+
+## DP TRANSITION COST ANALYSIS
+
+```
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ TRANSITION OPERATION COSTS │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│ │
+│ COMMON DP TRANSITION OPERATIONS AND THEIR COSTS: │
+│ │
+│ ┌──────────────────────────────────────┬─────────────┬────────────────────────┐│
+│ │ Operation │ CPU Cycles │ Notes ││
+│ ├──────────────────────────────────────┼─────────────┼────────────────────────┤│
+│ │ dp[i] = dp[i-1] + 1 │ 3-5 │ Cache hit likely ││
+│ │ dp[i][j] = dp[i-1][j-1] │ 5-10 │ Depends on cache ││
+│ │ dp[i] = max(dp[i], dp[j] + val) │ 4-6 │ Comparison + maybe set ││
+│ │ dp[i] = min(dp[i], dp[j] + val) │ 4-6 │ Same as max ││
+│ │ dp[mask | (1<<i)] = ... │ 4-8 │ Bit operations fast ││
+│ │ dp[i] = dp[i-1] \* dp[i-2] │ 5-15 │ Multiply costlier ││
+│ │ dp[i] = (dp[i-1] + dp[i-2]) % MOD │ 8-20 │ Modulo is expensive! ││
+│ │ dp.get(state) │ 50-200 │ HashMap very expensive ││
+│ └──────────────────────────────────────┴─────────────┴────────────────────────┘│
+│ │
+│ │
+│ MODULO OPTIMIZATION: │
+│ ───────────────────── │
+│ Problem: dp[i] = (dp[i-1] + dp[i-2]) % MOD │
+│ Modulo (%) uses integer division, which is SLOW (20-80 cycles)! │
+│ │
+
+```java
+// SLOW: Modulo on every operation
+for (int i = 2; i <= n; i++) {
+    dp[i] = (dp[i-1] + dp[i-2]) % MOD;  // % every iteration
+}
+
+// FASTER: Conditional subtraction (when MOD < MAX_INT/2)
+for (int i = 2; i <= n; i++) {
+    dp[i] = dp[i-1] + dp[i-2];
+    if (dp[i] >= MOD) dp[i] -= MOD;  // Branch instead of modulo
+}
+
+// FASTEST: Use long and modulo less frequently
+long sum = 0;
+for (int i = 2; i <= n; i++) {
+    sum = dp[i-1] + dp[i-2];
+    if (sum >= MOD) sum -= MOD;
+    dp[i] = (int) sum;
+}
+```
+
+│ │
+│ BENCHMARK (n=10^7 Fibonacci mod 10^9+7): │
+│ • With % every iter: 180 ms │
+│ • With conditional: 65 ms │
+│ • ~2.8x speedup! │
+│ │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+```
+
+## MEMORY ALLOCATION PATTERNS
+
+```
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ DP ARRAY ALLOCATION STRATEGIES │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│ │
+│ STRATEGY 1: PREALLOCATE ARRAYS (Best for fixed size) │
+│ ──────────────────────────────────────────────────── │
+
+```java
+// GOOD: Single allocation
+int[] dp = new int[n + 1];
+Arrays.fill(dp, -1);  // Or initialize in loop
+
+// BAD: Allocation inside loop
+for (int i = 0; i < tests; i++) {
+    int[] dp = new int[n + 1];  // New allocation each iteration!
+    // ... solve ...
+}
+
+// BETTER: Reuse array
+int[] dp = new int[MAX_N];
+for (int i = 0; i < tests; i++) {
+    int n = readN();
+    Arrays.fill(dp, 0, n + 1, 0);  // Clear only needed portion
+    // ... solve ...
+}
+```
+
+│ │
+│ ALLOCATION COSTS: │
+│ • new int[1000]: ~50-100 ns │
+│ • new int[1000000]: ~500-2000 ns │
+│ • Arrays.fill(arr, 0): ~0.5 ns per element (uses fast memory set) │
+│ │
+│ │
+│ STRATEGY 2: LAZY INITIALIZATION (When sparse) │
+│ ───────────────────────────────────────────── │
+
+```java
+// When most values stay at default, don't fill!
+int[] dp = new int[n + 1];  // Already all zeros in Java!
+
+// Or use sentinel value
+int[] dp = new int[n + 1];
+// Java guarantees all zeros - use 0 as "not computed" if valid answers are > 0
+```
+
+│ │
+│ │
+│ STRATEGY 3: USE PRIMITIVES, NOT OBJECTS │
+│ ─────────────────────────────────────────── │
+│ │
+│ ┌────────────────────────────────────────────────────────────────────────────┐│
+│ │ Storage │ Memory per element │ Access time ││
+│ ├────────────────────────────────┼────────────────────┼─────────────────────┤│
+│ │ int[] │ 4 bytes │ ~3-4 cycles ││
+│ │ Integer[] │ 16+ bytes │ ~10-15 cycles ││
+│ │ ArrayList<Integer> │ 20+ bytes │ ~15-20 cycles ││
+│ │ HashMap<Integer,Integer> │ 48+ bytes │ ~50-200 cycles ││
+│ └────────────────────────────────────────────────────────────────────────────┘│
+│ │
+│ Rule: Use primitive arrays for DP whenever possible! │
+│ Use HashMap only when state space is truly sparse and unpredictable. │
+│ │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+```
+
+---
+
 # PART 1: UNDERSTANDING DP FROM SCRATCH
 
 ## What is Dynamic Programming?
 
 ```
+
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║              DYNAMIC PROGRAMMING - COMPLETE UNDERSTANDING                     ║
+║ DYNAMIC PROGRAMMING - COMPLETE UNDERSTANDING ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHAT IS DYNAMIC PROGRAMMING?                                                 │
+│ WHAT IS DYNAMIC PROGRAMMING? │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ Dynamic Programming (DP) is a method for solving complex problems by:       │
-│ 1. Breaking them into simpler OVERLAPPING subproblems                       │
-│ 2. Solving each subproblem ONLY ONCE                                        │
-│ 3. STORING the results to avoid redundant computation                       │
-│                                                                              │
-│ DP = RECURSION + MEMOIZATION (REMEMBERING)                                  │
-│                                                                              │
-│ INVENTOR: Richard Bellman (1950s) at RAND Corporation                       │
-│ NAME ORIGIN: "Dynamic" sounded impressive to government funders!            │
-│              (Bellman chose it to hide the mathematical nature of his work) │
+│ Dynamic Programming (DP) is a method for solving complex problems by: │
+│ 1. Breaking them into simpler OVERLAPPING subproblems │
+│ 2. Solving each subproblem ONLY ONCE │
+│ 3. STORING the results to avoid redundant computation │
+│ │
+│ DP = RECURSION + MEMOIZATION (REMEMBERING) │
+│ │
+│ INVENTOR: Richard Bellman (1950s) at RAND Corporation │
+│ NAME ORIGIN: "Dynamic" sounded impressive to government funders! │
+│ (Bellman chose it to hide the mathematical nature of his work) │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHAT PROBLEM DOES DP SOLVE?                                                  │
+│ WHAT PROBLEM DOES DP SOLVE? │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ CORE PROBLEM: Optimization problems where:                                   │
-│ • You need the BEST solution (max/min)                                       │
-│ • Making decisions at each step                                              │
-│ • Decisions affect future choices                                            │
-│                                                                              │
-│ REAL-WORLD EXAMPLES:                                                         │
+│ CORE PROBLEM: Optimization problems where: │
+│ • You need the BEST solution (max/min) │
+│ • Making decisions at each step │
+│ • Decisions affect future choices │
+│ │
+│ REAL-WORLD EXAMPLES: │
 │ • Navigation: What's the shortest route? (Same intersections = subproblems) │
-│ • Finance: Max profit from stock trades (Each day = decision point)         │
-│ • Text: How similar are two strings? (Edit distance)                         │
-│ • Packing: Most value in limited space (Knapsack problem)                   │
-│ • Scheduling: Best order for tasks (Job scheduling)                          │
-│                                                                              │
-│ THE INSIGHT:                                                                 │
-│ Instead of exploring ALL possible combinations (exponential), DP builds     │
-│ optimal solutions from optimal sub-solutions (polynomial)!                  │
-│                                                                              │
-│ BEFORE DP (Brute Force):  O(2^n) or worse - trying all combinations         │
-│ AFTER DP:                 O(n²) or O(n×m) - building from subproblems       │
+│ • Finance: Max profit from stock trades (Each day = decision point) │
+│ • Text: How similar are two strings? (Edit distance) │
+│ • Packing: Most value in limited space (Knapsack problem) │
+│ • Scheduling: Best order for tasks (Job scheduling) │
+│ │
+│ THE INSIGHT: │
+│ Instead of exploring ALL possible combinations (exponential), DP builds │
+│ optimal solutions from optimal sub-solutions (polynomial)! │
+│ │
+│ BEFORE DP (Brute Force): O(2^n) or worse - trying all combinations │
+│ AFTER DP: O(n²) or O(n×m) - building from subproblems │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHY DOES DP WORK? (THE MATHEMATICAL FOUNDATION)                              │
+│ WHY DOES DP WORK? (THE MATHEMATICAL FOUNDATION) │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ TWO ESSENTIAL PROPERTIES (Both MUST be true):                                │
-│                                                                              │
-│ 1. OPTIMAL SUBSTRUCTURE                                                      │
-│    "Optimal solution to the whole = combination of optimal sub-solutions"    │
-│                                                                              │
-│    Example: Shortest Path A→C                                                │
-│    If A→B→C is shortest, then:                                               │
-│    • A→B part must be the shortest A→B path                                 │
-│    • B→C part must be the shortest B→C path                                 │
-│                                                                              │
-│    If this wasn't true, you could find a shorter A→C!                       │
-│                                                                              │
-│ 2. OVERLAPPING SUBPROBLEMS                                                   │
-│    "Same subproblems appear multiple times during recursion"                 │
-│                                                                              │
-│    Example: Fibonacci fib(5)                                                 │
-│    fib(5) = fib(4) + fib(3)                                                 │
-│    fib(4) = fib(3) + fib(2)  ← fib(3) needed TWICE!                         │
-│    fib(3) = fib(2) + fib(1)  ← fib(2) needed THRICE!                        │
-│                                                                              │
-│    If subproblems DON'T overlap → Use Divide & Conquer instead!             │
+│ │
+│ TWO ESSENTIAL PROPERTIES (Both MUST be true): │
+│ │
+│ 1. OPTIMAL SUBSTRUCTURE │
+│ "Optimal solution to the whole = combination of optimal sub-solutions" │
+│ │
+│ Example: Shortest Path A→C │
+│ If A→B→C is shortest, then: │
+│ • A→B part must be the shortest A→B path │
+│ • B→C part must be the shortest B→C path │
+│ │
+│ If this wasn't true, you could find a shorter A→C! │
+│ │
+│ 2. OVERLAPPING SUBPROBLEMS │
+│ "Same subproblems appear multiple times during recursion" │
+│ │
+│ Example: Fibonacci fib(5) │
+│ fib(5) = fib(4) + fib(3) │
+│ fib(4) = fib(3) + fib(2) ← fib(3) needed TWICE! │
+│ fib(3) = fib(2) + fib(1) ← fib(2) needed THRICE! │
+│ │
+│ If subproblems DON'T overlap → Use Divide & Conquer instead! │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHEN TO USE DP? (INTERVIEW RECOGNITION PATTERNS)                             │
+│ WHEN TO USE DP? (INTERVIEW RECOGNITION PATTERNS) │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ SIGNAL 1: "Find maximum/minimum..." or "Count the number of ways..."        │
-│    → Optimization = DP likely                                                │
-│                                                                              │
-│ SIGNAL 2: "Given choices at each step..."                                    │
-│    → Decision making with future consequences = DP                           │
-│                                                                              │
-│ SIGNAL 3: "Can you reach...?" or "Is it possible...?"                       │
-│    → Often can be framed as DP (true/false states)                          │
-│                                                                              │
-│ SIGNAL 4: Problem involves sequences/grids                                   │
-│    → String problems, matrix traversal = Classic DP                          │
-│                                                                              │
-│ SIGNAL 5: Same question repeated with different parameters                   │
-│    → Recursive structure with overlapping = DP                               │
-│                                                                              │
+│ SIGNAL 1: "Find maximum/minimum..." or "Count the number of ways..." │
+│ → Optimization = DP likely │
+│ │
+│ SIGNAL 2: "Given choices at each step..." │
+│ → Decision making with future consequences = DP │
+│ │
+│ SIGNAL 3: "Can you reach...?" or "Is it possible...?" │
+│ → Often can be framed as DP (true/false states) │
+│ │
+│ SIGNAL 4: Problem involves sequences/grids │
+│ → String problems, matrix traversal = Classic DP │
+│ │
+│ SIGNAL 5: Same question repeated with different parameters │
+│ → Recursive structure with overlapping = DP │
+│ │
 │ ┌────────────────────────────────┬─────────────────────────────────────────┐│
-│ │ USE DP WHEN                    │ DON'T USE DP WHEN                       ││
+│ │ USE DP WHEN │ DON'T USE DP WHEN ││
 │ ├────────────────────────────────┼─────────────────────────────────────────┤│
-│ │ Need optimal solution          │ Just need any valid solution            ││
-│ │ Subproblems overlap            │ Subproblems independent (use D&C)       ││
-│ │ Problem has optimal structure  │ Local choices don't build global optimal││
-│ │ Can define clear state         │ State space is too large                ││
+│ │ Need optimal solution │ Just need any valid solution ││
+│ │ Subproblems overlap │ Subproblems independent (use D&C) ││
+│ │ Problem has optimal structure │ Local choices don't build global optimal││
+│ │ Can define clear state │ State space is too large ││
 │ └────────────────────────────────┴─────────────────────────────────────────┘│
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ HOW DOES DP WORK? (TWO APPROACHES)                                           │
+│ HOW DOES DP WORK? (TWO APPROACHES) │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ APPROACH 1: TOP-DOWN (MEMOIZATION)                                           │
-│ ┌─────────────────────────────────────────────────────────────┐             │
-│ │ 1. Start with original problem                              │             │
-│ │ 2. Recursively break into subproblems                       │             │
-│ │ 3. Before computing, check if answer already cached         │             │
-│ │ 4. If cached: return it | If not: compute and cache         │             │
-│ │                                                              │             │
-│ │ ANALOGY: You're asked a hard question. You think recursively │             │
-│ │ but write down answers you've figured out on a notepad.      │             │
-│ └─────────────────────────────────────────────────────────────┘             │
-│                                                                              │
-│ APPROACH 2: BOTTOM-UP (TABULATION)                                           │
-│ ┌─────────────────────────────────────────────────────────────┐             │
-│ │ 1. Identify base cases (smallest subproblems)              │             │
-│ │ 2. Fill table starting from base cases                      │             │
-│ │ 3. Build up to the answer iteratively                       │             │
-│ │ 4. Final cell contains the answer                           │             │
-│ │                                                              │             │
-│ │ ANALOGY: Building a pyramid brick by brick from the bottom.  │             │
-│ │ Each brick relies on the ones below it.                      │             │
-│ └─────────────────────────────────────────────────────────────┘             │
-│                                                                              │
-│ COMPARISON:                                                                  │
-│ ┌───────────────────────┬───────────────────────────────────────┐           │
-│ │ Top-Down (Memo)       │ Bottom-Up (Tabulation)                │           │
-│ ├───────────────────────┼───────────────────────────────────────┤           │
-│ │ Easier to write       │ Usually faster (no recursion)         │           │
-│ │ Only solves needed    │ Solves ALL subproblems                │           │
-│ │ Risk of stack overflow│ No stack overflow                      │           │
-│ │ Lazy evaluation       │ Eager evaluation                       │           │
-│ └───────────────────────┴───────────────────────────────────────┘           │
+│ │
+│ APPROACH 1: TOP-DOWN (MEMOIZATION) │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 1. Start with original problem │ │
+│ │ 2. Recursively break into subproblems │ │
+│ │ 3. Before computing, check if answer already cached │ │
+│ │ 4. If cached: return it | If not: compute and cache │ │
+│ │ │ │
+│ │ ANALOGY: You're asked a hard question. You think recursively │ │
+│ │ but write down answers you've figured out on a notepad. │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│ │
+│ APPROACH 2: BOTTOM-UP (TABULATION) │
+│ ┌─────────────────────────────────────────────────────────────┐ │
+│ │ 1. Identify base cases (smallest subproblems) │ │
+│ │ 2. Fill table starting from base cases │ │
+│ │ 3. Build up to the answer iteratively │ │
+│ │ 4. Final cell contains the answer │ │
+│ │ │ │
+│ │ ANALOGY: Building a pyramid brick by brick from the bottom. │ │
+│ │ Each brick relies on the ones below it. │ │
+│ └─────────────────────────────────────────────────────────────┘ │
+│ │
+│ COMPARISON: │
+│ ┌───────────────────────┬───────────────────────────────────────┐ │
+│ │ Top-Down (Memo) │ Bottom-Up (Tabulation) │ │
+│ ├───────────────────────┼───────────────────────────────────────┤ │
+│ │ Easier to write │ Usually faster (no recursion) │ │
+│ │ Only solves needed │ Solves ALL subproblems │ │
+│ │ Risk of stack overflow│ No stack overflow │ │
+│ │ Lazy evaluation │ Eager evaluation │ │
+│ └───────────────────────┴───────────────────────────────────────┘ │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ DIFFICULTIES & COMMON PITFALLS                                               │
+│ DIFFICULTIES & COMMON PITFALLS │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ 1. IDENTIFYING THE STATE (Hardest Part!):                                    │
-│    "What information do I need to solve a subproblem?"                       │
-│    Wrong state definition = wrong solution                                   │
-│    Tip: Ask "What changes between recursive calls?"                          │
-│                                                                              │
-│ 2. FINDING THE RECURRENCE:                                                   │
-│    "How does current state relate to previous states?"                       │
-│    Tip: Think about the LAST decision/step                                   │
-│                                                                              │
-│ 3. BASE CASE ERRORS:                                                         │
-│    Missing or wrong base cases cause wrong answers                           │
-│    Tip: What's the smallest problem you can answer directly?                 │
-│                                                                              │
-│ 4. OFF-BY-ONE ERRORS:                                                        │
-│    Array indices, loop bounds - classic source of bugs                       │
-│    Tip: Trace through small examples by hand                                 │
-│                                                                              │
-│ 5. SPACE COMPLEXITY:                                                         │
-│    2D DP tables can be huge for large inputs                                 │
-│    Tip: Often can optimize to 1D by keeping only previous row               │
-│                                                                              │
-│ 6. RECONSTRUCTION PATH:                                                      │
-│    DP gives optimal VALUE, but sometimes you need the actual SOLUTION       │
-│    Tip: Store "choice made" at each step, then backtrack                    │
+│ 1. IDENTIFYING THE STATE (Hardest Part!): │
+│ "What information do I need to solve a subproblem?" │
+│ Wrong state definition = wrong solution │
+│ Tip: Ask "What changes between recursive calls?" │
+│ │
+│ 2. FINDING THE RECURRENCE: │
+│ "How does current state relate to previous states?" │
+│ Tip: Think about the LAST decision/step │
+│ │
+│ 3. BASE CASE ERRORS: │
+│ Missing or wrong base cases cause wrong answers │
+│ Tip: What's the smallest problem you can answer directly? │
+│ │
+│ 4. OFF-BY-ONE ERRORS: │
+│ Array indices, loop bounds - classic source of bugs │
+│ Tip: Trace through small examples by hand │
+│ │
+│ 5. SPACE COMPLEXITY: │
+│ 2D DP tables can be huge for large inputs │
+│ Tip: Often can optimize to 1D by keeping only previous row │
+│ │
+│ 6. RECONSTRUCTION PATH: │
+│ DP gives optimal VALUE, but sometimes you need the actual SOLUTION │
+│ Tip: Store "choice made" at each step, then backtrack │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ EXPECTED OUTPUTS & COMPLEXITY                                                │
+│ EXPECTED OUTPUTS & COMPLEXITY │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ COMPLEXITY IMPROVEMENT (Why DP is Powerful):                                 │
+│ │
+│ COMPLEXITY IMPROVEMENT (Why DP is Powerful): │
 │ ┌──────────────────────┬─────────────────────┬────────────────────────────┐ │
-│ │ Problem              │ Brute Force         │ With DP                    │ │
+│ │ Problem │ Brute Force │ With DP │ │
 │ ├──────────────────────┼─────────────────────┼────────────────────────────┤ │
-│ │ Fibonacci            │ O(2^n)              │ O(n)                       │ │
-│ │ Longest Common Subseq│ O(2^(m+n))          │ O(m×n)                     │ │
-│ │ 0/1 Knapsack         │ O(2^n)              │ O(n×W)                     │ │
-│ │ Edit Distance        │ O(3^n)              │ O(m×n)                     │ │
-│ │ Matrix Chain         │ O(n!)               │ O(n³)                      │ │
-│ │ Coin Change          │ O(amount^n)         │ O(n×amount)                │ │
+│ │ Fibonacci │ O(2^n) │ O(n) │ │
+│ │ Longest Common Subseq│ O(2^(m+n)) │ O(m×n) │ │
+│ │ 0/1 Knapsack │ O(2^n) │ O(n×W) │ │
+│ │ Edit Distance │ O(3^n) │ O(m×n) │ │
+│ │ Matrix Chain │ O(n!) │ O(n³) │ │
+│ │ Coin Change │ O(amount^n) │ O(n×amount) │ │
 │ └──────────────────────┴─────────────────────┴────────────────────────────┘ │
-│                                                                              │
-│ TYPICAL DP OUTPUT:                                                           │
-│ • Single number: Max profit, min cost, number of ways                        │
-│ • Boolean: Is it possible?                                                   │
-│ • Array/Table: All subproblem solutions (for path reconstruction)           │
-│ • The actual solution: Requires backtracking through DP table               │
-│                                                                              │
-│ SPACE-TIME TRADEOFF:                                                         │
-│ • Standard 2D DP: O(n×m) time, O(n×m) space                                 │
-│ • Space-optimized: O(n×m) time, O(min(n,m)) space (keep 2 rows)            │
-│ • Ultra-optimized: Sometimes O(1) space possible (like Fibonacci)          │
+│ │
+│ TYPICAL DP OUTPUT: │
+│ • Single number: Max profit, min cost, number of ways │
+│ • Boolean: Is it possible? │
+│ • Array/Table: All subproblem solutions (for path reconstruction) │
+│ • The actual solution: Requires backtracking through DP table │
+│ │
+│ SPACE-TIME TRADEOFF: │
+│ • Standard 2D DP: O(n×m) time, O(n×m) space │
+│ • Space-optimized: O(n×m) time, O(min(n,m)) space (keep 2 rows) │
+│ • Ultra-optimized: Sometimes O(1) space possible (like Fibonacci) │
 └──────────────────────────────────────────────────────────────────────────────┘
+
 ```
 
 ### The Story Metaphor
 
 ```
+
 THE STORY:
 Imagine you're solving a maze. Every time you hit a dead end,
 you go back to the start and try again.
 
 BRUTE FORCE:
+
 - Start → try path A → dead end → go back to start
 - Start → try path B → dead end → go back to start
 - You keep walking the same initial path!
 
 SMART WAY (DP):
+
 - Start → try path A → dead end → MARK IT
 - Go back, but remember "path A = dead end"
 - Next time, skip path A directly!
 
 THIS IS MEMOIZATION: Remember what you've already calculated.
-```
+
+````
 
 ---
 
@@ -250,7 +776,7 @@ public int fibRecursive(int n) {
 // fib(3) computed 2 times
 // fib(2) computed 3 times
 // WASTEFUL!
-```
+````
 
 ### Level 2: Memoization - Top Down (✅ Efficient)
 
@@ -1605,4 +2131,790 @@ MISTAKE 6: Redundant states
 
 ---
 
+# 🚀 PART FINAL: ADVANCED DP PATTERNS & TECHNIQUES
+
+```
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║          ADVANCED DYNAMIC PROGRAMMING - COMPETITIVE PROGRAMMING LEVEL            ║
+╠══════════════════════════════════════════════════════════════════════════════════╣
+║                                                                                   ║
+║  This section covers advanced DP patterns used in:                               ║
+║  • Competitive programming (Codeforces, ICPC, IOI)                              ║
+║  • Technical interviews at top companies                                         ║
+║  • Real-world optimization problems                                              ║
+║                                                                                   ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+```
+
+## DIGIT DP - COUNTING NUMBERS WITH PROPERTIES
+
+````
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                    DIGIT DP - THE PATTERN                                        │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                  │
+│  PROBLEM TYPE: Count numbers in range [L, R] with some digit property          │
+│  Examples:                                                                       │
+│  • Count numbers with digit sum = K                                             │
+│  • Count numbers without repeated digits                                        │
+│  • Count numbers divisible by D                                                 │
+│                                                                                  │
+│  KEY IDEA: Build number digit by digit, tracking:                              │
+│  • Position (which digit we're placing)                                        │
+│  • Tight bound (are we still bounded by limit?)                                │
+│  • Problem-specific state (sum, remainder, etc.)                               │
+│                                                                                  │
+│                                                                                  │
+│  TEMPLATE:                                                                       │
+│  ───────────                                                                    │
+```java
+// Count numbers from 0 to N with digit sum = targetSum
+Long[][] memo;  // [position][sum][tight]
+
+long countDigitSum(String N, int targetSum) {
+    memo = new Long[N.length()][targetSum + 1][2];
+    return solve(N, 0, 0, true, targetSum);
+}
+
+long solve(String N, int pos, int sum, boolean tight, int target) {
+    // Base case: processed all digits
+    if (pos == N.length()) {
+        return sum == target ? 1 : 0;
+    }
+
+    // Memoization check
+    int t = tight ? 1 : 0;
+    if (memo[pos][sum][t] != null) return memo[pos][sum][t];
+
+    // Determine upper limit for current digit
+    int limit = tight ? (N.charAt(pos) - '0') : 9;
+
+    long result = 0;
+    for (int digit = 0; digit <= limit; digit++) {
+        result += solve(N, pos + 1, sum + digit,
+                       tight && (digit == limit), target);
+    }
+
+    return memo[pos][sum][t] = result;
+}
+
+// For range [L, R]: answer = count(R) - count(L-1)
+````
+
+│ │
+│ │
+│ EXAMPLE: Count numbers 1 to N with no repeated adjacent digits │
+│ ───────────────────────────────────────────────────────────── │
+
+```java
+Long[][][] memo;  // [pos][prevDigit][tight]
+
+long countNoRepeated(String N) {
+    memo = new Long[N.length()][10][2];
+    return solve(N, 0, -1, true);  // -1 means no previous digit
+}
+
+long solve(String N, int pos, int prev, boolean tight) {
+    if (pos == N.length()) return 1;  // Valid number
+
+    int t = tight ? 1 : 0;
+    int p = prev + 1;  // Shift to use as array index
+    if (memo[pos][p][t] != null) return memo[pos][p][t];
+
+    int limit = tight ? (N.charAt(pos) - '0') : 9;
+
+    long result = 0;
+    for (int digit = 0; digit <= limit; digit++) {
+        if (digit != prev) {  // No adjacent repeats
+            result += solve(N, pos + 1, digit, tight && (digit == limit));
+        }
+    }
+
+    return memo[pos][p][t] = result;
+}
+```
+
+│ │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+```
+
+## BITMASK DP - SUBSET STATE TRACKING
+
+```
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ BITMASK DP - COMPLETE GUIDE │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│ │
+│ WHEN TO USE: Small n (≤ 20), need to track which elements are "used" │
+│ │
+│ BITMASK OPERATIONS: │
+│ ┌──────────────────────────────────────────────────────────────────────────┐ │
+│ │ Operation │ Code │ Example │ │
+│ ├────────────────────────────┼─────────────────────┼───────────────────────┤ │
+│ │ Check if bit i is set │ (mask >> i) & 1 │ mask=5: bit 0,2 set │ │
+│ │ Set bit i │ mask | (1 << i) │ 5|2=7 (set bit 1) │ │
+│ │ Clear bit i │ mask & ~(1 << i) │ 7&~2=5 (clear bit 1) │ │
+│ │ Toggle bit i │ mask ^ (1 << i) │ 5^4=1 (toggle bit 2) │ │
+│ │ Count set bits │ Integer.bitCount() │ bitCount(5)=2 │ │
+│ │ Lowest set bit │ mask & (-mask) │ 12&(-12)=4 │ │
+│ │ Clear lowest set bit │ mask & (mask-1) │ 12&11=8 │ │
+│ │ Check if power of 2 │ (mask & (mask-1))==0│ isPow2(8)=true │ │
+│ │ Iterate all subsets of mask│ See code below │ │ │
+│ └──────────────────────────────────────────────────────────────────────────┘ │
+│ │
+│ │
+│ TRAVELING SALESMAN PROBLEM (TSP): │
+│ ────────────────────────────────── │
+
+```java
+// dp[mask][i] = min cost to visit cities in mask, ending at city i
+// Time: O(2^n * n^2), Space: O(2^n * n)
+int tsp(int[][] dist) {
+    int n = dist.length;
+    int[][] dp = new int[1 << n][n];
+
+    // Initialize with infinity
+    for (int[] row : dp) Arrays.fill(row, Integer.MAX_VALUE / 2);
+
+    // Base: start at city 0
+    dp[1][0] = 0;  // mask=1 means only city 0 visited
+
+    // Process masks in increasing order of bits set
+    for (int mask = 1; mask < (1 << n); mask++) {
+        for (int last = 0; last < n; last++) {
+            if ((mask & (1 << last)) == 0) continue;  // last must be in mask
+
+            // Try all possible previous cities
+            int prevMask = mask ^ (1 << last);  // Remove last from mask
+            for (int prev = 0; prev < n; prev++) {
+                if ((prevMask & (1 << prev)) == 0) continue;
+                dp[mask][last] = Math.min(dp[mask][last],
+                                         dp[prevMask][prev] + dist[prev][last]);
+            }
+        }
+    }
+
+    // Find minimum: visit all cities and return to 0
+    int fullMask = (1 << n) - 1;
+    int ans = Integer.MAX_VALUE;
+    for (int last = 1; last < n; last++) {
+        ans = Math.min(ans, dp[fullMask][last] + dist[last][0]);
+    }
+    return ans;
+}
+```
+
+│ │
+│ │
+│ ITERATING OVER ALL SUBSETS OF A MASK: │
+│ ───────────────────────────────────── │
+
+```java
+// Iterate all subsets of mask (including empty and mask itself)
+for (int subset = mask; subset > 0; subset = (subset - 1) & mask) {
+    // Process subset
+}
+// Don't forget to handle subset = 0 separately if needed
+
+// Example: mask = 5 (binary 101)
+// Subsets: 5 (101), 4 (100), 1 (001), 0 (000)
+// Loop generates: 5 → 4 → 1 → (stops, handle 0 separately)
+```
+
+│ │
+│ │
+│ ASSIGNMENT PROBLEM (HUNGARIAN ALTERNATIVE): │
+│ ─────────────────────────────────────────── │
+
+```java
+// Assign n workers to n tasks, minimize total cost
+// dp[mask] = min cost when tasks in mask are assigned
+int assignmentProblem(int[][] cost) {
+    int n = cost.length;
+    int[] dp = new int[1 << n];
+    Arrays.fill(dp, Integer.MAX_VALUE / 2);
+    dp[0] = 0;
+
+    for (int mask = 0; mask < (1 << n); mask++) {
+        int worker = Integer.bitCount(mask);  // Current worker
+        if (worker >= n) continue;
+
+        for (int task = 0; task < n; task++) {
+            if ((mask & (1 << task)) != 0) continue;  // Task already assigned
+            int newMask = mask | (1 << task);
+            dp[newMask] = Math.min(dp[newMask], dp[mask] + cost[worker][task]);
+        }
+    }
+
+    return dp[(1 << n) - 1];
+}
+```
+
+│ │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+```
+
+## INTERVAL DP - OPTIMAL SUBSTRUCTURE ON RANGES
+
+```
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ INTERVAL DP - THE PATTERN │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│ │
+│ WHEN TO USE: Optimal solution for range [i,j] depends on smaller ranges │
+│ │
+│ CLASSIC PROBLEMS: │
+│ • Matrix chain multiplication │
+│ • Optimal BST │
+│ • Palindrome partitioning │
+│ • Burst balloons │
+│ • Stone game │
+│ │
+│ │
+│ TEMPLATE: │
+│ ─────────── │
+
+```java
+// dp[i][j] = optimal solution for interval [i, j]
+// Process by increasing interval length!
+
+int intervalDP(int[] arr) {
+    int n = arr.length;
+    int[][] dp = new int[n][n];
+
+    // Base case: intervals of length 1
+    for (int i = 0; i < n; i++) {
+        dp[i][i] = /* base case value */;
+    }
+
+    // Process by increasing length
+    for (int len = 2; len <= n; len++) {
+        for (int i = 0; i + len - 1 < n; i++) {
+            int j = i + len - 1;
+            dp[i][j] = /* initialize (often infinity or -infinity) */;
+
+            // Try all split points
+            for (int k = i; k < j; k++) {
+                dp[i][j] = Math.min(dp[i][j],
+                    dp[i][k] + dp[k+1][j] + /* merge cost */);
+            }
+        }
+    }
+
+    return dp[0][n-1];
+}
+```
+
+│ │
+│ │
+│ MATRIX CHAIN MULTIPLICATION: │
+│ ──────────────────────────── │
+
+```java
+// dims[i-1] x dims[i] = dimensions of matrix i (0-indexed)
+// Minimize scalar multiplications to compute M0 * M1 * ... * Mn-1
+int matrixChain(int[] dims) {
+    int n = dims.length - 1;  // n matrices
+    int[][] dp = new int[n][n];
+
+    // Base: single matrix, 0 multiplications
+    // dp[i][i] = 0 (already initialized)
+
+    for (int len = 2; len <= n; len++) {
+        for (int i = 0; i + len - 1 < n; i++) {
+            int j = i + len - 1;
+            dp[i][j] = Integer.MAX_VALUE;
+
+            for (int k = i; k < j; k++) {
+                // Split at k: (M_i...M_k) * (M_k+1...M_j)
+                int cost = dp[i][k] + dp[k+1][j]
+                         + dims[i] * dims[k+1] * dims[j+1];
+                dp[i][j] = Math.min(dp[i][j], cost);
+            }
+        }
+    }
+
+    return dp[0][n-1];
+}
+```
+
+│ │
+│ │
+│ BURST BALLOONS (LeetCode 312): │
+│ ────────────────────────────── │
+
+```java
+// Burst all balloons, maximize coins collected
+// coins = nums[left] * nums[i] * nums[right]
+int maxCoins(int[] nums) {
+    int n = nums.length;
+    int[] arr = new int[n + 2];
+    arr[0] = arr[n + 1] = 1;  // Add boundary 1s
+    for (int i = 0; i < n; i++) arr[i + 1] = nums[i];
+
+    int[][] dp = new int[n + 2][n + 2];
+    // dp[i][j] = max coins from bursting all balloons in (i, j) exclusive
+
+    for (int len = 1; len <= n; len++) {
+        for (int left = 0; left + len + 1 <= n + 1; left++) {
+            int right = left + len + 1;
+
+            // k is the LAST balloon to burst in (left, right)
+            for (int k = left + 1; k < right; k++) {
+                dp[left][right] = Math.max(dp[left][right],
+                    dp[left][k] + dp[k][right] + arr[left] * arr[k] * arr[right]);
+            }
+        }
+    }
+
+    return dp[0][n + 1];
+}
+// Key insight: Think of k as LAST to burst, not first!
+```
+
+│ │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+```
+
+## DP ON TREES
+
+```
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ TREE DP - THE PATTERN │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│ │
+│ WHEN TO USE: Compute optimal values on tree structures │
+│ │
+│ KEY INSIGHT: Process children first (post-order), then compute parent │
+│ │
+│ │
+│ BASIC TREE DP - MAXIMUM INDEPENDENT SET: │
+│ ───────────────────────────────────────── │
+
+```java
+// Select maximum weight of non-adjacent nodes
+// dp[v][0] = max weight not including v
+// dp[v][1] = max weight including v
+
+int[][] dp;
+List<List<Integer>> adj;
+
+void dfs(int v, int parent) {
+    dp[v][0] = 0;
+    dp[v][1] = weight[v];
+
+    for (int u : adj.get(v)) {
+        if (u == parent) continue;
+        dfs(u, v);
+
+        // If v not included, children can be included or not
+        dp[v][0] += Math.max(dp[u][0], dp[u][1]);
+        // If v included, children cannot be included
+        dp[v][1] += dp[u][0];
+    }
+}
+
+// Answer: Math.max(dp[root][0], dp[root][1])
+```
+
+│ │
+│ │
+│ TREE DIAMETER: │
+│ ────────────── │
+
+```java
+// Longest path in tree
+int diameter = 0;
+
+int dfs(int v, int parent) {
+    int max1 = 0, max2 = 0;  // Two longest paths through children
+
+    for (int u : adj.get(v)) {
+        if (u == parent) continue;
+        int childDepth = dfs(u, v) + 1;
+
+        if (childDepth > max1) {
+            max2 = max1;
+            max1 = childDepth;
+        } else if (childDepth > max2) {
+            max2 = childDepth;
+        }
+    }
+
+    // Diameter through v = max1 + max2
+    diameter = Math.max(diameter, max1 + max2);
+
+    return max1;  // Return longest path going down from v
+}
+```
+
+│ │
+│ │
+│ REROOTING TECHNIQUE (for all-roots DP): │
+│ ───────────────────────────────────────── │
+
+```java
+// Compute answer for all possible roots in O(n)
+// Example: Sum of distances from each node to all others
+
+long[] dp;      // dp[v] = sum of distances from v (rooted at v)
+long[] answer;  // answer[v] = sum of distances from v (any root)
+int[] subtree;  // subtree[v] = size of subtree rooted at v
+
+// Step 1: Root at node 0, compute dp[0] and subtree sizes
+void dfs1(int v, int parent) {
+    subtree[v] = 1;
+    dp[v] = 0;
+
+    for (int u : adj.get(v)) {
+        if (u == parent) continue;
+        dfs1(u, v);
+        subtree[v] += subtree[u];
+        dp[v] += dp[u] + subtree[u];  // Add distance to all nodes in subtree
+    }
+}
+
+// Step 2: Reroot - compute answer for all nodes
+void dfs2(int v, int parent) {
+    answer[v] = dp[v];
+
+    for (int u : adj.get(v)) {
+        if (u == parent) continue;
+
+        // Temporarily reroot from v to u
+        // Nodes in u's subtree get closer by 1
+        // Nodes outside u's subtree get farther by 1
+        dp[v] -= dp[u] + subtree[u];
+        dp[u] += dp[v] + (n - subtree[u]);
+
+        int oldSubtreeV = subtree[v];
+        subtree[v] -= subtree[u];
+        subtree[u] = n;
+
+        dfs2(u, v);
+
+        // Restore
+        subtree[u] = n - oldSubtreeV + subtree[v];
+        subtree[v] = oldSubtreeV;
+        dp[u] -= dp[v] + (n - subtree[u]);
+        dp[v] += dp[u] + subtree[u];
+    }
+}
+```
+
+│ │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+```
+
+## DP OPTIMIZATIONS - CONVEX HULL TRICK
+
+```
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ CONVEX HULL TRICK (CHT) │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│ │
+│ WHEN TO USE: Recurrence of form dp[i] = min(dp[j] + b[j] _ a[i]) for j < i │
+│ Reduces O(n²) to O(n) or O(n log n) │
+│ │
+│ CONDITIONS: │
+│ • Slopes b[j] are monotonic │
+│ • Query values a[i] are monotonic │
+│ • Want minimum (or can convert to minimum) │
+│ │
+│ │
+│ INTUITION: │
+│ ─────────── │
+│ Each j gives a line: y = b[j] _ x + dp[j] │
+│ Query for x = a[i]: find line with minimum y │
+│ Maintain lower convex hull of lines │
+│ │
+│ VISUALIZATION: │
+│ y │ │
+│ │ ╱ line 3 (b=4) │
+│ │ ╱ │
+│ │╱ ╱ line 2 (b=2) │
+│ │ ╱ │
+│ │ ╱ ╱ line 1 (b=1) │
+│ │ ╱ ╱ │
+│ │ ╱ ╱ │
+│ │╱──╱───────────────── x │
+│ ╱╲ │
+│ ╱ ╲ Convex hull (only these lines can be optimal) │
+│ │
+│ │
+│ IMPLEMENTATION (monotonic slopes and queries): │
+│ ───────────────────────────────────────────── │
+
+```java
+class ConvexHullTrick {
+    Deque<long[]> hull = new ArrayDeque<>();  // [slope, intercept]
+
+    // Is line c always worse than a and b?
+    boolean bad(long[] a, long[] b, long[] c) {
+        // Check if intersection of (a,c) is left of (a,b)
+        return (c[1] - a[1]) * (a[0] - b[0]) <= (b[1] - a[1]) * (a[0] - c[0]);
+    }
+
+    void addLine(long slope, long intercept) {
+        long[] line = {slope, intercept};
+        while (hull.size() >= 2 && bad(hull.get(hull.size()-2), hull.getLast(), line)) {
+            hull.removeLast();
+        }
+        hull.addLast(line);
+    }
+
+    long query(long x) {
+        // Remove lines that are no longer optimal (for increasing x)
+        while (hull.size() >= 2 &&
+               eval(hull.getFirst(), x) >= eval(hull.get(1), x)) {
+            hull.removeFirst();
+        }
+        return eval(hull.getFirst(), x);
+    }
+
+    long eval(long[] line, long x) {
+        return line[0] * x + line[1];
+    }
+}
+
+// Usage Example: dp[i] = min(dp[j] + b[j] * a[i])
+ConvexHullTrick cht = new ConvexHullTrick();
+cht.addLine(b[0], dp[0]);
+
+for (int i = 1; i < n; i++) {
+    dp[i] = cht.query(a[i]) + /* other terms */;
+    cht.addLine(b[i], dp[i]);
+}
+```
+
+│ │
+│ COMPLEXITY: │
+│ • Amortized O(1) per addLine and query if both are monotonic │
+│ • O(log n) per query with binary search if queries not monotonic │
+│ │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+```
+
+## DIVIDE AND CONQUER DP OPTIMIZATION
+
+```
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ DIVIDE AND CONQUER DP │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│ │
+│ WHEN TO USE: dp[i][j] = min(dp[i-1][k] + cost(k+1, j)) for k < j │
+│ And: optimal k for j₁ ≤ optimal k for j₂ when j₁ < j₂ │
+│ (This is the "monotonicity of optimal splits" property) │
+│ │
+│ Reduces O(n × m × n) to O(n × m × log n) │
+│ │
+│ │
+│ IMPLEMENTATION: │
+│ ─────────────── │
+
+```java
+// dp[i][j] = optimal value using exactly i partitions ending at j
+long[][] dp;
+int[][] opt;  // opt[i][j] = optimal split point k for dp[i][j]
+
+void compute(int level, int lo, int hi, int optLo, int optHi) {
+    if (lo > hi) return;
+
+    int mid = (lo + hi) / 2;
+    int optMid = optLo;
+    dp[level][mid] = Long.MAX_VALUE;
+
+    // Find optimal k for mid in range [optLo, min(optHi, mid-1)]
+    for (int k = optLo; k <= Math.min(optHi, mid - 1); k++) {
+        long val = dp[level - 1][k] + cost(k + 1, mid);
+        if (val < dp[level][mid]) {
+            dp[level][mid] = val;
+            optMid = k;
+        }
+    }
+
+    // Divide: left half uses optLo..optMid, right half uses optMid..optHi
+    compute(level, lo, mid - 1, optLo, optMid);
+    compute(level, mid + 1, hi, optMid, optHi);
+}
+
+// Call: compute(i, 1, n, 0, n) for each level i
+```
+
+│ │
+│ │
+│ EXAMPLE: Partition array into k subarrays, minimize max sum │
+│ ────────────────────────────────────────────────────────── │
+
+```java
+long solve(int[] arr, int k) {
+    int n = arr.length;
+    long[] prefix = new long[n + 1];
+    for (int i = 0; i < n; i++) prefix[i + 1] = prefix[i] + arr[i];
+
+    dp = new long[k + 1][n + 1];
+    Arrays.fill(dp[0], Long.MAX_VALUE / 2);
+    dp[0][0] = 0;
+
+    for (int level = 1; level <= k; level++) {
+        compute(level, 1, n, 0, n - 1);
+    }
+
+    return dp[k][n];
+}
+
+long cost(int l, int r) {
+    return prefix[r] - prefix[l - 1];  // Sum of arr[l-1..r-1]
+}
+```
+
+│ │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+```
+
+## BROKEN PROFILE DP (PLUG DP)
+
+```
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ BROKEN PROFILE DP - GRID TILING │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│ │
+│ WHEN TO USE: Tiling problems on small grids (width ≤ 20) │
+│ • Count ways to tile grid with dominoes │
+│ • Place non-attacking pieces │
+│ • Grid coloring with adjacent constraints │
+│ │
+│ │
+│ CONCEPT: Track "profile" (pattern of filled cells at boundary) │
+│ ───────────────────────────────────────────────────────────── │
+│ │
+│ Grid (3×4): Profile after processing cell (1,2): │
+│ ┌───┬───┬───┬───┐ ┌───┬───┬───┬───┐ │
+│ │ ✓ │ ✓ │ ✓ │ │ │ ✓ │ ✓ │ ✓ │ │ │
+│ ├───┼───┼───┼───┤ ├───┼───╔═══╗───┤ │
+│ │ ✓ │ ✓ │▐▌ │ │ ← here │ ✓ │ ✓ ║ ? ║ │ ← profile = mask of '?' │
+│ ├───┼───┼───┼───┤ ├───┼───╚═══╝───┤ cells just below boundary │
+│ │ │ │ │ │ │ │ │ │ │ │
+│ └───┴───┴───┴───┘ └───┴───┴───┴───┘ │
+│ │
+│ Profile = bitmask of m bits (grid width) │
+│ Bit i set = cell above current in column i is filled │
+│ │
+│ │
+│ DOMINO TILING (count ways to tile n×m grid with 1×2 dominoes): │
+│ ────────────────────────────────────────────────────────────── │
+
+```java
+// Count ways to tile n×m grid with dominoes
+long dominoTiling(int n, int m) {
+    if (n > m) { int t = n; n = m; m = t; }  // Ensure m >= n for efficiency
+
+    long[] dp = new long[1 << n];
+    dp[(1 << n) - 1] = 1;  // All filled = valid starting state
+
+    for (int col = 0; col < m; col++) {
+        for (int row = 0; row < n; row++) {
+            long[] newDp = new long[1 << n];
+
+            for (int mask = 0; mask < (1 << n); mask++) {
+                if (dp[mask] == 0) continue;
+
+                int bit = 1 << row;
+
+                if ((mask & bit) != 0) {
+                    // Cell above is filled, current must get filled from left
+                    // Or we can place vertical domino up (cell above filled by it)
+                    // Actually, if bit set, it means above cell "extends" here
+                    // So we set this cell's bit to 0 (used the extension)
+                    newDp[mask ^ bit] += dp[mask];
+                } else {
+                    // Cell above not filled, we must fill current cell
+
+                    // Option 1: Horizontal domino to the right
+                    // (only if not last column)
+                    if (col + 1 < m) {
+                        // This will "extend" to next column
+                        newDp[mask | bit] += dp[mask];
+                    }
+
+                    // Option 2: Vertical domino downward
+                    // (only if not last row, and cell below not already claimed)
+                    if (row + 1 < n && (mask & (bit << 1)) == 0) {
+                        newDp[mask] += dp[mask];  // Fill both, no extension
+                    }
+                }
+            }
+
+            dp = newDp;
+        }
+    }
+
+    return dp[0];  // Final state: nothing extends beyond grid
+}
+```
+
+│ │
+│ Time: O(m × n × 2^n) │
+│ Space: O(2^n) │
+│ Practical for n ≤ 15-20 │
+│ │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+```
+
+## DP PATTERN QUICK REFERENCE
+
+```
+
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║ DP PATTERNS QUICK REFERENCE ║
+╠══════════════════════════════════════════════════════════════════════════════════╣
+║ ║
+║ ┌─────────────────────────────────────────────────────────────────────────────┐║
+║ │ Pattern │ Signal │ Time │ Space │║
+║ ├───────────────────┼─────────────────────────┼───────────┼───────────────────┤║
+║ │ Linear DP │ One sequence │ O(n) │ O(1) to O(n) │║
+║ │ Two-sequence DP │ Compare two strings │ O(nm) │ O(m) with rolling│║
+║ │ Interval DP │ Range [i,j] optimal │ O(n³) │ O(n²) │║
+║ │ Tree DP │ Tree structure │ O(n) │ O(n) │║
+║ │ Bitmask DP │ n ≤ 20, subsets │ O(2ⁿ × n) │ O(2ⁿ) │║
+║ │ Digit DP │ Count in range [L,R] │ O(d × s) │ O(d × s) │║
+║ │ Broken Profile │ Grid, width ≤ 20 │ O(nm × 2ᵐ)│ O(2ᵐ) │║
+║ │ D&C Optimization │ Monotonic opt split │ O(nm log n)│ O(nm) │║
+║ │ Convex Hull Trick│ Linear transition │ O(n) │ O(n) │║
+║ │ Knuth Optimization│Quadratic → near-linear │ O(n²) │ O(n²) │║
+║ └─────────────────────────────────────────────────────────────────────────────┘║
+║ ║
+║ RECURRENCE PATTERNS: ║
+║ • dp[i] = f(dp[i-1], dp[i-2], ...) → Linear/Fibonacci type ║
+║ • dp[i][j] = f(dp[i-1][j-1], dp[i-1][j], dp[i][j-1]) → Grid DP ║
+║ • dp[i][j] = min/max(dp[i][k] + dp[k][j] + c) → Interval DP ║
+║ • dp[mask] = f(dp[mask ^ (1<<k)]) → Bitmask DP ║
+║ • dp[v] = g(dp[children]) → Tree DP ║
+║ ║
+║ SPACE OPTIMIZATION CHECKLIST: ║
+║ □ Can I use rolling array? (only need prev row/rows) ║
+║ □ Can I use single array with careful iteration order? ║
+║ □ Can I compress coordinates? ║
+║ □ Can I use bitmask instead of array? ║
+║ ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+
+```
+
+---
+
 _DP is not about memorizing solutions - it's about SEEING the substructure!_ 🧮
+```

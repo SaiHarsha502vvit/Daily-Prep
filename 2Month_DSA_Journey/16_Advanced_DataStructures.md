@@ -4,6 +4,526 @@
 
 ---
 
+# 🔬 PART 0: DEEP INTERNALS - HOW ADVANCED DATA STRUCTURES WORK AT MEMORY LEVEL
+
+```
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║       ADVANCED DATA STRUCTURES AT THE HARDWARE LEVEL - MINUTE DETAILS           ║
+╠══════════════════════════════════════════════════════════════════════════════════╣
+║                                                                                   ║
+║  Understanding the PHYSICAL implementation of these powerful structures:         ║
+║  • Memory layout and allocation patterns                                         ║
+║  • Cache behavior and optimization techniques                                    ║
+║  • Bit manipulation in Fenwick trees                                            ║
+║  • Why certain structures are faster in practice                                 ║
+║                                                                                   ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+```
+
+## TRIE NODE MEMORY LAYOUT
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                    TRIE MEMORY REPRESENTATION - DEEP DIVE                        │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                  │
+│  BASIC TRIE NODE (Array-based):                                                 │
+│  class TrieNode {                                                               │
+│      TrieNode[] children = new TrieNode[26];  // 26 letters                    │
+│      boolean isEndOfWord;                                                       │
+│  }                                                                               │
+│                                                                                  │
+│  MEMORY LAYOUT (64-bit JVM, compressed oops):                                   │
+│  ┌─────────────────────────────────────────────────────────────────────────┐   │
+│  │ OFFSET │ SIZE  │ FIELD                │ VALUE                          │   │
+│  ├────────┼───────┼──────────────────────┼────────────────────────────────┤   │
+│  │ 0      │ 8     │ Mark Word            │ Object header                  │   │
+│  │ 8      │ 4     │ Class Pointer        │ → TrieNode.class              │   │
+│  │ 12     │ 4     │ children (ref)       │ → Object[] array              │   │
+│  │ 16     │ 1     │ isEndOfWord          │ true/false                     │   │
+│  │ 17     │ 7     │ padding              │ alignment to 8 bytes           │   │
+│  └────────┴───────┴──────────────────────┴────────────────────────────────┘   │
+│  TrieNode object: 24 bytes                                                     │
+│                                                                                  │
+│  PLUS the children array:                                                       │
+│  ┌─────────────────────────────────────────────────────────────────────────┐   │
+│  │ OFFSET │ SIZE  │ CONTENT                                               │   │
+│  ├────────┼───────┼───────────────────────────────────────────────────────┤   │
+│  │ 0      │ 8     │ Mark Word (array header)                              │   │
+│  │ 8      │ 4     │ Class Pointer                                         │   │
+│  │ 12     │ 4     │ Array length = 26                                     │   │
+│  │ 16     │ 104   │ 26 × 4 bytes (references to child TrieNode)          │   │
+│  └────────┴───────┴───────────────────────────────────────────────────────┘   │
+│  children[] array: 120 bytes                                                   │
+│                                                                                  │
+│  TOTAL PER NODE: 24 + 120 = 144 bytes!                                         │
+│                                                                                  │
+│  For 100,000 words average 8 chars, assuming 30% node sharing:                 │
+│  Nodes ≈ 100,000 × 8 × 0.7 = 560,000 nodes                                    │
+│  Memory ≈ 560,000 × 144 = 80 MB!                                               │
+│                                                                                  │
+│                                                                                  │
+│  MEMORY-OPTIMIZED TRIE (HashMap children):                                      │
+│  class TrieNode {                                                               │
+│      Map<Character, TrieNode> children = new HashMap<>();                      │
+│      boolean isEndOfWord;                                                       │
+│  }                                                                               │
+│                                                                                  │
+│  For sparse nodes (few children): Much smaller!                                 │
+│  Average children ≈ 3-4, so ~160 bytes vs 144 bytes but more flexible         │
+│                                                                                  │
+│                                                                                  │
+│  COMPRESSED TRIE (Patricia/Radix Tree):                                         │
+│  ────────────────────────────────────                                           │
+│  Instead of storing single characters, store strings:                           │
+│                                                                                  │
+│  Standard Trie:          Patricia Trie:                                         │
+│        root                    root                                             │
+│         │                       │                                               │
+│         a                     "app"                                             │
+│         │                     /   \                                             │
+│         p                  "le"  "lication"                                     │
+│         │                                                                       │
+│         p                                                                       │
+│        / \                                                                      │
+│       l   l                                                                     │
+│       │   │                                                                     │
+│       e   i                                                                     │
+│           c...                                                                  │
+│                                                                                  │
+│  Patricia: Fewer nodes, less memory, similar time complexity                   │
+│                                                                                  │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+## SEGMENT TREE MEMORY LAYOUT
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                    SEGMENT TREE MEMORY - ARRAY-BASED STORAGE                     │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                  │
+│  For array of size n, segment tree needs array of size 4n (safe upper bound)   │
+│  Actually needs 2^⌈log₂(n)⌉+1 - 1 nodes, but 4n is simpler                     │
+│                                                                                  │
+│  ARRAY-BASED INDEXING:                                                           │
+│  ┌─────────────────────────────────────────────────────────────────────────┐   │
+│  │ Index i:                                                                │   │
+│  │   Left child:  2*i + 1                                                 │   │
+│  │   Right child: 2*i + 2                                                 │   │
+│  │   Parent:      (i-1) / 2                                               │   │
+│  │                                                                        │   │
+│  │ OR (1-indexed, simpler):                                               │   │
+│  │   Left child:  2*i                                                     │   │
+│  │   Right child: 2*i + 1                                                 │   │
+│  │   Parent:      i / 2                                                   │   │
+│  └─────────────────────────────────────────────────────────────────────────┘   │
+│                                                                                  │
+│  EXAMPLE: Array [1, 3, 5, 7, 9, 11] - Sum Segment Tree                         │
+│                                                                                  │
+│  LOGICAL TREE:                                                                   │
+│                       [36]                 (sum of all: index 1)                │
+│                     /      \                                                    │
+│                  [9]        [27]           (index 2, 3)                         │
+│                 /    \     /    \                                               │
+│               [4]   [5]  [16]  [11]        (index 4, 5, 6, 7)                   │
+│              /  \                /  \                                           │
+│            [1]  [3]  [5]  [7]  [9]  [11]   (index 8-13, leaves)               │
+│                                                                                  │
+│  ARRAY STORAGE (1-indexed):                                                     │
+│  ┌────┬────┬────┬────┬────┬────┬────┬────┬────┬────┬────┬────┬────┬────┐       │
+│  │ 0  │ 1  │ 2  │ 3  │ 4  │ 5  │ 6  │ 7  │ 8  │ 9  │10  │11  │12  │13  │       │
+│  ├────┼────┼────┼────┼────┼────┼────┼────┼────┼────┼────┼────┼────┼────┤       │
+│  │ -- │ 36 │ 9  │ 27 │ 4  │ 5  │ 16 │ 11 │ 1  │ 3  │ 5  │ 7  │ 9  │ 11 │       │
+│  └────┴────┴────┴────┴────┴────┴────┴────┴────┴────┴────┴────┴────┴────┘       │
+│                                                                                  │
+│  MEMORY: 4n × 4 bytes (int) = 16n bytes                                        │
+│  For n = 1,000,000: 16 MB                                                      │
+│                                                                                  │
+│                                                                                  │
+│  CACHE BEHAVIOR:                                                                 │
+│  ─────────────────                                                              │
+│  Query path: index 1 → 2 or 3 → 4,5,6,7 → ...                                 │
+│  Each level doubles the index → Sequential cache misses                        │
+│                                                                                  │
+│  Level 0: index 1 (cache line A)                                               │
+│  Level 1: index 2,3 (cache line A, probably hit)                              │
+│  Level 2: index 4-7 (might need new cache line)                               │
+│  Level 3: index 8-15 (likely new cache line)                                  │
+│  ...                                                                            │
+│                                                                                  │
+│  For log₂(n) levels: log₂(n) potential cache misses                           │
+│  n = 1M → log₂(1M) ≈ 20 cache misses per query                               │
+│                                                                                  │
+│  OPTIMIZATION: "Cache-oblivious" segment trees (van Emde Boas layout)         │
+│                                                                                  │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+## FENWICK TREE - BIT MANIPULATION DEEP DIVE
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                    FENWICK TREE (BIT) - THE MAGIC OF BINARY                      │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                  │
+│  KEY INSIGHT: Use lowest set bit for range calculation!                         │
+│                                                                                  │
+│  LOWEST SET BIT (LSB):                                                           │
+│  ─────────────────────                                                          │
+│  For number i, LSB = i & (-i)                                                  │
+│                                                                                  │
+│  WHY IT WORKS:                                                                   │
+│  -i = two's complement = invert all bits and add 1                             │
+│                                                                                  │
+│  i = 12 = 1100 (binary)                                                         │
+│  ~i     = 0011                                                                   │
+│  -i     = ~i + 1 = 0100                                                         │
+│  i & -i = 1100 & 0100 = 0100 = 4 = LSB                                         │
+│                                                                                  │
+│  EXAMPLES:                                                                       │
+│  ┌────────┬──────────┬──────────┬───────────┬───────────────────────────────┐  │
+│  │ i      │ Binary   │ -i       │ i & (-i)  │ Meaning                       │  │
+│  ├────────┼──────────┼──────────┼───────────┼───────────────────────────────┤  │
+│  │ 1      │ 0001     │ 1111     │ 0001 = 1  │ Covers index 1 only          │  │
+│  │ 2      │ 0010     │ 1110     │ 0010 = 2  │ Covers indices 1-2           │  │
+│  │ 3      │ 0011     │ 1101     │ 0001 = 1  │ Covers index 3 only          │  │
+│  │ 4      │ 0100     │ 1100     │ 0100 = 4  │ Covers indices 1-4           │  │
+│  │ 5      │ 0101     │ 1011     │ 0001 = 1  │ Covers index 5 only          │  │
+│  │ 6      │ 0110     │ 1010     │ 0010 = 2  │ Covers indices 5-6           │  │
+│  │ 7      │ 0111     │ 1001     │ 0001 = 1  │ Covers index 7 only          │  │
+│  │ 8      │ 1000     │ 1000     │ 1000 = 8  │ Covers indices 1-8           │  │
+│  └────────┴──────────┴──────────┴───────────┴───────────────────────────────┘  │
+│                                                                                  │
+│                                                                                  │
+│  BIT[i] stores sum of elements from (i - LSB(i) + 1) to i                      │
+│                                                                                  │
+│  VISUAL:                                                                         │
+│  Original: [1, 2, 3, 4, 5, 6, 7, 8] (1-indexed)                                │
+│                                                                                  │
+│  BIT array stores:                                                               │
+│  ┌────────────────────────────────────────────────────────────────────────────┐│
+│  │ BIT[1] = arr[1]                               = 1        (covers 1)       ││
+│  │ BIT[2] = arr[1] + arr[2]                      = 3        (covers 1-2)     ││
+│  │ BIT[3] = arr[3]                               = 3        (covers 3)       ││
+│  │ BIT[4] = arr[1] + arr[2] + arr[3] + arr[4]    = 10       (covers 1-4)     ││
+│  │ BIT[5] = arr[5]                               = 5        (covers 5)       ││
+│  │ BIT[6] = arr[5] + arr[6]                      = 11       (covers 5-6)     ││
+│  │ BIT[7] = arr[7]                               = 7        (covers 7)       ││
+│  │ BIT[8] = arr[1] + ... + arr[8]                = 36       (covers 1-8)     ││
+│  └────────────────────────────────────────────────────────────────────────────┘│
+│                                                                                  │
+│                                                                                  │
+│  QUERY: Sum of [1, 7]                                                           │
+│  ─────────────────────                                                          │
+│  sum = 0                                                                        │
+│  i = 7:  sum += BIT[7] = 7,  i -= LSB(7) = 7-1 = 6                            │
+│  i = 6:  sum += BIT[6] = 11, i -= LSB(6) = 6-2 = 4                            │
+│  i = 4:  sum += BIT[4] = 10, i -= LSB(4) = 4-4 = 0                            │
+│  DONE!   sum = 7 + 11 + 10 = 28 ✓                                              │
+│                                                                                  │
+│  Number of operations: Count of 1s in binary of 7 = 3 operations               │
+│  Maximum: log₂(n) operations                                                   │
+│                                                                                  │
+│                                                                                  │
+│  UPDATE: Add 5 to index 3                                                       │
+│  ────────────────────────────                                                   │
+│  i = 3:  BIT[3] += 5,  i += LSB(3) = 3+1 = 4                                  │
+│  i = 4:  BIT[4] += 5,  i += LSB(4) = 4+4 = 8                                  │
+│  i = 8:  BIT[8] += 5,  i += LSB(8) = 8+8 = 16 > n, STOP                       │
+│                                                                                  │
+│  Updates all ranges that include index 3!                                       │
+│                                                                                  │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+## UNION-FIND - PATH COMPRESSION VISUALIZATION
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                    UNION-FIND - PATH COMPRESSION DEEP DIVE                       │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                  │
+│  INITIAL STATE (8 elements, each is own parent):                               │
+│  parent[] = [0, 1, 2, 3, 4, 5, 6, 7]                                          │
+│  rank[]   = [0, 0, 0, 0, 0, 0, 0, 0]                                          │
+│                                                                                  │
+│  AFTER union(0,1), union(2,3), union(4,5), union(6,7):                        │
+│  parent[] = [0, 0, 2, 2, 4, 4, 6, 6]                                          │
+│  rank[]   = [1, 0, 1, 0, 1, 0, 1, 0]                                          │
+│                                                                                  │
+│  Trees:   0    2    4    6                                                     │
+│           │    │    │    │                                                     │
+│           1    3    5    7                                                     │
+│                                                                                  │
+│  AFTER union(0,2), union(4,6):                                                 │
+│  parent[] = [0, 0, 0, 2, 4, 4, 4, 6]                                          │
+│  rank[]   = [2, 0, 1, 0, 2, 0, 1, 0]                                          │
+│                                                                                  │
+│  Trees:       0           4                                                    │
+│              /│          /│                                                    │
+│             1 2         5 6                                                    │
+│               │           │                                                    │
+│               3           7                                                    │
+│                                                                                  │
+│  AFTER union(0,4):                                                              │
+│  parent[] = [0, 0, 0, 2, 0, 4, 4, 6]                                          │
+│  rank[]   = [3, 0, 1, 0, 2, 0, 1, 0]                                          │
+│                                                                                  │
+│  Tree:           0                                                             │
+│                / | \                                                           │
+│               1  2  4                                                          │
+│                  │ /│                                                          │
+│                  3 5 6                                                         │
+│                      │                                                         │
+│                      7                                                         │
+│                                                                                  │
+│                                                                                  │
+│  NOW: find(7) WITH PATH COMPRESSION:                                           │
+│  ────────────────────────────────────                                          │
+│                                                                                  │
+│  Call stack:                                                                     │
+│  find(7) → parent[7] = 6, recurse                                              │
+│    find(6) → parent[6] = 4, recurse                                            │
+│      find(4) → parent[4] = 0, recurse                                          │
+│        find(0) → parent[0] = 0, return 0 (root!)                              │
+│      return 0, set parent[4] = 0                                               │
+│    return 0, set parent[6] = 0                                                 │
+│  return 0, set parent[7] = 0                                                   │
+│                                                                                  │
+│  AFTER path compression:                                                        │
+│  parent[] = [0, 0, 0, 2, 0, 4, 0, 0]                                          │
+│                                                                                  │
+│  Tree:           0                                                             │
+│              /|\ | \\ \                                                        │
+│             1 2 4 5 6 7                                                        │
+│               │                                                                │
+│               3                                                                │
+│                                                                                  │
+│  Now find(7) is O(1)!                                                          │
+│                                                                                  │
+│                                                                                  │
+│  COMPLEXITY WITH BOTH OPTIMIZATIONS:                                            │
+│  ─────────────────────────────────────                                          │
+│  • Union by rank + Path compression                                             │
+│  • Amortized O(α(n)) per operation                                             │
+│  • α(n) = Inverse Ackermann function                                           │
+│  • α(n) ≤ 4 for any practical n (even n = atoms in universe)                  │
+│  • Effectively O(1) per operation!                                             │
+│                                                                                  │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+## SKIP LIST - PROBABILISTIC MEMORY LAYOUT
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                    SKIP LIST - HOW REDIS IMPLEMENTS SORTED SETS                  │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                  │
+│  SKIP LIST STRUCTURE:                                                            │
+│                                                                                  │
+│  Level 4:  head ─────────────────────────────────────────────────→ nil         │
+│  Level 3:  head ──────────────────→ 25 ──────────────────────────→ nil         │
+│  Level 2:  head ───────→ 10 ─────→ 25 ───────────────→ 75 ───────→ nil         │
+│  Level 1:  head → 5 ──→ 10 → 15 → 25 → 30 → 50 → 65 → 75 → 80 ──→ nil         │
+│  Level 0:  head → 5 → 7 → 10 → 15 → 25 → 30 → 50 → 65 → 75 → 80 → 90 → nil    │
+│                                                                                  │
+│                                                                                  │
+│  NODE MEMORY LAYOUT:                                                             │
+│  class SkipListNode {                                                           │
+│      int value;                                                                 │
+│      SkipListNode[] forward;  // Array of pointers to next nodes              │
+│  }                                                                               │
+│                                                                                  │
+│  ┌─────────────────────────────────────────────────────────────────────────┐   │
+│  │ SKIP LIST NODE (value = 25, level = 3):                                 │   │
+│  │                                                                          │   │
+│  │ ┌──────────────┬──────────────────────────────────────────────────────┐ │   │
+│  │ │ value: 25    │ forward[]: [ptr_to_30, ptr_to_30, ptr_to_75, nil]    │ │   │
+│  │ │ (4 bytes)    │ (array of 4 pointers, 32 bytes on 64-bit)            │ │   │
+│  │ └──────────────┴──────────────────────────────────────────────────────┘ │   │
+│  │                                                                          │   │
+│  │ Object overhead: ~16 bytes                                              │   │
+│  │ Array overhead:  ~16 bytes                                              │   │
+│  │ Total: ~68 bytes for this node                                         │   │
+│  └─────────────────────────────────────────────────────────────────────────┘   │
+│                                                                                  │
+│                                                                                  │
+│  LEVEL DISTRIBUTION (probability p = 0.5):                                      │
+│  ─────────────────────────────────────────                                      │
+│  • 50% of nodes: level 1                                                        │
+│  • 25% of nodes: level 2                                                        │
+│  • 12.5% of nodes: level 3                                                      │
+│  • ...                                                                          │
+│                                                                                  │
+│  EXPECTED MEMORY per node: ~1 + 0.5 + 0.25 + ... = 2 pointers average         │
+│  Much better than balanced BST!                                                 │
+│                                                                                  │
+│                                                                                  │
+│  SEARCH for 65:                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐│
+│  │ Start at head, level 4                                                    ││
+│  │ Level 4: head → nil (no nodes), go DOWN                                   ││
+│  │ Level 3: head → 25 (25 < 65), MOVE RIGHT, 25 → nil, go DOWN              ││
+│  │ Level 2: 25 → 75 (75 > 65), go DOWN                                      ││
+│  │ Level 1: 25 → 30 → 50 → 65, FOUND!                                       ││
+│  │                                                                           ││
+│  │ Comparisons: 25, 75, 30, 50, 65 = 5 comparisons                         ││
+│  │ vs Linear: 9 comparisons                                                  ││
+│  │ vs Binary Search: log₂(11) ≈ 4 comparisons (similar!)                   ││
+│  └────────────────────────────────────────────────────────────────────────────┘│
+│                                                                                  │
+│  WHY SKIP LIST OVER BALANCED BST?                                              │
+│  ─────────────────────────────────                                              │
+│  1. Simpler implementation (no rotations!)                                     │
+│  2. Easier concurrent access (lock individual levels)                         │
+│  3. Range queries are natural (just follow level 0)                           │
+│  4. Redis, LevelDB use it for sorted sets                                     │
+│                                                                                  │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+## BLOOM FILTER - BIT ARRAY INTERNALS
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                    BLOOM FILTER - PROBABILISTIC MEMBERSHIP                       │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                  │
+│  MEMORY LAYOUT:                                                                  │
+│  ┌─────────────────────────────────────────────────────────────────────────┐   │
+│  │ Bit array (m = 32 bits for example):                                    │   │
+│  │                                                                          │   │
+│  │ Index:  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 ...             │   │
+│  │ Bits:   0  0  1  0  1  0  0  1  0  0  1  0  0  0  1  0 ...             │   │
+│  │                                                                          │   │
+│  │ Storage: In Java, long[] with 64 bits each                              │   │
+│  │ m = 1M bits = 125 KB                                                    │   │
+│  │ m = 1B bits = 125 MB                                                    │   │
+│  └─────────────────────────────────────────────────────────────────────────┘   │
+│                                                                                  │
+│                                                                                  │
+│  HASH FUNCTIONS (k = 3 in this example):                                       │
+│  ─────────────────────────────────────────                                      │
+│  h1(x) = hash(x) % m                                                           │
+│  h2(x) = hash(x + seed1) % m                                                   │
+│  h3(x) = hash(x + seed2) % m                                                   │
+│                                                                                  │
+│  Or use double hashing: hi(x) = (h1(x) + i * h2(x)) % m                       │
+│                                                                                  │
+│                                                                                  │
+│  INSERT "apple":                                                                 │
+│  ─────────────────                                                              │
+│  h1("apple") = 2,  h2("apple") = 7,  h3("apple") = 14                         │
+│                                                                                  │
+│  Before: 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0                       │
+│  After:  0  0  1  0  0  0  0  1  0  0  0  0  0  0  1  0                       │
+│               ↑              ↑                    ↑                            │
+│              h1             h2                   h3                            │
+│                                                                                  │
+│                                                                                  │
+│  CHECK "apple": Look at positions 2, 7, 14 → all 1s → "PROBABLY IN SET"       │
+│  CHECK "grape": h1=3, h2=5, h3=10 → position 3 is 0 → "DEFINITELY NOT IN SET" │
+│                                                                                  │
+│                                                                                  │
+│  FALSE POSITIVE PROBABILITY:                                                    │
+│  ───────────────────────────                                                    │
+│  After inserting n elements with k hash functions into m bits:                 │
+│                                                                                  │
+│  P(bit is still 0) = (1 - 1/m)^(kn) ≈ e^(-kn/m)                               │
+│  P(false positive) = (1 - e^(-kn/m))^k                                         │
+│                                                                                  │
+│  OPTIMAL k = (m/n) × ln(2) ≈ 0.693 × (m/n)                                    │
+│                                                                                  │
+│  EXAMPLE CALCULATIONS:                                                          │
+│  ┌─────────────────────────────────────────────────────────────────────────┐   │
+│  │ n (elements) │ m (bits) │ m/n ratio │ optimal k │ FP rate              │   │
+│  ├──────────────┼──────────┼───────────┼───────────┼──────────────────────┤   │
+│  │ 1,000        │ 10,000   │ 10        │ 7         │ 0.82%                │   │
+│  │ 1,000        │ 20,000   │ 20        │ 14        │ 0.00061%             │   │
+│  │ 1,000,000    │ 10M      │ 10        │ 7         │ 0.82%                │   │
+│  │ 1,000,000    │ 100M     │ 100       │ 69        │ ~0%                  │   │
+│  └─────────────────────────────────────────────────────────────────────────┘   │
+│                                                                                  │
+│  RULE OF THUMB: 10 bits per element with 7 hash functions → ~1% FP rate       │
+│                                                                                  │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+## LRU CACHE - DOUBLY LINKED LIST + HASHMAP
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                    LRU CACHE - O(1) GET AND PUT                                  │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                  │
+│  STRUCTURE:                                                                      │
+│  ────────────                                                                   │
+│  1. HashMap<Key, Node>: O(1) lookup by key                                     │
+│  2. Doubly Linked List: O(1) remove/insert for recency tracking                │
+│                                                                                  │
+│                                                                                  │
+│  MEMORY LAYOUT:                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐│
+│  │                                                                            ││
+│  │  HashMap:                                                                  ││
+│  │  ┌───────────────────────────────────────────┐                            ││
+│  │  │ key: "A" → Node(A)                        │                            ││
+│  │  │ key: "B" → Node(B)                        │                            ││
+│  │  │ key: "C" → Node(C)                        │                            ││
+│  │  └───────────────────────────────────────────┘                            ││
+│  │                                                                            ││
+│  │  Doubly Linked List (most recent at head):                                ││
+│  │  ┌──────────────────────────────────────────────────────────────────────┐ ││
+│  │  │                                                                      │ ││
+│  │  │  HEAD ←→ Node(C) ←→ Node(B) ←→ Node(A) ←→ TAIL                      │ ││
+│  │  │  (dummy)  (most     (middle)   (least    (dummy)                     │ ││
+│  │  │           recent)              recent)                               │ ││
+│  │  │                                                                      │ ││
+│  │  └──────────────────────────────────────────────────────────────────────┘ ││
+│  │                                                                            ││
+│  │  Each Node:                                                                ││
+│  │  ┌──────────────────────────────────────────────────┐                     ││
+│  │  │ key: "B"                                         │                     ││
+│  │  │ value: 42                                        │                     ││
+│  │  │ prev: → Node(C)                                  │                     ││
+│  │  │ next: → Node(A)                                  │                     ││
+│  │  └──────────────────────────────────────────────────┘                     ││
+│  │                                                                            ││
+│  └────────────────────────────────────────────────────────────────────────────┘│
+│                                                                                  │
+│                                                                                  │
+│  OPERATIONS:                                                                     │
+│  ───────────                                                                    │
+│                                                                                  │
+│  GET(key):                                                                       │
+│  1. Look up in HashMap: O(1)                                                   │
+│  2. If found, move node to head: O(1)                                          │
+│  3. Return value                                                                │
+│                                                                                  │
+│  PUT(key, value):                                                               │
+│  1. If key exists: update value, move to head                                  │
+│  2. If key doesn't exist:                                                      │
+│     a. Create new node, add to head                                           │
+│     b. Add to HashMap                                                          │
+│     c. If over capacity, remove tail node (LRU item)                          │
+│                                                                                  │
+│                                                                                  │
+│  MEMORY PER ENTRY:                                                              │
+│  ──────────────────                                                             │
+│  Node: ~48 bytes (key ref, value ref, prev, next, object header)              │
+│  HashMap entry: ~32 bytes (key ref, value ref, hash, next)                    │
+│  Total: ~80 bytes per cache entry                                              │
+│                                                                                  │
+│  For 10,000 entries: ~800 KB                                                   │
+│  For 1,000,000 entries: ~80 MB                                                 │
+│                                                                                  │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
 # PART 1: WHY THESE DATA STRUCTURES MATTER
 
 ```

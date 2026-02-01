@@ -59,15 +59,23 @@
 | [17_Algorithm_Combining_Engineering_Mindset.md](17_Algorithm_Combining_Engineering_Mindset.md) | How to combine patterns & think like engineers | Creating solutions, not just solving     |
 | [18_University_Resources_Links.md](18_University_Resources_Links.md)                           | MIT, Stanford, Berkeley, KTH links             | Extra learning, deep understanding       |
 
+### Career & Techno-Functional Expert Guides (LATEST!)
+
+| File                                                                                             | Purpose                                                                                             | When to Use                                             |
+| ------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| [25_Career_TechnoFunctional_Complete_Guide.md](25_Career_TechnoFunctional_Complete_Guide.md)     | System Design, Cloud, Domain Knowledge (Banking/Healthcare/Telecom), Product Mindset, Project Ideas | Career growth, domain expertise, portfolio building     |
+| [26_Ultimate_DataStructures_Algorithms_Guide.md](26_Ultimate_DataStructures_Algorithms_Guide.md) | All DS variants with WHY-HOW-WHAT framework, 5-7 LeetCode per topic, Real-world usage               | Deep DS understanding, interview prep, system knowledge |
+
 ### 🆕 NEW! System Design, Flows & Patterns (EXTENDED)
 
-| File                                                                                   | Purpose                                       | When to Use                       |
-| -------------------------------------------------------------------------------------- | --------------------------------------------- | --------------------------------- |
-| [19_System_Design_Feature_Creation.md](19_System_Design_Feature_Creation.md)           | System design fundamentals & architecture     | Interview prep, building features |
-| [20_Design_Patterns_Complete_Guide.md](20_Design_Patterns_Complete_Guide.md)           | All GoF patterns with Java examples           | OOP design, interview prep        |
-| [21_3Month_DSA_Journey_Complete.md](21_3Month_DSA_Journey_Complete.md)                 | **EXTENDED 3-MONTH CALENDAR** - 290+ problems | Your main roadmap                 |
-| [22_User_Flows_System_Flows_Complete.md](22_User_Flows_System_Flows_Complete.md)       | User flows, data flows, system flows          | Feature design, documentation     |
-| [23_Feature_Creation_Complete_Framework.md](23_Feature_Creation_Complete_Framework.md) | End-to-end feature creation process           | Building production features      |
+| File                                                                                     | Purpose                                                                              | When to Use                       |
+| ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ | --------------------------------- |
+| [19_System_Design_Feature_Creation.md](19_System_Design_Feature_Creation.md)             | System design fundamentals & architecture                                            | Interview prep, building features |
+| [20_Design_Patterns_Complete_Guide.md](20_Design_Patterns_Complete_Guide.md)             | All GoF patterns with Java examples                                                  | OOP design, interview prep        |
+| [21_3Month_DSA_Journey_Complete.md](21_3Month_DSA_Journey_Complete.md)                   | **EXTENDED 3-MONTH CALENDAR** - 290+ problems                                        | Your main roadmap                 |
+| [22_User_Flows_System_Flows_Complete.md](22_User_Flows_System_Flows_Complete.md)         | User flows, data flows, system flows                                                 | Feature design, documentation     |
+| [23_Feature_Creation_Complete_Framework.md](23_Feature_Creation_Complete_Framework.md)   | End-to-end feature creation process                                                  | Building production features      |
+| [24_DataStructures_ALL_VARIANTS_Complete.md](24_DataStructures_ALL_VARIANTS_Complete.md) | **ALL DS VARIANTS**: Doubly Linked, Circular, Skip List, AVL, Red-Black, Deque, etc. | Complete DS understanding         |
 
 ---
 
