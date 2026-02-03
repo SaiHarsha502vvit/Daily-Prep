@@ -65,6 +65,7 @@
 | ------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
 | [25_Career_TechnoFunctional_Complete_Guide.md](25_Career_TechnoFunctional_Complete_Guide.md)     | System Design, Cloud, Domain Knowledge (Banking/Healthcare/Telecom), Product Mindset, Project Ideas | Career growth, domain expertise, portfolio building     |
 | [26_Ultimate_DataStructures_Algorithms_Guide.md](26_Ultimate_DataStructures_Algorithms_Guide.md) | All DS variants with WHY-HOW-WHAT framework, 5-7 LeetCode per topic, Real-world usage               | Deep DS understanding, interview prep, system knowledge |
+| [27_SQL_Complete_Guide.md](27_SQL_Complete_Guide.md)                                             | **🆕 NEW!** From Scratch to Expert - 100 Problems, 3 Projects, 50 Interview Q&A, Cheat Sheet        | Data Analyst, Data Engineer, Backend Dev                |
 
 ### 🆕 NEW! System Design, Flows & Patterns (EXTENDED)
 
