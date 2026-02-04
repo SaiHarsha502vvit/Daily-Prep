@@ -1,103 +1,139 @@
-# 🎯 NETCRACKER EXAM PREPARATION - START HERE!
+# 🎯 DSA & CAREER PREPARATION - START HERE!
 
-## 📂 ENTRY POINT: `01_START_HERE.md` (This File!)
+## 📂 ENTRY POINT: `01_Start_Here.md` (This File!)
 
 ```
 ╔═══════════════════════════════════════════════════════════════════════════════════╗
 ║                                                                                   ║
-║   📚 YOUR COMPLETE EXAM PREP FILES (IN READING ORDER):                            ║
+║   📚 YOUR COMPLETE PREP FILES (IN READING ORDER):                                 ║
 ║                                                                                   ║
 ║   ┌─────────────────────────────────────────────────────────────────────────────┐║
 ║   │  🚀 START HERE                                                              │║
 ║   │  ─────────────                                                              │║
-║   │  01_START_HERE.md ◄──── YOU ARE HERE (Entry Point)                         │║
+║   │  01_Getting_Started/01_Start_Here.md ◄──── YOU ARE HERE                    │║
+║   │  01_Getting_Started/02_Study_Plan_Calendar.md → 12-week study plan          │║
 ║   ├─────────────────────────────────────────────────────────────────────────────┤║
-║   │  📖 CORE LEARNING (Read in Order)                                           │║
-║   │  ────────────────────────────                                               │║
-║   │  02_CoreTemplates_and_Roadmap.md     → Templates + 2-day roadmap            │║
-║   │  03_NetcrackerPreparation.md         → 33 patterns (MAIN FILE!)            │║
-║   │  04_SlidingWindow_MasterGuide.md     → Count-based approach                 │║
+║   │  📖 DATA STRUCTURES                                                         │║
+║   │  ──────────────────                                                         │║
+║   │  02_Data_Structures/01_DataStructures_Complete.md → Arrays, Strings, etc.   │║
+║   │  02_Data_Structures/02_DataStructures_Variants.md → All DS variants         │║
+║   │  02_Data_Structures/03_Collections_Java.md → Java Collections               │║
+║   │  02_Data_Structures/04_2D_Arrays_Matrix.md → Matrix problems                │║
 ║   ├─────────────────────────────────────────────────────────────────────────────┤║
-║   │  🎨 VISUAL REFERENCES                                                       │║
-║   │  ────────────────────                                                       │║
-║   │  05_Visual_Algorithm_Diagrams.md     → Diagrams for all algorithms          │║
-║   │  06_Complete_Code_Templates.md       → Templates with visual guides         │║
+║   │  🧠 ALGORITHMS                                                              │║
+║   │  ─────────────                                                              │║
+║   │  03_Algorithms/01_Algorithm_Thinking.md → How to approach problems          │║
+║   │  03_Algorithms/02_Sorting_Algorithms.md → All sorting algorithms            │║
+║   │  03_Algorithms/03_Recursion_Complete.md → Recursion & backtracking          │║
+║   │  03_Algorithms/04_Dynamic_Programming.md → DP patterns                      │║
+║   │  03_Algorithms/05_Trees_Graphs.md → Trees & Graphs                          │║
+║   │  03_Algorithms/06_Advanced_Algorithms.md → Greedy, D&C                      │║
+║   │  03_Algorithms/07_Advanced_DataStructures.md → Tries, Segment Trees         │║
 ║   ├─────────────────────────────────────────────────────────────────────────────┤║
-║   │  📋 EXAM DAY QUICK REFS                                                     │║
+║   │  🎨 PATTERNS & TEMPLATES                                                    │║
+║   │  ───────────────────────                                                    │║
+║   │  04_Patterns_Templates/01_Sliding_Window.md → Sliding window patterns       │║
+║   │  04_Patterns_Templates/02_Code_Templates.md → Copy-paste templates          │║
+║   │  04_Patterns_Templates/03_Visual_Diagrams.md → Visual guides                │║
+║   │  04_Patterns_Templates/04_Pattern_Recognition.md → Pattern identification   │║
+║   │  04_Patterns_Templates/05_LeetCode_RealWorld_Map.md → Real-world mapping    │║
+║   ├─────────────────────────────────────────────────────────────────────────────┤║
+║   │  🧪 PROBLEM SOLVING                                                         │║
+║   │  ─────────────────────                                                      │║
+║   │  05_Problem_Solving/01_Practice_Problems.md → 210+ problems (MAIN!)         │║
+║   │  05_Problem_Solving/02_Edge_Cases.md → Edge case handling                   │║
+║   │  05_Problem_Solving/03_Common_Mistakes.md → Mistakes to avoid               │║
+║   │  05_Problem_Solving/04_Problem_Origins.md → Real-world origins              │║
+║   ├─────────────────────────────────────────────────────────────────────────────┤║
+║   │  🏗️ OOP & DESIGN                                                            │║
+║   │  ───────────────────                                                        │║
+║   │  06_OOP_Design/01_OOPS_Principles.md → OOP & SOLID                          │║
+║   │  06_OOP_Design/02_Design_Patterns.md → GoF Design Patterns                  │║
+║   │  06_OOP_Design/03_System_Design.md → System design basics                   │║
+║   │  06_OOP_Design/04_User_System_Flows.md → User/system flows                  │║
+║   ├─────────────────────────────────────────────────────────────────────────────┤║
+║   │  ☕ MODERN JAVA                                                             │║
+║   │  ─────────────────                                                          │║
+║   │  07_Modern_Java/01_Functional_Programming.md → Streams, Lambdas             │║
+║   │  07_Modern_Java/02_Algorithm_Engineering.md → Optimization                  │║
+║   ├─────────────────────────────────────────────────────────────────────────────┤║
+║   │  🗄️ SQL & DATABASE                                                          │║
+║   │  ──────────────────                                                         │║
+║   │  08_SQL_Database/01_SQL_Complete_Guide.md → Complete SQL (6000+ lines)      │║
+║   ├─────────────────────────────────────────────────────────────────────────────┤║
+║   │  💼 CAREER & REFERENCE                                                      │║
 ║   │  ──────────────────────                                                     │║
-║   │  07_QuickReference_CheatSheet.md     → Exam day cheat sheet                 │║
-║   │  08_ExamDay_Formulas.md              → All formulas at a glance             │║
-║   ├─────────────────────────────────────────────────────────────────────────────┤║
-║   │  🧪 PRACTICE & AVOID MISTAKES                                               │║
-║   │  ────────────────────────────                                               │║
-║   │  09_Practice_Problems.md             → Problems to solve                    │║
-║   │  10_Common_Mistakes.md               → Mistakes to avoid                    │║
-║   ├─────────────────────────────────────────────────────────────────────────────┤║
-║   │  📝 EXTRAS                                                                  │║
-║   │  ─────────                                                                  │║
-║   │  11_PaperToCode_TranslationGuide.md  → 5-step translation method            │║
-║   │  12_NEW_PATTERNS_ADDED.md            → Changelog of additions               │║
-║   │  13_WHAT_WE_FIXED.md                 → Bug fixes made                       │║
-║   │  14_PREPARATION_COMPLETE.md          → Summary of prep                      │║
+║   │  09_Career_Reference/01_Career_Guide.md → Career development                │║
+║   │  09_Career_Reference/02_Ultimate_DSA_Guide.md → MASTER REFERENCE            │║
+║   │  09_Career_Reference/03_Quick_Reference.md → Quick revision                 │║
+║   │  09_Career_Reference/04_Brain_Psychology.md → Learning psychology           │║
+║   │  09_Career_Reference/05_Daily_Habits_Tracking.md → Habit tracking           │║
+║   │  09_Career_Reference/06_Resources_Links.md → External resources             │║
 ║   └─────────────────────────────────────────────────────────────────────────────┘║
 ║                                                                                   ║
-║   📁 Other: JavaSolutions/, pdf/, cvcorpInstitueExamQuestionandmyAnswers.txt     ║
+║   📁 Other: JavaSolutions/, practice/, _archive/ (old files)                     ║
 ║                                                                                   ║
 ╚═══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
-## 🔥 CRITICAL BREAKTHROUGH RESOURCES
+## 🔥 CRITICAL RESOURCES
 
-### **🚨 #1: Paper to Code Translation Guide**
+### **🚨 #1: Practice Problems (210+ Problems)**
 
-**File:** [11_PaperToCode_TranslationGuide.md](11_PaperToCode_TranslationGuide.md)
+**File:** [05_Problem_Solving/01_Practice_Problems.md](../05_Problem_Solving/01_Practice_Problems.md)
 
-**READ THIS FIRST IF YOU:**
+**This is your main practice resource with:**
 
-- ✅ Understand concepts on paper but freeze when coding
-- ✅ Know what to do but can't translate to code
-- ✅ Get stuck thinking "which variable should I use?"
-- ✅ Second-guess yourself about loop boundaries
-- ✅ Feel cognitive overload when starting to code
+- ✅ 210+ problems across 13 sections
+- ✅ Visual ASCII diagrams for every concept
+- ✅ Complete Java solutions
+- ✅ LeetCode links (free problems)
+- ✅ Full descriptions (premium problems)
+- ✅ HackerEarth & Codeforces style problems
 
-**The 5-Step Universal Translation Method:**
+**Sections Covered:**
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║                    5-STEP TRANSLATION METHOD                              ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║   Problem                                                                 ║
-║      ↓                                                                    ║
-║   ┌─────────────────────────────────────────────────────────────────┐    ║
-║   │ STEP 1: NAME THE PATTERN                                         │    ║
-║   │         "This is a ___ problem"                                  │    ║
-║   └─────────────────────────────────────────────────────────────────┘    ║
-║      ↓                                                                    ║
-║   ┌─────────────────────────────────────────────────────────────────┐    ║
-║   │ STEP 2: WRITE SKELETON                                           │    ║
-║   │         Function signature + return statement only               │    ║
-║   └─────────────────────────────────────────────────────────────────┘    ║
-║      ↓                                                                    ║
-║   ┌─────────────────────────────────────────────────────────────────┐    ║
-║   │ STEP 3: ADD INVARIANT                                            │    ║
-║   │         The main loop structure                                  │    ║
-║   └─────────────────────────────────────────────────────────────────┘    ║
-║      ↓                                                                    ║
-║   ┌─────────────────────────────────────────────────────────────────┐    ║
-║   │ STEP 4: ADD LAYERS                                               │    ║
-║   │         One piece of logic at a time                             │    ║
-║   └─────────────────────────────────────────────────────────────────┘    ║
-║      ↓                                                                    ║
-║   ┌─────────────────────────────────────────────────────────────────┐    ║
-║   │ STEP 5: HANDLE EDGE CASES                                        │    ║
-║   │         Empty input, single element, all same                    │    ║
-║   └─────────────────────────────────────────────────────────────────┘    ║
-║      ↓                                                                    ║
-║   Working Solution! ✓                                                     ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
-```
+- Arrays, Strings, Math (Basic)
+- Sliding Window Patterns
+- Two Pointers Advanced
+- Binary Search Patterns
+- Stack & Queue Problems
+- Tree Problems (BFS/DFS)
+- Graph Algorithms
+- Dynamic Programming
+- Backtracking
+- Greedy Algorithms
+- Number Theory & Bit Manipulation
+
+---
+
+### **📊 #2: Ultimate DSA Reference**
+
+**File:** [09_Career_Reference/02_Ultimate_DSA_Guide.md](../09_Career_Reference/02_Ultimate_DSA_Guide.md)
+
+**The master reference covering everything:**
+
+- All data structures with complexities
+- All algorithms with implementations
+- Pattern recognition guides
+- JVM internals
+- Interview preparation
+
+---
+
+### **🎯 #3: Code Templates**
+
+**File:** [04_Patterns_Templates/02_Code_Templates.md](../04_Patterns_Templates/02_Code_Templates.md)
+
+**Copy-paste ready templates for:**
+
+- Input validation
+- Binary search
+- Sliding window
+- Two pointers
+- BFS/DFS traversals
+- Dynamic programming
+- And many more...
 
 **Why This Changes Everything:**
 
@@ -110,45 +146,6 @@
 
 ---
 
-### **📊 #2: Sliding Window Master Guide**
-
-**File:** [04_SlidingWindow_MasterGuide.md](04_SlidingWindow_MasterGuide.md)
-
-**Read this if you're confused about:**
-
-- "Should I use `j < i + k` or `j <= i + k`?"
-- Why sliding window boundaries feel confusing
-- When to use nested loops vs single loop
-
-**The Breakthrough:** Stop thinking in indices, start counting elements!
-
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║                    COUNT-BASED SLIDING WINDOW                             ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║   OLD WAY (confusing):                                                    ║
-║   for (int i = 0; i <= n - k; i++)    ← Is it < or <=?                   ║
-║       for (int j = i; j < i + k; j++) ← Off-by-one errors!              ║
-║                                                                           ║
-║   NEW WAY (foolproof):                                                    ║
-║   Think: "How many elements? j - i + 1"                                  ║
-║   When j - i + 1 == k → window is ready!                                 ║
-║                                                                           ║
-║   ┌───┬───┬───┬───┬───┬───┐                                             ║
-║   │ a │ b │ c │ d │ e │ f │   k = 3                                      ║
-║   └───┴───┴───┴───┴───┴───┘                                             ║
-║     i       j                                                             ║
-║     0       2                                                             ║
-║     count = j - i + 1 = 2 - 0 + 1 = 3 ✓                                  ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
-```
-
-**Time:** 15 minutes to read, lifetime of clarity 🎯
-
----
-
 ## 📋 QUICK START BY YOUR SITUATION
 
 ```
@@ -158,46 +155,53 @@
 ║                                                                           ║
 ║   How much time do you have?                                             ║
 ║           │                                                               ║
-║           ├── 2 Days ──────► Full plan (see below)                       ║
+║           ├── 12 Weeks ────► Full plan (02_Study_Plan_Calendar.md)       ║
 ║           │                                                               ║
-║           ├── 1 Day ───────► Focus on templates + practice               ║
+║           ├── 4 Weeks ─────► Focus on DSA + Patterns                     ║
 ║           │                                                               ║
-║           ├── 6 Hours ─────► Key patterns + quick practice               ║
+║           ├── 2 Weeks ─────► Core algorithms + Practice problems         ║
 ║           │                                                               ║
-║           └── 2 Hours ─────► Cheat sheet + Q1 only                       ║
+║           ├── 1 Week ──────► Templates + Most common patterns            ║
+║           │                                                               ║
+║           └── 1 Day ───────► Quick Reference + Easy problems             ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-### If You Have 2 Days:
+### If You Have 12 Weeks (Full Plan):
 
-1. Day 1 AM: Read [NetcrackerPreparation_ArraysStrings.md](NetcrackerPreparation_ArraysStrings.md) Q1-Q3
-2. Day 1 PM: Code Q1-Q3 from scratch using [CoreTemplates_and_Roadmap.md](CoreTemplates_and_Roadmap.md)
-3. Day 2 AM: Read Q4-Q5 + Practice from templates
-4. Day 2 PM: Take Mock Exam in [CoreTemplates_and_Roadmap.md](CoreTemplates_and_Roadmap.md#mock-exam-simulation)
-5. Final Hour: Review [QuickReference_CheatSheet.md](QuickReference_CheatSheet.md)
+1. Follow [02_Study_Plan_Calendar.md](02_Study_Plan_Calendar.md) week by week
+2. Start with Data Structures, move to Algorithms
+3. Practice problems from [05_Problem_Solving/01_Practice_Problems.md](../05_Problem_Solving/01_Practice_Problems.md)
+4. End with SQL mastery
+
+### If You Have 4 Weeks:
+
+1. Week 1: Arrays, Strings, Collections ([02_Data_Structures/](../02_Data_Structures/))
+2. Week 2: Recursion, DP basics ([03_Algorithms/03, 04](../03_Algorithms/))
+3. Week 3: Trees, Graphs ([03_Algorithms/05](../03_Algorithms/05_Trees_Graphs.md))
+4. Week 4: Practice + Mock tests ([05_Problem_Solving/](../05_Problem_Solving/))
+
+### If You Have 2 Weeks:
+
+1. Days 1-4: Arrays, Strings, Sliding Window
+2. Days 5-7: Recursion, Binary Search
+3. Days 8-10: Trees basics, Graph BFS/DFS
+4. Days 11-14: Practice problems intensively
+
+### If You Have 1 Week:
+
+1. Days 1-2: Code Templates ([04_Patterns_Templates/02_Code_Templates.md](../04_Patterns_Templates/02_Code_Templates.md))
+2. Days 3-4: Top 50 easy problems from practice file
+3. Days 5-6: Medium problems + edge cases
+4. Day 7: Review + Quick Reference
 
 ### If You Have 1 Day:
 
-1. Morning: Read [CoreTemplates_and_Roadmap.md](CoreTemplates_and_Roadmap.md) (Templates 1-10)
-2. Afternoon: Code all 5 questions from JavaSolutions/ folder
-3. Evening: Take Mock Exam + Review mistakes
-4. Before bed: Memorize [QuickReference_CheatSheet.md](QuickReference_CheatSheet.md)
-
-### If You Have 6 Hours:
-
-1. Hour 1-2: Skim [NetcrackerPreparation_ArraysStrings.md](NetcrackerPreparation_ArraysStrings.md) focusing on "Your Mistake" sections
-2. Hour 3-4: Memorize top 5 templates from [CoreTemplates_and_Roadmap.md](CoreTemplates_and_Roadmap.md)
-3. Hour 5: Code Q1, Q3, Q4 (highest return on investment)
-4. Hour 6: Print & review [QuickReference_CheatSheet.md](QuickReference_CheatSheet.md)
-
-### If Exam Starts in 2 Hours:
-
-1. Don't panic - you can still pass!
-2. Read [QuickReference_CheatSheet.md](QuickReference_CheatSheet.md) (5 pages only)
-3. Memorize input validation template
-4. Review "Common Pitfalls" section (Scanner, boundaries, string comparison)
-5. Practice Q1 (isPrime) once from [JavaSolutions/Q1_PrimePosition_Corrected.java](JavaSolutions/Q1_PrimePosition_Corrected.java)
+1. Read [09_Career_Reference/03_Quick_Reference.md](../09_Career_Reference/03_Quick_Reference.md)
+2. Focus on array/string problems only
+3. Practice input validation
+4. Review common mistakes
 
 ---
 
@@ -208,17 +212,21 @@
 ║                    WEAKNESS → SOLUTION PATH                               ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║   Boundary conditions ──► SlidingWindow_MasterGuide.md                   ║
+║   Boundary conditions ──► 04_Patterns_Templates/01_Sliding_Window.md     ║
 ║                                                                           ║
-║   Input validation ─────► QuickReference_CheatSheet.md                   ║
+║   Input validation ─────► 09_Career_Reference/03_Quick_Reference.md      ║
 ║                                                                           ║
-║   Pattern recognition ──► Visual_Algorithm_Diagrams.md                   ║
+║   Pattern recognition ──► 04_Patterns_Templates/04_Pattern_Recognition.md║
 ║                                                                           ║
-║   Paper → Code freeze ──► PaperToCode_TranslationGuide.md                ║
+║   Paper → Code freeze ──► 03_Algorithms/01_Algorithm_Thinking.md         ║
 ║                                                                           ║
-║   Syntax errors ────────► Complete_Code_Templates_Visual.md              ║
+║   Syntax errors ────────► 04_Patterns_Templates/02_Code_Templates.md     ║
 ║                                                                           ║
-║   Need practice ────────► Practice_Problems_Solutions.md                 ║
+║   Need practice ────────► 05_Problem_Solving/01_Practice_Problems.md     ║
+║                                                                           ║
+║   Edge cases ───────────► 05_Problem_Solving/02_Edge_Cases.md            ║
+║                                                                           ║
+║   Common mistakes ──────► 05_Problem_Solving/03_Common_Mistakes.md       ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -229,13 +237,11 @@
 
 **Solution Path:**
 
-1. **🔥 START HERE:** Read [SlidingWindow_MasterGuide.md](SlidingWindow_MasterGuide.md) — the count-based approach eliminates 90% of boundary confusion!
-2. Read "Boundary Traps" in [CoreTemplates_and_Roadmap.md](CoreTemplates_and_Roadmap.md#boundary-traps)
-3. Study Q3 mistake analysis in [NetcrackerPreparation_ArraysStrings.md](NetcrackerPreparation_ArraysStrings.md)
-4. Practice all sliding window problems in [CoreTemplates_and_Roadmap.md](CoreTemplates_and_Roadmap.md#level-4-sliding-window-practice)
-5. Use Progress Tracker to mark boundary mistakes
+1. Read [04_Patterns_Templates/01_Sliding_Window.md](../04_Patterns_Templates/01_Sliding_Window.md) — count-based approach
+2. Study "Boundary Traps" in [04_Patterns_Templates/02_Code_Templates.md](../04_Patterns_Templates/02_Code_Templates.md)
+3. Practice sliding window problems from [05_Problem_Solving/01_Practice_Problems.md](../05_Problem_Solving/01_Practice_Problems.md)
 
-**Time Required:** 3-4 hours (but start with the 15-min master guide!)
+**Time Required:** 3-4 hours
 
 ---
 
@@ -245,10 +251,9 @@
 
 **Solution Path:**
 
-1. Memorize validation template from [QuickReference_CheatSheet.md](QuickReference_CheatSheet.md#input-validation)
-2. Review Q4 (Pattern) mistake in [NetcrackerPreparation_ArraysStrings.md](NetcrackerPreparation_ArraysStrings.md)
-3. Code Q1 and Q4 with ALL validations
-4. Check "Common Pitfall #10" (Forgetting ZERO)
+1. Memorize validation template from [09_Career_Reference/03_Quick_Reference.md](../09_Career_Reference/03_Quick_Reference.md)
+2. Review [05_Problem_Solving/02_Edge_Cases.md](../05_Problem_Solving/02_Edge_Cases.md)
+3. Practice with validation on every problem
 
 **Time Required:** 1-2 hours
 
@@ -260,437 +265,90 @@
 
 **Solution Path:**
 
-1. Study "Pattern Recognition Table" in [QuickReference_CheatSheet.md](QuickReference_CheatSheet.md#pattern-recognition)
-2. Read Q2 and Q5 complete solutions in [NetcrackerPreparation_ArraysStrings.md](NetcrackerPreparation_ArraysStrings.md)
-3. Practice problems 4.1-4.3 (sliding window) in [CoreTemplates_and_Roadmap.md](CoreTemplates_and_Roadmap.md#level-4-sliding-window-practice)
-4. Try Mock Exam Problem 1A (Pair Sum)
+1. Study [04_Patterns_Templates/04_Pattern_Recognition.md](../04_Patterns_Templates/04_Pattern_Recognition.md)
+2. Read [04_Patterns_Templates/05_LeetCode_RealWorld_Map.md](../04_Patterns_Templates/05_LeetCode_RealWorld_Map.md)
+3. Practice categorized problems from [05_Problem_Solving/01_Practice_Problems.md](../05_Problem_Solving/01_Practice_Problems.md)
 
 **Time Required:** 4-5 hours
 
 ---
 
-### If You're Weak at All Three:
+## 📚 FOLDER QUICK REFERENCE
 
-**You Need:** Full 2-day structured plan
-
-**Follow This Order:**
-
-1. Start with [CoreTemplates_and_Roadmap.md](CoreTemplates_and_Roadmap.md#2-day-roadmap)
-2. Follow hour-by-hour schedule strictly
-3. Use Progress Tracker to mark completed checkboxes
-4. Don't skip Mock Exam on Day 2
-
----
-
-## �📁 What I've Created For You
-
-I've analyzed your exam performance (37% score, failed test cases) and created a complete 2-day preparation system targeting **60%+ score** by fixing your 3 critical weaknesses:
-
-1. **Boundary Conditions** (50% of your failures)
-2. **Constraint Validation** (30% of your failures)
-3. **Pattern Recognition** (20% - unattempted questions)
+| Folder                   | Purpose                  | When to Use              |
+| ------------------------ | ------------------------ | ------------------------ |
+| `01_Getting_Started/`    | Roadmap & planning       | First day, weekly review |
+| `02_Data_Structures/`    | Learn DS fundamentals    | Week 1-2                 |
+| `03_Algorithms/`         | Algorithm mastery        | Week 2-6                 |
+| `04_Patterns_Templates/` | Pattern recognition      | Week 3-6, ongoing        |
+| `05_Problem_Solving/`    | Practice (210+ problems) | Daily practice           |
+| `06_OOP_Design/`         | Design & architecture    | Week 6-8                 |
+| `07_Modern_Java/`        | Advanced Java            | Week 7-8                 |
+| `08_SQL_Database/`       | SQL mastery              | Week 9-12                |
+| `09_Career_Reference/`   | Quick refs & career      | Always                   |
 
 ---
 
-## 📚 YOUR PREPARATION FILES
+## 🎯 DAILY ROUTINE SUGGESTION
 
-### 1️⃣ **NetcrackerPreparation_ArraysStrings.md** (MAIN DOCUMENT)
-
-**📖 200+ pages | Comprehensive Guide with Pattern Library**
-
-**🆕 NEW ADDITIONS:**
-
-- **🧠 Master Pattern Library**: Complete thought process framework
-    - 9 Core Patterns (Sliding Window, Two Pointers, Prefix Sum, etc.)
-    - Visual diagrams for each pattern
-    - Brute force → Optimized progression
-    - Common logic blocks (copy-paste ready)
-    - "How to Think" sections for each pattern
-
-- **🎯 50+ Practice Problems**: Organized by difficulty levels 1-8
-    - Level 1: Basic Array Operations (Foundation)
-    - Level 2: Sliding Window Variations
-    - Level 3: Two Pointers Mastery
-    - Level 4: Frequency & Hashing
-    - Level 5: Prefix Sum & Range Queries
-    - Level 6: Recursion & Backtracking
-    - Level 7: Strings & StringBuilder
-    - Level 8: Advanced Patterns (DP, Greedy)
-
-- **📊 Problem-Solving Framework**: 6-step approach for ANY problem
-
-**Original Content (Preserved):**
-
-- All 5 exam questions with corrected solutions
-- Your exact mistakes analyzed line-by-line
-- 9-point teaching format for each problem:
-    - ✅ Corrected Solution (with & without Collections)
-    - ❌ Mistake Analysis (why you failed)
-    - 🧠 Concept Breakdown (mental models)
-    - 📝 Reusable Templates
-    - 🎓 Java Collections Mastery
-    - 💡 What to Memorize
-    - 🎯 Netcracker-Focused Questions
-    - ✅ Technical MCQs (30+ with explanations)
-    - 📊 Learning Roadmap
-
-**Questions Covered:**
-
-- Q1: Prime Position (3/6 TC passed → 6/6 fixed)
-- Q2: Sliding Window (0/6 not attempted → complete solution)
-- Q3: Digit Sum (4/10 TC passed → 10/10 fixed)
-- Q4: Triangle Pattern (4/6 TC passed → 6/6 fixed)
-- Q5: Subset Sum (0/6 not attempted → complete solution)
-
-**🎯 START HERE FOR DEEP LEARNING**
+```
+╔══════════════════════════════════════════════════════════════════════════╗
+║                         DAILY STUDY ROUTINE                              ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║                                                                          ║
+║  MORNING (1-2 hours):                                                    ║
+║  • Read one topic from current week's folder                             ║
+║  • Understand concepts, take notes                                       ║
+║                                                                          ║
+║  AFTERNOON (2-3 hours):                                                  ║
+║  • Solve 3-5 problems from 05_Problem_Solving/01_Practice_Problems.md    ║
+║  • Use templates from 04_Patterns_Templates/ as reference                ║
+║                                                                          ║
+║  EVENING (1 hour):                                                       ║
+║  • Review edge cases (05_Problem_Solving/02_Edge_Cases.md)               ║
+║  • Quick revision of day's learning                                      ║
+║                                                                          ║
+║  BEFORE SLEEP (15 min):                                                  ║
+║  • Mental review of patterns learned                                     ║
+║  • Plan tomorrow's topics                                                ║
+║                                                                          ║
+╚══════════════════════════════════════════════════════════════════════════╝
+```
 
 ---
 
-### 2️⃣ **CoreTemplates_and_Roadmap.md**
+## 🚀 START NOW!
 
-**📖 60+ pages | Quick Reference & Templates**
+### Recommended First Steps:
 
-**🆕 NEW ADDITIONS:**
+1. **Read** [02_Study_Plan_Calendar.md](02_Study_Plan_Calendar.md) for the full roadmap
+2. **Bookmark** [05_Problem_Solving/01_Practice_Problems.md](../05_Problem_Solving/01_Practice_Problems.md) for daily practice
+3. **Reference** [09_Career_Reference/02_Ultimate_DSA_Guide.md](../09_Career_Reference/02_Ultimate_DSA_Guide.md) when stuck
+4. **Start coding** with [JavaSolutions/](../JavaSolutions/) examples
 
-- **20 Advanced Templates** (added to original 10):
-    - Template 11: Two Pointers - Pair Sum
-    - Template 12: Array Rotation (Reversal Method)
-    - Template 13: Prefix Sum Array
-    - Template 14: Frequency Counter with Array
-    - Template 15: Kadane's Algorithm
-    - Template 16: Dutch National Flag Sort
-    - Template 17: Sliding Window Optimization
-    - Template 18: String to Character Array
-    - Template 19: Matrix Traversal Patterns
-    - Template 20: Binary Search on Answer Space
+### Resources:
 
-- **Common Logic Blocks** organized by problem type:
-    - Array Searching (Linear, Binary, First Occurrence)
-    - Min/Max Operations (Max, Second Max, MinMax)
-    - Subarray Operations (Print All, Find Sum, Count)
-    - String Pattern Matching (Contains, Count, Palindrome)
-
-**Original Content (Preserved):**
-
-- First 10 Must-Memorize Templates (copy-paste ready)
-- 6 Common Boundary Traps (YOUR mistakes)
-- Time Complexity Cheat Sheet
-- Java Collections Quick Reference
-- 2-Day Hour-by-Hour Roadmap
-- Pre-Exam Checklist (30-min before)
-- Success Metrics & Goals
-
-**🎯 USE THIS FOR STRUCTURED PRACTICE**
+- LeetCode: https://leetcode.com
+- HackerRank: https://hackerrank.com
+- SQLZoo: https://sqlzoo.net
+- GeeksforGeeks: https://geeksforgeeks.org
 
 ---
 
-### 3️⃣ **QuickReference_CheatSheet.md**
+## 💡 KEY SUCCESS TIPS
 
-**📖 5 pages | Emergency Guide**
-
-**What's Inside:**
-
-- Copy-paste templates (5 core ones)
-- Your Top 5 Mistakes (never again!)
-- Exam Day Checklist
-- Pattern Recognition Keywords
-- Time Allocation Strategy
-- Mental Shortcuts
-- Red Flags to Avoid
-
-**🎯 PRINT THIS & REVIEW 30 MIN BEFORE EXAM**
+1. **Consistency > Intensity**: 2 hours daily beats 10 hours weekly
+2. **Understand, Don't Memorize**: Know WHY patterns work
+3. **Active Learning**: Type code yourself, don't copy-paste
+4. **Track Progress**: Use checklists in Study Plan Calendar
+5. **Don't Compare**: Focus on YOUR improvement
 
 ---
 
-### 4️⃣ **JavaSolutions/** (Folder)
-
-**5 Complete Java Files | Ready to Compile**
-
-**Files:**
-
-1. `Q1_PrimePosition_Corrected.java` - Fixed isPrime loop, counter timing, validation
-2. `Q2_SlidingWindow_Complete.java` - Brute force + optimal (Deque) solutions
-3. `Q3_DigitSum_Corrected.java` - Fixed range boundaries (start+1 → start, i<end → i<=end)
-4. `Q4_Pattern_Corrected.java` - Added ZERO and negative validation
-5. `Q5_SubsetSum_Complete.java` - Complete backtracking solution with explanation
-
-**Features:**
-
-- Extensive comments explaining every fix
-- Your exact bugs highlighted
-- Test cases included
-- Time/space complexity noted
-- Alternative approaches documented
-
-**🎯 COMPILE, RUN, AND LEARN FROM THESE**
+**🎉 You're ready to begin! Good luck with your preparation! 💪**
 
 ---
 
-## 🚀 HOW TO USE THESE FILES (2-Day Plan)
-
-### 📅 DAY 1 (8 hours) - Fix & Learn
-
-#### Morning (4 hours)
-
-1. **Hour 1:** Open `NetcrackerPreparation_ArraysStrings.md` → Read Q1 section completely
-    - Run `Q1_PrimePosition_Corrected.java`
-    - Rewrite from scratch
-    - Test all cases
-
-2. **Hour 2:** Q3 Digit Sum section
-    - Understand the boundary bug
-    - Run `Q3_DigitSum_Corrected.java`
-    - Practice 3 variations
-
-3. **Hour 3:** Q4 Pattern section
-    - Realize how simple the fix was!
-    - Run `Q4_Pattern_Corrected.java`
-    - Add validation to 3 pattern problems
-
-4. **Hour 4:** Review + consolidation
-    - List YOUR mistakes
-    - Memorize validation template
-    - Time yourself solving all 3
-
-#### Afternoon (4 hours)
-
-5. **Hour 5:** Q2 Sliding Window
-    - Learn the pattern
-    - Run `Q2_SlidingWindow_Complete.java`
-    - Practice 3 window problems
-
-6. **Hour 6:** Q5 Backtracking (intro only)
-    - Run `Q5_SubsetSum_Complete.java`
-    - Trace execution manually
-    - Don't expect mastery yet
-
-7. **Hour 7:** Study `CoreTemplates_and_Roadmap.md`
-    - Copy all 10 templates
-    - Practice ArrayList/HashMap
-    - Do quick drills
-
-8. **Hour 8:** MCQs from main document
-    - Answer all 30+
-    - Review wrong answers
-    - Create flashcards
-
----
-
-### 📅 DAY 2 (8 hours) - Speed & Test
-
-#### Morning (4 hours)
-
-1. **Hour 1:** Speed drills (15 min each)
-    - Solve 4 variations under time pressure
-
-2. **Hour 2:** Combination problems
-    - Mix patterns together
-    - Practice under exam conditions
-
-3. **Hour 3:** Common Netcracker questions
-    - Arrays: second largest, rotate, duplicates
-    - Strings: palindrome, reverse, anagram
-
-4. **Hour 4:** Debug practice
-    - Find bugs in given code
-    - Practice your mistake patterns
-
-#### Afternoon (4 hours)
-
-5. **Hour 5-6:** Mock Exam (90 min)
-    - 2 coding questions
-    - No help
-    - Simulate real conditions
-
-6. **Hour 7:** Review mock exam
-    - Identify mistakes
-    - Categorize errors
-    - Redo wrong parts
-
-7. **Hour 8:** Final review
-    - Read `QuickReference_CheatSheet.md`
-    - Review templates
-    - Practice validation 5 times
-    - **Sleep 8 hours!**
-
----
-
-## ⚡ EXAM DAY STRATEGY
-
-### 30 Minutes Before:
-
-1. Review `QuickReference_CheatSheet.md` (5 pages only)
-2. Memorize validation template
-3. Remember: `i <= end` for inclusive ranges
-4. Remember: `i <= n - k` for sliding windows
-5. Deep breath - you're prepared!
-
-### During Exam:
-
-1. **Read constraints TWICE**
-2. **Write validation FIRST**
-3. **Draw boundaries on paper**
-4. **Test mentally: 0, 1, N, -1**
-5. **Submit confidently**
-
----
-
-## 🎯 YOUR IMPROVEMENT PATH
-
-### Before This Prep:
-
-- ❌ 37% score (37/100)
-- ❌ 3/5 questions attempted
-- ❌ 50% boundary condition failures
-- ❌ No pattern recognition
-
-### After This Prep (Expected):
-
-- ✅ 60-70% score (60-70/100)
-- ✅ 5/5 questions attempted
-- ✅ 80%+ boundary conditions correct
-- ✅ Recognize 3 core patterns
-
-### Your Advantages:
-
-1. You attempted 3 questions (many attempt 0)
-2. Your logic is correct (just boundary bugs)
-3. You learn from mistakes (proved by seeking help)
-4. **2 days IS enough to fix these issues**
-
----
-
-## 📊 WHAT EACH FILE FIXES
-
-| Your Weakness       | File to Use                                     | What You'll Learn                  |
-| ------------------- | ----------------------------------------------- | ---------------------------------- |
-| Boundary conditions | `NetcrackerPreparation_ArraysStrings.md` Q1, Q3 | Inclusive ranges, loop termination |
-| Input validation    | `NetcrackerPreparation_ArraysStrings.md` Q4     | Constraint checking template       |
-| Sliding window      | `NetcrackerPreparation_ArraysStrings.md` Q2     | Window pattern recognition         |
-| Backtracking        | `NetcrackerPreparation_ArraysStrings.md` Q5     | Recursion basics                   |
-| Time management     | `CoreTemplates_and_Roadmap.md`                  | Hour-by-hour schedule              |
-| Quick review        | `QuickReference_CheatSheet.md`                  | Last-minute prep                   |
-| Code practice       | `JavaSolutions/*.java`                          | Hands-on implementation            |
-
----
-
-## 💡 KEY INSIGHTS FROM YOUR MISTAKES
-
-### 1. Q1 Prime Position (Failed 50%)
-
-**Your Bug:** `i < num/2` instead of `i * i <= num`  
-**Impact:** Marked 4 as prime (wrong)  
-**Fix:** 1 line change  
-**Lesson:** Mathematical boundaries matter
-
-### 2. Q3 Digit Sum (Failed 60%)
-
-**Your Bug:** `for(i=start+1; i<end)` excluded both boundaries  
-**Impact:** Missing first and last valid numbers  
-**Fix:** Change to `for(i=start; i<=end)`  
-**Lesson:** [a,b] means INCLUSIVE
-
-### 3. Q4 Pattern (Failed 33%)
-
-**Your Bug:** No ZERO/negative validation  
-**Impact:** Empty output instead of error message  
-**Fix:** 8 lines of validation  
-**Lesson:** Read constraints first
-
-### 4. Q2, Q5 (Not Attempted)
-
-**Your Gap:** Never learned these patterns  
-**Impact:** 0 marks on 40% of exam  
-**Fix:** Learn sliding window + backtracking basics  
-**Lesson:** Pattern recognition is learnable
-
----
-
-## 🚨 CRITICAL SUCCESS FACTORS
-
-### Must-Do (Non-Negotiable):
-
-1. ✅ Memorize validation template
-2. ✅ Practice inclusive range loops
-3. ✅ Understand sliding window formula
-4. ✅ Run all 5 Java solutions
-5. ✅ Do mock exam on Day 2
-
-### Nice-to-Have (If Time Permits):
-
-1. Master backtracking (Q5)
-2. Learn two-pointers
-3. Solve 20 extra problems
-4. Perfect all MCQs
-
-### Don't Waste Time On:
-
-1. ❌ Advanced algorithms (not tested)
-2. ❌ Optimal solutions (correct > fast)
-3. ❌ Theoretical concepts (practice > theory)
-4. ❌ Panic (you're well-prepared)
-
----
-
-## 📞 HOW TO GET HELP WHILE STUDYING
-
-### If Confused on a Concept:
-
-1. Re-read the "Concept Breakdown" section
-2. Run the Java file and trace execution
-3. Draw it out on paper
-4. Check the MCQ section for related questions
-
-### If Code Doesn't Compile:
-
-1. Check: Are you using `Scanner` correctly?
-2. Check: Did you import `java.util.*`?
-3. Check: Are array indices within bounds?
-4. Run the provided Java solutions first
-
-### If Running Out of Time:
-
-1. Focus on Q1, Q3, Q4 (easier, you already attempted)
-2. Learn Q2 pattern (high-value, common in exams)
-3. Skip Q5 if needed (hard, less common)
-
----
-
-## 🎉 FINAL MOTIVATION
-
-### Remember:
-
-- Netcracker doesn't want perfect candidates
-- They want candidates who can learn and improve
-- Your 37% → 60%+ improvement shows exactly that
-- **You're not competing with geniuses, you're competing with careless coders**
-
-### Your Edge:
-
-- You know exactly what went wrong
-- You have targeted fixes for each mistake
-- You have 2 full days of focused prep
-- You have all the resources needed
-
-### Believe in the Numbers:
-
-- Fix boundary conditions → +20 marks
-- Add validation → +10 marks
-- Attempt Q2 with basic solution → +10 marks
-- Improve MCQs → +10 marks
-- **Total: 37 + 50 = 87% (well above pass!)**
-
----
-
-## 🚀 YOU'VE GOT THIS!
-
-**Start with:** `NetcrackerPreparation_ArraysStrings.md`  
-**Refer to:** `CoreTemplates_and_Roadmap.md`  
-**Before exam:** `QuickReference_CheatSheet.md`  
-**Practice with:** `JavaSolutions/*.java`
-
-**Now go study! Every hour of focused practice is one step closer to that offer letter! 💪**
-
----
-
-_Created by Senior Software Engineer | Tailored for YOUR specific mistakes | Based on real Netcracker exam patterns | Updated for 2026 hiring_
+_Last Updated: February 3, 2026_
+_Total Resources: 35 files across 9 folders_
+_Practice Problems: 210+ with solutions_

@@ -10,76 +10,76 @@
 ║   🎯 START HERE: Open 01_Getting_Started/01_Start_Here.md                        ║
 ║   📅 CALENDAR:   Open 01_Getting_Started/02_Study_Plan_Calendar.md               ║
 ║   🔥 MASTER REF: Open 09_Career_Reference/02_Ultimate_DSA_Guide.md               ║
+║   📝 PRACTICE:   Open 05_Problem_Solving/01_Practice_Problems.md (210+ problems) ║
 ║                                                                                   ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
 ---
 
-## 📁 FOLDER STRUCTURE
+## 📁 FOLDER STRUCTURE (CURRENT)
 
 ```
 NetCracker-Prep/
 │
-├── 00_MASTER_INDEX.md          ← YOU ARE HERE
+├── 00_MASTER_INDEX.md              ← YOU ARE HERE
 │
-├── 📁 01_Getting_Started/      ← START HERE (Week 1)
-│   ├── 01_Start_Here.md
-│   └── 02_Study_Plan_Calendar.md
+├── 📁 01_Getting_Started/          ← START HERE (Week 1)
+│   ├── 01_Start_Here.md            → Getting started guide
+│   └── 02_Study_Plan_Calendar.md   → 12-week study plan
 │
-├── 📁 02_Data_Structures/      ← FOUNDATIONS (Week 1-2)
-│   ├── 01_DataStructures_Complete.md
-│   ├── 02_DataStructures_Variants.md
-│   ├── 03_Collections_Java.md
-│   └── 04_2D_Arrays_Matrix.md
+├── 📁 02_Data_Structures/          ← FOUNDATIONS (Week 1-2)
+│   ├── 01_DataStructures_Complete.md   → Arrays, Strings, LinkedLists
+│   ├── 02_DataStructures_Variants.md   → All DS variants
+│   ├── 03_Collections_Java.md          → Java Collections Framework
+│   └── 04_2D_Arrays_Matrix.md          → Matrix problems
 │
-├── 📁 03_Algorithms/           ← CORE SKILLS (Week 2-5)
-│   ├── 01_Algorithm_Thinking.md
-│   ├── 02_Sorting_Algorithms.md
-│   ├── 03_Recursion_Complete.md
-│   ├── 04_Dynamic_Programming.md
-│   ├── 05_Trees_Graphs.md
-│   ├── 06_Advanced_Algorithms.md
-│   └── 07_Advanced_DataStructures.md
+├── 📁 03_Algorithms/               ← CORE SKILLS (Week 2-6)
+│   ├── 01_Algorithm_Thinking.md        → Problem-solving approach
+│   ├── 02_Sorting_Algorithms.md        → All sorting algorithms
+│   ├── 03_Recursion_Complete.md        → Recursion & backtracking
+│   ├── 04_Dynamic_Programming.md       → DP patterns
+│   ├── 05_Trees_Graphs.md              → Trees & Graphs
+│   ├── 06_Advanced_Algorithms.md       → Greedy, D&C, etc.
+│   └── 07_Advanced_DataStructures.md   → Tries, Segment Trees
 │
-├── 📁 04_Patterns_Templates/   ← PATTERN MASTERY (Week 3-6)
-│   ├── 01_Sliding_Window.md
-│   ├── 02_Code_Templates.md
-│   ├── 03_Visual_Diagrams.md
-│   ├── 04_Pattern_Recognition.md
-│   └── 05_LeetCode_RealWorld_Map.md
+├── 📁 04_Patterns_Templates/       ← PATTERN MASTERY (Week 3-6)
+│   ├── 01_Sliding_Window.md            → Sliding window patterns
+│   ├── 02_Code_Templates.md            → Ready-to-use templates
+│   ├── 03_Visual_Diagrams.md           → Visual algorithm guides
+│   ├── 04_Pattern_Recognition.md       → Pattern identification
+│   └── 05_LeetCode_RealWorld_Map.md    → Problems to real-world
 │
-├── 📁 05_Problem_Solving/      ← PRACTICE (Ongoing)
-│   ├── 01_Practice_Problems.md
-│   ├── 02_Edge_Cases.md
-│   ├── 03_Common_Mistakes.md
-│   └── 04_Problem_Origins.md
+├── 📁 05_Problem_Solving/          ← PRACTICE (Ongoing)
+│   ├── 01_Practice_Problems.md         → 210+ problems with solutions
+│   ├── 02_Edge_Cases.md                → Edge case handling
+│   ├── 03_Common_Mistakes.md           → Mistakes to avoid
+│   └── 04_Problem_Origins.md           → Real-world problem origins
 │
-├── 📁 06_OOP_Design/           ← DESIGN (Week 6-8)
-│   ├── 01_OOPS_Principles.md
-│   ├── 02_Design_Patterns.md
-│   ├── 03_System_Design.md
-│   └── 04_User_System_Flows.md
+├── 📁 06_OOP_Design/               ← DESIGN (Week 6-8)
+│   ├── 01_OOPS_Principles.md           → OOP concepts (SOLID)
+│   ├── 02_Design_Patterns.md           → GoF Design Patterns
+│   ├── 03_System_Design.md             → System design basics
+│   └── 04_User_System_Flows.md         → User flows & sequences
 │
-├── 📁 07_Modern_Java/          ← ADVANCED JAVA (Week 7-8)
-│   ├── 01_Functional_Programming.md
-│   └── 02_Algorithm_Engineering.md
+├── 📁 07_Modern_Java/              ← ADVANCED JAVA (Week 7-8)
+│   ├── 01_Functional_Programming.md    → Streams, Lambdas
+│   └── 02_Algorithm_Engineering.md     → Algorithm optimization
 │
-├── 📁 08_SQL_Database/         ← SQL MASTERY (Week 9-12)
-│   └── 01_SQL_Complete_Guide.md
+├── 📁 08_SQL_Database/             ← SQL MASTERY (Week 9-12)
+│   └── 01_SQL_Complete_Guide.md        → Complete SQL (6000+ lines)
 │
-├── 📁 09_Career_Reference/     ← REFERENCE (Always)
-│   ├── 01_Career_Guide.md
-│   ├── 02_Ultimate_DSA_Guide.md   ← MASTER REFERENCE
-│   ├── 03_Quick_Reference.md
-│   ├── 04_Brain_Psychology.md
-│   ├── 05_Daily_Habits_Tracking.md
-│   └── 06_Resources_Links.md
+├── 📁 09_Career_Reference/         ← REFERENCE (Always)
+│   ├── 01_Career_Guide.md              → Career development
+│   ├── 02_Ultimate_DSA_Guide.md        → MASTER REFERENCE
+│   ├── 03_Quick_Reference.md           → Quick revision sheet
+│   ├── 04_Brain_Psychology.md          → Learning psychology
+│   ├── 05_Daily_Habits_Tracking.md     → Habit tracking
+│   └── 06_Resources_Links.md           → External resources
 │
-├── 📁 JavaSolutions/           ← Your code solutions
-├── 📁 practice/                ← Practice files
-├── 📁 pdf/                     ← PDF resources
-└── 📁 _archive/                ← Old/merged files (safe to ignore)
+├── 📁 JavaSolutions/               ← Your code solutions
+├── 📁 practice/                    ← Practice files
+└── 📁 _archive/                    ← Old/merged files (safe to ignore)
 ```
 
 ---
@@ -106,12 +106,12 @@ NetCracker-Prep/
 
 ### Phase 3: SQL Mastery (Week 9-12)
 
-| Week | Focus                | Primary Files                                          |
-| ---- | -------------------- | ------------------------------------------------------ |
-| 9    | SQL Foundations      | `08_SQL_Database/01` (Parts 1-2)                       |
-| 10   | SQL Advanced         | `08_SQL_Database/01` (Part 3)                          |
-| 11   | Data Engineering     | `08_SQL_Database/01` (Part 4)                          |
-| 12   | Projects + Interview | `08_SQL_Database/01` (Part 5) + `09_Career_Reference/` |
+| Week | Focus                | Primary Files                                                                |
+| ---- | -------------------- | ---------------------------------------------------------------------------- |
+| 9    | SQL Foundations      | `08_SQL_Database/01_SQL_Complete_Guide.md` (Parts 1-2)                       |
+| 10   | SQL Advanced         | `08_SQL_Database/01_SQL_Complete_Guide.md` (Part 3)                          |
+| 11   | Data Engineering     | `08_SQL_Database/01_SQL_Complete_Guide.md` (Part 4)                          |
+| 12   | Projects + Interview | `08_SQL_Database/01_SQL_Complete_Guide.md` (Part 5) + `09_Career_Reference/` |
 
 ---
 
@@ -132,6 +132,7 @@ NetCracker-Prep/
 - [Dynamic Programming](03_Algorithms/04_Dynamic_Programming.md)
 - [Trees & Graphs](03_Algorithms/05_Trees_Graphs.md)
 - [Advanced (Greedy, D&C, etc.)](03_Algorithms/06_Advanced_Algorithms.md)
+- [Advanced Data Structures](03_Algorithms/07_Advanced_DataStructures.md)
 
 ### Patterns
 
@@ -143,7 +144,7 @@ NetCracker-Prep/
 
 ### Problem Solving
 
-- [Practice Problems](05_Problem_Solving/01_Practice_Problems.md)
+- [Practice Problems (210+)](05_Problem_Solving/01_Practice_Problems.md)
 - [Edge Cases](05_Problem_Solving/02_Edge_Cases.md)
 - [Common Mistakes](05_Problem_Solving/03_Common_Mistakes.md)
 
@@ -152,6 +153,12 @@ NetCracker-Prep/
 - [OOP Principles](06_OOP_Design/01_OOPS_Principles.md)
 - [Design Patterns](06_OOP_Design/02_Design_Patterns.md)
 - [System Design](06_OOP_Design/03_System_Design.md)
+- [User/System Flows](06_OOP_Design/04_User_System_Flows.md)
+
+### Modern Java
+
+- [Functional Programming](07_Modern_Java/01_Functional_Programming.md)
+- [Algorithm Engineering](07_Modern_Java/02_Algorithm_Engineering.md)
 
 ### SQL & Database
 
@@ -162,6 +169,9 @@ NetCracker-Prep/
 - [Career Guide](09_Career_Reference/01_Career_Guide.md)
 - [Ultimate DSA Reference](09_Career_Reference/02_Ultimate_DSA_Guide.md)
 - [Quick Reference](09_Career_Reference/03_Quick_Reference.md)
+- [Brain Psychology](09_Career_Reference/04_Brain_Psychology.md)
+- [Daily Habits](09_Career_Reference/05_Daily_Habits_Tracking.md)
+- [Resources & Links](09_Career_Reference/06_Resources_Links.md)
 
 ---
 
@@ -173,7 +183,7 @@ NetCracker-Prep/
 | 02_Data_Structures    | 4      | All DS content               |
 | 03_Algorithms         | 7      | All algorithms               |
 | 04_Patterns_Templates | 5      | Patterns & templates         |
-| 05_Problem_Solving    | 4      | Practice & edge cases        |
+| 05_Problem_Solving    | 4      | Practice (210+ problems)     |
 | 06_OOP_Design         | 4      | OOP, Design, System          |
 | 07_Modern_Java        | 2      | Functional, Engineering      |
 | 08_SQL_Database       | 1      | Complete SQL (6000+ lines)   |
@@ -194,7 +204,7 @@ NetCracker-Prep/
 │  • Take notes, understand concepts                          │
 │                                                             │
 │  Afternoon (2-3 hours):                                     │
-│  • Solve 2-3 problems related to morning topic              │
+│  • Solve 2-3 problems from 05_Problem_Solving/              │
 │  • Use 04_Patterns_Templates/ for reference                 │
 │                                                             │
 │  Evening (1 hour):                                          │
@@ -210,8 +220,8 @@ NetCracker-Prep/
 
 ---
 
-_Reorganized: February 3, 2026_
-_Total Files: 35 (down from 51)_
-_Structure: 9 topic folders + 1 archive_
+_Last Updated: February 3, 2026_
+_Total Files: 35 (organized in 9 topic folders)_
+_Structure: Clean and intuitive navigation_
 
 **Happy Learning! 🚀**
