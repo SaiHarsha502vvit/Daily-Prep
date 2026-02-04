@@ -273,6 +273,64 @@
 
 ---
 
+## 🧠 6 POWER LEARNING TECHNIQUES (USE DAILY!)
+
+```
+╔══════════════════════════════════════════════════════════════════════════════╗
+║       SCIENTIFICALLY-PROVEN TECHNIQUES FOR EFFECTIVE LEARNING                 ║
+║                                                                               ║
+║  Detailed guide: 09_Career_Reference/04_Brain_Psychology.md                  ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 1. ACTIVE RECALL METHOD                                                     │
+│    ──────────────────────                                                   │
+│    • Close the book                                                         │
+│    • Ask yourself questions                                                 │
+│    • Write answers from MEMORY                                              │
+│    • Then check                                                             │
+│                                                                             │
+│    "Reading FEELS productive. Recalling BUILDS mastery."                   │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ 2. 45-15 FOCUS BLOCKS                                                       │
+│    ────────────────────                                                     │
+│    • 45 minutes: DEEP WORK (no distractions!)                              │
+│    • 15 minutes: BREAK (NO scrolling! Walk, water, stretch)                │
+│    • Repeat 3-4 times                                                       │
+│                                                                             │
+│    "Your brain LOVES clear start-stop cycles."                             │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ 3. BLURTING TECHNIQUE                                                       │
+│    ────────────────────                                                     │
+│    • Study a topic → Close book                                            │
+│    • Dump EVERYTHING you remember on paper                                  │
+│    • Fill gaps in a DIFFERENT COLOR                                        │
+│    • You instantly SEE your weak areas!                                    │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ 4. 2-3-7 REVISION RULE                                                      │
+│    ────────────────────                                                     │
+│    Revise after:                                                            │
+│       Day 2 → Day 3 → Day 7                                                │
+│                                                                             │
+│    "Spaced repetition BEATS last-minute cramming."                         │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ 5. FEYNMAN TECHNIQUE                                                        │
+│    ────────────────────                                                     │
+│    Explain the topic in simple language                                    │
+│    as if teaching a 10-year-old.                                           │
+│                                                                             │
+│    "If you can't SIMPLIFY it, you don't UNDERSTAND it yet."                │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ 6. QUESTION FIRST APPROACH                                                  │
+│    ──────────────────────────                                               │
+│    Start with problems/PYQs BEFORE reading theory.                         │
+│                                                                             │
+│    "It trains your brain to study with PURPOSE."                           │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
 ## 📚 FOLDER QUICK REFERENCE
 
 | Folder                   | Purpose                  | When to Use              |

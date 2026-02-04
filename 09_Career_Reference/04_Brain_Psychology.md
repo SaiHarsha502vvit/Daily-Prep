@@ -681,7 +681,368 @@ Success!
 
 ---
 
-# PART 10: YOUR RETENTION CHECKLIST
+# PART 10: THE 6 POWER TECHNIQUES (PROVEN METHODS)
+
+```
+╔══════════════════════════════════════════════════════════════════════════════╗
+║           6 SCIENTIFICALLY-PROVEN LEARNING TECHNIQUES                         ║
+║                                                                               ║
+║   These are battle-tested methods used by top students worldwide             ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+```
+
+## 🧠 Technique 1: ACTIVE RECALL METHOD
+
+```
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                         ACTIVE RECALL                                         │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   PROCESS:                                                                   │
+│   ════════                                                                   │
+│   1. Close the book                                                          │
+│   2. Ask yourself questions                                                  │
+│   3. Write answers from MEMORY                                               │
+│   4. Then check against notes                                                │
+│                                                                              │
+│   WHY IT WORKS:                                                              │
+│   ┌────────────────────────────────────────────────────────────────────────┐│
+│   │ "Reading FEELS productive. Recalling BUILDS mastery."                  ││
+│   └────────────────────────────────────────────────────────────────────────┘│
+│                                                                              │
+│   DSA APPLICATION:                                                           │
+│   ─────────────────                                                          │
+│   • After learning Binary Search, close notes                               │
+│   • Ask: "What are the 3 steps of binary search?"                          │
+│   • Write from memory                                                        │
+│   • Check if correct                                                         │
+│                                                                              │
+│   EXAMPLE QUESTIONS TO ASK YOURSELF:                                         │
+│   • "What is the time complexity of this algorithm?"                        │
+│   • "When would I use Two Pointers vs Sliding Window?"                      │
+│   • "What are the edge cases for this problem?"                             │
+│   • "Can I write the template without looking?"                             │
+│                                                                              │
+│   DAILY PRACTICE:                                                            │
+│   Close all notes → Write down everything you remember about today's topic  │
+│   → Check → Note what you forgot → Review those parts tomorrow              │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+## ⏱️ Technique 2: 45-15 FOCUS BLOCKS
+
+```
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                       45-15 FOCUS BLOCKS                                      │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   THE RULE:                                                                  │
+│   ═════════                                                                  │
+│   • 45 minutes: DEEP WORK (no distractions!)                                │
+│   • 15 minutes: BREAK (NO scrolling! Walk, water, stretch)                  │
+│   • Repeat 3-4 times                                                         │
+│                                                                              │
+│   WHY IT WORKS:                                                              │
+│   ┌────────────────────────────────────────────────────────────────────────┐│
+│   │ "Your brain LOVES clear start-stop cycles."                            ││
+│   └────────────────────────────────────────────────────────────────────────┘│
+│                                                                              │
+│   TIMELINE EXAMPLE:                                                          │
+│   ───────────────────                                                        │
+│   09:00-09:45 → Deep work (Problem solving)                                 │
+│   09:45-10:00 → Break (walk, stretch, water)                                │
+│   10:00-10:45 → Deep work (Learn new pattern)                               │
+│   10:45-11:00 → Break                                                        │
+│   11:00-11:45 → Deep work (Practice problems)                               │
+│   11:45-12:00 → Break                                                        │
+│   12:00-12:45 → Deep work (Review and revise)                               │
+│                                                                              │
+│   = 3 hours of QUALITY study (worth 6+ hours of distracted study)           │
+│                                                                              │
+│   BREAK RULES:                                                               │
+│   ────────────                                                               │
+│   ✅ DO: Walk, stretch, drink water, look at nature, rest eyes              │
+│   ❌ DON'T: Social media, YouTube, phone (these tire your brain!)           │
+│                                                                              │
+│   WHY NO PHONE?                                                              │
+│   Phone activates same brain areas as studying → No real rest               │
+│   Walking/nature → Different brain areas → Real rest                        │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+## 📝 Technique 3: BLURTING TECHNIQUE
+
+```
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                       BLURTING TECHNIQUE                                      │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   PROCESS:                                                                   │
+│   ════════                                                                   │
+│   1. Study a topic thoroughly                                                │
+│   2. CLOSE the book/notes                                                    │
+│   3. Dump EVERYTHING you remember on paper (blurt it out!)                  │
+│   4. Fill gaps in a DIFFERENT COLOR                                          │
+│   5. You instantly SEE your weak areas!                                      │
+│                                                                              │
+│   WHY IT WORKS:                                                              │
+│   ┌────────────────────────────────────────────────────────────────────────┐│
+│   │ You can't hide from what you don't know.                               ││
+│   │ The different color shows exactly what needs more work.                ││
+│   └────────────────────────────────────────────────────────────────────────┘│
+│                                                                              │
+│   DSA EXAMPLE:                                                               │
+│   ─────────────                                                              │
+│   Topic: Binary Search                                                       │
+│                                                                              │
+│   YOUR BLURT (from memory):                                                  │
+│   "Binary search works on sorted arrays                                      │
+│    Mid = (left + right) / 2                                                  │
+│    If target > mid, search right half                                        │
+│    Time complexity is O(log n)"                                              │
+│                                                                              │
+│   FILL GAPS (in RED/different color):                                        │
+│   "Binary search works on sorted arrays                                      │
+│    Mid = left + (right - left) / 2  ← [OVERFLOW FIX!]                       │
+│    If target > mid, search right half                                        │
+│    If target < mid, search LEFT half ← [FORGOT!]                            │
+│    Time complexity is O(log n)                                               │
+│    EDGE CASES: empty array, single element ← [FORGOT!]"                     │
+│                                                                              │
+│   Now you know EXACTLY what to review!                                       │
+│                                                                              │
+│   RECOMMENDED:                                                                │
+│   Do this after completing each chapter/pattern                              │
+│   Keep your blurt papers - they become revision sheets!                     │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+## 📅 Technique 4: 2-3-7 REVISION RULE
+
+```
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                       2-3-7 REVISION RULE                                     │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   THE RULE:                                                                  │
+│   ═════════                                                                  │
+│   After learning something new, revise it on:                               │
+│                                                                              │
+│       Day 1: Learn it                                                        │
+│          ↓                                                                   │
+│       Day 2: First revision (next day)                                       │
+│          ↓                                                                   │
+│       Day 3: Second revision (day after)                                     │
+│          ↓                                                                   │
+│       Day 7: Third revision (week later)                                     │
+│                                                                              │
+│   WHY IT WORKS:                                                              │
+│   ┌────────────────────────────────────────────────────────────────────────┐│
+│   │ "Spaced repetition BEATS last-minute cramming."                        ││
+│   │                                                                        ││
+│   │ Each revision strengthens the memory trace.                            ││
+│   │ By Day 7, it's in long-term memory.                                    ││
+│   └────────────────────────────────────────────────────────────────────────┘│
+│                                                                              │
+│   PRACTICAL IMPLEMENTATION:                                                  │
+│   ─────────────────────────                                                  │
+│                                                                              │
+│   Day 1 (Mon): Learn Two Pointers pattern                                   │
+│   Day 2 (Tue): Quick revision of Two Pointers (10 min)                      │
+│                + Learn Sliding Window (new topic)                           │
+│   Day 3 (Wed): Quick revision of Two Pointers + Sliding Window              │
+│                + Learn Binary Search (new topic)                            │
+│   Day 7 (Sun): WEEKLY REVIEW - All topics from the week                     │
+│                                                                              │
+│   REVISION ≠ RE-READING:                                                     │
+│   ──────────────────────                                                     │
+│   ❌ Don't: Re-read notes passively                                         │
+│   ✅ Do: Try to recall from memory, then check                              │
+│                                                                              │
+│   TRACKING TIP:                                                              │
+│   Keep a simple table:                                                       │
+│   ┌────────────────────┬────────┬────────┬────────┬────────┐               │
+│   │ Topic              │ Day 1  │ Day 2  │ Day 3  │ Day 7  │               │
+│   ├────────────────────┼────────┼────────┼────────┼────────┤               │
+│   │ Two Pointers       │ ✓ Mon  │ ✓ Tue  │ ✓ Wed  │ ✓ Sun  │               │
+│   │ Sliding Window     │ ✓ Tue  │ ✓ Wed  │ ✓ Thu  │ ✓ Mon  │               │
+│   │ Binary Search      │ ✓ Wed  │ ✓ Thu  │ ✓ Fri  │ ✓ Tue  │               │
+│   └────────────────────┴────────┴────────┴────────┴────────┘               │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+## 👶 Technique 5: FEYNMAN TECHNIQUE
+
+```
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                       FEYNMAN TECHNIQUE                                       │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   THE RULE:                                                                  │
+│   ═════════                                                                  │
+│   Explain the topic in simple language...                                   │
+│   ...as if teaching a 10-year-old child.                                    │
+│                                                                              │
+│   KEY INSIGHT:                                                               │
+│   ┌────────────────────────────────────────────────────────────────────────┐│
+│   │ "If you can't SIMPLIFY it, you don't UNDERSTAND it yet."               ││
+│   └────────────────────────────────────────────────────────────────────────┘│
+│                                                                              │
+│   THE 4 STEPS:                                                               │
+│   ─────────────                                                              │
+│   1. Write the topic name at top of page                                    │
+│   2. Explain it in SIMPLE words (no jargon!)                                │
+│   3. Identify gaps - where did you struggle to explain?                     │
+│   4. Go back to source, fill gaps, simplify further                        │
+│                                                                              │
+│   DSA EXAMPLE: Explaining Hash Table to a 10-year-old                       │
+│   ─────────────────────────────────────────────────────────────────────────  │
+│                                                                              │
+│   BAD (complex): "A hash table is a data structure that implements         │
+│   an associative array abstract data type using a hash function             │
+│   to compute an index into an array of buckets."                            │
+│                                                                              │
+│   GOOD (simple): "Imagine a school with 100 lockers numbered 1-100.         │
+│   Each student's name is converted to a locker number using a magic         │
+│   formula (hash function). When you want to find Rahul's stuff,             │
+│   you use the formula to know exactly which locker to check.                │
+│   You don't check all 100 lockers - you go directly to his!"                │
+│                                                                              │
+│   ANOTHER EXAMPLE: Binary Search                                             │
+│   ───────────────────────────────                                            │
+│   "Imagine finding a word in a dictionary. You don't start from             │
+│   page 1. You open to the middle. Is your word before or after?             │
+│   Then you take that half and open to ITS middle. Keep doing this           │
+│   until you find the word. That's binary search!"                           │
+│                                                                              │
+│   PRACTICE THIS:                                                             │
+│   Pretend you're teaching your younger sibling or cousin                    │
+│   If they wouldn't understand, simplify more!                               │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+## ❓ Technique 6: QUESTION FIRST APPROACH
+
+```
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                     QUESTION FIRST APPROACH                                   │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   THE RULE:                                                                  │
+│   ═════════                                                                  │
+│   Start with Previous Year Questions (PYQs) / Problems BEFORE theory.       │
+│                                                                              │
+│   KEY INSIGHT:                                                               │
+│   ┌────────────────────────────────────────────────────────────────────────┐│
+│   │ "It trains your brain to study with PURPOSE."                          ││
+│   │                                                                        ││
+│   │ You know WHAT to look for when reading theory.                         ││
+│   │ Your brain is primed to absorb relevant information.                   ││
+│   └────────────────────────────────────────────────────────────────────────┘│
+│                                                                              │
+│   THE PROCESS:                                                               │
+│   ─────────────                                                              │
+│   1. Look at problems/questions on the topic FIRST                          │
+│   2. Try to solve (even if you fail completely)                             │
+│   3. Note what you don't know                                                │
+│   4. NOW read the theory (with questions in mind)                           │
+│   5. Return to problems with fresh understanding                            │
+│                                                                              │
+│   DSA APPLICATION:                                                           │
+│   ────────────────                                                           │
+│   WRONG ORDER:                                                               │
+│   Read all about DP → Watch videos → Then try problems                      │
+│   (You don't know WHAT to focus on, so you learn everything vaguely)        │
+│                                                                              │
+│   RIGHT ORDER:                                                               │
+│   Look at DP problems first → Notice patterns → Read theory →               │
+│   "Ah, THIS is why I need memoization!" → Solve with understanding          │
+│                                                                              │
+│   EXAMPLE WORKFLOW:                                                          │
+│   ───────────────────                                                        │
+│   Day 1: Open Sliding Window problems                                       │
+│          Try 2-3 problems (probably fail, that's OK!)                       │
+│          Note: "I don't understand how to track the window"                 │
+│                                                                              │
+│   Day 1: Read Sliding Window theory                                         │
+│          Focus on: "How to track window efficiently"                        │
+│          Everything clicks because you KNOW what you need!                  │
+│                                                                              │
+│   Day 1: Return to problems                                                  │
+│          Solve with understanding                                            │
+│                                                                              │
+│   WHY THIS WORKS:                                                            │
+│   ─────────────────                                                          │
+│   • Creates curiosity (your brain WANTS answers)                            │
+│   • Activates retrieval when reading (connecting to questions)              │
+│   • Makes learning targeted, not random                                     │
+│   • Shows you exactly what matters for interviews                           │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+## 🔄 COMBINING ALL 6 TECHNIQUES
+
+```
+╔══════════════════════════════════════════════════════════════════════════════╗
+║              THE ULTIMATE DAILY LEARNING WORKFLOW                             ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+MORNING SESSION (45-15-45-15):
+─────────────────────────────
+[09:00-09:45] Deep Work Block 1:
+              • Look at problems FIRST (Question First Approach)
+              • Try to solve, note gaps
+
+[09:45-10:00] Break (walk, no phone!)
+
+[10:00-10:45] Deep Work Block 2:
+              • Read theory with purpose
+              • Focus on gaps you identified
+
+[10:45-11:00] Break
+
+[11:00-11:45] Deep Work Block 3:
+              • Solve problems with understanding
+              • Use Active Recall - close notes, try from memory
+
+[11:45-12:00] Break
+
+AFTERNOON/EVENING:
+──────────────────
+[After lunch] Blurting Session (20 min):
+              • Close everything
+              • Dump what you learned on paper
+              • Fill gaps in different color
+
+[Evening] Feynman Practice (15 min):
+              • Explain today's topic simply
+              • Record voice note explaining to "10-year-old"
+              • Note where you struggled
+
+WEEKLY SCHEDULE (2-3-7 Rule):
+─────────────────────────────
+• Every evening: Quick recall of today's topic
+• Next day: Revise yesterday's topic (Day 2)
+• Day after: Revise 2-day-old topic (Day 3)
+• Sunday: Weekly review of all topics (Day 7)
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                                                                              │
+│   This system turns 3 hours of study into more learning                     │
+│   than most people get in 8 hours of unfocused work!                        │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+# PART 11: YOUR RETENTION CHECKLIST
 
 ```
 For each new pattern, ask yourself:

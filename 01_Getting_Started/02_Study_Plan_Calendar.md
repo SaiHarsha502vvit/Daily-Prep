@@ -419,6 +419,76 @@ SQL:      _____ / 100
 
 ---
 
+## 🧠 THE 6 POWER LEARNING TECHNIQUES
+
+```
+╔══════════════════════════════════════════════════════════════════════════╗
+║         USE THESE TECHNIQUES DAILY FOR MAXIMUM RETENTION!                 ║
+║                                                                          ║
+║    Full details: 09_Career_Reference/04_Brain_Psychology.md              ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ TECHNIQUE 1: ACTIVE RECALL                                               │
+│ ────────────────────────────                                             │
+│ Close book → Ask yourself questions → Write from memory → Check          │
+│                                                                          │
+│ "Reading FEELS productive. Recalling BUILDS mastery."                   │
+├──────────────────────────────────────────────────────────────────────────┤
+│ TECHNIQUE 2: 45-15 FOCUS BLOCKS                                          │
+│ ────────────────────────────────                                         │
+│ 45 min deep work → 15 min break (NO PHONE!) → Repeat 3-4x               │
+│                                                                          │
+│ "Your brain LOVES clear start-stop cycles."                             │
+├──────────────────────────────────────────────────────────────────────────┤
+│ TECHNIQUE 3: BLURTING TECHNIQUE                                          │
+│ ────────────────────────────────                                         │
+│ Study → Close book → Dump everything on paper →                         │
+│ Fill gaps in different color                                             │
+│                                                                          │
+│ "You instantly SEE your weak areas."                                    │
+├──────────────────────────────────────────────────────────────────────────┤
+│ TECHNIQUE 4: 2-3-7 REVISION RULE                                         │
+│ ────────────────────────────────                                         │
+│ Revise on: Day 2 → Day 3 → Day 7                                        │
+│                                                                          │
+│ "Spaced repetition BEATS last-minute cramming."                         │
+├──────────────────────────────────────────────────────────────────────────┤
+│ TECHNIQUE 5: FEYNMAN TECHNIQUE                                           │
+│ ────────────────────────────────                                         │
+│ Explain to a 10-year-old. If you can't simplify, you don't understand. │
+│                                                                          │
+│ "The best test of understanding is simplification."                     │
+├──────────────────────────────────────────────────────────────────────────┤
+│ TECHNIQUE 6: QUESTION FIRST                                              │
+│ ────────────────────────────                                             │
+│ Look at problems BEFORE reading theory.                                  │
+│                                                                          │
+│ "It trains your brain to study with PURPOSE."                           │
+└──────────────────────────────────────────────────────────────────────────┘
+
+DAILY WORKFLOW USING ALL 6:
+───────────────────────────
+Morning:
+  [09:00-09:45] Look at problems first (Technique 6)
+  [09:45-10:00] Break - walk, no phone
+  [10:00-10:45] Study theory with purpose
+  [10:45-11:00] Break
+  [11:00-11:45] Solve problems (Active Recall)
+
+Afternoon:
+  [After lunch] Blurting session - dump everything, fill gaps
+
+Evening:
+  [30 min] Revise today's topic (2-3-7 rule)
+  [15 min] Explain one concept simply (Feynman)
+
+Sunday:
+  Weekly review of all topics from the week
+```
+
+---
+
 ## 🚀 START NOW!
 
 **Day 1 (Today):**

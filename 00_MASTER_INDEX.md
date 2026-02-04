@@ -77,6 +77,18 @@ NetCracker-Prep/
 │   ├── 05_Daily_Habits_Tracking.md     → Habit tracking
 │   └── 06_Resources_Links.md           → External resources
 │
+├── 📁 10_Enterprise_Systems/       ← ENTERPRISE (Career Growth)
+│   ├── 01_ERP_Complete_Guide.md        → Oracle ERP, Finance, HR, SCM
+│   │                                      (Domain to Code Translation)
+│   ├── 02_ERP_Deep_Dive_Finance_RealWorld.md  → Finance Terms, Optimization,
+│   │                                            DSA in Real World, Career Path
+│   ├── 03_RealWorld_Problems_DSA.md    → Part 1: E-commerce, Banking,
+│   │                                      Food Delivery, Social Media (12 problems)
+│   ├── 04_RealWorld_Problems_Part2.md  → Part 2: Streaming, Healthcare,
+│   │                                      Travel, Logistics, Chat (10 problems)
+│   └── 05_RealWorld_Problems_Part3.md  → Part 3: Payments, Search, Data,
+│                                          Gaming (8 problems + Quick Reference)
+│
 ├── 📁 JavaSolutions/               ← Your code solutions
 ├── 📁 practice/                    ← Practice files
 └── 📁 _archive/                    ← Old/merged files (safe to ignore)
