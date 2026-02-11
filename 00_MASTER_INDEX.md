@@ -9,6 +9,7 @@
 ║                                                                                   ║
 ║   🎯 START HERE: Open 01_Getting_Started/01_Start_Here.md                        ║
 ║   📅 CALENDAR:   Open 01_Getting_Started/02_Study_Plan_Calendar.md               ║
+║   🆕 FEB 10:     Open 01_Getting_Started/03_Feb10_Study_Plan.md (Daily Plan)     ║
 ║   🔥 MASTER REF: Open 09_Career_Reference/02_Ultimate_DSA_Guide.md               ║
 ║   📝 PRACTICE:   Open 05_Problem_Solving/01_Practice_Problems.md (210+ problems) ║
 ║                                                                                   ║
@@ -26,7 +27,8 @@ NetCracker-Prep/
 │
 ├── 📁 01_Getting_Started/          ← START HERE (Week 1)
 │   ├── 01_Start_Here.md            → Getting started guide
-│   └── 02_Study_Plan_Calendar.md   → 12-week study plan
+│   ├── 02_Study_Plan_Calendar.md   → 12-week study plan
+│   └── 03_Feb10_Study_Plan.md      → 🆕 Feb 10, 2026 detailed daily plan
 │
 ├── 📁 02_Data_Structures/          ← FOUNDATIONS (Week 1-2)
 │   ├── 01_DataStructures_Complete.md   → Arrays, Strings, LinkedLists
@@ -41,7 +43,9 @@ NetCracker-Prep/
 │   ├── 04_Dynamic_Programming.md       → DP patterns
 │   ├── 05_Trees_Graphs.md              → Trees & Graphs
 │   ├── 06_Advanced_Algorithms.md       → Greedy, D&C, etc.
-│   └── 07_Advanced_DataStructures.md   → Tries, Segment Trees
+│   ├── 07_Advanced_DataStructures.md   → Tries, Segment Trees
+│   ├── 08_GCD_NumberTheory_Patterns.md → GCD, LCM, Primes, Modular Math
+│   └── 09_Pattern_Programs_Complete.md → 🆕 50+ Star/Number/Char patterns
 │
 ├── 📁 04_Patterns_Templates/       ← PATTERN MASTERY (Week 3-6)
 │   ├── 01_Sliding_Window.md            → Sliding window patterns
@@ -86,8 +90,20 @@ NetCracker-Prep/
 │   │                                      Food Delivery, Social Media (12 problems)
 │   ├── 04_RealWorld_Problems_Part2.md  → Part 2: Streaming, Healthcare,
 │   │                                      Travel, Logistics, Chat (10 problems)
-│   └── 05_RealWorld_Problems_Part3.md  → Part 3: Payments, Search, Data,
-│                                          Gaming (8 problems + Quick Reference)
+│   ├── 05_RealWorld_Problems_Part3.md  → Part 3: Payments, Search, Data,
+│   │                                      Gaming (8 problems + Quick Reference)
+│   └── 06_RealWorld_Incidents_DSA.md   → 🆕 Production Disasters: Twitter Fail
+│                                          Whale, Knight Capital, Real DSA Lessons
+│
+├── 📁 11_SQL_Complete/             ← SQL DEEP DIVE (Data Analyst Track)
+│   ├── 01_SQL_Foundations_WHY_HOW.md   → DDL, DML, DCL, TCL with WHY-HOW approach
+│   │                                      (ACID, Real incidents, Production safety)
+│   ├── 02_SQL_Data_Analysis.md         → JOINs, Window Functions, CTEs,
+│   │                                      Aggregations, Real Analytics Patterns
+│   ├── 03_RealWorld_Problems_DSA.md    → Production disasters & lessons learned
+│   │                                      (GitLab, Knight Capital, Marriott, etc.)
+│   └── 04_SQL_Practice_Projects.md     → 4 Full Projects: E-commerce, HR,
+│                                          Finance, Interview Challenges
 │
 ├── 📁 JavaSolutions/               ← Your code solutions
 ├── 📁 practice/                    ← Practice files
@@ -145,6 +161,8 @@ NetCracker-Prep/
 - [Trees & Graphs](03_Algorithms/05_Trees_Graphs.md)
 - [Advanced (Greedy, D&C, etc.)](03_Algorithms/06_Advanced_Algorithms.md)
 - [Advanced Data Structures](03_Algorithms/07_Advanced_DataStructures.md)
+- [GCD & Number Theory](03_Algorithms/08_GCD_NumberTheory_Patterns.md)
+- [🆕 Pattern Programs (50+)](03_Algorithms/09_Pattern_Programs_Complete.md)
 
 ### Patterns
 
@@ -159,6 +177,7 @@ NetCracker-Prep/
 - [Practice Problems (210+)](05_Problem_Solving/01_Practice_Problems.md)
 - [Edge Cases](05_Problem_Solving/02_Edge_Cases.md)
 - [Common Mistakes](05_Problem_Solving/03_Common_Mistakes.md)
+- [🆕 Real-World Incidents DSA](10_Enterprise_Systems/06_RealWorld_Incidents_DSA.md)
 
 ### Design & OOP
 
