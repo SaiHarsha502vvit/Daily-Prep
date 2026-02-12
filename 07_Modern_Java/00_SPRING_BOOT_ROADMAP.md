@@ -18,10 +18,10 @@
 │  EACH PHASE BUILDS ON THE PREVIOUS ONE                                          │
 │  Don't skip phases unless you're already proficient!                           │
 │                                                                                  │
-│  ⏱️ ESTIMATED TOTAL TIME: 7-10 weeks (2-3 hours/day)                           │
+│  ⏱️ ESTIMATED TOTAL TIME: 10-14 weeks (2-3 hours/day)                          │
 │     Including Part 0: Hidden Foundations                                        │
 │                                                                                  │
-│  TOTAL GUIDE: 15 Parts (Part 0 through Part 14)                                │
+│  TOTAL GUIDE: 22 Parts (Part 0 through Part 21)                                │
 │                                                                                  │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -411,6 +411,154 @@ _High-level overview of JPA, Web, Security, Testing. Read for context, but detai
 
 ---
 
+## PHASE 6: ENTERPRISE & CLOUD (Week 7-10+) 🟣
+
+> _"From monolith to microservices, from local to cloud"_
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  PART 15 → PART 16 → PART 17 → PART 18 → PART 19 → PART 20 → PART 21           │
+│                                                                                  │
+│  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐              │
+│  │ PART 15  │ │ PART 16  │ │ PART 17  │ │ PART 18  │ │ PART 19  │              │
+│  │ WebFlux  │→│ SOLID    │→│ Database │→│ Distrib. │→│ Testing  │              │
+│  │ Reactive │ │Principles│ │ Security │ │ Tracing  │ │ Complete │              │
+│  └──────────┘ └──────────┘ └──────────┘ └──────────┘ └──────────┘              │
+│                               │                                                  │
+│                               ▼                                                  │
+│                 ┌──────────────────────────────┐                                │
+│                 │  PART 20       │  PART 21    │                                │
+│                 │  Microservices │  Cloud      │                                │
+│                 │  Patterns      │  Deployment │                                │
+│                 └──────────────────────────────┘                                │
+│                                                                                  │
+│  Files:                                                                         │
+│  ├── 17_Spring_Boot_Part15_WebFlux_Reactive.md                                 │
+│  ├── 18_Spring_Boot_Part16_SOLID_Principles.md                                 │
+│  ├── 19_Spring_Boot_Part17_Database_Security.md                                │
+│  ├── 20_Spring_Boot_Part18_Distributed_Tracing.md                              │
+│  ├── 21_Spring_Boot_Part19_Testing_Complete.md                                 │
+│  ├── 22_Spring_Boot_Part20_Microservices_Patterns.md                           │
+│  └── 23_Spring_Boot_Part21_Cloud_Deployment.md                                 │
+│                                                                                  │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Part 15: WebFlux & Reactive Programming
+
+**File:** `17_Spring_Boot_Part15_WebFlux_Reactive.md`
+
+| Topic                 | Why It Matters              |
+| --------------------- | --------------------------- |
+| Reactive Streams      | Non-blocking I/O            |
+| Mono & Flux           | Core reactive types         |
+| WebClient             | Reactive HTTP client        |
+| R2DBC                 | Reactive database access    |
+| Backpressure          | Handle overwhelming data    |
+| Schedulers            | Control threading           |
+
+---
+
+### Part 16: SOLID Principles with Spring
+
+**File:** `18_Spring_Boot_Part16_SOLID_Principles.md`
+
+| Topic                            | Spring Example              |
+| -------------------------------- | --------------------------- |
+| Single Responsibility            | Service layer separation    |
+| Open/Closed                      | Strategy pattern in Spring  |
+| Liskov Substitution              | Interface programming       |
+| Interface Segregation            | Repository interfaces       |
+| Dependency Inversion             | @Autowired abstraction      |
+
+---
+
+### Part 17: Database Security
+
+**File:** `19_Spring_Boot_Part17_Database_Security.md`
+
+| Topic                 | Why It Matters              |
+| --------------------- | --------------------------- |
+| User Management       | Registration, authentication|
+| Password Security     | BCrypt, Argon2 hashing      |
+| Role-Based Access     | RBAC implementation         |
+| SQL Injection         | Prevention strategies       |
+| Data Encryption       | Column-level encryption     |
+| Audit Logging         | Track data changes          |
+
+---
+
+### Part 18: Distributed Tracing
+
+**File:** `20_Spring_Boot_Part18_Distributed_Tracing.md`
+
+| Topic                 | Why It Matters              |
+| --------------------- | --------------------------- |
+| Micrometer Tracing    | Observability               |
+| Zipkin Integration    | Trace visualization         |
+| Span & Trace IDs      | Request correlation         |
+| Baggage Propagation   | Cross-service context       |
+| Performance Analysis  | Latency identification      |
+
+---
+
+### Part 19: Testing Complete Guide
+
+**File:** `21_Spring_Boot_Part19_Testing_Complete.md`
+
+| Topic                 | Why It Matters              |
+| --------------------- | --------------------------- |
+| JUnit 5               | Modern testing framework    |
+| Mockito               | Mocking dependencies        |
+| @SpringBootTest       | Integration testing         |
+| @WebMvcTest           | Controller testing          |
+| @DataJpaTest          | Repository testing          |
+| TestContainers        | Real database testing       |
+| TDD & BDD             | Development methodologies   |
+
+---
+
+### Part 20: Microservices Patterns
+
+**File:** `22_Spring_Boot_Part20_Microservices_Patterns.md`
+
+| Topic                 | Why It Matters              |
+| --------------------- | --------------------------- |
+| Service Discovery     | Eureka, Consul              |
+| API Gateway           | Spring Cloud Gateway        |
+| Circuit Breaker       | Resilience4j                |
+| Saga Pattern          | Distributed transactions    |
+| CQRS                  | Read/write separation       |
+| Event Sourcing        | Audit and replay            |
+
+---
+
+### Part 21: Cloud Deployment
+
+**File:** `23_Spring_Boot_Part21_Cloud_Deployment.md`
+
+| Topic                 | Why It Matters              |
+| --------------------- | --------------------------- |
+| Docker                | Containerization            |
+| Kubernetes            | Container orchestration     |
+| AWS (EKS, S3, SQS)    | Amazon cloud services       |
+| Azure (AKS, Blob)     | Microsoft cloud services    |
+| GCP (GKE, Pub/Sub)    | Google cloud services       |
+| CI/CD Pipelines       | Automated deployments       |
+| Terraform             | Infrastructure as Code      |
+
+**✅ Phase 6 complete when you can:**
+
+- Build reactive APIs with WebFlux
+- Apply SOLID principles in Spring
+- Secure database access properly
+- Trace requests across microservices
+- Write comprehensive tests
+- Design microservice architecture
+- Deploy to cloud platforms
+
+---
+
 # 📋 QUICK REFERENCE: ALL PARTS
 
 ```
@@ -445,7 +593,16 @@ _High-level overview of JPA, Web, Security, Testing. Read for context, but detai
 │  ├── 📄 14_Spring_Boot_Part12_DSA_Applications.md → DSA                         │
 │  └── 📄 15_Spring_Boot_Part13_Industry_Projects.md → Projects                   │
 │                                                                                  │
-│  TOTAL: 15 FILES (Part 0-14)                                                    │
+│  PHASE 6: ENTERPRISE & CLOUD                                                     │
+│  ├── 📄 17_Spring_Boot_Part15_WebFlux_Reactive.md → Reactive Programming        │
+│  ├── 📄 18_Spring_Boot_Part16_SOLID_Principles.md → SOLID in Spring             │
+│  ├── 📄 19_Spring_Boot_Part17_Database_Security.md → Database Security          │
+│  ├── 📄 20_Spring_Boot_Part18_Distributed_Tracing.md → Tracing                  │
+│  ├── 📄 21_Spring_Boot_Part19_Testing_Complete.md → Testing                     │
+│  ├── 📄 22_Spring_Boot_Part20_Microservices_Patterns.md → Microservices         │
+│  └── 📄 23_Spring_Boot_Part21_Cloud_Deployment.md → Cloud Deployment            │
+│                                                                                  │
+│  TOTAL: 22 FILES (Part 0-21)                                                    │
 │                                                                                  │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -492,10 +649,10 @@ Part 0 (key sections) → Part 2 → Part 7 → Part 8 → Part 11
 Focus: Reflection (why @Autowired works), IoC/DI, REST API, JPA, Security
 ```
 
-### Path B: Full Mastery (6-8 weeks)
+### Path B: Full Mastery (10-14 weeks)
 
 ```
-Part 0 → All parts in order shown in this roadmap
+Part 0 → All parts in order shown in this roadmap (Parts 0-21)
 ```
 
 ### Path C: Already Know Basics (3-4 weeks)
@@ -510,6 +667,14 @@ Skip: Part 1, 4, 5 (if comfortable with Java, Lombok)
 ```
 Part 0 (ALL sections) → Part 2 → Part 3 → Rest follows
 Part 0 explains WHY Spring works the way it does
+```
+
+### Path E: Enterprise/Cloud Focus (4-5 weeks)
+
+```
+Part 15 (WebFlux) → Part 19 (Testing) → Part 20 (Microservices) → Part 21 (Cloud)
+Add: Part 18 (Tracing) for observability
+Ideal for: Senior developers preparing for microservices architecture
 ```
 
 ---
