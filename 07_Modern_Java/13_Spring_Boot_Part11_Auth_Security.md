@@ -5,6 +5,50 @@
 
 ---
 
+# 🎯 WHY-HOW-WHEN-WHICH FRAMEWORK
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHY: Why Security is Critical?                                                 │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • Data breaches cost millions: Legal fees, reputation damage                 │
+│  • Compliance: GDPR, HIPAA, PCI-DSS require security                          │
+│  • OWASP Top 10: Broken auth consistently in top vulnerabilities              │
+│  • Interview: Security questions separate senior from junior developers       │
+│  • Career: Security expertise = higher pay, more opportunities               │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  HOW: How Spring Security Works?                                                │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • Filter chain: Request passes through security filters                      │
+│  • Authentication: Who are you? (login, JWT validation)                       │
+│  • Authorization: What can you do? (roles, permissions)                       │
+│  • SecurityContext: Holds authenticated user info                             │
+│  • UserDetailsService: Loads user data for authentication                     │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHEN: When to Use Each Auth Strategy?                                          │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • Session-based: Traditional web apps, server-rendered pages                 │
+│  • JWT: REST APIs, microservices, stateless authentication                    │
+│  • OAuth2: "Login with Google/GitHub", third-party integration               │
+│  • API Keys: Service-to-service communication                                 │
+│  • Basic Auth: Simple internal APIs, development only                         │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHICH: Which Security Concepts to Master?                                      │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  ESSENTIAL:     Authentication vs Authorization, JWT, SecurityFilterChain      │
+│  IMPORTANT:     @PreAuthorize, BCrypt, CORS configuration                      │
+│  ADVANCED:      OAuth2 flows, custom filters, method security                  │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
 # SECTION 1: AUTHENTICATION vs AUTHORIZATION
 
 ---

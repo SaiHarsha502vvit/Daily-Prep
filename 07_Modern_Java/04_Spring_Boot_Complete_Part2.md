@@ -5,6 +5,50 @@
 
 ---
 
+# 🎯 WHY-HOW-WHEN-WHICH FRAMEWORK
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHY: Why IoC & DI are Foundation of Spring?                                    │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • IoC IS Spring: Without it, there's no automatic wiring                      │
+│  • Testability: Mock dependencies easily for unit testing                     │
+│  • Loose coupling: Change implementations without changing classes            │
+│  • Interview must-know: "Explain @Autowired" asked in every interview         │
+│  • Configuration flexibility: Switch beans via profiles, conditions           │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  HOW: How DI Works in Spring?                                                   │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • IoC Container: ApplicationContext creates and manages beans                │
+│  • Component Scanning: @Component/@Service/@Repository auto-detected          │
+│  • Constructor Injection: Preferred - immutable, testable                     │
+│  • Field Injection: @Autowired on fields - avoid (hard to test)               │
+│  • @Qualifier/@Primary: Resolve multiple implementations of same type         │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHEN: When to Use Each Bean Scope?                                             │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • Singleton (default): Stateless services, repositories - most common        │
+│  • Prototype: Stateful beans, each injection gets new instance                │
+│  • Request: Per HTTP request - user context, request data                     │
+│  • Session: Per user session - shopping cart, user preferences                │
+│  • Application: Shared across entire app - config, global state               │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHICH: Which DI Concepts to Master?                                            │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  ESSENTIAL:     Constructor injection, @Component, @Service, @Autowired       │
+│  IMPORTANT:     Bean scopes, @Qualifier, @Primary, @Configuration             │
+│  ADVANCED:      Circular dependency resolution, custom BeanPostProcessors     │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
 # TIER 2: SPRING CORE (IoC & DI)
 
 ---
@@ -1213,6 +1257,165 @@ public class SecondListener {
     @Order(2)  // Runs second
     public void handleSecond(UserRegisteredEvent event) { }
 }
+```
+
+---
+
+# CHAPTER 10: CIRCULAR DEPENDENCIES - COMPLETE GUIDE
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                        CIRCULAR DEPENDENCIES IN SPRING                           │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                  │
+│  WHAT IS A CIRCULAR DEPENDENCY?                                                  │
+│  ─────────────────────────────────────────────────────────────────────────────  │
+│                                                                                  │
+│  Bean A depends on Bean B, and Bean B depends on Bean A                         │
+│                                                                                  │
+│     ┌─────────┐        needs        ┌─────────┐                                 │
+│     │  BeanA  │ ──────────────────► │  BeanB  │                                 │
+│     └─────────┘                      └─────────┘                                 │
+│          ▲                                │                                      │
+│          └────────────── needs ───────────┘                                      │
+│                                                                                  │
+│  THE PROBLEM:                                                                    │
+│  To create A, Spring needs B. But to create B, Spring needs A.                  │
+│  = DEADLOCK! Neither can be created first.                                      │
+│                                                                                  │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  EXAMPLE OF CIRCULAR DEPENDENCY                                                  │
+├─────────────────────────────────────────────────────────────────────────────────┤
+
+// This code FAILS with BeanCurrentlyInCreationException
+
+@Service
+public class OrderService {
+    private final PaymentService paymentService;
+    
+    @Autowired
+    public OrderService(PaymentService paymentService) {  // Needs PaymentService
+        this.paymentService = paymentService;
+    }
+}
+
+@Service  
+public class PaymentService {
+    private final OrderService orderService;
+    
+    @Autowired
+    public PaymentService(OrderService orderService) {  // Needs OrderService
+        this.orderService = orderService;
+    }
+}
+
+// Spring Boot 2.6+ throws by default:
+// BeanCurrentlyInCreationException: Error creating bean 'orderService':
+// Requested bean is currently in creation: Is there an unresolvable circular reference?
+
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  SOLUTIONS TO CIRCULAR DEPENDENCIES                                              │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                  │
+│  SOLUTION 1: REDESIGN (BEST APPROACH)                                           │
+│  ───────────────────────────────────────────────────────────────────────────── │
+│  Extract shared logic into a third service:                                     │
+│                                                                                  │
+│     ┌─────────────┐          ┌─────────────┐                                    │
+│     │ OrderService│          │PaymentService│                                   │
+│     └──────┬──────┘          └──────┬──────┘                                    │
+│            │                        │                                           │
+│            ▼                        ▼                                           │
+│     ┌────────────────────────────────────┐                                      │
+│     │        SharedOrderLogic            │  ← New service both can use         │
+│     └────────────────────────────────────┘                                      │
+│                                                                                  │
+│  SOLUTION 2: @Lazy ANNOTATION                                                   │
+│  ───────────────────────────────────────────────────────────────────────────── │
+
+@Service
+public class OrderService {
+    private final PaymentService paymentService;
+    
+    @Autowired
+    public OrderService(@Lazy PaymentService paymentService) {  // @Lazy here!
+        this.paymentService = paymentService;
+    }
+}
+
+// HOW @Lazy WORKS:
+// Instead of real PaymentService, Spring injects a PROXY
+// The proxy delays creation until first method call
+// By then, OrderService is fully created, breaking the cycle
+
+│  SOLUTION 3: SETTER INJECTION (Not Recommended)                                 │
+│  ───────────────────────────────────────────────────────────────────────────── │
+
+@Service
+public class OrderService {
+    private PaymentService paymentService;
+    
+    @Autowired
+    public void setPaymentService(PaymentService paymentService) {
+        this.paymentService = paymentService;
+    }
+}
+
+// WHY IT WORKS: Bean created first (empty), then dependencies injected later
+// WHY NOT RECOMMENDED: Hides design problem, object can be used in invalid state
+
+│  SOLUTION 4: APPLICATION EVENT (When Appropriate)                               │
+│  ───────────────────────────────────────────────────────────────────────────── │
+
+// Instead of: orderService.getOrder() from PaymentService
+// Use an event:
+
+@Service
+public class PaymentService {
+    @EventListener
+    public void onOrderCreated(OrderCreatedEvent event) {
+        // React to order events without direct dependency
+    }
+}
+
+│  SOLUTION 5: ALLOW CIRCULAR REFS (Last Resort)                                  │
+│  ───────────────────────────────────────────────────────────────────────────── │
+
+// application.properties (Spring Boot 2.6+)
+spring.main.allow-circular-references=true
+
+// WARNING: This is a WORKAROUND, not a solution!
+// You're just hiding the design problem.
+
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  DETECTING CIRCULAR DEPENDENCIES EARLY                                           │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                  │
+│  COMPILE TIME: Use ArchUnit tests                                               │
+│                                                                                  │
+│    @Test                                                                         │
+│    void noCircularDependencies() {                                               │
+│        slices().matching("com.app.(*)..")                                       │
+│            .should().beFreeOfCycles()                                           │
+│            .check(classes);                                                      │
+│    }                                                                             │
+│                                                                                  │
+│  RUNTIME: Spring throws BeanCurrentlyInCreationException (default in 2.6+)     │
+│                                                                                  │
+│  DESIGN TIME: Apply SOLID principles                                            │
+│    • Single Responsibility: Services doing too much tend to be circular        │
+│    • Dependency Inversion: Depend on abstractions, not concretes               │
+│                                                                                  │
+│  INTERVIEW TIP: "I prefer redesigning to remove the cycle rather than using    │
+│  @Lazy because circular dependencies usually indicate poor design"              │
+│                                                                                  │
+└─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---

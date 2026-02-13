@@ -5,6 +5,162 @@
 
 ---
 
+# 📍 VISUAL LEARNING PATH (START HERE!)
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                    🎯 YOUR COMPLETE LEARNING JOURNEY                            │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                  │
+│  ════════════════════════════════════════════════════════════════════════════   │
+│                                                                                  │
+│  🟡 WEEK 0: PREREQUISITES                                                       │
+│  ─────────────────────────────────────────────────────────────────────────────  │
+│  ┌─────────────────────┐                                                        │
+│  │ 📄 FUNCTIONAL PROG  │  Modern Java: Lambda, Streams, Optional, Records     │
+│  │    01_Functional... │  ⏱️ 2-3 days                                          │
+│  └─────────────────────┘                                                        │
+│            │                                                                     │
+│            ▼                                                                     │
+│  ═══════════════════════════════════════════════════════════════════════════    │
+│                                                                                  │
+│  ⚫ WEEK 1: HIDDEN FOUNDATIONS (The "WHY" Behind Spring)                        │
+│  ─────────────────────────────────────────────────────────────────────────────  │
+│  ┌─────────────────────┐                                                        │
+│  │ 📄 PART 0           │  Reflection, Proxies, Servlets, Design Patterns      │
+│  │    02_Spring_Boot...│  ⏱️ 3-4 days (MOST IMPORTANT!)                        │
+│  └─────────────────────┘                                                        │
+│            │                                                                     │
+│            ▼                                                                     │
+│  ═══════════════════════════════════════════════════════════════════════════    │
+│                                                                                  │
+│  🟢 WEEK 2-3: CORE SPRING (The Heart of Everything)                             │
+│  ─────────────────────────────────────────────────────────────────────────────  │
+│  ┌─────────────────────┐    ┌─────────────────────┐    ┌─────────────────────┐  │
+│  │ 📄 PART 1           │───►│ 📄 PART 2           │───►│ 📄 PART 3           │  │
+│  │    Java Foundations │    │    IoC & DI         │    │    AOP & Auto-Conf  │  │
+│  │    ⏱️ 2 days        │    │    ⏱️ 3 days        │    │    ⏱️ 2 days        │  │
+│  └─────────────────────┘    └─────────────────────┘    └─────────────────────┘  │
+│                                                                 │               │
+│  ═══════════════════════════════════════════════════════════════│═══════════    │
+│                                                                 ▼               │
+│  🟡 WEEK 3-4: WEB FUNDAMENTALS (Before Building APIs!)                          │
+│  ─────────────────────────────────────────────────────────────────────────────  │
+│  ┌─────────────────────┐    ┌─────────────────────┐                             │
+│  │ 📄 PART 5           │───►│ 📄 PART 10          │  Read HTTP BEFORE          │
+│  │    Lombok & DTOs    │    │    HTTP Deep Dive   │  Controllers!              │
+│  │    ⏱️ 1 day         │    │    ⏱️ 2 days        │                             │
+│  └─────────────────────┘    └─────────────────────┘                             │
+│                                      │                                          │
+│  ════════════════════════════════════│══════════════════════════════════════    │
+│                                      ▼                                          │
+│  🔵 WEEK 4-5: APPLICATION LAYERS (Build Real APIs!)                             │
+│  ─────────────────────────────────────────────────────────────────────────────  │
+│  ┌─────────────────────┐    ┌─────────────────────┐    ┌─────────────────────┐  │
+│  │ 📄 PART 7           │───►│ 📄 PART 6           │───►│ 📄 PART 8           │  │
+│  │    Controllers/REST │    │    Service/Repo     │    │    JPA Deep Dive    │  │
+│  │    ⏱️ 2 days        │    │    ⏱️ 2 days        │    │    ⏱️ 3 days        │  │
+│  └─────────────────────┘    └─────────────────────┘    └─────────────────────┘  │
+│                                                                 │               │
+│  ═══════════════════════════════════════════════════════════════│═══════════    │
+│                                                                 ▼               │
+│  🟠 WEEK 5-6: PRODUCTION READY (Real World Features!)                           │
+│  ─────────────────────────────────────────────────────────────────────────────  │
+│  ┌─────────────────────┐    ┌─────────────────────┐                             │
+│  │ 📄 PART 14          │───►│ 📄 PART 11          │                             │
+│  │    Cache/Async/     │    │    Security & JWT   │                             │
+│  │    Actuator/Swagger │    │    OAuth2/RBAC      │                             │
+│  │    ⏱️ 2 days        │    │    ⏱️ 3 days        │                             │
+│  └─────────────────────┘    └─────────────────────┘                             │
+│                                      │                                          │
+│  ════════════════════════════════════│══════════════════════════════════════    │
+│                                      ▼                                          │
+│  🔴 WEEK 6-8: MASTERY (Senior Developer Skills!)                                │
+│  ─────────────────────────────────────────────────────────────────────────────  │
+│  ┌─────────────────────┐    ┌─────────────────────┐    ┌─────────────────────┐  │
+│  │ 📄 PART 9           │───►│ 📄 PART 12          │───►│ 📄 PART 13          │  │
+│  │    Architecture &   │    │    DSA in Spring    │    │    Industry         │  │
+│  │    Clean Code       │    │    Rate Limit, LRU  │    │    Projects         │  │
+│  │    ⏱️ 2 days        │    │    ⏱️ 2 days        │    │    ⏱️ 2 days        │  │
+│  └─────────────────────┘    └─────────────────────┘    └─────────────────────┘  │
+│                                                                 │               │
+│  ═══════════════════════════════════════════════════════════════│═══════════    │
+│                                                                 ▼               │
+│  🟣 WEEK 8-12: ENTERPRISE & CLOUD (Architect Level!)                            │
+│  ─────────────────────────────────────────────────────────────────────────────  │
+│  ┌───────────┐ ┌───────────┐ ┌───────────┐ ┌───────────┐ ┌───────────┐         │
+│  │ PART 15   │►│ PART 16   │►│ PART 17   │►│ PART 18   │►│ PART 19   │         │
+│  │ WebFlux   │ │ SOLID     │ │ DB Secur. │ │ Tracing   │ │ Testing   │         │
+│  └───────────┘ └───────────┘ └───────────┘ └───────────┘ └───────────┘         │
+│        │                                                                        │
+│        └──────────────────────────────────────────────────────┐                 │
+│                                                               ▼                 │
+│                    ┌─────────────────────┐    ┌─────────────────────┐           │
+│                    │ 📄 PART 20          │───►│ 📄 PART 21          │           │
+│                    │    Microservices    │    │    Cloud/K8s/CI-CD  │           │
+│                    │    Patterns         │    │    AWS/Azure/GCP    │           │
+│                    └─────────────────────┘    └─────────────────────┘           │
+│                                                                                  │
+│  ═══════════════════════════════════════════════════════════════════════════    │
+│                                                                                  │
+│  📖 REFERENCE (Use Anytime!)                                                    │
+│  ─────────────────────────────────────────────────────────────────────────────  │
+│  ┌─────────────────────────────────────────────────────────────────────────┐    │
+│  │ 📄 PART 22: ANNOTATIONS COMPLETE REFERENCE                              │    │
+│  │    Every annotation explained: JPA, Web, Security, Testing, Lombok     │    │
+│  │    ⭐ BOOKMARK THIS - Use as quick lookup while coding                 │    │
+│  └─────────────────────────────────────────────────────────────────────────┘    │
+│                                                                                  │
+│  ┌─────────────────────────────────────────────────────────────────────────┐    │
+│  │ 📄 PART 4: QUICK OVERVIEW (Optional high-level summary)                 │    │
+│  └─────────────────────────────────────────────────────────────────────────┘    │
+│                                                                                  │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+# 📚 COMPLETE FILE → TOPIC MAPPING
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  #   FILE NAME                                    TOPICS                         │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  --  01_Functional_Programming.md              Lambda, Streams, Optional,       │
+│                                                Records, var keyword             │
+│  00  02_Spring_Boot_Part0_Hidden_Foundations   Reflection, Proxy, Servlet,      │
+│                                                Jackson, HikariCP, DevTools      │
+│  01  03_Spring_Boot_Complete_Part1             JVM, GC, Threads, Memory         │
+│  02  04_Spring_Boot_Complete_Part2             IoC, DI, Bean Scopes, Lifecycle, │
+│                                                Circular Dependencies            │
+│  03  05_Spring_Boot_Complete_Part3             AOP, Proxies, Auto-Config        │
+│  04  06_Spring_Boot_Complete_Part4             JPA/Web/Security Overview        │
+│  05  07_Spring_Boot_Part5_Lombok_DTOs          @Data, @Builder, DTO Patterns    │
+│  06  08_Spring_Boot_Part6_Service_Repository   @Service, @Repository, @Query    │
+│  07  09_Spring_Boot_Part7_Controllers_REST     @RestController, @Valid, APIs    │
+│  08  10_Spring_Boot_Part8_JPA_Deep_Dive        Entities, Relations, N+1, Fetch  │
+│  09  11_Spring_Boot_Part9_Architecture_Quality Clean Code, Package Structure    │
+│  10  12_Spring_Boot_Part10_HTTP_Deep_Dive      HTTP Lifecycle, Headers, REST    │
+│  11  13_Spring_Boot_Part11_Auth_Security       JWT, OAuth2, Spring Security     │
+│  12  14_Spring_Boot_Part12_DSA_Applications    Rate Limiter, LRU, Trie, Graph   │
+│  13  15_Spring_Boot_Part13_Industry_Projects   Notification, Feature Flags      │
+│  14  16_Spring_Boot_Part14_Essential_Topics    Cache, Async, Actuator, Swagger  │
+│  15  17_Spring_Boot_Part15_WebFlux_Reactive    Mono, Flux, WebClient, R2DBC     │
+│  16  18_Spring_Boot_Part16_SOLID_Principles    S.O.L.I.D with Spring Examples   │
+│  17  19_Spring_Boot_Part17_Database_Security   Password Hash, Encryption, RBAC  │
+│  18  20_Spring_Boot_Part18_Distributed_Tracing Micrometer, Zipkin, Spans        │
+│  19  21_Spring_Boot_Part19_Testing_Complete    JUnit, Mockito, TestContainers   │
+│  20  22_Spring_Boot_Part20_Microservices       Eureka, Gateway, Circuit Breaker │
+│  21  23_Spring_Boot_Part21_Cloud_Deployment    Docker, K8s, AWS, Azure, CI/CD   │
+│  22  24_Spring_Boot_Part22_Annotations         ALL annotations reference        │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+TOTAL: 24 FILES (Functional Programming + Parts 0-22)
+ESTIMATED TIME: 10-14 weeks (2-3 hours/day)
+```
+
+---
+
 # HOW TO USE THIS ROADMAP
 
 ```
@@ -19,9 +175,9 @@
 │  Don't skip phases unless you're already proficient!                           │
 │                                                                                  │
 │  ⏱️ ESTIMATED TOTAL TIME: 10-14 weeks (2-3 hours/day)                          │
-│     Including Part 0: Hidden Foundations                                        │
+│     Including Part 0: Hidden Foundations + Functional Programming              │
 │                                                                                  │
-│  TOTAL GUIDE: 22 Parts (Part 0 through Part 21)                                │
+│  TOTAL GUIDES: 24 Files (Functional Programming + Parts 0-22)                  │
 │                                                                                  │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -32,7 +188,45 @@
 
 ---
 
-## PHASE 0: HIDDEN FOUNDATIONS (Read First!) ⚫
+## PREREQUISITES: MODERN JAVA FUNDAMENTALS (Week 0) 🟡
+> _"You cannot learn Spring Boot without modern Java"_
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  📄 FUNCTIONAL PROGRAMMING IN JAVA                                              │
+│                                                                                  │
+│  File: 01_Functional_Programming.md                                             │
+│                                                                                  │
+│  TOPICS COVERED:                                                                │
+│  ┌────────────────────────────────────────────────────────────────────────┐    │
+│  │ A. Lambda Expressions     │ (x) -> x * 2, concise anonymous functions │    │
+│  │ B. Functional Interfaces  │ Predicate, Function, Consumer, Supplier   │    │
+│  │ C. Stream API             │ filter, map, reduce, collect              │    │
+│  │ D. Method References      │ Class::method shorthand                   │    │
+│  │ E. Optional               │ Null-safe value handling                  │    │
+│  │ F. Local Variable (var)   │ Type inference: var x = new HashMap<>(); │    │
+│  │ G. Java Records           │ Immutable data carriers: record User(...) │    │
+│  └────────────────────────────────────────────────────────────────────────┘    │
+│                                                                                  │
+│  ⏱️ TIME: 2-3 days                                                              │
+│                                                                                  │
+│  WHY READ FIRST:                                                                │
+│  • Spring Boot uses lambdas EVERYWHERE (WebFlux, configs, callbacks)           │
+│  • Stream API: 10 lines of loops → 1 elegant line                              │
+│  • Records: Perfect for DTOs (Request/Response objects)                        │
+│  • Interview: "Rewrite this using streams" is a common question                │
+│                                                                                  │
+│  ✅ READY FOR NEXT WHEN YOU CAN:                                                │
+│  • Convert a for-loop to stream pipeline                                       │
+│  • Explain what Optional.map() does vs Optional.flatMap()                      │
+│  • Create a record with validation in compact constructor                      │
+│                                                                                  │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## PHASE 0: HIDDEN FOUNDATIONS (Week 1 - Read First!) ⚫
 > _"The invisible knowledge that tutorials never teach"_
 
 ```
@@ -559,6 +753,39 @@ _High-level overview of JPA, Web, Security, Testing. Read for context, but detai
 
 ---
 
+## APPENDIX: Quick Reference Guides 📖
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  PART 22: ANNOTATIONS COMPLETE REFERENCE                                        │
+│                                                                                  │
+│  File: 24_Spring_Boot_Part22_Annotations_Complete_Reference.md                 │
+│                                                                                  │
+│  A comprehensive reference covering ALL important annotations:                  │
+│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────┐    │
+│  │ • JPA Lifecycle: @PrePersist, @PostPersist, @PreUpdate, @PostUpdate   │    │
+│  │ • JPA Mapping: @Entity, @Column, @OneToMany, @ManyToOne, @Embedded    │    │
+│  │ • Auditing: @CreatedDate, @LastModifiedDate, @CreatedBy, @Version     │    │
+│  │ • Validation: @NotNull, @NotBlank, @Size, @Email, @Pattern, @Valid    │    │
+│  │ • Spring Core: @Component, @Service, @Autowired, @Qualifier, @Scope   │    │
+│  │ • Web: @GetMapping, @PostMapping, @PathVariable, @RequestBody         │    │
+│  │ • Security: @PreAuthorize, @PostAuthorize, @Secured                   │    │
+│  │ • Caching: @Cacheable, @CacheEvict, @CachePut                         │    │
+│  │ • Async: @Async, @Scheduled                                           │    │
+│  │ • Transaction: @Transactional (propagation, isolation, rollback)      │    │
+│  │ • Testing: @SpringBootTest, @MockBean, @DataJpaTest                   │    │
+│  │ • Lombok: @Data, @Builder, @Slf4j, @Value                             │    │
+│  │ • Hibernate: @Formula, @Where, @BatchSize, @DynamicUpdate             │    │
+│  └────────────────────────────────────────────────────────────────────────┘    │
+│                                                                                  │
+│  ⭐ USE AS QUICK REFERENCE - Bookmark this file!                               │
+│                                                                                  │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
 # 📋 QUICK REFERENCE: ALL PARTS
 
 ```
@@ -602,7 +829,10 @@ _High-level overview of JPA, Web, Security, Testing. Read for context, but detai
 │  ├── 📄 22_Spring_Boot_Part20_Microservices_Patterns.md → Microservices         │
 │  └── 📄 23_Spring_Boot_Part21_Cloud_Deployment.md → Cloud Deployment            │
 │                                                                                  │
-│  TOTAL: 22 FILES (Part 0-21)                                                    │
+│  APPENDIX                                                                        │
+│  └── 📄 24_Spring_Boot_Part22_Annotations_Complete_Reference.md → All Annotations│
+│                                                                                  │
+│  TOTAL: 23 FILES (Part 0-22)                                                    │
 │                                                                                  │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -640,43 +870,140 @@ _High-level overview of JPA, Web, Security, Testing. Read for context, but detai
 
 ---
 
-# 🚀 QUICK START PATHS
-
-### Path A: Job Interview Prep (2 weeks)
+# 🚀 QUICK START PATHS (Choose Your Adventure!)
 
 ```
-Part 0 (key sections) → Part 2 → Part 7 → Part 8 → Part 11
-Focus: Reflection (why @Autowired works), IoC/DI, REST API, JPA, Security
-```
-
-### Path B: Full Mastery (10-14 weeks)
-
-```
-Part 0 → All parts in order shown in this roadmap (Parts 0-21)
-```
-
-### Path C: Already Know Basics (3-4 weeks)
-
-```
-Part 0 (review) → Part 10 → Part 7-8 → Part 14 → Part 11 → Part 13
-Skip: Part 1, 4, 5 (if comfortable with Java, Lombok)
-```
-
-### Path D: "I Want to REALLY Understand Spring" (Recommended!)
-
-```
-Part 0 (ALL sections) → Part 2 → Part 3 → Rest follows
-Part 0 explains WHY Spring works the way it does
-```
-
-### Path E: Enterprise/Cloud Focus (4-5 weeks)
-
-```
-Part 15 (WebFlux) → Part 19 (Testing) → Part 20 (Microservices) → Part 21 (Cloud)
-Add: Part 18 (Tracing) for observability
-Ideal for: Senior developers preparing for microservices architecture
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                        LEARNING PATHS BY GOAL                                    │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                  │
+│  🎯 PATH A: JOB INTERVIEW PREP (2-3 weeks)                                      │
+│  ─────────────────────────────────────────────────────────────────────────────  │
+│                                                                                  │
+│    Functional Prog → Part 0 (key sections) → Part 2 → Part 7 → Part 8 → Part 11│
+│                                                                                  │
+│    FOCUS: Lambdas, IoC/DI, REST APIs, JPA Basics, Security                     │
+│    INTERVIEW TOPICS: "How does @Autowired work?", "Explain @Transactional"     │
+│                                                                                  │
+│  ─────────────────────────────────────────────────────────────────────────────  │
+│                                                                                  │
+│  📚 PATH B: FULL MASTERY (10-14 weeks)                                          │
+│  ─────────────────────────────────────────────────────────────────────────────  │
+│                                                                                  │
+│    Functional Prog → Part 0 → Parts 1-22 (all in roadmap order)                │
+│                                                                                  │
+│    RESULT: Complete backend engineer with enterprise knowledge                  │
+│                                                                                  │
+│  ─────────────────────────────────────────────────────────────────────────────  │
+│                                                                                  │
+│  ⚡ PATH C: ALREADY KNOW JAVA (4-5 weeks)                                       │
+│  ─────────────────────────────────────────────────────────────────────────────  │
+│                                                                                  │
+│    Part 0 (review) → Part 2 → Part 10 → Part 7-8 → Part 14 → Part 11 → Part 13│
+│                                                                                  │
+│    SKIP: Part 1 (Java basics), Part 5 (if know Lombok)                         │
+│    FOCUS: Spring internals, REST, JPA, Production features                     │
+│                                                                                  │
+│  ─────────────────────────────────────────────────────────────────────────────  │
+│                                                                                  │
+│  🔍 PATH D: "I WANT TO REALLY UNDERSTAND SPRING" (Recommended!)                │
+│  ─────────────────────────────────────────────────────────────────────────────  │
+│                                                                                  │
+│    Part 0 (ALL sections) → Part 2 → Part 3 → Continue in roadmap order         │
+│                                                                                  │
+│    WHY: Part 0 explains the WHY behind Spring's "magic"                        │
+│    RESULT: Debug any Spring issue, understand any blog post                    │
+│                                                                                  │
+│  ─────────────────────────────────────────────────────────────────────────────  │
+│                                                                                  │
+│  ☁️ PATH E: MICROSERVICES & CLOUD FOCUS (4-5 weeks)                            │
+│  ─────────────────────────────────────────────────────────────────────────────  │
+│                                                                                  │
+│    Part 15 (WebFlux) → Part 19 (Testing) → Part 20 (Microservices) → Part 21   │
+│    Add: Part 18 (Distributed Tracing) for observability                        │
+│                                                                                  │
+│    IDEAL FOR: Senior devs moving to microservices architecture                 │
+│                                                                                  │
+│  ─────────────────────────────────────────────────────────────────────────────  │
+│                                                                                  │
+│  🛡️ PATH F: SECURITY SPECIALIST (2-3 weeks)                                    │
+│  ─────────────────────────────────────────────────────────────────────────────  │
+│                                                                                  │
+│    Part 11 (Auth/Security) → Part 17 (DB Security) → Part 22 (Security annot.) │
+│                                                                                  │
+│    FOCUS: JWT, OAuth2, Role-Based Access, SQL Injection Prevention             │
+│                                                                                  │
+│  ─────────────────────────────────────────────────────────────────────────────  │
+│                                                                                  │
+│  🧪 PATH G: TESTING EXPERT (1-2 weeks)                                          │
+│  ─────────────────────────────────────────────────────────────────────────────  │
+│                                                                                  │
+│    Part 19 (Testing Complete) → Part 22 (Testing annotations)                  │
+│                                                                                  │
+│    TOPICS: JUnit 5, Mockito, @SpringBootTest, TestContainers, TDD/BDD          │
+│                                                                                  │
+└─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-_Start with Part 0 if you want to understand the magic. Start with Part 1 if you're new to Java. Trust the process!_
+# ✅ PHASE COMPLETION CHECKLIST
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  After each phase, you should be able to answer these questions:                │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                  │
+│  PREREQUISITES:                                                                  │
+│  ☐ What's the difference between map() and flatMap() in Streams?               │
+│  ☐ When would you use Optional vs returning null?                              │
+│  ☐ How do Java Records differ from regular classes?                            │
+│                                                                                  │
+│  PHASE 0 (Hidden Foundations):                                                   │
+│  ☐ How does @Autowired inject dependencies? (Reflection!)                      │
+│  ☐ Why doesn't @Transactional work on private methods? (Proxies!)              │
+│  ☐ What is the Servlet lifecycle?                                              │
+│                                                                                  │
+│  PHASE 1 (Core Spring):                                                          │
+│  ☐ What's the difference between @Component and @Bean?                         │
+│  ☐ Explain constructor injection vs field injection pros/cons                  │
+│  ☐ What are the different bean scopes?                                         │
+│  ☐ How does AOP work in Spring?                                                │
+│                                                                                  │
+│  PHASE 2 (Web Fundamentals):                                                     │
+│  ☐ What HTTP status code for "resource not found" vs "validation error"?      │
+│  ☐ When to use @PathVariable vs @RequestParam?                                 │
+│  ☐ What does Content-Type header do?                                           │
+│                                                                                  │
+│  PHASE 3 (Application Layers):                                                   │
+│  ☐ Build a complete CRUD REST API from scratch                                 │
+│  ☐ What is the N+1 query problem and how to solve it?                         │
+│  ☐ Explain LAZY vs EAGER fetch strategies                                      │
+│  ☐ What are transaction propagation levels?                                    │
+│                                                                                  │
+│  PHASE 4 (Production Features):                                                  │
+│  ☐ How to implement JWT authentication?                                        │
+│  ☐ What is the Filter Chain in Spring Security?                               │
+│  ☐ How does @Cacheable work?                                                   │
+│  ☐ What endpoints does Actuator expose?                                        │
+│                                                                                  │
+│  PHASE 5 (Mastery):                                                              │
+│  ☐ Design a rate limiter using sliding window                                  │
+│  ☐ Implement clean architecture in a Spring Boot app                          │
+│  ☐ Build a notification engine with retry logic                               │
+│                                                                                  │
+│  PHASE 6 (Enterprise):                                                           │
+│  ☐ Explain Mono vs Flux in WebFlux                                             │
+│  ☐ Implement Circuit Breaker pattern                                           │
+│  ☐ Deploy Spring Boot app to Kubernetes                                        │
+│  ☐ Set up distributed tracing with Zipkin                                      │
+│                                                                                  │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+_Start with Functional Programming if you're weak in modern Java._
+_Start with Part 0 if you want to understand the magic._
+_Start with Part 1 if you're completely new to Java._
+_Trust the process!_ 🚀

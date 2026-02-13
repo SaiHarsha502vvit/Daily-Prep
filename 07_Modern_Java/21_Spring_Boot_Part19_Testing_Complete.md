@@ -5,6 +5,50 @@
 
 ---
 
+# 🎯 WHY-HOW-WHEN-WHICH FRAMEWORK
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHY: Why Testing is Non-Negotiable?                                            │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • Bug in production costs 100x more to fix than in development               │
+│  • Tests = documentation that never gets outdated                             │
+│  • Refactoring confidence: change code without fear of breaking things        │
+│  • CI/CD requirement: automated deployment needs automated testing            │
+│  • Interview essential: All senior interviews include testing questions       │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  HOW: How to Test in Spring Boot?                                               │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • JUnit 5: Test framework (@Test, @BeforeEach, assertions)                    │
+│  • Mockito: Mock dependencies (@Mock, @InjectMocks, when/thenReturn)          │
+│  • @SpringBootTest: Full integration test with entire context                 │
+│  • @WebMvcTest: Test only controllers with MockMvc                            │
+│  • @DataJpaTest: Test only repositories with in-memory DB                     │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHEN: When to Use Each Test Type?                                              │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • Unit tests: Business logic in services (70% of tests)                      │
+│  • Integration tests: Database operations, API contracts (20%)                │
+│  • E2E tests: Critical user flows only (10%)                                  │
+│  • TestContainers: When in-memory DB isn't realistic enough                   │
+│  • TDD: When requirements are clear, write tests first                        │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHICH: Which Testing Tools to Master?                                          │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  ESSENTIAL:     JUnit 5, Mockito, @SpringBootTest, MockMvc                     │
+│  IMPORTANT:     TestContainers, @DataJpaTest, @WebMvcTest                      │
+│  ADVANCED:      JMeter, Gatling, ArchUnit, Contract Testing                    │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
 ## 📚 Table of Contents
 1. [Testing Philosophy](#testing-philosophy)
 2. [Testing Pyramid](#testing-pyramid)

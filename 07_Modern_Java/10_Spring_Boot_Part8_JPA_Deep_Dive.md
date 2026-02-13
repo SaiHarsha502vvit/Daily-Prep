@@ -5,6 +5,50 @@
 
 ---
 
+# 🎯 WHY-HOW-WHEN-WHICH FRAMEWORK
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHY: Why Deep JPA Knowledge?                                                   │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • N+1 queries: #1 performance killer - causes slow APIs in production         │
+│  • Lazy loading: LazyInitializationException is confusing without knowledge   │
+│  • Relationship mapping: @OneToMany, cascades - easy to get wrong             │
+│  • Interview must-know: "Explain lazy vs eager" tested in every interview    │
+│  • Debug production: Slow queries = understanding execution plans             │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  HOW: How JPA/Hibernate Works Under the Hood?                                   │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • Persistence Context: First-level cache, dirty checking                     │
+│  • Proxy objects: Lazy loading creates proxies (not real entities)            │
+│  • Session lifecycle: Open session in view vs closed session patterns         │
+│  • Query translation: JPQL → SQL via Hibernate                                │
+│  • Batch operations: savAll() vs individual save() performance                │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHEN: When to Use Different Fetch Strategies?                                  │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • LAZY (default for collections): Load only when accessed                     │
+│  • EAGER: Always load together (use sparingly - causes N+1)                    │
+│  • JOIN FETCH: Load in single query when you know you'll need it              │
+│  • EntityGraph: Dynamic fetch control per query                                │
+│  • DTO Projection: When you don't need full entity - best performance         │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHICH: Which JPA Concepts to Master?                                           │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  ESSENTIAL:     Entity lifecycle, relationships, lazy/eager, N+1 problem       │
+│  IMPORTANT:     Cascade types, orphan removal, inheritance mapping             │
+│  ADVANCED:      Second-level cache, batch processing, locking strategies       │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
 # JPA FUNDAMENTALS
 
 ---

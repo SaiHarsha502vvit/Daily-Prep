@@ -5,6 +5,50 @@
 
 ---
 
+# 🎯 WHY-HOW-WHEN-WHICH FRAMEWORK
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHY: Why AOP & Auto-Configuration?                                             │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • @Transactional magic: Without AOP knowledge, it's unexplainable            │
+│  • Cross-cutting concerns: Logging, security, caching - applied everywhere    │
+│  • Debug proxy issues: "Why isn't @Transactional working?" - now you'll know │
+│  • Auto-config: Understand why adding dependency enables features             │
+│  • Custom starters: Build your own Spring Boot starters for libraries         │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  HOW: How AOP Creates Magic?                                                    │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • Proxy wrapping: Spring creates proxy around your bean                       │
+│  • Pointcuts: Define WHERE advice applies (method patterns)                   │
+│  • Advice types: @Before, @After, @Around - WHEN code runs                    │
+│  • Auto-config: @ConditionalOnClass, META-INF/spring.factories                │
+│  • Starters: Pre-configured dependencies + auto-configuration                 │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHEN: When to Use AOP?                                                         │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • Logging: Log all service method entries/exits                               │
+│  • Security: Check authorization before method execution                      │
+│  • Transactions: @Transactional uses AOP (already built-in)                   │
+│  • Caching: @Cacheable wraps methods with cache logic                         │
+│  • Performance: Measure method execution time across all services             │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHICH: Which AOP Concepts to Master?                                           │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  ESSENTIAL:     Proxy limitations, @Around advice, pointcut expressions        │
+│  IMPORTANT:     Self-invocation problem, @EnableAspectJAutoProxy              │
+│  ADVANCED:      Custom auto-configuration, conditional bean creation          │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
 # TIER 3: ASPECT-ORIENTED PROGRAMMING (AOP)
 
 ---

@@ -5,6 +5,56 @@
 
 ---
 
+# 🎯 WHY-HOW-WHEN-WHICH FRAMEWORK
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHY: Why Learn Reactive Programming?                                           │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • Handle 10-100x more concurrent users with same hardware                     │
+│  • Modern systems need: real-time data, streaming, high concurrency            │
+│  • Netflix, Twitter, LinkedIn use reactive for millions of connections         │
+│  • Required for cloud-native microservices at scale                            │
+│  • Non-blocking = better resource utilization = cost savings                   │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  HOW: How Does WebFlux Work?                                                    │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • Event loop model (not thread-per-request)                                   │
+│  • Mono = 0 or 1 element, Flux = 0 to N elements                              │
+│  • Backpressure: subscriber controls data flow rate                            │
+│  • Non-blocking I/O with Netty server                                          │
+│  • Functional or annotation-based programming models                           │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHEN: When to Use WebFlux vs MVC?                                              │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  USE WEBFLUX WHEN:                                                              │
+│  • High concurrency (10K+ concurrent connections)                              │
+│  • Streaming data (SSE, WebSocket, real-time feeds)                            │
+│  • Microservices calling many external APIs                                    │
+│  • Already using reactive stack (R2DBC, MongoDB Reactive)                      │
+│                                                                                  │
+│  STICK WITH MVC WHEN:                                                           │
+│  • CRUD applications with moderate traffic                                     │
+│  • Team unfamiliar with reactive paradigm                                      │
+│  • Using blocking libraries (JDBC, JPA)                                        │
+│  • Simpler debugging and stack traces needed                                   │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHICH: Which Components to Master?                                             │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  ESSENTIAL:     Mono, Flux, WebClient, @RestController reactive                │
+│  IMPORTANT:     R2DBC, RouterFunction, error operators                         │
+│  ADVANCED:      Backpressure, Schedulers, testing StepVerifier                 │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
 # TABLE OF CONTENTS
 
 ```

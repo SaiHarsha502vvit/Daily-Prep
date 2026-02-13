@@ -4,6 +4,54 @@
 
 ---
 
+# 🎯 WHY-HOW-WHEN-WHICH FRAMEWORK
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHY: Why Learn Functional Programming in Java?                                 │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • Spring Boot uses lambdas everywhere - WebFlux, callbacks, configs          │
+│  • Stream API: 10 lines of loops → 1 elegant line                             │
+│  • Parallelism: .parallelStream() for instant multi-core processing           │
+│  • Interview favorite: "Write this with streams" - a common interview task   │
+│  • Modern Java: Java 8+ features are expected knowledge                       │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  HOW: How Does Functional Programming Work?                                     │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • Lambdas: Anonymous functions - (x) -> x * 2                                 │
+│  • Functional Interfaces: One abstract method - Predicate, Function, Consumer │
+│  • Stream Pipeline: source → intermediate ops → terminal op                  │
+│  • Method References: Class::method shorthand for lambdas                     │
+│  • Optional: No more NullPointerException - explicit null handling            │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHEN: When to Use Functional vs Imperative?                                    │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  USE FUNCTIONAL:                                                                │
+│  • Collection processing (filter, map, reduce)                                │
+│  • Parallel processing needed                                                 │
+│  • Callbacks, event handlers                                                  │
+│                                                                                  │
+│  USE IMPERATIVE:                                                                │
+│  • Complex control flow with break/continue                                   │
+│  • Performance-critical with primitive arrays                                 │
+│  • Stateful operations needing external mutation                              │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHICH: Which Functional Concepts to Master?                                    │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  ESSENTIAL:     Lambda syntax, Stream API (filter/map/collect), Optional       │
+│  IMPORTANT:     Method references, Collectors, flatMap, reduce                 │
+│  ADVANCED:      Custom collectors, parallel streams, CompletableFuture         │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
 # PART 0: COMPLETE UNDERSTANDING OF FUNCTIONAL PROGRAMMING
 
 ```
@@ -792,7 +840,242 @@ Mixing styles is normal and often best!
 
 ---
 
-# PART 10: PRACTICE EXERCISES
+# PART 10: MODERN JAVA FEATURES (Java 10+)
+
+## A. LOCAL VARIABLE TYPE INFERENCE (var) - Java 10
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                         LOCAL VARIABLE TYPE INFERENCE                            │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                  │
+│  WHAT IS var?                                                                    │
+│  The compiler INFERS the type from the right-hand side                          │
+│                                                                                  │
+│  BEFORE (verbose):                                                               │
+│    Map<String, List<Employee>> departments = new HashMap<>();                   │
+│    HttpServletRequest request = (HttpServletRequest) servletRequest;            │
+│                                                                                  │
+│  AFTER (concise):                                                                │
+│    var departments = new HashMap<String, List<Employee>>();                     │
+│    var request = (HttpServletRequest) servletRequest;                           │
+│                                                                                  │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+```java
+// WHERE TO USE var
+
+// ✅ GOOD: Long generic types
+var userService = new UserServiceImpl();
+var userMap = new HashMap<String, List<User>>();
+var iterator = collection.iterator();
+var stream = list.stream().filter(x -> x > 0);
+
+// ✅ GOOD: Try-with-resources
+try (var reader = new BufferedReader(new FileReader("file.txt"))) {
+    var line = reader.readLine();  // Clear from context
+}
+
+// ✅ GOOD: For-each loops
+for (var user : users) {
+    System.out.println(user.getName());
+}
+
+// ❌ BAD: Type not clear from right side
+var result = getResult();     // What type is result?
+var data = process(input);    // Unclear!
+
+// ❌ BAD: Primitives where int/double conveys meaning
+var count = 0;        // Use int count = 0;
+var rate = 3.14;      // Use double rate = 3.14;
+
+// ❌ INVALID: Cannot use var
+var name;                     // No initializer
+var arr = {1, 2, 3};         // Array initializer
+var lambda = (x) -> x * 2;   // Lambda needs explicit type
+
+// ✅ These work:
+String[] arr = {1, 2, 3};                    // Explicit type
+Function<Integer, Integer> lambda = x -> x * 2;  // Explicit type
+```
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  var RULES                                                                       │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  ✓ Only for LOCAL variables (not fields, parameters, or return types)          │
+│  ✓ Must have initializer on same line                                           │
+│  ✓ Type is determined at COMPILE time (not runtime)                            │
+│  ✓ var is NOT a keyword - can still use as variable name (not recommended)     │
+│                                                                                  │
+│  INTERVIEW TIP: "var improves readability when type is obvious from context,   │
+│  but explicit types are better when they document intent"                       │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## B. JAVA RECORDS (Java 16+)
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                         JAVA RECORDS - IMMUTABLE DATA CARRIERS                   │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                  │
+│  WHAT IS A RECORD?                                                               │
+│  A concise way to declare classes that are "data carriers" - classes whose main │
+│  purpose is to hold data, not behavior.                                          │
+│                                                                                  │
+│  PROBLEM: Traditional "POJO" classes require lots of boilerplate:               │
+│                                                                                  │
+│  // 50+ lines for a simple data class!                                          │
+│  public class User {                                                             │
+│      private final String name;                                                 │
+│      private final int age;                                                     │
+│      // Constructor                                                             │
+│      // Getters                                                                 │
+│      // equals()                                                                │
+│      // hashCode()                                                              │
+│      // toString()                                                              │
+│  }                                                                               │
+│                                                                                  │
+│  SOLUTION WITH RECORDS:                                                          │
+│                                                                                  │
+│  public record User(String name, int age) { }  // 1 line! That's it!           │
+│                                                                                  │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+```java
+// BASIC RECORD SYNTAX
+public record User(String name, String email, int age) { }
+
+// WHAT THE COMPILER GENERATES:
+// - Private final fields for each component
+// - Public constructor taking all components
+// - Public accessor methods: name(), email(), age()  (NOT getName()!)
+// - equals() based on all components
+// - hashCode() based on all components
+// - toString() like: User[name=John, email=john@email.com, age=25]
+
+// USAGE
+var user = new User("John", "john@email.com", 25);
+System.out.println(user.name());      // John (not getName!)
+System.out.println(user);             // User[name=John, email=john@email.com, age=25]
+
+// COMPARING
+var user1 = new User("John", "john@email.com", 25);
+var user2 = new User("John", "john@email.com", 25);
+System.out.println(user1.equals(user2));  // true - compares all fields!
+```
+
+```java
+// ADDING CUSTOM LOGIC TO RECORDS
+
+// 1. Custom Constructor (Validation)
+public record User(String name, String email, int age) {
+    // Compact constructor - no parameter list needed
+    public User {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Name cannot be blank");
+        }
+        if (age < 0 || age > 150) {
+            throw new IllegalArgumentException("Invalid age");
+        }
+        // name, email, age are auto-assigned after this block
+    }
+}
+
+// 2. Custom Methods
+public record Point(int x, int y) {
+    // Additional methods
+    public double distanceFromOrigin() {
+        return Math.sqrt(x * x + y * y);
+    }
+    
+    // Static factory methods
+    public static Point origin() {
+        return new Point(0, 0);
+    }
+}
+
+// 3. Custom Accessor (rarely needed)
+public record SensitiveData(String password) {
+    @Override
+    public String password() {
+        return "********";  // Hide actual value
+    }
+}
+```
+
+```java
+// RECORDS IN SPRING BOOT - PERFECT FOR DTOs!
+
+// Request DTO
+public record CreateUserRequest(
+    @NotBlank String name,
+    @Email String email,
+    @Min(0) @Max(150) int age
+) { }
+
+// Response DTO
+public record UserResponse(Long id, String name, String email) {
+    public static UserResponse from(User user) {
+        return new UserResponse(user.getId(), user.getName(), user.getEmail());
+    }
+}
+
+// Controller using records
+@RestController
+public class UserController {
+    
+    @PostMapping("/users")
+    public ResponseEntity<UserResponse> create(
+            @Valid @RequestBody CreateUserRequest request) {
+        User user = userService.create(request);
+        return ResponseEntity.ok(UserResponse.from(user));
+    }
+}
+```
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  RECORDS vs CLASS vs LOMBOK                                                      │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                  │
+│  ┌────────────────┬──────────────────────────────────────────────────────────┐  │
+│  │ Feature        │ class           │ record          │ @Data (Lombok)       │  │
+│  ├────────────────┼──────────────────────────────────────────────────────────┤  │
+│  │ Immutable      │ Manual          │ Always          │ @Value for immutable │  │
+│  │ Inheritance    │ Yes             │ No (final)      │ Yes                  │  │
+│  │ Mutable fields │ Yes             │ No              │ Yes                  │  │
+│  │ Boilerplate    │ High            │ None            │ None                 │  │
+│  │ External dep   │ None            │ None            │ Lombok               │  │
+│  │ Serialization  │ Works           │ Works           │ Works                │  │
+│  │ JPA Entities   │ Yes             │ No (immutable)  │ Yes                  │  │
+│  └────────────────┴──────────────────────────────────────────────────────────┘  │
+│                                                                                  │
+│  WHEN TO USE RECORDS:                                                            │
+│  ✓ DTOs (Request/Response objects)                                              │
+│  ✓ Value objects (Money, Address, Coordinates)                                  │
+│  ✓ Compound map keys                                                            │
+│  ✓ Return multiple values from a method                                         │
+│                                                                                  │
+│  WHEN NOT TO USE RECORDS:                                                        │
+│  ✗ JPA Entities (need mutable setters, default constructor)                    │
+│  ✗ Classes with behavior more important than data                              │
+│  ✗ Classes that need inheritance                                                │
+│                                                                                  │
+│  INTERVIEW TIP: "Records are perfect for DTOs because they're immutable,       │
+│  concise, and automatically implement equals/hashCode correctly"                │
+│                                                                                  │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+# PART 11: PRACTICE EXERCISES
 
 1. Write a stream pipeline to:
     - Filter strings longer than 3 characters

@@ -5,6 +5,50 @@
 
 ---
 
+# 🎯 WHY-HOW-WHEN-WHICH FRAMEWORK
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHY: Why Learn SOLID Principles?                                               │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • Reduces bugs: Changes don't break existing functionality                    │
+│  • Interview essential: Asked in every senior Java interview                   │
+│  • Spring is built on SOLID (IoC = DIP, @Component = SRP)                     │
+│  • Enables testability: Well-designed code is easy to test                    │
+│  • Team scalability: Multiple devs can work without conflicts                 │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  HOW: How to Apply SOLID?                                                       │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • S: One class = One responsibility (UserService only handles users)         │
+│  • O: Extend behavior without modifying existing code (Strategy pattern)      │
+│  • L: Subtypes must be substitutable for their base types                     │
+│  • I: Many specific interfaces > one general interface                        │
+│  • D: Depend on abstractions, not concrete implementations                    │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHEN: When to Apply Each Principle?                                            │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • SRP: Class has more than one reason to change → Split it                   │
+│  • OCP: Adding feature requires modifying existing code → Use abstraction     │
+│  • LSP: Subclass throws exceptions parent doesn't → Redesign hierarchy        │
+│  • ISP: Class implements methods it doesn't need → Split interface            │
+│  • DIP: Hard to test due to concrete dependencies → Inject interfaces         │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHICH: Which Principles are Most Critical in Spring?                           │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  ESSENTIAL:     DIP (entire IoC is based on it), SRP (service layer design)   │
+│  IMPORTANT:     OCP (extensible configurations), ISP (repository interfaces)  │
+│  ADVANCED:      LSP (exception handling hierarchies)                           │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
 # TABLE OF CONTENTS
 
 ```

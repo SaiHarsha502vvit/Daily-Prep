@@ -5,6 +5,50 @@
 
 ---
 
+# 🎯 WHY-HOW-WHEN-WHICH FRAMEWORK
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHY: Why Clean Architecture?                                                   │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • Technical debt: Bad architecture = slow development over time               │
+│  • Team productivity: Good structure = multiple devs work without conflicts   │
+│  • Testability: Layered code = easy to mock and unit test                     │
+│  • Maintenance: Clear boundaries = change one thing without breaking others   │
+│  • Interview: "How do you structure a Spring Boot project?"                   │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  HOW: How to Structure a Spring Boot Project?                                   │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • Layered: Controller → Service → Repository (classic Spring pattern)        │
+│  • Package by feature: user/, order/, payment/ (better for large apps)        │
+│  • Hexagonal: Ports & Adapters for framework independence                      │
+│  • Shared kernel: Common DTOs, exceptions, utilities in /common               │
+│  • Configuration: Separate config classes for different concerns              │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHEN: When to Use Each Architecture Style?                                     │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • Simple layered: Small projects, MVPs, learning                              │
+│  • Package by feature: Large monoliths, future microservice extraction        │
+│  • Hexagonal: When business logic is complex, need framework independence     │
+│  • Modular monolith: When you might need microservices later                  │
+│  • CQRS: Read/write patterns differ significantly                             │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHICH: Which Quality Practices to Follow?                                      │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  ESSENTIAL:     Layered architecture, exception handling, logging              │
+│  IMPORTANT:     Code review, consistent naming, DTO patterns                   │
+│  ADVANCED:      Domain-driven design, event sourcing, modular boundaries       │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
 # APPLICATION ARCHITECTURE
 
 ---

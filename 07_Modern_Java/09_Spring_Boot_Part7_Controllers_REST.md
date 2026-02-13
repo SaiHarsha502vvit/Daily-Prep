@@ -5,6 +5,50 @@
 
 ---
 
+# 🎯 WHY-HOW-WHEN-WHICH FRAMEWORK
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHY: Why REST Controllers?                                                     │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • REST is the standard: Web APIs, mobile apps, microservices                  │
+│  • HTTP verbs: GET, POST, PUT, DELETE map to CRUD operations                   │
+│  • Status codes: 200, 201, 400, 404, 500 communicate results                   │
+│  • JSON by default: @RestController auto-serializes to JSON                    │
+│  • Interview must-know: API design is tested in every backend interview       │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  HOW: How Controllers Handle Requests?                                          │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • @GetMapping: Retrieve resource - GET /api/users/{id}                        │
+│  • @PostMapping: Create resource - POST /api/users                             │
+│  • @PutMapping: Update entire resource - PUT /api/users/{id}                   │
+│  • @DeleteMapping: Remove resource - DELETE /api/users/{id}                    │
+│  • @Valid: Trigger bean validation on request body                            │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHEN: When to Use Which Parameter Type?                                        │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • @PathVariable: Resource identifier - /users/{id}                            │
+│  • @RequestParam: Filters, pagination - /users?status=active&page=1          │
+│  • @RequestBody: Create/Update data - JSON payload                             │
+│  • @RequestHeader: Auth tokens, API keys, custom headers                       │
+│  • ResponseEntity: Full control over status, headers, body                    │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHICH: Which Controller Patterns to Use?                                       │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  ESSENTIAL:     @RestController, @RequestMapping, @Valid, ResponseEntity       │
+│  IMPORTANT:     @ControllerAdvice for global exceptions, API versioning        │
+│  ADVANCED:      HATEOAS, content negotiation, file uploads                     │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
 # REST CONTROLLER FUNDAMENTALS
 
 ---

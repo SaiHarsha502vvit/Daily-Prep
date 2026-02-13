@@ -5,6 +5,50 @@
 
 ---
 
+# 🎯 WHY-HOW-WHEN-WHICH FRAMEWORK
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHY: Why Database Security Matters?                                            │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • SQL injection is #1 OWASP vulnerability - costs millions yearly             │
+│  • Data breaches destroy companies: reputation, lawsuits, fines               │
+│  • Compliance requirements: GDPR, HIPAA, PCI-DSS mandate security             │
+│  • Your API is only as secure as your data layer                              │
+│  • Audit trails are legally required in many industries                       │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  HOW: How to Secure Database Layer?                                             │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • Use parameterized queries (NEVER string concatenation)                     │
+│  • Hash passwords with BCrypt/Argon2 (NEVER plain text)                       │
+│  • Encrypt sensitive fields (SSN, credit cards) at rest                       │
+│  • Implement row-level security for multi-tenant apps                         │
+│  • Use connection pooling with encrypted credentials                          │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHEN: When to Apply Security Measures?                                         │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • User management: Any app with authentication                                │
+│  • Row-level security: Multi-tenant, data isolation needed                    │
+│  • Encryption: PII, financial data, health records                            │
+│  • Audit logging: Compliance requirements, debugging security issues          │
+│  • SQL injection prevention: ALWAYS (every app with database)                 │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHICH: Which Security Layers to Implement?                                     │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  ESSENTIAL:     Password hashing, SQL injection prevention, RBAC              │
+│  IMPORTANT:     Audit logging, method security, connection encryption         │
+│  ADVANCED:      Field encryption, row security, multi-tenancy isolation       │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
 # TABLE OF CONTENTS
 
 ```

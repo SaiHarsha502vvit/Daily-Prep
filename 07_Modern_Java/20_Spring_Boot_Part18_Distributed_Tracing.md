@@ -5,6 +5,51 @@ Distributed tracing tracks requests across multiple services, helping debug and 
 
 ---
 
+# 🎯 WHY-HOW-WHEN-WHICH FRAMEWORK
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHY: Why Distributed Tracing?                                                  │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • Debug microservices: "Which service caused the 500 error?"                 │
+│  • Performance bottlenecks: Find the slow service in the chain                │
+│  • Dependency mapping: Visualize how services communicate                     │
+│  • Production incidents: Trace exact path of failed requests                  │
+│  • SLA monitoring: Measure end-to-end latency across services                 │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  HOW: How Does Tracing Work?                                                    │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • Trace ID: Unique ID for entire request journey across services             │
+│  • Span ID: Unique ID for each unit of work (DB call, API call)              │
+│  • Propagation: Headers carry trace context between services                  │
+│  • Collection: Spans sent to collector (Zipkin/Jaeger) for visualization      │
+│  • Sampling: Not all traces collected (configurable rate)                     │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHEN: When to Use Distributed Tracing?                                         │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • Microservices: 3+ services communicating                                    │
+│  • Debugging: Request fails somewhere in the chain                            │
+│  • Performance: Need to find bottleneck services                              │
+│  • Production: Critical for observability at scale                            │
+│  • NOT needed: Single monolith, simple 2-service architecture                 │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHICH: Which Tools to Use?                                                     │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  SPRING BOOT 2.x: Spring Cloud Sleuth + Zipkin                                  │
+│  SPRING BOOT 3.x: Micrometer Tracing (Sleuth deprecated)                        │
+│  COLLECTORS:      Zipkin (simple), Jaeger (advanced), AWS X-Ray (cloud)        │
+│  METRICS:         Micrometer + Prometheus/Grafana for full observability       │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
 ## 1. Tracing Fundamentals
 
 ### Core Concepts

@@ -5,6 +5,50 @@
 
 ---
 
+# 🎯 WHY-HOW-WHEN-WHICH FRAMEWORK
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHY: Why Cloud Deployment?                                                     │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • Scalability: Auto-scale based on traffic (pay only for what you use)       │
+│  • Reliability: Multi-region, high availability built-in                      │
+│  • Speed: Deploy in minutes, not days (CI/CD pipelines)                       │
+│  • Managed services: Focus on code, not infrastructure                        │
+│  • Global reach: Deploy to any region, serve users worldwide                  │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  HOW: How to Deploy to Cloud?                                                   │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • Containerize: Docker multi-stage build for Spring Boot                     │
+│  • Orchestrate: Kubernetes (EKS/AKS/GKE) for container management             │
+│  • Automate: CI/CD with GitHub Actions/GitLab CI                              │
+│  • Infrastructure as Code: Terraform for reproducible deployments            │
+│  • Secrets: Cloud secret managers (AWS Secrets, Azure Key Vault)              │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHEN: When to Use Each Cloud Service?                                          │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • Docker: Every deployment (containerization is standard)                    │
+│  • Kubernetes: Multiple services, scaling needs, production                   │
+│  • Serverless (Lambda/Cloud Run): Event-driven, sporadic workloads            │
+│  • PaaS (Elastic Beanstalk): Simple apps, less control needed                 │
+│  • Multi-cloud: Vendor lock-in concerns, compliance requirements              │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHICH: Which Cloud Provider?                                                   │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  AWS:   Market leader, most services, best for startups (free tier)            │
+│  Azure: Best for Microsoft shops, enterprise, hybrid cloud                     │
+│  GCP:   Best for data/ML, Kubernetes (invented there), competitive pricing    │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
 ## 📚 Table of Contents
 1. [Cloud Native Principles](#cloud-native-principles)
 2. [Containerization with Docker](#containerization-with-docker)

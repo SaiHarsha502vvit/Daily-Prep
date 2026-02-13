@@ -5,6 +5,50 @@
 
 ---
 
+# 🎯 WHY-HOW-WHEN-WHICH FRAMEWORK
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHY: Why JPA/Hibernate is Essential?                                           │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • ORM magic: Map Java objects to database tables automatically                │
+│  • Type-safe queries: No more SQL string errors at runtime                    │
+│  • Database-agnostic: Switch MySQL/PostgreSQL without code changes            │
+│  • Interview essential: "Explain lazy loading" asked in every interview       │
+│  • N+1 problem: Understanding it prevents production nightmares               │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  HOW: How JPA Maps Objects to Database?                                         │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • @Entity: Class → Table, Fields → Columns                                    │
+│  • Relationships: @OneToMany, @ManyToOne, @ManyToMany                          │
+│  • Spring Data: findByX() methods auto-implemented                            │
+│  • @Query: Custom JPQL or native SQL when needed                               │
+│  • Transactions: @Transactional manages commit/rollback                        │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHEN: When to Use Different Query Strategies?                                  │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • findByX(): Simple lookups (findByEmail, findByStatus)                       │
+│  • @Query JPQL: Complex joins, aggregations                                    │
+│  • Native SQL: Database-specific features, performance                        │
+│  • Specifications: Dynamic queries with many optional filters                  │
+│  • Projections: Return only needed columns for performance                    │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHICH: Which JPA Concepts to Master?                                           │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  ESSENTIAL:     @Entity, relationships, JpaRepository, @Transactional          │
+│  IMPORTANT:     Lazy/Eager loading, N+1 problem, @Query, cascading             │
+│  ADVANCED:      Specifications, EntityManager, second-level cache              │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
 # TIER 5: DATA ACCESS (JPA & HIBERNATE)
 
 ---

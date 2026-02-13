@@ -5,6 +5,50 @@
 
 ---
 
+# 🎯 WHY-HOW-WHEN-WHICH FRAMEWORK
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHY: Why DSA Knowledge in Spring Boot?                                         │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • Performance: Wrong data structure = 100x slower operations                  │
+│  • Scalability: LRU cache, rate limiting, scheduling - all DSA                 │
+│  • Interviews: DSA + Spring Boot = complete backend developer                  │
+│  • Debugging: Understand why certain operations are slow                       │
+│  • Design decisions: Choose HashMap vs TreeMap, ArrayList vs LinkedList       │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  HOW: How DSA Applies in Real Applications?                                     │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • Caching: HashMap for O(1) lookup, LRU with LinkedHashMap                    │
+│  • Rate limiting: Token bucket, sliding window algorithms                      │
+│  • Search: Binary search for sorted data, tries for autocomplete              │
+│  • Task scheduling: Priority queues, DAG for dependencies                     │
+│  • Connection pooling: Queue for managing database connections                │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHEN: When to Apply DSA in Spring Boot?                                        │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • Custom caching: When @Cacheable isn't enough                                │
+│  • In-memory processing: Large data transformations                           │
+│  • Real-time features: Leaderboards, live search                              │
+│  • Batch operations: Processing millions of records efficiently               │
+│  • API rate limiting: Custom throttling implementations                       │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHICH: Which DSA Topics are Most Relevant?                                     │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  ESSENTIAL:     HashMap/HashSet, ArrayList/LinkedList, time complexity         │
+│  IMPORTANT:     Trees (for hierarchies), Queues (for async), Sorting          │
+│  ADVANCED:      Graphs (service dependencies), Bloom filters, B-Trees         │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
 # SECTION 1: WHERE DSA APPEARS IN SPRING BOOT
 
 ---
