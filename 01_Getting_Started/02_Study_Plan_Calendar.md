@@ -1,515 +1,1346 @@
-# 🎯 MASTER STUDY PLAN - COMPLETE DSA + SQL + ERP JOURNEY
+# 📅 2.5-Month Study Plan — February 19 to May 5, 2026
 
-> **Your Complete Roadmap from Zero to Hero**
-> _"Consistency beats intensity. Small daily progress = Massive results"_
-
----
-
-## 📋 WHAT'S IN THIS REPOSITORY
-
-This repository contains **EVERYTHING** you need to become a strong developer:
-
-- ✅ Data Structures (All types with variants)
-- ✅ Algorithms (Basic to Advanced)
-- ✅ Problem Solving Patterns
-- ✅ System Design Basics
-- ✅ OOP & Design Patterns
-- ✅ SQL (Complete - Beginner to Expert)
-- ✅ ERP Concepts (Oracle as Example)
-- ✅ Real-World Applications
-- ✅ Interview Preparation
+## Your Daily Roadmap: DS + Algorithm + Combo + Pattern + 2 Questions
 
 ---
 
-## 📚 COMPLETE FILE INDEX (CURRENT STRUCTURE)
-
-### 📁 01_Getting_Started/ - START HERE
-
-| File                        | Purpose             | Priority |
-| --------------------------- | ------------------- | -------- |
-| `01_Start_Here.md`          | Getting started     | ⭐⭐⭐   |
-| `02_Study_Plan_Calendar.md` | This file - Roadmap | ⭐⭐⭐   |
-
-### 📁 02_Data_Structures/ - FOUNDATIONS
-
-| File                            | Content                      | When to Study |
-| ------------------------------- | ---------------------------- | ------------- |
-| `01_DataStructures_Complete.md` | Arrays, Strings, LinkedLists | Week 1-2      |
-| `02_DataStructures_Variants.md` | All DS variants & types      | Week 2        |
-| `03_Collections_Java.md`        | Java Collections Framework   | Week 1        |
-| `04_2D_Arrays_Matrix.md`        | Matrix problems & patterns   | Week 2        |
-
-### 📁 03_Algorithms/ - CORE SKILLS
-
-| File                            | Content                    | When to Study |
-| ------------------------------- | -------------------------- | ------------- |
-| `01_Algorithm_Thinking.md`      | How to approach problems   | Week 1-2      |
-| `02_Sorting_Algorithms.md`      | All sorting algorithms     | Week 3        |
-| `03_Recursion_Complete.md`      | Recursion & backtracking   | Week 2-3      |
-| `04_Dynamic_Programming.md`     | DP patterns & problems     | Week 3-4      |
-| `05_Trees_Graphs.md`            | Trees, Graphs, Traversals  | Week 4-5      |
-| `06_Advanced_Algorithms.md`     | Greedy, D&C, etc.          | Week 5-6      |
-| `07_Advanced_DataStructures.md` | Segment trees, Tries, etc. | Week 6        |
-
-### 📁 04_Patterns_Templates/ - PATTERN MASTERY
-
-| File                           | Content                 | When to Study |
-| ------------------------------ | ----------------------- | ------------- |
-| `01_Sliding_Window.md`         | Sliding window patterns | Week 3        |
-| `02_Code_Templates.md`         | Ready-to-use templates  | Ongoing       |
-| `03_Visual_Diagrams.md`        | Visual algorithm guides | Reference     |
-| `04_Pattern_Recognition.md`    | Pattern identification  | Week 3-6      |
-| `05_LeetCode_RealWorld_Map.md` | Problems to real-world  | Reference     |
-
-### 📁 05_Problem_Solving/ - PRACTICE
-
-| File                      | Content                | When to Study |
-| ------------------------- | ---------------------- | ------------- |
-| `01_Practice_Problems.md` | 210+ practice problems | Ongoing       |
-| `02_Edge_Cases.md`        | Edge case handling     | Week 2-4      |
-| `03_Common_Mistakes.md`   | Avoid these errors     | Ongoing       |
-| `04_Problem_Origins.md`   | Real-world origins     | Reference     |
-
-### 📁 06_OOP_Design/ - DESIGN SKILLS
-
-| File                      | Content                | When to Study |
-| ------------------------- | ---------------------- | ------------- |
-| `01_OOPS_Principles.md`   | OOP concepts (SOLID)   | Week 6-7      |
-| `02_Design_Patterns.md`   | GoF Design Patterns    | Week 7-8      |
-| `03_System_Design.md`     | System design basics   | Week 7-8      |
-| `04_User_System_Flows.md` | User flows & sequences | Week 8        |
-
-### 📁 07_Modern_Java/ - ADVANCED JAVA
-
-| File                           | Content                    | When to Study |
-| ------------------------------ | -------------------------- | ------------- |
-| `01_Functional_Programming.md` | Streams, Lambdas, Optional | Week 7-8      |
-| `02_Algorithm_Engineering.md`  | Algorithm optimization     | Week 7-8      |
-
-### 📁 08_SQL_Database/ - SQL MASTERY
-
-| File                       | Content                    | When to Study |
-| -------------------------- | -------------------------- | ------------- |
-| `01_SQL_Complete_Guide.md` | Complete SQL (6000+ lines) | Week 9-12     |
-
-### 📁 09_Career_Reference/ - CAREER & REFERENCE
-
-| File                          | Content                  | When to Study |
-| ----------------------------- | ------------------------ | ------------- |
-| `01_Career_Guide.md`          | Career development       | Reference     |
-| `02_Ultimate_DSA_Guide.md`    | **MASTER DSA REFERENCE** | Daily         |
-| `03_Quick_Reference.md`       | Quick revision sheet     | Exam Day      |
-| `04_Brain_Psychology.md`      | Learning psychology      | Ongoing       |
-| `05_Daily_Habits_Tracking.md` | Habit tracking           | Daily         |
-| `06_Resources_Links.md`       | External resources       | Reference     |
-
-### 📁 Other Folders
-
-| Folder           | Purpose                   |
-| ---------------- | ------------------------- |
-| `JavaSolutions/` | Java code solutions       |
-| `practice/`      | Practice files            |
-| `_archive/`      | Old/merged files (ignore) |
+**START DATE:** Thursday, February 19, 2026  
+**END DATE:** Tuesday, May 5, 2026  
+**TOTAL:** 76 Days (11 Weeks)  
+**DAILY COMMITMENT:** 3-4 hours weekdays, 5-6 hours weekends
 
 ---
 
-## 🗓️ 12-WEEK STUDY PLAN
+## How Each Day Works
 
-### 📅 PHASE 1: FOUNDATIONS (Week 1-4)
+Every day follows this structure:
 
-#### Week 1: Arrays, Strings & Basics
+| Block | What | Time |
+|-------|------|------|
+| 📦 DS | One data structure topic — read, understand, implement | 40 min |
+| ⚙️ ALGO | One algorithm topic — learn the logic, trace on paper | 40 min |
+| 🔗 COMBO | A problem that combines today's DS + Algo together | 30 min |
+| 🧩 PATTERN | A coding pattern/technique to recognize and practice | 30 min |
+| ❓ Q1 & Q2 | Two basic-to-medium questions (increasing difficulty) | 40 min |
 
-| Day   | Topic               | Files to Study                                     | Practice        |
-| ----- | ------------------- | -------------------------------------------------- | --------------- |
-| Day 1 | Arrays Fundamentals | `02_Data_Structures/01_DataStructures_Complete.md` | 5 easy problems |
-| Day 2 | Strings Basics      | `02_Data_Structures/01_DataStructures_Complete.md` | 5 easy problems |
-| Day 3 | Two Pointers        | `04_Patterns_Templates/01_Sliding_Window.md`       | 5 problems      |
-| Day 4 | Sliding Window      | `04_Patterns_Templates/01_Sliding_Window.md`       | 5 problems      |
-| Day 5 | Practice Day        | `05_Problem_Solving/01_Practice_Problems.md`       | 10 problems     |
-| Day 6 | Collections Java    | `02_Data_Structures/03_Collections_Java.md`        | Practice        |
-| Day 7 | Review & Rest       | `09_Career_Reference/03_Quick_Reference.md`        | Light practice  |
-
-#### Week 2: Recursion & Matrices
-
-| Day   | Topic              | Files to Study                               | Practice       |
-| ----- | ------------------ | -------------------------------------------- | -------------- |
-| Day 1 | Recursion Basics   | `03_Algorithms/03_Recursion_Complete.md`     | 5 problems     |
-| Day 2 | Recursion Patterns | `03_Algorithms/03_Recursion_Complete.md`     | 5 problems     |
-| Day 3 | Backtracking Intro | `03_Algorithms/03_Recursion_Complete.md`     | 5 problems     |
-| Day 4 | 2D Arrays/Matrix   | `02_Data_Structures/04_2D_Arrays_Matrix.md`  | 5 problems     |
-| Day 5 | Matrix Patterns    | `02_Data_Structures/04_2D_Arrays_Matrix.md`  | 5 problems     |
-| Day 6 | Practice Day       | `05_Problem_Solving/01_Practice_Problems.md` | 10 problems    |
-| Day 7 | Review & Rest      | `05_Problem_Solving/02_Edge_Cases.md`        | Light practice |
-
-#### Week 3: Sorting & Searching
-
-| Day   | Topic                    | Files to Study                                 | Practice       |
-| ----- | ------------------------ | ---------------------------------------------- | -------------- |
-| Day 1 | Basic Sorting            | `03_Algorithms/02_Sorting_Algorithms.md`       | Implement all  |
-| Day 2 | Advanced Sorting         | `03_Algorithms/02_Sorting_Algorithms.md`       | 5 problems     |
-| Day 3 | Binary Search            | `09_Career_Reference/02_Ultimate_DSA_Guide.md` | 5 problems     |
-| Day 4 | Binary Search Variations | `05_Problem_Solving/01_Practice_Problems.md`   | 5 problems     |
-| Day 5 | Divide & Conquer         | `03_Algorithms/06_Advanced_Algorithms.md`      | 5 problems     |
-| Day 6 | Practice Day             | `05_Problem_Solving/01_Practice_Problems.md`   | 10 problems    |
-| Day 7 | Review & Rest            | `09_Career_Reference/03_Quick_Reference.md`    | Light practice |
-
-#### Week 4: Dynamic Programming Intro
-
-| Day   | Topic                 | Files to Study                               | Practice        |
-| ----- | --------------------- | -------------------------------------------- | --------------- |
-| Day 1 | DP Introduction       | `03_Algorithms/04_Dynamic_Programming.md`    | 3 problems      |
-| Day 2 | 1D DP Problems        | `03_Algorithms/04_Dynamic_Programming.md`    | 5 problems      |
-| Day 3 | 2D DP Problems        | `03_Algorithms/04_Dynamic_Programming.md`    | 5 problems      |
-| Day 4 | Classic DP (LCS, LIS) | `03_Algorithms/04_Dynamic_Programming.md`    | 5 problems      |
-| Day 5 | DP Practice           | `05_Problem_Solving/01_Practice_Problems.md` | 5 problems      |
-| Day 6 | OOP Concepts          | `06_OOP_Design/01_OOPS_Principles.md`        | Read + Practice |
-| Day 7 | Review Week 1-4       | All basics                                   | Assessment      |
+> **Mentor Tip:** Don't just solve — UNDERSTAND. Trace every solution on paper before coding. If you can't explain it to a rubber duck, you don't know it yet.
 
 ---
 
-### 📅 PHASE 2: INTERMEDIATE (Week 5-8)
+## Difficulty Progression
 
-#### Week 5: Trees
-
-| Day   | Topic               | Files to Study                                | Practice       |
-| ----- | ------------------- | --------------------------------------------- | -------------- |
-| Day 1 | Binary Trees        | `03_Algorithms/05_Trees_Graphs.md`            | 5 problems     |
-| Day 2 | BST Operations      | `03_Algorithms/05_Trees_Graphs.md`            | 5 problems     |
-| Day 3 | Tree Traversals     | `03_Algorithms/05_Trees_Graphs.md`            | 5 problems     |
-| Day 4 | Tree Problems       | `05_Problem_Solving/01_Practice_Problems.md`  | 5 problems     |
-| Day 5 | Heap/Priority Queue | `03_Algorithms/07_Advanced_DataStructures.md` | 5 problems     |
-| Day 6 | Practice Day        | `05_Problem_Solving/01_Practice_Problems.md`  | 10 problems    |
-| Day 7 | Review & Rest       | `09_Career_Reference/03_Quick_Reference.md`   | Light practice |
-
-#### Week 6: Graphs
-
-| Day   | Topic            | Files to Study                                | Practice       |
-| ----- | ---------------- | --------------------------------------------- | -------------- |
-| Day 1 | Graph Basics     | `03_Algorithms/05_Trees_Graphs.md`            | 3 problems     |
-| Day 2 | BFS & DFS        | `03_Algorithms/05_Trees_Graphs.md`            | 5 problems     |
-| Day 3 | Shortest Path    | `03_Algorithms/06_Advanced_Algorithms.md`     | 5 problems     |
-| Day 4 | Topological Sort | `03_Algorithms/06_Advanced_Algorithms.md`     | 5 problems     |
-| Day 5 | Union Find       | `03_Algorithms/07_Advanced_DataStructures.md` | 5 problems     |
-| Day 6 | Practice Day     | `05_Problem_Solving/01_Practice_Problems.md`  | 10 problems    |
-| Day 7 | Review & Rest    | `09_Career_Reference/03_Quick_Reference.md`   | Light practice |
-
-#### Week 7: Advanced DS & Design Patterns
-
-| Day   | Topic                | Files to Study                                 | Practice         |
-| ----- | -------------------- | ---------------------------------------------- | ---------------- |
-| Day 1 | Tries                | `03_Algorithms/07_Advanced_DataStructures.md`  | 5 problems       |
-| Day 2 | Segment Trees Intro  | `03_Algorithms/07_Advanced_DataStructures.md`  | 3 problems       |
-| Day 3 | Design Patterns      | `06_OOP_Design/02_Design_Patterns.md`          | Read + Implement |
-| Day 4 | More Design Patterns | `06_OOP_Design/02_Design_Patterns.md`          | Implement        |
-| Day 5 | System Design Basics | `06_OOP_Design/03_System_Design.md`            | Read             |
-| Day 6 | Functional Java      | `07_Modern_Java/01_Functional_Programming.md`  | Practice         |
-| Day 7 | Review Week 5-7      | `09_Career_Reference/02_Ultimate_DSA_Guide.md` | Assessment       |
-
-#### Week 8: System Design & Integration
-
-| Day   | Topic               | Files to Study                               | Practice        |
-| ----- | ------------------- | -------------------------------------------- | --------------- |
-| Day 1 | System Design       | `06_OOP_Design/03_System_Design.md`          | Study           |
-| Day 2 | User/System Flows   | `06_OOP_Design/04_User_System_Flows.md`      | Study + Design  |
-| Day 3 | Algorithm Eng.      | `07_Modern_Java/02_Algorithm_Engineering.md` | Practice        |
-| Day 4 | Integration         | All previous                                 | Mixed problems  |
-| Day 5 | Mock Interview Prep | `09_Career_Reference/03_Quick_Reference.md`  | Practice        |
-| Day 6 | Practice Day        | `05_Problem_Solving/01_Practice_Problems.md` | 5 hard problems |
-| Day 7 | Assessment          | Full review                                  | Self-test       |
+| Weeks | Level | What to Expect |
+|-------|-------|----------------|
+| 1-3 | 🟢 Easy | Foundations. Build muscle memory. Most problems solvable in <15 min |
+| 4-6 | 🟡 Easy-Medium | Core patterns emerge. Problems need 15-25 min thinking |
+| 7-8 | 🟠 Medium | Trees, Graphs, DP basics. Need paper + pen |
+| 9-10 | 🔴 Medium-Hard | Advanced patterns. Combine multiple techniques |
+| 11 | 🟣 Integration | Mock interviews, SQL, system design. Full circle |
 
 ---
 
-### 📅 PHASE 3: SQL MASTERY (Week 9-12)
+## File Reference Key
 
-#### Week 9: SQL Fundamentals
-
-| Day   | Topic                   | Files to Study                             | Practice      |
-| ----- | ----------------------- | ------------------------------------------ | ------------- |
-| Day 1 | Database Basics, DDL    | `08_SQL_Database/01_SQL_Complete_Guide.md` | Create tables |
-| Day 2 | Data Types, Constraints | `08_SQL_Database/01_SQL_Complete_Guide.md` | Practice      |
-| Day 3 | SELECT, WHERE, ORDER    | `08_SQL_Database/01_SQL_Complete_Guide.md` | 10 queries    |
-| Day 4 | INSERT, UPDATE, DELETE  | `08_SQL_Database/01_SQL_Complete_Guide.md` | Practice DML  |
-| Day 5 | Aggregate Functions     | `08_SQL_Database/01_SQL_Complete_Guide.md` | 10 queries    |
-| Day 6 | GROUP BY, HAVING        | `08_SQL_Database/01_SQL_Complete_Guide.md` | 10 queries    |
-| Day 7 | Review & Practice       | Week 9 topics                              | 20 queries    |
-
-#### Week 10: Intermediate SQL
-
-| Day   | Topic                     | Files to Study                             | Practice   |
-| ----- | ------------------------- | ------------------------------------------ | ---------- |
-| Day 1 | INNER, LEFT, RIGHT JOIN   | `08_SQL_Database/01_SQL_Complete_Guide.md` | 10 queries |
-| Day 2 | FULL, CROSS, SELF JOIN    | `08_SQL_Database/01_SQL_Complete_Guide.md` | 10 queries |
-| Day 3 | Subqueries                | `08_SQL_Database/01_SQL_Complete_Guide.md` | 10 queries |
-| Day 4 | CTEs (WITH clause)        | `08_SQL_Database/01_SQL_Complete_Guide.md` | 10 queries |
-| Day 5 | Window Functions Intro    | `08_SQL_Database/01_SQL_Complete_Guide.md` | 10 queries |
-| Day 6 | Window Functions Advanced | `08_SQL_Database/01_SQL_Complete_Guide.md` | 10 queries |
-| Day 7 | Review & Practice         | Week 10 topics                             | 20 queries |
-
-#### Week 11: Advanced SQL
-
-| Day   | Topic                     | Files to Study                             | Practice         |
-| ----- | ------------------------- | ------------------------------------------ | ---------------- |
-| Day 1 | Normalization (1NF-BCNF)  | `08_SQL_Database/01_SQL_Complete_Guide.md` | Design exercises |
-| Day 2 | Indexes & Performance     | `08_SQL_Database/01_SQL_Complete_Guide.md` | Analyze queries  |
-| Day 3 | Views & Stored Procedures | `08_SQL_Database/01_SQL_Complete_Guide.md` | Create views     |
-| Day 4 | Triggers & Functions      | `08_SQL_Database/01_SQL_Complete_Guide.md` | Create triggers  |
-| Day 5 | Transactions & ACID       | `08_SQL_Database/01_SQL_Complete_Guide.md` | Practice         |
-| Day 6 | Query Optimization        | `08_SQL_Database/01_SQL_Complete_Guide.md` | Optimize queries |
-| Day 7 | Review & Practice         | Week 11 topics                             | Complex queries  |
-
-#### Week 12: Expert SQL & Projects
-
-| Day   | Topic                     | Files to Study                             | Practice      |
-| ----- | ------------------------- | ------------------------------------------ | ------------- |
-| Day 1 | Analytics Functions       | `08_SQL_Database/01_SQL_Complete_Guide.md` | Data analysis |
-| Day 2 | Real-World Analytics      | `08_SQL_Database/01_SQL_Complete_Guide.md` | Case studies  |
-| Day 3 | Data Engineering Patterns | `08_SQL_Database/01_SQL_Complete_Guide.md` | ETL basics    |
-| Day 4 | Mini Project 1            | Build from scratch                         | Build         |
-| Day 5 | Mini Project 2            | Build from scratch                         | Build         |
-| Day 6 | Interview Prep            | `09_Career_Reference/01_Career_Guide.md`   | 50 questions  |
-| Day 7 | Final Assessment          | Everything                                 | Self-test     |
+| Symbol | Meaning |
+|--------|---------|
+| 📘 | Read this file |
+| 💻 | Code this problem |
+| 📝 | Take written notes |
+| 🎯 | Focus — this is the priority |
+| 🔁 | Review / Redo from earlier |
 
 ---
 
-## 🎯 DAILY ROUTINE TEMPLATE
+# PHASE 1: FOUNDATIONS (Week 1-3)
+
+> *"You don't build a house starting from the roof. Arrays, Strings, and Loops are your concrete foundation."*
+
+---
+
+## 📆 WEEK 1: Feb 19-25 — Arrays + Basic Algorithms + Loop Patterns
+
+### Day 1 — Thu, Feb 19 🟢
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **Array Basics** | Declaration, traversal, insertion, deletion |
+| ⚙️ ALGO | **Linear Search** | Search element one-by-one, understand O(n) |
+| 🔗 COMBO | Find element in array and return index | Combine array traversal + linear search |
+| 🧩 PATTERN | **Brute Force / Complete Search** | Try all possibilities — the starting point of everything |
+| ❓ Q1 | Find the maximum element in an array | *Easy — single pass* |
+| ❓ Q2 | Count occurrences of a number in an array | *Easy — frequency counting intro* |
+
+📘 Read: [02_Data_Structures/01_DataStructures_Complete.md](../02_Data_Structures/01_DataStructures_Complete.md) — Arrays section  
+📘 Read: [03_Algorithms/01_Algorithm_Thinking.md](../03_Algorithms/01_Algorithm_Thinking.md) — How to approach problems
+
+> **Mentor Note:** Today is Day 1. Don't rush. Understand WHY arrays are indexed from 0. Understand WHY linear search is O(n). These "obvious" things become your vocabulary.
+
+---
+
+### Day 2 — Fri, Feb 20 🟢
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **Array Operations** | Reverse, rotate, shift elements |
+| ⚙️ ALGO | **Frequency Counting** | Use array/map to count occurrences |
+| 🔗 COMBO | Find duplicate in array using frequency count | DS (array) + Algo (counting) |
+| 🧩 PATTERN | **Star Patterns** — Square, Right Triangle | Loop mastery through visual output |
+| ❓ Q1 | Reverse an array in-place | *Easy — swap technique* |
+| ❓ Q2 | Check if array is sorted | *Easy — compare adjacent* |
+
+📘 Read: [03_Algorithms/09_Pattern_Programs_Complete.md](../03_Algorithms/09_Pattern_Programs_Complete.md) — Part 1 (Star Patterns)
+
+> **Mentor Note:** Pattern programs teach you loop control. Don't skip them. Every `for` loop mistake in interviews traces back to weak loop fundamentals.
+
+---
+
+### Day 3 — Sat, Feb 21 🟢 (Deep Dive Day)
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **Array — Prefix Sum concept** | Running total technique |
+| ⚙️ ALGO | **Selection Sort** | Find minimum, swap to front |
+| 🔗 COMBO | Sort array → find median element | Sort + array indexing |
+| 🧩 PATTERN | **Pyramid + Inverted Pyramid** | Nested loops with spaces |
+| ❓ Q1 | Find second largest element in array | *Easy — two-pass or one-pass* |
+| ❓ Q2 | Move all zeros to end (LC 283) | *Easy — two pointer intro* |
+
+📘 Read: [03_Algorithms/02_Sorting_Algorithms.md](../03_Algorithms/02_Sorting_Algorithms.md) — Selection Sort section
+
+> **Mentor Note:** Weekend = extra time. After solving, try writing Selection Sort from memory 3 times. Muscle memory > reading.
+
+---
+
+### Day 4 — Sun, Feb 22 🟢 (Deep Dive Day)
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **String Basics** | charAt, length, substring, immutability |
+| ⚙️ ALGO | **Bubble Sort** | Compare adjacent, bubble up largest |
+| 🔗 COMBO | Sort characters of a string alphabetically | Convert string → char array → sort → string |
+| 🧩 PATTERN | **Character Patterns** — Alphabet triangles | Apply loop logic to characters |
+| ❓ Q1 | Reverse a string | *Easy — two pointers or StringBuilder* |
+| ❓ Q2 | Check if string is palindrome | *Easy — compare from both ends* |
+
+📘 Read: [02_Data_Structures/01_DataStructures_Complete.md](../02_Data_Structures/01_DataStructures_Complete.md) — Strings section  
+📘 Read: [03_Algorithms/09_Pattern_Programs_Complete.md](../03_Algorithms/09_Pattern_Programs_Complete.md) — Part 3 (Character Patterns)
+
+---
+
+### Day 5 — Mon, Feb 23 🟢
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **String Operations** | Substring, char arrays, ASCII values |
+| ⚙️ ALGO | **Insertion Sort** | Insert each element into correct position |
+| 🔗 COMBO | Sort list of strings by length using insertion sort logic | String + sorting |
+| 🧩 PATTERN | **Number Patterns** — Floyd's Triangle, Pascal's Triangle | Number generation in patterns |
+| ❓ Q1 | Count vowels and consonants in a string | *Easy — character check* |
+| ❓ Q2 | LC 242 — Valid Anagram | *Easy — frequency count on strings* |
+
+📘 Read: [03_Algorithms/09_Pattern_Programs_Complete.md](../03_Algorithms/09_Pattern_Programs_Complete.md) — Part 2 (Number Patterns)
+
+---
+
+### Day 6 — Tue, Feb 24 🟢
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **2D Array / Matrix basics** | Row-column access, traversal |
+| ⚙️ ALGO | **Binary Search (basic)** | Search in sorted array — O(log n) |
+| 🔗 COMBO | Search in a sorted matrix row | Matrix + Binary Search |
+| 🧩 PATTERN | **Matrix Traversal** — row-wise, column-wise, diagonal | How to walk through a grid |
+| ❓ Q1 | LC 704 — Binary Search | *Easy — classic implementation* |
+| ❓ Q2 | Find row with maximum 1s in binary matrix | *Easy-Medium* |
+
+📘 Read: [02_Data_Structures/04_2D_Arrays_Matrix.md](../02_Data_Structures/04_2D_Arrays_Matrix.md)  
+📘 Read: [04_Patterns_Templates/06_Binary_Search_Patterns.md](../04_Patterns_Templates/06_Binary_Search_Patterns.md) — Introduction only
+
+---
+
+### Day 7 — Wed, Feb 25 🟢 (REVIEW DAY)
+
+| Block | Topic |
+|-------|-------|
+| 🔁 | Revise all Array operations — write from memory |
+| 🔁 | Revise all 3 sorting algorithms — trace on paper |
+| 🔁 | Redo any pattern program you struggled with |
+| 💻 | **Timed Practice:** 3 problems in 45 minutes |
+| ❓ Q1 | Rotate array by K positions (LC 189) |
+| ❓ Q2 | First non-repeating character in string (LC 387) |
+
+> **Mentor Note:** Review days are NOT optional. Your brain consolidates knowledge during review. If you skip this, Week 2 will feel harder than it should.
+
+---
+
+## 📆 WEEK 2: Feb 26 - Mar 4 — Strings Deep + Sorting Mastery + Two Pointers
+
+### Day 8 — Thu, Feb 26 🟢
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **StringBuilder** | Mutable strings, why it matters for performance |
+| ⚙️ ALGO | **Merge Sort** | Divide and conquer, merge step |
+| 🔗 COMBO | Sort a string array using merge sort | Strings + D&C sorting |
+| 🧩 PATTERN | **Two Pointers — Same Direction** | Both pointers move forward |
+| ❓ Q1 | LC 26 — Remove Duplicates from Sorted Array | *Easy — in-place with pointer* |
+| ❓ Q2 | LC 283 — Move Zeroes | *Easy — review with two pointer lens* |
+
+📘 Read: [03_Algorithms/02_Sorting_Algorithms.md](../03_Algorithms/02_Sorting_Algorithms.md) — Merge Sort  
+📘 Read: [04_Patterns_Templates/07_Two_Pointers_Complete.md](../04_Patterns_Templates/07_Two_Pointers_Complete.md) — Introduction
+
+> **Mentor Note:** Merge Sort is your first "real" algorithm. Trace the recursion tree on paper. Draw the merge step. This is where you level up.
+
+---
+
+### Day 9 — Fri, Feb 27 🟢
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **String Comparison** | equals, compareTo, equalsIgnoreCase |
+| ⚙️ ALGO | **Quick Sort** | Partition logic, pivot selection |
+| 🔗 COMBO | Sort + Binary Search combined | Sort array then search efficiently |
+| 🧩 PATTERN | **Two Pointers — Opposite Directions** | Start from both ends, move inward |
+| ❓ Q1 | LC 125 — Valid Palindrome | *Easy — two pointers classic* |
+| ❓ Q2 | LC 344 — Reverse String | *Easy — in-place swap* |
+
+📘 Read: [03_Algorithms/02_Sorting_Algorithms.md](../03_Algorithms/02_Sorting_Algorithms.md) — Quick Sort
+
+---
+
+### Day 10 — Sat, Feb 28 🟢 (Deep Dive Day)
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **Character Arrays + ASCII** | Character manipulation, case conversion |
+| ⚙️ ALGO | **Counting Sort** | Non-comparison based O(n+k) sort |
+| 🔗 COMBO | Sort string by character frequency | Frequency array + reconstruction |
+| 🧩 PATTERN | **Frequency Count Pattern** | Count occurrences → make decisions |
+| ❓ Q1 | LC 387 — First Unique Character in String | *Easy — frequency map* |
+| ❓ Q2 | LC 1 — Two Sum (brute force first, then optimize) | *Easy — foundational* |
+
+---
+
+### Day 11 — Sun, Mar 1 🟢 (Deep Dive Day)
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **Jagged Arrays + Array of Arrays** | Variable-length rows |
+| ⚙️ ALGO | **Time & Space Complexity** | Big O analysis — O(1), O(n), O(n²), O(log n) |
+| 🔗 COMBO | Take brute force O(n²) → optimize to O(n) | Understand the WHY of optimization |
+| 🧩 PATTERN | **Complexity Analysis Pattern** | Identify bottleneck → improve |
+| ❓ Q1 | LC 169 — Majority Element | *Easy — Boyer-Moore voting* |
+| ❓ Q2 | LC 217 — Contains Duplicate | *Easy — HashSet intro* |
+
+📘 Read: [03_Algorithms/01_Algorithm_Thinking.md](../03_Algorithms/01_Algorithm_Thinking.md) — Complexity analysis section
+
+> **Mentor Note:** Today is critical. If you don't understand Big O, you can't explain WHY one solution is better. Interviewers care about this more than the code itself.
+
+---
+
+### Day 12 — Mon, Mar 2 🟡
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **Matrix — Transpose, Rotation** | In-place matrix operations |
+| ⚙️ ALGO | **Binary Search — First/Last Occurrence** | Modified BS for duplicates |
+| 🔗 COMBO | Search in rotated sorted array | BS variant — tricky but important |
+| 🧩 PATTERN | **Binary Search Decision Pattern** | Left half or right half? |
+| ❓ Q1 | LC 35 — Search Insert Position | *Easy — BS variant* |
+| ❓ Q2 | LC 34 — Find First and Last Position | *Medium — two binary searches* |
+
+📘 Read: [04_Patterns_Templates/06_Binary_Search_Patterns.md](../04_Patterns_Templates/06_Binary_Search_Patterns.md)
+
+---
+
+### Day 13 — Tue, Mar 3 🟡
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **Matrix — Spiral, Boundary Traversal** | Layer-by-layer processing |
+| ⚙️ ALGO | **Binary Search on Answer** | Search for the answer in a range |
+| 🔗 COMBO | Square root using binary search | BS on answer space |
+| 🧩 PATTERN | **Search Space Reduction Pattern** | Narrow possibilities each step |
+| ❓ Q1 | LC 54 — Spiral Matrix | *Medium — direction tracking* |
+| ❓ Q2 | LC 69 — Sqrt(x) | *Easy — BS on answer* |
+
+---
+
+### Day 14 — Wed, Mar 4 🟡 (REVIEW DAY)
+
+| Block | Topic |
+|-------|-------|
+| 🔁 | Sorting comparison table — when to use which sort? |
+| 🔁 | Binary search — trace all variants on paper |
+| 🔁 | Two pointer problems — redo without looking |
+| ❓ Q1 | LC 75 — Sort Colors (Dutch National Flag) |
+| ❓ Q2 | LC 240 — Search a 2D Matrix II |
+
+> **Mentor Note:** After 2 weeks, you should be able to: (1) Implement any basic sort from memory, (2) Write binary search without bugs, (3) Reverse array/string without thinking. If not, spend extra time here before moving on.
+
+---
+
+## 📆 WEEK 3: Mar 5-11 — Linked List + Recursion Introduction
+
+### Day 15 — Thu, Mar 5 🟡
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **Singly Linked List** | Node creation, traversal, concept of pointers |
+| ⚙️ ALGO | **Recursion Basics** | Base case, recursive case, call stack |
+| 🔗 COMBO | Traverse linked list using recursion | Recursive list printing |
+| 🧩 PATTERN | **Build From Scratch Pattern** | Implement DS from zero — no library |
+| ❓ Q1 | Create a linked list and print all elements | *Easy — implementation* |
+| ❓ Q2 | LC 509 — Fibonacci Number (recursive) | *Easy — classic recursion* |
+
+📘 Read: [02_Data_Structures/02_DataStructures_Variants.md](../02_Data_Structures/02_DataStructures_Variants.md) — Linked List section  
+📘 Read: [03_Algorithms/03_Recursion_Complete.md](../03_Algorithms/03_Recursion_Complete.md) — Part 1
+
+> **Mentor Note:** Linked Lists are where most students first feel "lost." Draw boxes with arrows on paper. EVERY. SINGLE. TIME. Visualization is not optional here.
+
+---
+
+### Day 16 — Fri, Mar 6 🟡
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **Linked List — Insert Operations** | Insert at head, tail, at position |
+| ⚙️ ALGO | **Recursion — Factorial, Sum of Digits** | Practice recursive thinking |
+| 🔗 COMBO | Insert into sorted linked list (maintaining order) | LL traversal + comparison logic |
+| 🧩 PATTERN | **Iterative vs Recursive Pattern** | Same problem, two approaches |
+| ❓ Q1 | Count nodes in a linked list | *Easy — traversal* |
+| ❓ Q2 | LC 231 — Power of Two (recursive approach) | *Easy — divide by 2 each time* |
+
+---
+
+### Day 17 — Sat, Mar 7 🟡 (Deep Dive Day)
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **Linked List — Delete Operations** | Delete from head, tail, by value |
+| ⚙️ ALGO | **Recursion — Reverse String/Array** | Recursive reversal logic |
+| 🔗 COMBO | Reverse a linked list (BOTH recursive + iterative) | The #1 linked list interview question |
+| 🧩 PATTERN | **In-Place Reversal Pattern** | Reverse without extra space |
+| ❓ Q1 | LC 206 — Reverse Linked List | *Easy — must-know* |
+| ❓ Q2 | LC 21 — Merge Two Sorted Lists | *Easy — pointer manipulation* |
+
+📘 Read: [03_Algorithms/03_Recursion_Complete.md](../03_Algorithms/03_Recursion_Complete.md) — Reversal techniques
+
+> **Mentor Note:** LC 206 is asked in 80% of interviews. You must be able to write it in under 3 minutes, both iteratively and recursively. Practice until it's automatic.
+
+---
+
+### Day 18 — Sun, Mar 8 🟡 (Deep Dive Day)
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **Linked List — Cycle Detection** | Floyd's Tortoise and Hare algorithm |
+| ⚙️ ALGO | **GCD — Euclidean Algorithm** | Recursive GCD, why it works |
+| 🔗 COMBO | Detect cycle + find cycle start point | Slow-fast pointer math |
+| 🧩 PATTERN | **Slow-Fast Pointer Pattern** | Two speeds reveal hidden structure |
+| ❓ Q1 | LC 141 — Linked List Cycle | *Easy — detect cycle* |
+| ❓ Q2 | LC 876 — Middle of the Linked List | *Easy — slow-fast* |
+
+📘 Read: [03_Algorithms/08_GCD_NumberTheory_Patterns.md](../03_Algorithms/08_GCD_NumberTheory_Patterns.md) — Part 1
+
+---
+
+### Day 19 — Mon, Mar 9 🟡
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **Doubly Linked List** | Two-directional navigation |
+| ⚙️ ALGO | **LCM, Coprime Check** | LCM = (a*b)/GCD(a,b) |
+| 🔗 COMBO | Implement LRU-style structure with DLL | DS design thinking |
+| 🧩 PATTERN | **Number Theory Pattern** | GCD/LCM as building blocks |
+| ❓ Q1 | LC 234 — Palindrome Linked List | *Easy — slow-fast + reverse* |
+| ❓ Q2 | LC 1071 — GCD of Strings | *Easy — string + GCD* |
+
+---
+
+### Day 20 — Tue, Mar 10 🟡
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **Linked List — Advanced** | Flatten, clone with random pointer (concept) |
+| ⚙️ ALGO | **Prime Numbers + Sieve of Eratosthenes** | Generate all primes up to N |
+| 🔗 COMBO | Count prime-valued nodes in a linked list | Combine LL traversal + prime check |
+| 🧩 PATTERN | **Precompute/Sieve Pattern** | Build lookup table first, then query O(1) |
+| ❓ Q1 | LC 204 — Count Primes | *Medium — sieve* |
+| ❓ Q2 | LC 160 — Intersection of Two Linked Lists | *Easy — two pointer on LL* |
+
+📘 Read: [03_Algorithms/08_GCD_NumberTheory_Patterns.md](../03_Algorithms/08_GCD_NumberTheory_Patterns.md) — Part 3
+
+---
+
+### Day 21 — Wed, Mar 11 🟡 (REVIEW DAY)
+
+| Block | Topic |
+|-------|-------|
+| 🔁 | Linked list — implement all operations from memory |
+| 🔁 | Recursion — trace call stack on paper for 3 problems |
+| 🔁 | GCD/LCM — solve 3 problems without reading |
+| ❓ Q1 | LC 83 — Remove Duplicates from Sorted List |
+| ❓ Q2 | LC 203 — Remove Linked List Elements |
+
+> **Mentor Note:** End of Phase 1. You should now be comfortable with: Arrays, Strings, Matrices, 3 sorting algorithms, Binary Search, Linked Lists, Basic Recursion, GCD/Primes. If any of these feel shaky, STOP and spend 1 extra day before moving to Phase 2.
+
+---
+
+# PHASE 2: CORE PATTERNS (Week 4-6)
+
+> *"Now you know the ingredients. Phase 2 teaches you the recipes — Stack, Queue, HashMap, Trees, and the patterns that connect everything."*
+
+---
+
+## 📆 WEEK 4: Mar 12-18 — Stack & Queue + HashMap Intro
+
+### Day 22 — Thu, Mar 12 🟡
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **Stack — Concept + Array Implementation** | LIFO, push, pop, peek |
+| ⚙️ ALGO | **Modular Arithmetic** | (a+b)%m, (a*b)%m, applications |
+| 🔗 COMBO | Evaluate simple expression using stack | DS meets algo |
+| 🧩 PATTERN | **LIFO Pattern** | Last processed first — undo, backtrack |
+| ❓ Q1 | LC 20 — Valid Parentheses | *Easy — stack classic* |
+| ❓ Q2 | LC 1281 — Subtract Product and Sum of Digits | *Easy — digit extraction* |
+
+📘 Read: [02_Data_Structures/02_DataStructures_Variants.md](../02_Data_Structures/02_DataStructures_Variants.md) — Stack section  
+📘 Read: [03_Algorithms/08_GCD_NumberTheory_Patterns.md](../03_Algorithms/08_GCD_NumberTheory_Patterns.md) — Part 4 (Modular)
+
+---
+
+### Day 23 — Fri, Mar 13 🟡
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **Stack — Applications** | Next Greater Element, stock span |
+| ⚙️ ALGO | **Modular Exponentiation** | Fast power in O(log n) |
+| 🔗 COMBO | Next Greater Element using stack | Monotonic stack concept |
+| 🧩 PATTERN | **Monotonic Stack Pattern** | Maintain increasing/decreasing order |
+| ❓ Q1 | LC 496 — Next Greater Element I | *Easy — stack + map* |
+| ❓ Q2 | LC 155 — Min Stack | *Medium — auxiliary stack* |
+
+📘 Read: [03_Algorithms/15_Monotonic_Stack_Queue_Complete.md](../03_Algorithms/15_Monotonic_Stack_Queue_Complete.md) — Introduction
+
+---
+
+### Day 24 — Sat, Mar 14 🟡 (Deep Dive Day)
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **Queue — Concept + Circular Queue** | FIFO, enqueue, dequeue |
+| ⚙️ ALGO | **Prefix Sum Technique** | Precompute cumulative sums |
+| 🔗 COMBO | Range sum query using prefix sum | Instant range queries |
+| 🧩 PATTERN | **Prefix Sum Pattern** | O(n) preprocess → O(1) queries |
+| ❓ Q1 | LC 303 — Range Sum Query (Immutable) | *Easy — prefix sum* |
+| ❓ Q2 | LC 232 — Implement Queue using Stacks | *Easy — design* |
+
+📘 Read: [02_Data_Structures/02_DataStructures_Variants.md](../02_Data_Structures/02_DataStructures_Variants.md) — Queue section
+
+---
+
+### Day 25 — Sun, Mar 15 🟡 (Deep Dive Day)
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **Priority Queue / Heap concept** | Min-Heap, Max-Heap idea |
+| ⚙️ ALGO | **Kadane's Algorithm** | Maximum subarray sum in O(n) |
+| 🔗 COMBO | Maximum subarray sum problem | Classic DP/greedy hybrid |
+| 🧩 PATTERN | **Running Calculation Pattern** | Track best answer as you go |
+| ❓ Q1 | LC 53 — Maximum Subarray | *Medium — Kadane* |
+| ❓ Q2 | LC 121 — Best Time to Buy and Sell Stock | *Easy — track min so far* |
+
+> **Mentor Note:** Kadane's algorithm is beautiful. It teaches you that sometimes keeping a "running best" is all you need. This idea will come back in DP.
+
+---
+
+### Day 26 — Mon, Mar 16 🟡
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **HashMap — put, get, containsKey** | Key-value storage O(1) average |
+| ⚙️ ALGO | **Two Pointer Technique (formal)** | When and how to use it |
+| 🔗 COMBO | Two Sum using HashMap (optimal) | O(n) with map lookup |
+| 🧩 PATTERN | **Map Lookup Pattern** | Trade space for time |
+| ❓ Q1 | LC 1 — Two Sum (optimal) | *Easy — HashMap solution* |
+| ❓ Q2 | LC 167 — Two Sum II (sorted input) | *Medium — two pointers* |
+
+📘 Read: [04_Patterns_Templates/07_Two_Pointers_Complete.md](../04_Patterns_Templates/07_Two_Pointers_Complete.md)
+
+---
+
+### Day 27 — Tue, Mar 17 🟡
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **HashSet — Uniqueness checking** | add, contains, O(1) lookup |
+| ⚙️ ALGO | **Dutch National Flag (3-way partition)** | Sort 0s, 1s, 2s |
+| 🔗 COMBO | Find duplicates using HashSet | Set-based duplicate detection |
+| 🧩 PATTERN | **Partition Pattern** | Divide array into groups |
+| ❓ Q1 | LC 217 — Contains Duplicate | *Easy — HashSet* |
+| ❓ Q2 | LC 349 — Intersection of Two Arrays | *Easy — Set operations* |
+
+---
+
+### Day 28 — Wed, Mar 18 🟡 (REVIEW DAY)
+
+| Block | Topic |
+|-------|-------|
+| 🔁 | Stack — implement from scratch, solve 3 problems |
+| 🔁 | Queue — implement circular queue from scratch |
+| 🔁 | HashMap/HashSet — when to use which? |
+| ❓ Q1 | LC 225 — Implement Stack using Queues |
+| ❓ Q2 | LC 560 — Subarray Sum Equals K |
+
+> **Mentor Note:** LC 560 combines prefix sum + HashMap. If you can solve it, you've truly understood both concepts. If not, review Day 24 and Day 26.
+
+---
+
+## 📆 WEEK 5: Mar 19-25 — Hashing Deep + Sliding Window
+
+### Day 29 — Thu, Mar 19 🟡
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **HashMap — Frequency Map, Grouping** | Count freq, group by key |
+| ⚙️ ALGO | **Sliding Window — Fixed Size** | Window of K elements |
+| 🔗 COMBO | Maximum sum of subarray of size K | Fixed window + running sum |
+| 🧩 PATTERN | **Fixed Sliding Window Pattern** | Slide window, update answer |
+| ❓ Q1 | LC 49 — Group Anagrams | *Medium — HashMap grouping* |
+| ❓ Q2 | Max sum subarray of size K (practice) | *Easy — window technique* |
+
+📘 Read: [04_Patterns_Templates/01_Sliding_Window.md](../04_Patterns_Templates/01_Sliding_Window.md) — Fixed window section
+
+> **Mentor Note:** Sliding Window is a TOP interview pattern. Learn the template today, and you'll use it for 20+ problems.
+
+---
+
+### Day 30 — Fri, Mar 20 🟡
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **HashMap — One-Pass vs Two-Pass** | Optimize by combining loops |
+| ⚙️ ALGO | **Sliding Window — Variable Size** | Expand right, shrink left |
+| 🔗 COMBO | Longest substring without repeating characters | Variable window + HashSet |
+| 🧩 PATTERN | **Variable Sliding Window Pattern** | Expand until invalid → shrink until valid |
+| ❓ Q1 | LC 3 — Longest Substring Without Repeating Characters | *Medium — window + set* |
+| ❓ Q2 | LC 219 — Contains Duplicate II | *Easy — window + map* |
+
+📘 Read: [04_Patterns_Templates/01_Sliding_Window.md](../04_Patterns_Templates/01_Sliding_Window.md) — Variable window section
+
+---
+
+### Day 31 — Sat, Mar 21 🟠 (Deep Dive Day)
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **TreeMap, LinkedHashMap** | Sorted keys, insertion order |
+| ⚙️ ALGO | **Sliding Window — with Counter/Map** | Track frequencies in window |
+| 🔗 COMBO | Minimum window substring | Hardest sliding window problem |
+| 🧩 PATTERN | **Shrinking Window Pattern** | Find minimum valid window |
+| ❓ Q1 | LC 76 — Minimum Window Substring | *Hard — but important pattern* |
+| ❓ Q2 | LC 438 — Find All Anagrams in a String | *Medium — fixed window + freq* |
+
+> **Mentor Note:** LC 76 is hard, but don't skip it. Even understanding the approach (without solving perfectly) teaches the pattern. Come back to it in Week 10 and it'll click.
+
+---
+
+### Day 32 — Sun, Mar 22 🟡 (Deep Dive Day)
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **Java Collections Deep Dive** | List, Set, Map interfaces |
+| ⚙️ ALGO | **Merge Intervals** | Sort by start → merge overlapping |
+| 🔗 COMBO | Use sorting + scanning for intervals | Sort + linear scan |
+| 🧩 PATTERN | **Interval Pattern** | Sort → compare adjacent → merge |
+| ❓ Q1 | LC 56 — Merge Intervals | *Medium — sort + merge* |
+| ❓ Q2 | LC 57 — Insert Interval | *Medium — find position + merge* |
+
+📘 Read: [02_Data_Structures/03_Collections_Java.md](../02_Data_Structures/03_Collections_Java.md)
+
+---
+
+### Day 33 — Mon, Mar 23 🟠
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **Deque (Double-Ended Queue)** | Add/remove from both ends |
+| ⚙️ ALGO | **Sliding Window Maximum** | Track max in window efficiently |
+| 🔗 COMBO | Max of all subarrays of size K using deque | Monotonic deque |
+| 🧩 PATTERN | **Monotonic Deque Pattern** | Maintain order in deque |
+| ❓ Q1 | LC 239 — Sliding Window Maximum | *Hard — deque technique* |
+| ❓ Q2 | LC 346 — Moving Average from Data Stream (concept) | *Easy — queue* |
+
+---
+
+### Day 34 — Tue, Mar 24 🟡
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **Comparable & Comparator** | Custom sorting in Java |
+| ⚙️ ALGO | **Sort by Custom Criteria** | Lambda comparators |
+| 🔗 COMBO | Sort by frequency using HashMap + custom sort | Combine map + sort |
+| 🧩 PATTERN | **Custom Sort Pattern** | Define your own ordering |
+| ❓ Q1 | LC 347 — Top K Frequent Elements | *Medium — map + sort/heap* |
+| ❓ Q2 | LC 451 — Sort Characters By Frequency | *Medium — freq + sort* |
+
+---
+
+### Day 35 — Wed, Mar 25 🟡 (REVIEW DAY)
+
+| Block | Topic |
+|-------|-------|
+| 🔁 | Sliding Window — write the template from memory |
+| 🔁 | HashMap patterns — frequency, grouping, lookup |
+| 🔁 | Redo 3 problems without looking at solutions |
+| ❓ Q1 | LC 209 — Minimum Size Subarray Sum |
+| ❓ Q2 | LC 424 — Longest Repeating Character Replacement |
+
+> **Mentor Note:** Halfway point! By now you should be comfortable with: All basic DS, 5 sorting algorithms, Binary Search, LinkedList, Stack, Queue, HashMap, Sliding Window, Two Pointers. Take a moment to appreciate how far you've come.
+
+---
+
+## 📆 WEEK 6: Mar 26 - Apr 1 — Trees (Binary Tree + BST)
+
+### Day 36 — Thu, Mar 26 🟠
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **Binary Tree — Node, Left, Right** | Tree structure basics |
+| ⚙️ ALGO | **Tree Traversal — Inorder, Preorder, Postorder** | DFS on trees, all 3 orders |
+| 🔗 COMBO | Build a tree and perform all 3 traversals | Construction + traversal |
+| 🧩 PATTERN | **DFS on Tree Pattern** | Go deep before going wide |
+| ❓ Q1 | LC 94 — Binary Tree Inorder Traversal | *Easy — recursive* |
+| ❓ Q2 | LC 144 — Binary Tree Preorder Traversal | *Easy — recursive + iterative* |
+
+📘 Read: [03_Algorithms/05_Trees_Graphs.md](../03_Algorithms/05_Trees_Graphs.md) — Part 1 (Trees)
+
+> **Mentor Note:** Trees are recursion in action. If recursion felt hard in Week 3, it'll click now. Every tree problem = "process root, recurse left, recurse right."
+
+---
+
+### Day 37 — Fri, Mar 27 🟠
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **Binary Tree — Levels and Height** | Level = depth from root |
+| ⚙️ ALGO | **Level Order Traversal (BFS)** | Queue-based, level by level |
+| 🔗 COMBO | Zigzag level order traversal | BFS with direction flag |
+| 🧩 PATTERN | **BFS on Tree Pattern** | Use queue, process level by level |
+| ❓ Q1 | LC 102 — Binary Tree Level Order Traversal | *Medium — BFS* |
+| ❓ Q2 | LC 104 — Maximum Depth of Binary Tree | *Easy — recursion or BFS* |
+
+---
+
+### Day 38 — Sat, Mar 28 🟠 (Deep Dive Day)
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **Binary Tree — Properties** | Height, diameter, balanced check |
+| ⚙️ ALGO | **Recursion on Trees** | Return values up the tree |
+| 🔗 COMBO | Check if balanced + find diameter in same traversal | Optimize with combined recursion |
+| 🧩 PATTERN | **Post-Order Processing Pattern** | Process children first, then root |
+| ❓ Q1 | LC 543 — Diameter of Binary Tree | *Easy — post-order trick* |
+| ❓ Q2 | LC 110 — Balanced Binary Tree | *Easy — height-based check* |
+
+---
+
+### Day 39 — Sun, Mar 29 🟠 (Deep Dive Day)
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **Binary Search Tree — Concept** | Left < Root < Right property |
+| ⚙️ ALGO | **BST Insert, Search, Delete** | Maintain BST property |
+| 🔗 COMBO | Build BST from sorted array | Balanced BST construction |
+| 🧩 PATTERN | **BST Property Pattern** | Use ordering for efficient search |
+| ❓ Q1 | LC 700 — Search in a BST | *Easy — recursive search* |
+| ❓ Q2 | LC 108 — Convert Sorted Array to BST | *Easy — divide array* |
+
+---
+
+### Day 40 — Mon, Mar 30 🟠
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **BST — Validation, LCA** | Is this tree a valid BST? |
+| ⚙️ ALGO | **Inorder Successor/Predecessor** | Next/previous in BST |
+| 🔗 COMBO | Validate BST using inorder property | Inorder = sorted → verify |
+| 🧩 PATTERN | **Inorder Sorted Pattern** | BST inorder always gives sorted order |
+| ❓ Q1 | LC 98 — Validate Binary Search Tree | *Medium — range checking* |
+| ❓ Q2 | LC 235 — Lowest Common Ancestor of BST | *Medium — use BST property* |
+
+---
+
+### Day 41 — Tue, Mar 31 🟠
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **Tree — Path Problems** | Root-to-leaf, any-to-any paths |
+| ⚙️ ALGO | **DFS Path Tracking** | Carry path info through recursion |
+| 🔗 COMBO | Path sum + all paths enumeration | DFS with backtracking |
+| 🧩 PATTERN | **Root-to-Leaf Pattern** | Track path from root to leaf |
+| ❓ Q1 | LC 112 — Path Sum | *Easy — DFS with target* |
+| ❓ Q2 | LC 257 — Binary Tree Paths | *Easy — string building* |
+
+---
+
+### Day 42 — Wed, Apr 1 🟠 (REVIEW DAY)
+
+| Block | Topic |
+|-------|-------|
+| 🔁 | Tree traversal — all 4 types (in, pre, post, level) from memory |
+| 🔁 | BST operations — insert, search, delete, validate |
+| 🔁 | Draw tree problems on paper before coding |
+| ❓ Q1 | LC 226 — Invert Binary Tree |
+| ❓ Q2 | LC 101 — Symmetric Tree |
+
+> **Mentor Note:** If trees feel hard, that's normal. Re-do Day 36-39 problems. Trees become intuitive after ~20 problems. You're building that 20-problem foundation right now.
+
+---
+
+# PHASE 3: ADVANCED TOPICS (Week 7-10)
+
+> *"You've mastered the tools. Now you learn to combine them, optimize them, and solve problems you've never seen before."*
+
+---
+
+## 📆 WEEK 7: Apr 2-8 — Heaps + Graphs Introduction
+
+### Day 43 — Thu, Apr 2 🟠
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **Min-Heap / Max-Heap** | Implementation, heapify |
+| ⚙️ ALGO | **Heap Sort** | Build heap → extract min/max |
+| 🔗 COMBO | Find Kth largest element using heap | Maintain heap of size K |
+| 🧩 PATTERN | **Top-K Pattern** | Heap of size K for top/bottom K |
+| ❓ Q1 | LC 215 — Kth Largest Element in an Array | *Medium — heap or quickselect* |
+| ❓ Q2 | LC 703 — Kth Largest Element in a Stream | *Easy — min-heap of size K* |
+
+📘 Read: [02_Data_Structures/02_DataStructures_Variants.md](../02_Data_Structures/02_DataStructures_Variants.md) — Heap section  
+📘 Read: [03_Algorithms/07_Advanced_DataStructures.md](../03_Algorithms/07_Advanced_DataStructures.md) — Heap section
+
+---
+
+### Day 44 — Fri, Apr 3 🟠
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **PriorityQueue in Java** | Built-in min/max heap |
+| ⚙️ ALGO | **Merge K Sorted Structures** | K-way merge using heap |
+| 🔗 COMBO | Merge K sorted lists | Heap + linked list pointers |
+| 🧩 PATTERN | **K-Way Merge Pattern** | Multiple sources → one output |
+| ❓ Q1 | LC 23 — Merge k Sorted Lists | *Hard — heap classic* |
+| ❓ Q2 | LC 973 — K Closest Points to Origin | *Medium — max-heap* |
+
+---
+
+### Day 45 — Sat, Apr 4 🟠 (Deep Dive Day)
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **Graph — Adjacency List & Matrix** | How to represent graphs |
+| ⚙️ ALGO | **BFS on Graph** | Level-by-level exploration |
+| 🔗 COMBO | Shortest path in unweighted graph | BFS = shortest for unweighted |
+| 🧩 PATTERN | **Graph BFS Pattern** | Queue + visited set |
+| ❓ Q1 | LC 200 — Number of Islands | *Medium — BFS/DFS on grid* |
+| ❓ Q2 | LC 733 — Flood Fill | *Easy — BFS/DFS* |
+
+📘 Read: [03_Algorithms/05_Trees_Graphs.md](../03_Algorithms/05_Trees_Graphs.md) — Graphs section
+
+> **Mentor Note:** Graphs are just "trees with cycles." BFS on graphs = BFS on trees + visited set. You already know the foundation from Week 6.
+
+---
+
+### Day 46 — Sun, Apr 5 🟠 (Deep Dive Day)
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **Graph — Directed, Undirected, Weighted** | Graph types |
+| ⚙️ ALGO | **DFS on Graph** | Go deep, backtrack, explore |
+| 🔗 COMBO | Find all connected components using DFS | Count disconnected pieces |
+| 🧩 PATTERN | **Graph DFS Pattern** | Recursion + visited |
+| ❓ Q1 | LC 547 — Number of Provinces | *Medium — DFS/Union Find* |
+| ❓ Q2 | LC 695 — Max Area of Island | *Medium — DFS on grid* |
+
+---
+
+### Day 47 — Mon, Apr 6 🟠
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **Graph — Cycle Detection** | Detect cycles in directed/undirected |
+| ⚙️ ALGO | **Topological Sort (Kahn's BFS)** | Process nodes in dependency order |
+| 🔗 COMBO | Course Schedule — can you finish all courses? | Cycle detection + topo sort |
+| 🧩 PATTERN | **Topological Sort Pattern** | Dependency resolution |
+| ❓ Q1 | LC 207 — Course Schedule | *Medium — cycle in directed graph* |
+| ❓ Q2 | LC 210 — Course Schedule II | *Medium — topo sort order* |
+
+---
+
+### Day 48 — Tue, Apr 7 🟠
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **Weighted Graph** | Edge weights, shortest path concept |
+| ⚙️ ALGO | **Dijkstra's Algorithm (concept)** | Greedy shortest path |
+| 🔗 COMBO | Network delay time | Shortest path in weighted graph |
+| 🧩 PATTERN | **Shortest Path Pattern** | BFS for unweighted, Dijkstra for weighted |
+| ❓ Q1 | LC 743 — Network Delay Time | *Medium — Dijkstra* |
+| ❓ Q2 | LC 994 — Rotting Oranges | *Medium — multi-source BFS* |
+
+---
+
+### Day 49 — Wed, Apr 8 🟠 (REVIEW DAY)
+
+| Block | Topic |
+|-------|-------|
+| 🔁 | Heap — implement from scratch, solve 2 problems |
+| 🔁 | Graph — BFS and DFS templates from memory |
+| 🔁 | Draw graphs and trace algorithms on paper |
+| ❓ Q1 | LC 133 — Clone Graph |
+| ❓ Q2 | Graph problem of your choice |
+
+---
+
+## 📆 WEEK 8: Apr 9-15 — Dynamic Programming Foundations
+
+### Day 50 — Thu, Apr 9 🟠
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **DP Table — 1D Array for Memoization** | Store computed results |
+| ⚙️ ALGO | **Fibonacci — Memoization + Tabulation** | Top-down vs Bottom-up |
+| 🔗 COMBO | Climbing Stairs = Fibonacci in disguise | See the DP structure |
+| 🧩 PATTERN | **1D DP Pattern** | dp[i] depends on dp[i-1], dp[i-2] |
+| ❓ Q1 | LC 70 — Climbing Stairs | *Easy — 1D DP* |
+| ❓ Q2 | LC 509 — Fibonacci (DP approach) | *Easy — tabulation* |
+
+📘 Read: [03_Algorithms/04_Dynamic_Programming.md](../03_Algorithms/04_Dynamic_Programming.md) — Basics section
+
+> **Mentor Note:** DP is the most feared topic. But it's just: "Can I break this into smaller problems? Can I store results to avoid re-solving?" That's it. Start simple, build confidence.
+
+---
+
+### Day 51 — Fri, Apr 10 🟠
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **DP Table — Space Optimization** | Use 2 variables instead of array |
+| ⚙️ ALGO | **House Robber Logic** | Include or exclude current element |
+| 🔗 COMBO | Max sum of non-adjacent elements | Classic include/exclude |
+| 🧩 PATTERN | **Include/Exclude DP Pattern** | Take it or skip it |
+| ❓ Q1 | LC 198 — House Robber | *Medium — 1D DP* |
+| ❓ Q2 | LC 746 — Min Cost Climbing Stairs | *Easy — 1D DP* |
+
+---
+
+### Day 52 — Sat, Apr 11 🔴 (Deep Dive Day)
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **DP Table — 2D Array** | Two dimensions of state |
+| ⚙️ ALGO | **0/1 Knapsack** | Classic DP: take or leave |
+| 🔗 COMBO | Subset Sum = Knapsack variant | Can you make this sum? |
+| 🧩 PATTERN | **2D DP Pattern (Knapsack Family)** | dp[i][j] = considering i items with capacity j |
+| ❓ Q1 | LC 416 — Partition Equal Subset Sum | *Medium — subset sum* |
+| ❓ Q2 | LC 494 — Target Sum (approach) | *Medium — knapsack variant* |
+
+📘 Read: [03_Algorithms/04_Dynamic_Programming.md](../03_Algorithms/04_Dynamic_Programming.md) — Knapsack section
+
+---
+
+### Day 53 — Sun, Apr 12 🔴 (Deep Dive Day)
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **String DP Table** | 2D table for two strings |
+| ⚙️ ALGO | **Longest Common Subsequence (LCS)** | Compare two strings character by character |
+| 🔗 COMBO | Edit Distance = LCS extended | Insert, delete, replace operations |
+| 🧩 PATTERN | **Two-String DP Pattern** | dp[i][j] for string1[0..i] and string2[0..j] |
+| ❓ Q1 | LC 1143 — Longest Common Subsequence | *Medium — 2D DP* |
+| ❓ Q2 | LC 72 — Edit Distance | *Medium — classic DP* |
+
+---
+
+### Day 54 — Mon, Apr 13 🔴
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **1D DP with Binary Search** | LIS optimization |
+| ⚙️ ALGO | **Longest Increasing Subsequence** | O(n²) DP → O(n log n) with BS |
+| 🔗 COMBO | LIS variants — print the sequence | Track parent pointers |
+| 🧩 PATTERN | **LIS Pattern** | Patience sorting / DP + BS |
+| ❓ Q1 | LC 300 — Longest Increasing Subsequence | *Medium — DP* |
+| ❓ Q2 | LC 674 — Longest Continuous Increasing Subsequence | *Easy — sliding window* |
+
+---
+
+### Day 55 — Tue, Apr 14 🔴
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **DP with Multiple States** | Track multiple variables |
+| ⚙️ ALGO | **Buy and Sell Stock Variants** | State: holding, not holding, cooldown |
+| 🔗 COMBO | Stock with cooldown or transaction limit | State machine DP |
+| 🧩 PATTERN | **State Machine DP Pattern** | Transition between states |
+| ❓ Q1 | LC 121 — Best Time to Buy and Sell Stock (review DP lens) | *Easy — see it as DP* |
+| ❓ Q2 | LC 122 — Best Time to Buy and Sell Stock II | *Medium — greedy or DP* |
+
+---
+
+### Day 56 — Wed, Apr 15 🔴 (REVIEW DAY)
+
+| Block | Topic |
+|-------|-------|
+| 🔁 | DP pattern identification — given a problem, which DP type? |
+| 🔁 | Bottom-up vs Top-down — practice converting between them |
+| 🔁 | Redo LC 70, 198, 416, 1143 from memory |
+| ❓ Q1 | LC 62 — Unique Paths |
+| ❓ Q2 | LC 64 — Minimum Path Sum |
+
+> **Mentor Note:** DP mastery comes from pattern recognition. After this week, you should recognize: "This is a knapsack problem" or "This is an LCS problem." If you can't, review the patterns.
+
+---
+
+## 📆 WEEK 9: Apr 16-22 — Greedy + Backtracking
+
+### Day 57 — Thu, Apr 16 🔴
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **Interval Arrays** | Represent intervals as [start, end] |
+| ⚙️ ALGO | **Activity Selection / Interval Scheduling** | Greedy by end time |
+| 🔗 COMBO | Non-overlapping intervals | Greedy: remove minimum intervals |
+| 🧩 PATTERN | **Greedy Interval Pattern** | Sort by end → pick greedily |
+| ❓ Q1 | LC 435 — Non-overlapping Intervals | *Medium — greedy* |
+| ❓ Q2 | LC 452 — Minimum Number of Arrows | *Medium — intervals* |
+
+📘 Read: [03_Algorithms/12_Greedy_Algorithms_Complete.md](../03_Algorithms/12_Greedy_Algorithms_Complete.md)  
+📘 Read: [03_Algorithms/06_Advanced_Algorithms.md](../03_Algorithms/06_Advanced_Algorithms.md) — Greedy section
+
+---
+
+### Day 58 — Fri, Apr 17 🔴
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **Boolean/State Arrays for Greedy** | Track reachability |
+| ⚙️ ALGO | **Jump Game Logic** | Can you reach the end? |
+| 🔗 COMBO | Maximum jumps to reach end | Greedy forward scanning |
+| 🧩 PATTERN | **Greedy Forward Scan Pattern** | Track furthest reachable |
+| ❓ Q1 | LC 55 — Jump Game | *Medium — greedy* |
+| ❓ Q2 | LC 45 — Jump Game II | *Medium — greedy BFS* |
+
+---
+
+### Day 59 — Sat, Apr 18 🔴 (Deep Dive Day)
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **Recursion Tree for Backtracking** | Visualize all choices |
+| ⚙️ ALGO | **Backtracking — Permutations** | Choose → Explore → Unchoose |
+| 🔗 COMBO | Generate all permutations of array | Classic backtracking |
+| 🧩 PATTERN | **Backtracking Template** | The 3-step pattern for all backtracking |
+| ❓ Q1 | LC 46 — Permutations | *Medium — backtracking* |
+| ❓ Q2 | LC 47 — Permutations II (with duplicates) | *Medium — skip duplicates* |
+
+📘 Read: [03_Algorithms/11_Backtracking_Complete.md](../03_Algorithms/11_Backtracking_Complete.md)  
+📘 Read: [03_Algorithms/03_Recursion_Complete.md](../03_Algorithms/03_Recursion_Complete.md) — Backtracking section
+
+> **Mentor Note:** Backtracking = recursion + undo. Draw the recursion tree for every problem. If you can draw the tree, you can write the code.
+
+---
+
+### Day 60 — Sun, Apr 19 🔴 (Deep Dive Day)
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **Subset Generation Tree** | Binary choice: include or exclude |
+| ⚙️ ALGO | **Subsets & Combinations** | Generate all subsets, C(n,r) |
+| 🔗 COMBO | Combination Sum — find combos that sum to target | Backtracking with pruning |
+| 🧩 PATTERN | **Subset Generation Pattern** | Include/exclude at each step |
+| ❓ Q1 | LC 78 — Subsets | *Medium — backtracking* |
+| ❓ Q2 | LC 39 — Combination Sum | *Medium — backtracking with repeat* |
+
+---
+
+### Day 61 — Mon, Apr 20 🔴
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **2D Board for Grid Backtracking** | Navigate grid with choices |
+| ⚙️ ALGO | **N-Queens / Word Search** | Place queens, search words |
+| 🔗 COMBO | Word Search on 2D board | Grid + backtracking + visited |
+| 🧩 PATTERN | **Grid Backtracking Pattern** | 4-directional exploration with undo |
+| ❓ Q1 | LC 79 — Word Search | *Medium — grid backtracking* |
+| ❓ Q2 | LC 51 — N-Queens (conceptual understanding) | *Hard — know the approach* |
+
+---
+
+### Day 62 — Tue, Apr 21 🟠
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **Trie — Concept & Implementation** | Prefix tree for strings |
+| ⚙️ ALGO | **String Matching with Trie** | Insert + search + prefix check |
+| 🔗 COMBO | Implement Trie and search words | Build from scratch |
+| 🧩 PATTERN | **Trie Pattern** | Common prefix → tree structure |
+| ❓ Q1 | LC 208 — Implement Trie | *Medium — design* |
+| ❓ Q2 | LC 14 — Longest Common Prefix | *Easy — trie or vertical scan* |
+
+📘 Read: [03_Algorithms/07_Advanced_DataStructures.md](../03_Algorithms/07_Advanced_DataStructures.md) — Trie section
+
+---
+
+### Day 63 — Wed, Apr 22 🔴 (REVIEW DAY)
+
+| Block | Topic |
+|-------|-------|
+| 🔁 | Greedy vs DP — when does greedy work? When must you use DP? |
+| 🔁 | Backtracking template — write from memory |
+| 🔁 | Solve 3 backtracking problems timed (15 min each) |
+| ❓ Q1 | LC 22 — Generate Parentheses |
+| ❓ Q2 | LC 17 — Letter Combinations of a Phone Number |
+
+---
+
+## 📆 WEEK 10: Apr 23-29 — Advanced Patterns + Remaining Topics
+
+### Day 64 — Thu, Apr 23 🔴
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **DP Table for Coin Change** | Unbounded knapsack variant |
+| ⚙️ ALGO | **Coin Change Variants** | Minimum coins, number of ways |
+| 🔗 COMBO | Fewest coins to make amount | Bottom-up DP |
+| 🧩 PATTERN | **Unbounded Knapsack Pattern** | Items can be reused |
+| ❓ Q1 | LC 322 — Coin Change | *Medium — DP* |
+| ❓ Q2 | LC 518 — Coin Change 2 | *Medium — count ways* |
+
+---
+
+### Day 65 — Fri, Apr 24 🔴
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **Matrix for Grid DP** | dp[i][j] for grid problems |
+| ⚙️ ALGO | **Grid DP — Unique Paths, Min Path** | Move right/down in grid |
+| 🔗 COMBO | Minimum falling path sum | Grid + DP |
+| 🧩 PATTERN | **Grid DP Pattern** | dp[i][j] = f(dp[i-1][j], dp[i][j-1]) |
+| ❓ Q1 | LC 62 — Unique Paths (if not already solved) | *Medium — grid DP* |
+| ❓ Q2 | LC 931 — Minimum Falling Path Sum | *Medium — grid DP* |
+
+---
+
+### Day 66 — Sat, Apr 25 🟠 (Deep Dive Day)
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **Bit Representation** | Binary, AND, OR, XOR, shifts |
+| ⚙️ ALGO | **Bit Manipulation Tricks** | Single number, power of 2, count bits |
+| 🔗 COMBO | Count set bits + XOR tricks | Combine bitwise operations |
+| 🧩 PATTERN | **Bit Manipulation Pattern** | XOR for duplicates, AND for masking |
+| ❓ Q1 | LC 136 — Single Number | *Easy — XOR* |
+| ❓ Q2 | LC 191 — Number of 1 Bits | *Easy — bit counting* |
+
+📘 Read: [03_Algorithms/10_Bit_Manipulation_Complete.md](../03_Algorithms/10_Bit_Manipulation_Complete.md)
+
+---
+
+### Day 67 — Sun, Apr 26 🔴 (Deep Dive Day)
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **Union-Find / Disjoint Set** | Find, Union, Rank, Path Compression |
+| ⚙️ ALGO | **Union by Rank + Path Compression** | Efficient connected components |
+| 🔗 COMBO | Connected components using Union-Find | Alternative to DFS |
+| 🧩 PATTERN | **Union-Find Pattern** | Group elements, check connectivity |
+| ❓ Q1 | LC 684 — Redundant Connection | *Medium — union find* |
+| ❓ Q2 | LC 547 — Number of Provinces (Union Find approach) | *Medium — redo with UF* |
+
+📘 Read: [03_Algorithms/14_Union_Find_DSU_Complete.md](../03_Algorithms/14_Union_Find_DSU_Complete.md)
+
+---
+
+### Day 68 — Mon, Apr 27 🟠
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **String — Advanced Operations** | KMP concept, pattern matching |
+| ⚙️ ALGO | **String Algorithms Overview** | Rabin-Karp concept, Z-algorithm concept |
+| 🔗 COMBO | Pattern searching in text | Use built-in or manual matching |
+| 🧩 PATTERN | **String Matching Pattern** | Sliding window on strings |
+| ❓ Q1 | LC 28 — Find Index of First Occurrence | *Easy — string search* |
+| ❓ Q2 | LC 459 — Repeated Substring Pattern | *Easy — string analysis* |
+
+📘 Read: [03_Algorithms/13_String_Algorithms_Complete.md](../03_Algorithms/13_String_Algorithms_Complete.md)
+
+---
+
+### Day 69 — Tue, Apr 28 🔴
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **Monotonic Stack — Deep Dive** | Maintain decreasing/increasing order |
+| ⚙️ ALGO | **Next Greater/Smaller Variants** | Left, right, circular |
+| 🔗 COMBO | Largest Rectangle in Histogram | Stack-based area calculation |
+| 🧩 PATTERN | **Monotonic Stack Advanced Pattern** | Process in order, maintain invariant |
+| ❓ Q1 | LC 84 — Largest Rectangle in Histogram | *Hard — monotonic stack* |
+| ❓ Q2 | LC 42 — Trapping Rain Water | *Hard — two pointer or stack* |
+
+📘 Read: [03_Algorithms/15_Monotonic_Stack_Queue_Complete.md](../03_Algorithms/15_Monotonic_Stack_Queue_Complete.md)
+
+> **Mentor Note:** LC 84 and LC 42 are classics that appear in interviews at top companies. Even understanding the approach is a win. Don't stress if the implementation takes time.
+
+---
+
+### Day 70 — Wed, Apr 29 🔴 (REVIEW DAY)
+
+| Block | Topic |
+|-------|-------|
+| 🔁 | All advanced patterns — review templates |
+| 🔁 | Mixed problem solving — random pick, solve timed |
+| 🔁 | Identify your 3 weakest topics |
+| ❓ Q1 | LC 11 — Container With Most Water |
+| ❓ Q2 | LC 15 — 3Sum |
+
+> **Mentor Note:** End of Phase 3. You now have exposure to EVERY major topic. The goal was never perfection — it's recognition. When you see a problem, you should now think "Oh, this looks like a sliding window problem" or "This needs DP." That recognition is your superpower.
+
+---
+
+# PHASE 4: INTEGRATION + POLISH (Week 11)
+
+> *"The final stretch. Tie everything together. Test yourself. Build confidence."*
+
+---
+
+## 📆 WEEK 11: Apr 30 - May 5 — SQL + System Design + Mock Interviews
+
+### Day 71 — Thu, Apr 30 🟣
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **System Design Basics** | Components, trade-offs |
+| ⚙️ ALGO | **OOP Principles Review (SOLID)** | S, O, L, I, D with examples |
+| 🔗 COMBO | Design a simple class hierarchy | Apply OOP to a real scenario |
+| 🧩 PATTERN | **Design Patterns** (Singleton, Factory) | Creator patterns |
+| ❓ Q1 | Mixed Medium problem (pick random from weak area) |
+| ❓ Q2 | SQL — Basic SELECT, WHERE, ORDER BY |
+
+📘 Read: [06_OOP_Design/01_OOPS_Principles.md](../06_OOP_Design/01_OOPS_Principles.md)  
+📘 Read: [06_OOP_Design/02_Design_Patterns.md](../06_OOP_Design/02_Design_Patterns.md)  
+📘 Read: [11_SQL_Complete/01_SQL_Foundations_WHY_HOW.md](../11_SQL_Complete/01_SQL_Foundations_WHY_HOW.md)
+
+---
+
+### Day 72 — Fri, May 1 🟣
+
+| Block | Topic | Details |
+|-------|-------|---------|
+| 📦 DS | **SQL Tables & Relations** | Primary key, foreign key, normalization |
+| ⚙️ ALGO | **SQL JOINs** | INNER, LEFT, RIGHT, FULL OUTER |
+| 🔗 COMBO | Multi-table queries | Join 2-3 tables to answer questions |
+| 🧩 PATTERN | **SQL Aggregation Pattern** | GROUP BY + HAVING + aggregate functions |
+| ❓ Q1 | SQL — Employee earning more than manager | *Classic SQL* |
+| ❓ Q2 | SQL — Find duplicate emails | *Classic SQL* |
+
+📘 Read: [11_SQL_Complete/02_SQL_Data_Analysis.md](../11_SQL_Complete/02_SQL_Data_Analysis.md)  
+📘 Read: [08_SQL_Database/01_SQL_Complete_Guide.md](../08_SQL_Database/01_SQL_Complete_Guide.md)
+
+---
+
+### Day 73 — Sat, May 2 🟣 (MOCK INTERVIEW DAY 1)
 
 ```
-╔══════════════════════════════════════════════════════════════════════════╗
-║                         DAILY STUDY ROUTINE                              ║
-╠══════════════════════════════════════════════════════════════════════════╣
-║                                                                          ║
-║  MORNING (2-3 hours):                                                    ║
-║  ┌─────────────────────────────────────────────────────────────────┐    ║
-║  │ • 30 min: Review yesterday's topics                             │    ║
-║  │ • 60 min: Learn new concept (read guide)                        │    ║
-║  │ • 60 min: Solve 3-5 problems on the topic                       │    ║
-║  └─────────────────────────────────────────────────────────────────┘    ║
-║                                                                          ║
-║  AFTERNOON/EVENING (2-3 hours):                                          ║
-║  ┌─────────────────────────────────────────────────────────────────┐    ║
-║  │ • 60 min: More problem solving (medium difficulty)              │    ║
-║  │ • 45 min: Code implementation (type out solutions)              │    ║
-║  │ • 30 min: Review mistakes, note patterns                        │    ║
-║  │ • 15 min: Plan tomorrow's study                                 │    ║
-║  └─────────────────────────────────────────────────────────────────┘    ║
-║                                                                          ║
-║  BEFORE SLEEP (15 min):                                                  ║
-║  ┌─────────────────────────────────────────────────────────────────┐    ║
-║  │ • Quick mental review of what you learned                       │    ║
-║  │ • Spaced repetition: recall topics from 3 days ago              │    ║
-║  └─────────────────────────────────────────────────────────────────┘    ║
-║                                                                          ║
-╚══════════════════════════════════════════════════════════════════════════╝
+FULL MOCK INTERVIEW — 3 Hours
+
+Hour 1: DSA Problems
+  Problem 1 (Easy) — 20 min — pick from your solved list
+  Problem 2 (Medium) — 30 min — random pick, explain approach first
+  After: Review where you got stuck
+
+Hour 2: System Design Discussion
+  Design a URL Shortener (or Rate Limiter) — 30 min
+  Think about: API, Database, Scale
+
+Hour 3: Review + Weak Areas
+  Redo 2 problems from your weakest topic
+  Note: What pattern did I miss? Why?
 ```
+
+📘 Read: [06_OOP_Design/03_System_Design.md](../06_OOP_Design/03_System_Design.md)
 
 ---
 
-## 📊 PROGRESS TRACKER
-
-### Week-by-Week Checklist
+### Day 74 — Sun, May 3 🟣 (MOCK INTERVIEW DAY 2)
 
 ```
-Week 1:  □ Arrays □ Strings □ Two Pointers □ Sliding Window □ Collections
-Week 2:  □ Recursion □ Backtracking □ 2D Arrays □ Matrix Patterns
-Week 3:  □ Sorting □ Binary Search □ Divide & Conquer
-Week 4:  □ DP Intro □ 1D DP □ 2D DP □ Classic DP □ OOP
-Week 5:  □ Binary Trees □ BST □ Traversals □ Tree Problems □ Heap
-Week 6:  □ Graphs □ BFS □ DFS □ Shortest Path □ Topological □ Union Find
-Week 7:  □ Tries □ Segment Trees □ Design Patterns □ System Design Intro
-Week 8:  □ System Design □ User Flows □ Integration □ Mock Prep
-Week 9:  □ SQL Basics □ DDL □ DML □ SELECT □ Aggregates
-Week 10: □ JOINs □ Subqueries □ CTEs □ Window Functions
-Week 11: □ Normalization □ Indexes □ Views □ Triggers □ Transactions
-Week 12: □ Analytics □ Real-World □ Data Engineering □ Projects □ Interview
+FULL MOCK INTERVIEW — 3 Hours
+
+Hour 1: DSA Problems
+  Problem 1 (Medium) — 25 min
+  Problem 2 (Medium) — 25 min
+  Practice talking through your approach
+
+Hour 2: SQL Problem Set
+  3 SQL problems (JOIN, GROUP BY, Subquery)
+
+Hour 3: Final Weak Area Push
+  Your weakest 2 topics — 3 problems each
+  Write a 1-line summary for each pattern
 ```
 
-### Problems Solved Counter
-
-```
-Easy:     _____ / 100
-Medium:   _____ / 100
-Hard:     _____ / 50
-SQL:      _____ / 100
-```
+📘 Read: [11_SQL_Complete/04_SQL_Practice_Projects.md](../11_SQL_Complete/04_SQL_Practice_Projects.md)
 
 ---
 
-## 🔗 QUICK NAVIGATION BY TOPIC
+### Day 75 — Mon, May 4 🟣 (FLASH REVISION)
 
-### Data Structures
+```
+QUICK REFERENCE REVISION — Review Everything
 
-- [Arrays & Strings](../02_Data_Structures/01_DataStructures_Complete.md)
-- [Matrix/2D Arrays](../02_Data_Structures/04_2D_Arrays_Matrix.md)
-- [All Variants](../02_Data_Structures/02_DataStructures_Variants.md)
-- [Java Collections](../02_Data_Structures/03_Collections_Java.md)
+Morning (2 hrs):
+  Review all DS complexities — O(1), O(n), O(log n) for each DS
+  All algorithm patterns — one-line summary each
+  Key formulas: GCD, LCM, nCr, sorting bounds
 
-### Algorithms
+Afternoon (2 hrs):
+  All coding patterns — when to use each
+  Redo your 5 favorite problems (the ones you feel proud of)
 
-- [How to Think](../03_Algorithms/01_Algorithm_Thinking.md)
-- [Sorting](../03_Algorithms/02_Sorting_Algorithms.md)
-- [Recursion](../03_Algorithms/03_Recursion_Complete.md)
-- [Dynamic Programming](../03_Algorithms/04_Dynamic_Programming.md)
-- [Trees & Graphs](../03_Algorithms/05_Trees_Graphs.md)
-- [Advanced Algorithms](../03_Algorithms/06_Advanced_Algorithms.md)
-- [Advanced Data Structures](../03_Algorithms/07_Advanced_DataStructures.md)
+Evening (1 hr):
+  Top 10 mistakes to avoid in interviews
+  Edge cases checklist review
+```
 
-### Patterns
-
-- [Sliding Window](../04_Patterns_Templates/01_Sliding_Window.md)
-- [Code Templates](../04_Patterns_Templates/02_Code_Templates.md)
-- [Visual Diagrams](../04_Patterns_Templates/03_Visual_Diagrams.md)
-- [Pattern Recognition](../04_Patterns_Templates/04_Pattern_Recognition.md)
-- [LeetCode → Real World](../04_Patterns_Templates/05_LeetCode_RealWorld_Map.md)
-
-### Problem Solving
-
-- [Practice Problems (210+)](../05_Problem_Solving/01_Practice_Problems.md)
-- [Edge Cases](../05_Problem_Solving/02_Edge_Cases.md)
-- [Common Mistakes](../05_Problem_Solving/03_Common_Mistakes.md)
-
-### Design & OOP
-
-- [OOP Principles](../06_OOP_Design/01_OOPS_Principles.md)
-- [Design Patterns](../06_OOP_Design/02_Design_Patterns.md)
-- [System Design](../06_OOP_Design/03_System_Design.md)
-
-### SQL & Database
-
-- [Complete SQL Guide](../08_SQL_Database/01_SQL_Complete_Guide.md)
-
-### Career & Reference
-
-- [Career Guide](../09_Career_Reference/01_Career_Guide.md)
-- [Ultimate DSA Reference](../09_Career_Reference/02_Ultimate_DSA_Guide.md)
-- [Quick Reference](../09_Career_Reference/03_Quick_Reference.md)
+📘 Read: [09_Career_Reference/03_Quick_Reference.md](../09_Career_Reference/03_Quick_Reference.md)  
+📘 Read: [04_Patterns_Templates/02_Code_Templates.md](../04_Patterns_Templates/02_Code_Templates.md)  
+📘 Read: [05_Problem_Solving/02_Edge_Cases.md](../05_Problem_Solving/02_Edge_Cases.md)  
+📘 Read: [05_Problem_Solving/03_Common_Mistakes.md](../05_Problem_Solving/03_Common_Mistakes.md)
 
 ---
 
-## 💡 KEY SUCCESS TIPS
+### Day 76 — Tue, May 5 🟣 (FINAL DAY — CONFIDENCE BUILDER)
 
 ```
-╔══════════════════════════════════════════════════════════════════════════╗
-║                         SUCCESS MANTRAS                                  ║
-╠══════════════════════════════════════════════════════════════════════════╣
-║                                                                          ║
-║  1. CONSISTENCY > INTENSITY                                              ║
-║     • 2 hours daily beats 10 hours once a week                          ║
-║     • Show up every day, even if just for 30 minutes                    ║
-║                                                                          ║
-║  2. UNDERSTAND, DON'T MEMORIZE                                          ║
-║     • Ask WHY for every algorithm and pattern                           ║
-║     • If you understand, you can recreate                               ║
-║                                                                          ║
-║  3. ACTIVE LEARNING                                                      ║
-║     • Type code yourself, don't copy-paste                              ║
-║     • Explain concepts out loud (rubber duck debugging)                 ║
-║     • Teach someone else (best way to learn)                            ║
-║                                                                          ║
-║  4. TRACK YOUR PROGRESS                                                  ║
-║     • Mark completed topics                                              ║
-║     • Review weak areas weekly                                           ║
-║     • Celebrate small wins                                               ║
-║                                                                          ║
-║  5. DON'T COMPARE                                                        ║
-║     • Everyone's journey is different                                    ║
-║     • Focus on YOUR progress from yesterday                             ║
-║                                                                          ║
-╚══════════════════════════════════════════════════════════════════════════╝
-```
+LIGHT DAY — Trust Your Preparation
 
----
-
-## 🧠 THE 6 POWER LEARNING TECHNIQUES
-
-```
-╔══════════════════════════════════════════════════════════════════════════╗
-║         USE THESE TECHNIQUES DAILY FOR MAXIMUM RETENTION!                 ║
-║                                                                          ║
-║    Full details: 09_Career_Reference/04_Brain_Psychology.md              ║
-╚══════════════════════════════════════════════════════════════════════════╝
-
-┌──────────────────────────────────────────────────────────────────────────┐
-│ TECHNIQUE 1: ACTIVE RECALL                                               │
-│ ────────────────────────────                                             │
-│ Close book → Ask yourself questions → Write from memory → Check          │
-│                                                                          │
-│ "Reading FEELS productive. Recalling BUILDS mastery."                   │
-├──────────────────────────────────────────────────────────────────────────┤
-│ TECHNIQUE 2: 45-15 FOCUS BLOCKS                                          │
-│ ────────────────────────────────                                         │
-│ 45 min deep work → 15 min break (NO PHONE!) → Repeat 3-4x               │
-│                                                                          │
-│ "Your brain LOVES clear start-stop cycles."                             │
-├──────────────────────────────────────────────────────────────────────────┤
-│ TECHNIQUE 3: BLURTING TECHNIQUE                                          │
-│ ────────────────────────────────                                         │
-│ Study → Close book → Dump everything on paper →                         │
-│ Fill gaps in different color                                             │
-│                                                                          │
-│ "You instantly SEE your weak areas."                                    │
-├──────────────────────────────────────────────────────────────────────────┤
-│ TECHNIQUE 4: 2-3-7 REVISION RULE                                         │
-│ ────────────────────────────────                                         │
-│ Revise on: Day 2 → Day 3 → Day 7                                        │
-│                                                                          │
-│ "Spaced repetition BEATS last-minute cramming."                         │
-├──────────────────────────────────────────────────────────────────────────┤
-│ TECHNIQUE 5: FEYNMAN TECHNIQUE                                           │
-│ ────────────────────────────────                                         │
-│ Explain to a 10-year-old. If you can't simplify, you don't understand. │
-│                                                                          │
-│ "The best test of understanding is simplification."                     │
-├──────────────────────────────────────────────────────────────────────────┤
-│ TECHNIQUE 6: QUESTION FIRST                                              │
-│ ────────────────────────────                                             │
-│ Look at problems BEFORE reading theory.                                  │
-│                                                                          │
-│ "It trains your brain to study with PURPOSE."                           │
-└──────────────────────────────────────────────────────────────────────────┘
-
-DAILY WORKFLOW USING ALL 6:
-───────────────────────────
 Morning:
-  [09:00-09:45] Look at problems first (Technique 6)
-  [09:45-10:00] Break - walk, no phone
-  [10:00-10:45] Study theory with purpose
-  [10:45-11:00] Break
-  [11:00-11:45] Solve problems (Active Recall)
+  Redo 5 favorite solved problems — enjoy the speed
+  Review your handwritten notes
+  Scan Quick Reference one more time
 
 Afternoon:
-  [After lunch] Blurting session - dump everything, fill gaps
+  Mental rehearsal: visualize yourself in the interview
+  Positive self-talk: "I've prepared for 76 days. I'm ready."
 
 Evening:
-  [30 min] Revise today's topic (2-3-7 rule)
-  [15 min] Explain one concept simply (Feynman)
+  REST. Sleep well. No new problems.
+  Tomorrow you perform. Today you prepare your mind.
+```
 
-Sunday:
-  Weekly review of all topics from the week
+📘 Read: [09_Career_Reference/04_Brain_Psychology.md](../09_Career_Reference/04_Brain_Psychology.md)
+
+> **Final Mentor Note:** You've covered Arrays, Strings, Matrices, LinkedLists, Stacks, Queues, HashMaps, Trees, Graphs, Heaps, DP, Greedy, Backtracking, Tries, Union-Find, Bit Manipulation, Monotonic Stacks, SQL, System Design, and OOP. You solved 150+ problems. You learned 20+ patterns. You are ready. Trust the process.
+
+---
+
+# 📊 PROGRESS TRACKER
+
+## Weekly Checklist
+
+| Week | Dates | Topics | Confidence (1-5) | Problems Solved |
+|------|-------|--------|-------------------|-----------------|
+| 1 | Feb 19-25 | Arrays, Sorting Basics, Patterns | __ / 5 | __ / 14 |
+| 2 | Feb 26-Mar 4 | Strings, Sorting Deep, Two Pointers, Binary Search | __ / 5 | __ / 14 |
+| 3 | Mar 5-11 | Linked List, Recursion, GCD/Primes | __ / 5 | __ / 14 |
+| 4 | Mar 12-18 | Stack, Queue, HashMap, Kadane's | __ / 5 | __ / 14 |
+| 5 | Mar 19-25 | Sliding Window, Hashing Deep, Intervals | __ / 5 | __ / 14 |
+| 6 | Mar 26-Apr 1 | Binary Tree, BST, Tree Patterns | __ / 5 | __ / 14 |
+| 7 | Apr 2-8 | Heaps, Graphs, BFS/DFS, Topo Sort | __ / 5 | __ / 14 |
+| 8 | Apr 9-15 | Dynamic Programming (1D, 2D, Knapsack, LCS, LIS) | __ / 5 | __ / 14 |
+| 9 | Apr 16-22 | Greedy, Backtracking, Trie | __ / 5 | __ / 14 |
+| 10 | Apr 23-29 | Coin Change DP, Bits, Union-Find, Monotonic Stack | __ / 5 | __ / 14 |
+| 11 | Apr 30-May 5 | SQL, System Design, OOP, Mock Interviews | __ / 5 | __ / 12 |
+
+**TARGET: 150+ problems solved, 20+ patterns mastered**
+
+---
+
+## Daily Log Template
+
+```
+Date: ___________  Day __ / 76
+
+DS Topic:    _________________ [Done? Y/N]
+Algo Topic:  _________________ [Done? Y/N]
+Combo:       _________________ [Done? Y/N]
+Pattern:     _________________ [Done? Y/N]
+Q1:          _________________ [Solved? Y/N] [Time: __ min]
+Q2:          _________________ [Solved? Y/N] [Time: __ min]
+
+What I struggled with: _______________________
+What clicked today:    _______________________
+Tomorrow's focus:      _______________________
 ```
 
 ---
 
-## 🚀 START NOW!
+## Complete File Reference by Week
 
-**Day 1 (Today):**
-
-1. Read this entire plan
-2. Open `09_Career_Reference/02_Ultimate_DSA_Guide.md`
-3. Start with Arrays section
-4. Solve 5 easy array problems on LeetCode/HackerRank
-
-**Resources:**
-
-- LeetCode: https://leetcode.com
-- HackerRank: https://hackerrank.com
-- SQLZoo: https://sqlzoo.net
-- Mode SQL Tutorial: https://mode.com/sql-tutorial/
-
----
-
-_"The journey of a thousand miles begins with a single step. Take that step today!"_ 🚀
+| Week | Primary Reading Files |
+|------|----------------------|
+| 1 | [01_DataStructures_Complete.md](../02_Data_Structures/01_DataStructures_Complete.md), [01_Algorithm_Thinking.md](../03_Algorithms/01_Algorithm_Thinking.md), [09_Pattern_Programs_Complete.md](../03_Algorithms/09_Pattern_Programs_Complete.md), [02_Sorting_Algorithms.md](../03_Algorithms/02_Sorting_Algorithms.md) |
+| 2 | [02_Sorting_Algorithms.md](../03_Algorithms/02_Sorting_Algorithms.md), [07_Two_Pointers_Complete.md](../04_Patterns_Templates/07_Two_Pointers_Complete.md), [06_Binary_Search_Patterns.md](../04_Patterns_Templates/06_Binary_Search_Patterns.md), [04_2D_Arrays_Matrix.md](../02_Data_Structures/04_2D_Arrays_Matrix.md) |
+| 3 | [02_DataStructures_Variants.md](../02_Data_Structures/02_DataStructures_Variants.md), [03_Recursion_Complete.md](../03_Algorithms/03_Recursion_Complete.md), [08_GCD_NumberTheory_Patterns.md](../03_Algorithms/08_GCD_NumberTheory_Patterns.md) |
+| 4 | [02_DataStructures_Variants.md](../02_Data_Structures/02_DataStructures_Variants.md) (Stack/Queue), [08_GCD_NumberTheory_Patterns.md](../03_Algorithms/08_GCD_NumberTheory_Patterns.md) (Modular), [15_Monotonic_Stack_Queue_Complete.md](../03_Algorithms/15_Monotonic_Stack_Queue_Complete.md) |
+| 5 | [01_Sliding_Window.md](../04_Patterns_Templates/01_Sliding_Window.md), [03_Collections_Java.md](../02_Data_Structures/03_Collections_Java.md), [04_Pattern_Recognition.md](../04_Patterns_Templates/04_Pattern_Recognition.md) |
+| 6 | [05_Trees_Graphs.md](../03_Algorithms/05_Trees_Graphs.md) (Trees), [04_Pattern_Recognition.md](../04_Patterns_Templates/04_Pattern_Recognition.md) |
+| 7 | [05_Trees_Graphs.md](../03_Algorithms/05_Trees_Graphs.md) (Graphs), [07_Advanced_DataStructures.md](../03_Algorithms/07_Advanced_DataStructures.md) (Heap) |
+| 8 | [04_Dynamic_Programming.md](../03_Algorithms/04_Dynamic_Programming.md) |
+| 9 | [12_Greedy_Algorithms_Complete.md](../03_Algorithms/12_Greedy_Algorithms_Complete.md), [11_Backtracking_Complete.md](../03_Algorithms/11_Backtracking_Complete.md), [07_Advanced_DataStructures.md](../03_Algorithms/07_Advanced_DataStructures.md) (Trie) |
+| 10 | [10_Bit_Manipulation_Complete.md](../03_Algorithms/10_Bit_Manipulation_Complete.md), [14_Union_Find_DSU_Complete.md](../03_Algorithms/14_Union_Find_DSU_Complete.md), [13_String_Algorithms_Complete.md](../03_Algorithms/13_String_Algorithms_Complete.md), [15_Monotonic_Stack_Queue_Complete.md](../03_Algorithms/15_Monotonic_Stack_Queue_Complete.md) |
+| 11 | [01_OOPS_Principles.md](../06_OOP_Design/01_OOPS_Principles.md), [03_System_Design.md](../06_OOP_Design/03_System_Design.md), [01_SQL_Foundations_WHY_HOW.md](../11_SQL_Complete/01_SQL_Foundations_WHY_HOW.md), [03_Quick_Reference.md](../09_Career_Reference/03_Quick_Reference.md) |
 
 ---
 
-**Last Updated:** February 3, 2026
-**Total Files:** 35 organized in 9 topic folders
+## Success Milestones
+
+```
+BY END OF WEEK 3 (Mar 11):
+  Can solve any Easy array/string problem in < 15 min
+  Implement all basic sorts from memory
+  Reverse linked list both ways without looking
+  Binary search — zero bugs
+
+BY END OF WEEK 6 (Apr 1):
+  Solve Easy problems in < 10 min
+  Solve Medium problems in < 25 min
+  Know sliding window, two pointers, binary search patterns cold
+  Tree traversals from memory
+
+BY END OF WEEK 8 (Apr 15):
+  Solve 2 Mediums in 1 hour
+  Identify DP pattern within 5 minutes
+  Graph BFS/DFS template from memory
+  100+ problems solved
+
+BY END OF WEEK 11 (May 5):
+  Solve 2 Mediums in 50 minutes
+  Explain any DS/Algorithm clearly
+  Write SQL JOINs and GROUP BYs
+  System design discussion confidence
+  150+ problems solved
+  READY FOR INTERVIEWS
+```
+
+---
+
+_Last Updated: February 19, 2026_  
+_Plan Duration: 76 Days | 11 Weeks | Feb 19 - May 5, 2026_  
+_Structure: DS + Algo + Combo + Pattern + 2 Questions daily_
+
+**Your journey starts TODAY. One day at a time. Let's go.**
