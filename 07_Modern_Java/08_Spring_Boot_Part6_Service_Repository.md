@@ -5,6 +5,50 @@
 
 ---
 
+# 🎯 WHY-HOW-WHEN-WHICH FRAMEWORK
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHY: Why Service Layer Pattern?                                                │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • Fat controller anti-pattern: Business logic belongs in services            │
+│  • Reusability: Same service works for REST, CLI, scheduled jobs              │
+│  • Testability: Services easy to unit test without HTTP                       │
+│  • Transaction boundary: @Transactional goes on services                      │
+│  • Clean architecture: Controller → Service → Repository separation           │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  HOW: How to Structure Service Layer?                                           │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • Interface + Implementation: UserService interface, UserServiceImpl          │
+│  • @Service annotation: Marks class for component scanning                     │
+│  • Constructor injection: @RequiredArgsConstructor for dependencies            │
+│  • DTO conversion: Service converts Entity ↔ DTO                              │
+│  • Exception handling: Throw domain exceptions from services                   │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHEN: When to Use Service vs Repository?                                       │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  SERVICE: Business logic, validation, orchestration, DTO conversion            │
+│  REPOSITORY: Data access only - findById, save, delete, custom queries         │
+│                                                                                  │
+│  SERVICE: "Create order" = validate stock, calculate price, send email         │
+│  REPOSITORY: "Save order to database"                                           │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHICH: Which Patterns to Use?                                                  │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  ESSENTIAL:     @Service, @Repository, @Transactional on service methods       │
+│  IMPORTANT:     Interface segregation, custom repository methods               │
+│  ADVANCED:      Specifications, domain events, CQRS separation                 │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
 # THE SERVICE LAYER
 
 ---

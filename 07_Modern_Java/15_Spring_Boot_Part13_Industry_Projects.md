@@ -5,6 +5,49 @@
 
 ---
 
+# 🎯 WHY-HOW-WHEN-WHICH FRAMEWORK
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHY: Why Build Real-World Projects?                                            │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • Portfolio: TODO apps won't impress - E-commerce, Payment systems will      │
+│  • Interview: "Show me something non-trivial you've built"                   │
+│  • Experience: Real problems teach real solutions                             │
+│  • Confidence: "I've built payment integration" > "I know Spring Boot"       │
+│  • Job-ready: Gap between tutorials and production is huge                    │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  HOW: How Top Companies Structure Spring Boot Apps?                             │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • Domain-driven: Package by feature (user/, order/, payment/)                │
+│  • Multi-module: Shared libraries, separate deployables                       │
+│  • Event-driven: Kafka/RabbitMQ for async operations                          │
+│  • Observability: Metrics, tracing, logging in every service                  │
+│  • CI/CD: Automated testing, deployment pipelines                             │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHEN: When to Build Which Type of Project?                                     │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • Beginner: Blog platform, URL shortener, basic CRUD                          │
+│  • Intermediate: E-commerce, booking system, notification service             │
+│  • Advanced: Payment gateway, real-time chat, distributed system               │
+│  • Expert: Event sourcing, multi-tenant SaaS, microservices platform          │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHICH: Which Projects Stand Out in Interviews?                                 │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  IMPRESSIVE:    Payment integration, real-time features, microservices         │
+│  GOOD:          E-commerce with cart, booking with availability                │
+│  AVOID:         TODO apps, basic CRUD without business logic                   │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
 # SECTION 1: HOW BIG COMPANIES USE SPRING BOOT
 
 ---

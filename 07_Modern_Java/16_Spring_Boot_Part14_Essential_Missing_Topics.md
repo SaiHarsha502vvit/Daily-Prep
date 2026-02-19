@@ -5,6 +5,50 @@
 
 ---
 
+# 🎯 WHY-HOW-WHEN-WHICH FRAMEWORK
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHY: Why These "Essential Missing" Topics?                                     │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • Production requirements: Caching, async, scheduling are expected            │
+│  • API completion: Swagger docs, file uploads are basic features              │
+│  • Monitoring: Actuator = production application visibility                   │
+│  • Performance: Async and caching directly affect response times              │
+│  • Interview gaps: "Have you used @Cacheable? @Async?" - common questions    │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  HOW: How to Implement Each Feature?                                            │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • @Cacheable: Annotate method, configure cache manager (Redis/Caffeine)       │
+│  • @Async: @EnableAsync + return CompletableFuture                            │
+│  • @Scheduled: @EnableScheduling + cron expressions                           │
+│  • Actuator: Add dependency, configure endpoints in properties                │
+│  • Swagger: springdoc-openapi dependency, annotations optional                │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHEN: When to Use Each Feature?                                                │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • Caching: Expensive computations, frequently accessed data                   │
+│  • Async: Email sending, file processing, external API calls                  │
+│  • Scheduling: Report generation, cleanup jobs, data sync                     │
+│  • Actuator: Always in production for monitoring/health checks                │
+│  • Swagger: APIs consumed by other teams/clients                              │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHICH: Which Topics to Prioritize?                                             │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  ESSENTIAL:     Caching, @Async, Actuator, Swagger/OpenAPI                      │
+│  IMPORTANT:     Scheduling, file upload, email, internationalization           │
+│  ADVANCED:      WebSocket, Server-Sent Events, rate limiting                   │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
 # TABLE OF CONTENTS
 
 ```

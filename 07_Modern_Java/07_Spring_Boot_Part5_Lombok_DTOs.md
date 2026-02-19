@@ -5,6 +5,50 @@
 
 ---
 
+# 🎯 WHY-HOW-WHEN-WHICH FRAMEWORK
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHY: Why Lombok & DTOs?                                                        │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • Java verbosity: 80 lines of getters/setters → 1 annotation                  │
+│  • DTOs decouple: Don't expose entities to API - control what's returned       │
+│  • Security: Hide sensitive fields (password) from responses                   │
+│  • API versioning: Change DTO without changing entity/database                 │
+│  • Industry standard: Every Spring Boot project uses Lombok                    │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  HOW: How Does Lombok Work?                                                      │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • Annotation processing: Generates code at compile time (not reflection)      │
+│  • @Data: Generates getters, setters, equals, hashCode, toString               │
+│  • @Builder: Fluent builder pattern for object creation                        │
+│  • @RequiredArgsConstructor: Constructor for final fields (perfect for DI)    │
+│  • ModelMapper/MapStruct: Convert Entity ↔ DTO automatically                  │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHEN: When to Use DTOs?                                                        │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • ALWAYS for APIs: Never expose entities directly to clients                  │
+│  • Request DTOs: Validate and filter incoming data                             │
+│  • Response DTOs: Control exactly what fields are returned                     │
+│  • Different views: UserSummaryDTO vs UserDetailDTO for different endpoints   │
+│  • Cross-cutting: DTOs can aggregate data from multiple entities              │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHICH: Which Lombok Annotations to Use?                                        │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  ENTITIES:      @Getter, @Setter, @NoArgsConstructor (avoid @Data for JPA)      │
+│  DTOs:          @Data, @Builder, @AllArgsConstructor                            │
+│  SERVICES:      @RequiredArgsConstructor, @Slf4j                                │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
 # LOMBOK - THE BOILERPLATE KILLER
 
 ---

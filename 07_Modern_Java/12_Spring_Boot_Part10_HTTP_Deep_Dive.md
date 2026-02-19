@@ -5,6 +5,50 @@
 
 ---
 
+# 🎯 WHY-HOW-WHEN-WHICH FRAMEWORK
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHY: Why Understand HTTP Deeply?                                               │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • Debug network issues: "Why is my API slow?" - headers, connections         │
+│  • API design: Right status codes, headers make intuitive APIs                │
+│  • Security: CORS, cookies, authentication headers                            │
+│  • Performance: Caching, compression, keep-alive connections                  │
+│  • Interview: Network questions are common in backend interviews              │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  HOW: How HTTP Request/Response Cycle Works?                                    │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • DNS lookup: Domain → IP address resolution                                  │
+│  • TCP handshake: Establish connection (3-way handshake)                       │
+│  • TLS negotiation: HTTPS encryption setup                                     │
+│  • Request: Method + URL + Headers + Body                                       │
+│  • Response: Status + Headers + Body                                           │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHEN: When to Use Each HTTP Method?                                            │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  • GET: Retrieve data (safe, idempotent, cacheable)                            │
+│  • POST: Create new resource (not idempotent)                                  │
+│  • PUT: Replace entire resource (idempotent)                                   │
+│  • PATCH: Partial update (not always idempotent)                               │
+│  • DELETE: Remove resource (idempotent)                                        │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WHICH: Which HTTP Concepts to Master?                                          │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  ESSENTIAL:     Status codes, methods, headers, request/response structure     │
+│  IMPORTANT:     CORS, cookies, caching headers, content types                  │
+│  ADVANCED:      HTTP/2, WebSocket, long polling, streaming                     │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
 # SECTION 1: HTTP REQUEST LIFECYCLE
 
 ---
