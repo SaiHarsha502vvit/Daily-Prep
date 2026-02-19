@@ -73,7 +73,7 @@ Daily-Prep/
 │   ├── 03_System_Design.md            → System design basics
 │   └── 04_User_System_Flows.md        → User flows & sequences
 │
-├── 📁 07_Modern_Java/                 ← JAVA + SPRING BOOT (16 files)
+├── 📁 07_Modern_Java/                 ← JAVA + SPRING BOOT (28 files)
 │   ├── 00_SPRING_BOOT_ROADMAP.md      → Spring Boot learning path
 │   ├── 01_Functional_Programming.md   → Streams, Lambdas, Optionals
 │   ├── 02_Algorithm_Engineering.md    → Algorithm optimization
@@ -91,8 +91,16 @@ Daily-Prep/
 │   ├── 13_Spring_Boot_Part11_Auth_Security.md → JWT, OAuth2
 │   ├── 14_Spring_Boot_Part12_DSA_Applications.md → DSA in backend
 │   ├── 15_Spring_Boot_Part13_Industry_Projects.md → Real-world projects
-│   └── 16_Spring_Boot_Part14_Essential_Missing_Topics.md → Advanced topics
-│
+│   ├── 16_Spring_Boot_Part14_Essential_Missing_Topics.md → Advanced topics
+│   ├── 17_Spring_Boot_Part15_WebFlux_Reactive.md → WebFlux & Reactive
+│   ├── 18_Spring_Boot_Part16_SOLID_Principles.md → SOLID in Spring
+│   ├── 19_Spring_Boot_Part17_Database_Security.md → DB Security
+│   ├── 20_Spring_Boot_Part18_Distributed_Tracing.md → Observability & Tracing
+│   ├── 21_Spring_Boot_Part19_Testing_Complete.md → Testing strategies
+│   ├── 22_Spring_Boot_Part20_Microservices_Patterns.md → Microservices
+│   ├── 23_Spring_Boot_Part21_Cloud_Deployment.md → Cloud & Deployment
+│   └── 24_Spring_Boot_Part22_Annotations_Complete_Reference.md → All annotations│   ├── 25_Spring_Boot_Part23_Missing_Essential_Topics.md → WebSocket, GraphQL, gRPC, Batch, i18n, Multi-tenancy, GraalVM, Rate Limiting
+│   └── 26_Spring_Boot_Curriculum_50Day.md → 🆕 50-Day Spring Boot Study Plan│
 ├── 📁 08_SQL_Database/                ← SQL
 │   └── 01_SQL_Complete_Guide.md       → Complete SQL (6000+ lines)
 │
@@ -176,6 +184,16 @@ Daily-Prep/
 - [Functional Programming](07_Modern_Java/01_Functional_Programming.md)
 - [Algorithm Engineering](07_Modern_Java/02_Algorithm_Engineering.md)
 - Spring Boot Parts 0-14: [Part 0](07_Modern_Java/02_Spring_Boot_Part0_Hidden_Foundations.md) → [Part 14](07_Modern_Java/16_Spring_Boot_Part14_Essential_Missing_Topics.md)
+- [WebFlux & Reactive](07_Modern_Java/17_Spring_Boot_Part15_WebFlux_Reactive.md)
+- [SOLID in Spring](07_Modern_Java/18_Spring_Boot_Part16_SOLID_Principles.md)
+- [Database Security](07_Modern_Java/19_Spring_Boot_Part17_Database_Security.md)
+- [Distributed Tracing](07_Modern_Java/20_Spring_Boot_Part18_Distributed_Tracing.md)
+- [Testing Complete](07_Modern_Java/21_Spring_Boot_Part19_Testing_Complete.md)
+- [Microservices Patterns](07_Modern_Java/22_Spring_Boot_Part20_Microservices_Patterns.md)
+- [Cloud Deployment](07_Modern_Java/23_Spring_Boot_Part21_Cloud_Deployment.md)
+- [Annotations Reference](07_Modern_Java/24_Spring_Boot_Part22_Annotations_Complete_Reference.md)
+- [**Missing Essentials: WebSocket, GraphQL, gRPC, Batch, i18n, GraalVM, Modulith**](07_Modern_Java/25_Spring_Boot_Part23_Missing_Essential_Topics.md)
+- [**📅 50-Day Spring Boot Curriculum**](07_Modern_Java/26_Spring_Boot_Curriculum_50Day.md)
 
 ### SQL & Database
 - [Complete SQL Guide (6000+ lines)](08_SQL_Database/01_SQL_Complete_Guide.md)
@@ -209,12 +227,12 @@ Daily-Prep/
 | 04_Patterns_Templates | 7 | Coding patterns & templates |
 | 05_Problem_Solving | 4 | Practice (210+ problems) |
 | 06_OOP_Design | 4 | OOP, Design, System |
-| 07_Modern_Java | 16 | Functional, Engineering, Spring Boot |
+| 07_Modern_Java | 28 | Functional, Engineering, Spring Boot |
 | 08_SQL_Database | 1 | Complete SQL (6000+ lines) |
 | 09_Career_Reference | 6 | Career, Reference, Resources |
 | 10_Enterprise_Systems | 6 | ERP, Real-world problems |
 | 11_SQL_Complete | 4 | SQL Deep Dive + Projects |
-| **TOTAL** | **70** | **Complete learning system** |
+| **TOTAL** | **82** | **Complete learning system** |
 
 ---
 
@@ -233,5 +251,5 @@ Open [02_Study_Plan_Calendar.md](01_Getting_Started/02_Study_Plan_Calendar.md) f
 
 ---
 
-_Total Files: 70 (organized in 11 topic folders)_  
+_Total Files: 82 (organized in 11 topic folders)_  
 _Structure: Clean and intuitive navigation_

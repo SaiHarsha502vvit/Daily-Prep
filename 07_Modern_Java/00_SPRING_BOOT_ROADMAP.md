@@ -112,6 +112,19 @@
 │  └─────────────────────────────────────────────────────────────────────────┘    │
 │                                                                                  │
 │  ┌─────────────────────────────────────────────────────────────────────────┐    │
+│  │ 📄 PART 23: MISSING ESSENTIAL TOPICS                                    │    │
+│  │    WebSockets, GraphQL, gRPC, Spring Batch, HATEOAS, i18n,            │    │
+│  │    Multi-Tenancy, Spring Boot 3.x, GraalVM, Modulith, Rate Limiting   │    │
+│  │    ⭐ 14 topics that complete your Spring Boot mastery                  │    │
+│  └─────────────────────────────────────────────────────────────────────────┘    │
+│                                                                                  │
+│  ┌─────────────────────────────────────────────────────────────────────────┐    │
+│  │ 📄 50-DAY SPRING BOOT CURRICULUM                                        │    │
+│  │    Complete 10-week study plan: Foundations → Production → Expert      │    │
+│  │    Daily structure: READ + CODE + PRACTICE + NOTES                     │    │
+│  └─────────────────────────────────────────────────────────────────────────┘    │
+│                                                                                  │
+│  ┌─────────────────────────────────────────────────────────────────────────┐    │
 │  │ 📄 PART 4: QUICK OVERVIEW (Optional high-level summary)                 │    │
 │  └─────────────────────────────────────────────────────────────────────────┘    │
 │                                                                                  │
@@ -153,9 +166,12 @@
 │  20  22_Spring_Boot_Part20_Microservices       Eureka, Gateway, Circuit Breaker │
 │  21  23_Spring_Boot_Part21_Cloud_Deployment    Docker, K8s, AWS, Azure, CI/CD   │
 │  22  24_Spring_Boot_Part22_Annotations         ALL annotations reference        │
+│  23  25_Spring_Boot_Part23_Missing_Essentials   WebSockets, GraphQL, gRPC,      │
+│                                                 Batch, HATEOAS, i18n, GraalVM   │
+│  --  26_Spring_Boot_Curriculum_50Day            50-day study plan (10 weeks)     │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
-TOTAL: 24 FILES (Functional Programming + Parts 0-22)
+TOTAL: 26 FILES (Functional Programming + Parts 0-23 + Curriculum)
 ESTIMATED TIME: 10-14 weeks (2-3 hours/day)
 ```
 
@@ -830,9 +846,11 @@ _High-level overview of JPA, Web, Security, Testing. Read for context, but detai
 │  └── 📄 23_Spring_Boot_Part21_Cloud_Deployment.md → Cloud Deployment            │
 │                                                                                  │
 │  APPENDIX                                                                        │
-│  └── 📄 24_Spring_Boot_Part22_Annotations_Complete_Reference.md → All Annotations│
+│  ├── 📄 24_Spring_Boot_Part22_Annotations_Complete_Reference.md → All Annotations│
+│  ├── 📄 25_Spring_Boot_Part23_Missing_Essential_Topics.md → Missing Essentials   │
+│  └── 📄 26_Spring_Boot_Curriculum_50Day.md → 50-Day Study Plan                   │
 │                                                                                  │
-│  TOTAL: 23 FILES (Part 0-22)                                                    │
+│  TOTAL: 25 FILES (Part 0-23 + Curriculum)                                       │
 │                                                                                  │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
