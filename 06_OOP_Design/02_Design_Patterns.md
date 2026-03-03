@@ -1260,3 +1260,69 @@ order.setStatus(OrderStatus.PAID); // Notifies observers
 ║ Proxy          ║ Control access, lazy loading, caching                        ║
 ╚════════════════╩═══════════════════════════════════════════════════════════════╝
 ```
+
+---
+
+# CURATED PRACTICE PROBLEMS — OOP & DESIGN PATTERNS
+
+> **HOW TO USE**: These are system design / OOP implementation problems.
+> Section 1 = implement data structures using OOP. Section 2 = apply design patterns.
+> Section 3 = LeetCode design class problems.
+
+---
+
+## Section 1: OOP Implementation — Build From Scratch
+
+| # | Problem | Platform | Difficulty | Key Technique |
+|---|---------|----------|------------|---------------|
+| 1 | Design HashMap (LC 706) | LeetCode | Easy | Array of buckets + chaining |
+| 2 | Design HashSet (LC 705) | LeetCode | Easy | Boolean bucket or linked list |
+| 3 | Min Stack (LC 155) | LeetCode | Medium | Two stacks or store (val, min) pairs |
+| 4 | Implement Queue using Stacks (LC 232) | LeetCode | Easy | Two stacks: push/pop inversion |
+| 5 | Implement Stack using Queues (LC 225) | LeetCode | Easy | Push costly or pop costly |
+| 6 | Design Linked List (LC 707) | LeetCode | Medium | Sentinel nodes, doubly linked |
+| 7 | Design Circular Queue (LC 622) | LeetCode | Medium | Array with front/rear pointers |
+| 8 | Design Circular Deque (LC 641) | LeetCode | Medium | Extend circular queue both ends |
+
+---
+
+## Section 2: Design Class Problems (Strategy/Observer/Iterator)
+
+| # | Problem | Platform | Difficulty | Key Technique |
+|---|---------|----------|------------|---------------|
+| 1 | LRU Cache (LC 146) | LeetCode | Medium | HashMap + Doubly Linked List |
+| 2 | LFU Cache (LC 460) | LeetCode | Hard | HashMap + frequency buckets |
+| 3 | Iterator for Combination (LC 1286) | LeetCode | Medium | Iterator pattern, precompute or lazy |
+| 4 | Flatten Nested List Iterator (LC 341) | LeetCode | Medium | Stack + recursive flatten |
+| 5 | Peeking Iterator (LC 284) | LeetCode | Medium | Decorator pattern on iterator |
+| 6 | Design Twitter (LC 355) | LeetCode | Medium | OOP: User, Tweet, Feed (merge k) |
+| 7 | Design Browser History (LC 1472) | LeetCode | Medium | Command pattern / doubly linked |
+| 8 | Design Underground System (LC 1396) | LeetCode | Medium | HashMap tracking check-in/out |
+
+---
+
+## Section 3: Advanced Design
+
+| # | Problem | Platform | Difficulty | Key Technique |
+|---|---------|----------|------------|---------------|
+| 1 | Serialize and Deserialize Binary Tree (LC 297) | LeetCode | Hard | Preorder + null markers |
+| 2 | Design Add and Search Words (LC 211) | LeetCode | Medium | Trie + DFS for wildcard |
+| 3 | Implement Trie (LC 208) | LeetCode | Medium | Array[26] children nodes |
+| 4 | Design File System (LC 1166) | LeetCode | Medium | Trie or HashMap of paths |
+| 5 | Design Hit Counter (LC 362) | LeetCode | Medium | Queue or circular buffer |
+| 6 | Insert Delete GetRandom O(1) (LC 380) | LeetCode | Medium | ArrayList + HashMap swap trick |
+| 7 | Find Median from Data Stream (LC 295) | LeetCode | Hard | Two heaps (maxHeap + minHeap) |
+
+---
+
+## HIDDEN GEMS — Design Problems
+
+| # | Problem | Platform | Why It's Valuable |
+|---|---------|----------|-------------------|
+| 1 | Design Parking System (LC 1603) | LeetCode | Simplest OOP design — good warm-up |
+| 2 | Design an Ordered Stream (LC 1656) | LeetCode | Pointer advancement pattern |
+| 3 | Snapshot Array (LC 1146) | LeetCode | Binary search on version history |
+| 4 | Time Based Key-Value Store (LC 981) | LeetCode | TreeMap or binary search on timestamps |
+| 5 | Online Stock Span (LC 901) | LeetCode | Monotonic stack as internal state |
+
+---

@@ -917,4 +917,30 @@ public List<List<Integer>> subsets(int[] nums) {
 
 ---
 
+# CURATED PRACTICE PROBLEMS — PATTERN RECOGNITION DRILL
+
+> **HOW TO USE**: For each problem below, FIRST identify the pattern BEFORE coding.
+> Write down: "This is a [pattern] problem because [reason]."
+
+---
+
+## Pattern Identification Drill (Mixed)
+
+| # | Problem | Platform | Difficulty | Pattern to Identify |
+|---|---------|----------|------------|--------------------|
+| 1 | Best Time to Buy and Sell Stock (LC 121) | LeetCode | Easy | Kadane's / Track min so far |
+| 2 | Product of Array Except Self (LC 238) | LeetCode | Medium | Prefix/Suffix products |
+| 3 | Longest Consecutive Sequence (LC 128) | LeetCode | Medium | HashSet + sequence start |
+| 4 | Find All Duplicates in Array (LC 442) | LeetCode | Medium | Index marking (negate trick) |
+| 5 | Subarray Sum Equals K (LC 560) | LeetCode | Medium | Prefix sum + HashMap |
+| 6 | Next Permutation (LC 31) | LeetCode | Medium | Right-to-left scan pattern |
+| 7 | Longest Palindromic Substring (LC 5) | LeetCode | Medium | Expand around center |
+| 8 | Median of Two Sorted Arrays (LC 4) | LeetCode | Hard | Binary search on partition |
+| 9 | Coin Change (LC 322) | LeetCode | Medium | Unbounded knapsack DP |
+| 10 | Word Break (LC 139) | LeetCode | Medium | DP + HashSet dictionary |
+| 11 | House Robber (LC 198) | LeetCode | Medium | Linear DP: take or skip |
+| 12 | Decode Ways (LC 91) | LeetCode | Medium | Linear DP: 1-digit or 2-digit |
+
+---
+
 **Master these patterns, and you'll solve 90% of interview problems!**

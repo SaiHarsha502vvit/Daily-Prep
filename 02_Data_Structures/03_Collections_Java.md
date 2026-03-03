@@ -749,4 +749,28 @@ Collections.sort(list, Collections.reverseOrder());  // [5, 4, 3, 1, 1]
 
 ---
 
-_This reference is your go-to guide during practice! 📚_
+# CURATED PRACTICE PROBLEMS — JAVA COLLECTIONS IN ACTION
+
+> **HOW TO USE**: These problems specifically test your knowledge of Java Collections API.
+> Focus on choosing the RIGHT collection for each problem.
+
+---
+
+## Collection Choice Problems
+
+| # | Problem | Platform | Difficulty | Best Collection | Why |
+|---|---------|----------|------------|-----------------|-----|
+| 1 | Two Sum (LC 1) | LeetCode | Easy | HashMap | O(1) lookup by complement |
+| 2 | Group Anagrams (LC 49) | LeetCode | Medium | HashMap<String, List> | Sorted key grouping |
+| 3 | Kth Largest Element (LC 215) | LeetCode | Medium | PriorityQueue | Min heap of size k |
+| 4 | LRU Cache (LC 146) | LeetCode | Medium | LinkedHashMap | Insertion order + removeEldest |
+| 5 | Merge Intervals (LC 56) | LeetCode | Medium | ArrayList + sort | Collections.sort by start |
+| 6 | Sliding Window Max (LC 239) | LeetCode | Hard | ArrayDeque | Monotonic deque |
+| 7 | Top K Frequent Words (LC 692) | LeetCode | Medium | HashMap + TreeMap | Sorted by freq then alpha |
+| 8 | Contains Duplicate III (LC 220) | LeetCode | Hard | TreeSet | floor/ceiling for range check |
+| 9 | My Calendar I (LC 729) | LeetCode | Medium | TreeMap | floorKey/ceilingKey for overlap |
+| 10 | Task Scheduler (LC 621) | LeetCode | Medium | PriorityQueue | Max heap by remaining count |
+
+---
+
+_This reference is your go-to guide during practice!_

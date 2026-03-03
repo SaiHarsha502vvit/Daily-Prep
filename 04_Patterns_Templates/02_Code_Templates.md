@@ -1316,4 +1316,32 @@ Before writing code for any problem:
 4. **Test with examples** before submitting
 5. **Handle edge cases** (empty, single element, all same)
 
-**You've got this! 💪**
+---
+
+# CURATED PRACTICE PROBLEMS — TEMPLATE APPLICATION DRILL
+
+> **HOW TO USE**: Each problem maps to a specific template from this guide.
+> Practice: open the template, then adapt it to solve the problem.
+
+---
+
+## Template → Problem Mapping
+
+| Template | Problem | Platform | Difficulty | Adaptation Needed |
+|----------|---------|----------|------------|------------------|
+| Binary Search | Search in Rotated Sorted Array (LC 33) | LeetCode | Medium | Modified condition in while loop |
+| Binary Search | Find Minimum in Rotated Sorted Array (LC 153) | LeetCode | Medium | Compare mid with right |
+| Sliding Window (Fixed) | Maximum Average Subarray I (LC 643) | LeetCode | Easy | Direct template application |
+| Sliding Window (Variable) | Minimum Window Substring (LC 76) | LeetCode | Hard | Shrink condition = all chars covered |
+| Two Pointers | 3Sum (LC 15) | LeetCode | Medium | Fix one + two-pointer template |
+| BFS Template | Word Ladder (LC 127) | LeetCode | Hard | String transformation as neighbors |
+| DFS Template | Number of Islands (LC 200) | LeetCode | Medium | Grid DFS with flood fill |
+| Backtracking | Combination Sum (LC 39) | LeetCode | Medium | Reuse allowed, target decreasing |
+| Merge Sort | Sort an Array (LC 912) | LeetCode | Medium | Direct template application |
+| Trie Template | Implement Trie (LC 208) | LeetCode | Medium | Direct template application |
+| Union-Find | Number of Provinces (LC 547) | LeetCode | Medium | Union adjacency matrix entries |
+| Topological Sort | Course Schedule II (LC 210) | LeetCode | Medium | Kahn's BFS template |
+
+---
+
+**You've got this!**

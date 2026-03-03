@@ -711,6 +711,75 @@ public class UserRoleId implements Serializable {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+### N+1 Query Visual Flow — Sequence Diagram
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│          N+1 PROBLEM — VISUAL SEQUENCE COMPARISON                               │
+│                                                                                  │
+│  ═══════════ BAD: N+1 Queries (Lazy Loading) ═══════════                        │
+│                                                                                  │
+│  Application          Hibernate            Database                             │
+│      │                    │                    │                                 │
+│      │── findAllUsers() ─▶│                    │                                 │
+│      │                    │── SELECT * FROM    │                                 │
+│      │                    │   users ──────────▶│  ← Query 1                     │
+│      │                    │◀── 10 User rows ──│                                 │
+│      │◀─ List<User> ─────│                    │                                 │
+│      │                    │                    │                                 │
+│      │── user.getOrders()▶│                    │                                 │
+│      │                    │── SELECT * FROM    │                                 │
+│      │                    │   orders WHERE     │                                 │
+│      │                    │   user_id=1 ──────▶│  ← Query 2                     │
+│      │◀─ orders ─────────│◀──────────────────│                                 │
+│      │                    │                    │                                 │
+│      │── user.getOrders()▶│── WHERE user_id=2 ▶│  ← Query 3                     │
+│      │── user.getOrders()▶│── WHERE user_id=3 ▶│  ← Query 4                     │
+│      │── user.getOrders()▶│── WHERE user_id=4 ▶│  ← Query 5                     │
+│      │      ...           │       ...          │     ...                         │
+│      │── user.getOrders()▶│── WHERE user_id=10▶│  ← Query 11                    │
+│      │                    │                    │                                 │
+│      │  TOTAL: 1 + 10 = 11 queries for 10 users!                               │
+│      │  With 1000 users → 1001 round trips → DATABASE OVERLOAD 🔥              │
+│                                                                                  │
+│  ═══════════ GOOD: JOIN FETCH (1 Query) ═══════════                             │
+│                                                                                  │
+│  Application          Hibernate            Database                             │
+│      │                    │                    │                                 │
+│      │── findAllUsers() ─▶│                    │                                 │
+│      │                    │── SELECT u.*, o.*  │                                 │
+│      │                    │   FROM users u     │                                 │
+│      │                    │   LEFT JOIN orders │                                 │
+│      │                    │   o ON u.id =      │                                 │
+│      │                    │   o.user_id ──────▶│  ← Query 1 (ONLY!)             │
+│      │                    │◀── all data ──────│                                 │
+│      │◀─ List<User>      │                    │                                 │
+│      │   (with orders    │                    │                                 │
+│      │    pre-loaded)    │                    │                                 │
+│      │                    │                    │                                 │
+│      │  TOTAL: 1 query regardless of user count ✅                              │
+│                                                                                  │
+│  ═══════════ ALSO GOOD: @BatchSize (Batched) ═══════════                        │
+│                                                                                  │
+│  Application          Hibernate            Database                             │
+│      │                    │                    │                                 │
+│      │── findAllUsers() ─▶│── SELECT * FROM    │                                 │
+│      │                    │   users ──────────▶│  ← Query 1                     │
+│      │◀─ 1000 users ─────│                    │                                 │
+│      │                    │                    │                                 │
+│      │── access orders ──▶│── SELECT * FROM    │                                 │
+│      │                    │   orders WHERE     │                                 │
+│      │                    │   user_id IN       │                                 │
+│      │                    │   (1,2,...,50) ───▶│  ← Query 2 (batch of 50)       │
+│      │                    │── IN (51,...,100) ─▶│  ← Query 3                     │
+│      │                    │       ...          │     ...                         │
+│      │                    │── IN (951,...1000)─▶│  ← Query 21                    │
+│      │                    │                    │                                 │
+│      │  TOTAL: 1 + 20 = 21 queries (vs 1001!) ✅                                │
+│                                                                                  │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
 ### Solutions to N+1
 
 ```java

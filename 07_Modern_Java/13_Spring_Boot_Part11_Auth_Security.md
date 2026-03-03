@@ -1146,6 +1146,80 @@ public class ProjectController {
 
 ## Chapter 9: OAuth2 / Social Login
 
+### OAuth2 Authorization Code Flow — Visual Diagram
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│          OAUTH2 AUTHORIZATION CODE FLOW                                         │
+│          (Most common & most secure for web apps)                               │
+│                                                                                  │
+│   User              Your App           Auth Server          Resource Server     │
+│  (Browser)        (Spring Boot)     (Google/GitHub)        (Google API etc.)    │
+│     │                  │                   │                      │              │
+│     │── Click          │                   │                      │              │
+│     │  "Login with     │                   │                      │              │
+│     │   Google" ──────▶│                   │                      │              │
+│     │                  │                   │                      │              │
+│  ┌──┤ STEP 1: Redirect to Auth Server     │                      │              │
+│  │  │◀── 302 Redirect──│                   │                      │              │
+│  │  │    to:                               │                      │              │
+│  │  │    accounts.google.com/auth?         │                      │              │
+│  │  │      client_id=YOUR_APP              │                      │              │
+│  │  │      redirect_uri=/callback          │                      │              │
+│  │  │      scope=email+profile             │                      │              │
+│  │  │      response_type=code              │                      │              │
+│  │  │      state=random_csrf_token         │                      │              │
+│  │  │                  │                   │                      │              │
+│  │  │ STEP 2: User logs in at Auth Server │                      │              │
+│  │  │─── email + password ────────────────▶│                      │              │
+│  │  │                  │                   │── Verify             │              │
+│  │  │                  │                   │   credentials        │              │
+│  │  │                  │                   │                      │              │
+│  │  │ STEP 3: "Allow this app?" consent   │                      │              │
+│  │  │◀── consent screen ──────────────────│                      │              │
+│  │  │─── "Yes, Allow" ──────────────────▶ │                      │              │
+│  │  │                  │                   │                      │              │
+│  │  │ STEP 4: Auth Server redirects back with CODE               │              │
+│  │  │◀── 302 Redirect──│                   │                      │              │
+│  │  │    to: yourapp.com/callback?         │                      │              │
+│  │  │      code=AUTH_CODE_abc123           │                      │              │
+│  │  │      state=random_csrf_token         │                      │              │
+│  └──│─── /callback ───▶│                   │                      │              │
+│     │                  │                   │                      │              │
+│     │  STEP 5: Exchange code for tokens (SERVER-TO-SERVER)       │              │
+│     │                  │── POST /token ───▶│                      │              │
+│     │                  │   code=abc123     │                      │              │
+│     │                  │   client_id=...   │                      │              │
+│     │                  │   client_secret=..│                      │              │
+│     │                  │                   │                      │              │
+│     │                  │◀── access_token ──│                      │              │
+│     │                  │    refresh_token   │                      │              │
+│     │                  │    id_token (OIDC) │                      │              │
+│     │                  │                   │                      │              │
+│     │  STEP 6: Use access_token to get user info                 │              │
+│     │                  │── GET /userinfo ──│──────────────────────▶│              │
+│     │                  │   Bearer: token   │                      │              │
+│     │                  │◀── { email, name, picture } ────────────│              │
+│     │                  │                   │                      │              │
+│     │  STEP 7: Create session, redirect to dashboard             │              │
+│     │◀── Set-Cookie ──│                   │                      │              │
+│     │    JSESSIONID    │                   │                      │              │
+│     │                  │                   │                      │              │
+│  ════════════════════════════════════════════════════════════════════════════    │
+│  WHY Authorization Code (not Implicit)?                                         │
+│  • Code exchanged server-side → token NEVER exposed to browser                  │
+│  • client_secret stays on server → can't be stolen from JS                     │
+│  • Refresh tokens possible → long-lived sessions without re-login              │
+│                                                                                  │
+│  SECURITY CHECKLIST:                                                            │
+│  ✅ Validate state parameter (prevents CSRF)                                    │
+│  ✅ Use HTTPS everywhere                                                        │
+│  ✅ Store tokens server-side (not localStorage)                                 │
+│  ✅ Validate redirect_uri matches registered URI                                │
+│  ✅ Use PKCE for public clients (mobile/SPA)                                    │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
 ```java
 // ═══════════════════════════════════════════════════════════════════════════════
 // OAuth2 LOGIN (Google, GitHub, Facebook, etc.)

@@ -738,5 +738,67 @@ You're ready. 🚀
 
 ---
 
+# CURATED PRACTICE PROBLEMS — SLIDING WINDOW & TWO POINTERS
+
+> **HOW TO USE**: Section 1 = fixed window (easiest). Section 2 = variable window. Section 3 = two pointers.
+> Master each section before moving to the next.
+
+---
+
+## Section 1: Fixed-Size Sliding Window
+
+| # | Problem | Platform | Difficulty | Key Technique |
+|---|---------|----------|------------|---------------|
+| 1 | Maximum Average Subarray I (LC 643) | LeetCode | Easy | Sum of window k, slide |
+| 2 | Find All Anagrams in a String (LC 438) | LeetCode | Medium | Frequency map window = k |
+| 3 | Permutation in String (LC 567) | LeetCode | Medium | Fixed window = len(s1) |
+| 4 | Maximum of All Subarrays of Size K | GFG | Medium | Deque for sliding max |
+| 5 | Sliding Window Maximum (LC 239) | LeetCode | Hard | Monotonic deque |
+
+---
+
+## Section 2: Variable-Size Sliding Window
+
+| # | Problem | Platform | Difficulty | Key Technique |
+|---|---------|----------|------------|---------------|
+| 1 | Longest Substring Without Repeating (LC 3) | LeetCode | Medium | HashSet + shrink on duplicate |
+| 2 | Minimum Size Subarray Sum (LC 209) | LeetCode | Medium | Shrink while sum >= target |
+| 3 | Longest Repeating Character Replacement (LC 424) | LeetCode | Medium | Window - maxFreq <= k |
+| 4 | Max Consecutive Ones III (LC 1004) | LeetCode | Medium | Flip at most k zeros |
+| 5 | Fruit Into Baskets (LC 904) | LeetCode | Medium | At most 2 distinct fruits |
+| 6 | Minimum Window Substring (LC 76) | LeetCode | Hard | Shrink to find minimum valid |
+| 7 | Subarrays with K Different Integers (LC 992) | LeetCode | Hard | atMost(k) - atMost(k-1) trick |
+| 8 | Longest Substring with At Most K Distinct (LC 340) | LeetCode | Medium | HashMap count distinct |
+
+---
+
+## Section 3: Two Pointers
+
+| # | Problem | Platform | Difficulty | Key Technique |
+|---|---------|----------|------------|---------------|
+| 1 | Two Sum II - Sorted (LC 167) | LeetCode | Medium | Left+right converge |
+| 2 | 3Sum (LC 15) | LeetCode | Medium | Fix one + two-pointer on rest |
+| 3 | Container With Most Water (LC 11) | LeetCode | Medium | Move shorter pointer inward |
+| 4 | Trapping Rain Water (LC 42) | LeetCode | Hard | Two pointer with leftMax/rightMax |
+| 5 | Sort Colors (LC 75) | LeetCode | Medium | Dutch National Flag 3-way |
+| 6 | Remove Duplicates from Sorted Array (LC 26) | LeetCode | Easy | Slow/fast pointer |
+| 7 | Move Zeroes (LC 283) | LeetCode | Easy | Partition pointer |
+| 8 | Squares of a Sorted Array (LC 977) | LeetCode | Easy | Two pointers from both ends |
+
+---
+
+## HIDDEN GEMS — Sliding Window & Two Pointers
+
+| # | Problem | Platform | Why It's Valuable |
+|---|---------|----------|-------------------|
+| 1 | Count Number of Nice Subarrays (LC 1248) | LeetCode | atMost trick with odd numbers |
+| 2 | Replace the Substring for Balanced String (LC 1234) | LeetCode | Min window where outside is balanced |
+| 3 | Grumpy Bookstore Owner (LC 1052) | LeetCode | Fixed window on top of prefix sum |
+| 4 | Longest Turbulent Subarray (LC 978) | LeetCode | Alternating comparison window |
+| 5 | Maximum Points You Can Obtain from Cards (LC 1423) | LeetCode | Min subarray trick (complement) |
+| 6 | Get Equal Substrings Within Budget (LC 1208) | LeetCode | Variable window with cost constraint |
+
+---
+
 _Created: January 24, 2026_  
 _Based on your breakthrough understanding_

@@ -154,6 +154,71 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+### IoC Container Resolution — Step-by-Step Flow
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│              IoC CONTAINER BEAN RESOLUTION PROCESS                               │
+│                                                                                  │
+│  PHASE 1: COMPONENT SCANNING                                                    │
+│  ──────────────────────────────────────                                          │
+│  Classpath scan → find @Component, @Service, @Repository, @Controller           │
+│                                                                                  │
+│       @Service            @Repository           @Controller                     │
+│    OrderService          OrderRepo             OrderController                  │
+│         │                    │                       │                           │
+│         ▼                    ▼                       ▼                           │
+│                                                                                  │
+│  PHASE 2: BeanDefinition CREATION                                               │
+│  ──────────────────────────────────────                                          │
+│  Each class → BeanDefinition object (metadata about the bean)                   │
+│                                                                                  │
+│    BeanDefinition {                                                              │
+│      name: "orderService"                                                       │
+│      class: OrderService.class                                                  │
+│      scope: SINGLETON                                                           │
+│      dependencies: [OrderRepo, NotificationService]                             │
+│    }                                                                             │
+│                                                                                  │
+│  PHASE 3: DEPENDENCY GRAPH CONSTRUCTION                                         │
+│  ──────────────────────────────────────                                          │
+│  Container builds a directed graph of who-needs-whom:                            │
+│                                                                                  │
+│    OrderController ──depends──▶ OrderService                                    │
+│                                    │                                             │
+│                          ┌─────────┴──────────┐                                 │
+│                          ▼                     ▼                                 │
+│                      OrderRepo        NotificationService                       │
+│                          │                     │                                 │
+│                          ▼                     ▼                                 │
+│                      DataSource           EmailClient                           │
+│                                                                                  │
+│  PHASE 4: CREATION ORDER (Topological Sort)                                     │
+│  ──────────────────────────────────────                                          │
+│  Leaves first → dependents last:                                                │
+│                                                                                  │
+│    Step 1: DataSource        (no deps)                                          │
+│    Step 2: EmailClient       (no deps)                                          │
+│    Step 3: OrderRepo         (needs DataSource ✅)                              │
+│    Step 4: NotificationService (needs EmailClient ✅)                           │
+│    Step 5: OrderService      (needs OrderRepo ✅ + NotificationService ✅)      │
+│    Step 6: OrderController   (needs OrderService ✅)                            │
+│                                                                                  │
+│  PHASE 5: INJECTION                                                              │
+│  ──────────────────────────────────────                                          │
+│  Container injects references into constructor / fields:                         │
+│                                                                                  │
+│    new OrderController(                                                          │
+│        container.getBean(OrderService.class)  ← already created                 │
+│    )                                                                             │
+│                                                                                  │
+│  ⚠️  CIRCULAR DEPENDENCY?                                                       │
+│  A → B → A  ═══▶  Spring throws BeanCurrentlyInCreationException               │
+│  Fix: @Lazy on one side, or redesign (extract shared logic)                     │
+│                                                                                  │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
 ---
 
 ## Chapter 2: Spring Beans - The Building Blocks

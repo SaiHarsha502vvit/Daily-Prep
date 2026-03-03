@@ -4,6 +4,7 @@
 
 ## Table of Contents
 
+0. [PART 0: Complete Understanding](#part-0)
 1. [What is Backtracking?](#what-is-backtracking)
 2. [The Universal Template](#universal-template)
 3. [Subsets Pattern](#subsets-pattern)
@@ -14,6 +15,96 @@
 8. [Interview Problems](#interview-problems)
 9. [Practice Problems List](#practice-list)
 10. [Quick Reference](#quick-reference)
+
+---
+
+## PART 0: COMPLETE UNDERSTANDING — The WHY Before the WHAT <a name="part-0"></a>
+
+### What Problem Does Backtracking Solve?
+
+```
+THE FUNDAMENTAL PROBLEM:
+Some problems have SO MANY possible solutions that you can't 
+list them all upfront. But you need to find ONE (or ALL) valid ones.
+
+Examples:
+  - How many ways to place 8 queens on a chessboard? (92 solutions out of 4B+)
+  - What are all valid combinations of parentheses? 
+  - Solve this Sudoku puzzle
+  - Find a path through this maze
+
+BRUTE FORCE would try everything → for 8 queens: 64^8 = 281 trillion positions
+BACKTRACKING prunes early → only explore VALID partial solutions
+```
+
+### The Mental Model: Exploring a Tree of Choices
+
+```
+Every backtracking problem is a DECISION TREE:
+
+  "Choose a letter for position 1"
+           /    |    \
+          a     b     c
+         /|\   /|\   /|\    ← "Choose for position 2"
+        a b c a b c a b c
+        ...
+
+At each node, you have CHOICES.
+Some branches lead to valid solutions. Others are dead ends.
+
+BACKTRACKING = DFS through this tree, BUT:
+  - Before going deeper → CHECK if this partial solution CAN lead to a valid one
+  - If NO → PRUNE this branch (don't explore further) → HUGE time savings
+  - If dead end → UNDO last choice (backtrack) → try next option
+```
+
+### The Universal 3-Step Framework: Choose → Explore → Unchoose
+
+```
+for each CHOICE at current position:
+    1. CHOOSE:   Make a choice (add to current path)
+    2. EXPLORE:  Recurse to next position
+    3. UNCHOOSE: Undo the choice (remove from path) ← THIS IS BACKTRACKING
+
+WHY "unchoose"? Because after exploring one branch, you need to
+return to the same state to try the NEXT branch. Like hiking:
+you go down a trail, hit a dead end, walk BACK to the fork,
+then try the other trail.
+```
+
+### When to Use Backtracking vs Other Approaches
+
+```
+✅ USE BACKTRACKING WHEN:
+  - Generate ALL solutions (subsets, permutations, combinations)
+  - Constraint satisfaction (Sudoku, N-Queens, crossword)
+  - Path finding in a maze
+  - Problem says "find all", "list all", "count all valid"
+
+❌ DO NOT USE WHEN:
+  - You only need the COUNT (not the actual solutions) → Use DP instead
+  - You need the OPTIMAL solution → Use DP or Greedy
+  - The state space is too large even with pruning (n > 20-25)
+  - There's a mathematical formula (combinations = n! / (k! * (n-k)!))
+
+  BACKTRACKING = "I need to enumerate" 
+  DP = "I need to optimize"
+  GREEDY = "I can make local choices that are globally optimal"
+```
+
+### Historical Context
+
+```
+1960s: Backtracking was formalized by Walker (1960) and Golomb & Baumert (1965)
+The 8-Queens problem (1848, Max Bezzel) was one of the first applications.
+Today it's the foundation for:
+  - SAT solvers (automated theorem proving)
+  - Compiler optimization (register allocation)
+  - AI game engines (chess move generation)
+  - Regex matchers
+```
+
+📖 **Related mental model:** [14_Mental_Models/01_Recursion_Tree_Thinking.md](../14_Mental_Models/01_Recursion_Tree_Thinking.md) — Part 4 covers the Choose-Explore-Unchoose framework in depth.
 
 ---
 

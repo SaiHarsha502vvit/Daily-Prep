@@ -1,0 +1,1165 @@
+> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](07b_Advanced_DS_Patterns.md)
+
+---
+
+# 🏗️ Advanced Data Structures: Complete Guide
+
+## Beyond Arrays and Trees - Structures That Power Modern Systems
+
+---
+
+# 🔬 PART 0: DEEP INTERNALS - HOW ADVANCED DATA STRUCTURES WORK AT MEMORY LEVEL
+
+```
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║       ADVANCED DATA STRUCTURES AT THE HARDWARE LEVEL - MINUTE DETAILS           ║
+╠══════════════════════════════════════════════════════════════════════════════════╣
+║                                                                                   ║
+║  Understanding the PHYSICAL implementation of these powerful structures:         ║
+║  • Memory layout and allocation patterns                                         ║
+║  • Cache behavior and optimization techniques                                    ║
+║  • Bit manipulation in Fenwick trees                                            ║
+║  • Why certain structures are faster in practice                                 ║
+║                                                                                   ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+```
+
+## TRIE NODE MEMORY LAYOUT
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                    TRIE MEMORY REPRESENTATION - DEEP DIVE                        │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                  │
+│  BASIC TRIE NODE (Array-based):                                                 │
+│  class TrieNode {                                                               │
+│      TrieNode[] children = new TrieNode[26];  // 26 letters                    │
+│      boolean isEndOfWord;                                                       │
+│  }                                                                               │
+│                                                                                  │
+│  MEMORY LAYOUT (64-bit JVM, compressed oops):                                   │
+│  ┌─────────────────────────────────────────────────────────────────────────┐   │
+│  │ OFFSET │ SIZE  │ FIELD                │ VALUE                          │   │
+│  ├────────┼───────┼──────────────────────┼────────────────────────────────┤   │
+│  │ 0      │ 8     │ Mark Word            │ Object header                  │   │
+│  │ 8      │ 4     │ Class Pointer        │ → TrieNode.class              │   │
+│  │ 12     │ 4     │ children (ref)       │ → Object[] array              │   │
+│  │ 16     │ 1     │ isEndOfWord          │ true/false                     │   │
+│  │ 17     │ 7     │ padding              │ alignment to 8 bytes           │   │
+│  └────────┴───────┴──────────────────────┴────────────────────────────────┘   │
+│  TrieNode object: 24 bytes                                                     │
+│                                                                                  │
+│  PLUS the children array:                                                       │
+│  ┌─────────────────────────────────────────────────────────────────────────┐   │
+│  │ OFFSET │ SIZE  │ CONTENT                                               │   │
+│  ├────────┼───────┼───────────────────────────────────────────────────────┤   │
+│  │ 0      │ 8     │ Mark Word (array header)                              │   │
+│  │ 8      │ 4     │ Class Pointer                                         │   │
+│  │ 12     │ 4     │ Array length = 26                                     │   │
+│  │ 16     │ 104   │ 26 × 4 bytes (references to child TrieNode)          │   │
+│  └────────┴───────┴───────────────────────────────────────────────────────┘   │
+│  children[] array: 120 bytes                                                   │
+│                                                                                  │
+│  TOTAL PER NODE: 24 + 120 = 144 bytes!                                         │
+│                                                                                  │
+│  For 100,000 words average 8 chars, assuming 30% node sharing:                 │
+│  Nodes ≈ 100,000 × 8 × 0.7 = 560,000 nodes                                    │
+│  Memory ≈ 560,000 × 144 = 80 MB!                                               │
+│                                                                                  │
+│                                                                                  │
+│  MEMORY-OPTIMIZED TRIE (HashMap children):                                      │
+│  class TrieNode {                                                               │
+│      Map<Character, TrieNode> children = new HashMap<>();                      │
+│      boolean isEndOfWord;                                                       │
+│  }                                                                               │
+│                                                                                  │
+│  For sparse nodes (few children): Much smaller!                                 │
+│  Average children ≈ 3-4, so ~160 bytes vs 144 bytes but more flexible         │
+│                                                                                  │
+│                                                                                  │
+│  COMPRESSED TRIE (Patricia/Radix Tree):                                         │
+│  ────────────────────────────────────                                           │
+│  Instead of storing single characters, store strings:                           │
+│                                                                                  │
+│  Standard Trie:          Patricia Trie:                                         │
+│        root                    root                                             │
+│         │                       │                                               │
+│         a                     "app"                                             │
+│         │                     /   \                                             │
+│         p                  "le"  "lication"                                     │
+│         │                                                                       │
+│         p                                                                       │
+│        / \                                                                      │
+│       l   l                                                                     │
+│       │   │                                                                     │
+│       e   i                                                                     │
+│           c...                                                                  │
+│                                                                                  │
+│  Patricia: Fewer nodes, less memory, similar time complexity                   │
+│                                                                                  │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+## SEGMENT TREE MEMORY LAYOUT
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                    SEGMENT TREE MEMORY - ARRAY-BASED STORAGE                     │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                  │
+│  For array of size n, segment tree needs array of size 4n (safe upper bound)   │
+│  Actually needs 2^⌈log₂(n)⌉+1 - 1 nodes, but 4n is simpler                     │
+│                                                                                  │
+│  ARRAY-BASED INDEXING:                                                           │
+│  ┌─────────────────────────────────────────────────────────────────────────┐   │
+│  │ Index i:                                                                │   │
+│  │   Left child:  2*i + 1                                                 │   │
+│  │   Right child: 2*i + 2                                                 │   │
+│  │   Parent:      (i-1) / 2                                               │   │
+│  │                                                                        │   │
+│  │ OR (1-indexed, simpler):                                               │   │
+│  │   Left child:  2*i                                                     │   │
+│  │   Right child: 2*i + 1                                                 │   │
+│  │   Parent:      i / 2                                                   │   │
+│  └─────────────────────────────────────────────────────────────────────────┘   │
+│                                                                                  │
+│  EXAMPLE: Array [1, 3, 5, 7, 9, 11] - Sum Segment Tree                         │
+│                                                                                  │
+│  LOGICAL TREE:                                                                   │
+│                       [36]                 (sum of all: index 1)                │
+│                     /      \                                                    │
+│                  [9]        [27]           (index 2, 3)                         │
+│                 /    \     /    \                                               │
+│               [4]   [5]  [16]  [11]        (index 4, 5, 6, 7)                   │
+│              /  \                /  \                                           │
+│            [1]  [3]  [5]  [7]  [9]  [11]   (index 8-13, leaves)               │
+│                                                                                  │
+│  ARRAY STORAGE (1-indexed):                                                     │
+│  ┌────┬────┬────┬────┬────┬────┬────┬────┬────┬────┬────┬────┬────┬────┐       │
+│  │ 0  │ 1  │ 2  │ 3  │ 4  │ 5  │ 6  │ 7  │ 8  │ 9  │10  │11  │12  │13  │       │
+│  ├────┼────┼────┼────┼────┼────┼────┼────┼────┼────┼────┼────┼────┼────┤       │
+│  │ -- │ 36 │ 9  │ 27 │ 4  │ 5  │ 16 │ 11 │ 1  │ 3  │ 5  │ 7  │ 9  │ 11 │       │
+│  └────┴────┴────┴────┴────┴────┴────┴────┴────┴────┴────┴────┴────┴────┘       │
+│                                                                                  │
+│  MEMORY: 4n × 4 bytes (int) = 16n bytes                                        │
+│  For n = 1,000,000: 16 MB                                                      │
+│                                                                                  │
+│                                                                                  │
+│  CACHE BEHAVIOR:                                                                 │
+│  ─────────────────                                                              │
+│  Query path: index 1 → 2 or 3 → 4,5,6,7 → ...                                 │
+│  Each level doubles the index → Sequential cache misses                        │
+│                                                                                  │
+│  Level 0: index 1 (cache line A)                                               │
+│  Level 1: index 2,3 (cache line A, probably hit)                              │
+│  Level 2: index 4-7 (might need new cache line)                               │
+│  Level 3: index 8-15 (likely new cache line)                                  │
+│  ...                                                                            │
+│                                                                                  │
+│  For log₂(n) levels: log₂(n) potential cache misses                           │
+│  n = 1M → log₂(1M) ≈ 20 cache misses per query                               │
+│                                                                                  │
+│  OPTIMIZATION: "Cache-oblivious" segment trees (van Emde Boas layout)         │
+│                                                                                  │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+## FENWICK TREE - BIT MANIPULATION DEEP DIVE
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                    FENWICK TREE (BIT) - THE MAGIC OF BINARY                      │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                  │
+│  KEY INSIGHT: Use lowest set bit for range calculation!                         │
+│                                                                                  │
+│  LOWEST SET BIT (LSB):                                                           │
+│  ─────────────────────                                                          │
+│  For number i, LSB = i & (-i)                                                  │
+│                                                                                  │
+│  WHY IT WORKS:                                                                   │
+│  -i = two's complement = invert all bits and add 1                             │
+│                                                                                  │
+│  i = 12 = 1100 (binary)                                                         │
+│  ~i     = 0011                                                                   │
+│  -i     = ~i + 1 = 0100                                                         │
+│  i & -i = 1100 & 0100 = 0100 = 4 = LSB                                         │
+│                                                                                  │
+│  EXAMPLES:                                                                       │
+│  ┌────────┬──────────┬──────────┬───────────┬───────────────────────────────┐  │
+│  │ i      │ Binary   │ -i       │ i & (-i)  │ Meaning                       │  │
+│  ├────────┼──────────┼──────────┼───────────┼───────────────────────────────┤  │
+│  │ 1      │ 0001     │ 1111     │ 0001 = 1  │ Covers index 1 only          │  │
+│  │ 2      │ 0010     │ 1110     │ 0010 = 2  │ Covers indices 1-2           │  │
+│  │ 3      │ 0011     │ 1101     │ 0001 = 1  │ Covers index 3 only          │  │
+│  │ 4      │ 0100     │ 1100     │ 0100 = 4  │ Covers indices 1-4           │  │
+│  │ 5      │ 0101     │ 1011     │ 0001 = 1  │ Covers index 5 only          │  │
+│  │ 6      │ 0110     │ 1010     │ 0010 = 2  │ Covers indices 5-6           │  │
+│  │ 7      │ 0111     │ 1001     │ 0001 = 1  │ Covers index 7 only          │  │
+│  │ 8      │ 1000     │ 1000     │ 1000 = 8  │ Covers indices 1-8           │  │
+│  └────────┴──────────┴──────────┴───────────┴───────────────────────────────┘  │
+│                                                                                  │
+│                                                                                  │
+│  BIT[i] stores sum of elements from (i - LSB(i) + 1) to i                      │
+│                                                                                  │
+│  VISUAL:                                                                         │
+│  Original: [1, 2, 3, 4, 5, 6, 7, 8] (1-indexed)                                │
+│                                                                                  │
+│  BIT array stores:                                                               │
+│  ┌────────────────────────────────────────────────────────────────────────────┐│
+│  │ BIT[1] = arr[1]                               = 1        (covers 1)       ││
+│  │ BIT[2] = arr[1] + arr[2]                      = 3        (covers 1-2)     ││
+│  │ BIT[3] = arr[3]                               = 3        (covers 3)       ││
+│  │ BIT[4] = arr[1] + arr[2] + arr[3] + arr[4]    = 10       (covers 1-4)     ││
+│  │ BIT[5] = arr[5]                               = 5        (covers 5)       ││
+│  │ BIT[6] = arr[5] + arr[6]                      = 11       (covers 5-6)     ││
+│  │ BIT[7] = arr[7]                               = 7        (covers 7)       ││
+│  │ BIT[8] = arr[1] + ... + arr[8]                = 36       (covers 1-8)     ││
+│  └────────────────────────────────────────────────────────────────────────────┘│
+│                                                                                  │
+│                                                                                  │
+│  QUERY: Sum of [1, 7]                                                           │
+│  ─────────────────────                                                          │
+│  sum = 0                                                                        │
+│  i = 7:  sum += BIT[7] = 7,  i -= LSB(7) = 7-1 = 6                            │
+│  i = 6:  sum += BIT[6] = 11, i -= LSB(6) = 6-2 = 4                            │
+│  i = 4:  sum += BIT[4] = 10, i -= LSB(4) = 4-4 = 0                            │
+│  DONE!   sum = 7 + 11 + 10 = 28 ✓                                              │
+│                                                                                  │
+│  Number of operations: Count of 1s in binary of 7 = 3 operations               │
+│  Maximum: log₂(n) operations                                                   │
+│                                                                                  │
+│                                                                                  │
+│  UPDATE: Add 5 to index 3                                                       │
+│  ────────────────────────────                                                   │
+│  i = 3:  BIT[3] += 5,  i += LSB(3) = 3+1 = 4                                  │
+│  i = 4:  BIT[4] += 5,  i += LSB(4) = 4+4 = 8                                  │
+│  i = 8:  BIT[8] += 5,  i += LSB(8) = 8+8 = 16 > n, STOP                       │
+│                                                                                  │
+│  Updates all ranges that include index 3!                                       │
+│                                                                                  │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+## UNION-FIND - PATH COMPRESSION VISUALIZATION
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                    UNION-FIND - PATH COMPRESSION DEEP DIVE                       │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                  │
+│  INITIAL STATE (8 elements, each is own parent):                               │
+│  parent[] = [0, 1, 2, 3, 4, 5, 6, 7]                                          │
+│  rank[]   = [0, 0, 0, 0, 0, 0, 0, 0]                                          │
+│                                                                                  │
+│  AFTER union(0,1), union(2,3), union(4,5), union(6,7):                        │
+│  parent[] = [0, 0, 2, 2, 4, 4, 6, 6]                                          │
+│  rank[]   = [1, 0, 1, 0, 1, 0, 1, 0]                                          │
+│                                                                                  │
+│  Trees:   0    2    4    6                                                     │
+│           │    │    │    │                                                     │
+│           1    3    5    7                                                     │
+│                                                                                  │
+│  AFTER union(0,2), union(4,6):                                                 │
+│  parent[] = [0, 0, 0, 2, 4, 4, 4, 6]                                          │
+│  rank[]   = [2, 0, 1, 0, 2, 0, 1, 0]                                          │
+│                                                                                  │
+│  Trees:       0           4                                                    │
+│              /│          /│                                                    │
+│             1 2         5 6                                                    │
+│               │           │                                                    │
+│               3           7                                                    │
+│                                                                                  │
+│  AFTER union(0,4):                                                              │
+│  parent[] = [0, 0, 0, 2, 0, 4, 4, 6]                                          │
+│  rank[]   = [3, 0, 1, 0, 2, 0, 1, 0]                                          │
+│                                                                                  │
+│  Tree:           0                                                             │
+│                / | \                                                           │
+│               1  2  4                                                          │
+│                  │ /│                                                          │
+│                  3 5 6                                                         │
+│                      │                                                         │
+│                      7                                                         │
+│                                                                                  │
+│                                                                                  │
+│  NOW: find(7) WITH PATH COMPRESSION:                                           │
+│  ────────────────────────────────────                                          │
+│                                                                                  │
+│  Call stack:                                                                     │
+│  find(7) → parent[7] = 6, recurse                                              │
+│    find(6) → parent[6] = 4, recurse                                            │
+│      find(4) → parent[4] = 0, recurse                                          │
+│        find(0) → parent[0] = 0, return 0 (root!)                              │
+│      return 0, set parent[4] = 0                                               │
+│    return 0, set parent[6] = 0                                                 │
+│  return 0, set parent[7] = 0                                                   │
+│                                                                                  │
+│  AFTER path compression:                                                        │
+│  parent[] = [0, 0, 0, 2, 0, 4, 0, 0]                                          │
+│                                                                                  │
+│  Tree:           0                                                             │
+│              /|\ | \\ \                                                        │
+│             1 2 4 5 6 7                                                        │
+│               │                                                                │
+│               3                                                                │
+│                                                                                  │
+│  Now find(7) is O(1)!                                                          │
+│                                                                                  │
+│                                                                                  │
+│  COMPLEXITY WITH BOTH OPTIMIZATIONS:                                            │
+│  ─────────────────────────────────────                                          │
+│  • Union by rank + Path compression                                             │
+│  • Amortized O(α(n)) per operation                                             │
+│  • α(n) = Inverse Ackermann function                                           │
+│  • α(n) ≤ 4 for any practical n (even n = atoms in universe)                  │
+│  • Effectively O(1) per operation!                                             │
+│                                                                                  │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+## SKIP LIST - PROBABILISTIC MEMORY LAYOUT
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                    SKIP LIST - HOW REDIS IMPLEMENTS SORTED SETS                  │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                  │
+│  SKIP LIST STRUCTURE:                                                            │
+│                                                                                  │
+│  Level 4:  head ─────────────────────────────────────────────────→ nil         │
+│  Level 3:  head ──────────────────→ 25 ──────────────────────────→ nil         │
+│  Level 2:  head ───────→ 10 ─────→ 25 ───────────────→ 75 ───────→ nil         │
+│  Level 1:  head → 5 ──→ 10 → 15 → 25 → 30 → 50 → 65 → 75 → 80 ──→ nil         │
+│  Level 0:  head → 5 → 7 → 10 → 15 → 25 → 30 → 50 → 65 → 75 → 80 → 90 → nil    │
+│                                                                                  │
+│                                                                                  │
+│  NODE MEMORY LAYOUT:                                                             │
+│  class SkipListNode {                                                           │
+│      int value;                                                                 │
+│      SkipListNode[] forward;  // Array of pointers to next nodes              │
+│  }                                                                               │
+│                                                                                  │
+│  ┌─────────────────────────────────────────────────────────────────────────┐   │
+│  │ SKIP LIST NODE (value = 25, level = 3):                                 │   │
+│  │                                                                          │   │
+│  │ ┌──────────────┬──────────────────────────────────────────────────────┐ │   │
+│  │ │ value: 25    │ forward[]: [ptr_to_30, ptr_to_30, ptr_to_75, nil]    │ │   │
+│  │ │ (4 bytes)    │ (array of 4 pointers, 32 bytes on 64-bit)            │ │   │
+│  │ └──────────────┴──────────────────────────────────────────────────────┘ │   │
+│  │                                                                          │   │
+│  │ Object overhead: ~16 bytes                                              │   │
+│  │ Array overhead:  ~16 bytes                                              │   │
+│  │ Total: ~68 bytes for this node                                         │   │
+│  └─────────────────────────────────────────────────────────────────────────┘   │
+│                                                                                  │
+│                                                                                  │
+│  LEVEL DISTRIBUTION (probability p = 0.5):                                      │
+│  ─────────────────────────────────────────                                      │
+│  • 50% of nodes: level 1                                                        │
+│  • 25% of nodes: level 2                                                        │
+│  • 12.5% of nodes: level 3                                                      │
+│  • ...                                                                          │
+│                                                                                  │
+│  EXPECTED MEMORY per node: ~1 + 0.5 + 0.25 + ... = 2 pointers average         │
+│  Much better than balanced BST!                                                 │
+│                                                                                  │
+│                                                                                  │
+│  SEARCH for 65:                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐│
+│  │ Start at head, level 4                                                    ││
+│  │ Level 4: head → nil (no nodes), go DOWN                                   ││
+│  │ Level 3: head → 25 (25 < 65), MOVE RIGHT, 25 → nil, go DOWN              ││
+│  │ Level 2: 25 → 75 (75 > 65), go DOWN                                      ││
+│  │ Level 1: 25 → 30 → 50 → 65, FOUND!                                       ││
+│  │                                                                           ││
+│  │ Comparisons: 25, 75, 30, 50, 65 = 5 comparisons                         ││
+│  │ vs Linear: 9 comparisons                                                  ││
+│  │ vs Binary Search: log₂(11) ≈ 4 comparisons (similar!)                   ││
+│  └────────────────────────────────────────────────────────────────────────────┘│
+│                                                                                  │
+│  WHY SKIP LIST OVER BALANCED BST?                                              │
+│  ─────────────────────────────────                                              │
+│  1. Simpler implementation (no rotations!)                                     │
+│  2. Easier concurrent access (lock individual levels)                         │
+│  3. Range queries are natural (just follow level 0)                           │
+│  4. Redis, LevelDB use it for sorted sets                                     │
+│                                                                                  │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+## BLOOM FILTER - BIT ARRAY INTERNALS
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                    BLOOM FILTER - PROBABILISTIC MEMBERSHIP                       │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                  │
+│  MEMORY LAYOUT:                                                                  │
+│  ┌─────────────────────────────────────────────────────────────────────────┐   │
+│  │ Bit array (m = 32 bits for example):                                    │   │
+│  │                                                                          │   │
+│  │ Index:  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 ...             │   │
+│  │ Bits:   0  0  1  0  1  0  0  1  0  0  1  0  0  0  1  0 ...             │   │
+│  │                                                                          │   │
+│  │ Storage: In Java, long[] with 64 bits each                              │   │
+│  │ m = 1M bits = 125 KB                                                    │   │
+│  │ m = 1B bits = 125 MB                                                    │   │
+│  └─────────────────────────────────────────────────────────────────────────┘   │
+│                                                                                  │
+│                                                                                  │
+│  HASH FUNCTIONS (k = 3 in this example):                                       │
+│  ─────────────────────────────────────────                                      │
+│  h1(x) = hash(x) % m                                                           │
+│  h2(x) = hash(x + seed1) % m                                                   │
+│  h3(x) = hash(x + seed2) % m                                                   │
+│                                                                                  │
+│  Or use double hashing: hi(x) = (h1(x) + i * h2(x)) % m                       │
+│                                                                                  │
+│                                                                                  │
+│  INSERT "apple":                                                                 │
+│  ─────────────────                                                              │
+│  h1("apple") = 2,  h2("apple") = 7,  h3("apple") = 14                         │
+│                                                                                  │
+│  Before: 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0                       │
+│  After:  0  0  1  0  0  0  0  1  0  0  0  0  0  0  1  0                       │
+│               ↑              ↑                    ↑                            │
+│              h1             h2                   h3                            │
+│                                                                                  │
+│                                                                                  │
+│  CHECK "apple": Look at positions 2, 7, 14 → all 1s → "PROBABLY IN SET"       │
+│  CHECK "grape": h1=3, h2=5, h3=10 → position 3 is 0 → "DEFINITELY NOT IN SET" │
+│                                                                                  │
+│                                                                                  │
+│  FALSE POSITIVE PROBABILITY:                                                    │
+│  ───────────────────────────                                                    │
+│  After inserting n elements with k hash functions into m bits:                 │
+│                                                                                  │
+│  P(bit is still 0) = (1 - 1/m)^(kn) ≈ e^(-kn/m)                               │
+│  P(false positive) = (1 - e^(-kn/m))^k                                         │
+│                                                                                  │
+│  OPTIMAL k = (m/n) × ln(2) ≈ 0.693 × (m/n)                                    │
+│                                                                                  │
+│  EXAMPLE CALCULATIONS:                                                          │
+│  ┌─────────────────────────────────────────────────────────────────────────┐   │
+│  │ n (elements) │ m (bits) │ m/n ratio │ optimal k │ FP rate              │   │
+│  ├──────────────┼──────────┼───────────┼───────────┼──────────────────────┤   │
+│  │ 1,000        │ 10,000   │ 10        │ 7         │ 0.82%                │   │
+│  │ 1,000        │ 20,000   │ 20        │ 14        │ 0.00061%             │   │
+│  │ 1,000,000    │ 10M      │ 10        │ 7         │ 0.82%                │   │
+│  │ 1,000,000    │ 100M     │ 100       │ 69        │ ~0%                  │   │
+│  └─────────────────────────────────────────────────────────────────────────┘   │
+│                                                                                  │
+│  RULE OF THUMB: 10 bits per element with 7 hash functions → ~1% FP rate       │
+│                                                                                  │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+## LRU CACHE - DOUBLY LINKED LIST + HASHMAP
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                    LRU CACHE - O(1) GET AND PUT                                  │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                  │
+│  STRUCTURE:                                                                      │
+│  ────────────                                                                   │
+│  1. HashMap<Key, Node>: O(1) lookup by key                                     │
+│  2. Doubly Linked List: O(1) remove/insert for recency tracking                │
+│                                                                                  │
+│                                                                                  │
+│  MEMORY LAYOUT:                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐│
+│  │                                                                            ││
+│  │  HashMap:                                                                  ││
+│  │  ┌───────────────────────────────────────────┐                            ││
+│  │  │ key: "A" → Node(A)                        │                            ││
+│  │  │ key: "B" → Node(B)                        │                            ││
+│  │  │ key: "C" → Node(C)                        │                            ││
+│  │  └───────────────────────────────────────────┘                            ││
+│  │                                                                            ││
+│  │  Doubly Linked List (most recent at head):                                ││
+│  │  ┌──────────────────────────────────────────────────────────────────────┐ ││
+│  │  │                                                                      │ ││
+│  │  │  HEAD ←→ Node(C) ←→ Node(B) ←→ Node(A) ←→ TAIL                      │ ││
+│  │  │  (dummy)  (most     (middle)   (least    (dummy)                     │ ││
+│  │  │           recent)              recent)                               │ ││
+│  │  │                                                                      │ ││
+│  │  └──────────────────────────────────────────────────────────────────────┘ ││
+│  │                                                                            ││
+│  │  Each Node:                                                                ││
+│  │  ┌──────────────────────────────────────────────────┐                     ││
+│  │  │ key: "B"                                         │                     ││
+│  │  │ value: 42                                        │                     ││
+│  │  │ prev: → Node(C)                                  │                     ││
+│  │  │ next: → Node(A)                                  │                     ││
+│  │  └──────────────────────────────────────────────────┘                     ││
+│  │                                                                            ││
+│  └────────────────────────────────────────────────────────────────────────────┘│
+│                                                                                  │
+│                                                                                  │
+│  OPERATIONS:                                                                     │
+│  ───────────                                                                    │
+│                                                                                  │
+│  GET(key):                                                                       │
+│  1. Look up in HashMap: O(1)                                                   │
+│  2. If found, move node to head: O(1)                                          │
+│  3. Return value                                                                │
+│                                                                                  │
+│  PUT(key, value):                                                               │
+│  1. If key exists: update value, move to head                                  │
+│  2. If key doesn't exist:                                                      │
+│     a. Create new node, add to head                                           │
+│     b. Add to HashMap                                                          │
+│     c. If over capacity, remove tail node (LRU item)                          │
+│                                                                                  │
+│                                                                                  │
+│  MEMORY PER ENTRY:                                                              │
+│  ──────────────────                                                             │
+│  Node: ~48 bytes (key ref, value ref, prev, next, object header)              │
+│  HashMap entry: ~32 bytes (key ref, value ref, hash, next)                    │
+│  Total: ~80 bytes per cache entry                                              │
+│                                                                                  │
+│  For 10,000 entries: ~800 KB                                                   │
+│  For 1,000,000 entries: ~80 MB                                                 │
+│                                                                                  │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+# PART 1: WHY THESE DATA STRUCTURES MATTER
+
+```
+REAL-WORLD USAGE:
+
+TRIE:
+├── Autocomplete in Google Search
+├── Spell checkers
+├── IP routing tables
+└── DNA sequence matching
+
+SEGMENT TREE:
+├── Range queries in databases
+├── Graphics rendering (visibility)
+└── Computational geometry
+
+FENWICK TREE (BIT):
+├── Cumulative frequency tables
+├── Range sum queries
+└── Inversion counting
+
+DISJOINT SET (UNION-FIND):
+├── Network connectivity
+├── Kruskal's MST algorithm
+├── Image processing (connected components)
+└── Social networks (friend circles)
+
+SKIP LIST:
+├── Redis database
+├── LevelDB
+└── Concurrent data structures
+
+BLOOM FILTER:
+├── Chrome's malicious URL check
+├── Database query optimization
+├── Spell checkers
+└── Network routers
+
+LRU CACHE:
+├── Operating system page replacement
+├── Web browser cache
+├── Database query cache
+└── CPU cache management
+```
+
+---
+
+# PART 2: TRIE (PREFIX TREE)
+
+## Concept and Structure
+
+```
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                     TRIE (PREFIX TREE) - COMPLETE UNDERSTANDING              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ WHAT IS A TRIE?                                                             │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ TRIE = Tree for Retrieval (pronounced "try")                                │
+│ A tree-like data structure where each path from root to a node represents  │
+│ a PREFIX of strings stored in it. Each node represents ONE CHARACTER.      │
+│                                                                             │
+│ INVENTED: 1959 by René de la Briandais                                      │
+│ REFINED: 1960 by Edward Fredkin (who named it "trie")                       │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ WHAT PROBLEM DOES TRIE SOLVE?                                               │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ PROBLEM 1: Fast prefix-based searching                                      │
+│   - Given 1 million words, find all words starting with "pre"              │
+│   - HashMap: Must check ALL 1 million keys → O(n × m)                       │
+│   - Trie: Go to 'p'→'r'→'e', then collect all children → O(m + k)          │
+│     where k = number of matches                                             │
+│                                                                             │
+│ PROBLEM 2: Autocomplete suggestions                                         │
+│   - User types "app", show: "apple", "application", "approach"             │
+│   - Database search is SLOW for this                                        │
+│   - Trie: Navigate to "app" node, DFS to find all completions              │
+│                                                                             │
+│ PROBLEM 3: Spell checking                                                   │
+│   - Is "acknowledgement" spelled correctly?                                 │
+│   - Dictionary lookup in O(word_length) not O(dictionary_size)             │
+│                                                                             │
+│ PROBLEM 4: IP Routing (Longest Prefix Matching)                             │
+│   - Router needs to find which interface to send packet                     │
+│   - Match IP address against routing table prefixes                         │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ WHY USE TRIE OVER OTHER DATA STRUCTURES?                                    │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ VS HASHMAP:                                                                 │
+│ ┌──────────────────┬───────────────────┬──────────────────────────────────┐ │
+│ │ Operation        │ HashMap           │ Trie                             │ │
+│ ├──────────────────┼───────────────────┼──────────────────────────────────┤ │
+│ │ Search exact     │ O(m) avg          │ O(m)                             │ │
+│ │ Search prefix    │ O(n × m) 😢       │ O(prefix_len) 🎉                 │ │
+│ │ Hash collisions  │ YES               │ NO                               │ │
+│ │ Ordered results  │ NO                │ YES (lexicographic)              │ │
+│ │ Space efficiency │ Better            │ Worse (but can compress)         │ │
+│ └──────────────────┴───────────────────┴──────────────────────────────────┘ │
+│                                                                             │
+│ VS BINARY SEARCH TREE (BST):                                                │
+│ - BST: O(m × log n) to search (compare strings at each node)               │
+│ - Trie: O(m) regardless of how many strings stored                          │
+│                                                                             │
+│ THE KEY INSIGHT:                                                            │
+│ Trie time complexity depends on WORD LENGTH, not NUMBER OF WORDS!           │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ WHEN TO USE TRIE?                                                           │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ ✅ USE TRIE WHEN:                                                           │
+│    • Need prefix-based operations (autocomplete, spell check)               │
+│    • Need lexicographically sorted results                                  │
+│    • Searching same prefixes repeatedly                                     │
+│    • Building word games (Scrabble, Boggle)                                 │
+│    • IP routing tables                                                      │
+│    • Phone directory (search by prefix)                                     │
+│                                                                             │
+│ ❌ DON'T USE TRIE WHEN:                                                     │
+│    • Only need exact match (HashMap is simpler)                             │
+│    • Memory is very limited (Tries use more space)                          │
+│    • Strings are very long with little common prefixes                      │
+│    • Data changes frequently and memory matters                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ HOW DOES TRIE WORK? (VISUAL EXPLANATION)                                    │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ Storing: ["cat", "car", "card", "care", "dog"]                             │
+│                                                                             │
+│             (root)                   STRUCTURE:                             │
+│            /      \                  - Each node = one character            │
+│          c          d                - Edge = transition to next char       │
+│          |          |                - * = marks end of valid word          │
+│          a          o                                                       │
+│         /|\         |                MEMORY LAYOUT:                         │
+│        t r e        g*               - Root has children[26] (for a-z)     │
+│        * |*                          - Most children are null               │
+│          d                           - Only used paths allocated            │
+│          *                                                                  │
+│                                                                             │
+│ SEARCH "car":                        INSERT "cow":                          │
+│ root→c→a→r (found, is end? YES ✓)   root→c→o(new)→w(new, mark end)         │
+│                                                                             │
+│ SEARCH "ca":                         PREFIX "car":                          │
+│ root→c→a (found, is end? NO ✗)      root→c→a→r, then DFS: card, care       │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ DIFFICULTIES & EDGE CASES                                                   │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ 1. SPACE CONSUMPTION:                                                       │
+│    - Each node has 26 pointers (for a-z) = 26 × 8 bytes = 208 bytes/node   │
+│    - Solution: Use HashMap<Character, Node> instead of array               │
+│    - Solution: Compressed Trie (merge single-child chains)                  │
+│                                                                             │
+│ 2. DELETION COMPLEXITY:                                                     │
+│    - Can't just remove node; might break other words                        │
+│    - "card" and "car": deleting "car" shouldn't delete 'c','a','r'        │
+│    - Solution: Only unmark isEndOfWord if other words use same path        │
+│                                                                             │
+│ 3. UNICODE/SPECIAL CHARACTERS:                                              │
+│    - 26-size array only works for lowercase English                         │
+│    - Solution: Use HashMap<Character, Node> for flexibility                 │
+│                                                                             │
+│ 4. CASE SENSITIVITY:                                                        │
+│    - "Cat" vs "cat" - are they same?                                       │
+│    - Solution: Convert to lowercase before operations                       │
+│                                                                             │
+│ 5. EMPTY STRING:                                                            │
+│    - Is "" a valid word? Handle root.isEndOfWord                           │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ EXPECTED OUTPUTS & COMPLEXITY                                               │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ OPERATION        │ TIME           │ SPACE           │ OUTPUT                │
+│ ─────────────────┼────────────────┼─────────────────┼────────────────────── │
+│ Insert(word)     │ O(m)           │ O(m) worst      │ void (modifies trie)  │
+│ Search(word)     │ O(m)           │ O(1)            │ boolean (exists?)     │
+│ StartsWith(pre)  │ O(p)           │ O(1)            │ boolean (prefix?)     │
+│ Autocomplete     │ O(p + k)       │ O(k)            │ List<String> matches  │
+│ Delete(word)     │ O(m)           │ O(m) stack      │ boolean (deleted?)    │
+│                                                                             │
+│ m = word length, p = prefix length, k = number of matches                   │
+│                                                                             │
+│ SPACE COMPLEXITY OF ENTIRE TRIE:                                            │
+│ - Worst case: O(ALPHABET_SIZE × m × n) where n = number of words           │
+│ - Best case: O(total characters) when words share prefixes                  │
+│                                                                             │
+│ EXAMPLE OUTPUT:                                                             │
+│ trie.insert("apple");                                                       │
+│ trie.search("apple");   → true                                             │
+│ trie.search("app");     → false ("app" not marked as word)                 │
+│ trie.startsWith("app"); → true  (prefix exists)                            │
+│ trie.autocomplete("app"); → ["apple", "application", ...]                 │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+## Implementation
+
+```java
+class TrieNode {
+    TrieNode[] children = new TrieNode[26];  // For lowercase letters
+    boolean isEndOfWord = false;
+}
+
+class Trie {
+    private TrieNode root = new TrieNode();
+
+    // INSERT: O(m)
+    public void insert(String word) {
+        TrieNode node = root;
+        for (char c : word.toCharArray()) {
+            int index = c - 'a';
+            if (node.children[index] == null) {
+                node.children[index] = new TrieNode();
+            }
+            node = node.children[index];
+        }
+        node.isEndOfWord = true;
+    }
+
+    // SEARCH: O(m)
+    public boolean search(String word) {
+        TrieNode node = findNode(word);
+        return node != null && node.isEndOfWord;
+    }
+
+    // PREFIX SEARCH: O(m)
+    public boolean startsWith(String prefix) {
+        return findNode(prefix) != null;
+    }
+
+    private TrieNode findNode(String str) {
+        TrieNode node = root;
+        for (char c : str.toCharArray()) {
+            int index = c - 'a';
+            if (node.children[index] == null) {
+                return null;
+            }
+            node = node.children[index];
+        }
+        return node;
+    }
+
+    // AUTOCOMPLETE: Get all words with given prefix
+    public List<String> autocomplete(String prefix) {
+        List<String> results = new ArrayList<>();
+        TrieNode node = findNode(prefix);
+        if (node != null) {
+            dfs(node, new StringBuilder(prefix), results);
+        }
+        return results;
+    }
+
+    private void dfs(TrieNode node, StringBuilder path, List<String> results) {
+        if (node.isEndOfWord) {
+            results.add(path.toString());
+        }
+        for (int i = 0; i < 26; i++) {
+            if (node.children[i] != null) {
+                path.append((char) ('a' + i));
+                dfs(node.children[i], path, results);
+                path.deleteCharAt(path.length() - 1);
+            }
+        }
+    }
+}
+
+// VISUAL TRACE - INSERT "cat", "car", "card":
+//
+// After "cat":    After "car":    After "card":
+//     (root)          (root)          (root)
+//       |               |               |
+//       c               c               c
+//       |               |               |
+//       a               a               a
+//       |              / \             / \
+//       t*            t*  r*          t*  r*
+//                                         |
+//                                         d*
+```
+
+## Advanced Trie Operations
+
+```java
+// DELETE from Trie
+public boolean delete(String word) {
+    return delete(root, word, 0);
+}
+
+private boolean delete(TrieNode node, String word, int depth) {
+    if (depth == word.length()) {
+        if (!node.isEndOfWord) return false;
+        node.isEndOfWord = false;
+        return isEmpty(node);
+    }
+
+    int index = word.charAt(depth) - 'a';
+    if (node.children[index] == null) return false;
+
+    boolean shouldDelete = delete(node.children[index], word, depth + 1);
+
+    if (shouldDelete) {
+        node.children[index] = null;
+        return !node.isEndOfWord && isEmpty(node);
+    }
+    return false;
+}
+
+private boolean isEmpty(TrieNode node) {
+    for (TrieNode child : node.children) {
+        if (child != null) return false;
+    }
+    return true;
+}
+
+// LONGEST COMMON PREFIX
+public String longestCommonPrefix(String[] words) {
+    if (words.length == 0) return "";
+
+    // Insert all words
+    for (String word : words) insert(word);
+
+    // Traverse until branching
+    StringBuilder prefix = new StringBuilder();
+    TrieNode node = root;
+
+    while (countChildren(node) == 1 && !node.isEndOfWord) {
+        for (int i = 0; i < 26; i++) {
+            if (node.children[i] != null) {
+                prefix.append((char) ('a' + i));
+                node = node.children[i];
+                break;
+            }
+        }
+    }
+
+    return prefix.toString();
+}
+```
+
+---
+
+# PART 3: SEGMENT TREE
+
+## Concept
+
+```
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                    SEGMENT TREE - COMPLETE UNDERSTANDING                      ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ WHAT IS A SEGMENT TREE?                                                      │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ A segment tree is a binary tree where each node represents an INTERVAL      │
+│ (segment) of the array and stores an aggregate value (sum, min, max, etc.)  │
+│ for that interval.                                                           │
+│                                                                              │
+│ STRUCTURE:                                                                   │
+│ • Root: Represents the ENTIRE array [0, n-1]                                 │
+│ • Each internal node: Represents [l, r] = [l, mid] + [mid+1, r]             │
+│ • Leaves: Each represents a SINGLE element [i, i]                            │
+│                                                                              │
+│ INVENTED: Used in computational geometry since 1970s (Bentley)               │
+│ POPULARIZED: In competitive programming in 2000s                             │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ WHAT PROBLEM DOES SEGMENT TREE SOLVE?                                        │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ CORE PROBLEM: Efficient range queries + point/range updates                  │
+│                                                                              │
+│ WITHOUT SEGMENT TREE:                                                        │
+│ "Find sum of elements from index 2 to 1000"                                  │
+│ • Array: O(n) to sum each time → 10 queries on 1M elements = 10M ops        │
+│ • Prefix sum: O(1) query BUT O(n) if you need to update an element          │
+│                                                                              │
+│ WITH SEGMENT TREE:                                                           │
+│ • Query: O(log n)                                                            │
+│ • Update: O(log n)                                                           │
+│ • 10 queries + 5 updates = 15 × log(1M) ≈ 300 ops!                          │
+│                                                                              │
+│ REAL-WORLD EXAMPLES:                                                         │
+│ • Databases: Range queries on changing data                                  │
+│ • Finance: Rolling statistics (min/max/avg over time windows)               │
+│ • Gaming: Leaderboard queries ("players ranked 50-100")                     │
+│ • GIS: Geographic range queries                                              │
+│ • Image Processing: 2D range queries (with 2D segment trees)                │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ WHY USE SEGMENT TREE OVER ALTERNATIVES?                                      │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│ ┌──────────────────────┬──────────────┬──────────────┬────────────────────┐ │
+│ │ Data Structure       │ Query Time   │ Update Time  │ Use Case           │ │
+│ ├──────────────────────┼──────────────┼──────────────┼────────────────────┤ │
+│ │ Plain Array          │ O(n)         │ O(1)         │ Few queries        │ │
+│ │ Prefix Sum Array     │ O(1)         │ O(n)         │ No updates         │ │
+│ │ Segment Tree         │ O(log n)     │ O(log n)     │ Both! ⭐           │ │
+│ │ Fenwick/BIT          │ O(log n)     │ O(log n)     │ Simpler, sum only  │ │
+│ │ Sqrt Decomposition   │ O(√n)        │ O(1)         │ Simpler to code    │ │
+│ └──────────────────────┴──────────────┴──────────────┴────────────────────┘ │
+│                                                                              │
+│ SEGMENT TREE ADVANTAGES:                                                     │
+│ • Handles ANY associative operation (sum, min, max, gcd, AND, OR, XOR)      │
+│ • Supports lazy propagation for range updates                                │
+│ • More flexible than Fenwick Tree (BIT)                                      │
+│ • Generalizes to 2D, merge sort tree, etc.                                   │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ WHEN TO USE SEGMENT TREE?                                                    │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ ✅ USE SEGMENT TREE WHEN:                                                   │
+│    • Need BOTH range queries AND point/range updates                         │
+│    • Operation is ASSOCIATIVE (a⊕(b⊕c) = (a⊕b)⊕c)                           │
+│    • Many queries (more than O(n) total)                                     │
+│    • Array is fixed size (or use dynamic segment tree)                       │
+│                                                                              │
+│ ❌ DON'T USE WHEN:                                                          │
+│    • Only queries, no updates → use prefix sum (simpler)                     │
+│    • Only updates, no queries → just use array                               │
+│    • Few queries → brute force is fine                                       │
+│    • Operation isn't associative → segment tree won't work                   │
+│                                                                              │
+│ INTERVIEW SIGNALS:                                                           │
+│ • "Range sum query" + "update element" = SEGMENT TREE                        │
+│ • "Range minimum query" + "modifications" = SEGMENT TREE                     │
+│ • "Query multiple times" on "changing array" = SEGMENT TREE                  │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ HOW DOES SEGMENT TREE WORK?                                                  │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│ Array: [1, 3, 5, 7, 9, 11]                                                   │
+│                                                                              │
+│ Segment Tree for SUM:                                                        │
+│                                                                              │
+│                     [36]              ← Root: sum of [0,5] = 1+3+5+7+9+11   │
+│                    /    \                                                    │
+│                [9]      [27]          ← [0,2]=9, [3,5]=27                   │
+│               /   \    /    \                                                │
+│             [4]  [5]  [16]  [11]      ← [0,1]=4, [2]=5, [3,4]=16, [5]=11   │
+│            /  \       /  \                                                   │
+│          [1] [3]    [7]  [9]          ← Individual elements                 │
+│                                                                              │
+│ QUERY: "Sum from index 1 to 4"                                               │
+│ • Start at root                                                              │
+│ • Node [0,5]: Range [1,4] partially overlaps → go to both children          │
+│ • Node [0,2]: Range [1,2] partially overlaps → go to both children          │
+│   • Node [0,1]: Range [1,1] partially overlaps → check children             │
+│     • Node [0]: outside [1,4], ignore                                        │
+│     • Node [1]: completely inside [1,4], return 3                            │
+│   • Node [2]: completely inside [1,4], return 5                              │
+│ • Node [3,5]: Range [3,4] partially overlaps                                 │
+│   • Node [3,4]: completely inside [1,4], return 16                           │
+│   • Node [5]: outside [1,4], ignore                                          │
+│ • Answer: 3 + 5 + 16 = 24 ✓                                                 │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ DIFFICULTIES & COMMON MISTAKES                                               │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ 1. TREE SIZE CALCULATION:                                                    │
+│    Size needed: 4×n (safe) or 2×2^(ceil(log2(n))) (exact)                   │
+│    Common mistake: Using 2n (not enough for non-powers of 2)                 │
+│                                                                              │
+│ 2. INDEX CONFUSION:                                                          │
+│    Left child: 2*i, Right child: 2*i+1 (1-indexed)                          │
+│    Left child: 2*i+1, Right child: 2*i+2 (0-indexed)                        │
+│    Pick one and stick to it!                                                 │
+│                                                                              │
+│ 3. BOUNDARY CONDITIONS:                                                      │
+│    Query [l,r] where l > r? Return identity element                          │
+│    Segment [start,end] where start > end? Should not happen!                │
+│                                                                              │
+│ 4. FORGETTING TO UPDATE ALL ANCESTORS:                                       │
+│    When updating a leaf, must update all nodes up to root                    │
+│                                                                              │
+│ 5. LAZY PROPAGATION ERRORS:                                                  │
+│    Forgetting to push down lazy values before splitting                      │
+│    Not handling lazy values when query visits a node                         │
+│                                                                              │
+│ 6. WRONG MERGE OPERATION:                                                    │
+│    Sum: merge(a,b) = a + b                                                   │
+│    Min: merge(a,b) = min(a,b)                                                │
+│    Be consistent!                                                            │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ EXPECTED OUTPUTS & COMPLEXITY                                                │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│ OPERATION        │ TIME         │ SPACE        │ OUTPUT                      │
+│ ─────────────────┼──────────────┼──────────────┼──────────────────────────── │
+│ Build            │ O(n)         │ O(n)         │ Segment tree array          │
+│ Point Query      │ O(log n)     │ O(log n)*    │ Value at index              │
+│ Range Query      │ O(log n)     │ O(log n)*    │ Aggregate over range        │
+│ Point Update     │ O(log n)     │ O(log n)*    │ void (modifies tree)        │
+│ Range Update**   │ O(log n)     │ O(log n)*    │ void (with lazy prop)       │
+│                                                                              │
+│ * Stack space for recursion                                                  │
+│ ** With lazy propagation                                                     │
+│                                                                              │
+│ SPACE: O(4n) ≈ O(n) for tree storage                                        │
+│                                                                              │
+│ EXAMPLE OUTPUT:                                                              │
+│ arr = [1, 3, 5, 7, 9, 11]                                                    │
+│ query(1, 4) → 24 (3+5+7+9)                                                   │
+│ update(2, 10)  → arr becomes [1, 3, 10, 7, 9, 11]                           │
+│ query(1, 4) → 29 (3+10+7+9)                                                  │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+## Implementation
+
+```java
+class SegmentTree {
+    int[] tree;
+    int[] arr;
+    int n;
+
+    public SegmentTree(int[] arr) {
+        this.arr = arr;
+        this.n = arr.length;
+        this.tree = new int[4 * n];  // Safe size
+        build(0, 0, n - 1);
+    }
+
+    // BUILD: O(n)
+    private void build(int node, int start, int end) {
+        if (start == end) {
+            tree[node] = arr[start];
+            return;
+        }
+
+        int mid = (start + end) / 2;
+        int leftChild = 2 * node + 1;
+        int rightChild = 2 * node + 2;
+
+        build(leftChild, start, mid);
+        build(rightChild, mid + 1, end);
+
+        tree[node] = tree[leftChild] + tree[rightChild];  // Sum
+    }
+
+    // RANGE QUERY: O(log n)
+    public int query(int L, int R) {
+        return query(0, 0, n - 1, L, R);
+    }
+
+    private int query(int node, int start, int end, int L, int R) {
+        // No overlap
+        if (R < start || L > end) {
+            return 0;  // Identity for sum
+        }
+
+        // Complete overlap
+        if (L <= start && end <= R) {
+            return tree[node];
+        }
+
+        // Partial overlap
+        int mid = (start + end) / 2;
+        int leftSum = query(2 * node + 1, start, mid, L, R);
+        int rightSum = query(2 * node + 2, mid + 1, end, L, R);
+
+        return leftSum + rightSum;
+    }
+
+    // POINT UPDATE: O(log n)
+    public void update(int idx, int newVal) {
+        arr[idx] = newVal;
+        update(0, 0, n - 1, idx, newVal);
+    }
+
+    private void update(int node, int start, int end, int idx, int val) {
+        if (start == end) {
+            tree[node] = val;
+            return;
+        }
+
+        int mid = (start + end) / 2;
+        if (idx <= mid) {
+            update(2 * node + 1, start, mid, idx, val);
+        } else {
+            update(2 * node + 2, mid + 1, end, idx, val);
+        }
+
+        tree[node] = tree[2 * node + 1] + tree[2 * node + 2];
+    }
+}
+
+// VISUAL QUERY TRACE:
+// Array: [1, 3, 5, 7, 9, 11]
+// Query: sum(1, 4) = 3 + 5 + 7 + 9 = 24
+//
+//                    [36] (0-5)
+//                   /    \
+//               [9]      [27]
+//              /   \    /    \
+//            [4]  [5]  [16]  [11]
+//           /  \       /  \
+//         [1] [3]    [7]  [9]
+//
+// Query(1,4):
+// At root (0-5): partial overlap → go both sides
+// Left (0-2): partial → go both
+//   (0-1): partial → go both
+//     (0): no overlap → return 0
+//     (1): complete → return 3
+//   (2): complete → return 5
+// Right (3-5): partial → go both
+//   (3-4): complete → return 16
+//   (5): no overlap → return 0
+//
+// Result: 0 + 3 + 5 + 16 + 0 = 24 ✓
+```
+
+---
+

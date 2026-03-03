@@ -1,0 +1,273 @@
+> **SQL Chapter 03/20** | [← Previous](02_DataTypes_Constraints.md) | [Index](../00_MASTER_INDEX.md) | [Next →](04_DML_Manipulating_Data.md)
+
+---
+
+## Chapter 3: DDL - Creating Database Structure
+
+### CREATE Statements
+
+```sql
+-- ═══════════════════════════════════════════════════════════════════════════════
+-- DDL: DATA DEFINITION LANGUAGE - COMPLETE EXAMPLES
+-- ═══════════════════════════════════════════════════════════════════════════════
+
+-- ═══════════════════════════════════════════════════════════════════════════════
+-- CREATE DATABASE
+-- ═══════════════════════════════════════════════════════════════════════════════
+
+-- Basic database creation
+CREATE DATABASE company_db;
+
+-- With character set (important for international data)
+CREATE DATABASE company_db
+    CHARACTER SET utf8mb4
+    COLLATE utf8mb4_unicode_ci;
+
+-- Only create if not exists
+CREATE DATABASE IF NOT EXISTS company_db;
+
+-- Use the database
+USE company_db;
+
+
+-- ═══════════════════════════════════════════════════════════════════════════════
+-- CREATE TABLE - COMPREHENSIVE EXAMPLES
+-- ═══════════════════════════════════════════════════════════════════════════════
+
+-- EXAMPLE 1: Complete Employee Management System
+
+-- Departments table
+CREATE TABLE departments (
+    dept_id         INT PRIMARY KEY AUTO_INCREMENT,
+    dept_name       VARCHAR(100) NOT NULL UNIQUE,
+    location        VARCHAR(100),
+    budget          DECIMAL(15, 2) DEFAULT 0.00,
+    created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Employees table with all constraint types
+CREATE TABLE employees (
+    emp_id          INT PRIMARY KEY AUTO_INCREMENT,
+    emp_code        VARCHAR(10) UNIQUE NOT NULL,
+    first_name      VARCHAR(50) NOT NULL,
+    last_name       VARCHAR(50) NOT NULL,
+    email           VARCHAR(100) UNIQUE NOT NULL,
+    phone           VARCHAR(15),
+    hire_date       DATE NOT NULL,
+    job_title       VARCHAR(100),
+    salary          DECIMAL(10, 2) CHECK (salary >= 0),
+    commission_pct  DECIMAL(3, 2) CHECK (commission_pct BETWEEN 0 AND 1),
+    dept_id         INT,
+    manager_id      INT,
+    is_active       BOOLEAN DEFAULT TRUE,
+
+    -- Foreign Keys
+    FOREIGN KEY (dept_id) REFERENCES departments(dept_id)
+        ON DELETE SET NULL
+        ON UPDATE CASCADE,
+
+    FOREIGN KEY (manager_id) REFERENCES employees(emp_id)
+        ON DELETE SET NULL,
+
+    -- Named constraint
+    CONSTRAINT chk_email CHECK (email LIKE '%@%.%')
+);
+
+-- EXAMPLE 2: E-commerce Database Schema
+
+-- Categories (self-referencing for hierarchy)
+CREATE TABLE categories (
+    category_id     INT PRIMARY KEY AUTO_INCREMENT,
+    name            VARCHAR(100) NOT NULL,
+    parent_id       INT,
+    level           INT DEFAULT 1,
+    is_active       BOOLEAN DEFAULT TRUE,
+
+    FOREIGN KEY (parent_id) REFERENCES categories(category_id)
+        ON DELETE CASCADE
+);
+
+-- Products
+CREATE TABLE products (
+    product_id      BIGINT PRIMARY KEY AUTO_INCREMENT,
+    sku             VARCHAR(50) UNIQUE NOT NULL,
+    name            VARCHAR(255) NOT NULL,
+    description     TEXT,
+    price           DECIMAL(10, 2) NOT NULL CHECK (price >= 0),
+    cost            DECIMAL(10, 2) CHECK (cost >= 0),
+    quantity        INT UNSIGNED DEFAULT 0,
+    category_id     INT,
+    brand           VARCHAR(100),
+    weight          DECIMAL(8, 2),
+    dimensions      JSON,  -- {"length": 10, "width": 5, "height": 3}
+    attributes      JSON,  -- Flexible product attributes
+    status          ENUM('active', 'inactive', 'discontinued') DEFAULT 'active',
+    created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (category_id) REFERENCES categories(category_id),
+
+    -- Full-text index for search (MySQL)
+    FULLTEXT INDEX idx_product_search (name, description)
+);
+
+-- Customers
+CREATE TABLE customers (
+    customer_id     BIGINT PRIMARY KEY AUTO_INCREMENT,
+    email           VARCHAR(255) UNIQUE NOT NULL,
+    password_hash   VARCHAR(255) NOT NULL,
+    first_name      VARCHAR(100),
+    last_name       VARCHAR(100),
+    phone           VARCHAR(20),
+    date_of_birth   DATE,
+    gender          ENUM('M', 'F', 'O'),
+    is_verified     BOOLEAN DEFAULT FALSE,
+    created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    last_login      TIMESTAMP
+);
+
+-- Addresses (one customer can have multiple addresses)
+CREATE TABLE addresses (
+    address_id      BIGINT PRIMARY KEY AUTO_INCREMENT,
+    customer_id     BIGINT NOT NULL,
+    address_type    ENUM('billing', 'shipping') NOT NULL,
+    street_line1    VARCHAR(255) NOT NULL,
+    street_line2    VARCHAR(255),
+    city            VARCHAR(100) NOT NULL,
+    state           VARCHAR(100),
+    postal_code     VARCHAR(20) NOT NULL,
+    country         VARCHAR(100) NOT NULL,
+    is_default      BOOLEAN DEFAULT FALSE,
+
+    FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
+        ON DELETE CASCADE
+);
+
+-- Orders
+CREATE TABLE orders (
+    order_id        BIGINT PRIMARY KEY AUTO_INCREMENT,
+    order_number    VARCHAR(20) UNIQUE NOT NULL,
+    customer_id     BIGINT NOT NULL,
+    order_date      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status          ENUM('pending', 'processing', 'shipped', 'delivered', 'cancelled')
+                    DEFAULT 'pending',
+    shipping_address_id BIGINT,
+    billing_address_id  BIGINT,
+    subtotal        DECIMAL(12, 2) NOT NULL,
+    tax             DECIMAL(12, 2) DEFAULT 0,
+    shipping_cost   DECIMAL(10, 2) DEFAULT 0,
+    discount        DECIMAL(12, 2) DEFAULT 0,
+    total           DECIMAL(12, 2) GENERATED ALWAYS AS
+                    (subtotal + tax + shipping_cost - discount) STORED,
+    payment_method  VARCHAR(50),
+    payment_status  ENUM('pending', 'paid', 'failed', 'refunded') DEFAULT 'pending',
+    notes           TEXT,
+
+    FOREIGN KEY (customer_id) REFERENCES customers(customer_id),
+    FOREIGN KEY (shipping_address_id) REFERENCES addresses(address_id),
+    FOREIGN KEY (billing_address_id) REFERENCES addresses(address_id)
+);
+
+-- Order Items (junction table)
+CREATE TABLE order_items (
+    item_id         BIGINT PRIMARY KEY AUTO_INCREMENT,
+    order_id        BIGINT NOT NULL,
+    product_id      BIGINT NOT NULL,
+    quantity        INT NOT NULL CHECK (quantity > 0),
+    unit_price      DECIMAL(10, 2) NOT NULL,
+    discount        DECIMAL(5, 2) DEFAULT 0,
+    total_price     DECIMAL(12, 2) GENERATED ALWAYS AS
+                    (quantity * unit_price * (1 - discount/100)) STORED,
+
+    FOREIGN KEY (order_id) REFERENCES orders(order_id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES products(product_id),
+
+    -- Prevent duplicate products in same order
+    UNIQUE KEY unique_order_product (order_id, product_id)
+);
+
+
+-- ═══════════════════════════════════════════════════════════════════════════════
+-- CREATE INDEX
+-- ═══════════════════════════════════════════════════════════════════════════════
+
+-- Single column index
+CREATE INDEX idx_emp_lastname ON employees(last_name);
+
+-- Composite index (order matters!)
+CREATE INDEX idx_emp_dept_hire ON employees(dept_id, hire_date);
+
+-- Unique index
+CREATE UNIQUE INDEX idx_emp_email ON employees(email);
+
+-- Partial index (PostgreSQL) - only index active employees
+CREATE INDEX idx_active_emp ON employees(emp_id) WHERE is_active = TRUE;
+
+-- Covering index (includes all columns needed for query)
+CREATE INDEX idx_product_category ON products(category_id, name, price);
+
+
+-- ═══════════════════════════════════════════════════════════════════════════════
+-- ALTER TABLE
+-- ═══════════════════════════════════════════════════════════════════════════════
+
+-- Add column
+ALTER TABLE employees ADD COLUMN middle_name VARCHAR(50);
+
+-- Add column with position
+ALTER TABLE employees ADD COLUMN ssn VARCHAR(11) AFTER last_name;
+
+-- Modify column
+ALTER TABLE employees MODIFY COLUMN phone VARCHAR(20);
+
+-- Rename column (MySQL 8.0+)
+ALTER TABLE employees RENAME COLUMN phone TO phone_number;
+
+-- Drop column
+ALTER TABLE employees DROP COLUMN middle_name;
+
+-- Add constraint
+ALTER TABLE employees
+    ADD CONSTRAINT chk_salary CHECK (salary > 0);
+
+-- Drop constraint
+ALTER TABLE employees DROP CONSTRAINT chk_salary;
+
+-- Add foreign key
+ALTER TABLE employees
+    ADD CONSTRAINT fk_dept
+    FOREIGN KEY (dept_id) REFERENCES departments(dept_id);
+
+-- Drop foreign key
+ALTER TABLE employees DROP FOREIGN KEY fk_dept;
+
+-- Rename table
+ALTER TABLE employees RENAME TO staff;
+-- OR
+RENAME TABLE employees TO staff;
+
+
+-- ═══════════════════════════════════════════════════════════════════════════════
+-- DROP & TRUNCATE
+-- ═══════════════════════════════════════════════════════════════════════════════
+
+-- Drop table (removes structure and data)
+DROP TABLE IF EXISTS temp_table;
+
+-- Drop table with dependencies
+DROP TABLE IF EXISTS employees CASCADE;  -- PostgreSQL
+
+-- Truncate (remove all data, keep structure, faster than DELETE)
+TRUNCATE TABLE logs;
+
+-- Drop database
+DROP DATABASE IF EXISTS test_db;
+
+-- Drop index
+DROP INDEX idx_emp_lastname ON employees;  -- MySQL
+DROP INDEX IF EXISTS idx_emp_lastname;      -- PostgreSQL
+```
+
+---
+

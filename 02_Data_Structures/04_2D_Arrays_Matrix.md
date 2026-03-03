@@ -1155,4 +1155,62 @@ private static void dfsIsland(int[][] grid, int r, int c,
 
 ---
 
+# CURATED PRACTICE PROBLEMS — 2D ARRAYS & MATRIX
+
+> **HOW TO USE**: Section 1 = traversal basics. Section 2 = search/transform. Section 3 = advanced.
+
+---
+
+## Section 1: Matrix Traversal & Basics
+
+| # | Problem | Platform | Difficulty | Key Technique |
+|---|---------|----------|------------|---------------|
+| 1 | Reshape the Matrix (LC 566) | LeetCode | Easy | row = idx/cols, col = idx%cols |
+| 2 | Transpose Matrix (LC 867) | LeetCode | Easy | Swap [i][j] → [j][i] |
+| 3 | Rotate Image (LC 48) | LeetCode | Medium | Transpose + reverse rows (or layers) |
+| 4 | Spiral Matrix (LC 54) | LeetCode | Medium | 4-boundary shrink traversal |
+| 5 | Spiral Matrix II (LC 59) | LeetCode | Medium | Fill in spiral order |
+| 6 | Diagonal Traverse (LC 498) | LeetCode | Medium | Direction flip on boundaries |
+| 7 | Toeplitz Matrix (LC 766) | LeetCode | Easy | Each diagonal has same value |
+
+---
+
+## Section 2: Matrix Search & Transform
+
+| # | Problem | Platform | Difficulty | Key Technique |
+|---|---------|----------|------------|---------------|
+| 1 | Search a 2D Matrix (LC 74) | LeetCode | Medium | Treat as 1D sorted → binary search |
+| 2 | Search a 2D Matrix II (LC 240) | LeetCode | Medium | Start top-right, eliminate row/col |
+| 3 | Set Matrix Zeroes (LC 73) | LeetCode | Medium | Use first row/col as markers |
+| 4 | Game of Life (LC 289) | LeetCode | Medium | Encode states in bits for in-place |
+| 5 | Valid Sudoku (LC 36) | LeetCode | Medium | Row/col/box constraint sets |
+| 6 | Island Perimeter (LC 463) | LeetCode | Easy | Count edges not shared with land |
+
+---
+
+## Section 3: Advanced Matrix (DP/BFS on Grid)
+
+| # | Problem | Platform | Difficulty | Key Technique |
+|---|---------|----------|------------|---------------|
+| 1 | Maximal Square (LC 221) | LeetCode | Medium | DP: min(top,left,diag) + 1 |
+| 2 | Maximal Rectangle (LC 85) | LeetCode | Hard | Histogram per row + largest rect |
+| 3 | Longest Increasing Path in Matrix (LC 329) | LeetCode | Hard | DFS + memo (topological) |
+| 4 | Number of Islands (LC 200) | LeetCode | Medium | Flood fill DFS/BFS |
+| 5 | Word Search (LC 79) | LeetCode | Medium | Backtracking on grid |
+| 6 | Shortest Path in Binary Matrix (LC 1091) | LeetCode | Medium | BFS 8-directional |
+
+---
+
+## HIDDEN GEMS — Matrix Problems
+
+| # | Problem | Platform | Why It's Valuable |
+|---|---------|----------|-------------------|
+| 1 | Count Negative Numbers in a Sorted Matrix (LC 1351) | LeetCode | Staircase search O(m+n) |
+| 2 | Lucky Numbers in a Matrix (LC 1380) | LeetCode | Row min ∩ col max |
+| 3 | Kth Smallest Element in a Sorted Matrix (LC 378) | LeetCode | Binary search on value range |
+| 4 | Pacific Atlantic Water Flow (LC 417) | LeetCode | Reverse BFS from borders |
+| 5 | Minimum Path Sum (LC 64) | LeetCode | Classic 2D DP on grid |
+
+---
+
 _Master 2D arrays = Master half of interview problems!_ 🔲

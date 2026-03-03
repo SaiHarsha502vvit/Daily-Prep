@@ -1,0 +1,282 @@
+# Graph + Traversal Patterns — Combined Pattern Guide
+
+> **WHY this combination?** Graphs model relationships. BFS gives shortest unweighted path. DFS explores all reachable nodes. Dijkstra handles weighted graphs. Union-Find manages connected components. Choosing the right traversal is THE key skill.
+
+---
+
+## 🧠 WHEN TO RECOGNIZE
+
+```
+Problem type → Algorithm:
+├── "Shortest path" (unweighted) → BFS
+├── "Shortest path" (weighted, no negative) → Dijkstra
+├── "Shortest path" (negative edges) → Bellman-Ford
+├── "All pairs shortest path" → Floyd-Warshall
+├── "Connected components" → BFS/DFS or Union-Find
+├── "Cycle detection" → DFS (directed) or Union-Find (undirected)
+├── "Topological ordering" → Kahn's BFS or DFS
+├── "Minimum spanning tree" → Prim's or Kruskal's
+├── "Bridges/Articulation points" → Tarjan's DFS
+└── "Bipartite check" → BFS/DFS with 2-coloring
+```
+
+---
+
+## 📐 CORE TEMPLATES
+
+### Template 1: BFS (Shortest Path Unweighted)
+```java
+int bfs(int[][] graph, int start, int end) {
+    Queue<Integer> queue = new LinkedList<>();
+    boolean[] visited = new boolean[n];
+    queue.offer(start);
+    visited[start] = true;
+    int distance = 0;
+
+    while (!queue.isEmpty()) {
+        int size = queue.size();
+        for (int i = 0; i < size; i++) {
+            int node = queue.poll();
+            if (node == end) return distance;
+            for (int neighbor : graph[node]) {
+                if (!visited[neighbor]) {
+                    visited[neighbor] = true;
+                    queue.offer(neighbor);
+                }
+            }
+        }
+        distance++;
+    }
+    return -1;
+}
+```
+
+### Template 2: DFS (Cycle Detection + Topological Sort)
+```java
+// States: 0=unvisited, 1=in-progress, 2=completed
+boolean hasCycle(int node, List<List<Integer>> adj, int[] state, List<Integer> topo) {
+    state[node] = 1;  // VISITING
+    for (int next : adj.get(node)) {
+        if (state[next] == 1) return true;       // CYCLE! Back edge
+        if (state[next] == 0 && hasCycle(next, adj, state, topo)) return true;
+    }
+    state[node] = 2;  // DONE
+    topo.add(0, node);  // Add to beginning for topological order
+    return false;
+}
+```
+
+### Template 3: Dijkstra
+```java
+int[] dijkstra(List<int[]>[] graph, int start, int n) {
+    int[] dist = new int[n];
+    Arrays.fill(dist, Integer.MAX_VALUE);
+    dist[start] = 0;
+    PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[1] - b[1]);
+    pq.offer(new int[]{start, 0});
+
+    while (!pq.isEmpty()) {
+        int[] curr = pq.poll();
+        int u = curr[0], d = curr[1];
+        if (d > dist[u]) continue;  // skip stale entries
+        for (int[] edge : graph[u]) {
+            int v = edge[0], w = edge[1];
+            if (dist[u] + w < dist[v]) {
+                dist[v] = dist[u] + w;
+                pq.offer(new int[]{v, dist[v]});
+            }
+        }
+    }
+    return dist;
+}
+```
+
+### Template 4: Union-Find
+```java
+int[] parent, rank;
+int find(int x) {
+    if (parent[x] != x) parent[x] = find(parent[x]);  // path compression
+    return parent[x];
+}
+boolean union(int x, int y) {
+    int px = find(x), py = find(y);
+    if (px == py) return false;  // already connected (cycle in undirected!)
+    if (rank[px] < rank[py]) { parent[px] = py; }
+    else if (rank[px] > rank[py]) { parent[py] = px; }
+    else { parent[py] = px; rank[px]++; }
+    return true;
+}
+```
+
+---
+
+## � FULL WALKTHROUGH: Number of Islands (Grid DFS)
+
+```
+Problem: Count number of islands in a grid.
+  grid = [
+    [1,1,0,0,0],
+    [1,1,0,0,0],
+    [0,0,1,0,0],
+    [0,0,0,1,1]
+  ]
+
+Approach: Scan grid. When we find a '1', DFS to "sink" the
+entire island (mark all connected 1s as 0), then increment count.
+
+WHY DFS/sink? After sinking, we won't count the same island twice.
+
+Step-by-step:
+  (0,0)=1 → DFS! Sink (0,0),(0,1),(1,0),(1,1). count=1
+  (0,1)=0 (sunk), skip.
+  (2,2)=1 → DFS! Sink (2,2). count=2
+  (3,3)=1 → DFS! Sink (3,3),(3,4). count=3
+
+  Answer: 3 islands ✅
+
+Time: O(R×C) | Space: O(R×C) recursion stack worst case
+```
+
+---
+
+## 🔬 FULL WALKTHROUGH 2: Topological Sort (Course Schedule)
+
+```
+Problem: Can you finish all courses? Prerequisites: [[1,0],[2,0],[3,1],[3,2]]
+         (0 must come before 1, 0 before 2, 1 before 3, 2 before 3)
+
+         0 → 1 → 3
+         0 → 2 → 3
+
+Approach: Kahn's Algorithm (BFS-based topological sort using indegree).
+
+Step-by-step:
+  Compute indegree: 0→0, 1→1, 2→1, 3→2
+  Queue = nodes with indegree 0 = [0]
+  order = []
+
+  Dequeue 0: order=[0]. Neighbors: 1(indegree 1→0), 2(indegree 1→0)
+             Queue = [1, 2]
+  Dequeue 1: order=[0,1]. Neighbors: 3(indegree 2→1)
+             Queue = [2]
+  Dequeue 2: order=[0,1,2]. Neighbors: 3(indegree 1→0)
+             Queue = [3]
+  Dequeue 3: order=[0,1,2,3]. No neighbors.
+             Queue = []
+
+  order.size() == numCourses(4) → YES, can finish! ✅
+  Topological order: [0, 1, 2, 3]
+
+  If order.size() < numCourses → there's a cycle → impossible!
+
+Time: O(V + E) | Space: O(V + E)
+```
+
+---
+
+## 🛡️ EDGE CASES & COMMON MISTAKES
+
+```
+EDGE CASES:
+┌──────────────────────────────────┬──────────────────────────────────────┐
+│ Edge Case                        │ Handling                             │
+├──────────────────────────────────┼──────────────────────────────────────┤
+│ Disconnected graph               │ BFS/DFS may miss components — loop! │
+│ Self-loop                        │ Cycle detection catches this        │
+│ Empty graph (no edges)           │ All nodes are valid, indegree=0    │
+│ Grid with all 0s                 │ 0 islands                           │
+│ Grid with all 1s                 │ 1 island                            │
+│ Single node, no edges            │ Trivially works                    │
+│ Negative weights (Dijkstra)      │ Dijkstra FAILS! Use Bellman-Ford   │
+└──────────────────────────────────┴──────────────────────────────────────┘
+
+COMMON MISTAKES:
+1. BFS: Adding to visited AFTER dequeue instead of WHEN enqueueing
+   Result: same node enqueued multiple times → TLE or wrong answer
+2. Directed vs undirected cycle detection — DIFFERENT algorithms!
+   Undirected: parent tracking. Directed: 3-state coloring (white/gray/black)
+3. Dijkstra: Not using "skip stale" pattern (if dist[u] < curr_dist: skip)
+4. Topological sort: Forgetting to check order.size() vs numNodes for cycle
+5. Grid DFS: Forgetting to mark visited BEFORE recursing into neighbors
+```
+
+---
+
+## 📊 COMPLEXITY SUMMARY
+
+| Algorithm | Time | Space | When |
+|-----------|------|-------|------|
+| BFS/DFS traversal | O(V+E) | O(V) | Reachability, components |
+| Grid BFS/DFS | O(R×C) | O(R×C) | Islands, flood fill |
+| Topological Sort | O(V+E) | O(V+E) | DAG ordering, scheduling |
+| Dijkstra | O(E log V) | O(V) | Shortest path, positive weights |
+| Union-Find | O(α(n)) ≈ O(1) | O(n) | Connectivity, MST |
+
+---
+
+## 📋 PRACTICE PROBLEMS — From Your Excel Sheet
+
+### Easy
+| # | Problem | Companies | Key Insight |
+|---|---------|-----------|-------------|
+| 2 | [DFS of Graph](https://www.geeksforgeeks.org/depth-first-search-or-dfs-for-a-graph/) | Amazon | Standard DFS template |
+| 3 | [Number of Islands](https://leetcode.com/problems/number-of-islands/) | — | DFS/BFS flood fill on grid |
+| 4 | [Flood Fill](https://leetcode.com/problems/flood-fill/) | Salesforce | BFS/DFS from source |
+| 5 | [Rat in a Maze](https://practice.geeksforgeeks.org/problems/rat-in-a-maze-problem/1) | — | Backtracking DFS |
+| 6 | [Detect Cycle Undirected](https://practice.geeksforgeeks.org/problems/detect-cycle-in-an-undirected-graph/1) | — | BFS/DFS or Union-Find |
+| 7 | [Detect Cycle Directed](https://www.geeksforgeeks.org/detect-cycle-in-a-graph/) | — | DFS with 3 states |
+
+### Medium
+| # | Problem | Companies | Key Insight |
+|---|---------|-----------|-------------|
+| 8 | [Steps by Knight](https://practice.geeksforgeeks.org/problems/steps-by-knight5927/1) | Amazon | BFS shortest path |
+| 9 | [Decode String](https://leetcode.com/problems/decode-string/) | Amazon | Stack + DFS |
+| 10 | [Shortest Bridge](https://leetcode.com/problems/shortest-bridge/) | Amazon | DFS to find island + BFS to expand |
+| 11 | [Network Connected](https://leetcode.com/problems/number-of-operations-to-make-network-connected/) | Amazon, Salesforce | Union-Find: edges - components |
+| 12 | [Eventual Safe States](https://leetcode.com/problems/find-eventual-safe-states/) | — | Reverse DFS / topo sort |
+| 13 | [Kosaraju's SCC](https://practice.geeksforgeeks.org/problems/strongly-connected-components-kosarajus-algo/1) | — | Two-pass DFS |
+| 14 | [Time to Inform Employees](https://leetcode.com/problems/time-needed-to-inform-all-employees/) | Amazon | DFS/BFS on tree |
+| 15 | [Graph Coloring](https://www.geeksforgeeks.org/graph-coloring-applications/) | — | Backtracking |
+| 16 | [Most Stones Removed](https://leetcode.com/problems/most-stones-removed-with-same-row-or-column/) | — | Union-Find on row/col |
+| 17 | [As Far from Land](https://leetcode.com/problems/as-far-from-land-as-possible/) | — | Multi-source BFS |
+| 18 | [Smallest City at Threshold](https://leetcode.com/problems/find-the-city-with-the-smallest-number-of-neighbors-at-a-threshold-distance/) | — | Floyd-Warshall or Dijkstra |
+| 19 | [Course Schedule](https://www.geeksforgeeks.org/find-whether-it-is-possible-to-finish-all-tasks-or-not-from-given-dependencies/) | — | Topological sort cycle check |
+| 20 | [Prim's MST](https://www.geeksforgeeks.org/prims-minimum-spanning-tree-mst-greedy-algo-5/) | Salesforce | PQ-based Prim's |
+| 21 | [Floyd-Warshall](https://practice.geeksforgeeks.org/problems/implementing-floyd-warshall2042/1) | — | All-pairs DP |
+| 22 | [Evaluate Division](https://leetcode.com/problems/evaluate-division/) | — | Weighted graph DFS |
+| 23 | [Snakes and Ladders](https://leetcode.com/problems/snakes-and-ladders/) | — | BFS shortest path |
+| 24 | [Topological Sort](https://practice.geeksforgeeks.org/problems/topological-sort/1) | Microsoft | Kahn's or DFS |
+| 25 | [Cheapest Flights K Stops](https://leetcode.com/problems/cheapest-flights-within-k-stops/description/) | Amazon, Salesforce | Modified Dijkstra or Bellman-Ford |
+| 26 | [Bellman-Ford Negative Cycle](https://www.geeksforgeeks.org/detect-negative-cycle-graph-bellman-ford/) | — | V-1 iterations + check |
+| 27 | [Bipartite Graph](https://www.geeksforgeeks.org/bipartite-graph/) | — | BFS 2-coloring |
+
+### Hard
+| # | Problem | Companies | Key Insight |
+|---|---------|-----------|-------------|
+| 28 | [Longest Increasing Path in Matrix](https://leetcode.com/problems/longest-increasing-path-in-a-matrix/) | Amazon | DFS + memoization on grid |
+| 29 | [Making a Large Island](https://leetcode.com/problems/making-a-large-island/) | — | Union-Find + try flipping each 0 |
+| 30 | [Critical Connections](https://leetcode.com/problems/critical-connections-in-a-network/) | Salesforce | Tarjan's bridge finding |
+| 31 | [Alien Dictionary](https://practice.geeksforgeeks.org/problems/alien-dictionary/1) | Salesforce | Build graph + topological sort |
+| 32 | [Water Jug BFS](https://www.geeksforgeeks.org/water-jug-problem-using-bfs/) | — | State-space BFS |
+| 33 | [Travelling Salesman](https://www.geeksforgeeks.org/travelling-salesman-problem-set-1/) | Salesforce, Microsoft | DP + bitmask |
+| 34 | [Spanning Trees Count](https://www.geeksforgeeks.org/total-number-spanning-trees-graph/) | — | Kirchhoff's theorem |
+| 35 | [Word Ladder](https://leetcode.com/problems/word-ladder/) | — | BFS with word transformation |
+| 36 | [Minimize Cash Flow](https://www.geeksforgeeks.org/minimize-cash-flow-among-given-set-friends-borrowed-money/) | — | Net amounts + greedy |
+| 37 | [Remove Boxes](https://leetcode.com/problems/remove-boxes/) | Salesforce, Microsoft | Interval DP |
+
+### Additional — From Bonus Section
+| # | Problem | Key Insight |
+|---|---------|-------------|
+| 38 | Bridge in a Graph | Tarjan's algorithm |
+| 39 | Seven Bridges of Königsberg | Euler path existence |
+| 40 | Minimum edges to reverse for path | 0-1 BFS |
+
+---
+
+📖 **Related Chapters:**
+- [03_Algorithms/05b_Graphs_Core.md](../03_Algorithms/05b_Graphs_Core.md) — Graph fundamentals
+- [03_Algorithms/05d_Graphs_Advanced_Algos.md](../03_Algorithms/05d_Graphs_Advanced_Algos.md) — Advanced graph algorithms
+- [03_Algorithms/14_Union_Find_DSU_Complete.md](../03_Algorithms/14_Union_Find_DSU_Complete.md) — Union-Find deep dive
+
+---
+[← 13 Tree+DFS/BFS](13_Tree_Plus_DFS_BFS.md) | [15 Heap+Greedy →](15_Heap_Plus_GreedySelection.md)

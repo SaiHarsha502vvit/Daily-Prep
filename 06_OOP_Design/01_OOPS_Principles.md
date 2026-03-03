@@ -1094,4 +1094,37 @@ For each, think about:
 
 ---
 
-_OOP is about managing complexity through smart organization!_ 🏗️
+# CURATED PRACTICE PROBLEMS — OOP PRINCIPLES
+
+> **HOW TO USE**: These are conceptual + coding problems that test your grasp of OOP pillars.
+
+---
+
+## OOP Coding Challenges
+
+| # | Problem | Platform | Difficulty | OOP Concept Tested |
+|---|---------|----------|------------|--------------------|
+| 1 | Design Parking System (LC 1603) | LeetCode | Easy | Encapsulation, simple class design |
+| 2 | Design HashMap (LC 706) | LeetCode | Easy | Encapsulation + array of linked lists |
+| 3 | Design Browser History (LC 1472) | LeetCode | Medium | Stack/List with encapsulated state |
+| 4 | Implement Queue using Stacks (LC 232) | LeetCode | Easy | Abstraction: queue interface, stack impl |
+| 5 | Design Twitter (LC 355) | LeetCode | Medium | Composition: User has Tweets, follows Set |
+| 6 | LRU Cache (LC 146) | LeetCode | Medium | Encapsulation: internal doubly-linked list |
+| 7 | Serialize/Deserialize Binary Tree (LC 297) | LeetCode | Hard | Abstraction: encode/decode interface |
+| 8 | Design Snake Game (LC 353) | LeetCode | Medium | State management, queue for body |
+
+---
+
+## OOP Design Exercises (Think + Sketch)
+
+| # | Exercise | Focus |
+|---|----------|-------|
+| 1 | Design a Library Management System | Inheritance (Book/EBook/AudioBook), Polymorphism |
+| 2 | Design a Vending Machine | State pattern, Encapsulation |
+| 3 | Design a Chess Game | Inheritance (Piece hierarchy), Polymorphism (move()) |
+| 4 | Design a Deck of Cards | Abstraction, Factory pattern |
+| 5 | Design an Elevator System | Observer pattern, State pattern |
+
+---
+
+_OOP is about managing complexity through smart organization!_
