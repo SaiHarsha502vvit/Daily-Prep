@@ -98,7 +98,7 @@ Daily-Prep/
 │   ├── 19_Matrix_Plus_Grid_Traversal.md → 🆕 2D Grid + BFS/DFS patterns
 │   └── 20_BitManipulation_Plus_Tricks.md → 🆕 Bit tricks, XOR, bitmask + Math/Search
 │
-├── 05_Problem_Solving/                  (17 files)
+├── 05_Problem_Solving/                  (23 files)
 │   ├── 01_Problems_Intro_Checklist.md   → Problem-solving methodology
 │   ├── 02_Problems_Math_Numbers.md      → Number theory problems
 │   ├── 03_Problems_Strings.md           → String manipulation problems
@@ -283,13 +283,15 @@ Daily-Prep/
 - [Graph+Traversal](04_Patterns_Templates/14_Graph_Plus_Traversal.md) | [Heap+Greedy](04_Patterns_Templates/15_Heap_Plus_GreedySelection.md) | [DP Patterns](04_Patterns_Templates/16_DP_Pattern_Recognition.md)
 - [Backtracking+Pruning](04_Patterns_Templates/17_Backtracking_Plus_Pruning.md) | [String+Advanced](04_Patterns_Templates/18_String_Plus_Advanced.md) | [Matrix+Grid](04_Patterns_Templates/19_Matrix_Plus_Grid_Traversal.md) | [BitManip+Tricks](04_Patterns_Templates/20_BitManipulation_Plus_Tricks.md)
 
-### Practice & Problem Solving (17 files)
+### Practice & Problem Solving (23 files)
 - [Intro & Checklist](05_Problem_Solving/01_Problems_Intro_Checklist.md)
 - [Math & Numbers](05_Problem_Solving/02_Problems_Math_Numbers.md) | [Strings](05_Problem_Solving/03_Problems_Strings.md) | [Arrays](05_Problem_Solving/04_Problems_Arrays.md)
 - [Sliding Window](05_Problem_Solving/05_Problems_Sliding_Window.md) | [Two Pointers](05_Problem_Solving/06_Problems_Two_Pointers.md) | [Binary Search](05_Problem_Solving/07_Problems_Binary_Search.md)
 - [Stack & Queue](05_Problem_Solving/08_Problems_Stack_Queue.md) | [Trees](05_Problem_Solving/09_Problems_Trees.md) | [Graphs](05_Problem_Solving/10_Problems_Graphs.md)
 - [Dynamic Programming](05_Problem_Solving/11_Problems_Dynamic_Programming.md) | [Backtracking](05_Problem_Solving/12_Problems_Backtracking.md) | [Greedy](05_Problem_Solving/13_Problems_Greedy.md)
-- [Mixed Competitive](05_Problem_Solving/14_Problems_Mixed_Competitive.md)
+- [Mixed Competitive](05_Problem_Solving/14_Problems_Mixed_Competitive.md) | [Linked Lists](05_Problem_Solving/15_Problems_LinkedList.md) | [Heap / Priority Queue](05_Problem_Solving/16_Problems_Heap.md)
+- [Hashing](05_Problem_Solving/17_Problems_Hashing.md) | [Bit Manipulation](05_Problem_Solving/18_Problems_Bit_Manipulation.md) | [Matrix](05_Problem_Solving/19_Problems_Matrix.md)
+- [Sorting](05_Problem_Solving/20_Problems_Sorting.md) | [Design](05_Problem_Solving/21_Problems_Design.md) | [Recursion & Subsets](05_Problem_Solving/22_Problems_Recursion_Subsets.md)
 - [Edge Cases](05_Problem_Solving/02_Edge_Cases.md) | [Common Mistakes](05_Problem_Solving/03_Common_Mistakes.md) | [Problem Origins](05_Problem_Solving/04_Problem_Origins.md)
 
 ### OOP & Design (4 files)
@@ -395,7 +397,7 @@ Open [07_Modern_Java/26_Spring_Boot_Curriculum_50Day.md](07_Modern_Java/26_Sprin
 | 02_Data_Structures | 11 | Memory → Arrays → LinkedList → Stack/Queue → Hash → Trees → Internals → Variants |
 | 03_Algorithms | 29 | Sorting → Recursion → DP → Trees → Graphs → Advanced → Number Theory → Specialized |
 | 04_Patterns_Templates | 20 | 7 original + 13 combined DS+Algo patterns with Excel problems |
-| 05_Problem_Solving | 17 | 14 topic chapters + Edge/Mistakes/Origins |
+| 05_Problem_Solving | 23 | 20 topic chapters + Edge/Mistakes/Origins |
 | 06_OOP_Design | 4 | OOP, Design Patterns, System Design |
 | 07_Modern_Java | 38 | Functional, Algo Eng, 30+ Spring Boot chapters |
 | 08_SQL | 21 | Zero to expert in 21 chapters |

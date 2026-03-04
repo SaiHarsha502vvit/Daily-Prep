@@ -686,31 +686,118 @@ public void inorderIter(TreeNode root) {
 
 ---
 
+# PART 7.5: TOWER OF HANOI — The Classic First Recursion Problem
+
+```
+THE PROBLEM:
+Move n disks from Source (A) to Target (C) using Auxiliary (B).
+Rules: 1. Move one disk at a time
+       2. Never place larger disk on smaller disk
+
+WHY THIS IS THE PERFECT RECURSION PROBLEM:
+- Base case is obvious (1 disk → just move it)
+- Recursive step is elegant (move n-1, move biggest, move n-1)
+- Self-similar: solving for n uses the solution for n-1 twice
+
+THE INSIGHT (MIT 6.006 Style):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+To move n disks from A → C:
+  1. Move top n-1 disks from A → B (using C as helper)
+  2. Move disk n (the largest) from A → C
+  3. Move n-1 disks from B → C (using A as helper)
+
+3-DISK TRACE:
+  Start:     A=[3,2,1]   B=[]       C=[]
+
+  Step 1: Move disk 1: A→C
+           A=[3,2]      B=[]       C=[1]
+  Step 2: Move disk 2: A→B
+           A=[3]        B=[2]      C=[1]
+  Step 3: Move disk 1: C→B
+           A=[3]        B=[2,1]    C=[]
+  Step 4: Move disk 3: A→C          ← THE BIG MOVE
+           A=[]         B=[2,1]    C=[3]
+  Step 5: Move disk 1: B→A
+           A=[1]        B=[2]      C=[3]
+  Step 6: Move disk 2: B→C
+           A=[1]        B=[]       C=[3,2]
+  Step 7: Move disk 1: A→C
+           A=[]         B=[]       C=[3,2,1]  ✓ DONE!
+
+  Total moves = 2^n - 1 = 2^3 - 1 = 7 moves
+```
+
+```java
+// Tower of Hanoi — Classic Recursive Solution
+public void towerOfHanoi(int n, char source, char target, char auxiliary) {
+    if (n == 1) {
+        System.out.println("Move disk 1 from " + source + " to " + target);
+        return;
+    }
+    // Step 1: Move n-1 disks from source to auxiliary (using target as helper)
+    towerOfHanoi(n - 1, source, auxiliary, target);
+    
+    // Step 2: Move the largest disk from source to target
+    System.out.println("Move disk " + n + " from " + source + " to " + target);
+    
+    // Step 3: Move n-1 disks from auxiliary to target (using source as helper)
+    towerOfHanoi(n - 1, auxiliary, target, source);
+}
+
+// Usage: towerOfHanoi(3, 'A', 'C', 'B');
+```
+
+```
+COMPLEXITY: Time O(2^n) — must make 2^n - 1 moves (provably optimal!)
+            Space O(n) — recursion depth
+
+WHY 2^n - 1 IS OPTIMAL:
+  T(n) = 2·T(n-1) + 1
+  T(1) = 1
+  T(n) = 2^n - 1  (by induction or Master Theorem)
+
+  You CANNOT do better. Every state transition is necessary.
+  This makes Tower of Hanoi the simplest exponential-time problem
+  that's PROVABLY exponential — no clever algorithm can speed it up.
+
+LEGEND: Buddhist monks in Hanoi are said to be moving 64 golden disks.
+When they finish (2^64 - 1 moves), the world will end.
+At 1 move/second, that's 585 billion years. The universe is 13.8 billion.
+```
+
+---
+
 # PART 8: PRACTICE PROBLEMS BY DIFFICULTY
 
 ## Easy
 
-1. **Sum of digits** - Add digits of a number
-2. **Power of number** - Calculate x^n
-3. **Palindrome check** - Is string palindrome?
-4. **Count occurrences** - Count x in array
-5. **String reverse** - Reverse using recursion
+| # | Problem | LC# | Pattern |
+|---|---------|-----|---------|
+| 1 | [Sum of Digits](https://leetcode.com/problems/add-digits/) | 258 | Recursion / Math |
+| 2 | [Power of Two](https://leetcode.com/problems/power-of-two/) | 231 | Recursion / Bit |
+| 3 | [Palindrome Check](https://leetcode.com/problems/valid-palindrome/) | 125 | Recursion / Two Pointers |
+| 4 | [Reverse String](https://leetcode.com/problems/reverse-string/) | 344 | Recursion / Two Pointers |
+| 5 | [Fibonacci Number](https://leetcode.com/problems/fibonacci-number/) | 509 | Recursion → DP |
 
 ## Medium
 
-1. **Generate parentheses** - All valid combinations
-2. **Subsets** - All subsets of array
-3. **Permutations** - All permutations
-4. **Combination sum** - Find combinations summing to target
-5. **Letter combinations** - Phone keypad problem
+| # | Problem | LC# | Pattern |
+|---|---------|-----|---------|
+| 1 | [Generate Parentheses](https://leetcode.com/problems/generate-parentheses/) | 22 | Constrained Backtrack |
+| 2 | [Subsets](https://leetcode.com/problems/subsets/) | 78 | Include/Exclude |
+| 3 | [Permutations](https://leetcode.com/problems/permutations/) | 46 | Backtrack + visited |
+| 4 | [Combination Sum](https://leetcode.com/problems/combination-sum/) | 39 | Unbounded Backtrack |
+| 5 | [Letter Combinations of Phone](https://leetcode.com/problems/letter-combinations-of-a-phone-number/) | 17 | Backtracking |
 
 ## Hard
 
-1. **N-Queens** - Place N queens on board
-2. **Sudoku solver** - Fill the board
-3. **Word search** - Find word in grid
-4. **Regular expression matching**
-5. **Wildcard matching**
+| # | Problem | LC# | Pattern |
+|---|---------|-----|---------|
+| 1 | [N-Queens](https://leetcode.com/problems/n-queens/) | 51 | Constraint Backtrack |
+| 2 | [Sudoku Solver](https://leetcode.com/problems/sudoku-solver/) | 37 | Constraint Backtrack |
+| 3 | [Word Search](https://leetcode.com/problems/word-search/) | 79 | Grid Backtrack |
+| 4 | [Regular Expression Matching](https://leetcode.com/problems/regular-expression-matching/) | 10 | Recursion → DP |
+| 5 | [Wildcard Matching](https://leetcode.com/problems/wildcard-matching/) | 44 | Recursion → DP |
 
 ---
 
