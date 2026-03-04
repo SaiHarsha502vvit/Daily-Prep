@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](08_GCD_NumberTheory_Patterns.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](10_Bit_Manipulation_Complete.md)
+
 # ⭐ Complete Pattern Programs - From Zero to Hero
 
 ## Master Loop Logic Through Visual Patterns

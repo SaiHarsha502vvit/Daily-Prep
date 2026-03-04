@@ -209,14 +209,146 @@ It's like saving coins daily (O(1)) and occasionally paying a big bill (O(n)),
 but the savings always cover the bill. On AVERAGE, each day costs O(1).
 ```
 
+### Dynamic Array – Cost Table (The Foundation Example)
+```
+╔══════════╦══════════╦═══════════╦══════════════════════════════╗
+║ Insert # ║ Capacity ║ Cost      ║ What Happens                 ║
+╠══════════╬══════════╬═══════════╬══════════════════════════════╣
+║    1     ║  1       ║  1        ║ Insert                       ║
+║    2     ║  1→2     ║  1+1 = 2  ║ Resize (copy 1) + Insert     ║
+║    3     ║  2→4     ║  2+1 = 3  ║ Resize (copy 2) + Insert     ║
+║    4     ║  4       ║  1        ║ Insert (still room)          ║
+║    5     ║  4→8     ║  4+1 = 5  ║ Resize (copy 4) + Insert     ║
+║   6–8    ║  8       ║  1 each   ║ Insert (still room)          ║
+║    9     ║  8→16    ║  8+1 = 9  ║ Resize (copy 8) + Insert     ║
+╚══════════╩══════════╩═══════════╩══════════════════════════════╝
+
+Total cost for n inserts:
+  Regular inserts = n
+  Resize copies   = 1 + 2 + 4 + 8 + ... + n/2 = n - 1  (geometric sum)
+  Grand total     = n + (n - 1) < 2n
+
+  Amortized cost per insert = 2n / n = O(1) ✓
+```
+
+### Three Formal Methods of Amortized Analysis
+
+> **Why three methods?** Different problems are easier to analyze with different
+> methods. All three give the SAME answer. Pick the one that "clicks."
+
+#### Method 1: Aggregate (Simplest)
+```
+╔════════════════════════════════════════════════════════────╗
+║  AGGREGATE METHOD: Count total work, divide by n          ║
+╠═══════════════════════════════════════════════════════════ ╣
+║                                                           ║
+║  Total cost of n operations = T(n)                        ║
+║  Amortized cost per op      = T(n) / n                    ║
+║                                                           ║
+║  Dynamic Array Example:                                   ║
+║    T(n) = n + (1+2+4+...+n/2) < 2n + 1 < 3n              ║
+║    Amortized = 3n / n = O(1)                              ║
+║                                                           ║
+║  Stack with multipop(k) Example:                          ║
+║    Each element pushed at most once, popped at most once   ║
+║    Total pushes + pops over n operations ≤ 2n             ║
+║    Amortized = 2n / n = O(1)                              ║
+╚═══════════════════════════════════════════════════════════ ╝
+```
+
+#### Method 2: Accounting (The Coin Method)
+```
+╔═══════════════════════════════════════════════════════════════╗
+║  ACCOUNTING: Charge EXTRA on cheap ops, save for expensive   ║
+╠═══════════════════════════════════════════════════════════════╣
+║                                                              ║
+║  Rule: Credit balance must NEVER go negative                 ║
+║                                                              ║
+║  Dynamic Array — Charge 3 per insert:                        ║
+║    $1 → pays for the insert itself                           ║
+║    $2 → saved as credit (stored on the element)              ║
+║                                                              ║
+║  When resize happens (double from m to 2m):                  ║
+║    Need to copy m elements                                   ║
+║    Each of the m/2 NEW elements since last resize saved $2   ║
+║    Total credit = m/2 × $2 = $m → exactly pays for copy!    ║
+║                                                              ║
+║  We charged $3 per operation → amortized cost = O(3) = O(1) ║
+║                                                              ║
+║  ┌─────────────────────────────────────┐                     ║
+║  │  $1   $1   $1   $1   $1   $1  $1   │                     ║
+║  │  [a]  [b]  [c]  [d]  [e]  [f] [g]  │ ← each has $2      ║
+║  │  $2   $2   $2   $2   $2   $2  $2   │    credit attached  ║
+║  └─────────────────────────────────────┘                     ║
+╚═══════════════════════════════════════════════════════════════╝
+```
+
+#### Method 3: Potential (The Physics Method)
+```
+╔══════════════════════════════════════════════════════════════╗
+║  POTENTIAL: Define Φ (potential energy of data structure)    ║
+╠══════════════════════════════════════════════════════════════╣
+║                                                             ║
+║  Amortized cost ĉᵢ = cᵢ + Φ(Dᵢ) − Φ(Dᵢ₋₁)               ║
+║                     = actual cost + change in potential      ║
+║                                                             ║
+║  Requirement: Φ(Dₙ) ≥ Φ(D₀) (potential doesn't drop below ║
+║               starting value over entire sequence)           ║
+║                                                             ║
+║  Dynamic Array — Choose Φ = 2·size − capacity               ║
+║                                                             ║
+║  Normal insert (no resize):                                 ║
+║    cᵢ = 1                                                   ║
+║    ΔΦ = 2(size+1) − cap − (2·size − cap)  = +2             ║
+║    ĉᵢ = 1 + 2 = 3                                          ║
+║                                                             ║
+║  Insert + resize (cap doubles: m → 2m):                     ║
+║    cᵢ = m + 1            (copy m elements + insert 1)       ║
+║    ΔΦ = [2(m+1) − 2m] − [2m − m]  = 2 − m                 ║
+║    ĉᵢ = (m+1) + (2−m) = 3                                  ║
+║                                                             ║
+║  Both cases: amortized = 3 = O(1) ✓                         ║
+╚══════════════════════════════════════════════════════════════╝
+```
+
+### When to Use Which Method
+```
+╔═══════════════════╦══════════════════════════════════════════╗
+║ Method            ║ Best When                                ║
+╠═══════════════════╬══════════════════════════════════════════╣
+║ Aggregate         ║ Simple count — all ops cost the same     ║
+║ Accounting        ║ Different ops cost differently, want     ║
+║                   ║ intuitive "prepay" explanation           ║
+║ Potential         ║ Need a formal proof, complex structure   ║
+║                   ║ (e.g., splay trees, Fibonacci heaps)     ║
+╚═══════════════════╩══════════════════════════════════════════╝
+```
+
 ### Common Amortized O(1) Operations
 ```
-ArrayList.add()         → O(1) amortized (despite occasional O(n) resize)
-HashMap.put()           → O(1) amortized (despite occasional O(n) rehash)
-Stack operations in     → O(1) amortized (push/pop over all operations)
-  monotonic stack
-Union-Find with path    → O(α(n)) ≈ O(1) amortized (inverse Ackermann)
-  compression
+╔══════════════════════════╦═══════════════════╦═══════════════════════════╗
+║ Operation                ║ Worst Case Single ║ Amortized                 ║
+╠══════════════════════════╬═══════════════════╬═══════════════════════════╣
+║ ArrayList.add()          ║ O(n) (resize)     ║ O(1)                      ║
+║ HashMap.put()            ║ O(n) (rehash)     ║ O(1)                      ║
+║ Stack multipop           ║ O(n)              ║ O(1) per op               ║
+║ Monotonic stack (total)  ║ O(n) per push     ║ O(1) per element          ║
+║ Union-Find (path comp.)  ║ O(log n)          ║ O(α(n)) ≈ O(1)           ║
+║ Splay tree operations    ║ O(n)              ║ O(log n)                  ║
+║ Fibonacci heap decrease  ║ O(1)              ║ O(1) (with cascading cut) ║
+╚══════════════════════════╩═══════════════════╩═══════════════════════════╝
+```
+
+### Common Mistake: Amortized ≠ Average Case
+```
+⚠️  Amortized: GUARANTEED over any sequence of n operations
+    Average:   Expected over RANDOM input (probabilistic)
+
+Example:
+  QuickSort average = O(n log n) → bad luck gives O(n²)
+  ArrayList.add() amortized O(1) → ALWAYS O(1) per op over n ops
+  
+  Amortized is STRONGER than average — no randomness needed!
 ```
 
 ---

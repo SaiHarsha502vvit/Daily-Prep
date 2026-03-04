@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](03_Collections_Java.md) | [Back to Index](../00_MASTER_INDEX.md)
+
 # 🔲 2D Arrays & Matrix: Complete Deep Dive
 
 ## From Memory Layout to Complex Traversals

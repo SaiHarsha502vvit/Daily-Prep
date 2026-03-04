@@ -161,7 +161,7 @@ minHeap.contains(obj);   // O(n)
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-### 1. Kth Largest Element in a Stream (LC 703) ⭐ Easy
+### 1. [Kth Largest Element in a Stream](https://leetcode.com/problems/kth-largest-element-in-a-stream/) (LC 703) ⭐ Easy
 **Companies**: Amazon, Facebook, Google  
 **Pattern**: Min-heap of size K
 
@@ -204,7 +204,7 @@ class KthLargest {
 
 ---
 
-### 2. Last Stone Weight (LC 1046) ⭐ Easy
+### 2. [Last Stone Weight](https://leetcode.com/problems/last-stone-weight/) (LC 1046) ⭐ Easy
 **Companies**: Amazon, Google  
 **Pattern**: Max-heap simulation
 
@@ -241,7 +241,7 @@ class Solution {
 
 ---
 
-### 3. Sort Array by Increasing Frequency (LC 1636) ⭐ Easy
+### 3. [Sort Array by Increasing Frequency](https://leetcode.com/problems/sort-array-by-increasing-frequency/) (LC 1636) ⭐ Easy
 **Companies**: Amazon, Bloomberg  
 **Pattern**: Frequency count + custom sort / heap
 
@@ -289,7 +289,7 @@ class Solution {
 
 ---
 
-### 4. Relative Ranks (LC 506) ⭐ Easy
+### 4. [Relative Ranks](https://leetcode.com/problems/relative-ranks/) (LC 506) ⭐ Easy
 **Companies**: Google, Amazon  
 **Pattern**: Max-heap for ranking
 
@@ -335,7 +335,7 @@ class Solution {
 
 ---
 
-### 5. Minimum Cost to Connect Sticks (LC 1167) ⭐ Easy
+### 5. [Minimum Cost to Connect Sticks](https://leetcode.com/problems/minimum-cost-to-connect-sticks/) (LC 1167) ⭐ Easy
 **Companies**: Amazon  
 **Pattern**: Min-heap greedy (Huffman-like)
 
@@ -383,7 +383,7 @@ class Solution {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-### 1. Kth Largest Element in an Array (LC 215) ⭐ Medium
+### 1. [Kth Largest Element in an Array](https://leetcode.com/problems/kth-largest-element-in-an-array/) (LC 215) ⭐ Medium
 **Companies**: Facebook, Amazon, Google, Microsoft, Apple  
 **Pattern**: Min-heap of size K (or Quickselect)
 
@@ -445,7 +445,7 @@ class Solution {
 
 ---
 
-### 2. Top K Frequent Elements (LC 347) ⭐ Medium
+### 2. [Top K Frequent Elements](https://leetcode.com/problems/top-k-frequent-elements/) (LC 347) ⭐ Medium
 **Companies**: Amazon, Facebook, Google, Microsoft, Uber  
 **Pattern**: Frequency count + Min-heap of size K (or Bucket sort)
 
@@ -516,7 +516,7 @@ class Solution {
 
 ---
 
-### 3. K Closest Points to Origin (LC 973) ⭐ Medium
+### 3. [K Closest Points to Origin](https://leetcode.com/problems/k-closest-points-to-origin/) (LC 973) ⭐ Medium
 **Companies**: Facebook, Amazon, Google  
 **Pattern**: Max-heap of size K
 
@@ -559,7 +559,7 @@ class Solution {
 
 ---
 
-### 4. Find Median from Data Stream (LC 295) ⭐ Medium/Hard
+### 4. [Find Median from Data Stream](https://leetcode.com/problems/find-median-from-data-stream/) (LC 295) ⭐ Medium/Hard
 **Companies**: Amazon, Google, Facebook, Microsoft, Apple  
 **Pattern**: Two Heaps (maxHeap for lower half, minHeap for upper half)
 
@@ -608,7 +608,7 @@ class MedianFinder {
 
 ---
 
-### 5. Reorganize String (LC 767) ⭐ Medium
+### 5. [Reorganize String](https://leetcode.com/problems/reorganize-string/) (LC 767) ⭐ Medium
 **Companies**: Amazon, Google, Facebook  
 **Pattern**: Greedy + Max-Heap
 
@@ -662,7 +662,7 @@ class Solution {
 
 ---
 
-### 6. Task Scheduler (LC 621) ⭐ Medium
+### 6. [Task Scheduler](https://leetcode.com/problems/task-scheduler/) (LC 621) ⭐ Medium
 **Companies**: Facebook, Amazon, Google, Microsoft  
 **Pattern**: Greedy + Heap (or math)
 
@@ -731,7 +731,7 @@ class Solution {
 
 ---
 
-### 7. Merge K Sorted Lists (LC 23) ⭐ Medium/Hard
+### 7. [Merge K Sorted Lists](https://leetcode.com/problems/merge-k-sorted-lists/) (LC 23) ⭐ Medium/Hard
 **Companies**: Amazon, Facebook, Google, Microsoft, Apple  
 **Pattern**: Min-heap of K heads
 
@@ -780,7 +780,7 @@ class Solution {
 
 ---
 
-### 8. Sort Characters By Frequency (LC 451) ⭐ Medium
+### 8. [Sort Characters By Frequency](https://leetcode.com/problems/sort-characters-by-frequency/) (LC 451) ⭐ Medium
 **Companies**: Amazon, Google, Bloomberg  
 **Pattern**: Frequency count + Max-Heap
 
@@ -821,7 +821,7 @@ class Solution {
 
 ---
 
-### 9. Kth Smallest Element in a Sorted Matrix (LC 378) ⭐ Medium
+### 9. [Kth Smallest Element in a Sorted Matrix](https://leetcode.com/problems/kth-smallest-element-in-a-sorted-matrix/) (LC 378) ⭐ Medium
 **Companies**: Amazon, Google, Facebook  
 **Pattern**: Min-heap BFS on matrix / Binary Search
 
@@ -866,7 +866,7 @@ class Solution {
 
 ---
 
-### 10. Furthest Building You Can Reach (LC 1642) ⭐ Medium
+### 10. [Furthest Building You Can Reach](https://leetcode.com/problems/furthest-building-you-can-reach/) (LC 1642) ⭐ Medium
 **Companies**: Google, Amazon  
 **Pattern**: Min-heap for greedy resource allocation
 
@@ -918,7 +918,7 @@ class Solution {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-### 1. Sliding Window Maximum (LC 239) ⭐ Hard
+### 1. [Sliding Window Maximum](https://leetcode.com/problems/sliding-window-maximum/) (LC 239) ⭐ Hard
 **Companies**: Amazon, Google, Facebook, Microsoft  
 **Pattern**: Monotonic Deque (preferred) vs Max-Heap
 
@@ -986,7 +986,7 @@ class Solution {
 
 ---
 
-### 2. IPO (LC 502) ⭐ Hard
+### 2. [IPO](https://leetcode.com/problems/ipo/) (LC 502) ⭐ Hard
 **Companies**: Amazon, Google  
 **Pattern**: Two Heaps — Greedy capital maximization
 
@@ -1034,7 +1034,7 @@ class Solution {
 
 ---
 
-### 3. Trapping Rain Water II (LC 407) ⭐ Hard
+### 3. [Trapping Rain Water II](https://leetcode.com/problems/trapping-rain-water-ii/) (LC 407) ⭐ Hard
 **Companies**: Google, Amazon  
 **Pattern**: Min-Heap BFS on 3D heightmap (extension of 1D trapping rain water)
 
@@ -1098,7 +1098,7 @@ class Solution {
 
 ---
 
-### 4. Minimum Cost to Hire K Workers (LC 857) ⭐ Hard
+### 4. [Minimum Cost to Hire K Workers](https://leetcode.com/problems/minimum-cost-to-hire-k-workers/) (LC 857) ⭐ Hard
 **Companies**: Google, Amazon  
 **Pattern**: Sort + Max-Heap greedy
 
@@ -1157,7 +1157,7 @@ class Solution {
 
 ---
 
-### 5. Sliding Window Median (LC 480) ⭐ Hard
+### 5. [Sliding Window Median](https://leetcode.com/problems/sliding-window-median/) (LC 480) ⭐ Hard
 **Companies**: Google, Facebook, Amazon  
 **Pattern**: Two Heaps + Lazy Deletion (extension of LC 295)
 
@@ -1309,26 +1309,26 @@ class Solution {
 
 | Problem                      | LC  | Pattern                    | Key Data Structure       |
 |------------------------------|-----|----------------------------|--------------------------|
-| Kth Largest in Stream        | 703 | Min-heap size K            | PQ (min)                 |
-| Last Stone Weight            | 1046| Max-heap simulation        | PQ (max)                 |
-| Sort by Frequency            | 1636| Freq + custom comparator   | PQ (custom)              |
-| Relative Ranks               | 506 | Max-heap for ranking       | PQ (max)                 |
-| Min Cost Connect Sticks      | 1167| Huffman / greedy merge     | PQ (min)                 |
-| Kth Largest in Array         | 215 | Min-heap size K / QuickSel | PQ (min) or partition    |
-| Top K Frequent               | 347 | Freq + min-heap size K     | HashMap + PQ (min)       |
-| K Closest Points             | 973 | Max-heap size K            | PQ (max by distance)     |
-| Find Median (stream)         | 295 | Two heaps                  | PQ (max) + PQ (min)      |
-| Reorganize String            | 767 | Greedy + max-heap          | PQ (max by freq)         |
-| Task Scheduler               | 621 | Greedy rounds + heap       | PQ (max by freq)         |
-| Merge K Sorted Lists         | 23  | K-way merge                | PQ (min) of size K       |
-| Sort Chars by Frequency      | 451 | Freq + max-heap            | HashMap + PQ (max)       |
-| Kth Smallest Sorted Matrix   | 378 | K-way merge on matrix      | PQ (min)                 |
-| Furthest Building            | 1642| Greedy resource allocation  | PQ (min) of size L       |
-| Sliding Window Maximum       | 239 | Monotonic deque (optimal)  | Deque / PQ (max)         |
-| IPO                          | 502 | Two heaps greedy           | PQ (min cap) + PQ (max)  |
-| Trapping Rain Water II       | 407 | Min-heap BFS boundary      | PQ (min)                 |
-| Min Cost Hire K Workers      | 857 | Sort + max-heap            | PQ (max quality)         |
-| Sliding Window Median        | 480 | Two heaps + lazy delete    | PQ (max) + PQ (min)      |
+|[Kth Largest in Stream](https://leetcode.com/problems/kth-largest-element-in-a-stream/)|703| Min-heap size K            | PQ (min)                 |
+|[Last Stone Weight](https://leetcode.com/problems/last-stone-weight/)|1046| Max-heap simulation        | PQ (max)                 |
+|[Sort by Frequency](https://leetcode.com/problems/sort-array-by-increasing-frequency/)|1636| Freq + custom comparator   | PQ (custom)              |
+|[Relative Ranks](https://leetcode.com/problems/relative-ranks/)|506| Max-heap for ranking       | PQ (max)                 |
+|[Min Cost Connect Sticks](https://leetcode.com/problems/minimum-cost-to-connect-sticks/)|1167| Huffman / greedy merge     | PQ (min)                 |
+|[Kth Largest in Array](https://leetcode.com/problems/kth-largest-element-in-an-array/)|215| Min-heap size K / QuickSel | PQ (min) or partition    |
+|[Top K Frequent](https://leetcode.com/problems/top-k-frequent-elements/)|347| Freq + min-heap size K     | HashMap + PQ (min)       |
+|[K Closest Points](https://leetcode.com/problems/k-closest-points-to-origin/)|973| Max-heap size K            | PQ (max by distance)     |
+|[Find Median (stream)](https://leetcode.com/problems/find-median-from-data-stream/)|295| Two heaps                  | PQ (max) + PQ (min)      |
+|[Reorganize String](https://leetcode.com/problems/reorganize-string/)|767| Greedy + max-heap          | PQ (max by freq)         |
+|[Task Scheduler](https://leetcode.com/problems/task-scheduler/)|621| Greedy rounds + heap       | PQ (max by freq)         |
+|[Merge K Sorted Lists](https://leetcode.com/problems/merge-k-sorted-lists/)|23| K-way merge                | PQ (min) of size K       |
+|[Sort Chars by Frequency](https://leetcode.com/problems/sort-characters-by-frequency/)|451| Freq + max-heap            | HashMap + PQ (max)       |
+|[Kth Smallest Sorted Matrix](https://leetcode.com/problems/kth-smallest-element-in-a-sorted-matrix/)|378| K-way merge on matrix      | PQ (min)                 |
+|[Furthest Building](https://leetcode.com/problems/furthest-building-you-can-reach/)|1642| Greedy resource allocation  | PQ (min) of size L       |
+|[Sliding Window Maximum](https://leetcode.com/problems/sliding-window-maximum/)|239| Monotonic deque (optimal)  | Deque / PQ (max)         |
+|[IPO](https://leetcode.com/problems/ipo/)|502| Two heaps greedy           | PQ (min cap) + PQ (max)  |
+|[Trapping Rain Water II](https://leetcode.com/problems/trapping-rain-water-ii/)|407| Min-heap BFS boundary      | PQ (min)                 |
+|[Min Cost Hire K Workers](https://leetcode.com/problems/minimum-cost-to-hire-k-workers/)|857| Sort + max-heap            | PQ (max quality)         |
+|[Sliding Window Median](https://leetcode.com/problems/sliding-window-median/)|480| Two heaps + lazy delete    | PQ (max) + PQ (min)      |
 
 ---
 

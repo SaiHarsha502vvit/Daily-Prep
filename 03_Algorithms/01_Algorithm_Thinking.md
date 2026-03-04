@@ -1,3 +1,5 @@
+> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_Sorting_Algorithms.md)
+
 # 🧠 Algorithm Thinking: How to Approach Any Problem
 
 ## Learning the LOGIC, Not Just the Code

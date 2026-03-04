@@ -139,7 +139,7 @@
 
 ---
 
-### #266. Two Sum (LC 1) ★ FULL SOLUTION
+### #266. [Two Sum](https://leetcode.com/problems/two-sum/) (LC 1) ★ FULL SOLUTION
 
 ```
 PROBLEM:
@@ -212,7 +212,7 @@ VARIANTS:
 
 ---
 
-### #267. Group Anagrams (LC 49) ★ FULL SOLUTION
+### #267. [Group Anagrams](https://leetcode.com/problems/group-anagrams/) (LC 49) ★ FULL SOLUTION
 
 ```
 PROBLEM:
@@ -297,7 +297,7 @@ VARIANTS:
 
 ---
 
-### #268. Find All Duplicates in Array (LC 442) ★ FULL SOLUTION
+### #268. [Find All Duplicates in Array](https://leetcode.com/problems/find-all-duplicates-in-an-array/) (LC 442) ★ FULL SOLUTION
 
 ```
 PROBLEM:
@@ -373,7 +373,7 @@ VARIANTS:
 
 ---
 
-### #269. Top K Frequent Elements (LC 347) — Approach
+### #269. [Top K Frequent Elements](https://leetcode.com/problems/top-k-frequent-elements/) (LC 347) — Approach
 
 ```
 APPROACH: HashMap + Bucket Sort
@@ -392,7 +392,7 @@ APPROACH: HashMap + Bucket Sort
 
 ---
 
-### #270. Missing Number (LC 268) — Approach
+### #270. [Missing Number](https://leetcode.com/problems/missing-number/) (LC 268) — Approach
 
 ```
 APPROACH 1: Math (Gauss sum)
@@ -408,7 +408,7 @@ APPROACH 3: HashSet
 
 ---
 
-### #271. Happy Number (LC 202) — Approach
+### #271. [Happy Number](https://leetcode.com/problems/happy-number/) (LC 202) — Approach
 
 ```
 APPROACH: Cycle detection with HashSet
@@ -436,7 +436,7 @@ APPROACH: Frequency count with int[256] or HashMap
 
 ---
 
-### #273. Longest Common Prefix (LC 14) — Approach
+### #273. [Longest Common Prefix](https://leetcode.com/problems/longest-common-prefix/) (LC 14) — Approach
 
 ```
 APPROACH: Vertical scan (no HashMap needed)
@@ -457,7 +457,7 @@ APPROACH: Vertical scan (no HashMap needed)
 
 ---
 
-### #274. Subarray Sum Equals K (LC 560) ★ FULL SOLUTION
+### #274. [Subarray Sum Equals K](https://leetcode.com/problems/subarray-sum-equals-k/) (LC 560) ★ FULL SOLUTION
 
 ```
 PROBLEM:
@@ -588,7 +588,7 @@ VARIANTS:
 
 ---
 
-### #275. Subarray Sums Divisible by K (LC 974) ★ FULL SOLUTION
+### #275. [Subarray Sums Divisible by K](https://leetcode.com/problems/subarray-sums-divisible-by-k/) (LC 974) ★ FULL SOLUTION
 
 ```
 PROBLEM:
@@ -730,7 +730,7 @@ APPROACH: Remainder frequency matching
 
 ---
 
-### #278. Longest Consecutive Sequence (LC 128) ★ FULL SOLUTION
+### #278. [Longest Consecutive Sequence](https://leetcode.com/problems/longest-consecutive-sequence/) (LC 128) ★ FULL SOLUTION
 
 ```
 PROBLEM:
@@ -914,7 +914,7 @@ VARIANTS:
 
 ---
 
-### #280. LRU Cache (LC 146) ★ FULL SOLUTION
+### #280. [LRU Cache](https://leetcode.com/problems/lru-cache/) (LC 146) ★ FULL SOLUTION
 
 ```
 PROBLEM:
@@ -1081,7 +1081,7 @@ APPROACH: In-place hashing (cyclic sort variant)
 
 ---
 
-### #283. Valid Parentheses (LC 20) — Approach
+### #283. [Valid Parentheses](https://leetcode.com/problems/valid-parentheses/) (LC 20) — Approach
 
 ```
 APPROACH: Stack + HashMap for bracket matching
@@ -1095,7 +1095,7 @@ APPROACH: Stack + HashMap for bracket matching
 
 ---
 
-### #284. Isomorphic Strings (LC 205) — Approach
+### #284. [Isomorphic Strings](https://leetcode.com/problems/isomorphic-strings/) (LC 205) — Approach
 
 ```
 APPROACH: Two HashMaps for bijection

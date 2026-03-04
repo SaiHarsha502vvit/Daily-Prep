@@ -16,7 +16,7 @@
 | SQL from Zero (21 chapters) | [08_SQL/](#sql-21-chapters) |
 | Spring Boot (35+ chapters + 50-Day Plan) | [07_Modern_Java/](#modern-java--spring-boot) |
 | Developer Essentials (10 guides) | [13_Developer_Essentials/](#developer-essentials-new) |
-| **Mental Models — HOW TO THINK (10 guides)** | [14_Mental_Models/](#mental-models--how-to-think-new) |
+| **Mental Models — HOW TO THINK (13 guides)** | [14_Mental_Models/](#mental-models--how-to-think-new) |
 | Quick Reference Sheet | [09_Career_Reference/03_Quick_Reference.md](09_Career_Reference/03_Quick_Reference.md) |
 
 ---
@@ -76,7 +76,7 @@ Daily-Prep/
 │   ├── 14_Union_Find_DSU_Complete.md    → Disjoint Set Union, path compression, rank
 │   └── 15_Monotonic_Stack_Queue_Complete.md → NGE, histogram, trapping rain water
 │
-├── 04_Patterns_Templates/              (20 files)
+├── 04_Patterns_Templates/              (23 files)
 │   ├── 01_Sliding_Window.md             → Fixed & variable window techniques
 │   ├── 02_Code_Templates.md            → Ready-to-use code templates
 │   ├── 03_Visual_Diagrams.md           → Visual algorithm walkthroughs
@@ -96,7 +96,10 @@ Daily-Prep/
 │   ├── 17_Backtracking_Plus_Pruning.md  → 🆕 Backtracking + Pruning techniques
 │   ├── 18_String_Plus_Advanced.md       → 🆕 String + HashMap/Window/DP/Trie
 │   ├── 19_Matrix_Plus_Grid_Traversal.md → 🆕 2D Grid + BFS/DFS patterns
-│   └── 20_BitManipulation_Plus_Tricks.md → 🆕 Bit tricks, XOR, bitmask + Math/Search
+│   ├── 20_BitManipulation_Plus_Tricks.md → 🆕 Bit tricks, XOR, bitmask + Math/Search
+│   ├── 21_Intervals_Pattern.md          → 🆕 Interval merge/insert/sweep line (7 solved)
+│   ├── 22_Cyclic_Sort_Pattern.md        → 🆕 Cyclic sort for missing/duplicate (6 solved)
+│   └── 23_Knapsack_Family.md            → 🆕 0/1, Unbounded, Bounded unification (6 solved)
 │
 ├── 05_Problem_Solving/                  (23 files)
 │   ├── 01_Problems_Intro_Checklist.md   → Problem-solving methodology
@@ -232,7 +235,7 @@ Daily-Prep/
 │   ├── 09_System_Design.md              → Load balancing, caching, queues, CAP
 │   └── 10_Dev_Tools_Productivity.md     → IDE shortcuts, debugging, Postman, Maven
 │
-├── 14_Mental_Models/                    (11 files — HOW TO THINK guides!)
+├── 14_Mental_Models/                    (14 files — HOW TO THINK guides!)
 │   ├── 00_INDEX.md                      → Reading order & usage guide
 │   ├── 01_Recursion_Tree_Thinking.md    → Draw recursion trees, leap of faith, memo→tab
 │   ├── 02_DP_State_Thinking.md          → State identification, transitions, optimization
@@ -243,7 +246,10 @@ Daily-Prep/
 │   ├── 07_SQL_Mental_Pipeline.md        → Think in sets, query building pipeline
 │   ├── 08_Debugging_DryRun.md           → Systematic debugging, dry run method
 │   ├── 09_Complexity_Intuition.md       → See complexity at a glance, amortized
-│   └── 10_Interview_Thinking.md         → Think out loud, recovery strategies, pressure
+│   ├── 10_Interview_Thinking.md         → Think out loud, recovery strategies, pressure
+│   ├── 11_Greedy_vs_DP_Decision.md      → 🆕 3-question checklist, proof techniques
+│   ├── 12_Space_Time_Tradeoffs.md       → 🆕 When to trade memory for speed
+│   └── 13_Pattern_Composition.md        → 🆕 Combining 2+ patterns for Hard problems
 │
 ├── JavaSolutions/                       → Your Java code solutions
 ├── practice/                            → Practice scratch files
@@ -282,6 +288,7 @@ Daily-Prep/
 - [Stack+Monotonic](04_Patterns_Templates/11_Stack_Plus_MonotonicPattern.md) | [LinkedList+Pointers](04_Patterns_Templates/12_LinkedList_Plus_TwoPointers.md) | [Tree+DFS/BFS](04_Patterns_Templates/13_Tree_Plus_DFS_BFS.md)
 - [Graph+Traversal](04_Patterns_Templates/14_Graph_Plus_Traversal.md) | [Heap+Greedy](04_Patterns_Templates/15_Heap_Plus_GreedySelection.md) | [DP Patterns](04_Patterns_Templates/16_DP_Pattern_Recognition.md)
 - [Backtracking+Pruning](04_Patterns_Templates/17_Backtracking_Plus_Pruning.md) | [String+Advanced](04_Patterns_Templates/18_String_Plus_Advanced.md) | [Matrix+Grid](04_Patterns_Templates/19_Matrix_Plus_Grid_Traversal.md) | [BitManip+Tricks](04_Patterns_Templates/20_BitManipulation_Plus_Tricks.md)
+- [Intervals](04_Patterns_Templates/21_Intervals_Pattern.md) | [Cyclic Sort](04_Patterns_Templates/22_Cyclic_Sort_Pattern.md) | [Knapsack Family](04_Patterns_Templates/23_Knapsack_Family.md)
 
 ### Practice & Problem Solving (23 files)
 - [Intro & Checklist](05_Problem_Solving/01_Problems_Intro_Checklist.md)
@@ -359,6 +366,7 @@ Daily-Prep/
 - [Universal Problem Framework](14_Mental_Models/05_Universal_Problem_Framework.md) | [Implementation Checklist](14_Mental_Models/06_Implementation_Checklist.md)
 - [SQL Mental Pipeline](14_Mental_Models/07_SQL_Mental_Pipeline.md) | [Debugging & Dry Run](14_Mental_Models/08_Debugging_DryRun.md)
 - [Complexity Intuition](14_Mental_Models/09_Complexity_Intuition.md) | [Interview Thinking](14_Mental_Models/10_Interview_Thinking.md)
+- [Greedy vs DP Decision](14_Mental_Models/11_Greedy_vs_DP_Decision.md) | [Space-Time Tradeoffs](14_Mental_Models/12_Space_Time_Tradeoffs.md) | [Pattern Composition](14_Mental_Models/13_Pattern_Composition.md)
 
 ---
 

@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](14_Union_Find_DSU_Complete.md) | [Back to Index](../00_MASTER_INDEX.md)
+
 # 📚 Monotonic Stack & Queue Complete Guide
 > Master the Technique for Next Greater/Smaller Element Problems
 

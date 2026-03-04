@@ -248,7 +248,7 @@ Terminate when top > bottom or left > right.
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-### 1. Flood Fill (LC 733) ⭐ Easy
+### 1. [Flood Fill](https://leetcode.com/problems/flood-fill/) (LC 733) ⭐ Easy
 **Companies**: Amazon, Google, Microsoft, Facebook  
 **Pattern**: DFS / BFS flood fill
 
@@ -461,7 +461,7 @@ class Solution {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-### 1. Number of Islands (LC 200) ⭐⭐ Medium
+### 1. [Number of Islands](https://leetcode.com/problems/number-of-islands/) (LC 200) ⭐⭐ Medium
 **Companies**: Amazon, Google, Microsoft, Facebook, Bloomberg, Apple, Uber  
 **Pattern**: DFS flood fill to count connected components
 
@@ -524,7 +524,7 @@ class Solution {
 
 ---
 
-### 2. Rotting Oranges (LC 994) ⭐⭐ Medium
+### 2. [Rotting Oranges](https://leetcode.com/problems/rotting-oranges/) (LC 994) ⭐⭐ Medium
 **Companies**: Amazon, Google, Microsoft, Facebook, Uber  
 **Pattern**: Multi-source BFS (simultaneous spread)
 
@@ -601,7 +601,7 @@ class Solution {
 
 ---
 
-### 3. 01 Matrix (LC 542) ⭐⭐ Medium
+### 3. [01 Matrix](https://leetcode.com/problems/zero-one-matrix/) (LC 542) ⭐⭐ Medium
 **Companies**: Google, Amazon, Microsoft, Facebook  
 **Pattern**: Multi-source BFS from all 0s
 
@@ -670,7 +670,7 @@ class Solution {
 
 ---
 
-### 4. Spiral Matrix (LC 54) ⭐⭐ Medium
+### 4. [Spiral Matrix](https://leetcode.com/problems/spiral-matrix/) (LC 54) ⭐⭐ Medium
 **Companies**: Amazon, Google, Microsoft, Apple, Facebook, Uber  
 **Pattern**: Boundary simulation (layer peeling)
 
@@ -742,7 +742,7 @@ class Solution {
 
 ---
 
-### 5. Rotate Image (LC 48) ⭐⭐ Medium
+### 5. [Rotate Image](https://leetcode.com/problems/rotate-image/) (LC 48) ⭐⭐ Medium
 **Companies**: Amazon, Google, Microsoft, Apple, Facebook  
 **Pattern**: Transpose + Reverse (in-place rotation)
 
@@ -802,7 +802,7 @@ class Solution {
 
 ---
 
-### 6. Set Matrix Zeroes (LC 73) ⭐⭐ Medium
+### 6. [Set Matrix Zeroes](https://leetcode.com/problems/set-matrix-zeroes/) (LC 73) ⭐⭐ Medium
 **Companies**: Amazon, Microsoft, Facebook, Apple, Bloomberg  
 **Pattern**: Space optimization with first row/col as markers
 
@@ -874,7 +874,7 @@ class Solution {
 
 ---
 
-### 7. Word Search (LC 79) ⭐⭐ Medium
+### 7. [Word Search](https://leetcode.com/problems/word-search/) (LC 79) ⭐⭐ Medium
 **Companies**: Amazon, Google, Microsoft, Facebook, Bloomberg, Apple  
 **Pattern**: Backtracking DFS on grid
 
@@ -939,7 +939,7 @@ class Solution {
 
 ---
 
-### 8. Surrounded Regions (LC 130) ⭐⭐ Medium
+### 8. [Surrounded Regions](https://leetcode.com/problems/surrounded-regions/) (LC 130) ⭐⭐ Medium
 **Companies**: Amazon, Google, Microsoft, Facebook  
 **Pattern**: Border-connected DFS (reverse thinking)
 
@@ -1010,7 +1010,7 @@ class Solution {
 
 ---
 
-### 9. Pacific Atlantic Water Flow (LC 417) ⭐⭐ Medium
+### 9. [Pacific Atlantic Water Flow](https://leetcode.com/problems/pacific-atlantic-water-flow/) (LC 417) ⭐⭐ Medium
 **Companies**: Google, Amazon, Microsoft, Facebook  
 **Pattern**: Reverse BFS/DFS from oceans
 
@@ -1189,7 +1189,7 @@ class Solution {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-### 1. Shortest Path in Binary Matrix (LC 1091) ⭐⭐⭐ Hard
+### 1. [Shortest Path in Binary Matrix](https://leetcode.com/problems/shortest-path-in-binary-matrix/) (LC 1091) ⭐⭐⭐ Hard
 **Companies**: Google, Amazon, Facebook, Microsoft  
 **Pattern**: BFS with 8-directional movement
 
@@ -1462,7 +1462,7 @@ class Solution {
 
 ---
 
-### 4. Trapping Rain Water II (LC 407) ⭐⭐⭐ Hard
+### 4. [Trapping Rain Water II](https://leetcode.com/problems/trapping-rain-water-ii/) (LC 407) ⭐⭐⭐ Hard
 **Companies**: Google, Amazon, Microsoft  
 **Pattern**: Min-heap BFS from borders (3D water filling)
 

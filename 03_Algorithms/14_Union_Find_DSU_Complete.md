@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](13_String_Algorithms_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](15_Monotonic_Stack_Queue_Complete.md)
+
 # 🌲 Union-Find / Disjoint Set Union (DSU) Complete Guide
 > The Data Structure That Solves Connectivity Problems in Near-Constant Time
 

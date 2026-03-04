@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](12_Greedy_Algorithms_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](14_Union_Find_DSU_Complete.md)
+
 # 🔤 String Algorithms Complete Guide
 > KMP, Rabin-Karp, Z-Algorithm & Pattern Matching Mastery
 

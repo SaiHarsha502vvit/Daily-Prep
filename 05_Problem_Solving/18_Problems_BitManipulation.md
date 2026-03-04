@@ -262,7 +262,7 @@
 
 ## 16.1 XOR Tricks (Easy)
 
-### Problem #286: Single Number (LC 136)
+### Problem #286: [Single Number](https://leetcode.com/problems/single-number/) (LC 136)
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
@@ -308,7 +308,7 @@ public int singleNumber(int[] nums) {
 
 ---
 
-### Problem #287: Missing Number (LC 268)
+### Problem #287: [Missing Number](https://leetcode.com/problems/missing-number/) (LC 268)
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
@@ -353,7 +353,7 @@ public int missingNumber(int[] nums) {
 
 ---
 
-### Problem #288: Single Number II (LC 137)
+### Problem #288: [Single Number II](https://leetcode.com/problems/single-number-ii/) (LC 137)
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
@@ -429,7 +429,7 @@ public int singleNumberStateMachine(int[] nums) {
 
 ---
 
-### Problem #289: Single Number III (LC 260)
+### Problem #289: [Single Number III](https://leetcode.com/problems/single-number-iii/) (LC 260)
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
@@ -488,7 +488,7 @@ public int[] singleNumber(int[] nums) {
 
 ## 16.2 Power & Counting (Easy-Medium)
 
-### Problem #290: Power of Two (LC 231)
+### Problem #290: [Power of Two](https://leetcode.com/problems/power-of-two/) (LC 231)
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
@@ -529,7 +529,7 @@ public boolean isPowerOfTwo(int n) {
 
 ---
 
-### Problem #291: Counting Bits (LC 338)
+### Problem #291: [Counting Bits](https://leetcode.com/problems/counting-bits/) (LC 338)
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
@@ -574,7 +574,7 @@ public int[] countBits(int n) {
 
 ---
 
-### Problem #292: Number of 1 Bits / Hamming Weight (LC 191)
+### Problem #292: [Number of 1 Bits / Hamming Weight](https://leetcode.com/problems/number-of-1-bits/) (LC 191)
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
@@ -615,7 +615,7 @@ public int hammingWeight(int n) {
 
 ---
 
-### Problem #293: Reverse Bits (LC 190)
+### Problem #293: [Reverse Bits](https://leetcode.com/problems/reverse-bits/) (LC 190)
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
@@ -651,7 +651,7 @@ public int reverseBits(int n) {
 
 ---
 
-### Problem #294: Hamming Distance (LC 461)
+### Problem #294: [Hamming Distance](https://leetcode.com/problems/hamming-distance/) (LC 461)
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
@@ -681,7 +681,7 @@ public int hammingDistance(int x, int y) {
 
 ## 16.3 Math Problems (Easy-Medium)
 
-### Problem #295: Reverse Integer (LC 7)
+### Problem #295: [Reverse Integer](https://leetcode.com/problems/reverse-integer/) (LC 7)
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
@@ -733,7 +733,7 @@ public int reverse(int x) {
 
 ---
 
-### Problem #296: Palindrome Number (LC 9)
+### Problem #296: [Palindrome Number](https://leetcode.com/problems/palindrome-number/) (LC 9)
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
@@ -786,7 +786,7 @@ public boolean isPalindrome(int x) {
 
 ---
 
-### Problem #297: Add Binary (LC 67)
+### Problem #297: [Add Binary](https://leetcode.com/problems/add-binary/) (LC 67)
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
@@ -830,7 +830,7 @@ public String addBinary(String a, String b) {
 
 ---
 
-### Problem #298: Excel Sheet Column Title (LC 168)
+### Problem #298: [Excel Sheet Column Title](https://leetcode.com/problems/excel-sheet-column-title/) (LC 168)
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
@@ -865,7 +865,7 @@ public String convertToTitle(int n) {
 
 ---
 
-### Problem #299: Maximum Product of Three Numbers (LC 628)
+### Problem #299: [Maximum Product of Three Numbers](https://leetcode.com/problems/maximum-product-of-three-numbers/) (LC 628)
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
@@ -899,7 +899,7 @@ public int maximumProduct(int[] nums) {
 
 ---
 
-### Problem #300: Kth Factor of N (LC 1492)
+### Problem #300: [Kth Factor of N](https://leetcode.com/problems/kth-factor-of-n/) (LC 1492)
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
@@ -931,7 +931,7 @@ public int kthFactor(int n, int k) {
 
 ---
 
-### Problem #301: Happy Number (LC 202)
+### Problem #301: [Happy Number](https://leetcode.com/problems/happy-number/) (LC 202)
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
@@ -974,7 +974,7 @@ private int step(int n) {
 
 ---
 
-### Problem #302: Valid Square (LC 593)
+### Problem #302: [Valid Square](https://leetcode.com/problems/valid-square/) (LC 593)
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
@@ -1007,7 +1007,7 @@ private int dist(int[] a, int[] b) {
 
 ---
 
-### Problem #303: Max Points on a Line (LC 149)
+### Problem #303: [Max Points on a Line](https://leetcode.com/problems/max-points-on-a-line/) (LC 149)
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
@@ -1205,7 +1205,7 @@ public int countSubsetsWithSumDP(int[] nums, int target) {
 
 ---
 
-### Problem #306: Partition Equal Subset Sum (LC 416)
+### Problem #306: [Partition Equal Subset Sum](https://leetcode.com/problems/partition-equal-subset-sum/) (LC 416)
 
 ```
 ┌────────────────────────────────────────────────────────────────┐

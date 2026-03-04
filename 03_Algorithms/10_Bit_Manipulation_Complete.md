@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](09_Pattern_Programs_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](11_Backtracking_Complete.md)
+
 # 🔢 Bit Manipulation Complete Guide
 > Master the Art of Binary Operations for Coding Interviews
 
