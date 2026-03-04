@@ -1,4 +1,5 @@
 > **Navigation**: [< Previous Chapter](05d_Graphs_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md)
+> 🧠 **Mental Model**: See [Graph & Tree Thinking](../14_Mental_Models/03_Graph_Tree_Thinking.md) — graph pattern recognition
 
 ---
 

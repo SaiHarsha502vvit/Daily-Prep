@@ -246,11 +246,26 @@ private int findMostFrequent(Map<Integer, Integer> freq) { ... }
 
 ### Before the Interview
 ```
-□ Review your top 20 solved problems (not 200)
-□ Practice explaining your approach OUT LOUD
-□ Do 1-2 warm-up problems the morning of
-□ Prepare your environment (IDE, pen+paper, water)
+LOGISTICS (Night Before):
+□ Confirm interview time, timezone, and platform (Zoom/Teams/CoderPad)
+□ Test camera, mic, screen sharing
+□ Have backup plan (phone hotspot, alternate device)
+□ Prepare water, pen+paper, quiet room
+□ Set two alarms (phone + system)
+
+TECHNICAL WARM-UP (Morning of):
+□ Review your top 20 solved problems — patterns not code
+□ Do 1-2 easy warm-up problems (10 min max each)
+□ Review your "cheat sheet" of common templates:
+  - Sliding window, BFS/DFS, binary search, DP template
+□ Practice explaining ONE solution out loud (2-3 min walkthrough)
+
+MINDSET RESET (30 min before):
+□ Close all unrelated tabs and notifications
 □ Remind yourself: "I've solved problems like this before"
+□ Take 3 deep breaths — box breathing (4-4-4-4)
+□ Positive self-talk: focus on demonstrating thinking, not perfection
+□ Open IDE/scratch pad, have it ready
 ```
 
 ### During the Interview
@@ -301,6 +316,86 @@ After coding:
 □ Check edge cases mentally
 □ State time and space complexity
 □ Ask "Would you like me to optimize further?"
+```
+
+---
+
+## Part 9: Interview Question Types — What to Expect at Each Stage
+
+```
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                    INTERVIEW QUESTION TYPE MAP                                ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                                                                              ║
+║  PHONE SCREEN FAVORITES (30-45 min, 1 problem):                             ║
+║  ┌──────────────────────────────────────────────────────────────────────┐    ║
+║  │ • Two Sum variants          (HashMap)                                │    ║
+║  │ • Valid Parentheses          (Stack)                                  │    ║
+║  │ • Merge Two Sorted Lists     (LinkedList)                            │    ║
+║  │ • Binary Search variants     (Arrays)                                │    ║
+║  │ • BFS/DFS on trees           (Recursion)                             │    ║
+║  │ • Sliding Window basics       (Strings/Arrays)                       │    ║
+║  │                                                                      │    ║
+║  │ WHY: Quick to state, clear correct answer, tests fundamentals       │    ║
+║  └──────────────────────────────────────────────────────────────────────┘    ║
+║                                                                              ║
+║  ONSITE ROUND 1 — DATA STRUCTURES (45-60 min, 1-2 problems):               ║
+║  ┌──────────────────────────────────────────────────────────────────────┐    ║
+║  │ • Design LRU Cache            (HashMap + DLL)                        │    ║
+║  │ • Serialize/Deserialize Tree  (BFS/DFS)                              │    ║
+║  │ • Trie problems               (Implementation + DFS)                │    ║
+║  │ • Graph traversal variants    (BFS/DFS + visited)                    │    ║
+║  │ • Interval merge/insert       (Sorting + Greedy)                     │    ║
+║  │                                                                      │    ║
+║  │ WHY: Tests implementation skill + data structure knowledge           │    ║
+║  └──────────────────────────────────────────────────────────────────────┘    ║
+║                                                                              ║
+║  ONSITE ROUND 2 — ALGORITHMS (45-60 min, 1-2 problems):                    ║
+║  ┌──────────────────────────────────────────────────────────────────────┐    ║
+║  │ • DP problems (Coin Change, LCS, Knapsack variants)                  │    ║
+║  │ • Binary Search on Answer     (Minimize max / Maximize min)          │    ║
+║  │ • Backtracking (N-Queens, Word Search, Subsets)                      │    ║
+║  │ • Shortest path (Dijkstra, BFS with state)                           │    ║
+║  │ • Topological Sort             (Course Schedule variants)            │    ║
+║  │                                                                      │    ║
+║  │ WHY: Tests problem-solving depth and optimization thinking           │    ║
+║  └──────────────────────────────────────────────────────────────────────┘    ║
+║                                                                              ║
+║  COMPANY FAVORITES:                                                          ║
+║  ┌──────────────────────────────────────────────────────────────────────┐    ║
+║  │ Amazon:  Arrays, Hash Maps, Trees, BFS/DFS, Design                   │    ║
+║  │ Google:  DP, Graph algorithms, Binary Search, Math                    │    ║
+║  │ Meta:    Arrays, Strings, Trees, Graphs, Backtracking                │    ║
+║  │ Microsoft: Arrays, Trees, LinkedList, Sorting, Design                │    ║
+║  │ Apple:   Arrays, Trees, Sorting, String manipulation                  │    ║
+║  │ Startups: Practical design, API design, System thinking               │    ║
+║  └──────────────────────────────────────────────────────────────────────┘    ║
+║                                                                              ║
+║  DIFFICULTY DISTRIBUTION (typical onsite):                                   ║
+║  • 1 Easy warm-up (5-10 min) → 1 Medium core (20-30 min) = most common     ║
+║  • 1 Medium (15 min) → 1 Medium-Hard (25 min) = senior roles               ║
+║  • 1 Hard (full session) = rare, usually at Google/Meta L5+                 ║
+║                                                                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+```
+
+### Post-Interview Debrief Checklist
+```
+WITHIN 1 HOUR OF THE INTERVIEW:
+□ Write down exact problems asked (problem statement, not just name)
+□ Record your approach — what you said, what you coded
+□ Note where you struggled or got hints
+□ Rate yourself: Communication (1-5), Code Quality (1-5), Speed (1-5)
+
+SAME DAY:
+□ Look up the problems on LeetCode — solve them cleanly
+□ Identify: "What pattern should I have recognized faster?"
+□ Add any new patterns to your study list
+
+WEEKLY REVIEW:
+□ Review all interview debriefs from the week
+□ Are there recurring weak spots? Focus practice there.
+□ Update your "top 20" with problems similar to what you were asked
 ```
 
 ---

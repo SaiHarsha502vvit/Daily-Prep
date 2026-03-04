@@ -27,6 +27,15 @@ Other folders teach: "Here's the Two Pointer template, here's the code."
 | 09 | [📐 Complexity Analysis: Intuitive Reasoning](09_Complexity_Intuition.md) | How to reason about time/space without memorizing formulas |
 | 10 | [🎓 Interview Thinking: Live Problem Solving](10_Interview_Thinking.md) | Think out loud, handle blanks, manage time under pressure |
 
+### Extended Mental Models (Advanced)
+
+| # | Guide | What You'll Learn |
+|---|-------|------------------|
+| 11 | [⚖️ Greedy vs DP Decision Framework](11_Greedy_vs_DP_Decision.md) | When greedy works, when you need DP, proof techniques |
+| 12 | [🔄 Space-Time Tradeoffs](12_Space_Time_Tradeoffs.md) | Trading memory for speed, caching, bit manipulation optimizations |
+| 13 | [🧩 Pattern Composition](13_Pattern_Composition.md) | Combining multiple patterns in a single solution |
+| 14 | [🚀 Optimization Pipeline](14_Optimization_Pipeline.md) | Systematic brute force → optimal -- identify redundancy, choose technique |
+
 ---
 
 ## How to Use These Guides

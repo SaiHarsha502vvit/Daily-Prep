@@ -1,4 +1,5 @@
 > **Navigation**: [< Previous](12_Greedy_Algorithms_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](14_Union_Find_DSU_Complete.md)
+> 🧠 **Mental Model**: See [Array & String Thinking](../14_Mental_Models/04_Array_String_Thinking.md) — pointer patterns and string manipulation mental models
 
 # 🔤 String Algorithms Complete Guide
 > KMP, Rabin-Karp, Z-Algorithm & Pattern Matching Mastery

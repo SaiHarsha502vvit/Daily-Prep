@@ -738,3 +738,239 @@ private int countPairs(int[] nums, int maxDist) {
 
 ---
 
+## SECTION 5: Additional Binary Search Problems
+
+### Problem 13: Find Peak Element
+
+**LeetCode 162** | **Difficulty:** Medium
+
+```
+╔═══════════════════════════════════════════════════════════════════════════╗
+║  FIND PEAK ELEMENT (LeetCode 162 - Medium)                                ║
+╠═══════════════════════════════════════════════════════════════════════════╣
+║                                                                           ║
+║  A peak element is strictly greater than its neighbors.                  ║
+║  Return index of ANY peak. nums[-1] = nums[n] = -∞.                     ║
+║                                                                           ║
+║  Example: nums = [1,2,3,1]  →  Output: 2 (nums[2]=3 is peak)           ║
+║                                                                           ║
+║  KEY: If nums[mid] < nums[mid+1], peak must be on right side.           ║
+║  TIME: O(log n) | SPACE: O(1)                                            ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+```java
+public int findPeakElement(int[] nums) {
+    int left = 0, right = nums.length - 1;
+    while (left < right) {
+        int mid = left + (right - left) / 2;
+        if (nums[mid] < nums[mid + 1])
+            left = mid + 1;  // peak is on right
+        else
+            right = mid;     // mid could be peak
+    }
+    return left;
+}
+```
+
+---
+
+### Problem 14: Search a 2D Matrix
+
+**LeetCode 74** | **Difficulty:** Medium
+
+```
+╔═══════════════════════════════════════════════════════════════════════════╗
+║  SEARCH A 2D MATRIX (LeetCode 74 - Medium)                                ║
+╠═══════════════════════════════════════════════════════════════════════════╣
+║                                                                           ║
+║  Each row sorted left to right. First int of each row > last of prev.    ║
+║  Determine if target exists in matrix.                                   ║
+║                                                                           ║
+║  Example:                                                                ║
+║  matrix = [[1,3,5,7],[10,11,16,20],[23,30,34,60]], target = 3           ║
+║  Output: true                                                             ║
+║                                                                           ║
+║  KEY: Treat as sorted 1D array. index → row=idx/cols, col=idx%cols      ║
+║  TIME: O(log(m*n)) | SPACE: O(1)                                         ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+```java
+public boolean searchMatrix(int[][] matrix, int target) {
+    int m = matrix.length, n = matrix[0].length;
+    int left = 0, right = m * n - 1;
+
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+        int val = matrix[mid / n][mid % n];
+
+        if (val == target) return true;
+        else if (val < target) left = mid + 1;
+        else right = mid - 1;
+    }
+    return false;
+}
+```
+
+---
+
+### Problem 15: Time Based Key-Value Store
+
+**LeetCode 981** | **Difficulty:** Medium
+
+```
+╔═══════════════════════════════════════════════════════════════════════════╗
+║  TIME BASED KEY-VALUE STORE (LeetCode 981 - Medium)                       ║
+╠═══════════════════════════════════════════════════════════════════════════╣
+║                                                                           ║
+║  set(key, value, timestamp) — store key-value with timestamp             ║
+║  get(key, timestamp) — return value with largest timestamp <= given      ║
+║                                                                           ║
+║  Example:                                                                ║
+║  set("foo","bar",1), get("foo",1) → "bar"                               ║
+║  get("foo",3) → "bar", set("foo","bar2",4), get("foo",5) → "bar2"      ║
+║                                                                           ║
+║  KEY: Binary search on timestamps for each key.                          ║
+║  TIME: set O(1), get O(log n) | SPACE: O(n)                             ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+```java
+class TimeMap {
+    Map<String, List<int[]>> map; // key → list of [timestamp, valueIndex]
+    List<String> values;
+
+    // Simpler approach: store timestamps and values together
+    Map<String, TreeMap<Integer, String>> store;
+
+    public TimeMap() {
+        store = new HashMap<>();
+    }
+
+    public void set(String key, String value, int timestamp) {
+        store.computeIfAbsent(key, k -> new TreeMap<>()).put(timestamp, value);
+    }
+
+    public String get(String key, int timestamp) {
+        if (!store.containsKey(key)) return "";
+        TreeMap<Integer, String> tree = store.get(key);
+        Integer floor = tree.floorKey(timestamp);
+        return floor == null ? "" : tree.get(floor);
+    }
+}
+```
+
+---
+
+### Problem 16: Median of Two Sorted Arrays
+
+**LeetCode 4** | **Difficulty:** Hard
+
+```
+╔═══════════════════════════════════════════════════════════════════════════╗
+║  MEDIAN OF TWO SORTED ARRAYS (LeetCode 4 - Hard)                         ║
+╠═══════════════════════════════════════════════════════════════════════════╣
+║                                                                           ║
+║  Given two sorted arrays nums1 and nums2, return the median.             ║
+║  Overall runtime must be O(log(m+n)).                                    ║
+║                                                                           ║
+║  Example:                                                                ║
+║  nums1 = [1,3], nums2 = [2]  →  Output: 2.0                            ║
+║  nums1 = [1,2], nums2 = [3,4]  →  Output: 2.5                          ║
+║                                                                           ║
+║  KEY: Binary search on partition of shorter array.                       ║
+║  Split both arrays so left half has (m+n+1)/2 elements.                  ║
+║  TIME: O(log(min(m,n))) | SPACE: O(1)                                    ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+```java
+public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+    // Ensure nums1 is shorter
+    if (nums1.length > nums2.length)
+        return findMedianSortedArrays(nums2, nums1);
+
+    int m = nums1.length, n = nums2.length;
+    int left = 0, right = m;
+
+    while (left <= right) {
+        int i = left + (right - left) / 2;  // partition in nums1
+        int j = (m + n + 1) / 2 - i;        // partition in nums2
+
+        int maxLeft1 = (i == 0) ? Integer.MIN_VALUE : nums1[i - 1];
+        int minRight1 = (i == m) ? Integer.MAX_VALUE : nums1[i];
+        int maxLeft2 = (j == 0) ? Integer.MIN_VALUE : nums2[j - 1];
+        int minRight2 = (j == n) ? Integer.MAX_VALUE : nums2[j];
+
+        if (maxLeft1 <= minRight2 && maxLeft2 <= minRight1) {
+            if ((m + n) % 2 == 0)
+                return (Math.max(maxLeft1, maxLeft2) +
+                        Math.min(minRight1, minRight2)) / 2.0;
+            else
+                return Math.max(maxLeft1, maxLeft2);
+        } else if (maxLeft1 > minRight2) {
+            right = i - 1;
+        } else {
+            left = i + 1;
+        }
+    }
+    return 0.0;
+}
+```
+
+---
+
+### Problem 17: Magnetic Force Between Two Balls
+
+**LeetCode 1552** | **Difficulty:** Medium
+
+```
+╔═══════════════════════════════════════════════════════════════════════════╗
+║  MAGNETIC FORCE BETWEEN TWO BALLS (LeetCode 1552 - Medium)               ║
+╠═══════════════════════════════════════════════════════════════════════════╣
+║                                                                           ║
+║  Place m balls in basket positions to maximize minimum magnetic force    ║
+║  (distance) between any two balls.                                       ║
+║                                                                           ║
+║  Example:                                                                ║
+║  position = [1,2,3,4,7], m = 3  →  Output: 3                           ║
+║  Place at positions 1, 4, 7 → min distance = 3                          ║
+║                                                                           ║
+║  KEY: Binary search on answer (minimum distance).                        ║
+║  For each candidate distance, greedily check if m balls fit.             ║
+║  TIME: O(n log(maxDist)) | SPACE: O(1)                                   ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+```java
+public int maxDistance(int[] position, int m) {
+    Arrays.sort(position);
+    int left = 1;
+    int right = position[position.length - 1] - position[0];
+
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+        if (canPlace(position, m, mid))
+            left = mid + 1;   // try larger distance
+        else
+            right = mid - 1;  // distance too large
+    }
+    return right;
+}
+
+private boolean canPlace(int[] position, int m, int minDist) {
+    int count = 1, lastPos = position[0];
+    for (int i = 1; i < position.length; i++) {
+        if (position[i] - lastPos >= minDist) {
+            count++;
+            lastPos = position[i];
+            if (count >= m) return true;
+        }
+    }
+    return false;
+}
+```
+
+---
+

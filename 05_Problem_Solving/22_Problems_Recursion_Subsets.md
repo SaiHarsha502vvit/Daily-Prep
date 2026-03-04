@@ -851,6 +851,164 @@ The nth Catalan number C(n) = (2n)! / ((n+1)! × n!)
 
 ---
 
+### Problem 13: Palindrome Partitioning
+
+**LeetCode 131** | **Difficulty:** Medium
+
+```
+╔═══════════════════════════════════════════════════════════════════════════╗
+║  PALINDROME PARTITIONING (LeetCode 131 - Medium)                          ║
+╠═══════════════════════════════════════════════════════════════════════════╣
+║                                                                           ║
+║  Partition string s so every substring is a palindrome.                  ║
+║  Return all possible partitions.                                         ║
+║                                                                           ║
+║  Example: s = "aab"                                                      ║
+║  Output: [["a","a","b"], ["aa","b"]]                                     ║
+║                                                                           ║
+║  KEY: Backtrack trying each prefix. If prefix is palindrome, recurse     ║
+║  on remaining suffix.                                                    ║
+║  TIME: O(n × 2^n) | SPACE: O(n) recursion depth                         ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+```java
+public List<List<String>> partition(String s) {
+    List<List<String>> result = new ArrayList<>();
+    backtrack(s, 0, new ArrayList<>(), result);
+    return result;
+}
+
+private void backtrack(String s, int start, List<String> path,
+                       List<List<String>> result) {
+    if (start == s.length()) {
+        result.add(new ArrayList<>(path));
+        return;
+    }
+    for (int end = start + 1; end <= s.length(); end++) {
+        String sub = s.substring(start, end);
+        if (isPalindrome(sub)) {
+            path.add(sub);
+            backtrack(s, end, path, result);
+            path.remove(path.size() - 1);
+        }
+    }
+}
+
+private boolean isPalindrome(String s) {
+    int l = 0, r = s.length() - 1;
+    while (l < r) {
+        if (s.charAt(l++) != s.charAt(r--)) return false;
+    }
+    return true;
+}
+```
+
+---
+
+### Problem 14: Combinations
+
+**LeetCode 77** | **Difficulty:** Medium
+
+```
+╔═══════════════════════════════════════════════════════════════════════════╗
+║  COMBINATIONS (LeetCode 77 - Medium)                                      ║
+╠═══════════════════════════════════════════════════════════════════════════╣
+║                                                                           ║
+║  Given n and k, return all possible combinations of k numbers            ║
+║  chosen from range [1, n].                                               ║
+║                                                                           ║
+║  Example: n = 4, k = 2                                                   ║
+║  Output: [[1,2],[1,3],[1,4],[2,3],[2,4],[3,4]]                          ║
+║                                                                           ║
+║  KEY: Standard backtracking. Prune when remaining < needed.              ║
+║  TIME: O(C(n,k) × k) | SPACE: O(k)                                     ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+```java
+public List<List<Integer>> combine(int n, int k) {
+    List<List<Integer>> result = new ArrayList<>();
+    backtrack(n, k, 1, new ArrayList<>(), result);
+    return result;
+}
+
+private void backtrack(int n, int k, int start, List<Integer> path,
+                       List<List<Integer>> result) {
+    if (path.size() == k) {
+        result.add(new ArrayList<>(path));
+        return;
+    }
+    // Pruning: need (k - path.size()) more, so stop early
+    for (int i = start; i <= n - (k - path.size()) + 1; i++) {
+        path.add(i);
+        backtrack(n, k, i + 1, path, result);
+        path.remove(path.size() - 1);
+    }
+}
+```
+
+---
+
+### Problem 15: N-Queens
+
+**LeetCode 51** | **Difficulty:** Hard
+
+```
+╔═══════════════════════════════════════════════════════════════════════════╗
+║  N-QUEENS (LeetCode 51 - Hard)                                            ║
+╠═══════════════════════════════════════════════════════════════════════════╣
+║                                                                           ║
+║  Place n queens on n×n chessboard so no two attack each other.           ║
+║  Return all distinct solutions.                                          ║
+║                                                                           ║
+║  Example: n = 4                                                          ║
+║  Output: [[".Q..","...Q","Q...","..Q."],                                ║
+║           ["..Q.","Q...","...Q",".Q.."]]                                ║
+║                                                                           ║
+║  KEY: Place row by row. Track cols, diags, anti-diags with sets.         ║
+║  TIME: O(n!) | SPACE: O(n²)                                             ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+```java
+public List<List<String>> solveNQueens(int n) {
+    List<List<String>> result = new ArrayList<>();
+    char[][] board = new char[n][n];
+    for (char[] row : board) Arrays.fill(row, '.');
+    Set<Integer> cols = new HashSet<>();
+    Set<Integer> diags = new HashSet<>();     // row - col
+    Set<Integer> antiDiags = new HashSet<>(); // row + col
+    backtrack(board, 0, cols, diags, antiDiags, result);
+    return result;
+}
+
+private void backtrack(char[][] board, int row,
+        Set<Integer> cols, Set<Integer> diags, Set<Integer> antiDiags,
+        List<List<String>> result) {
+    if (row == board.length) {
+        List<String> solution = new ArrayList<>();
+        for (char[] r : board) solution.add(new String(r));
+        result.add(solution);
+        return;
+    }
+    for (int col = 0; col < board.length; col++) {
+        if (cols.contains(col) || diags.contains(row - col)
+                || antiDiags.contains(row + col)) continue;
+
+        board[row][col] = 'Q';
+        cols.add(col); diags.add(row - col); antiDiags.add(row + col);
+
+        backtrack(board, row + 1, cols, diags, antiDiags, result);
+
+        board[row][col] = '.';
+        cols.remove(col); diags.remove(row - col); antiDiags.remove(row + col);
+    }
+}
+```
+
+---
+
 ## 📋 CURATED PRACTICE PROBLEMS
 
 ### Easy

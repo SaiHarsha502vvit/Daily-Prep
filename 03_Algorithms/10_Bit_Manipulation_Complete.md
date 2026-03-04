@@ -1,4 +1,5 @@
 > **Navigation**: [< Previous](09_Pattern_Programs_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](11_Backtracking_Complete.md)
+> 🧠 **Mental Model**: See [Space-Time Tradeoffs](../14_Mental_Models/12_Space_Time_Tradeoffs.md) — bit tricks as O(1) space optimizations
 
 # 🔢 Bit Manipulation Complete Guide
 > Master the Art of Binary Operations for Coding Interviews

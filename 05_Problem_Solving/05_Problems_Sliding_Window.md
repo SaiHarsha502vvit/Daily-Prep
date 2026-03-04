@@ -629,3 +629,203 @@ public int lengthOfLongestSubstringTwoDistinct(String s) {
 
 ---
 
+## SECTION 4: Advanced Sliding Window Problems
+
+### Problem 12: Sliding Window Maximum
+
+**LeetCode 239** | **Difficulty:** Hard
+
+```
+╔═══════════════════════════════════════════════════════════════════════════╗
+║  SLIDING WINDOW MAXIMUM (LeetCode 239 - Hard)                             ║
+╠═══════════════════════════════════════════════════════════════════════════╣
+║                                                                           ║
+║  Given array nums and sliding window of size k, return max in each       ║
+║  window position as the window slides from left to right.                ║
+║                                                                           ║
+║  Example:                                                                ║
+║  Input: nums = [1,3,-1,-3,5,3,6,7], k = 3                               ║
+║  Output: [3,3,5,5,6,7]                                                   ║
+║                                                                           ║
+║  KEY INSIGHT: Use monotonic deque (decreasing) — front always has max    ║
+║  TIME: O(n) | SPACE: O(k)                                                ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+```java
+public int[] maxSlidingWindow(int[] nums, int k) {
+    int n = nums.length;
+    int[] result = new int[n - k + 1];
+    Deque<Integer> deque = new ArrayDeque<>();
+
+    for (int i = 0; i < n; i++) {
+        while (!deque.isEmpty() && deque.peekFirst() < i - k + 1)
+            deque.pollFirst();
+        while (!deque.isEmpty() && nums[deque.peekLast()] < nums[i])
+            deque.pollLast();
+        deque.offerLast(i);
+        if (i >= k - 1)
+            result[i - k + 1] = nums[deque.peekFirst()];
+    }
+    return result;
+}
+```
+
+---
+
+### Problem 13: Subarrays with K Different Integers
+
+**LeetCode 992** | **Difficulty:** Hard
+
+```
+╔═══════════════════════════════════════════════════════════════════════════╗
+║  SUBARRAYS WITH K DIFFERENT INTEGERS (LeetCode 992 - Hard)                ║
+╠═══════════════════════════════════════════════════════════════════════════╣
+║                                                                           ║
+║  Return count of subarrays with exactly k distinct integers.             ║
+║                                                                           ║
+║  Example:                                                                ║
+║  Input: nums = [1,2,1,2,3], k = 2  →  Output: 7                        ║
+║                                                                           ║
+║  KEY TRICK: exactly(k) = atMost(k) - atMost(k-1)                        ║
+║  TIME: O(n) | SPACE: O(k)                                                ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+```java
+public int subarraysWithKDistinct(int[] nums, int k) {
+    return atMost(nums, k) - atMost(nums, k - 1);
+}
+
+private int atMost(int[] nums, int k) {
+    Map<Integer, Integer> count = new HashMap<>();
+    int left = 0, result = 0;
+    for (int right = 0; right < nums.length; right++) {
+        count.merge(nums[right], 1, Integer::sum);
+        while (count.size() > k) {
+            int leftVal = nums[left];
+            count.merge(leftVal, -1, Integer::sum);
+            if (count.get(leftVal) == 0) count.remove(leftVal);
+            left++;
+        }
+        result += right - left + 1;
+    }
+    return result;
+}
+```
+
+---
+
+### Problem 14: Grumpy Bookstore Owner
+
+**LeetCode 1052** | **Difficulty:** Medium
+
+```
+╔═══════════════════════════════════════════════════════════════════════════╗
+║  GRUMPY BOOKSTORE OWNER (LeetCode 1052 - Medium)                         ║
+╠═══════════════════════════════════════════════════════════════════════════╣
+║                                                                           ║
+║  Owner can use technique for k minutes to not be grumpy.                 ║
+║  Find max satisfied customers.                                           ║
+║                                                                           ║
+║  Example:                                                                ║
+║  customers = [1,0,1,2,1,1,7,5], grumpy = [0,1,0,1,0,1,0,1], k=3       ║
+║  Output: 16                                                               ║
+║                                                                           ║
+║  KEY: Base satisfied + sliding window of size k for max extra.           ║
+║  TIME: O(n) | SPACE: O(1)                                                ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+```java
+public int maxSatisfied(int[] customers, int[] grumpy, int minutes) {
+    int n = customers.length, baseSatisfied = 0;
+    for (int i = 0; i < n; i++)
+        if (grumpy[i] == 0) baseSatisfied += customers[i];
+
+    int extra = 0, maxExtra = 0;
+    for (int i = 0; i < n; i++) {
+        if (grumpy[i] == 1) extra += customers[i];
+        if (i >= minutes && grumpy[i - minutes] == 1)
+            extra -= customers[i - minutes];
+        maxExtra = Math.max(maxExtra, extra);
+    }
+    return baseSatisfied + maxExtra;
+}
+```
+
+---
+
+### Problem 15: Count Number of Nice Subarrays
+
+**LeetCode 1248** | **Difficulty:** Medium
+
+```
+╔═══════════════════════════════════════════════════════════════════════════╗
+║  COUNT NUMBER OF NICE SUBARRAYS (LeetCode 1248 - Medium)                  ║
+╠═══════════════════════════════════════════════════════════════════════════╣
+║                                                                           ║
+║  Nice subarray = exactly k odd numbers. Return count.                    ║
+║                                                                           ║
+║  Example: nums = [1,1,2,1,1], k = 3  →  Output: 2                      ║
+║                                                                           ║
+║  KEY: exactly(k) = atMost(k) - atMost(k-1)                              ║
+║  TIME: O(n) | SPACE: O(1)                                                ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+```java
+public int numberOfSubarrays(int[] nums, int k) {
+    return atMost(nums, k) - atMost(nums, k - 1);
+}
+
+private int atMost(int[] nums, int k) {
+    int left = 0, result = 0, oddCount = 0;
+    for (int right = 0; right < nums.length; right++) {
+        if (nums[right] % 2 == 1) oddCount++;
+        while (oddCount > k) {
+            if (nums[left] % 2 == 1) oddCount--;
+            left++;
+        }
+        result += right - left + 1;
+    }
+    return result;
+}
+```
+
+---
+
+### Problem 16: Max Consecutive Ones III
+
+**LeetCode 1004** | **Difficulty:** Medium
+
+```
+╔═══════════════════════════════════════════════════════════════════════════╗
+║  MAX CONSECUTIVE ONES III (LeetCode 1004 - Medium)                        ║
+╠═══════════════════════════════════════════════════════════════════════════╣
+║                                                                           ║
+║  Max consecutive 1's if you can flip at most k 0's.                      ║
+║                                                                           ║
+║  Example: nums = [1,1,1,0,0,0,1,1,1,1,0], k = 2  →  Output: 6         ║
+║                                                                           ║
+║  KEY: Sliding window tracking zeros count. Shrink when > k.              ║
+║  TIME: O(n) | SPACE: O(1)                                                ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+```java
+public int longestOnes(int[] nums, int k) {
+    int left = 0, maxLen = 0, zeros = 0;
+    for (int right = 0; right < nums.length; right++) {
+        if (nums[right] == 0) zeros++;
+        while (zeros > k) {
+            if (nums[left] == 0) zeros--;
+            left++;
+        }
+        maxLen = Math.max(maxLen, right - left + 1);
+    }
+    return maxLen;
+}
+```
+
+---

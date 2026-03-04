@@ -16,7 +16,7 @@
 | SQL from Zero (21 chapters) | [08_SQL/](#sql-21-chapters) |
 | Spring Boot (35+ chapters + 50-Day Plan) | [07_Modern_Java/](#modern-java--spring-boot) |
 | Developer Essentials (10 guides) | [13_Developer_Essentials/](#developer-essentials-new) |
-| **Mental Models — HOW TO THINK (13 guides)** | [14_Mental_Models/](#mental-models--how-to-think-new) |
+| **Mental Models — HOW TO THINK (14 guides)** | [14_Mental_Models/](#mental-models--how-to-think-new) |
 | Quick Reference Sheet | [09_Career_Reference/03_Quick_Reference.md](09_Career_Reference/03_Quick_Reference.md) |
 
 ---
@@ -49,6 +49,7 @@ Daily-Prep/
 │   ├── 01_Algorithm_Thinking.md         → Problem-solving mindset & Big O
 │   ├── 02a_Sorting_Fundamentals.md      → Bubble, Selection, Insertion, Merge Sort
 │   ├── 02b_Sorting_Advanced.md          → Quick, Heap, Counting, Radix, Binary Search
+│   ├── 02c_Divide_And_Conquer.md        → D&C method, Master Theorem, Binary Search internals
 │   ├── 03a_Recursion_Internals.md       → Call stack, stack frames, memory model
 │   ├── 03b_Recursion_Fundamentals.md    → Base cases, patterns, classic problems
 │   ├── 03c_Recursion_Advanced.md        → Backtracking, memoization, tree recursion
@@ -235,7 +236,7 @@ Daily-Prep/
 │   ├── 09_System_Design.md              → Load balancing, caching, queues, CAP
 │   └── 10_Dev_Tools_Productivity.md     → IDE shortcuts, debugging, Postman, Maven
 │
-├── 14_Mental_Models/                    (14 files — HOW TO THINK guides!)
+├── 14_Mental_Models/                    (15 files — HOW TO THINK guides!)
 │   ├── 00_INDEX.md                      → Reading order & usage guide
 │   ├── 01_Recursion_Tree_Thinking.md    → Draw recursion trees, leap of faith, memo→tab
 │   ├── 02_DP_State_Thinking.md          → State identification, transitions, optimization
@@ -250,6 +251,7 @@ Daily-Prep/
 │   ├── 11_Greedy_vs_DP_Decision.md      → 🆕 3-question checklist, proof techniques
 │   ├── 12_Space_Time_Tradeoffs.md       → 🆕 When to trade memory for speed
 │   └── 13_Pattern_Composition.md        → 🆕 Combining 2+ patterns for Hard problems
+│   └── 14_Optimization_Pipeline.md      → 🆕 Systematic brute force → optimal pipeline
 │
 ├── JavaSolutions/                       → Your Java code solutions
 ├── practice/                            → Practice scratch files
@@ -268,7 +270,7 @@ Daily-Prep/
 
 ### Algorithms (26 chapters)
 - **Thinking**: [Algorithm Thinking & Big O](03_Algorithms/01_Algorithm_Thinking.md)
-- **Sorting**: [Fundamentals](03_Algorithms/02a_Sorting_Fundamentals.md) → [Advanced](03_Algorithms/02b_Sorting_Advanced.md)
+- **Sorting**: [Fundamentals](03_Algorithms/02a_Sorting_Fundamentals.md) → [Advanced](03_Algorithms/02b_Sorting_Advanced.md) → [Divide & Conquer](03_Algorithms/02c_Divide_And_Conquer.md)
 - **Recursion**: [Internals](03_Algorithms/03a_Recursion_Internals.md) → [Fundamentals](03_Algorithms/03b_Recursion_Fundamentals.md) → [Advanced](03_Algorithms/03c_Recursion_Advanced.md)
 - **Dynamic Programming**: [Internals](03_Algorithms/04a_DP_Internals.md) → [Fundamentals](03_Algorithms/04b_DP_Fundamentals.md) → [Advanced](03_Algorithms/04c_DP_Advanced.md)
 - **Trees**: [Trees Complete](03_Algorithms/05_Trees.md)
@@ -367,6 +369,7 @@ Daily-Prep/
 - [SQL Mental Pipeline](14_Mental_Models/07_SQL_Mental_Pipeline.md) | [Debugging & Dry Run](14_Mental_Models/08_Debugging_DryRun.md)
 - [Complexity Intuition](14_Mental_Models/09_Complexity_Intuition.md) | [Interview Thinking](14_Mental_Models/10_Interview_Thinking.md)
 - [Greedy vs DP Decision](14_Mental_Models/11_Greedy_vs_DP_Decision.md) | [Space-Time Tradeoffs](14_Mental_Models/12_Space_Time_Tradeoffs.md) | [Pattern Composition](14_Mental_Models/13_Pattern_Composition.md)
+- [Optimization Pipeline](14_Mental_Models/14_Optimization_Pipeline.md)
 
 ---
 

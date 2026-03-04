@@ -1,4 +1,5 @@
 > **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](05c_Graphs_Fundamentals.md)
+> 🧠 **Mental Model**: See [Graph & Tree Thinking](../14_Mental_Models/03_Graph_Tree_Thinking.md) — traversal intuition and pattern recognition
 
 ---
 
@@ -90,6 +91,79 @@
 │        Use adjacency matrix for dense graphs or when edge lookup is frequent   │
 │                                                                                  │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+## EDGE LIST REPRESENTATION
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                    EDGE LIST - THE SIMPLEST GRAPH REPRESENTATION                 │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                  │
+│  STRUCTURE: Just a list of edges — each edge is (src, dst, weight)              │
+│                                                                                  │
+│  int[][] edges = {{0,1,5}, {0,2,3}, {1,2,1}, {2,3,7}};                        │
+│  // Each row: [from, to, weight]                                                │
+│                                                                                  │
+│  GRAPH:       5       3       7                                                  │
+│         0 ------→ 1     0 ----→ 2 ----→ 3                                       │
+│                    ↑    1                                                         │
+│                    └────┘                                                        │
+│                                                                                  │
+│  MEMORY: O(E) — just the edges, nothing more                                   │
+│                                                                                  │
+│  ─────────────────────────────────────────────────────────────────────────────  │
+│                                                                                  │
+│  WHEN TO USE EDGE LIST:                                                          │
+│  ✅ Bellman-Ford algorithm (iterates over ALL edges each relaxation)             │
+│  ✅ Kruskal's MST (sort edges by weight, process in order)                      │
+│  ✅ When you just need to store/sort edges                                       │
+│  ✅ Problems that give input as edge list directly                               │
+│                                                                                  │
+│  WHEN NOT TO USE:                                                                │
+│  ❌ Need to find neighbors of a vertex → O(E) scan each time!                   │
+│  ❌ BFS/DFS (adjacency list is much better)                                     │
+│  ❌ Need edge existence check (adjacency matrix is O(1))                        │
+│                                                                                  │
+│  ─────────────────────────────────────────────────────────────────────────────  │
+│                                                                                  │
+│  COMPARISON OF ALL THREE:                                                        │
+│  ┌──────────────────┬──────────────┬────────────────┬──────────────────────┐    │
+│  │ Operation        │ Adj Matrix   │ Adj List       │ Edge List            │    │
+│  ├──────────────────┼──────────────┼────────────────┼──────────────────────┤    │
+│  │ Space            │ O(V²)       │ O(V + E)       │ O(E)                 │    │
+│  │ Add edge         │ O(1)         │ O(1)           │ O(1)                 │    │
+│  │ Edge exists?     │ O(1)         │ O(degree)      │ O(E)                 │    │
+│  │ All neighbors    │ O(V)         │ O(degree)      │ O(E)                 │    │
+│  │ All edges        │ O(V²)       │ O(V + E)       │ O(E)                 │    │
+│  │ Sort edges       │ O(V² log V) │ O(E log E)     │ O(E log E)           │    │
+│  └──────────────────┴──────────────┴────────────────┴──────────────────────┘    │
+│                                                                                  │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+```java
+// EDGE LIST — Java Implementation
+// Simple: just an array of [src, dst, weight]
+
+// Usage in Bellman-Ford:
+int[][] edges = {{0,1,5}, {0,2,3}, {1,2,1}, {2,3,7}};
+int V = 4;
+int[] dist = new int[V];
+Arrays.fill(dist, Integer.MAX_VALUE);
+dist[0] = 0;
+
+for (int i = 0; i < V - 1; i++) {          // V-1 relaxation rounds
+    for (int[] edge : edges) {               // iterate ALL edges
+        int u = edge[0], v = edge[1], w = edge[2];
+        if (dist[u] != Integer.MAX_VALUE && dist[u] + w < dist[v])
+            dist[v] = dist[u] + w;
+    }
+}
+
+// Usage in Kruskal's MST:
+Arrays.sort(edges, (a, b) -> a[2] - b[2]);  // sort by weight
+// Then process with Union-Find...
 ```
 
 ## BFS AND DFS - INTERNAL OPERATIONS

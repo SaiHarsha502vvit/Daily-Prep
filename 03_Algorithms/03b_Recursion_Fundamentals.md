@@ -1,4 +1,5 @@
 > **Navigation**: [< Previous Chapter](03a_Recursion_Internals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](03c_Recursion_Advanced.md)
+> 🧠 **Mental Model**: See [Recursion Tree Thinking](../14_Mental_Models/01_Recursion_Tree_Thinking.md) — base case identification and recursive leap of faith
 
 ---
 

@@ -1,4 +1,5 @@
 > **Navigation**: [< Previous Chapter](04b_DP_Fundamentals.md) | [Back to Index](../00_MASTER_INDEX.md)
+> 🧠 **Mental Model**: See [DP State Thinking](../14_Mental_Models/02_DP_State_Thinking.md) — advanced state design and optimization
 
 ---
 
