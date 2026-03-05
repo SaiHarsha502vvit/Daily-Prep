@@ -12,12 +12,12 @@ Translating messy human problems into elegant digital systems.
 
 YOU ARE NOT JUST A CODER. YOU ARE:
 ┌─────────────────────────────────────────────────────────────────┐
-│ 🔬 A Computer Scientist    - Understanding computation limits  │
-│ 🏗️ A System Architect      - Designing scalable structures     │
-│ 🎨 A Product Engineer      - Building what users truly need    │
-│ 🧠 A UX Thinker            - Feeling the user's pain           │
-│ ⚙️ A DevOps Pragmatist     - Keeping systems alive             │
-│ 💭 A Philosophy Engineer   - Asking WHY before HOW             │
+│ 🔬 A Computer Scientist    - Understanding computation limits    │
+│ 🏗️ A System Architect      - Designing scalable structures      │
+│ 🎨 A Product Engineer      - Building what users truly need      │
+│ 🧠 A UX Thinker            - Feeling the user's pain             │
+│ ⚙️ A DevOps Pragmatist     - Keeping systems alive              │
+│ 💭 A Philosophy Engineer   - Asking WHY before HOW               │
 └─────────────────────────────────────────────────────────────────┘
 
 YOUR THINKING CHAIN:
@@ -214,7 +214,7 @@ FUSION DESIGN:
 │                                                                 │
 │   HashMap<UserId, Queue<Timestamp>>                             │
 │                                                                 │
-│   User123 → [T-50s, T-30s, T-10s, T-5s, T-2s, NOW]             │
+│   User123 → [T-50s, T-30s, T-10s, T-5s, T-2s, NOW]              │
 │                                                                 │
 │   Algorithm:                                                    │
 │   1. Remove timestamps older than 60s (dequeue)                 │
@@ -418,38 +418,38 @@ PROJECT 1: REAL-TIME CHAT SYSTEM
 │ Components:                                                     │
 │ • Message Queue (Ring Buffer)                                   │
 │ • User Sessions (HashMap)                                       │
-│ • Message History (B-Tree indexed DB)                          │
-│ • Online Status (Bloom Filter for quick check)                 │
-│ • Typing Indicators (TTL HashMap)                              │
+│ • Message History (B-Tree indexed DB)                           │
+│ • Online Status (Bloom Filter for quick check)                  │
+│ • Typing Indicators (TTL HashMap)                               │
 │                                                                 │
-│ Scale Challenge: 1M concurrent users                           │
-│ Failure Mode: What if message server dies?                     │
+│ Scale Challenge: 1M concurrent users                            │
+│ Failure Mode: What if message server dies?                      │
 └─────────────────────────────────────────────────────────────────┘
 
 PROJECT 2: SEARCH ENGINE
 ┌─────────────────────────────────────────────────────────────────┐
 │ Components:                                                     │
-│ • Inverted Index (HashMap of word → documents)                 │
-│ • Autocomplete (Trie)                                          │
-│ • Ranking (Heap for top-k)                                     │
-│ • Spell Correction (Edit Distance DP)                          │
-│ • Crawling Queue (Priority Queue)                              │
+│ • Inverted Index (HashMap of word → documents)                  │
+│ • Autocomplete (Trie)                                           │
+│ • Ranking (Heap for top-k)                                      │
+│ • Spell Correction (Edit Distance DP)                           │
+│ • Crawling Queue (Priority Queue)                               │
 │                                                                 │
-│ Scale Challenge: 1B documents                                  │
-│ Failure Mode: Index corruption?                                │
+│ Scale Challenge: 1B documents                                   │
+│ Failure Mode: Index corruption?                                 │
 └─────────────────────────────────────────────────────────────────┘
 
 PROJECT 3: ANALYTICS PIPELINE
 ┌─────────────────────────────────────────────────────────────────┐
 │ Components:                                                     │
-│ • Event Stream (Ring Buffer)                                   │
-│ • Aggregations (Segment Tree)                                  │
-│ • Unique Counts (HyperLogLog)                                  │
-│ • Time Windows (Sliding Window)                                │
-│ • Storage (LSM Tree)                                           │
+│ • Event Stream (Ring Buffer)                                    │
+│ • Aggregations (Segment Tree)                                   │
+│ • Unique Counts (HyperLogLog)                                   │
+│ • Time Windows (Sliding Window)                                 │
+│ • Storage (LSM Tree)                                            │
 │                                                                 │
-│ Scale Challenge: 1M events/second                              │
-│ Failure Mode: Data loss during spike?                          │
+│ Scale Challenge: 1M events/second                               │
+│ Failure Mode: Data loss during spike?                           │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -489,18 +489,18 @@ WEEKLY:
 ╔═══════════════════════════════════════════════════════════════════════╗
 ║                                                                       ║
 ║   YOU ARE NOT PREPARING FOR INTERVIEWS.                               ║
-║   YOU ARE PREPARING FOR SYSTEMS THAT CANNOT FAIL QUIETLY.            ║
+║   YOU ARE PREPARING FOR SYSTEMS THAT CANNOT FAIL QUIETLY.             ║
 ║                                                                       ║
-║   Every algorithm is a tool for CONTROLLING CHAOS.                   ║
-║   Every data structure is a SHAPE OF THOUGHT.                        ║
-║   Every system you build is a TRANSLATION OF HUMAN NEED.             ║
+║   Every algorithm is a tool for CONTROLLING CHAOS.                    ║
+║   Every data structure is a SHAPE OF THOUGHT.                         ║
+║   Every system you build is a TRANSLATION OF HUMAN NEED.              ║
 ║                                                                       ║
-║   The goal is not to memorize patterns.                              ║
-║   The goal is to SEE THE INVISIBLE ALGORITHMS                        ║
-║   running inside the world itself.                                   ║
+║   The goal is not to memorize patterns.                               ║
+║   The goal is to SEE THE INVISIBLE ALGORITHMS                         ║
+║   running inside the world itself.                                    ║
 ║                                                                       ║
-║   Walk into any codebase, any startup, any infrastructure —          ║
-║   and understand what's REALLY happening beneath the surface.        ║
+║   Walk into any codebase, any startup, any infrastructure —           ║
+║   and understand what's REALLY happening beneath the surface.         ║
 ║                                                                       ║
 ╚═══════════════════════════════════════════════════════════════════════╝
 ```
@@ -521,61 +521,61 @@ USER STORY: "I want to convert long URLs to short ones"
 STEP 1 — HUMAN INTENT
 ┌─────────────────────────────────────────────────────────────────┐
 │ User wants to:                                                  │
-│ • Share links easily (Twitter character limit)                 │
-│ • Track click analytics                                        │
-│ • Have memorable links                                         │
-│ • Links should work forever                                    │
+│ • Share links easily (Twitter character limit)                  │
+│ • Track click analytics                                         │
+│ • Have memorable links                                          │
+│ • Links should work forever                                     │
 └─────────────────────────────────────────────────────────────────┘
 
 STEP 2 — SYSTEM REQUIREMENTS
 ┌─────────────────────────────────────────────────────────────────┐
 │ Functional:                                                     │
-│ • shorten(longUrl) → shortUrl                                  │
-│ • redirect(shortUrl) → longUrl                                 │
-│ • getStats(shortUrl) → click count, referrers                  │
+│ • shorten(longUrl) → shortUrl                                   │
+│ • redirect(shortUrl) → longUrl                                  │
+│ • getStats(shortUrl) → click count, referrers                   │
 │                                                                 │
-│ Non-Functional:                                                │
-│ • 100M URLs created/month                                      │
-│ • 10B redirects/month                                          │
-│ • 99.99% availability                                          │
-│ • < 100ms redirect latency                                     │
+│ Non-Functional:                                                 │
+│ • 100M URLs created/month                                       │
+│ • 10B redirects/month                                           │
+│ • 99.99% availability                                           │
+│ • < 100ms redirect latency                                      │
 └─────────────────────────────────────────────────────────────────┘
 
 STEP 3 — DATA MODEL
 ┌─────────────────────────────────────────────────────────────────┐
 │ URL Table:                                                      │
-│ ┌──────────────────────────────────────────────────────────┐   │
-│ │ short_code (PK) │ long_url │ created_at │ user_id │ ttl │   │
-│ ├──────────────────────────────────────────────────────────┤   │
-│ │ abc123          │ https://... │ 2024-01-01 │ u1 │ null  │   │
-│ └──────────────────────────────────────────────────────────┘   │
+│ ┌──────────────────────────────────────────────────────────┐    │
+│ │ short_code (PK) │ long_url │ created_at │ user_id │ ttl │     │
+│ ├──────────────────────────────────────────────────────────┤    │
+│ │ abc123          │ https://... │ 2024-01-01 │ u1 │ null  │     │
+│ └──────────────────────────────────────────────────────────┘    │
 │                                                                 │
-│ Analytics Table:                                               │
-│ ┌──────────────────────────────────────────────────────────┐   │
-│ │ short_code │ timestamp │ referrer │ country │ device    │   │
-│ └──────────────────────────────────────────────────────────┘   │
+│ Analytics Table:                                                │
+│ ┌──────────────────────────────────────────────────────────┐    │
+│ │ short_code │ timestamp │ referrer │ country │ device    │     │
+│ └──────────────────────────────────────────────────────────┘    │
 └─────────────────────────────────────────────────────────────────┘
 
 STEP 4 — DSA MAPPING
 ┌─────────────────────────────────────────────────────────────────┐
-│ Short Code Generation:                                         │
-│ • Base62 encoding (a-z, A-Z, 0-9) = 62 chars                  │
-│ • 6 chars = 62^6 = 56 billion combinations                    │
-│ • Algorithm: Counter → Base62 conversion                       │
+│ Short Code Generation:                                          │
+│ • Base62 encoding (a-z, A-Z, 0-9) = 62 chars                    │
+│ • 6 chars = 62^6 = 56 billion combinations                      │
+│ • Algorithm: Counter → Base62 conversion                        │
 │                                                                 │
-│ Storage:                                                       │
-│ • HashMap for O(1) lookups                                     │
-│ • B-Tree index for database                                    │
-│ • Bloom filter for quick "not exists" check                    │
+│ Storage:                                                        │
+│ • HashMap for O(1) lookups                                      │
+│ • B-Tree index for database                                     │
+│ • Bloom filter for quick "not exists" check                     │
 │                                                                 │
-│ Caching:                                                       │
-│ • LRU Cache for hot URLs (20% URLs get 80% traffic)           │
-│ • Cache redirect destination                                   │
+│ Caching:                                                        │
+│ • LRU Cache for hot URLs (20% URLs get 80% traffic)             │
+│ • Cache redirect destination                                    │
 │                                                                 │
-│ Analytics:                                                     │
-│ • Ring Buffer for recent events                                │
-│ • HyperLogLog for unique visitor count                        │
-│ • Segment Tree for time-range queries                          │
+│ Analytics:                                                      │
+│ • Ring Buffer for recent events                                 │
+│ • HyperLogLog for unique visitor count                          │
+│ • Segment Tree for time-range queries                           │
 └─────────────────────────────────────────────────────────────────┘
 
 STEP 5 — ARCHITECTURE
@@ -584,21 +584,21 @@ STEP 5 — ARCHITECTURE
 │    Client                                                       │
 │      │                                                          │
 │      ▼                                                          │
-│  [Load Balancer]                                               │
+│  [Load Balancer]                                                │
 │      │                                                          │
-│      ├──────────────────┬──────────────────┐                   │
+│      ├──────────────────┬──────────────────┐                    │
 │      ▼                  ▼                  ▼                    │
-│  [API Server 1]    [API Server 2]    [API Server N]            │
+│  [API Server 1]    [API Server 2]    [API Server N]             │
 │      │                  │                  │                    │
-│      └──────────────────┼──────────────────┘                   │
+│      └──────────────────┼──────────────────┘                    │
 │                         │                                       │
-│                    [Redis Cache]                               │
+│                    [Redis Cache]                                │
 │                         │                                       │
-│              ┌──────────┴──────────┐                           │
+│              ┌──────────┴──────────┐                            │
 │              ▼                     ▼                            │
-│      [PostgreSQL Master]    [PostgreSQL Replica]               │
+│      [PostgreSQL Master]    [PostgreSQL Replica]                │
 │                                                                 │
-│  Async: [Kafka] → [Analytics Service] → [ClickHouse]           │
+│  Async: [Kafka] → [Analytics Service] → [ClickHouse]            │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -686,25 +686,25 @@ REQUIREMENTS:
 
 DSA ANALYSIS:
 ┌─────────────────────────────────────────────────────────────────┐
-│ Option 1: Sorted Array                                         │
-│ • Get top K: O(K) ✓                                            │
-│ • Update score: O(N) ✗ - too slow for 1000/sec                │
+│ Option 1: Sorted Array                                          │
+│ • Get top K: O(K) ✓                                             │
+│ • Update score: O(N) ✗ - too slow for 1000/sec                  │
 │                                                                 │
-│ Option 2: Heap                                                 │
-│ • Get top K: O(K log N) - need to extract K times             │
-│ • Update score: O(N) - need to find element first ✗           │
+│ Option 2: Heap                                                  │
+│ • Get top K: O(K log N) - need to extract K times               │
+│ • Update score: O(N) - need to find element first ✗             │
 │                                                                 │
-│ Option 3: Skip List + HashMap                                  │
-│ • Get top K: O(K) ✓                                            │
-│ • Update score: O(log N) ✓                                     │
-│ • Get rank: O(log N) ✓                                         │
+│ Option 3: Skip List + HashMap                                   │
+│ • Get top K: O(K) ✓                                             │
+│ • Update score: O(log N) ✓                                      │
+│ • Get rank: O(log N) ✓                                          │
 │                                                                 │
-│ Option 4: Segment Tree (Score → Count)                         │
-│ • Get top K: O(K log M) where M = max score                   │
-│ • Update score: O(log M) ✓                                     │
-│ • Get rank: O(log M) ✓                                         │
+│ Option 4: Segment Tree (Score → Count)                          │
+│ • Get top K: O(K log M) where M = max score                     │
+│ • Update score: O(log M) ✓                                      │
+│ • Get rank: O(log M) ✓                                          │
 │                                                                 │
-│ WINNER: Skip List for flexibility + Redis Sorted Set           │
+│ WINNER: Skip List for flexibility + Redis Sorted Set            │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -805,9 +805,9 @@ REQUIREMENTS:
 DSA MAPPING:
 ┌─────────────────────────────────────────────────────────────────┐
 │                                                                 │
-│   User types: "pro"                                            │
+│   User types: "pro"                                             │
 │                                                                 │
-│   TRIE traversal to "pro":                                     │
+│   TRIE traversal to "pro":                                      │
 │                                                                 │
 │              (root)                                             │
 │                |                                                │
@@ -827,12 +827,12 @@ DSA MAPPING:
 │             |  |                                                │
 │             *  *                                                │
 │                                                                 │
-│   At each node, we need TOP K by popularity                    │
-│   Solution: Store top 5 at each node (precomputed)             │
+│   At each node, we need TOP K by popularity                     │
+│   Solution: Store top 5 at each node (precomputed)              │
 │                                                                 │
-│   "pro" node stores: [("programming", 10K), ("profile", 8K),   │
-│                       ("product", 5K), ("problem", 3K),        │
-│                       ("process", 2K)]                         │
+│   "pro" node stores: [("programming", 10K), ("profile", 8K),    │
+│                       ("product", 5K), ("problem", 3K),         │
+│                       ("process", 2K)]                          │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -938,26 +938,26 @@ LEETCODE PROBLEMS AND THEIR PRODUCTION COUNTERPARTS:
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │ LC Problem                 │ Real System Application                        │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│ Two Sum                    │ Finding matching orders in trading systems    │
-│ LRU Cache                  │ Caching layer in any web service              │
-│ Merge Intervals            │ Calendar scheduling, resource allocation      │
-│ Word Search II             │ Search engine indexing, plagiarism detection  │
-│ Design Twitter             │ Social media feed generation                  │
-│ Meeting Rooms II           │ Resource scheduling, server allocation        │
-│ Sliding Window Maximum     │ Real-time streaming analytics                 │
-│ Serialize Binary Tree      │ Database replication, data transmission       │
-│ Rate Limiter               │ API gateway, DDoS protection                  │
-│ Top K Frequent             │ Analytics dashboards, trending topics         │
-│ Find Median Stream         │ Real-time percentile monitoring               │
-│ Alien Dictionary           │ Dependency resolution, build systems          │
-│ Course Schedule            │ Task scheduling, CI/CD pipelines              │
-│ Word Ladder                │ Spell correction, recommendation systems      │
-│ Trapping Rain Water        │ Resource allocation, load balancing           │
-│ Min Stack                  │ Undo functionality, version control           │
-│ Validate BST               │ Database constraint checking                  │
-│ Clone Graph                │ Social network analysis, web crawling         │
-│ Number of Islands          │ Image processing, connected component analysis│
-│ Longest Palindrome         │ DNA sequence analysis, data compression       │
+│ Two Sum                    │ Finding matching orders in trading systems     │
+│ LRU Cache                  │ Caching layer in any web service               │
+│ Merge Intervals            │ Calendar scheduling, resource allocation       │
+│ Word Search II             │ Search engine indexing, plagiarism detection   │
+│ Design Twitter             │ Social media feed generation                   │
+│ Meeting Rooms II           │ Resource scheduling, server allocation         │
+│ Sliding Window Maximum     │ Real-time streaming analytics                  │
+│ Serialize Binary Tree      │ Database replication, data transmission        │
+│ Rate Limiter               │ API gateway, DDoS protection                   │
+│ Top K Frequent             │ Analytics dashboards, trending topics          │
+│ Find Median Stream         │ Real-time percentile monitoring                │
+│ Alien Dictionary           │ Dependency resolution, build systems           │
+│ Course Schedule            │ Task scheduling, CI/CD pipelines               │
+│ Word Ladder                │ Spell correction, recommendation systems       │
+│ Trapping Rain Water        │ Resource allocation, load balancing            │
+│ Min Stack                  │ Undo functionality, version control            │
+│ Validate BST               │ Database constraint checking                   │
+│ Clone Graph                │ Social network analysis, web crawling          │
+│ Number of Islands          │ Image processing, connected component analysis │
+│ Longest Palindrome         │ DNA sequence analysis, data compression        │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -988,27 +988,27 @@ WHEN SYSTEM IS SLOW:
 DEBUGGING FLOWCHART:
 ┌─────────────────────────────────────────────────────────────────┐
 │                                                                 │
-│   System is slow                                               │
+│   System is slow                                                │
 │         │                                                       │
 │         ▼                                                       │
-│   ┌─────────────────┐                                          │
-│   │ Check latency   │                                          │
-│   │ percentiles     │                                          │
-│   └────────┬────────┘                                          │
+│   ┌─────────────────┐                                           │
+│   │ Check latency   │                                           │
+│   │ percentiles     │                                           │
+│   └────────┬────────┘                                           │
 │            │                                                    │
-│     ┌──────┴──────┐                                            │
+│     ┌──────┴──────┐                                             │
 │     ▼             ▼                                             │
-│  P99 high     P50 high                                         │
+│  P99 high     P50 high                                          │
 │     │             │                                             │
 │     ▼             ▼                                             │
 │  Edge cases    Everything                                       │
-│  are slow      is slow                                         │
+│  are slow      is slow                                          │
 │     │             │                                             │
 │     ▼             ▼                                             │
-│  Check for:    Check for:                                      │
-│  - Large data  - Database                                      │
-│  - Bad input   - Network                                       │
-│  - Missing     - CPU/Memory                                    │
+│  Check for:    Check for:                                       │
+│  - Large data  - Database                                       │
+│  - Bad input   - Network                                        │
+│  - Missing     - CPU/Memory                                     │
 │    index       - Resource                                       │
 │                  contention                                     │
 │                                                                 │

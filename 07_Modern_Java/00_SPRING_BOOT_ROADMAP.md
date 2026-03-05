@@ -9,65 +9,65 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    🎯 YOUR COMPLETE LEARNING JOURNEY                            │
+│                    🎯 YOUR COMPLETE LEARNING JOURNEY                             │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  ════════════════════════════════════════════════════════════════════════════   │
-│                                                                                  │
-│  🟡 WEEK 0: PREREQUISITES                                                       │
+│                                                                                 │
+│  🟡 WEEK 0: PREREQUISITES                                                        │
 │  ─────────────────────────────────────────────────────────────────────────────  │
 │  ┌─────────────────────┐                                                        │
-│  │ 📄 FUNCTIONAL PROG  │  Modern Java: Lambda, Streams, Optional, Records     │
-│  │    01_Functional... │  ⏱️ 2-3 days                                          │
+│  │ 📄 FUNCTIONAL PROG  │  Modern Java: Lambda, Streams, Optional, Records        │
+│  │    01_Functional... │  ⏱️ 2-3 days                                           │
 │  └─────────────────────┘                                                        │
-│            │                                                                     │
-│            ▼                                                                     │
+│            │                                                                    │
+│            ▼                                                                    │
 │  ═══════════════════════════════════════════════════════════════════════════    │
-│                                                                                  │
-│  ⚫ WEEK 1: HIDDEN FOUNDATIONS (The "WHY" Behind Spring)                        │
+│                                                                                 │
+│  ⚫ WEEK 1: HIDDEN FOUNDATIONS (The "WHY" Behind Spring)                         │
 │  ─────────────────────────────────────────────────────────────────────────────  │
 │  ┌─────────────────────┐                                                        │
-│  │ 📄 PART 0           │  Reflection, Proxies, Servlets, Design Patterns      │
-│  │    02_Spring_Boot...│  ⏱️ 3-4 days (MOST IMPORTANT!)                        │
+│  │ 📄 PART 0           │  Reflection, Proxies, Servlets, Design Patterns         │
+│  │    02_Spring_Boot...│  ⏱️ 3-4 days (MOST IMPORTANT!)                         │
 │  └─────────────────────┘                                                        │
-│            │                                                                     │
-│            ▼                                                                     │
+│            │                                                                    │
+│            ▼                                                                    │
 │  ═══════════════════════════════════════════════════════════════════════════    │
-│                                                                                  │
-│  🟢 WEEK 2-3: CORE SPRING (The Heart of Everything)                             │
+│                                                                                 │
+│  🟢 WEEK 2-3: CORE SPRING (The Heart of Everything)                              │
 │  ─────────────────────────────────────────────────────────────────────────────  │
 │  ┌─────────────────────┐    ┌─────────────────────┐    ┌─────────────────────┐  │
-│  │ 📄 PART 1           │───►│ 📄 PART 2           │───►│ 📄 PART 3           │  │
+│  │ 📄 PART 1           │───►│ 📄 PART 2           │───►│ 📄 PART 3           │     │
 │  │    Java Foundations │    │    IoC & DI         │    │    AOP & Auto-Conf  │  │
 │  │    ⏱️ 2 days        │    │    ⏱️ 3 days        │    │    ⏱️ 2 days        │  │
 │  └─────────────────────┘    └─────────────────────┘    └─────────────────────┘  │
 │                                                                 │               │
 │  ═══════════════════════════════════════════════════════════════│═══════════    │
 │                                                                 ▼               │
-│  🟡 WEEK 3-4: WEB FUNDAMENTALS (Before Building APIs!)                          │
+│  🟡 WEEK 3-4: WEB FUNDAMENTALS (Before Building APIs!)                           │
 │  ─────────────────────────────────────────────────────────────────────────────  │
 │  ┌─────────────────────┐    ┌─────────────────────┐                             │
-│  │ 📄 PART 5           │───►│ 📄 PART 10          │  Read HTTP BEFORE          │
-│  │    Lombok & DTOs    │    │    HTTP Deep Dive   │  Controllers!              │
+│  │ 📄 PART 5           │───►│ 📄 PART 10          │  Read HTTP BEFORE             │
+│  │    Lombok & DTOs    │    │    HTTP Deep Dive   │  Controllers!               │
 │  │    ⏱️ 1 day         │    │    ⏱️ 2 days        │                             │
 │  └─────────────────────┘    └─────────────────────┘                             │
 │                                      │                                          │
 │  ════════════════════════════════════│══════════════════════════════════════    │
 │                                      ▼                                          │
-│  🔵 WEEK 4-5: APPLICATION LAYERS (Build Real APIs!)                             │
+│  🔵 WEEK 4-5: APPLICATION LAYERS (Build Real APIs!)                              │
 │  ─────────────────────────────────────────────────────────────────────────────  │
 │  ┌─────────────────────┐    ┌─────────────────────┐    ┌─────────────────────┐  │
-│  │ 📄 PART 7           │───►│ 📄 PART 6           │───►│ 📄 PART 8           │  │
+│  │ 📄 PART 7           │───►│ 📄 PART 6           │───►│ 📄 PART 8           │     │
 │  │    Controllers/REST │    │    Service/Repo     │    │    JPA Deep Dive    │  │
 │  │    ⏱️ 2 days        │    │    ⏱️ 2 days        │    │    ⏱️ 3 days        │  │
 │  └─────────────────────┘    └─────────────────────┘    └─────────────────────┘  │
 │                                                                 │               │
 │  ═══════════════════════════════════════════════════════════════│═══════════    │
 │                                                                 ▼               │
-│  🟠 WEEK 5-6: PRODUCTION READY (Real World Features!)                           │
+│  🟠 WEEK 5-6: PRODUCTION READY (Real World Features!)                            │
 │  ─────────────────────────────────────────────────────────────────────────────  │
 │  ┌─────────────────────┐    ┌─────────────────────┐                             │
-│  │ 📄 PART 14          │───►│ 📄 PART 11          │                             │
+│  │ 📄 PART 14          │───►│ 📄 PART 11          │                               │
 │  │    Cache/Async/     │    │    Security & JWT   │                             │
 │  │    Actuator/Swagger │    │    OAuth2/RBAC      │                             │
 │  │    ⏱️ 2 days        │    │    ⏱️ 3 days        │                             │
@@ -75,10 +75,10 @@
 │                                      │                                          │
 │  ════════════════════════════════════│══════════════════════════════════════    │
 │                                      ▼                                          │
-│  🔴 WEEK 6-8: MASTERY (Senior Developer Skills!)                                │
+│  🔴 WEEK 6-8: MASTERY (Senior Developer Skills!)                                 │
 │  ─────────────────────────────────────────────────────────────────────────────  │
 │  ┌─────────────────────┐    ┌─────────────────────┐    ┌─────────────────────┐  │
-│  │ 📄 PART 9           │───►│ 📄 PART 12          │───►│ 📄 PART 13          │  │
+│  │ 📄 PART 9           │───►│ 📄 PART 12          │───►│ 📄 PART 13          │     │
 │  │    Architecture &   │    │    DSA in Spring    │    │    Industry         │  │
 │  │    Clean Code       │    │    Rate Limit, LRU  │    │    Projects         │  │
 │  │    ⏱️ 2 days        │    │    ⏱️ 2 days        │    │    ⏱️ 2 days        │  │
@@ -86,48 +86,48 @@
 │                                                                 │               │
 │  ═══════════════════════════════════════════════════════════════│═══════════    │
 │                                                                 ▼               │
-│  🟣 WEEK 8-12: ENTERPRISE & CLOUD (Architect Level!)                            │
+│  🟣 WEEK 8-12: ENTERPRISE & CLOUD (Architect Level!)                             │
 │  ─────────────────────────────────────────────────────────────────────────────  │
-│  ┌───────────┐ ┌───────────┐ ┌───────────┐ ┌───────────┐ ┌───────────┐         │
-│  │ PART 15   │►│ PART 16   │►│ PART 17   │►│ PART 18   │►│ PART 19   │         │
-│  │ WebFlux   │ │ SOLID     │ │ DB Secur. │ │ Tracing   │ │ Testing   │         │
-│  └───────────┘ └───────────┘ └───────────┘ └───────────┘ └───────────┘         │
+│  ┌───────────┐ ┌───────────┐ ┌───────────┐ ┌───────────┐ ┌───────────┐          │
+│  │ PART 15   │►│ PART 16   │►│ PART 17   │►│ PART 18   │►│ PART 19   │          │
+│  │ WebFlux   │ │ SOLID     │ │ DB Secur. │ │ Tracing   │ │ Testing   │          │
+│  └───────────┘ └───────────┘ └───────────┘ └───────────┘ └───────────┘          │
 │        │                                                                        │
 │        └──────────────────────────────────────────────────────┐                 │
 │                                                               ▼                 │
 │                    ┌─────────────────────┐    ┌─────────────────────┐           │
-│                    │ 📄 PART 20          │───►│ 📄 PART 21          │           │
+│                    │ 📄 PART 20          │───►│ 📄 PART 21          │             │
 │                    │    Microservices    │    │    Cloud/K8s/CI-CD  │           │
 │                    │    Patterns         │    │    AWS/Azure/GCP    │           │
 │                    └─────────────────────┘    └─────────────────────┘           │
-│                                                                                  │
+│                                                                                 │
 │  ═══════════════════════════════════════════════════════════════════════════    │
-│                                                                                  │
-│  📖 REFERENCE (Use Anytime!)                                                    │
+│                                                                                 │
+│  📖 REFERENCE (Use Anytime!)                                                     │
 │  ─────────────────────────────────────────────────────────────────────────────  │
 │  ┌─────────────────────────────────────────────────────────────────────────┐    │
-│  │ 📄 PART 22: ANNOTATIONS COMPLETE REFERENCE                              │    │
-│  │    Every annotation explained: JPA, Web, Security, Testing, Lombok     │    │
-│  │    ⭐ BOOKMARK THIS - Use as quick lookup while coding                 │    │
+│  │ 📄 PART 22: ANNOTATIONS COMPLETE REFERENCE                              │     │
+│  │    Every annotation explained: JPA, Web, Security, Testing, Lombok     │     │
+│  │    ⭐ BOOKMARK THIS - Use as quick lookup while coding                 │      │
 │  └─────────────────────────────────────────────────────────────────────────┘    │
-│                                                                                  │
+│                                                                                 │
 │  ┌─────────────────────────────────────────────────────────────────────────┐    │
-│  │ 📄 PART 23: MISSING ESSENTIAL TOPICS                                    │    │
-│  │    WebSockets, GraphQL, gRPC, Spring Batch, HATEOAS, i18n,            │    │
-│  │    Multi-Tenancy, Spring Boot 3.x, GraalVM, Modulith, Rate Limiting   │    │
-│  │    ⭐ 14 topics that complete your Spring Boot mastery                  │    │
+│  │ 📄 PART 23: MISSING ESSENTIAL TOPICS                                    │     │
+│  │    WebSockets, GraphQL, gRPC, Spring Batch, HATEOAS, i18n,            │      │
+│  │    Multi-Tenancy, Spring Boot 3.x, GraalVM, Modulith, Rate Limiting   │      │
+│  │    ⭐ 14 topics that complete your Spring Boot mastery                  │     │
 │  └─────────────────────────────────────────────────────────────────────────┘    │
-│                                                                                  │
+│                                                                                 │
 │  ┌─────────────────────────────────────────────────────────────────────────┐    │
-│  │ 📄 50-DAY SPRING BOOT CURRICULUM                                        │    │
-│  │    Complete 10-week study plan: Foundations → Production → Expert      │    │
-│  │    Daily structure: READ + CODE + PRACTICE + NOTES                     │    │
+│  │ 📄 50-DAY SPRING BOOT CURRICULUM                                        │     │
+│  │    Complete 10-week study plan: Foundations → Production → Expert      │     │
+│  │    Daily structure: READ + CODE + PRACTICE + NOTES                     │     │
 │  └─────────────────────────────────────────────────────────────────────────┘    │
-│                                                                                  │
+│                                                                                 │
 │  ┌─────────────────────────────────────────────────────────────────────────┐    │
-│  │ 📄 PART 4: QUICK OVERVIEW (Optional high-level summary)                 │    │
+│  │ 📄 PART 4: QUICK OVERVIEW (Optional high-level summary)                 │     │
 │  └─────────────────────────────────────────────────────────────────────────┘    │
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -137,7 +137,7 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│  #   FILE NAME                                    TOPICS                         │
+│  #   FILE NAME                                    TOPICS                        │
 ├─────────────────────────────────────────────────────────────────────────────────┤
 │  --  01_Functional_Programming.md              Lambda, Streams, Optional,       │
 │                                                Records, var keyword             │
@@ -168,7 +168,7 @@
 │  22  24_Spring_Boot_Part22_Annotations         ALL annotations reference        │
 │  23  25_Spring_Boot_Part23_Missing_Essentials   WebSockets, GraphQL, gRPC,      │
 │                                                 Batch, HATEOAS, i18n, GraalVM   │
-│  --  26_Spring_Boot_Curriculum_50Day            50-day study plan (10 weeks)     │
+│  --  26_Spring_Boot_Curriculum_50Day            50-day study plan (10 weeks)    │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 TOTAL: 26 FILES (Functional Programming + Parts 0-23 + Curriculum)
@@ -181,20 +181,20 @@ ESTIMATED TIME: 10-14 weeks (2-3 hours/day)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                         LEARNING PHILOSOPHY                                      │
+│                         LEARNING PHILOSOPHY                                     │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  ❌ WRONG: Jump to Spring Boot → Get stuck → Don't understand errors           │
-│  ✅ RIGHT: Master foundations → Understand the "magic" → Build confidently      │
-│                                                                                  │
+│                                                                                 │
+│  ❌ WRONG: Jump to Spring Boot → Get stuck → Don't understand errors             │
+│  ✅ RIGHT: Master foundations → Understand the "magic" → Build confidently       │
+│                                                                                 │
 │  EACH PHASE BUILDS ON THE PREVIOUS ONE                                          │
-│  Don't skip phases unless you're already proficient!                           │
-│                                                                                  │
-│  ⏱️ ESTIMATED TOTAL TIME: 10-14 weeks (2-3 hours/day)                          │
-│     Including Part 0: Hidden Foundations + Functional Programming              │
-│                                                                                  │
-│  TOTAL GUIDES: 24 Files (Functional Programming + Parts 0-22)                  │
-│                                                                                  │
+│  Don't skip phases unless you're already proficient!                            │
+│                                                                                 │
+│  ⏱️ ESTIMATED TOTAL TIME: 10-14 weeks (2-3 hours/day)                           │
+│     Including Part 0: Hidden Foundations + Functional Programming               │
+│                                                                                 │
+│  TOTAL GUIDES: 24 Files (Functional Programming + Parts 0-22)                   │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -209,34 +209,34 @@ ESTIMATED TIME: 10-14 weeks (2-3 hours/day)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│  📄 FUNCTIONAL PROGRAMMING IN JAVA                                              │
-│                                                                                  │
+│  📄 FUNCTIONAL PROGRAMMING IN JAVA                                               │
+│                                                                                 │
 │  File: 01_Functional_Programming.md                                             │
-│                                                                                  │
+│                                                                                 │
 │  TOPICS COVERED:                                                                │
-│  ┌────────────────────────────────────────────────────────────────────────┐    │
-│  │ A. Lambda Expressions     │ (x) -> x * 2, concise anonymous functions │    │
-│  │ B. Functional Interfaces  │ Predicate, Function, Consumer, Supplier   │    │
-│  │ C. Stream API             │ filter, map, reduce, collect              │    │
-│  │ D. Method References      │ Class::method shorthand                   │    │
-│  │ E. Optional               │ Null-safe value handling                  │    │
-│  │ F. Local Variable (var)   │ Type inference: var x = new HashMap<>(); │    │
-│  │ G. Java Records           │ Immutable data carriers: record User(...) │    │
-│  └────────────────────────────────────────────────────────────────────────┘    │
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────┐     │
+│  │ A. Lambda Expressions     │ (x) -> x * 2, concise anonymous functions │      │
+│  │ B. Functional Interfaces  │ Predicate, Function, Consumer, Supplier   │      │
+│  │ C. Stream API             │ filter, map, reduce, collect              │      │
+│  │ D. Method References      │ Class::method shorthand                   │      │
+│  │ E. Optional               │ Null-safe value handling                  │      │
+│  │ F. Local Variable (var)   │ Type inference: var x = new HashMap<>(); │       │
+│  │ G. Java Records           │ Immutable data carriers: record User(...) │      │
+│  └────────────────────────────────────────────────────────────────────────┘     │
+│                                                                                 │
 │  ⏱️ TIME: 2-3 days                                                              │
-│                                                                                  │
+│                                                                                 │
 │  WHY READ FIRST:                                                                │
-│  • Spring Boot uses lambdas EVERYWHERE (WebFlux, configs, callbacks)           │
-│  • Stream API: 10 lines of loops → 1 elegant line                              │
-│  • Records: Perfect for DTOs (Request/Response objects)                        │
-│  • Interview: "Rewrite this using streams" is a common question                │
-│                                                                                  │
-│  ✅ READY FOR NEXT WHEN YOU CAN:                                                │
-│  • Convert a for-loop to stream pipeline                                       │
-│  • Explain what Optional.map() does vs Optional.flatMap()                      │
-│  • Create a record with validation in compact constructor                      │
-│                                                                                  │
+│  • Spring Boot uses lambdas EVERYWHERE (WebFlux, configs, callbacks)            │
+│  • Stream API: 10 lines of loops → 1 elegant line                               │
+│  • Records: Perfect for DTOs (Request/Response objects)                         │
+│  • Interview: "Rewrite this using streams" is a common question                 │
+│                                                                                 │
+│  ✅ READY FOR NEXT WHEN YOU CAN:                                                 │
+│  • Convert a for-loop to stream pipeline                                        │
+│  • Explain what Optional.map() does vs Optional.flatMap()                       │
+│  • Create a record with validation in compact constructor                       │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -247,29 +247,29 @@ ESTIMATED TIME: 10-14 weeks (2-3 hours/day)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│  📄 PART 0: THE HIDDEN FOUNDATIONS                                              │
-│                                                                                  │
-│  File: 02_Spring_Boot_Part0_Hidden_Foundations.md                              │
-│                                                                                  │
+│  📄 PART 0: THE HIDDEN FOUNDATIONS                                               │
+│                                                                                 │
+│  File: 02_Spring_Boot_Part0_Hidden_Foundations.md                               │
+│                                                                                 │
 │  TOPICS COVERED:                                                                │
-│  ┌────────────────────────────────────────────────────────────────────────┐    │
-│  │ A. Java Reflection      │ How Spring reads @Autowired, @Component     │    │
-│  │ B. Annotation Processing│ How @Getter (Lombok) vs @Autowired differ   │    │
-│  │ C. Proxy Patterns       │ Why @Transactional fails on private methods │    │
-│  │ D. Servlet API          │ What Spring Boot hides from you             │    │
-│  │ E. Jackson Serialization│ How JSON ↔ Java conversion works            │    │
-│  │ F. Connection Pooling   │ Why HikariCP matters                         │    │
-│  │ G. Classloading         │ How Spring DevTools hot-reload works        │    │
-│  │ H. Build Tools          │ Maven/Gradle phases, scopes, transitive deps│    │
-│  │ I. HTTP Fundamentals    │ Raw HTTP, status codes, keep-alive          │    │
-│  │ J. Design Patterns      │ Singleton, Factory, Proxy in Spring         │    │
-│  │ K. Threads & Executors  │ How Tomcat handles requests, @Async         │    │
-│  │ L. Generics & Type Erasure│ Why you can't do new T()                  │    │
-│  │ M. Bytecode             │ How Spring Data generates repositories     │    │
-│  └────────────────────────────────────────────────────────────────────────┘    │
-│                                                                                  │
-│  ⚠️ READ THIS FIRST if you want to understand WHY, not just HOW               │
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────┐     │
+│  │ A. Java Reflection      │ How Spring reads @Autowired, @Component     │      │
+│  │ B. Annotation Processing│ How @Getter (Lombok) vs @Autowired differ   │      │
+│  │ C. Proxy Patterns       │ Why @Transactional fails on private methods │      │
+│  │ D. Servlet API          │ What Spring Boot hides from you             │      │
+│  │ E. Jackson Serialization│ How JSON ↔ Java conversion works            │      │
+│  │ F. Connection Pooling   │ Why HikariCP matters                         │     │
+│  │ G. Classloading         │ How Spring DevTools hot-reload works        │      │
+│  │ H. Build Tools          │ Maven/Gradle phases, scopes, transitive deps│      │
+│  │ I. HTTP Fundamentals    │ Raw HTTP, status codes, keep-alive          │      │
+│  │ J. Design Patterns      │ Singleton, Factory, Proxy in Spring         │      │
+│  │ K. Threads & Executors  │ How Tomcat handles requests, @Async         │      │
+│  │ L. Generics & Type Erasure│ Why you can't do new T()                  │      │
+│  │ M. Bytecode             │ How Spring Data generates repositories     │       │
+│  └────────────────────────────────────────────────────────────────────────┘     │
+│                                                                                 │
+│  ⚠️ READ THIS FIRST if you want to understand WHY, not just HOW                 │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -293,17 +293,17 @@ ESTIMATED TIME: 10-14 weeks (2-3 hours/day)
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  PART 1 → PART 2 → PART 3                                                       │
-│                                                                                  │
-│  ┌──────────────────┐    ┌──────────────────┐    ┌──────────────────┐          │
-│  │  📄 PART 1       │    │  📄 PART 2       │    │  📄 PART 3       │          │
-│  │  Java            │───►│  Spring Core     │───►│  AOP &           │          │
-│  │  Foundations     │    │  (IoC & DI)      │    │  Auto-Config     │          │
-│  └──────────────────┘    └──────────────────┘    └──────────────────┘          │
-│                                                                                  │
-│  File: 03_Spring_Boot_Complete_Part1.md                                        │
-│  File: 04_Spring_Boot_Complete_Part2.md                                        │
-│  File: 05_Spring_Boot_Complete_Part3.md                                        │
-│                                                                                  │
+│                                                                                 │
+│  ┌──────────────────┐    ┌──────────────────┐    ┌──────────────────┐           │
+│  │  📄 PART 1       │    │  📄 PART 2       │    │  📄 PART 3       │              │
+│  │  Java            │───►│  Spring Core     │───►│  AOP &           │           │
+│  │  Foundations     │    │  (IoC & DI)      │    │  Auto-Config     │           │
+│  └──────────────────┘    └──────────────────┘    └──────────────────┘           │
+│                                                                                 │
+│  File: 03_Spring_Boot_Complete_Part1.md                                         │
+│  File: 04_Spring_Boot_Complete_Part2.md                                         │
+│  File: 05_Spring_Boot_Complete_Part3.md                                         │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -375,18 +375,18 @@ ESTIMATED TIME: 10-14 weeks (2-3 hours/day)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│  PART 5 → PART 10 → PART 4 (Overview)                                          │
-│                                                                                  │
-│  ┌──────────────────┐    ┌──────────────────┐    ┌──────────────────┐          │
-│  │  📄 PART 5       │    │  📄 PART 10      │    │  📄 PART 4       │          │
-│  │  Lombok &        │───►│  HTTP Deep       │───►│  Quick Overview  │          │
-│  │  DTOs            │    │  Dive            │    │  (Optional)      │          │
-│  └──────────────────┘    └──────────────────┘    └──────────────────┘          │
-│                                                                                  │
-│  File: 07_Spring_Boot_Part5_Lombok_DTOs.md                                     │
-│  File: 12_Spring_Boot_Part10_HTTP_Deep_Dive.md                                 │
-│  File: 06_Spring_Boot_Complete_Part4.md (Optional overview)                    │
-│                                                                                  │
+│  PART 5 → PART 10 → PART 4 (Overview)                                           │
+│                                                                                 │
+│  ┌──────────────────┐    ┌──────────────────┐    ┌──────────────────┐           │
+│  │  📄 PART 5       │    │  📄 PART 10      │    │  📄 PART 4       │              │
+│  │  Lombok &        │───►│  HTTP Deep       │───►│  Quick Overview  │           │
+│  │  DTOs            │    │  Dive            │    │  (Optional)      │           │
+│  └──────────────────┘    └──────────────────┘    └──────────────────┘           │
+│                                                                                 │
+│  File: 07_Spring_Boot_Part5_Lombok_DTOs.md                                      │
+│  File: 12_Spring_Boot_Part10_HTTP_Deep_Dive.md                                  │
+│  File: 06_Spring_Boot_Complete_Part4.md (Optional overview)                     │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -434,17 +434,17 @@ _High-level overview of JPA, Web, Security, Testing. Read for context, but detai
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  PART 7 → PART 6 → PART 8                                                       │
-│                                                                                  │
-│  ┌──────────────────┐    ┌──────────────────┐    ┌──────────────────┐          │
-│  │  📄 PART 7       │    │  📄 PART 6       │    │  📄 PART 8       │          │
-│  │  Controllers     │───►│  Service &       │───►│  JPA Deep        │          │
-│  │  & REST API      │    │  Repository      │    │  Dive            │          │
-│  └──────────────────┘    └──────────────────┘    └──────────────────┘          │
-│                                                                                  │
-│  File: 09_Spring_Boot_Part7_Controllers_REST.md                                │
-│  File: 08_Spring_Boot_Part6_Service_Repository.md                              │
-│  File: 10_Spring_Boot_Part8_JPA_Deep_Dive.md                                   │
-│                                                                                  │
+│                                                                                 │
+│  ┌──────────────────┐    ┌──────────────────┐    ┌──────────────────┐           │
+│  │  📄 PART 7       │    │  📄 PART 6       │    │  📄 PART 8       │              │
+│  │  Controllers     │───►│  Service &       │───►│  JPA Deep        │           │
+│  │  & REST API      │    │  Repository      │    │  Dive            │           │
+│  └──────────────────┘    └──────────────────┘    └──────────────────┘           │
+│                                                                                 │
+│  File: 09_Spring_Boot_Part7_Controllers_REST.md                                 │
+│  File: 08_Spring_Boot_Part6_Service_Repository.md                               │
+│  File: 10_Spring_Boot_Part8_JPA_Deep_Dive.md                                    │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -508,16 +508,16 @@ _High-level overview of JPA, Web, Security, Testing. Read for context, but detai
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  PART 14 → PART 11                                                              │
-│                                                                                  │
-│  ┌──────────────────┐    ┌──────────────────┐                                  │
-│  │  📄 PART 14      │    │  📄 PART 11      │                                  │
-│  │  Essential       │───►│  Authentication  │                                  │
-│  │  Topics          │    │  & Security      │                                  │
-│  └──────────────────┘    └──────────────────┘                                  │
-│                                                                                  │
-│  File: 16_Spring_Boot_Part14_Essential_Missing_Topics.md                       │
-│  File: 13_Spring_Boot_Part11_Auth_Security.md                                  │
-│                                                                                  │
+│                                                                                 │
+│  ┌──────────────────┐    ┌──────────────────┐                                   │
+│  │  📄 PART 14      │    │  📄 PART 11      │                                     │
+│  │  Essential       │───►│  Authentication  │                                   │
+│  │  Topics          │    │  & Security      │                                   │
+│  └──────────────────┘    └──────────────────┘                                   │
+│                                                                                 │
+│  File: 16_Spring_Boot_Part14_Essential_Missing_Topics.md                        │
+│  File: 13_Spring_Boot_Part11_Auth_Security.md                                   │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -563,17 +563,17 @@ _High-level overview of JPA, Web, Security, Testing. Read for context, but detai
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  PART 9 → PART 12 → PART 13                                                     │
-│                                                                                  │
-│  ┌──────────────────┐    ┌──────────────────┐    ┌──────────────────┐          │
-│  │  📄 PART 9       │    │  📄 PART 12      │    │  📄 PART 13      │          │
-│  │  Clean           │───►│  DSA in          │───►│  Industry        │          │
-│  │  Architecture    │    │  Spring Boot     │    │  Projects        │          │
-│  └──────────────────┘    └──────────────────┘    └──────────────────┘          │
-│                                                                                  │
-│  File: 11_Spring_Boot_Part9_Architecture_Quality.md                            │
-│  File: 14_Spring_Boot_Part12_DSA_Applications.md                               │
-│  File: 15_Spring_Boot_Part13_Industry_Projects.md                              │
-│                                                                                  │
+│                                                                                 │
+│  ┌──────────────────┐    ┌──────────────────┐    ┌──────────────────┐           │
+│  │  📄 PART 9       │    │  📄 PART 12      │    │  📄 PART 13      │              │
+│  │  Clean           │───►│  DSA in          │───►│  Industry        │           │
+│  │  Architecture    │    │  Spring Boot     │    │  Projects        │           │
+│  └──────────────────┘    └──────────────────┘    └──────────────────┘           │
+│                                                                                 │
+│  File: 11_Spring_Boot_Part9_Architecture_Quality.md                             │
+│  File: 14_Spring_Boot_Part12_DSA_Applications.md                                │
+│  File: 15_Spring_Boot_Part13_Industry_Projects.md                               │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -627,30 +627,30 @@ _High-level overview of JPA, Web, Security, Testing. Read for context, but detai
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│  PART 15 → PART 16 → PART 17 → PART 18 → PART 19 → PART 20 → PART 21           │
-│                                                                                  │
-│  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐              │
-│  │ PART 15  │ │ PART 16  │ │ PART 17  │ │ PART 18  │ │ PART 19  │              │
-│  │ WebFlux  │→│ SOLID    │→│ Database │→│ Distrib. │→│ Testing  │              │
-│  │ Reactive │ │Principles│ │ Security │ │ Tracing  │ │ Complete │              │
-│  └──────────┘ └──────────┘ └──────────┘ └──────────┘ └──────────┘              │
-│                               │                                                  │
-│                               ▼                                                  │
+│  PART 15 → PART 16 → PART 17 → PART 18 → PART 19 → PART 20 → PART 21            │
+│                                                                                 │
+│  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐               │
+│  │ PART 15  │ │ PART 16  │ │ PART 17  │ │ PART 18  │ │ PART 19  │               │
+│  │ WebFlux  │→│ SOLID    │→│ Database │→│ Distrib. │→│ Testing  │               │
+│  │ Reactive │ │Principles│ │ Security │ │ Tracing  │ │ Complete │               │
+│  └──────────┘ └──────────┘ └──────────┘ └──────────┘ └──────────┘               │
+│                               │                                                 │
+│                               ▼                                                 │
 │                 ┌──────────────────────────────┐                                │
 │                 │  PART 20       │  PART 21    │                                │
 │                 │  Microservices │  Cloud      │                                │
 │                 │  Patterns      │  Deployment │                                │
 │                 └──────────────────────────────┘                                │
-│                                                                                  │
+│                                                                                 │
 │  Files:                                                                         │
-│  ├── 17_Spring_Boot_Part15_WebFlux_Reactive.md                                 │
-│  ├── 18_Spring_Boot_Part16_SOLID_Principles.md                                 │
-│  ├── 19_Spring_Boot_Part17_Database_Security.md                                │
-│  ├── 20_Spring_Boot_Part18_Distributed_Tracing.md                              │
-│  ├── 21_Spring_Boot_Part19_Testing_Complete.md                                 │
-│  ├── 22_Spring_Boot_Part20_Microservices_Patterns.md                           │
-│  └── 23_Spring_Boot_Part21_Cloud_Deployment.md                                 │
-│                                                                                  │
+│  ├── 17_Spring_Boot_Part15_WebFlux_Reactive.md                                  │
+│  ├── 18_Spring_Boot_Part16_SOLID_Principles.md                                  │
+│  ├── 19_Spring_Boot_Part17_Database_Security.md                                 │
+│  ├── 20_Spring_Boot_Part18_Distributed_Tracing.md                               │
+│  ├── 21_Spring_Boot_Part19_Testing_Complete.md                                  │
+│  ├── 22_Spring_Boot_Part20_Microservices_Patterns.md                            │
+│  └── 23_Spring_Boot_Part21_Cloud_Deployment.md                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -774,29 +774,29 @@ _High-level overview of JPA, Web, Security, Testing. Read for context, but detai
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  PART 22: ANNOTATIONS COMPLETE REFERENCE                                        │
-│                                                                                  │
-│  File: 24_Spring_Boot_Part22_Annotations_Complete_Reference.md                 │
-│                                                                                  │
+│                                                                                 │
+│  File: 24_Spring_Boot_Part22_Annotations_Complete_Reference.md                  │
+│                                                                                 │
 │  A comprehensive reference covering ALL important annotations:                  │
-│                                                                                  │
-│  ┌────────────────────────────────────────────────────────────────────────┐    │
-│  │ • JPA Lifecycle: @PrePersist, @PostPersist, @PreUpdate, @PostUpdate   │    │
-│  │ • JPA Mapping: @Entity, @Column, @OneToMany, @ManyToOne, @Embedded    │    │
-│  │ • Auditing: @CreatedDate, @LastModifiedDate, @CreatedBy, @Version     │    │
-│  │ • Validation: @NotNull, @NotBlank, @Size, @Email, @Pattern, @Valid    │    │
-│  │ • Spring Core: @Component, @Service, @Autowired, @Qualifier, @Scope   │    │
-│  │ • Web: @GetMapping, @PostMapping, @PathVariable, @RequestBody         │    │
-│  │ • Security: @PreAuthorize, @PostAuthorize, @Secured                   │    │
-│  │ • Caching: @Cacheable, @CacheEvict, @CachePut                         │    │
-│  │ • Async: @Async, @Scheduled                                           │    │
-│  │ • Transaction: @Transactional (propagation, isolation, rollback)      │    │
-│  │ • Testing: @SpringBootTest, @MockBean, @DataJpaTest                   │    │
-│  │ • Lombok: @Data, @Builder, @Slf4j, @Value                             │    │
-│  │ • Hibernate: @Formula, @Where, @BatchSize, @DynamicUpdate             │    │
-│  └────────────────────────────────────────────────────────────────────────┘    │
-│                                                                                  │
-│  ⭐ USE AS QUICK REFERENCE - Bookmark this file!                               │
-│                                                                                  │
+│                                                                                 │
+│  ┌────────────────────────────────────────────────────────────────────────┐     │
+│  │ • JPA Lifecycle: @PrePersist, @PostPersist, @PreUpdate, @PostUpdate   │      │
+│  │ • JPA Mapping: @Entity, @Column, @OneToMany, @ManyToOne, @Embedded    │      │
+│  │ • Auditing: @CreatedDate, @LastModifiedDate, @CreatedBy, @Version     │      │
+│  │ • Validation: @NotNull, @NotBlank, @Size, @Email, @Pattern, @Valid    │      │
+│  │ • Spring Core: @Component, @Service, @Autowired, @Qualifier, @Scope   │      │
+│  │ • Web: @GetMapping, @PostMapping, @PathVariable, @RequestBody         │      │
+│  │ • Security: @PreAuthorize, @PostAuthorize, @Secured                   │      │
+│  │ • Caching: @Cacheable, @CacheEvict, @CachePut                         │      │
+│  │ • Async: @Async, @Scheduled                                           │      │
+│  │ • Transaction: @Transactional (propagation, isolation, rollback)      │      │
+│  │ • Testing: @SpringBootTest, @MockBean, @DataJpaTest                   │      │
+│  │ • Lombok: @Data, @Builder, @Slf4j, @Value                             │      │
+│  │ • Hibernate: @Formula, @Where, @BatchSize, @DynamicUpdate             │      │
+│  └────────────────────────────────────────────────────────────────────────┘     │
+│                                                                                 │
+│  ⭐ USE AS QUICK REFERENCE - Bookmark this file!                                 │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -806,52 +806,52 @@ _High-level overview of JPA, Web, Security, Testing. Read for context, but detai
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│              COMPLETE FILE LIST (IN LEARNING ORDER)                              │
+│              COMPLETE FILE LIST (IN LEARNING ORDER)                             │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  PHASE 0: HIDDEN FOUNDATIONS (Read First!)                                      │
-│  └── 📄 02_Spring_Boot_Part0_Hidden_Foundations.md → Reflection, Proxies, etc. │
-│                                                                                  │
-│  PHASE 1: FOUNDATIONS                                                            │
-│  ├── 📄 03_Spring_Boot_Complete_Part1.md      → Java Foundations                │
-│  ├── 📄 04_Spring_Boot_Complete_Part2.md      → IoC & DI                        │
-│  └── 📄 05_Spring_Boot_Complete_Part3.md      → AOP & Auto-Config               │
-│                                                                                  │
-│  PHASE 2: TOOLING & WEB BASICS                                                   │
-│  ├── 📄 07_Spring_Boot_Part5_Lombok_DTOs.md   → Lombok & DTOs                   │
-│  ├── 📄 12_Spring_Boot_Part10_HTTP_Deep_Dive.md → HTTP (READ BEFORE PHASE 3!)  │
-│  └── 📄 06_Spring_Boot_Complete_Part4.md      → Overview (Optional)             │
-│                                                                                  │
-│  PHASE 3: APPLICATION LAYERS                                                     │
-│  ├── 📄 09_Spring_Boot_Part7_Controllers_REST.md → Controllers                  │
-│  ├── 📄 08_Spring_Boot_Part6_Service_Repository.md → Service Layer              │
-│  └── 📄 10_Spring_Boot_Part8_JPA_Deep_Dive.md → JPA & Hibernate                 │
-│                                                                                  │
-│  PHASE 4: PRODUCTION FEATURES                                                    │
-│  ├── 📄 16_Spring_Boot_Part14_Essential_Missing_Topics.md → Cache, Async, etc. │
-│  └── 📄 13_Spring_Boot_Part11_Auth_Security.md → Security                       │
-│                                                                                  │
-│  PHASE 5: MASTERY                                                                │
-│  ├── 📄 11_Spring_Boot_Part9_Architecture_Quality.md → Architecture             │
-│  ├── 📄 14_Spring_Boot_Part12_DSA_Applications.md → DSA                         │
-│  └── 📄 15_Spring_Boot_Part13_Industry_Projects.md → Projects                   │
-│                                                                                  │
-│  PHASE 6: ENTERPRISE & CLOUD                                                     │
-│  ├── 📄 17_Spring_Boot_Part15_WebFlux_Reactive.md → Reactive Programming        │
-│  ├── 📄 18_Spring_Boot_Part16_SOLID_Principles.md → SOLID in Spring             │
-│  ├── 📄 19_Spring_Boot_Part17_Database_Security.md → Database Security          │
-│  ├── 📄 20_Spring_Boot_Part18_Distributed_Tracing.md → Tracing                  │
-│  ├── 📄 21_Spring_Boot_Part19_Testing_Complete.md → Testing                     │
-│  ├── 📄 22_Spring_Boot_Part20_Microservices_Patterns.md → Microservices         │
-│  └── 📄 23_Spring_Boot_Part21_Cloud_Deployment.md → Cloud Deployment            │
-│                                                                                  │
-│  APPENDIX                                                                        │
+│  └── 📄 02_Spring_Boot_Part0_Hidden_Foundations.md → Reflection, Proxies, etc.   │
+│                                                                                 │
+│  PHASE 1: FOUNDATIONS                                                           │
+│  ├── 📄 03_Spring_Boot_Complete_Part1.md      → Java Foundations                 │
+│  ├── 📄 04_Spring_Boot_Complete_Part2.md      → IoC & DI                         │
+│  └── 📄 05_Spring_Boot_Complete_Part3.md      → AOP & Auto-Config                │
+│                                                                                 │
+│  PHASE 2: TOOLING & WEB BASICS                                                  │
+│  ├── 📄 07_Spring_Boot_Part5_Lombok_DTOs.md   → Lombok & DTOs                    │
+│  ├── 📄 12_Spring_Boot_Part10_HTTP_Deep_Dive.md → HTTP (READ BEFORE PHASE 3!)    │
+│  └── 📄 06_Spring_Boot_Complete_Part4.md      → Overview (Optional)              │
+│                                                                                 │
+│  PHASE 3: APPLICATION LAYERS                                                    │
+│  ├── 📄 09_Spring_Boot_Part7_Controllers_REST.md → Controllers                   │
+│  ├── 📄 08_Spring_Boot_Part6_Service_Repository.md → Service Layer               │
+│  └── 📄 10_Spring_Boot_Part8_JPA_Deep_Dive.md → JPA & Hibernate                  │
+│                                                                                 │
+│  PHASE 4: PRODUCTION FEATURES                                                   │
+│  ├── 📄 16_Spring_Boot_Part14_Essential_Missing_Topics.md → Cache, Async, etc.   │
+│  └── 📄 13_Spring_Boot_Part11_Auth_Security.md → Security                        │
+│                                                                                 │
+│  PHASE 5: MASTERY                                                               │
+│  ├── 📄 11_Spring_Boot_Part9_Architecture_Quality.md → Architecture              │
+│  ├── 📄 14_Spring_Boot_Part12_DSA_Applications.md → DSA                          │
+│  └── 📄 15_Spring_Boot_Part13_Industry_Projects.md → Projects                    │
+│                                                                                 │
+│  PHASE 6: ENTERPRISE & CLOUD                                                    │
+│  ├── 📄 17_Spring_Boot_Part15_WebFlux_Reactive.md → Reactive Programming         │
+│  ├── 📄 18_Spring_Boot_Part16_SOLID_Principles.md → SOLID in Spring              │
+│  ├── 📄 19_Spring_Boot_Part17_Database_Security.md → Database Security           │
+│  ├── 📄 20_Spring_Boot_Part18_Distributed_Tracing.md → Tracing                   │
+│  ├── 📄 21_Spring_Boot_Part19_Testing_Complete.md → Testing                      │
+│  ├── 📄 22_Spring_Boot_Part20_Microservices_Patterns.md → Microservices          │
+│  └── 📄 23_Spring_Boot_Part21_Cloud_Deployment.md → Cloud Deployment             │
+│                                                                                 │
+│  APPENDIX                                                                       │
 │  ├── 📄 24_Spring_Boot_Part22_Annotations_Complete_Reference.md → All Annotations│
 │  ├── 📄 25_Spring_Boot_Part23_Missing_Essential_Topics.md → Missing Essentials   │
 │  └── 📄 26_Spring_Boot_Curriculum_50Day.md → 50-Day Study Plan                   │
-│                                                                                  │
+│                                                                                 │
 │  TOTAL: 25 FILES (Part 0-23 + Curriculum)                                       │
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -861,28 +861,28 @@ _High-level overview of JPA, Web, Security, Testing. Read for context, but detai
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│              HOW TO STUDY EFFECTIVELY                                            │
+│              HOW TO STUDY EFFECTIVELY                                           │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  1. DON'T JUST READ - CODE ALONG                                                │
 │     Create a practice project and implement as you learn                        │
-│                                                                                  │
+│                                                                                 │
 │  2. EACH PART = 1-3 DAYS                                                        │
 │     Don't rush. Understanding beats memorization.                               │
-│                                                                                  │
+│                                                                                 │
 │  3. BUILD SOMETHING AFTER EACH PHASE                                            │
 │     Phase 1: Simple bean playground                                             │
 │     Phase 2: REST API skeleton                                                  │
 │     Phase 3: Complete CRUD app                                                  │
 │     Phase 4: Add caching, security                                              │
 │     Phase 5: Full industry-level project                                        │
-│                                                                                  │
-│  4. INTERVIEW PREP PRIORITY                                                      │
-│     Most asked: IoC/DI, REST, JPA, Transactions, Security                      │
-│                                                                                  │
-│  5. REVISIT FOUNDATIONS                                                          │
-│     If stuck on advanced topics, re-read Part 2 (IoC) and Part 3 (AOP)         │
-│                                                                                  │
+│                                                                                 │
+│  4. INTERVIEW PREP PRIORITY                                                     │
+│     Most asked: IoC/DI, REST, JPA, Transactions, Security                       │
+│                                                                                 │
+│  5. REVISIT FOUNDATIONS                                                         │
+│     If stuck on advanced topics, re-read Part 2 (IoC) and Part 3 (AOP)          │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -892,74 +892,74 @@ _High-level overview of JPA, Web, Security, Testing. Read for context, but detai
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                        LEARNING PATHS BY GOAL                                    │
+│                        LEARNING PATHS BY GOAL                                   │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  🎯 PATH A: JOB INTERVIEW PREP (2-3 weeks)                                      │
+│                                                                                 │
+│  🎯 PATH A: JOB INTERVIEW PREP (2-3 weeks)                                       │
 │  ─────────────────────────────────────────────────────────────────────────────  │
-│                                                                                  │
-│    Functional Prog → Part 0 (key sections) → Part 2 → Part 7 → Part 8 → Part 11│
-│                                                                                  │
-│    FOCUS: Lambdas, IoC/DI, REST APIs, JPA Basics, Security                     │
-│    INTERVIEW TOPICS: "How does @Autowired work?", "Explain @Transactional"     │
-│                                                                                  │
+│                                                                                 │
+│    Functional Prog → Part 0 (key sections) → Part 2 → Part 7 → Part 8 → Part 11 │
+│                                                                                 │
+│    FOCUS: Lambdas, IoC/DI, REST APIs, JPA Basics, Security                      │
+│    INTERVIEW TOPICS: "How does @Autowired work?", "Explain @Transactional"      │
+│                                                                                 │
 │  ─────────────────────────────────────────────────────────────────────────────  │
-│                                                                                  │
-│  📚 PATH B: FULL MASTERY (10-14 weeks)                                          │
+│                                                                                 │
+│  📚 PATH B: FULL MASTERY (10-14 weeks)                                           │
 │  ─────────────────────────────────────────────────────────────────────────────  │
-│                                                                                  │
-│    Functional Prog → Part 0 → Parts 1-22 (all in roadmap order)                │
-│                                                                                  │
+│                                                                                 │
+│    Functional Prog → Part 0 → Parts 1-22 (all in roadmap order)                 │
+│                                                                                 │
 │    RESULT: Complete backend engineer with enterprise knowledge                  │
-│                                                                                  │
+│                                                                                 │
 │  ─────────────────────────────────────────────────────────────────────────────  │
-│                                                                                  │
-│  ⚡ PATH C: ALREADY KNOW JAVA (4-5 weeks)                                       │
+│                                                                                 │
+│  ⚡ PATH C: ALREADY KNOW JAVA (4-5 weeks)                                        │
 │  ─────────────────────────────────────────────────────────────────────────────  │
-│                                                                                  │
-│    Part 0 (review) → Part 2 → Part 10 → Part 7-8 → Part 14 → Part 11 → Part 13│
-│                                                                                  │
-│    SKIP: Part 1 (Java basics), Part 5 (if know Lombok)                         │
-│    FOCUS: Spring internals, REST, JPA, Production features                     │
-│                                                                                  │
+│                                                                                 │
+│    Part 0 (review) → Part 2 → Part 10 → Part 7-8 → Part 14 → Part 11 → Part 13  │
+│                                                                                 │
+│    SKIP: Part 1 (Java basics), Part 5 (if know Lombok)                          │
+│    FOCUS: Spring internals, REST, JPA, Production features                      │
+│                                                                                 │
 │  ─────────────────────────────────────────────────────────────────────────────  │
-│                                                                                  │
-│  🔍 PATH D: "I WANT TO REALLY UNDERSTAND SPRING" (Recommended!)                │
+│                                                                                 │
+│  🔍 PATH D: "I WANT TO REALLY UNDERSTAND SPRING" (Recommended!)                  │
 │  ─────────────────────────────────────────────────────────────────────────────  │
-│                                                                                  │
-│    Part 0 (ALL sections) → Part 2 → Part 3 → Continue in roadmap order         │
-│                                                                                  │
-│    WHY: Part 0 explains the WHY behind Spring's "magic"                        │
-│    RESULT: Debug any Spring issue, understand any blog post                    │
-│                                                                                  │
+│                                                                                 │
+│    Part 0 (ALL sections) → Part 2 → Part 3 → Continue in roadmap order          │
+│                                                                                 │
+│    WHY: Part 0 explains the WHY behind Spring's "magic"                         │
+│    RESULT: Debug any Spring issue, understand any blog post                     │
+│                                                                                 │
 │  ─────────────────────────────────────────────────────────────────────────────  │
-│                                                                                  │
-│  ☁️ PATH E: MICROSERVICES & CLOUD FOCUS (4-5 weeks)                            │
+│                                                                                 │
+│  ☁️ PATH E: MICROSERVICES & CLOUD FOCUS (4-5 weeks)                             │
 │  ─────────────────────────────────────────────────────────────────────────────  │
-│                                                                                  │
-│    Part 15 (WebFlux) → Part 19 (Testing) → Part 20 (Microservices) → Part 21   │
-│    Add: Part 18 (Distributed Tracing) for observability                        │
-│                                                                                  │
-│    IDEAL FOR: Senior devs moving to microservices architecture                 │
-│                                                                                  │
+│                                                                                 │
+│    Part 15 (WebFlux) → Part 19 (Testing) → Part 20 (Microservices) → Part 21    │
+│    Add: Part 18 (Distributed Tracing) for observability                         │
+│                                                                                 │
+│    IDEAL FOR: Senior devs moving to microservices architecture                  │
+│                                                                                 │
 │  ─────────────────────────────────────────────────────────────────────────────  │
-│                                                                                  │
-│  🛡️ PATH F: SECURITY SPECIALIST (2-3 weeks)                                    │
+│                                                                                 │
+│  🛡️ PATH F: SECURITY SPECIALIST (2-3 weeks)                                     │
 │  ─────────────────────────────────────────────────────────────────────────────  │
-│                                                                                  │
-│    Part 11 (Auth/Security) → Part 17 (DB Security) → Part 22 (Security annot.) │
-│                                                                                  │
-│    FOCUS: JWT, OAuth2, Role-Based Access, SQL Injection Prevention             │
-│                                                                                  │
+│                                                                                 │
+│    Part 11 (Auth/Security) → Part 17 (DB Security) → Part 22 (Security annot.)  │
+│                                                                                 │
+│    FOCUS: JWT, OAuth2, Role-Based Access, SQL Injection Prevention              │
+│                                                                                 │
 │  ─────────────────────────────────────────────────────────────────────────────  │
-│                                                                                  │
-│  🧪 PATH G: TESTING EXPERT (1-2 weeks)                                          │
+│                                                                                 │
+│  🧪 PATH G: TESTING EXPERT (1-2 weeks)                                           │
 │  ─────────────────────────────────────────────────────────────────────────────  │
-│                                                                                  │
-│    Part 19 (Testing Complete) → Part 22 (Testing annotations)                  │
-│                                                                                  │
-│    TOPICS: JUnit 5, Mockito, @SpringBootTest, TestContainers, TDD/BDD          │
-│                                                                                  │
+│                                                                                 │
+│    Part 19 (Testing Complete) → Part 22 (Testing annotations)                   │
+│                                                                                 │
+│    TOPICS: JUnit 5, Mockito, @SpringBootTest, TestContainers, TDD/BDD           │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -971,51 +971,51 @@ _High-level overview of JPA, Web, Security, Testing. Read for context, but detai
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  After each phase, you should be able to answer these questions:                │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  PREREQUISITES:                                                                  │
-│  ☐ What's the difference between map() and flatMap() in Streams?               │
-│  ☐ When would you use Optional vs returning null?                              │
-│  ☐ How do Java Records differ from regular classes?                            │
-│                                                                                  │
-│  PHASE 0 (Hidden Foundations):                                                   │
-│  ☐ How does @Autowired inject dependencies? (Reflection!)                      │
-│  ☐ Why doesn't @Transactional work on private methods? (Proxies!)              │
-│  ☐ What is the Servlet lifecycle?                                              │
-│                                                                                  │
-│  PHASE 1 (Core Spring):                                                          │
-│  ☐ What's the difference between @Component and @Bean?                         │
-│  ☐ Explain constructor injection vs field injection pros/cons                  │
-│  ☐ What are the different bean scopes?                                         │
-│  ☐ How does AOP work in Spring?                                                │
-│                                                                                  │
-│  PHASE 2 (Web Fundamentals):                                                     │
-│  ☐ What HTTP status code for "resource not found" vs "validation error"?      │
-│  ☐ When to use @PathVariable vs @RequestParam?                                 │
-│  ☐ What does Content-Type header do?                                           │
-│                                                                                  │
-│  PHASE 3 (Application Layers):                                                   │
-│  ☐ Build a complete CRUD REST API from scratch                                 │
-│  ☐ What is the N+1 query problem and how to solve it?                         │
-│  ☐ Explain LAZY vs EAGER fetch strategies                                      │
-│  ☐ What are transaction propagation levels?                                    │
-│                                                                                  │
-│  PHASE 4 (Production Features):                                                  │
-│  ☐ How to implement JWT authentication?                                        │
-│  ☐ What is the Filter Chain in Spring Security?                               │
-│  ☐ How does @Cacheable work?                                                   │
-│  ☐ What endpoints does Actuator expose?                                        │
-│                                                                                  │
-│  PHASE 5 (Mastery):                                                              │
-│  ☐ Design a rate limiter using sliding window                                  │
-│  ☐ Implement clean architecture in a Spring Boot app                          │
-│  ☐ Build a notification engine with retry logic                               │
-│                                                                                  │
-│  PHASE 6 (Enterprise):                                                           │
-│  ☐ Explain Mono vs Flux in WebFlux                                             │
-│  ☐ Implement Circuit Breaker pattern                                           │
-│  ☐ Deploy Spring Boot app to Kubernetes                                        │
-│  ☐ Set up distributed tracing with Zipkin                                      │
-│                                                                                  │
+│                                                                                 │
+│  PREREQUISITES:                                                                 │
+│  ☐ What's the difference between map() and flatMap() in Streams?                │
+│  ☐ When would you use Optional vs returning null?                               │
+│  ☐ How do Java Records differ from regular classes?                             │
+│                                                                                 │
+│  PHASE 0 (Hidden Foundations):                                                  │
+│  ☐ How does @Autowired inject dependencies? (Reflection!)                       │
+│  ☐ Why doesn't @Transactional work on private methods? (Proxies!)               │
+│  ☐ What is the Servlet lifecycle?                                               │
+│                                                                                 │
+│  PHASE 1 (Core Spring):                                                         │
+│  ☐ What's the difference between @Component and @Bean?                          │
+│  ☐ Explain constructor injection vs field injection pros/cons                   │
+│  ☐ What are the different bean scopes?                                          │
+│  ☐ How does AOP work in Spring?                                                 │
+│                                                                                 │
+│  PHASE 2 (Web Fundamentals):                                                    │
+│  ☐ What HTTP status code for "resource not found" vs "validation error"?        │
+│  ☐ When to use @PathVariable vs @RequestParam?                                  │
+│  ☐ What does Content-Type header do?                                            │
+│                                                                                 │
+│  PHASE 3 (Application Layers):                                                  │
+│  ☐ Build a complete CRUD REST API from scratch                                  │
+│  ☐ What is the N+1 query problem and how to solve it?                           │
+│  ☐ Explain LAZY vs EAGER fetch strategies                                       │
+│  ☐ What are transaction propagation levels?                                     │
+│                                                                                 │
+│  PHASE 4 (Production Features):                                                 │
+│  ☐ How to implement JWT authentication?                                         │
+│  ☐ What is the Filter Chain in Spring Security?                                 │
+│  ☐ How does @Cacheable work?                                                    │
+│  ☐ What endpoints does Actuator expose?                                         │
+│                                                                                 │
+│  PHASE 5 (Mastery):                                                             │
+│  ☐ Design a rate limiter using sliding window                                   │
+│  ☐ Implement clean architecture in a Spring Boot app                            │
+│  ☐ Build a notification engine with retry logic                                 │
+│                                                                                 │
+│  PHASE 6 (Enterprise):                                                          │
+│  ☐ Explain Mono vs Flux in WebFlux                                              │
+│  ☐ Implement Circuit Breaker pattern                                            │
+│  ☐ Deploy Spring Boot app to Kubernetes                                         │
+│  ☐ Set up distributed tracing with Zipkin                                       │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 

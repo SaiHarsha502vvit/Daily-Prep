@@ -176,12 +176,12 @@ EDGE CASES:
 ┌────────────────────────────────┬───────────────────────────────────────────┐
 │ Edge Case                      │ Handling                                  │
 ├────────────────────────────────┼───────────────────────────────────────────┤
-│ Empty candidates/array         │ Return [[]] (one empty subset) or []    │
-│ Target = 0                     │ Return [[]] (empty combination works)    │
-│ All candidates > target        │ Return [] (no valid combination)         │
-│ Single element                 │ Subsets: [[], [x]]. Perms: [[x]]        │
-│ All duplicates [2,2,2]         │ Subsets: [[], [2], [2,2], [2,2,2]]     │
-│ n=0 for N-Queens              │ Return [[]] (vacuously true)             │
+│ Empty candidates/array         │ Return [[]] (one empty subset) or []      │
+│ Target = 0                     │ Return [[]] (empty combination works)     │
+│ All candidates > target        │ Return [] (no valid combination)          │
+│ Single element                 │ Subsets: [[], [x]]. Perms: [[x]]          │
+│ All duplicates [2,2,2]         │ Subsets: [[], [2], [2,2], [2,2,2]]        │
+│ n=0 for N-Queens              │ Return [[]] (vacuously true)               │
 └────────────────────────────────┴───────────────────────────────────────────┘
 
 COMMON MISTAKES:

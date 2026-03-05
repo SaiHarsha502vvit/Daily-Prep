@@ -11,39 +11,39 @@
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHY: Why Security is Critical?                                                 │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Data breaches cost millions: Legal fees, reputation damage                 │
-│  • Compliance: GDPR, HIPAA, PCI-DSS require security                          │
-│  • OWASP Top 10: Broken auth consistently in top vulnerabilities              │
-│  • Interview: Security questions separate senior from junior developers       │
-│  • Career: Security expertise = higher pay, more opportunities               │
+│  • Data breaches cost millions: Legal fees, reputation damage                   │
+│  • Compliance: GDPR, HIPAA, PCI-DSS require security                            │
+│  • OWASP Top 10: Broken auth consistently in top vulnerabilities                │
+│  • Interview: Security questions separate senior from junior developers         │
+│  • Career: Security expertise = higher pay, more opportunities                  │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  HOW: How Spring Security Works?                                                │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Filter chain: Request passes through security filters                      │
-│  • Authentication: Who are you? (login, JWT validation)                       │
-│  • Authorization: What can you do? (roles, permissions)                       │
-│  • SecurityContext: Holds authenticated user info                             │
-│  • UserDetailsService: Loads user data for authentication                     │
+│  • Filter chain: Request passes through security filters                        │
+│  • Authentication: Who are you? (login, JWT validation)                         │
+│  • Authorization: What can you do? (roles, permissions)                         │
+│  • SecurityContext: Holds authenticated user info                               │
+│  • UserDetailsService: Loads user data for authentication                       │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHEN: When to Use Each Auth Strategy?                                          │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Session-based: Traditional web apps, server-rendered pages                 │
-│  • JWT: REST APIs, microservices, stateless authentication                    │
-│  • OAuth2: "Login with Google/GitHub", third-party integration               │
-│  • API Keys: Service-to-service communication                                 │
-│  • Basic Auth: Simple internal APIs, development only                         │
+│  • Session-based: Traditional web apps, server-rendered pages                   │
+│  • JWT: REST APIs, microservices, stateless authentication                      │
+│  • OAuth2: "Login with Google/GitHub", third-party integration                  │
+│  • API Keys: Service-to-service communication                                   │
+│  • Basic Auth: Simple internal APIs, development only                           │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHICH: Which Security Concepts to Master?                                      │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  ESSENTIAL:     Authentication vs Authorization, JWT, SecurityFilterChain      │
-│  IMPORTANT:     @PreAuthorize, BCrypt, CORS configuration                      │
-│  ADVANCED:      OAuth2 flows, custom filters, method security                  │
+│  ESSENTIAL:     Authentication vs Authorization, JWT, SecurityFilterChain       │
+│  IMPORTANT:     @PreAuthorize, BCrypt, CORS configuration                       │
+│  ADVANCED:      OAuth2 flows, custom filters, method security                   │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -57,51 +57,51 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│              AUTHENTICATION vs AUTHORIZATION                                     │
+│              AUTHENTICATION vs AUTHORIZATION                                    │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  ┌──────────────────────────────────┬──────────────────────────────────────┐   │
-│  │      AUTHENTICATION (AuthN)      │      AUTHORIZATION (AuthZ)           │   │
-│  ├──────────────────────────────────┼──────────────────────────────────────┤   │
-│  │                                  │                                      │   │
-│  │  "WHO are you?"                  │  "WHAT can you do?"                  │   │
-│  │                                  │                                      │   │
-│  │  Verifies IDENTITY               │  Verifies PERMISSIONS                │   │
-│  │                                  │                                      │   │
-│  │  Happens FIRST                   │  Happens AFTER authentication       │   │
-│  │                                  │                                      │   │
-│  │  Examples:                       │  Examples:                           │   │
-│  │  • Username + Password           │  • User can view their own data     │   │
-│  │  • Fingerprint                   │  • Admin can delete any user        │   │
-│  │  • Face ID                       │  • Manager can approve requests     │   │
-│  │  • JWT Token                     │  • Guest can only read              │   │
-│  │                                  │                                      │   │
-│  │  HTTP Status: 401 Unauthorized   │  HTTP Status: 403 Forbidden         │   │
-│  │                                  │                                      │   │
-│  └──────────────────────────────────┴──────────────────────────────────────┘   │
-│                                                                                  │
+│                                                                                 │
+│  ┌──────────────────────────────────┬──────────────────────────────────────┐    │
+│  │      AUTHENTICATION (AuthN)      │      AUTHORIZATION (AuthZ)           │    │
+│  ├──────────────────────────────────┼──────────────────────────────────────┤    │
+│  │                                  │                                      │    │
+│  │  "WHO are you?"                  │  "WHAT can you do?"                  │    │
+│  │                                  │                                      │    │
+│  │  Verifies IDENTITY               │  Verifies PERMISSIONS                │    │
+│  │                                  │                                      │    │
+│  │  Happens FIRST                   │  Happens AFTER authentication       │     │
+│  │                                  │                                      │    │
+│  │  Examples:                       │  Examples:                           │    │
+│  │  • Username + Password           │  • User can view their own data     │     │
+│  │  • Fingerprint                   │  • Admin can delete any user        │     │
+│  │  • Face ID                       │  • Manager can approve requests     │     │
+│  │  • JWT Token                     │  • Guest can only read              │     │
+│  │                                  │                                      │    │
+│  │  HTTP Status: 401 Unauthorized   │  HTTP Status: 403 Forbidden         │     │
+│  │                                  │                                      │    │
+│  └──────────────────────────────────┴──────────────────────────────────────┘    │
+│                                                                                 │
 │  REAL-WORLD ANALOGY:                                                            │
 │  ═══════════════════                                                            │
-│                                                                                  │
+│                                                                                 │
 │  AIRPORT SECURITY:                                                              │
-│                                                                                  │
+│                                                                                 │
 │  1. AUTHENTICATION: Show your ID/Passport at checkpoint                         │
 │     "Are you really John Smith?" ✓                                              │
-│                                                                                  │
+│                                                                                 │
 │  2. AUTHORIZATION: Check your boarding pass                                     │
-│     "Can you enter the First Class lounge?" ✗                                  │
-│     "Can you board Flight AA123?" ✓                                            │
-│                                                                                  │
-│  ═══════════════════════════════════════════════════════════════════════════   │
-│                                                                                  │
-│  IN CODE:                                                                        │
-│                                                                                  │
+│     "Can you enter the First Class lounge?" ✗                                   │
+│     "Can you board Flight AA123?" ✓                                             │
+│                                                                                 │
+│  ═══════════════════════════════════════════════════════════════════════════    │
+│                                                                                 │
+│  IN CODE:                                                                       │
+│                                                                                 │
 │  User logs in with email/password → AUTHENTICATION                              │
 │  System returns JWT token                                                       │
-│                                                                                  │
+│                                                                                 │
 │  User tries to access /admin/users → AUTHORIZATION                              │
-│  System checks: Does this user have ADMIN role? No → 403 Forbidden             │
-│                                                                                  │
+│  System checks: Does this user have ADMIN role? No → 403 Forbidden              │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -111,61 +111,61 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│              SPRING SECURITY FILTER CHAIN                                        │
+│              SPRING SECURITY FILTER CHAIN                                       │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  HTTP Request                                                                   │
 │       │                                                                         │
 │       ▼                                                                         │
-│  ┌─────────────────────────────────────────────────────────────────────────┐   │
-│  │                    SECURITY FILTER CHAIN                                │   │
-│  │                                                                         │   │
-│  │  ┌────────────────────────────────────────────────────────────────┐    │   │
-│  │  │ 1. SecurityContextPersistenceFilter                           │    │   │
-│  │  │    → Loads SecurityContext from session                       │    │   │
-│  │  └────────────────────────────────────────────────────────────────┘    │   │
-│  │                            │                                           │   │
-│  │                            ▼                                           │   │
-│  │  ┌────────────────────────────────────────────────────────────────┐    │   │
-│  │  │ 2. LogoutFilter                                                │    │   │
-│  │  │    → Handles /logout URL                                       │    │   │
-│  │  └────────────────────────────────────────────────────────────────┘    │   │
-│  │                            │                                           │   │
-│  │                            ▼                                           │   │
-│  │  ┌────────────────────────────────────────────────────────────────┐    │   │
-│  │  │ 3. UsernamePasswordAuthenticationFilter                       │    │   │
-│  │  │    → Handles form login (/login POST)                         │    │   │
-│  │  └────────────────────────────────────────────────────────────────┘    │   │
-│  │                            │                                           │   │
-│  │                            ▼                                           │   │
-│  │  ┌────────────────────────────────────────────────────────────────┐    │   │
-│  │  │ 4. BasicAuthenticationFilter                                   │    │   │
-│  │  │    → Handles HTTP Basic Auth header                           │    │   │
-│  │  └────────────────────────────────────────────────────────────────┘    │   │
-│  │                            │                                           │   │
-│  │                            ▼                                           │   │
-│  │  ┌────────────────────────────────────────────────────────────────┐    │   │
-│  │  │ 5. BearerTokenAuthenticationFilter (for JWT)                  │    │   │
-│  │  │    → Validates JWT from Authorization header                   │    │   │
-│  │  └────────────────────────────────────────────────────────────────┘    │   │
-│  │                            │                                           │   │
-│  │                            ▼                                           │   │
-│  │  ┌────────────────────────────────────────────────────────────────┐    │   │
-│  │  │ 6. ExceptionTranslationFilter                                 │    │   │
-│  │  │    → Converts security exceptions to HTTP responses           │    │   │
-│  │  └────────────────────────────────────────────────────────────────┘    │   │
-│  │                            │                                           │   │
-│  │                            ▼                                           │   │
-│  │  ┌────────────────────────────────────────────────────────────────┐    │   │
-│  │  │ 7. FilterSecurityInterceptor / AuthorizationFilter            │    │   │
-│  │  │    → Final authorization check (can user access this URL?)    │    │   │
-│  │  └────────────────────────────────────────────────────────────────┘    │   │
-│  │                                                                         │   │
-│  └─────────────────────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────────────────────┐    │
+│  │                    SECURITY FILTER CHAIN                                │    │
+│  │                                                                         │    │
+│  │  ┌────────────────────────────────────────────────────────────────┐    │     │
+│  │  │ 1. SecurityContextPersistenceFilter                           │    │      │
+│  │  │    → Loads SecurityContext from session                       │    │      │
+│  │  └────────────────────────────────────────────────────────────────┘    │     │
+│  │                            │                                           │     │
+│  │                            ▼                                           │     │
+│  │  ┌────────────────────────────────────────────────────────────────┐    │     │
+│  │  │ 2. LogoutFilter                                                │    │     │
+│  │  │    → Handles /logout URL                                       │    │     │
+│  │  └────────────────────────────────────────────────────────────────┘    │     │
+│  │                            │                                           │     │
+│  │                            ▼                                           │     │
+│  │  ┌────────────────────────────────────────────────────────────────┐    │     │
+│  │  │ 3. UsernamePasswordAuthenticationFilter                       │    │      │
+│  │  │    → Handles form login (/login POST)                         │    │      │
+│  │  └────────────────────────────────────────────────────────────────┘    │     │
+│  │                            │                                           │     │
+│  │                            ▼                                           │     │
+│  │  ┌────────────────────────────────────────────────────────────────┐    │     │
+│  │  │ 4. BasicAuthenticationFilter                                   │    │     │
+│  │  │    → Handles HTTP Basic Auth header                           │    │      │
+│  │  └────────────────────────────────────────────────────────────────┘    │     │
+│  │                            │                                           │     │
+│  │                            ▼                                           │     │
+│  │  ┌────────────────────────────────────────────────────────────────┐    │     │
+│  │  │ 5. BearerTokenAuthenticationFilter (for JWT)                  │    │      │
+│  │  │    → Validates JWT from Authorization header                   │    │     │
+│  │  └────────────────────────────────────────────────────────────────┘    │     │
+│  │                            │                                           │     │
+│  │                            ▼                                           │     │
+│  │  ┌────────────────────────────────────────────────────────────────┐    │     │
+│  │  │ 6. ExceptionTranslationFilter                                 │    │      │
+│  │  │    → Converts security exceptions to HTTP responses           │    │      │
+│  │  └────────────────────────────────────────────────────────────────┘    │     │
+│  │                            │                                           │     │
+│  │                            ▼                                           │     │
+│  │  ┌────────────────────────────────────────────────────────────────┐    │     │
+│  │  │ 7. FilterSecurityInterceptor / AuthorizationFilter            │    │      │
+│  │  │    → Final authorization check (can user access this URL?)    │    │      │
+│  │  └────────────────────────────────────────────────────────────────┘    │     │
+│  │                                                                         │    │
+│  └─────────────────────────────────────────────────────────────────────────┘    │
 │       │                                                                         │
 │       ▼                                                                         │
-│  Controller (if all filters pass)                                              │
-│                                                                                  │
+│  Controller (if all filters pass)                                               │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -179,60 +179,60 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                         JWT STRUCTURE                                            │
+│                         JWT STRUCTURE                                           │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.                                          │
-│  eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4iLCJpYXQiOjE1MTYyMzkwMjJ9.        │
-│  SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c                                   │
-│                                                                                  │
+│  eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4iLCJpYXQiOjE1MTYyMzkwMjJ9.          │
+│  SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c                                    │
+│                                                                                 │
 │  ─────────────────┬─────────────────────────────────────────┬──────────────     │
 │       HEADER      │              PAYLOAD                    │   SIGNATURE       │
 │     (Base64)      │            (Base64)                     │   (Base64)        │
-│                                                                                  │
-│  ═══════════════════════════════════════════════════════════════════════════   │
-│                                                                                  │
+│                                                                                 │
+│  ═══════════════════════════════════════════════════════════════════════════    │
+│                                                                                 │
 │  HEADER (Algorithm + Type):                                                     │
 │  ══════════════════════════                                                     │
 │  {                                                                              │
-│    "alg": "HS256",    ← Algorithm used to sign                                 │
-│    "typ": "JWT"       ← Token type                                             │
+│    "alg": "HS256",    ← Algorithm used to sign                                  │
+│    "typ": "JWT"       ← Token type                                              │
 │  }                                                                              │
-│                                                                                  │
-│  PAYLOAD (Claims - the actual data):                                           │
+│                                                                                 │
+│  PAYLOAD (Claims - the actual data):                                            │
 │  ════════════════════════════════════                                           │
 │  {                                                                              │
-│    "sub": "1234567890",     ← Subject (user ID)                                │
-│    "name": "John Doe",      ← Custom claim                                     │
-│    "email": "john@test.com",                                                   │
-│    "roles": ["USER", "ADMIN"],                                                 │
-│    "iat": 1516239022,       ← Issued At (Unix timestamp)                       │
-│    "exp": 1516242622        ← Expiration (Unix timestamp)                      │
+│    "sub": "1234567890",     ← Subject (user ID)                                 │
+│    "name": "John Doe",      ← Custom claim                                      │
+│    "email": "john@test.com",                                                    │
+│    "roles": ["USER", "ADMIN"],                                                  │
+│    "iat": 1516239022,       ← Issued At (Unix timestamp)                        │
+│    "exp": 1516242622        ← Expiration (Unix timestamp)                       │
 │  }                                                                              │
-│                                                                                  │
+│                                                                                 │
 │  SIGNATURE:                                                                     │
 │  ══════════                                                                     │
 │  HMACSHA256(                                                                    │
-│    base64UrlEncode(header) + "." + base64UrlEncode(payload),                   │
+│    base64UrlEncode(header) + "." + base64UrlEncode(payload),                    │
 │    secret_key                                                                   │
 │  )                                                                              │
-│                                                                                  │
-│  ═══════════════════════════════════════════════════════════════════════════   │
-│                                                                                  │
+│                                                                                 │
+│  ═══════════════════════════════════════════════════════════════════════════    │
+│                                                                                 │
 │  WHY JWT?                                                                       │
 │  ════════                                                                       │
-│                                                                                  │
-│  ✅ STATELESS: Server doesn't need to store sessions                           │
-│  ✅ SCALABLE: Works across multiple servers (no session sharing)               │
-│  ✅ MOBILE-FRIENDLY: Easy to send in header                                    │
-│  ✅ SELF-CONTAINED: Contains all user info needed                              │
-│  ✅ CROSS-DOMAIN: Works for APIs consumed by different clients                 │
-│                                                                                  │
-│  ⚠️ CAUTION:                                                                   │
-│  • Cannot invalidate individual tokens (use short expiry + refresh tokens)     │
-│  • Payload is only Base64 encoded, NOT encrypted (don't put secrets)          │
-│  • Token size can grow large with many claims                                  │
-│                                                                                  │
+│                                                                                 │
+│  ✅ STATELESS: Server doesn't need to store sessions                             │
+│  ✅ SCALABLE: Works across multiple servers (no session sharing)                 │
+│  ✅ MOBILE-FRIENDLY: Easy to send in header                                      │
+│  ✅ SELF-CONTAINED: Contains all user info needed                                │
+│  ✅ CROSS-DOMAIN: Works for APIs consumed by different clients                   │
+│                                                                                 │
+│  ⚠️ CAUTION:                                                                    │
+│  • Cannot invalidate individual tokens (use short expiry + refresh tokens)      │
+│  • Payload is only Base64 encoded, NOT encrypted (don't put secrets)            │
+│  • Token size can grow large with many claims                                   │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -242,12 +242,12 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    JWT AUTHENTICATION FLOW                                       │
+│                    JWT AUTHENTICATION FLOW                                      │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  STEP 1: LOGIN                                                                  │
 │  ═════════════                                                                  │
-│                                                                                  │
+│                                                                                 │
 │  Client                              Server                                     │
 │    │                                    │                                       │
 │    │  POST /api/auth/login              │                                       │
@@ -256,9 +256,9 @@
 │    │    "password": "secret123"         │                                       │
 │    │  }                                 │                                       │
 │    │ ──────────────────────────────────►│                                       │
-│    │                                    │ 1. Find user by email                │
-│    │                                    │ 2. Verify password hash              │
-│    │                                    │ 3. Generate JWT token                │
+│    │                                    │ 1. Find user by email                 │
+│    │                                    │ 2. Verify password hash               │
+│    │                                    │ 3. Generate JWT token                 │
 │    │                                    │                                       │
 │    │        200 OK                      │                                       │
 │    │  {                                 │                                       │
@@ -268,20 +268,20 @@
 │    │  }                                 │                                       │
 │    │ ◄──────────────────────────────────│                                       │
 │    │                                    │                                       │
-│                                                                                  │
+│                                                                                 │
 │  STEP 2: ACCESS PROTECTED RESOURCE                                              │
 │  ═════════════════════════════════                                              │
-│                                                                                  │
+│                                                                                 │
 │  Client                              Server                                     │
 │    │                                    │                                       │
 │    │  GET /api/users/me                 │                                       │
 │    │  Authorization: Bearer eyJhbG...   │                                       │
 │    │ ──────────────────────────────────►│                                       │
-│    │                                    │ 1. Extract token from header         │
-│    │                                    │ 2. Validate signature                │
-│    │                                    │ 3. Check expiration                  │
-│    │                                    │ 4. Extract user from token           │
-│    │                                    │ 5. Process request                   │
+│    │                                    │ 1. Extract token from header          │
+│    │                                    │ 2. Validate signature                 │
+│    │                                    │ 3. Check expiration                   │
+│    │                                    │ 4. Extract user from token            │
+│    │                                    │ 5. Process request                    │
 │    │                                    │                                       │
 │    │        200 OK                      │                                       │
 │    │  {                                 │                                       │
@@ -290,10 +290,10 @@
 │    │  }                                 │                                       │
 │    │ ◄──────────────────────────────────│                                       │
 │    │                                    │                                       │
-│                                                                                  │
+│                                                                                 │
 │  STEP 3: TOKEN EXPIRED - REFRESH                                                │
 │  ════════════════════════════════                                               │
-│                                                                                  │
+│                                                                                 │
 │  Client                              Server                                     │
 │    │                                    │                                       │
 │    │  POST /api/auth/refresh            │                                       │
@@ -301,8 +301,8 @@
 │    │    "refreshToken": "eyJhbG..."     │                                       │
 │    │  }                                 │                                       │
 │    │ ──────────────────────────────────►│                                       │
-│    │                                    │ 1. Validate refresh token            │
-│    │                                    │ 2. Generate new access token         │
+│    │                                    │ 1. Validate refresh token             │
+│    │                                    │ 2. Generate new access token          │
 │    │                                    │                                       │
 │    │        200 OK                      │                                       │
 │    │  {                                 │                                       │
@@ -311,7 +311,7 @@
 │    │  }                                 │                                       │
 │    │ ◄──────────────────────────────────│                                       │
 │    │                                    │                                       │
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1034,107 +1034,107 @@ public class ProjectController {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    TESTING AUTH IN POSTMAN                                       │
+│                    TESTING AUTH IN POSTMAN                                      │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  STEP 1: REGISTER USER                                                          │
 │  ═════════════════════                                                          │
-│                                                                                  │
+│                                                                                 │
 │  POST http://localhost:8080/api/auth/register                                   │
-│                                                                                  │
+│                                                                                 │
 │  Body (raw JSON):                                                               │
 │  {                                                                              │
-│    "email": "john@test.com",                                                   │
-│    "password": "MySecret123!",                                                 │
-│    "firstName": "John",                                                        │
-│    "lastName": "Doe"                                                           │
+│    "email": "john@test.com",                                                    │
+│    "password": "MySecret123!",                                                  │
+│    "firstName": "John",                                                         │
+│    "lastName": "Doe"                                                            │
 │  }                                                                              │
-│                                                                                  │
-│  Response:                                                                       │
+│                                                                                 │
+│  Response:                                                                      │
 │  {                                                                              │
-│    "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEsInJvbGVzIjo...",      │
-│    "refreshToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2huQHRlc3Qu...",        │
+│    "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEsInJvbGVzIjo...",        │
+│    "refreshToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2huQHRlc3Qu...",          │
 │    "tokenType": "Bearer",                                                       │
 │    "expiresIn": 3600                                                            │
 │  }                                                                              │
-│                                                                                  │
-│                                                                                  │
-│  STEP 2: LOGIN                                                                   │
-│  ═════════════                                                                   │
-│                                                                                  │
+│                                                                                 │
+│                                                                                 │
+│  STEP 2: LOGIN                                                                  │
+│  ═════════════                                                                  │
+│                                                                                 │
 │  POST http://localhost:8080/api/auth/login                                      │
-│                                                                                  │
+│                                                                                 │
 │  Body (raw JSON):                                                               │
 │  {                                                                              │
-│    "email": "john@test.com",                                                   │
-│    "password": "MySecret123!"                                                  │
+│    "email": "john@test.com",                                                    │
+│    "password": "MySecret123!"                                                   │
 │  }                                                                              │
-│                                                                                  │
+│                                                                                 │
 │  → Save accessToken to environment variable!                                    │
-│                                                                                  │
+│                                                                                 │
 │  Tests tab (auto-save token):                                                   │
-│  ┌────────────────────────────────────────────────────────────────────────┐    │
-│  │ var json = pm.response.json();                                        │    │
-│  │ pm.environment.set("accessToken", json.accessToken);                  │    │
-│  │ pm.environment.set("refreshToken", json.refreshToken);                │    │
-│  └────────────────────────────────────────────────────────────────────────┘    │
-│                                                                                  │
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────┐     │
+│  │ var json = pm.response.json();                                        │      │
+│  │ pm.environment.set("accessToken", json.accessToken);                  │      │
+│  │ pm.environment.set("refreshToken", json.refreshToken);                │      │
+│  └────────────────────────────────────────────────────────────────────────┘     │
+│                                                                                 │
+│                                                                                 │
 │  STEP 3: ACCESS PROTECTED ENDPOINT                                              │
 │  ═════════════════════════════════                                              │
-│                                                                                  │
-│  GET http://localhost:8080/api/users/me                                        │
-│                                                                                  │
-│  Headers:                                                                        │
-│  ┌───────────────────┬──────────────────────────────────────────┐              │
-│  │ Key               │ Value                                    │              │
-│  ├───────────────────┼──────────────────────────────────────────┤              │
-│  │ Authorization     │ Bearer {{accessToken}}                   │              │
-│  └───────────────────┴──────────────────────────────────────────┘              │
-│                                                                                  │
+│                                                                                 │
+│  GET http://localhost:8080/api/users/me                                         │
+│                                                                                 │
+│  Headers:                                                                       │
+│  ┌───────────────────┬──────────────────────────────────────────┐               │
+│  │ Key               │ Value                                    │               │
+│  ├───────────────────┼──────────────────────────────────────────┤               │
+│  │ Authorization     │ Bearer {{accessToken}}                   │               │
+│  └───────────────────┴──────────────────────────────────────────┘               │
+│                                                                                 │
 │  OR use Authorization tab:                                                      │
 │  • Type: Bearer Token                                                           │
 │  • Token: {{accessToken}}                                                       │
-│                                                                                  │
-│                                                                                  │
+│                                                                                 │
+│                                                                                 │
 │  STEP 4: TEST 401 UNAUTHORIZED                                                  │
 │  ═════════════════════════════                                                  │
-│                                                                                  │
-│  GET http://localhost:8080/api/users/me                                        │
+│                                                                                 │
+│  GET http://localhost:8080/api/users/me                                         │
 │  (without Authorization header)                                                 │
-│                                                                                  │
+│                                                                                 │
 │  Expected Response: 401 Unauthorized                                            │
 │  {                                                                              │
-│    "error": "Unauthorized",                                                    │
-│    "message": "Full authentication is required"                                │
+│    "error": "Unauthorized",                                                     │
+│    "message": "Full authentication is required"                                 │
 │  }                                                                              │
-│                                                                                  │
-│                                                                                  │
+│                                                                                 │
+│                                                                                 │
 │  STEP 5: TEST 403 FORBIDDEN                                                     │
 │  ══════════════════════════                                                     │
-│                                                                                  │
-│  GET http://localhost:8080/api/admin/users                                     │
-│  Authorization: Bearer {{accessToken}} (USER role, not ADMIN)                  │
-│                                                                                  │
+│                                                                                 │
+│  GET http://localhost:8080/api/admin/users                                      │
+│  Authorization: Bearer {{accessToken}} (USER role, not ADMIN)                   │
+│                                                                                 │
 │  Expected Response: 403 Forbidden                                               │
 │  {                                                                              │
-│    "error": "Forbidden",                                                       │
-│    "message": "Access denied"                                                  │
+│    "error": "Forbidden",                                                        │
+│    "message": "Access denied"                                                   │
 │  }                                                                              │
-│                                                                                  │
-│                                                                                  │
+│                                                                                 │
+│                                                                                 │
 │  STEP 6: REFRESH TOKEN                                                          │
 │  ═════════════════════                                                          │
-│                                                                                  │
-│  POST http://localhost:8080/api/auth/refresh                                   │
-│                                                                                  │
+│                                                                                 │
+│  POST http://localhost:8080/api/auth/refresh                                    │
+│                                                                                 │
 │  Body:                                                                          │
 │  {                                                                              │
-│    "refreshToken": "{{refreshToken}}"                                          │
+│    "refreshToken": "{{refreshToken}}"                                           │
 │  }                                                                              │
-│                                                                                  │
-│  → Gets new accessToken without re-entering password                           │
-│                                                                                  │
+│                                                                                 │
+│  → Gets new accessToken without re-entering password                            │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1152,71 +1152,71 @@ public class ProjectController {
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │          OAUTH2 AUTHORIZATION CODE FLOW                                         │
 │          (Most common & most secure for web apps)                               │
-│                                                                                  │
+│                                                                                 │
 │   User              Your App           Auth Server          Resource Server     │
 │  (Browser)        (Spring Boot)     (Google/GitHub)        (Google API etc.)    │
-│     │                  │                   │                      │              │
-│     │── Click          │                   │                      │              │
-│     │  "Login with     │                   │                      │              │
-│     │   Google" ──────▶│                   │                      │              │
-│     │                  │                   │                      │              │
+│     │                  │                   │                      │             │
+│     │── Click          │                   │                      │             │
+│     │  "Login with     │                   │                      │             │
+│     │   Google" ──────▶│                   │                      │             │
+│     │                  │                   │                      │             │
 │  ┌──┤ STEP 1: Redirect to Auth Server     │                      │              │
-│  │  │◀── 302 Redirect──│                   │                      │              │
-│  │  │    to:                               │                      │              │
-│  │  │    accounts.google.com/auth?         │                      │              │
-│  │  │      client_id=YOUR_APP              │                      │              │
-│  │  │      redirect_uri=/callback          │                      │              │
-│  │  │      scope=email+profile             │                      │              │
-│  │  │      response_type=code              │                      │              │
-│  │  │      state=random_csrf_token         │                      │              │
-│  │  │                  │                   │                      │              │
+│  │  │◀── 302 Redirect──│                   │                      │             │
+│  │  │    to:                               │                      │             │
+│  │  │    accounts.google.com/auth?         │                      │             │
+│  │  │      client_id=YOUR_APP              │                      │             │
+│  │  │      redirect_uri=/callback          │                      │             │
+│  │  │      scope=email+profile             │                      │             │
+│  │  │      response_type=code              │                      │             │
+│  │  │      state=random_csrf_token         │                      │             │
+│  │  │                  │                   │                      │             │
 │  │  │ STEP 2: User logs in at Auth Server │                      │              │
-│  │  │─── email + password ────────────────▶│                      │              │
-│  │  │                  │                   │── Verify             │              │
-│  │  │                  │                   │   credentials        │              │
-│  │  │                  │                   │                      │              │
+│  │  │─── email + password ────────────────▶│                      │             │
+│  │  │                  │                   │── Verify             │             │
+│  │  │                  │                   │   credentials        │             │
+│  │  │                  │                   │                      │             │
 │  │  │ STEP 3: "Allow this app?" consent   │                      │              │
 │  │  │◀── consent screen ──────────────────│                      │              │
 │  │  │─── "Yes, Allow" ──────────────────▶ │                      │              │
-│  │  │                  │                   │                      │              │
+│  │  │                  │                   │                      │             │
 │  │  │ STEP 4: Auth Server redirects back with CODE               │              │
-│  │  │◀── 302 Redirect──│                   │                      │              │
-│  │  │    to: yourapp.com/callback?         │                      │              │
-│  │  │      code=AUTH_CODE_abc123           │                      │              │
-│  │  │      state=random_csrf_token         │                      │              │
-│  └──│─── /callback ───▶│                   │                      │              │
-│     │                  │                   │                      │              │
+│  │  │◀── 302 Redirect──│                   │                      │             │
+│  │  │    to: yourapp.com/callback?         │                      │             │
+│  │  │      code=AUTH_CODE_abc123           │                      │             │
+│  │  │      state=random_csrf_token         │                      │             │
+│  └──│─── /callback ───▶│                   │                      │             │
+│     │                  │                   │                      │             │
 │     │  STEP 5: Exchange code for tokens (SERVER-TO-SERVER)       │              │
-│     │                  │── POST /token ───▶│                      │              │
-│     │                  │   code=abc123     │                      │              │
-│     │                  │   client_id=...   │                      │              │
-│     │                  │   client_secret=..│                      │              │
-│     │                  │                   │                      │              │
-│     │                  │◀── access_token ──│                      │              │
-│     │                  │    refresh_token   │                      │              │
-│     │                  │    id_token (OIDC) │                      │              │
-│     │                  │                   │                      │              │
+│     │                  │── POST /token ───▶│                      │             │
+│     │                  │   code=abc123     │                      │             │
+│     │                  │   client_id=...   │                      │             │
+│     │                  │   client_secret=..│                      │             │
+│     │                  │                   │                      │             │
+│     │                  │◀── access_token ──│                      │             │
+│     │                  │    refresh_token   │                      │            │
+│     │                  │    id_token (OIDC) │                      │            │
+│     │                  │                   │                      │             │
 │     │  STEP 6: Use access_token to get user info                 │              │
-│     │                  │── GET /userinfo ──│──────────────────────▶│              │
-│     │                  │   Bearer: token   │                      │              │
+│     │                  │── GET /userinfo ──│──────────────────────▶│            │
+│     │                  │   Bearer: token   │                      │             │
 │     │                  │◀── { email, name, picture } ────────────│              │
-│     │                  │                   │                      │              │
+│     │                  │                   │                      │             │
 │     │  STEP 7: Create session, redirect to dashboard             │              │
 │     │◀── Set-Cookie ──│                   │                      │              │
-│     │    JSESSIONID    │                   │                      │              │
-│     │                  │                   │                      │              │
-│  ════════════════════════════════════════════════════════════════════════════    │
+│     │    JSESSIONID    │                   │                      │             │
+│     │                  │                   │                      │             │
+│  ════════════════════════════════════════════════════════════════════════════   │
 │  WHY Authorization Code (not Implicit)?                                         │
 │  • Code exchanged server-side → token NEVER exposed to browser                  │
-│  • client_secret stays on server → can't be stolen from JS                     │
-│  • Refresh tokens possible → long-lived sessions without re-login              │
-│                                                                                  │
+│  • client_secret stays on server → can't be stolen from JS                      │
+│  • Refresh tokens possible → long-lived sessions without re-login               │
+│                                                                                 │
 │  SECURITY CHECKLIST:                                                            │
-│  ✅ Validate state parameter (prevents CSRF)                                    │
-│  ✅ Use HTTPS everywhere                                                        │
-│  ✅ Store tokens server-side (not localStorage)                                 │
-│  ✅ Validate redirect_uri matches registered URI                                │
-│  ✅ Use PKCE for public clients (mobile/SPA)                                    │
+│  ✅ Validate state parameter (prevents CSRF)                                     │
+│  ✅ Use HTTPS everywhere                                                         │
+│  ✅ Store tokens server-side (not localStorage)                                  │
+│  ✅ Validate redirect_uri matches registered URI                                 │
+│  ✅ Use PKCE for public clients (mobile/SPA)                                     │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1504,38 +1504,38 @@ public class BasicAuthSecurityConfig {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    SECURITY CHECKLIST                                            │
+│                    SECURITY CHECKLIST                                           │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  AUTHENTICATION:                                                                 │
-│  □ Use BCrypt for password hashing (never plain text or MD5/SHA1)              │
+│                                                                                 │
+│  AUTHENTICATION:                                                                │
+│  □ Use BCrypt for password hashing (never plain text or MD5/SHA1)               │
 │  □ Implement rate limiting on login endpoints                                   │
-│  □ Use short-lived access tokens (15-60 min)                                   │
-│  □ Use longer-lived refresh tokens (7-30 days)                                 │
-│  □ Store refresh tokens securely (database with user binding)                  │
-│  □ Implement token blacklisting for logout                                     │
-│  □ Use HTTPS everywhere in production                                          │
-│                                                                                  │
-│  AUTHORIZATION:                                                                  │
+│  □ Use short-lived access tokens (15-60 min)                                    │
+│  □ Use longer-lived refresh tokens (7-30 days)                                  │
+│  □ Store refresh tokens securely (database with user binding)                   │
+│  □ Implement token blacklisting for logout                                      │
+│  □ Use HTTPS everywhere in production                                           │
+│                                                                                 │
+│  AUTHORIZATION:                                                                 │
 │  □ Implement principle of least privilege                                       │
-│  □ Use role-based OR permission-based access control                           │
-│  □ Validate resource ownership (user can only access their data)               │
+│  □ Use role-based OR permission-based access control                            │
+│  □ Validate resource ownership (user can only access their data)                │
 │  □ Never trust client-side authorization                                        │
-│                                                                                  │
-│  JWT SPECIFIC:                                                                   │
-│  □ Use strong secret key (min 256 bits for HS256)                             │
-│  □ Set appropriate expiration times                                            │
-│  □ Don't store sensitive data in JWT payload (it's just Base64!)              │
-│  □ Validate all claims (iss, aud, exp)                                        │
-│                                                                                  │
-│  GENERAL:                                                                        │
-│  □ Disable CSRF only for stateless APIs                                        │
+│                                                                                 │
+│  JWT SPECIFIC:                                                                  │
+│  □ Use strong secret key (min 256 bits for HS256)                               │
+│  □ Set appropriate expiration times                                             │
+│  □ Don't store sensitive data in JWT payload (it's just Base64!)                │
+│  □ Validate all claims (iss, aud, exp)                                          │
+│                                                                                 │
+│  GENERAL:                                                                       │
+│  □ Disable CSRF only for stateless APIs                                         │
 │  □ Implement proper CORS configuration                                          │
-│  □ Log authentication failures (but not passwords!)                            │
-│  □ Use security headers (X-Content-Type-Options, X-Frame-Options)             │
+│  □ Log authentication failures (but not passwords!)                             │
+│  □ Use security headers (X-Content-Type-Options, X-Frame-Options)               │
 │  □ Keep dependencies updated                                                    │
-│  □ Conduct regular security audits                                             │
-│                                                                                  │
+│  □ Conduct regular security audits                                              │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 

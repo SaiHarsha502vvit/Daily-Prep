@@ -8,29 +8,29 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║           EDGE CASES - COMPLETE UNDERSTANDING & MINDSET                       ║
+║           EDGE CASES - COMPLETE UNDERSTANDING & MINDSET                      ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ WHAT ARE EDGE CASES?                                                         │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ Edge cases are BOUNDARY CONDITIONS - the extreme or unusual inputs that     │
+│ Edge cases are BOUNDARY CONDITIONS - the extreme or unusual inputs that      │
 │ your solution must handle correctly.                                         │
 │                                                                              │
 │ ANALOGY: Building a bridge                                                   │
-│ • Normal case: Cars crossing on a sunny day                                 │
-│ • Edge case: What if 100 trucks cross at once?                              │
-│ • Edge case: What if there's an earthquake?                                 │
-│ • Edge case: What if it's -40°C and metal contracts?                        │
+│ • Normal case: Cars crossing on a sunny day                                  │
+│ • Edge case: What if 100 trucks cross at once?                               │
+│ • Edge case: What if there's an earthquake?                                  │
+│ • Edge case: What if it's -40°C and metal contracts?                         │
 │                                                                              │
-│ Engineers must consider ALL conditions, not just typical ones!              │
+│ Engineers must consider ALL conditions, not just typical ones!               │
 │                                                                              │
 │ HISTORICAL CONTEXT:                                                          │
-│ • 1996: Ariane 5 rocket explodes - integer overflow edge case              │
-│ • 1999: Mars Climate Orbiter lost - unit conversion edge case              │
-│ • 2020: Boeing 737 MAX - sensor edge case not handled                      │
+│ • 1996: Ariane 5 rocket explodes - integer overflow edge case                │
+│ • 1999: Mars Climate Orbiter lost - unit conversion edge case                │
+│ • 2020: Boeing 737 MAX - sensor edge case not handled                        │
 │                                                                              │
-│ Edge cases are not minor issues - they cause MAJOR failures!                │
+│ Edge cases are not minor issues - they cause MAJOR failures!                 │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -39,24 +39,24 @@
 │                                                                              │
 │ PROBLEM: Humans naturally think about "TYPICAL" scenarios.                   │
 │                                                                              │
-│ When you think "find maximum in array", your brain imagines:                │
-│ [3, 7, 2, 9, 1] → Answer: 9  ✓                                              │
+│ When you think "find maximum in array", your brain imagines:                 │
+│ [3, 7, 2, 9, 1] → Answer: 9  ✓                                               │
 │                                                                              │
 │ But what about:                                                              │
-│ []        → What's max of nothing?   (empty)                                │
-│ [5]       → Max of one element?      (single)                               │
-│ [3, 3, 3] → All same values?         (duplicates)                           │
-│ [-5, -3]  → All negative?            (negative)                             │
-│ [MAX_INT] → Near overflow?           (boundary)                             │
+│ []        → What's max of nothing?   (empty)                                 │
+│ [5]       → Max of one element?      (single)                                │
+│ [3, 3, 3] → All same values?         (duplicates)                            │
+│ [-5, -3]  → All negative?            (negative)                              │
+│ [MAX_INT] → Near overflow?           (boundary)                              │
 │                                                                              │
 │ YOUR SOLUTION MUST HANDLE ALL OF THESE!                                      │
 │                                                                              │
 │ INTERVIEW REALITY:                                                           │
-│ ┌─────────────────────────────────────────────────────────────────────────┐ │
-│ │  Interviewer tests your solution with edge cases!                       │ │
-│ │  - If it breaks → You didn't think through the problem                  │ │
-│ │  - If it handles → You think like a professional engineer               │ │
-│ └─────────────────────────────────────────────────────────────────────────┘ │
+│ ┌─────────────────────────────────────────────────────────────────────────┐  │
+│ │  Interviewer tests your solution with edge cases!                       │  │
+│ │  - If it breaks → You didn't think through the problem                  │  │
+│ │  - If it handles → You think like a professional engineer               │  │
+│ └─────────────────────────────────────────────────────────────────────────┘  │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -64,25 +64,25 @@
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │ 1. CORRECTNESS:                                                              │
-│    A solution that fails on edge cases is WRONG                             │
-│    It only APPEARS to work on typical inputs                                │
+│    A solution that fails on edge cases is WRONG                              │
+│    It only APPEARS to work on typical inputs                                 │
 │                                                                              │
 │ 2. ROBUSTNESS:                                                               │
-│    Production systems receive unexpected inputs constantly                  │
-│    Users do weird things, data has anomalies                                │
+│    Production systems receive unexpected inputs constantly                   │
+│    Users do weird things, data has anomalies                                 │
 │                                                                              │
 │ 3. SECURITY:                                                                 │
-│    Hackers specifically look for edge cases to exploit                      │
-│    Buffer overflow = edge case not handled                                  │
-│    SQL injection = special characters not handled                           │
+│    Hackers specifically look for edge cases to exploit                       │
+│    Buffer overflow = edge case not handled                                   │
+│    SQL injection = special characters not handled                            │
 │                                                                              │
 │ 4. PROFESSIONALISM:                                                          │
-│    Edge case handling separates juniors from seniors                        │
-│    It shows you THINK before you code                                       │
+│    Edge case handling separates juniors from seniors                         │
+│    It shows you THINK before you code                                        │
 │                                                                              │
 │ 5. INTERVIEW SUCCESS:                                                        │
-│    Discussing edge cases shows depth of understanding                       │
-│    Even if you don't solve optimally, handling edge cases impresses         │
+│    Discussing edge cases shows depth of understanding                        │
+│    Even if you don't solve optimally, handling edge cases impresses          │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -92,28 +92,28 @@
 │ THE 5-CATEGORY SYSTEM (Use for EVERY problem):                               │
 │                                                                              │
 │ 1. EMPTY / NOTHING                                                           │
-│    "What if there's no input at all?"                                       │
-│    [], "", null, 0 elements                                                 │
+│    "What if there's no input at all?"                                        │
+│    [], "", null, 0 elements                                                  │
 │                                                                              │
 │ 2. ONE / MINIMAL                                                             │
-│    "What if there's just one element?"                                      │
-│    [5], "a", single node                                                    │
+│    "What if there's just one element?"                                       │
+│    [5], "a", single node                                                     │
 │                                                                              │
 │ 3. TWO / SMALL                                                               │
-│    "What if there are exactly two?"                                         │
-│    Often catches off-by-one errors                                          │
-│    [1, 2] vs [2, 1]                                                         │
+│    "What if there are exactly two?"                                          │
+│    Often catches off-by-one errors                                           │
+│    [1, 2] vs [2, 1]                                                          │
 │                                                                              │
 │ 4. BOUNDARY / EXTREME                                                        │
-│    "What about maximum/minimum possible values?"                            │
-│    Integer.MAX_VALUE, Integer.MIN_VALUE, very large n                       │
+│    "What about maximum/minimum possible values?"                             │
+│    Integer.MAX_VALUE, Integer.MIN_VALUE, very large n                        │
 │                                                                              │
 │ 5. SPECIAL / WEIRD                                                           │
-│    "What's the weirdest valid input?"                                       │
-│    All same values, all negative, sorted/reverse sorted                     │
+│    "What's the weirdest valid input?"                                        │
+│    All same values, all negative, sorted/reverse sorted                      │
 │                                                                              │
-│ PRACTICE: Before coding, LIST edge cases first!                             │
-│ Spend 2 minutes identifying them = Save 20 minutes debugging                │
+│ PRACTICE: Before coding, LIST edge cases first!                              │
+│ Spend 2 minutes identifying them = Save 20 minutes debugging                 │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -126,7 +126,7 @@
 │ • Include them in your approach                                              │
 │                                                                              │
 │ DURING CODING:                                                               │
-│ • Add guard clauses at the start                                            │
+│ • Add guard clauses at the start                                             │
 │ • Check bounds before array access                                           │
 │ • Validate inputs before processing                                          │
 │                                                                              │
@@ -136,9 +136,9 @@
 │ • Write test cases for edge scenarios                                        │
 │                                                                              │
 │ IN INTERVIEWS:                                                               │
-│ • Mention edge cases when explaining approach                               │
-│ • Ask interviewer: "Should I handle empty input?"                           │
-│ • After solving, say: "Let me verify with edge cases"                       │
+│ • Mention edge cases when explaining approach                                │
+│ • Ask interviewer: "Should I handle empty input?"                            │
+│ • After solving, say: "Let me verify with edge cases"                        │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -152,31 +152,31 @@
 │    Many solutions assume positive inputs                                     │
 │                                                                              │
 │ 3. OVERFLOW NOT DETECTED:                                                    │
-│    int a + int b can overflow silently!                                     │
-│    Use long or check before adding                                          │
+│    int a + int b can overflow silently!                                      │
+│    Use long or check before adding                                           │
 │                                                                              │
 │ 4. OFF-BY-ONE ERRORS:                                                        │
-│    < vs <=, i+1 vs i, length vs length-1                                   │
-│    Test with arrays of size 1 and 2                                         │
+│    < vs <=, i+1 vs i, length vs length-1                                     │
+│    Test with arrays of size 1 and 2                                          │
 │                                                                              │
 │ 5. ASSUMING ORDER:                                                           │
-│    "Array is sorted" - is it ascending or descending?                       │
-│    "Find first occurrence" - what if not present?                           │
+│    "Array is sorted" - is it ascending or descending?                        │
+│    "Find first occurrence" - what if not present?                            │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ EXPECTED OUTPUTS OF MASTERING EDGE CASES                                     │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ ✅ AUTOMATIC THINKING: Identify edge cases without conscious effort         │
-│ ✅ ROBUST CODE: Solutions that work for ALL inputs                          │
-│ ✅ FEWER BUGS: Catch issues before they happen                              │
-│ ✅ INTERVIEW SUCCESS: Impress with thoroughness                              │
-│ ✅ PROFESSIONAL QUALITY: Code ready for production                          │
+│ ✅ AUTOMATIC THINKING: Identify edge cases without conscious effort           │
+│ ✅ ROBUST CODE: Solutions that work for ALL inputs                            │
+│ ✅ FEWER BUGS: Catch issues before they happen                                │
+│ ✅ INTERVIEW SUCCESS: Impress with thoroughness                               │
+│ ✅ PROFESSIONAL QUALITY: Code ready for production                            │
 │                                                                              │
 │ THE TRANSFORMATION:                                                          │
-│ FROM: "My solution works" (on examples I tried)                             │
-│   TO: "My solution is PROVEN correct" (on all possible inputs)              │
+│ FROM: "My solution works" (on examples I tried)                              │
+│   TO: "My solution is PROVEN correct" (on all possible inputs)               │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 

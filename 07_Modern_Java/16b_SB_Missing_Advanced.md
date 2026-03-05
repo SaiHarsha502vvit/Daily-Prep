@@ -1020,45 +1020,45 @@ public class RabbitConsumer {
 # QUICK REFERENCE
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────────────────────┐
 │              PART 14 QUICK REFERENCE                                             │
-├─────────────────────────────────────────────────────────────────────────────────┤
+├──────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                  │
 │  CACHING:                                                                        │
-│  @Cacheable - Read from cache                                                   │
-│  @CacheEvict - Remove from cache                                                │
-│  @CachePut - Always update cache                                                │
+│  @Cacheable - Read from cache                                                    │
+│  @CacheEvict - Remove from cache                                                 │
+│  @CachePut - Always update cache                                                 │
 │                                                                                  │
 │  ASYNC:                                                                          │
-│  @EnableAsync + @Async                                                          │
-│  Return CompletableFuture<T> for result                                        │
+│  @EnableAsync + @Async                                                           │
+│  Return CompletableFuture<T> for result                                          │
 │                                                                                  │
 │  SCHEDULING:                                                                     │
-│  @EnableScheduling + @Scheduled                                                 │
-│  fixedRate, fixedDelay, cron                                                   │
+│  @EnableScheduling + @Scheduled                                                  │
+│  fixedRate, fixedDelay, cron                                                     │
 │                                                                                  │
 │  ACTUATOR ENDPOINTS:                                                             │
-│  /actuator/health - Health check                                               │
-│  /actuator/metrics - JVM metrics                                               │
-│  /actuator/info - App info                                                     │
+│  /actuator/health - Health check                                                 │
+│  /actuator/metrics - JVM metrics                                                 │
+│  /actuator/info - App info                                                       │
 │                                                                                  │
 │  SWAGGER:                                                                        │
-│  @Tag, @Operation, @ApiResponse, @Schema                                       │
-│  URL: /swagger-ui.html                                                         │
+│  @Tag, @Operation, @ApiResponse, @Schema                                         │
+│  URL: /swagger-ui.html                                                           │
 │                                                                                  │
 │  FILES:                                                                          │
-│  @RequestParam("file") MultipartFile file                                      │
+│  @RequestParam("file") MultipartFile file                                        │
 │                                                                                  │
 │  EMAIL:                                                                          │
-│  JavaMailSender, SimpleMailMessage, MimeMessage                                │
+│  JavaMailSender, SimpleMailMessage, MimeMessage                                  │
 │                                                                                  │
 │  FLYWAY:                                                                         │
-│  V<version>__<description>.sql in db/migration/                                │
+│  V<version>__<description>.sql in db/migration/                                  │
 │                                                                                  │
 │  DOCKER:                                                                         │
-│  Multi-stage build, docker-compose                                             │
+│  Multi-stage build, docker-compose                                               │
 │                                                                                  │
-└─────────────────────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---

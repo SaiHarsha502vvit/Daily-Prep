@@ -38,22 +38,22 @@
 ║  Imagine a sushi restaurant with a conveyor belt:                ║
 ║                                                                  ║
 ║  EAGER approach (old Java loops):                                ║
-║  → Chef makes ALL 100 sushi plates first                        ║
-║  → Puts them ALL on the belt                                    ║
-║  → You pick the 3 you want                                      ║
-║  → 97 plates WASTED                                             ║
+║  → Chef makes ALL 100 sushi plates first                         ║
+║  → Puts them ALL on the belt                                     ║
+║  → You pick the 3 you want                                       ║
+║  → 97 plates WASTED                                              ║
 ║                                                                  ║
 ║  LAZY approach (streams):                                        ║
-║  → Chef waits for your ORDER (terminal operation)               ║
-║  → Makes one plate at a time                                    ║
-║  → You take it, inspect it (filter), modify it (map)            ║
-║  → Stop when you have 3 (limit)                                 ║
-║  → Chef stops. Only 3 plates made.                              ║
+║  → Chef waits for your ORDER (terminal operation)                ║
+║  → Makes one plate at a time                                     ║
+║  → You take it, inspect it (filter), modify it (map)             ║
+║  → Stop when you have 3 (limit)                                  ║
+║  → Chef stops. Only 3 plates made.                               ║
 ║                                                                  ║
 ║  WHY THIS MATTERS:                                               ║
-║  • findFirst() on 1 million items? Only processes until found   ║
-║  • limit(5) on infinite stream? Processes exactly 5 items       ║
-║  • filter().map().collect()? SINGLE PASS, not 3 separate loops  ║
+║  • findFirst() on 1 million items? Only processes until found    ║
+║  • limit(5) on infinite stream? Processes exactly 5 items        ║
+║  • filter().map().collect()? SINGLE PASS, not 3 separate loops   ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
@@ -94,25 +94,25 @@ List<String> result = names.stream()
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│  SHORT-CIRCUITING OPERATIONS:                                    │
-│                                                                  │
+│  SHORT-CIRCUITING OPERATIONS:                                   │
+│                                                                 │
 │  Terminal:     findFirst(), findAny(), anyMatch(),              │
-│                allMatch(), noneMatch()                           │
-│                                                                  │
+│                allMatch(), noneMatch()                          │
+│                                                                 │
 │  Intermediate: limit(), takeWhile() (Java 9+)                   │
-│                                                                  │
-│  These can STOP the entire pipeline early:                       │
-│                                                                  │
+│                                                                 │
+│  These can STOP the entire pipeline early:                      │
+│                                                                 │
 │  // On 10 million records — finds first match, stops            │
-│  users.stream()                                                  │
+│  users.stream()                                                 │
 │      .filter(u -> u.getAge() > 65)                              │
 │      .findFirst();  // Might check only 100 users               │
-│                                                                  │
-│  // Infinite stream — no problem!                                │
-│  Stream.iterate(1, n -> n + 1)  // infinite: 1, 2, 3, 4...    │
-│      .filter(n -> n % 7 == 0)   // multiples of 7              │
+│                                                                 │
+│  // Infinite stream — no problem!                               │
+│  Stream.iterate(1, n -> n + 1)  // infinite: 1, 2, 3, 4...      │
+│      .filter(n -> n % 7 == 0)   // multiples of 7               │
 │      .limit(5)                   // take first 5                │
-│      .forEach(System.out::println);  // 7, 14, 21, 28, 35     │
+│      .forEach(System.out::println);  // 7, 14, 21, 28, 35       │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -146,18 +146,18 @@ names.stream()
 ║  THE DVD vs NETFLIX ANALOGY                                      ║
 ║                                                                  ║
 ║  Collection = DVD collection on your shelf                       ║
-║  → All data IN MEMORY right now                                 ║
-║  → You can pick any DVD (random access)                         ║
-║  → You can count them (size)                                    ║
-║  → You can add/remove DVDs (mutable)                            ║
-║  → Same DVDs, watch as many times as you want (reusable)        ║
+║  → All data IN MEMORY right now                                  ║
+║  → You can pick any DVD (random access)                          ║
+║  → You can count them (size)                                     ║
+║  → You can add/remove DVDs (mutable)                             ║
+║  → Same DVDs, watch as many times as you want (reusable)         ║
 ║                                                                  ║
 ║  Stream = Netflix                                                ║
-║  → Data comes ON DEMAND (lazy, possibly from database)          ║
-║  → You watch in order (sequential processing)                   ║
-║  → You don't know total count until you watch all               ║
-║  → You can't rewind (consumed once)                             ║
-║  → You describe WHAT you want, Netflix figures out HOW          ║
+║  → Data comes ON DEMAND (lazy, possibly from database)           ║
+║  → You watch in order (sequential processing)                    ║
+║  → You don't know total count until you watch all                ║
+║  → You can't rewind (consumed once)                              ║
+║  → You describe WHAT you want, Netflix figures out HOW           ║
 ║                                                                  ║
 ║  KEY DISTINCTION:                                                ║
 ║  Collection = data structure (stores data)                       ║
@@ -189,12 +189,12 @@ stream.forEach(System.out::println);
 │ Feature            │ Collection            │ Stream               │
 ├────────────────────┼───────────────────────┼──────────────────────┤
 │ When computed      │ Eagerly (all at once) │ Lazily (on demand)   │
-│ Reusable           │ ✅ Yes                │ ❌ Once only         │
-│ Mutable            │ ✅ add/remove         │ ❌ Immutable pipe    │
+│ Reusable           │ ✅ Yes                │ ❌ Once only           │
+│ Mutable            │ ✅ add/remove         │ ❌ Immutable pipe      │
 │ Size               │ Known (.size())       │ May be infinite      │
-│ Random access      │ ✅ list.get(i)        │ ❌ Sequential only   │
-│ Can store data     │ ✅ Primary purpose    │ ❌ Passes through    │
-│ External iteration │ ✅ for-each           │ ❌ Internal only     │
+│ Random access      │ ✅ list.get(i)        │ ❌ Sequential only     │
+│ Can store data     │ ✅ Primary purpose    │ ❌ Passes through      │
+│ External iteration │ ✅ for-each           │ ❌ Internal only       │
 │ Source of data     │ IS the data           │ Wraps a data source  │
 └────────────────────┴───────────────────────┴──────────────────────┘
 ```
@@ -210,19 +210,19 @@ stream.forEach(System.out::println);
 ║  THE RESTAURANT ORDER ANALOGY                                    ║
 ║                                                                  ║
 ║  Intermediate Operations = Adding items to your order            ║
-║  → "I'd like the salad..." (filter)                             ║
-║  → "...with dressing on the side..." (map)                      ║
-║  → "...and only the first 3..." (limit)                         ║
+║  → "I'd like the salad..." (filter)                              ║
+║  → "...with dressing on the side..." (map)                       ║
+║  → "...and only the first 3..." (limit)                          ║
 ║  → Nothing is being prepared yet!                                ║
 ║                                                                  ║
 ║  Terminal Operation = Saying "That's my order" (submit)          ║
-║  → collect() = "Bring it all on one plate"                      ║
-║  → forEach() = "Feed me one bite at a time"                     ║
-║  → reduce() = "Blend it all into one smoothie"                  ║
-║  → count() = "Just tell me how many items"                      ║
-║  → findFirst() = "Just bring the first one"                     ║
+║  → collect() = "Bring it all on one plate"                       ║
+║  → forEach() = "Feed me one bite at a time"                      ║
+║  → reduce() = "Blend it all into one smoothie"                   ║
+║  → count() = "Just tell me how many items"                       ║
+║  → findFirst() = "Just bring the first one"                      ║
 ║                                                                  ║
-║  THE KITCHEN STARTS ONLY WHEN YOU SUBMIT THE ORDER              ║
+║  THE KITCHEN STARTS ONLY WHEN YOU SUBMIT THE ORDER               ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
@@ -230,19 +230,19 @@ stream.forEach(System.out::println);
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│  INTERMEDIATE (returns Stream — lazy, chainable):                │
-│                                                                  │
+│  INTERMEDIATE (returns Stream — lazy, chainable):               │
+│                                                                 │
 │  Stateless (no memory between elements):                        │
 │    filter(), map(), flatMap(), peek(), mapToInt/Long/Double()   │
-│                                                                  │
+│                                                                 │
 │  Stateful (must see all/some elements first):                   │
-│    sorted()  ← must see ALL elements to sort                   │
-│    distinct() ← must remember what it's seen (HashSet)         │
-│    skip(n)   ← must count n elements to skip                   │
-│    limit(n)  ← must count (but short-circuits)                 │
-│                                                                  │
-│  ⚠️ sorted() BREAKS laziness — forces buffering all elements!  │
-│                                                                  │
+│    sorted()  ← must see ALL elements to sort                    │
+│    distinct() ← must remember what it's seen (HashSet)          │
+│    skip(n)   ← must count n elements to skip                    │
+│    limit(n)  ← must count (but short-circuits)                  │
+│                                                                 │
+│  ⚠️ sorted() BREAKS laziness — forces buffering all elements!   │
+│                                                                 │
 │  TERMINAL (returns result — triggers execution):                │
 │    collect(), forEach(), reduce(), count(), min(), max(),       │
 │    toArray(), findFirst(), findAny(),                           │
@@ -279,20 +279,20 @@ list.stream().findFirst();              // No buffering needed
 ║                                                                  ║
 ║  You have 3 gift boxes, each containing smaller boxes:           ║
 ║                                                                  ║
-║  Box1 → [candy, toy]                                            ║
+║  Box1 → [candy, toy]                                             ║
 ║  Box2 → [book]                                                   ║
-║  Box3 → [pen, eraser, ruler]                                    ║
+║  Box3 → [pen, eraser, ruler]                                     ║
 ║                                                                  ║
-║  map() = "Open each box and look inside"                        ║
-║  Result: [ [candy,toy], [book], [pen,eraser,ruler] ]            ║
-║  → You get a Stream<List<Item>> — boxes within boxes!           ║
+║  map() = "Open each box and look inside"                         ║
+║  Result: [ [candy,toy], [book], [pen,eraser,ruler] ]             ║
+║  → You get a Stream<List<Item>> — boxes within boxes!            ║
 ║                                                                  ║
-║  flatMap() = "Open each box AND dump everything on the table"   ║
-║  Result: [candy, toy, book, pen, eraser, ruler]                 ║
-║  → You get a Stream<Item> — flat, no nesting!                   ║
+║  flatMap() = "Open each box AND dump everything on the table"    ║
+║  Result: [candy, toy, book, pen, eraser, ruler]                  ║
+║  → You get a Stream<Item> — flat, no nesting!                    ║
 ║                                                                  ║
-║  map():     1-to-1 transformation (same structure)              ║
-║  flatMap(): 1-to-many + flatten (removes one nesting level)     ║
+║  map():     1-to-1 transformation (same structure)               ║
+║  flatMap(): 1-to-many + flatten (removes one nesting level)      ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
@@ -331,19 +331,19 @@ customers.stream()
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│  DECISION:                                                       │
-│                                                                  │
+│  DECISION:                                                      │
+│                                                                 │
 │  Your function returns ONE thing?     → map()                   │
 │    name → name.toUpperCase()         (String → String)          │
 │    user → user.getAge()              (User → Integer)           │
-│                                                                  │
+│                                                                 │
 │  Your function returns a COLLECTION?  → flatMap()               │
 │    user → user.getOrders()           (User → List<Order>)       │
 │    line → Arrays.asList(line.split(" "))  (String → List)       │
 │    optional → optional.stream()      (Optional → Stream)        │
-│                                                                  │
-│  Your function returns an OPTIONAL?   → flatMap() (Java 9+)    │
-│    Stream<Optional<T>> → flatMap(Optional::stream) → Stream<T> │
+│                                                                 │
+│  Your function returns an OPTIONAL?   → flatMap() (Java 9+)     │
+│    Stream<Optional<T>> → flatMap(Optional::stream) → Stream<T>  │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -363,21 +363,21 @@ customers.stream()
 ║  reduce() is like rolling a snowball downhill:                   ║
 ║                                                                  ║
 ║  identity (starting snowball) = 0                                ║
-║  accumulator (pick up snow as you roll) = (sum, next) -> sum+n  ║
+║  accumulator (pick up snow as you roll) = (sum, next) -> sum+n   ║
 ║                                                                  ║
-║  Elements: [3, 7, 2, 5]                                         ║
+║  Elements: [3, 7, 2, 5]                                          ║
 ║                                                                  ║
-║  Step 1: snowball=0, pick up 3  → snowball=3                   ║
-║  Step 2: snowball=3, pick up 7  → snowball=10                  ║
-║  Step 3: snowball=10, pick up 2 → snowball=12                  ║
-║  Step 4: snowball=12, pick up 5 → snowball=17                  ║
+║  Step 1: snowball=0, pick up 3  → snowball=3                     ║
+║  Step 2: snowball=3, pick up 7  → snowball=10                    ║
+║  Step 3: snowball=10, pick up 2 → snowball=12                    ║
+║  Step 4: snowball=12, pick up 5 → snowball=17                    ║
 ║                                                                  ║
 ║  Result: 17                                                      ║
 ║                                                                  ║
 ║  THREE FORMS:                                                    ║
-║  reduce(BinaryOperator)           → Optional<T>                 ║
-║  reduce(identity, BinaryOperator) → T                           ║
-║  reduce(identity, accumulator, combiner) → U (for parallel)    ║
+║  reduce(BinaryOperator)           → Optional<T>                  ║
+║  reduce(identity, BinaryOperator) → T                            ║
+║  reduce(identity, accumulator, combiner) → U (for parallel)      ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
@@ -413,24 +413,24 @@ int totalLength = words.stream()
 ### reduce() vs collect() — When to Use Which
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  reduce() = combine all into ONE value                          │
-│    Sum, product, min, max, concatenation                        │
-│    → Creates NEW object each step (immutable accumulation)      │
-│                                                                  │
-│  collect() = pour all into a MUTABLE CONTAINER                  │
-│    List, Map, Set, StringBuilder, custom object                 │
-│    → MUTATES the container (mutable accumulation)               │
-│                                                                  │
-│  WHY THE DISTINCTION?                                            │
-│  reduce() with String concat: "a" + "b" → new "ab" + "c" → "abc"│
-│    → Creates N new String objects = O(n²) for strings!          │
-│                                                                  │
-│  collect() with StringBuilder: sb.append("a").append("b")...   │
-│    → Mutates ONE object = O(n)                                  │
-│                                                                  │
+┌────────────────────────────────────────────────────────────────────┐
+│  reduce() = combine all into ONE value                             │
+│    Sum, product, min, max, concatenation                           │
+│    → Creates NEW object each step (immutable accumulation)         │
+│                                                                    │
+│  collect() = pour all into a MUTABLE CONTAINER                     │
+│    List, Map, Set, StringBuilder, custom object                    │
+│    → MUTATES the container (mutable accumulation)                  │
+│                                                                    │
+│  WHY THE DISTINCTION?                                              │
+│  reduce() with String concat: "a" + "b" → new "ab" + "c" → "abc"   │
+│    → Creates N new String objects = O(n²) for strings!             │
+│                                                                    │
+│  collect() with StringBuilder: sb.append("a").append("b")...       │
+│    → Mutates ONE object = O(n)                                     │
+│                                                                    │
 │  RULE: Building a collection? Use collect(). Single value? reduce()│
-└─────────────────────────────────────────────────────────────────┘
+└────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -448,19 +448,19 @@ int totalLength = words.stream()
 ║                                                                  ║
 ║  A Collector has 4 jobs (like 4 assembly line workers):          ║
 ║                                                                  ║
-║  1. supplier()    → "Bring an empty box"                        ║
+║  1. supplier()    → "Bring an empty box"                         ║
 ║                      () -> new ArrayList<>()                     ║
 ║                                                                  ║
-║  2. accumulator() → "Put each item in the box"                  ║
-║                      (list, item) -> list.add(item)             ║
+║  2. accumulator() → "Put each item in the box"                   ║
+║                      (list, item) -> list.add(item)              ║
 ║                                                                  ║
-║  3. combiner()    → "Merge two boxes into one" (for parallel)   ║
-║                      (list1, list2) -> { list1.addAll(list2); } ║
+║  3. combiner()    → "Merge two boxes into one" (for parallel)    ║
+║                      (list1, list2) -> { list1.addAll(list2); }  ║
 ║                                                                  ║
-║  4. finisher()    → "Seal the box and label it"                 ║
+║  4. finisher()    → "Seal the box and label it"                  ║
 ║                      list -> Collections.unmodifiableList(list)  ║
 ║                                                                  ║
-║  + characteristics() → hints: CONCURRENT? UNORDERED? IDENTITY?  ║
+║  + characteristics() → hints: CONCURRENT? UNORDERED? IDENTITY?   ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
@@ -537,22 +537,22 @@ Map<String, Long> countByDept = employees.stream()
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
-║  THE COOKING ANALOGY — When More Chefs HURT                     ║
+║  THE COOKING ANALOGY — When More Chefs HURT                      ║
 ║                                                                  ║
-║  Sequential: 1 chef makes 100 dishes — predictable, orderly    ║
-║  Parallel: 10 chefs share 1 kitchen — CHAOS potential!         ║
+║  Sequential: 1 chef makes 100 dishes — predictable, orderly      ║
+║  Parallel: 10 chefs share 1 kitchen — CHAOS potential!           ║
 ║                                                                  ║
-║  WHEN 10 CHEFS HELP:                                            ║
-║  → Independent tasks (each chef has own station)                ║
-║  → CPU-heavy work (chopping, mixing — not waiting)              ║
-║  → Large dataset (100+ dishes, not 5)                           ║
+║  WHEN 10 CHEFS HELP:                                             ║
+║  → Independent tasks (each chef has own station)                 ║
+║  → CPU-heavy work (chopping, mixing — not waiting)               ║
+║  → Large dataset (100+ dishes, not 5)                            ║
 ║                                                                  ║
-║  WHEN 10 CHEFS HURT:                                            ║
-║  → Shared equipment (one oven = one bottle neck = contention)   ║
-║  → Small tasks (overhead of coordinating > time saved)          ║
-║  → IO-bound (everyone waits for the same delivery truck)        ║
-║  → Order matters (dish 1 must finish before dish 2 starts)      ║
-║  → Shared state mutation (two chefs grabbing same salt = bug)   ║
+║  WHEN 10 CHEFS HURT:                                             ║
+║  → Shared equipment (one oven = one bottle neck = contention)    ║
+║  → Small tasks (overhead of coordinating > time saved)           ║
+║  → IO-bound (everyone waits for the same delivery truck)         ║
+║  → Order matters (dish 1 must finish before dish 2 starts)       ║
+║  → Shared state mutation (two chefs grabbing same salt = bug)    ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
@@ -596,21 +596,21 @@ list.parallelStream()
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │  USE parallelStream() WHEN ALL ARE TRUE:                        │
-│                                                                  │
-│  ✅ Dataset > 10,000 elements (overhead worth it)               │
+│                                                                 │
+│  ✅ Dataset > 10,000 elements (overhead worth it)                │
 │  ✅ CPU-intensive computation per element                        │
-│  ✅ Data source splits cheaply (ArrayList, array, IntStream)    │
-│  ✅ No shared mutable state                                     │
-│  ✅ Order doesn't matter (or you accept ordering overhead)      │
-│  ✅ No blocking IO                                              │
-│                                                                  │
+│  ✅ Data source splits cheaply (ArrayList, array, IntStream)     │
+│  ✅ No shared mutable state                                      │
+│  ✅ Order doesn't matter (or you accept ordering overhead)       │
+│  ✅ No blocking IO                                               │
+│                                                                 │
 │  NEVER USE WHEN:                                                │
-│  ❌ < 1000 elements (overhead dominates)                        │
-│  ❌ LinkedList source (can't split efficiently)                 │
-│  ❌ Blocking IO (starves common ForkJoinPool)                   │
-│  ❌ Side effects (println, writing to shared list)              │
-│  ❌ In a web server (common pool shared across ALL requests!)   │
-│                                                                  │
+│  ❌ < 1000 elements (overhead dominates)                         │
+│  ❌ LinkedList source (can't split efficiently)                  │
+│  ❌ Blocking IO (starves common ForkJoinPool)                    │
+│  ❌ Side effects (println, writing to shared list)               │
+│  ❌ In a web server (common pool shared across ALL requests!)    │
+│                                                                 │
 │  CUSTOM POOL WORKAROUND:                                        │
 │  ForkJoinPool custom = new ForkJoinPool(4);                     │
 │  custom.submit(() ->                                            │
@@ -632,28 +632,28 @@ list.parallelStream()
 ║  HOW THE JVM FUSES OPERATIONS                                    ║
 ║                                                                  ║
 ║  Your code:                                                      ║
-║    .filter(x -> x > 10).map(x -> x * 2).collect(toList())     ║
+║    .filter(x -> x > 10).map(x -> x * 2).collect(toList())        ║
 ║                                                                  ║
 ║  Naive execution (3 loops):                                      ║
-║    Loop 1: filter all → temp list                               ║
-║    Loop 2: map all → temp list                                  ║
-║    Loop 3: collect → result                                     ║
+║    Loop 1: filter all → temp list                                ║
+║    Loop 2: map all → temp list                                   ║
+║    Loop 3: collect → result                                      ║
 ║                                                                  ║
-║  Actual execution (FUSED into 1 loop):                          ║
-║    for (int x : source) {                                       ║
-║        if (x > 10) {           // filter inline                 ║
-║            result.add(x * 2);  // map + collect inline          ║
+║  Actual execution (FUSED into 1 loop):                           ║
+║    for (int x : source) {                                        ║
+║        if (x > 10) {           // filter inline                  ║
+║            result.add(x * 2);  // map + collect inline           ║
 ║        }                                                         ║
 ║    }                                                             ║
 ║                                                                  ║
 ║  This is called LOOP FUSION:                                     ║
-║  → No intermediate collections created                          ║
-║  → Single pass through data                                     ║
-║  → Better cache locality (process each element completely)      ║
+║  → No intermediate collections created                           ║
+║  → Single pass through data                                      ║
+║  → Better cache locality (process each element completely)       ║
 ║                                                                  ║
-║  EXCEPT when a stateful operation (sorted, distinct) appears:   ║
-║  → Pipeline splits into segments at each stateful op            ║
-║  → Each segment fuses internally, but barriers between them     ║
+║  EXCEPT when a stateful operation (sorted, distinct) appears:    ║
+║  → Pipeline splits into segments at each stateful op             ║
+║  → Each segment fuses internally, but barriers between them      ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
@@ -668,19 +668,19 @@ list.parallelStream()
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
-║  THE GIFT BOX vs EMPTY BOX ANALOGY                              ║
+║  THE GIFT BOX vs EMPTY BOX ANALOGY                               ║
 ║                                                                  ║
-║  null = Someone handed you NOTHING and said "here's a thing"    ║
-║         You reach for the thing → NPE (you grabbed air)         ║
+║  null = Someone handed you NOTHING and said "here's a thing"     ║
+║         You reach for the thing → NPE (you grabbed air)          ║
 ║                                                                  ║
 ║  Optional = Someone hands you a box.                             ║
-║            → Box might contain a value (Optional.of(value))     ║
-║            → Box might be empty (Optional.empty())              ║
-║            → The BOX ITSELF is never null                       ║
-║            → You MUST check before reaching in                  ║
+║            → Box might contain a value (Optional.of(value))      ║
+║            → Box might be empty (Optional.empty())               ║
+║            → The BOX ITSELF is never null                        ║
+║            → You MUST check before reaching in                   ║
 ║                                                                  ║
-║  Optional FORCES you to handle the absence case.                ║
-║  null lets you FORGET.                                          ║
+║  Optional FORCES you to handle the absence case.                 ║
+║  null lets you FORGET.                                           ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
@@ -728,30 +728,30 @@ return optional.map(transform).orElseThrow();
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
-║  THE 4 TYPES — And Why Each Exists                              ║
+║  THE 4 TYPES — And Why Each Exists                               ║
 ║                                                                  ║
-║  1. Static method:    ClassName::staticMethod                   ║
-║     Lambda:           x -> Math.abs(x)                          ║
-║     Reference:        Math::abs                                 ║
-║     Think:            "Call this class's static function"       ║
+║  1. Static method:    ClassName::staticMethod                    ║
+║     Lambda:           x -> Math.abs(x)                           ║
+║     Reference:        Math::abs                                  ║
+║     Think:            "Call this class's static function"        ║
 ║                                                                  ║
-║  2. Instance method (bound):  instance::method                  ║
-║     Lambda:           x -> System.out.println(x)               ║
-║     Reference:        System.out::println                       ║
-║     Think:            "Call THIS object's method"               ║
+║  2. Instance method (bound):  instance::method                   ║
+║     Lambda:           x -> System.out.println(x)                 ║
+║     Reference:        System.out::println                        ║
+║     Think:            "Call THIS object's method"                ║
 ║                                                                  ║
-║  3. Instance method (unbound):  ClassName::instanceMethod       ║
-║     Lambda:           s -> s.toUpperCase()                      ║
-║     Reference:        String::toUpperCase                       ║
-║     Think:            "Call the method ON the stream element"   ║
-║     ⚠️ First param becomes the receiver:                        ║
-║        (s) -> s.toUpperCase() == String::toUpperCase            ║
-║        (a, b) -> a.compareTo(b) == String::compareTo           ║
+║  3. Instance method (unbound):  ClassName::instanceMethod        ║
+║     Lambda:           s -> s.toUpperCase()                       ║
+║     Reference:        String::toUpperCase                        ║
+║     Think:            "Call the method ON the stream element"    ║
+║     ⚠️ First param becomes the receiver:                         ║
+║        (s) -> s.toUpperCase() == String::toUpperCase             ║
+║        (a, b) -> a.compareTo(b) == String::compareTo             ║
 ║                                                                  ║
-║  4. Constructor:      ClassName::new                            ║
-║     Lambda:           () -> new ArrayList<>()                   ║
-║     Reference:        ArrayList::new                            ║
-║     Think:            "Create a new instance"                   ║
+║  4. Constructor:      ClassName::new                             ║
+║     Lambda:           () -> new ArrayList<>()                    ║
+║     Reference:        ArrayList::new                             ║
+║     Think:            "Create a new instance"                    ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 

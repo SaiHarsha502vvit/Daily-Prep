@@ -36,17 +36,17 @@
 ║  You have a house at 123 Main St.                                ║
 ║  You give me a COPY of the address (not the keys).               ║
 ║                                                                  ║
-║  I can VISIT the house and rearrange furniture inside:            ║
-║    → modifyObject(dog) → dog.name = "Max" → ORIGINAL changes    ║
+║  I can VISIT the house and rearrange furniture inside:           ║
+║    → modifyObject(dog) → dog.name = "Max" → ORIGINAL changes     ║
 ║                                                                  ║
-║  But I CANNOT demolish your house and build a new one:            ║
+║  But I CANNOT demolish your house and build a new one:           ║
 ║    → dog = new Dog("Rex") → only MY copy of the address changes  ║
-║    → YOUR original variable still points to the old house         ║
+║    → YOUR original variable still points to the old house        ║
 ║                                                                  ║
 ║  Java ALWAYS passes a COPY of the value.                         ║
 ║  For primitives: copy of the value (5, true, 'a')                ║
 ║  For objects: copy of the REFERENCE (the address), not the       ║
-║              object itself. The reference is passed BY VALUE.     ║
+║              object itself. The reference is passed BY VALUE.    ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
@@ -90,22 +90,22 @@ public class PassByValueDemo {
 ║                                                                  ║
 ║  String pool = A public library with ONE copy of each book       ║
 ║                                                                  ║
-║  String a = "hello"; → Library: "We have 'hello'. Here's the    ║
+║  String a = "hello"; → Library: "We have 'hello'. Here's the     ║
 ║                         reference to the SAME copy."             ║
 ║  String b = "hello"; → Library: "We already have 'hello'.        ║
 ║                         Here's the SAME reference."              ║
 ║  a == b → true! Same physical book (same object in pool)         ║
 ║                                                                  ║
-║  String c = new String("hello"); → "I don't want the library    ║
+║  String c = new String("hello"); → "I don't want the library     ║
 ║                         copy. Make me a PRIVATE copy."           ║
 ║  a == c → false! Different physical books (different objects)    ║
-║  a.equals(c) → true! Same content                               ║
+║  a.equals(c) → true! Same content                                ║
 ║                                                                  ║
 ║  WHY IMMUTABLE?                                                  ║
 ║  If anyone could change the library book, EVERYONE reading it    ║
 ║  would see the change. Immutability ensures sharing is safe.     ║
 ║  Also: security (class names, URLs), hashCode caching,           ║
-║  thread safety.                                                   ║
+║  thread safety.                                                  ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
@@ -147,13 +147,13 @@ System.out.println(original); // "hello" — unchanged!
 ║  → Use == (there's no .equals() for primitives)                  ║
 ║  → 5 == 5 is true. Simple.                                       ║
 ║                                                                  ║
-║  For OBJECTS (String, Integer, custom classes):                   ║
+║  For OBJECTS (String, Integer, custom classes):                  ║
 ║  → Use .equals() for content comparison                          ║
 ║  → == checks if they're literally the same object                ║
 ║                                                                  ║
 ║  CRITICAL: Default .equals() (from Object) uses ==               ║
 ║  You MUST override .equals() in your classes!                    ║
-║  And when you override equals, ALWAYS override hashCode too.    ║
+║  And when you override equals, ALWAYS override hashCode too.     ║
 ║  (HashMap depends on this contract)                              ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
@@ -200,14 +200,14 @@ class Point {
 ║  THE VIP LOUNGE ANALOGY                                          ║
 ║                                                                  ║
 ║  Java has a VIP lounge for "popular" integers: -128 to 127.      ║
-║  These 256 Integer objects are pre-created and CACHED.            ║
+║  These 256 Integer objects are pre-created and CACHED.           ║
 ║                                                                  ║
-║  Integer a = 127 → "127 is a VIP. Here's the cached object."    ║
-║  Integer b = 127 → "127 is a VIP. Here's the SAME cached one."  ║
+║  Integer a = 127 → "127 is a VIP. Here's the cached object."     ║
+║  Integer b = 127 → "127 is a VIP. Here's the SAME cached one."   ║
 ║  a == b → true (same object from cache!)                         ║
 ║                                                                  ║
-║  Integer c = 128 → "128 is NOT a VIP. Create a NEW object."     ║
-║  Integer d = 128 → "128 is NOT a VIP. Create ANOTHER object."   ║
+║  Integer c = 128 → "128 is NOT a VIP. Create a NEW object."      ║
+║  Integer d = 128 → "128 is NOT a VIP. Create ANOTHER object."    ║
 ║  c == d → false (different objects!)                             ║
 ║                                                                  ║
 ║  LESSON: NEVER use == with wrapper types.                        ║
@@ -248,16 +248,16 @@ System.out.println(c.equals(d)); // true  — always use this
 ║  List<Integer> at compile time → List at runtime                 ║
 ║  They're THE SAME class at runtime!                              ║
 ║                                                                  ║
-║  WHY? Java added generics in Java 5. Old code used raw List.    ║
+║  WHY? Java added generics in Java 5. Old code used raw List.     ║
 ║  To maintain backward compatibility, the JVM doesn't know        ║
 ║  about generic types — the compiler erases them.                 ║
 ║                                                                  ║
 ║  CONSEQUENCES:                                                   ║
-║  ❌ new T()            — T is erased, JVM doesn't know the type  ║
-║  ❌ instanceof T       — no type info at runtime                 ║
-║  ❌ T.class            — erased                                  ║
-║  ❌ new T[10]          — can't create generic arrays             ║
-║  ❌ catch T            — can't catch generic exceptions          ║
+║  ❌ new T()            — T is erased, JVM doesn't know the type   ║
+║  ❌ instanceof T       — no type info at runtime                  ║
+║  ❌ T.class            — erased                                   ║
+║  ❌ new T[10]          — can't create generic arrays              ║
+║  ❌ catch T            — can't catch generic exceptions           ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
@@ -305,11 +305,11 @@ Dog dog = create(Dog.class); // Works!
 ║     Put entry in Drawer 7.                                       ║
 ║                                                                  ║
 ║  2. PUT("Bob", 30):                                              ║
-║     hashCode("Bob") = 66965 → Drawer 5. No collision.           ║
+║     hashCode("Bob") = 66965 → Drawer 5. No collision.            ║
 ║                                                                  ║
-║  3. COLLISION: PUT("Celia", 28) → also maps to Drawer 7!        ║
+║  3. COLLISION: PUT("Celia", 28) → also maps to Drawer 7!         ║
 ║     Java 7: Linked list in that drawer. O(n) worst case.         ║
-║     Java 8+: If list > 8 entries, convert to RED-BLACK TREE.    ║
+║     Java 8+: If list > 8 entries, convert to RED-BLACK TREE.     ║
 ║              Now O(log n) instead of O(n).                       ║
 ║                                                                  ║
 ║  4. RESIZE: When 75% full (load factor 0.75), capacity           ║
@@ -350,9 +350,9 @@ Map<String, Integer> map = new HashMap<>(100); // avoids resizing
 ```
 ╔══════════════════════════════════════════════════════════════════╗
 ║  final VARIABLE → constant reference (but object can change!)    ║
-║    final List<String> list = new ArrayList<>();                   ║
+║    final List<String> list = new ArrayList<>();                  ║
 ║    list.add("hello");        // ✅ Modifying contents is fine     ║
-║    list = new ArrayList<>(); // ❌ Can't reassign the variable   ║
+║    list = new ArrayList<>(); // ❌ Can't reassign the variable    ║
 ║    ↑ Like a permanent parking spot — the car in it can change    ║
 ║      its color, but you can't move to a different spot.          ║
 ║                                                                  ║
@@ -377,7 +377,7 @@ Map<String, Integer> map = new HashMap<>(100); // avoids resizing
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
-║  CHECKED (compile-time) = "Expected problems you SHOULD handle" ║
+║  CHECKED (compile-time) = "Expected problems you SHOULD handle"  ║
 ║    IOException, SQLException, FileNotFoundException              ║
 ║    → Compiler FORCES try-catch or throws declaration             ║
 ║    → "The file might not exist. What's your Plan B?"             ║
@@ -387,7 +387,7 @@ Map<String, Integer> map = new HashMap<>(100); // avoids resizing
 ║    NullPointerException, ArrayIndexOutOfBoundsException          ║
 ║    → Compiler does NOT force handling                            ║
 ║    → "Your code has a bug. Fix it, don't catch it."              ║
-║    → Like tripping: fix the hazard, don't just put a cushion.   ║
+║    → Like tripping: fix the hazard, don't just put a cushion.    ║
 ║                                                                  ║
 ║  THE HIERARCHY:                                                  ║
 ║     Throwable                                                    ║
@@ -459,12 +459,12 @@ for (String s : list) {
 ║                                                                  ║
 ║  Iterator says: "I'm counting cards in a deck. Card 1... 2..."   ║
 ║  You: *removes a card from the middle*                           ║
-║  Iterator: "Wait — the deck changed! My count is wrong now!"    ║
-║  → Throws ConcurrentModificationException                       ║
+║  Iterator: "Wait — the deck changed! My count is wrong now!"     ║
+║  → Throws ConcurrentModificationException                        ║
 ║                                                                  ║
 ║  FAIL-FAST: Java collections track a modCount. The iterator      ║
 ║  checks modCount each step. If it changed (someone modified      ║
-║  the collection), it immediately fails rather than give           ║
+║  the collection), it immediately fails rather than give          ║
 ║  corrupt results.                                                ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
@@ -512,7 +512,7 @@ list.removeAll(toRemove);
 ║  synchronized = A room with ONE key (mutual exclusion)           ║
 ║  → Only ONE thread can enter at a time                           ║
 ║  → Provides both visibility AND atomicity                        ║
-║  → Use for: compound operations (check-then-act, read-modify-   ║
+║  → Use for: compound operations (check-then-act, read-modify-    ║
 ║    write). Heavier — threads must wait.                          ║
 ║                                                                  ║
 ║  Atomic (AtomicInteger, etc.) = Lock-free operations via CAS     ║
@@ -548,7 +548,7 @@ counter.incrementAndGet(); // ✅ Atomic, no lock needed
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
-║  PRE-JAVA 8: Clear distinction                                  ║
+║  PRE-JAVA 8: Clear distinction                                   ║
 ║  Abstract class = partial implementation + state                 ║
 ║  Interface = pure contract (all abstract)                        ║
 ║                                                                  ║
@@ -567,7 +567,7 @@ counter.incrementAndGet(); // ✅ Atomic, no lock needed
 ║  → NO constructors                                               ║
 ║  → Multiple inheritance (implements MANY)                        ║
 ║  → All methods are public                                        ║
-║  → CAN-DO relationship ("Dog CAN-DO Serializable")              ║
+║  → CAN-DO relationship ("Dog CAN-DO Serializable")               ║
 ║                                                                  ║
 ║  RULE: Use interface FIRST. Only use abstract class when you     ║
 ║  need shared STATE or constructors.                              ║
@@ -602,7 +602,7 @@ counter.incrementAndGet(); // ✅ Atomic, no lock needed
 ║                                                                  ║
 ║  ALGORITHMS:                                                     ║
 ║  G1: Default since Java 9. Divides heap into regions.            ║
-║  ZGC: Ultra-low pause (< 10ms). Java 15+.                       ║
+║  ZGC: Ultra-low pause (< 10ms). Java 15+.                        ║
 ║  Shenandoah: Concurrent compaction. OpenJDK.                     ║
 ║                                                                  ║
 ║  KEY: GC is NOT deterministic. System.gc() is a suggestion,      ║

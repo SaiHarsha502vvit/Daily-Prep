@@ -12,21 +12,21 @@
 PHYSICAL REALITY - Like a stack of plates:
 ┌────────────────────────────────────────────────────┐
 │                                                    │
-│   TOP →  ┌─────┐                                  │
-│          │  5  │  ← Last In, First Out (LIFO)     │
-│          ├─────┤                                  │
-│          │  4  │                                  │
-│          ├─────┤                                  │
-│          │  3  │                                  │
-│          ├─────┤                                  │
-│          │  2  │                                  │
-│          ├─────┤                                  │
-│          │  1  │                                  │
-│          └─────┘                                  │
+│   TOP →  ┌─────┐                                   │
+│          │  5  │  ← Last In, First Out (LIFO)      │
+│          ├─────┤                                   │
+│          │  4  │                                   │
+│          ├─────┤                                   │
+│          │  3  │                                   │
+│          ├─────┤                                   │
+│          │  2  │                                   │
+│          ├─────┤                                   │
+│          │  1  │                                   │
+│          └─────┘                                   │
 │                                                    │
-│   PUSH: Add to top                                │
-│   POP: Remove from top                            │
-│   PEEK: Look at top without removing              │
+│   PUSH: Add to top                                 │
+│   POP: Remove from top                             │
+│   PEEK: Look at top without removing               │
 │                                                    │
 └────────────────────────────────────────────────────┘
 ```
@@ -218,17 +218,17 @@ NOW USED IN:
 PHYSICAL REALITY - Like a line at a store:
 ┌────────────────────────────────────────────────────┐
 │                                                    │
-│  FRONT                               BACK         │
-│    ↓                                  ↓           │
-│  ┌───┬───┬───┬───┬───┐                           │
-│  │ 1 │ 2 │ 3 │ 4 │ 5 │                           │
-│  └───┴───┴───┴───┴───┘                           │
-│    ↑                 ↑                            │
-│  Dequeue          Enqueue                        │
-│  (Remove)         (Add)                          │
+│  FRONT                               BACK          │
+│    ↓                                  ↓            │
+│  ┌───┬───┬───┬───┬───┐                             │
+│  │ 1 │ 2 │ 3 │ 4 │ 5 │                             │
+│  └───┴───┴───┴───┴───┘                             │
+│    ↑                 ↑                             │
+│  Dequeue          Enqueue                          │
+│  (Remove)         (Add)                            │
 │                                                    │
-│  FIFO = First In, First Out                       │
-│  "First come, first served"                       │
+│  FIFO = First In, First Out                        │
+│  "First come, first served"                        │
 │                                                    │
 └────────────────────────────────────────────────────┘
 ```
@@ -263,7 +263,7 @@ SOLUTION - PRINT QUEUE:
 PRINT QUEUE:
 ┌────────────────────────────────────────┐
 │ Front                            Back  │
-│ [Job1] → [Job2] → [Job3] → [Job4]     │
+│ [Job1] → [Job2] → [Job3] → [Job4]      │
 │   ↑                              ↑     │
 │ Printing                    New jobs   │
 └────────────────────────────────────────┘

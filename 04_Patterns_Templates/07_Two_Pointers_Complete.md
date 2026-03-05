@@ -41,13 +41,13 @@
 Problem: Find pair with target sum in SORTED array
 
 Brute Force O(n²):                  Two Pointers O(n):
-┌────────────────────┐              ┌────────────────────┐
+┌────────────────────┐              ┌────────────────────────┐
 │ for i = 0 to n:    │              │ left → ... ... ← right │
-│   for j = i+1 to n:│              │                    │
-│     check(i,j)     │              │ Move based on sum: │
-│                    │              │ sum < target: left++  │
-│                    │              │ sum > target: right-- │
-└────────────────────┘              └────────────────────┘
+│   for j = i+1 to n:│              │                        │
+│     check(i,j)     │              │ Move based on sum:     │
+│                    │              │ sum < target: left++   │
+│                    │              │ sum > target: right--  │
+└────────────────────┘              └────────────────────────┘
 
 Array [1, 2, 4, 6, 8, 9], target = 10
 
@@ -66,25 +66,25 @@ Two Pointers: At most 6 moves
 │              TWO POINTER PATTERNS                               │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  1. OPPOSITE DIRECTION (Collision)                             │
-│     left →          ← right                                    │
-│     [....converging....]                                       │
-│     Use: Pair sum, palindrome, partition                       │
+│  1. OPPOSITE DIRECTION (Collision)                              │
+│     left →          ← right                                     │
+│     [....converging....]                                        │
+│     Use: Pair sum, palindrome, partition                        │
 │                                                                 │
-│  2. SAME DIRECTION (Fast/Slow or Reader/Writer)               │
-│     slow →                                                     │
+│  2. SAME DIRECTION (Fast/Slow or Reader/Writer)                 │
+│     slow →                                                      │
 │        fast →                                                   │
-│     Use: Remove duplicates, cycle detection, partition         │
+│     Use: Remove duplicates, cycle detection, partition          │
 │                                                                 │
-│  3. SLIDING WINDOW (Special Same Direction)                   │
-│     [left ... right]                                           │
+│  3. SLIDING WINDOW (Special Same Direction)                     │
+│     [left ... right]                                            │
 │     →         →                                                 │
-│     Use: Subarray/substring problems                           │
+│     Use: Subarray/substring problems                            │
 │                                                                 │
-│  4. MULTI-ARRAY (Merge Pattern)                               │
-│     Array A: p1 →                                              │
-│     Array B: p2 →                                              │
-│     Use: Merge, intersection, comparison                       │
+│  4. MULTI-ARRAY (Merge Pattern)                                 │
+│     Array A: p1 →                                               │
+│     Array B: p2 →                                               │
+│     Use: Merge, intersection, comparison                        │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -675,19 +675,19 @@ public int findDuplicate(int[] nums) {
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│           SLIDING WINDOW = TWO POINTERS + WINDOW STATE         │
+│           SLIDING WINDOW = TWO POINTERS + WINDOW STATE          │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │  Sliding Window Template:                                       │
 │                                                                 │
 │  left = 0                                                       │
-│  for right in range(n):                                        │
-│      # Expand: add element at right to window                  │
-│      window.add(arr[right])                                    │
+│  for right in range(n):                                         │
+│      # Expand: add element at right to window                   │
+│      window.add(arr[right])                                     │
 │                                                                 │
-│      # Shrink: while window is invalid/too large               │
+│      # Shrink: while window is invalid/too large                │
 │      while invalid(window):                                     │
-│          window.remove(arr[left])                              │
+│          window.remove(arr[left])                               │
 │          left++                                                 │
 │                                                                 │
 │      # Update answer if needed                                  │
@@ -1023,28 +1023,28 @@ public int numRescueBoats(int[] people, int limit) {
 │              TWO POINTER PROBLEM MAP                            │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  PAIR FINDING (Opposite Direction):                            │
-│  • Two Sum II, 3Sum, 4Sum, 3Sum Closest                        │
-│  • Container With Most Water                                   │
+│  PAIR FINDING (Opposite Direction):                             │
+│  • Two Sum II, 3Sum, 4Sum, 3Sum Closest                         │
+│  • Container With Most Water                                    │
 │                                                                 │
-│  PALINDROME/REVERSE:                                           │
-│  • Valid Palindrome I/II, Reverse String                       │
+│  PALINDROME/REVERSE:                                            │
+│  • Valid Palindrome I/II, Reverse String                        │
 │                                                                 │
-│  ARRAY MODIFICATION (Same Direction):                          │
-│  • Remove Duplicates I/II, Remove Element                      │
-│  • Move Zeroes, Sort Colors                                    │
+│  ARRAY MODIFICATION (Same Direction):                           │
+│  • Remove Duplicates I/II, Remove Element                       │
+│  • Move Zeroes, Sort Colors                                     │
 │                                                                 │
-│  LINKED LIST (Fast/Slow):                                      │
-│  • Cycle Detection I/II, Middle of List                        │
-│  • Find Duplicate Number, Happy Number                         │
+│  LINKED LIST (Fast/Slow):                                       │
+│  • Cycle Detection I/II, Middle of List                         │
+│  • Find Duplicate Number, Happy Number                          │
 │                                                                 │
 │  MERGE OPERATIONS:                                              │
-│  • Merge Sorted Arrays, Intersection                           │
+│  • Merge Sorted Arrays, Intersection                            │
 │  • Compare Strings                                              │
 │                                                                 │
 │  ADVANCED:                                                      │
-│  • Trapping Rain Water, Partition Labels                       │
-│  • Boats to Save People                                        │
+│  • Trapping Rain Water, Partition Labels                        │
+│  • Boats to Save People                                         │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -1162,23 +1162,23 @@ private int getNextValidIndex(String str, int index) {
 │              WHICH TWO POINTER PATTERN?                         │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  "Find pair/triplet with sum"                                  │
-│    → Opposite direction (sorted array)                         │
+│  "Find pair/triplet with sum"                                   │
+│    → Opposite direction (sorted array)                          │
 │                                                                 │
-│  "Remove/Move elements in-place"                               │
-│    → Same direction (reader-writer)                            │
+│  "Remove/Move elements in-place"                                │
+│    → Same direction (reader-writer)                             │
 │                                                                 │
-│  "Detect cycle" or "Find middle"                               │
-│    → Fast & slow pointers                                      │
+│  "Detect cycle" or "Find middle"                                │
+│    → Fast & slow pointers                                       │
 │                                                                 │
-│  "Substring/Subarray with condition"                           │
-│    → Sliding window (same direction)                           │
+│  "Substring/Subarray with condition"                            │
+│    → Sliding window (same direction)                            │
 │                                                                 │
-│  "Merge/Compare two arrays"                                    │
-│    → Multi-array two pointers                                  │
+│  "Merge/Compare two arrays"                                     │
+│    → Multi-array two pointers                                   │
 │                                                                 │
-│  "Maximize/Minimize something between two ends"                │
-│    → Opposite direction with greedy                            │
+│  "Maximize/Minimize something between two ends"                 │
+│    → Opposite direction with greedy                             │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -1228,16 +1228,16 @@ while (p1 < m && p2 < n) {
 │              TWO POINTER COMPLEXITIES                           │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  Two Sum II (sorted):        O(n) time, O(1) space             │
-│  3Sum:                       O(n²) time, O(1) space            │
-│  4Sum:                       O(n³) time, O(1) space            │
-│  Container With Most Water:  O(n) time, O(1) space             │
-│  Trapping Rain Water:        O(n) time, O(1) space             │
-│  Remove Duplicates:          O(n) time, O(1) space             │
-│  Linked List Cycle:          O(n) time, O(1) space             │
-│  Merge Sorted Arrays:        O(m+n) time, O(1) space           │
+│  Two Sum II (sorted):        O(n) time, O(1) space              │
+│  3Sum:                       O(n²) time, O(1) space             │
+│  4Sum:                       O(n³) time, O(1) space             │
+│  Container With Most Water:  O(n) time, O(1) space              │
+│  Trapping Rain Water:        O(n) time, O(1) space              │
+│  Remove Duplicates:          O(n) time, O(1) space              │
+│  Linked List Cycle:          O(n) time, O(1) space              │
+│  Merge Sorted Arrays:        O(m+n) time, O(1) space            │
 │                                                                 │
-│  Note: Two pointers often reduces O(n²) brute force to O(n)   │
+│  Note: Two pointers often reduces O(n²) brute force to O(n)     │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -1252,20 +1252,20 @@ while (p1 < m && p2 < n) {
 ╠═══════════════════════════════════════════════════════════════╣
 ║                                                               ║
 ║  1. IDENTIFY THE PATTERN                                      ║
-║     - Pair with sum → Opposite direction                     ║
-║     - In-place modify → Same direction (reader-writer)       ║
-║     - Cycle/Middle → Fast & slow                             ║
-║     - Merge/Compare → Multi-array                            ║
+║     - Pair with sum → Opposite direction                      ║
+║     - In-place modify → Same direction (reader-writer)        ║
+║     - Cycle/Middle → Fast & slow                              ║
+║     - Merge/Compare → Multi-array                             ║
 ║                                                               ║
 ║  2. KEY INSIGHTS                                              ║
-║     - SORTED array often enables two pointers                ║
-║     - Move pointer based on current state                    ║
-║     - Think: "Can I eliminate options by moving pointer?"    ║
+║     - SORTED array often enables two pointers                 ║
+║     - Move pointer based on current state                     ║
+║     - Think: "Can I eliminate options by moving pointer?"     ║
 ║                                                               ║
 ║  3. COMMON OPTIMIZATIONS                                      ║
-║     - Skip duplicates after finding match                    ║
-║     - Early termination when impossible                      ║
-║     - Process from END when merging in-place                 ║
+║     - Skip duplicates after finding match                     ║
+║     - Early termination when impossible                       ║
+║     - Process from END when merging in-place                  ║
 ║                                                               ║
 ║  4. EDGE CASES                                                ║
 ║     - Empty array                                             ║

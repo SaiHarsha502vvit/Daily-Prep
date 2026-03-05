@@ -99,7 +99,7 @@
 ║  3. SOURCE ORDER (if same specificity)                           ║
 ║     Last rule wins                                               ║
 ║                                                                  ║
-║  Most people only know step 2-3 and forget step 1 entirely.     ║
+║  Most people only know step 2-3 and forget step 1 entirely.      ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
@@ -118,22 +118,22 @@
 ║       (IDs)   (Classes)  (Elements)                              ║
 ║                                                                  ║
 ║  .nav ul li a:hover                                              ║
-║  A=0  B=2 (.nav, :hover)  C=3 (ul, li, a)                       ║
+║  A=0  B=2 (.nav, :hover)  C=3 (ul, li, a)                        ║
 ║  Score: (0, 2, 3)                                                ║
 ║                                                                  ║
 ║  #main a                                                         ║
 ║  A=1  B=0  C=1                                                   ║
 ║  Score: (1, 0, 1)                                                ║
 ║                                                                  ║
-║  (1,0,1) BEATS (0,2,3) because A column wins first.             ║
+║  (1,0,1) BEATS (0,2,3) because A column wins first.              ║
 ║  It's NOT a decimal: (0,11,0) does NOT become (1,1,0).           ║
 ║  Even 100 classes can't beat 1 ID.                               ║
 ║                                                                  ║
 ║  Where each thing goes:                                          ║
-║  A (IDs): #header, #main                                        ║
-║  B (Classes): .nav, [type="text"], :hover, :nth-child(2)        ║
+║  A (IDs): #header, #main                                         ║
+║  B (Classes): .nav, [type="text"], :hover, :nth-child(2)         ║
 ║  C (Elements): div, p, ::before, ::after                         ║
-║  NONE: *, +, ~, >, :where()                                     ║
+║  NONE: *, +, ~, >, :where()                                      ║
 ║  Special: :is(), :not() use their ARGUMENT's specificity         ║
 ║  Special: :where() always has 0 specificity                      ║
 ╚══════════════════════════════════════════════════════════════════╝
@@ -158,12 +158,12 @@
 ║  │ │ └──────────────────────────────────┘  │ │                   ║
 ║  │ └──────────────────────────────────────┘  │                   ║
 ║  └───────────────────────────────────────────┘                   ║
-║  Total width = 200 + 20+20 + 5+5 = 250px                        ║
+║  Total width = 200 + 20+20 + 5+5 = 250px                         ║
 ║  You said 200px... but the box is 250px. Confusing!              ║
 ║                                                                  ║
 ║  border-box (what everyone uses):                                ║
 ║  width: 200px means the WHOLE box is 200px.                      ║
-║  Content shrinks to fit: 200 - 20 - 20 - 5 - 5 = 150px         ║
+║  Content shrinks to fit: 200 - 20 - 20 - 5 - 5 = 150px           ║
 ║  "200px means 200px" — what you'd expect.                        ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
@@ -227,7 +227,7 @@
 ║  MARGIN COLLAPSE — The Personal Space Analogy                    ║
 ║                                                                  ║
 ║  Two people each want 20cm of personal space.                    ║
-║  They don't need 40cm between them — 20cm satisfies BOTH.       ║
+║  They don't need 40cm between them — 20cm satisfies BOTH.        ║
 ║                                                                  ║
 ║  Adjacent vertical margins COLLAPSE to the larger one:           ║
 ║  ┌──────────┐                                                    ║
@@ -239,17 +239,17 @@
 ║  └──────────┘                                                    ║
 ║                                                                  ║
 ║  WHEN IT HAPPENS:                                                ║
-║  ✅ Vertical margins (top/bottom) of block elements              ║
-║  ✅ Adjacent siblings                                            ║
-║  ✅ Parent-child (if no padding/border between them)             ║
-║  ✅ Empty blocks (own top and bottom margins collapse)           ║
+║  ✅ Vertical margins (top/bottom) of block elements               ║
+║  ✅ Adjacent siblings                                             ║
+║  ✅ Parent-child (if no padding/border between them)              ║
+║  ✅ Empty blocks (own top and bottom margins collapse)            ║
 ║                                                                  ║
 ║  WHEN IT DOESN'T:                                                ║
-║  ❌ Horizontal margins (left/right) — NEVER collapse             ║
-║  ❌ Flex/Grid items — margins don't collapse                     ║
-║  ❌ Elements with BFC boundary between them                      ║
-║  ❌ Floated or absolutely positioned elements                    ║
-║  ❌ Inline-block elements                                        ║
+║  ❌ Horizontal margins (left/right) — NEVER collapse              ║
+║  ❌ Flex/Grid items — margins don't collapse                      ║
+║  ❌ Elements with BFC boundary between them                       ║
+║  ❌ Floated or absolutely positioned elements                     ║
+║  ❌ Inline-block elements                                         ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
@@ -335,21 +335,21 @@
 ║                                        fine-tuned spacing        ║
 ║                                                                  ║
 ║  rem           Root font-size (html)   Font sizes, spacing,      ║
-║                Usually 16px            padding, margins.          ║
+║                Usually 16px            padding, margins.         ║
 ║                                        Scales with user prefs.   ║
 ║                                                                  ║
 ║  em            Parent's font-size      Spacing relative to       ║
 ║                                        current text size.        ║
 ║                ⚠️ Compounds! em in em   Beware nesting!          ║
-║                in em gets huge.                                   ║
+║                in em gets huge.                                  ║
 ║                                                                  ║
 ║  %             Parent's dimension      Fluid widths in layouts   ║
 ║                                                                  ║
 ║  vw/vh         1% of viewport          Full-screen sections,     ║
-║                width/height            hero banners               ║
-║                ⚠️ vh doesn't account                              ║
-║                for mobile URL bar!                                ║
-║                Use dvh instead.                                   ║
+║                width/height            hero banners              ║
+║                ⚠️ vh doesn't account                             ║
+║                for mobile URL bar!                               ║
+║                Use dvh instead.                                  ║
 ║                                                                  ║
 ║  ch            Width of '0' character  Input widths (20ch =      ║
 ║                                        roughly 20 characters)    ║
@@ -373,7 +373,7 @@
 ╔══════════════════════════════════════════════════════════════════╗
 ║  HOW THE BROWSER RENDERS (Pipeline):                             ║
 ║                                                                  ║
-║  Style → Layout → Paint → Composite                             ║
+║  Style → Layout → Paint → Composite                              ║
 ║                                                                  ║
 ║  REFLOW (Layout):                                                ║
 ║  Changing width, height, top, left, margin, padding, font-size   ║

@@ -195,7 +195,7 @@ CRITICAL PATTERN:
 │              │     DFS        │     BFS        │
 ├──────────────┼────────────────┼────────────────┤
 │ Data Struct  │ Stack/Recursion│ Queue          │
-│ Memory       │ O(h) height   │ O(w) width     │
+│ Memory       │ O(h) height   │ O(w) width      │
 │ Deep tree    │ Uses less mem  │ Uses more mem  │
 │ Wide tree    │ Uses more mem  │ Uses less mem  │
 │ Shortest path│ Not guaranteed │ YES (unweight) │

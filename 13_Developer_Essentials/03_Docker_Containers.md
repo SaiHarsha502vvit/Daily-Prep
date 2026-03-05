@@ -30,10 +30,10 @@ Container = Your application + ALL its dependencies
 
 ┌──────────────────────────────┐
 │         Container            │
-│  ┌──────┐ ┌──────┐ ┌──────┐ │
-│  │ Your │ │ Java │ │MySQL │ │
-│  │ App  │ │  17  │ │ 8.0  │ │
-│  └──────┘ └──────┘ └──────┘ │
+│  ┌──────┐ ┌──────┐ ┌──────┐  │
+│  │ Your │ │ Java │ │MySQL │  │
+│  │ App  │ │  17  │ │ 8.0  │  │
+│  └──────┘ └──────┘ └──────┘  │
 │  ┌──────────────────────────┐│
 │  │    Ubuntu 22.04 (base)   ││
 │  └──────────────────────────┘│
@@ -51,15 +51,15 @@ This container runs IDENTICALLY on:
 
 ```
 ┌─── VM ────────────────────┐    ┌─── Container ─────────────┐
-│ App A    App B    App C   │    │ App A    App B    App C    │
+│ App A    App B    App C   │    │ App A    App B    App C   │
 │ Bins/Libs Bins/Libs B/L   │    │ Bins/Libs Bins/Libs B/L   │
-│ Guest OS  Guest OS  G.OS  │    │                            │
-│ (Ubuntu)  (CentOS) (Deb)  │    │      Docker Engine         │
-│                           │    │                            │
-│      Hypervisor           │    │      Host OS (Linux)       │
-│      Host OS              │    │      Hardware              │
+│ Guest OS  Guest OS  G.OS  │    │                           │
+│ (Ubuntu)  (CentOS) (Deb)  │    │      Docker Engine        │
+│                           │    │                           │
+│      Hypervisor           │    │      Host OS (Linux)      │
+│      Host OS              │    │      Hardware             │
 │      Hardware             │    └────────────────────────────┘
-└───────────────────────────┘
+└────────────────────────────────────────────────────────────┘
                                   
 VM:        Heavy (GB), 30s startup, full OS per app
 Container: Light (MB), 1s startup, shared OS kernel

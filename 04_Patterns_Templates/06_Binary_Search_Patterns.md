@@ -27,10 +27,10 @@
 ║              BINARY SEARCH IN ONE SENTENCE                    ║
 ╠═══════════════════════════════════════════════════════════════╣
 ║                                                               ║
-║  "If the search space is MONOTONIC (sorted/ordered),         ║
+║  "If the search space is MONOTONIC (sorted/ordered),          ║
 ║   eliminate HALF of it each step."                            ║
 ║                                                               ║
-║  Time: O(log n)  —  From 1 billion → 30 comparisons          ║
+║  Time: O(log n)  —  From 1 billion → 30 comparisons           ║
 ║                                                               ║
 ╚═══════════════════════════════════════════════════════════════╝
 ```
@@ -46,12 +46,12 @@ Linear Search on 1,000,000 elements:
 
 Binary Search on 1,000,000 elements:
 ┌────────────────────────────────────────────────────┐
-│ 1,000,000 → 500,000 → 250,000 → 125,000 →         │
-│ 62,500 → 31,250 → 15,625 → 7,812 → 3,906 →        │
-│ 1,953 → 976 → 488 → 244 → 122 → 61 →              │
-│ 30 → 15 → 7 → 3 → 1                               │
+│ 1,000,000 → 500,000 → 250,000 → 125,000 →          │
+│ 62,500 → 31,250 → 15,625 → 7,812 → 3,906 →         │
+│ 1,953 → 976 → 488 → 244 → 122 → 61 →               │
+│ 30 → 15 → 7 → 3 → 1                                │
 │                                                    │
-│ Only ~20 comparisons! (log₂(1,000,000) ≈ 20)      │
+│ Only ~20 comparisons! (log₂(1,000,000) ≈ 20)       │
 └────────────────────────────────────────────────────┘
 ```
 
@@ -62,19 +62,19 @@ Binary Search on 1,000,000 elements:
 │           BINARY SEARCH APPLICABILITY                           │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  You need ONE of these properties:                             │
+│  You need ONE of these properties:                              │
 │                                                                 │
 │  1. SORTED ARRAY                                                │
 │     - Ascending or descending                                   │
 │     - Search for specific value or boundary                     │
 │                                                                 │
 │  2. MONOTONIC FUNCTION                                          │
-│     - f(x) is always increasing or always decreasing           │
-│     - Search for value where f(x) crosses threshold            │
+│     - f(x) is always increasing or always decreasing            │
+│     - Search for value where f(x) crosses threshold             │
 │                                                                 │
-│  3. SEARCH SPACE WITH BINARY PROPERTY                          │
-│     - Can eliminate half based on some condition               │
-│     - "Binary search on answer"                                │
+│  3. SEARCH SPACE WITH BINARY PROPERTY                           │
+│     - Can eliminate half based on some condition                │
+│     - "Binary search on answer"                                 │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -180,22 +180,22 @@ Uses:
 │              TEMPLATE QUICK REFERENCE                           │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  TEMPLATE 1: left <= right, left/right = mid ± 1               │
-│  Use for: Exact match                                          │
-│  Returns: Index of element or -1                               │
+│  TEMPLATE 1: left <= right, left/right = mid ± 1                │
+│  Use for: Exact match                                           │
+│  Returns: Index of element or -1                                │
 │                                                                 │
-│  TEMPLATE 2: left < right, right = mid                         │
-│  Use for: First position >= target                             │
-│  Returns: Insert position (0 to n)                             │
+│  TEMPLATE 2: left < right, right = mid                          │
+│  Use for: First position >= target                              │
+│  Returns: Insert position (0 to n)                              │
 │                                                                 │
-│  TEMPLATE 3: left < right, left = mid + 1                      │
-│  Use for: First position > target                              │
-│  Returns: Insert position (0 to n)                             │
+│  TEMPLATE 3: left < right, left = mid + 1                       │
+│  Use for: First position > target                               │
+│  Returns: Insert position (0 to n)                              │
 │                                                                 │
 │  KEY DIFFERENCES:                                               │
-│  • while condition: <= for T1, < for T2/T3                     │
-│  • right init: length-1 for T1, length for T2/T3              │
-│  • mid assignment: right = mid for T2, left = mid+1 for T3    │
+│  • while condition: <= for T1, < for T2/T3                      │
+│  • right init: length-1 for T1, length for T2/T3                │
+│  • mid assignment: right = mid for T2, left = mid+1 for T3      │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -507,18 +507,18 @@ public int peakIndexInMountainArray(int[] arr) {
 │           BINARY SEARCH ON ANSWER PATTERN                       │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  When: You're not searching IN an array, but searching FOR     │
-│        an optimal value in a range.                            │
+│  When: You're not searching IN an array, but searching FOR      │
+│        an optimal value in a range.                             │
 │                                                                 │
 │  Pattern:                                                       │
-│  1. Define search space: [min_possible, max_possible]          │
-│  2. Define feasibility function: canAchieve(answer)            │
-│  3. Binary search for boundary where answer becomes feasible   │
+│  1. Define search space: [min_possible, max_possible]           │
+│  2. Define feasibility function: canAchieve(answer)             │
+│  3. Binary search for boundary where answer becomes feasible    │
 │                                                                 │
 │  Examples:                                                      │
-│  • Minimum capacity to ship packages in D days                 │
+│  • Minimum capacity to ship packages in D days                  │
 │  • Maximum minimum distance between elements                    │
-│  • Kth smallest element in sorted matrix                       │
+│  • Kth smallest element in sorted matrix                        │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -1019,31 +1019,31 @@ if (nums[left] <= nums[mid])  // ✓
 │              BINARY SEARCH PROBLEM TYPES                        │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  BASIC (Template 1):                                           │
+│  BASIC (Template 1):                                            │
 │  - Binary Search, Search Insert Position                        │
 │                                                                 │
-│  BOUNDARY FINDING (Template 2/3):                              │
-│  - First/Last Position of Element                              │
-│  - First Bad Version, Find Smallest Letter                     │
+│  BOUNDARY FINDING (Template 2/3):                               │
+│  - First/Last Position of Element                               │
+│  - First Bad Version, Find Smallest Letter                      │
 │                                                                 │
-│  ROTATED ARRAY:                                                │
-│  - Search in Rotated Array I/II                                │
-│  - Find Minimum in Rotated Array I/II                          │
+│  ROTATED ARRAY:                                                 │
+│  - Search in Rotated Array I/II                                 │
+│  - Find Minimum in Rotated Array I/II                           │
 │                                                                 │
-│  PEAK FINDING:                                                 │
-│  - Find Peak Element, Mountain Array                           │
+│  PEAK FINDING:                                                  │
+│  - Find Peak Element, Mountain Array                            │
 │                                                                 │
-│  BINARY SEARCH ON ANSWER:                                      │
-│  - Ship Packages, Koko Bananas, Split Array                    │
-│  - Magnetic Force, Capacity to Ship                            │
+│  BINARY SEARCH ON ANSWER:                                       │
+│  - Ship Packages, Koko Bananas, Split Array                     │
+│  - Magnetic Force, Capacity to Ship                             │
 │                                                                 │
 │  2D MATRIX:                                                     │
-│  - Search 2D Matrix I/II                                       │
-│  - Kth Smallest in Sorted Matrix                               │
+│  - Search 2D Matrix I/II                                        │
+│  - Kth Smallest in Sorted Matrix                                │
 │                                                                 │
 │  ADVANCED:                                                      │
-│  - Median of Two Sorted Arrays                                 │
-│  - Longest Increasing Subsequence (with BS)                    │
+│  - Median of Two Sorted Arrays                                  │
+│  - Longest Increasing Subsequence (with BS)                     │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -1119,20 +1119,20 @@ public char nextGreatestLetter(char[] letters, char target) {
 │              WHICH TEMPLATE TO USE?                             │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  "Find exact element"                                          │
-│    → Template 1: left <= right                                 │
+│  "Find exact element"                                           │
+│    → Template 1: left <= right                                  │
 │                                                                 │
-│  "Find first position where condition is true"                 │
-│    → Template 2: left < right, right = mid                     │
+│  "Find first position where condition is true"                  │
+│    → Template 2: left < right, right = mid                      │
 │                                                                 │
-│  "Find last position where condition is true"                  │
-│    → Template 3: left < right, left = mid, upper mid           │
+│  "Find last position where condition is true"                   │
+│    → Template 3: left < right, left = mid, upper mid            │
 │                                                                 │
-│  "Minimize answer" (find smallest valid)                       │
-│    → Template 2 style                                          │
+│  "Minimize answer" (find smallest valid)                        │
+│    → Template 2 style                                           │
 │                                                                 │
-│  "Maximize answer" (find largest valid)                        │
-│    → Template 3 style (use upper mid)                          │
+│  "Maximize answer" (find largest valid)                         │
+│    → Template 3 style (use upper mid)                           │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -1165,13 +1165,13 @@ After coding:
 │              BINARY SEARCH COMPLEXITIES                         │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  Basic Binary Search:        O(log n) time, O(1) space         │
-│  Rotated Array Search:       O(log n) time, O(1) space         │
-│  Rotated Array w/ Dups:      O(n) worst, O(log n) average      │
-│  Binary Search on Answer:    O(log R × f(n)) where R = range   │
-│  2D Matrix (sorted):         O(log(m×n))                       │
-│  2D Matrix (row/col sorted): O(m + n)                          │
-│  Median of Two Arrays:       O(log min(m, n))                  │
+│  Basic Binary Search:        O(log n) time, O(1) space          │
+│  Rotated Array Search:       O(log n) time, O(1) space          │
+│  Rotated Array w/ Dups:      O(n) worst, O(log n) average       │
+│  Binary Search on Answer:    O(log R × f(n)) where R = range    │
+│  2D Matrix (sorted):         O(log(m×n))                        │
+│  2D Matrix (row/col sorted): O(m + n)                           │
+│  Median of Two Arrays:       O(log min(m, n))                   │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -1186,9 +1186,9 @@ After coding:
 ╠═══════════════════════════════════════════════════════════════╣
 ║                                                               ║
 ║  1. MEMORIZE THE 3 TEMPLATES                                  ║
-║     - T1: Exact match (left <= right)                        ║
-║     - T2: First true (left < right, right = mid)             ║
-║     - T3: Last true (left < right, left = mid, upper mid)    ║
+║     - T1: Exact match (left <= right)                         ║
+║     - T2: First true (left < right, right = mid)              ║
+║     - T3: Last true (left < right, left = mid, upper mid)     ║
 ║                                                               ║
 ║  2. BINARY SEARCH ON ANSWER                                   ║
 ║     - Define search space [min, max]                          ║
@@ -1200,9 +1200,9 @@ After coding:
 ║     - Check which half, then decide direction                 ║
 ║                                                               ║
 ║  4. AVOID COMMON BUGS                                         ║
-║     - Overflow: Use left + (right - left) / 2                ║
-║     - Infinite loop: Match update with while condition       ║
-║     - Off-by-one: right = length vs length - 1               ║
+║     - Overflow: Use left + (right - left) / 2                 ║
+║     - Infinite loop: Match update with while condition        ║
+║     - Off-by-one: right = length vs length - 1                ║
 ║                                                               ║
 ╚═══════════════════════════════════════════════════════════════╝
 ```

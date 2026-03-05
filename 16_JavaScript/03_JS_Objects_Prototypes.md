@@ -6,20 +6,20 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: Objects are JS's universal data structure. Prototypes are   ║
-║        JS's inheritance mechanism. Classes (ES6) are sugar on top. ║
-║                                                                    ║
-║  WHY:  Everything in JS is (or behaves like) an object.           ║
-║        Understanding prototypes explains: why [].map works,        ║
-║        how inheritance works, what `class` really does.            ║
-║                                                                    ║
-║  WHO:  Anyone doing JS — React props are objects, APIs return     ║
-║        objects, DOM elements are objects.                          ║
-║                                                                    ║
-║  WHEN: After understanding functions and closures (Ch 2).         ║
-║                                                                    ║
-║  HOW:  Every object has an internal [[Prototype]] link to another ║
-║        object. When you access a property, JS walks this chain.   ║
+║  WHAT: Objects are JS's universal data structure. Prototypes are     ║
+║        JS's inheritance mechanism. Classes (ES6) are sugar on top.   ║
+║                                                                      ║
+║  WHY:  Everything in JS is (or behaves like) an object.              ║
+║        Understanding prototypes explains: why [].map works,          ║
+║        how inheritance works, what `class` really does.              ║
+║                                                                      ║
+║  WHO:  Anyone doing JS — React props are objects, APIs return        ║
+║        objects, DOM elements are objects.                            ║
+║                                                                      ║
+║  WHEN: After understanding functions and closures (Ch 2).            ║
+║                                                                      ║
+║  HOW:  Every object has an internal [[Prototype]] link to another    ║
+║        object. When you access a property, JS walks this chain.      ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -76,20 +76,20 @@ const user5 = createPerson("Harsha", 24);
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  WHICH TO USE:                                                     ║
-║  ┌───────────────────┬────────────────────────────────────┐        ║
-║  │ Approach          │ When to Use                        │        ║
-║  ├───────────────────┼────────────────────────────────────┤        ║
-║  │ Object literal    │ One-off objects, configs, data     │        ║
-║  │ Class             │ Multiple instances, inheritance    │        ║
-║  │ Factory function  │ Privacy, no `this` confusion       │        ║
-║  │ Object.create     │ When you need specific prototype   │        ║
-║  │ Constructor fn    │ Legacy code only (use class)       │        ║
-║  └───────────────────┴────────────────────────────────────┘        ║
-║                                                                    ║
-║  REASONING: In React, you'll mostly use object literals (props,   ║
-║  state) and classes (old class components). Factory functions      ║
-║  avoid `this` problems entirely — good for utility modules.       ║
+║  WHICH TO USE:                                                       ║
+║  ┌───────────────────┬────────────────────────────────────┐          ║
+║  │ Approach          │ When to Use                        │          ║
+║  ├───────────────────┼────────────────────────────────────┤          ║
+║  │ Object literal    │ One-off objects, configs, data     │          ║
+║  │ Class             │ Multiple instances, inheritance    │          ║
+║  │ Factory function  │ Privacy, no `this` confusion       │          ║
+║  │ Object.create     │ When you need specific prototype   │          ║
+║  │ Constructor fn    │ Legacy code only (use class)       │          ║
+║  └───────────────────┴────────────────────────────────────┘          ║
+║                                                                      ║
+║  REASONING: In React, you'll mostly use object literals (props,      ║
+║  state) and classes (old class components). Factory functions        ║
+║  avoid `this` problems entirely — good for utility modules.          ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -145,24 +145,24 @@ person.firstName;          // "New"
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  LEVEL 1: Object.preventExtensions(obj)                           ║
-║  → Cannot ADD new properties. Can modify/delete existing.         ║
-║                                                                    ║
-║  LEVEL 2: Object.seal(obj)                                        ║
-║  → Cannot ADD or DELETE properties. CAN modify values.            ║
-║  (Sets configurable: false on all properties)                     ║
-║                                                                    ║
-║  LEVEL 3: Object.freeze(obj)                                      ║
-║  → Cannot ADD, DELETE, or MODIFY. Completely immutable.           ║
-║  (Sets writable: false AND configurable: false)                   ║
-║                                                                    ║
-║  ⚠ ALL THREE ARE SHALLOW! Nested objects are NOT frozen.         ║
-║                                                                    ║
-║  const obj = Object.freeze({ a: 1, b: { c: 2 } });              ║
-║  obj.a = 10;     // Silently fails ✅                             ║
-║  obj.b.c = 10;   // WORKS! ❌ b is not frozen                   ║
-║                                                                    ║
-║  For deep freeze, use structuredClone or a recursive freeze.      ║
+║  LEVEL 1: Object.preventExtensions(obj)                              ║
+║  → Cannot ADD new properties. Can modify/delete existing.            ║
+║                                                                      ║
+║  LEVEL 2: Object.seal(obj)                                           ║
+║  → Cannot ADD or DELETE properties. CAN modify values.               ║
+║  (Sets configurable: false on all properties)                        ║
+║                                                                      ║
+║  LEVEL 3: Object.freeze(obj)                                         ║
+║  → Cannot ADD, DELETE, or MODIFY. Completely immutable.              ║
+║  (Sets writable: false AND configurable: false)                      ║
+║                                                                      ║
+║  ⚠ ALL THREE ARE SHALLOW! Nested objects are NOT frozen.             ║
+║                                                                      ║
+║  const obj = Object.freeze({ a: 1, b: { c: 2 } });                   ║
+║  obj.a = 10;     // Silently fails ✅                                 ║
+║  obj.b.c = 10;   // WORKS! ❌ b is not frozen                         ║
+║                                                                      ║
+║  For deep freeze, use structuredClone or a recursive freeze.         ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -174,46 +174,46 @@ person.firstName;          // "New"
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: Every object has a hidden [[Prototype]] link to another    ║
-║        object. This forms a CHAIN (until null).                    ║
-║                                                                    ║
-║  WHY:  Memory efficiency. Instead of copying methods to every     ║
-║        instance, all instances SHARE methods via the prototype.    ║
-║        1000 users, 1 copy of greet() — not 1000 copies.          ║
-║                                                                    ║
-║  ANALOGY: Prototype chain is like a family tree.                  ║
-║  If you don't know something, ask your parent.                    ║
-║  If parent doesn't know, ask grandparent. Up to the root (null). ║
-║                                                                    ║
-║  HOW:  Access via Object.getPrototypeOf(obj) or obj.__proto__    ║
-║        (deprecated but widely known).                              ║
+║  WHAT: Every object has a hidden [[Prototype]] link to another       ║
+║        object. This forms a CHAIN (until null).                      ║
+║                                                                      ║
+║  WHY:  Memory efficiency. Instead of copying methods to every        ║
+║        instance, all instances SHARE methods via the prototype.      ║
+║        1000 users, 1 copy of greet() — not 1000 copies.              ║
+║                                                                      ║
+║  ANALOGY: Prototype chain is like a family tree.                     ║
+║  If you don't know something, ask your parent.                       ║
+║  If parent doesn't know, ask grandparent. Up to the root (null).     ║
+║                                                                      ║
+║  HOW:  Access via Object.getPrototypeOf(obj) or obj.__proto__        ║
+║        (deprecated but widely known).                                ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  PROTOTYPE CHAIN VISUALIZATION:                                    ║
-║                                                                    ║
-║  const arr = [1, 2, 3];                                           ║
-║                                                                    ║
-║  arr                                                               ║
-║   │ .__proto__                                                     ║
-║   ▼                                                                ║
-║  Array.prototype { map, filter, reduce, forEach, ... }            ║
-║   │ .__proto__                                                     ║
-║   ▼                                                                ║
-║  Object.prototype { toString, hasOwnProperty, valueOf, ... }      ║
-║   │ .__proto__                                                     ║
-║   ▼                                                                ║
-║  null  ← END OF CHAIN                                             ║
-║                                                                    ║
-║  When you call arr.map(), JS looks:                               ║
-║  1. Does arr have own property "map"? → No                        ║
-║  2. Does Array.prototype have "map"? → YES! Use it.               ║
-║                                                                    ║
-║  When you call arr.toString(), JS looks:                          ║
-║  1. arr → No  2. Array.prototype → has its own toString → Use it ║
-║  (If Array.prototype didn't have it, would go to Object.prototype)║
+║  PROTOTYPE CHAIN VISUALIZATION:                                      ║
+║                                                                      ║
+║  const arr = [1, 2, 3];                                              ║
+║                                                                      ║
+║  arr                                                                 ║
+║   │ .__proto__                                                       ║
+║   ▼                                                                  ║
+║  Array.prototype { map, filter, reduce, forEach, ... }               ║
+║   │ .__proto__                                                       ║
+║   ▼                                                                  ║
+║  Object.prototype { toString, hasOwnProperty, valueOf, ... }         ║
+║   │ .__proto__                                                       ║
+║   ▼                                                                  ║
+║  null  ← END OF CHAIN                                                ║
+║                                                                      ║
+║  When you call arr.map(), JS looks:                                  ║
+║  1. Does arr have own property "map"? → No                           ║
+║  2. Does Array.prototype have "map"? → YES! Use it.                  ║
+║                                                                      ║
+║  When you call arr.toString(), JS looks:                             ║
+║  1. arr → No  2. Array.prototype → has its own toString → Use it     ║
+║  (If Array.prototype didn't have it, would go to Object.prototype)   ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -312,21 +312,21 @@ rex.showTricks();     // "sit"
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  CLASS ≡ PROTOTYPE (what class actually does):                    ║
-║                                                                    ║
-║  class Dog extends Animal { bark() {} }                           ║
-║                                                                    ║
-║  IS EXACTLY THE SAME AS:                                          ║
-║                                                                    ║
-║  function Dog(name, breed) { Animal.call(this, name); ... }       ║
-║  Dog.prototype = Object.create(Animal.prototype);                 ║
-║  Dog.prototype.constructor = Dog;                                 ║
-║  Dog.prototype.bark = function() {};                              ║
-║                                                                    ║
-║  REASONING: `class` doesn't add new behavior to JS. It's just    ║
-║  cleaner syntax for the prototype pattern. Under the hood, it's   ║
-║  still prototypes. But class syntax prevents common mistakes       ║
-║  like forgetting to set constructor.                               ║
+║  CLASS ≡ PROTOTYPE (what class actually does):                       ║
+║                                                                      ║
+║  class Dog extends Animal { bark() {} }                              ║
+║                                                                      ║
+║  IS EXACTLY THE SAME AS:                                             ║
+║                                                                      ║
+║  function Dog(name, breed) { Animal.call(this, name); ... }          ║
+║  Dog.prototype = Object.create(Animal.prototype);                    ║
+║  Dog.prototype.constructor = Dog;                                    ║
+║  Dog.prototype.bark = function() {};                                 ║
+║                                                                      ║
+║  REASONING: `class` doesn't add new behavior to JS. It's just        ║
+║  cleaner syntax for the prototype pattern. Under the hood, it's      ║
+║  still prototypes. But class syntax prevents common mistakes         ║
+║  like forgetting to set constructor.                                 ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -460,24 +460,24 @@ for (const n of range) console.log(n); // 1, 2, 3, 4, 5
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  ┌──────────────────┬──────────────────┬──────────────────┐        ║
-║  │ Feature          │ JavaScript       │ Java             │        ║
-║  ├──────────────────┼──────────────────┼──────────────────┤        ║
-║  │ Typing           │ Dynamic          │ Static           │        ║
-║  │ Inheritance      │ Prototype-based  │ Class-based      │        ║
-║  │ Class keyword    │ Sugar over proto │ Real class       │        ║
-║  │ Private fields   │ # prefix (new)   │ private keyword  │        ║
-║  │ Interfaces       │ None (use TS)    │ interface keyword│        ║
-║  │ Multiple inherit │ Mixins/compose   │ Interfaces only  │        ║
-║  │ Object creation  │ Literal {}, new  │ new only         │        ║
-║  │ Property access  │ Dynamic (obj[x]) │ Fixed at compile │        ║
-║  │ this keyword     │ Changes by call  │ Always instance  │        ║
-║  │ Null safety      │ ?. operator      │ Optional (Java17)│        ║
-║  └──────────────────┴──────────────────┴──────────────────┘        ║
-║                                                                    ║
-║  KEY INSIGHT: In Java, the class defines the shape forever.       ║
-║  In JS, objects are "bags of properties" — you can add/remove     ║
-║  properties at any time. More flexible, but less safe.            ║
+║  ┌──────────────────┬──────────────────┬──────────────────┐          ║
+║  │ Feature          │ JavaScript       │ Java             │          ║
+║  ├──────────────────┼──────────────────┼──────────────────┤          ║
+║  │ Typing           │ Dynamic          │ Static           │          ║
+║  │ Inheritance      │ Prototype-based  │ Class-based      │          ║
+║  │ Class keyword    │ Sugar over proto │ Real class       │          ║
+║  │ Private fields   │ # prefix (new)   │ private keyword  │          ║
+║  │ Interfaces       │ None (use TS)    │ interface keyword│          ║
+║  │ Multiple inherit │ Mixins/compose   │ Interfaces only  │          ║
+║  │ Object creation  │ Literal {}, new  │ new only         │          ║
+║  │ Property access  │ Dynamic (obj[x]) │ Fixed at compile │          ║
+║  │ this keyword     │ Changes by call  │ Always instance  │          ║
+║  │ Null safety      │ ?. operator      │ Optional (Java17)│          ║
+║  └──────────────────┴──────────────────┴──────────────────┘          ║
+║                                                                      ║
+║  KEY INSIGHT: In Java, the class defines the shape forever.          ║
+║  In JS, objects are "bags of properties" — you can add/remove        ║
+║  properties at any time. More flexible, but less safe.               ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 

@@ -128,20 +128,20 @@ public class DoublyLinkedList {
 #### WHY Quick Sort?
 
 ```
-┌────────────────────────────────────────────────────────────────┐
-│  COMPARISON OF SORTING ALGORITHMS (what you know so far):      │
+┌─────────────────────────────────────────────────────────────────┐
+│  COMPARISON OF SORTING ALGORITHMS (what you know so far):       │
 │                                                                 │
 │  Algorithm       │ Best    │ Average  │ Worst   │ Space │ Stable│
 │  ─────────────────────────────────────────────────────────────  │
-│  Selection Sort  │ O(n²)   │ O(n²)    │ O(n²)   │ O(1) │  No  │
-│  Insertion Sort  │ O(n)    │ O(n²)    │ O(n²)   │ O(1) │  Yes │
-│  Bubble Sort     │ O(n)    │ O(n²)    │ O(n²)   │ O(1) │  Yes │
-│  Merge Sort      │ O(nlogn)│ O(nlogn) │ O(nlogn)│ O(n) │  Yes │
-│  Quick Sort      │ O(nlogn)│ O(nlogn) │ O(n²)   │ O(logn)│ No │
+│  Selection Sort  │ O(n²)   │ O(n²)    │ O(n²)   │ O(1) │  No    │
+│  Insertion Sort  │ O(n)    │ O(n²)    │ O(n²)   │ O(1) │  Yes   │
+│  Bubble Sort     │ O(n)    │ O(n²)    │ O(n²)   │ O(1) │  Yes   │
+│  Merge Sort      │ O(nlogn)│ O(nlogn) │ O(nlogn)│ O(n) │  Yes   │
+│  Quick Sort      │ O(nlogn)│ O(nlogn) │ O(n²)   │ O(logn)│ No   │
 │                                                                 │
-│  Quick Sort wins: in-place (O(log n) stack) + cache-friendly   │
-│  Java's Arrays.sort(int[]) uses Dual-Pivot Quick Sort          │
-└────────────────────────────────────────────────────────────────┘
+│  Quick Sort wins: in-place (O(log n) stack) + cache-friendly    │
+│  Java's Arrays.sort(int[]) uses Dual-Pivot Quick Sort           │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
 #### HOW: Partition then Recurse

@@ -11,39 +11,39 @@
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHY: Why JPA/Hibernate is Essential?                                           │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • ORM magic: Map Java objects to database tables automatically                │
-│  • Type-safe queries: No more SQL string errors at runtime                    │
-│  • Database-agnostic: Switch MySQL/PostgreSQL without code changes            │
-│  • Interview essential: "Explain lazy loading" asked in every interview       │
-│  • N+1 problem: Understanding it prevents production nightmares               │
+│  • ORM magic: Map Java objects to database tables automatically                 │
+│  • Type-safe queries: No more SQL string errors at runtime                      │
+│  • Database-agnostic: Switch MySQL/PostgreSQL without code changes              │
+│  • Interview essential: "Explain lazy loading" asked in every interview         │
+│  • N+1 problem: Understanding it prevents production nightmares                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  HOW: How JPA Maps Objects to Database?                                         │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • @Entity: Class → Table, Fields → Columns                                    │
-│  • Relationships: @OneToMany, @ManyToOne, @ManyToMany                          │
-│  • Spring Data: findByX() methods auto-implemented                            │
-│  • @Query: Custom JPQL or native SQL when needed                               │
-│  • Transactions: @Transactional manages commit/rollback                        │
+│  • @Entity: Class → Table, Fields → Columns                                     │
+│  • Relationships: @OneToMany, @ManyToOne, @ManyToMany                           │
+│  • Spring Data: findByX() methods auto-implemented                              │
+│  • @Query: Custom JPQL or native SQL when needed                                │
+│  • Transactions: @Transactional manages commit/rollback                         │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHEN: When to Use Different Query Strategies?                                  │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • findByX(): Simple lookups (findByEmail, findByStatus)                       │
-│  • @Query JPQL: Complex joins, aggregations                                    │
-│  • Native SQL: Database-specific features, performance                        │
-│  • Specifications: Dynamic queries with many optional filters                  │
-│  • Projections: Return only needed columns for performance                    │
+│  • findByX(): Simple lookups (findByEmail, findByStatus)                        │
+│  • @Query JPQL: Complex joins, aggregations                                     │
+│  • Native SQL: Database-specific features, performance                          │
+│  • Specifications: Dynamic queries with many optional filters                   │
+│  • Projections: Return only needed columns for performance                      │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHICH: Which JPA Concepts to Master?                                           │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  ESSENTIAL:     @Entity, relationships, JpaRepository, @Transactional          │
-│  IMPORTANT:     Lazy/Eager loading, N+1 problem, @Query, cascading             │
-│  ADVANCED:      Specifications, EntityManager, second-level cache              │
+│  ESSENTIAL:     @Entity, relationships, JpaRepository, @Transactional           │
+│  IMPORTANT:     Lazy/Eager loading, N+1 problem, @Query, cascading              │
+│  ADVANCED:      Specifications, EntityManager, second-level cache               │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -59,41 +59,41 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    JDBC vs JPA COMPARISON                                        │
+│                    JDBC vs JPA COMPARISON                                       │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  RAW JDBC (Boilerplate hell):                                                   │
-│                                                                                  │
+│                                                                                 │
 │  public User findById(Long id) {                                                │
-│      String sql = "SELECT * FROM users WHERE id = ?";                          │
-│      try (Connection conn = dataSource.getConnection();                        │
-│           PreparedStatement ps = conn.prepareStatement(sql)) {                 │
-│          ps.setLong(1, id);                                                    │
-│          ResultSet rs = ps.executeQuery();                                     │
-│          if (rs.next()) {                                                      │
-│              User user = new User();                                           │
-│              user.setId(rs.getLong("id"));                                     │
-│              user.setName(rs.getString("name"));                               │
-│              user.setEmail(rs.getString("email"));                             │
-│              // ... 20 more fields                                             │
+│      String sql = "SELECT * FROM users WHERE id = ?";                           │
+│      try (Connection conn = dataSource.getConnection();                         │
+│           PreparedStatement ps = conn.prepareStatement(sql)) {                  │
+│          ps.setLong(1, id);                                                     │
+│          ResultSet rs = ps.executeQuery();                                      │
+│          if (rs.next()) {                                                       │
+│              User user = new User();                                            │
+│              user.setId(rs.getLong("id"));                                      │
+│              user.setName(rs.getString("name"));                                │
+│              user.setEmail(rs.getString("email"));                              │
+│              // ... 20 more fields                                              │
 │              return user;                                                       │
 │          }                                                                      │
 │          return null;                                                           │
 │      }                                                                          │
 │  }                                                                              │
-│                                                                                  │
+│                                                                                 │
 │  JPA (Clean and simple):                                                        │
-│                                                                                  │
+│                                                                                 │
 │  public User findById(Long id) {                                                │
-│      return entityManager.find(User.class, id);  // One line!                  │
+│      return entityManager.find(User.class, id);  // One line!                   │
 │  }                                                                              │
-│                                                                                  │
+│                                                                                 │
 │  OR with Spring Data JPA:                                                       │
-│                                                                                  │
-│  public interface UserRepository extends JpaRepository<User, Long> {           │
-│      // findById() is automatic! No implementation needed!                     │
+│                                                                                 │
+│  public interface UserRepository extends JpaRepository<User, Long> {            │
+│      // findById() is automatic! No implementation needed!                      │
 │  }                                                                              │
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -101,45 +101,45 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    JPA STACK                                                     │
+│                    JPA STACK                                                    │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  ┌─────────────────────────────────────────────────────────────────────────┐   │
+│                                                                                 │
+│  ┌─────────────────────────────────────────────────────────────────────────┐    │
 │  │                     YOUR APPLICATION CODE                                │   │
 │  │                                                                          │   │
-│  │   UserService → UserRepository → findById(1L)                           │   │
+│  │   UserService → UserRepository → findById(1L)                           │    │
 │  └─────────────────────────────────────────────────┬────────────────────────┘   │
-│                                                     │                            │
+│                                                     │                           │
 │  ┌─────────────────────────────────────────────────▼────────────────────────┐   │
 │  │                     SPRING DATA JPA                                      │   │
 │  │                                                                          │   │
-│  │   Query derivation, automatic repository implementation                 │   │
+│  │   Query derivation, automatic repository implementation                 │    │
 │  └─────────────────────────────────────────────────┬────────────────────────┘   │
-│                                                     │                            │
+│                                                     │                           │
 │  ┌─────────────────────────────────────────────────▼────────────────────────┐   │
 │  │                     JPA (API/Specification)                              │   │
 │  │                                                                          │   │
-│  │   EntityManager, @Entity, JPQL, Criteria API                            │   │
+│  │   EntityManager, @Entity, JPQL, Criteria API                            │    │
 │  └─────────────────────────────────────────────────┬────────────────────────┘   │
-│                                                     │                            │
+│                                                     │                           │
 │  ┌─────────────────────────────────────────────────▼────────────────────────┐   │
 │  │                     HIBERNATE (JPA Implementation)                       │   │
 │  │                                                                          │   │
-│  │   Session, 1st/2nd level cache, dirty checking, SQL generation         │   │
+│  │   Session, 1st/2nd level cache, dirty checking, SQL generation         │     │
 │  └─────────────────────────────────────────────────┬────────────────────────┘   │
-│                                                     │                            │
+│                                                     │                           │
 │  ┌─────────────────────────────────────────────────▼────────────────────────┐   │
 │  │                     JDBC / DataSource                                    │   │
 │  │                                                                          │   │
-│  │   Connection pooling (HikariCP), actual SQL execution                   │   │
+│  │   Connection pooling (HikariCP), actual SQL execution                   │    │
 │  └─────────────────────────────────────────────────┬────────────────────────┘   │
-│                                                     │                            │
+│                                                     │                           │
 │  ┌─────────────────────────────────────────────────▼────────────────────────┐   │
 │  │                     DATABASE                                             │   │
 │  │                                                                          │   │
-│  │   MySQL, PostgreSQL, Oracle, etc.                                       │   │
+│  │   MySQL, PostgreSQL, Oracle, etc.                                       │    │
 │  └──────────────────────────────────────────────────────────────────────────┘   │
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -788,25 +788,25 @@ public record ErrorResponse(String message, List<String> errors) {}
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    AUTHENTICATION vs AUTHORIZATION                               │
+│                    AUTHENTICATION vs AUTHORIZATION                              │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  AUTHENTICATION = "WHO are you?"                                                │
-│  ─────────────────────────────────                                               │
-│  • Username/password login                                                       │
+│  ─────────────────────────────────                                              │
+│  • Username/password login                                                      │
 │  • OAuth2/Social login                                                          │
-│  • JWT token validation                                                          │
-│  • Certificate verification                                                      │
-│                                                                                  │
+│  • JWT token validation                                                         │
+│  • Certificate verification                                                     │
+│                                                                                 │
 │  AUTHORIZATION = "WHAT can you do?"                                             │
-│  ───────────────────────────────────                                             │
-│  • Role-based: ADMIN can delete, USER can only read                            │
-│  • Resource-based: User can only edit their OWN posts                          │
-│  • Permission-based: Fine-grained access control                               │
-│                                                                                  │
-│  FLOW:                                                                           │
+│  ───────────────────────────────────                                            │
+│  • Role-based: ADMIN can delete, USER can only read                             │
+│  • Resource-based: User can only edit their OWN posts                           │
+│  • Permission-based: Fine-grained access control                                │
+│                                                                                 │
+│  FLOW:                                                                          │
 │  Request → Authentication → Authorization → Controller                          │
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -911,24 +911,24 @@ public class UserService {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    TESTING PYRAMID                                               │
+│                    TESTING PYRAMID                                              │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │                          ┌─────────────┐                                        │
 │                          │   E2E       │  Few, slow, expensive                  │
 │                         /│   Tests     │                                        │
 │                        / └─────────────┘                                        │
-│                       /                                                          │
+│                       /                                                         │
 │                      /  ┌───────────────────┐                                   │
 │                     /   │   Integration      │  Some tests                      │
 │                    /    │   Tests            │  @SpringBootTest                 │
 │                   /     └───────────────────┘                                   │
-│                  /                                                               │
+│                  /                                                              │
 │                 /  ┌─────────────────────────────┐                              │
 │                /   │       Unit Tests            │  Many, fast, cheap           │
 │               /    │   @Mock, no Spring context  │                              │
 │              /     └─────────────────────────────┘                              │
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1164,40 +1164,40 @@ TESTING:
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────────┐
-│                    SPRING BOOT MASTERY ROADMAP                                  │
+│                    SPRING BOOT MASTERY ROADMAP                                 │
 ├────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  TIER 1: Java Foundations                                                       │
+│                                                                                │
+│  TIER 1: Java Foundations                                                      │
 │  └── Memory, ClassLoading, Threading, Functional Programming                   │
-│                                                                                 │
-│  TIER 2: Spring Core                                                            │
+│                                                                                │
+│  TIER 2: Spring Core                                                           │
 │  └── IoC, DI, Beans, Lifecycle, Events                                         │
-│                                                                                 │
-│  TIER 3: AOP                                                                    │
+│                                                                                │
+│  TIER 3: AOP                                                                   │
 │  └── Aspects, Pointcuts, Proxies                                               │
-│                                                                                 │
-│  TIER 4: Spring Boot                                                            │
+│                                                                                │
+│  TIER 4: Spring Boot                                                           │
 │  └── Auto-Configuration, Properties, Profiles                                  │
-│                                                                                 │
-│  TIER 5: Data Access                                                            │
+│                                                                                │
+│  TIER 5: Data Access                                                           │
 │  └── JPA, Hibernate, Transactions                                              │
-│                                                                                 │
-│  TIER 6: Web                                                                    │
+│                                                                                │
+│  TIER 6: Web                                                                   │
 │  └── REST APIs, Validation, Exception Handling                                 │
-│                                                                                 │
-│  TIER 7: Security                                                               │
+│                                                                                │
+│  TIER 7: Security                                                              │
 │  └── Authentication, Authorization, JWT                                        │
-│                                                                                 │
-│  TIER 8: Microservices (Advanced)                                               │
+│                                                                                │
+│  TIER 8: Microservices (Advanced)                                              │
 │  └── Service Discovery, API Gateway, Messaging                                 │
-│                                                                                 │
-│  TIER 9: Testing                                                                │
+│                                                                                │
+│  TIER 9: Testing                                                               │
 │  └── Unit, Integration, Web, Repository Tests                                  │
-│                                                                                 │
+│                                                                                │
 ├────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
+│                                                                                │
 │  KEY PRINCIPLE: Always understand WHY before learning HOW                      │
-│                                                                                 │
+│                                                                                │
 └────────────────────────────────────────────────────────────────────────────────┘
 ```
 

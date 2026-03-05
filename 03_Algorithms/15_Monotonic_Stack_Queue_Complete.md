@@ -29,36 +29,36 @@
 │ WHAT PROBLEM DOES MONOTONIC STACK SOLVE?                                     │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ CORE PROBLEM: For each element in an array, find the NEXT (or PREVIOUS)     │
-│ element that is GREATER (or SMALLER). This appears EVERYWHERE.              │
+│ CORE PROBLEM: For each element in an array, find the NEXT (or PREVIOUS)      │
+│ element that is GREATER (or SMALLER). This appears EVERYWHERE.               │
 │                                                                              │
-│ ┌─────────────────────────────────────────────────────────────────────────┐ │
-│ │ BRUTE FORCE vs MONOTONIC STACK                                          │ │
-│ │                                                                         │ │
-│ │ Array: [73, 74, 75, 71, 69, 72, 76, 73]                               │ │
-│ │ Question: "How many days until a warmer temperature?"                   │ │
-│ │                                                                         │ │
-│ │ BRUTE FORCE: For each day, scan forward until warmer found.           │ │
-│ │   Day 0 (73): check 74 → warmer! → 1 day                             │ │
-│ │   Day 1 (74): check 75 → warmer! → 1 day                             │ │
-│ │   Day 2 (75): check 71,69,72,76 → 76 warmer! → 4 days                │ │
-│ │   Day 3 (71): check 69,72 → 72 warmer! → 2 days                      │ │
-│ │   ...                                                                  │ │
-│ │   For each element, scan up to n elements: O(n²)                      │ │
-│ │   n=100K → 10 BILLION operations → ~10 seconds ❌                     │ │
-│ │                                                                         │ │
-│ │ MONOTONIC STACK: Process each element ONCE. When an element arrives,   │ │
-│ │   pop all smaller elements (they found their answer = current element).│ │
-│ │   Each element pushed once, popped once: TOTAL = O(n)                 │ │
-│ │   n=100K → 200K operations → <1 millisecond ✅                        │ │
-│ └─────────────────────────────────────────────────────────────────────────┘ │
+│ ┌─────────────────────────────────────────────────────────────────────────┐  │
+│ │ BRUTE FORCE vs MONOTONIC STACK                                          │  │
+│ │                                                                         │  │
+│ │ Array: [73, 74, 75, 71, 69, 72, 76, 73]                               │    │
+│ │ Question: "How many days until a warmer temperature?"                   │  │
+│ │                                                                         │  │
+│ │ BRUTE FORCE: For each day, scan forward until warmer found.           │    │
+│ │   Day 0 (73): check 74 → warmer! → 1 day                             │     │
+│ │   Day 1 (74): check 75 → warmer! → 1 day                             │     │
+│ │   Day 2 (75): check 71,69,72,76 → 76 warmer! → 4 days                │     │
+│ │   Day 3 (71): check 69,72 → 72 warmer! → 2 days                      │     │
+│ │   ...                                                                  │   │
+│ │   For each element, scan up to n elements: O(n²)                      │    │
+│ │   n=100K → 10 BILLION operations → ~10 seconds ❌                     │     │
+│ │                                                                         │  │
+│ │ MONOTONIC STACK: Process each element ONCE. When an element arrives,   │   │
+│ │   pop all smaller elements (they found their answer = current element).│   │
+│ │   Each element pushed once, popped once: TOTAL = O(n)                 │    │
+│ │   n=100K → 200K operations → <1 millisecond ✅                        │     │
+│ └─────────────────────────────────────────────────────────────────────────┘  │
 │                                                                              │
 │ WHY O(n)? THE KEY INSIGHT:                                                   │
-│   Each element enters the stack exactly ONCE.                               │
-│   Each element leaves the stack at most ONCE.                               │
-│   Total push + pop operations = 2n = O(n).                                  │
-│   Despite the while loop INSIDE the for loop, it's NOT O(n²)!             │
-│   (Amortized analysis: each element pays for its own push and pop.)        │
+│   Each element enters the stack exactly ONCE.                                │
+│   Each element leaves the stack at most ONCE.                                │
+│   Total push + pop operations = 2n = O(n).                                   │
+│   Despite the while loop INSIDE the for loop, it's NOT O(n²)!                │
+│   (Amortized analysis: each element pays for its own push and pop.)          │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -67,24 +67,24 @@
 │                                                                              │
 │ 1984 — LARGEST RECTANGLE IN HISTOGRAM:                                       │
 │   Computational geometry researchers needed to find the largest axis-aligned │
-│   rectangle in a histogram (bar chart). Brute force was O(n²).             │
-│   Someone realized: "Keep a stack of increasing heights. When a shorter     │
-│   bar arrives, pop and calculate rectangle with the popped height."         │
-│   Result: O(n) algorithm! This became THE classic monotonic stack problem.  │
+│   rectangle in a histogram (bar chart). Brute force was O(n²).               │
+│   Someone realized: "Keep a stack of increasing heights. When a shorter      │
+│   bar arrives, pop and calculate rectangle with the popped height."          │
+│   Result: O(n) algorithm! This became THE classic monotonic stack problem.   │
 │                                                                              │
 │ 2000s — COMPETITIVE PROGRAMMING EXPLOSION:                                   │
-│   Monotonic stack became a core technique in contests (IOI, ACM-ICPC).     │
-│   Dozens of seemingly different problems share this core pattern:           │
-│   • Stock Price Span (finance: days since price was this low)              │
-│   • Trapping Rain Water (civil engineering: water accumulation)            │
-│   • Buildings With Sunset View (architecture: visibility)                  │
+│   Monotonic stack became a core technique in contests (IOI, ACM-ICPC).       │
+│   Dozens of seemingly different problems share this core pattern:            │
+│   • Stock Price Span (finance: days since price was this low)                │
+│   • Trapping Rain Water (civil engineering: water accumulation)              │
+│   • Buildings With Sunset View (architecture: visibility)                    │
 │                                                                              │
 │ TODAY — INDUSTRY USES:                                                       │
-│   • Real-time dashboards: Sliding window max over streaming data            │
-│   • Financial analysis: Stock span, volatility tracking                    │
-│   • Computer vision: Local maxima/minima detection in signal processing    │
-│   • Web rendering: CSS stacking context resolution                         │
-│   • Game engines: Visibility calculation (which buildings can you see?)     │
+│   • Real-time dashboards: Sliding window max over streaming data             │
+│   • Financial analysis: Stock span, volatility tracking                      │
+│   • Computer vision: Local maxima/minima detection in signal processing      │
+│   • Web rendering: CSS stacking context resolution                           │
+│   • Game engines: Visibility calculation (which buildings can you see?)      │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -93,68 +93,68 @@
 │                                                                              │
 │ MONOTONIC DECREASING STACK (for Next Greater Element):                       │
 │                                                                              │
-│ Imagine a bouncer maintaining a LINE of people sorted by HEIGHT.            │
+│ Imagine a bouncer maintaining a LINE of people sorted by HEIGHT.             │
 │ When a NEW person arrives:                                                   │
-│   1. Anyone in line SHORTER than new person gets kicked out.               │
-│      (They just found their "next greater" = the new person!)              │
-│   2. The new person joins the end of the line.                              │
+│   1. Anyone in line SHORTER than new person gets kicked out.                 │
+│      (They just found their "next greater" = the new person!)                │
+│   2. The new person joins the end of the line.                               │
 │                                                                              │
-│ FULL WALKTHROUGH: arr = [2, 1, 4, 3, 5]                                    │
+│ FULL WALKTHROUGH: arr = [2, 1, 4, 3, 5]                                      │
 │                                                                              │
-│ Step 1: Process 2    Stack: [2]           Line: just 2 standing            │
-│   No one to kick out. 2 enters line.                                        │
+│ Step 1: Process 2    Stack: [2]           Line: just 2 standing              │
+│   No one to kick out. 2 enters line.                                         │
 │                                                                              │
-│ Step 2: Process 1    Stack: [2, 1]        Line: 2 then 1                   │
-│   1 < 2, so 1 stands behind 2. No one kicked out.                          │
+│ Step 2: Process 1    Stack: [2, 1]        Line: 2 then 1                     │
+│   1 < 2, so 1 stands behind 2. No one kicked out.                            │
 │                                                                              │
-│ Step 3: Process 4    Stack: [4]           Kicks: 1→NGE=4, 2→NGE=4         │
-│   4 arrives. 1 < 4 → kicked! (NGE of 1 = 4)                               │
-│                 2 < 4 → kicked! (NGE of 2 = 4)                              │
-│   4 enters empty line.                                                      │
+│ Step 3: Process 4    Stack: [4]           Kicks: 1→NGE=4, 2→NGE=4            │
+│   4 arrives. 1 < 4 → kicked! (NGE of 1 = 4)                                  │
+│                 2 < 4 → kicked! (NGE of 2 = 4)                               │
+│   4 enters empty line.                                                       │
 │                                                                              │
-│ Step 4: Process 3    Stack: [4, 3]        3 stands behind 4                │
-│   3 < 4, no one kicked. 3 enters.                                           │
+│ Step 4: Process 3    Stack: [4, 3]        3 stands behind 4                  │
+│   3 < 4, no one kicked. 3 enters.                                            │
 │                                                                              │
-│ Step 5: Process 5    Stack: [5]           Kicks: 3→NGE=5, 4→NGE=5         │
-│   5 kicks out 3 (NGE=5) and 4 (NGE=5). 5 enters.                          │
+│ Step 5: Process 5    Stack: [5]           Kicks: 3→NGE=5, 4→NGE=5            │
+│   5 kicks out 3 (NGE=5) and 4 (NGE=5). 5 enters.                             │
 │                                                                              │
-│ Final: 5 has no NGE → -1                                                    │
-│ Result: NGE = [4, 4, 5, 5, -1]                                             │
+│ Final: 5 has no NGE → -1                                                     │
+│ Result: NGE = [4, 4, 5, 5, -1]                                               │
 │                                                                              │
-│ TOTAL: 5 pushes + 5 pops = 10 operations = O(2n) = O(n) ✅                 │
+│ TOTAL: 5 pushes + 5 pops = 10 operations = O(2n) = O(n) ✅                    │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ THE COMPLETE VARIANT TABLE                                                   │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ ┌──────────────────────┬─────────────────────────────────────────────┐      │
-│ │ You Need             │ Use This                                    │      │
-│ ├──────────────────────┼─────────────────────────────────────────────┤      │
-│ │ Next Greater Element │ Monotonic DECREASING stack, scan L→R       │      │
-│ │ Next Smaller Element │ Monotonic INCREASING stack, scan L→R       │      │
-│ │ Prev Greater Element │ Monotonic DECREASING stack, scan L→R      │      │
-│ │ Prev Smaller Element │ Monotonic INCREASING stack, scan L→R      │      │
-│ │ Sliding Window Max   │ Monotonic DECREASING deque                 │      │
-│ │ Sliding Window Min   │ Monotonic INCREASING deque                 │      │
-│ │ Largest Rectangle    │ Monotonic INCREASING stack (heights)       │      │
-│ │ Trapping Rain Water  │ Monotonic DECREASING stack (heights)       │      │
-│ └──────────────────────┴─────────────────────────────────────────────┘      │
+│ ┌──────────────────────┬─────────────────────────────────────────────┐       │
+│ │ You Need             │ Use This                                    │       │
+│ ├──────────────────────┼─────────────────────────────────────────────┤       │
+│ │ Next Greater Element │ Monotonic DECREASING stack, scan L→R       │        │
+│ │ Next Smaller Element │ Monotonic INCREASING stack, scan L→R       │        │
+│ │ Prev Greater Element │ Monotonic DECREASING stack, scan L→R      │         │
+│ │ Prev Smaller Element │ Monotonic INCREASING stack, scan L→R      │         │
+│ │ Sliding Window Max   │ Monotonic DECREASING deque                 │        │
+│ │ Sliding Window Min   │ Monotonic INCREASING deque                 │        │
+│ │ Largest Rectangle    │ Monotonic INCREASING stack (heights)       │        │
+│ │ Trapping Rain Water  │ Monotonic DECREASING stack (heights)       │        │
+│ └──────────────────────┴─────────────────────────────────────────────┘       │
 │                                                                              │
 │ MEMORY TRICK for Increasing vs Decreasing:                                   │
-│   Want GREATER? Keep SMALLER ones waiting → DECREASING stack                │
-│   Want SMALLER? Keep GREATER ones waiting → INCREASING stack                │
-│   Think: "What I'm KEEPING is OPPOSITE of what I'm LOOKING FOR."           │
+│   Want GREATER? Keep SMALLER ones waiting → DECREASING stack                 │
+│   Want SMALLER? Keep GREATER ones waiting → INCREASING stack                 │
+│   Think: "What I'm KEEPING is OPPOSITE of what I'm LOOKING FOR."             │
 │                                                                              │
 │ PREVIOUS vs NEXT:                                                            │
-│   For NEXT: answer is found when element is POPPED (something bigger came) │
-│   For PREV: answer is the element ON TOP after pushing current              │
-│   Direction can also change by scanning R→L instead of L→R.                │
+│   For NEXT: answer is found when element is POPPED (something bigger came)   │
+│   For PREV: answer is the element ON TOP after pushing current               │
+│   Direction can also change by scanning R→L instead of L→R.                  │
 │                                                                              │
 │ SIGNAL WORDS in interviews:                                                  │
-│   "next greater/smaller", "span", "visible buildings/people",               │
-│   "sliding window max/min", "histogram", "trapping water/rain",             │
-│   "stock price span", "days until warmer", "sum of subarray minimums"       │
+│   "next greater/smaller", "span", "visible buildings/people",                │
+│   "sliding window max/min", "histogram", "trapping water/rain",              │
+│   "stock price span", "days until warmer", "sum of subarray minimums"        │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -207,105 +207,105 @@ public int[] prevSmaller(int[] arr) {
 │ BENCHMARK: BRUTE FORCE vs MONOTONIC STACK                                    │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ Next Greater Element for n elements:                                        │
+│ Next Greater Element for n elements:                                         │
 │                                                                              │
-│ ┌─────────────┬───────────────┬───────────────────────────────────────┐     │
-│ │ n           │ Brute O(n²)  │ Monotonic Stack O(n)                  │     │
-│ ├─────────────┼───────────────┼───────────────────────────────────────┤     │
-│ │ 100         │ 0.01 ms      │ 0.001 ms                              │     │
-│ │ 1,000       │ 1 ms         │ 0.01 ms                               │     │
-│ │ 10,000      │ 100 ms       │ 0.1 ms                                │     │
-│ │ 100,000     │ 10 sec       │ 1 ms           (10,000x faster!)     │     │
-│ │ 1,000,000   │ 17 min       │ 10 ms          (100,000x faster!)    │     │
-│ │ 10,000,000  │ ~28 hours    │ 100 ms         (1,000,000x faster!)  │     │
-│ └─────────────┴───────────────┴───────────────────────────────────────┘     │
+│ ┌─────────────┬───────────────┬───────────────────────────────────────┐      │
+│ │ n           │ Brute O(n²)  │ Monotonic Stack O(n)                  │       │
+│ ├─────────────┼───────────────┼───────────────────────────────────────┤      │
+│ │ 100         │ 0.01 ms      │ 0.001 ms                              │       │
+│ │ 1,000       │ 1 ms         │ 0.01 ms                               │       │
+│ │ 10,000      │ 100 ms       │ 0.1 ms                                │       │
+│ │ 100,000     │ 10 sec       │ 1 ms           (10,000x faster!)     │        │
+│ │ 1,000,000   │ 17 min       │ 10 ms          (100,000x faster!)    │        │
+│ │ 10,000,000  │ ~28 hours    │ 100 ms         (1,000,000x faster!)  │        │
+│ └─────────────┴───────────────┴───────────────────────────────────────┘      │
 │                                                                              │
 │ INTERVIEW CONSTRAINTS:                                                       │
-│   n ≤ 10⁵ → must be O(n) or O(n log n) → monotonic stack is key          │
-│   If you see "next greater" + n ≤ 10⁵ → monotonic stack, not brute force. │
+│   n ≤ 10⁵ → must be O(n) or O(n log n) → monotonic stack is key              │
+│   If you see "next greater" + n ≤ 10⁵ → monotonic stack, not brute force.    │
 │                                                                              │
 │ CPU INSIGHT:                                                                 │
-│ • Stack operations are cache-friendly (top of stack stays in L1 cache)     │
-│ • Sequential array scan → CPU prefetcher predicts next access             │
-│ • Much faster in practice than even O(n log n) sort-based approaches       │
+│ • Stack operations are cache-friendly (top of stack stays in L1 cache)       │
+│ • Sequential array scan → CPU prefetcher predicts next access                │
+│ • Much faster in practice than even O(n log n) sort-based approaches         │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ ⚠️  COMMON MISTAKES & HOW TO AVOID THEM                                     │
+│ ⚠️  COMMON MISTAKES & HOW TO AVOID THEM                                      │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │ MISTAKE 1: Increasing vs Decreasing confusion                                │
-│   "Next Greater" → you want bigger to pop smaller → DECREASING stack       │
-│   "Next Smaller" → you want smaller to pop bigger → INCREASING stack       │
-│   Fix: Think "what do I KEEP in the stack?" Keep what HASN'T found answer. │
+│   "Next Greater" → you want bigger to pop smaller → DECREASING stack         │
+│   "Next Smaller" → you want smaller to pop bigger → INCREASING stack         │
+│   Fix: Think "what do I KEEP in the stack?" Keep what HASN'T found answer.   │
 │                                                                              │
-│ MISTAKE 2: Storing values instead of INDICES                                │
-│   If you store values, you can't fill the result array!                    │
-│   Fix: ALWAYS push INDICES. Access values via arr[stack.peek()].           │
+│ MISTAKE 2: Storing values instead of INDICES                                 │
+│   If you store values, you can't fill the result array!                      │
+│   Fix: ALWAYS push INDICES. Access values via arr[stack.peek()].             │
 │                                                                              │
-│ MISTAKE 3: Off-by-one in "Previous" problems                                │
-│   For previous smaller/greater, the answer is stack.peek() BEFORE pushing. │
-│   Don't confuse with "next" problems where answer is found during popping.  │
+│ MISTAKE 3: Off-by-one in "Previous" problems                                 │
+│   For previous smaller/greater, the answer is stack.peek() BEFORE pushing.   │
+│   Don't confuse with "next" problems where answer is found during popping.   │
 │                                                                              │
 │ MISTAKE 4: Forgetting circular array case                                    │
-│   "Next Greater Element II" uses circular array.                            │
-│   Fix: Process the array TWICE (i = 0 to 2n-1, index = i % n).            │
-│   Only push during first pass.                                              │
+│   "Next Greater Element II" uses circular array.                             │
+│   Fix: Process the array TWICE (i = 0 to 2n-1, index = i % n).               │
+│   Only push during first pass.                                               │
 │                                                                              │
-│ MISTAKE 5: Using wrong comparison (< vs <=)                                 │
-│   For "strictly greater": use <  (pop when stack value < current)          │
-│   For "greater or equal": use <= (pop when stack value <= current)          │
-│   This matters in "Number of Visible People in a Queue" and similar.       │
+│ MISTAKE 5: Using wrong comparison (< vs <=)                                  │
+│   For "strictly greater": use <  (pop when stack value < current)            │
+│   For "greater or equal": use <= (pop when stack value <= current)           │
+│   This matters in "Number of Visible People in a Queue" and similar.         │
 │                                                                              │
-│ MISTAKE 6: Not using Deque for Sliding Window problems                      │
-│   Sliding window needs removal from BOTH ends → use Deque, not Stack.      │
-│   Remove from front: expired elements (out of window).                     │
-│   Remove from back: elements that can no longer be answer (smaller/bigger). │
+│ MISTAKE 6: Not using Deque for Sliding Window problems                       │
+│   Sliding window needs removal from BOTH ends → use Deque, not Stack.        │
+│   Remove from front: expired elements (out of window).                       │
+│   Remove from back: elements that can no longer be answer (smaller/bigger).  │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ DIFFICULTIES IN LEARNING MONOTONIC STACK                                     │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ 1. "HOW CAN A WHILE LOOP INSIDE A FOR LOOP BE O(n)?"                        │
-│    Each element is pushed exactly once and popped at most once.             │
-│    Total pushes = n, total pops ≤ n. Total work = 2n = O(n).              │
-│    The while loop doesn't always run! It fires only when popping happens.  │
+│ 1. "HOW CAN A WHILE LOOP INSIDE A FOR LOOP BE O(n)?"                         │
+│    Each element is pushed exactly once and popped at most once.              │
+│    Total pushes = n, total pops ≤ n. Total work = 2n = O(n).                 │
+│    The while loop doesn't always run! It fires only when popping happens.    │
 │                                                                              │
 │ 2. "WHEN DO I USE STACK vs DEQUE?"                                           │
-│    Stack: "Next/Previous Greater/Smaller" — only need one end.             │
-│    Deque: "Sliding Window Max/Min" — need to expire old elements from front│
-│    Rule: If there's a WINDOW SIZE → Deque. Otherwise → Stack.              │
+│    Stack: "Next/Previous Greater/Smaller" — only need one end.               │
+│    Deque: "Sliding Window Max/Min" — need to expire old elements from front  │
+│    Rule: If there's a WINDOW SIZE → Deque. Otherwise → Stack.                │
 │                                                                              │
-│ 3. "LARGEST RECTANGLE IN HISTOGRAM IS CONFUSING"                            │
-│    Key insight: For each bar, the rectangle width extends to the            │
-│    previous smaller bar (left boundary) and next smaller bar (right).       │
-│    Use increasing stack: when shorter bar arrives, popped bar knows its     │
-│    right boundary (current) and left boundary (new stack top).             │
-│    Practice: draw the histogram and trace the stack step by step.          │
+│ 3. "LARGEST RECTANGLE IN HISTOGRAM IS CONFUSING"                             │
+│    Key insight: For each bar, the rectangle width extends to the             │
+│    previous smaller bar (left boundary) and next smaller bar (right).        │
+│    Use increasing stack: when shorter bar arrives, popped bar knows its      │
+│    right boundary (current) and left boundary (new stack top).               │
+│    Practice: draw the histogram and trace the stack step by step.            │
 │                                                                              │
-│ 4. "SUM OF SUBARRAY MINIMUMS SEEMS IMPOSSIBLY HARD"                        │
-│    Break it down: for each element, find how many subarrays it's minimum of│
-│    That count = (distance to prev smaller) × (distance to next smaller).   │
-│    Use monotonic stack to find both distances. Then sum: val × count.      │
+│ 4. "SUM OF SUBARRAY MINIMUMS SEEMS IMPOSSIBLY HARD"                          │
+│    Break it down: for each element, find how many subarrays it's minimum of  │
+│    That count = (distance to prev smaller) × (distance to next smaller).     │
+│    Use monotonic stack to find both distances. Then sum: val × count.        │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ ⭐ EXPECTED OUTPUTS OF MASTERING MONOTONIC STACK ⭐                           │
+│ ⭐ EXPECTED OUTPUTS OF MASTERING MONOTONIC STACK ⭐                            │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ ✅ INSTANT RECOGNITION: See "next greater" → Monotonic Stack               │
-│ ✅ Can write NGE/NSE/PGE/PSE templates from memory                         │
-│ ✅ Can solve Largest Rectangle in Histogram in 10 minutes                   │
-│ ✅ Understand amortized O(n) proof (push once, pop once)                    │
-│ ✅ Know when to use Stack vs Deque (window → Deque)                        │
-│ ✅ Handle circular arrays (process 2n with i%n)                             │
-│ ✅ Solve contribution-counting problems (Sum of Subarray Mins/Maxs)        │
+│ ✅ INSTANT RECOGNITION: See "next greater" → Monotonic Stack                  │
+│ ✅ Can write NGE/NSE/PGE/PSE templates from memory                            │
+│ ✅ Can solve Largest Rectangle in Histogram in 10 minutes                     │
+│ ✅ Understand amortized O(n) proof (push once, pop once)                      │
+│ ✅ Know when to use Stack vs Deque (window → Deque)                           │
+│ ✅ Handle circular arrays (process 2n with i%n)                               │
+│ ✅ Solve contribution-counting problems (Sum of Subarray Mins/Maxs)           │
 │                                                                              │
 │ THE TRANSFORMATION:                                                          │
-│ FROM: "I'll check every pair — O(n²) is fine for now"                      │
-│   TO: "Monotonic stack gives me next greater/smaller in O(n).               │
-│        I keep a [decreasing/increasing] stack and process linearly."        │
+│ FROM: "I'll check every pair — O(n²) is fine for now"                        │
+│   TO: "Monotonic stack gives me next greater/smaller in O(n).                │
+│        I keep a [decreasing/increasing] stack and process linearly."         │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -324,16 +324,16 @@ public int[] prevSmaller(int[] arr) {
 ║              MONOTONIC DATA STRUCTURES                        ║
 ╠═══════════════════════════════════════════════════════════════╣
 ║                                                               ║
-║  MONOTONIC STACK: A stack where elements are always in       ║
-║  increasing or decreasing order from bottom to top.          ║
+║  MONOTONIC STACK: A stack where elements are always in        ║
+║  increasing or decreasing order from bottom to top.           ║
 ║                                                               ║
-║  MONOTONIC QUEUE: A deque where elements are always in       ║
-║  increasing or decreasing order.                             ║
+║  MONOTONIC QUEUE: A deque where elements are always in        ║
+║  increasing or decreasing order.                              ║
 ║                                                               ║
 ║  WHY USE THEM?                                                ║
-║  • Find next/previous greater/smaller element in O(n)        ║
-║  • Sliding window max/min in O(n) total                      ║
-║  • Reduce O(n²) brute force to O(n)                          ║
+║  • Find next/previous greater/smaller element in O(n)         ║
+║  • Sliding window max/min in O(n) total                       ║
+║  • Reduce O(n²) brute force to O(n)                           ║
 ║                                                               ║
 ╚═══════════════════════════════════════════════════════════════╝
 ```
@@ -349,7 +349,7 @@ Regular Stack:              Monotonic Decreasing Stack:
 ├─────┤                     ├─────┤
 │  2  │                     │  3  │
 ├─────┤                     └─────┘   (largest at bottom)
-│  5  │
+│  5                              │
 └─────┘  (random order)
 
 Monotonic Increasing Stack:
@@ -369,17 +369,17 @@ Monotonic Increasing Stack:
 │              MONOTONIC STACK KEY INSIGHT                        │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  When we POP an element, we've found its answer!               │
+│  When we POP an element, we've found its answer!                │
 │                                                                 │
 │  For Next Greater Element:                                      │
-│  - Use DECREASING stack (larger pops smaller)                  │
-│  - When we pop: current element IS the next greater            │
+│  - Use DECREASING stack (larger pops smaller)                   │
+│  - When we pop: current element IS the next greater             │
 │                                                                 │
 │  For Next Smaller Element:                                      │
-│  - Use INCREASING stack (smaller pops larger)                  │
-│  - When we pop: current element IS the next smaller            │
+│  - Use INCREASING stack (smaller pops larger)                   │
+│  - When we pop: current element IS the next smaller             │
 │                                                                 │
-│  "Pop = Found the answer for the popped element"               │
+│  "Pop = Found the answer for the popped element"                │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -616,19 +616,19 @@ public int[] nextSmallerElement(int[] nums) {
 │              COMPARISON: GREATER vs SMALLER                     │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  NEXT GREATER ELEMENT:                                         │
-│  • Use DECREASING stack                                        │
-│  • Pop when current > stack.top                                │
-│  • "Larger element kicks out smaller ones"                     │
+│  NEXT GREATER ELEMENT:                                          │
+│  • Use DECREASING stack                                         │
+│  • Pop when current > stack.top                                 │
+│  • "Larger element kicks out smaller ones"                      │
 │                                                                 │
-│  NEXT SMALLER ELEMENT:                                         │
-│  • Use INCREASING stack                                        │
-│  • Pop when current < stack.top                                │
-│  • "Smaller element kicks out larger ones"                     │
+│  NEXT SMALLER ELEMENT:                                          │
+│  • Use INCREASING stack                                         │
+│  • Pop when current < stack.top                                 │
+│  • "Smaller element kicks out larger ones"                      │
 │                                                                 │
-│  Rule of thumb:                                                │
-│  • Looking for GREATER → maintain DECREASING                  │
-│  • Looking for SMALLER → maintain INCREASING                  │
+│  Rule of thumb:                                                 │
+│  • Looking for GREATER → maintain DECREASING                    │
+│  • Looking for SMALLER → maintain INCREASING                    │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -736,25 +736,25 @@ public int[] previousSmallerElement(int[] nums) {
 │              ALL FOUR PATTERNS                                  │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  NEXT GREATER (right):                                         │
-│  • Direction: Left → Right                                     │
-│  • Stack: Decreasing                                           │
-│  • Answer: When POPPING                                        │
+│  NEXT GREATER (right):                                          │
+│  • Direction: Left → Right                                      │
+│  • Stack: Decreasing                                            │
+│  • Answer: When POPPING                                         │
 │                                                                 │
-│  NEXT SMALLER (right):                                         │
-│  • Direction: Left → Right                                     │
-│  • Stack: Increasing                                           │
-│  • Answer: When POPPING                                        │
+│  NEXT SMALLER (right):                                          │
+│  • Direction: Left → Right                                      │
+│  • Stack: Increasing                                            │
+│  • Answer: When POPPING                                         │
 │                                                                 │
-│  PREVIOUS GREATER (left):                                      │
-│  • Direction: Left → Right                                     │
-│  • Stack: Decreasing                                           │
-│  • Answer: When PUSHING (stack top is answer)                 │
+│  PREVIOUS GREATER (left):                                       │
+│  • Direction: Left → Right                                      │
+│  • Stack: Decreasing                                            │
+│  • Answer: When PUSHING (stack top is answer)                   │
 │                                                                 │
-│  PREVIOUS SMALLER (left):                                      │
-│  • Direction: Left → Right                                     │
-│  • Stack: Increasing                                           │
-│  • Answer: When PUSHING (stack top is answer)                 │
+│  PREVIOUS SMALLER (left):                                       │
+│  • Direction: Left → Right                                      │
+│  • Stack: Increasing                                            │
+│  • Answer: When PUSHING (stack top is answer)                   │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -777,7 +777,7 @@ public int[] previousSmallerElement(int[] nums) {
 ║  • Remove from front (when element leaves window)             ║
 ║  • Get max/min: Front of deque                                ║
 ║                                                               ║
-║  Use case: Sliding window max/min in O(n) total              ║
+║  Use case: Sliding window max/min in O(n) total               ║
 ║                                                               ║
 ╚═══════════════════════════════════════════════════════════════╝
 ```
@@ -1160,21 +1160,21 @@ public boolean find132pattern(int[] nums) {
 │              MONOTONIC STACK/QUEUE PROBLEMS                     │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  NEXT/PREVIOUS GREATER/SMALLER:                                │
-│  • Next Greater Element I/II                                   │
-│  • Daily Temperatures                                          │
-│  • Stock Span Problem                                          │
+│  NEXT/PREVIOUS GREATER/SMALLER:                                 │
+│  • Next Greater Element I/II                                    │
+│  • Daily Temperatures                                           │
+│  • Stock Span Problem                                           │
 │                                                                 │
-│  RECTANGLE PROBLEMS:                                           │
-│  • Largest Rectangle in Histogram                              │
-│  • Maximal Rectangle in Matrix                                 │
-│  • Trapping Rain Water                                         │
+│  RECTANGLE PROBLEMS:                                            │
+│  • Largest Rectangle in Histogram                               │
+│  • Maximal Rectangle in Matrix                                  │
+│  • Trapping Rain Water                                          │
 │                                                                 │
-│  SLIDING WINDOW:                                               │
+│  SLIDING WINDOW:                                                │
 │  • Sliding Window Maximum                                       │
-│  • Shortest Subarray with Sum >= K                             │
+│  • Shortest Subarray with Sum >= K                              │
 │                                                                 │
-│  STRING/NUMBER:                                                │
+│  STRING/NUMBER:                                                 │
 │  • Remove K Digits                                              │
 │  • Remove Duplicate Letters                                     │
 │  • 132 Pattern                                                  │
@@ -1349,20 +1349,20 @@ public int sumSubarrayMins(int[] arr) {
 │              STACK TYPE SELECTION                               │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  DECREASING STACK (larger at bottom):                          │
-│  • Next/Previous GREATER element                               │
-│  • Largest rectangle (find boundaries)                         │
-│  • Stock span (count higher prices)                            │
+│  DECREASING STACK (larger at bottom):                           │
+│  • Next/Previous GREATER element                                │
+│  • Largest rectangle (find boundaries)                          │
+│  • Stock span (count higher prices)                             │
 │                                                                 │
-│  INCREASING STACK (smaller at bottom):                         │
-│  • Next/Previous SMALLER element                               │
-│  • Sum of subarray minimums                                    │
+│  INCREASING STACK (smaller at bottom):                          │
+│  • Next/Previous SMALLER element                                │
+│  • Sum of subarray minimums                                     │
 │  • Remove K digits                                              │
 │                                                                 │
 │  MEMORY TRICK:                                                  │
-│  • Finding GREATER → maintain DECREASING                      │
-│  • Finding SMALLER → maintain INCREASING                      │
-│  (The stack is the "opposite" of what you're looking for)     │
+│  • Finding GREATER → maintain DECREASING                        │
+│  • Finding SMALLER → maintain INCREASING                        │
+│  (The stack is the "opposite" of what you're looking for)       │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -1434,15 +1434,15 @@ public int[] maxWindow(int[] arr, int k) {
 │              MONOTONIC STACK/QUEUE COMPLEXITIES                 │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  Next Greater Element:            O(n) time, O(n) space        │
-│  Daily Temperatures:              O(n) time, O(n) space        │
-│  Largest Rectangle Histogram:     O(n) time, O(n) space        │
-│  Sliding Window Maximum:          O(n) time, O(k) space        │
-│  Remove K Digits:                 O(n) time, O(n) space        │
+│  Next Greater Element:            O(n) time, O(n) space         │
+│  Daily Temperatures:              O(n) time, O(n) space         │
+│  Largest Rectangle Histogram:     O(n) time, O(n) space         │
+│  Sliding Window Maximum:          O(n) time, O(k) space         │
+│  Remove K Digits:                 O(n) time, O(n) space         │
 │                                                                 │
 │  KEY INSIGHT:                                                   │
-│  Each element is pushed and popped at most ONCE.               │
-│  Total operations = 2n → O(n)                                  │
+│  Each element is pushed and popped at most ONCE.                │
+│  Total operations = 2n → O(n)                                   │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -1457,22 +1457,22 @@ public int[] maxWindow(int[] arr, int k) {
 ╠═══════════════════════════════════════════════════════════════╣
 ║                                                               ║
 ║  1. IDENTIFY THE PATTERN                                      ║
-║     • "Next greater/smaller" → Monotonic Stack               ║
-║     • "Sliding window max/min" → Monotonic Queue             ║
-║     • "Rectangle area" → Usually needs both boundaries       ║
+║     • "Next greater/smaller" → Monotonic Stack                ║
+║     • "Sliding window max/min" → Monotonic Queue              ║
+║     • "Rectangle area" → Usually needs both boundaries        ║
 ║                                                               ║
 ║  2. CHOOSE STACK TYPE                                         ║
-║     • Looking for GREATER → Decreasing stack                 ║
-║     • Looking for SMALLER → Increasing stack                 ║
+║     • Looking for GREATER → Decreasing stack                  ║
+║     • Looking for SMALLER → Increasing stack                  ║
 ║                                                               ║
 ║  3. KNOW WHEN ANSWER IS FOUND                                 ║
 ║     • Next element: Answer when POPPING                       ║
-║     • Previous element: Answer when PUSHING (check top)      ║
+║     • Previous element: Answer when PUSHING (check top)       ║
 ║                                                               ║
 ║  4. HANDLE EDGE CASES                                         ║
-║     • No greater/smaller exists: default to -1 or n          ║
-║     • Circular array: iterate 2n times                       ║
-║     • Duplicates: decide on < vs ≤ carefully                │
+║     • No greater/smaller exists: default to -1 or n           ║
+║     • Circular array: iterate 2n times                        ║
+║     • Duplicates: decide on < vs ≤ carefully                  ║
 ║                                                               ║
 ║  5. COMMON APPLICATIONS                                       ║
 ║     • Histogram problems                                      ║

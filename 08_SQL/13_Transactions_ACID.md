@@ -6,47 +6,47 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    ACID PROPERTIES                                               │
+│                    ACID PROPERTIES                                              │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  A - ATOMICITY                                                                  │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │  "All or Nothing" - Transaction either completes fully or not at all       ││
-│  │                                                                            ││
-│  │  Transfer $100 from Account A to Account B:                                ││
-│  │  1. Deduct $100 from A  ─┐                                                 ││
-│  │  2. Add $100 to B       ─┴─ Both must succeed, or neither happens          ││
-│  │                                                                            ││
-│  │  If step 2 fails, step 1 is automatically rolled back!                     ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │  "All or Nothing" - Transaction either completes fully or not at all       │ │
+│  │                                                                            │ │
+│  │  Transfer $100 from Account A to Account B:                                │ │
+│  │  1. Deduct $100 from A  ─┐                                                 │ │
+│  │  2. Add $100 to B       ─┴─ Both must succeed, or neither happens          │ │
+│  │                                                                            │ │
+│  │  If step 2 fails, step 1 is automatically rolled back!                     │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 │  C - CONSISTENCY                                                                │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │  Database moves from one valid state to another valid state                ││
-│  │  All constraints, triggers, and rules are maintained                       ││
-│  │                                                                            ││
-│  │  Before: Total money = $1000                                               ││
-│  │  After:  Total money = $1000 (unchanged!)                                  ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │  Database moves from one valid state to another valid state                │ │
+│  │  All constraints, triggers, and rules are maintained                       │ │
+│  │                                                                            │ │
+│  │  Before: Total money = $1000                                               │ │
+│  │  After:  Total money = $1000 (unchanged!)                                  │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 │  I - ISOLATION                                                                  │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │  Concurrent transactions don't interfere with each other                   ││
-│  │  Each transaction sees database as if it's the only one running            ││
-│  │                                                                            ││
-│  │  Transaction 1: Reading balance                                            ││
-│  │  Transaction 2: Updating balance                                           ││
-│  │  → T1 sees either before or after T2, never partial update                 ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │  Concurrent transactions don't interfere with each other                   │ │
+│  │  Each transaction sees database as if it's the only one running            │ │
+│  │                                                                            │ │
+│  │  Transaction 1: Reading balance                                            │ │
+│  │  Transaction 2: Updating balance                                           │ │
+│  │  → T1 sees either before or after T2, never partial update                 │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 │  D - DURABILITY                                                                 │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │  Once committed, changes are permanent                                     ││
-│  │  Data survives system crashes, power failures                              ││
-│  │                                                                            ││
-│  │  Achieved through: Write-ahead logging, disk writes, replication           ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │  Once committed, changes are permanent                                     │ │
+│  │  Data survives system crashes, power failures                              │ │
+│  │                                                                            │ │
+│  │  Achieved through: Write-ahead logging, disk writes, replication           │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 

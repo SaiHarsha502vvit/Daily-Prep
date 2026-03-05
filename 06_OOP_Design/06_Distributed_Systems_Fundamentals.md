@@ -15,19 +15,19 @@
 ╔══════════════════════════════════════════════════════════════════════════════════╗
 ║  THE FUNDAMENTAL PROBLEM                                                         ║
 ║                                                                                  ║
-║  Single machine:  Simple, consistent, but limited                               ║
-║  → CPU/Memory/Disk have hard ceilings                                           ║
-║  → Single point of failure (SPOF)                                               ║
+║  Single machine:  Simple, consistent, but limited                                ║
+║  → CPU/Memory/Disk have hard ceilings                                            ║
+║  → Single point of failure (SPOF)                                                ║
 ║                                                                                  ║
 ║  Distributed system: Multiple machines working together                          ║
-║  → Scale beyond single machine limits                                           ║
-║  → Survive individual machine failures                                          ║
-║  → BUT: introduces network as unreliable component                              ║
+║  → Scale beyond single machine limits                                            ║
+║  → Survive individual machine failures                                           ║
+║  → BUT: introduces network as unreliable component                               ║
 ║                                                                                  ║
-║  REAL-WORLD ANALOGY: One chef vs a restaurant kitchen                           ║
+║  REAL-WORLD ANALOGY: One chef vs a restaurant kitchen                            ║
 ║  One chef: Perfect coordination, limited throughput                              ║
-║  Kitchen team: High throughput, but needs communication protocols               ║
-║  → Miscommunication = wrong orders, duplicate dishes, lost tickets              ║
+║  Kitchen team: High throughput, but needs communication protocols                ║
+║  → Miscommunication = wrong orders, duplicate dishes, lost tickets               ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -71,19 +71,19 @@
 ### CAP in Plain English
 ```
 ╔══════════════════════════════════════════════════════════════════════════════════╗
-║  SCENARIO: You run 2 database replicas (Node A, Node B)                         ║
-║  A network partition splits them — they can't talk to each other                ║
+║  SCENARIO: You run 2 database replicas (Node A, Node B)                          ║
+║  A network partition splits them — they can't talk to each other                 ║
 ║                                                                                  ║
-║  [Node A]  ✂️ network partition ✂️  [Node B]                                   ║
+║  [Node A]  ✂️ network partition ✂️  [Node B]                                     ║
 ║                                                                                  ║
-║  A write comes to Node A: "Set balance = $100"                                  ║
-║  A read comes to Node B: "What's the balance?"                                  ║
+║  A write comes to Node A: "Set balance = $100"                                   ║
+║  A read comes to Node B: "What's the balance?"                                   ║
 ║                                                                                  ║
-║  CHOICE 1 (CP): Node B says "Sorry, I can't answer — I might be stale"         ║
-║  → Consistent ✅  Available ❌                                                   ║
+║  CHOICE 1 (CP): Node B says "Sorry, I can't answer — I might be stale"           ║
+║  → Consistent ✅  Available ❌                                                     ║
 ║                                                                                  ║
-║  CHOICE 2 (AP): Node B returns old value "$80"                                  ║
-║  → Available ✅  Consistent ❌                                                   ║
+║  CHOICE 2 (AP): Node B returns old value "$80"                                   ║
+║  → Available ✅  Consistent ❌                                                     ║
 ║                                                                                  ║
 ║  You CANNOT have both during a partition. Period.                                ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
@@ -96,34 +96,34 @@
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  SPECTRUM: Strong ←───────────────────────────────────→ Weak                    │
-│                                                                                  │
+│                                                                                 │
 │  1. STRONG CONSISTENCY (Linearizability)                                        │
 │     → Every read returns the most recent write                                  │
 │     → As if there's only one copy of data                                       │
-│     → Cost: High latency (must coordinate all replicas)                        │
+│     → Cost: High latency (must coordinate all replicas)                         │
 │     → Example: Single PostgreSQL instance, Google Spanner                       │
-│                                                                                  │
-│  2. SEQUENTIAL CONSISTENCY                                                       │
+│                                                                                 │
+│  2. SEQUENTIAL CONSISTENCY                                                      │
 │     → All operations appear in SOME total order                                 │
 │     → Same order observed by all nodes                                          │
 │     → But that order might not match real-time wall clock                       │
-│                                                                                  │
-│  3. CAUSAL CONSISTENCY                                                           │
+│                                                                                 │
+│  3. CAUSAL CONSISTENCY                                                          │
 │     → Operations that are causally related are seen in order                    │
 │     → Concurrent operations may be seen in different orders                     │
-│     → Example: "I replied to your message" always appears after your message   │
-│                                                                                  │
+│     → Example: "I replied to your message" always appears after your message    │
+│                                                                                 │
 │  4. EVENTUAL CONSISTENCY                                                        │
-│     → Given enough time with no new writes, all replicas converge              │
+│     → Given enough time with no new writes, all replicas converge               │
 │     → Reads may return stale data temporarily                                   │
 │     → Cost: Cheapest, fastest                                                   │
-│     → Example: DNS, S3, DynamoDB (default)                                     │
-│                                                                                  │
-│  REAL-WORLD MAP:                                                                 │
+│     → Example: DNS, S3, DynamoDB (default)                                      │
+│                                                                                 │
+│  REAL-WORLD MAP:                                                                │
 │  ┌────────────────────┬──────────────────────────────────────────────────────┐  │
 │  │ Strong             │ Banking, inventory, leader election                  │  │
 │  │ Causal             │ Social media comments, collaborative editing         │  │
-│  │ Eventual           │ DNS, CDN, product catalog, analytics                │  │
+│  │ Eventual           │ DNS, CDN, product catalog, analytics                │   │
 │  └────────────────────┴──────────────────────────────────────────────────────┘  │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -134,38 +134,38 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════════╗
-║  1. SINGLE LEADER (Master-Slave)                                                ║
+║  1. SINGLE LEADER (Master-Slave)                                                 ║
 ║                                                                                  ║
-║     ┌────────┐  writes   ┌────────┐                                             ║
-║     │ Client  │──────────→│ Leader  │───replicate──→ Follower 1                   ║
-║     └────────┘           └────────┘───replicate──→ Follower 2                   ║
+║     ┌────────┐  writes   ┌────────┐                                              ║
+║     │ Client  │──────────→│ Leader  │───replicate──→ Follower 1                  ║
+║     └────────┘           └────────┘───replicate──→ Follower 2                    ║
 ║     reads from any       (one writer)                                            ║
 ║                                                                                  ║
-║     ✅ Simple, strong consistency possible                                       ║
-║     ❌ Leader is bottleneck, failover complexity                                 ║
+║     ✅ Simple, strong consistency possible                                        ║
+║     ❌ Leader is bottleneck, failover complexity                                  ║
 ║     Examples: PostgreSQL streaming replication, MySQL                            ║
 ║                                                                                  ║
 ║  2. MULTI-LEADER                                                                 ║
 ║                                                                                  ║
-║     Leader A ◄────sync────► Leader B                                            ║
+║     Leader A ◄────sync────► Leader B                                             ║
 ║       ↓                       ↓                                                  ║
 ║     Followers              Followers                                             ║
 ║                                                                                  ║
-║     ✅ Write to nearest datacenter (low latency)                                ║
-║     ❌ Conflict resolution is HARD (last-writer-wins, merge, custom logic)      ║
-║     Examples: CouchDB, multi-region DynamoDB                                    ║
+║     ✅ Write to nearest datacenter (low latency)                                  ║
+║     ❌ Conflict resolution is HARD (last-writer-wins, merge, custom logic)        ║
+║     Examples: CouchDB, multi-region DynamoDB                                     ║
 ║                                                                                  ║
-║  3. LEADERLESS (Quorum-based)                                                   ║
+║  3. LEADERLESS (Quorum-based)                                                    ║
 ║                                                                                  ║
-║     Client writes to N replicas simultaneously                                  ║
-║     Read from R replicas, take most recent                                      ║
-║     Rule: W + R > N guarantees overlap → strong consistency POSSIBLE            ║
+║     Client writes to N replicas simultaneously                                   ║
+║     Read from R replicas, take most recent                                       ║
+║     Rule: W + R > N guarantees overlap → strong consistency POSSIBLE             ║
 ║                                                                                  ║
-║     N=3, W=2, R=2: Every read overlaps with at least one write replica          ║
+║     N=3, W=2, R=2: Every read overlaps with at least one write replica           ║
 ║                                                                                  ║
-║     ✅ No single point of failure                                                ║
-║     ❌ Complex conflict resolution, repair mechanisms                            ║
-║     Examples: Cassandra, DynamoDB, Riak                                         ║
+║     ✅ No single point of failure                                                 ║
+║     ❌ Complex conflict resolution, repair mechanisms                             ║
+║     Examples: Cassandra, DynamoDB, Riak                                          ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -176,38 +176,38 @@
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHY: Single machine can't hold all data → split across machines                │
-│                                                                                  │
+│                                                                                 │
 │  STRATEGY 1: Range-Based Partitioning                                           │
 │  ─────────────────────────────────────                                          │
-│  Shard 1: Users A-F    Shard 2: Users G-M    Shard 3: Users N-Z               │
-│                                                                                  │
-│  ✅ Range queries are efficient (get all users A-C → only shard 1)             │
-│  ❌ Hot spots! (If most users start with "S", shard 3 overloaded)              │
-│                                                                                  │
+│  Shard 1: Users A-F    Shard 2: Users G-M    Shard 3: Users N-Z                 │
+│                                                                                 │
+│  ✅ Range queries are efficient (get all users A-C → only shard 1)               │
+│  ❌ Hot spots! (If most users start with "S", shard 3 overloaded)                │
+│                                                                                 │
 │  STRATEGY 2: Hash-Based Partitioning                                            │
 │  ────────────────────────────────────                                           │
 │  shard = hash(userId) % num_shards                                              │
-│                                                                                  │
-│  ✅ Even distribution (no hot spots for simple partition key)                   │
-│  ❌ Range queries require scatter-gather (hit all shards)                       │
-│  ❌ Adding/removing shard requires massive data movement                        │
-│                                                                                  │
-│  STRATEGY 3: Consistent Hashing  ← BEST FOR DISTRIBUTED SYSTEMS               │
+│                                                                                 │
+│  ✅ Even distribution (no hot spots for simple partition key)                    │
+│  ❌ Range queries require scatter-gather (hit all shards)                        │
+│  ❌ Adding/removing shard requires massive data movement                         │
+│                                                                                 │
+│  STRATEGY 3: Consistent Hashing  ← BEST FOR DISTRIBUTED SYSTEMS                 │
 │  ─────────────────────────────────                                              │
-│  Nodes and keys mapped to a hash ring (0 to 2^32)                              │
-│  Key assigned to nearest node clockwise                                        │
-│                                                                                  │
-│       0                                                                          │
+│  Nodes and keys mapped to a hash ring (0 to 2^32)                               │
+│  Key assigned to nearest node clockwise                                         │
+│                                                                                 │
+│       0                                                                         │
 │      ╱ ╲        Node A at position 100                                          │
 │    ╱     ╲      Node B at position 200                                          │
 │   ╱       ╲     Node C at position 300                                          │
 │  ╱    ●A   ╲                                                                    │
-│  │  ●B   ●C │   Key at position 150 → goes to Node B (nearest clockwise)      │
+│  │  ●B   ●C │   Key at position 150 → goes to Node B (nearest clockwise)        │
 │  ╲         ╱                                                                    │
-│   ╲       ╱     When Node B dies: only keys between A and B move to C          │
-│    ╲     ╱      Not ALL keys — just 1/N of them!                               │
+│   ╲       ╱     When Node B dies: only keys between A and B move to C           │
+│    ╲     ╱      Not ALL keys — just 1/N of them!                                │
 │      ╲ ╱                                                                        │
-│                                                                                  │
+│                                                                                 │
 │  Virtual nodes: Each physical node owns multiple positions on ring              │
 │  → Better distribution, smoother rebalancing                                    │
 └─────────────────────────────────────────────────────────────────────────────────┘
@@ -221,29 +221,29 @@
 ╔══════════════════════════════════════════════════════════════════════════════════╗
 ║  PROBLEM: Multiple nodes must agree on a value (leader, transaction, order)      ║
 ║                                                                                  ║
-║  RAFT (Understandable Consensus)                                                ║
-║  ────────────────────────────────                                               ║
-║  3 roles: Leader, Follower, Candidate                                           ║
+║  RAFT (Understandable Consensus)                                                 ║
+║  ────────────────────────────────                                                ║
+║  3 roles: Leader, Follower, Candidate                                            ║
 ║                                                                                  ║
 ║  1. Leader Election:                                                             ║
-║     → Followers wait for heartbeat from leader                                  ║
-║     → No heartbeat → timeout → become Candidate                                ║
-║     → Candidate requests votes from all nodes                                   ║
-║     → Majority votes → become Leader                                            ║
+║     → Followers wait for heartbeat from leader                                   ║
+║     → No heartbeat → timeout → become Candidate                                  ║
+║     → Candidate requests votes from all nodes                                    ║
+║     → Majority votes → become Leader                                             ║
 ║                                                                                  ║
 ║  2. Log Replication:                                                             ║
-║     → Client sends write to Leader                                              ║
-║     → Leader appends to log, sends to Followers                                 ║
-║     → Majority acknowledge → Leader commits                                    ║
-║     → Leader tells Followers to commit                                          ║
+║     → Client sends write to Leader                                               ║
+║     → Leader appends to log, sends to Followers                                  ║
+║     → Majority acknowledge → Leader commits                                      ║
+║     → Leader tells Followers to commit                                           ║
 ║                                                                                  ║
-║  WHY MAJORITY (Quorum)?                                                         ║
-║  → 5 nodes: need 3 to agree                                                    ║
-║  → Can tolerate 2 failures                                                      ║
-║  → Any two majorities overlap by at least 1 node                               ║
-║     → Guarantees the committed value is never lost                              ║
+║  WHY MAJORITY (Quorum)?                                                          ║
+║  → 5 nodes: need 3 to agree                                                      ║
+║  → Can tolerate 2 failures                                                       ║
+║  → Any two majorities overlap by at least 1 node                                 ║
+║     → Guarantees the committed value is never lost                               ║
 ║                                                                                  ║
-║  USED BY: etcd (Kubernetes), CockroachDB, TiKV, Consul                        ║
+║  USED BY: etcd (Kubernetes), CockroachDB, TiKV, Consul                           ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -253,31 +253,31 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│  PATTERN              │ WHAT                          │ USED IN                  │
-│──────────────────────┼───────────────────────────────┼────────────────────────│
+│  PATTERN              │ WHAT                          │ USED IN                 │
+│──────────────────────┼───────────────────────────────┼────────────────────────  │
 │  Circuit Breaker      │ Stop calling failing service  │ Netflix Hystrix,        │
 │                       │ to prevent cascade failures   │ Resilience4J            │
-│──────────────────────┼───────────────────────────────┼────────────────────────│
+│──────────────────────┼───────────────────────────────┼────────────────────────  │
 │  Bulkhead             │ Isolate failures to one       │ Thread pool per service │
-│                       │ component, protect others     │                          │
-│──────────────────────┼───────────────────────────────┼────────────────────────│
-│  Saga                 │ Distributed transaction as    │ Order → Pay → Ship     │
+│                       │ component, protect others     │                         │
+│──────────────────────┼───────────────────────────────┼────────────────────────  │
+│  Saga                 │ Distributed transaction as    │ Order → Pay → Ship      │
 │                       │ sequence of local txns +      │ with compensation       │
-│                       │ compensations                 │                          │
-│──────────────────────┼───────────────────────────────┼────────────────────────│
+│                       │ compensations                 │                         │
+│──────────────────────┼───────────────────────────────┼────────────────────────  │
 │  CQRS                 │ Separate read and write       │ Event-sourced systems   │
-│                       │ models/databases              │                          │
-│──────────────────────┼───────────────────────────────┼────────────────────────│
+│                       │ models/databases              │                         │
+│──────────────────────┼───────────────────────────────┼────────────────────────  │
 │  Event Sourcing       │ Store events, not state       │ Banking ledger, audit   │
-│                       │ Rebuild state by replaying    │ systems                  │
-│──────────────────────┼───────────────────────────────┼────────────────────────│
+│                       │ Rebuild state by replaying    │ systems                 │
+│──────────────────────┼───────────────────────────────┼────────────────────────  │
 │  Sidecar              │ Attach helper process to main │ Service mesh (Istio),   │
 │                       │ service (logging, proxy)      │ Envoy proxy             │
-│──────────────────────┼───────────────────────────────┼────────────────────────│
+│──────────────────────┼───────────────────────────────┼────────────────────────  │
 │  Leader Election      │ One node coordinates work     │ ZooKeeper, etcd         │
-│──────────────────────┼───────────────────────────────┼────────────────────────│
+│──────────────────────┼───────────────────────────────┼────────────────────────  │
 │  Gossip Protocol      │ Nodes share state by random   │ Cassandra, Consul       │
-│                       │ peer-to-peer communication    │                          │
+│                       │ peer-to-peer communication    │                         │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 

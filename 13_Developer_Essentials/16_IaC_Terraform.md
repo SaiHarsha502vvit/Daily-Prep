@@ -4,18 +4,18 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  BEFORE IaC:                                                       ║
-║  "Hey admin, can you create a server? 2 CPU, 8 GB RAM, Ubuntu"    ║
-║  → Email/ticket → wait 3 days → manual setup → no consistency    ║
-║  → "But it works on MY server!" (configuration drift)             ║
-║                                                                    ║
-║  AFTER IaC:                                                        ║
-║  Write code → commit to Git → CI/CD creates infrastructure       ║
-║  → reproducible, versioned, reviewable, testable                  ║
-║  → identical environments every time                               ║
-║                                                                    ║
-║  IaC = Treat infrastructure the same way you treat application    ║
-║  code: version it, test it, review it, automate it.               ║
+║  BEFORE IaC:                                                         ║
+║  "Hey admin, can you create a server? 2 CPU, 8 GB RAM, Ubuntu"       ║
+║  → Email/ticket → wait 3 days → manual setup → no consistency        ║
+║  → "But it works on MY server!" (configuration drift)                ║
+║                                                                      ║
+║  AFTER IaC:                                                          ║
+║  Write code → commit to Git → CI/CD creates infrastructure           ║
+║  → reproducible, versioned, reviewable, testable                     ║
+║  → identical environments every time                                 ║
+║                                                                      ║
+║  IaC = Treat infrastructure the same way you treat application       ║
+║  code: version it, test it, review it, automate it.                  ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -25,26 +25,26 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  PROVISIONING (create infrastructure):                             ║
-║  • Terraform — multi-cloud, declarative, HCL language             ║
-║  • Pulumi — multi-cloud, use real languages (Java/Python/TS)      ║
-║  • AWS CloudFormation — AWS only, JSON/YAML                       ║
-║  • Azure ARM/Bicep — Azure only                                   ║
-║  • Google Cloud Deployment Manager — GCP only                     ║
-║                                                                    ║
-║  CONFIGURATION MANAGEMENT (configure existing servers):            ║
-║  • Ansible — agentless, YAML playbooks, push-based               ║
-║  • Chef — Ruby DSL, pull-based, agent on servers                  ║
-║  • Puppet — declarative, pull-based, agent on servers             ║
-║                                                                    ║
-║  CONTAINERS & ORCHESTRATION:                                       ║
-║  • Docker / Dockerfile — build container images                   ║
-║  • Docker Compose — multi-container local development             ║
-║  • Kubernetes manifests — container orchestration                 ║
-║  • Helm — Kubernetes package manager (templated manifests)        ║
-║                                                                    ║
-║  Most common combo: Terraform + Ansible + Docker + Kubernetes     ║
-║  For interviews: Know Terraform basics + Docker + K8s concepts    ║
+║  PROVISIONING (create infrastructure):                               ║
+║  • Terraform — multi-cloud, declarative, HCL language                ║
+║  • Pulumi — multi-cloud, use real languages (Java/Python/TS)         ║
+║  • AWS CloudFormation — AWS only, JSON/YAML                          ║
+║  • Azure ARM/Bicep — Azure only                                      ║
+║  • Google Cloud Deployment Manager — GCP only                        ║
+║                                                                      ║
+║  CONFIGURATION MANAGEMENT (configure existing servers):              ║
+║  • Ansible — agentless, YAML playbooks, push-based                   ║
+║  • Chef — Ruby DSL, pull-based, agent on servers                     ║
+║  • Puppet — declarative, pull-based, agent on servers                ║
+║                                                                      ║
+║  CONTAINERS & ORCHESTRATION:                                         ║
+║  • Docker / Dockerfile — build container images                      ║
+║  • Docker Compose — multi-container local development                ║
+║  • Kubernetes manifests — container orchestration                    ║
+║  • Helm — Kubernetes package manager (templated manifests)           ║
+║                                                                      ║
+║  Most common combo: Terraform + Ansible + Docker + Kubernetes        ║
+║  For interviews: Know Terraform basics + Docker + K8s concepts       ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -56,18 +56,18 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  IMPERATIVE (scripting):                                           ║
-║  "Create a VPC, then create a subnet, then create an EC2..."     ║
-║  → You describe the STEPS                                        ║
-║  → Bash scripts, AWS CLI commands                                ║
-║                                                                    ║
-║  DECLARATIVE (Terraform):                                         ║
-║  "I want 3 EC2 instances, a VPC, and an RDS database"            ║
-║  → You describe the DESIRED STATE                                ║
-║  → Terraform figures out the steps to get there                  ║
-║                                                                    ║
-║  KEY BENEFIT: Terraform knows current state vs desired state.     ║
-║  It only changes what's DIFFERENT (idempotent).                   ║
+║  IMPERATIVE (scripting):                                             ║
+║  "Create a VPC, then create a subnet, then create an EC2..."         ║
+║  → You describe the STEPS                                            ║
+║  → Bash scripts, AWS CLI commands                                    ║
+║                                                                      ║
+║  DECLARATIVE (Terraform):                                            ║
+║  "I want 3 EC2 instances, a VPC, and an RDS database"                ║
+║  → You describe the DESIRED STATE                                    ║
+║  → Terraform figures out the steps to get there                      ║
+║                                                                      ║
+║  KEY BENEFIT: Terraform knows current state vs desired state.        ║
+║  It only changes what's DIFFERENT (idempotent).                      ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -75,24 +75,24 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║                                                                    ║
-║   Write (.tf files)                                               ║
-║       │                                                            ║
-║       ▼                                                            ║
-║   terraform init        ← Download providers (AWS, Azure, etc.)  ║
-║       │                                                            ║
-║       ▼                                                            ║
-║   terraform plan        ← Preview changes (diff: + add, - remove)║
-║       │                    NEVER skip this step!                   ║
-║       ▼                                                            ║
-║   terraform apply       ← Execute changes (creates/updates)      ║
-║       │                                                            ║
-║       ▼                                                            ║
-║   terraform destroy     ← Tear down everything (cleanup)         ║
-║                                                                    ║
-║   State file (terraform.tfstate) tracks what exists.              ║
-║   NEVER edit this file manually. NEVER commit it to Git.         ║
-║   Store it remotely (S3 + DynamoDB lock, Terraform Cloud).       ║
+║                                                                      ║
+║   Write (.tf files)                                                  ║
+║       │                                                              ║
+║       ▼                                                              ║
+║   terraform init        ← Download providers (AWS, Azure, etc.)      ║
+║       │                                                              ║
+║       ▼                                                              ║
+║   terraform plan        ← Preview changes (diff: + add, - remove)    ║
+║       │                    NEVER skip this step!                     ║
+║       ▼                                                              ║
+║   terraform apply       ← Execute changes (creates/updates)          ║
+║       │                                                              ║
+║       ▼                                                              ║
+║   terraform destroy     ← Tear down everything (cleanup)             ║
+║                                                                      ║
+║   State file (terraform.tfstate) tracks what exists.                 ║
+║   NEVER edit this file manually. NEVER commit it to Git.             ║
+║   Store it remotely (S3 + DynamoDB lock, Terraform Cloud).           ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -233,29 +233,29 @@ resource "aws_instance" "web" {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  Project Structure:                                                ║
-║                                                                    ║
-║  infrastructure/                                                   ║
-║  ├── modules/                                                     ║
-║  │   ├── vpc/                                                     ║
-║  │   │   ├── main.tf                                              ║
-║  │   │   ├── variables.tf                                         ║
-║  │   │   └── outputs.tf                                           ║
-║  │   ├── ec2/                                                     ║
-║  │   │   ├── main.tf                                              ║
-║  │   │   ├── variables.tf                                         ║
-║  │   │   └── outputs.tf                                           ║
-║  │   └── rds/                                                     ║
-║  │       ├── main.tf                                              ║
-║  │       ├── variables.tf                                         ║
-║  │       └── outputs.tf                                           ║
-║  ├── environments/                                                ║
-║  │   ├── dev/                                                     ║
-║  │   │   ├── main.tf          ← uses modules                     ║
-║  │   │   └── terraform.tfvars                                     ║
-║  │   ├── staging/                                                 ║
-║  │   └── prod/                                                    ║
-║  └── terraform.tfvars                                             ║
+║  Project Structure:                                                  ║
+║                                                                      ║
+║  infrastructure/                                                     ║
+║  ├── modules/                                                        ║
+║  │   ├── vpc/                                                        ║
+║  │   │   ├── main.tf                                                 ║
+║  │   │   ├── variables.tf                                            ║
+║  │   │   └── outputs.tf                                              ║
+║  │   ├── ec2/                                                        ║
+║  │   │   ├── main.tf                                                 ║
+║  │   │   ├── variables.tf                                            ║
+║  │   │   └── outputs.tf                                              ║
+║  │   └── rds/                                                        ║
+║  │       ├── main.tf                                                 ║
+║  │       ├── variables.tf                                            ║
+║  │       └── outputs.tf                                              ║
+║  ├── environments/                                                   ║
+║  │   ├── dev/                                                        ║
+║  │   │   ├── main.tf          ← uses modules                         ║
+║  │   │   └── terraform.tfvars                                        ║
+║  │   ├── staging/                                                    ║
+║  │   └── prod/                                                       ║
+║  └── terraform.tfvars                                                ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -462,26 +462,26 @@ resource "aws_db_instance" "main" {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  STATE FILE — The Most Important Terraform Concept                ║
-║                                                                    ║
-║  terraform.tfstate maps your .tf code to real infrastructure.     ║
-║                                                                    ║
-║  .tf file says: "I want an EC2 instance"                          ║
-║  State file says: "That's i-0abc123 in us-east-1"                ║
-║                                                                    ║
-║  RULES:                                                            ║
-║  1. NEVER edit state manually                                     ║
-║  2. NEVER commit state to Git (contains secrets!)                 ║
-║  3. ALWAYS use remote state for teams:                            ║
-║     • AWS: S3 bucket + DynamoDB table (for locking)              ║
-║     • Azure: Azure Blob Storage                                   ║
-║     • Terraform Cloud: built-in                                   ║
-║  4. Use terraform state commands for state operations:            ║
-║     • terraform state list    — see all resources                ║
-║     • terraform state show    — inspect a resource               ║
-║     • terraform state mv      — rename/move                      ║
-║     • terraform state rm      — remove from state (not destroy)  ║
-║     • terraform import        — bring existing resource into state║
+║  STATE FILE — The Most Important Terraform Concept                   ║
+║                                                                      ║
+║  terraform.tfstate maps your .tf code to real infrastructure.        ║
+║                                                                      ║
+║  .tf file says: "I want an EC2 instance"                             ║
+║  State file says: "That's i-0abc123 in us-east-1"                    ║
+║                                                                      ║
+║  RULES:                                                              ║
+║  1. NEVER edit state manually                                        ║
+║  2. NEVER commit state to Git (contains secrets!)                    ║
+║  3. ALWAYS use remote state for teams:                               ║
+║     • AWS: S3 bucket + DynamoDB table (for locking)                  ║
+║     • Azure: Azure Blob Storage                                      ║
+║     • Terraform Cloud: built-in                                      ║
+║  4. Use terraform state commands for state operations:               ║
+║     • terraform state list    — see all resources                    ║
+║     • terraform state show    — inspect a resource                   ║
+║     • terraform state mv      — rename/move                          ║
+║     • terraform state rm      — remove from state (not destroy)      ║
+║     • terraform import        — bring existing resource into state   ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -491,21 +491,21 @@ resource "aws_db_instance" "main" {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  GitOps Workflow for Terraform:                                    ║
-║                                                                    ║
-║  Developer             Git               CI/CD             Cloud   ║
-║  ┌────────┐   push    ┌────────┐  trigger  ┌────────┐    ┌──────┐║
-║  │ Write  │──────────▶│ Branch │──────────▶│Pipeline│───▶│ AWS  │║
-║  │ .tf    │           │ + PR   │           │        │    │      │║
-║  └────────┘           └────────┘           └────────┘    └──────┘║
-║                                                                    ║
-║  Pipeline Steps:                                                   ║
-║  1. terraform fmt -check     (formatting)                         ║
-║  2. terraform validate       (syntax check)                       ║
-║  3. terraform plan           (preview) → comment on PR           ║
-║  4. (PR approved) terraform apply -auto-approve                   ║
-║                                                                    ║
-║  RULE: Only CI/CD applies. Humans don't run apply.               ║
+║  GitOps Workflow for Terraform:                                      ║
+║                                                                      ║
+║  Developer             Git               CI/CD             Cloud     ║
+║  ┌────────┐   push    ┌────────┐  trigger  ┌────────┐    ┌──────┐    ║
+║  │ Write  │──────────▶│ Branch │──────────▶│Pipeline│───▶│ AWS  │    ║
+║  │ .tf    │           │ + PR   │           │        │    │      │    ║
+║  └────────┘           └────────┘           └────────┘    └──────┘    ║
+║                                                                      ║
+║  Pipeline Steps:                                                     ║
+║  1. terraform fmt -check     (formatting)                            ║
+║  2. terraform validate       (syntax check)                          ║
+║  3. terraform plan           (preview) → comment on PR               ║
+║  4. (PR approved) terraform apply -auto-approve                      ║
+║                                                                      ║
+║  RULE: Only CI/CD applies. Humans don't run apply.                   ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -596,18 +596,18 @@ Q: What happens if you delete a resource from .tf without destroy?
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  1. Version control everything — all .tf files in Git             ║
-║  2. Use modules for reusable components                           ║
-║  3. Remote state with locking — never local for teams            ║
-║  4. Separate environments — don't share state                    ║
-║  5. Use variables and outputs — no hardcoded values              ║
-║  6. Pin provider versions — avoid surprise upgrades              ║
-║  7. Run plan in CI — review changes before apply                 ║
-║  8. Tag all resources — cost tracking, ownership                 ║
-║  9. Use data sources — don't hardcode AMI IDs or ARNs           ║
-║  10. Secrets in Vault/SSM — never in .tf files or state         ║
-║  11. Small, focused changes — easier to review and debug         ║
-║  12. Destroy unused resources — cost awareness                   ║
+║  1. Version control everything — all .tf files in Git                ║
+║  2. Use modules for reusable components                              ║
+║  3. Remote state with locking — never local for teams                ║
+║  4. Separate environments — don't share state                        ║
+║  5. Use variables and outputs — no hardcoded values                  ║
+║  6. Pin provider versions — avoid surprise upgrades                  ║
+║  7. Run plan in CI — review changes before apply                     ║
+║  8. Tag all resources — cost tracking, ownership                     ║
+║  9. Use data sources — don't hardcode AMI IDs or ARNs                ║
+║  10. Secrets in Vault/SSM — never in .tf files or state              ║
+║  11. Small, focused changes — easier to review and debug             ║
+║  12. Destroy unused resources — cost awareness                       ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 

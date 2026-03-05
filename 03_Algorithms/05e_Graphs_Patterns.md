@@ -423,130 +423,130 @@ public boolean hasHamiltonianPath(int n, int[][] edges) {
 ## ALGORITHM COMPLEXITY COMPARISON
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────────────────────┐
 │                    TREE & GRAPH ALGORITHMS - COMPLEXITY SUMMARY                  │
-├─────────────────────────────────────────────────────────────────────────────────┤
+├──────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                  │
 │  TREE TRAVERSALS:                                                                │
-│  ┌────────────────────────┬────────────┬───────────┬───────────────────────────┐│
-│  │ Algorithm              │ Time       │ Space     │ Notes                     ││
-│  ├────────────────────────┼────────────┼───────────┼───────────────────────────┤│
-│  │ Preorder/Inorder/Post  │ O(n)       │ O(h)      │ Recursive or iterative   ││
-│  │ Level Order (BFS)      │ O(n)       │ O(w)      │ w = max width            ││
-│  │ Morris Traversal       │ O(n)       │ O(1)      │ Modifies tree temporarily ││
-│  └────────────────────────┴────────────┴───────────┴───────────────────────────┘│
+│  ┌────────────────────────┬────────────┬───────────┬───────────────────────────┐ │
+│  │ Algorithm              │ Time       │ Space     │ Notes                     │ │
+│  ├────────────────────────┼────────────┼───────────┼───────────────────────────┤ │
+│  │ Preorder/Inorder/Post  │ O(n)       │ O(h)      │ Recursive or iterative   │  │
+│  │ Level Order (BFS)      │ O(n)       │ O(w)      │ w = max width            │  │
+│  │ Morris Traversal       │ O(n)       │ O(1)      │ Modifies tree temporarily │ │
+│  └────────────────────────┴────────────┴───────────┴───────────────────────────┘ │
 │                                                                                  │
 │  BST OPERATIONS:                                                                 │
-│  ┌────────────────────────┬────────────┬───────────┬───────────────────────────┐│
-│  │ Operation              │ Average    │ Worst     │ Notes                     ││
-│  ├────────────────────────┼────────────┼───────────┼───────────────────────────┤│
-│  │ Search                 │ O(log n)   │ O(n)      │ Worst = skewed tree      ││
-│  │ Insert                 │ O(log n)   │ O(n)      │ Maintain balance!        ││
-│  │ Delete                 │ O(log n)   │ O(n)      │ Three cases             ││
-│  │ Find min/max           │ O(log n)   │ O(n)      │ Follow left/right       ││
-│  └────────────────────────┴────────────┴───────────┴───────────────────────────┘│
+│  ┌────────────────────────┬────────────┬───────────┬───────────────────────────┐ │
+│  │ Operation              │ Average    │ Worst     │ Notes                     │ │
+│  ├────────────────────────┼────────────┼───────────┼───────────────────────────┤ │
+│  │ Search                 │ O(log n)   │ O(n)      │ Worst = skewed tree      │  │
+│  │ Insert                 │ O(log n)   │ O(n)      │ Maintain balance!        │  │
+│  │ Delete                 │ O(log n)   │ O(n)      │ Three cases             │   │
+│  │ Find min/max           │ O(log n)   │ O(n)      │ Follow left/right       │   │
+│  └────────────────────────┴────────────┴───────────┴───────────────────────────┘ │
 │                                                                                  │
-│  BALANCED TREES (AVL, Red-Black):                                               │
-│  ┌────────────────────────┬────────────┬───────────┬───────────────────────────┐│
-│  │ Operation              │ Time       │ Space     │ Notes                     ││
-│  ├────────────────────────┼────────────┼───────────┼───────────────────────────┤│
-│  │ All operations         │ O(log n)   │ O(log n)  │ Guaranteed balanced      ││
-│  │ Rebalancing            │ O(1)       │ O(1)      │ Max 2 rotations (AVL)   ││
-│  └────────────────────────┴────────────┴───────────┴───────────────────────────┘│
+│  BALANCED TREES (AVL, Red-Black):                                                │
+│  ┌────────────────────────┬────────────┬───────────┬───────────────────────────┐ │
+│  │ Operation              │ Time       │ Space     │ Notes                     │ │
+│  ├────────────────────────┼────────────┼───────────┼───────────────────────────┤ │
+│  │ All operations         │ O(log n)   │ O(log n)  │ Guaranteed balanced      │  │
+│  │ Rebalancing            │ O(1)       │ O(1)      │ Max 2 rotations (AVL)   │   │
+│  └────────────────────────┴────────────┴───────────┴───────────────────────────┘ │
 │                                                                                  │
 │  GRAPH TRAVERSALS:                                                               │
-│  ┌────────────────────────┬────────────┬───────────┬───────────────────────────┐│
-│  │ Algorithm              │ Time       │ Space     │ Notes                     ││
-│  ├────────────────────────┼────────────┼───────────┼───────────────────────────┤│
-│  │ BFS                    │ O(V + E)   │ O(V)      │ Level-by-level          ││
-│  │ DFS                    │ O(V + E)   │ O(V)      │ Depth-first             ││
-│  │ Topological Sort       │ O(V + E)   │ O(V)      │ DAG only                ││
-│  └────────────────────────┴────────────┴───────────┴───────────────────────────┘│
+│  ┌────────────────────────┬────────────┬───────────┬───────────────────────────┐ │
+│  │ Algorithm              │ Time       │ Space     │ Notes                     │ │
+│  ├────────────────────────┼────────────┼───────────┼───────────────────────────┤ │
+│  │ BFS                    │ O(V + E)   │ O(V)      │ Level-by-level          │   │
+│  │ DFS                    │ O(V + E)   │ O(V)      │ Depth-first             │   │
+│  │ Topological Sort       │ O(V + E)   │ O(V)      │ DAG only                │   │
+│  └────────────────────────┴────────────┴───────────┴───────────────────────────┘ │
 │                                                                                  │
 │  SHORTEST PATH:                                                                  │
-│  ┌────────────────────────┬────────────┬───────────┬───────────────────────────┐│
-│  │ Algorithm              │ Time       │ Space     │ Notes                     ││
-│  ├────────────────────────┼────────────┼───────────┼───────────────────────────┤│
-│  │ BFS (unweighted)       │ O(V + E)   │ O(V)      │ Best for unweighted     ││
-│  │ Dijkstra (binary heap) │ O(E log V) │ O(V)      │ Non-negative weights    ││
-│  │ Dijkstra (Fib heap)    │ O(E+V logV)│ O(V)      │ Rarely implemented      ││
-│  │ Bellman-Ford           │ O(V × E)   │ O(V)      │ Handles negative        ││
-│  │ SPFA                   │ O(V × E)   │ O(V)      │ Avg O(kE), k small     ││
-│  │ Floyd-Warshall         │ O(V³)      │ O(V²)     │ All pairs              ││
-│  │ Johnson                │ O(VE logV) │ O(V²)     │ All pairs, sparse      ││
-│  └────────────────────────┴────────────┴───────────┴───────────────────────────┘│
+│  ┌────────────────────────┬────────────┬───────────┬───────────────────────────┐ │
+│  │ Algorithm              │ Time       │ Space     │ Notes                     │ │
+│  ├────────────────────────┼────────────┼───────────┼───────────────────────────┤ │
+│  │ BFS (unweighted)       │ O(V + E)   │ O(V)      │ Best for unweighted     │   │
+│  │ Dijkstra (binary heap) │ O(E log V) │ O(V)      │ Non-negative weights    │   │
+│  │ Dijkstra (Fib heap)    │ O(E+V logV)│ O(V)      │ Rarely implemented      │   │
+│  │ Bellman-Ford           │ O(V × E)   │ O(V)      │ Handles negative        │   │
+│  │ SPFA                   │ O(V × E)   │ O(V)      │ Avg O(kE), k small     │    │
+│  │ Floyd-Warshall         │ O(V³)      │ O(V²)     │ All pairs              │    │
+│  │ Johnson                │ O(VE logV) │ O(V²)     │ All pairs, sparse      │    │
+│  └────────────────────────┴────────────┴───────────┴───────────────────────────┘ │
 │                                                                                  │
 │  MST:                                                                            │
-│  ┌────────────────────────┬────────────┬───────────┬───────────────────────────┐│
-│  │ Algorithm              │ Time       │ Space     │ Notes                     ││
-│  ├────────────────────────┼────────────┼───────────┼───────────────────────────┤│
-│  │ Kruskal                │ O(E log E) │ O(V)      │ Sort + Union-Find       ││
-│  │ Prim (binary heap)     │ O(E log V) │ O(V)      │ Dense: use matrix       ││
-│  │ Prim (Fib heap)        │ O(E+V logV)│ O(V)      │ Better for dense        ││
-│  │ Borůvka                │ O(E log V) │ O(V)      │ Parallelizable          ││
-│  └────────────────────────┴────────────┴───────────┴───────────────────────────┘│
+│  ┌────────────────────────┬────────────┬───────────┬───────────────────────────┐ │
+│  │ Algorithm              │ Time       │ Space     │ Notes                     │ │
+│  ├────────────────────────┼────────────┼───────────┼───────────────────────────┤ │
+│  │ Kruskal                │ O(E log E) │ O(V)      │ Sort + Union-Find       │   │
+│  │ Prim (binary heap)     │ O(E log V) │ O(V)      │ Dense: use matrix       │   │
+│  │ Prim (Fib heap)        │ O(E+V logV)│ O(V)      │ Better for dense        │   │
+│  │ Borůvka                │ O(E log V) │ O(V)      │ Parallelizable          │   │
+│  └────────────────────────┴────────────┴───────────┴───────────────────────────┘ │
 │                                                                                  │
 │  ADVANCED:                                                                       │
-│  ┌────────────────────────┬────────────┬───────────┬───────────────────────────┐│
-│  │ Algorithm              │ Time       │ Space     │ Notes                     ││
-│  ├────────────────────────┼────────────┼───────────┼───────────────────────────┤│
-│  │ SCC (Tarjan/Kosaraju)  │ O(V + E)   │ O(V)      │ Directed graphs         ││
-│  │ Articulation Points    │ O(V + E)   │ O(V)      │ Cut vertices            ││
-│  │ Bridges                │ O(V + E)   │ O(V)      │ Cut edges               ││
-│  │ LCA (preprocessing)    │ O(n log n) │ O(n log n)│ Binary lifting          ││
-│  │ LCA (query)            │ O(log n)   │ -         │ After preprocessing     ││
-│  │ Euler Path             │ O(E)       │ O(V + E)  │ Hierholzer              ││
-│  │ Hamiltonian Path       │ O(n² 2^n)  │ O(n 2^n)  │ DP + bitmask           ││
-│  └────────────────────────┴────────────┴───────────┴───────────────────────────┘│
+│  ┌────────────────────────┬────────────┬───────────┬───────────────────────────┐ │
+│  │ Algorithm              │ Time       │ Space     │ Notes                     │ │
+│  ├────────────────────────┼────────────┼───────────┼───────────────────────────┤ │
+│  │ SCC (Tarjan/Kosaraju)  │ O(V + E)   │ O(V)      │ Directed graphs         │   │
+│  │ Articulation Points    │ O(V + E)   │ O(V)      │ Cut vertices            │   │
+│  │ Bridges                │ O(V + E)   │ O(V)      │ Cut edges               │   │
+│  │ LCA (preprocessing)    │ O(n log n) │ O(n log n)│ Binary lifting          │   │
+│  │ LCA (query)            │ O(log n)   │ -         │ After preprocessing     │   │
+│  │ Euler Path             │ O(E)       │ O(V + E)  │ Hierholzer              │   │
+│  │ Hamiltonian Path       │ O(n² 2^n)  │ O(n 2^n)  │ DP + bitmask           │    │
+│  └────────────────────────┴────────────┴───────────┴───────────────────────────┘ │
 │                                                                                  │
-└─────────────────────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ## INTERVIEW PROBLEM PATTERNS
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────────────────────┐
 │                    WHEN TO USE WHICH ALGORITHM                                   │
-├─────────────────────────────────────────────────────────────────────────────────┤
+├──────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                  │
-│  "Find shortest path..."                                                        │
-│  • Unweighted → BFS                                                             │
-│  • Positive weights → Dijkstra                                                  │
-│  • Negative weights → Bellman-Ford                                              │
-│  • All pairs → Floyd-Warshall (dense) or Johnson (sparse)                      │
+│  "Find shortest path..."                                                         │
+│  • Unweighted → BFS                                                              │
+│  • Positive weights → Dijkstra                                                   │
+│  • Negative weights → Bellman-Ford                                               │
+│  • All pairs → Floyd-Warshall (dense) or Johnson (sparse)                        │
 │                                                                                  │
-│  "Find connected components..."                                                 │
-│  • Undirected → BFS/DFS or Union-Find                                          │
-│  • Directed (SCC) → Tarjan or Kosaraju                                         │
+│  "Find connected components..."                                                  │
+│  • Undirected → BFS/DFS or Union-Find                                            │
+│  • Directed (SCC) → Tarjan or Kosaraju                                           │
 │                                                                                  │
-│  "Detect cycle..."                                                              │
-│  • Undirected → DFS with parent tracking or Union-Find                         │
-│  • Directed → DFS with colors (white/gray/black)                               │
+│  "Detect cycle..."                                                               │
+│  • Undirected → DFS with parent tracking or Union-Find                           │
+│  • Directed → DFS with colors (white/gray/black)                                 │
 │                                                                                  │
-│  "Ordering with dependencies..."                                                │
-│  • Topological Sort (Kahn's BFS or DFS postorder)                              │
+│  "Ordering with dependencies..."                                                 │
+│  • Topological Sort (Kahn's BFS or DFS postorder)                                │
 │                                                                                  │
-│  "Minimum cost to connect all..."                                              │
-│  • MST: Kruskal or Prim                                                        │
+│  "Minimum cost to connect all..."                                                │
+│  • MST: Kruskal or Prim                                                          │
 │                                                                                  │
-│  "Find LCA..."                                                                  │
-│  • Single query → O(n) recursive                                               │
-│  • Multiple queries → Binary lifting O(log n) per query                        │
+│  "Find LCA..."                                                                   │
+│  • Single query → O(n) recursive                                                 │
+│  • Multiple queries → Binary lifting O(log n) per query                          │
 │                                                                                  │
-│  "Count paths..."                                                               │
-│  • DAG → Topological sort + DP                                                 │
-│  • General → DFS with memoization                                              │
+│  "Count paths..."                                                                │
+│  • DAG → Topological sort + DP                                                   │
+│  • General → DFS with memoization                                                │
 │                                                                                  │
-│  "Network flow / max matching..."                                              │
-│  • Ford-Fulkerson / Edmonds-Karp / Dinic                                       │
+│  "Network flow / max matching..."                                                │
+│  • Ford-Fulkerson / Edmonds-Karp / Dinic                                         │
 │                                                                                  │
 │  TREE-SPECIFIC:                                                                  │
-│  • Validate BST → Inorder (should be sorted) or range checking                 │
-│  • Serialize/Deserialize → Preorder + null markers                             │
-│  • Tree DP → Postorder traversal                                               │
-│  • Path problems → LCA + path sum                                              │
+│  • Validate BST → Inorder (should be sorted) or range checking                   │
+│  • Serialize/Deserialize → Preorder + null markers                               │
+│  • Tree DP → Postorder traversal                                                 │
+│  • Path problems → LCA + path sum                                                │
 │                                                                                  │
-└─────────────────────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -558,35 +558,35 @@ public boolean hasHamiltonianPath(int n, int[][] edges) {
 ## 🔵 WHY: Why Do We Need A*?
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────────────────────┐
 │                     WHY A* EXISTS — THE MOTIVATION                               │
 │                                                                                  │
-│  Dijkstra explores in ALL directions equally:                                   │
+│  Dijkstra explores in ALL directions equally:                                    │
 │                                                                                  │
-│           . . . . . . .                                                         │
-│         . . . . . . . . .                                                       │
-│       . . . . S . . . . . .          S = Start, G = Goal                       │
-│         . . . . . . . . .            Dijkstra explores the entire circle        │
-│           . . . . G . .              before finding path to G                   │
+│           . . . . . . .                                                          │
+│         . . . . . . . . .                                                        │
+│       . . . . S . . . . . .          S = Start, G = Goal                         │
+│         . . . . . . . . .            Dijkstra explores the entire circle         │
+│           . . . . G . .              before finding path to G                    │
 │                                                                                  │
-│  A* uses a HEURISTIC to guide search TOWARD the goal:                           │
+│  A* uses a HEURISTIC to guide search TOWARD the goal:                            │
 │                                                                                  │
 │                 . .                                                              │
-│           S . . . . G                A* explores a narrow corridor              │
-│                 . .                   toward the goal — MUCH faster!            │
+│           S . . . . G                A* explores a narrow corridor               │
+│                 . .                   toward the goal — MUCH faster!             │
 │                                                                                  │
 │  WHEN TO USE:                                                                    │
-│  • Grid pathfinding (games, robotics, GPS)                                      │
-│  • Any graph where you have an estimate of distance to goal                     │
-│  • When Dijkstra is too slow because graph is huge                              │
+│  • Grid pathfinding (games, robotics, GPS)                                       │
+│  • Any graph where you have an estimate of distance to goal                      │
+│  • When Dijkstra is too slow because graph is huge                               │
 │                                                                                  │
 │  REAL-WORLD:                                                                     │
 │  • Google Maps route planning                                                    │
-│  • Game AI (NPCs navigating around obstacles)                                   │
+│  • Game AI (NPCs navigating around obstacles)                                    │
 │  • Robot motion planning                                                         │
 │  • Network routing protocols                                                     │
 │                                                                                  │
-└─────────────────────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -594,63 +594,63 @@ public boolean hasHamiltonianPath(int n, int[][] edges) {
 ## 🔵 WHAT: How A* Works
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────────────────────┐
 │                     A* CORE FORMULA                                              │
 │                                                                                  │
-│   f(n) = g(n) + h(n)                                                           │
+│   f(n) = g(n) + h(n)                                                             │
 │                                                                                  │
 │   Where:                                                                         │
-│   • g(n) = ACTUAL cost from start to node n (known, exact)                      │
-│   • h(n) = ESTIMATED cost from n to goal (heuristic, approximate)               │
-│   • f(n) = total estimated cost of path through n                               │
+│   • g(n) = ACTUAL cost from start to node n (known, exact)                       │
+│   • h(n) = ESTIMATED cost from n to goal (heuristic, approximate)                │
+│   • f(n) = total estimated cost of path through n                                │
 │                                                                                  │
-│   ┌──────────────┐         ┌──────────────┐         ┌──────────────┐           │
-│   │    START     │ ─g(n)─▶ │   NODE n     │ ─h(n)─▶ │    GOAL      │           │
+│   ┌──────────────┐         ┌──────────────┐         ┌──────────────┐             │
+│   │    START     │ ─g(n)─▶ │   NODE n     │ ─h(n)─▶ │    GOAL      │             │
 │   │              │  exact   │              │ estimate │              │           │
-│   └──────────────┘         └──────────────┘         └──────────────┘           │
+│   └──────────────┘         └──────────────┘         └──────────────┘             │
 │                                                                                  │
-│   KEY INSIGHT: A* always expands the node with LOWEST f(n)                      │
-│   This means it prioritizes nodes that appear to be on the shortest path        │
+│   KEY INSIGHT: A* always expands the node with LOWEST f(n)                       │
+│   This means it prioritizes nodes that appear to be on the shortest path         │
 │                                                                                  │
 │   COMPARISON WITH DIJKSTRA:                                                      │
-│   • Dijkstra:  priority = g(n)           (only actual cost)                     │
-│   • A*:        priority = g(n) + h(n)    (actual + estimated remaining)         │
-│   • If h(n) = 0 for all n → A* becomes Dijkstra                                │
+│   • Dijkstra:  priority = g(n)           (only actual cost)                      │
+│   • A*:        priority = g(n) + h(n)    (actual + estimated remaining)          │
+│   • If h(n) = 0 for all n → A* becomes Dijkstra                                  │
 │                                                                                  │
-└─────────────────────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Common Heuristic Functions
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                     HEURISTIC FUNCTIONS FOR GRIDS                                │
-│                                                                                  │
-│  1. MANHATTAN DISTANCE (4-directional movement: ↑↓←→)                          │
-│     h = |x₁ - x₂| + |y₁ - y₂|                                                │
-│                                                                                  │
-│     From (1,1) to (4,3):  |4-1| + |3-1| = 3 + 2 = 5                          │
-│                                                                                  │
-│  2. EUCLIDEAN DISTANCE (any direction, diagonal allowed)                        │
-│     h = √((x₁-x₂)² + (y₁-y₂)²)                                              │
-│                                                                                  │
-│     From (1,1) to (4,3):  √(9+4) ≈ 3.6                                       │
-│                                                                                  │
-│  3. CHEBYSHEV DISTANCE (8-directional: ↑↓←→↗↘↙↖)                             │
-│     h = max(|x₁-x₂|, |y₁-y₂|)                                                │
-│                                                                                  │
-│     From (1,1) to (4,3):  max(3, 2) = 3                                       │
-│                                                                                  │
-│  ╔════════════════════════════════════════════════════════════════╗              │
+┌───────────────────────────────────────────────────────────────────────────────────┐
+│                     HEURISTIC FUNCTIONS FOR GRIDS                                 │
+│                                                                                   │
+│  1. MANHATTAN DISTANCE (4-directional movement: ↑↓←→)                             │
+│     h = |x₁ - x₂| + |y₁ - y₂|                                                     │
+│                                                                                   │
+│     From (1,1) to (4,3):  |4-1| + |3-1| = 3 + 2 = 5                               │
+│                                                                                   │
+│  2. EUCLIDEAN DISTANCE (any direction, diagonal allowed)                          │
+│     h = √((x₁-x₂)² + (y₁-y₂)²)                                                    │
+│                                                                                   │
+│     From (1,1) to (4,3):  √(9+4) ≈ 3.6                                            │
+│                                                                                   │
+│  3. CHEBYSHEV DISTANCE (8-directional: ↑↓←→↗↘↙↖)                                  │
+│     h = max(|x₁-x₂|, |y₁-y₂|)                                                     │
+│                                                                                   │
+│     From (1,1) to (4,3):  max(3, 2) = 3                                           │
+│                                                                                   │
+│  ╔════════════════════════════════════════════════════════════════╗               │
 │  ║  ADMISSIBILITY REQUIREMENT:                                     ║              │
-│  ║  h(n) must NEVER overestimate the true cost to goal            ║              │
-│  ║  h(n) ≤ actual_cost(n, goal)  for all n                       ║              │
+│  ║  h(n) must NEVER overestimate the true cost to goal            ║               │
+│  ║  h(n) ≤ actual_cost(n, goal)  for all n                       ║                │
 │  ║                                                                 ║              │
-│  ║  If admissible → A* guarantees OPTIMAL (shortest) path         ║              │
-│  ║  If not admissible → faster but may find suboptimal path       ║              │
-│  ╚════════════════════════════════════════════════════════════════╝              │
-│                                                                                  │
-└─────────────────────────────────────────────────────────────────────────────────┘
+│  ║  If admissible → A* guarantees OPTIMAL (shortest) path         ║               │
+│  ║  If not admissible → faster but may find suboptimal path       ║               │
+│  ╚════════════════════════════════════════════════════════════════╝               │
+│                                                                                   │
+└───────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -658,50 +658,50 @@ public boolean hasHamiltonianPath(int n, int[][] edges) {
 ## 🔵 HOW: Step-by-Step Walkthrough
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────────────────────┐
 │                     A* ALGORITHM STEP-BY-STEP                                    │
 │                                                                                  │
-│  Grid Example (0 = open, 1 = wall, S = start, G = goal):                       │
+│  Grid Example (0 = open, 1 = wall, S = start, G = goal):                         │
 │                                                                                  │
-│    0   1   2   3   4         Heuristic: Manhattan distance                      │
-│  ┌───┬───┬───┬───┬───┐                                                         │
-│ 0│ S │   │   │   │   │      S = (0,0), G = (2,4)                              │
-│  ├───┼───┼───┼───┼───┤                                                         │
-│ 1│   │ █ │ █ │   │   │      █ = wall (blocked)                                 │
-│  ├───┼───┼───┼───┼───┤                                                         │
-│ 2│   │   │   │   │ G │                                                          │
-│  └───┴───┴───┴───┴───┘                                                         │
+│    0   1   2   3   4         Heuristic: Manhattan distance                       │
+│  ┌───┬───┬───┬───┬───┐                                                           │
+│ 0│ S │   │   │   │   │      S = (0,0), G = (2,4)                                 │
+│  ├───┼───┼───┼───┼───┤                                                           │
+│ 1│   │ █ │ █ │   │   │      █ = wall (blocked)                                   │
+│  ├───┼───┼───┼───┼───┤                                                           │
+│ 2│   │   │   │   │ G │                                                           │
+│  └───┴───┴───┴───┴───┘                                                           │
 │                                                                                  │
 │  STEP 1: Initialize                                                              │
-│    openSet   = {S}   (nodes to explore, sorted by f)                            │
-│    closedSet = {}    (nodes already explored)                                   │
-│    g(S) = 0, h(S) = |0-2|+|0-4| = 6, f(S) = 0+6 = 6                         │
+│    openSet   = {S}   (nodes to explore, sorted by f)                             │
+│    closedSet = {}    (nodes already explored)                                    │
+│    g(S) = 0, h(S) = |0-2|+|0-4| = 6, f(S) = 0+6 = 6                              │
 │                                                                                  │
-│  STEP 2: Pop lowest f from openSet → S (0,0), f=6                              │
-│    Expand neighbors: (0,1) and (1,0)                                            │
-│    (0,1): g=1, h=|0-2|+|1-4|=5, f=6                                           │
-│    (1,0): g=1, h=|1-2|+|0-4|=5, f=6                                           │
-│    openSet = {(0,1), (1,0)}                                                     │
+│  STEP 2: Pop lowest f from openSet → S (0,0), f=6                                │
+│    Expand neighbors: (0,1) and (1,0)                                             │
+│    (0,1): g=1, h=|0-2|+|1-4|=5, f=6                                              │
+│    (1,0): g=1, h=|1-2|+|0-4|=5, f=6                                              │
+│    openSet = {(0,1), (1,0)}                                                      │
 │                                                                                  │
-│  STEP 3: Pop (0,1), f=6                                                         │
+│  STEP 3: Pop (0,1), f=6                                                          │
 │    Neighbors: (0,2)                                                              │
-│    (0,2): g=2, h=|0-2|+|2-4|=4, f=6                                           │
+│    (0,2): g=2, h=|0-2|+|2-4|=4, f=6                                              │
 │                                                                                  │
-│  ... continues expanding toward goal ...                                        │
+│  ... continues expanding toward goal ...                                         │
 │                                                                                  │
 │  FINAL PATH:                                                                     │
-│    S→(0,1)→(0,2)→(0,3)→(1,3)→(2,3)→G    Cost = 6                            │
+│    S→(0,1)→(0,2)→(0,3)→(1,3)→(2,3)→G    Cost = 6                                 │
 │                                                                                  │
-│    0   1   2   3   4                                                            │
-│  ┌───┬───┬───┬───┬───┐                                                         │
-│ 0│ * │ * │ * │ * │   │    * = path found by A*                                 │
-│  ├───┼───┼───┼───┼───┤                                                         │
-│ 1│   │ █ │ █ │ * │   │                                                          │
-│  ├───┼───┼───┼───┼───┤                                                         │
-│ 2│   │   │   │ * │ * │                                                          │
-│  └───┴───┴───┴───┴───┘                                                         │
+│    0   1   2   3   4                                                             │
+│  ┌───┬───┬───┬───┬───┐                                                           │
+│ 0│ * │ * │ * │ * │   │    * = path found by A*                                   │
+│  ├───┼───┼───┼───┼───┤                                                           │
+│ 1│   │ █ │ █ │ * │   │                                                           │
+│  ├───┼───┼───┼───┼───┤                                                           │
+│ 2│   │   │   │ * │ * │                                                           │
+│  └───┴───┴───┴───┴───┘                                                           │
 │                                                                                  │
-└─────────────────────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -907,39 +907,39 @@ public class AStarWeightedGraph {
 ### A* vs Dijkstra — When to Use Which
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────────────────────┐
 │                     A* VS DIJKSTRA COMPARISON                                    │
 │                                                                                  │
-│  ┌──────────────────────┬──────────────────────┬───────────────────────────┐   │
-│  │ Property             │ Dijkstra             │ A*                        │   │
-│  ├──────────────────────┼──────────────────────┼───────────────────────────┤   │
-│  │ Time Complexity      │ O(E log V)           │ O(E log V) worst case    │   │
-│  │                      │                      │ Often MUCH better        │   │
-│  ├──────────────────────┼──────────────────────┼───────────────────────────┤   │
-│  │ Explores             │ All reachable nodes  │ Nodes toward goal only   │   │
-│  ├──────────────────────┼──────────────────────┼───────────────────────────┤   │
-│  │ Needs heuristic?     │ No                   │ Yes                      │   │
-│  ├──────────────────────┼──────────────────────┼───────────────────────────┤   │
-│  │ Guarantees optimal?  │ Yes (non-neg weights)│ Yes (if h admissible)    │   │
-│  ├──────────────────────┼──────────────────────┼───────────────────────────┤   │
-│  │ Single target?       │ Finds all targets    │ Stops at single goal     │   │
-│  ├──────────────────────┼──────────────────────┼───────────────────────────┤   │
-│  │ Best for             │ All-to-all paths     │ Start-to-specific-goal   │   │
-│  ├──────────────────────┼──────────────────────┼───────────────────────────┤   │
-│  │ Negative weights?    │ No                   │ No                       │   │
-│  └──────────────────────┴──────────────────────┴───────────────────────────┘   │
+│  ┌──────────────────────┬──────────────────────┬───────────────────────────┐     │
+│  │ Property             │ Dijkstra             │ A*                        │     │
+│  ├──────────────────────┼──────────────────────┼───────────────────────────┤     │
+│  │ Time Complexity      │ O(E log V)           │ O(E log V) worst case    │      │
+│  │                      │                      │ Often MUCH better        │      │
+│  ├──────────────────────┼──────────────────────┼───────────────────────────┤     │
+│  │ Explores             │ All reachable nodes  │ Nodes toward goal only   │      │
+│  ├──────────────────────┼──────────────────────┼───────────────────────────┤     │
+│  │ Needs heuristic?     │ No                   │ Yes                      │      │
+│  ├──────────────────────┼──────────────────────┼───────────────────────────┤     │
+│  │ Guarantees optimal?  │ Yes (non-neg weights)│ Yes (if h admissible)    │      │
+│  ├──────────────────────┼──────────────────────┼───────────────────────────┤     │
+│  │ Single target?       │ Finds all targets    │ Stops at single goal     │      │
+│  ├──────────────────────┼──────────────────────┼───────────────────────────┤     │
+│  │ Best for             │ All-to-all paths     │ Start-to-specific-goal   │      │
+│  ├──────────────────────┼──────────────────────┼───────────────────────────┤     │
+│  │ Negative weights?    │ No                   │ No                       │      │
+│  └──────────────────────┴──────────────────────┴───────────────────────────┘     │
 │                                                                                  │
 │  RULE OF THUMB:                                                                  │
-│  • Know the goal location? → A*                                                 │
-│  • Need shortest to ALL nodes? → Dijkstra                                       │
-│  • Can't define a heuristic? → Dijkstra                                         │
-│  • Huge graph (million+ nodes)? → A* will be dramatically faster               │
+│  • Know the goal location? → A*                                                  │
+│  • Need shortest to ALL nodes? → Dijkstra                                        │
+│  • Can't define a heuristic? → Dijkstra                                          │
+│  • Huge graph (million+ nodes)? → A* will be dramatically faster                 │
 │                                                                                  │
-│  NODES EXPLORED (10000-node grid, start=top-left, goal=bottom-right):          │
-│  • Dijkstra: ~10000 nodes (explores everything)                                │
-│  • A*:       ~2000 nodes  (focused corridor) → 5x faster!                      │
+│  NODES EXPLORED (10000-node grid, start=top-left, goal=bottom-right):            │
+│  • Dijkstra: ~10000 nodes (explores everything)                                  │
+│  • A*:       ~2000 nodes  (focused corridor) → 5x faster!                        │
 │                                                                                  │
-└─────────────────────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Practice Problems (A* / Shortest Path with Heuristic)

@@ -12,14 +12,14 @@
 │  BITS ARE THE ATOMS OF COMPUTATION                              │
 │                                                                 │
 │  Every integer in memory is already a sequence of bits.         │
-│  Bit operations are single CPU instructions — O(1) each,       │
+│  Bit operations are single CPU instructions — O(1) each,        │
 │  the fastest operations possible on any processor.              │
 │                                                                 │
 │   Decimal 13  →  Binary 1101                                    │
 │                        ↑↑↑↑                                     │
-│                  bit:  3210                                      │
+│                  bit:  3210                                     │
 │                                                                 │
-│   13 = 1×2³ + 1×2² + 0×2¹ + 1×2⁰                               │
+│   13 = 1×2³ + 1×2² + 0×2¹ + 1×2⁰                                │
 │      = 8   +  4   +  0   +  1                                   │
 │                                                                 │
 │  INTERVIEW FREQUENCY: ~5-8% of coding problems                  │
@@ -33,7 +33,7 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║     BIT MANIPULATION — COMPLETE UNDERSTANDING & FORMAL FOUNDATIONS          ║
+║     BIT MANIPULATION — COMPLETE UNDERSTANDING & FORMAL FOUNDATIONS           ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -45,7 +45,7 @@
 │ interview problems require bit manipulation knowledge.                       │
 │                                                                              │
 │ REAL-WORLD BIT MANIPULATION:                                                 │
-│ • Permissions/Flags: Unix file permissions (rwx = 111₂ = 7)                 │
+│ • Permissions/Flags: Unix file permissions (rwx = 111₂ = 7)                  │
 │ • Network masks: IP subnetting uses AND with bitmasks                        │
 │ • Graphics: Alpha blending, color channels packed into 32-bit ints           │
 │ • Cryptography: XOR is the foundation of stream ciphers                      │
@@ -65,9 +65,9 @@
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │ ┌─────────────────────────────────────────────────────────────────────┐      │
-│ │ 1. AND (&): Both bits 1 → 1. Otherwise → 0                         │      │
+│ │ 1. AND (&): Both bits 1 → 1. Otherwise → 0                         │       │
 │ │                                                                     │      │
-│ │    1101  (13)          USE CASES:                                    │      │
+│ │    1101  (13)          USE CASES:                                    │     │
 │ │  & 1010  (10)          • Masking: extract specific bits             │      │
 │ │  ──────                • Checking if a specific bit is set          │      │
 │ │    1000  ( 8)          • Clearing bits (AND with 0 = clear)         │      │
@@ -75,18 +75,18 @@
 │ └─────────────────────────────────────────────────────────────────────┘      │
 │                                                                              │
 │ ┌─────────────────────────────────────────────────────────────────────┐      │
-│ │ 2. OR (|): Either bit 1 → 1. Both 0 → 0                            │      │
+│ │ 2. OR (|): Either bit 1 → 1. Both 0 → 0                            │       │
 │ │                                                                     │      │
-│ │    1101  (13)          USE CASES:                                    │      │
+│ │    1101  (13)          USE CASES:                                    │     │
 │ │  | 1010  (10)          • Setting specific bits to 1                 │      │
 │ │  ──────                • Combining flags/permissions                │      │
-│ │    1111  (15)          • Building bitmasks incrementally             │      │
+│ │    1111  (15)          • Building bitmasks incrementally             │     │
 │ └─────────────────────────────────────────────────────────────────────┘      │
 │                                                                              │
 │ ┌─────────────────────────────────────────────────────────────────────┐      │
-│ │ 3. XOR (^): Different bits → 1. Same bits → 0                      │      │
+│ │ 3. XOR (^): Different bits → 1. Same bits → 0                      │       │
 │ │                                                                     │      │
-│ │    1101  (13)          KEY PROPERTIES:                               │      │
+│ │    1101  (13)          KEY PROPERTIES:                               │     │
 │ │  ^ 1010  (10)          • a ^ a = 0    (self-cancel)                 │      │
 │ │  ──────                • a ^ 0 = a    (identity)                    │      │
 │ │    0111  ( 7)          • a ^ b = b ^ a (commutative)                │      │
@@ -94,49 +94,49 @@
 │ │    USE CASES:                                                       │      │
 │ │    • Find unique element (all pairs cancel)                         │      │
 │ │    • Toggle bits on/off                                             │      │
-│ │    • Swap without temp: a^=b; b^=a; a^=b;                          │      │
+│ │    • Swap without temp: a^=b; b^=a; a^=b;                          │       │
 │ └─────────────────────────────────────────────────────────────────────┘      │
 │                                                                              │
 │ ┌─────────────────────────────────────────────────────────────────────┐      │
 │ │ 4. NOT (~): Flip ALL bits. 0→1, 1→0                                 │      │
 │ │                                                                     │      │
-│ │    In Java: ~x = -(x + 1)  due to two's complement                 │      │
+│ │    In Java: ~x = -(x + 1)  due to two's complement                 │       │
 │ │    ~0  = -1    (all 1s in binary)                                   │      │
-│ │    ~5  = -6    (flip 0...0101 → 1...1010 = -6)                     │      │
+│ │    ~5  = -6    (flip 0...0101 → 1...1010 = -6)                     │       │
 │ │    ~-1 =  0                                                         │      │
 │ │                                                                     │      │
 │ │    TWO'S COMPLEMENT RULE:                                           │      │
-│ │    For n-bit signed integer: -x = ~x + 1                           │      │
-│ │    So: -x = ~x + 1  →  ~x = -(x+1)                                │      │
+│ │    For n-bit signed integer: -x = ~x + 1                           │       │
+│ │    So: -x = ~x + 1  →  ~x = -(x+1)                                │        │
 │ └─────────────────────────────────────────────────────────────────────┘      │
 │                                                                              │
 │ ┌─────────────────────────────────────────────────────────────────────┐      │
-│ │ 5. LEFT SHIFT (<<): Shift bits left, fill with 0s on right         │      │
+│ │ 5. LEFT SHIFT (<<): Shift bits left, fill with 0s on right         │       │
 │ │                                                                     │      │
-│ │    5 << 1 = 10   (0101 → 1010)  = 5 × 2¹                          │      │
-│ │    5 << 3 = 40   (0101 → 101000) = 5 × 2³                         │      │
-│ │    EFFECT: Multiply by 2ᵏ                                          │      │
-│ │    1 << k = 2ᵏ  (create mask with kth bit set)                     │      │
+│ │    5 << 1 = 10   (0101 → 1010)  = 5 × 2¹                          │        │
+│ │    5 << 3 = 40   (0101 → 101000) = 5 × 2³                         │        │
+│ │    EFFECT: Multiply by 2ᵏ                                          │       │
+│ │    1 << k = 2ᵏ  (create mask with kth bit set)                     │       │
 │ └─────────────────────────────────────────────────────────────────────┘      │
 │                                                                              │
 │ ┌─────────────────────────────────────────────────────────────────────┐      │
 │ │ 6. RIGHT SHIFT                                                      │      │
 │ │                                                                     │      │
 │ │    >> (Arithmetic / Signed):                                        │      │
-│ │      Shift right, fill with SIGN BIT (preserves sign)              │      │
-│ │      20 >> 2 = 5     (positive: fill with 0)                       │      │
-│ │      -20 >> 2 = -5   (negative: fill with 1)                       │      │
-│ │      EFFECT: Divide by 2ᵏ (rounds toward -∞)                       │      │
+│ │      Shift right, fill with SIGN BIT (preserves sign)              │       │
+│ │      20 >> 2 = 5     (positive: fill with 0)                       │       │
+│ │      -20 >> 2 = -5   (negative: fill with 1)                       │       │
+│ │      EFFECT: Divide by 2ᵏ (rounds toward -∞)                       │       │
 │ │                                                                     │      │
 │ │    >>> (Logical / Unsigned — Java specific):                        │      │
-│ │      Shift right, ALWAYS fill with 0                               │      │
-│ │      -1 >>> 1 = 2147483647  (0111...1111)                          │      │
+│ │      Shift right, ALWAYS fill with 0                               │       │
+│ │      -1 >>> 1 = 2147483647  (0111...1111)                          │       │
 │ │      Used when treating int as unsigned bit pattern                 │      │
 │ └─────────────────────────────────────────────────────────────────────┘      │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ ESSENTIAL TRICKS TABLE                                                        │
+│ ESSENTIAL TRICKS TABLE                                                       │
 ├────────────────────────────┬─────────────────────┬───────────────────────────┤
 │ Trick                      │ Code                │ Why It Works              │
 ├────────────────────────────┼─────────────────────┼───────────────────────────┤
@@ -169,11 +169,11 @@
 ├────────────────────────────┼─────────────────────┼───────────────────────────┤
 │ Check if odd               │ n & 1               │ Lowest bit = 1 means odd  │
 ├────────────────────────────┼─────────────────────┼───────────────────────────┤
-│ Multiply by 2ᵏ            │ n << k              │ Shift left = ×2ᵏ          │
+│ Multiply by 2ᵏ            │ n << k              │ Shift left = ×2ᵏ           │
 ├────────────────────────────┼─────────────────────┼───────────────────────────┤
-│ Divide by 2ᵏ              │ n >> k              │ Shift right = ÷2ᵏ         │
+│ Divide by 2ᵏ              │ n >> k              │ Shift right = ÷2ᵏ          │
 ├────────────────────────────┼─────────────────────┼───────────────────────────┤
-│ Swap without temp          │ a^=b; b^=a; a^=b;  │ XOR self-cancel property  │
+│ Swap without temp          │ a^=b; b^=a; a^=b;  │ XOR self-cancel property   │
 ├────────────────────────────┼─────────────────────┼───────────────────────────┤
 │ Get all 1s mask            │ ~0 or -1            │ All bits set in two's     │
 │                            │                     │ complement                │
@@ -183,24 +183,24 @@
 │ SUBSET GENERATION VIA BITMASK                                                │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ For n elements, iterate mask from 0 to 2ⁿ - 1.                              │
+│ For n elements, iterate mask from 0 to 2ⁿ - 1.                               │
 │ Each bit in the mask represents whether an element is included.              │
 │                                                                              │
 │ Example: elements = [a, b, c]  (n = 3)                                       │
 │                                                                              │
-│   mask = 0 (000) → {}          mask = 4 (100) → {c}                         │
-│   mask = 1 (001) → {a}         mask = 5 (101) → {a, c}                      │
-│   mask = 2 (010) → {b}         mask = 6 (110) → {b, c}                      │
-│   mask = 3 (011) → {a, b}      mask = 7 (111) → {a, b, c}                   │
+│   mask = 0 (000) → {}          mask = 4 (100) → {c}                          │
+│   mask = 1 (001) → {a}         mask = 5 (101) → {a, c}                       │
+│   mask = 2 (010) → {b}         mask = 6 (110) → {b, c}                       │
+│   mask = 3 (011) → {a, b}      mask = 7 (111) → {a, b, c}                    │
 │                                                                              │
 │ TOTAL SUBSETS = 2ⁿ                                                           │
 │                                                                              │
 │ PROOF: Each of the n elements has 2 choices (in or out).                     │
-│        By the multiplication principle: 2 × 2 × ... × 2 (n times) = 2ⁿ     │
+│        By the multiplication principle: 2 × 2 × ... × 2 (n times) = 2ⁿ       │
 │                                                                              │
 │ NUMBER OF SUBSETS WITH A GIVEN SUM:                                          │
 │   Brute force: Generate all 2ⁿ subsets, compute sum, count matches.          │
-│   Time: O(n × 2ⁿ).  For n ≤ 20, this is feasible (~20 million ops).         │
+│   Time: O(n × 2ⁿ).  For n ≤ 20, this is feasible (~20 million ops).          │
 │   For larger n: use DP (0/1 knapsack counting variant).                      │
 │                                                                              │
 │ CODE PATTERN:                                                                │
@@ -218,28 +218,28 @@
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │ 1. OPERATOR PRECEDENCE: & and | have LOWER precedence than ==                │
-│    WRONG:  if (n & 1 == 0)        → parsed as n & (1 == 0) → n & 0         │
-│    RIGHT:  if ((n & 1) == 0)      → always parenthesize bit operations!     │
+│    WRONG:  if (n & 1 == 0)        → parsed as n & (1 == 0) → n & 0           │
+│    RIGHT:  if ((n & 1) == 0)      → always parenthesize bit operations!      │
 │                                                                              │
 │ 2. SIGNED vs UNSIGNED SHIFT:                                                 │
 │    >> preserves sign bit (arithmetic shift)                                  │
 │    >>> fills with 0 (logical shift)                                          │
-│    For negative numbers: -8 >> 1 = -4, but -8 >>> 1 = 2147483644            │
+│    For negative numbers: -8 >> 1 = -4, but -8 >>> 1 = 2147483644             │
 │    Always think about whether your input can be negative!                    │
 │                                                                              │
 │ 3. INT OVERFLOW AT BIT 31:                                                   │
-│    1 << 31 = Integer.MIN_VALUE (−2³¹) in Java, NOT 2³¹                      │
+│    1 << 31 = Integer.MIN_VALUE (−2³¹) in Java, NOT 2³¹                       │
 │    Use 1L << 31 for correct positive value with long.                        │
-│    Shifting by ≥ 32 on int is UNDEFINED/wrapped: 1 << 32 = 1 (not 0)       │
+│    Shifting by ≥ 32 on int is UNDEFINED/wrapped: 1 << 32 = 1 (not 0)         │
 │                                                                              │
 │ 4. JAVA HAS NO UNSIGNED INT:                                                 │
 │    Java int is always signed 32-bit two's complement.                        │
 │    For problems with "unsigned" semantics, use long or Integer methods       │
 │    like Integer.toUnsignedLong(), Integer.compareUnsigned()                  │
 │                                                                              │
-│ 5. XOR TRICKS ONLY WORK WITH EXACTLY 2 OCCURRENCES:                         │
+│ 5. XOR TRICKS ONLY WORK WITH EXACTLY 2 OCCURRENCES:                          │
 │    "XOR all to find single" works when every OTHER element appears           │
-│    exactly twice. With 3 occurrences, use bit-counting mod 3 instead.       │
+│    exactly twice. With 3 occurrences, use bit-counting mod 3 instead.        │
 │    Always verify the constraint: "every element appears twice except one"    │
 └──────────────────────────────────────────────────────────────────────────────┘
 
@@ -250,10 +250,10 @@
 │   "Find unique / missing element"  → XOR all elements                        │
 │   "Check / set / toggle a flag"    → Masks with &, |, ^                      │
 │   "Is power of 2?"                 → n & (n-1) == 0                          │
-│   "Count set bits"                 → Kernighan's (n &= n-1 loop)            │
-│   "Generate all subsets"           → Bitmask 0 to 2ⁿ-1                      │
-│   "Optimize NP with small n≤20"    → Bitmask DP                             │
-│   "Multiply / divide by 2ᵏ"       → Shift left / right                      │
+│   "Count set bits"                 → Kernighan's (n &= n-1 loop)             │
+│   "Generate all subsets"           → Bitmask 0 to 2ⁿ-1                       │
+│   "Optimize NP with small n≤20"    → Bitmask DP                              │
+│   "Multiply / divide by 2ᵏ"       → Shift left / right                       │
 │   "Elements appear k times"        → Count bits mod k                        │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -266,7 +266,7 @@
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
-│  SINGLE NUMBER — Every element appears twice except one         │
+│  SINGLE NUMBER — Every element appears twice except one        │
 ├────────────────────────────────────────────────────────────────┤
 │                                                                │
 │  Input:  [4, 1, 2, 1, 2]                                       │
@@ -281,14 +281,14 @@
 │                                                                │
 │  TRACE:                                                        │
 │    4 ^ 1 ^ 2 ^ 1 ^ 2                                           │
-│  = 4 ^ (1 ^ 1) ^ (2 ^ 2)     ← rearrange (commutative)       │
-│  = 4 ^ 0 ^ 0                                                  │
+│  = 4 ^ (1 ^ 1) ^ (2 ^ 2)     ← rearrange (commutative)         │
+│  = 4 ^ 0 ^ 0                                                   │
 │  = 4                           ← answer!                       │
 │                                                                │
 │  PROOF OF CORRECTNESS:                                         │
-│  Let S = {a₁, a₁, a₂, a₂, ..., aₖ, aₖ, x} where x is unique │
-│  XOR(S) = a₁⊕a₁ ⊕ a₂⊕a₂ ⊕ ... ⊕ aₖ⊕aₖ ⊕ x                  │
-│         = 0 ⊕ 0 ⊕ ... ⊕ 0 ⊕ x = x  ∎                         │
+│  Let S = {a₁, a₁, a₂, a₂, ..., aₖ, aₖ, x} where x is unique    │
+│  XOR(S) = a₁⊕a₁ ⊕ a₂⊕a₂ ⊕ ... ⊕ aₖ⊕aₖ ⊕ x                      │
+│         = 0 ⊕ 0 ⊕ ... ⊕ 0 ⊕ x = x  ∎                           │
 │                                                                │
 │  Time: O(n)   Space: O(1)                                      │
 └────────────────────────────────────────────────────────────────┘
@@ -312,10 +312,10 @@ public int singleNumber(int[] nums) {
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
-│  MISSING NUMBER — Array of [0..n] with one number missing       │
+│  MISSING NUMBER — Array of [0..n] with one number missing      │
 ├────────────────────────────────────────────────────────────────┤
 │                                                                │
-│  Input:  [3, 0, 1]   (n = 3, range [0..3])                    │
+│  Input:  [3, 0, 1]   (n = 3, range [0..3])                     │
 │  Output: 2                                                     │
 │                                                                │
 │  APPROACH: XOR all indices [0..n] with all values.             │
@@ -325,11 +325,11 @@ public int singleNumber(int[] nums) {
 │    Index: 0  1  2  (plus n=3)                                  │
 │    Value: 3  0  1                                              │
 │                                                                │
-│    XOR of indices+n: 0 ^ 1 ^ 2 ^ 3                            │
+│    XOR of indices+n: 0 ^ 1 ^ 2 ^ 3                             │
 │    XOR of values:    3 ^ 0 ^ 1                                 │
-│    Combined: 0^1^2^3 ^ 3^0^1                                  │
-│            = (0^0) ^ (1^1) ^ (3^3) ^ 2                        │
-│            = 0 ^ 0 ^ 0 ^ 2 = 2  ✓                             │
+│    Combined: 0^1^2^3 ^ 3^0^1                                   │
+│            = (0^0) ^ (1^1) ^ (3^3) ^ 2                         │
+│            = 0 ^ 0 ^ 0 ^ 2 = 2  ✓                              │
 │                                                                │
 │  PROOF: Every number except the missing one appears as both    │
 │  an index and a value → cancels. The missing one appears only  │
@@ -373,9 +373,9 @@ public int missingNumber(int[] nums) {
 │  TRACE (bit-by-bit):                                           │
 │    nums = [2(10), 2(10), 3(11), 2(10)]                         │
 │                                                                │
-│    Bit 0: counts = 0+0+1+0 = 1.  1 % 3 = 1 → bit 0 is SET   │
-│    Bit 1: counts = 1+1+1+1 = 4.  4 % 3 = 1 → bit 1 is SET   │
-│    Result = 11₂ = 3  ✓                                        │
+│    Bit 0: counts = 0+0+1+0 = 1.  1 % 3 = 1 → bit 0 is SET      │
+│    Bit 1: counts = 1+1+1+1 = 4.  4 % 3 = 1 → bit 1 is SET      │
+│    Result = 11₂ = 3  ✓                                         │
 │                                                                │
 │  PROOF: If a number appears 3 times, its contribution to each  │
 │  bit position is divisible by 3 → vanishes under mod 3.        │
@@ -433,26 +433,26 @@ public int singleNumberStateMachine(int[] nums) {
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
-│  SINGLE NUMBER III — TWO elements appear once, rest twice       │
+│  SINGLE NUMBER III — TWO elements appear once, rest twice      │
 ├────────────────────────────────────────────────────────────────┤
 │                                                                │
 │  Input:  [1, 2, 1, 3, 2, 5]                                    │
 │  Output: [3, 5]                                                │
 │                                                                │
-│  STEP 1: XOR all → get xorAll = 3 ^ 5 = 6 (110)               │
+│  STEP 1: XOR all → get xorAll = 3 ^ 5 = 6 (110)                │
 │          This is XOR of the two unique numbers.                │
 │                                                                │
 │  STEP 2: Find rightmost set bit of xorAll.                     │
 │          6 = 110 → rightmost set bit = 010 (bit 1)             │
-│          diff = xorAll & (-xorAll) = 6 & (-6) = 2             │
+│          diff = xorAll & (-xorAll) = 6 & (-6) = 2              │
 │          This bit DIFFERS between the two unique numbers.      │
 │                                                                │
 │  STEP 3: Partition array into two groups based on that bit:    │
-│          Group A (bit 1 = 0): [1, 1, 3]  → XOR = 3            │
-│          Group B (bit 1 = 1): [2, 2, 5]  → XOR = 5            │
+│          Group A (bit 1 = 0): [1, 1, 3]  → XOR = 3             │
+│          Group B (bit 1 = 1): [2, 2, 5]  → XOR = 5             │
 │                                                                │
 │  PROOF: The two unique numbers differ in at least one bit.     │
-│  Using that bit to partition ensures they land in DIFFERENT     │
+│  Using that bit to partition ensures they land in DIFFERENT    │
 │  groups. All duplicate pairs land in the SAME group (same      │
 │  bits). Each group reduces to the standard Single Number.  ∎   │
 │                                                                │
@@ -505,11 +505,11 @@ public int[] singleNumber(int[] nums) {
 │  If n is a power of 2, it has exactly one bit set.             │
 │  Clearing it gives 0.                                          │
 │                                                                │
-│    8 & 7 = 1000 & 0111 = 0000  ✓ (power of 2)                 │
-│    6 & 5 = 0110 & 0101 = 0100  ✗ (not power of 2)             │
+│    8 & 7 = 1000 & 0111 = 0000  ✓ (power of 2)                  │
+│    6 & 5 = 0110 & 0101 = 0100  ✗ (not power of 2)              │
 │                                                                │
-│  PROOF: If n = 2ᵏ, then n has bit k set and all others 0.     │
-│  n - 1 = 2ᵏ - 1 has bits [0..k-1] all set, bit k clear.      │
+│  PROOF: If n = 2ᵏ, then n has bit k set and all others 0.      │
+│  n - 1 = 2ᵏ - 1 has bits [0..k-1] all set, bit k clear.        │
 │  n & (n-1) = 0 since no bits overlap.                          │
 │  Conversely, if n has ≥ 2 bits set, clearing the lowest        │
 │  leaves at least one, so result ≠ 0.  ∎                        │
@@ -533,28 +533,28 @@ public boolean isPowerOfTwo(int n) {
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
-│  COUNTING BITS — For every i in [0..n], count set bits          │
+│  COUNTING BITS — For every i in [0..n], count set bits         │
 ├────────────────────────────────────────────────────────────────┤
 │                                                                │
 │  Input: n = 5                                                  │
 │  Output: [0, 1, 1, 2, 1, 2]                                    │
 │                                                                │
-│  DP RECURRENCE: dp[i] = dp[i & (i - 1)] + 1                   │
+│  DP RECURRENCE: dp[i] = dp[i & (i - 1)] + 1                    │
 │                                                                │
-│  WHY: i & (i-1) clears the lowest set bit of i.               │
-│  So dp[i] = (number of bits in i with lowest cleared) + 1     │
+│  WHY: i & (i-1) clears the lowest set bit of i.                │
+│  So dp[i] = (number of bits in i with lowest cleared) + 1      │
 │           = dp[parent] + 1                                     │
 │                                                                │
 │  TRACE:                                                        │
 │    dp[0] = 0                    (base case)                    │
-│    dp[1] = dp[1 & 0] + 1 = dp[0] + 1 = 1                     │
-│    dp[2] = dp[2 & 1] + 1 = dp[0] + 1 = 1                     │
-│    dp[3] = dp[3 & 2] + 1 = dp[2] + 1 = 2                     │
-│    dp[4] = dp[4 & 3] + 1 = dp[0] + 1 = 1                     │
-│    dp[5] = dp[5 & 4] + 1 = dp[4] + 1 = 2                     │
+│    dp[1] = dp[1 & 0] + 1 = dp[0] + 1 = 1                       │
+│    dp[2] = dp[2 & 1] + 1 = dp[0] + 1 = 1                       │
+│    dp[3] = dp[3 & 2] + 1 = dp[2] + 1 = 2                       │
+│    dp[4] = dp[4 & 3] + 1 = dp[0] + 1 = 1                       │
+│    dp[5] = dp[5 & 4] + 1 = dp[4] + 1 = 2                       │
 │                                                                │
-│  PROOF: Clearing one bit reduces popcount by 1. By induction, │
-│  dp[i & (i-1)] is correct → dp[i] = dp[i&(i-1)] + 1.  ∎      │
+│  PROOF: Clearing one bit reduces popcount by 1. By induction,  │
+│  dp[i & (i-1)] is correct → dp[i] = dp[i&(i-1)] + 1.  ∎        │
 │                                                                │
 │  Time: O(n)   Space: O(n) for output                           │
 └────────────────────────────────────────────────────────────────┘
@@ -578,7 +578,7 @@ public int[] countBits(int n) {
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
-│  HAMMING WEIGHT — Count number of 1 bits in an integer          │
+│  HAMMING WEIGHT — Count number of 1 bits in an integer         │
 ├────────────────────────────────────────────────────────────────┤
 │                                                                │
 │  Input:  n = 11 (1011)                                         │
@@ -589,10 +589,10 @@ public int[] countBits(int n) {
 │  Count iterations = number of set bits.                        │
 │                                                                │
 │  TRACE:                                                        │
-│    n = 1011 → n & 1010 = 1010  (cleared bit 0) count=1        │
-│    n = 1010 → n & 1001 = 1000  (cleared bit 1) count=2        │
-│    n = 1000 → n & 0111 = 0000  (cleared bit 3) count=3        │
-│    n = 0 → STOP. Answer = 3  ✓                                │
+│    n = 1011 → n & 1010 = 1010  (cleared bit 0) count=1         │
+│    n = 1010 → n & 1001 = 1000  (cleared bit 1) count=2         │
+│    n = 1000 → n & 0111 = 0000  (cleared bit 3) count=3         │
+│    n = 0 → STOP. Answer = 3  ✓                                 │
 │                                                                │
 │  Time: O(k) where k = number of set bits                       │
 │  Space: O(1)                                                   │
@@ -619,7 +619,7 @@ public int hammingWeight(int n) {
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
-│  REVERSE BITS — Reverse all 32 bits of an unsigned integer      │
+│  REVERSE BITS — Reverse all 32 bits of an unsigned integer     │
 ├────────────────────────────────────────────────────────────────┤
 │                                                                │
 │  Input:  0000...1011 (11)                                      │
@@ -655,16 +655,16 @@ public int reverseBits(int n) {
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
-│  HAMMING DISTANCE — Count positions where bits differ           │
+│  HAMMING DISTANCE — Count positions where bits differ          │
 ├────────────────────────────────────────────────────────────────┤
 │                                                                │
-│  Input:  x = 1 (0001), y = 4 (0100)                           │
+│  Input:  x = 1 (0001), y = 4 (0100)                            │
 │  Output: 2                                                     │
 │                                                                │
 │  APPROACH: XOR gives 1 at positions where bits differ.         │
-│  Count set bits in x ^ y → that's the Hamming distance.       │
+│  Count set bits in x ^ y → that's the Hamming distance.        │
 │                                                                │
-│  1 ^ 4 = 0001 ^ 0100 = 0101 → 2 set bits → distance = 2      │
+│  1 ^ 4 = 0001 ^ 0100 = 0101 → 2 set bits → distance = 2        │
 │                                                                │
 │  Time: O(1)   Space: O(1)                                      │
 └────────────────────────────────────────────────────────────────┘
@@ -685,7 +685,7 @@ public int hammingDistance(int x, int y) {
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
-│  REVERSE INTEGER — Reverse digits with overflow handling        │
+│  REVERSE INTEGER — Reverse digits with overflow handling       │
 ├────────────────────────────────────────────────────────────────┤
 │                                                                │
 │  Input:  123 → 321                                             │
@@ -737,7 +737,7 @@ public int reverse(int x) {
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
-│  PALINDROME NUMBER — Check without converting to string         │
+│  PALINDROME NUMBER — Check without converting to string        │
 ├────────────────────────────────────────────────────────────────┤
 │                                                                │
 │  Input:  121 → true                                            │
@@ -758,9 +758,9 @@ public int reverse(int x) {
 │  TRACE (x = 1221):                                             │
 │    x = 1221, rev = 0                                           │
 │    x = 122,  rev = 1                                           │
-│    x = 12,   rev = 12      → STOP (rev >= x)                  │
+│    x = 12,   rev = 12      → STOP (rev >= x)                   │
 │                                                                │
-│    Even length: x == rev → 12 == 12 ✓                           │
+│    Even length: x == rev → 12 == 12 ✓                          │
 │                                                                │
 │  Time: O(log₁₀(n))   Space: O(1)                               │
 └────────────────────────────────────────────────────────────────┘
@@ -790,7 +790,7 @@ public boolean isPalindrome(int x) {
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
-│  ADD BINARY — Add two binary strings                            │
+│  ADD BINARY — Add two binary strings                           │
 ├────────────────────────────────────────────────────────────────┤
 │                                                                │
 │  Input:  a = "1010", b = "1011"                                │
@@ -834,13 +834,13 @@ public String addBinary(String a, String b) {
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
-│  EXCEL COLUMN TITLE — Convert number to column title            │
+│  EXCEL COLUMN TITLE — Convert number to column title           │
 ├────────────────────────────────────────────────────────────────┤
 │                                                                │
-│  1 → "A", 26 → "Z", 27 → "AA", 701 → "ZY"                   │
+│  1 → "A", 26 → "Z", 27 → "AA", 701 → "ZY"                      │
 │                                                                │
 │  APPROACH: Like base-26 conversion, but 1-indexed.             │
-│  Subtract 1 before each modulo to map A=0, B=1, ..., Z=25.    │
+│  Subtract 1 before each modulo to map A=0, B=1, ..., Z=25.     │
 │                                                                │
 │  while (n > 0):                                                │
 │    n--;                                                        │
@@ -868,22 +868,22 @@ public String convertToTitle(int n) {
 ### Problem #299: [Maximum Product of Three Numbers](https://leetcode.com/problems/maximum-product-of-three-numbers/) (LC 628)
 
 ```
-┌────────────────────────────────────────────────────────────────┐
-│  MAX PRODUCT OF THREE                                          │
-├────────────────────────────────────────────────────────────────┤
-│                                                                │
-│  Input: [1, 2, 3, 4]  → Output: 24  (2×3×4)                   │
-│  Input: [-4, -3, 1, 2, 3] → Output: 36  ((-4)×(-3)×3)        │
-│                                                                │
-│  APPROACH: After sorting, answer is max of:                    │
-│    1. Three largest: nums[n-1] × nums[n-2] × nums[n-3]        │
+┌───────────────────────────────────────────────────────────────────┐
+│  MAX PRODUCT OF THREE                                             │
+├───────────────────────────────────────────────────────────────────┤
+│                                                                   │
+│  Input: [1, 2, 3, 4]  → Output: 24  (2×3×4)                       │
+│  Input: [-4, -3, 1, 2, 3] → Output: 36  ((-4)×(-3)×3)             │
+│                                                                   │
+│  APPROACH: After sorting, answer is max of:                       │
+│    1. Three largest: nums[n-1] × nums[n-2] × nums[n-3]            │
 │    2. Two smallest (neg) × largest: nums[0] × nums[1] × nums[n-1] │
-│                                                                │
-│  WHY? Two negatives multiply to positive, which ×  largest    │
-│  positive could exceed three positives.                        │
-│                                                                │
-│  Time: O(n log n)   Space: O(1) or O(n) for sort              │
-└────────────────────────────────────────────────────────────────┘
+│                                                                   │
+│  WHY? Two negatives multiply to positive, which ×  largest        │
+│  positive could exceed three positives.                           │
+│                                                                   │
+│  Time: O(n log n)   Space: O(1) or O(n) for sort                  │
+└───────────────────────────────────────────────────────────────────┘
 ```
 
 ```java
@@ -906,7 +906,7 @@ public int maximumProduct(int[] nums) {
 │  KTH FACTOR OF N                                               │
 ├────────────────────────────────────────────────────────────────┤
 │                                                                │
-│  Input: n = 12, k = 3  → Output: 3  (factors: 1,2,3,4,6,12)  │
+│  Input: n = 12, k = 3  → Output: 3  (factors: 1,2,3,4,6,12)    │
 │                                                                │
 │  APPROACH: Iterate 1 to √n, collect smaller factors.           │
 │  If k-th not found, check larger factors (n/factor) in         │
@@ -935,17 +935,17 @@ public int kthFactor(int n, int k) {
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
-│  HAPPY NUMBER — Detect cycle in digit-square-sum sequence       │
+│  HAPPY NUMBER — Detect cycle in digit-square-sum sequence      │
 ├────────────────────────────────────────────────────────────────┤
 │                                                                │
 │  Process: Replace n with sum of squares of its digits.         │
-│  If reaches 1 → happy. If cycles → not happy.                 │
+│  If reaches 1 → happy. If cycles → not happy.                  │
 │                                                                │
-│  19 → 1²+9² = 82 → 64+4 = 68 → 36+64 = 100 → 1  ✓ happy    │
+│  19 → 1²+9² = 82 → 64+4 = 68 → 36+64 = 100 → 1  ✓ happy        │
 │                                                                │
 │  APPROACH: Floyd's cycle detection (fast/slow pointers).       │
 │  slow = step(n), fast = step(step(n)).                         │
-│  If fast reaches 1 → happy. If slow == fast → cycle → not.    │
+│  If fast reaches 1 → happy. If slow == fast → cycle → not.     │
 │                                                                │
 │  Time: O(log n)   Space: O(1) with Floyd's                     │
 └────────────────────────────────────────────────────────────────┘
@@ -983,7 +983,7 @@ private int step(int n) {
 │                                                                │
 │  APPROACH: Compute all 6 pairwise distances.                   │
 │  A valid square has: 4 equal sides + 2 equal diagonals.        │
-│  Diagonals = √2 × side.                                       │
+│  Diagonals = √2 × side.                                        │
 │  So among 6 distances: 4 must be equal (sides) and             │
 │  2 must be equal AND longer (diagonals). All > 0.              │
 │                                                                │
@@ -1011,7 +1011,7 @@ private int dist(int[] a, int[] b) {
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
-│  MAX POINTS ON A LINE — Find max collinear points               │
+│  MAX POINTS ON A LINE — Find max collinear points              │
 ├────────────────────────────────────────────────────────────────┤
 │                                                                │
 │  Input: [[1,1],[2,2],[3,3],[1,2],[2,3]]                        │
@@ -1020,9 +1020,9 @@ private int dist(int[] a, int[] b) {
 │  APPROACH: For each point i, compute slope to every other      │
 │  point j. Use HashMap<String, Integer> of slopes.              │
 │  Slope = dy/dx → normalize with GCD to avoid floating point.   │
-│  Handle vertical lines: dx=0 → slope = "INF".                 │
+│  Handle vertical lines: dx=0 → slope = "INF".                  │
 │                                                                │
-│  Slope representation: "dy/dx" where gcd(|dy|,|dx|) divides   │
+│  Slope representation: "dy/dx" where gcd(|dy|,|dx|) divides    │
 │  both, and sign is normalized (dx always positive, or if       │
 │  dx=0 then dy positive).                                       │
 │                                                                │
@@ -1091,33 +1091,33 @@ private int gcd(int a, int b) {
 ├────────────────────────────────────────────────────────────────┤
 │                                                                │
 │  n = 3 elements → 2³ = 8 subsets                               │
-│  Iterate mask from 0 to 7 (binary 000 to 111):                │
+│  Iterate mask from 0 to 7 (binary 000 to 111):                 │
 │                                                                │
 │  mask  binary  bits set for [1,2,3]  subset                    │
 │  ────  ──────  ─────────────────────  ──────                   │
-│    0    000     none                   {}                       │
-│    1    001     index 0 → 1            {1}                      │
-│    2    010     index 1 → 2            {2}                      │
+│    0    000     none                   {}                      │
+│    1    001     index 0 → 1            {1}                     │
+│    2    010     index 1 → 2            {2}                     │
 │    3    011     index 0,1 → 1,2        {1, 2}                  │
-│    4    100     index 2 → 3            {3}                      │
+│    4    100     index 2 → 3            {3}                     │
 │    5    101     index 0,2 → 1,3        {1, 3}                  │
 │    6    110     index 1,2 → 2,3        {2, 3}                  │
-│    7    111     index 0,1,2 → 1,2,3   {1, 2, 3}               │
+│    7    111     index 0,1,2 → 1,2,3   {1, 2, 3}                │
 │                                                                │
 │  PROOF OF 2ⁿ SUBSETS (Counting Argument):                      │
-│  Each of the n elements independently chooses: IN or OUT.       │
+│  Each of the n elements independently chooses: IN or OUT.      │
 │  Element 1: 2 choices                                          │
 │  Element 2: 2 choices                                          │
 │  Element 3: 2 choices                                          │
-│  Total by multiplication principle = 2 × 2 × 2 = 2³ = 8.     │
+│  Total by multiplication principle = 2 × 2 × 2 = 2³ = 8.       │
 │  In general: 2ⁿ.  ∎                                            │
 │                                                                │
 │  ALTERNATIVE PROOF (Bijection with binary strings):            │
 │  There is a 1-to-1 mapping between subsets of {1,...,n}        │
 │  and binary strings of length n. Each string encodes which     │
-│  elements are included. Number of binary strings = 2ⁿ.  ∎     │
+│  elements are included. Number of binary strings = 2ⁿ.  ∎      │
 │                                                                │
-│  Time: O(n × 2ⁿ)   Space: O(n × 2ⁿ) for storing all subsets  │
+│  Time: O(n × 2ⁿ)   Space: O(n × 2ⁿ) for storing all subsets    │
 └────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1147,15 +1147,15 @@ public List<List<Integer>> subsets(int[] nums) {
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
-│  COUNT SUBSETS WITH SUM = TARGET                                │
+│  COUNT SUBSETS WITH SUM = TARGET                               │
 ├────────────────────────────────────────────────────────────────┤
 │                                                                │
-│  Input:  nums = [1, 2, 3, 4, 5], target = 5                   │
+│  Input:  nums = [1, 2, 3, 4, 5], target = 5                    │
 │  Output: 3  → {5}, {2,3}, {1,4}                                │
 │                                                                │
-│  METHOD 1: BITMASK BRUTE FORCE (for n ≤ 20)                   │
+│  METHOD 1: BITMASK BRUTE FORCE (for n ≤ 20)                    │
 │  Enumerate all 2ⁿ subsets, compute sum, count matches.         │
-│  Time: O(n × 2ⁿ)                                              │
+│  Time: O(n × 2ⁿ)                                               │
 │                                                                │
 │  METHOD 2: DP (0/1 Knapsack counting — for larger n)           │
 │  dp[j] = number of subsets with sum j.                         │
@@ -1165,12 +1165,12 @@ public List<List<Integer>> subsets(int[] nums) {
 │  Time: O(n × target)   Space: O(target)                        │
 │                                                                │
 │  TRACE of DP (target=5):                                       │
-│  Init:  dp = [1, 0, 0, 0, 0, 0]  (1 way to make sum 0: {})   │
-│  num=1: dp = [1, 1, 0, 0, 0, 0]                               │
-│  num=2: dp = [1, 1, 1, 1, 0, 0]                               │
-│  num=3: dp = [1, 1, 1, 2, 1, 1]                               │
-│  num=4: dp = [1, 1, 1, 2, 2, 2]                               │
-│  num=5: dp = [1, 1, 1, 2, 2, 3]  → answer = dp[5] = 3  ✓     │
+│  Init:  dp = [1, 0, 0, 0, 0, 0]  (1 way to make sum 0: {})     │
+│  num=1: dp = [1, 1, 0, 0, 0, 0]                                │
+│  num=2: dp = [1, 1, 1, 1, 0, 0]                                │
+│  num=3: dp = [1, 1, 1, 2, 1, 1]                                │
+│  num=4: dp = [1, 1, 1, 2, 2, 2]                                │
+│  num=5: dp = [1, 1, 1, 2, 2, 3]  → answer = dp[5] = 3  ✓       │
 └────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1212,13 +1212,13 @@ public int countSubsetsWithSumDP(int[] nums, int target) {
 │  PARTITION EQUAL SUBSET SUM                                    │
 ├────────────────────────────────────────────────────────────────┤
 │                                                                │
-│  Can we partition array into two subsets with equal sum?        │
+│  Can we partition array into two subsets with equal sum?       │
 │  Equivalent to: does a subset with sum = totalSum / 2 exist?   │
 │                                                                │
 │  APPROACH: 0/1 knapsack boolean DP (see DP section).           │
-│  dp[j] = true if a subset with sum j exists.                  │
+│  dp[j] = true if a subset with sum j exists.                   │
 │    dp[0] = true                                                │
-│    For each num: dp[j] |= dp[j - num]   (reverse order)       │
+│    For each num: dp[j] |= dp[j - num]   (reverse order)        │
 │                                                                │
 │  Time: O(n × sum/2)   Space: O(sum/2)                          │
 │  If totalSum is odd → immediately return false.                │
@@ -1234,7 +1234,7 @@ public int countSubsetsWithSumDP(int[] nums, int target) {
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
-│  ONES AND ZEROES — Max strings fitting m zeros and n ones       │
+│  ONES AND ZEROES — Max strings fitting m zeros and n ones      │
 ├────────────────────────────────────────────────────────────────┤
 │                                                                │
 │  Given binary strings, at most m 0s and n 1s, find max         │
@@ -1244,9 +1244,9 @@ public int countSubsetsWithSumDP(int[] nums, int target) {
 │  dp[i][j] = max strings using at most i zeros and j ones.      │
 │  For each string with z zeros and o ones:                      │
 │    for i from m downto z, j from n downto o:                   │
-│      dp[i][j] = max(dp[i][j], dp[i-z][j-o] + 1)              │
+│      dp[i][j] = max(dp[i][j], dp[i-z][j-o] + 1)                │
 │                                                                │
-│  Time: O(len × m × n)   Space: O(m × n)                       │
+│  Time: O(len × m × n)   Space: O(m × n)                        │
 │  See Dynamic Programming section for full solution.            │
 └────────────────────────────────────────────────────────────────┘
 ```
@@ -1274,17 +1274,17 @@ public int countSubsetsWithSumDP(int[] nums, int target) {
 ║ Clear lowest set bit               ║ n & (n - 1)          ║ O(1)             ║
 ║ Isolate lowest set bit             ║ n & (-n)             ║ O(1)             ║
 ║ Check power of 2                   ║ n>0 && (n&(n-1))==0  ║ O(1)             ║
-║ Count set bits (Kernighan)         ║ while(n){n&=n-1;c++} ║ O(k), k=popcount║
+║ Count set bits (Kernighan)         ║ while(n){n&=n-1;c++} ║ O(k), k=popcount ║
 ║ Count set bits (Java)              ║ Integer.bitCount(n)   ║ O(1)            ║
 ║ Reverse bits                       ║ Integer.reverse(n)    ║ O(1)            ║
-║ Highest set bit position           ║ 31-Integer.           ║ O(1)             ║
-║                                    ║ numberOfLeadingZeros  ║                  ║
-║ Lowest set bit position            ║ Integer.              ║ O(1)             ║
-║                                    ║ numberOfTrailingZeros ║                  ║
-║ Generate all subsets               ║ mask: 0..2ⁿ-1        ║ O(n × 2ⁿ)       ║
+║ Highest set bit position           ║ 31-Integer.           ║ O(1)            ║
+║                                    ║ numberOfLeadingZeros  ║                 ║
+║ Lowest set bit position            ║ Integer.              ║ O(1)            ║
+║                                    ║ numberOfTrailingZeros ║                 ║
+║ Generate all subsets               ║ mask: 0..2ⁿ-1        ║ O(n × 2ⁿ)        ║
 ║ Swap without temp                  ║ a^=b; b^=a; a^=b     ║ O(1)             ║
 ║ Absolute value (no branch)         ║ (n^(n>>31))-(n>>31)  ║ O(1)             ║
-║ XOR all to find unique             ║ reduce by ^           ║ O(n)             ║
+║ XOR all to find unique             ║ reduce by ^           ║ O(n)            ║
 ║ Turn off rightmost consecutive 1s  ║ n & (n + 1)          ║ O(1)             ║
 ║ Create mask: bits [0..i]           ║ (1 << (i+1)) - 1     ║ O(1)             ║
 ╚════════════════════════════════════╩══════════════════════╩══════════════════╝
@@ -1304,7 +1304,7 @@ public int countSubsetsWithSumDP(int[] nums, int target) {
 ╠═════════════════════════════════╬═══════════════════╬════════════════════════╣
 ║ Subsets of size k               ║ C(n, k)           ║ C(3,1) = 3             ║
 ╠═════════════════════════════════╬═══════════════════╬════════════════════════╣
-║ Non-empty subsets               ║ 2ⁿ - 1            ║ 8 - 1 = 7             ║
+║ Non-empty subsets               ║ 2ⁿ - 1            ║ 8 - 1 = 7              ║
 ╠═════════════════════════════════╬═══════════════════╬════════════════════════╣
 ║ Subsets with sum S              ║ Count via DP or   ║ varies                 ║
 ║                                 ║ bitmask           ║                        ║
@@ -1313,13 +1313,13 @@ public int countSubsetsWithSumDP(int[] nums, int target) {
 ╠═════════════════════════════════╬═══════════════════╬════════════════════════╣
 ║ Subsets NOT containing x        ║ 2ⁿ⁻¹              ║ 2² = 4                 ║
 ╠═════════════════════════════════╬═══════════════════╬════════════════════════╣
-║ Sum of all subset sizes         ║ n × 2ⁿ⁻¹          ║ 3 × 4 = 12            ║
+║ Sum of all subset sizes         ║ n × 2ⁿ⁻¹          ║ 3 × 4 = 12             ║
 ╠═════════════════════════════════╬═══════════════════╬════════════════════════╣
-║ Number of pairs of subsets      ║ 3ⁿ                ║ 3³ = 27               ║
-║ (A ⊆ B ⊆ {1..n})               ║                   ║ (each elem: out,A,B)   ║
+║ Number of pairs of subsets      ║ 3ⁿ                ║ 3³ = 27                ║
+║ (A ⊆ B ⊆ {1..n})               ║                   ║ (each elem: out,A,B)    ║
 ╠═════════════════════════════════╬═══════════════════╬════════════════════════╣
-║ Identity: Σ C(n,k) = 2ⁿ        ║ Binomial theorem  ║ C(3,0)+C(3,1)+C(3,2)  ║
-║ for k=0..n                      ║ with x=1          ║ +C(3,3)=1+3+3+1=8     ║
+║ Identity: Σ C(n,k) = 2ⁿ        ║ Binomial theorem  ║ C(3,0)+C(3,1)+C(3,2)    ║
+║ for k=0..n                      ║ with x=1          ║ +C(3,3)=1+3+3+1=8      ║
 ╚═════════════════════════════════╩═══════════════════╩════════════════════════╝
 
 PROOFS:
@@ -1334,13 +1334,13 @@ PROOFS:
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                    BIT MANIPULATION MASTERY CHECKLIST                         ║
+║                    BIT MANIPULATION MASTERY CHECKLIST                        ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
 ║                                                                              ║
-║  FUNDAMENTALS (must be instant — no thinking required)                        ║
+║  FUNDAMENTALS (must be instant — no thinking required)                       ║
 ║  [ ] I can explain AND, OR, XOR, NOT, <<, >> in my sleep                     ║
-║  [ ] I know XOR properties: a^a=0, a^0=a, commutative, associative          ║
-║  [ ] I understand two's complement: -x = ~x + 1                             ║
+║  [ ] I know XOR properties: a^a=0, a^0=a, commutative, associative           ║
+║  [ ] I understand two's complement: -x = ~x + 1                              ║
 ║  [ ] I know operator precedence: ALWAYS parenthesize bit ops                 ║
 ║  [ ] I know Java has no unsigned int — when to use long                      ║
 ║                                                                              ║
@@ -1368,16 +1368,16 @@ PROOFS:
 ║  BITMASK & SUBSETS (advanced — know when to use)                             ║
 ║  [ ] Generate all 2ⁿ subsets via bitmask                                     ║
 ║  [ ] Count subsets with given sum (bitmask brute force + DP)                 ║
-║  [ ] Prove 2ⁿ subsets by counting argument                                  ║
-║  [ ] Recognize when bitmask DP applies (n ≤ 20, NP-hard)                    ║
+║  [ ] Prove 2ⁿ subsets by counting argument                                   ║
+║  [ ] Recognize when bitmask DP applies (n ≤ 20, NP-hard)                     ║
 ║  [ ] Partition Equal Subset Sum → 0/1 knapsack connection                    ║
 ║                                                                              ║
 ║  SPEED TARGETS                                                               ║
-║  [ ] Single Number variants: < 3 minutes each                               ║
-║  [ ] Power/Counting bit problems: < 5 minutes each                          ║
-║  [ ] Math problems (reverse, palindrome): < 8 minutes each                  ║
-║  [ ] Max Points on Line: < 15 minutes                                       ║
-║  [ ] Bitmask subset generation: < 5 minutes                                 ║
+║  [ ] Single Number variants: < 3 minutes each                                ║
+║  [ ] Power/Counting bit problems: < 5 minutes each                           ║
+║  [ ] Math problems (reverse, palindrome): < 8 minutes each                   ║
+║  [ ] Max Points on Line: < 15 minutes                                        ║
+║  [ ] Bitmask subset generation: < 5 minutes                                  ║
 ║                                                                              ║
 ║  COMMON INTERVIEW FOLLOW-UPS                                                 ║
 ║  [ ] "Can you do it in O(1) space?" → bit manipulation                       ║

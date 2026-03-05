@@ -15,39 +15,39 @@
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHY: Why Learn Hidden Foundations?                                             │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Spring is 90% reflection/proxies - without understanding, it's magic        │
-│  • Debug faster: Know WHY @Autowired fails, not just WHAT to copy              │
-│  • Interview advantage: "Explain how Spring creates beans" - nail it          │
-│  • Performance tuning: Understand connection pools, classloading              │
-│  • Framework confidence: Build custom starters, understand auto-config        │
+│  • Spring is 90% reflection/proxies - without understanding, it's magic         │
+│  • Debug faster: Know WHY @Autowired fails, not just WHAT to copy               │
+│  • Interview advantage: "Explain how Spring creates beans" - nail it            │
+│  • Performance tuning: Understand connection pools, classloading                │
+│  • Framework confidence: Build custom starters, understand auto-config          │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  HOW: How These Foundations Power Spring?                                       │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Reflection: @Autowired, component scanning, bean creation                  │
-│  • Proxies: @Transactional, @Cacheable, @Async - all proxy-based              │
-│  • Servlet API: DispatcherServlet, filters, request lifecycle                 │
-│  • Jackson: JSON serialization, @JsonIgnore, custom serializers               │
-│  • Connection pools: HikariCP under the hood for database performance         │
+│  • Reflection: @Autowired, component scanning, bean creation                    │
+│  • Proxies: @Transactional, @Cacheable, @Async - all proxy-based                │
+│  • Servlet API: DispatcherServlet, filters, request lifecycle                   │
+│  • Jackson: JSON serialization, @JsonIgnore, custom serializers                 │
+│  • Connection pools: HikariCP under the hood for database performance           │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHEN: When to Study These Topics?                                              │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Before Spring Boot: Understand what it's abstracting                        │
-│  • When debugging: Proxy issues, injection failures, serialization bugs       │
-│  • Interview prep: These are senior-level differentiators                     │
-│  • Performance issues: Connection leaks, memory problems, slow startup        │
-│  • Building libraries: Custom starters, shared components                     │
+│  • Before Spring Boot: Understand what it's abstracting                         │
+│  • When debugging: Proxy issues, injection failures, serialization bugs         │
+│  • Interview prep: These are senior-level differentiators                       │
+│  • Performance issues: Connection leaks, memory problems, slow startup          │
+│  • Building libraries: Custom starters, shared components                       │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHICH: Which Foundations are Most Critical?                                    │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  ESSENTIAL:     Reflection, Proxies, Servlet API                               │
-│  IMPORTANT:     Jackson, Connection Pooling, Design Patterns                   │
-│  ADVANCED:      Classloading, Bytecode, Annotation Processing                  │
+│  ESSENTIAL:     Reflection, Proxies, Servlet API                                │
+│  IMPORTANT:     Jackson, Connection Pooling, Design Patterns                    │
+│  ADVANCED:      Classloading, Bytecode, Annotation Processing                   │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -79,21 +79,21 @@ SECTION M: BYTECODE & INSTRUMENTATION - ULTIMATE FOUNDATION
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    SPRING IS 90% REFLECTION                                      │
+│                    SPRING IS 90% REFLECTION                                     │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  Spring Boot does ALL of this using Reflection:                                  │
-│                                                                                  │
+│                                                                                 │
+│  Spring Boot does ALL of this using Reflection:                                 │
+│                                                                                 │
 │  @Autowired          → Reflection finds field, injects bean                     │
 │  @Component scan     → Reflection discovers classes                             │
 │  @RequestMapping     → Reflection reads annotation metadata                     │
 │  @Value("${prop}")   → Reflection sets field values                             │
 │  @Transactional      → Reflection creates proxy at runtime                      │
 │  Repository methods  → Reflection generates implementations!                    │
-│                                                                                  │
+│                                                                                 │
 │  WITHOUT UNDERSTANDING REFLECTION = SPRING IS MAGIC                             │
 │  WITH REFLECTION KNOWLEDGE = SPRING IS LOGICAL                                  │
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -464,21 +464,21 @@ for (Type type : genericInterfaces) {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    REFLECTION PERFORMANCE                                        │
+│                    REFLECTION PERFORMANCE                                       │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  Operation                        │ Speed vs Direct Call                        │
-│  ─────────────────────────────────┼───────────────────────────────────────────│
-│  Class.forName()                  │ ~10x slower (but cached)                   │
-│  Method.invoke()                  │ ~3-5x slower                               │
-│  Field.set/get()                  │ ~3-5x slower                               │
-│  Constructor.newInstance()        │ ~3x slower                                 │
-│                                                                                  │
+│  ─────────────────────────────────┼───────────────────────────────────────────  │
+│  Class.forName()                  │ ~10x slower (but cached)                    │
+│  Method.invoke()                  │ ~3-5x slower                                │
+│  Field.set/get()                  │ ~3-5x slower                                │
+│  Constructor.newInstance()        │ ~3x slower                                  │
+│                                                                                 │
 │  WHY SPRING IS STILL FAST:                                                      │
 │  1. Reflection happens at STARTUP (once)                                        │
-│  2. Results are CACHED (bean definitions, mappings)                            │
+│  2. Results are CACHED (bean definitions, mappings)                             │
 │  3. Runtime calls use cached references                                         │
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -526,15 +526,15 @@ public class CachedDispatcher {
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  YOU USE ANNOTATIONS DAILY BUT NEVER ASK: HOW DO THEY WORK?                     │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  @Override          → Checked at COMPILE time (compiler magic)                  │
 │  @Deprecated        → Warning at COMPILE time                                   │
 │  @Autowired         → Processed at RUNTIME (Spring reflection)                  │
 │  @Entity            → Processed at RUNTIME (Hibernate reflection)               │
 │  @Getter (Lombok)   → Processed at COMPILE time (code generation!)              │
-│                                                                                  │
+│                                                                                 │
 │  THREE different mechanisms! Do you know which is which?                        │
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -595,17 +595,17 @@ public @interface RuntimeAvailable { }
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    RETENTION POLICY COMPARISON                                   │
+│                    RETENTION POLICY COMPARISON                                  │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  Policy    │ In Source │ In .class │ At Runtime │ Example                       │
-│  ──────────┼───────────┼───────────┼────────────┼─────────────────────────────│
-│  SOURCE    │    ✅     │    ❌     │     ❌     │ @Override, @SuppressWarnings │
-│  CLASS     │    ✅     │    ✅     │     ❌     │ Default, bytecode tools       │
-│  RUNTIME   │    ✅     │    ✅     │     ✅     │ @Autowired, @Entity          │
-│                                                                                  │
-│  SPRING REQUIRES RUNTIME - it uses reflection to read annotations!             │
-│                                                                                  │
+│  ──────────┼───────────┼───────────┼────────────┼─────────────────────────────  │
+│  SOURCE    │    ✅     │    ❌     │     ❌     │ @Override, @SuppressWarnings     │
+│  CLASS     │    ✅     │    ✅     │     ❌     │ Default, bytecode tools          │
+│  RUNTIME   │    ✅     │    ✅     │     ✅     │ @Autowired, @Entity              │
+│                                                                                 │
+│  SPRING REQUIRES RUNTIME - it uses reflection to read annotations!              │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -708,30 +708,30 @@ public class User {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    COMPILE-TIME PROCESSING FLOW                                  │
+│                    COMPILE-TIME PROCESSING FLOW                                 │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  Your Code (User.java with @Getter)                                             │
-│       │                                                                          │
-│       ▼                                                                          │
+│       │                                                                         │
+│       ▼                                                                         │
 │  ┌──────────────────┐                                                           │
 │  │ Java Compiler    │                                                           │
 │  │ (javac)          │                                                           │
 │  └────────┬─────────┘                                                           │
-│           │                                                                      │
+│           │                                                                     │
 │           │ Finds annotation processor in META-INF/services                     │
 │           │ javax.annotation.processing.Processor                               │
-│           ▼                                                                      │
+│           ▼                                                                     │
 │  ┌──────────────────┐                                                           │
 │  │ Lombok Processor │ ◄─── Runs DURING compilation                              │
 │  │ Generates code   │                                                           │
 │  └────────┬─────────┘                                                           │
-│           │                                                                      │
-│           ▼                                                                      │
-│  Modified bytecode (User.class with getName/setName)                           │
-│                                                                                  │
-│  RESULT: No runtime cost! Methods exist in .class file                         │
-│                                                                                  │
+│           │                                                                     │
+│           ▼                                                                     │
+│  Modified bytecode (User.class with getName/setName)                            │
+│                                                                                 │
+│  RESULT: No runtime cost! Methods exist in .class file                          │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -792,29 +792,29 @@ public class BuilderProcessor extends AbstractProcessor {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│  @Transactional DOESN'T MODIFY YOUR CODE - IT WRAPS IT IN A PROXY              │
+│  @Transactional DOESN'T MODIFY YOUR CODE - IT WRAPS IT IN A PROXY               │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  Your Code:                           What Spring Creates:                      │
-│                                                                                  │
+│                                                                                 │
 │  @Service                             @Service                                  │
-│  class UserService {                  class UserService$Proxy extends ... {    │
-│      @Transactional                       private UserService target;          │
+│  class UserService {                  class UserService$Proxy extends ... {     │
+│      @Transactional                       private UserService target;           │
 │      void save(User u) {                                                        │
-│          repo.save(u);    ───────►        void save(User u) {                  │
+│          repo.save(u);    ───────►        void save(User u) {                   │
 │      }                                        beginTransaction();               │
 │  }                                            try {                             │
-│                                                   target.save(u);  // YOUR code│
+│                                                   target.save(u);  // YOUR code │
 │                                                   commit();                     │
-│                                               } catch (Exception e) {          │
+│                                               } catch (Exception e) {           │
 │                                                   rollback();                   │
 │                                                   throw e;                      │
 │                                               }                                 │
 │                                           }                                     │
 │                                       }                                         │
-│                                                                                  │
-│  When you @Autowired UserService, you get the PROXY, not your class!           │
-│                                                                                  │
+│                                                                                 │
+│  When you @Autowired UserService, you get the PROXY, not your class!            │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -962,20 +962,20 @@ class TransactionInterceptor implements MethodInterceptor {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    JDK PROXY vs CGLIB                                            │
+│                    JDK PROXY vs CGLIB                                           │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  Feature              │ JDK Dynamic Proxy       │ CGLIB                         │
-│  ─────────────────────┼─────────────────────────┼─────────────────────────────│
+│  ─────────────────────┼─────────────────────────┼─────────────────────────────  │
 │  Requires interface   │ YES                     │ NO                            │
-│  How it works         │ Implements interface    │ Subclasses your class        │
-│  Can proxy final class│ N/A (needs interface)  │ NO (can't subclass final)    │
-│  Can proxy final method│ N/A                    │ NO (can't override final)    │
-│  Performance          │ Slightly faster         │ Slightly slower (bytecode)   │
-│  Included in JDK      │ YES                     │ NO (external library)        │
-│                                                                                  │
+│  How it works         │ Implements interface    │ Subclasses your class         │
+│  Can proxy final class│ N/A (needs interface)  │ NO (can't subclass final)      │
+│  Can proxy final method│ N/A                    │ NO (can't override final)     │
+│  Performance          │ Slightly faster         │ Slightly slower (bytecode)    │
+│  Included in JDK      │ YES                     │ NO (external library)         │
+│                                                                                 │
 │  SPRING BOOT DEFAULT: Uses CGLIB for all proxies (spring.aop.proxy-target-class=true)
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1000,25 +1000,25 @@ public class UserService {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    SELF-INVOCATION PROBLEM                                       │
+│                    SELF-INVOCATION PROBLEM                                      │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  External Call (through proxy):                                                  │
-│  ┌──────────┐      ┌─────────────────┐      ┌──────────────┐                   │
+│                                                                                 │
+│  External Call (through proxy):                                                 │
+│  ┌──────────┐      ┌─────────────────┐      ┌──────────────┐                    │
 │  │ Caller   │ ───► │ UserService$Proxy│ ───► │ Real Service │                   │
-│  └──────────┘      │ (intercepts!)   │      └──────────────┘                   │
+│  └──────────┘      │ (intercepts!)   │      └──────────────┘                    │
 │                    └─────────────────┘                                          │
-│                                                                                  │
+│                                                                                 │
 │  Self-Invocation (BYPASSES proxy!):                                             │
-│  ┌─────────────────────────────────────────────────────────────────┐           │
+│  ┌─────────────────────────────────────────────────────────────────┐            │
 │  │ Real Service                                                     │           │
-│  │                                                                   │           │
+│  │                                                                   │          │
 │  │  methodB() {                                                     │           │
-│  │      this.methodA();  ◄─── "this" = Real object, NOT proxy!     │           │
+│  │      this.methodA();  ◄─── "this" = Real object, NOT proxy!     │            │
 │  │  }                         Transaction interceptor never runs    │           │
-│  │                                                                   │           │
-│  └─────────────────────────────────────────────────────────────────┘           │
-│                                                                                  │
+│  │                                                                   │          │
+│  └─────────────────────────────────────────────────────────────────┘            │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1109,21 +1109,21 @@ RESULT: Private methods bypass the proxy entirely
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│  SPRING MVC IS BUILT ON SERVLETS - YOU JUST DON'T SEE THEM                     │
+│  SPRING MVC IS BUILT ON SERVLETS - YOU JUST DON'T SEE THEM                      │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  When you write:                     Behind the scenes:                         │
-│                                                                                  │
+│                                                                                 │
 │  @GetMapping("/users")               HttpServletRequest request                 │
-│  public List<User> getUsers() {      HttpServletResponse response              │
-│      return userService.findAll();   FilterChain chain                         │
+│  public List<User> getUsers() {      HttpServletResponse response               │
+│      return userService.findAll();   FilterChain chain                          │
 │  }                                   DispatcherServlet                          │
 │                                      RequestMapping handler                     │
 │                                      View resolution                            │
 │                                      ... and more!                              │
-│                                                                                  │
+│                                                                                 │
 │  Understanding Servlets = Understanding Spring MVC deeply                       │
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1254,39 +1254,39 @@ public void customResponse(HttpServletResponse response) throws IOException {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    HTTP REQUEST FLOW IN SPRING                                   │
+│                    HTTP REQUEST FLOW IN SPRING                                  │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  HTTP Request                                                                    │
-│       │                                                                          │
-│       ▼                                                                          │
+│                                                                                 │
+│  HTTP Request                                                                   │
+│       │                                                                         │
+│       ▼                                                                         │
 │  ┌──────────────────┐                                                           │
 │  │ Filter 1         │  ◄── Logging, CORS, Security checks                       │
-│  │ (SecurityFilter) │                                                            │
+│  │ (SecurityFilter) │                                                           │
 │  └────────┬─────────┘                                                           │
-│           │                                                                      │
-│           ▼                                                                      │
+│           │                                                                     │
+│           ▼                                                                     │
 │  ┌──────────────────┐                                                           │
 │  │ Filter 2         │  ◄── Request/Response modification                        │
-│  │ (CustomFilter)   │                                                            │
+│  │ (CustomFilter)   │                                                           │
 │  └────────┬─────────┘                                                           │
-│           │                                                                      │
-│           ▼                                                                      │
+│           │                                                                     │
+│           ▼                                                                     │
 │  ┌──────────────────┐                                                           │
-│  │ DispatcherServlet│  ◄── Spring's main servlet                               │
+│  │ DispatcherServlet│  ◄── Spring's main servlet                                │
 │  └────────┬─────────┘                                                           │
-│           │                                                                      │
-│           ▼                                                                      │
+│           │                                                                     │
+│           ▼                                                                     │
 │  ┌──────────────────┐                                                           │
 │  │ HandlerMapping   │  ◄── Finds the right @Controller                          │
 │  └────────┬─────────┘                                                           │
-│           │                                                                      │
-│           ▼                                                                      │
+│           │                                                                     │
+│           ▼                                                                     │
 │  ┌──────────────────┐                                                           │
 │  │ @Controller      │  ◄── Your code                                            │
-│  │ method           │                                                            │
+│  │ method           │                                                           │
 │  └──────────────────┘                                                           │
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1327,22 +1327,22 @@ public class RequestLoggingFilter implements Filter {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    FILTER vs INTERCEPTOR vs AOP                                  │
+│                    FILTER vs INTERCEPTOR vs AOP                                 │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  Component      │ Level        │ Access To           │ Use Case                 │
-│  ───────────────┼──────────────┼─────────────────────┼─────────────────────────│
-│  Filter         │ Servlet      │ Request/Response    │ Security, CORS, Logging │
-│  (javax.servlet)│              │ (raw bytes)         │ Request modification    │
+│  ───────────────┼──────────────┼─────────────────────┼───────────────────────── │
+│  Filter         │ Servlet      │ Request/Response    │ Security, CORS, Logging  │
+│  (javax.servlet)│              │ (raw bytes)         │ Request modification     │
 │                 │              │                     │                          │
-│  Interceptor    │ Spring MVC   │ Handler, Request,   │ Pre/post processing     │
-│  (HandlerInter.)│              │ ModelAndView        │ Auth, Validation        │
+│  Interceptor    │ Spring MVC   │ Handler, Request,   │ Pre/post processing      │
+│  (HandlerInter.)│              │ ModelAndView        │ Auth, Validation         │
 │                 │              │                     │                          │
-│  AOP            │ Spring Bean  │ Method parameters,  │ Transactions, Logging   │
-│  (@Aspect)      │              │ Return values       │ Cross-cutting concerns  │
+│  AOP            │ Spring Bean  │ Method parameters,  │ Transactions, Logging    │
+│  (@Aspect)      │              │ Return values       │ Cross-cutting concerns   │
 │                 │              │                     │                          │
-│  ORDER: Filter → Interceptor → AOP → Controller → AOP → Interceptor → Filter  │
-│                                                                                  │
+│  ORDER: Filter → Interceptor → AOP → Controller → AOP → Interceptor → Filter    │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1389,23 +1389,23 @@ public class DispatcherServlet extends FrameworkServlet {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│  EVERY @RestController USES JACKSON - DO YOU KNOW HOW?                         │
+│  EVERY @RestController USES JACKSON - DO YOU KNOW HOW?                          │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  @GetMapping("/user")                                                           │
 │  public User getUser() {                                                        │
 │      return new User("John", 25);                                               │
 │  }                                                                              │
-│                                                                                  │
+│                                                                                 │
 │  // Response: {"name":"John","age":25}                                          │
-│                                                                                  │
+│                                                                                 │
 │  @PostMapping("/user")                                                          │
 │  public void create(@RequestBody User user) {                                   │
 │      // user.name = "John", user.age = 25                                       │
 │  }                                                                              │
-│                                                                                  │
-│  WHO CONVERTS JAVA ↔ JSON?  JACKSON!                                           │
-│                                                                                  │
+│                                                                                 │
+│  WHO CONVERTS JAVA ↔ JSON?  JACKSON!                                            │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1429,30 +1429,30 @@ User user = mapper.readValue(json, User.class);
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    JACKSON SERIALIZATION PROCESS                                 │
+│                    JACKSON SERIALIZATION PROCESS                                │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  User object                                                                     │
-│       │                                                                          │
-│       ▼                                                                          │
-│  ┌──────────────────────────────────────────────────────────────────────┐      │
-│  │ 1. INTROSPECTION (Using Reflection!)                                 │      │
-│  │    - Finds all getters: getName(), getAge()                          │      │
-│  │    - Removes "get" prefix → "name", "age"                            │      │
-│  │    - Checks for @JsonProperty annotations                            │      │
-│  └────────────────────────────────────────────────────────────────────┬─┘      │
+│                                                                                 │
+│  User object                                                                    │
+│       │                                                                         │
+│       ▼                                                                         │
+│  ┌──────────────────────────────────────────────────────────────────────┐       │
+│  │ 1. INTROSPECTION (Using Reflection!)                                 │       │
+│  │    - Finds all getters: getName(), getAge()                          │       │
+│  │    - Removes "get" prefix → "name", "age"                            │       │
+│  │    - Checks for @JsonProperty annotations                            │       │
+│  └────────────────────────────────────────────────────────────────────┬─┘       │
 │                                                                        │        │
 │                                                                        ▼        │
-│  ┌──────────────────────────────────────────────────────────────────────┐      │
+│  ┌──────────────────────────────────────────────────────────────────────┐       │
 │  │ 2. SERIALIZATION                                                      │      │
-│  │    - Calls each getter: user.getName() → "John"                      │      │
+│  │    - Calls each getter: user.getName() → "John"                      │       │
 │  │    - Converts to JSON representation                                  │      │
-│  │    - Handles nested objects recursively                              │      │
-│  └────────────────────────────────────────────────────────────────────┬─┘      │
+│  │    - Handles nested objects recursively                              │       │
+│  └────────────────────────────────────────────────────────────────────┬─┘       │
 │                                                                        │        │
 │                                                                        ▼        │
-│  {"name":"John","age":25}                                                      │
-│                                                                                  │
+│  {"name":"John","age":25}                                                       │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 

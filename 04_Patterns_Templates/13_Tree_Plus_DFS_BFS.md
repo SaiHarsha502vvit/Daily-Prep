@@ -181,12 +181,12 @@ EDGE CASES:
 ┌──────────────────────────────┬────────────────────────────────────────┐
 │ Edge Case                    │ Handling                               │
 ├──────────────────────────────┼────────────────────────────────────────┤
-│ Null root                    │ Return empty list / false / 0         │
-│ Single node (leaf)           │ Height=0, depth=0, is balanced       │
-│ Skewed tree (like linked list)│ Height = n, BFS space = O(1)        │
-│ Complete binary tree          │ BFS space = O(n/2) for last level   │
-│ Duplicate values in BST      │ Convention: left < root ≤ right     │
-│ Integer.MIN/MAX in BST ranges│ Use Long.MIN/MAX for range bounds   │
+│ Null root                    │ Return empty list / false / 0          │
+│ Single node (leaf)           │ Height=0, depth=0, is balanced         │
+│ Skewed tree (like linked list)│ Height = n, BFS space = O(1)          │
+│ Complete binary tree          │ BFS space = O(n/2) for last level     │
+│ Duplicate values in BST      │ Convention: left < root ≤ right        │
+│ Integer.MIN/MAX in BST ranges│ Use Long.MIN/MAX for range bounds      │
 └──────────────────────────────┴────────────────────────────────────────┘
 
 COMMON MISTAKES:

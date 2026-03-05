@@ -124,11 +124,11 @@ When you hit a dead end, GO BACK and try a different path.
 │                     BACKTRACKING FLOW                           │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│    1. CHOOSE    →    2. EXPLORE    →    3. UNCHOOSE            │
+│    1. CHOOSE    →    2. EXPLORE    →    3. UNCHOOSE             │
 │                                                                 │
-│    Make a            Recursively         Undo the              │
-│    decision          explore with        decision              │
-│                      that choice         (backtrack)           │
+│    Make a            Recursively         Undo the               │
+│    decision          explore with        decision               │
+│                      that choice         (backtrack)            │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -157,13 +157,13 @@ Result: [[], [1], [2], [1,2]]
 ┌─────────────────────────────────────────────────────────────────┐
 │              USE BACKTRACKING WHEN YOU SEE:                     │
 ├─────────────────────────────────────────────────────────────────┤
-│  ✓ "Generate all..."                                           │
-│  ✓ "Find all possible..."                                      │
-│  ✓ "Print all combinations/permutations/subsets"               │
-│  ✓ "All ways to..."                                            │
-│  ✓ Constraint satisfaction (Sudoku, N-Queens)                  │
-│  ✓ Path finding with constraints                               │
-│  ✓ Game solving (word search, crossword)                       │
+│  ✓ "Generate all..."                                            │
+│  ✓ "Find all possible..."                                       │
+│  ✓ "Print all combinations/permutations/subsets"                │
+│  ✓ "All ways to..."                                             │
+│  ✓ Constraint satisfaction (Sudoku, N-Queens)                   │
+│  ✓ Path finding with constraints                                │
+│  ✓ Game solving (word search, crossword)                        │
 └─────────────────────────────────────────────────────────────────┘
 
 Time Complexity usually: O(2^n) or O(n!) - exponential
@@ -245,18 +245,18 @@ public class BacktrackingTemplate {
 │                  CRITICAL IMPLEMENTATION NOTES                  │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  1. ALWAYS COPY before adding to result:                       │
-│     result.add(new ArrayList<>(current));  ✓                   │
-│     result.add(current);  ✗ (adds reference, will be modified) │
+│  1. ALWAYS COPY before adding to result:                        │
+│     result.add(new ArrayList<>(current));  ✓                    │
+│     result.add(current);  ✗ (adds reference, will be modified)  │
 │                                                                 │
-│  2. REMOVE from END (last element):                            │
-│     current.remove(current.size() - 1);  ✓                     │
-│     current.remove(element);  ✗ (removes by value, slower)     │
+│  2. REMOVE from END (last element):                             │
+│     current.remove(current.size() - 1);  ✓                      │
+│     current.remove(element);  ✗ (removes by value, slower)      │
 │                                                                 │
-│  3. 'start' parameter controls:                                │
-│     start = i + 1  →  No duplicates, subsets/combinations      │
-│     start = i      →  Can reuse elements                       │
-│     No start       →  Permutations (use visited array)         │
+│  3. 'start' parameter controls:                                 │
+│     start = i + 1  →  No duplicates, subsets/combinations       │
+│     start = i      →  Can reuse elements                        │
+│     No start       →  Permutations (use visited array)          │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -1048,20 +1048,20 @@ for (int end = 0; end < n; end++) {
 │                  BACKTRACKING PROBLEM TYPES                       │
 ├───────────────────────────────────────────────────────────────────┤
 │                                                                   │
-│  SUBSETS:                    PERMUTATIONS:                       │
-│  - Subsets I, II             - Permutations I, II                │
-│  - Combination Sum 1-3       - Next Permutation                  │
-│  - Palindrome Partitioning   - Permutation Sequence              │
+│  SUBSETS:                    PERMUTATIONS:                        │
+│  - Subsets I, II             - Permutations I, II                 │
+│  - Combination Sum 1-3       - Next Permutation                   │
+│  - Palindrome Partitioning   - Permutation Sequence               │
 │                                                                   │
-│  COMBINATIONS:               GRID/MATRIX:                        │
-│  - Combinations (n,k)        - N-Queens                          │
-│  - Letter Combinations       - Sudoku Solver                     │
-│  - Generate Parentheses      - Word Search                       │
+│  COMBINATIONS:               GRID/MATRIX:                         │
+│  - Combinations (n,k)        - N-Queens                           │
+│  - Letter Combinations       - Sudoku Solver                      │
+│  - Generate Parentheses      - Word Search                        │
 │                                                                   │
-│  STRING:                     PATH FINDING:                       │
-│  - Restore IP Addresses      - Path Sum II                       │
-│  - Word Break II             - All Paths from Source to Target   │
-│  - Decode Ways               - Unique Paths III                  │
+│  STRING:                     PATH FINDING:                        │
+│  - Restore IP Addresses      - Path Sum II                        │
+│  - Word Break II             - All Paths from Source to Target    │
+│  - Decode Ways               - Unique Paths III                   │
 │                                                                   │
 └───────────────────────────────────────────────────────────────────┘
 ```
@@ -1184,7 +1184,7 @@ private List<String> backtrack(String s, int start,
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │  "Generate all subsets" → SUBSETS PATTERN                       │
-│      start = i + 1, every state valid                          │
+│      start = i + 1, every state valid                           │
 │                                                                 │
 │  "Generate all permutations" → PERMUTATIONS PATTERN             │
 │      Use visited[], iterate from 0                              │
@@ -1218,11 +1218,11 @@ Arrays.sort(nums);
 ┌─────────────────────────────────────────────────────────────────┐
 │              TIME COMPLEXITIES                                  │
 ├─────────────────────────────────────────────────────────────────┤
-│  Subsets:           O(n × 2^n)  - 2^n subsets, O(n) to copy    │
-│  Permutations:      O(n × n!)   - n! permutations, O(n) copy   │
-│  Combinations (k):  O(k × C(n,k))                              │
+│  Subsets:           O(n × 2^n)  - 2^n subsets, O(n) to copy     │
+│  Permutations:      O(n × n!)   - n! permutations, O(n) copy    │
+│  Combinations (k):  O(k × C(n,k))                               │
 │  N-Queens:          O(n!)       - roughly                       │
-│  Sudoku:            O(9^m)      - m = empty cells              │
+│  Sudoku:            O(9^m)      - m = empty cells               │
 └─────────────────────────────────────────────────────────────────┘
 
 Space: O(n) for recursion stack (excluding output)
@@ -1259,17 +1259,17 @@ Space: O(n) for recursion stack (excluding output)
 ║              THE 3 ESSENTIAL TEMPLATES                        ║
 ╠═══════════════════════════════════════════════════════════════╣
 ║                                                               ║
-║  1. SUBSETS (every state is answer)                          ║
-║     result.add(copy); // at start                            ║
-║     for i = start to n, start = i+1                          ║
+║  1. SUBSETS (every state is answer)                           ║
+║     result.add(copy); // at start                             ║
+║     for i = start to n, start = i+1                           ║
 ║                                                               ║
-║  2. PERMUTATIONS (full length is answer)                     ║
+║  2. PERMUTATIONS (full length is answer)                      ║
 ║     if size == n: add;                                        ║
-║     for i = 0 to n, use visited[]                            ║
+║     for i = 0 to n, use visited[]                             ║
 ║                                                               ║
-║  3. COMBINATIONS (fixed size k is answer)                    ║
+║  3. COMBINATIONS (fixed size k is answer)                     ║
 ║     if size == k: add;                                        ║
-║     for i = start to n, start = i+1                          ║
+║     for i = start to n, start = i+1                           ║
 ║                                                               ║
 ╚═══════════════════════════════════════════════════════════════╝
 

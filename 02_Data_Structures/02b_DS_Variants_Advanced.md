@@ -10,7 +10,7 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                      MIN STACK - COMPLETE GUIDE                               ║
+║                      MIN STACK - COMPLETE GUIDE                              ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -20,24 +20,24 @@
 │ • push(x)   - O(1)                                                          │
 │ • pop()     - O(1)                                                          │
 │ • top()     - O(1)                                                          │
-│ • getMin()  - O(1)  ← THE SPECIAL OPERATION!                               │
+│ • getMin()  - O(1)  ← THE SPECIAL OPERATION!                                │
 │                                                                             │
 │ CHALLENGE: How to get minimum in O(1)?                                      │
 │                                                                             │
-│ NAIVE: Search entire stack → O(n)                                          │
-│ SMART: Track minimum at EACH state of the stack!                           │
+│ NAIVE: Search entire stack → O(n)                                           │
+│ SMART: Track minimum at EACH state of the stack!                            │
 │                                                                             │
 │ APPROACH 1 - TWO STACKS:                                                    │
-│   Main Stack:  [3, 5, 2, 7, 1]  top→                                       │
-│   Min Stack:   [3, 3, 2, 2, 1]  top→                                       │
+│   Main Stack:  [3, 5, 2, 7, 1]  top→                                        │
+│   Min Stack:   [3, 3, 2, 2, 1]  top→                                        │
 │                                                                             │
-│   Min stack stores the minimum at each point!                              │
-│   When we pop, both stacks pop.                                            │
-│   getMin() = minStack.top()                                                │
+│   Min stack stores the minimum at each point!                               │
+│   When we pop, both stacks pop.                                             │
+│   getMin() = minStack.top()                                                 │
 │                                                                             │
 │ APPROACH 2 - SINGLE STACK WITH PAIRS:                                       │
-│   Stack: [(3,3), (5,3), (2,2), (7,2), (1,1)]                              │
-│          (value, min_at_this_point)                                        │
+│   Stack: [(3,3), (5,3), (2,2), (7,2), (1,1)]                                │
+│          (value, min_at_this_point)                                         │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -130,22 +130,22 @@ public class MinStackOptimized {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                      MAX STACK - COMPLETE GUIDE                               ║
+║                      MAX STACK - COMPLETE GUIDE                              ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │ WHAT IS IT?                                                                 │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │ Similar to Min Stack but also supports:                                     │
-│ • popMax() - Remove and return the maximum element                         │
+│ • popMax() - Remove and return the maximum element                          │
 │                                                                             │
 │ This is HARDER than Min Stack because:                                      │
-│ - popMax() might remove element from MIDDLE of stack                       │
-│ - Need to maintain consistency                                             │
+│ - popMax() might remove element from MIDDLE of stack                        │
+│ - Need to maintain consistency                                              │
 │                                                                             │
-│ APPROACH: Use TreeMap + Doubly Linked List                                 │
-│   - Doubly Linked List: Maintains stack order                              │
-│   - TreeMap: Maps values to their nodes for O(log n) max finding           │
+│ APPROACH: Use TreeMap + Doubly Linked List                                  │
+│   - Doubly Linked List: Maintains stack order                               │
+│   - TreeMap: Maps values to their nodes for O(log n) max finding            │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -217,39 +217,39 @@ public class MaxStackSimple {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                    CIRCULAR QUEUE - COMPLETE GUIDE                            ║
+║                    CIRCULAR QUEUE - COMPLETE GUIDE                           ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │ WHAT IS IT?                                                                 │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │ A queue implemented using a circular array.                                 │
-│ When we reach the end of the array, we wrap around to the beginning!       │
+│ When we reach the end of the array, we wrap around to the beginning!        │
 │                                                                             │
 │ WHY CIRCULAR?                                                               │
 │                                                                             │
 │ LINEAR QUEUE PROBLEM:                                                       │
-│   After many enqueue/dequeue operations:                                   │
+│   After many enqueue/dequeue operations:                                    │
 │   [_, _, _, _, 5, 6, 7, _]                                                  │
-│               ↑        ↑                                                   │
-│             front    rear                                                  │
-│   Wasted space at beginning!                                               │
+│               ↑        ↑                                                    │
+│             front    rear                                                   │
+│   Wasted space at beginning!                                                │
 │                                                                             │
 │ CIRCULAR QUEUE SOLUTION:                                                    │
-│   [8, 9, _, _, 5, 6, 7]                                                    │
-│         ↑     ↑                                                            │
-│       rear  front                                                          │
-│   rear wraps around to use empty space!                                    │
+│   [8, 9, _, _, 5, 6, 7]                                                     │
+│         ↑     ↑                                                             │
+│       rear  front                                                           │
+│   rear wraps around to use empty space!                                     │
 │                                                                             │
 │ VISUAL (as a circle):                                                       │
-│           ┌───┐                                                            │
-│          / 7   \                                                           │
-│        /         \                                                         │
-│      │ 6          8 │                                                      │
-│        \         /                                                         │
-│         \ 5   9 /                                                          │
-│           └───┘                                                            │
-│            front                                                           │
+│           ┌───┐                                                             │
+│          / 7   \                                                            │
+│        /         \                                                          │
+│      │ 6          8 │                                                       │
+│        \         /                                                          │
+│         \ 5   9 /                                                           │
+│           └───┘                                                             │
+│            front                                                            │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -352,32 +352,32 @@ public class CircularQueue<T> {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                      DEQUE - COMPLETE GUIDE                                   ║
+║                      DEQUE - COMPLETE GUIDE                                  ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │ WHAT IS IT?                                                                 │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│ A queue where you can add/remove from BOTH ends in O(1)!                   │
+│ A queue where you can add/remove from BOTH ends in O(1)!                    │
 │                                                                             │
 │ VISUAL:                                                                     │
-│   addFirst ──→ ┌───┬───┬───┬───┬───┐ ←── addLast                          │
-│                │ A │ B │ C │ D │ E │                                       │
-│  removeFirst ←─ └───┴───┴───┴───┴───┘ ──→ removeLast                       │
+│   addFirst ──→ ┌───┬───┬───┬───┬───┐ ←── addLast                            │
+│                │ A │ B │ C │ D │ E │                                        │
+│  removeFirst ←─ └───┴───┴───┴───┴───┘ ──→ removeLast                        │
 │                                                                             │
 │ OPERATIONS:                                                                 │
-│ • addFirst(x)    - Add to front                                            │
-│ • addLast(x)     - Add to back                                             │
-│ • removeFirst()  - Remove from front                                       │
-│ • removeLast()   - Remove from back                                        │
-│ • peekFirst()    - See front                                               │
-│ • peekLast()     - See back                                                │
+│ • addFirst(x)    - Add to front                                             │
+│ • addLast(x)     - Add to back                                              │
+│ • removeFirst()  - Remove from front                                        │
+│ • removeLast()   - Remove from back                                         │
+│ • peekFirst()    - See front                                                │
+│ • peekLast()     - See back                                                 │
 │                                                                             │
 │ ALL OPERATIONS ARE O(1)!                                                    │
 │                                                                             │
 │ DEQUE = STACK + QUEUE                                                       │
-│ Can use as stack (addFirst/removeFirst)                                    │
-│ Can use as queue (addLast/removeFirst)                                     │
+│ Can use as stack (addFirst/removeFirst)                                     │
+│ Can use as queue (addLast/removeFirst)                                      │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -497,7 +497,7 @@ public class MyDeque<T> {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                    MONOTONIC QUEUE - COMPLETE GUIDE                           ║
+║                    MONOTONIC QUEUE - COMPLETE GUIDE                          ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -507,22 +507,22 @@ public class MyDeque<T> {
 │ (either increasing or decreasing).                                          │
 │                                                                             │
 │ MONOTONIC DECREASING QUEUE (for finding max):                               │
-│ Elements from front to back: 8 > 6 > 5 > 3                                 │
-│ Front is always the maximum!                                               │
+│ Elements from front to back: 8 > 6 > 5 > 3                                  │
+│ Front is always the maximum!                                                │
 │                                                                             │
 │ MONOTONIC INCREASING QUEUE (for finding min):                               │
-│ Elements from front to back: 2 < 4 < 7 < 9                                 │
-│ Front is always the minimum!                                               │
+│ Elements from front to back: 2 < 4 < 7 < 9                                  │
+│ Front is always the minimum!                                                │
 │                                                                             │
 │ HOW IT WORKS (Decreasing for max):                                          │
 │ When adding element x:                                                      │
-│ 1. Remove all elements from BACK that are smaller than x                   │
-│ 2. Add x to back                                                           │
-│ 3. Front is always the current maximum                                     │
+│ 1. Remove all elements from BACK that are smaller than x                    │
+│ 2. Add x to back                                                            │
+│ 3. Front is always the current maximum                                      │
 │                                                                             │
-│ WHY? Elements smaller than x will NEVER be the max while x exists!         │
+│ WHY? Elements smaller than x will NEVER be the max while x exists!          │
 │                                                                             │
-│ KEY USE CASE: Sliding Window Maximum/Minimum in O(n)!                      │
+│ KEY USE CASE: Sliding Window Maximum/Minimum in O(n)!                       │
 └─────────────────────────────────────────────────────────────────────────────┘
 
 EXAMPLE - SLIDING WINDOW MAXIMUM:
@@ -613,7 +613,7 @@ public class MonotonicQueue {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                    BINARY TREE VARIANTS OVERVIEW                              ║
+║                    BINARY TREE VARIANTS OVERVIEW                             ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
                         BINARY TREE
@@ -678,24 +678,24 @@ Essentially a linked list!
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                       AVL TREE - COMPLETE GUIDE                               ║
+║                       AVL TREE - COMPLETE GUIDE                              ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │ WHAT IS IT?                                                                 │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │ A self-balancing Binary Search Tree where:                                  │
-│ • For EVERY node: |height(left) - height(right)| ≤ 1                       │
+│ • For EVERY node: |height(left) - height(right)| ≤ 1                        │
 │                                                                             │
-│ INVENTED: 1962 by Adelson-Velsky and Landis                                │
+│ INVENTED: 1962 by Adelson-Velsky and Landis                                 │
 │                                                                             │
 │ WHY BALANCE MATTERS:                                                        │
-│ Unbalanced BST: O(n) worst case (degenerates to linked list)               │
-│ Balanced AVL:   O(log n) GUARANTEED for all operations!                    │
+│ Unbalanced BST: O(n) worst case (degenerates to linked list)                │
+│ Balanced AVL:   O(log n) GUARANTEED for all operations!                     │
 │                                                                             │
-│ BALANCE FACTOR = height(left) - height(right)                              │
-│ Valid values: -1, 0, +1                                                    │
-│ If BF becomes -2 or +2, we ROTATE!                                         │
+│ BALANCE FACTOR = height(left) - height(right)                               │
+│ Valid values: -1, 0, +1                                                     │
+│ If BF becomes -2 or +2, we ROTATE!                                          │
 └─────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -704,28 +704,28 @@ Essentially a linked list!
 │                                                                             │
 │ 4 CASES OF IMBALANCE:                                                       │
 │                                                                             │
-│ 1. LEFT-LEFT (LL) → Single Right Rotation                                  │
+│ 1. LEFT-LEFT (LL) → Single Right Rotation                                   │
 │        30                     20                                            │
 │       /                      /  \                                           │
 │      20          →         10    30                                         │
 │     /                                                                       │
 │    10                                                                       │
 │                                                                             │
-│ 2. RIGHT-RIGHT (RR) → Single Left Rotation                                 │
+│ 2. RIGHT-RIGHT (RR) → Single Left Rotation                                  │
 │    10                         20                                            │
 │      \                       /  \                                           │
 │       20         →         10    30                                         │
 │         \                                                                   │
 │          30                                                                 │
 │                                                                             │
-│ 3. LEFT-RIGHT (LR) → Left then Right Rotation                              │
+│ 3. LEFT-RIGHT (LR) → Left then Right Rotation                               │
 │        30                    30                      25                     │
 │       /                     /                       /  \                    │
 │      20          →        25         →           20    30                   │
 │        \                 /                                                  │
 │         25             20                                                   │
 │                                                                             │
-│ 4. RIGHT-LEFT (RL) → Right then Left Rotation                              │
+│ 4. RIGHT-LEFT (RL) → Right then Left Rotation                               │
 │    10                    10                         15                      │
 │      \                     \                       /  \                     │
 │       20        →           15       →           10    20                   │
@@ -925,54 +925,54 @@ public class AVLTree {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                    RED-BLACK TREE - COMPLETE GUIDE                            ║
+║                    RED-BLACK TREE - COMPLETE GUIDE                           ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │ WHAT IS IT?                                                                 │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│ A self-balancing BST where each node has a COLOR (Red or Black)            │
+│ A self-balancing BST where each node has a COLOR (Red or Black)             │
 │                                                                             │
-│ INVENTED: 1972 by Rudolf Bayer (as "symmetric binary B-trees")             │
-│ REFINED: 1978 by Leonidas Guibas and Robert Sedgewick                      │
+│ INVENTED: 1972 by Rudolf Bayer (as "symmetric binary B-trees")              │
+│ REFINED: 1978 by Leonidas Guibas and Robert Sedgewick                       │
 │                                                                             │
 │ PROPERTIES (MUST ALL BE TRUE):                                              │
-│ 1. Every node is either RED or BLACK                                       │
-│ 2. Root is always BLACK                                                    │
-│ 3. Every leaf (NIL) is BLACK                                               │
-│ 4. If node is RED, both children must be BLACK (no red-red parent-child)  │
-│ 5. Every path from node to descendant NIL has same number of black nodes  │
+│ 1. Every node is either RED or BLACK                                        │
+│ 2. Root is always BLACK                                                     │
+│ 3. Every leaf (NIL) is BLACK                                                │
+│ 4. If node is RED, both children must be BLACK (no red-red parent-child)    │
+│ 5. Every path from node to descendant NIL has same number of black nodes    │
 │                                                                             │
 │ VISUAL:                                                                     │
 │         [13:B]                                                              │
-│        /      \                                                            │
-│    [8:R]      [17:R]                                                       │
-│    /   \      /    \                                                       │
-│ [1:B] [11:B] [15:B] [25:B]                                                 │
-│        /             \                                                     │
-│     [6:R]          [22:R]                                                  │
+│        /      \                                                             │
+│    [8:R]      [17:R]                                                        │
+│    /   \      /    \                                                        │
+│ [1:B] [11:B] [15:B] [25:B]                                                  │
+│        /             \                                                      │
+│     [6:R]          [22:R]                                                   │
 │                                                                             │
-│ B = Black, R = Red                                                         │
+│ B = Black, R = Red                                                          │
 └─────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │ AVL vs RED-BLACK                                                            │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│ ┌─────────────────────┬───────────────────┬────────────────────────────┐   │
-│ │ Property            │ AVL Tree          │ Red-Black Tree             │   │
-│ ├─────────────────────┼───────────────────┼────────────────────────────┤   │
-│ │ Balance strictness  │ Strictly balanced │ Loosely balanced           │   │
-│ │ Search              │ O(log n)          │ O(log n)                   │   │
-│ │ Insert              │ Slower (more rot.)│ Faster (fewer rotations)   │   │
-│ │ Delete              │ Slower            │ Faster                     │   │
-│ │ Height              │ 1.44 * log(n)     │ 2 * log(n)                 │   │
-│ │ Used in             │ Databases         │ Java TreeMap, C++ map      │   │
-│ └─────────────────────┴───────────────────┴────────────────────────────┘   │
+│ ┌─────────────────────┬───────────────────┬────────────────────────────┐    │
+│ │ Property            │ AVL Tree          │ Red-Black Tree             │    │
+│ ├─────────────────────┼───────────────────┼────────────────────────────┤    │
+│ │ Balance strictness  │ Strictly balanced │ Loosely balanced           │    │
+│ │ Search              │ O(log n)          │ O(log n)                   │    │
+│ │ Insert              │ Slower (more rot.)│ Faster (fewer rotations)   │    │
+│ │ Delete              │ Slower            │ Faster                     │    │
+│ │ Height              │ 1.44 * log(n)     │ 2 * log(n)                 │    │
+│ │ Used in             │ Databases         │ Java TreeMap, C++ map      │    │
+│ └─────────────────────┴───────────────────┴────────────────────────────┘    │
 │                                                                             │
 │ WHEN TO USE:                                                                │
-│ • AVL: Lookup-heavy applications (more balanced = faster search)           │
-│ • RB: Insert/Delete-heavy (fewer rotations = faster modifications)         │
+│ • AVL: Lookup-heavy applications (more balanced = faster search)            │
+│ • RB: Insert/Delete-heavy (fewer rotations = faster modifications)          │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1010,41 +1010,41 @@ public class AVLTree {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                       HEAP VARIANTS - COMPLETE GUIDE                          ║
+║                       HEAP VARIANTS - COMPLETE GUIDE                         ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │ HEAP TYPES                                                                  │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│ 1. MIN HEAP: Parent ≤ Children                                             │
+│ 1. MIN HEAP: Parent ≤ Children                                              │
 │         1                                                                   │
 │        / \                                                                  │
 │       3   6                                                                 │
 │      / \                                                                    │
 │     5   9                                                                   │
-│    Min at root!                                                            │
+│    Min at root!                                                             │
 │                                                                             │
-│ 2. MAX HEAP: Parent ≥ Children                                             │
+│ 2. MAX HEAP: Parent ≥ Children                                              │
 │         9                                                                   │
 │        / \                                                                  │
 │       6   5                                                                 │
 │      / \                                                                    │
 │     3   1                                                                   │
-│    Max at root!                                                            │
+│    Max at root!                                                             │
 │                                                                             │
-│ 3. BINARY HEAP: Most common, complete binary tree                          │
+│ 3. BINARY HEAP: Most common, complete binary tree                           │
 │                                                                             │
-│ 4. D-ARY HEAP: Each node has D children (not just 2)                       │
-│    - Shallower tree                                                        │
-│    - Used in Dijkstra's algorithm optimization                             │
+│ 4. D-ARY HEAP: Each node has D children (not just 2)                        │
+│    - Shallower tree                                                         │
+│    - Used in Dijkstra's algorithm optimization                              │
 │                                                                             │
-│ 5. FIBONACCI HEAP: Amortized O(1) for many operations                      │
-│    - Used in advanced graph algorithms                                     │
+│ 5. FIBONACCI HEAP: Amortized O(1) for many operations                       │
+│    - Used in advanced graph algorithms                                      │
 │    - Complex implementation                                                 │
 │                                                                             │
-│ 6. BINOMIAL HEAP: Collection of binomial trees                             │
-│    - Efficient merge: O(log n)                                             │
+│ 6. BINOMIAL HEAP: Collection of binomial trees                              │
+│    - Efficient merge: O(log n)                                              │
 └─────────────────────────────────────────────────────────────────────────────┘
 
 ARRAY REPRESENTATION OF BINARY HEAP:
@@ -1196,7 +1196,7 @@ public class MinHeap {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                    HASH TABLE VARIANTS - COMPLETE GUIDE                       ║
+║                    HASH TABLE VARIANTS - COMPLETE GUIDE                      ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -1207,48 +1207,48 @@ public class MinHeap {
 │    Each bucket contains a linked list                                       │
 │                                                                             │
 │    Index 0: -> null                                                         │
-│    Index 1: -> [15] -> [25] -> null  (15 % 10 = 5, 25 % 10 = 5)           │
-│    Index 2: -> [12] -> null                                                │
+│    Index 1: -> [15] -> [25] -> null  (15 % 10 = 5, 25 % 10 = 5)             │
+│    Index 2: -> [12] -> null                                                 │
 │    ...                                                                      │
 │                                                                             │
-│    Pros: Simple, unlimited capacity                                        │
-│    Cons: Extra memory for pointers, cache unfriendly                       │
+│    Pros: Simple, unlimited capacity                                         │
+│    Cons: Extra memory for pointers, cache unfriendly                        │
 │                                                                             │
 │ 2. OPEN ADDRESSING (Probing):                                               │
-│    Find another slot in same array                                         │
+│    Find another slot in same array                                          │
 │                                                                             │
-│    a) LINEAR PROBING: Try next slot                                        │
-│       h(k), h(k)+1, h(k)+2, ...                                            │
-│       Problem: Clustering                                                  │
+│    a) LINEAR PROBING: Try next slot                                         │
+│       h(k), h(k)+1, h(k)+2, ...                                             │
+│       Problem: Clustering                                                   │
 │                                                                             │
-│    b) QUADRATIC PROBING: Try squared distances                             │
-│       h(k), h(k)+1², h(k)+2², h(k)+3², ...                                │
+│    b) QUADRATIC PROBING: Try squared distances                              │
+│       h(k), h(k)+1², h(k)+2², h(k)+3², ...                                  │
 │       Better distribution                                                   │
 │                                                                             │
-│    c) DOUBLE HASHING: Use second hash function                             │
-│       h(k), h(k)+h2(k), h(k)+2*h2(k), ...                                  │
+│    c) DOUBLE HASHING: Use second hash function                              │
+│       h(k), h(k)+h2(k), h(k)+2*h2(k), ...                                   │
 │       Best distribution                                                     │
 │                                                                             │
 │ 3. ROBIN HOOD HASHING:                                                      │
-│    Elements with larger "probe distance" steal from shorter ones           │
+│    Elements with larger "probe distance" steal from shorter ones            │
 │    More uniform distribution                                                │
 │                                                                             │
 │ 4. CUCKOO HASHING:                                                          │
-│    Two hash functions, two tables                                          │
-│    O(1) worst case lookup!                                                 │
+│    Two hash functions, two tables                                           │
+│    O(1) worst case lookup!                                                  │
 └─────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │ JAVA HASH MAP VARIANTS                                                      │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│ HashMap:         Basic, not thread-safe, allows null                       │
-│ LinkedHashMap:   Maintains insertion order                                 │
-│ TreeMap:         Sorted by keys (Red-Black Tree)                           │
-│ HashTable:       Thread-safe (legacy, use ConcurrentHashMap)               │
-│ ConcurrentHashMap: Thread-safe, modern                                     │
-│ WeakHashMap:     Keys can be garbage collected                             │
-│ IdentityHashMap: Uses == instead of equals()                               │
+│ HashMap:         Basic, not thread-safe, allows null                        │
+│ LinkedHashMap:   Maintains insertion order                                  │
+│ TreeMap:         Sorted by keys (Red-Black Tree)                            │
+│ HashTable:       Thread-safe (legacy, use ConcurrentHashMap)                │
+│ ConcurrentHashMap: Thread-safe, modern                                      │
+│ WeakHashMap:     Keys can be garbage collected                              │
+│ IdentityHashMap: Uses == instead of equals()                                │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1262,55 +1262,55 @@ public class MinHeap {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                    DATA STRUCTURE SELECTION GUIDE                             ║
+║                    DATA STRUCTURE SELECTION GUIDE                            ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 LINKED LIST SELECTION:
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │ Need                            │ Use                                       │
-│ ────────────────────────────────────────────────────────────────────────── │
-│ Simple forward traversal        │ Singly Linked List                       │
-│ Delete at tail / backward       │ Doubly Linked List                       │
-│ Round-robin / cycling           │ Circular Linked List                     │
-│ Both directions + cycling       │ Circular Doubly Linked List              │
-│ O(log n) search in sorted list  │ Skip List                                │
-│ LRU Cache                       │ Doubly Linked + HashMap                  │
+│ ──────────────────────────────────────────────────────────────────────────  │
+│ Simple forward traversal        │ Singly Linked List                        │
+│ Delete at tail / backward       │ Doubly Linked List                        │
+│ Round-robin / cycling           │ Circular Linked List                      │
+│ Both directions + cycling       │ Circular Doubly Linked List               │
+│ O(log n) search in sorted list  │ Skip List                                 │
+│ LRU Cache                       │ Doubly Linked + HashMap                   │
 └─────────────────────────────────────────────────────────────────────────────┘
 
 QUEUE SELECTION:
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │ Need                            │ Use                                       │
-│ ────────────────────────────────────────────────────────────────────────── │
-│ Basic FIFO                      │ Simple Queue                             │
-│ Fixed size, no wasted space     │ Circular Queue                           │
-│ Add/remove both ends            │ Deque                                    │
-│ Priority-based access           │ Priority Queue (Heap)                    │
-│ Sliding window max/min          │ Monotonic Queue                          │
+│ ──────────────────────────────────────────────────────────────────────────  │
+│ Basic FIFO                      │ Simple Queue                              │
+│ Fixed size, no wasted space     │ Circular Queue                            │
+│ Add/remove both ends            │ Deque                                     │
+│ Priority-based access           │ Priority Queue (Heap)                     │
+│ Sliding window max/min          │ Monotonic Queue                           │
 └─────────────────────────────────────────────────────────────────────────────┘
 
 TREE SELECTION:
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │ Need                            │ Use                                       │
-│ ────────────────────────────────────────────────────────────────────────── │
-│ Basic sorted structure          │ BST                                      │
-│ Guaranteed O(log n)             │ AVL or Red-Black Tree                    │
-│ Lookup-heavy                    │ AVL Tree                                 │
-│ Insert/Delete-heavy             │ Red-Black Tree                           │
-│ Range queries                   │ Segment Tree                             │
-│ Prefix operations               │ Trie                                     │
-│ Top-k / Priority                │ Heap                                     │
-│ Database index                  │ B-Tree / B+ Tree                         │
+│ ──────────────────────────────────────────────────────────────────────────  │
+│ Basic sorted structure          │ BST                                       │
+│ Guaranteed O(log n)             │ AVL or Red-Black Tree                     │
+│ Lookup-heavy                    │ AVL Tree                                  │
+│ Insert/Delete-heavy             │ Red-Black Tree                            │
+│ Range queries                   │ Segment Tree                              │
+│ Prefix operations               │ Trie                                      │
+│ Top-k / Priority                │ Heap                                      │
+│ Database index                  │ B-Tree / B+ Tree                          │
 └─────────────────────────────────────────────────────────────────────────────┘
 
 HASH TABLE SELECTION:
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │ Need                            │ Use                                       │
-│ ────────────────────────────────────────────────────────────────────────── │
-│ Basic key-value                 │ HashMap                                  │
-│ Maintain insertion order        │ LinkedHashMap                            │
-│ Sorted keys                     │ TreeMap                                  │
-│ Thread-safe                     │ ConcurrentHashMap                        │
-│ Only keys (no values)           │ HashSet                                  │
+│ ──────────────────────────────────────────────────────────────────────────  │
+│ Basic key-value                 │ HashMap                                   │
+│ Maintain insertion order        │ LinkedHashMap                             │
+│ Sorted keys                     │ TreeMap                                   │
+│ Thread-safe                     │ ConcurrentHashMap                         │
+│ Only keys (no values)           │ HashSet                                   │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 

@@ -73,10 +73,10 @@ function RequireAuth({ children }: { children: React.ReactNode }) {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════════╗
-║  1. useEffect + fetch (basic, no caching)                                       ║
-║  2. React Query / SWR (best for most apps — caching, refetch, dedup)           ║
-║  3. React Router loaders (v6.4+ data router — fetch before render)             ║
-║  4. Next.js / Remix server components (SSR/SSG — fetch on server)              ║
+║  1. useEffect + fetch (basic, no caching)                                        ║
+║  2. React Query / SWR (best for most apps — caching, refetch, dedup)             ║
+║  3. React Router loaders (v6.4+ data router — fetch before render)               ║
+║  4. Next.js / Remix server components (SSR/SSG — fetch on server)                ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 
 React Router v6.4 Loader (fetch before component renders):

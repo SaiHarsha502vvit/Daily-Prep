@@ -130,32 +130,32 @@ Saga Solution:
 
 ```
 CHOREOGRAPHY-BASED SAGA:
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │                                                                  │
-│   Order     ──event──▶    Payment    ──event──▶   Inventory     │
+│   Order     ──event──▶    Payment    ──event──▶   Inventory      │
 │   Service              Service               Service             │
 │      │                      │                      │             │
 │      └──────────────────────┴──────────────────────┘             │
 │                   Event Bus (Kafka)                              │
-│  ✅ Loose coupling                                               │
-│  ❌ Hard to track overall progress                               │
-└─────────────────────────────────────────────────────────────────┘
+│  ✅ Loose coupling                                                │
+│  ❌ Hard to track overall progress                                │
+└──────────────────────────────────────────────────────────────────┘
 
 ORCHESTRATION-BASED SAGA:
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │                                                                  │
-│                    ┌─────────────────┐                          │
-│                    │  Saga           │                          │
-│                    │  Orchestrator   │                          │
-│                    └────────┬────────┘                          │
-│              ┌──────────────┼──────────────┐                    │
-│              ▼              ▼              ▼                    │
-│         Order           Payment       Inventory                 │
-│         Service         Service       Service                   │
-│  ✅ Clear flow visibility                                       │
-│  ✅ Easier error handling                                       │
-│  ❌ Orchestrator becomes single point                           │
-└─────────────────────────────────────────────────────────────────┘
+│                    ┌─────────────────┐                           │
+│                    │  Saga           │                           │
+│                    │  Orchestrator   │                           │
+│                    └────────┬────────┘                           │
+│              ┌──────────────┼──────────────┐                     │
+│              ▼              ▼              ▼                     │
+│         Order           Payment       Inventory                  │
+│         Service         Service       Service                    │
+│  ✅ Clear flow visibility                                         │
+│  ✅ Easier error handling                                         │
+│  ❌ Orchestrator becomes single point                             │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ### Orchestration-Based Saga Implementation
@@ -396,25 +396,25 @@ public class PaymentService {
 ### Event Types
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                       EVENT TYPES                               │
-├─────────────────────────────────────────────────────────────────┤
-│  DOMAIN EVENTS                                                  │
-│  Something that happened in the business domain                 │
-│  Examples: OrderPlaced, PaymentReceived, UserRegistered         │
+┌──────────────────────────────────────────────────────────────────┐
+│                       EVENT TYPES                                │
+├──────────────────────────────────────────────────────────────────┤
+│  DOMAIN EVENTS                                                   │
+│  Something that happened in the business domain                  │
+│  Examples: OrderPlaced, PaymentReceived, UserRegistered          │
 │                                                                  │
-│  INTEGRATION EVENTS                                             │
-│  Events shared between bounded contexts/services                │
-│  Examples: OrderCreatedIntegrationEvent                         │
+│  INTEGRATION EVENTS                                              │
+│  Events shared between bounded contexts/services                 │
+│  Examples: OrderCreatedIntegrationEvent                          │
 │                                                                  │
-│  EVENT COMMANDS                                                 │
-│  Request for action (imperative)                                │
-│  Examples: ProcessPayment, ShipOrder                            │
+│  EVENT COMMANDS                                                  │
+│  Request for action (imperative)                                 │
+│  Examples: ProcessPayment, ShipOrder                             │
 │                                                                  │
-│  EVENT QUERIES                                                  │
-│  Request for data                                               │
-│  Examples: GetOrderStatus                                       │
-└─────────────────────────────────────────────────────────────────┘
+│  EVENT QUERIES                                                   │
+│  Request for data                                                │
+│  Examples: GetOrderStatus                                        │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ### Spring Cloud Stream with Kafka
@@ -639,29 +639,29 @@ public class OrderAggregate {
 ### CQRS Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                        CQRS PATTERN                             │
-├─────────────────────────────────────────────────────────────────┤
+┌──────────────────────────────────────────────────────────────────┐
+│                        CQRS PATTERN                              │
+├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
-│                    ┌─────────────┐                              │
-│                    │   Client    │                              │
-│                    └──────┬──────┘                              │
+│                    ┌─────────────┐                               │
+│                    │   Client    │                               │
+│                    └──────┬──────┘                               │
 │              Commands     │     Queries                          │
-│           ┌───────────────┴───────────────┐                     │
-│           ▼                               ▼                     │
-│   ┌───────────────┐               ┌───────────────┐             │
-│   │   Command     │               │    Query      │             │
-│   │   Handler     │               │    Handler    │             │
-│   └───────┬───────┘               └───────┬───────┘             │
-│           │                               │                     │
-│           ▼                               ▼                     │
-│   ┌───────────────┐               ┌───────────────┐             │
-│   │   Write DB    │ ──events──▶   │   Read DB     │             │
-│   │  (PostgreSQL) │               │   (MongoDB)   │             │
-│   │  Normalized   │               │   Denormalized│             │
-│   └───────────────┘               └───────────────┘             │
+│           ┌───────────────┴───────────────┐                      │
+│           ▼                               ▼                      │
+│   ┌───────────────┐               ┌───────────────┐              │
+│   │   Command     │               │    Query      │              │
+│   │   Handler     │               │    Handler    │              │
+│   └───────┬───────┘               └───────┬───────┘              │
+│           │                               │                      │
+│           ▼                               ▼                      │
+│   ┌───────────────┐               ┌───────────────┐              │
+│   │   Write DB    │ ──events──▶   │   Read DB     │              │
+│   │  (PostgreSQL) │               │   (MongoDB)   │              │
+│   │  Normalized   │               │   Denormalized│              │
+│   └───────────────┘               └───────────────┘              │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ### CQRS Implementation
@@ -837,34 +837,34 @@ public class OrderReadModelUpdater {
 ### Service Mesh Overview
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                      SERVICE MESH                               │
-├─────────────────────────────────────────────────────────────────┤
+┌──────────────────────────────────────────────────────────────────┐
+│                      SERVICE MESH                                │
+├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
-│  Traditional:  Service A ──────────────▶ Service B              │
+│  Traditional:  Service A ──────────────▶ Service B               │
 │                                                                  │
-│  With Mesh:    ┌─────────┐          ┌─────────┐                 │
-│                │Service A│          │Service B│                 │
-│                └────┬────┘          └────┬────┘                 │
-│                     │                    │                      │
-│                ┌────┴────┐          ┌────┴────┐                 │
-│                │ Sidecar │──────────│ Sidecar │                 │
-│                │ Proxy   │          │ Proxy   │                 │
-│                └─────────┘          └─────────┘                 │
-│                     │                    │                      │
-│                     └────────┬───────────┘                      │
-│                          Control Plane                          │
-│                   (Configuration, Policies)                     │
+│  With Mesh:    ┌─────────┐          ┌─────────┐                  │
+│                │Service A│          │Service B│                  │
+│                └────┬────┘          └────┬────┘                  │
+│                     │                    │                       │
+│                ┌────┴────┐          ┌────┴────┐                  │
+│                │ Sidecar │──────────│ Sidecar │                  │
+│                │ Proxy   │          │ Proxy   │                  │
+│                └─────────┘          └─────────┘                  │
+│                     │                    │                       │
+│                     └────────┬───────────┘                       │
+│                          Control Plane                           │
+│                   (Configuration, Policies)                      │
 │                                                                  │
 │  Benefits:                                                       │
-│  ✅ Traffic management (routing, load balancing)                │
-│  ✅ Security (mTLS, authorization)                              │
-│  ✅ Observability (metrics, tracing, logging)                   │
-│  ✅ Reliability (retries, circuit breakers)                     │
+│  ✅ Traffic management (routing, load balancing)                  │
+│  ✅ Security (mTLS, authorization)                                │
+│  ✅ Observability (metrics, tracing, logging)                     │
+│  ✅ Reliability (retries, circuit breakers)                       │
 │                                                                  │
-│  Popular: Istio, Linkerd, Consul Connect                        │
+│  Popular: Istio, Linkerd, Consul Connect                         │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ### Istio Configuration Example
@@ -933,23 +933,23 @@ spec:
 ### OAuth2 / JWT Authentication
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                   OAUTH2 FLOW WITH GATEWAY                      │
-├─────────────────────────────────────────────────────────────────┤
+┌──────────────────────────────────────────────────────────────────┐
+│                   OAUTH2 FLOW WITH GATEWAY                       │
+├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
-│  1. Client → Auth Server: Login (username/password)             │
-│  2. Auth Server → Client: JWT Token                             │
-│  3. Client → API Gateway: Request + JWT                         │
-│  4. Gateway: Validate JWT, extract claims                       │
-│  5. Gateway → Service: Request + User Context headers           │
-│  6. Service: Process request                                    │
+│  1. Client → Auth Server: Login (username/password)              │
+│  2. Auth Server → Client: JWT Token                              │
+│  3. Client → API Gateway: Request + JWT                          │
+│  4. Gateway: Validate JWT, extract claims                        │
+│  5. Gateway → Service: Request + User Context headers            │
+│  6. Service: Process request                                     │
 │                                                                  │
-│  ┌────────┐    ┌──────────┐    ┌─────────┐    ┌─────────┐      │
-│  │ Client │───▶│  Auth    │───▶│ Gateway │───▶│ Service │      │
-│  │        │◀───│  Server  │◀───│         │◀───│         │      │
-│  └────────┘    └──────────┘    └─────────┘    └─────────┘      │
+│  ┌────────┐    ┌──────────┐    ┌─────────┐    ┌─────────┐        │
+│  │ Client │───▶│  Auth    │───▶│ Gateway │───▶│ Service │        │
+│  │        │◀───│  Server  │◀───│         │◀───│         │        │
+│  └────────┘    └──────────┘    └─────────┘    └─────────┘        │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ### Gateway Security Configuration
@@ -1011,26 +1011,26 @@ public class GatewaySecurityConfig {
 ### The Three Pillars
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│              THREE PILLARS OF OBSERVABILITY                     │
-├─────────────────────────────────────────────────────────────────┤
+┌──────────────────────────────────────────────────────────────────┐
+│              THREE PILLARS OF OBSERVABILITY                      │
+├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
-│  ┌─────────────┐   ┌─────────────┐   ┌─────────────┐           │
-│  │   METRICS   │   │   LOGGING   │   │   TRACING   │           │
-│  │             │   │             │   │             │           │
-│  │ What?       │   │ What?       │   │ What?       │           │
-│  │ Quantitative│   │ Event data  │   │ Request     │           │
-│  │ measurements│   │ & context   │   │ journey     │           │
-│  │             │   │             │   │             │           │
-│  │ Tools:      │   │ Tools:      │   │ Tools:      │           │
-│  │ Prometheus  │   │ ELK Stack   │   │ Jaeger      │           │
-│  │ Grafana     │   │ Loki        │   │ Zipkin      │           │
-│  │ Micrometer  │   │ Fluentd     │   │ Tempo       │           │
-│  └─────────────┘   └─────────────┘   └─────────────┘           │
+│  ┌─────────────┐   ┌─────────────┐   ┌─────────────┐             │
+│  │   METRICS   │   │   LOGGING   │   │   TRACING   │             │
+│  │             │   │             │   │             │             │
+│  │ What?       │   │ What?       │   │ What?       │             │
+│  │ Quantitative│   │ Event data  │   │ Request     │             │
+│  │ measurements│   │ & context   │   │ journey     │             │
+│  │             │   │             │   │             │             │
+│  │ Tools:      │   │ Tools:      │   │ Tools:      │             │
+│  │ Prometheus  │   │ ELK Stack   │   │ Jaeger      │             │
+│  │ Grafana     │   │ Loki        │   │ Zipkin      │             │
+│  │ Micrometer  │   │ Fluentd     │   │ Tempo       │             │
+│  └─────────────┘   └─────────────┘   └─────────────┘             │
 │                                                                  │
-│  Combined: Full visibility into system behavior                 │
+│  Combined: Full visibility into system behavior                  │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ### Metrics with Micrometer
@@ -1087,55 +1087,55 @@ public class OrderService {
 ### Blue-Green Deployment
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                   BLUE-GREEN DEPLOYMENT                         │
-├─────────────────────────────────────────────────────────────────┤
+┌──────────────────────────────────────────────────────────────────┐
+│                   BLUE-GREEN DEPLOYMENT                          │
+├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
 │  Before:                                                         │
-│  Load Balancer ──▶ Blue (v1.0) ✅ Active                        │
-│                    Green (v1.1) 🔳 Staged                        │
+│  Load Balancer ──▶ Blue (v1.0) ✅ Active                          │
+│                    Green (v1.1) 🔳 Staged                         │
 │                                                                  │
 │  After:                                                          │
-│  Load Balancer ──▶ Blue (v1.0) 🔳 Standby                       │
-│                    Green (v1.1) ✅ Active                        │
+│  Load Balancer ──▶ Blue (v1.0) 🔳 Standby                         │
+│                    Green (v1.1) ✅ Active                         │
 │                                                                  │
-│  ✅ Zero downtime                                               │
-│  ✅ Instant rollback                                            │
-│  ❌ Needs 2x infrastructure                                     │
+│  ✅ Zero downtime                                                 │
+│  ✅ Instant rollback                                              │
+│  ❌ Needs 2x infrastructure                                       │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ### Canary Deployment
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                    CANARY DEPLOYMENT                            │
-├─────────────────────────────────────────────────────────────────┤
+┌──────────────────────────────────────────────────────────────────┐
+│                    CANARY DEPLOYMENT                             │
+├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
-│  Phase 1: 5% to new version                                     │
-│  ┌─────────────────────────────────────────────────────┐        │
-│  │  v1.0: ██████████████████████████████████████ 95%  │        │
-│  │  v1.1: ██ 5%                                        │        │
-│  └─────────────────────────────────────────────────────┘        │
+│  Phase 1: 5% to new version                                      │
+│  ┌─────────────────────────────────────────────────────┐         │
+│  │  v1.0: ██████████████████████████████████████ 95%  │          │
+│  │  v1.1: ██ 5%                                        │         │
+│  └─────────────────────────────────────────────────────┘         │
 │                                                                  │
-│  Phase 2: 25% to new version (if metrics good)                  │
-│  ┌─────────────────────────────────────────────────────┐        │
-│  │  v1.0: ████████████████████████████████ 75%        │        │
-│  │  v1.1: ████████ 25%                                 │        │
-│  └─────────────────────────────────────────────────────┘        │
+│  Phase 2: 25% to new version (if metrics good)                   │
+│  ┌─────────────────────────────────────────────────────┐         │
+│  │  v1.0: ████████████████████████████████ 75%        │          │
+│  │  v1.1: ████████ 25%                                 │         │
+│  └─────────────────────────────────────────────────────┘         │
 │                                                                  │
-│  Phase 3: 100% to new version                                   │
-│  ┌─────────────────────────────────────────────────────┐        │
-│  │  v1.0: 0%                                           │        │
-│  │  v1.1: ██████████████████████████████████████ 100% │        │
-│  └─────────────────────────────────────────────────────┘        │
+│  Phase 3: 100% to new version                                    │
+│  ┌─────────────────────────────────────────────────────┐         │
+│  │  v1.0: 0%                                           │         │
+│  │  v1.1: ██████████████████████████████████████ 100% │          │
+│  └─────────────────────────────────────────────────────┘         │
 │                                                                  │
-│  ✅ Gradual rollout                                             │
-│  ✅ Real traffic validation                                     │
-│  ✅ Quick rollback if issues                                    │
+│  ✅ Gradual rollout                                               │
+│  ✅ Real traffic validation                                       │
+│  ✅ Quick rollback if issues                                      │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ---

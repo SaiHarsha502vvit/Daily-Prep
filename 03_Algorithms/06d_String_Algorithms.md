@@ -920,28 +920,28 @@ SLIDING WINDOW:
 └─────────────────────────────────────────┴───────────────┘
 
 DYNAMIC PROGRAMMING:
-┌─────────────────────────────────────────┬───────────────┐
-│ Climbing Stairs                         │ 70            │
-│ House Robber I, II, III                 │ 198, 213, 337 │
-│ Coin Change I, II                       │ 322, 518      │
-│ Longest Increasing Subsequence          │ 300           │
-│ Longest Common Subsequence              │ 1143          │
-│ Edit Distance                           │ 72            │
-│ 0/1 Knapsack (Practice)                 │ -             │
-│ Partition Equal Subset Sum              │ 416           │
-│ Target Sum                              │ 494           │
-│ Palindromic Substrings                  │ 647           │
-│ Longest Palindromic Subsequence         │ 516           │
-│ Word Break I, II                        │ 139, 140      │
-│ Decode Ways                             │ 91            │
-│ Unique Paths I, II                      │ 62, 63        │
-│ Min Path Sum                            │ 64            │
-│ Maximal Square                          │ 221           │
+┌─────────────────────────────────────────┬────────────────┐
+│ Climbing Stairs                         │ 70             │
+│ House Robber I, II, III                 │ 198, 213, 337  │
+│ Coin Change I, II                       │ 322, 518       │
+│ Longest Increasing Subsequence          │ 300            │
+│ Longest Common Subsequence              │ 1143           │
+│ Edit Distance                           │ 72             │
+│ 0/1 Knapsack (Practice)                 │ -              │
+│ Partition Equal Subset Sum              │ 416            │
+│ Target Sum                              │ 494            │
+│ Palindromic Substrings                  │ 647            │
+│ Longest Palindromic Subsequence         │ 516            │
+│ Word Break I, II                        │ 139, 140       │
+│ Decode Ways                             │ 91             │
+│ Unique Paths I, II                      │ 62, 63         │
+│ Min Path Sum                            │ 64             │
+│ Maximal Square                          │ 221            │
 │ Best Time Buy Sell Stock I-IV           │ 121,122,123,188│
-│ Interleaving String                     │ 97            │
-│ Burst Balloons                          │ 312           │
-│ Matrix Chain Multiplication             │ -             │
-└─────────────────────────────────────────┴───────────────┘
+│ Interleaving String                     │ 97             │
+│ Burst Balloons                          │ 312            │
+│ Matrix Chain Multiplication             │ -              │
+└─────────────────────────────────────────┴────────────────┘
 
 GRAPH ALGORITHMS:
 ┌─────────────────────────────────────────┬───────────────┐

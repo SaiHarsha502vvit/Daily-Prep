@@ -16,29 +16,29 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│              COMPLETE PROJECT LIFECYCLE                          │
+│              COMPLETE PROJECT LIFECYCLE                         │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  1. CLIENT DISCOVERY          2. REQUIREMENTS                    │
-│     └── First meeting            └── Feature list                │
-│     └── Understanding need       └── User stories                │
-│     └── Budget/Timeline          └── Acceptance criteria         │
-│                                                                  │
-│  3. DESIGN PHASE              4. ARCHITECTURE                    │
-│     └── UI/UX Design             └── System design               │
-│     └── Wireframes               └── Database schema             │
-│     └── Prototypes               └── API design                  │
-│                                                                  │
-│  5. DEVELOPMENT               6. TESTING                         │
-│     └── Frontend                 └── Unit tests                  │
-│     └── Backend                  └── Integration tests           │
-│     └── Database                 └── User acceptance             │
-│                                                                  │
-│  7. DEPLOYMENT                8. MAINTENANCE                     │
-│     └── CI/CD setup              └── Monitoring                  │
-│     └── Cloud hosting            └── Bug fixes                   │
-│     └── Domain/SSL               └── Feature updates             │
-│                                                                  │
+│                                                                 │
+│  1. CLIENT DISCOVERY          2. REQUIREMENTS                   │
+│     └── First meeting            └── Feature list               │
+│     └── Understanding need       └── User stories               │
+│     └── Budget/Timeline          └── Acceptance criteria        │
+│                                                                 │
+│  3. DESIGN PHASE              4. ARCHITECTURE                   │
+│     └── UI/UX Design             └── System design              │
+│     └── Wireframes               └── Database schema            │
+│     └── Prototypes               └── API design                 │
+│                                                                 │
+│  5. DEVELOPMENT               6. TESTING                        │
+│     └── Frontend                 └── Unit tests                 │
+│     └── Backend                  └── Integration tests          │
+│     └── Database                 └── User acceptance            │
+│                                                                 │
+│  7. DEPLOYMENT                8. MAINTENANCE                    │
+│     └── CI/CD setup              └── Monitoring                 │
+│     └── Cloud hosting            └── Bug fixes                  │
+│     └── Domain/SSL               └── Feature updates            │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -310,24 +310,24 @@ Date: [Date]
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    UX vs UI                                      │
+│                    UX vs UI                                     │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  UX (User Experience)          UI (User Interface)               │
-│  ─────────────────────         ────────────────────              │
-│  How it WORKS                  How it LOOKS                      │
-│  User journey                  Colors, fonts                     │
-│  Information architecture      Buttons, icons                    │
-│  Interaction design            Visual hierarchy                  │
-│  Usability                     Aesthetics                        │
-│                                                                  │
-│  APPLIES TO:                   APPLIES TO:                       │
-│  ✓ Web apps                    ✓ Web apps                        │
-│  ✓ Mobile apps                 ✓ Mobile apps                     │
-│  ✓ CLI tools                   ✗ CLI tools (minimal)             │
-│  ✓ APIs                        ✗ APIs (none)                     │
-│  ✓ Hardware                    ✗ Backend services                │
-│                                                                  │
+│                                                                 │
+│  UX (User Experience)          UI (User Interface)              │
+│  ─────────────────────         ────────────────────             │
+│  How it WORKS                  How it LOOKS                     │
+│  User journey                  Colors, fonts                    │
+│  Information architecture      Buttons, icons                   │
+│  Interaction design            Visual hierarchy                 │
+│  Usability                     Aesthetics                       │
+│                                                                 │
+│  APPLIES TO:                   APPLIES TO:                      │
+│  ✓ Web apps                    ✓ Web apps                       │
+│  ✓ Mobile apps                 ✓ Mobile apps                    │
+│  ✓ CLI tools                   ✗ CLI tools (minimal)            │
+│  ✓ APIs                        ✗ APIs (none)                    │
+│  ✓ Hardware                    ✗ Backend services               │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 
 KEY INSIGHT: Even a command-line tool has UX!
@@ -786,39 +786,39 @@ CREATE TABLE user_preferences (
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    ENTITY RELATIONSHIP DIAGRAM                   │
+│                    ENTITY RELATIONSHIP DIAGRAM                  │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  ┌──────────┐         ┌──────────────┐                          │
 │  │  USERS   │────────<│   ACCOUNTS   │                          │
 │  └────┬─────┘   1:N   └──────┬───────┘                          │
-│       │                      │                                   │
-│       │ 1:N                  │ 1:N                               │
-│       │                      │                                   │
-│       ▼                      ▼                                   │
-│  ┌──────────┐         ┌──────────────┐        ┌──────────┐     │
-│  │ BUDGETS  │         │ TRANSACTIONS │───────>│CATEGORIES│     │
-│  └──────────┘         └──────────────┘  N:1   └──────────┘     │
+│       │                      │                                  │
+│       │ 1:N                  │ 1:N                              │
+│       │                      │                                  │
+│       ▼                      ▼                                  │
+│  ┌──────────┐         ┌──────────────┐        ┌──────────┐      │
+│  │ BUDGETS  │         │ TRANSACTIONS │───────>│CATEGORIES│      │
+│  └──────────┘         └──────────────┘  N:1   └──────────┘      │
 │       │                                              ▲          │
 │       │                                              │          │
 │       └──────────────────────────────────────────────┘          │
-│                           N:1                                    │
-│                                                                  │
+│                           N:1                                   │
+│                                                                 │
 │  ┌──────────┐         ┌──────────────┐                          │
 │  │  GOALS   │◄────────│    USERS     │                          │
 │  └──────────┘   N:1   └──────────────┘                          │
-│                              │                                   │
-│                              │ 1:N                               │
-│                              ▼                                   │
+│                              │                                  │
+│                              │ 1:N                              │
+│                              ▼                                  │
 │                       ┌──────────────┐                          │
 │                       │NOTIFICATIONS │                          │
 │                       └──────────────┘                          │
-│                                                                  │
-│  CARDINALITY:                                                    │
+│                                                                 │
+│  CARDINALITY:                                                   │
 │  ────────── 1:1 (One to One)                                    │
 │  ─────────< 1:N (One to Many)                                   │
 │  >────────< N:N (Many to Many)                                  │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -898,81 +898,81 @@ SQL QUERY EXECUTION - COMPLETE INTERNAL FLOW:
 Query: SELECT * FROM users WHERE email = 'john@example.com'
 
 ┌─────────────────────────────────────────────────────────────────┐
-│                    QUERY EXECUTION STAGES                        │
+│                    QUERY EXECUTION STAGES                       │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  1. PARSER                                                       │
-│  ──────────                                                      │
+│                                                                 │
+│  1. PARSER                                                      │
+│  ──────────                                                     │
 │  Input: "SELECT * FROM users WHERE email = 'john@example.com'"  │
-│                                                                  │
-│  Steps:                                                          │
+│                                                                 │
+│  Steps:                                                         │
 │  • Lexical analysis (tokenize)                                  │
 │    ["SELECT", "*", "FROM", "users", "WHERE", "email", "=", ...] │
 │  • Syntax analysis (parse tree)                                 │
 │  • Semantic analysis (validate table/column names exist)        │
-│                                                                  │
+│                                                                 │
 │  Output: Abstract Syntax Tree (AST)                             │
-│                                                                  │
+│                                                                 │
 │         ┌──────────────┐                                        │
 │         │   SELECT     │                                        │
 │         └──────┬───────┘                                        │
-│                │                                                 │
+│                │                                                │
 │      ┌─────────┼─────────┐                                      │
 │      │         │         │                                      │
 │      ▼         ▼         ▼                                      │
-│  ┌───────┐ ┌──────┐ ┌────────┐                                 │
-│  │   *   │ │users │ │ WHERE  │                                 │
-│  └───────┘ └──────┘ └────┬───┘                                 │
+│  ┌───────┐ ┌──────┐ ┌────────┐                                  │
+│  │   *   │ │users │ │ WHERE  │                                  │
+│  └───────┘ └──────┘ └────┬───┘                                  │
 │                          │                                      │
 │                          ▼                                      │
 │                    ┌──────────┐                                 │
 │                    │ email =  │                                 │
 │                    │ 'john@.' │                                 │
 │                    └──────────┘                                 │
-│                                                                  │
-│                                                                  │
-│  2. QUERY OPTIMIZER                                              │
-│  ─────────────────                                               │
+│                                                                 │
+│                                                                 │
+│  2. QUERY OPTIMIZER                                             │
+│  ─────────────────                                              │
 │  "What's the fastest way to get this data?"                     │
-│                                                                  │
-│  Considers:                                                      │
+│                                                                 │
+│  Considers:                                                     │
 │  • Available indexes                                            │
 │  • Table statistics (row count, data distribution)              │
-│  • Join order (for multi-table queries)                        │
+│  • Join order (for multi-table queries)                         │
 │  • Cost estimation for each approach                            │
-│                                                                  │
-│  Options evaluated:                                              │
-│  ┌────────────────────────────────────────────────────────┐    │
+│                                                                 │
+│  Options evaluated:                                             │
+│  ┌────────────────────────────────────────────────────────┐     │
 │  │ Option A: Full Table Scan                               │    │
-│  │   Cost: 1000 (read all 10000 rows)                     │    │
-│  ├────────────────────────────────────────────────────────┤    │
-│  │ Option B: Use Index on email                           │    │
-│  │   Cost: 3 (index lookup + 1 row fetch)                 │    │
-│  └────────────────────────────────────────────────────────┘    │
-│                                                                  │
+│  │   Cost: 1000 (read all 10000 rows)                     │     │
+│  ├────────────────────────────────────────────────────────┤     │
+│  │ Option B: Use Index on email                           │     │
+│  │   Cost: 3 (index lookup + 1 row fetch)                 │     │
+│  └────────────────────────────────────────────────────────┘     │
+│                                                                 │
 │  Winner: Option B (Index Scan)                                  │
-│                                                                  │
+│                                                                 │
 │  Output: Execution Plan                                         │
-│                                                                  │
-│                                                                  │
-│  3. EXECUTOR                                                     │
+│                                                                 │
+│                                                                 │
+│  3. EXECUTOR                                                    │
 │  ───────────                                                    │
 │  Runs the plan step by step:                                    │
-│                                                                  │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │ Index Scan using idx_users_email on users               │   │
-│  │   Index Cond: (email = 'john@example.com')              │   │
-│  │   Rows: 1                                               │   │
-│  │   Actual Time: 0.015ms                                  │   │
-│  └─────────────────────────────────────────────────────────┘   │
-│                                                                  │
-│                                                                  │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │ Index Scan using idx_users_email on users               │    │
+│  │   Index Cond: (email = 'john@example.com')              │    │
+│  │   Rows: 1                                               │    │
+│  │   Actual Time: 0.015ms                                  │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│                                                                 │
+│                                                                 │
 │  4. STORAGE ENGINE (How data is actually read)                  │
 │  ─────────────────────────────────────────────                  │
-│                                                                  │
+│                                                                 │
 │  Request: "Give me the row where email = 'john@example.com'"    │
-│                                                                  │
-│  ┌─────────────────────────────────────────────────────────┐   │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐    │
 │  │                      B+ TREE INDEX                       │   │
 │  │                                                          │   │
 │  │                     ┌─────────┐                          │   │
@@ -980,53 +980,53 @@ Query: SELECT * FROM users WHERE email = 'john@example.com'
 │  │                     └────┬────┘                          │   │
 │  │              ┌───────────┴───────────┐                   │   │
 │  │              │                       │                   │   │
-│  │         ┌────▼────┐            ┌────▼────┐              │   │
-│  │         │ D, G    │            │ P, T    │              │   │
-│  │         └────┬────┘            └─────────┘              │   │
-│  │    ┌─────────┼─────────┐                                │   │
-│  │    │         │         │                                │   │
-│  │ ┌──▼──┐  ┌───▼──┐  ┌──▼──┐                             │   │
-│  │ │A,B,C│  │D,E,F │  │G,H,J│  (Leaf nodes)               │   │
-│  │ └─────┘  └──────┘  └─────┘                              │   │
+│  │         ┌────▼────┐            ┌────▼────┐              │    │
+│  │         │ D, G    │            │ P, T    │              │    │
+│  │         └────┬────┘            └─────────┘              │    │
+│  │    ┌─────────┼─────────┐                                │    │
+│  │    │         │         │                                │    │
+│  │ ┌──▼──┐  ┌───▼──┐  ┌──▼──┐                             │     │
+│  │ │A,B,C│  │D,E,F │  │G,H,J│  (Leaf nodes)               │     │
+│  │ └─────┘  └──────┘  └─────┘                              │    │
 │  │                                                          │   │
-│  │ Search for "john@example.com":                          │   │
-│  │ 1. Root: "j" < "M", go left                            │   │
-│  │ 2. Internal: "j" > "G", go right                       │   │
-│  │ 3. Leaf: Found! Points to data page 42, slot 7         │   │
+│  │ Search for "john@example.com":                          │    │
+│  │ 1. Root: "j" < "M", go left                            │     │
+│  │ 2. Internal: "j" > "G", go right                       │     │
+│  │ 3. Leaf: Found! Points to data page 42, slot 7         │     │
 │  │                                                          │   │
-│  │ Complexity: O(log n) - Only 3 comparisons for          │   │
-│  │            millions of rows!                            │   │
-│  └─────────────────────────────────────────────────────────┘   │
-│                                                                  │
-│                                                                  │
+│  │ Complexity: O(log n) - Only 3 comparisons for          │     │
+│  │            millions of rows!                            │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│                                                                 │
+│                                                                 │
 │  5. BUFFER POOL (Memory Cache)                                  │
 │  ─────────────────────────────                                  │
-│                                                                  │
-│  ┌─────────────────────────────────────────────────────────┐   │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐    │
 │  │                     BUFFER POOL                          │   │
 │  │                    (RAM Cache)                           │   │
 │  │                                                          │   │
-│  │  Is page 42 in cache?                                   │   │
-│  │  ┌────────────────────────────────────────────────┐    │   │
-│  │  │ YES → Read from RAM (nanoseconds)              │    │   │
-│  │  ├────────────────────────────────────────────────┤    │   │
-│  │  │ NO  → Read from Disk (milliseconds)            │    │   │
-│  │  │       Then cache it for next time              │    │   │
-│  │  └────────────────────────────────────────────────┘    │   │
+│  │  Is page 42 in cache?                                   │    │
+│  │  ┌────────────────────────────────────────────────┐    │     │
+│  │  │ YES → Read from RAM (nanoseconds)              │    │     │
+│  │  ├────────────────────────────────────────────────┤    │     │
+│  │  │ NO  → Read from Disk (milliseconds)            │    │     │
+│  │  │       Then cache it for next time              │    │     │
+│  │  └────────────────────────────────────────────────┘    │     │
 │  │                                                          │   │
-│  │  Page 42:                                               │   │
-│  │  ┌─────────────────────────────────────────────────┐   │   │
-│  │  │ Slot 1: {id: 1, email: 'alice@...', ...}       │   │   │
-│  │  │ Slot 2: {id: 2, email: 'bob@...', ...}         │   │   │
-│  │  │ ...                                             │   │   │
-│  │  │ Slot 7: {id: 7, email: 'john@example.com',...} │◄──┘   │
-│  │  └─────────────────────────────────────────────────┘       │
-│  └─────────────────────────────────────────────────────────┘   │
-│                                                                  │
+│  │  Page 42:                                               │    │
+│  │  ┌─────────────────────────────────────────────────┐   │     │
+│  │  │ Slot 1: {id: 1, email: 'alice@...', ...}       │   │      │
+│  │  │ Slot 2: {id: 2, email: 'bob@...', ...}         │   │      │
+│  │  │ ...                                             │   │     │
+│  │  │ Slot 7: {id: 7, email: 'john@example.com',...} │◄──┘      │
+│  │  └─────────────────────────────────────────────────┘         │
+│  └─────────────────────────────────────────────────────────┘    │
+│                                                                 │
 │  6. RETURN RESULT                                               │
 │  ────────────────                                               │
-│  Row data sent back through network to application             │
-│                                                                  │
+│  Row data sent back through network to application              │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1041,37 +1041,37 @@ INDEX TYPES - DEEP DIVE:
 
 Structure:
 ┌─────────────────────────────────────────────────────────────────┐
-│                          B+ TREE                                 │
-│                                                                  │
-│  Properties:                                                     │
+│                          B+ TREE                                │
+│                                                                 │
+│  Properties:                                                    │
 │  • Balanced (all leaves at same depth)                          │
-│  • Sorted                                                        │
+│  • Sorted                                                       │
 │  • Leaves are linked (range scans easy)                         │
-│                                                                  │
+│                                                                 │
 │                       ┌───────────────┐                         │
 │                       │   50 │ 100    │  (Root)                 │
 │                       └───┬─────┬─────┘                         │
-│                           │     │                                │
+│                           │     │                               │
 │            ┌──────────────┘     └──────────────┐                │
-│            │                                    │                │
+│            │                                    │               │
 │       ┌────▼────┐                        ┌─────▼────┐           │
 │       │ 20 │ 35 │                        │ 70 │ 85  │           │
 │       └─┬────┬──┘                        └──┬────┬──┘           │
 │         │    │                              │    │              │
-│    ┌────▼──┐ └──┐                    ┌─────▼┐   └──┐           │
-│    │       │    │                    │      │      │           │
-│ ┌──▼──┐ ┌──▼──┐ ┌──▼──┐       ┌──▼──┐ ┌──▼──┐ ┌──▼──┐        │
-│ │5,10,│ │20,25│ │35,40│  ...  │50,60│ │70,75│ │85,90│        │
-│ │15   │ │30   │ │45   │       │65   │ │80   │ │95   │        │
-│ └──┬──┘ └──┬──┘ └──┬──┘       └──┬──┘ └──┬──┘ └──┬──┘        │
-│    │  ────►│  ────►│  ────►      │  ────►│  ────►│           │
-│    │       │       │             │       │       │           │
-│   (Leaf nodes linked for range scans)                        │
-│                                                                  │
+│    ┌────▼──┐ └──┐                    ┌─────▼┐   └──┐            │
+│    │       │    │                    │      │      │            │
+│ ┌──▼──┐ ┌──▼──┐ ┌──▼──┐       ┌──▼──┐ ┌──▼──┐ ┌──▼──┐           │
+│ │5,10,│ │20,25│ │35,40│  ...  │50,60│ │70,75│ │85,90│           │
+│ │15   │ │30   │ │45   │       │65   │ │80   │ │95   │           │
+│ └──┬──┘ └──┬──┘ └──┬──┘       └──┬──┘ └──┬──┘ └──┬──┘           │
+│    │  ────►│  ────►│  ────►      │  ────►│  ────►│              │
+│    │       │       │             │       │       │              │
+│   (Leaf nodes linked for range scans)                           │
+│                                                                 │
 │  Insert/Delete: O(log n)                                        │
 │  Search: O(log n)                                               │
-│  Range scan: O(log n + k) where k = number of matches          │
-│                                                                  │
+│  Range scan: O(log n + k) where k = number of matches           │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 
 
@@ -1079,26 +1079,26 @@ Structure:
 ─────────────
 
 ┌─────────────────────────────────────────────────────────────────┐
-│                       HASH INDEX                                 │
-│                                                                  │
+│                       HASH INDEX                                │
+│                                                                 │
 │  hash('john@example.com') = 42                                  │
-│                                                                  │
+│                                                                 │
 │  ┌───────────────┐                                              │
-│  │  Bucket 0     │ → [row1] → [row5]                           │
+│  │  Bucket 0     │ → [row1] → [row5]                            │
 │  ├───────────────┤                                              │
-│  │  Bucket 1     │ → [row3]                                    │
+│  │  Bucket 1     │ → [row3]                                     │
 │  ├───────────────┤                                              │
 │  │  ...          │                                              │
 │  ├───────────────┤                                              │
-│  │  Bucket 42    │ → [row7 (john@example.com)]  ← DIRECT HIT   │
+│  │  Bucket 42    │ → [row7 (john@example.com)]  ← DIRECT HIT    │
 │  ├───────────────┤                                              │
 │  │  ...          │                                              │
 │  └───────────────┘                                              │
-│                                                                  │
+│                                                                 │
 │  Good for: Exact match (=)                                      │
-│  Bad for: Range queries (<, >, BETWEEN)                        │
+│  Bad for: Range queries (<, >, BETWEEN)                         │
 │  Search: O(1) average                                           │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 
 
@@ -1106,25 +1106,25 @@ Structure:
 ───────────────────────────────────────────
 
 ┌─────────────────────────────────────────────────────────────────┐
-│                    INVERTED INDEX                                │
-│                                                                  │
-│  Documents:                                                      │
+│                    INVERTED INDEX                               │
+│                                                                 │
+│  Documents:                                                     │
 │  Doc1: "Hello world"                                            │
 │  Doc2: "Hello there"                                            │
 │  Doc3: "World peace"                                            │
-│                                                                  │
+│                                                                 │
 │  Inverted Index:                                                │
-│  ┌─────────────┬────────────────┐                              │
-│  │    Word     │   Documents    │                              │
-│  ├─────────────┼────────────────┤                              │
-│  │   hello     │   [1, 2]       │                              │
-│  │   world     │   [1, 3]       │                              │
-│  │   there     │   [2]          │                              │
-│  │   peace     │   [3]          │                              │
-│  └─────────────┴────────────────┘                              │
-│                                                                  │
-│  Search "world" → Instantly find docs [1, 3]                   │
-│                                                                  │
+│  ┌─────────────┬────────────────┐                               │
+│  │    Word     │   Documents    │                               │
+│  ├─────────────┼────────────────┤                               │
+│  │   hello     │   [1, 2]       │                               │
+│  │   world     │   [1, 3]       │                               │
+│  │   there     │   [2]          │                               │
+│  │   peace     │   [3]          │                               │
+│  └─────────────┴────────────────┘                               │
+│                                                                 │
+│  Search "world" → Instantly find docs [1, 3]                    │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1137,44 +1137,44 @@ UNDERSTANDING EXPLAIN ANALYZE:
 Run: EXPLAIN ANALYZE SELECT * FROM users WHERE email = 'john@example.com';
 
 ┌──────────────────────────────────────────────────────────────────────────┐
-│                           EXPLAIN OUTPUT                                  │
+│                           EXPLAIN OUTPUT                                 │
 ├──────────────────────────────────────────────────────────────────────────┤
-│                                                                           │
+│                                                                          │
 │ Index Scan using idx_users_email on users                                │
-│   (cost=0.42..8.44 rows=1 width=256)                                    │
+│   (cost=0.42..8.44 rows=1 width=256)                                     │
 │   (actual time=0.015..0.016 rows=1 loops=1)                              │
 │   Index Cond: (email = 'john@example.com'::character varying)            │
-│   Buffers: shared hit=3                                                   │
-│ Planning Time: 0.087 ms                                                   │
-│ Execution Time: 0.035 ms                                                  │
-│                                                                           │
+│   Buffers: shared hit=3                                                  │
+│ Planning Time: 0.087 ms                                                  │
+│ Execution Time: 0.035 ms                                                 │
+│                                                                          │
 ├──────────────────────────────────────────────────────────────────────────┤
-│                                                                           │
-│ BREAKDOWN:                                                                │
-│                                                                           │
+│                                                                          │
+│ BREAKDOWN:                                                               │
+│                                                                          │
 │ "Index Scan using idx_users_email"                                       │
 │   → Using an index (good!)                                               │
-│                                                                           │
+│                                                                          │
 │ "cost=0.42..8.44"                                                        │
 │   → 0.42 = startup cost (time to return first row)                       │
 │   → 8.44 = total cost (arbitrary units)                                  │
-│                                                                           │
-│ "rows=1"                                                                  │
+│                                                                          │
+│ "rows=1"                                                                 │
 │   → Optimizer estimated 1 row (accurate!)                                │
-│                                                                           │
+│                                                                          │
 │ "actual time=0.015..0.016"                                               │
 │   → Real time in milliseconds                                            │
-│                                                                           │
-│ "Buffers: shared hit=3"                                                   │
+│                                                                          │
+│ "Buffers: shared hit=3"                                                  │
 │   → Read 3 pages from memory (cache hit!)                                │
-│   → If it said "shared read=3" → disk read (slow)                       │
-│                                                                           │
+│   → If it said "shared read=3" → disk read (slow)                        │
+│                                                                          │
 │ "Planning Time: 0.087 ms"                                                │
 │   → Time spent figuring out the plan                                     │
-│                                                                           │
+│                                                                          │
 │ "Execution Time: 0.035 ms"                                               │
 │   → Actual query run time                                                │
-│                                                                           │
+│                                                                          │
 └──────────────────────────────────────────────────────────────────────────┘
 
 
@@ -1184,30 +1184,30 @@ BAD QUERY EXAMPLE:
 EXPLAIN ANALYZE SELECT * FROM users WHERE LOWER(email) = 'john@example.com';
 
 ┌──────────────────────────────────────────────────────────────────────────┐
-│                                                                           │
+│                                                                          │
 │ Seq Scan on users                                                        │
-│   (cost=0.00..1850.00 rows=500 width=256)                               │
+│   (cost=0.00..1850.00 rows=500 width=256)                                │
 │   (actual time=0.020..45.123 rows=1 loops=1)                             │
 │   Filter: (lower(email) = 'john@example.com'::text)                      │
 │   Rows Removed by Filter: 99999                                          │
 │   Buffers: shared read=850                                               │
-│                                                                           │
+│                                                                          │
 ├──────────────────────────────────────────────────────────────────────────┤
-│                                                                           │
+│                                                                          │
 │ PROBLEMS:                                                                │
-│                                                                           │
-│ "Seq Scan" = Full table scan (BAD!)                                     │
-│   → Index on email can't be used with LOWER()                           │
-│                                                                           │
+│                                                                          │
+│ "Seq Scan" = Full table scan (BAD!)                                      │
+│   → Index on email can't be used with LOWER()                            │
+│                                                                          │
 │ "Rows Removed by Filter: 99999"                                          │
-│   → Scanned 100000 rows, kept only 1 (wasteful!)                        │
-│                                                                           │
-│ "shared read=850"                                                         │
+│   → Scanned 100000 rows, kept only 1 (wasteful!)                         │
+│                                                                          │
+│ "shared read=850"                                                        │
 │   → Read 850 pages from disk                                             │
-│                                                                           │
-│ FIX: CREATE INDEX idx_users_email_lower ON users(LOWER(email));         │
-│      (Expression index)                                                   │
-│                                                                           │
+│                                                                          │
+│ FIX: CREATE INDEX idx_users_email_lower ON users(LOWER(email));          │
+│      (Expression index)                                                  │
+│                                                                          │
 └──────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1220,14 +1220,14 @@ HOW TRANSACTIONS WORK INTERNALLY:
 Transaction: BEGIN; UPDATE accounts SET balance = balance - 100 WHERE id = 1; COMMIT;
 
 ┌─────────────────────────────────────────────────────────────────┐
-│                    TRANSACTION LIFECYCLE                         │
+│                    TRANSACTION LIFECYCLE                        │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  1. BEGIN TRANSACTION                                           │
 │  ────────────────────                                           │
-│  • Transaction ID assigned (e.g., txid = 42)                   │
+│  • Transaction ID assigned (e.g., txid = 42)                    │
 │  • Added to active transaction list                             │
-│                                                                  │
-│                                                                  │
+│                                                                 │
+│                                                                 │
 │  2. WRITE-AHEAD LOG (WAL)                                       │
 │  ────────────────────────                                       │

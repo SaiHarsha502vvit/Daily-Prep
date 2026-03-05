@@ -6,22 +6,22 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: The DOM (Document Object Model) is the browser's in-memory ║
-║        representation of your HTML. Browser APIs are the tools    ║
-║        the browser gives JS to interact with the page and more.   ║
-║                                                                    ║
-║  WHY:  React abstracts the DOM — but you MUST understand what's   ║
-║        underneath. Debugging, performance, third-party libraries,  ║
-║        vanilla JS projects, and interview questions require it.    ║
-║                                                                    ║
-║  WHO:  Every frontend developer. Even React devs need DOM         ║
-║        knowledge for refs, portals, and performance tuning.       ║
-║                                                                    ║
-║  WHEN: After understanding JS fundamentals + async.               ║
-║                                                                    ║
-║  WHERE: Only in browsers (not Node.js). Node has no DOM.          ║
-║                                                                    ║
-║  HOW:  HTML → Parser → DOM Tree. JS accesses via `document` API. ║
+║  WHAT: The DOM (Document Object Model) is the browser's in-memory    ║
+║        representation of your HTML. Browser APIs are the tools       ║
+║        the browser gives JS to interact with the page and more.      ║
+║                                                                      ║
+║  WHY:  React abstracts the DOM — but you MUST understand what's      ║
+║        underneath. Debugging, performance, third-party libraries,    ║
+║        vanilla JS projects, and interview questions require it.      ║
+║                                                                      ║
+║  WHO:  Every frontend developer. Even React devs need DOM            ║
+║        knowledge for refs, portals, and performance tuning.          ║
+║                                                                      ║
+║  WHEN: After understanding JS fundamentals + async.                  ║
+║                                                                      ║
+║  WHERE: Only in browsers (not Node.js). Node has no DOM.             ║
+║                                                                      ║
+║  HOW:  HTML → Parser → DOM Tree. JS accesses via `document` API.     ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -31,26 +31,26 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  HTML FILE:                      DOM TREE (in memory):            ║
-║                                                                    ║
-║  <html>                          document                          ║
-║    <head>                            │                             ║
-║      <title>Page</title>         ┌───┴───┐                        ║
-║    </head>                      html     (doctype)                ║
-║    <body>                       ┌┴┐                               ║
-║      <h1>Hello</h1>           head body                          ║
-║      <p>World</p>              │  ┌─┴─┐                          ║
-║    </body>                   title h1  p                          ║
-║  </html>                      │    │    │                          ║
-║                              "Page" "Hello" "World"               ║
-║                              (text) (text)  (text)                ║
-║                                                                    ║
-║  REASONING: The browser reads HTML text → builds a TREE of NODE  ║
-║  objects. Each HTML tag becomes an Element node. Text becomes a   ║
-║  Text node. This tree IS the DOM. JS can read and modify it.     ║
-║                                                                    ║
-║  KEY INSIGHT: The DOM is NOT your HTML file. It's a LIVE object   ║
-║  tree in memory. When JS modifies it, the page updates visually. ║
+║  HTML FILE:                      DOM TREE (in memory):               ║
+║                                                                      ║
+║  <html>                          document                            ║
+║    <head>                            │                               ║
+║      <title>Page</title>         ┌───┴───┐                           ║
+║    </head>                      html     (doctype)                   ║
+║    <body>                       ┌┴┐                                  ║
+║      <h1>Hello</h1>           head body                              ║
+║      <p>World</p>              │  ┌─┴─┐                              ║
+║    </body>                   title h1  p                             ║
+║  </html>                      │    │    │                            ║
+║                              "Page" "Hello" "World"                  ║
+║                              (text) (text)  (text)                   ║
+║                                                                      ║
+║  REASONING: The browser reads HTML text → builds a TREE of NODE      ║
+║  objects. Each HTML tag becomes an Element node. Text becomes a      ║
+║  Text node. This tree IS the DOM. JS can read and modify it.         ║
+║                                                                      ║
+║  KEY INSIGHT: The DOM is NOT your HTML file. It's a LIVE object      ║
+║  tree in memory. When JS modifies it, the page updates visually.     ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -109,23 +109,23 @@ cardsArray.filter(card => card.classList.contains("active"));
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  GIVEN THIS DOM:                                                   ║
-║                                                                    ║
-║  <ul id="list">                   ul#list                         ║
-║    <li>First</li>                ┌──┼──┐                          ║
-║    <li>Second</li>              li  li  li                        ║
-║    <li>Third</li>                                                  ║
-║  </ul>                                                             ║
-║                                                                    ║
-║  PARENT:     li.parentElement       → ul                          ║
-║  CHILDREN:   ul.children            → [li, li, li] (elements)    ║
-║  FIRST:      ul.firstElementChild   → li (First)                 ║
-║  LAST:       ul.lastElementChild    → li (Third)                 ║
-║  NEXT:       li.nextElementSibling  → li (Second)                ║
-║  PREV:       li.previousElementSibling → li (First)              ║
-║                                                                    ║
-║  ⚠ Use *Element* versions (not childNodes/firstChild) to skip   ║
-║  text nodes (whitespace between tags counts as text nodes!)       ║
+║  GIVEN THIS DOM:                                                     ║
+║                                                                      ║
+║  <ul id="list">                   ul#list                            ║
+║    <li>First</li>                ┌──┼──┐                             ║
+║    <li>Second</li>              li  li  li                           ║
+║    <li>Third</li>                                                    ║
+║  </ul>                                                               ║
+║                                                                      ║
+║  PARENT:     li.parentElement       → ul                             ║
+║  CHILDREN:   ul.children            → [li, li, li] (elements)        ║
+║  FIRST:      ul.firstElementChild   → li (First)                     ║
+║  LAST:       ul.lastElementChild    → li (Third)                     ║
+║  NEXT:       li.nextElementSibling  → li (Second)                    ║
+║  PREV:       li.previousElementSibling → li (First)                  ║
+║                                                                      ║
+║  ⚠ Use *Element* versions (not childNodes/firstChild) to skip        ║
+║  text nodes (whitespace between tags counts as text nodes!)          ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -233,46 +233,46 @@ list.appendChild(fragment); // ONE DOM update!
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: Events are signals that something happened — click, type,  ║
-║        scroll, load, resize, etc. Event listeners react to them.  ║
-║                                                                    ║
-║  WHY:  This is the bridge between user actions and your code.     ║
-║        Every interactive web page uses events.                     ║
-║                                                                    ║
-║  HOW:  Events PROPAGATE through the DOM in 3 phases:             ║
-║                                                                    ║
-║  Phase 1: CAPTURING (top → target)                                ║
-║           document → html → body → div → button                  ║
-║                                                                    ║
-║  Phase 2: TARGET (the element that was clicked)                   ║
-║           button ← event fires here                               ║
-║                                                                    ║
-║  Phase 3: BUBBLING (target → top) ← DEFAULT!                     ║
-║           button → div → body → html → document                  ║
-║                                                                    ║
-║  ANALOGY: Drop a stone in a pond.                                 ║
-║  Capturing = stone going down. Bubbling = ripples coming up.     ║
+║  WHAT: Events are signals that something happened — click, type,     ║
+║        scroll, load, resize, etc. Event listeners react to them.     ║
+║                                                                      ║
+║  WHY:  This is the bridge between user actions and your code.        ║
+║        Every interactive web page uses events.                       ║
+║                                                                      ║
+║  HOW:  Events PROPAGATE through the DOM in 3 phases:                 ║
+║                                                                      ║
+║  Phase 1: CAPTURING (top → target)                                   ║
+║           document → html → body → div → button                      ║
+║                                                                      ║
+║  Phase 2: TARGET (the element that was clicked)                      ║
+║           button ← event fires here                                  ║
+║                                                                      ║
+║  Phase 3: BUBBLING (target → top) ← DEFAULT!                         ║
+║           button → div → body → html → document                      ║
+║                                                                      ║
+║  ANALOGY: Drop a stone in a pond.                                    ║
+║  Capturing = stone going down. Bubbling = ripples coming up.         ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  EVENT PROPAGATION VISUAL:                                         ║
-║                                                                    ║
-║  ┌─── document ──────────────────────────────────────────┐         ║
-║  │  ① Capture ↓                          ③ Bubble ↑     │         ║
-║  │  ┌─── body ──────────────────────────────────────┐    │         ║
-║  │  │  ① ↓                                  ③ ↑    │    │         ║
-║  │  │  ┌─── div.container ──────────────────────┐   │    │         ║
-║  │  │  │  ① ↓                          ③ ↑     │   │    │         ║
-║  │  │  │  ┌─── button ─────────────────────┐    │   │    │         ║
-║  │  │  │  │                                │    │   │    │         ║
-║  │  │  │  │  ② TARGET — event fires here  │    │   │    │         ║
-║  │  │  │  │                                │    │   │    │         ║
-║  │  │  │  └────────────────────────────────┘    │   │    │         ║
-║  │  │  └────────────────────────────────────────┘   │    │         ║
-║  │  └───────────────────────────────────────────────┘    │         ║
-║  └───────────────────────────────────────────────────────┘         ║
+║  EVENT PROPAGATION VISUAL:                                           ║
+║                                                                      ║
+║  ┌─── document ──────────────────────────────────────────┐           ║
+║  │  ① Capture ↓                          ③ Bubble ↑     │            ║
+║  │  ┌─── body ──────────────────────────────────────┐    │           ║
+║  │  │  ① ↓                                  ③ ↑    │    │            ║
+║  │  │  ┌─── div.container ──────────────────────┐   │    │           ║
+║  │  │  │  ① ↓                          ③ ↑     │   │    │            ║
+║  │  │  │  ┌─── button ─────────────────────┐    │   │    │           ║
+║  │  │  │  │                                │    │   │    │           ║
+║  │  │  │  │  ② TARGET — event fires here  │    │   │    │            ║
+║  │  │  │  │                                │    │   │    │           ║
+║  │  │  │  └────────────────────────────────┘    │   │    │           ║
+║  │  │  └────────────────────────────────────────┘   │    │           ║
+║  │  └───────────────────────────────────────────────┘    │           ║
+║  └───────────────────────────────────────────────────────┘           ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -335,23 +335,23 @@ document.querySelector("#todo-list").addEventListener("click", (e) => {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  MOUSE:     click, dblclick, mouseenter, mouseleave, mousemove    ║
-║  KEYBOARD:  keydown, keyup, keypress (deprecated)                 ║
-║  FORM:      submit, change, input, focus, blur, reset             ║
-║  WINDOW:    load, DOMContentLoaded, resize, scroll, beforeunload  ║
-║  TOUCH:     touchstart, touchmove, touchend                       ║
-║  DRAG:      dragstart, drag, dragover, drop, dragend              ║
-║  CLIPBOARD: copy, cut, paste                                      ║
-║                                                                    ║
-║  input vs change:                                                  ║
-║  • input: fires on EVERY keystroke/change (real-time)             ║
-║  • change: fires when element LOSES FOCUS (on blur)               ║
-║  For real-time search: use "input". For form fields: "change".    ║
-║                                                                    ║
-║  DOMContentLoaded vs load:                                        ║
-║  • DOMContentLoaded: DOM is ready (HTML parsed). Scripts can run. ║
-║  • load: EVERYTHING loaded (images, CSS, iframes).               ║
-║  RULE: Use DOMContentLoaded for JS initialization.                ║
+║  MOUSE:     click, dblclick, mouseenter, mouseleave, mousemove       ║
+║  KEYBOARD:  keydown, keyup, keypress (deprecated)                    ║
+║  FORM:      submit, change, input, focus, blur, reset                ║
+║  WINDOW:    load, DOMContentLoaded, resize, scroll, beforeunload     ║
+║  TOUCH:     touchstart, touchmove, touchend                          ║
+║  DRAG:      dragstart, drag, dragover, drop, dragend                 ║
+║  CLIPBOARD: copy, cut, paste                                         ║
+║                                                                      ║
+║  input vs change:                                                    ║
+║  • input: fires on EVERY keystroke/change (real-time)                ║
+║  • change: fires when element LOSES FOCUS (on blur)                  ║
+║  For real-time search: use "input". For form fields: "change".       ║
+║                                                                      ║
+║  DOMContentLoaded vs load:                                           ║
+║  • DOMContentLoaded: DOM is ready (HTML parsed). Scripts can run.    ║
+║  • load: EVERYTHING loaded (images, CSS, iframes).                   ║
+║  RULE: Use DOMContentLoaded for JS initialization.                   ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -406,23 +406,23 @@ email.setCustomValidity("Custom error");   // Custom validation message
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  ┌───────────────┬────────────┬──────────┬──────────┬───────────┐  ║
-║  │ Feature       │ localStorage│ session  │ Cookies  │ IndexedDB │  ║
-║  ├───────────────┼────────────┼──────────┼──────────┼───────────┤  ║
-║  │ Capacity      │ ~5-10 MB   │ ~5 MB    │ ~4 KB    │ Large     │  ║
-║  │ Persistence   │ Forever    │ Tab close│ Expires  │ Forever   │  ║
-║  │ Sent to server│ No         │ No       │ Yes (!)  │ No        │  ║
-║  │ Scope         │ Origin     │ Tab+origin│ Domain  │ Origin    │  ║
-║  │ API           │ Simple     │ Simple   │ Complex  │ Complex   │  ║
-║  │ Data type     │ String only│ String   │ String   │ Any       │  ║
-║  │ Sync/Async    │ Sync       │ Sync     │ Sync     │ Async     │  ║
-║  └───────────────┴────────────┴──────────┴──────────┴───────────┘  ║
-║                                                                    ║
-║  USE CASES:                                                        ║
-║  • localStorage: dark mode pref, cart items, form drafts          ║
-║  • sessionStorage: one-time banners, wizard progress              ║
-║  • Cookies: authentication (httpOnly cookies), tracking            ║
-║  • IndexedDB: offline apps, large data, file caching              ║
+║  ┌───────────────┬────────────┬──────────┬──────────┬───────────┐    ║
+║  │ Feature       │ localStorage│ session  │ Cookies  │ IndexedDB │   ║
+║  ├───────────────┼────────────┼──────────┼──────────┼───────────┤    ║
+║  │ Capacity      │ ~5-10 MB   │ ~5 MB    │ ~4 KB    │ Large     │    ║
+║  │ Persistence   │ Forever    │ Tab close│ Expires  │ Forever   │    ║
+║  │ Sent to server│ No         │ No       │ Yes (!)  │ No        │    ║
+║  │ Scope         │ Origin     │ Tab+origin│ Domain  │ Origin    │    ║
+║  │ API           │ Simple     │ Simple   │ Complex  │ Complex   │    ║
+║  │ Data type     │ String only│ String   │ String   │ Any       │    ║
+║  │ Sync/Async    │ Sync       │ Sync     │ Sync     │ Async     │    ║
+║  └───────────────┴────────────┴──────────┴──────────┴───────────┘    ║
+║                                                                      ║
+║  USE CASES:                                                          ║
+║  • localStorage: dark mode pref, cart items, form drafts             ║
+║  • sessionStorage: one-time banners, wizard progress                 ║
+║  • Cookies: authentication (httpOnly cookies), tracking              ║
+║  • IndexedDB: offline apps, large data, file caching                 ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -553,31 +553,31 @@ navigator.geolocation.getCurrentPosition(
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  THE PROBLEM WITH MANUAL DOM MANIPULATION:                         ║
-║                                                                    ║
-║  1. Imperative: You tell the DOM WHAT to do, step by step.       ║
-║     "Find this element, change its text, add this class..."       ║
-║     → Complex apps become spaghetti code.                         ║
-║                                                                    ║
-║  2. State Sync: Your data (state) and the DOM can get out of     ║
-║     sync. Update one, forget the other → bugs.                    ║
-║                                                                    ║
-║  3. Performance: Each DOM change = reflow + repaint.              ║
-║     100 small changes = 100 reflows (expensive!).                 ║
-║                                                                    ║
-║  REACT'S SOLUTION:                                                 ║
-║                                                                    ║
-║  1. Declarative: Describe WHAT the UI should look like.          ║
-║     React figures out HOW to update the DOM.                      ║
-║                                                                    ║
-║  2. Virtual DOM: React diffs a virtual tree, then applies        ║
-║     MINIMAL real DOM changes (batched for performance).           ║
-║                                                                    ║
-║  3. One-way data flow: State → UI. Change state, UI updates     ║
-║     automatically. No manual sync.                                ║
-║                                                                    ║
-║  BUT: Understanding the real DOM helps you debug React, use refs, ║
-║  optimize performance, and write vanilla JS when needed.          ║
+║  THE PROBLEM WITH MANUAL DOM MANIPULATION:                           ║
+║                                                                      ║
+║  1. Imperative: You tell the DOM WHAT to do, step by step.           ║
+║     "Find this element, change its text, add this class..."          ║
+║     → Complex apps become spaghetti code.                            ║
+║                                                                      ║
+║  2. State Sync: Your data (state) and the DOM can get out of         ║
+║     sync. Update one, forget the other → bugs.                       ║
+║                                                                      ║
+║  3. Performance: Each DOM change = reflow + repaint.                 ║
+║     100 small changes = 100 reflows (expensive!).                    ║
+║                                                                      ║
+║  REACT'S SOLUTION:                                                   ║
+║                                                                      ║
+║  1. Declarative: Describe WHAT the UI should look like.              ║
+║     React figures out HOW to update the DOM.                         ║
+║                                                                      ║
+║  2. Virtual DOM: React diffs a virtual tree, then applies            ║
+║     MINIMAL real DOM changes (batched for performance).              ║
+║                                                                      ║
+║  3. One-way data flow: State → UI. Change state, UI updates          ║
+║     automatically. No manual sync.                                   ║
+║                                                                      ║
+║  BUT: Understanding the real DOM helps you debug React, use refs,    ║
+║  optimize performance, and write vanilla JS when needed.             ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 

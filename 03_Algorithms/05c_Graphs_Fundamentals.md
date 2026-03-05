@@ -9,7 +9,7 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                    GRAPHS - COMPLETE UNDERSTANDING                            ║
+║                    GRAPHS - COMPLETE UNDERSTANDING                           ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -24,8 +24,8 @@
 │ • Multiple paths between any two nodes                                       │
 │ • Disconnected components                                                    │
 │                                                                              │
-│ HISTORY: Graph theory started with Euler's "Seven Bridges of Königsberg"    │
-│ problem in 1736 - can you cross all bridges exactly once?                   │
+│ HISTORY: Graph theory started with Euler's "Seven Bridges of Königsberg"     │
+│ problem in 1736 - can you cross all bridges exactly once?                    │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -56,18 +56,18 @@
 │ WHY GRAPHS INSTEAD OF OTHER DATA STRUCTURES?                                 │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ ┌────────────────────────┬───────────────────────────────────────────────┐  │
-│ │ Structure              │ Relationship Type                             │  │
-│ ├────────────────────────┼───────────────────────────────────────────────┤  │
-│ │ Array                  │ Sequential, by position                       │  │
-│ │ Tree                   │ Hierarchical, parent-child                    │  │
-│ │ Graph                  │ ANY relationship! ⭐ Most flexible           │  │
-│ └────────────────────────┴───────────────────────────────────────────────┘  │
+│ ┌────────────────────────┬───────────────────────────────────────────────┐   │
+│ │ Structure              │ Relationship Type                             │   │
+│ ├────────────────────────┼───────────────────────────────────────────────┤   │
+│ │ Array                  │ Sequential, by position                       │   │
+│ │ Tree                   │ Hierarchical, parent-child                    │   │
+│ │ Graph                  │ ANY relationship! ⭐ Most flexible           │     │
+│ └────────────────────────┴───────────────────────────────────────────────┘   │
 │                                                                              │
-│ Trees are actually SPECIAL CASES of graphs (connected, acyclic)!            │
+│ Trees are actually SPECIAL CASES of graphs (connected, acyclic)!             │
 │                                                                              │
 │ USE GRAPH WHEN:                                                              │
-│ • Relationships aren't hierarchical (peer-to-peer, many-to-many)            │
+│ • Relationships aren't hierarchical (peer-to-peer, many-to-many)             │
 │ • Cycles are possible (road networks, social connections)                    │
 │ • Need to model complex dependencies                                         │
 │ • Multiple paths between entities exist                                      │
@@ -78,24 +78,24 @@
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │ ADJACENCY LIST:                                                              │
-│ ┌───────────────────────────────────────────────────────────────┐           │
-│ │ USE WHEN: Sparse graph (E << V²)                              │           │
-│ │ Space: O(V + E)                                               │           │
-│ │ Check edge exists: O(degree)                                  │           │
-│ │ Iterate neighbors: O(degree) ✅ FAST                          │           │
-│ │ BEST FOR: Most real-world graphs (social networks, roads)     │           │
-│ └───────────────────────────────────────────────────────────────┘           │
+│ ┌───────────────────────────────────────────────────────────────┐            │
+│ │ USE WHEN: Sparse graph (E << V²)                              │            │
+│ │ Space: O(V + E)                                               │            │
+│ │ Check edge exists: O(degree)                                  │            │
+│ │ Iterate neighbors: O(degree) ✅ FAST                          │             │
+│ │ BEST FOR: Most real-world graphs (social networks, roads)     │            │
+│ └───────────────────────────────────────────────────────────────┘            │
 │                                                                              │
 │ ADJACENCY MATRIX:                                                            │
-│ ┌───────────────────────────────────────────────────────────────┐           │
-│ │ USE WHEN: Dense graph (E ≈ V²) or need O(1) edge lookup       │           │
-│ │ Space: O(V²)                                                  │           │
-│ │ Check edge exists: O(1) ✅ FAST                               │           │
-│ │ Iterate neighbors: O(V)                                       │           │
-│ │ BEST FOR: Small dense graphs, weighted graphs, Floyd-Warshall │           │
-│ └───────────────────────────────────────────────────────────────┘           │
+│ ┌───────────────────────────────────────────────────────────────┐            │
+│ │ USE WHEN: Dense graph (E ≈ V²) or need O(1) edge lookup       │            │
+│ │ Space: O(V²)                                                  │            │
+│ │ Check edge exists: O(1) ✅ FAST                               │             │
+│ │ Iterate neighbors: O(V)                                       │            │
+│ │ BEST FOR: Small dense graphs, weighted graphs, Floyd-Warshall │            │
+│ └───────────────────────────────────────────────────────────────┘            │
 │                                                                              │
-│ RULE OF THUMB: Use adjacency LIST unless you have specific reason not to!   │
+│ RULE OF THUMB: Use adjacency LIST unless you have specific reason not to!    │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -106,7 +106,7 @@
 │    Solution: boolean[] visited or Set<Integer> visited                       │
 │                                                                              │
 │ 2. DIRECTED VS UNDIRECTED CONFUSION:                                         │
-│    Undirected: Add edge both ways (A→B AND B→A)                             │
+│    Undirected: Add edge both ways (A→B AND B→A)                              │
 │    Directed: Add edge one way only                                           │
 │                                                                              │
 │ 3. 0-INDEXED VS 1-INDEXED:                                                   │
@@ -114,7 +114,7 @@
 │    Solution: Either use size N+1 or subtract 1 from all indices              │
 │                                                                              │
 │ 4. DISCONNECTED COMPONENTS:                                                  │
-│    Single DFS/BFS won't visit all nodes if graph disconnected!              │
+│    Single DFS/BFS won't visit all nodes if graph disconnected!               │
 │    Solution: Loop through all nodes, start new traversal if unvisited        │
 │                                                                              │
 │ 5. NOT HANDLING WEIGHTS:                                                     │
@@ -131,25 +131,25 @@
 │ • BFS: O(V + E) time, O(V) space (visited + queue)                           │
 │                                                                              │
 │ COMMON ALGORITHM COMPLEXITIES:                                               │
-│ ┌────────────────────────────┬──────────────────────┬────────────────────┐  │
-│ │ Algorithm                  │ Time                 │ Space              │  │
-│ ├────────────────────────────┼──────────────────────┼────────────────────┤  │
-│ │ DFS/BFS                    │ O(V + E)             │ O(V)               │  │
-│ │ Dijkstra (binary heap)     │ O((V+E) log V)       │ O(V)               │  │
-│ │ Bellman-Ford               │ O(V × E)             │ O(V)               │  │
-│ │ Floyd-Warshall             │ O(V³)                │ O(V²)              │  │
-│ │ Topological Sort           │ O(V + E)             │ O(V)               │  │
-│ │ Kruskal's MST              │ O(E log E)           │ O(V)               │  │
-│ │ Prim's MST                 │ O((V+E) log V)       │ O(V)               │  │
-│ │ Cycle Detection            │ O(V + E)             │ O(V)               │  │
-│ └────────────────────────────┴──────────────────────┴────────────────────┘  │
+│ ┌────────────────────────────┬──────────────────────┬────────────────────┐   │
+│ │ Algorithm                  │ Time                 │ Space              │   │
+│ ├────────────────────────────┼──────────────────────┼────────────────────┤   │
+│ │ DFS/BFS                    │ O(V + E)             │ O(V)               │   │
+│ │ Dijkstra (binary heap)     │ O((V+E) log V)       │ O(V)               │   │
+│ │ Bellman-Ford               │ O(V × E)             │ O(V)               │   │
+│ │ Floyd-Warshall             │ O(V³)                │ O(V²)              │   │
+│ │ Topological Sort           │ O(V + E)             │ O(V)               │   │
+│ │ Kruskal's MST              │ O(E log E)           │ O(V)               │   │
+│ │ Prim's MST                 │ O((V+E) log V)       │ O(V)               │   │
+│ │ Cycle Detection            │ O(V + E)             │ O(V)               │   │
+│ └────────────────────────────┴──────────────────────┴────────────────────┘   │
 │                                                                              │
 │ TYPICAL OUTPUTS:                                                             │
 │ • Path finding: List of nodes from source to destination                     │
 │ • Shortest path: Distance value or path + distance                           │
-│ • Cycle detection: Boolean (exists?) or List (the cycle)                    │
+│ • Cycle detection: Boolean (exists?) or List (the cycle)                     │
 │ • Topological sort: Ordered list of all vertices                             │
-│ • Connected components: Number of components or list of component nodes     │
+│ • Connected components: Number of components or list of component nodes      │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -207,7 +207,7 @@ CONNECTED: All nodes reachable from any node
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                    DFS vs BFS - COMPLETE COMPARISON                           ║
+║                    DFS vs BFS - COMPLETE COMPARISON                          ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -230,10 +230,10 @@ CONNECTED: All nodes reachable from any node
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ BFS (Breadth-First Search)                                                   │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ STRATEGY: Visit all neighbors at current level before going deeper          │
+│ STRATEGY: Visit all neighbors at current level before going deeper           │
 │                                                                              │
 │ USE BFS WHEN:                                                                │
-│ • Finding SHORTEST path in unweighted graph ⭐                              │
+│ • Finding SHORTEST path in unweighted graph ⭐                                │
 │ • Level-order traversal needed                                               │
 │ • Finding nodes at distance k                                                │
 │ • "Minimum steps/moves" problems                                             │
@@ -246,20 +246,20 @@ CONNECTED: All nodes reachable from any node
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ QUICK DECISION TABLE                                                         │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ ┌─────────────────────────────────────┬───────────────────────────────────┐ │
-│ │ Problem Type                        │ Use                               │ │
-│ ├─────────────────────────────────────┼───────────────────────────────────┤ │
-│ │ Shortest path (unweighted)          │ BFS                               │ │
-│ │ Shortest path (weighted)            │ Dijkstra/Bellman-Ford             │ │
-│ │ Any path exists?                    │ DFS (simpler) or BFS              │ │
-│ │ All paths                           │ DFS with backtracking             │ │
-│ │ Cycle detection                     │ DFS                               │ │
-│ │ Topological sort                    │ DFS (or Kahn's BFS)               │ │
-│ │ Connected components                │ DFS or BFS                        │ │
-│ │ Level/distance from source          │ BFS                               │ │
-│ │ Island counting                     │ DFS or BFS                        │ │
-│ │ Word ladder (transformation)        │ BFS                               │ │
-│ └─────────────────────────────────────┴───────────────────────────────────┘ │
+│ ┌─────────────────────────────────────┬───────────────────────────────────┐  │
+│ │ Problem Type                        │ Use                               │  │
+│ ├─────────────────────────────────────┼───────────────────────────────────┤  │
+│ │ Shortest path (unweighted)          │ BFS                               │  │
+│ │ Shortest path (weighted)            │ Dijkstra/Bellman-Ford             │  │
+│ │ Any path exists?                    │ DFS (simpler) or BFS              │  │
+│ │ All paths                           │ DFS with backtracking             │  │
+│ │ Cycle detection                     │ DFS                               │  │
+│ │ Topological sort                    │ DFS (or Kahn's BFS)               │  │
+│ │ Connected components                │ DFS or BFS                        │  │
+│ │ Level/distance from source          │ BFS                               │  │
+│ │ Island counting                     │ DFS or BFS                        │  │
+│ │ Word ladder (transformation)        │ BFS                               │  │
+│ └─────────────────────────────────────┴───────────────────────────────────┘  │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 

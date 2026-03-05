@@ -6,26 +6,26 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: TypeScript is JavaScript + STATIC TYPE CHECKING.           ║
-║        It compiles to plain JS. Every valid JS is valid TS.       ║
-║                                                                    ║
-║  WHY:  JS bugs often come from type mismatches:                   ║
-║        • Passing string where number expected                     ║
-║        • Accessing property on undefined object                   ║
-║        • Calling function with wrong arguments                     ║
-║        TS catches these at COMPILE TIME — before users see them.  ║
-║                                                                    ║
-║  WHO:  Every professional JS developer. React, Angular, Vue,     ║
-║        Node — all major ecosystems have TS support. Most job      ║
-║        listings now require TypeScript.                            ║
-║                                                                    ║
-║  WHEN: Immediately after learning JS fundamentals.                ║
-║                                                                    ║
-║  WHERE: Everywhere JS runs. TS compiles away — the browser/Node  ║
-║         never sees TypeScript, only the resulting JavaScript.      ║
-║                                                                    ║
-║  HOW:  Install → write .ts files → compiler (tsc) or bundler     ║
-║        (Vite) transpiles to .js → runs as usual.                  ║
+║  WHAT: TypeScript is JavaScript + STATIC TYPE CHECKING.              ║
+║        It compiles to plain JS. Every valid JS is valid TS.          ║
+║                                                                      ║
+║  WHY:  JS bugs often come from type mismatches:                      ║
+║        • Passing string where number expected                        ║
+║        • Accessing property on undefined object                      ║
+║        • Calling function with wrong arguments                       ║
+║        TS catches these at COMPILE TIME — before users see them.     ║
+║                                                                      ║
+║  WHO:  Every professional JS developer. React, Angular, Vue,         ║
+║        Node — all major ecosystems have TS support. Most job         ║
+║        listings now require TypeScript.                              ║
+║                                                                      ║
+║  WHEN: Immediately after learning JS fundamentals.                   ║
+║                                                                      ║
+║  WHERE: Everywhere JS runs. TS compiles away — the browser/Node      ║
+║         never sees TypeScript, only the resulting JavaScript.        ║
+║                                                                      ║
+║  HOW:  Install → write .ts files → compiler (tsc) or bundler         ║
+║        (Vite) transpiles to .js → runs as usual.                     ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -76,19 +76,19 @@ npx tsc --watch              # Watch mode (auto-recompile)
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  WHY strict: true IS NON-NEGOTIABLE:                              ║
-║                                                                    ║
-║  strict: true enables 7 flags at once:                            ║
-║  • noImplicitAny — no guessing types                              ║
-║  • strictNullChecks — null is NOT assignable to string            ║
-║  • strictFunctionTypes — function parameter variance checks       ║
-║  • strictBindCallApply — type-safe bind/call/apply               ║
-║  • strictPropertyInitialization — class fields must be init'd    ║
-║  • noImplicitThis — error if `this` type is unknown              ║
-║  • alwaysStrict — emit "use strict" in every file                ║
-║                                                                    ║
-║  REASONING: Without strict, TS gives a FALSE sense of safety.    ║
-║  You think you have type protection but you don't. Start strict. ║
+║  WHY strict: true IS NON-NEGOTIABLE:                                 ║
+║                                                                      ║
+║  strict: true enables 7 flags at once:                               ║
+║  • noImplicitAny — no guessing types                                 ║
+║  • strictNullChecks — null is NOT assignable to string               ║
+║  • strictFunctionTypes — function parameter variance checks          ║
+║  • strictBindCallApply — type-safe bind/call/apply                   ║
+║  • strictPropertyInitialization — class fields must be init'd        ║
+║  • noImplicitThis — error if `this` type is unknown                  ║
+║  • alwaysStrict — emit "use strict" in every file                    ║
+║                                                                      ║
+║  REASONING: Without strict, TS gives a FALSE sense of safety.        ║
+║  You think you have type protection but you don't. Start strict.     ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -162,27 +162,27 @@ function infiniteLoop(): never {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  TYPE HIERARCHY:                                                   ║
-║                                                                    ║
-║  unknown  ← TOP type (anything assignable TO it)                  ║
-║    │                                                               ║
-║    ├── string                                                      ║
-║    ├── number                                                      ║
-║    ├── boolean                                                     ║
-║    ├── object                                                      ║
-║    │     ├── Array                                                 ║
-║    │     ├── Function                                              ║
-║    │     └── {...}                                                 ║
-║    ├── null                                                        ║
-║    ├── undefined                                                   ║
-║    ├── void                                                        ║
-║    └── any ← SPECIAL (opts out of type checking entirely)         ║
-║                                                                    ║
-║  never  ← BOTTOM type (nothing assignable TO it)                  ║
-║                                                                    ║
-║  REASONING: unknown = "I don't know yet, so check before using"   ║
-║  any = "I don't care, let me do whatever" (dangerous)             ║
-║  never = "This can never happen" (exhaustive checks)              ║
+║  TYPE HIERARCHY:                                                     ║
+║                                                                      ║
+║  unknown  ← TOP type (anything assignable TO it)                     ║
+║    │                                                                 ║
+║    ├── string                                                        ║
+║    ├── number                                                        ║
+║    ├── boolean                                                       ║
+║    ├── object                                                        ║
+║    │     ├── Array                                                   ║
+║    │     ├── Function                                                ║
+║    │     └── {...}                                                   ║
+║    ├── null                                                          ║
+║    ├── undefined                                                     ║
+║    ├── void                                                          ║
+║    └── any ← SPECIAL (opts out of type checking entirely)            ║
+║                                                                      ║
+║  never  ← BOTTOM type (nothing assignable TO it)                     ║
+║                                                                      ║
+║  REASONING: unknown = "I don't know yet, so check before using"      ║
+║  any = "I don't care, let me do whatever" (dangerous)                ║
+║  never = "This can never happen" (exhaustive checks)                 ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -510,23 +510,23 @@ const palette = {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  USE TYPESCRIPT WHEN:                       USE JS WHEN:          ║
-║  ┌──────────────────────────────┐  ┌───────────────────────────┐  ║
-║  │ Team project (2+ devs)      │  │ Quick prototype / script  │  ║
-║  │ Large codebase (>1000 LOC)  │  │ Simple automation tasks   │  ║
-║  │ API contracts matter        │  │ Learning JS fundamentals  │  ║
-║  │ Refactoring is frequent     │  │ Config files (vite, etc.) │  ║
-║  │ Code is long-lived          │  │ Tiny utility scripts      │  ║
-║  │ Complex state management    │  │ Browser console debugging │  ║
-║  │ Library/package authoring   │  │                           │  ║
-║  └──────────────────────────────┘  └───────────────────────────┘  ║
-║                                                                    ║
-║  FACT: TypeScript has ZERO runtime cost. It compiles completely   ║
-║  away. The only cost is compilation time (usually <1s with Vite). ║
-║                                                                    ║
-║  ANALOGY: TS is like spellcheck in a Word document.              ║
-║  It doesn't change what you write — it helps you write correctly. ║
-║  The final document (JS) is the same, but with fewer mistakes.   ║
+║  USE TYPESCRIPT WHEN:                       USE JS WHEN:             ║
+║  ┌──────────────────────────────┐  ┌───────────────────────────┐     ║
+║  │ Team project (2+ devs)      │  │ Quick prototype / script  │      ║
+║  │ Large codebase (>1000 LOC)  │  │ Simple automation tasks   │      ║
+║  │ API contracts matter        │  │ Learning JS fundamentals  │      ║
+║  │ Refactoring is frequent     │  │ Config files (vite, etc.) │      ║
+║  │ Code is long-lived          │  │ Tiny utility scripts      │      ║
+║  │ Complex state management    │  │ Browser console debugging │      ║
+║  │ Library/package authoring   │  │                           │      ║
+║  └──────────────────────────────┘  └───────────────────────────┘     ║
+║                                                                      ║
+║  FACT: TypeScript has ZERO runtime cost. It compiles completely      ║
+║  away. The only cost is compilation time (usually <1s with Vite).    ║
+║                                                                      ║
+║  ANALOGY: TS is like spellcheck in a Word document.                  ║
+║  It doesn't change what you write — it helps you write correctly.    ║
+║  The final document (JS) is the same, but with fewer mistakes.       ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 

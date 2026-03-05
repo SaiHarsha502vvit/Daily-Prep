@@ -6,21 +6,21 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                  CYCLIC SORT PATTERN                             │
+│                  CYCLIC SORT PATTERN                            │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │  WHEN YOU SEE: "Find the missing/duplicate number in range      │
-│  [1..n] using O(1) extra space"  →  CYCLIC SORT.               │
+│  [1..n] using O(1) extra space"  →  CYCLIC SORT.                │
 │                                                                 │
-│  CORE IDEA: Numbers in range [1..n] or [0..n] should each      │
+│  CORE IDEA: Numbers in range [1..n] or [0..n] should each       │
 │  sit at their "correct" index. Place each number at its home    │
 │  index, then scan for mismatches.                               │
 │                                                                 │
 │  TEMPLATE:                                                      │
-│    1. While nums[i] isn't at correct position → SWAP to home   │
-│    2. Scan array: where nums[i] ≠ expected → that's answer     │
+│    1. While nums[i] isn't at correct position → SWAP to home    │
+│    2. Scan array: where nums[i] ≠ expected → that's answer      │
 │                                                                 │
-│  TIME: O(n)  |  SPACE: O(1)  ← the magic of this pattern       │
+│  TIME: O(n)  |  SPACE: O(1)  ← the magic of this pattern        │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -38,16 +38,16 @@
 │ THE REAL-WORLD ORIGIN                                                        │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ 📖 ROLL CALL: Imagine a teacher with 30 students numbered 1-30.             │
+│ 📖 ROLL CALL: Imagine a teacher with 30 students numbered 1-30.               │
 │    She asks each to stand at their numbered desk. After everyone             │
 │    moves, empty desks = absent students, two at one desk = duplicate.        │
-│    This IS cyclic sort.                                                       │
+│    This IS cyclic sort.                                                      │
 │                                                                              │
-│ 📖 LIBRARY SHELVING: Books numbered 1-1000 need to go to their             │
-│    shelf position. Rather than sort them, place each at its                   │
-│    designated slot. Missing books = gaps. Two copies = duplicates.            │
+│ 📖 LIBRARY SHELVING: Books numbered 1-1000 need to go to their                │
+│    shelf position. Rather than sort them, place each at its                  │
+│    designated slot. Missing books = gaps. Two copies = duplicates.           │
 │                                                                              │
-│ 📖 NETWORK PACKET REASSEMBLY: TCP packets numbered sequentially.            │
+│ 📖 NETWORK PACKET REASSEMBLY: TCP packets numbered sequentially.              │
 │    Place each at its sequence number slot. Missing slots = lost packets.     │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
@@ -56,18 +56,18 @@
 │ WHY CYCLIC SORT INSTEAD OF HASH SET?                                         │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│  HASH SET: O(n) time, O(n) space  ← easy but uses extra memory              │
-│  SORTING:  O(n log n) time, O(1) space  ← doesn't leverage range constraint │
-│  CYCLIC:   O(n) time, O(1) space  ← optimal when numbers ∈ [1..n]          │
+│  HASH SET: O(n) time, O(n) space  ← easy but uses extra memory               │
+│  SORTING:  O(n log n) time, O(1) space  ← doesn't leverage range constraint  │
+│  CYCLIC:   O(n) time, O(1) space  ← optimal when numbers ∈ [1..n]            │
 │                                                                              │
 │  RECOGNIZE IT: Anytime you see:                                              │
-│    • "Given array of n numbers from range [1..n]" (or [0..n])               │
+│    • "Given array of n numbers from range [1..n]" (or [0..n])                │
 │    • "Find missing / duplicate / correction"                                 │
 │    • "O(1) extra space"                                                      │
 │    → Cyclic Sort.                                                            │
 │                                                                              │
 │  WHY O(n)? Each element swaps at most once to its correct position.          │
-│  Even though there's a while loop inside a for loop, total swaps ≤ n.       │
+│  Even though there's a while loop inside a for loop, total swaps ≤ n.        │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 
@@ -75,37 +75,37 @@
 │ THE BASE TEMPLATE                                                            │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│  For numbers in range [1..n], correct index = nums[i] - 1                   │
-│  For numbers in range [0..n], correct index = nums[i]                       │
+│  For numbers in range [1..n], correct index = nums[i] - 1                    │
+│  For numbers in range [0..n], correct index = nums[i]                        │
 │                                                                              │
 │  STEP 1: Place each number at correct index                                  │
-│  ┌─────────────────────────────────────────┐                                │
-│  │ for (int i = 0; i < n; i++) {           │                                │
-│  │     while (nums[i] != nums[correctIdx]) │  ← swap until correct         │
-│  │         swap(nums, i, correctIdx);      │                                │
-│  │ }                                       │                                │
-│  └─────────────────────────────────────────┘                                │
+│  ┌─────────────────────────────────────────┐                                 │
+│  │ for (int i = 0; i < n; i++) {           │                                 │
+│  │     while (nums[i] != nums[correctIdx]) │  ← swap until correct           │
+│  │         swap(nums, i, correctIdx);      │                                 │
+│  │ }                                       │                                 │
+│  └─────────────────────────────────────────┘                                 │
 │                                                                              │
 │  STEP 2: Scan for mismatches                                                 │
-│  ┌─────────────────────────────────────────┐                                │
-│  │ for (int i = 0; i < n; i++) {           │                                │
-│  │     if (nums[i] != i + 1)               │  ← this position is wrong     │
-│  │         // i+1 is missing/duplicate     │                                │
-│  │ }                                       │                                │
-│  └─────────────────────────────────────────┘                                │
+│  ┌─────────────────────────────────────────┐                                 │
+│  │ for (int i = 0; i < n; i++) {           │                                 │
+│  │     if (nums[i] != i + 1)               │  ← this position is wrong       │
+│  │         // i+1 is missing/duplicate     │                                 │
+│  │ }                                       │                                 │
+│  └─────────────────────────────────────────┘                                 │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ COMMON MISTAKES                                                              │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ 1. Off-by-one: [1..n] → index = val-1, but [0..n-1] → index = val          │
-│ 2. Infinite loop: must check nums[i] != nums[correctIdx], NOT nums[i] != i+1│
-│    (if duplicate exists, swapping back and forth forever)                     │
-│ 3. Ignoring out-of-range values: if val < 1 or val > n, SKIP the swap       │
-│ 4. Trying to use this on ranges that aren't [0..n] or [1..n]                │
+│ 1. Off-by-one: [1..n] → index = val-1, but [0..n-1] → index = val            │
+│ 2. Infinite loop: must check nums[i] != nums[correctIdx], NOT nums[i] != i+1 │
+│    (if duplicate exists, swapping back and forth forever)                    │
+│ 3. Ignoring out-of-range values: if val < 1 or val > n, SKIP the swap        │
+│ 4. Trying to use this on ranges that aren't [0..n] or [1..n]                 │
 │ 5. Forgetting step 2: the sort itself doesn't produce the answer, the        │
-│    subsequent scan does                                                       │
+│    subsequent scan does                                                      │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -403,27 +403,27 @@ COMPLEXITY: Time O(n) | Space O(1)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                    CYCLIC SORT CHEATSHEET                                │
+│                    CYCLIC SORT CHEATSHEET                               │
 ├─────────────────────────────────────────────────────────────────────────┤
 │                                                                         │
-│  TRIGGER: "n numbers in range [0..n] or [1..n]" + "O(1) space"         │
+│  TRIGGER: "n numbers in range [0..n] or [1..n]" + "O(1) space"          │
 │                                                                         │
 │  PROBLEM              │ RANGE   │ SCAN FOR           │ LC#              │
 │  ═════════════════════╪═════════╪════════════════════╪═════════════════ │
-│  Missing Number       │ [0..n]  │ nums[i] ≠ i      │ 268              │
-│  All Disappeared      │ [1..n]  │ nums[i] ≠ i+1    │ 448              │
-│  All Duplicates       │ [1..n]  │ nums[i] ≠ i+1    │ 442              │
-│  First Missing +ve    │ [1..n]  │ nums[i] ≠ i+1    │ 41               │
-│  Find Duplicate       │ [1..n]  │ nums[i] ≠ i+1    │ 287              │
-│  Set Mismatch         │ [1..n]  │ nums[i] ≠ i+1    │ 645              │
+│  Missing Number       │ [0..n]  │ nums[i] ≠ i      │ 268                │
+│  All Disappeared      │ [1..n]  │ nums[i] ≠ i+1    │ 448                │
+│  All Duplicates       │ [1..n]  │ nums[i] ≠ i+1    │ 442                │
+│  First Missing +ve    │ [1..n]  │ nums[i] ≠ i+1    │ 41                 │
+│  Find Duplicate       │ [1..n]  │ nums[i] ≠ i+1    │ 287                │
+│  Set Mismatch         │ [1..n]  │ nums[i] ≠ i+1    │ 645                │
 │                                                                         │
 │  TEMPLATE:                                                              │
 │  1. while (nums[i] out of range) skip                                   │
-│  2. while (nums[i] != nums[correctIdx]) swap                           │
-│  3. Scan: where nums[i] ≠ expected → answer                           │
+│  2. while (nums[i] != nums[correctIdx]) swap                            │
+│  3. Scan: where nums[i] ≠ expected → answer                             │
 │                                                                         │
-│  THE SWAP GUARD: Always compare nums[i] with nums[correctIdx]          │
-│  NOT nums[i] with i+1. This prevents infinite loops on duplicates.     │
+│  THE SWAP GUARD: Always compare nums[i] with nums[correctIdx]           │
+│  NOT nums[i] with i+1. This prevents infinite loops on duplicates.      │
 │                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 ```

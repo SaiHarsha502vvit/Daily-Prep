@@ -985,42 +985,42 @@ public class CredentialRotationService {
 # QUICK REFERENCE
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────────────────────┐
 │              DATABASE SECURITY CHECKLIST                                         │
-├─────────────────────────────────────────────────────────────────────────────────┤
+├──────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                  │
-│  AUTHENTICATION & AUTHORIZATION                                                 │
-│  □ Implement RBAC (Role-Based Access Control)                                  │
-│  □ Use fine-grained permissions                                                │
-│  □ Implement method-level security (@PreAuthorize)                            │
-│  □ Apply row-level security where needed                                       │
+│  AUTHENTICATION & AUTHORIZATION                                                  │
+│  □ Implement RBAC (Role-Based Access Control)                                    │
+│  □ Use fine-grained permissions                                                  │
+│  □ Implement method-level security (@PreAuthorize)                               │
+│  □ Apply row-level security where needed                                         │
 │                                                                                  │
-│  PASSWORD SECURITY                                                              │
-│  □ Use BCrypt or Argon2 for hashing                                           │
-│  □ Implement password policy validation                                        │
-│  □ Check against breached password lists                                       │
-│  □ Implement password expiry                                                   │
-│  □ Track failed login attempts                                                 │
+│  PASSWORD SECURITY                                                               │
+│  □ Use BCrypt or Argon2 for hashing                                              │
+│  □ Implement password policy validation                                          │
+│  □ Check against breached password lists                                         │
+│  □ Implement password expiry                                                     │
+│  □ Track failed login attempts                                                   │
 │                                                                                  │
-│  DATA PROTECTION                                                                │
-│  □ Encrypt sensitive data at rest                                              │
-│  □ Use SSL/TLS for database connections                                        │
-│  □ Never expose passwords in logs or responses                                 │
-│  □ Implement audit logging                                                     │
+│  DATA PROTECTION                                                                 │
+│  □ Encrypt sensitive data at rest                                                │
+│  □ Use SSL/TLS for database connections                                          │
+│  □ Never expose passwords in logs or responses                                   │
+│  □ Implement audit logging                                                       │
 │                                                                                  │
-│  SQL INJECTION PREVENTION                                                       │
-│  □ Use parameterized queries                                                   │
-│  □ Never concatenate user input in queries                                     │
-│  □ Validate and sanitize all input                                            │
-│  □ Use ORM properly                                                            │
+│  SQL INJECTION PREVENTION                                                        │
+│  □ Use parameterized queries                                                     │
+│  □ Never concatenate user input in queries                                       │
+│  □ Validate and sanitize all input                                               │
+│  □ Use ORM properly                                                              │
 │                                                                                  │
-│  CONNECTION SECURITY                                                            │
-│  □ Use environment variables for credentials                                   │
-│  □ Enable SSL for database connections                                         │
-│  □ Use secrets manager in production                                           │
-│  □ Implement credential rotation                                               │
+│  CONNECTION SECURITY                                                             │
+│  □ Use environment variables for credentials                                     │
+│  □ Enable SSL for database connections                                           │
+│  □ Use secrets manager in production                                             │
+│  □ Implement credential rotation                                                 │
 │                                                                                  │
-└─────────────────────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---

@@ -13,18 +13,18 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════════╗
-║  React is a LIBRARY for building user interfaces (not a framework!)             ║
+║  React is a LIBRARY for building user interfaces (not a framework!)              ║
 ║                                                                                  ║
 ║  KEY IDEAS:                                                                      ║
-║  1. Component-Based: UI = tree of reusable components                           ║
-║  2. Declarative: Describe WHAT to render, React handles HOW                     ║
-║  3. Virtual DOM: React diffs changes, updates only what changed                 ║
-║  4. One-Way Data Flow: Data flows Parent → Child via props                      ║
+║  1. Component-Based: UI = tree of reusable components                            ║
+║  2. Declarative: Describe WHAT to render, React handles HOW                      ║
+║  3. Virtual DOM: React diffs changes, updates only what changed                  ║
+║  4. One-Way Data Flow: Data flows Parent → Child via props                       ║
 ║                                                                                  ║
 ║  MENTAL MODEL:                                                                   ║
-║  Traditional: Manually update DOM when data changes (imperative)                ║
-║  React: UI = f(state) — UI is a FUNCTION of state (declarative)                ║
-║  When state changes → React re-renders → diffs → updates DOM                   ║
+║  Traditional: Manually update DOM when data changes (imperative)                 ║
+║  React: UI = f(state) — UI is a FUNCTION of state (declarative)                  ║
+║  When state changes → React re-renders → diffs → updates DOM                     ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -271,23 +271,23 @@ function Dashboard({ user, notifications }) {
 ║  FUNCTION COMPONENT LIFECYCLE (via Hooks)                                        ║
 ║                                                                                  ║
 ║  Mount (component appears):                                                      ║
-║    1. Function called → JSX returned → DOM updated                              ║
-║    2. useEffect(() => { ... }, []) runs ONCE after first render                 ║
+║    1. Function called → JSX returned → DOM updated                               ║
+║    2. useEffect(() => { ... }, []) runs ONCE after first render                  ║
 ║                                                                                  ║
 ║  Update (state/props change):                                                    ║
-║    1. Function re-called → new JSX returned → DOM diffed & updated             ║
-║    2. useEffect(() => { ... }, [dep]) runs if dep changed                       ║
+║    1. Function re-called → new JSX returned → DOM diffed & updated               ║
+║    2. useEffect(() => { ... }, [dep]) runs if dep changed                        ║
 ║                                                                                  ║
 ║  Unmount (component removed):                                                    ║
-║    1. Cleanup function from useEffect runs                                      ║
+║    1. Cleanup function from useEffect runs                                       ║
 ║    useEffect(() => {                                                             ║
-║      const timer = setInterval(...);                                            ║
-║      return () => clearInterval(timer);  // ← cleanup                           ║
-║    }, []);                                                                        ║
+║      const timer = setInterval(...);                                             ║
+║      return () => clearInterval(timer);  // ← cleanup                            ║
+║    }, []);                                                                       ║
 ║                                                                                  ║
 ║  RENDER CYCLE:                                                                   ║
-║  Props/State change → React re-renders component → Virtual DOM diff            ║
-║  → Only changed DOM nodes updated (efficient!)                                  ║
+║  Props/State change → React re-renders component → Virtual DOM diff              ║
+║  → Only changed DOM nodes updated (efficient!)                                   ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 

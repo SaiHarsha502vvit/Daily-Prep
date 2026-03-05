@@ -15,39 +15,39 @@
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHY: Why These "Essential Missing" Topics?                                     │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Production requirements: Caching, async, scheduling are expected            │
-│  • API completion: Swagger docs, file uploads are basic features              │
-│  • Monitoring: Actuator = production application visibility                   │
-│  • Performance: Async and caching directly affect response times              │
-│  • Interview gaps: "Have you used @Cacheable? @Async?" - common questions    │
+│  • Production requirements: Caching, async, scheduling are expected             │
+│  • API completion: Swagger docs, file uploads are basic features                │
+│  • Monitoring: Actuator = production application visibility                     │
+│  • Performance: Async and caching directly affect response times                │
+│  • Interview gaps: "Have you used @Cacheable? @Async?" - common questions       │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  HOW: How to Implement Each Feature?                                            │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • @Cacheable: Annotate method, configure cache manager (Redis/Caffeine)       │
-│  • @Async: @EnableAsync + return CompletableFuture                            │
-│  • @Scheduled: @EnableScheduling + cron expressions                           │
-│  • Actuator: Add dependency, configure endpoints in properties                │
-│  • Swagger: springdoc-openapi dependency, annotations optional                │
+│  • @Cacheable: Annotate method, configure cache manager (Redis/Caffeine)        │
+│  • @Async: @EnableAsync + return CompletableFuture                              │
+│  • @Scheduled: @EnableScheduling + cron expressions                             │
+│  • Actuator: Add dependency, configure endpoints in properties                  │
+│  • Swagger: springdoc-openapi dependency, annotations optional                  │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHEN: When to Use Each Feature?                                                │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Caching: Expensive computations, frequently accessed data                   │
-│  • Async: Email sending, file processing, external API calls                  │
-│  • Scheduling: Report generation, cleanup jobs, data sync                     │
-│  • Actuator: Always in production for monitoring/health checks                │
-│  • Swagger: APIs consumed by other teams/clients                              │
+│  • Caching: Expensive computations, frequently accessed data                    │
+│  • Async: Email sending, file processing, external API calls                    │
+│  • Scheduling: Report generation, cleanup jobs, data sync                       │
+│  • Actuator: Always in production for monitoring/health checks                  │
+│  • Swagger: APIs consumed by other teams/clients                                │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHICH: Which Topics to Prioritize?                                             │
 ├─────────────────────────────────────────────────────────────────────────────────┤
 │  ESSENTIAL:     Caching, @Async, Actuator, Swagger/OpenAPI                      │
-│  IMPORTANT:     Scheduling, file upload, email, internationalization           │
-│  ADVANCED:      WebSocket, Server-Sent Events, rate limiting                   │
+│  IMPORTANT:     Scheduling, file upload, email, internationalization            │
+│  ADVANCED:      WebSocket, Server-Sent Events, rate limiting                    │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -57,22 +57,22 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│              WHAT THIS PART COVERS                                               │
+│              WHAT THIS PART COVERS                                              │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  1. Caching (@Cacheable, @CacheEvict, Redis)                                   │
-│  2. Async Processing (@Async, @EnableAsync)                                    │
-│  3. Scheduling (@Scheduled, @EnableScheduling)                                 │
-│  4. Spring Boot Actuator (Health, Metrics, Info)                              │
-│  5. API Documentation (Swagger/OpenAPI)                                        │
-│  6. File Upload/Download (Multipart)                                           │
-│  7. Email Sending (JavaMailSender)                                             │
-│  8. Logging (SLF4J, Logback Configuration)                                     │
-│  9. Database Migrations (Flyway)                                               │
+│                                                                                 │
+│  1. Caching (@Cacheable, @CacheEvict, Redis)                                    │
+│  2. Async Processing (@Async, @EnableAsync)                                     │
+│  3. Scheduling (@Scheduled, @EnableScheduling)                                  │
+│  4. Spring Boot Actuator (Health, Metrics, Info)                                │
+│  5. API Documentation (Swagger/OpenAPI)                                         │
+│  6. File Upload/Download (Multipart)                                            │
+│  7. Email Sending (JavaMailSender)                                              │
+│  8. Logging (SLF4J, Logback Configuration)                                      │
+│  9. Database Migrations (Flyway)                                                │
 │  10. Docker Deployment                                                          │
 │  11. Environment Configuration                                                  │
-│  12. Messaging Basics (Kafka/RabbitMQ)                                         │
-│                                                                                  │
+│  12. Messaging Basics (Kafka/RabbitMQ)                                          │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -86,28 +86,28 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│              WHY CACHING MATTERS                                                 │
+│              WHY CACHING MATTERS                                                │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  WITHOUT CACHING:                                                               │
-│  • Same expensive database query runs 1000x/minute                             │
-│  • External API calls hit rate limits                                          │
-│  • CPU-intensive calculations repeat unnecessarily                             │
-│  • Response time: 500ms                                                        │
-│                                                                                  │
+│  • Same expensive database query runs 1000x/minute                              │
+│  • External API calls hit rate limits                                           │
+│  • CPU-intensive calculations repeat unnecessarily                              │
+│  • Response time: 500ms                                                         │
+│                                                                                 │
 │  WITH CACHING:                                                                  │
-│  • Database query runs once, cached for 5 minutes                              │
-│  • API response cached, within rate limits                                     │
-│  • Calculation done once, result reused                                        │
-│  • Response time: 5ms                                                          │
-│                                                                                  │
+│  • Database query runs once, cached for 5 minutes                               │
+│  • API response cached, within rate limits                                      │
+│  • Calculation done once, result reused                                         │
+│  • Response time: 5ms                                                           │
+│                                                                                 │
 │  CACHE PROVIDERS:                                                               │
-│  • Simple (ConcurrentHashMap) - Built-in, single instance                     │
-│  • Caffeine - High-performance local cache                                     │
-│  • Redis - Distributed cache (multiple instances)                              │
-│  • Ehcache - Feature-rich local cache                                          │
-│  • Hazelcast - Distributed + in-memory grid                                   │
-│                                                                                  │
+│  • Simple (ConcurrentHashMap) - Built-in, single instance                       │
+│  • Caffeine - High-performance local cache                                      │
+│  • Redis - Distributed cache (multiple instances)                               │
+│  • Ehcache - Feature-rich local cache                                           │
+│  • Hazelcast - Distributed + in-memory grid                                     │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -376,24 +376,24 @@ public class RedisCacheConfig {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│              ASYNC PROCESSING FLOW                                               │
+│              ASYNC PROCESSING FLOW                                              │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  SYNCHRONOUS (Default):                                                         │
-│  Request → processA() → processB() → sendEmail() → Response                    │
-│  Total time: 100ms + 50ms + 2000ms = 2150ms                                    │
-│                                                                                  │
+│  Request → processA() → processB() → sendEmail() → Response                     │
+│  Total time: 100ms + 50ms + 2000ms = 2150ms                                     │
+│                                                                                 │
 │  ASYNCHRONOUS (With @Async):                                                    │
-│  Request → processA() → processB() → [sendEmail() in background] → Response   │
-│  Total time: 100ms + 50ms = 150ms (email sends in parallel)                   │
-│                                                                                  │
-│  USE CASES:                                                                      │
+│  Request → processA() → processB() → [sendEmail() in background] → Response     │
+│  Total time: 100ms + 50ms = 150ms (email sends in parallel)                     │
+│                                                                                 │
+│  USE CASES:                                                                     │
 │  • Sending emails/notifications                                                 │
 │  • Generating reports                                                           │
-│  • Calling external APIs that aren't needed for response                       │
+│  • Calling external APIs that aren't needed for response                        │
 │  • Audit logging                                                                │
 │  • Clean-up tasks                                                               │
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -703,35 +703,35 @@ public class ScheduledTasks {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│              CRON EXPRESSION CHEAT SHEET                                         │
+│              CRON EXPRESSION CHEAT SHEET                                        │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  Format: second minute hour day-of-month month day-of-week                      │
-│                                                                                  │
+│                                                                                 │
 │  ┌──────────── second (0-59)                                                    │
 │  │ ┌────────── minute (0-59)                                                    │
 │  │ │ ┌──────── hour (0-23)                                                      │
-│  │ │ │ ┌────── day of month (1-31)                                             │
-│  │ │ │ │ ┌──── month (1-12)                                                    │
-│  │ │ │ │ │ ┌── day of week (0-7, 0 or 7 = Sunday)                             │
+│  │ │ │ ┌────── day of month (1-31)                                              │
+│  │ │ │ │ ┌──── month (1-12)                                                     │
+│  │ │ │ │ │ ┌── day of week (0-7, 0 or 7 = Sunday)                               │
 │  │ │ │ │ │ │                                                                    │
 │  * * * * * *                                                                    │
-│                                                                                  │
-│  SPECIAL CHARACTERS:                                                             │
+│                                                                                 │
+│  SPECIAL CHARACTERS:                                                            │
 │  * = any value                                                                  │
-│  , = list (MON,WED,FRI)                                                        │
-│  - = range (1-5)                                                               │
-│  / = step (*/15 = every 15)                                                    │
-│                                                                                  │
-│  EXAMPLES:                                                                       │
-│  "0 0 * * * *"     = Every hour (top of hour)                                  │
-│  "0 */30 * * * *"  = Every 30 minutes                                          │
-│  "0 0 9-17 * * *"  = Every hour, 9 AM - 5 PM                                  │
-│  "0 0 0 * * *"     = Midnight every day                                        │
-│  "0 0 12 * * MON"  = Noon every Monday                                         │
-│  "0 0 0 1 * *"     = Midnight, first of month                                  │
-│  "0 0 0 L * *"     = Midnight, last day of month                               │
-│                                                                                  │
+│  , = list (MON,WED,FRI)                                                         │
+│  - = range (1-5)                                                                │
+│  / = step (*/15 = every 15)                                                     │
+│                                                                                 │
+│  EXAMPLES:                                                                      │
+│  "0 0 * * * *"     = Every hour (top of hour)                                   │
+│  "0 */30 * * * *"  = Every 30 minutes                                           │
+│  "0 0 9-17 * * *"  = Every hour, 9 AM - 5 PM                                    │
+│  "0 0 0 * * *"     = Midnight every day                                         │
+│  "0 0 12 * * MON"  = Noon every Monday                                          │
+│  "0 0 0 1 * *"     = Midnight, first of month                                   │
+│  "0 0 0 L * *"     = Midnight, last day of month                                │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -745,26 +745,26 @@ public class ScheduledTasks {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│              ACTUATOR - PRODUCTION MONITORING                                    │
+│              ACTUATOR - PRODUCTION MONITORING                                   │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  WHAT ACTUATOR PROVIDES:                                                        │
-│  • /actuator/health - Is app healthy?                                          │
-│  • /actuator/info - App version, git info                                      │
-│  • /actuator/metrics - CPU, memory, requests                                   │
-│  • /actuator/env - Environment properties                                      │
-│  • /actuator/loggers - View/change log levels                                  │
-│  • /actuator/beans - All Spring beans                                          │
-│  • /actuator/mappings - All URL mappings                                       │
-│  • /actuator/threaddump - Thread states                                        │
-│  • /actuator/heapdump - Heap dump (download)                                   │
-│                                                                                  │
-│  USED BY:                                                                        │
+│  • /actuator/health - Is app healthy?                                           │
+│  • /actuator/info - App version, git info                                       │
+│  • /actuator/metrics - CPU, memory, requests                                    │
+│  • /actuator/env - Environment properties                                       │
+│  • /actuator/loggers - View/change log levels                                   │
+│  • /actuator/beans - All Spring beans                                           │
+│  • /actuator/mappings - All URL mappings                                        │
+│  • /actuator/threaddump - Thread states                                         │
+│  • /actuator/heapdump - Heap dump (download)                                    │
+│                                                                                 │
+│  USED BY:                                                                       │
 │  • Kubernetes (health probes)                                                   │
-│  • Prometheus (metrics scraping)                                               │
-│  • Load balancers (health checks)                                              │
+│  • Prometheus (metrics scraping)                                                │
+│  • Load balancers (health checks)                                               │
 │  • DevOps dashboards                                                            │
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 

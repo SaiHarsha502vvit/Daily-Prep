@@ -10,148 +10,148 @@
 ```
 
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║ RECURSION - COMPLETE UNDERSTANDING ║
+║ RECURSION - COMPLETE UNDERSTANDING                                           ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHAT IS RECURSION? │
+│ WHAT IS RECURSION?                                                           │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ Recursion is when a function calls ITSELF to solve smaller versions of │
-│ the SAME problem until reaching a simple case it can solve directly. │
-│ │
-│ FORMAL DEFINITION: A method of solving problems where the solution │
-│ depends on solutions to smaller instances of the same problem. │
-│ │
-│ INVENTOR: The concept comes from mathematical induction (1600s), but │
-│ recursive functions in computing were formalized by Stephen Kleene (1930s) │
-│ and became practical with programming languages like LISP (1958). │
+│ Recursion is when a function calls ITSELF to solve smaller versions of       │
+│ the SAME problem until reaching a simple case it can solve directly.         │
+│                                                                              │
+│ FORMAL DEFINITION: A method of solving problems where the solution           │
+│ depends on solutions to smaller instances of the same problem.               │
+│                                                                              │
+│ INVENTOR: The concept comes from mathematical induction (1600s), but         │
+│ recursive functions in computing were formalized by Stephen Kleene (1930s)   │
+│ and became practical with programming languages like LISP (1958).            │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHAT PROBLEM DOES RECURSION SOLVE? │
+│ WHAT PROBLEM DOES RECURSION SOLVE?                                           │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ CORE PROBLEM: Some problems have SELF-SIMILAR structure - they contain │
-│ smaller versions of themselves inside them! │
-│ │
-│ EXAMPLES: │
-│ • Folders contain subfolders (which contain subfolders...) │
-│ • Tree nodes have children (which have children...) │
-│ • Mathematical sequences: n! = n × (n-1)! │
-│ • Divide and Conquer: sort big array = sort two halves + merge │
-│ │
-│ WITHOUT RECURSION: │
-│ You'd need complex loops with manual stack management - very error-prone! │
-│ │
-│ WITH RECURSION: │
-│ Write code that mirrors the problem's natural structure - elegant & clean! │
+│ CORE PROBLEM: Some problems have SELF-SIMILAR structure - they contain       │
+│ smaller versions of themselves inside them!                                  │
+│                                                                              │
+│ EXAMPLES:                                                                    │
+│ • Folders contain subfolders (which contain subfolders...)                   │
+│ • Tree nodes have children (which have children...)                          │
+│ • Mathematical sequences: n! = n × (n-1)!                                    │
+│ • Divide and Conquer: sort big array = sort two halves + merge               │
+│                                                                              │
+│ WITHOUT RECURSION:                                                           │
+│ You'd need complex loops with manual stack management - very error-prone!    │
+│                                                                              │
+│ WITH RECURSION:                                                              │
+│ Write code that mirrors the problem's natural structure - elegant & clean!   │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHY USE RECURSION OVER ITERATION? │
+│ WHY USE RECURSION OVER ITERATION?                                            │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ │
-│ ┌────────────────────────────┬────────────────────────────────────────────┐ │
-│ │ USE RECURSION WHEN │ USE ITERATION WHEN │ │
-│ ├────────────────────────────┼────────────────────────────────────────────┤ │
-│ │ Problem has tree structure │ Linear/sequential processing │ │
-│ │ Need to backtrack │ Simple counting/accumulation │ │
-│ │ D&C algorithms │ Memory is very limited │ │
-│ │ Generating combinations │ Input size is huge (>10⁵ depth) │ │
-│ │ Tree/Graph traversal │ Performance is critical │ │
-│ │ Nested structures │ Tail recursion not optimized (Java) │ │
-│ └────────────────────────────┴────────────────────────────────────────────┘ │
-│ │
-│ KEY INSIGHT: Every recursion CAN be converted to iteration with explicit │
-│ stack, but recursion is often more readable for tree-like problems. │
+│                                                                              │
+│ ┌────────────────────────────┬────────────────────────────────────────────┐  │
+│ │ USE RECURSION WHEN │ USE ITERATION WHEN │                                  │
+│ ├────────────────────────────┼────────────────────────────────────────────┤  │
+│ │ Problem has tree structure │ Linear/sequential processing │                │
+│ │ Need to backtrack │ Simple counting/accumulation │                         │
+│ │ D&C algorithms │ Memory is very limited │                                  │
+│ │ Generating combinations │ Input size is huge (>10⁵ depth) │                │
+│ │ Tree/Graph traversal │ Performance is critical │                           │
+│ │ Nested structures │ Tail recursion not optimized (Java) │                  │
+│ └────────────────────────────┴────────────────────────────────────────────┘  │
+│                                                                              │
+│ KEY INSIGHT: Every recursion CAN be converted to iteration with explicit     │
+│ stack, but recursion is often more readable for tree-like problems.          │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHEN TO USE RECURSION? (INTERVIEW SIGNALS) │
+│ WHEN TO USE RECURSION? (INTERVIEW SIGNALS)                                   │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ SIGNAL 1: "Find all..." or "Generate all..." │
-│ → Combinations, permutations, subsets = RECURSION with backtracking │
-│ │
-│ SIGNAL 2: Tree or Graph problems │
-│ → Tree traversal, path finding = NATURAL recursion │
-│ │
-│ SIGNAL 3: "Divide into halves" mentioned │
-│ → Binary search, merge sort = D&C recursion │
-│ │
-│ SIGNAL 4: Problem definition references itself │
-│ → Fibonacci, factorial, nested structures │
-│ │
-│ SIGNAL 5: Need to try choices and undo (backtrack) │
-│ → N-Queens, Sudoku, maze solving │
+│ SIGNAL 1: "Find all..." or "Generate all..."                                 │
+│ → Combinations, permutations, subsets = RECURSION with backtracking          │
+│                                                                              │
+│ SIGNAL 2: Tree or Graph problems                                             │
+│ → Tree traversal, path finding = NATURAL recursion                           │
+│                                                                              │
+│ SIGNAL 3: "Divide into halves" mentioned                                     │
+│ → Binary search, merge sort = D&C recursion                                  │
+│                                                                              │
+│ SIGNAL 4: Problem definition references itself                               │
+│ → Fibonacci, factorial, nested structures                                    │
+│                                                                              │
+│ SIGNAL 5: Need to try choices and undo (backtrack)                           │
+│ → N-Queens, Sudoku, maze solving                                             │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ HOW DOES RECURSION WORK BEHIND THE SCENES? │
+│ HOW DOES RECURSION WORK BEHIND THE SCENES?                                   │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ │
-│ CALL STACK MECHANISM: │
-│ When function calls itself, Java creates new "stack frame" with: │
-│ • Local variables (separate copy) │
-│ • Parameters (separate copy) │
-│ • Return address (where to go back) │
-│ │
-│ ┌─────────────────┐ │
-│ │ factorial(1) │ ← TOP (currently executing) │
-│ │ n=1, return→2 │ │
-│ ├─────────────────┤ │
-│ │ factorial(2) │ (waiting for result from above) │
-│ │ n=2, return→5 │ │
-│ ├─────────────────┤ │
-│ │ factorial(3) │ (waiting) │
-│ │ n=3, return→10 │ │
-│ └─────────────────┘ │
-│ │
-│ Each frame WAITS until the frame above returns, then continues. │
+│                                                                              │
+│ CALL STACK MECHANISM:                                                        │
+│ When function calls itself, Java creates new "stack frame" with:             │
+│ • Local variables (separate copy)                                            │
+│ • Parameters (separate copy)                                                 │
+│ • Return address (where to go back)                                          │
+│                                                                              │
+│ ┌─────────────────┐                                                          │
+│ │ factorial(1) │ ← TOP (currently executing)                                 │
+│ │ n=1, return→2 │                                                            │
+│ ├─────────────────┤                                                          │
+│ │ factorial(2) │ (waiting for result from above)                             │
+│ │ n=2, return→5 │                                                            │
+│ ├─────────────────┤                                                          │
+│ │ factorial(3) │ (waiting)                                                   │
+│ │ n=3, return→10 │                                                           │
+│ └─────────────────┘                                                          │
+│                                                                              │
+│ Each frame WAITS until the frame above returns, then continues.              │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ DIFFICULTIES & COMMON PITFALLS │
+│ DIFFICULTIES & COMMON PITFALLS                                               │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ 1. STACK OVERFLOW (Most Common!): │
-│ Cause: No base case OR base case never reached │
-│ Java default stack: ~10,000-20,000 frames (varies by JVM/OS) │
-│ Solution: Always verify base case is reachable! │
-│ │
-│ 2. EXPONENTIAL TIME COMPLEXITY: │
-│ Cause: Overlapping subproblems (like naive Fibonacci) │
-│ Solution: Add memoization or convert to DP │
-│ │
-│ 3. EXTRA SPACE FROM CALL STACK: │
-│ Cause: O(n) stack space even if algorithm seems O(1) │
-│ Solution: Use tail recursion or convert to iteration │
-│ │
-│ 4. DEBUGGING DIFFICULTY: │
-│ Cause: Hard to trace multiple levels │
-│ Solution: Add print statements showing depth and parameters │
-│ │
-│ 5. INFINITE RECURSION (Subtle): │
-│ Example: if (n == 1) return 1; return n \* fact(n); // forgot n-1! │
-│ Solution: Always check that recursive call uses SMALLER input │
+│ 1. STACK OVERFLOW (Most Common!):                                            │
+│ Cause: No base case OR base case never reached                               │
+│ Java default stack: ~10,000-20,000 frames (varies by JVM/OS)                 │
+│ Solution: Always verify base case is reachable!                              │
+│                                                                              │
+│ 2. EXPONENTIAL TIME COMPLEXITY:                                              │
+│ Cause: Overlapping subproblems (like naive Fibonacci)                        │
+│ Solution: Add memoization or convert to DP                                   │
+│                                                                              │
+│ 3. EXTRA SPACE FROM CALL STACK:                                              │
+│ Cause: O(n) stack space even if algorithm seems O(1)                         │
+│ Solution: Use tail recursion or convert to iteration                         │
+│                                                                              │
+│ 4. DEBUGGING DIFFICULTY:                                                     │
+│ Cause: Hard to trace multiple levels                                         │
+│ Solution: Add print statements showing depth and parameters                  │
+│                                                                              │
+│ 5. INFINITE RECURSION (Subtle):                                              │
+│ Example: if (n == 1) return 1; return n \* fact(n); // forgot n-1!           │
+│ Solution: Always check that recursive call uses SMALLER input                │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ EXPECTED OUTPUTS & COMPLEXITY │
+│ EXPECTED OUTPUTS & COMPLEXITY                                                │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ TIME COMPLEXITY: │
-│ • Linear recursion (1 call): O(n) │
-│ • Binary recursion without overlap: O(n) - like merge sort │
-│ • Binary recursion WITH overlap: O(2^n) - like naive fib │
-│ • Binary recursion with memo: O(n) - like optimized fib │
-│ │
-│ SPACE COMPLEXITY: │
-│ • Always at least O(depth) for call stack │
-│ • Linear recursion: O(n) stack space │
-│ • Balanced binary: O(log n) stack space │
-│ • Unbalanced/linear: O(n) stack space │
-│ │
-│ RECURRENCE RELATIONS: │
-│ • T(n) = T(n-1) + O(1) → O(n) [Linear] │
-│ • T(n) = 2T(n/2) + O(n) → O(n log n) [Merge Sort] │
-│ • T(n) = T(n-1) + T(n-2) → O(2^n) [Naive Fibonacci] │
+│ TIME COMPLEXITY:                                                             │
+│ • Linear recursion (1 call): O(n)                                            │
+│ • Binary recursion without overlap: O(n) - like merge sort                   │
+│ • Binary recursion WITH overlap: O(2^n) - like naive fib                     │
+│ • Binary recursion with memo: O(n) - like optimized fib                      │
+│                                                                              │
+│ SPACE COMPLEXITY:                                                            │
+│ • Always at least O(depth) for call stack                                    │
+│ • Linear recursion: O(n) stack space                                         │
+│ • Balanced binary: O(log n) stack space                                      │
+│ • Unbalanced/linear: O(n) stack space                                        │
+│                                                                              │
+│ RECURRENCE RELATIONS:                                                        │
+│ • T(n) = T(n-1) + O(1) → O(n) [Linear]                                       │
+│ • T(n) = 2T(n/2) + O(n) → O(n log n) [Merge Sort]                            │
+│ • T(n) = T(n-1) + T(n-2) → O(2^n) [Naive Fibonacci]                          │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ```
@@ -199,17 +199,17 @@ WHY THIS WORKS:
 ```
 
 ┌──────────────────────────────────────────────────────────────┐
-│ LAW 1: BASE CASE │
-│ There MUST be a stopping condition │
-│ Without it: INFINITE RECURSION → Stack Overflow! │
+│ LAW 1: BASE CASE                                             │
+│ There MUST be a stopping condition                           │
+│ Without it: INFINITE RECURSION → Stack Overflow!             │
 ├──────────────────────────────────────────────────────────────┤
-│ LAW 2: PROGRESS TOWARD BASE CASE │
-│ Each recursive call MUST get closer to base case │
-│ If n starts at 100, next call should use 99, then 98... │
+│ LAW 2: PROGRESS TOWARD BASE CASE                             │
+│ Each recursive call MUST get closer to base case             │
+│ If n starts at 100, next call should use 99, then 98...      │
 ├──────────────────────────────────────────────────────────────┤
-│ LAW 3: TRUST THE RECURSION │
-│ Assume the recursive call works correctly │
-│ Focus on: "If sub-problem is solved, how do I use it?" │
+│ LAW 3: TRUST THE RECURSION                                   │
+│ Assume the recursive call works correctly                    │
+│ Focus on: "If sub-problem is solved, how do I use it?"       │
 └──────────────────────────────────────────────────────────────┘
 
 ````

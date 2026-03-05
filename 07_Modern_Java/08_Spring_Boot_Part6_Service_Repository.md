@@ -11,39 +11,39 @@
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHY: Why Service Layer Pattern?                                                │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Fat controller anti-pattern: Business logic belongs in services            │
-│  • Reusability: Same service works for REST, CLI, scheduled jobs              │
-│  • Testability: Services easy to unit test without HTTP                       │
-│  • Transaction boundary: @Transactional goes on services                      │
-│  • Clean architecture: Controller → Service → Repository separation           │
+│  • Fat controller anti-pattern: Business logic belongs in services              │
+│  • Reusability: Same service works for REST, CLI, scheduled jobs                │
+│  • Testability: Services easy to unit test without HTTP                         │
+│  • Transaction boundary: @Transactional goes on services                        │
+│  • Clean architecture: Controller → Service → Repository separation             │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  HOW: How to Structure Service Layer?                                           │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Interface + Implementation: UserService interface, UserServiceImpl          │
-│  • @Service annotation: Marks class for component scanning                     │
-│  • Constructor injection: @RequiredArgsConstructor for dependencies            │
-│  • DTO conversion: Service converts Entity ↔ DTO                              │
-│  • Exception handling: Throw domain exceptions from services                   │
+│  • Interface + Implementation: UserService interface, UserServiceImpl           │
+│  • @Service annotation: Marks class for component scanning                      │
+│  • Constructor injection: @RequiredArgsConstructor for dependencies             │
+│  • DTO conversion: Service converts Entity ↔ DTO                                │
+│  • Exception handling: Throw domain exceptions from services                    │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHEN: When to Use Service vs Repository?                                       │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  SERVICE: Business logic, validation, orchestration, DTO conversion            │
-│  REPOSITORY: Data access only - findById, save, delete, custom queries         │
-│                                                                                  │
-│  SERVICE: "Create order" = validate stock, calculate price, send email         │
+│  SERVICE: Business logic, validation, orchestration, DTO conversion             │
+│  REPOSITORY: Data access only - findById, save, delete, custom queries          │
+│                                                                                 │
+│  SERVICE: "Create order" = validate stock, calculate price, send email          │
 │  REPOSITORY: "Save order to database"                                           │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHICH: Which Patterns to Use?                                                  │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  ESSENTIAL:     @Service, @Repository, @Transactional on service methods       │
-│  IMPORTANT:     Interface segregation, custom repository methods               │
-│  ADVANCED:      Specifications, domain events, CQRS separation                 │
+│  ESSENTIAL:     @Service, @Repository, @Transactional on service methods        │
+│  IMPORTANT:     Interface segregation, custom repository methods                │
+│  ADVANCED:      Specifications, domain events, CQRS separation                  │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -57,68 +57,68 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    THE SERVICE LAYER PURPOSE                                     │
+│                    THE SERVICE LAYER PURPOSE                                    │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  WITHOUT SERVICE LAYER (Fat Controller Anti-Pattern):                           │
-│                                                                                  │
+│                                                                                 │
 │  @RestController                                                                │
-│  public class OrderController {                                                  │
+│  public class OrderController {                                                 │
 │      @PostMapping("/orders")                                                    │
 │      public Order createOrder(@RequestBody OrderRequest req) {                  │
-│          // ❌ Validation logic in controller                                   │
+│          // ❌ Validation logic in controller                                    │
 │          if (req.getItems().isEmpty()) throw new BadRequestException();         │
-│                                                                                  │
-│          // ❌ Business logic in controller                                     │
+│                                                                                 │
+│          // ❌ Business logic in controller                                      │
 │          double total = 0;                                                      │
 │          for (Item item : req.getItems()) {                                     │
 │              Product p = productRepo.findById(item.productId);                  │
 │              if (p.getStock() < item.quantity) throw new OutOfStockException(); │
 │              total += p.getPrice() * item.quantity;                             │
-│          }                                                                       │
-│                                                                                  │
-│          // ❌ Transaction management in controller                             │
+│          }                                                                      │
+│                                                                                 │
+│          // ❌ Transaction management in controller                              │
 │          Order order = new Order();                                             │
 │          order.setTotal(total);                                                 │
 │          orderRepo.save(order);                                                 │
-│                                                                                  │
-│          // ❌ Integration with external services                               │
+│                                                                                 │
+│          // ❌ Integration with external services                                │
 │          emailService.sendOrderConfirmation(order);                             │
 │          inventoryService.decrementStock(order);                                │
-│                                                                                  │
+│                                                                                 │
 │          return order;                                                          │
 │      }                                                                          │
 │  }                                                                              │
-│                                                                                  │
-│  PROBLEMS:                                                                       │
-│  ❌ Untestable - can't unit test business logic                                │
-│  ❌ Code duplication - same logic in multiple controllers                      │
-│  ❌ Mixed concerns - HTTP handling + business + persistence                    │
-│  ❌ Hard to maintain - changes ripple everywhere                               │
-│                                                                                  │
+│                                                                                 │
+│  PROBLEMS:                                                                      │
+│  ❌ Untestable - can't unit test business logic                                  │
+│  ❌ Code duplication - same logic in multiple controllers                        │
+│  ❌ Mixed concerns - HTTP handling + business + persistence                      │
+│  ❌ Hard to maintain - changes ripple everywhere                                 │
+│                                                                                 │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  WITH SERVICE LAYER (Clean Architecture):                                       │
-│                                                                                  │
-│  ┌──────────────────────────────────────────────────────────────────┐          │
+│                                                                                 │
+│  ┌──────────────────────────────────────────────────────────────────┐           │
 │  │                                                                   │          │
-│  │  Controller                Service                Repository     │          │
-│  │  ┌─────────┐            ┌───────────┐           ┌───────────┐   │          │
-│  │  │ HTTP    │───────────▶│ Business  │───────────▶│ Database  │   │          │
-│  │  │ Layer   │            │ Logic     │            │ Access    │   │          │
-│  │  └─────────┘            └───────────┘            └───────────┘   │          │
-│  │  • Request    ──────▶   • Validation  ──────▶   • CRUD          │          │
-│  │  • Response   ◀──────   • Rules       ◀──────   • Queries       │          │
-│  │  • Auth       ──────▶   • Orchestrate ──────▶   • Transactions  │          │
+│  │  Controller                Service                Repository     │           │
+│  │  ┌─────────┐            ┌───────────┐           ┌───────────┐   │            │
+│  │  │ HTTP    │───────────▶│ Business  │───────────▶│ Database  │   │           │
+│  │  │ Layer   │            │ Logic     │            │ Access    │   │           │
+│  │  └─────────┘            └───────────┘            └───────────┘   │           │
+│  │  • Request    ──────▶   • Validation  ──────▶   • CRUD          │            │
+│  │  • Response   ◀──────   • Rules       ◀──────   • Queries       │            │
+│  │  • Auth       ──────▶   • Orchestrate ──────▶   • Transactions  │            │
 │  │                                                                   │          │
-│  └──────────────────────────────────────────────────────────────────┘          │
-│                                                                                  │
-│  BENEFITS:                                                                       │
-│  ✅ Single Responsibility - each layer has ONE job                             │
-│  ✅ Testable - unit test services without HTTP                                 │
-│  ✅ Reusable - same service used by REST, GraphQL, CLI                        │
-│  ✅ Maintainable - changes isolated to one layer                              │
-│                                                                                  │
+│  └──────────────────────────────────────────────────────────────────┘           │
+│                                                                                 │
+│  BENEFITS:                                                                      │
+│  ✅ Single Responsibility - each layer has ONE job                               │
+│  ✅ Testable - unit test services without HTTP                                   │
+│  ✅ Reusable - same service used by REST, GraphQL, CLI                           │
+│  ✅ Maintainable - changes isolated to one layer                                 │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -396,13 +396,13 @@ public class OrderService {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    SERVICE ANTI-PATTERNS TO AVOID                                │
+│                    SERVICE ANTI-PATTERNS TO AVOID                               │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  ❌ ANTI-PATTERN 1: Anemic Service (Just a CRUD wrapper)                       │
+│                                                                                 │
+│  ❌ ANTI-PATTERN 1: Anemic Service (Just a CRUD wrapper)                         │
 │  ────────────────────────────────────────────────────────────────────────       │
-│  @Service                                                                        │
-│  public class UserService {                                                      │
+│  @Service                                                                       │
+│  public class UserService {                                                     │
 │      public User findById(Long id) {                                            │
 │          return userRepository.findById(id).orElse(null);  // Just delegation!  │
 │      }                                                                          │
@@ -410,37 +410,37 @@ public class OrderService {
 │          return userRepository.save(user);  // No business logic!               │
 │      }                                                                          │
 │  }                                                                              │
-│  // Problem: No value add. Controller could use Repository directly.           │
-│                                                                                  │
-│  ✅ FIX: Add validation, business rules, orchestration                         │
-│                                                                                  │
+│  // Problem: No value add. Controller could use Repository directly.            │
+│                                                                                 │
+│  ✅ FIX: Add validation, business rules, orchestration                           │
+│                                                                                 │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  ❌ ANTI-PATTERN 2: Entity Exposure (Returning entities from service)          │
+│                                                                                 │
+│  ❌ ANTI-PATTERN 2: Entity Exposure (Returning entities from service)            │
 │  ────────────────────────────────────────────────────────────────────────       │
-│  @Service                                                                        │
-│  public class UserService {                                                      │
-│      public User findById(Long id) {  // ❌ Returns Entity!                     │
+│  @Service                                                                       │
+│  public class UserService {                                                     │
+│      public User findById(Long id) {  // ❌ Returns Entity!                      │
 │          return userRepository.findById(id).orElseThrow();                      │
 │      }                                                                          │
 │  }                                                                              │
-│  // Problems:                                                                    │
+│  // Problems:                                                                   │
 │  // - Exposes internal structure                                                │
 │  // - Can't control what data is returned                                       │
 │  // - Lazy loading issues in presentation layer                                 │
-│                                                                                  │
-│  ✅ FIX: Return DTOs from service methods                                       │
+│                                                                                 │
+│  ✅ FIX: Return DTOs from service methods                                        │
 │  public UserResponse findById(Long id) {                                        │
 │      return userRepository.findById(id)                                         │
 │          .map(userMapper::toResponse)                                           │
 │          .orElseThrow(() -> new UserNotFoundException(id));                     │
 │  }                                                                              │
-│                                                                                  │
+│                                                                                 │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  ❌ ANTI-PATTERN 3: God Service (Does everything)                              │
+│                                                                                 │
+│  ❌ ANTI-PATTERN 3: God Service (Does everything)                                │
 │  ────────────────────────────────────────────────────────────────────────       │
-│  @Service                                                                        │
+│  @Service                                                                       │
 │  public class BusinessService {  // 3000+ lines!                                │
 │      public void processUser() { ... }                                          │
 │      public void processOrder() { ... }                                         │
@@ -449,47 +449,47 @@ public class OrderService {
 │      public void processReporting() { ... }                                     │
 │      // 50+ more methods...                                                     │
 │  }                                                                              │
-│                                                                                  │
-│  ✅ FIX: Split into focused services by domain                                  │
-│  - UserService, OrderService, PaymentService, ShippingService                  │
-│                                                                                  │
+│                                                                                 │
+│  ✅ FIX: Split into focused services by domain                                   │
+│  - UserService, OrderService, PaymentService, ShippingService                   │
+│                                                                                 │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  ❌ ANTI-PATTERN 4: HttpServletRequest in Service                              │
+│                                                                                 │
+│  ❌ ANTI-PATTERN 4: HttpServletRequest in Service                                │
 │  ────────────────────────────────────────────────────────────────────────       │
-│  @Service                                                                        │
-│  public class UserService {                                                      │
-│      public User createUser(HttpServletRequest request) {  // ❌ HTTP leak!    │
+│  @Service                                                                       │
+│  public class UserService {                                                     │
+│      public User createUser(HttpServletRequest request) {  // ❌ HTTP leak!      │
 │          String name = request.getParameter("name");                            │
 │      }                                                                          │
 │  }                                                                              │
-│  // Problem: Service tied to HTTP, can't use with CLI/tests                    │
-│                                                                                  │
-│  ✅ FIX: Accept DTOs, not HTTP objects                                          │
-│  public UserResponse createUser(CreateUserRequest request) { ... }             │
-│                                                                                  │
+│  // Problem: Service tied to HTTP, can't use with CLI/tests                     │
+│                                                                                 │
+│  ✅ FIX: Accept DTOs, not HTTP objects                                           │
+│  public UserResponse createUser(CreateUserRequest request) { ... }              │
+│                                                                                 │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  ❌ ANTI-PATTERN 5: Missing @Transactional                                     │
+│                                                                                 │
+│  ❌ ANTI-PATTERN 5: Missing @Transactional                                       │
 │  ────────────────────────────────────────────────────────────────────────       │
-│  @Service                                                                        │
-│  public class TransferService {                                                  │
-│      public void transfer(Long from, Long to, BigDecimal amount) {             │
+│  @Service                                                                       │
+│  public class TransferService {                                                 │
+│      public void transfer(Long from, Long to, BigDecimal amount) {              │
 │          Account source = accountRepo.findById(from).get();                     │
 │          Account dest = accountRepo.findById(to).get();                         │
-│                                                                                  │
+│                                                                                 │
 │          source.debit(amount);                                                  │
-│          accountRepo.save(source);  // ← What if this succeeds...              │
-│                                                                                  │
+│          accountRepo.save(source);  // ← What if this succeeds...               │
+│                                                                                 │
 │          dest.credit(amount);                                                   │
-│          accountRepo.save(dest);    // ← ...but this fails? MONEY LOST!        │
+│          accountRepo.save(dest);    // ← ...but this fails? MONEY LOST!         │
 │      }                                                                          │
 │  }                                                                              │
-│                                                                                  │
-│  ✅ FIX: Add @Transactional for atomic operations                               │
-│  @Transactional                                                                  │
-│  public void transfer(Long from, Long to, BigDecimal amount) { ... }           │
-│                                                                                  │
+│                                                                                 │
+│  ✅ FIX: Add @Transactional for atomic operations                                │
+│  @Transactional                                                                 │
+│  public void transfer(Long from, Long to, BigDecimal amount) { ... }            │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -628,47 +628,47 @@ public interface OrderSpecification {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    SPRING DATA JPA REPOSITORY HIERARCHY                          │
+│                    SPRING DATA JPA REPOSITORY HIERARCHY                         │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │               Repository<T, ID>              ← Marker interface                 │
-│                      │                                                           │
-│                      ▼                                                           │
+│                      │                                                          │
+│                      ▼                                                          │
 │           CrudRepository<T, ID>              ← Basic CRUD operations            │
 │           • save(entity)                                                        │
 │           • saveAll(entities)                                                   │
 │           • findById(id) → Optional<T>                                          │
-│           • existsById(id)                                                       │
+│           • existsById(id)                                                      │
 │           • findAll() → Iterable<T>                                             │
 │           • findAllById(ids)                                                    │
 │           • count()                                                             │
 │           • deleteById(id)                                                      │
 │           • delete(entity)                                                      │
 │           • deleteAll()                                                         │
-│                      │                                                           │
-│                      ▼                                                           │
+│                      │                                                          │
+│                      ▼                                                          │
 │        ListCrudRepository<T, ID>             ← Returns List instead of Iterable │
-│                      │                                                           │
-│                      ▼                                                           │
+│                      │                                                          │
+│                      ▼                                                          │
 │    PagingAndSortingRepository<T, ID>         ← + Pagination & Sorting           │
-│           • findAll(Sort sort)                                                   │
+│           • findAll(Sort sort)                                                  │
 │           • findAll(Pageable pageable) → Page<T>                                │
-│                      │                                                           │
-│                      ▼                                                           │
+│                      │                                                          │
+│                      ▼                                                          │
 │          JpaRepository<T, ID>                ← + JPA specific features          │
 │           • flush()                                                             │
-│           • saveAndFlush(entity)                                                 │
-│           • deleteInBatch(entities)                                              │
-│           • getById(id) → T (lazy)                                               │
+│           • saveAndFlush(entity)                                                │
+│           • deleteInBatch(entities)                                             │
+│           • getById(id) → T (lazy)                                              │
 │           • getReferenceById(id) → T (lazy proxy)                               │
-│                      │                                                           │
-│                      ▼                                                           │
+│                      │                                                          │
+│                      ▼                                                          │
 │          JpaSpecificationExecutor<T>         ← + Dynamic queries                │
-│           • findOne(Specification)                                               │
-│           • findAll(Specification)                                               │
-│           • findAll(Specification, Pageable)                                     │
-│           • count(Specification)                                                 │
-│                                                                                  │
+│           • findOne(Specification)                                              │
+│           • findAll(Specification)                                              │
+│           • findAll(Specification, Pageable)                                    │
+│           • count(Specification)                                                │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -874,9 +874,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 ```
 ┌───────────────────────────────────────────────────────────────────────────────┐
-│                    QUERY METHOD KEYWORDS                                       │
+│                    QUERY METHOD KEYWORDS                                      │
 ├───────────────────────────────────────────────────────────────────────────────┤
-│                                                                                │
+│                                                                               │
 │  SUBJECT KEYWORDS (Start of method name):                                     │
 │  ─────────────────────────────────────────                                    │
 │  find...By      → Query returning result(s)                                   │
@@ -889,12 +889,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
 │  exists...By    → Returns boolean                                             │
 │  delete...By    → Deletes matching entities                                   │
 │  remove...By    → Same as delete                                              │
-│                                                                                │
+│                                                                               │
 │  PREDICATE KEYWORDS (In property expression):                                 │
 │  ─────────────────────────────────────────────                                │
 │  And            → Combines conditions with AND                                │
 │  Or             → Combines conditions with OR                                 │
-│  Is, Equals     → Equality (default, can be omitted)                         │
+│  Is, Equals     → Equality (default, can be omitted)                          │
 │  Not, IsNot     → Negation                                                    │
 │  Between        → Between two values (inclusive)                              │
 │  LessThan       → <                                                           │
@@ -914,15 +914,15 @@ public interface UserRepository extends JpaRepository<User, Long> {
 │  NotIn          → NOT IN                                                      │
 │  True           → = true                                                      │
 │  False          → = false                                                     │
-│  IgnoreCase     → Case-insensitive comparison                                │
+│  IgnoreCase     → Case-insensitive comparison                                 │
 │  OrderBy        → ORDER BY                                                    │
-│                                                                                │
-│  MODIFIERS:                                                                    │
-│  ───────────                                                                   │
+│                                                                               │
+│  MODIFIERS:                                                                   │
+│  ───────────                                                                  │
 │  First, Top     → LIMIT 1                                                     │
-│  FirstN, TopN   → LIMIT N (e.g., First10, Top5)                              │
+│  FirstN, TopN   → LIMIT N (e.g., First10, Top5)                               │
 │  Distinct       → SELECT DISTINCT                                             │
-│                                                                                │
+│                                                                               │
 └───────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1207,60 +1207,60 @@ public class UserSearchCriteria {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    REPOSITORY BEST PRACTICES                                     │
+│                    REPOSITORY BEST PRACTICES                                    │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  1. USE OPTIONAL FOR SINGLE RESULTS                                             │
 │  ───────────────────────────────────────────                                    │
-│  ✅ Optional<User> findByEmail(String email);                                   │
-│  ❌ User findByEmail(String email);  // Returns null - error prone              │
-│                                                                                  │
-│                                                                                  │
+│  ✅ Optional<User> findByEmail(String email);                                    │
+│  ❌ User findByEmail(String email);  // Returns null - error prone               │
+│                                                                                 │
+│                                                                                 │
 │  2. PREFER DERIVED QUERIES FOR SIMPLE CASES                                     │
 │  ─────────────────────────────────────────────                                  │
-│  ✅ List<User> findByActiveTrue();  // Clear, type-safe                        │
-│  ❌ @Query("SELECT u FROM User u WHERE u.active = true")  // Verbose           │
-│                                                                                  │
-│                                                                                  │
+│  ✅ List<User> findByActiveTrue();  // Clear, type-safe                          │
+│  ❌ @Query("SELECT u FROM User u WHERE u.active = true")  // Verbose             │
+│                                                                                 │
+│                                                                                 │
 │  3. USE @Query FOR COMPLEX QUERIES                                              │
 │  ─────────────────────────────────────                                          │
 │  // When method name would be too long:                                         │
-│  ✅ @Query("SELECT u FROM User u WHERE u.active = true " +                      │
+│  ✅ @Query("SELECT u FROM User u WHERE u.active = true " +                       │
 │           "AND u.role IN :roles AND u.createdAt > :date")                       │
-│  ❌ findByActiveTrueAndRoleInAndCreatedAtAfter(...)  // Too long!              │
-│                                                                                  │
-│                                                                                  │
+│  ❌ findByActiveTrueAndRoleInAndCreatedAtAfter(...)  // Too long!                │
+│                                                                                 │
+│                                                                                 │
 │  4. USE FETCH JOIN TO PREVENT N+1                                               │
 │  ───────────────────────────────────                                            │
-│  ✅ @Query("SELECT u FROM User u LEFT JOIN FETCH u.orders WHERE u.id = :id")   │
-│  ❌ userRepo.findById(id);  // Then accessing orders causes N+1                │
-│     user.getOrders().forEach(...)  // Each order = 1 query!                    │
-│                                                                                  │
-│                                                                                  │
+│  ✅ @Query("SELECT u FROM User u LEFT JOIN FETCH u.orders WHERE u.id = :id")     │
+│  ❌ userRepo.findById(id);  // Then accessing orders causes N+1                  │
+│     user.getOrders().forEach(...)  // Each order = 1 query!                     │
+│                                                                                 │
+│                                                                                 │
 │  5. PAGINATE LARGE RESULTS                                                      │
 │  ──────────────────────────────                                                 │
-│  ✅ Page<User> findByActiveTrue(Pageable pageable);                            │
-│  ❌ List<User> findByActiveTrue();  // Returns ALL matching rows!              │
-│                                                                                  │
-│                                                                                  │
+│  ✅ Page<User> findByActiveTrue(Pageable pageable);                              │
+│  ❌ List<User> findByActiveTrue();  // Returns ALL matching rows!                │
+│                                                                                 │
+│                                                                                 │
 │  6. USE PROJECTIONS FOR READ-ONLY DATA                                          │
 │  ─────────────────────────────────────────                                      │
-│  ✅ List<UserSummary> findAllUserSummaries();  // Select only needed fields    │
-│  ❌ List<User> findAll();  // Loads all fields, all relationships             │
-│                                                                                  │
-│                                                                                  │
+│  ✅ List<UserSummary> findAllUserSummaries();  // Select only needed fields      │
+│  ❌ List<User> findAll();  // Loads all fields, all relationships                │
+│                                                                                 │
+│                                                                                 │
 │  7. AVOID LOGIC IN REPOSITORY                                                   │
 │  ──────────────────────────────                                                 │
-│  Repository = just data access. Business logic goes in Service.                │
-│                                                                                  │
-│                                                                                  │
+│  Repository = just data access. Business logic goes in Service.                 │
+│                                                                                 │
+│                                                                                 │
 │  8. USE @Modifying FOR BULK OPERATIONS                                          │
 │  ──────────────────────────────────────────                                     │
-│  @Modifying                                                                      │
-│  @Query("UPDATE User u SET u.active = false WHERE u.lastLogin < :cutoff")      │
-│  int deactivateInactive(@Param("cutoff") LocalDateTime cutoff);                │
-│  // Much faster than loading entities, modifying, and saving                   │
-│                                                                                  │
+│  @Modifying                                                                     │
+│  @Query("UPDATE User u SET u.active = false WHERE u.lastLogin < :cutoff")       │
+│  int deactivateInactive(@Param("cutoff") LocalDateTime cutoff);                 │
+│  // Much faster than loading entities, modifying, and saving                    │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 

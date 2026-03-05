@@ -10,20 +10,20 @@
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │  SINGLY LINKED LIST:                                            │
-│  head → [1|•] → [2|•] → [3|•] → [4|•] → null                  │
+│  head → [1|•] → [2|•] → [3|•] → [4|•] → null                    │
 │          val next  val next  val next  val next                 │
 │                                                                 │
 │  DOUBLY LINKED LIST:                                            │
-│  null ← [•|1|•] ⇄ [•|2|•] ⇄ [•|3|•] ⇄ [•|4|•] → null        │
+│  null ← [•|1|•] ⇄ [•|2|•] ⇄ [•|3|•] ⇄ [•|4|•] → null            │
 │          prev val next                                          │
 │                                                                 │
 │  CIRCULAR:                                                      │
-│  ┌→ [1|•] → [2|•] → [3|•] → [4|•] ─┐                          │
+│  ┌→ [1|•] → [2|•] → [3|•] → [4|•] ─┐                            │
 │  └───────────────────────────────────┘                          │
 │                                                                 │
 │  THREE CORE TECHNIQUES:                                         │
 │  1. Runner (slow/fast)  — cycle, middle, kth from end           │
-│  2. Dummy Head          — simplify head-changing operations      │
+│  2. Dummy Head          — simplify head-changing operations     │
 │  3. Reverse-as-you-go   — in-place O(1) space reversal          │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -34,7 +34,7 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║     LINKED LIST PROBLEMS — COMPLETE UNDERSTANDING & FORMAL FOUNDATIONS      ║
+║     LINKED LIST PROBLEMS — COMPLETE UNDERSTANDING & FORMAL FOUNDATIONS       ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -43,20 +43,20 @@
 │                                                                              │
 │ LinkedList is a FUNDAMENTAL exam topic — tests pointer manipulation,         │
 │ in-place algorithms, and O(1) space thinking. Unlike arrays, you cannot      │
-│ randomly access elements; every algorithm must work via sequential             │
+│ randomly access elements; every algorithm must work via sequential           │
 │ traversal and pointer rewiring. This forces you to think about INVARIANTS    │
 │ at every step.                                                               │
 │                                                                              │
 │ WHY INTERVIEWERS LOVE IT:                                                    │
-│ • Pointer bugs are EASY to introduce, HARD to debug → tests carefulness     │
+│ • Pointer bugs are EASY to introduce, HARD to debug → tests carefulness      │
 │ • Edge cases everywhere: empty list, single node, head changes               │
 │ • O(1) space constraints force elegant in-place solutions                    │
 │ • Reveals whether you truly understand references vs values                  │
 │                                                                              │
 │ REAL-WORLD LINKED LISTS:                                                     │
-│ • LRU Cache (HashMap + Doubly Linked List)                                  │
-│ • Blockchain (each block links to previous hash)                            │
-│ • File systems (FAT table — each cluster points to next)                    │
+│ • LRU Cache (HashMap + Doubly Linked List)                                   │
+│ • Blockchain (each block links to previous hash)                             │
+│ • File systems (FAT table — each cluster points to next)                     │
 │ • Undo/Redo stacks in editors (doubly linked command list)                   │
 │ • Memory allocators (free list of available memory blocks)                   │
 └──────────────────────────────────────────────────────────────────────────────┘
@@ -65,77 +65,77 @@
 │ THE THREE MENTAL MODELS                                                      │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ MODEL 1: "RUNNER TECHNIQUE" (slow/fast pointers)                            │
+│ MODEL 1: "RUNNER TECHNIQUE" (slow/fast pointers)                             │
 │                                                                              │
-│   Two pointers traverse the list at DIFFERENT SPEEDS.                       │
-│   Fast moves 2 steps, slow moves 1 step per iteration.                      │
+│   Two pointers traverse the list at DIFFERENT SPEEDS.                        │
+│   Fast moves 2 steps, slow moves 1 step per iteration.                       │
 │                                                                              │
 │   Applications:                                                              │
-│   • Detect cycle: if fast meets slow → cycle exists                         │
-│   • Find middle: when fast reaches end, slow is at middle                   │
-│   • Find kth from end: start fast k steps ahead, then move both             │
+│   • Detect cycle: if fast meets slow → cycle exists                          │
+│   • Find middle: when fast reaches end, slow is at middle                    │
+│   • Find kth from end: start fast k steps ahead, then move both              │
 │                                                                              │
-│   WHY IT WORKS (formal):                                                    │
-│   Let n = list length. After t steps: slow at position t, fast at 2t.      │
-│   When fast reaches position n: t = n/2, so slow is at n/2 (middle).       │
-│   For cycle of length c: relative speed is 1 node/step,                     │
-│   so fast catches slow in at most c steps after both enter cycle.           │
+│   WHY IT WORKS (formal):                                                     │
+│   Let n = list length. After t steps: slow at position t, fast at 2t.        │
+│   When fast reaches position n: t = n/2, so slow is at n/2 (middle).         │
+│   For cycle of length c: relative speed is 1 node/step,                      │
+│   so fast catches slow in at most c steps after both enter cycle.            │
 │                                                                              │
-│ MODEL 2: "DUMMY HEAD" (sentinel node)                                       │
+│ MODEL 2: "DUMMY HEAD" (sentinel node)                                        │
 │                                                                              │
 │   Create a fake node before the real head:                                   │
-│   dummy → [real head] → [node2] → ...                                       │
+│   dummy → [real head] → [node2] → ...                                        │
 │                                                                              │
-│   WHY: Eliminates ALL special cases where head might change.                │
-│   Without dummy: if you delete head, you need if-else logic.               │
-│   With dummy: just process uniformly, return dummy.next.                    │
+│   WHY: Eliminates ALL special cases where head might change.                 │
+│   Without dummy: if you delete head, you need if-else logic.                 │
+│   With dummy: just process uniformly, return dummy.next.                     │
 │                                                                              │
 │   Use dummy when:                                                            │
-│   • Merging two lists (new head unknown until comparison)                   │
-│   • Removing nodes (head itself might be removed)                           │
-│   • Partitioning (building two sub-lists, heads unknown)                    │
+│   • Merging two lists (new head unknown until comparison)                    │
+│   • Removing nodes (head itself might be removed)                            │
+│   • Partitioning (building two sub-lists, heads unknown)                     │
 │                                                                              │
-│ MODEL 3: "REVERSE AS YOU GO" (in-place reversal)                            │
+│ MODEL 3: "REVERSE AS YOU GO" (in-place reversal)                             │
 │                                                                              │
-│   Reverse pointers one-by-one during a single traversal.                    │
-│   Uses three pointers: prev, curr, next.                                    │
+│   Reverse pointers one-by-one during a single traversal.                     │
+│   Uses three pointers: prev, curr, next.                                     │
 │                                                                              │
-│   Before: prev → null, curr → [1] → [2] → [3] → null                      │
-│   After:  null ← [1] ← [2] ← [3] ← prev, curr → null                     │
+│   Before: prev → null, curr → [1] → [2] → [3] → null                         │
+│   After:  null ← [1] ← [2] ← [3] ← prev, curr → null                         │
 │                                                                              │
-│   Loop invariant: After iteration i, the first i nodes are reversed         │
-│   and prev points to the new head of the reversed portion.                  │
+│   Loop invariant: After iteration i, the first i nodes are reversed          │
+│   and prev points to the new head of the reversed portion.                   │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ FORMAL DEFINITION (MIT / KTH Style)                                          │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ A singly linked list L = (v₁, v₂, ..., vₙ) is a sequence of nodes          │
-│ where each node vᵢ contains:                                                │
-│   • vᵢ.val  — the stored datum                                              │
-│   • vᵢ.next — a pointer to vᵢ₊₁ (for i < n), with vₙ.next = null         │
+│ A singly linked list L = (v₁, v₂, ..., vₙ) is a sequence of nodes            │
+│ where each node vᵢ contains:                                                 │
+│   • vᵢ.val  — the stored datum                                               │
+│   • vᵢ.next — a pointer to vᵢ₊₁ (for i < n), with vₙ.next = null             │
 │                                                                              │
-│ The list is accessed via a reference head = v₁ (or head = null if empty).   │
+│ The list is accessed via a reference head = v₁ (or head = null if empty).    │
 │                                                                              │
 │ TIME COMPLEXITY INVARIANT:                                                   │
 │ ┌────────────────────────────────────────────────────────────────────┐       │
-│ │ Accessing the i-th element requires O(i) time since there is      │       │
+│ │ Accessing the i-th element requires O(i) time since there is      │        │
 │ │ NO random access. Every operation that depends on position i       │       │
-│ │ has a lower bound of Ω(i) comparisons/pointer traversals.         │       │
+│ │ has a lower bound of Ω(i) comparisons/pointer traversals.         │        │
 │ └────────────────────────────────────────────────────────────────────┘       │
 │                                                                              │
-│ ┌──────────────────────────┬──────────┬──────────┐                          │
+│ ┌──────────────────────────┬──────────┬──────────┐                           │
 │ │ Operation                │ Array    │ LinkedList│                          │
-│ ├──────────────────────────┼──────────┼──────────┤                          │
-│ │ Access i-th element      │ O(1)     │ O(i)     │                          │
-│ │ Insert at head           │ O(n)     │ O(1)     │                          │
-│ │ Insert at position i     │ O(n)     │ O(i)     │                          │
-│ │ Delete at head           │ O(n)     │ O(1)     │                          │
-│ │ Delete at position i     │ O(n)     │ O(i)     │                          │
-│ │ Search                   │ O(n)     │ O(n)     │                          │
-│ │ Merge sort               │ O(n lgn) │ O(n lgn) │ ← LL uses O(1) space!  │
-│ └──────────────────────────┴──────────┴──────────┘                          │
+│ ├──────────────────────────┼──────────┼──────────┤                           │
+│ │ Access i-th element      │ O(1)     │ O(i)     │                           │
+│ │ Insert at head           │ O(n)     │ O(1)     │                           │
+│ │ Insert at position i     │ O(n)     │ O(i)     │                           │
+│ │ Delete at head           │ O(n)     │ O(1)     │                           │
+│ │ Delete at position i     │ O(n)     │ O(i)     │                           │
+│ │ Search                   │ O(n)     │ O(n)     │                           │
+│ │ Merge sort               │ O(n lgn) │ O(n lgn) │ ← LL uses O(1) space!     │
+│ └──────────────────────────┴──────────┴──────────┘                           │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -145,14 +145,14 @@
 │ ┌──────────────────────────────────────────────────────────────────┐         │
 │ │ DECISION FLOWCHART                                                │        │
 │ │                                                                   │        │
-│ │ "Find middle / cycle / kth from end?"  → Runner (slow/fast)      │        │
-│ │ "Reverse the list or a sublist?"       → Three-pointer reversal  │        │
-│ │ "Merge two sorted lists?"              → Dummy head + compare    │        │
-│ │ "Head might change (delete/insert)?"   → Dummy head sentinel     │        │
-│ │ "Copy list with random pointers?"      → Interleave technique    │        │
-│ │ "Merge K sorted lists?"                → Min-heap of heads       │        │
-│ │ "Sort a linked list?"                  → Merge sort (natural)    │        │
-│ │ "Palindrome check?"                    → Find mid + reverse half │        │
+│ │ "Find middle / cycle / kth from end?"  → Runner (slow/fast)      │         │
+│ │ "Reverse the list or a sublist?"       → Three-pointer reversal  │         │
+│ │ "Merge two sorted lists?"              → Dummy head + compare    │         │
+│ │ "Head might change (delete/insert)?"   → Dummy head sentinel     │         │
+│ │ "Copy list with random pointers?"      → Interleave technique    │         │
+│ │ "Merge K sorted lists?"                → Min-heap of heads       │         │
+│ │ "Sort a linked list?"                  → Merge sort (natural)    │         │
+│ │ "Palindrome check?"                    → Find mid + reverse half │         │
 │ │ "Partition around value?"              → Two dummy heads          │        │
 │ └──────────────────────────────────────────────────────────────────┘         │
 └──────────────────────────────────────────────────────────────────────────────┘
@@ -161,35 +161,35 @@
 │ JAVA CODE TEMPLATES                                                          │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ TEMPLATE 1: REVERSE LINKED LIST (iterative, O(1) space)                     │
+│ TEMPLATE 1: REVERSE LINKED LIST (iterative, O(1) space)                      │
 │                                                                              │
-│   ListNode prev = null, curr = head;                                        │
-│   while (curr != null) {                                                    │
-│       ListNode next = curr.next;   // save next                             │
-│       curr.next = prev;            // reverse pointer                       │
-│       prev = curr;                 // advance prev                          │
-│       curr = next;                 // advance curr                          │
+│   ListNode prev = null, curr = head;                                         │
+│   while (curr != null) {                                                     │
+│       ListNode next = curr.next;   // save next                              │
+│       curr.next = prev;            // reverse pointer                        │
+│       prev = curr;                 // advance prev                           │
+│       curr = next;                 // advance curr                           │
 │   }                                                                          │
-│   return prev;  // new head                                                 │
+│   return prev;  // new head                                                  │
 │                                                                              │
-│ TEMPLATE 2: FIND MIDDLE (slow/fast runner)                                  │
+│ TEMPLATE 2: FIND MIDDLE (slow/fast runner)                                   │
 │                                                                              │
-│   ListNode slow = head, fast = head;                                        │
-│   while (fast != null && fast.next != null) {                               │
-│       slow = slow.next;                                                     │
-│       fast = fast.next.next;                                                │
+│   ListNode slow = head, fast = head;                                         │
+│   while (fast != null && fast.next != null) {                                │
+│       slow = slow.next;                                                      │
+│       fast = fast.next.next;                                                 │
 │   }                                                                          │
-│   return slow;  // middle node (2nd middle if even length)                  │
+│   return slow;  // middle node (2nd middle if even length)                   │
 │                                                                              │
-│ TEMPLATE 3: MERGE TWO SORTED LISTS (dummy head)                            │
+│ TEMPLATE 3: MERGE TWO SORTED LISTS (dummy head)                              │
 │                                                                              │
-│   ListNode dummy = new ListNode(0), tail = dummy;                           │
-│   while (l1 != null && l2 != null) {                                        │
-│       if (l1.val <= l2.val) { tail.next = l1; l1 = l1.next; }              │
-│       else                  { tail.next = l2; l2 = l2.next; }              │
-│       tail = tail.next;                                                     │
+│   ListNode dummy = new ListNode(0), tail = dummy;                            │
+│   while (l1 != null && l2 != null) {                                         │
+│       if (l1.val <= l2.val) { tail.next = l1; l1 = l1.next; }                │
+│       else                  { tail.next = l2; l2 = l2.next; }                │
+│       tail = tail.next;                                                      │
 │   }                                                                          │
-│   tail.next = (l1 != null) ? l1 : l2;                                      │
+│   tail.next = (l1 != null) ? l1 : l2;                                        │
 │   return dummy.next;                                                         │
 │                                                                              │
 │ NODE DEFINITION:                                                             │
@@ -197,80 +197,80 @@
 │   class ListNode {                                                           │
 │       int val;                                                               │
 │       ListNode next;                                                         │
-│       ListNode(int val) { this.val = val; }                                 │
+│       ListNode(int val) { this.val = val; }                                  │
 │   }                                                                          │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ ⚠️  COMMON MISTAKES IN LINKED LIST PROBLEMS                                 │
+│ ⚠️  COMMON MISTAKES IN LINKED LIST PROBLEMS                                  │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ MISTAKE 1: Losing reference to head                                         │
-│   You traverse with head directly → now you can't return it.               │
-│   FIX: Always use a separate pointer: ListNode curr = head;                │
+│ MISTAKE 1: Losing reference to head                                          │
+│   You traverse with head directly → now you can't return it.                 │
+│   FIX: Always use a separate pointer: ListNode curr = head;                  │
 │                                                                              │
-│ MISTAKE 2: Not handling null / empty list                                   │
-│   if (head == null) or if (head.next == null) — check FIRST.               │
-│   Forgetting this → NullPointerException on single-node or empty input.    │
+│ MISTAKE 2: Not handling null / empty list                                    │
+│   if (head == null) or if (head.next == null) — check FIRST.                 │
+│   Forgetting this → NullPointerException on single-node or empty input.      │
 │                                                                              │
-│ MISTAKE 3: Forgetting to update .next (dangling pointer)                    │
-│   After moving a node, its old .next still points to the old location.     │
-│   FIX: Explicitly set node.next = null or to the correct new target.       │
+│ MISTAKE 3: Forgetting to update .next (dangling pointer)                     │
+│   After moving a node, its old .next still points to the old location.       │
+│   FIX: Explicitly set node.next = null or to the correct new target.         │
 │                                                                              │
-│ MISTAKE 4: Creating a cycle when relinking nodes                            │
-│   Swapping pointers without breaking old links → infinite loop.            │
-│   FIX: Save next BEFORE rewiring. Draw the pointer diagram.               │
+│ MISTAKE 4: Creating a cycle when relinking nodes                             │
+│   Swapping pointers without breaking old links → infinite loop.              │
+│   FIX: Save next BEFORE rewiring. Draw the pointer diagram.                  │
 │                                                                              │
-│ MISTAKE 5: Off-by-one in kth from end                                       │
-│   "kth from end" — do you count from 1 or 0? Move fast k or k+1 times?    │
-│   FIX: Clarify with interviewer. Typically k=1 means last node.            │
-│   Move fast exactly k steps, then move both until fast == null.            │
+│ MISTAKE 5: Off-by-one in kth from end                                        │
+│   "kth from end" — do you count from 1 or 0? Move fast k or k+1 times?       │
+│   FIX: Clarify with interviewer. Typically k=1 means last node.              │
+│   Move fast exactly k steps, then move both until fast == null.              │
 │                                                                              │
-│ MISTAKE 6: Not using dummy head when head might change                      │
-│   Deleting the head node, or merging where the new head is unknown.        │
-│   Writing special-case if-else instead of using a sentinel.                │
-│   FIX: ListNode dummy = new ListNode(0); dummy.next = head;               │
-│   Process uniformly. Return dummy.next.                                    │
+│ MISTAKE 6: Not using dummy head when head might change                       │
+│   Deleting the head node, or merging where the new head is unknown.          │
+│   Writing special-case if-else instead of using a sentinel.                  │
+│   FIX: ListNode dummy = new ListNode(0); dummy.next = head;                  │
+│   Process uniformly. Return dummy.next.                                      │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ ⭐ EXPECTED OUTPUTS OF MASTERING LINKED LISTS ⭐                              │
+│ ⭐ EXPECTED OUTPUTS OF MASTERING LINKED LISTS ⭐                               │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ ✅ See "reverse" → three-pointer template in 1 minute (iterative + recur.) │
-│ ✅ See "cycle" → Floyd's slow/fast immediately, prove convergence           │
-│ ✅ See "merge sorted" → dummy head + tail pointer without thinking          │
-│ ✅ See "kth from end" → two-pointer gap technique instantly                 │
-│ ✅ See "head might change" → always reach for dummy sentinel                │
-│ ✅ See "palindrome" → find middle + reverse second half + compare           │
+│ ✅ See "reverse" → three-pointer template in 1 minute (iterative + recur.)    │
+│ ✅ See "cycle" → Floyd's slow/fast immediately, prove convergence             │
+│ ✅ See "merge sorted" → dummy head + tail pointer without thinking            │
+│ ✅ See "kth from end" → two-pointer gap technique instantly                   │
+│ ✅ See "head might change" → always reach for dummy sentinel                  │
+│ ✅ See "palindrome" → find middle + reverse second half + compare             │
 │                                                                              │
 │ THE TRANSFORMATION:                                                          │
-│ FROM: "I keep getting null pointer errors and infinite loops"               │
-│   TO: "I draw the pointer diagram, identify which pointers change,          │
+│ FROM: "I keep getting null pointer errors and infinite loops"                │
+│   TO: "I draw the pointer diagram, identify which pointers change,           │
 │        save references before rewiring, and use dummy heads when the         │
-│        head might change. Every step maintains my loop invariant."          │
+│        head might change. Every step maintains my loop invariant."           │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ COMPLEXITY QUICK REFERENCE                                                   │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ ┌──────────────────────────┬──────────┬──────────┬────────────────────┐     │
-│ │ Problem                  │ Time     │ Space    │ Technique          │     │
-│ ├──────────────────────────┼──────────┼──────────┼────────────────────┤     │
-│ │ Reverse List             │ O(n)     │ O(1)     │ Three pointers     │     │
-│ │ Find Middle              │ O(n)     │ O(1)     │ Slow/fast          │     │
-│ │ Detect Cycle             │ O(n)     │ O(1)     │ Floyd's            │     │
-│ │ Merge Two Sorted         │ O(n+m)   │ O(1)     │ Dummy head         │     │
-│ │ Remove Nth from End      │ O(n)     │ O(1)     │ Two-pointer gap    │     │
-│ │ Add Two Numbers          │ O(max)   │ O(max)   │ Stack / reverse    │     │
-│ │ Copy Random Pointer      │ O(n)     │ O(1)*    │ Interleave 3-pass  │     │
-│ │ Merge K Sorted           │ O(N lgk) │ O(k)     │ Min-heap           │     │
-│ │ Reverse K-Group          │ O(n)     │ O(1)     │ Iterative K-rev    │     │
-│ │ Sort Linked List         │ O(n lgn) │ O(1)*    │ Bottom-up merge    │     │
-│ └──────────────────────────┴──────────┴──────────┴────────────────────┘     │
+│ ┌──────────────────────────┬──────────┬──────────┬────────────────────┐      │
+│ │ Problem                  │ Time     │ Space    │ Technique          │      │
+│ ├──────────────────────────┼──────────┼──────────┼────────────────────┤      │
+│ │ Reverse List             │ O(n)     │ O(1)     │ Three pointers     │      │
+│ │ Find Middle              │ O(n)     │ O(1)     │ Slow/fast          │      │
+│ │ Detect Cycle             │ O(n)     │ O(1)     │ Floyd's            │      │
+│ │ Merge Two Sorted         │ O(n+m)   │ O(1)     │ Dummy head         │      │
+│ │ Remove Nth from End      │ O(n)     │ O(1)     │ Two-pointer gap    │      │
+│ │ Add Two Numbers          │ O(max)   │ O(max)   │ Stack / reverse    │      │
+│ │ Copy Random Pointer      │ O(n)     │ O(1)*    │ Interleave 3-pass  │      │
+│ │ Merge K Sorted           │ O(N lgk) │ O(k)     │ Min-heap           │      │
+│ │ Reverse K-Group          │ O(n)     │ O(1)     │ Iterative K-rev    │      │
+│ │ Sort Linked List         │ O(n lgn) │ O(1)*    │ Bottom-up merge    │      │
+│ └──────────────────────────┴──────────┴──────────┴────────────────────┘      │
 │                                                                              │
-│ * O(1) extra space (excluding recursion stack or output)                    │
+│ * O(1) extra space (excluding recursion stack or output)                     │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1716,45 +1716,45 @@ TEMPLATE: Two-pointer on sorted DLL.
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ ✅ LINKED LIST MASTERY — TRACK YOUR PROGRESS                                │
+│ ✅ LINKED LIST MASTERY — TRACK YOUR PROGRESS                                  │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │ FUNDAMENTALS:                                                                │
-│ - [ ] Can reverse a linked list in your sleep (iterative + recursive)       │
-│ - [ ] Can detect and find cycle start (prove Floyd's theorem)               │
+│ - [ ] Can reverse a linked list in your sleep (iterative + recursive)        │
+│ - [ ] Can detect and find cycle start (prove Floyd's theorem)                │
 │ - [ ] Can find the middle using slow/fast runner                             │
-│ - [ ] Can merge two sorted lists with dummy head                            │
+│ - [ ] Can merge two sorted lists with dummy head                             │
 │ - [ ] Can remove nth from end using two-pointer gap                          │
 │                                                                              │
 │ INTERMEDIATE:                                                                │
 │ - [ ] Can reverse a sublist (positions left to right)                        │
-│ - [ ] Can copy a list with random pointers (3-pass interleave)              │
+│ - [ ] Can copy a list with random pointers (3-pass interleave)               │
 │ - [ ] Can partition a list around a value (two dummy heads)                  │
-│ - [ ] Can add two numbers represented as linked lists                       │
+│ - [ ] Can add two numbers represented as linked lists                        │
 │                                                                              │
 │ ADVANCED:                                                                    │
-│ - [ ] Can merge K sorted lists using min-heap                               │
-│ - [ ] Can handle K-group reversal operations                                │
-│ - [ ] Understand when LL merge sort beats array merge sort                  │
-│ - [ ] Can explain reservoir sampling for random node selection              │
+│ - [ ] Can merge K sorted lists using min-heap                                │
+│ - [ ] Can handle K-group reversal operations                                 │
+│ - [ ] Understand when LL merge sort beats array merge sort                   │
+│ - [ ] Can explain reservoir sampling for random node selection               │
 │                                                                              │
 │ PROOF & THEORY:                                                              │
-│ - [ ] Can state and prove the loop invariant for iterative reversal         │
+│ - [ ] Can state and prove the loop invariant for iterative reversal          │
 │ - [ ] Can prove Floyd's cycle detection theorem                              │
-│ - [ ] Can derive O(N log k) for merge-K-sorted-lists                        │
-│ - [ ] Can explain why merge sort is natural for linked lists                │
+│ - [ ] Can derive O(N log k) for merge-K-sorted-lists                         │
+│ - [ ] Can explain why merge sort is natural for linked lists                 │
 │                                                                              │
 │ SPEED TARGETS:                                                               │
-│ ┌───────────────────────────┬────────────┐                                  │
-│ │ Problem                   │ Target     │                                  │
-│ ├───────────────────────────┼────────────┤                                  │
-│ │ Reverse LL (iterative)    │ < 2 min    │                                  │
-│ │ Detect Cycle (Floyd's)    │ < 3 min    │                                  │
-│ │ Merge Two Sorted          │ < 3 min    │                                  │
-│ │ Remove Nth from End       │ < 4 min    │                                  │
-│ │ Reverse K-Group           │ < 8 min    │                                  │
-│ │ Merge K Sorted            │ < 8 min    │                                  │
-│ └───────────────────────────┴────────────┘                                  │
+│ ┌───────────────────────────┬────────────┐                                   │
+│ │ Problem                   │ Target     │                                   │
+│ ├───────────────────────────┼────────────┤                                   │
+│ │ Reverse LL (iterative)    │ < 2 min    │                                   │
+│ │ Detect Cycle (Floyd's)    │ < 3 min    │                                   │
+│ │ Merge Two Sorted          │ < 3 min    │                                   │
+│ │ Remove Nth from End       │ < 4 min    │                                   │
+│ │ Reverse K-Group           │ < 8 min    │                                   │
+│ │ Merge K Sorted            │ < 8 min    │                                   │
+│ └───────────────────────────┴────────────┘                                   │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 

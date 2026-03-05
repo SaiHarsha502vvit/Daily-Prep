@@ -13,7 +13,7 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║               CHECKLIST: Did you use these today?                             ║
+║               CHECKLIST: Did you use these today?                            ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 ⬜ ACTIVE RECALL - Did you test yourself from memory?

@@ -17,19 +17,19 @@
 ║  MAXIMUM SUM SUBARRAY OF SIZE K                                           ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Given array and integer k, find maximum sum of any contiguous subarray  ║
-║  of size k.                                                              ║
+║  Given array and integer k, find maximum sum of any contiguous subarray   ║
+║  of size k.                                                               ║
 ║                                                                           ║
-║  Input: arr = [2, 1, 5, 1, 3, 2], k = 3                                  ║
+║  Input: arr = [2, 1, 5, 1, 3, 2], k = 3                                   ║
 ║  Output: 9                                                                ║
-║  Explanation: Subarray [5, 1, 3] has maximum sum = 9                     ║
+║  Explanation: Subarray [5, 1, 3] has maximum sum = 9                      ║
 ║                                                                           ║
 ║  Visual:                                                                  ║
-║  [2, 1, 5, 1, 3, 2]                                                      ║
-║   └──┘  sum=8                                                            ║
-║      └──┘  sum=7                                                         ║
-║         └──┘  sum=9 ← MAX                                                ║
-║            └──┘  sum=6                                                   ║
+║  [2, 1, 5, 1, 3, 2]                                                       ║
+║   └──┘  sum=8                                                             ║
+║      └──┘  sum=7                                                          ║
+║         └──┘  sum=9 ← MAX                                                 ║
+║            └──┘  sum=6                                                    ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -62,11 +62,11 @@ public int maxSumSubarray(int[] arr, int k) {
 ║  MAXIMUM AVERAGE SUBARRAY I                                               ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Find contiguous subarray of length k with maximum average value.        ║
+║  Find contiguous subarray of length k with maximum average value.         ║
 ║                                                                           ║
-║  Input: nums = [1,12,-5,-6,50,3], k = 4                                  ║
+║  Input: nums = [1,12,-5,-6,50,3], k = 4                                   ║
 ║  Output: 12.75                                                            ║
-║  Explanation: Max avg is (12-5-6+50)/4 = 51/4 = 12.75                    ║
+║  Explanation: Max avg is (12-5-6+50)/4 = 51/4 = 12.75                     ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -97,11 +97,11 @@ public double findMaxAverage(int[] nums, int k) {
 ║  SUBARRAYS WITH AVG >= THRESHOLD                                          ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Count subarrays of size k where average >= threshold.                   ║
+║  Count subarrays of size k where average >= threshold.                    ║
 ║                                                                           ║
-║  Input: arr = [2,2,2,2,5,5,5,8], k = 3, threshold = 4                    ║
+║  Input: arr = [2,2,2,2,5,5,5,8], k = 3, threshold = 4                     ║
 ║  Output: 3                                                                ║
-║  Explanation: [2,5,5], [5,5,5], [5,5,8] have avg >= 4                    ║
+║  Explanation: [2,5,5], [5,5,5], [5,5,8] have avg >= 4                     ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -134,31 +134,31 @@ public int numOfSubarrays(int[] arr, int k, int threshold) {
 ║  (LeetCode Premium - Full Problem Description)                            ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Find maximum sum among all subarrays of length k where ALL elements     ║
-║  are DISTINCT (no duplicates in window).                                 ║
+║  Find maximum sum among all subarrays of length k where ALL elements      ║
+║  are DISTINCT (no duplicates in window).                                  ║
 ║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────   ║
+║  ─────────────────────────────────────────────────────────────────────    ║
 ║                                                                           ║
 ║  Example 1:                                                               ║
-║  Input: nums = [1,5,4,2,9,9,9], k = 3                                    ║
+║  Input: nums = [1,5,4,2,9,9,9], k = 3                                     ║
 ║  Output: 15                                                               ║
 ║  Explanation:                                                             ║
-║  [1,5,4] sum=10, all distinct ✓                                          ║
-║  [5,4,2] sum=11, all distinct ✓                                          ║
-║  [4,2,9] sum=15, all distinct ✓ ← MAX                                    ║
-║  [2,9,9] has duplicate 9, skip                                           ║
-║  [9,9,9] has duplicates, skip                                            ║
+║  [1,5,4] sum=10, all distinct ✓                                           ║
+║  [5,4,2] sum=11, all distinct ✓                                           ║
+║  [4,2,9] sum=15, all distinct ✓ ← MAX                                     ║
+║  [2,9,9] has duplicate 9, skip                                            ║
+║  [9,9,9] has duplicates, skip                                             ║
 ║                                                                           ║
 ║  Example 2:                                                               ║
-║  Input: nums = [4,4,4], k = 3                                            ║
+║  Input: nums = [4,4,4], k = 3                                             ║
 ║  Output: 0                                                                ║
-║  Explanation: No subarray of length 3 has all distinct elements          ║
+║  Explanation: No subarray of length 3 has all distinct elements           ║
 ║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────   ║
+║  ─────────────────────────────────────────────────────────────────────    ║
 ║                                                                           ║
 ║  Constraints:                                                             ║
-║  - 1 <= k <= nums.length <= 10^5                                         ║
-║  - 1 <= nums[i] <= 10^5                                                  ║
+║  - 1 <= k <= nums.length <= 10^5                                          ║
+║  - 1 <= nums[i] <= 10^5                                                   ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -208,18 +208,18 @@ public long maximumSubarraySum(int[] nums, int k) {
 ║  MINIMUM SIZE SUBARRAY SUM                                                ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Find minimal length of contiguous subarray with sum >= target.          ║
+║  Find minimal length of contiguous subarray with sum >= target.           ║
 ║                                                                           ║
-║  Input: target = 7, nums = [2,3,1,2,4,3]                                 ║
+║  Input: target = 7, nums = [2,3,1,2,4,3]                                  ║
 ║  Output: 2                                                                ║
-║  Explanation: [4,3] has sum=7 with length 2                              ║
+║  Explanation: [4,3] has sum=7 with length 2                               ║
 ║                                                                           ║
 ║  Visual:                                                                  ║
-║  [2,3,1,2,4,3]                                                           ║
-║   └────────┘ sum=12, len=5                                               ║
-║     └──────┘ sum=10, len=4                                               ║
-║       └────┘ sum=7, len=3                                                ║
-║           └─┘ sum=7, len=2 ← MIN                                         ║
+║  [2,3,1,2,4,3]                                                            ║
+║   └────────┘ sum=12, len=5                                                ║
+║     └──────┘ sum=10, len=4                                                ║
+║       └────┘ sum=7, len=3                                                 ║
+║           └─┘ sum=7, len=2 ← MIN                                          ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -253,29 +253,29 @@ public int minSubArrayLen(int target, int[] nums) {
 ║  (LeetCode 340 - Premium)                                                 ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Find length of longest substring with at most k distinct characters.    ║
+║  Find length of longest substring with at most k distinct characters.     ║
 ║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────   ║
+║  ─────────────────────────────────────────────────────────────────────    ║
 ║                                                                           ║
 ║  Example 1:                                                               ║
-║  Input: s = "eceba", k = 2                                               ║
+║  Input: s = "eceba", k = 2                                                ║
 ║  Output: 3                                                                ║
-║  Explanation: "ece" has 2 distinct chars (e, c)                          ║
+║  Explanation: "ece" has 2 distinct chars (e, c)                           ║
 ║                                                                           ║
 ║  Example 2:                                                               ║
-║  Input: s = "aa", k = 1                                                  ║
+║  Input: s = "aa", k = 1                                                   ║
 ║  Output: 2                                                                ║
 ║                                                                           ║
 ║  Example 3:                                                               ║
-║  Input: s = "aabacbebebe", k = 3                                         ║
+║  Input: s = "aabacbebebe", k = 3                                          ║
 ║  Output: 7                                                                ║
-║  Explanation: "cbebebe" has 3 distinct (c, b, e)                         ║
+║  Explanation: "cbebebe" has 3 distinct (c, b, e)                          ║
 ║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────   ║
+║  ─────────────────────────────────────────────────────────────────────    ║
 ║                                                                           ║
 ║  Constraints:                                                             ║
-║  - 1 <= s.length <= 5 * 10^4                                             ║
-║  - 0 <= k <= 50                                                          ║
+║  - 1 <= s.length <= 5 * 10^4                                              ║
+║  - 0 <= k <= 50                                                           ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -316,17 +316,17 @@ public int lengthOfLongestSubstringKDistinct(String s, int k) {
 ║  FRUIT INTO BASKETS                                                       ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  You have 2 baskets. Each basket can hold only ONE type of fruit.        ║
-║  Find maximum fruits you can collect (longest subarray with 2 types).    ║
+║  You have 2 baskets. Each basket can hold only ONE type of fruit.         ║
+║  Find maximum fruits you can collect (longest subarray with 2 types).     ║
 ║                                                                           ║
-║  Input: fruits = [1,2,1]                                                 ║
-║  Output: 3 (collect all)                                                 ║
+║  Input: fruits = [1,2,1]                                                  ║
+║  Output: 3 (collect all)                                                  ║
 ║                                                                           ║
-║  Input: fruits = [0,1,2,2]                                               ║
-║  Output: 3 ([1,2,2])                                                     ║
+║  Input: fruits = [0,1,2,2]                                                ║
+║  Output: 3 ([1,2,2])                                                      ║
 ║                                                                           ║
-║  Input: fruits = [1,2,3,2,2]                                             ║
-║  Output: 4 ([2,3,2,2])                                                   ║
+║  Input: fruits = [1,2,3,2,2]                                              ║
+║  Output: 4 ([2,3,2,2])                                                    ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -364,20 +364,20 @@ public int totalFruit(int[] fruits) {
 ║  LONGEST REPEATING CHARACTER REPLACEMENT                                  ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  You can replace at most k characters. Find longest substring with all   ║
-║  same characters after at most k replacements.                           ║
+║  You can replace at most k characters. Find longest substring with all    ║
+║  same characters after at most k replacements.                            ║
 ║                                                                           ║
-║  Input: s = "ABAB", k = 2                                                ║
+║  Input: s = "ABAB", k = 2                                                 ║
 ║  Output: 4                                                                ║
-║  Explanation: Replace 2 A's with B's → "BBBB" (or vice versa)            ║
+║  Explanation: Replace 2 A's with B's → "BBBB" (or vice versa)             ║
 ║                                                                           ║
-║  Input: s = "AABABBA", k = 1                                             ║
+║  Input: s = "AABABBA", k = 1                                              ║
 ║  Output: 4                                                                ║
-║  Explanation: Replace middle B → "AAAAABA" gives "AAAA"                  ║
+║  Explanation: Replace middle B → "AAAAABA" gives "AAAA"                   ║
 ║                                                                           ║
 ║  KEY INSIGHT:                                                             ║
-║  Window is valid if: (windowLength - maxFreq) <= k                       ║
-║  We need to replace (windowLength - maxFreq) characters                  ║
+║  Window is valid if: (windowLength - maxFreq) <= k                        ║
+║  We need to replace (windowLength - maxFreq) characters                   ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -415,17 +415,17 @@ public int characterReplacement(String s, int k) {
 ║  MAX CONSECUTIVE ONES III                                                 ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Binary array. Flip at most k 0's. Return max consecutive 1's.           ║
+║  Binary array. Flip at most k 0's. Return max consecutive 1's.            ║
 ║                                                                           ║
-║  Input: nums = [1,1,1,0,0,0,1,1,1,1,0], k = 2                            ║
+║  Input: nums = [1,1,1,0,0,0,1,1,1,1,0], k = 2                             ║
 ║  Output: 6                                                                ║
-║  Explanation: [1,1,1,0,0,1,1,1,1,1,1]                                    ║
-║                        ↑ ↑ flipped                                       ║
+║  Explanation: [1,1,1,0,0,1,1,1,1,1,1]                                     ║
+║                        ↑ ↑ flipped                                        ║
 ║                                                                           ║
 ║  Visual:                                                                  ║
-║  [1,1,1,0,0,0,1,1,1,1,0]                                                 ║
-║           └─────────────┘ window with 2 zeros                            ║
-║           flip 2 zeros = 6 ones                                          ║
+║  [1,1,1,0,0,0,1,1,1,1,0]                                                  ║
+║           └─────────────┘ window with 2 zeros                             ║
+║           flip 2 zeros = 6 ones                                           ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -462,13 +462,13 @@ public int longestOnes(int[] nums, int k) {
 ║  PERMUTATION IN STRING                                                    ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Check if s2 contains any permutation of s1.                             ║
+║  Check if s2 contains any permutation of s1.                              ║
 ║                                                                           ║
-║  Input: s1 = "ab", s2 = "eidbaooo"                                       ║
+║  Input: s1 = "ab", s2 = "eidbaooo"                                        ║
 ║  Output: true                                                             ║
-║  Explanation: s2 contains "ba" which is permutation of "ab"              ║
+║  Explanation: s2 contains "ba" which is permutation of "ab"               ║
 ║                                                                           ║
-║  Input: s1 = "ab", s2 = "eidboaoo"                                       ║
+║  Input: s1 = "ab", s2 = "eidboaoo"                                        ║
 ║  Output: false                                                            ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
@@ -510,18 +510,18 @@ public boolean checkInclusion(String s1, String s2) {
 ║  MINIMUM WINDOW SUBSTRING                                                 ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Find minimum window in s that contains all characters of t.             ║
+║  Find minimum window in s that contains all characters of t.              ║
 ║                                                                           ║
-║  Input: s = "ADOBECODEBANC", t = "ABC"                                   ║
+║  Input: s = "ADOBECODEBANC", t = "ABC"                                    ║
 ║  Output: "BANC"                                                           ║
 ║                                                                           ║
 ║  Visual:                                                                  ║
-║  ADOBECODEBANC                                                           ║
-║  A   ─┘    (has A, need B,C)                                             ║
-║  ADOBEC    (has A,B,C - valid, len=6)                                    ║
-║   DOBEC    (no A - invalid)                                              ║
-║  ...                                                                     ║
-║         BANC  (has A,B,C - valid, len=4) ← MIN                           ║
+║  ADOBECODEBANC                                                            ║
+║  A   ─┘    (has A, need B,C)                                              ║
+║  ADOBEC    (has A,B,C - valid, len=6)                                     ║
+║   DOBEC    (no A - invalid)                                               ║
+║  ...                                                                      ║
+║         BANC  (has A,B,C - valid, len=4) ← MIN                            ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -583,25 +583,25 @@ public String minWindow(String s, String t) {
 ║  (LeetCode 159 - Premium)                                                 ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Find length of longest substring with at most 2 distinct characters.    ║
+║  Find length of longest substring with at most 2 distinct characters.     ║
 ║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────   ║
+║  ─────────────────────────────────────────────────────────────────────    ║
 ║                                                                           ║
 ║  Example 1:                                                               ║
 ║  Input: s = "eceba"                                                       ║
 ║  Output: 3                                                                ║
-║  Explanation: "ece" has 2 distinct characters                            ║
+║  Explanation: "ece" has 2 distinct characters                             ║
 ║                                                                           ║
 ║  Example 2:                                                               ║
-║  Input: s = "ccaabbb"                                                    ║
+║  Input: s = "ccaabbb"                                                     ║
 ║  Output: 5                                                                ║
-║  Explanation: "aabbb" has 2 distinct characters                          ║
+║  Explanation: "aabbb" has 2 distinct characters                           ║
 ║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────   ║
+║  ─────────────────────────────────────────────────────────────────────    ║
 ║                                                                           ║
 ║  Constraints:                                                             ║
-║  - 1 <= s.length <= 10^5                                                 ║
-║  - s consists of English letters                                         ║
+║  - 1 <= s.length <= 10^5                                                  ║
+║  - s consists of English letters                                          ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -640,15 +640,15 @@ public int lengthOfLongestSubstringTwoDistinct(String s) {
 ║  SLIDING WINDOW MAXIMUM (LeetCode 239 - Hard)                             ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Given array nums and sliding window of size k, return max in each       ║
-║  window position as the window slides from left to right.                ║
+║  Given array nums and sliding window of size k, return max in each        ║
+║  window position as the window slides from left to right.                 ║
 ║                                                                           ║
-║  Example:                                                                ║
-║  Input: nums = [1,3,-1,-3,5,3,6,7], k = 3                               ║
-║  Output: [3,3,5,5,6,7]                                                   ║
+║  Example:                                                                 ║
+║  Input: nums = [1,3,-1,-3,5,3,6,7], k = 3                                 ║
+║  Output: [3,3,5,5,6,7]                                                    ║
 ║                                                                           ║
-║  KEY INSIGHT: Use monotonic deque (decreasing) — front always has max    ║
-║  TIME: O(n) | SPACE: O(k)                                                ║
+║  KEY INSIGHT: Use monotonic deque (decreasing) — front always has max     ║
+║  TIME: O(n) | SPACE: O(k)                                                 ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -682,13 +682,13 @@ public int[] maxSlidingWindow(int[] nums, int k) {
 ║  SUBARRAYS WITH K DIFFERENT INTEGERS (LeetCode 992 - Hard)                ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Return count of subarrays with exactly k distinct integers.             ║
+║  Return count of subarrays with exactly k distinct integers.              ║
 ║                                                                           ║
-║  Example:                                                                ║
-║  Input: nums = [1,2,1,2,3], k = 2  →  Output: 7                        ║
+║  Example:                                                                 ║
+║  Input: nums = [1,2,1,2,3], k = 2  →  Output: 7                           ║
 ║                                                                           ║
-║  KEY TRICK: exactly(k) = atMost(k) - atMost(k-1)                        ║
-║  TIME: O(n) | SPACE: O(k)                                                ║
+║  KEY TRICK: exactly(k) = atMost(k) - atMost(k-1)                          ║
+║  TIME: O(n) | SPACE: O(k)                                                 ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -722,18 +722,18 @@ private int atMost(int[] nums, int k) {
 
 ```
 ╔═══════════════════════════════════════════════════════════════════════════╗
-║  GRUMPY BOOKSTORE OWNER (LeetCode 1052 - Medium)                         ║
+║  GRUMPY BOOKSTORE OWNER (LeetCode 1052 - Medium)                          ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Owner can use technique for k minutes to not be grumpy.                 ║
-║  Find max satisfied customers.                                           ║
+║  Owner can use technique for k minutes to not be grumpy.                  ║
+║  Find max satisfied customers.                                            ║
 ║                                                                           ║
-║  Example:                                                                ║
-║  customers = [1,0,1,2,1,1,7,5], grumpy = [0,1,0,1,0,1,0,1], k=3       ║
+║  Example:                                                                 ║
+║  customers = [1,0,1,2,1,1,7,5], grumpy = [0,1,0,1,0,1,0,1], k=3           ║
 ║  Output: 16                                                               ║
 ║                                                                           ║
-║  KEY: Base satisfied + sliding window of size k for max extra.           ║
-║  TIME: O(n) | SPACE: O(1)                                                ║
+║  KEY: Base satisfied + sliding window of size k for max extra.            ║
+║  TIME: O(n) | SPACE: O(1)                                                 ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -765,12 +765,12 @@ public int maxSatisfied(int[] customers, int[] grumpy, int minutes) {
 ║  COUNT NUMBER OF NICE SUBARRAYS (LeetCode 1248 - Medium)                  ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Nice subarray = exactly k odd numbers. Return count.                    ║
+║  Nice subarray = exactly k odd numbers. Return count.                     ║
 ║                                                                           ║
-║  Example: nums = [1,1,2,1,1], k = 3  →  Output: 2                      ║
+║  Example: nums = [1,1,2,1,1], k = 3  →  Output: 2                         ║
 ║                                                                           ║
-║  KEY: exactly(k) = atMost(k) - atMost(k-1)                              ║
-║  TIME: O(n) | SPACE: O(1)                                                ║
+║  KEY: exactly(k) = atMost(k) - atMost(k-1)                                ║
+║  TIME: O(n) | SPACE: O(1)                                                 ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -804,12 +804,12 @@ private int atMost(int[] nums, int k) {
 ║  MAX CONSECUTIVE ONES III (LeetCode 1004 - Medium)                        ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Max consecutive 1's if you can flip at most k 0's.                      ║
+║  Max consecutive 1's if you can flip at most k 0's.                       ║
 ║                                                                           ║
-║  Example: nums = [1,1,1,0,0,0,1,1,1,1,0], k = 2  →  Output: 6         ║
+║  Example: nums = [1,1,1,0,0,0,1,1,1,1,0], k = 2  →  Output: 6             ║
 ║                                                                           ║
-║  KEY: Sliding window tracking zeros count. Shrink when > k.              ║
-║  TIME: O(n) | SPACE: O(1)                                                ║
+║  KEY: Sliding window tracking zeros count. Shrink when > k.               ║
+║  TIME: O(n) | SPACE: O(1)                                                 ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 

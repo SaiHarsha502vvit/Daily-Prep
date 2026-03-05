@@ -11,39 +11,39 @@
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHY: Why Deep JPA Knowledge?                                                   │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • N+1 queries: #1 performance killer - causes slow APIs in production         │
-│  • Lazy loading: LazyInitializationException is confusing without knowledge   │
-│  • Relationship mapping: @OneToMany, cascades - easy to get wrong             │
-│  • Interview must-know: "Explain lazy vs eager" tested in every interview    │
-│  • Debug production: Slow queries = understanding execution plans             │
+│  • N+1 queries: #1 performance killer - causes slow APIs in production          │
+│  • Lazy loading: LazyInitializationException is confusing without knowledge     │
+│  • Relationship mapping: @OneToMany, cascades - easy to get wrong               │
+│  • Interview must-know: "Explain lazy vs eager" tested in every interview       │
+│  • Debug production: Slow queries = understanding execution plans               │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  HOW: How JPA/Hibernate Works Under the Hood?                                   │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Persistence Context: First-level cache, dirty checking                     │
-│  • Proxy objects: Lazy loading creates proxies (not real entities)            │
-│  • Session lifecycle: Open session in view vs closed session patterns         │
-│  • Query translation: JPQL → SQL via Hibernate                                │
-│  • Batch operations: savAll() vs individual save() performance                │
+│  • Persistence Context: First-level cache, dirty checking                       │
+│  • Proxy objects: Lazy loading creates proxies (not real entities)              │
+│  • Session lifecycle: Open session in view vs closed session patterns           │
+│  • Query translation: JPQL → SQL via Hibernate                                  │
+│  • Batch operations: savAll() vs individual save() performance                  │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHEN: When to Use Different Fetch Strategies?                                  │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • LAZY (default for collections): Load only when accessed                     │
-│  • EAGER: Always load together (use sparingly - causes N+1)                    │
-│  • JOIN FETCH: Load in single query when you know you'll need it              │
-│  • EntityGraph: Dynamic fetch control per query                                │
-│  • DTO Projection: When you don't need full entity - best performance         │
+│  • LAZY (default for collections): Load only when accessed                      │
+│  • EAGER: Always load together (use sparingly - causes N+1)                     │
+│  • JOIN FETCH: Load in single query when you know you'll need it                │
+│  • EntityGraph: Dynamic fetch control per query                                 │
+│  • DTO Projection: When you don't need full entity - best performance           │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHICH: Which JPA Concepts to Master?                                           │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  ESSENTIAL:     Entity lifecycle, relationships, lazy/eager, N+1 problem       │
-│  IMPORTANT:     Cascade types, orphan removal, inheritance mapping             │
-│  ADVANCED:      Second-level cache, batch processing, locking strategies       │
+│  ESSENTIAL:     Entity lifecycle, relationships, lazy/eager, N+1 problem        │
+│  IMPORTANT:     Cascade types, orphan removal, inheritance mapping              │
+│  ADVANCED:      Second-level cache, batch processing, locking strategies        │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -57,69 +57,69 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    THE JPA ECOSYSTEM                                             │
+│                    THE JPA ECOSYSTEM                                            │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  ┌─────────────────────────────────────────────────────────────────────────┐   │
+│                                                                                 │
+│  ┌─────────────────────────────────────────────────────────────────────────┐    │
 │  │                    YOUR APPLICATION CODE                                 │   │
 │  │                                                                          │   │
-│  │    @Entity, @Repository, @Service                                       │   │
-│  └────────────────────────────────┬────────────────────────────────────────┘   │
+│  │    @Entity, @Repository, @Service                                       │    │
+│  └────────────────────────────────┬────────────────────────────────────────┘    │
 │                                   │                                             │
 │                                   ▼                                             │
-│  ┌─────────────────────────────────────────────────────────────────────────┐   │
+│  ┌─────────────────────────────────────────────────────────────────────────┐    │
 │  │               SPRING DATA JPA                                            │   │
 │  │                                                                          │   │
-│  │    • Repository interfaces (JpaRepository)                              │   │
-│  │    • Derived queries (findByEmail)                                      │   │
-│  │    • @Query annotation                                                  │   │
-│  │    • Pagination & Sorting                                               │   │
-│  │    • Auto-implementation of repositories                                │   │
+│  │    • Repository interfaces (JpaRepository)                              │    │
+│  │    • Derived queries (findByEmail)                                      │    │
+│  │    • @Query annotation                                                  │    │
+│  │    • Pagination & Sorting                                               │    │
+│  │    • Auto-implementation of repositories                                │    │
 │  │                                                                          │   │
-│  │    → Reduces boilerplate, provides Spring integration                   │   │
-│  └────────────────────────────────┬────────────────────────────────────────┘   │
+│  │    → Reduces boilerplate, provides Spring integration                   │    │
+│  └────────────────────────────────┬────────────────────────────────────────┘    │
 │                                   │                                             │
 │                                   ▼                                             │
-│  ┌─────────────────────────────────────────────────────────────────────────┐   │
+│  ┌─────────────────────────────────────────────────────────────────────────┐    │
 │  │               JPA (Jakarta Persistence API)                              │   │
 │  │                                                                          │   │
-│  │    • SPECIFICATION (not implementation!)                                │   │
-│  │    • Defines annotations: @Entity, @Table, @Column, @OneToMany         │   │
-│  │    • Defines EntityManager interface                                    │   │
-│  │    • Defines JPQL (query language)                                      │   │
-│  │    • jakarta.persistence package                                        │   │
+│  │    • SPECIFICATION (not implementation!)                                │    │
+│  │    • Defines annotations: @Entity, @Table, @Column, @OneToMany         │     │
+│  │    • Defines EntityManager interface                                    │    │
+│  │    • Defines JPQL (query language)                                      │    │
+│  │    • jakarta.persistence package                                        │    │
 │  │                                                                          │   │
-│  │    → The STANDARD - implementations follow this spec                    │   │
-│  └────────────────────────────────┬────────────────────────────────────────┘   │
+│  │    → The STANDARD - implementations follow this spec                    │    │
+│  └────────────────────────────────┬────────────────────────────────────────┘    │
 │                                   │                                             │
 │                                   ▼                                             │
-│  ┌─────────────────────────────────────────────────────────────────────────┐   │
+│  ┌─────────────────────────────────────────────────────────────────────────┐    │
 │  │               HIBERNATE (JPA Implementation)                             │   │
 │  │                                                                          │   │
-│  │    • MOST POPULAR JPA implementation                                    │   │
-│  │    • Actually executes the ORM operations                              │   │
-│  │    • Converts entities to SQL                                          │   │
-│  │    • Manages persistence context (1st level cache)                     │   │
-│  │    • Connection pooling (HikariCP)                                     │   │
-│  │    • 2nd level cache                                                   │   │
-│  │    • Query generation & optimization                                   │   │
+│  │    • MOST POPULAR JPA implementation                                    │    │
+│  │    • Actually executes the ORM operations                              │     │
+│  │    • Converts entities to SQL                                          │     │
+│  │    • Manages persistence context (1st level cache)                     │     │
+│  │    • Connection pooling (HikariCP)                                     │     │
+│  │    • 2nd level cache                                                   │     │
+│  │    • Query generation & optimization                                   │     │
 │  │                                                                          │   │
-│  │    → The ENGINE that does the actual work                              │   │
-│  └────────────────────────────────┬────────────────────────────────────────┘   │
+│  │    → The ENGINE that does the actual work                              │     │
+│  └────────────────────────────────┬────────────────────────────────────────┘    │
 │                                   │                                             │
 │                                   ▼                                             │
-│  ┌─────────────────────────────────────────────────────────────────────────┐   │
+│  ┌─────────────────────────────────────────────────────────────────────────┐    │
 │  │               JDBC                                                       │   │
 │  │                                                                          │   │
-│  │    • Low-level database access                                          │   │
-│  │    • SQL execution                                                      │   │
-│  │    • ResultSet handling                                                 │   │
+│  │    • Low-level database access                                          │    │
+│  │    • SQL execution                                                      │    │
+│  │    • ResultSet handling                                                 │    │
 │  │                                                                          │   │
-│  └────────────────────────────────┬────────────────────────────────────────┘   │
+│  └────────────────────────────────┬────────────────────────────────────────┘    │
 │                                   │                                             │
 │                                   ▼                                             │
 │                           DATABASE (PostgreSQL, MySQL, etc.)                    │
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -378,17 +378,17 @@ public class Address {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    JPA RELATIONSHIP TYPES                                        │
+│                    JPA RELATIONSHIP TYPES                                       │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  @OneToOne     User ──────── Address        (One user has one address)          │
-│                                                                                  │
+│                                                                                 │
 │  @OneToMany    User ──────<< Order          (One user has many orders)          │
-│                                                                                  │
+│                                                                                 │
 │  @ManyToOne    Order >>────── User          (Many orders belong to one user)    │
-│                                                                                  │
+│                                                                                 │
 │  @ManyToMany   User >>────<< Role           (Many users have many roles)        │
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -686,28 +686,28 @@ public class UserRoleId implements Serializable {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    THE N+1 PROBLEM                                               │
+│                    THE N+1 PROBLEM                                              │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  // Loading 10 users and their orders:                                          │
-│                                                                                  │
-│  List<User> users = userRepository.findAll();  // Query 1: Get users           │
+│                                                                                 │
+│  List<User> users = userRepository.findAll();  // Query 1: Get users            │
 │  for (User user : users) {                                                      │
-│      user.getOrders().size();  // Query 2-11: Get orders for EACH user        │
+│      user.getOrders().size();  // Query 2-11: Get orders for EACH user          │
 │  }                                                                              │
-│                                                                                  │
-│  RESULT: 1 + 10 = 11 queries for just 10 users!                                │
-│  With 1000 users = 1001 queries! 🔥 DATABASE MELTS                             │
-│                                                                                  │
-│  ┌─────────────────────────────────────────────────────────────────────┐       │
+│                                                                                 │
+│  RESULT: 1 + 10 = 11 queries for just 10 users!                                 │
+│  With 1000 users = 1001 queries! 🔥 DATABASE MELTS                               │
+│                                                                                 │
+│  ┌─────────────────────────────────────────────────────────────────────┐        │
 │  │  Query 1:  SELECT * FROM users                                       │       │
-│  │  Query 2:  SELECT * FROM orders WHERE user_id = 1                   │       │
-│  │  Query 3:  SELECT * FROM orders WHERE user_id = 2                   │       │
-│  │  Query 4:  SELECT * FROM orders WHERE user_id = 3                   │       │
+│  │  Query 2:  SELECT * FROM orders WHERE user_id = 1                   │        │
+│  │  Query 3:  SELECT * FROM orders WHERE user_id = 2                   │        │
+│  │  Query 4:  SELECT * FROM orders WHERE user_id = 3                   │        │
 │  │  ...                                                                 │       │
-│  │  Query 11: SELECT * FROM orders WHERE user_id = 10                  │       │
-│  └─────────────────────────────────────────────────────────────────────┘       │
-│                                                                                  │
+│  │  Query 11: SELECT * FROM orders WHERE user_id = 10                  │        │
+│  └─────────────────────────────────────────────────────────────────────┘        │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -716,67 +716,67 @@ public class UserRoleId implements Serializable {
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │          N+1 PROBLEM — VISUAL SEQUENCE COMPARISON                               │
-│                                                                                  │
+│                                                                                 │
 │  ═══════════ BAD: N+1 Queries (Lazy Loading) ═══════════                        │
-│                                                                                  │
+│                                                                                 │
 │  Application          Hibernate            Database                             │
-│      │                    │                    │                                 │
-│      │── findAllUsers() ─▶│                    │                                 │
-│      │                    │── SELECT * FROM    │                                 │
+│      │                    │                    │                                │
+│      │── findAllUsers() ─▶│                    │                                │
+│      │                    │── SELECT * FROM    │                                │
 │      │                    │   users ──────────▶│  ← Query 1                     │
 │      │                    │◀── 10 User rows ──│                                 │
 │      │◀─ List<User> ─────│                    │                                 │
-│      │                    │                    │                                 │
-│      │── user.getOrders()▶│                    │                                 │
-│      │                    │── SELECT * FROM    │                                 │
-│      │                    │   orders WHERE     │                                 │
+│      │                    │                    │                                │
+│      │── user.getOrders()▶│                    │                                │
+│      │                    │── SELECT * FROM    │                                │
+│      │                    │   orders WHERE     │                                │
 │      │                    │   user_id=1 ──────▶│  ← Query 2                     │
-│      │◀─ orders ─────────│◀──────────────────│                                 │
-│      │                    │                    │                                 │
+│      │◀─ orders ─────────│◀──────────────────│                                  │
+│      │                    │                    │                                │
 │      │── user.getOrders()▶│── WHERE user_id=2 ▶│  ← Query 3                     │
 │      │── user.getOrders()▶│── WHERE user_id=3 ▶│  ← Query 4                     │
 │      │── user.getOrders()▶│── WHERE user_id=4 ▶│  ← Query 5                     │
-│      │      ...           │       ...          │     ...                         │
+│      │      ...           │       ...          │     ...                        │
 │      │── user.getOrders()▶│── WHERE user_id=10▶│  ← Query 11                    │
-│      │                    │                    │                                 │
-│      │  TOTAL: 1 + 10 = 11 queries for 10 users!                               │
-│      │  With 1000 users → 1001 round trips → DATABASE OVERLOAD 🔥              │
-│                                                                                  │
+│      │                    │                    │                                │
+│      │  TOTAL: 1 + 10 = 11 queries for 10 users!                                │
+│      │  With 1000 users → 1001 round trips → DATABASE OVERLOAD 🔥                │
+│                                                                                 │
 │  ═══════════ GOOD: JOIN FETCH (1 Query) ═══════════                             │
-│                                                                                  │
+│                                                                                 │
 │  Application          Hibernate            Database                             │
-│      │                    │                    │                                 │
-│      │── findAllUsers() ─▶│                    │                                 │
-│      │                    │── SELECT u.*, o.*  │                                 │
-│      │                    │   FROM users u     │                                 │
-│      │                    │   LEFT JOIN orders │                                 │
-│      │                    │   o ON u.id =      │                                 │
+│      │                    │                    │                                │
+│      │── findAllUsers() ─▶│                    │                                │
+│      │                    │── SELECT u.*, o.*  │                                │
+│      │                    │   FROM users u     │                                │
+│      │                    │   LEFT JOIN orders │                                │
+│      │                    │   o ON u.id =      │                                │
 │      │                    │   o.user_id ──────▶│  ← Query 1 (ONLY!)             │
 │      │                    │◀── all data ──────│                                 │
 │      │◀─ List<User>      │                    │                                 │
 │      │   (with orders    │                    │                                 │
 │      │    pre-loaded)    │                    │                                 │
-│      │                    │                    │                                 │
-│      │  TOTAL: 1 query regardless of user count ✅                              │
-│                                                                                  │
+│      │                    │                    │                                │
+│      │  TOTAL: 1 query regardless of user count ✅                               │
+│                                                                                 │
 │  ═══════════ ALSO GOOD: @BatchSize (Batched) ═══════════                        │
-│                                                                                  │
+│                                                                                 │
 │  Application          Hibernate            Database                             │
-│      │                    │                    │                                 │
-│      │── findAllUsers() ─▶│── SELECT * FROM    │                                 │
+│      │                    │                    │                                │
+│      │── findAllUsers() ─▶│── SELECT * FROM    │                                │
 │      │                    │   users ──────────▶│  ← Query 1                     │
 │      │◀─ 1000 users ─────│                    │                                 │
-│      │                    │                    │                                 │
-│      │── access orders ──▶│── SELECT * FROM    │                                 │
-│      │                    │   orders WHERE     │                                 │
-│      │                    │   user_id IN       │                                 │
+│      │                    │                    │                                │
+│      │── access orders ──▶│── SELECT * FROM    │                                │
+│      │                    │   orders WHERE     │                                │
+│      │                    │   user_id IN       │                                │
 │      │                    │   (1,2,...,50) ───▶│  ← Query 2 (batch of 50)       │
-│      │                    │── IN (51,...,100) ─▶│  ← Query 3                     │
-│      │                    │       ...          │     ...                         │
-│      │                    │── IN (951,...1000)─▶│  ← Query 21                    │
-│      │                    │                    │                                 │
-│      │  TOTAL: 1 + 20 = 21 queries (vs 1001!) ✅                                │
-│                                                                                  │
+│      │                    │── IN (51,...,100) ─▶│  ← Query 3                    │
+│      │                    │       ...          │     ...                        │
+│      │                    │── IN (951,...1000)─▶│  ← Query 21                   │
+│      │                    │                    │                                │
+│      │  TOTAL: 1 + 20 = 21 queries (vs 1001!) ✅                                 │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -881,26 +881,26 @@ public record UserWithOrderCount(Long id, String name, String email, Long orderC
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    FETCH TYPE RECOMMENDATIONS                                    │
+│                    FETCH TYPE RECOMMENDATIONS                                   │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  Relationship      Default       Recommendation                                 │
 │  ──────────────────────────────────────────────────────────────────────────     │
 │  @OneToOne         EAGER         → Change to LAZY                               │
 │  @ManyToOne        EAGER         → Change to LAZY                               │
 │  @OneToMany        LAZY          → Keep LAZY ✓                                  │
 │  @ManyToMany       LAZY          → Keep LAZY ✓                                  │
-│                                                                                  │
-│  GOLDEN RULE: Always use LAZY, then fetch what you need explicitly             │
-│                                                                                  │
-│  @ManyToOne(fetch = FetchType.LAZY)  // Override EAGER default!                │
-│  @OneToOne(fetch = FetchType.LAZY)   // Override EAGER default!                │
-│                                                                                  │
+│                                                                                 │
+│  GOLDEN RULE: Always use LAZY, then fetch what you need explicitly              │
+│                                                                                 │
+│  @ManyToOne(fetch = FetchType.LAZY)  // Override EAGER default!                 │
+│  @OneToOne(fetch = FetchType.LAZY)   // Override EAGER default!                 │
+│                                                                                 │
 │  Then fetch when needed:                                                        │
-│  - JOIN FETCH in JPQL                                                          │
-│  - @EntityGraph on repository method                                           │
-│  - Hibernate.initialize() in service                                           │
-│                                                                                  │
+│  - JOIN FETCH in JPQL                                                           │
+│  - @EntityGraph on repository method                                            │
+│  - Hibernate.initialize() in service                                            │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -910,38 +910,38 @@ public record UserWithOrderCount(Long id, String name, String email, Long orderC
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    ENTITY LIFECYCLE STATES                                       │
+│                    ENTITY LIFECYCLE STATES                                      │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │                      ┌──────────────┐                                           │
 │                      │   NEW        │  (Transient)                              │
 │                      │   (no ID)    │                                           │
 │                      └──────┬───────┘                                           │
-│                             │ persist()                                          │
-│                             ▼                                                    │
-│  ┌────────────────────────────────────────────────────────────────────┐        │
+│                             │ persist()                                         │
+│                             ▼                                                   │
+│  ┌────────────────────────────────────────────────────────────────────┐         │
 │  │                    PERSISTENCE CONTEXT                              │        │
 │  │                    (1st Level Cache)                                │        │
 │  │                                                                     │        │
-│  │   ┌──────────────┐                    ┌──────────────┐             │        │
-│  │   │   MANAGED    │◄────find()────────│   DATABASE   │             │        │
-│  │   │   (has ID)   │                    │              │             │        │
-│  │   │              │─────flush()──────►│              │             │        │
-│  │   └──────┬───────┘                    └──────────────┘             │        │
-│  │          │                                                         │        │
-│  └──────────┼─────────────────────────────────────────────────────────┘        │
+│  │   ┌──────────────┐                    ┌──────────────┐             │         │
+│  │   │   MANAGED    │◄────find()────────│   DATABASE   │             │          │
+│  │   │   (has ID)   │                    │              │             │         │
+│  │   │              │─────flush()──────►│              │             │          │
+│  │   └──────┬───────┘                    └──────────────┘             │         │
+│  │          │                                                         │         │
+│  └──────────┼─────────────────────────────────────────────────────────┘         │
 │             │ detach() / close() / clear()                                      │
-│             ▼                                                                    │
+│             ▼                                                                   │
 │       ┌──────────────┐                                                          │
 │       │   DETACHED   │                                                          │
 │       │   (has ID,   │                                                          │
 │       │   not tracked)│                                                         │
 │       └──────┬───────┘                                                          │
-│              │ merge()                                                           │
+│              │ merge()                                                          │
 │              └──────────────────► Back to MANAGED                               │
-│                                                                                  │
-│       remove() on MANAGED ──────► REMOVED (scheduled for DELETE)               │
-│                                                                                  │
+│                                                                                 │
+│       remove() on MANAGED ──────► REMOVED (scheduled for DELETE)                │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1328,39 +1328,39 @@ public class BrokenService {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    JPA BEST PRACTICES CHECKLIST                                  │
+│                    JPA BEST PRACTICES CHECKLIST                                 │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  ENTITY DESIGN:                                                                 │
-│  □ Use LAZY fetch for all relationships                                        │
-│  □ Override equals/hashCode using only business key or ID                      │
-│  □ Exclude collections from toString to prevent lazy loading                   │
-│  □ Use @Version for optimistic locking                                         │
-│  □ Use Set (not List) for @ManyToMany                                         │
-│  □ Provide helper methods for bidirectional relationships                      │
-│                                                                                  │
+│  □ Use LAZY fetch for all relationships                                         │
+│  □ Override equals/hashCode using only business key or ID                       │
+│  □ Exclude collections from toString to prevent lazy loading                    │
+│  □ Use @Version for optimistic locking                                          │
+│  □ Use Set (not List) for @ManyToMany                                           │
+│  □ Provide helper methods for bidirectional relationships                       │
+│                                                                                 │
 │  ID GENERATION:                                                                 │
-│  □ Use IDENTITY (MySQL) or SEQUENCE (PostgreSQL) - avoid TABLE                │
-│  □ Consider UUID for distributed systems                                       │
-│                                                                                  │
+│  □ Use IDENTITY (MySQL) or SEQUENCE (PostgreSQL) - avoid TABLE                  │
+│  □ Consider UUID for distributed systems                                        │
+│                                                                                 │
 │  QUERYING:                                                                      │
-│  □ Use JOIN FETCH or @EntityGraph to prevent N+1                              │
-│  □ Use DTO projections for read-only queries                                  │
-│  □ Use Pageable for large result sets                                         │
-│  □ Use @Query for complex queries instead of long method names                │
-│                                                                                  │
+│  □ Use JOIN FETCH or @EntityGraph to prevent N+1                                │
+│  □ Use DTO projections for read-only queries                                    │
+│  □ Use Pageable for large result sets                                           │
+│  □ Use @Query for complex queries instead of long method names                  │
+│                                                                                 │
 │  TRANSACTIONS:                                                                  │
-│  □ @Transactional on service layer, not repository                            │
-│  □ @Transactional(readOnly = true) for read operations                        │
-│  □ Understand rollback behavior (only RuntimeException by default)            │
-│  □ Avoid self-invocation (proxy bypass issue)                                 │
-│                                                                                  │
+│  □ @Transactional on service layer, not repository                              │
+│  □ @Transactional(readOnly = true) for read operations                          │
+│  □ Understand rollback behavior (only RuntimeException by default)              │
+│  □ Avoid self-invocation (proxy bypass issue)                                   │
+│                                                                                 │
 │  PERFORMANCE:                                                                   │
-│  □ Enable SQL logging in development: show-sql, format-sql                    │
-│  □ Use @BatchSize for lazy collections                                        │
-│  □ Use bulk operations (@Modifying @Query) for batch updates                  │
-│  □ Consider 2nd level cache for read-heavy data                               │
-│                                                                                  │
+│  □ Enable SQL logging in development: show-sql, format-sql                      │
+│  □ Use @BatchSize for lazy collections                                          │
+│  □ Use bulk operations (@Modifying @Query) for batch updates                    │
+│  □ Consider 2nd level cache for read-heavy data                                 │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 

@@ -11,43 +11,43 @@
 ### The Full-Stack Landscape
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │                    FULL-STACK ARCHITECTURE                       │
-├─────────────────────────────────────────────────────────────────┤
+├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
-│  ┌─────────────────────────────────────────────────────────────┐│
+│  ┌─────────────────────────────────────────────────────────────┐ │
 │  │                      FRONTEND                                ││
-│  │  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐        ││
-│  │  │  React  │  │ Angular │  │   Vue   │  │ Svelte  │        ││
-│  │  └─────────┘  └─────────┘  └─────────┘  └─────────┘        ││
+│  │  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐        │  │
+│  │  │  React  │  │ Angular │  │   Vue   │  │ Svelte  │        │  │
+│  │  └─────────┘  └─────────┘  └─────────┘  └─────────┘        │  │
 │  │                      │                                       ││
-│  │              ┌───────▼───────┐                              ││
-│  │              │  State Mgmt   │ Redux/Zustand/Pinia          ││
-│  │              └───────────────┘                              ││
-│  └─────────────────────────────────────────────────────────────┘│
+│  │              ┌───────▼───────┐                              │ │
+│  │              │  State Mgmt   │ Redux/Zustand/Pinia          │ │
+│  │              └───────────────┘                              │ │
+│  └─────────────────────────────────────────────────────────────┘ │
 │                            │                                     │
 │                    HTTP/WebSocket/GraphQL                        │
 │                            │                                     │
-│  ┌─────────────────────────▼───────────────────────────────────┐│
+│  ┌─────────────────────────▼───────────────────────────────────┐ │
 │  │                      BACKEND                                 ││
-│  │  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐        ││
-│  │  │ Node.js │  │  Java   │  │ Python  │  │   Go    │        ││
-│  │  │ Express │  │ Spring  │  │ FastAPI │  │   Gin   │        ││
-│  │  └─────────┘  └─────────┘  └─────────┘  └─────────┘        ││
+│  │  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐        │  │
+│  │  │ Node.js │  │  Java   │  │ Python  │  │   Go    │        │  │
+│  │  │ Express │  │ Spring  │  │ FastAPI │  │   Gin   │        │  │
+│  │  └─────────┘  └─────────┘  └─────────┘  └─────────┘        │  │
 │  │                      │                                       ││
-│  │              ┌───────▼───────┐                              ││
-│  │              │  API Layer    │ REST/GraphQL/gRPC            ││
-│  │              └───────────────┘                              ││
-│  └─────────────────────────────────────────────────────────────┘│
+│  │              ┌───────▼───────┐                              │ │
+│  │              │  API Layer    │ REST/GraphQL/gRPC            │ │
+│  │              └───────────────┘                              │ │
+│  └─────────────────────────────────────────────────────────────┘ │
 │                            │                                     │
-│  ┌─────────────────────────▼───────────────────────────────────┐│
+│  ┌─────────────────────────▼───────────────────────────────────┐ │
 │  │                    DATA LAYER                                ││
-│  │  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐        ││
-│  │  │PostgreSQL│ │ MongoDB │  │  Redis  │  │ Elastic │        ││
-│  │  └─────────┘  └─────────┘  └─────────┘  └─────────┘        ││
-│  └─────────────────────────────────────────────────────────────┘│
+│  │  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐        │  │
+│  │  │PostgreSQL│ │ MongoDB │  │  Redis  │  │ Elastic │        │  │
+│  │  └─────────┘  └─────────┘  └─────────┘  └─────────┘        │  │
+│  └─────────────────────────────────────────────────────────────┘ │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ### Frontend Development - React Complete
@@ -1426,133 +1426,133 @@ public class MyApp {
 }
 
 ┌─────────────────────────────────────────────────────────────────┐
-│              SPRING BOOT STARTUP SEQUENCE                        │
+│              SPRING BOOT STARTUP SEQUENCE                       │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  1. CREATE SpringApplication OBJECT                             │
 │  ─────────────────────────────────                              │
-│  • Detect web application type (SERVLET, REACTIVE, NONE)       │
-│  • Load ApplicationContextInitializers                         │
+│  • Detect web application type (SERVLET, REACTIVE, NONE)        │
+│  • Load ApplicationContextInitializers                          │
 │  • Load ApplicationListeners                                    │
 │  • Detect main application class                                │
-│                                                                  │
-│                                                                  │
+│                                                                 │
+│                                                                 │
 │  2. RUN METHOD EXECUTION                                        │
 │  ───────────────────────                                        │
-│                                                                  │
-│  ┌──────────────────────────────────────────────────────────┐  │
+│                                                                 │
+│  ┌──────────────────────────────────────────────────────────┐   │
 │  │ a) Create & Configure Environment                         │  │
-│  │    • Load application.properties / application.yml       │  │
-│  │    • Load environment variables                          │  │
-│  │    • Load command line arguments                         │  │
-│  │    • Profile activation (dev, prod, etc.)               │  │
-│  └──────────────────────────────────────────────────────────┘  │
+│  │    • Load application.properties / application.yml       │   │
+│  │    • Load environment variables                          │   │
+│  │    • Load command line arguments                         │   │
+│  │    • Profile activation (dev, prod, etc.)               │    │
+│  └──────────────────────────────────────────────────────────┘   │
 │                         │                                       │
 │                         ▼                                       │
-│  ┌──────────────────────────────────────────────────────────┐  │
+│  ┌──────────────────────────────────────────────────────────┐   │
 │  │ b) Print Banner                                           │  │
-│  │      ____          _            ____              _      │  │
-│  │     / ___| _ __  _(_)_ __   __ | __ )  ___   ___ | |_    │  │
-│  │     \___ \| '_ \| | | '_ \ / _`|  _ \ / _ \ / _ \| __|   │  │
+│  │      ____          _            ____              _      │   │
+│  │     / ___| _ __  _(_)_ __   __ | __ )  ___   ___ | |_    │   │
+│  │     \___ \| '_ \| | | '_ \ / _`|  _ \ / _ \ / _ \| __|   │   │
 │  │      ___) | |_) | | | | | | (_| | |_) | (_) | (_) | |_    │  │
 │  │     |____/| .__/|_|_|_| |_|\__, |____/ \___/ \___/ \__|   │  │
 │  │           |_|              |___/                          │  │
-│  └──────────────────────────────────────────────────────────┘  │
+│  └──────────────────────────────────────────────────────────┘   │
 │                         │                                       │
 │                         ▼                                       │
-│  ┌──────────────────────────────────────────────────────────┐  │
+│  ┌──────────────────────────────────────────────────────────┐   │
 │  │ c) Create ApplicationContext                              │  │
 │  │                                                           │  │
-│  │    Web App → AnnotationConfigServletWebServerContext     │  │
+│  │    Web App → AnnotationConfigServletWebServerContext     │   │
 │  │                                                           │  │
-│  │    This is the IoC Container that will hold all beans    │  │
-│  └──────────────────────────────────────────────────────────┘  │
+│  │    This is the IoC Container that will hold all beans    │   │
+│  └──────────────────────────────────────────────────────────┘   │
 │                         │                                       │
 │                         ▼                                       │
-│  ┌──────────────────────────────────────────────────────────┐  │
+│  ┌──────────────────────────────────────────────────────────┐   │
 │  │ d) COMPONENT SCANNING (Most Important!)                   │  │
 │  │                                                           │  │
-│  │    @SpringBootApplication includes @ComponentScan        │  │
+│  │    @SpringBootApplication includes @ComponentScan        │   │
 │  │                                                           │  │
-│  │    Scans packages for:                                   │  │
-│  │    • @Component                                          │  │
-│  │    • @Service                                            │  │
-│  │    • @Repository                                         │  │
-│  │    • @Controller / @RestController                       │  │
-│  │    • @Configuration                                      │  │
+│  │    Scans packages for:                                   │   │
+│  │    • @Component                                          │   │
+│  │    • @Service                                            │   │
+│  │    • @Repository                                         │   │
+│  │    • @Controller / @RestController                       │   │
+│  │    • @Configuration                                      │   │
 │  │                                                           │  │
-│  │    For each found class:                                 │  │
-│  │    → Create bean definition                              │  │
-│  │    → Check @Autowired dependencies                       │  │
-│  │    → Add to bean registry                                │  │
-│  └──────────────────────────────────────────────────────────┘  │
+│  │    For each found class:                                 │   │
+│  │    → Create bean definition                              │   │
+│  │    → Check @Autowired dependencies                       │   │
+│  │    → Add to bean registry                                │   │
+│  └──────────────────────────────────────────────────────────┘   │
 │                         │                                       │
 │                         ▼                                       │
-│  ┌──────────────────────────────────────────────────────────┐  │
+│  ┌──────────────────────────────────────────────────────────┐   │
 │  │ e) AUTO-CONFIGURATION                                     │  │
 │  │                                                           │  │
-│  │    Spring Boot reads: META-INF/spring.factories          │  │
+│  │    Spring Boot reads: META-INF/spring.factories          │   │
 │  │                                                           │  │
-│  │    Conditional auto-configs:                             │  │
-│  │    @ConditionalOnClass(DataSource.class)                │  │
-│  │    → If H2/MySQL driver present → Configure DataSource   │  │
+│  │    Conditional auto-configs:                             │   │
+│  │    @ConditionalOnClass(DataSource.class)                │    │
+│  │    → If H2/MySQL driver present → Configure DataSource   │   │
 │  │                                                           │  │
-│  │    @ConditionalOnMissingBean                             │  │
-│  │    → Only create if user hasn't defined their own       │  │
+│  │    @ConditionalOnMissingBean                             │   │
+│  │    → Only create if user hasn't defined their own       │    │
 │  │                                                           │  │
 │  │    Examples:                                              │  │
-│  │    • DataSourceAutoConfiguration                         │  │
-│  │    • JpaAutoConfiguration                                │  │
-│  │    • WebMvcAutoConfiguration                             │  │
-│  │    • TomcatAutoConfiguration                             │  │
-│  └──────────────────────────────────────────────────────────┘  │
+│  │    • DataSourceAutoConfiguration                         │   │
+│  │    • JpaAutoConfiguration                                │   │
+│  │    • WebMvcAutoConfiguration                             │   │
+│  │    • TomcatAutoConfiguration                             │   │
+│  └──────────────────────────────────────────────────────────┘   │
 │                         │                                       │
 │                         ▼                                       │
-│  ┌──────────────────────────────────────────────────────────┐  │
+│  ┌──────────────────────────────────────────────────────────┐   │
 │  │ f) BEAN INSTANTIATION (Dependency Injection)              │  │
 │  │                                                           │  │
-│  │    Order:                                                │  │
-│  │    1. Instantiate beans with no dependencies             │  │
-│  │    2. Inject dependencies into beans that need them      │  │
-│  │    3. Call @PostConstruct methods                        │  │
-│  │    4. Call InitializingBean.afterPropertiesSet()        │  │
+│  │    Order:                                                │   │
+│  │    1. Instantiate beans with no dependencies             │   │
+│  │    2. Inject dependencies into beans that need them      │   │
+│  │    3. Call @PostConstruct methods                        │   │
+│  │    4. Call InitializingBean.afterPropertiesSet()        │    │
 │  │                                                           │  │
 │  │    Example:                                               │  │
-│  │    @Service                                              │  │
-│  │    public class UserService {                            │  │
-│  │        @Autowired  // Spring injects this!              │  │
-│  │        private UserRepository repo;                      │  │
+│  │    @Service                                              │   │
+│  │    public class UserService {                            │   │
+│  │        @Autowired  // Spring injects this!              │    │
+│  │        private UserRepository repo;                      │   │
 │  │    }                                                      │  │
 │  │                                                           │  │
 │  │    Spring:                                                │  │
-│  │    1. Create UserRepository instance                     │  │
-│  │    2. Create UserService instance                        │  │
-│  │    3. Inject repo into UserService                       │  │
-│  └──────────────────────────────────────────────────────────┘  │
+│  │    1. Create UserRepository instance                     │   │
+│  │    2. Create UserService instance                        │   │
+│  │    3. Inject repo into UserService                       │   │
+│  └──────────────────────────────────────────────────────────┘   │
 │                         │                                       │
 │                         ▼                                       │
-│  ┌──────────────────────────────────────────────────────────┐  │
+│  ┌──────────────────────────────────────────────────────────┐   │
 │  │ g) START EMBEDDED SERVER                                  │  │
 │  │                                                           │  │
-│  │    TomcatWebServer:                                      │  │
-│  │    • Create Tomcat instance                              │  │
-│  │    • Configure connectors (port 8080)                    │  │
-│  │    • Register DispatcherServlet                          │  │
-│  │    • Start listening for connections                     │  │
+│  │    TomcatWebServer:                                      │   │
+│  │    • Create Tomcat instance                              │   │
+│  │    • Configure connectors (port 8080)                    │   │
+│  │    • Register DispatcherServlet                          │   │
+│  │    • Start listening for connections                     │   │
 │  │                                                           │  │
-│  │    Log: Tomcat started on port(s): 8080 (http)          │  │
-│  └──────────────────────────────────────────────────────────┘  │
+│  │    Log: Tomcat started on port(s): 8080 (http)          │    │
+│  └──────────────────────────────────────────────────────────┘   │
 │                         │                                       │
 │                         ▼                                       │
-│  ┌──────────────────────────────────────────────────────────┐  │
+│  ┌──────────────────────────────────────────────────────────┐   │
 │  │ h) APPLICATION READY                                      │  │
 │  │                                                           │  │
-│  │    Publish ApplicationReadyEvent                         │  │
-│  │    Log: Started MyApp in 2.345 seconds                   │  │
+│  │    Publish ApplicationReadyEvent                         │   │
+│  │    Log: Started MyApp in 2.345 seconds                   │   │
 │  │                                                           │  │
-│  │    Your app is now ready to receive requests!            │  │
-│  └──────────────────────────────────────────────────────────┘  │
-│                                                                  │
+│  │    Your app is now ready to receive requests!            │   │
+│  └──────────────────────────────────────────────────────────┘   │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1565,213 +1565,213 @@ COMPLETE REQUEST LIFECYCLE IN SPRING BOOT:
 Client sends: GET /api/users/123
 
 ┌─────────────────────────────────────────────────────────────────┐
-│              HTTP REQUEST JOURNEY                                │
+│              HTTP REQUEST JOURNEY                               │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  STEP 1: TOMCAT RECEIVES REQUEST                                │
 │  ───────────────────────────────                                │
-│                                                                  │
-│  ┌─────────────────────────────────────────────────────────┐   │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐    │
 │  │                      TOMCAT                              │   │
 │  │                                                          │   │
-│  │  Thread Pool: [T1] [T2] [T3] ... [T200]                 │   │
+│  │  Thread Pool: [T1] [T2] [T3] ... [T200]                 │    │
 │  │                                                          │   │
-│  │  New request arrives:                                   │   │
-│  │  → Assign thread T1 to handle it                        │   │
-│  │  → T1 will process entire request                       │   │
+│  │  New request arrives:                                   │    │
+│  │  → Assign thread T1 to handle it                        │    │
+│  │  → T1 will process entire request                       │    │
 │  │                                                          │   │
-│  │  socket.read() → Parse HTTP:                            │   │
-│  │  • Method: GET                                          │   │
-│  │  • Path: /api/users/123                                 │   │
-│  │  • Headers: Accept, Content-Type, Authorization...      │   │
+│  │  socket.read() → Parse HTTP:                            │    │
+│  │  • Method: GET                                          │    │
+│  │  • Path: /api/users/123                                 │    │
+│  │  • Headers: Accept, Content-Type, Authorization...      │    │
 │  │                                                          │   │
 │  │  Create:                                                 │   │
-│  │  • HttpServletRequest object                            │   │
-│  │  • HttpServletResponse object                           │   │
+│  │  • HttpServletRequest object                            │    │
+│  │  • HttpServletResponse object                           │    │
 │  │                                                          │   │
-│  └──────────────────────────┬──────────────────────────────┘   │
+│  └──────────────────────────┬──────────────────────────────┘    │
 │                             │                                   │
 │                             ▼                                   │
-│  STEP 2: FILTER CHAIN                                          │
-│  ────────────────────                                          │
-│                                                                  │
-│  ┌─────────────────────────────────────────────────────────┐   │
+│  STEP 2: FILTER CHAIN                                           │
+│  ────────────────────                                           │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐    │
 │  │                   FILTER CHAIN                           │   │
 │  │                                                          │   │
-│  │  Request passes through filters (in order):             │   │
+│  │  Request passes through filters (in order):             │    │
 │  │                                                          │   │
-│  │  1. CharacterEncodingFilter                             │   │
-│  │     → Set UTF-8 encoding                                │   │
+│  │  1. CharacterEncodingFilter                             │    │
+│  │     → Set UTF-8 encoding                                │    │
 │  │                                                          │   │
-│  │  2. CorsFilter (if configured)                          │   │
-│  │     → Check CORS headers                                │   │
+│  │  2. CorsFilter (if configured)                          │    │
+│  │     → Check CORS headers                                │    │
 │  │                                                          │   │
-│  │  3. SecurityFilterChain (Spring Security)               │   │
-│  │     → Authentication                                    │   │
+│  │  3. SecurityFilterChain (Spring Security)               │    │
+│  │     → Authentication                                    │    │
 │  │     → Authorization                                      │   │
-│  │     → CSRF check                                        │   │
-│  │     → Session management                                │   │
+│  │     → CSRF check                                        │    │
+│  │     → Session management                                │    │
 │  │                                                          │   │
-│  │  4. Custom filters...                                   │   │
+│  │  4. Custom filters...                                   │    │
 │  │                                                          │   │
-│  │  chain.doFilter(request, response);                     │   │
+│  │  chain.doFilter(request, response);                     │    │
 │  │                                                          │   │
-│  └──────────────────────────┬──────────────────────────────┘   │
+│  └──────────────────────────┬──────────────────────────────┘    │
 │                             │                                   │
 │                             ▼                                   │
-│  STEP 3: DISPATCHER SERVLET                                    │
-│  ──────────────────────────                                    │
-│                                                                  │
-│  ┌─────────────────────────────────────────────────────────┐   │
+│  STEP 3: DISPATCHER SERVLET                                     │
+│  ──────────────────────────                                     │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐    │
 │  │                DISPATCHER SERVLET                        │   │
 │  │            (Front Controller Pattern)                    │   │
 │  │                                                          │   │
-│  │  a) HANDLER MAPPING                                     │   │
-│  │     "Which controller handles /api/users/123?"          │   │
+│  │  a) HANDLER MAPPING                                     │    │
+│  │     "Which controller handles /api/users/123?"          │    │
 │  │                                                          │   │
-│  │     Check RequestMappingHandlerMapping:                 │   │
-│  │     • GET /api/users/{id} → UserController.getUser()    │   │
+│  │     Check RequestMappingHandlerMapping:                 │    │
+│  │     • GET /api/users/{id} → UserController.getUser()    │    │
 │  │                                                          │   │
-│  │     Found: UserController, method getUser               │   │
+│  │     Found: UserController, method getUser               │    │
 │  │                                                          │   │
-│  │  b) BUILD HANDLER EXECUTION CHAIN                       │   │
-│  │     • HandlerMethod (the controller method)             │   │
-│  │     • Interceptors (pre/post processing)                │   │
+│  │  b) BUILD HANDLER EXECUTION CHAIN                       │    │
+│  │     • HandlerMethod (the controller method)             │    │
+│  │     • Interceptors (pre/post processing)                │    │
 │  │                                                          │   │
-│  └──────────────────────────┬──────────────────────────────┘   │
+│  └──────────────────────────┬──────────────────────────────┘    │
 │                             │                                   │
 │                             ▼                                   │
-│  STEP 4: INTERCEPTORS (preHandle)                              │
-│  ────────────────────────────────                              │
-│                                                                  │
-│  ┌─────────────────────────────────────────────────────────┐   │
+│  STEP 4: INTERCEPTORS (preHandle)                               │
+│  ────────────────────────────────                               │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐    │
 │  │                  INTERCEPTORS                            │   │
 │  │                                                          │   │
-│  │  LoggingInterceptor.preHandle()                         │   │
-│  │  → Log request details                                  │   │
+│  │  LoggingInterceptor.preHandle()                         │    │
+│  │  → Log request details                                  │    │
 │  │                                                          │   │
-│  │  AuthInterceptor.preHandle()                            │   │
-│  │  → Verify JWT token, set user in context                │   │
+│  │  AuthInterceptor.preHandle()                            │    │
+│  │  → Verify JWT token, set user in context                │    │
 │  │                                                          │   │
-│  │  RateLimitInterceptor.preHandle()                       │   │
-│  │  → Check rate limit, reject if exceeded                 │   │
+│  │  RateLimitInterceptor.preHandle()                       │    │
+│  │  → Check rate limit, reject if exceeded                 │    │
 │  │                                                          │   │
-│  │  return true; → Continue to controller                  │   │
-│  │  return false; → Stop, send response                    │   │
+│  │  return true; → Continue to controller                  │    │
+│  │  return false; → Stop, send response                    │    │
 │  │                                                          │   │
-│  └──────────────────────────┬──────────────────────────────┘   │
+│  └──────────────────────────┬──────────────────────────────┘    │
 │                             │                                   │
 │                             ▼                                   │
-│  STEP 5: HANDLER ADAPTER                                       │
-│  ───────────────────────                                       │
-│                                                                  │
-│  ┌─────────────────────────────────────────────────────────┐   │
+│  STEP 5: HANDLER ADAPTER                                        │
+│  ───────────────────────                                        │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐    │
 │  │             HANDLER ADAPTER                              │   │
 │  │    (RequestMappingHandlerAdapter)                        │   │
 │  │                                                          │   │
-│  │  ARGUMENT RESOLUTION:                                   │   │
-│  │  ─────────────────────                                  │   │
+│  │  ARGUMENT RESOLUTION:                                   │    │
+│  │  ─────────────────────                                  │    │
 │  │                                                          │   │
-│  │  @GetMapping("/api/users/{id}")                         │   │
-│  │  public User getUser(@PathVariable Long id,             │   │
-│  │                      @RequestHeader("Auth") String token│   │
-│  │                      HttpServletRequest request) {...}  │   │
+│  │  @GetMapping("/api/users/{id}")                         │    │
+│  │  public User getUser(@PathVariable Long id,             │    │
+│  │                      @RequestHeader("Auth") String token│    │
+│  │                      HttpServletRequest request) {...}  │    │
 │  │                                                          │   │
-│  │  ArgumentResolvers:                                     │   │
-│  │  • PathVariableMethodArgumentResolver                   │   │
-│  │    → Extract "123" from URL, convert to Long            │   │
-│  │  • RequestHeaderMethodArgumentResolver                  │   │
-│  │    → Extract "Auth" header value                        │   │
-│  │  • ServletRequestMethodArgumentResolver                 │   │
-│  │    → Inject HttpServletRequest                          │   │
+│  │  ArgumentResolvers:                                     │    │
+│  │  • PathVariableMethodArgumentResolver                   │    │
+│  │    → Extract "123" from URL, convert to Long            │    │
+│  │  • RequestHeaderMethodArgumentResolver                  │    │
+│  │    → Extract "Auth" header value                        │    │
+│  │  • ServletRequestMethodArgumentResolver                 │    │
+│  │    → Inject HttpServletRequest                          │    │
 │  │                                                          │   │
-│  │  Now invoke: controller.getUser(123L, "token", request) │   │
+│  │  Now invoke: controller.getUser(123L, "token", request) │    │
 │  │                                                          │   │
-│  └──────────────────────────┬──────────────────────────────┘   │
+│  └──────────────────────────┬──────────────────────────────┘    │
 │                             │                                   │
 │                             ▼                                   │
-│  STEP 6: YOUR CONTROLLER CODE RUNS                             │
-│  ─────────────────────────────────                             │
-│                                                                  │
-│  ┌─────────────────────────────────────────────────────────┐   │
+│  STEP 6: YOUR CONTROLLER CODE RUNS                              │
+│  ─────────────────────────────────                              │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐    │
 │  │                YOUR CONTROLLER                           │   │
 │  │                                                          │   │
-│  │  @RestController                                        │   │
-│  │  @RequestMapping("/api/users")                          │   │
-│  │  public class UserController {                          │   │
+│  │  @RestController                                        │    │
+│  │  @RequestMapping("/api/users")                          │    │
+│  │  public class UserController {                          │    │
 │  │                                                          │   │
-│  │      @Autowired                                         │   │
-│  │      private UserService userService;                   │   │
+│  │      @Autowired                                         │    │
+│  │      private UserService userService;                   │    │
 │  │                                                          │   │
-│  │      @GetMapping("/{id}")                               │   │
-│  │      public User getUser(@PathVariable Long id) {       │   │
-│  │          return userService.findById(id);               │   │
+│  │      @GetMapping("/{id}")                               │    │
+│  │      public User getUser(@PathVariable Long id) {       │    │
+│  │          return userService.findById(id);               │    │
 │  │      }                                                   │   │
 │  │  }                                                       │   │
 │  │                                                          │   │
 │  │  Executes:                                               │   │
-│  │  1. Call userService.findById(123)                      │   │
-│  │  2. Service calls userRepository.findById(123)          │   │
-│  │  3. Repository generates SQL, queries database          │   │
+│  │  1. Call userService.findById(123)                      │    │
+│  │  2. Service calls userRepository.findById(123)          │    │
+│  │  3. Repository generates SQL, queries database          │    │
 │  │  4. Return User object                                   │   │
 │  │                                                          │   │
-│  └──────────────────────────┬──────────────────────────────┘   │
+│  └──────────────────────────┬──────────────────────────────┘    │
 │                             │                                   │
 │                             ▼                                   │
-│  STEP 7: RETURN VALUE HANDLING                                 │
-│  ─────────────────────────────                                 │
-│                                                                  │
-│  ┌─────────────────────────────────────────────────────────┐   │
+│  STEP 7: RETURN VALUE HANDLING                                  │
+│  ─────────────────────────────                                  │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐    │
 │  │            RETURN VALUE HANDLERS                         │   │
 │  │                                                          │   │
-│  │  Controller returns: User object                        │   │
+│  │  Controller returns: User object                        │    │
 │  │                                                          │   │
-│  │  @RestController includes @ResponseBody                 │   │
-│  │  → Use HttpMessageConverter                             │   │
+│  │  @RestController includes @ResponseBody                 │    │
+│  │  → Use HttpMessageConverter                             │    │
 │  │                                                          │   │
-│  │  Content negotiation (Accept header):                   │   │
-│  │  • Accept: application/json → MappingJackson2Converter │   │
-│  │  • Accept: application/xml → Jaxb2Converter            │   │
+│  │  Content negotiation (Accept header):                   │    │
+│  │  • Accept: application/json → MappingJackson2Converter │     │
+│  │  • Accept: application/xml → Jaxb2Converter            │     │
 │  │                                                          │   │
-│  │  Jackson serializes User to JSON:                       │   │
+│  │  Jackson serializes User to JSON:                       │    │
 │  │  {                                                       │   │
-│  │    "id": 123,                                           │   │
-│  │    "name": "John",                                      │   │
-│  │    "email": "john@example.com"                          │   │
+│  │    "id": 123,                                           │    │
+│  │    "name": "John",                                      │    │
+│  │    "email": "john@example.com"                          │    │
 │  │  }                                                       │   │
 │  │                                                          │   │
-│  └──────────────────────────┬──────────────────────────────┘   │
+│  └──────────────────────────┬──────────────────────────────┘    │
 │                             │                                   │
 │                             ▼                                   │
-│  STEP 8: INTERCEPTORS (postHandle)                             │
-│  ─────────────────────────────────                             │
-│                                                                  │
-│  ┌─────────────────────────────────────────────────────────┐   │
+│  STEP 8: INTERCEPTORS (postHandle)                              │
+│  ─────────────────────────────────                              │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐    │
 │  │                                                          │   │
-│  │  LoggingInterceptor.postHandle()                        │   │
-│  │  → Log response status, timing                          │   │
+│  │  LoggingInterceptor.postHandle()                        │    │
+│  │  → Log response status, timing                          │    │
 │  │                                                          │   │
-│  └──────────────────────────┬──────────────────────────────┘   │
+│  └──────────────────────────┬──────────────────────────────┘    │
 │                             │                                   │
 │                             ▼                                   │
-│  STEP 9: RESPONSE SENT                                         │
-│  ─────────────────────                                         │
-│                                                                  │
-│  ┌─────────────────────────────────────────────────────────┐   │
+│  STEP 9: RESPONSE SENT                                          │
+│  ─────────────────────                                          │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐    │
 │  │                                                          │   │
-│  │  HTTP/1.1 200 OK                                        │   │
-│  │  Content-Type: application/json                         │   │
-│  │  Content-Length: 67                                     │   │
+│  │  HTTP/1.1 200 OK                                        │    │
+│  │  Content-Type: application/json                         │    │
+│  │  Content-Length: 67                                     │    │
 │  │                                                          │   │
-│  │  {"id":123,"name":"John","email":"john@example.com"}    │   │
+│  │  {"id":123,"name":"John","email":"john@example.com"}    │    │
 │  │                                                          │   │
-│  │  → Written to socket                                    │   │
-│  │  → Thread T1 released back to pool                      │   │
+│  │  → Written to socket                                    │    │
+│  │  → Thread T1 released back to pool                      │    │
 │  │                                                          │   │
-│  └─────────────────────────────────────────────────────────┘   │
-│                                                                  │
+│  └─────────────────────────────────────────────────────────┘    │
+│                                                                 │
 │  TOTAL TIME: ~50ms                                              │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1784,116 +1784,116 @@ WHAT HAPPENS WHEN YOU CALL repository.findById():
 Code: User user = userRepository.findById(123L);
 
 ┌─────────────────────────────────────────────────────────────────┐
-│              JPA QUERY EXECUTION                                 │
+│              JPA QUERY EXECUTION                                │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  1. SPRING DATA JPA                                             │
 │  ───────────────────                                            │
-│                                                                  │
+│                                                                 │
 │  UserRepository extends JpaRepository<User, Long>               │
-│                                                                  │
-│  Spring Data JPA creates proxy at startup:                     │
+│                                                                 │
+│  Spring Data JPA creates proxy at startup:                      │
 │  → Generates implementation for findById()                      │
-│  → Uses JPA EntityManager internally                           │
-│                                                                  │
-│                                                                  │
+│  → Uses JPA EntityManager internally                            │
+│                                                                 │
+│                                                                 │
 │  2. ENTITY MANAGER                                              │
 │  ────────────────                                               │
-│                                                                  │
-│  entityManager.find(User.class, 123L);                         │
-│                                                                  │
-│  First, check FIRST-LEVEL CACHE (Persistence Context):         │
-│  ┌─────────────────────────────────────────────────────────┐   │
+│                                                                 │
+│  entityManager.find(User.class, 123L);                          │
+│                                                                 │
+│  First, check FIRST-LEVEL CACHE (Persistence Context):          │
+│  ┌─────────────────────────────────────────────────────────┐    │
 │  │              PERSISTENCE CONTEXT                         │   │
 │  │                  (Session)                               │   │
 │  │                                                          │   │
-│  │  Cache: { User#123 → null } // Not found                │   │
+│  │  Cache: { User#123 → null } // Not found                │    │
 │  │                                                          │   │
-│  │  If found: return cached entity (no DB query!)          │   │
-│  │  If not: continue to second-level cache or DB           │   │
+│  │  If found: return cached entity (no DB query!)          │    │
+│  │  If not: continue to second-level cache or DB           │    │
 │  │                                                          │   │
-│  └─────────────────────────────────────────────────────────┘   │
-│                                                                  │
-│                                                                  │
-│  3. SECOND-LEVEL CACHE (Optional, e.g., EhCache)               │
+│  └─────────────────────────────────────────────────────────┘    │
+│                                                                 │
+│                                                                 │
+│  3. SECOND-LEVEL CACHE (Optional, e.g., EhCache)                │
 │  ───────────────────────────────────────────────                │
-│                                                                  │
-│  @Cacheable on entity:                                         │
-│  ┌─────────────────────────────────────────────────────────┐   │
+│                                                                 │
+│  @Cacheable on entity:                                          │
+│  ┌─────────────────────────────────────────────────────────┐    │
 │  │              SECOND-LEVEL CACHE                          │   │
 │  │                                                          │   │
-│  │  Region: "users"                                        │   │
+│  │  Region: "users"                                        │    │
 │  │  Key: 123                                                │   │
-│  │  Value: null // Not cached                              │   │
+│  │  Value: null // Not cached                              │    │
 │  │                                                          │   │
-│  └─────────────────────────────────────────────────────────┘   │
-│                                                                  │
-│                                                                  │
+│  └─────────────────────────────────────────────────────────┘    │
+│                                                                 │
+│                                                                 │
 │  4. HIBERNATE GENERATES SQL                                     │
 │  ──────────────────────────                                     │
-│                                                                  │
-│  Hibernate: select u.id, u.name, u.email, u.created_at         │
+│                                                                 │
+│  Hibernate: select u.id, u.name, u.email, u.created_at          │
 │             from users u                                        │
 │             where u.id = ?                                      │
-│                                                                  │
-│                                                                  │
+│                                                                 │
+│                                                                 │
 │  5. JDBC LAYER                                                  │
 │  ────────────                                                   │
-│                                                                  │
-│  ┌─────────────────────────────────────────────────────────┐   │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐    │
 │  │                   HIKARI CP                              │   │
 │  │              (Connection Pool)                           │   │
 │  │                                                          │   │
-│  │  pool.getConnection();                                  │   │
-│  │  → Return available connection from pool                │   │
+│  │  pool.getConnection();                                  │    │
+│  │  → Return available connection from pool                │    │
 │  │                                                          │   │
-│  │  PreparedStatement ps = conn.prepareStatement(sql);     │   │
-│  │  ps.setLong(1, 123);                                    │   │
-│  │  ResultSet rs = ps.executeQuery();                      │   │
+│  │  PreparedStatement ps = conn.prepareStatement(sql);     │    │
+│  │  ps.setLong(1, 123);                                    │    │
+│  │  ResultSet rs = ps.executeQuery();                      │    │
 │  │                                                          │   │
-│  └──────────────────────────┬──────────────────────────────┘   │
+│  └──────────────────────────┬──────────────────────────────┘    │
 │                             │                                   │
 │                             ▼                                   │
 │  6. DATABASE EXECUTION                                          │
 │  ─────────────────────                                          │
-│                                                                  │
+│                                                                 │
 │  (As explained in Database Internals section)                   │
-│  → Parse → Optimize → Execute → Return rows                    │
-│                                                                  │
-│                                                                  │
+│  → Parse → Optimize → Execute → Return rows                     │
+│                                                                 │
+│                                                                 │
 │  7. RESULT MAPPING                                              │
 │  ────────────────                                               │
-│                                                                  │
-│  ┌─────────────────────────────────────────────────────────┐   │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐    │
 │  │                                                          │   │
-│  │  ResultSet row:                                         │   │
-│  │  | id  | name  | email            | created_at    |     │   │
-│  │  | 123 | John  | john@example.com | 2024-01-15    |     │   │
+│  │  ResultSet row:                                         │    │
+│  │  | id  | name  | email            | created_at    |     │    │
+│  │  | 123 | John  | john@example.com | 2024-01-15    |     │    │
 │  │                                                          │   │
-│  │  Hibernate creates User object:                         │   │
-│  │  User user = new User();                                │   │
-│  │  user.setId(rs.getLong("id"));                          │   │
-│  │  user.setName(rs.getString("name"));                    │   │
-│  │  user.setEmail(rs.getString("email"));                  │   │
+│  │  Hibernate creates User object:                         │    │
+│  │  User user = new User();                                │    │
+│  │  user.setId(rs.getLong("id"));                          │    │
+│  │  user.setName(rs.getString("name"));                    │    │
+│  │  user.setEmail(rs.getString("email"));                  │    │
 │  │  ...                                                     │   │
 │  │                                                          │   │
-│  └─────────────────────────────────────────────────────────┘   │
-│                                                                  │
-│                                                                  │
+│  └─────────────────────────────────────────────────────────┘    │
+│                                                                 │
+│                                                                 │
 │  8. CACHE POPULATION                                            │
 │  ───────────────────                                            │
-│                                                                  │
-│  • Add to first-level cache (Persistence Context)              │
-│  • Add to second-level cache (if enabled)                      │
-│                                                                  │
-│  Next call to findById(123) will return cached entity!         │
-│                                                                  │
-│                                                                  │
+│                                                                 │
+│  • Add to first-level cache (Persistence Context)               │
+│  • Add to second-level cache (if enabled)                       │
+│                                                                 │
+│  Next call to findById(123) will return cached entity!          │
+│                                                                 │
+│                                                                 │
 │  9. RETURN ENTITY                                               │
 │  ───────────────                                                │
-│                                                                  │
-│  return user; // Managed entity in Persistence Context         │
-│                                                                  │
+│                                                                 │
+│  return user; // Managed entity in Persistence Context          │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 
 
@@ -1935,85 +1935,85 @@ public class UserService {
 }
 
 ┌─────────────────────────────────────────────────────────────────┐
-│              @TRANSACTIONAL EXECUTION                            │
+│              @TRANSACTIONAL EXECUTION                           │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  SPRING AOP PROXY:                                              │
 │  ─────────────────                                              │
-│                                                                  │
-│  At startup, Spring creates proxy around UserService:          │
-│                                                                  │
-│  ┌─────────────────────────────────────────────────────────┐   │
+│                                                                 │
+│  At startup, Spring creates proxy around UserService:           │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐    │
 │  │                   PROXY                                  │   │
 │  │                                                          │   │
-│  │  public void transferMoney(...) {                       │   │
-│  │      // Before advice                                   │   │
-│  │      TransactionStatus tx = txManager.getTransaction(); │   │
+│  │  public void transferMoney(...) {                       │    │
+│  │      // Before advice                                   │    │
+│  │      TransactionStatus tx = txManager.getTransaction(); │    │
 │  │                                                          │   │
 │  │      try {                                               │   │
-│  │          // Call actual method                          │   │
-│  │          target.transferMoney(fromId, toId, amount);    │   │
+│  │          // Call actual method                          │    │
+│  │          target.transferMoney(fromId, toId, amount);    │    │
 │  │                                                          │   │
-│  │          // After returning advice                      │   │
-│  │          txManager.commit(tx);                          │   │
+│  │          // After returning advice                      │    │
+│  │          txManager.commit(tx);                          │    │
 │  │                                                          │   │
-│  │      } catch (Exception e) {                            │   │
-│  │          // After throwing advice                       │   │
-│  │          txManager.rollback(tx);                        │   │
+│  │      } catch (Exception e) {                            │    │
+│  │          // After throwing advice                       │    │
+│  │          txManager.rollback(tx);                        │    │
 │  │          throw e;                                        │   │
 │  │      }                                                   │   │
 │  │  }                                                       │   │
 │  │                                                          │   │
-│  └─────────────────────────────────────────────────────────┘   │
-│                                                                  │
-│                                                                  │
-│  DIRTY CHECKING (How save happens without save()):             │
-│  ─────────────────────────────────────────────────             │
-│                                                                  │
+│  └─────────────────────────────────────────────────────────┘    │
+│                                                                 │
+│                                                                 │
+│  DIRTY CHECKING (How save happens without save()):              │
+│  ─────────────────────────────────────────────────              │
+│                                                                 │
 │  When transaction starts:                                       │
-│  ┌─────────────────────────────────────────────────────────┐   │
+│  ┌─────────────────────────────────────────────────────────┐    │
 │  │  Persistence Context tracks:                             │   │
 │  │                                                          │   │
-│  │  Entity        Original Values       Current Values     │   │
-│  │  ────────────────────────────────────────────────────   │   │
-│  │  Account#1     balance: 1000          balance: 900      │   │
-│  │  Account#2     balance: 500           balance: 600      │   │
+│  │  Entity        Original Values       Current Values     │    │
+│  │  ────────────────────────────────────────────────────   │    │
+│  │  Account#1     balance: 1000          balance: 900      │    │
+│  │  Account#2     balance: 500           balance: 600      │    │
 │  │                                                          │   │
-│  └─────────────────────────────────────────────────────────┘   │
-│                                                                  │
+│  └─────────────────────────────────────────────────────────┘    │
+│                                                                 │
 │  At commit time (flush):                                        │
-│  • Compare original vs current                                 │
-│  • Generate UPDATE statements for changed entities             │
-│                                                                  │
-│  UPDATE accounts SET balance = 900 WHERE id = 1;               │
-│  UPDATE accounts SET balance = 600 WHERE id = 2;               │
-│                                                                  │
-│                                                                  │
+│  • Compare original vs current                                  │
+│  • Generate UPDATE statements for changed entities              │
+│                                                                 │
+│  UPDATE accounts SET balance = 900 WHERE id = 1;                │
+│  UPDATE accounts SET balance = 600 WHERE id = 2;                │
+│                                                                 │
+│                                                                 │
 │  PROPAGATION LEVELS:                                            │
 │  ──────────────────                                             │
-│                                                                  │
-│  @Transactional(propagation = Propagation.REQUIRED)  // Default│
-│  → Join existing tx or create new one                          │
-│                                                                  │
-│  @Transactional(propagation = Propagation.REQUIRES_NEW)        │
-│  → Always create new tx, suspend existing                      │
-│                                                                  │
-│  @Transactional(propagation = Propagation.NESTED)              │
-│  → Create savepoint within existing tx                         │
-│                                                                  │
-│                                                                  │
+│                                                                 │
+│  @Transactional(propagation = Propagation.REQUIRED)  // Default │
+│  → Join existing tx or create new one                           │
+│                                                                 │
+│  @Transactional(propagation = Propagation.REQUIRES_NEW)         │
+│  → Always create new tx, suspend existing                       │
+│                                                                 │
+│  @Transactional(propagation = Propagation.NESTED)               │
+│  → Create savepoint within existing tx                          │
+│                                                                 │
+│                                                                 │
 │  ISOLATION LEVELS:                                              │
 │  ────────────────                                               │
-│                                                                  │
-│  @Transactional(isolation = Isolation.READ_COMMITTED)          │
-│  → Can't read uncommitted changes from other tx                │
-│                                                                  │
-│  @Transactional(isolation = Isolation.REPEATABLE_READ)         │
-│  → Same query returns same results within tx                   │
-│                                                                  │
-│  @Transactional(isolation = Isolation.SERIALIZABLE)            │
-│  → Fully isolated (slowest, safest)                            │
-│                                                                  │
+│                                                                 │
+│  @Transactional(isolation = Isolation.READ_COMMITTED)           │
+│  → Can't read uncommitted changes from other tx                 │
+│                                                                 │
+│  @Transactional(isolation = Isolation.REPEATABLE_READ)          │
+│  → Same query returns same results within tx                    │
+│                                                                 │
+│  @Transactional(isolation = Isolation.SERIALIZABLE)             │
+│  → Fully isolated (slowest, safest)                             │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -2029,29 +2029,29 @@ _Stage 3 Complete! Ready for Stage 4: DevOps & Networking Deep Dive_
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    DEVOPS INFINITY LOOP                          │
+│                    DEVOPS INFINITY LOOP                         │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│            PLAN → CODE → BUILD → TEST                            │
-│           ↗                          ↘                           │
-│       MONITOR                          RELEASE                   │
-│           ↖                          ↙                           │
-│            OPERATE ← DEPLOY ← RELEASE                            │
-│                                                                  │
+│                                                                 │
+│            PLAN → CODE → BUILD → TEST                           │
+│           ↗                          ↘                          │
+│       MONITOR                          RELEASE                  │
+│           ↖                          ↙                          │
+│            OPERATE ← DEPLOY ← RELEASE                           │
+│                                                                 │
 │  DEV SIDE (Left):              OPS SIDE (Right):                │
 │  ├── Plan                      ├── Release                      │
 │  ├── Code                      ├── Deploy                       │
 │  ├── Build                     ├── Operate                      │
 │  └── Test                      └── Monitor                      │
-│                                                                  │
-│  KEY PRACTICES:                                                  │
+│                                                                 │
+│  KEY PRACTICES:                                                 │
 │  ├── Continuous Integration (CI)                                │
 │  ├── Continuous Delivery/Deployment (CD)                        │
 │  ├── Infrastructure as Code (IaC)                               │
 │  ├── Monitoring & Observability                                 │
 │  ├── Microservices Architecture                                 │
 │  └── Automated Testing                                          │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -2061,29 +2061,29 @@ _Stage 3 Complete! Ready for Stage 4: DevOps & Networking Deep Dive_
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                 KUBERNETES ARCHITECTURE                          │
+│                 KUBERNETES ARCHITECTURE                         │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  ┌───────────────────── CONTROL PLANE ─────────────────────┐    │
-│  │                                                          │    │
-│  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  │    │
-│  │  │ API Server   │  │  Scheduler   │  │  Controller  │  │    │
-│  │  │              │  │              │  │  Manager     │  │    │
-│  │  │ kubectl →    │  │ Pod to Node  │  │ Desired vs   │  │    │
-│  │  │ REST API     │  │ Assignment   │  │ Actual State │  │    │
-│  │  └──────────────┘  └──────────────┘  └──────────────┘  │    │
-│  │                                                          │    │
-│  │  ┌──────────────┐  ┌──────────────┐                    │    │
-│  │  │    etcd      │  │ Cloud        │                    │    │
-│  │  │              │  │ Controller   │                    │    │
-│  │  │ Key-Value    │  │ Manager      │                    │    │
-│  │  │ Store        │  │ (Optional)   │                    │    │
-│  │  └──────────────┘  └──────────────┘                    │    │
-│  └──────────────────────────────────────────────────────────┘    │
-│                              │                                   │
+│  │                                                          │   │
+│  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  │     │
+│  │  │ API Server   │  │  Scheduler   │  │  Controller  │  │     │
+│  │  │              │  │              │  │  Manager     │  │     │
+│  │  │ kubectl →    │  │ Pod to Node  │  │ Desired vs   │  │     │
+│  │  │ REST API     │  │ Assignment   │  │ Actual State │  │     │
+│  │  └──────────────┘  └──────────────┘  └──────────────┘  │     │
+│  │                                                          │   │
+│  │  ┌──────────────┐  ┌──────────────┐                    │     │
+│  │  │    etcd      │  │ Cloud        │                    │     │
+│  │  │              │  │ Controller   │                    │     │
+│  │  │ Key-Value    │  │ Manager      │                    │     │
+│  │  │ Store        │  │ (Optional)   │                    │     │
+│  │  └──────────────┘  └──────────────┘                    │     │
+│  └──────────────────────────────────────────────────────────┘   │
+│                              │                                  │
 │  ┌───────────────────────────┼───────────────────────────┐      │
-│  │                    WORKER NODES                        │      │
-│  │                           │                            │      │
+│  │                    WORKER NODES                        │     │
+│  │                           │                            │     │
 │  │  ┌────────────────────────┼────────────────────────┐  │      │
 │  │  │         NODE 1         │         NODE 2         │  │      │
 │  │  │  ┌─────────────────┐   │   ┌─────────────────┐  │  │      │
@@ -2092,12 +2092,12 @@ _Stage 3 Complete! Ready for Stage 4: DevOps & Networking Deep Dive_
 │  │  │  ┌─────────────────┐   │   ┌─────────────────┐  │  │      │
 │  │  │  │   Kube-Proxy    │   │   │   Kube-Proxy    │  │  │      │
 │  │  │  └─────────────────┘   │   └─────────────────┘  │  │      │
-│  │  │  ┌─────┐ ┌─────┐      │   ┌─────┐ ┌─────┐     │  │      │
-│  │  │  │ Pod │ │ Pod │      │   │ Pod │ │ Pod │     │  │      │
-│  │  │  └─────┘ └─────┘      │   └─────┘ └─────┘     │  │      │
+│  │  │  ┌─────┐ ┌─────┐      │   ┌─────┐ ┌─────┐     │  │        │
+│  │  │  │ Pod │ │ Pod │      │   │ Pod │ │ Pod │     │  │        │
+│  │  │  └─────┘ └─────┘      │   └─────┘ └─────┘     │  │        │
 │  │  └────────────────────────┴────────────────────────┘  │      │
-│  └────────────────────────────────────────────────────────┘      │
-│                                                                  │
+│  └────────────────────────────────────────────────────────┘     │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 

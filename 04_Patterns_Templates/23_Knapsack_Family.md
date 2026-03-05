@@ -6,22 +6,22 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│              THE KNAPSACK FAMILY TREE                            │
+│              THE KNAPSACK FAMILY TREE                           │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │                     KNAPSACK                                    │
-│                    /    |     \                                  │
+│                    /    |     \                                 │
 │                 0/1  Unbounded  Bounded                         │
 │                / | \     |         |                            │
-│       Subset  Target Partition  Coin    Rod                    │
-│        Sum     Sum    Equal    Change   Cut                    │
-│       (LC416) (LC494)(LC416)  (LC322) (GFG)                   │
+│       Subset  Target Partition  Coin    Rod                     │
+│        Sum     Sum    Equal    Change   Cut                     │
+│       (LC416) (LC494)(LC416)  (LC322) (GFG)                     │
 │                                  |                              │
-│                              Coin Ways                         │
+│                              Coin Ways                          │
 │                              (LC518)                            │
 │                                                                 │
 │  INSIGHT: ALL these problems share ONE core recurrence:         │
-│   dp[i][w] = max/min/count of (take item, skip item)           │
+│   dp[i][w] = max/min/count of (take item, skip item)            │
 │  The ONLY difference: 0/1 vs unbounded vs bounded.              │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
@@ -40,21 +40,21 @@
 │ THE REAL-WORLD ORIGIN                                                        │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ 📖 CARGO LOADING: A delivery truck has weight capacity W.                    │
+│ 📖 CARGO LOADING: A delivery truck has weight capacity W.                     │
 │    Each package has weight and profit. Maximize profit without               │
-│    exceeding capacity. This IS the 0/1 Knapsack.                            │
+│    exceeding capacity. This IS the 0/1 Knapsack.                             │
 │                                                                              │
-│ 📖 BUDGET ALLOCATION: Company has budget B. Projects have costs              │
-│    and expected returns. Pick subset to maximize ROI.                         │
+│ 📖 BUDGET ALLOCATION: Company has budget B. Projects have costs               │
+│    and expected returns. Pick subset to maximize ROI.                        │
 │                                                                              │
-│ 📖 CLOUD COST OPTIMIZATION: You have N instance types with different         │
+│ 📖 CLOUD COST OPTIMIZATION: You have N instance types with different          │
 │    CPU/memory/cost. Fill capacity constraints to minimize total cost.        │
 │    → Multi-dimensional knapsack.                                             │
 │                                                                              │
-│ 📖 CUTTING STOCK: Steel rod of length L. Cuts of length l₁,l₂,...          │
-│    sell for p₁,p₂,... Maximize revenue. Unlimited cuts → Unbounded.        │
+│ 📖 CUTTING STOCK: Steel rod of length L. Cuts of length l₁,l₂,...             │
+│    sell for p₁,p₂,... Maximize revenue. Unlimited cuts → Unbounded.          │
 │                                                                              │
-│ 📖 CRYPTOCURRENCY CHANGE: Exchange coins of denominations d₁,d₂,...         │
+│ 📖 CRYPTOCURRENCY CHANGE: Exchange coins of denominations d₁,d₂,...           │
 │    to make amount A. Minimum coins? That's Coin Change.                      │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
@@ -66,23 +66,23 @@
 │  TYPE 1: 0/1 KNAPSACK                                                        │
 │  Each item used AT MOST ONCE.                                                │
 │  Direction: iterate capacity RIGHT → LEFT (backward)                         │
-│  Why? Prevents reusing same item. Each dp[w] uses previous row's values.    │
+│  Why? Prevents reusing same item. Each dp[w] uses previous row's values.     │
 │                                                                              │
 │  TYPE 2: UNBOUNDED KNAPSACK                                                  │
 │  Each item used UNLIMITED times.                                             │
 │  Direction: iterate capacity LEFT → RIGHT (forward)                          │
-│  Why? dp[w-weight] already includes current item → reuse allowed.           │
+│  Why? dp[w-weight] already includes current item → reuse allowed.            │
 │                                                                              │
 │  TYPE 3: BOUNDED KNAPSACK (k copies each)                                    │
 │  Each item used at most k times.                                             │
-│  Technique: Binary splitting → reduce to 0/1 with log(k) virtual items.    │
+│  Technique: Binary splitting → reduce to 0/1 with log(k) virtual items.      │
 │                                                                              │
 │  ┌────────────────────────────────────────────────────────────────────┐      │
-│  │  HOW TO TELL WHICH TYPE:                                          │      │
-│  │  • "Each element at most once" → 0/1                              │      │
-│  │  • "Unlimited supply / coins / cuts" → Unbounded                  │      │
-│  │  • "At most k of each" → Bounded                                 │      │
-│  │  • "Subset of array" → 0/1 (each element used once)              │      │
+│  │  HOW TO TELL WHICH TYPE:                                          │       │
+│  │  • "Each element at most once" → 0/1                              │       │
+│  │  • "Unlimited supply / coins / cuts" → Unbounded                  │       │
+│  │  • "At most k of each" → Bounded                                 │        │
+│  │  • "Subset of array" → 0/1 (each element used once)              │        │
 │  └────────────────────────────────────────────────────────────────────┘      │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
@@ -93,23 +93,23 @@
 │                                                                              │
 │  For each item i with weight w_i and value v_i:                              │
 │                                                                              │
-│  0/1:       dp[w] = max(dp[w], dp[w - w_i] + v_i)    (iterate w: W → w_i) │
-│  Unbounded: dp[w] = max(dp[w], dp[w - w_i] + v_i)    (iterate w: w_i → W) │
+│  0/1:       dp[w] = max(dp[w], dp[w - w_i] + v_i)    (iterate w: W → w_i)    │
+│  Unbounded: dp[w] = max(dp[w], dp[w - w_i] + v_i)    (iterate w: w_i → W)    │
 │                                                                              │
 │  SAME FORMULA. Only the loop direction changes!                              │
 │                                                                              │
 │  For COUNTING variants (how many ways?):                                     │
-│    dp[w] += dp[w - w_i]                                                     │
+│    dp[w] += dp[w - w_i]                                                      │
 │                                                                              │
 │  For MINIMIZATION variants (min coins):                                      │
-│    dp[w] = min(dp[w], dp[w - w_i] + 1)                                     │
+│    dp[w] = min(dp[w], dp[w - w_i] + 1)                                       │
 │                                                                              │
 │  ┌────────────────────────────────────────────────────────────────────┐      │
-│  │ AGGREGATE FUNCTION determines the variant:                        │      │
-│  │  max(...)  → maximize value/profit                                │      │
-│  │  min(...)  → minimize cost/coins                                  │      │
-│  │  sum +=    → count number of ways                                 │      │
-│  │  || (OR)   → can we achieve target? (boolean)                     │      │
+│  │ AGGREGATE FUNCTION determines the variant:                        │       │
+│  │  max(...)  → maximize value/profit                                │       │
+│  │  min(...)  → minimize cost/coins                                  │       │
+│  │  sum +=    → count number of ways                                 │       │
+│  │  || (OR)   → can we achieve target? (boolean)                     │       │
 │  └────────────────────────────────────────────────────────────────────┘      │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
@@ -118,8 +118,8 @@
 │ THE TRANSFORMATION PIPELINE                                                  │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│  STEP 1: Identify → what's the "item"? what's the "weight/capacity"?        │
-│  STEP 2: Type → 0/1 or Unbounded?                                           │
+│  STEP 1: Identify → what's the "item"? what's the "weight/capacity"?         │
+│  STEP 2: Type → 0/1 or Unbounded?                                            │
 │  STEP 3: Objective → max, min, count, or boolean?                            │
 │  STEP 4: Write recurrence                                                    │
 │  STEP 5: Space optimize with 1D array + correct direction                    │
@@ -130,8 +130,8 @@
 │  ├──────────────────┼──────────┼───────────┼──────────┼───────────────┤      │
 │  │ 0/1 Knapsack     │ object   │ weight    │ 0/1      │ max profit    │      │
 │  │ Subset Sum       │ number   │ target    │ 0/1      │ boolean       │      │
-│  │ Partition Equal   │ number   │ sum/2     │ 0/1      │ boolean       │      │
-│  │ Target Sum ±      │ number   │ (S+T)/2   │ 0/1      │ count         │      │
+│  │ Partition Equal   │ number   │ sum/2     │ 0/1      │ boolean       │     │
+│  │ Target Sum ±      │ number   │ (S+T)/2   │ 0/1      │ count         │     │
 │  │ Coin Change      │ coin     │ amount    │ unbounded│ min count     │      │
 │  │ Coin Change II   │ coin     │ amount    │ unbounded│ count ways    │      │
 │  │ Rod Cutting      │ length   │ rod len   │ unbounded│ max profit    │      │
@@ -143,16 +143,16 @@
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ COMMON MISTAKES                                                              │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ 1. Wrong loop direction: RIGHT→LEFT for 0/1, LEFT→RIGHT for unbounded       │
+│ 1. Wrong loop direction: RIGHT→LEFT for 0/1, LEFT→RIGHT for unbounded        │
 │ 2. Confusing "count ways" with "count combinations":                         │
-│    • Items in outer loop, capacity inner → COMBINATIONS (no order)          │
-│    • Capacity in outer loop, items inner → PERMUTATIONS (order matters)     │
-│ 3. Wrong base case: dp[0] = 0 for min, dp[0] = 1 for count,               │
+│    • Items in outer loop, capacity inner → COMBINATIONS (no order)           │
+│    • Capacity in outer loop, items inner → PERMUTATIONS (order matters)      │
+│ 3. Wrong base case: dp[0] = 0 for min, dp[0] = 1 for count,                  │
 │    dp[0] = true for boolean                                                  │
 │ 4. Not handling impossible case: for min, init dp[] = Integer.MAX_VALUE      │
 │    except dp[0] = 0                                                          │
-│ 5. Off-by-one in 2D → 1D space optimization conversion                      │
-│ 6. Forgetting: Target Sum needs (target+sum)%2==0 check first               │
+│ 5. Off-by-one in 2D → 1D space optimization conversion                       │
+│ 6. Forgetting: Target Sum needs (target+sum)%2==0 check first                │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -447,25 +447,25 @@ COMPLEXITY: Time O(strs × m × n) | Space O(m × n)
 │                                                                              │
 │  Consider item: weight=2, value=3. Capacity W=6.                             │
 │                                                                              │
-│  0/1 KNAPSACK (RIGHT → LEFT):                                               │
-│  dp = [0, 0, 0, 0, 0, 0, 0]                                                │
+│  0/1 KNAPSACK (RIGHT → LEFT):                                                │
+│  dp = [0, 0, 0, 0, 0, 0, 0]                                                  │
 │                                                                              │
-│  w=6: dp[6] = max(dp[6], dp[4]+3) = 3    dp=[0,0,0,0,0,0,3]               │
-│  w=5: dp[5] = max(dp[5], dp[3]+3) = 3    dp=[0,0,0,0,0,3,3]               │
-│  w=4: dp[4] = max(dp[4], dp[2]+3) = 3    dp=[0,0,0,0,3,3,3]               │
-│  w=3: dp[3] = max(dp[3], dp[1]+3) = 3    dp=[0,0,0,3,3,3,3]               │
-│  w=2: dp[2] = max(dp[2], dp[0]+3) = 3    dp=[0,0,3,3,3,3,3]               │
-│  ✅ Item used only ONCE (dp[4] used old dp[2]=0, not the updated 3)        │
+│  w=6: dp[6] = max(dp[6], dp[4]+3) = 3    dp=[0,0,0,0,0,0,3]                  │
+│  w=5: dp[5] = max(dp[5], dp[3]+3) = 3    dp=[0,0,0,0,0,3,3]                  │
+│  w=4: dp[4] = max(dp[4], dp[2]+3) = 3    dp=[0,0,0,0,3,3,3]                  │
+│  w=3: dp[3] = max(dp[3], dp[1]+3) = 3    dp=[0,0,0,3,3,3,3]                  │
+│  w=2: dp[2] = max(dp[2], dp[0]+3) = 3    dp=[0,0,3,3,3,3,3]                  │
+│  ✅ Item used only ONCE (dp[4] used old dp[2]=0, not the updated 3)           │
 │                                                                              │
 │  UNBOUNDED KNAPSACK (LEFT → RIGHT):                                          │
-│  dp = [0, 0, 0, 0, 0, 0, 0]                                                │
+│  dp = [0, 0, 0, 0, 0, 0, 0]                                                  │
 │                                                                              │
-│  w=2: dp[2] = max(dp[2], dp[0]+3) = 3    dp=[0,0,3,0,0,0,0]               │
-│  w=3: dp[3] = max(dp[3], dp[1]+3) = 3    dp=[0,0,3,3,0,0,0]               │
-│  w=4: dp[4] = max(dp[4], dp[2]+3) = 6    dp=[0,0,3,3,6,0,0]  ← used new! │
-│  w=5: dp[5] = max(dp[5], dp[3]+3) = 6    dp=[0,0,3,3,6,6,0]               │
-│  w=6: dp[6] = max(dp[6], dp[4]+3) = 9    dp=[0,0,3,3,6,6,9]               │
-│  ✅ Item reused multiple times (dp[4] used updated dp[2]=3 → 2 copies)     │
+│  w=2: dp[2] = max(dp[2], dp[0]+3) = 3    dp=[0,0,3,0,0,0,0]                  │
+│  w=3: dp[3] = max(dp[3], dp[1]+3) = 3    dp=[0,0,3,3,0,0,0]                  │
+│  w=4: dp[4] = max(dp[4], dp[2]+3) = 6    dp=[0,0,3,3,6,0,0]  ← used new!     │
+│  w=5: dp[5] = max(dp[5], dp[3]+3) = 6    dp=[0,0,3,3,6,6,0]                  │
+│  w=6: dp[6] = max(dp[6], dp[4]+3) = 9    dp=[0,0,3,3,6,6,9]                  │
+│  ✅ Item reused multiple times (dp[4] used updated dp[2]=3 → 2 copies)        │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```

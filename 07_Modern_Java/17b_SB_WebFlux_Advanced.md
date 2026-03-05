@@ -797,74 +797,74 @@ public class BackpressureExamples {
 ## Chapter 11: Making the Right Choice
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────────────────────┐
 │              WEBFLUX vs MVC DECISION MATRIX                                      │
-├─────────────────────────────────────────────────────────────────────────────────┤
+├──────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                  │
-│  CHOOSE SPRING MVC WHEN:                                                        │
-│  ┌────────────────────────────────────────────────────────────────────────┐    │
-│  │ ✓ Traditional CRUD application                                         │    │
-│  │ ✓ Team is familiar with blocking paradigm                             │    │
-│  │ ✓ Using JPA/Hibernate (blocking by design)                           │    │
-│  │ ✓ Moderate traffic (hundreds/thousands RPS)                          │    │
-│  │ ✓ Complex business logic with many interconnected calls              │    │
-│  │ ✓ Need mature ecosystem (more libraries, tools)                      │    │
-│  └────────────────────────────────────────────────────────────────────────┘    │
+│  CHOOSE SPRING MVC WHEN:                                                         │
+│  ┌────────────────────────────────────────────────────────────────────────┐      │
+│  │ ✓ Traditional CRUD application                                         │      │
+│  │ ✓ Team is familiar with blocking paradigm                             │       │
+│  │ ✓ Using JPA/Hibernate (blocking by design)                           │        │
+│  │ ✓ Moderate traffic (hundreds/thousands RPS)                          │        │
+│  │ ✓ Complex business logic with many interconnected calls              │        │
+│  │ ✓ Need mature ecosystem (more libraries, tools)                      │        │
+│  └────────────────────────────────────────────────────────────────────────┘      │
 │                                                                                  │
-│  CHOOSE SPRING WEBFLUX WHEN:                                                    │
-│  ┌────────────────────────────────────────────────────────────────────────┐    │
-│  │ ✓ High concurrency (10K+ simultaneous connections)                    │    │
-│  │ ✓ Streaming data (real-time feeds, SSE, WebSocket)                   │    │
-│  │ ✓ Microservices with many external calls (API Gateway)               │    │
-│  │ ✓ Event-driven architecture                                           │    │
-│  │ ✓ Limited resources (need efficiency)                                 │    │
-│  │ ✓ Team comfortable with reactive programming                         │    │
-│  └────────────────────────────────────────────────────────────────────────┘    │
+│  CHOOSE SPRING WEBFLUX WHEN:                                                     │
+│  ┌────────────────────────────────────────────────────────────────────────┐      │
+│  │ ✓ High concurrency (10K+ simultaneous connections)                    │       │
+│  │ ✓ Streaming data (real-time feeds, SSE, WebSocket)                   │        │
+│  │ ✓ Microservices with many external calls (API Gateway)               │        │
+│  │ ✓ Event-driven architecture                                           │       │
+│  │ ✓ Limited resources (need efficiency)                                 │       │
+│  │ ✓ Team comfortable with reactive programming                         │        │
+│  └────────────────────────────────────────────────────────────────────────┘      │
 │                                                                                  │
-│  ⚠️ DON'T USE WEBFLUX IF:                                                      │
-│  ┌────────────────────────────────────────────────────────────────────────┐    │
-│  │ ✗ Need JPA relationships (@OneToMany, @ManyToOne)                    │    │
-│  │ ✗ Team unfamiliar with reactive concepts                             │    │
-│  │ ✗ Need blocking libraries without reactive alternatives              │    │
-│  │ ✗ Simple CRUD without high concurrency needs                         │    │
-│  └────────────────────────────────────────────────────────────────────────┘    │
+│  ⚠️ DON'T USE WEBFLUX IF:                                                        │
+│  ┌────────────────────────────────────────────────────────────────────────┐      │
+│  │ ✗ Need JPA relationships (@OneToMany, @ManyToOne)                    │        │
+│  │ ✗ Team unfamiliar with reactive concepts                             │        │
+│  │ ✗ Need blocking libraries without reactive alternatives              │        │
+│  │ ✗ Simple CRUD without high concurrency needs                         │        │
+│  └────────────────────────────────────────────────────────────────────────┘      │
 │                                                                                  │
-└─────────────────────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────────────────────┘
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────────────────────┐
 │              COMMON MISTAKES TO AVOID                                            │
-├─────────────────────────────────────────────────────────────────────────────────┤
+├──────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                  │
-│  1. BLOCKING IN REACTIVE CODE                                                   │
-│     ❌ BAD:                                                                     │
-│     Mono.just(repository.findById(id))  // Blocking call!                      │
+│  1. BLOCKING IN REACTIVE CODE                                                    │
+│     ❌ BAD:                                                                       │
+│     Mono.just(repository.findById(id))  // Blocking call!                        │
 │                                                                                  │
-│     ✅ GOOD:                                                                    │
-│     Mono.fromCallable(() -> repository.findById(id))                           │
-│         .subscribeOn(Schedulers.boundedElastic())                              │
+│     ✅ GOOD:                                                                      │
+│     Mono.fromCallable(() -> repository.findById(id))                             │
+│         .subscribeOn(Schedulers.boundedElastic())                                │
 │                                                                                  │
-│  2. NOT SUBSCRIBING                                                             │
-│     ❌ BAD:                                                                     │
-│     userService.createUser(request);  // Nothing happens!                      │
+│  2. NOT SUBSCRIBING                                                              │
+│     ❌ BAD:                                                                       │
+│     userService.createUser(request);  // Nothing happens!                        │
 │                                                                                  │
-│     ✅ GOOD:                                                                    │
-│     return userService.createUser(request);  // Let Spring subscribe          │
+│     ✅ GOOD:                                                                      │
+│     return userService.createUser(request);  // Let Spring subscribe             │
 │                                                                                  │
-│  3. USING .block() IN REACTIVE CODE                                            │
-│     ❌ BAD:                                                                     │
-│     User user = userService.findById(id).block();  // Defeats purpose!        │
+│  3. USING .block() IN REACTIVE CODE                                              │
+│     ❌ BAD:                                                                       │
+│     User user = userService.findById(id).block();  // Defeats purpose!           │
 │                                                                                  │
-│     ✅ GOOD:                                                                    │
-│     return userService.findById(id).map(this::process);                        │
+│     ✅ GOOD:                                                                      │
+│     return userService.findById(id).map(this::process);                          │
 │                                                                                  │
-│  4. MIXING MVC AND WEBFLUX DEPENDENCIES                                        │
-│     ❌ BAD:                                                                     │
-│     Including both spring-boot-starter-web AND spring-boot-starter-webflux    │
+│  4. MIXING MVC AND WEBFLUX DEPENDENCIES                                          │
+│     ❌ BAD:                                                                       │
+│     Including both spring-boot-starter-web AND spring-boot-starter-webflux       │
 │                                                                                  │
-│     ✅ GOOD:                                                                    │
-│     Use only one (Spring Boot uses MVC if both present)                        │
+│     ✅ GOOD:                                                                      │
+│     Use only one (Spring Boot uses MVC if both present)                          │
 │                                                                                  │
-└─────────────────────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Complete WebFlux Application Example
@@ -1074,52 +1074,52 @@ public class ProductController {
 ## Key Operators Cheat Sheet
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────────────────────┐
 │              REACTIVE OPERATORS QUICK REFERENCE                                  │
-├─────────────────────────────────────────────────────────────────────────────────┤
+├──────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                  │
 │  CREATION:                                                                       │
-│  Mono.just(T)           | Single value                                          │
-│  Mono.empty()           | No value                                              │
-│  Mono.error(ex)         | Error signal                                          │
-│  Mono.defer(() -> ...)  | Lazy creation                                         │
-│  Flux.just(T...)        | From values                                           │
-│  Flux.range(start, n)   | Integer range                                         │
-│  Flux.interval(dur)     | Periodic emission                                     │
-│  Flux.fromIterable()    | From collection                                       │
+│  Mono.just(T)           | Single value                                           │
+│  Mono.empty()           | No value                                               │
+│  Mono.error(ex)         | Error signal                                           │
+│  Mono.defer(() -> ...)  | Lazy creation                                          │
+│  Flux.just(T...)        | From values                                            │
+│  Flux.range(start, n)   | Integer range                                          │
+│  Flux.interval(dur)     | Periodic emission                                      │
+│  Flux.fromIterable()    | From collection                                        │
 │                                                                                  │
 │  TRANSFORMATION:                                                                 │
-│  .map(fn)               | Transform each element                                │
-│  .flatMap(fn)           | Transform to Publisher, flatten (async)              │
-│  .concatMap(fn)         | Like flatMap but ordered                              │
-│  .filter(pred)          | Keep matching elements                                │
-│  .take(n)               | First n elements                                      │
-│  .skip(n)               | Skip first n                                          │
-│  .distinct()            | Remove duplicates                                     │
+│  .map(fn)               | Transform each element                                 │
+│  .flatMap(fn)           | Transform to Publisher, flatten (async)                │
+│  .concatMap(fn)         | Like flatMap but ordered                               │
+│  .filter(pred)          | Keep matching elements                                 │
+│  .take(n)               | First n elements                                       │
+│  .skip(n)               | Skip first n                                           │
+│  .distinct()            | Remove duplicates                                      │
 │                                                                                  │
 │  COMBINING:                                                                      │
-│  Flux.concat(p1, p2)    | Sequential combination                                │
-│  Flux.merge(p1, p2)     | Interleaved combination                               │
-│  Flux.zip(p1, p2)       | Pair elements                                         │
-│  .zipWith(other)        | Zip with another publisher                            │
+│  Flux.concat(p1, p2)    | Sequential combination                                 │
+│  Flux.merge(p1, p2)     | Interleaved combination                                │
+│  Flux.zip(p1, p2)       | Pair elements                                          │
+│  .zipWith(other)        | Zip with another publisher                             │
 │                                                                                  │
 │  ERROR HANDLING:                                                                 │
-│  .onErrorReturn(v)      | Return default on error                               │
-│  .onErrorResume(fn)     | Switch to fallback                                    │
-│  .onErrorMap(fn)        | Transform error                                       │
-│  .retry(n)              | Retry n times                                         │
-│  .retryWhen(spec)       | Advanced retry                                        │
+│  .onErrorReturn(v)      | Return default on error                                │
+│  .onErrorResume(fn)     | Switch to fallback                                     │
+│  .onErrorMap(fn)        | Transform error                                        │
+│  .retry(n)              | Retry n times                                          │
+│  .retryWhen(spec)       | Advanced retry                                         │
 │                                                                                  │
 │  TERMINAL:                                                                       │
-│  .subscribe()           | Start the stream                                      │
-│  .block()               | Block and get (TESTING ONLY!)                        │
-│  .collectList()         | Collect to List                                       │
+│  .subscribe()           | Start the stream                                       │
+│  .block()               | Block and get (TESTING ONLY!)                          │
+│  .collectList()         | Collect to List                                        │
 │                                                                                  │
 │  SCHEDULING:                                                                     │
-│  .subscribeOn(sched)    | Affects upstream                                      │
-│  .publishOn(sched)      | Affects downstream                                    │
+│  .subscribeOn(sched)    | Affects upstream                                       │
+│  .publishOn(sched)      | Affects downstream                                     │
 │                                                                                  │
-└─────────────────────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---

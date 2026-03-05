@@ -95,7 +95,7 @@ int[] bellmanFord(int n, int[][] edges, int source) {
 │ Negative cycles   │ Can't detect     │ CAN detect         │
 │ Space             │ O(V)             │ O(V)               │
 │ Use when          │ Non-neg weights  │ Neg weights or K   │
-│                   │                  │ stops constraint    │
+│                   │                  │ stops constraint   │
 └───────────────────┴──────────────────┴────────────────────┘
 ```
 

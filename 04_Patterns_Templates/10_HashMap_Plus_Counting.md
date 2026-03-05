@@ -186,13 +186,13 @@ CRITICAL: Always initialize map with {0: 1}!
 │ Edge Case                   │ Handling                                 │
 ├─────────────────────────────┼──────────────────────────────────────────┤
 │ Duplicate values [1,1,1]    │ Two Sum: need DIFFERENT indices (check!) │
-│ Single element = target     │ Subarray of length 1 is valid           │
+│ Single element = target     │ Subarray of length 1 is valid            │
 │ Negative numbers            │ Prefix Sum + HashMap (NOT sliding window)│
-│ All zeros, target=0         │ Every subarray of any length sums to 0 │
-│ Empty array                 │ Return 0 / empty                        │
-│ Large values (overflow)     │ Use long for prefix sums if needed     │
-│ HashMap collision concern   │ Java handles internally, but int[26]   │
-│                             │ is faster for lowercase-only problems  │
+│ All zeros, target=0         │ Every subarray of any length sums to 0   │
+│ Empty array                 │ Return 0 / empty                         │
+│ Large values (overflow)     │ Use long for prefix sums if needed       │
+│ HashMap collision concern   │ Java handles internally, but int[26]     │
+│                             │ is faster for lowercase-only problems    │
 └─────────────────────────────┴──────────────────────────────────────────┘
 ```
 

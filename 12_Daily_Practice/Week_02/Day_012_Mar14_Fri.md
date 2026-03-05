@@ -112,21 +112,21 @@ TWO VARIANTS:
    Used for: remove duplicates, linked list cycle, partition
 
 ┌──────────────────────────────────────────────────────────┐
-│  OPPOSITE DIRECTION EXAMPLE: Two Sum II (sorted array)    │
+│  OPPOSITE DIRECTION EXAMPLE: Two Sum II (sorted array)   │
 │  [2, 7, 11, 15]  target = 9                              │
-│   L→                ←R                                    │
-│   2 + 15 = 17 > 9  → move R left                        │
-│   2 + 11 = 13 > 9  → move R left                        │
-│   2 + 7  = 9  == 9  → FOUND! ✓                          │
+│   L→                ←R                                   │
+│   2 + 15 = 17 > 9  → move R left                         │
+│   2 + 11 = 13 > 9  → move R left                         │
+│   2 + 7  = 9  == 9  → FOUND! ✓                           │
 └──────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────┐
-│  SAME DIRECTION EXAMPLE: Remove Duplicates (sorted)       │
+│  SAME DIRECTION EXAMPLE: Remove Duplicates (sorted)      │
 │  [1, 1, 2, 2, 3]                                         │
-│   s  f                                                    │
-│   slow tracks "unique so far" position                    │
-│   fast scans ahead for next unique                        │
-│   Result: [1, 2, 3, _, _]  return slow+1 = 3            │
+│   s  f                                                   │
+│   slow tracks "unique so far" position                   │
+│   fast scans ahead for next unique                       │
+│   Result: [1, 2, 3, _, _]  return slow+1 = 3             │
 └──────────────────────────────────────────────────────────┘
 ```
 

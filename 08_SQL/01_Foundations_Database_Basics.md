@@ -8,42 +8,42 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    DATABASE FUNDAMENTALS                                         │
+│                    DATABASE FUNDAMENTALS                                        │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  DATABASE = Organized collection of structured data                             │
-│                                                                                  │
+│                                                                                 │
 │  REAL-WORLD ANALOGY:                                                            │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │                                                                            ││
-│  │  Database     = Library                                                    ││
-│  │  Tables       = Sections (Fiction, Science, History)                       ││
-│  │  Rows         = Individual Books                                           ││
-│  │  Columns      = Book attributes (Title, Author, ISBN, Year)                ││
-│  │  Primary Key  = Unique Book ID                                             ││
-│  │  Foreign Key  = Author ID linking to Authors section                       ││
-│  │                                                                            ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │                                                                            │ │
+│  │  Database     = Library                                                    │ │
+│  │  Tables       = Sections (Fiction, Science, History)                       │ │
+│  │  Rows         = Individual Books                                           │ │
+│  │  Columns      = Book attributes (Title, Author, ISBN, Year)                │ │
+│  │  Primary Key  = Unique Book ID                                             │ │
+│  │  Foreign Key  = Author ID linking to Authors section                       │ │
+│  │                                                                            │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
+│                                                                                 │
 │  DATABASE TYPES:                                                                │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │                                                                            ││
-│  │  1. RELATIONAL (SQL) ─────────────────────────────────────────────────    ││
-│  │     • Data in tables with rows & columns                                   ││
-│  │     • Relationships via keys                                               ││
-│  │     • Examples: MySQL, PostgreSQL, Oracle, SQL Server                      ││
-│  │     • Best for: Structured data, transactions, reports                    ││
-│  │                                                                            ││
-│  │  2. NoSQL ────────────────────────────────────────────────────────────    ││
-│  │     • Document: MongoDB (JSON-like documents)                              ││
-│  │     • Key-Value: Redis (Fast caching)                                      ││
-│  │     • Column-Family: Cassandra (Big data)                                  ││
-│  │     • Graph: Neo4j (Relationships)                                         ││
-│  │     • Best for: Unstructured data, scalability, flexibility               ││
-│  │                                                                            ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │                                                                            │ │
+│  │  1. RELATIONAL (SQL) ─────────────────────────────────────────────────    │  │
+│  │     • Data in tables with rows & columns                                   │ │
+│  │     • Relationships via keys                                               │ │
+│  │     • Examples: MySQL, PostgreSQL, Oracle, SQL Server                      │ │
+│  │     • Best for: Structured data, transactions, reports                    │  │
+│  │                                                                            │ │
+│  │  2. NoSQL ────────────────────────────────────────────────────────────    │  │
+│  │     • Document: MongoDB (JSON-like documents)                              │ │
+│  │     • Key-Value: Redis (Fast caching)                                      │ │
+│  │     • Column-Family: Cassandra (Big data)                                  │ │
+│  │     • Graph: Neo4j (Relationships)                                         │ │
+│  │     • Best for: Unstructured data, scalability, flexibility               │  │
+│  │                                                                            │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -51,9 +51,9 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    RDBMS ARCHITECTURE                                            │
+│                    RDBMS ARCHITECTURE                                           │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │                         ┌─────────────────────┐                                 │
 │                         │   APPLICATION       │                                 │
 │                         │   (Your Java/Python │                                 │
@@ -64,12 +64,12 @@
 │                         ┌─────────────────────┐                                 │
 │                         │   DBMS ENGINE       │                                 │
 │                         │   ┌───────────────┐ │                                 │
-│                         │   │ Query Parser  │ │ ← Syntax check                 │
+│                         │   │ Query Parser  │ │ ← Syntax check                  │
 │                         │   ├───────────────┤ │                                 │
-│                         │   │ Query         │ │ ← Creates execution plan       │
+│                         │   │ Query         │ │ ← Creates execution plan        │
 │                         │   │ Optimizer     │ │                                 │
 │                         │   ├───────────────┤ │                                 │
-│                         │   │ Execution     │ │ ← Runs the query               │
+│                         │   │ Execution     │ │ ← Runs the query                │
 │                         │   │ Engine        │ │                                 │
 │                         │   └───────────────┘ │                                 │
 │                         └──────────┬──────────┘                                 │
@@ -78,12 +78,12 @@
 │                         ┌─────────────────────┐                                 │
 │                         │   STORAGE ENGINE    │                                 │
 │                         │   ┌───────────────┐ │                                 │
-│                         │   │ Buffer Pool   │ │ ← In-memory cache              │
+│                         │   │ Buffer Pool   │ │ ← In-memory cache               │
 │                         │   ├───────────────┤ │                                 │
-│                         │   │ Transaction   │ │ ← ACID compliance              │
+│                         │   │ Transaction   │ │ ← ACID compliance               │
 │                         │   │ Manager       │ │                                 │
 │                         │   ├───────────────┤ │                                 │
-│                         │   │ Lock Manager  │ │ ← Concurrency control          │
+│                         │   │ Lock Manager  │ │ ← Concurrency control           │
 │                         │   └───────────────┘ │                                 │
 │                         └──────────┬──────────┘                                 │
 │                                    │                                            │
@@ -94,7 +94,7 @@
 │                         │    Index files,     │                                 │
 │                         │    Log files)       │                                 │
 │                         └─────────────────────┘                                 │
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -102,40 +102,40 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    SQL COMMAND CATEGORIES                                        │
+│                    SQL COMMAND CATEGORIES                                       │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  1. DDL - Data Definition Language (Structure)                                  │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │  CREATE   - Create database objects (tables, views, indexes)               ││
-│  │  ALTER    - Modify existing objects                                        ││
-│  │  DROP     - Delete objects                                                 ││
-│  │  TRUNCATE - Remove all data from table (keeps structure)                   ││
-│  │  RENAME   - Rename objects                                                 ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │  CREATE   - Create database objects (tables, views, indexes)               │ │
+│  │  ALTER    - Modify existing objects                                        │ │
+│  │  DROP     - Delete objects                                                 │ │
+│  │  TRUNCATE - Remove all data from table (keeps structure)                   │ │
+│  │  RENAME   - Rename objects                                                 │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 │  2. DML - Data Manipulation Language (Data)                                     │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │  SELECT   - Retrieve data                                                  ││
-│  │  INSERT   - Add new data                                                   ││
-│  │  UPDATE   - Modify existing data                                           ││
-│  │  DELETE   - Remove data                                                    ││
-│  │  MERGE    - Insert or update (upsert)                                      ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │  SELECT   - Retrieve data                                                  │ │
+│  │  INSERT   - Add new data                                                   │ │
+│  │  UPDATE   - Modify existing data                                           │ │
+│  │  DELETE   - Remove data                                                    │ │
+│  │  MERGE    - Insert or update (upsert)                                      │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 │  3. DCL - Data Control Language (Permissions)                                   │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │  GRANT    - Give permissions                                               ││
-│  │  REVOKE   - Remove permissions                                             ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │  GRANT    - Give permissions                                               │ │
+│  │  REVOKE   - Remove permissions                                             │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 │  4. TCL - Transaction Control Language                                          │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │  COMMIT     - Save changes permanently                                     ││
-│  │  ROLLBACK   - Undo changes                                                 ││
-│  │  SAVEPOINT  - Create rollback point                                        ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │  COMMIT     - Save changes permanently                                     │ │
+│  │  ROLLBACK   - Undo changes                                                 │ │
+│  │  SAVEPOINT  - Create rollback point                                        │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -162,28 +162,28 @@
 ╔══════════════════════════════════════════════════════════════════════════════════╗
 ║                    THE WHY-HOW FRAMEWORK FOR SQL                                 ║
 ╠══════════════════════════════════════════════════════════════════════════════════╣
-║                                                                                   ║
+║                                                                                  ║
 ║  For every SQL concept, we answer:                                               ║
-║                                                                                   ║
-║  🔵 WHY does this exist?                                                        ║
-║     └── What real-world problem does it solve?                                  ║
-║     └── What would happen without it?                                           ║
-║     └── Which companies use this? When?                                         ║
-║                                                                                   ║
-║  🟢 HOW does it work?                                                           ║
-║     └── Core syntax and mechanics                                               ║
-║     └── Step-by-step execution                                                  ║
-║     └── Visual representation                                                   ║
-║                                                                                   ║
-║  🟡 WHEN to use it?                                                             ║
-║     └── Best practice scenarios                                                 ║
-║     └── Anti-patterns to avoid                                                  ║
-║     └── Performance implications                                                ║
-║                                                                                   ║
-║  🔴 REAL-WORLD Story                                                            ║
-║     └── Production incident or use case                                         ║
-║     └── How it was solved using this concept                                    ║
-║                                                                                   ║
+║                                                                                  ║
+║  🔵 WHY does this exist?                                                          ║
+║     └── What real-world problem does it solve?                                   ║
+║     └── What would happen without it?                                            ║
+║     └── Which companies use this? When?                                          ║
+║                                                                                  ║
+║  🟢 HOW does it work?                                                             ║
+║     └── Core syntax and mechanics                                                ║
+║     └── Step-by-step execution                                                   ║
+║     └── Visual representation                                                    ║
+║                                                                                  ║
+║  🟡 WHEN to use it?                                                               ║
+║     └── Best practice scenarios                                                  ║
+║     └── Anti-patterns to avoid                                                   ║
+║     └── Performance implications                                                 ║
+║                                                                                  ║
+║  🔴 REAL-WORLD Story                                                              ║
+║     └── Production incident or use case                                          ║
+║     └── How it was solved using this concept                                     ║
+║                                                                                  ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -199,47 +199,47 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    LIFE WITHOUT DATABASES                                        │
+│                    LIFE WITHOUT DATABASES                                       │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  SCENARIO: E-commerce Company with 1 Million Users                              │
-│                                                                                  │
+│                                                                                 │
 │  WITHOUT DATABASE (Using Files):                                                │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │                                                                            ││
-│  │  users.txt                     orders.txt                                  ││
-│  │  ─────────                     ──────────                                  ││
-│  │  1,John,john@email.com         1001,1,2024-01-15,500.00                    ││
-│  │  2,Jane,jane@email.com         1002,2,2024-01-15,250.00                    ││
-│  │  3,Bob,bob@email.com           1003,1,2024-01-16,750.00                    ││
-│  │  ...1 million more lines        ...5 million more lines                    ││
-│  │                                                                            ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │                                                                            │ │
+│  │  users.txt                     orders.txt                                  │ │
+│  │  ─────────                     ──────────                                  │ │
+│  │  1,John,john@email.com         1001,1,2024-01-15,500.00                    │ │
+│  │  2,Jane,jane@email.com         1002,2,2024-01-15,250.00                    │ │
+│  │  3,Bob,bob@email.com           1003,1,2024-01-16,750.00                    │ │
+│  │  ...1 million more lines        ...5 million more lines                    │ │
+│  │                                                                            │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 │  PROBLEMS:                                                                      │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │                                                                            ││
-│  │  1. SPEED: Find all orders for user 567,823?                               ││
-│  │     → Must read entire 5 million line file! Takes minutes.                 ││
-│  │                                                                            ││
-│  │  2. CONSISTENCY: Two systems update same user simultaneously?              ││
-│  │     → Data corruption! Which version is correct?                           ││
-│  │                                                                            ││
-│  │  3. INTEGRITY: Delete user but orders still reference them?                ││
-│  │     → Orphan data! Orders point to non-existent user.                      ││
-│  │                                                                            ││
-│  │  4. CONCURRENT ACCESS: 10,000 users reading/writing files?                 ││
-│  │     → File locks! System crashes! Data loss!                              ││
-│  │                                                                            ││
-│  │  5. RECOVERY: Power outage during file write?                              ││
-│  │     → Partial data! Corrupted files! Business disaster!                    ││
-│  │                                                                            ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
-│  🔴 REAL INCIDENT: In 2003, a major airline lost $50M in revenue               │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │                                                                            │ │
+│  │  1. SPEED: Find all orders for user 567,823?                               │ │
+│  │     → Must read entire 5 million line file! Takes minutes.                 │ │
+│  │                                                                            │ │
+│  │  2. CONSISTENCY: Two systems update same user simultaneously?              │ │
+│  │     → Data corruption! Which version is correct?                           │ │
+│  │                                                                            │ │
+│  │  3. INTEGRITY: Delete user but orders still reference them?                │ │
+│  │     → Orphan data! Orders point to non-existent user.                      │ │
+│  │                                                                            │ │
+│  │  4. CONCURRENT ACCESS: 10,000 users reading/writing files?                 │ │
+│  │     → File locks! System crashes! Data loss!                              │  │
+│  │                                                                            │ │
+│  │  5. RECOVERY: Power outage during file write?                              │ │
+│  │     → Partial data! Corrupted files! Business disaster!                    │ │
+│  │                                                                            │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
+│  🔴 REAL INCIDENT: In 2003, a major airline lost $50M in revenue                 │
 │     when their flat-file booking system crashed during peak season.             │
 │     Recovery took 3 days. They migrated to Oracle within 6 months.              │
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -247,9 +247,9 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    DATABASE SOLUTIONS                                            │
+│                    DATABASE SOLUTIONS                                           │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  Problem               │ Database Solution          │ How It Works              │
 │  ──────────────────────┼────────────────────────────┼───────────────────────────│
 │  Slow Search           │ INDEXES                    │ B-Tree structure: O(log n)│
@@ -266,7 +266,7 @@
 │  ──────────────────────┼────────────────────────────┼───────────────────────────│
 │  Data Loss             │ TRANSACTION LOGS (WAL)     │ Replay logs after crash   │
 │                        │ Checkpoints                │ Regular state snapshots   │
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -282,36 +282,36 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    WHY DDL EXISTS                                                │
+│                    WHY DDL EXISTS                                               │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  ANALOGY: Building a House                                                      │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │                                                                            ││
-│  │  Before putting furniture (DATA), you need:                                ││
-│  │                                                                            ││
-│  │  1. BLUEPRINT (Schema)     → CREATE DATABASE                               ││
-│  │  2. ROOMS (Structure)      → CREATE TABLE                                  ││
-│  │  3. ROOM TYPES (Rules)     → Data Types + Constraints                      ││
-│  │  4. RENOVATIONS            → ALTER TABLE                                   ││
-│  │  5. DEMOLITION             → DROP TABLE                                    ││
-│  │                                                                            ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
-│  🔴 REAL INCIDENT: Flipkart's Big Billion Day 2015                              │
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │                                                                            │ │
+│  │  Before putting furniture (DATA), you need:                                │ │
+│  │                                                                            │ │
+│  │  1. BLUEPRINT (Schema)     → CREATE DATABASE                               │ │
+│  │  2. ROOMS (Structure)      → CREATE TABLE                                  │ │
+│  │  3. ROOM TYPES (Rules)     → Data Types + Constraints                      │ │
+│  │  4. RENOVATIONS            → ALTER TABLE                                   │ │
+│  │  5. DEMOLITION             → DROP TABLE                                    │ │
+│  │                                                                            │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
+│  🔴 REAL INCIDENT: Flipkart's Big Billion Day 2015                               │
+│                                                                                 │
 │  WHAT HAPPENED:                                                                 │
 │  - Expected 10M orders, got 15M in first hour                                   │
 │  - Original schema: Single 'orders' table with all columns                      │
 │  - Result: Table locks, 30-minute delays, customer rage                         │
-│                                                                                  │
+│                                                                                 │
 │  WHAT THEY LEARNED:                                                             │
 │  - Normalize tables: orders, order_items, order_status (separate tables)        │
 │  - Add proper indexes on order_id, customer_id, created_at                      │
 │  - Partition tables by date for faster queries                                  │
-│                                                                                  │
+│                                                                                 │
 │  OUTCOME: 2016 sale handled 8x the traffic with no issues                       │
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -474,9 +474,9 @@ CREATE TABLE order_items (
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    E-COMMERCE DATABASE RELATIONSHIPS                             │
+│                    E-COMMERCE DATABASE RELATIONSHIPS                            │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │                         ┌───────────────────┐                                   │
 │                         │    CUSTOMERS      │                                   │
 │                         ├───────────────────┤                                   │
@@ -490,37 +490,37 @@ CREATE TABLE order_items (
 │                                  │ has many                                     │
 │                                  │                                              │
 │                                  ▼ ∞                                            │
-│                         ┌───────────────────┐         ┌───────────────────┐    │
-│                         │     ORDERS        │         │     PRODUCTS      │    │
-│                         ├───────────────────┤         ├───────────────────┤    │
-│                         │ PK: order_id      │         │ PK: product_id    │    │
-│                         │ FK: customer_id ──┼─────────│    name           │    │
-│                         │    order_number   │         │    price          │    │
-│                         │    total          │         │    stock          │    │
-│                         │    status         │         └─────────┬─────────┘    │
-│                         └────────┬──────────┘                   │              │
-│                                  │ 1                            │ 1            │
-│                                  │                              │              │
-│                                  │ contains                     │ appears in   │
-│                                  │                              │              │
-│                                  ▼ ∞                            ▼ ∞            │
-│                         ┌──────────────────────────────────────────────────┐   │
+│                         ┌───────────────────┐         ┌───────────────────┐     │
+│                         │     ORDERS        │         │     PRODUCTS      │     │
+│                         ├───────────────────┤         ├───────────────────┤     │
+│                         │ PK: order_id      │         │ PK: product_id    │     │
+│                         │ FK: customer_id ──┼─────────│    name           │     │
+│                         │    order_number   │         │    price          │     │
+│                         │    total          │         │    stock          │     │
+│                         │    status         │         └─────────┬─────────┘     │
+│                         └────────┬──────────┘                   │               │
+│                                  │ 1                            │ 1             │
+│                                  │                              │               │
+│                                  │ contains                     │ appears in    │
+│                                  │                              │               │
+│                                  ▼ ∞                            ▼ ∞             │
+│                         ┌──────────────────────────────────────────────────┐    │
 │                         │               ORDER_ITEMS                         │   │
-│                         ├──────────────────────────────────────────────────┤   │
+│                         ├──────────────────────────────────────────────────┤    │
 │                         │ PK: item_id                                       │   │
 │                         │ FK: order_id ────────────────────┐                │   │
 │                         │ FK: product_id ──────────────────┘                │   │
 │                         │     quantity                                      │   │
 │                         │     unit_price (snapshot at purchase time)        │   │
-│                         └──────────────────────────────────────────────────┘   │
-│                                                                                  │
+│                         └──────────────────────────────────────────────────┘    │
+│                                                                                 │
 │  CARDINALITY:                                                                   │
 │  ─────────────                                                                  │
-│  Customer (1) ─────→ (∞) Orders      "A customer has many orders"              │
+│  Customer (1) ─────→ (∞) Orders      "A customer has many orders"               │
 │  Order (1) ─────────→ (∞) Items      "An order has many items"                  │
-│  Product (1) ───────→ (∞) Items      "A product appears in many orders"        │
-│  Order (∞) ←────────→ (∞) Products   "Many-to-Many via order_items"            │
-│                                                                                  │
+│  Product (1) ───────→ (∞) Items      "A product appears in many orders"         │
+│  Order (∞) ←────────→ (∞) Products   "Many-to-Many via order_items"             │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -532,47 +532,47 @@ CREATE TABLE order_items (
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    WHY SCHEMAS EVOLVE                                            │
+│                    WHY SCHEMAS EVOLVE                                           │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  BUSINESS REASONS:                                                              │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │                                                                            ││
-│  │  1. NEW FEATURES                                                           ││
-│  │     - "We need to store user's profile photo"                              ││
-│  │     → ALTER TABLE users ADD COLUMN profile_url VARCHAR(500);               ││
-│  │                                                                            ││
-│  │  2. REGULATORY COMPLIANCE                                                  ││
-│  │     - "GDPR requires consent tracking"                                     ││
-│  │     → ALTER TABLE users ADD COLUMN gdpr_consent_date TIMESTAMP;            ││
-│  │                                                                            ││
-│  │  3. PERFORMANCE ISSUES                                                     ││
-│  │     - "Search is slow"                                                     ││
-│  │     → ALTER TABLE products ADD INDEX idx_search (name, category);          ││
-│  │                                                                            ││
-│  │  4. DATA GROWTH                                                            ││
-│  │     - "Product IDs exceeded INT limit"                                     ││
-│  │     → ALTER TABLE products MODIFY product_id BIGINT;                       ││
-│  │                                                                            ││
-│  │  5. BUG FIXES                                                              ││
-│  │     - "Emails should be case-insensitive unique"                           ││
-│  │     → ALTER TABLE users ADD UNIQUE INDEX idx_email_ci (email) USING BTREE; ││
-│  │                                                                            ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
-│  🔴 REAL INCIDENT: Twitter's early scaling problems (2007-2009)                 │
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │                                                                            │ │
+│  │  1. NEW FEATURES                                                           │ │
+│  │     - "We need to store user's profile photo"                              │ │
+│  │     → ALTER TABLE users ADD COLUMN profile_url VARCHAR(500);               │ │
+│  │                                                                            │ │
+│  │  2. REGULATORY COMPLIANCE                                                  │ │
+│  │     - "GDPR requires consent tracking"                                     │ │
+│  │     → ALTER TABLE users ADD COLUMN gdpr_consent_date TIMESTAMP;            │ │
+│  │                                                                            │ │
+│  │  3. PERFORMANCE ISSUES                                                     │ │
+│  │     - "Search is slow"                                                     │ │
+│  │     → ALTER TABLE products ADD INDEX idx_search (name, category);          │ │
+│  │                                                                            │ │
+│  │  4. DATA GROWTH                                                            │ │
+│  │     - "Product IDs exceeded INT limit"                                     │ │
+│  │     → ALTER TABLE products MODIFY product_id BIGINT;                       │ │
+│  │                                                                            │ │
+│  │  5. BUG FIXES                                                              │ │
+│  │     - "Emails should be case-insensitive unique"                           │ │
+│  │     → ALTER TABLE users ADD UNIQUE INDEX idx_email_ci (email) USING BTREE; │ │
+│  │                                                                            │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
+│  🔴 REAL INCIDENT: Twitter's early scaling problems (2007-2009)                  │
+│                                                                                 │
 │  PROBLEM: Single 'tweets' table with all data                                   │
 │  SYMPTOMS: "Fail Whale" error page became famous                                │
-│                                                                                  │
+│                                                                                 │
 │  MIGRATION JOURNEY:                                                             │
 │  1. Split tweets table by user_id ranges (sharding)                             │
 │  2. Moved from MySQL to custom storage (Manhattan)                              │
 │  3. Added read replicas for timeline queries                                    │
 │  4. Denormalized data for read performance                                      │
-│                                                                                  │
+│                                                                                 │
 │  LESSON: Schema design decisions at day 1 affect scalability at day 1000        │
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -690,46 +690,46 @@ ALTER TABLE products CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    ALTER TABLE: RISK ASSESSMENT                                  │
+│                    ALTER TABLE: RISK ASSESSMENT                                 │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  ✅ SAFE (Can do in production):                                                │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │  • ADD COLUMN with DEFAULT (MySQL 8.0+, PostgreSQL)                        ││
-│  │  • ADD INDEX CONCURRENTLY (PostgreSQL)                                     ││
-│  │  • Create new INDEX (fast for small tables)                                ││
-│  │  • DROP unused INDEX                                                       ││
-│  │  • ADD nullable column                                                     ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│                                                                                 │
+│  ✅ SAFE (Can do in production):                                                 │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │  • ADD COLUMN with DEFAULT (MySQL 8.0+, PostgreSQL)                        │ │
+│  │  • ADD INDEX CONCURRENTLY (PostgreSQL)                                     │ │
+│  │  • Create new INDEX (fast for small tables)                                │ │
+│  │  • DROP unused INDEX                                                       │ │
+│  │  • ADD nullable column                                                     │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 │  ⚠️ CAUTION (Do during low traffic):                                            │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │  • ADD INDEX on large table (locks table in MySQL < 8.0)                   ││
-│  │  • MODIFY column (rewrites table)                                          ││
-│  │  • ADD FOREIGN KEY (validates existing data)                               ││
-│  │  • Change VARCHAR length (may rewrite)                                     ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │  • ADD INDEX on large table (locks table in MySQL < 8.0)                   │ │
+│  │  • MODIFY column (rewrites table)                                          │ │
+│  │  • ADD FOREIGN KEY (validates existing data)                               │ │
+│  │  • Change VARCHAR length (may rewrite)                                     │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 │  🚨 DANGEROUS (Plan maintenance window):                                         │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │  • DROP COLUMN (irreversible, may break app)                               ││
-│  │  • Change column type (data loss possible)                                 ││
-│  │  • RENAME TABLE (breaks queries)                                           ││
-│  │  • ADD NOT NULL to existing column (fails if NULLs exist)                  ││
-│  │  • Change PRIMARY KEY                                                      ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │  • DROP COLUMN (irreversible, may break app)                               │ │
+│  │  • Change column type (data loss possible)                                 │ │
+│  │  • RENAME TABLE (breaks queries)                                           │ │
+│  │  • ADD NOT NULL to existing column (fails if NULLs exist)                  │ │
+│  │  • Change PRIMARY KEY                                                      │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 │  PRODUCTION MIGRATION CHECKLIST:                                                │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │  □ Test on staging with production-size data                               ││
-│  │  □ Measure migration time (will table be locked?)                          ││
-│  │  □ Take backup before migration                                            ││
-│  │  □ Prepare rollback script                                                 ││
-│  │  □ Schedule during low-traffic window                                      ││
-│  │  □ Monitor application errors during/after                                 ││
-│  │  □ Have DBA on call                                                        ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │  □ Test on staging with production-size data                               │ │
+│  │  □ Measure migration time (will table be locked?)                          │ │
+│  │  □ Take backup before migration                                            │ │
+│  │  □ Prepare rollback script                                                 │ │
+│  │  □ Schedule during low-traffic window                                      │ │
+│  │  □ Monitor application errors during/after                                 │ │
+│  │  □ Have DBA on call                                                        │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -741,54 +741,54 @@ ALTER TABLE products CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    WHY DML EXISTS                                                │
+│                    WHY DML EXISTS                                               │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  CRUD = Create, Read, Update, Delete                                            │
-│                                                                                  │
+│                                                                                 │
 │  MAPPING TO SQL:                                                                │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │                                                                            ││
-│  │  CREATE  ──────────→  INSERT                                               ││
-│  │  READ    ──────────→  SELECT                                               ││
-│  │  UPDATE  ──────────→  UPDATE                                               ││
-│  │  DELETE  ──────────→  DELETE                                               ││
-│  │                                                                            ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │                                                                            │ │
+│  │  CREATE  ──────────→  INSERT                                               │ │
+│  │  READ    ──────────→  SELECT                                               │ │
+│  │  UPDATE  ──────────→  UPDATE                                               │ │
+│  │  DELETE  ──────────→  DELETE                                               │ │
+│  │                                                                            │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 │  MAPPING TO REST APIs:                                                          │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │                                                                            ││
-│  │  HTTP Method │ SQL Operation │ Example                                     ││
-│  │  ────────────┼───────────────┼───────────────────────────────────────────  ││
-│  │  POST        │ INSERT        │ Create new user account                     ││
-│  │  GET         │ SELECT        │ Fetch user profile                          ││
-│  │  PUT/PATCH   │ UPDATE        │ Update email address                        ││
-│  │  DELETE      │ DELETE        │ Remove user account                         ││
-│  │                                                                            ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
-│  🔴 REAL INCIDENT: GitLab Database Deletion (2017)                              │
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │                                                                            │ │
+│  │  HTTP Method │ SQL Operation │ Example                                     │ │
+│  │  ────────────┼───────────────┼───────────────────────────────────────────  │ │
+│  │  POST        │ INSERT        │ Create new user account                     │ │
+│  │  GET         │ SELECT        │ Fetch user profile                          │ │
+│  │  PUT/PATCH   │ UPDATE        │ Update email address                        │ │
+│  │  DELETE      │ DELETE        │ Remove user account                         │ │
+│  │                                                                            │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
+│  🔴 REAL INCIDENT: GitLab Database Deletion (2017)                               │
+│                                                                                 │
 │  WHAT HAPPENED:                                                                 │
 │  - Admin ran DELETE without WHERE clause during maintenance                     │
 │  - Command: "DELETE FROM production_db"                                         │
 │  - 300GB of production data wiped in seconds                                    │
-│                                                                                  │
+│                                                                                 │
 │  WHAT FAILED:                                                                   │
 │  - 5 different backup methods, ALL failed                                       │
 │  - LVM snapshots: configured wrong                                              │
 │  - S3 backups: not running                                                      │
 │  - Azure disk snapshots: never enabled                                          │
-│                                                                                  │
+│                                                                                 │
 │  AFTERMATH:                                                                     │
 │  - 6 hours of data lost                                                         │
 │  - GitLab was transparent, live-streamed recovery                               │
 │  - Now they have mandatory WHERE clause checks                                  │
-│                                                                                  │
+│                                                                                 │
 │  LESSON: "DELETE FROM table" should NEVER work without WHERE                    │
 │          Use sql_safe_updates=1 in MySQL!                                       │
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1065,46 +1065,46 @@ DELETE FROM temp_import_data WHERE import_date < '2024-01-01';
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    WHY DCL EXISTS                                                │
+│                    WHY DCL EXISTS                                               │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  PRINCIPLE OF LEAST PRIVILEGE:                                                  │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │                                                                            ││
-│  │  "Every user should have only the minimum permissions                      ││
-│  │   necessary to perform their job function"                                 ││
-│  │                                                                            ││
-│  │  WHY THIS MATTERS:                                                         ││
-│  │                                                                            ││
-│  │  Developer needs:     Read production logs                                 ││
-│  │  Developer gets:      SELECT on logs table only                            ││
-│  │  Developer should NOT get: DELETE on users table!                          ││
-│  │                                                                            ││
-│  │  Analyst needs:       Run reports                                          ││
-│  │  Analyst gets:        SELECT on all tables                                 ││
-│  │  Analyst should NOT get: UPDATE or DELETE anything!                        ││
-│  │                                                                            ││
-│  │  Application needs:   CRUD on specific tables                              ││
-│  │  Application gets:    SELECT, INSERT, UPDATE on app tables                 ││
-│  │  Application should NOT get: DROP TABLE!                                   ││
-│  │                                                                            ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
-│  🔴 REAL INCIDENT: Marriott Data Breach (2018)                                  │
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │                                                                            │ │
+│  │  "Every user should have only the minimum permissions                      │ │
+│  │   necessary to perform their job function"                                 │ │
+│  │                                                                            │ │
+│  │  WHY THIS MATTERS:                                                         │ │
+│  │                                                                            │ │
+│  │  Developer needs:     Read production logs                                 │ │
+│  │  Developer gets:      SELECT on logs table only                            │ │
+│  │  Developer should NOT get: DELETE on users table!                          │ │
+│  │                                                                            │ │
+│  │  Analyst needs:       Run reports                                          │ │
+│  │  Analyst gets:        SELECT on all tables                                 │ │
+│  │  Analyst should NOT get: UPDATE or DELETE anything!                        │ │
+│  │                                                                            │ │
+│  │  Application needs:   CRUD on specific tables                              │ │
+│  │  Application gets:    SELECT, INSERT, UPDATE on app tables                 │ │
+│  │  Application should NOT get: DROP TABLE!                                   │ │
+│  │                                                                            │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
+│  🔴 REAL INCIDENT: Marriott Data Breach (2018)                                   │
+│                                                                                 │
 │  WHAT HAPPENED:                                                                 │
 │  - Attackers gained access to ONE compromised account                           │
 │  - That account had excessive permissions (admin rights)                        │
 │  - 500 million guest records exposed                                            │
 │  - $124 million GDPR fine                                                       │
-│                                                                                  │
+│                                                                                 │
 │  ROOT CAUSE:                                                                    │
 │  - Accounts had more permissions than needed                                    │
 │  - No separation between read-only and admin users                              │
 │  - Legacy Starwood systems never had proper DCL setup                           │
-│                                                                                  │
+│                                                                                 │
 │  LESSON: Proper GRANT/REVOKE setup can limit breach impact                      │
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1202,55 +1202,55 @@ SHOW GRANTS;
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    WHY TRANSACTIONS EXIST                                        │
+│                    WHY TRANSACTIONS EXIST                                       │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  THE BANK TRANSFER PROBLEM:                                                     │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │                                                                            ││
-│  │  Transfer ₹10,000 from Account A to Account B                              ││
-│  │                                                                            ││
-│  │  WITHOUT TRANSACTIONS:                                                     ││
-│  │  ┌──────────────────────────────────────────────────────────────────────┐ ││
-│  │  │ Step 1: UPDATE accounts SET balance = balance - 10000                │ ││
-│  │  │         WHERE account_id = 'A';  -- ✓ Success                         │ ││
-│  │  │                                                                      │ ││
-│  │  │         ⚡ POWER FAILURE / SERVER CRASH HERE ⚡                       │ ││
-│  │  │                                                                      │ ││
-│  │  │ Step 2: UPDATE accounts SET balance = balance + 10000                │ ││
-│  │  │         WHERE account_id = 'B';  -- ✗ Never executed!                 │ ││
-│  │  └──────────────────────────────────────────────────────────────────────┘ ││
-│  │                                                                            ││
-│  │  RESULT: ₹10,000 disappeared! Money debited but never credited.            ││
-│  │                                                                            ││
-│  │  WITH TRANSACTIONS:                                                        ││
-│  │  ┌──────────────────────────────────────────────────────────────────────┐ ││
-│  │  │ START TRANSACTION;                                                   │ ││
-│  │  │                                                                      │ ││
-│  │  │ UPDATE accounts SET balance = balance - 10000                        │ ││
-│  │  │ WHERE account_id = 'A';                                               │ ││
-│  │  │                                                                      │ ││
-│  │  │ ⚡ POWER FAILURE ⚡                                                   │ ││
-│  │  │                                                                      │ ││
-│  │  │ -- Transaction never committed                                       │ ││
-│  │  │ -- On restart: ROLLBACK automatically                                │ ││
-│  │  │ -- Account A balance restored!                                       │ ││
-│  │  └──────────────────────────────────────────────────────────────────────┘ ││
-│  │                                                                            ││
-│  │  RESULT: Either BOTH updates happen, or NEITHER happens. Never partial.    ││
-│  │                                                                            ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
-│  🔴 REAL INCIDENT: Knight Capital Trading Loss (2012)                           │
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │                                                                            │ │
+│  │  Transfer ₹10,000 from Account A to Account B                              │ │
+│  │                                                                            │ │
+│  │  WITHOUT TRANSACTIONS:                                                     │ │
+│  │  ┌──────────────────────────────────────────────────────────────────────┐ │  │
+│  │  │ Step 1: UPDATE accounts SET balance = balance - 10000                │ │  │
+│  │  │         WHERE account_id = 'A';  -- ✓ Success                         │ │ │
+│  │  │                                                                      │ │  │
+│  │  │         ⚡ POWER FAILURE / SERVER CRASH HERE ⚡                       │ │   │
+│  │  │                                                                      │ │  │
+│  │  │ Step 2: UPDATE accounts SET balance = balance + 10000                │ │  │
+│  │  │         WHERE account_id = 'B';  -- ✗ Never executed!                 │ │ │
+│  │  └──────────────────────────────────────────────────────────────────────┘ │  │
+│  │                                                                            │ │
+│  │  RESULT: ₹10,000 disappeared! Money debited but never credited.            │ │
+│  │                                                                            │ │
+│  │  WITH TRANSACTIONS:                                                        │ │
+│  │  ┌──────────────────────────────────────────────────────────────────────┐ │  │
+│  │  │ START TRANSACTION;                                                   │ │  │
+│  │  │                                                                      │ │  │
+│  │  │ UPDATE accounts SET balance = balance - 10000                        │ │  │
+│  │  │ WHERE account_id = 'A';                                               │ │ │
+│  │  │                                                                      │ │  │
+│  │  │ ⚡ POWER FAILURE ⚡                                                   │ │   │
+│  │  │                                                                      │ │  │
+│  │  │ -- Transaction never committed                                       │ │  │
+│  │  │ -- On restart: ROLLBACK automatically                                │ │  │
+│  │  │ -- Account A balance restored!                                       │ │  │
+│  │  └──────────────────────────────────────────────────────────────────────┘ │  │
+│  │                                                                            │ │
+│  │  RESULT: Either BOTH updates happen, or NEITHER happens. Never partial.    │ │
+│  │                                                                            │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
+│  🔴 REAL INCIDENT: Knight Capital Trading Loss (2012)                            │
+│                                                                                 │
 │  WHAT HAPPENED:                                                                 │
 │  - Software deployment error activated old test code                            │
 │  - System executed millions of trades in 45 minutes                             │
 │  - No transactional rollback capability for market orders                       │
 │  - $440 MILLION lost in 45 minutes                                              │
-│                                                                                  │
+│                                                                                 │
 │  LESSON: Critical operations MUST be transactional with rollback capability     │
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1258,70 +1258,70 @@ SHOW GRANTS;
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    ACID PROPERTIES EXPLAINED                                     │
+│                    ACID PROPERTIES EXPLAINED                                    │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  A - ATOMICITY ("All or Nothing")                                               │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │                                                                            ││
-│  │  Like an ATOM - indivisible unit                                           ││
-│  │                                                                            ││
-│  │  Transaction with 5 SQL statements:                                        ││
-│  │  ┌───────────────────────────────────────────────────────────────────┐    ││
-│  │  │ INSERT → UPDATE → UPDATE → INSERT → DELETE                        │    ││
-│  │  │    ↓        ↓        ↓        ↓        ↓                          │    ││
-│  │  │   ✓        ✓        ✓        ✗ (error)                           │    ││
-│  │  │                                                                   │    ││
-│  │  │   ALL get ROLLED BACK - database unchanged                        │    ││
-│  │  └───────────────────────────────────────────────────────────────────┘    ││
-│  │                                                                            ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │                                                                            │ │
+│  │  Like an ATOM - indivisible unit                                           │ │
+│  │                                                                            │ │
+│  │  Transaction with 5 SQL statements:                                        │ │
+│  │  ┌───────────────────────────────────────────────────────────────────┐    │  │
+│  │  │ INSERT → UPDATE → UPDATE → INSERT → DELETE                        │    │  │
+│  │  │    ↓        ↓        ↓        ↓        ↓                          │    │  │
+│  │  │   ✓        ✓        ✓        ✗ (error)                           │    │   │
+│  │  │                                                                   │    │  │
+│  │  │   ALL get ROLLED BACK - database unchanged                        │    │  │
+│  │  └───────────────────────────────────────────────────────────────────┘    │  │
+│  │                                                                            │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 │  C - CONSISTENCY ("Valid State to Valid State")                                 │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │                                                                            ││
-│  │  Database rules (constraints) ALWAYS enforced                              ││
-│  │                                                                            ││
-│  │  Example: Account balance cannot go negative                               ││
-│  │  CHECK (balance >= 0)                                                      ││
-│  │                                                                            ││
-│  │  Transaction: Transfer ₹10,000 from account with ₹5,000 balance           ││
-│  │  Result: Transaction REJECTED - would violate constraint                   ││
-│  │                                                                            ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │                                                                            │ │
+│  │  Database rules (constraints) ALWAYS enforced                              │ │
+│  │                                                                            │ │
+│  │  Example: Account balance cannot go negative                               │ │
+│  │  CHECK (balance >= 0)                                                      │ │
+│  │                                                                            │ │
+│  │  Transaction: Transfer ₹10,000 from account with ₹5,000 balance           │  │
+│  │  Result: Transaction REJECTED - would violate constraint                   │ │
+│  │                                                                            │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 │  I - ISOLATION ("Transactions Don't Interfere")                                 │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │                                                                            ││
-│  │  Two transactions running simultaneously:                                  ││
-│  │                                                                            ││
-│  │  T1: Read balance, calculate interest, update balance                      ││
-│  │  T2: Read balance, debit payment, update balance                           ││
-│  │                                                                            ││
-│  │  WITHOUT isolation: Both read ₹10,000, both write different values        ││
-│  │                     One update gets lost!                                  ││
-│  │                                                                            ││
-│  │  WITH isolation: T1 completes fully, THEN T2 runs                          ││
-│  │                  OR they see each other's intermediate results             ││
-│  │                  (depends on isolation level)                              ││
-│  │                                                                            ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │                                                                            │ │
+│  │  Two transactions running simultaneously:                                  │ │
+│  │                                                                            │ │
+│  │  T1: Read balance, calculate interest, update balance                      │ │
+│  │  T2: Read balance, debit payment, update balance                           │ │
+│  │                                                                            │ │
+│  │  WITHOUT isolation: Both read ₹10,000, both write different values        │  │
+│  │                     One update gets lost!                                  │ │
+│  │                                                                            │ │
+│  │  WITH isolation: T1 completes fully, THEN T2 runs                          │ │
+│  │                  OR they see each other's intermediate results             │ │
+│  │                  (depends on isolation level)                              │ │
+│  │                                                                            │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 │  D - DURABILITY ("Committed = Permanent")                                       │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │                                                                            ││
-│  │  After COMMIT, data survives:                                              ││
-│  │  - Power failure                                                           ││
-│  │  - Server crash                                                            ││
-│  │  - Disk failure (with proper backup)                                       ││
-│  │                                                                            ││
-│  │  HOW: Write-Ahead Logging (WAL)                                            ││
-│  │  1. Write change to log file FIRST                                         ││
-│  │  2. Then write to actual data file                                         ││
-│  │  3. On crash: Replay log to recover committed transactions                 ││
-│  │                                                                            ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │                                                                            │ │
+│  │  After COMMIT, data survives:                                              │ │
+│  │  - Power failure                                                           │ │
+│  │  - Server crash                                                            │ │
+│  │  - Disk failure (with proper backup)                                       │ │
+│  │                                                                            │ │
+│  │  HOW: Write-Ahead Logging (WAL)                                            │ │
+│  │  1. Write change to log file FIRST                                         │ │
+│  │  2. Then write to actual data file                                         │ │
+│  │  3. On crash: Replay log to recover committed transactions                 │ │
+│  │                                                                            │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1521,30 +1521,30 @@ TRADE-OFF: Higher isolation = Slower performance (more locking)
 ╔══════════════════════════════════════════════════════════════════════════════════╗
 ║                    SQL FOUNDATIONS - QUICK REFERENCE                             ║
 ╠══════════════════════════════════════════════════════════════════════════════════╣
-║                                                                                   ║
+║                                                                                  ║
 ║  DDL (Structure):                                                                ║
 ║    CREATE DATABASE, CREATE TABLE, ALTER TABLE, DROP TABLE, TRUNCATE TABLE        ║
-║                                                                                   ║
+║                                                                                  ║
 ║  DML (Data):                                                                     ║
 ║    INSERT, SELECT, UPDATE, DELETE, MERGE                                         ║
-║                                                                                   ║
+║                                                                                  ║
 ║  DCL (Permissions):                                                              ║
 ║    GRANT, REVOKE, CREATE USER, CREATE ROLE                                       ║
-║                                                                                   ║
+║                                                                                  ║
 ║  TCL (Transactions):                                                             ║
 ║    START TRANSACTION, COMMIT, ROLLBACK, SAVEPOINT                                ║
-║                                                                                   ║
+║                                                                                  ║
 ║  ACID:                                                                           ║
 ║    Atomicity, Consistency, Isolation, Durability                                 ║
-║                                                                                   ║
+║                                                                                  ║
 ║  GOLDEN RULES:                                                                   ║
-║    ✓ Always use WHERE with UPDATE/DELETE                                        ║
-║    ✓ Run SELECT before UPDATE/DELETE to verify                                  ║
-║    ✓ Use transactions for multi-statement operations                            ║
-║    ✓ Principle of least privilege for users                                     ║
-║    ✓ Never store money as FLOAT - use DECIMAL                                   ║
-║    ✓ Test schema changes on staging first                                       ║
-║                                                                                   ║
+║    ✓ Always use WHERE with UPDATE/DELETE                                         ║
+║    ✓ Run SELECT before UPDATE/DELETE to verify                                   ║
+║    ✓ Use transactions for multi-statement operations                             ║
+║    ✓ Principle of least privilege for users                                      ║
+║    ✓ Never store money as FLOAT - use DECIMAL                                    ║
+║    ✓ Test schema changes on staging first                                        ║
+║                                                                                  ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 

@@ -185,18 +185,18 @@ public class SinglyLinkedList {
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
 │  WHY MERGE SORT MATTERS:                                            │
-│                                                                      │
+│                                                                     │
 │  • GUARANTEED O(n log n) — no worst case degradation                │
 │  • STABLE sort (equal elements stay in original order)              │
 │  • Foundation of external sorting (sorting data too big for RAM)    │
-│  • Tim Sort (Java's Arrays.sort for objects) is based on it        │
-│  • Teaches the Divide & Conquer paradigm perfectly                 │
-│                                                                      │
-│  vs Quick Sort:                                                      │
-│  • Quick Sort: avg O(n log n), worst O(n²), in-place              │
-│  • Merge Sort: always O(n log n), uses O(n) extra space            │
-│  • Java uses Merge Sort for objects (stability needed)             │
-│  • Java uses Quick Sort for primitives (speed, no stability need)  │
+│  • Tim Sort (Java's Arrays.sort for objects) is based on it         │
+│  • Teaches the Divide & Conquer paradigm perfectly                  │
+│                                                                     │
+│  vs Quick Sort:                                                     │
+│  • Quick Sort: avg O(n log n), worst O(n²), in-place                │
+│  • Merge Sort: always O(n log n), uses O(n) extra space             │
+│  • Java uses Merge Sort for objects (stability needed)              │
+│  • Java uses Quick Sort for primitives (speed, no stability need)   │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 

@@ -13,14 +13,14 @@
 │ WHY THIS MATTERS                                                             │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│  Easy problems = 1 pattern. Medium = 1-2 patterns. Hard = 2-3 patterns.     │
+│  Easy problems = 1 pattern. Medium = 1-2 patterns. Hard = 2-3 patterns.      │
 │                                                                              │
 │  At LC Hard level, the challenge isn't knowing patterns —                    │
 │  it's COMPOSING them. You need to recognize that a problem                   │
-│  requires Binary Search INSIDE DP, or BFS WITH Bit Masking,                 │
+│  requires Binary Search INSIDE DP, or BFS WITH Bit Masking,                  │
 │  or Trie PLUS Backtracking.                                                  │
 │                                                                              │
-│  This guide maps the most common COMPOSITION PAIRS and teaches              │
+│  This guide maps the most common COMPOSITION PAIRS and teaches               │
 │  you to recognize when a problem needs multiple patterns.                    │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
@@ -62,28 +62,28 @@
 │  TRIGGER: "Minimize the maximum" or "Maximize the minimum"                   │
 │                                                                              │
 │  HOW IT WORKS:                                                               │
-│  1. Binary search on the ANSWER space (lo=min possible, hi=max possible)    │
-│  2. For each candidate answer, GREEDILY check: "is this feasible?"          │
+│  1. Binary search on the ANSWER space (lo=min possible, hi=max possible)     │
+│  2. For each candidate answer, GREEDILY check: "is this feasible?"           │
 │  3. Narrow the search based on feasibility                                   │
 │                                                                              │
 │  VISUAL:                                                                     │
-│  Answer space: [lo ─────────── mid ─────────── hi]                          │
+│  Answer space: [lo ─────────── mid ─────────── hi]                           │
 │                                 │                                            │
 │                          feasible(mid)?                                      │
 │                          YES → search lower (minimize max)                   │
 │                          NO  → search higher                                 │
 │                                                                              │
 │  EXAMPLE: Split Array Largest Sum (LC 410)                                   │
-│  "Split array into m subarrays to minimize the largest subarray sum"        │
-│  • Binary search: lo=max(nums), hi=sum(nums)                                │
-│  • Greedy check: Can we split into ≤ m parts, each ≤ mid?                  │
+│  "Split array into m subarrays to minimize the largest subarray sum"         │
+│  • Binary search: lo=max(nums), hi=sum(nums)                                 │
+│  • Greedy check: Can we split into ≤ m parts, each ≤ mid?                    │
 │    Iterate array, greedy: start new partition when sum exceeds mid.          │
-│  • If partitions ≤ m → feasible → try smaller                              │
+│  • If partitions ≤ m → feasible → try smaller                                │
 │                                                                              │
 │  OTHER PROBLEMS:                                                             │
-│  • Koko Eating Bananas (LC 875): BS on speed, greedy check hours            │
-│  • Ship Packages in D Days (LC 1011): BS on capacity, greedy check days     │
-│  • Magnetic Force (LC 1552): BS on min distance, greedy check placement     │
+│  • Koko Eating Bananas (LC 875): BS on speed, greedy check hours             │
+│  • Ship Packages in D Days (LC 1011): BS on capacity, greedy check days      │
+│  • Magnetic Force (LC 1552): BS on min distance, greedy check placement      │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -121,19 +121,19 @@ private boolean canSplit(int[] nums, int m, int maxSum) {
 │ PATTERN: BFS with State = (node, visited bitmask)                            │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│  TRIGGER: "Visit all nodes" / "Shortest path through all" / n ≤ 20         │
+│  TRIGGER: "Visit all nodes" / "Shortest path through all" / n ≤ 20           │
 │                                                                              │
 │  HOW IT WORKS:                                                               │
-│  • State = (current node, set of visited nodes encoded as bitmask)          │
+│  • State = (current node, set of visited nodes encoded as bitmask)           │
 │  • BFS explores all states level by level (shortest path)                    │
-│  • Bitmask fits in int when n ≤ 20 (2²⁰ = ~1M states)                     │
+│  • Bitmask fits in int when n ≤ 20 (2²⁰ = ~1M states)                        │
 │                                                                              │
 │  EXAMPLE: Shortest Path Visiting All Nodes (LC 847)                          │
 │  • BFS from every node simultaneously                                        │
-│  • State: (node, mask) where mask has bit i set if node i visited           │
-│  • Goal: any state with mask = (1<<n)-1 (all bits set)                      │
+│  • State: (node, mask) where mask has bit i set if node i visited            │
+│  • Goal: any state with mask = (1<<n)-1 (all bits set)                       │
 │                                                                              │
-│  OTHER: Travelling Salesman (n ≤ 20), Hamilton Path                         │
+│  OTHER: Travelling Salesman (n ≤ 20), Hamilton Path                          │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -150,18 +150,18 @@ private boolean canSplit(int[] nums, int m, int maxSum) {
 │  TRIGGER: "Find all words from dictionary in a grid/string"                  │
 │                                                                              │
 │  HOW IT WORKS:                                                               │
-│  • Build Trie from dictionary words → O(sum of word lengths)                │
+│  • Build Trie from dictionary words → O(sum of word lengths)                 │
 │  • DFS/backtrack on grid, following Trie branches                            │
-│  • Trie PRUNES backtracking: if no child for current char → stop            │
+│  • Trie PRUNES backtracking: if no child for current char → stop             │
 │                                                                              │
-│  WHY COMPOSED: Backtracking alone = recheck every word start O(W×4ⁿ).      │
+│  WHY COMPOSED: Backtracking alone = recheck every word start O(W×4ⁿ).        │
 │  Trie = single DFS checks ALL words simultaneously.                          │
 │                                                                              │
 │  EXAMPLE: Word Search II (LC 212)                                            │
 │  • Insert all words into Trie                                                │
 │  • DFS from every cell, walk Trie simultaneously                             │
-│  • When Trie node has word → found it                                       │
-│  • Optimization: remove word from Trie after finding (prune)                │
+│  • When Trie node has word → found it                                        │
+│  • Optimization: remove word from Trie after finding (prune)                 │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -178,16 +178,16 @@ private boolean canSplit(int[] nums, int m, int maxSum) {
 │  TRIGGER: "Count/find subarrays with sum = k"                                │
 │                                                                              │
 │  HOW IT WORKS:                                                               │
-│  • prefix[j] - prefix[i] = sum(i..j)                                       │
-│  • For target k: need prefix[j] - k in map                                  │
+│  • prefix[j] - prefix[i] = sum(i..j)                                         │
+│  • For target k: need prefix[j] - k in map                                   │
 │  • HashMap stores frequency of each prefix sum seen so far                   │
 │                                                                              │
 │  EXAMPLE: Subarray Sum Equals K (LC 560)                                     │
 │  • Walk array, maintain running prefix sum                                   │
-│  • At each position, check: map.containsKey(prefix - k)?                    │
+│  • At each position, check: map.containsKey(prefix - k)?                     │
 │  • Add current prefix to map                                                 │
 │                                                                              │
-│  OTHER: Contiguous Array (LC 525), Path Sum III (LC 437)                    │
+│  OTHER: Contiguous Array (LC 525), Path Sum III (LC 437)                     │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -206,14 +206,14 @@ private boolean canSplit(int[] nums, int m, int maxSum) {
 │  HOW IT WORKS:                                                               │
 │  • DFS explores all paths from each cell                                     │
 │  • Memoize result per cell to avoid recomputation                            │
-│  • Without memo: exponential. With memo: O(V×E) or O(n×m).                 │
+│  • Without memo: exponential. With memo: O(V×E) or O(n×m).                   │
 │                                                                              │
 │  EXAMPLE: Longest Increasing Path in Matrix (LC 329)                         │
-│  • DFS from each cell, only move to strictly larger neighbors               │
-│  • memo[i][j] = longest path starting from (i,j)                            │
-│  • Each cell computed once → O(m×n)                                         │
+│  • DFS from each cell, only move to strictly larger neighbors                │
+│  • memo[i][j] = longest path starting from (i,j)                             │
+│  • Each cell computed once → O(m×n)                                          │
 │                                                                              │
-│  OTHER: Number of Increasing Paths (LC 2328), Out of Boundary Paths (576)  │
+│  OTHER: Number of Increasing Paths (LC 2328), Out of Boundary Paths (576)    │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -230,24 +230,24 @@ private boolean canSplit(int[] nums, int m, int maxSum) {
 │  When you read a problem, identify:                                          │
 │                                                                              │
 │  1. WHAT DATA STRUCTURE is implied?                                          │
-│     → Grid/graph/tree/string/array → narrows pattern space                  │
+│     → Grid/graph/tree/string/array → narrows pattern space                   │
 │                                                                              │
 │  2. WHAT OPERATION is needed?                                                │
 │     → Search / Count / Optimize / Check feasibility                          │
 │                                                                              │
 │  3. DOES ONE PATTERN LEAVE A GAP?                                            │
-│     → "I know it's DP, but how do I check feasibility?" → + Binary Search   │
-│     → "I know it's backtracking, but too slow" → + Trie/pruning            │
-│     → "I know it's BFS, but state space is huge" → + Bitmask compression   │
+│     → "I know it's DP, but how do I check feasibility?" → + Binary Search    │
+│     → "I know it's backtracking, but too slow" → + Trie/pruning              │
+│     → "I know it's BFS, but state space is huge" → + Bitmask compression     │
 │                                                                              │
 │  COMPOSITION SIGNALS:                                                        │
-│  • "Minimize the maximum" → Binary Search on Answer + Greedy               │
-│  • "Visit all (n≤20)" → BFS + Bitmask                                      │
-│  • "Find all dictionary words in grid" → Trie + Backtracking               │
-│  • "Subarray sum equals k" → Prefix Sum + HashMap                          │
-│  • "Longest path in DAG" → Topological Sort + DP                           │
-│  • "Count inversions / smaller after self" → Merge Sort + counting          │
-│  • "Optimal with constraints on path" → Dijkstra + state DP                │
+│  • "Minimize the maximum" → Binary Search on Answer + Greedy                 │
+│  • "Visit all (n≤20)" → BFS + Bitmask                                        │
+│  • "Find all dictionary words in grid" → Trie + Backtracking                 │
+│  • "Subarray sum equals k" → Prefix Sum + HashMap                            │
+│  • "Longest path in DAG" → Topological Sort + DP                             │
+│  • "Count inversions / smaller after self" → Merge Sort + counting           │
+│  • "Optimal with constraints on path" → Dijkstra + state DP                  │
 │                                                                              │
 │  THE DIFFICULTY LADDER:                                                      │
 │  Easy:   1 pattern                                                           │

@@ -6,18 +6,18 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: Modern CSS techniques for building scalable, maintainable ║
-║        design systems: Custom Properties, methodologies, modern  ║
-║        selectors, and production-quality UI patterns.             ║
-║                                                                    ║
-║  WHY:  Real projects have 1000+ CSS rules. Without organization, ║
-║        CSS becomes unmaintainable spaghetti. Modern tools solve   ║
-║        specificity wars, naming conflicts, and design consistency.║
-║                                                                    ║
-║  WHO:  Any developer working on projects beyond a single page.   ║
-║                                                                    ║
-║  HOW:  CSS Custom Properties for design tokens. BEM or CSS       ║
-║        Modules for scoping. Building a design system.             ║
+║  WHAT: Modern CSS techniques for building scalable, maintainable     ║
+║        design systems: Custom Properties, methodologies, modern      ║
+║        selectors, and production-quality UI patterns.                ║
+║                                                                      ║
+║  WHY:  Real projects have 1000+ CSS rules. Without organization,     ║
+║        CSS becomes unmaintainable spaghetti. Modern tools solve      ║
+║        specificity wars, naming conflicts, and design consistency.   ║
+║                                                                      ║
+║  WHO:  Any developer working on projects beyond a single page.       ║
+║                                                                      ║
+║  HOW:  CSS Custom Properties for design tokens. BEM or CSS           ║
+║        Modules for scoping. Building a design system.                ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -138,31 +138,31 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  BEM: Block__Element--Modifier                                    ║
-║                                                                    ║
-║  Block: Independent component              .card                  ║
-║  Element: Part of a block                  .card__title           ║
-║  Modifier: Variation/state                 .card--featured        ║
-║                                                                    ║
-║  VISUAL:                                                          ║
-║  ┌──────────────────────────────┐                                 ║
-║  │ .card                        │ ← Block                        ║
-║  │  ┌────────────────────────┐  │                                 ║
-║  │  │ .card__image           │  │ ← Element                      ║
-║  │  └────────────────────────┘  │                                 ║
-║  │  .card__title                │ ← Element                      ║
-║  │  .card__description          │ ← Element                      ║
-║  │  ┌────────────────────────┐  │                                 ║
-║  │  │ .card__button          │  │ ← Element                      ║
-║  │  │ .card__button--primary │  │ ← Element + Modifier           ║
-║  │  └────────────────────────┘  │                                 ║
-║  └──────────────────────────────┘                                 ║
-║                                                                    ║
-║  .card--featured = modifier on the block                         ║
-║  .card__button--disabled = modifier on the element               ║
-║                                                                    ║
-║  WHY BEM: Flat specificity (all single class), self-documenting, ║
-║  no nesting conflicts, easy to understand relationship.           ║
+║  BEM: Block__Element--Modifier                                       ║
+║                                                                      ║
+║  Block: Independent component              .card                     ║
+║  Element: Part of a block                  .card__title              ║
+║  Modifier: Variation/state                 .card--featured           ║
+║                                                                      ║
+║  VISUAL:                                                             ║
+║  ┌──────────────────────────────┐                                    ║
+║  │ .card                        │ ← Block                            ║
+║  │  ┌────────────────────────┐  │                                    ║
+║  │  │ .card__image           │  │ ← Element                          ║
+║  │  └────────────────────────┘  │                                    ║
+║  │  .card__title                │ ← Element                          ║
+║  │  .card__description          │ ← Element                          ║
+║  │  ┌────────────────────────┐  │                                    ║
+║  │  │ .card__button          │  │ ← Element                          ║
+║  │  │ .card__button--primary │  │ ← Element + Modifier               ║
+║  │  └────────────────────────┘  │                                    ║
+║  └──────────────────────────────┘                                    ║
+║                                                                      ║
+║  .card--featured = modifier on the block                             ║
+║  .card__button--disabled = modifier on the element                   ║
+║                                                                      ║
+║  WHY BEM: Flat specificity (all single class), self-documenting,     ║
+║  no nesting conflicts, easy to understand relationship.              ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -572,18 +572,18 @@ form:has(:invalid) {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  CSS APPROACH      │ WHEN TO USE          │ TRADE-OFFS            ║
-║  ──────────────────┼──────────────────────┼────────────────────── ║
-║  Plain CSS         │ Small projects       │ Global scope issues   ║
-║  CSS Modules       │ React projects       │ Best scoping (✅)     ║
-║  Tailwind CSS      │ Rapid prototyping    │ Verbose HTML, learn   ║
-║  styled-components │ Dynamic styling      │ Runtime cost, bundle  ║
-║  CSS-in-JS (Panda) │ Design system libs   │ Zero-runtime (✅)     ║
-║                                                                    ║
-║  INDUSTRY TREND (2024):                                           ║
-║  CSS Modules + Tailwind = most popular combo                     ║
-║  styled-components declining (runtime cost)                       ║
-║  Zero-runtime CSS-in-JS rising (Panda CSS, vanilla-extract)      ║
+║  CSS APPROACH      │ WHEN TO USE          │ TRADE-OFFS               ║
+║  ──────────────────┼──────────────────────┼──────────────────────    ║
+║  Plain CSS         │ Small projects       │ Global scope issues      ║
+║  CSS Modules       │ React projects       │ Best scoping (✅)         ║
+║  Tailwind CSS      │ Rapid prototyping    │ Verbose HTML, learn      ║
+║  styled-components │ Dynamic styling      │ Runtime cost, bundle     ║
+║  CSS-in-JS (Panda) │ Design system libs   │ Zero-runtime (✅)         ║
+║                                                                      ║
+║  INDUSTRY TREND (2024):                                              ║
+║  CSS Modules + Tailwind = most popular combo                         ║
+║  styled-components declining (runtime cost)                          ║
+║  Zero-runtime CSS-in-JS rising (Panda CSS, vanilla-extract)          ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 

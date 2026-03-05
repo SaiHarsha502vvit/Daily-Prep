@@ -20,7 +20,7 @@
 │  ├──────────────┼───────────────┼────────────┼────────────────┤ │
 │  │ Bubble O(n²) │ Merge O(nlogn)│ Counting   │ TimSort        │ │
 │  │ Selection    │ Quick O(nlogn)│ Radix      │ IntroSort      │ │
-│  │ Insertion    │ Heap  O(nlogn)│ Bucket     │ BlockSort       │ │
+│  │ Insertion    │ Heap  O(nlogn)│ Bucket     │ BlockSort       ││
 │  └──────────────┴───────────────┴────────────┴────────────────┘ │
 │                                                                 │
 │  DECISION FRAMEWORK:                                            │
@@ -46,21 +46,21 @@
 │ THE REAL-WORLD ORIGIN                                                        │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ 📖 1945: John von Neumann invented Merge Sort for the EDVAC computer.       │
-│     It was the FIRST algorithm designed specifically for computers.           │
+│ 📖 1945: John von Neumann invented Merge Sort for the EDVAC computer.         │
+│     It was the FIRST algorithm designed specifically for computers.          │
 │                                                                              │
-│ 📖 1960: Tony Hoare invented QuickSort while working on machine             │
+│ 📖 1960: Tony Hoare invented QuickSort while working on machine               │
 │     translation at Moscow State University. He needed to sort words in a     │
-│     Russian-English dictionary. Still the fastest practical sort today.       │
+│     Russian-English dictionary. Still the fastest practical sort today.      │
 │                                                                              │
-│ 📖 1964: J.W.J. Williams invented HeapSort — the first O(n log n)          │
+│ 📖 1964: J.W.J. Williams invented HeapSort — the first O(n log n)             │
 │     in-place sort that's also worst-case guaranteed.                         │
 │                                                                              │
-│ 📖 2002: Tim Peters created TimSort for Python — a hybrid that              │
+│ 📖 2002: Tim Peters created TimSort for Python — a hybrid that                │
 │     exploits "runs" of pre-sorted data. Now used in Java, Android, Swift.    │
 │                                                                              │
 │ FUNDAMENTAL THEOREM:                                                         │
-│ Any comparison-based sort requires Ω(n log n) comparisons in the worst case.│
+│ Any comparison-based sort requires Ω(n log n) comparisons in the worst case. │
 │ Proof: n! possible orderings → decision tree has height ≥ log₂(n!) = Ω(nlogn)│
 │                                                                              │
 │ This means: Merge Sort, QuickSort, HeapSort are OPTIMAL for general data.    │
@@ -72,46 +72,46 @@
 │ THE MENTAL MODEL: "What property do I need after sorting?"                   │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│  SORT + BINARY SEARCH  → "Find something fast"                              │
-│  SORT + TWO POINTERS   → "Find pairs/triplets"                              │
-│  SORT + GREEDY         → "Process in optimal order"                         │
-│  SORT + MERGE          → "Combine sorted sequences"                         │
-│  CUSTOM COMPARATOR     → "Define YOUR ordering"                             │
+│  SORT + BINARY SEARCH  → "Find something fast"                               │
+│  SORT + TWO POINTERS   → "Find pairs/triplets"                               │
+│  SORT + GREEDY         → "Process in optimal order"                          │
+│  SORT + MERGE          → "Combine sorted sequences"                          │
+│  CUSTOM COMPARATOR     → "Define YOUR ordering"                              │
 │                                                                              │
 │  BEFORE YOU SORT, ASK:                                                       │
 │  1. Does sorting destroy information I need? (original indices!)             │
-│  2. Is there a way to solve WITHOUT sorting? (HashMap, counting)            │
-│  3. Do I need full sort or just partial? (QuickSelect for kth element)      │
+│  2. Is there a way to solve WITHOUT sorting? (HashMap, counting)             │
+│  3. Do I need full sort or just partial? (QuickSelect for kth element)       │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ COMPLEXITY COMPARISON TABLE                                                  │
-├────────────────────┬──────────┬──────────┬──────────┬────────┬──────────────┤
-│ Algorithm          │ Best     │ Average  │ Worst    │ Space  │ Stable?      │
-├────────────────────┼──────────┼──────────┼──────────┼────────┼──────────────┤
-│ Bubble Sort        │ O(n)     │ O(n²)    │ O(n²)    │ O(1)   │ Yes          │
-│ Selection Sort     │ O(n²)    │ O(n²)    │ O(n²)    │ O(1)   │ No           │
-│ Insertion Sort     │ O(n)     │ O(n²)    │ O(n²)    │ O(1)   │ Yes          │
-│ Merge Sort         │ O(nlogn) │ O(nlogn) │ O(nlogn) │ O(n)   │ Yes          │
-│ Quick Sort         │ O(nlogn) │ O(nlogn) │ O(n²)    │ O(logn)│ No           │
-│ Heap Sort          │ O(nlogn) │ O(nlogn) │ O(nlogn) │ O(1)   │ No           │
-│ Counting Sort      │ O(n+k)   │ O(n+k)   │ O(n+k)   │ O(k)   │ Yes          │
-│ Radix Sort         │ O(d·n)   │ O(d·n)   │ O(d·n)   │ O(n+k) │ Yes          │
-│ Bucket Sort        │ O(n+k)   │ O(n+k)   │ O(n²)    │ O(n)   │ Yes          │
-│ Tim Sort           │ O(n)     │ O(nlogn) │ O(nlogn) │ O(n)   │ Yes          │
-└────────────────────┴──────────┴──────────┴──────────┴────────┴──────────────┘
+├────────────────────┬──────────┬──────────┬──────────┬────────┬───────────────┤
+│ Algorithm          │ Best     │ Average  │ Worst    │ Space  │ Stable?       │
+├────────────────────┼──────────┼──────────┼──────────┼────────┼───────────────┤
+│ Bubble Sort        │ O(n)     │ O(n²)    │ O(n²)    │ O(1)   │ Yes           │
+│ Selection Sort     │ O(n²)    │ O(n²)    │ O(n²)    │ O(1)   │ No            │
+│ Insertion Sort     │ O(n)     │ O(n²)    │ O(n²)    │ O(1)   │ Yes           │
+│ Merge Sort         │ O(nlogn) │ O(nlogn) │ O(nlogn) │ O(n)   │ Yes           │
+│ Quick Sort         │ O(nlogn) │ O(nlogn) │ O(n²)    │ O(logn)│ No            │
+│ Heap Sort          │ O(nlogn) │ O(nlogn) │ O(nlogn) │ O(1)   │ No            │
+│ Counting Sort      │ O(n+k)   │ O(n+k)   │ O(n+k)   │ O(k)   │ Yes           │
+│ Radix Sort         │ O(d·n)   │ O(d·n)   │ O(d·n)   │ O(n+k) │ Yes           │
+│ Bucket Sort        │ O(n+k)   │ O(n+k)   │ O(n²)    │ O(n)   │ Yes           │
+│ Tim Sort           │ O(n)     │ O(nlogn) │ O(nlogn) │ O(n)   │ Yes           │
+└────────────────────┴──────────┴──────────┴──────────┴────────┴───────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ COMMON MISTAKES                                                              │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ 1. Using Arrays.sort() on primitives thinking it's stable (it's Dual-Pivot  │
+│ 1. Using Arrays.sort() on primitives thinking it's stable (it's Dual-Pivot   │
 │    QuickSort = NOT stable). Use Integer[] + Arrays.sort() for stability.     │
-│ 2. Forgetting that QuickSort worst case is O(n²) on already-sorted input    │
+│ 2. Forgetting that QuickSort worst case is O(n²) on already-sorted input     │
 │    → Use randomized pivot or median-of-three.                                │
 │ 3. Custom comparator returning a-b can INTEGER OVERFLOW.                     │
 │    → Use Integer.compare(a, b) instead.                                      │
-│ 4. Sorting when HashMap would be O(n) — don't sort just to find duplicates! │
+│ 4. Sorting when HashMap would be O(n) — don't sort just to find duplicates!  │
 │ 5. Not considering stability when equal elements' relative order matters     │
 │    (e.g., sorting employees by salary, keeping alphabetical within same).    │
 └──────────────────────────────────────────────────────────────────────────────┘

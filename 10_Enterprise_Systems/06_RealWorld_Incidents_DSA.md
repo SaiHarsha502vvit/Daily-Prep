@@ -7,15 +7,15 @@
 ```
 ╔══════════════════════════════════════════════════════════════════════════════════╗
 ║  WHY THIS FILE EXISTS                                                            ║
-║                                                                                   ║
+║                                                                                  ║
 ║  Every production disaster teaches fundamental DSA/System lessons:               ║
 ║  • Wrong data structure choice → System crash                                    ║
 ║  • Wrong algorithm complexity → Millions of dollars lost                         ║
 ║  • Missing edge cases → Data corruption                                          ║
 ║  • Poor concurrency handling → Race conditions                                   ║
-║                                                                                   ║
-║  This file: Real incidents → Root cause → DSA lesson → Your takeaway            ║
-║                                                                                   ║
+║                                                                                  ║
+║  This file: Real incidents → Root cause → DSA lesson → Your takeaway             ║
+║                                                                                  ║
 ║  START DATE: February 10, 2026                                                   ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
@@ -98,15 +98,15 @@ def get_timeline(user_id):
 │                                                                             │
 │ READ-HEAVY APPROACH (Original Twitter):                                     │
 │   Write: O(1)                                                               │
-│   Read:  O(n × m + k log k) - DISASTER for high-follow users               │
+│   Read:  O(n × m + k log k) - DISASTER for high-follow users                │
 │                                                                             │
 │ WRITE-HEAVY APPROACH (Fixed Twitter):                                       │
-│   Write: O(followers) - Push to each follower's list                       │
-│   Read:  O(1) - Just read from cache                                       │
+│   Write: O(followers) - Push to each follower's list                        │
+│   Read:  O(1) - Just read from cache                                        │
 │                                                                             │
 │ WHEN TO USE WHAT:                                                           │
-│   • Reads >> Writes → Pre-compute on write (caching, denormalization)      │
-│   • Writes >> Reads → Compute on read (logs, analytics)                    │
+│   • Reads >> Writes → Pre-compute on write (caching, denormalization)       │
+│   • Writes >> Reads → Compute on read (logs, analytics)                     │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -206,14 +206,14 @@ public class RecommendationEngine {
 │ LESSON: HEAP FOR TOP-K PROBLEMS                                             │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│ WRONG: Sort entire dataset, take first K → O(n log n)                      │
-│ RIGHT: Use Heap → O(n log k) or even O(k log k) with preprocessing         │
+│ WRONG: Sort entire dataset, take first K → O(n log n)                       │
+│ RIGHT: Use Heap → O(n log k) or even O(k log k) with preprocessing          │
 │                                                                             │
 │ TOP-K PATTERNS:                                                             │
-│   • K largest  → Min-Heap of size K (reject if smaller than min)           │
-│   • K smallest → Max-Heap of size K (reject if larger than max)            │
+│   • K largest  → Min-Heap of size K (reject if smaller than min)            │
+│   • K smallest → Max-Heap of size K (reject if larger than max)             │
 │                                                                             │
-│ WHEN YOU SEE "Top 10", "K most frequent", "K nearest"                      │
+│ WHEN YOU SEE "Top 10", "K most frequent", "K nearest"                       │
 │ → IMMEDIATELY think HEAP                                                    │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
@@ -314,17 +314,17 @@ public class SearchEngine {
 │ LESSON: INVERTED INDEX + TRIE FOR SEARCH                                    │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│ BRUTE FORCE SEARCH: O(documents × avg_document_length) per query           │
-│ INVERTED INDEX:     O(query_words × result_set_size)                       │
+│ BRUTE FORCE SEARCH: O(documents × avg_document_length) per query            │
+│ INVERTED INDEX:     O(query_words × result_set_size)                        │
 │                                                                             │
 │ TRIE FOR AUTOCOMPLETE:                                                      │
-│   • Insert: O(word length)                                                 │
-│   • Search prefix: O(prefix length + results)                              │
+│   • Insert: O(word length)                                                  │
+│   • Search prefix: O(prefix length + results)                               │
 │                                                                             │
 │ WHEN YOU SEE:                                                               │
-│   • "Search" → Think Inverted Index                                        │
-│   • "Autocomplete/Prefix" → Think Trie                                     │
-│   • "Dictionary/Spell check" → Think Trie                                  │
+│   • "Search" → Think Inverted Index                                         │
+│   • "Autocomplete/Prefix" → Think Trie                                      │
+│   • "Dictionary/Spell check" → Think Trie                                   │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -390,14 +390,14 @@ func measureLatencyMonotonic(start, end time.Time) float64 {
 │   • Single element                                                          │
 │   • All same elements                                                       │
 │   • Negative numbers                                                        │
-│   • Overflow (Integer.MAX_VALUE + 1)                                       │
+│   • Overflow (Integer.MAX_VALUE + 1)                                        │
 │                                                                             │
 │ TIME/DATES:                                                                 │
-│   • Leap years (Feb 29)                                                    │
+│   • Leap years (Feb 29)                                                     │
 │   • Leap seconds                                                            │
-│   • Timezone changes (DST)                                                 │
-│   • End of year (Dec 31 → Jan 1)                                          │
-│   • Time going backward (NTP sync, leap seconds)                           │
+│   • Timezone changes (DST)                                                  │
+│   • End of year (Dec 31 → Jan 1)                                            │
+│   • Time going backward (NTP sync, leap seconds)                            │
 │                                                                             │
 │ LINKED LISTS:                                                               │
 │   • Null head                                                               │
@@ -407,7 +407,7 @@ func measureLatencyMonotonic(start, end time.Time) float64 {
 │ TREES:                                                                      │
 │   • Null root                                                               │
 │   • Single node                                                             │
-│   • Completely left/right skewed                                           │
+│   • Completely left/right skewed                                            │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -543,18 +543,18 @@ public class SlidingWindowRateLimiter {
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │ CIRCUIT BREAKER PATTERN:                                                    │
-│   CLOSED → OPEN (after N failures) → HALF-OPEN (test) → CLOSED            │
+│   CLOSED → OPEN (after N failures) → HALF-OPEN (test) → CLOSED              │
 │                                                                             │
 │ RATE LIMITING ALGORITHMS:                                                   │
-│   • Token Bucket (allows bursts)                                           │
-│   • Leaky Bucket (constant rate)                                           │
-│   • Fixed Window (simple but spike at boundaries)                          │
-│   • Sliding Window (most accurate)                                         │
+│   • Token Bucket (allows bursts)                                            │
+│   • Leaky Bucket (constant rate)                                            │
+│   • Fixed Window (simple but spike at boundaries)                           │
+│   • Sliding Window (most accurate)                                          │
 │                                                                             │
 │ ALWAYS HAVE:                                                                │
-│   • Maximum iteration limits in loops                                      │
-│   • Timeout for any blocking operation                                     │
-│   • Rate limits for any repeated operation                                 │
+│   • Maximum iteration limits in loops                                       │
+│   • Timeout for any blocking operation                                      │
+│   • Rate limits for any repeated operation                                  │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -656,19 +656,19 @@ public Article getArticleEarlyRefresh(String articleId) {
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │ CACHE PROBLEMS:                                                             │
-│   • Cache Stampede: Many requests hit DB when cache expires                │
-│   • Cache Penetration: Queries for non-existent data bypass cache          │
-│   • Cache Breakdown: Hot key expires, all requests hit DB                  │
+│   • Cache Stampede: Many requests hit DB when cache expires                 │
+│   • Cache Penetration: Queries for non-existent data bypass cache           │
+│   • Cache Breakdown: Hot key expires, all requests hit DB                   │
 │                                                                             │
 │ SOLUTIONS:                                                                  │
-│   • Stampede → Locking or probabilistic early refresh                      │
-│   • Penetration → Cache negative results (null) with short TTL             │
-│   • Breakdown → Never expire hot keys, refresh in background               │
+│   • Stampede → Locking or probabilistic early refresh                       │
+│   • Penetration → Cache negative results (null) with short TTL              │
+│   • Breakdown → Never expire hot keys, refresh in background                │
 │                                                                             │
-│ LRU CACHE IMPLEMENTATION (Interview favorite):                             │
-│   • HashMap for O(1) lookup                                                │
-│   • Doubly Linked List for O(1) update recency                            │
-│   • Combined: O(1) for all operations                                      │
+│ LRU CACHE IMPLEMENTATION (Interview favorite):                              │
+│   • HashMap for O(1) lookup                                                 │
+│   • Doubly Linked List for O(1) update recency                              │
+│   • Combined: O(1) for all operations                                       │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -761,20 +761,20 @@ public class SmartShuffle {
 │ LESSON: CONSTRAINED RANDOM PLACEMENT                                        │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│ PROBLEM TYPE: "Arrange items with minimum gap between same category"       │
+│ PROBLEM TYPE: "Arrange items with minimum gap between same category"        │
 │                                                                             │
 │ SIMILAR PROBLEMS:                                                           │
-│   • Task Scheduler (LC 621) - CPU cooling time between same tasks          │
-│   • Reorganize String (LC 767) - No adjacent same characters               │
-│   • Distant Barcodes (LC 1054) - No adjacent same barcodes                 │
+│   • Task Scheduler (LC 621) - CPU cooling time between same tasks           │
+│   • Reorganize String (LC 767) - No adjacent same characters                │
+│   • Distant Barcodes (LC 1054) - No adjacent same barcodes                  │
 │                                                                             │
 │ PATTERN:                                                                    │
-│   1. Count frequency of each category                                      │
-│   2. Use Max-Heap (most frequent first)                                    │
-│   3. Cooldown queue for gap enforcement                                    │
-│   4. If heap empty but cooldown not → impossible                          │
+│   1. Count frequency of each category                                       │
+│   2. Use Max-Heap (most frequent first)                                     │
+│   3. Cooldown queue for gap enforcement                                     │
+│   4. If heap empty but cooldown not → impossible                            │
 │                                                                             │
-│ TIME: O(n log k) where k = number of categories                           │
+│ TIME: O(n log k) where k = number of categories                             │
 │ SPACE: O(k)                                                                 │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
@@ -914,33 +914,33 @@ public class TwoPhaseController {
 │ LESSON: THREAD SAFETY PATTERNS                                              │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│ RACE CONDITION: Two threads access shared data, at least one writes        │
+│ RACE CONDITION: Two threads access shared data, at least one writes         │
 │                                                                             │
 │ SOLUTIONS:                                                                  │
 │                                                                             │
-│ 1. IMMUTABILITY                                                            │
-│    → Object can't change after creation                                    │
-│    → Thread-safe by design                                                 │
-│    → String, Integer in Java                                               │
+│ 1. IMMUTABILITY                                                             │
+│    → Object can't change after creation                                     │
+│    → Thread-safe by design                                                  │
+│    → String, Integer in Java                                                │
 │                                                                             │
 │ 2. ATOMIC OPERATIONS                                                        │
-│    → AtomicInteger, AtomicReference                                        │
-│    → Compare-and-swap (CAS) operations                                     │
-│    → Lock-free, high performance                                           │
+│    → AtomicInteger, AtomicReference                                         │
+│    → Compare-and-swap (CAS) operations                                      │
+│    → Lock-free, high performance                                            │
 │                                                                             │
 │ 3. SYNCHRONIZATION                                                          │
 │    → synchronized keyword                                                   │
-│    → ReentrantLock                                                         │
-│    → ReadWriteLock (multiple readers OR single writer)                     │
+│    → ReentrantLock                                                          │
+│    → ReadWriteLock (multiple readers OR single writer)                      │
 │                                                                             │
 │ 4. THREAD-LOCAL STORAGE                                                     │
-│    → Each thread has its own copy                                          │
-│    → No sharing = no race condition                                        │
+│    → Each thread has its own copy                                           │
+│    → No sharing = no race condition                                         │
 │                                                                             │
-│ INTERVIEW TIP: Always mention trade-offs:                                  │
-│    Immutability → Memory overhead (new objects)                            │
-│    Locks → Potential deadlock, performance impact                          │
-│    Atomic → Only works for simple operations                               │
+│ INTERVIEW TIP: Always mention trade-offs:                                   │
+│    Immutability → Memory overhead (new objects)                             │
+│    Locks → Potential deadlock, performance impact                           │
+│    Atomic → Only works for simple operations                                │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -1048,21 +1048,21 @@ public class VersionedSurge {
 │ LESSON: CAP THEOREM & CONSISTENCY LEVELS                                    │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│ CAP THEOREM: Can only have 2 of 3:                                         │
-│   C - Consistency (all nodes see same data)                                │
-│   A - Availability (every request gets response)                           │
-│   P - Partition tolerance (system works despite network issues)            │
+│ CAP THEOREM: Can only have 2 of 3:                                          │
+│   C - Consistency (all nodes see same data)                                 │
+│   A - Availability (every request gets response)                            │
+│   P - Partition tolerance (system works despite network issues)             │
 │                                                                             │
 │ CONSISTENCY LEVELS:                                                         │
-│   • Strong: All reads see latest write (like single server)               │
-│   • Eventual: Reads eventually see latest write (replicated DBs)          │
-│   • Causal: If A causes B, everyone sees A before B                       │
-│   • Read-your-writes: You see your own writes immediately                 │
+│   • Strong: All reads see latest write (like single server)                 │
+│   • Eventual: Reads eventually see latest write (replicated DBs)            │
+│   • Causal: If A causes B, everyone sees A before B                         │
+│   • Read-your-writes: You see your own writes immediately                   │
 │                                                                             │
-│ INTERVIEW: When discussing distributed systems, ALWAYS mention:            │
-│   1. What consistency level is needed?                                     │
-│   2. What's the latency vs consistency trade-off?                         │
-│   3. How do you handle conflicts?                                          │
+│ INTERVIEW: When discussing distributed systems, ALWAYS mention:             │
+│   1. What consistency level is needed?                                      │
+│   2. What's the latency vs consistency trade-off?                           │
+│   3. How do you handle conflicts?                                           │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -1076,24 +1076,24 @@ public class VersionedSurge {
 # ═══════════════════════════════════════════════════════════
 
 ```
-┌────────────────────────────────────────────────────────────────────────────────────────────┐
-│                            INCIDENT TO DSA LESSON MAPPING                                  │
-├─────────────────────────────────────────────────────────────────────────────────────────────┤
-│ INCIDENT                          │ DSA LESSON                         │ KEY PATTERN        │
-│ ────────────────────────────────────────────────────────────────────────────────────────── │
-│ Twitter Fail Whale                │ Read vs Write optimization         │ Fan-out on write   │
-│ Amazon 2-Second Rule              │ Heap for Top-K                     │ Priority Queue     │
+┌──────────────────────────────────────────────────────────────────────────────────────────────┐
+│                            INCIDENT TO DSA LESSON MAPPING                                    │
+├──────────────────────────────────────────────────────────────────────────────────────────────┤
+│ INCIDENT                          │ DSA LESSON                         │ KEY PATTERN         │
+│ ──────────────────────────────────────────────────────────────────────────────────────────   │
+│ Twitter Fail Whale                │ Read vs Write optimization         │ Fan-out on write    │
+│ Amazon 2-Second Rule              │ Heap for Top-K                     │ Priority Queue      │
 │ LinkedIn Search                   │ Inverted Index + Trie              │ Search optimization │
-│ Cloudflare Leap Second           │ Edge case handling                  │ Defensive coding   │
-│ Knight Capital                    │ Rate limiting                      │ Token Bucket       │
-│ Reddit Hug of Death               │ Caching strategies                 │ LRU Cache          │
-│ Spotify Shuffle                   │ Constrained placement              │ Heap + Cooldown    │
-│ Therac-25 Radiation               │ Thread safety                      │ Atomic operations  │
-│ Uber Surge Pricing                │ Distributed consistency            │ Version vectors    │
-│ GitLab Deletion                   │ Backup verification                │ Failsafe design    │
-│ Marriott Breach                   │ Security + Auditing                │ Principle of least │
-│                                   │                                    │ privilege          │
-└─────────────────────────────────────────────────────────────────────────────────────────────┘
+│ Cloudflare Leap Second           │ Edge case handling                  │ Defensive coding    │
+│ Knight Capital                    │ Rate limiting                      │ Token Bucket        │
+│ Reddit Hug of Death               │ Caching strategies                 │ LRU Cache           │
+│ Spotify Shuffle                   │ Constrained placement              │ Heap + Cooldown     │
+│ Therac-25 Radiation               │ Thread safety                      │ Atomic operations   │
+│ Uber Surge Pricing                │ Distributed consistency            │ Version vectors     │
+│ GitLab Deletion                   │ Backup verification                │ Failsafe design     │
+│ Marriott Breach                   │ Security + Auditing                │ Principle of least  │
+│                                   │                                    │ privilege           │
+└──────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---

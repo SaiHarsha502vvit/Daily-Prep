@@ -544,18 +544,18 @@ private void helper(String num, int target, int index,
 ### Time Complexity Patterns
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│ RECURSION TYPE              │ RECURRENCE       │ TIME           │
-├─────────────────────────────────────────────────────────────────┤
-│ Linear (1 call, n→n-1)      │ T(n) = T(n-1)+1  │ O(n)           │
-│ Linear (1 call, n→n/2)      │ T(n) = T(n/2)+1  │ O(log n)       │
-│ Binary (2 calls, n→n-1)     │ T(n) = 2T(n-1)+1 │ O(2^n)         │
-│ Binary (2 calls, n→n/2)     │ T(n) = 2T(n/2)+n │ O(n log n)     │
-│ Tree traversal              │ T(n) = 2T(n/2)+1 │ O(n)           │
-│ Subsets                     │ T(n) = 2T(n-1)+1 │ O(2^n)         │
-│ Permutations                │ T(n) = n*T(n-1)  │ O(n!)          │
+┌──────────────────────────────────────────────────────────────────────────┐
+│ RECURSION TYPE              │ RECURRENCE       │ TIME                    │
+├──────────────────────────────────────────────────────────────────────────┤
+│ Linear (1 call, n→n-1)      │ T(n) = T(n-1)+1  │ O(n)                    │
+│ Linear (1 call, n→n/2)      │ T(n) = T(n/2)+1  │ O(log n)                │
+│ Binary (2 calls, n→n-1)     │ T(n) = 2T(n-1)+1 │ O(2^n)                  │
+│ Binary (2 calls, n→n/2)     │ T(n) = 2T(n/2)+n │ O(n log n)              │
+│ Tree traversal              │ T(n) = 2T(n/2)+1 │ O(n)                    │
+│ Subsets                     │ T(n) = 2T(n-1)+1 │ O(2^n)                  │
+│ Permutations                │ T(n) = n*T(n-1)  │ O(n!)                   │
 │ Fibonacci (naive)           │ T(n) = T(n-1)+T(n-2) │ O(φ^n) ≈ O(1.618^n) │
-└─────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────────────┘
 
 SPACE COMPLEXITY:
 - Usually O(max recursion depth)
@@ -767,16 +767,16 @@ public long factorial(int n) {
 ╔══════════════════════════════════════════════════════════════════════════════════╗
 ║          ADVANCED RECURSION - BEYOND THE BASICS                                  ║
 ╠══════════════════════════════════════════════════════════════════════════════════╣
-║                                                                                   ║
+║                                                                                  ║
 ║  This section covers advanced patterns used in competitive programming and       ║
-║  system-level programming:                                                        ║
-║  • Mutual recursion                                                               ║
-║  • Indirect recursion                                                             ║
+║  system-level programming:                                                       ║
+║  • Mutual recursion                                                              ║
+║  • Indirect recursion                                                            ║
 ║  • Continuation Passing Style (CPS)                                              ║
 ║  • Y-Combinator (anonymous recursion)                                            ║
 ║  • Recursion with immutable state                                                ║
 ║  • Advanced backtracking optimizations                                           ║
-║                                                                                   ║
+║                                                                                  ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -784,18 +784,18 @@ public long factorial(int n) {
 
 ````
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    MUTUAL RECURSION - TWO FUNCTIONS CALL EACH OTHER              │
+│                    MUTUAL RECURSION - TWO FUNCTIONS CALL EACH OTHER             │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  CONCEPT: Two or more functions that call each other in a cycle.                │
-│                                                                                  │
+│                                                                                 │
 │       ┌───────────┐                    ┌───────────┐                            │
-│       │  isEven   │ ────────────────→ │  isOdd    │                            │
+│       │  isEven   │ ────────────────→ │  isOdd    │                             │
 │       └───────────┘                    └───────────┘                            │
-│             ↑                                │                                   │
-│             └────────────────────────────────┘                                   │
-│                                                                                  │
-│                                                                                  │
+│             ↑                                │                                  │
+│             └────────────────────────────────┘                                  │
+│                                                                                 │
+│                                                                                 │
 │  EXAMPLE: Check if a number is even or odd using mutual recursion               │
 │  ────────────────────────────────────────────────────────                       │
 ```java
@@ -887,18 +887,18 @@ class Parser {
 ```
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│ CONTINUATION PASSING STYLE (CPS) │
+│ CONTINUATION PASSING STYLE (CPS)                                                │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│ │
-│ CONCEPT: Instead of returning a value, pass a function that handles the │
-│ result. Every call becomes a tail call! │
-│ │
-│ TRADITIONAL: CPS: │
-│ return value ← caller continuation(value) → no return │
-│ │
-│ │
-│ EXAMPLE: Factorial in CPS │
-│ ─────────────────────────── │
+│                                                                                 │
+│ CONCEPT: Instead of returning a value, pass a function that handles the         │
+│ result. Every call becomes a tail call!                                         │
+│                                                                                 │
+│ TRADITIONAL: CPS:                                                               │
+│ return value ← caller continuation(value) → no return                           │
+│                                                                                 │
+│                                                                                 │
+│ EXAMPLE: Factorial in CPS                                                       │
+│ ───────────────────────────                                                     │
 
 ```java
 // Traditional recursive factorial
@@ -973,19 +973,19 @@ void fibCPS(int n, Continuation<Integer> k) {
 ```
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│ Y-COMBINATOR - RECURSION WITHOUT NAMING │
+│ Y-COMBINATOR - RECURSION WITHOUT NAMING                                         │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│ │
-│ PROBLEM: How do you write a recursive function without naming it? │
-│ (Lambda calculus has no assignment!) │
-│ │
-│ SOLUTION: Y-Combinator - a higher-order function that enables recursion │
-│ │
-│ MATHEMATICAL DEFINITION: │
-│ Y = λf. (λx. f(x x)) (λx. f(x x)) │
-│ │
-│ JAVA IMPLEMENTATION: │
-│ ───────────────────── │
+│                                                                                 │
+│ PROBLEM: How do you write a recursive function without naming it?               │
+│ (Lambda calculus has no assignment!)                                            │
+│                                                                                 │
+│ SOLUTION: Y-Combinator - a higher-order function that enables recursion         │
+│                                                                                 │
+│ MATHEMATICAL DEFINITION:                                                        │
+│ Y = λf. (λx. f(x x)) (λx. f(x x))                                               │
+│                                                                                 │
+│ JAVA IMPLEMENTATION:                                                            │
+│ ─────────────────────                                                           │
 
 ```java
 // Function that takes itself and returns a function
@@ -1046,11 +1046,11 @@ Function<Integer, Integer> factorial = new Function<>() {
 ```
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│ BACKTRACKING OPTIMIZATION TECHNIQUES │
+│ BACKTRACKING OPTIMIZATION TECHNIQUES                                            │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│ │
-│ TECHNIQUE 1: PRUNING - Cut branches that can't lead to solution │
-│ ───────────────────────────────────────────────────────────────── │
+│                                                                                 │
+│ TECHNIQUE 1: PRUNING - Cut branches that can't lead to solution                 │
+│ ─────────────────────────────────────────────────────────────────               │
 
 ```java
 // N-Queens with intelligent pruning
@@ -1243,11 +1243,11 @@ class SudokuSolver {
 ```
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│ ADVANCED DIVIDE AND CONQUER PATTERNS │
+│ ADVANCED DIVIDE AND CONQUER PATTERNS                                            │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│ │
-│ PATTERN 1: CLOSEST PAIR OF POINTS (2D) │
-│ ────────────────────────────────────── │
+│                                                                                 │
+│ PATTERN 1: CLOSEST PAIR OF POINTS (2D)                                          │
+│ ──────────────────────────────────────                                          │
 
 ```java
 class ClosestPair {
@@ -1395,13 +1395,13 @@ int[][] strassen(int[][] A, int[][] B) {
 ```
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│ IMMUTABLE STATE IN RECURSION │
+│ IMMUTABLE STATE IN RECURSION                                                    │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│ │
-│ PROBLEM: Mutable state makes reasoning about recursion difficult │
-│ SOLUTION: Pass state as parameters, return new state │
-│ │
-│ MUTABLE (hard to reason): IMMUTABLE (easier to reason): │
+│                                                                                 │
+│ PROBLEM: Mutable state makes reasoning about recursion difficult                │
+│ SOLUTION: Pass state as parameters, return new state                            │
+│                                                                                 │
+│ MUTABLE (hard to reason): IMMUTABLE (easier to reason):                         │
 
 ```java
 // MUTABLE - state is shared/modified
@@ -1477,53 +1477,53 @@ List<Integer> vals = foldTree(root, new ArrayList<>(), (list, val) -> {
 ```
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│ PERFORMANCE: RECURSIVE VS ITERATIVE │
+│ PERFORMANCE: RECURSIVE VS ITERATIVE                                             │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│ │
-│ BENCHMARK DATA (Java 17, Intel i7, 1M iterations averaged): │
-│ │
-│ ┌───────────────────────────────┬────────────────┬────────────────┬──────────┐│
-│ │ Problem │ Recursive (ns) │ Iterative (ns) │ Ratio ││
-│ ├───────────────────────────────┼────────────────┼────────────────┼──────────┤│
-│ │ Factorial(20) │ 85 │ 12 │ 7.1x ││
-│ │ Fibonacci(30) naive │ 8,500,000 │ 15 │ 566,000x ││
-│ │ Fibonacci(30) memoized │ 120 │ 15 │ 8x ││
-│ │ Binary Search(1M elements) │ 180 │ 120 │ 1.5x ││
-│ │ Tree Inorder(1K nodes) │ 45,000 │ 52,000 │ 0.87x ││
-│ │ QuickSort(10K elements) │ 850,000 │ 820,000 │ 1.04x ││
-│ │ Permutations(10 elements) │ 3,200,000 │ 3,100,000 │ 1.03x ││
-│ └───────────────────────────────┴────────────────┴────────────────┴──────────┘│
-│ │
-│ KEY INSIGHTS: │
-│ • Simple recursion (factorial): 7x slower due to call overhead │
-│ • Naive exponential recursion: Catastrophically slow │
-│ • Memoized recursion: Competitive with iteration │
-│ • Tree traversal: Recursion can be FASTER (simpler code → JIT optimizes) │
-│ • Complex algorithms (sort, permute): Nearly identical performance │
-│ │
-│ │
-│ MEMORY USAGE: │
-│ ────────────── │
-│ ┌───────────────────────────────┬────────────────┬────────────────┐ │
-│ │ Problem │ Recursive │ Iterative │ │
-│ ├───────────────────────────────┼────────────────┼────────────────┤ │
-│ │ Factorial(1000) │ 32 KB stack │ 8 bytes │ │
-│ │ Factorial(100000) │ OVERFLOW! │ 8 bytes │ │
-│ │ Tree Traversal (depth 20) │ 640 bytes │ 640 bytes* │ │
-│ │ Tree Traversal (depth 10000) │ OVERFLOW! │ 320 KB heap │ │
-│ └───────────────────────────────┴────────────────┴────────────────┘ │
-│ * Iterative tree traversal uses heap-allocated stack │
-│ │
-│ │
-│ WHEN TO CHOOSE EACH: │
-│ ───────────────────── │
-│ RECURSION: ITERATION: │
-│ • Tree/graph structures • Simple counting/accumulation │
-│ • Depth ≤ 1000-10000 • Depth could be > 10000 │
-│ • Code clarity matters • Memory critical │
-│ • Backtracking needed • Tail recursion patterns │
-│ • D&C algorithms • Linear data structures │
-│ │
+│                                                                                 │
+│ BENCHMARK DATA (Java 17, Intel i7, 1M iterations averaged):                     │
+│                                                                                 │
+│ ┌───────────────────────────────┬────────────────┬────────────────┬──────────┐  │
+│ │ Problem │ Recursive (ns) │ Iterative (ns) │ Ratio │                           │
+│ ├───────────────────────────────┼────────────────┼────────────────┼──────────┤  │
+│ │ Factorial(20) │ 85 │ 12 │ 7.1x │                                              │
+│ │ Fibonacci(30) naive │ 8,500,000 │ 15 │ 566,000x │                             │
+│ │ Fibonacci(30) memoized │ 120 │ 15 │ 8x │                                      │
+│ │ Binary Search(1M elements) │ 180 │ 120 │ 1.5x │                               │
+│ │ Tree Inorder(1K nodes) │ 45,000 │ 52,000 │ 0.87x │                            │
+│ │ QuickSort(10K elements) │ 850,000 │ 820,000 │ 1.04x │                         │
+│ │ Permutations(10 elements) │ 3,200,000 │ 3,100,000 │ 1.03x │                   │
+│ └───────────────────────────────┴────────────────┴────────────────┴──────────┘  │
+│                                                                                 │
+│ KEY INSIGHTS:                                                                   │
+│ • Simple recursion (factorial): 7x slower due to call overhead                  │
+│ • Naive exponential recursion: Catastrophically slow                            │
+│ • Memoized recursion: Competitive with iteration                                │
+│ • Tree traversal: Recursion can be FASTER (simpler code → JIT optimizes)        │
+│ • Complex algorithms (sort, permute): Nearly identical performance              │
+│                                                                                 │
+│                                                                                 │
+│ MEMORY USAGE:                                                                   │
+│ ──────────────                                                                  │
+│ ┌───────────────────────────────┬────────────────┬────────────────┐             │
+│ │ Problem │ Recursive │ Iterative │                                             │
+│ ├───────────────────────────────┼────────────────┼────────────────┤             │
+│ │ Factorial(1000) │ 32 KB stack │ 8 bytes │                                     │
+│ │ Factorial(100000) │ OVERFLOW! │ 8 bytes │                                     │
+│ │ Tree Traversal (depth 20) │ 640 bytes │ 640 bytes* │                          │
+│ │ Tree Traversal (depth 10000) │ OVERFLOW! │ 320 KB heap │                      │
+│ └───────────────────────────────┴────────────────┴────────────────┘             │
+│ * Iterative tree traversal uses heap-allocated stack                            │
+│                                                                                 │
+│                                                                                 │
+│ WHEN TO CHOOSE EACH:                                                            │
+│ ─────────────────────                                                           │
+│ RECURSION: ITERATION:                                                           │
+│ • Tree/graph structures • Simple counting/accumulation                          │
+│ • Depth ≤ 1000-10000 • Depth could be > 10000                                   │
+│ • Code clarity matters • Memory critical                                        │
+│ • Backtracking needed • Tail recursion patterns                                 │
+│ • D&C algorithms • Linear data structures                                       │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ```
@@ -1533,55 +1533,55 @@ List<Integer> vals = foldTree(root, new ArrayList<>(), (list, val) -> {
 ```
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│ RECURSION PROBLEM CLASSIFICATION │
+│ RECURSION PROBLEM CLASSIFICATION                                                │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│ │
-│ ┌─────────────────────────────────────────────────────────────────────────┐ │
-│ │ RECURSION PROBLEM TYPES │ │
-│ ├────────────────┬────────────────────────────────────────────────────────┤ │
-│ │ │ │ │
-│ │ LINEAR │ Only ONE recursive call per invocation │ │
-│ │ RECURSION │ • Factorial, Sum, Array traversal │ │
-│ │ O(n) calls │ • Can always convert to simple iteration │ │
-│ │ │ │ │
-│ ├────────────────┼────────────────────────────────────────────────────────┤ │
-│ │ │ │ │
-│ │ BINARY │ TWO recursive calls per invocation │ │
-│ │ RECURSION │ • Fibonacci, Merge Sort, Binary Tree traversal │ │
-│ │ O(2ⁿ) naive │ • Often needs memoization for efficiency │ │
-│ │ O(n) with │ │ │
-│ │ memo │ │ │
-│ │ │ │ │
-│ ├────────────────┼────────────────────────────────────────────────────────┤ │
-│ │ │ │ │
-│ │ MULTIPLE │ k recursive calls per invocation │ │
-│ │ RECURSION │ • N-ary tree, Graph traversal │ │
-│ │ O(kⁿ) nodes │ • Combinations, permutations │ │
-│ │ │ │ │
-│ ├────────────────┼────────────────────────────────────────────────────────┤ │
-│ │ │ │ │
-│ │ MUTUAL │ Two+ functions call each other │ │
-│ │ RECURSION │ • isEven/isOdd, Parser (expr/term/factor) │ │
-│ │ │ • State machines │ │
-│ │ │ │ │
-│ ├────────────────┼────────────────────────────────────────────────────────┤ │
-│ │ │ │ │
-│ │ TAIL │ Recursive call is LAST operation │ │
-│ │ RECURSION │ • Accumulator patterns │ │
-│ │ O(1) space │ • Can be optimized to iteration (not in Java!) │ │
-│ │ if optimized │ │ │
-│ │ │ │ │
-│ └────────────────┴────────────────────────────────────────────────────────┘ │
-│ │
-│ │
-│ SOLVING STRATEGY BY TYPE: │
-│ ──────────────────────── │
-│ LINEAR: Convert to loop if n large, or use as-is for small n │
-│ BINARY: Add memoization if subproblems overlap (DP!) │
-│ MULTIPLE: Use pruning/backtracking, careful about complexity │
-│ MUTUAL: Draw call graph to understand flow │
-│ TAIL: In Java, manually convert to loop for large n │
-│ │
+│                                                                                 │
+│ ┌─────────────────────────────────────────────────────────────────────────┐     │
+│ │ RECURSION PROBLEM TYPES │                                                     │
+│ ├────────────────┬────────────────────────────────────────────────────────┤     │
+│ │ │ │                                                                           │
+│ │ LINEAR │ Only ONE recursive call per invocation │                             │
+│ │ RECURSION │ • Factorial, Sum, Array traversal │                               │
+│ │ O(n) calls │ • Can always convert to simple iteration │                       │
+│ │ │ │                                                                           │
+│ ├────────────────┼────────────────────────────────────────────────────────┤     │
+│ │ │ │                                                                           │
+│ │ BINARY │ TWO recursive calls per invocation │                                 │
+│ │ RECURSION │ • Fibonacci, Merge Sort, Binary Tree traversal │                  │
+│ │ O(2ⁿ) naive │ • Often needs memoization for efficiency │                      │
+│ │ O(n) with │ │                                                                 │
+│ │ memo │ │                                                                      │
+│ │ │ │                                                                           │
+│ ├────────────────┼────────────────────────────────────────────────────────┤     │
+│ │ │ │                                                                           │
+│ │ MULTIPLE │ k recursive calls per invocation │                                 │
+│ │ RECURSION │ • N-ary tree, Graph traversal │                                   │
+│ │ O(kⁿ) nodes │ • Combinations, permutations │                                  │
+│ │ │ │                                                                           │
+│ ├────────────────┼────────────────────────────────────────────────────────┤     │
+│ │ │ │                                                                           │
+│ │ MUTUAL │ Two+ functions call each other │                                     │
+│ │ RECURSION │ • isEven/isOdd, Parser (expr/term/factor) │                       │
+│ │ │ • State machines │                                                          │
+│ │ │ │                                                                           │
+│ ├────────────────┼────────────────────────────────────────────────────────┤     │
+│ │ │ │                                                                           │
+│ │ TAIL │ Recursive call is LAST operation │                                     │
+│ │ RECURSION │ • Accumulator patterns │                                          │
+│ │ O(1) space │ • Can be optimized to iteration (not in Java!) │                 │
+│ │ if optimized │ │                                                              │
+│ │ │ │                                                                           │
+│ └────────────────┴────────────────────────────────────────────────────────┘     │
+│                                                                                 │
+│                                                                                 │
+│ SOLVING STRATEGY BY TYPE:                                                       │
+│ ────────────────────────                                                        │
+│ LINEAR: Convert to loop if n large, or use as-is for small n                    │
+│ BINARY: Add memoization if subproblems overlap (DP!)                            │
+│ MULTIPLE: Use pruning/backtracking, careful about complexity                    │
+│ MUTUAL: Draw call graph to understand flow                                      │
+│ TAIL: In Java, manually convert to loop for large n                             │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ```
@@ -1591,43 +1591,43 @@ List<Integer> vals = foldTree(root, new ArrayList<>(), (list, val) -> {
 ```
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│ RECURSION WRITING CHECKLIST ✓ │
+│ RECURSION WRITING CHECKLIST ✓                                                   │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│ │
-│ BEFORE CODING: │
-│ □ Identify the subproblem - what's the "smaller version"? │
-│ □ Identify base case(s) - when can you answer directly? │
-│ □ Identify what each call returns (or modifies) │
-│ □ Estimate max depth - will stack overflow? │
-│ □ Check for overlapping subproblems - need memoization? │
-│ │
-│ WHILE CODING: │
-│ □ Write base case FIRST │
-│ □ Recursive call gets SMALLER input (makes progress) │
-│ □ Use the result - don't ignore what recursion returns │
-│ □ For backtracking: undo changes after recursive call │
-│ □ For combinations: decide what to "carry" vs what to "accumulate" │
-│ │
-│ DEBUGGING: │
-│ □ Trace with smallest possible input (n=0, n=1) │
-│ □ Verify base case returns correct answer │
-│ □ Check that you're making progress toward base case │
-│ □ Print state at each call level if confused │
-│ □ Draw the recursion tree for small n │
-│ │
-│ OPTIMIZATION: │
-│ □ Add memoization if same subproblems called multiple times │
-│ □ Convert tail recursion to iteration for large n │
-│ □ Use pruning to avoid exploring hopeless branches │
-│ □ Consider iterative solution if depth > 10000 │
-│ │
-│ INTERVIEW TIPS: │
-│ □ State the recurrence relation out loud before coding │
-│ □ Identify time and space complexity │
-│ □ Mention potential stack overflow for large inputs │
-│ □ Discuss memoization if applicable │
-│ □ Offer iterative alternative if asked │
-│ │
+│                                                                                 │
+│ BEFORE CODING:                                                                  │
+│ □ Identify the subproblem - what's the "smaller version"?                       │
+│ □ Identify base case(s) - when can you answer directly?                         │
+│ □ Identify what each call returns (or modifies)                                 │
+│ □ Estimate max depth - will stack overflow?                                     │
+│ □ Check for overlapping subproblems - need memoization?                         │
+│                                                                                 │
+│ WHILE CODING:                                                                   │
+│ □ Write base case FIRST                                                         │
+│ □ Recursive call gets SMALLER input (makes progress)                            │
+│ □ Use the result - don't ignore what recursion returns                          │
+│ □ For backtracking: undo changes after recursive call                           │
+│ □ For combinations: decide what to "carry" vs what to "accumulate"              │
+│                                                                                 │
+│ DEBUGGING:                                                                      │
+│ □ Trace with smallest possible input (n=0, n=1)                                 │
+│ □ Verify base case returns correct answer                                       │
+│ □ Check that you're making progress toward base case                            │
+│ □ Print state at each call level if confused                                    │
+│ □ Draw the recursion tree for small n                                           │
+│                                                                                 │
+│ OPTIMIZATION:                                                                   │
+│ □ Add memoization if same subproblems called multiple times                     │
+│ □ Convert tail recursion to iteration for large n                               │
+│ □ Use pruning to avoid exploring hopeless branches                              │
+│ □ Consider iterative solution if depth > 10000                                  │
+│                                                                                 │
+│ INTERVIEW TIPS:                                                                 │
+│ □ State the recurrence relation out loud before coding                          │
+│ □ Identify time and space complexity                                            │
+│ □ Mention potential stack overflow for large inputs                             │
+│ □ Discuss memoization if applicable                                             │
+│ □ Offer iterative alternative if asked                                          │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ```
@@ -1643,36 +1643,36 @@ _Recursion is not about memorizing - it's about TRUSTING!_ 🔄
 ```
 
 ╔══════════════════════════════════════════════════════════════════════════════════╗
-║ RECURSION QUICK REFERENCE ║
+║ RECURSION QUICK REFERENCE                                                        ║
 ╠══════════════════════════════════════════════════════════════════════════════════╣
-║ ║
-║ TEMPLATE: ║
-║ returnType solve(input) { ║
-║ if (baseCase) return baseCaseAnswer; ║
-║ return combine(solve(smallerInput)); ║
-║ } ║
-║ ║
-║ COMPLEXITY RULES: ║
-║ • T(n) = T(n-1) + O(1) → O(n) // Linear ║
-║ • T(n) = 2T(n-1) + O(1) → O(2ⁿ) // Exponential ║
-║ • T(n) = 2T(n/2) + O(n) → O(n log n) // Merge Sort ║
-║ • T(n) = T(n/2) + O(1) → O(log n) // Binary Search ║
-║ • T(n) = T(n-1) + O(n) → O(n²) // Selection Sort ║
-║ ║
-║ MAX RECURSION DEPTH: ~10,000-20,000 in Java (depends on stack size) ║
-║ ║
-║ BACKTRACKING TEMPLATE: ║
-║ void backtrack(state, choices) { ║
-║ if (goalReached) { recordSolution(); return; } ║
-║ for (choice : choices) { ║
-║ if (isValid(choice)) { ║
-║ make(choice); ║
-║ backtrack(newState, remainingChoices); ║
-║ undo(choice); // BACKTRACK ║
-║ } ║
-║ } ║
-║ } ║
-║ ║
+║                                                                                  ║
+║ TEMPLATE:                                                                        ║
+║ returnType solve(input) {                                                        ║
+║ if (baseCase) return baseCaseAnswer;                                             ║
+║ return combine(solve(smallerInput));                                             ║
+║ }                                                                                ║
+║                                                                                  ║
+║ COMPLEXITY RULES:                                                                ║
+║ • T(n) = T(n-1) + O(1) → O(n) // Linear                                          ║
+║ • T(n) = 2T(n-1) + O(1) → O(2ⁿ) // Exponential                                   ║
+║ • T(n) = 2T(n/2) + O(n) → O(n log n) // Merge Sort                               ║
+║ • T(n) = T(n/2) + O(1) → O(log n) // Binary Search                               ║
+║ • T(n) = T(n-1) + O(n) → O(n²) // Selection Sort                                 ║
+║                                                                                  ║
+║ MAX RECURSION DEPTH: ~10,000-20,000 in Java (depends on stack size)              ║
+║                                                                                  ║
+║ BACKTRACKING TEMPLATE:                                                           ║
+║ void backtrack(state, choices) {                                                 ║
+║ if (goalReached) { recordSolution(); return; }                                   ║
+║ for (choice : choices) {                                                         ║
+║ if (isValid(choice)) {                                                           ║
+║ make(choice);                                                                    ║
+║ backtrack(newState, remainingChoices);                                           ║
+║ undo(choice); // BACKTRACK                                                       ║
+║ }                                                                                ║
+║ }                                                                                ║
+║ }                                                                                ║
+║                                                                                  ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 
 ```

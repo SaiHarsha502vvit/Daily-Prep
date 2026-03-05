@@ -4,19 +4,19 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  This is your SQL interview ready-reckoner.                       ║
-║                                                                    ║
-║  50 problems organized by pattern, not by difficulty.             ║
-║  Each problem has: Schema, Question, Solution, Explanation.       ║
-║  Focus on PATTERNS — once you learn the pattern, you can          ║
-║  solve any variation.                                              ║
-║                                                                    ║
-║  COMMON INTERVIEW DATASETS (used throughout):                     ║
-║  • Employees (id, name, dept_id, salary, hire_date, mgr_id)      ║
-║  • Departments (id, name, location)                               ║
-║  • Orders (id, customer_id, amount, order_date, status)           ║
-║  • Products (id, name, category, price, stock)                    ║
-║  • Students (id, name, score, class)                              ║
+║  This is your SQL interview ready-reckoner.                          ║
+║                                                                      ║
+║  50 problems organized by pattern, not by difficulty.                ║
+║  Each problem has: Schema, Question, Solution, Explanation.          ║
+║  Focus on PATTERNS — once you learn the pattern, you can             ║
+║  solve any variation.                                                ║
+║                                                                      ║
+║  COMMON INTERVIEW DATASETS (used throughout):                        ║
+║  • Employees (id, name, dept_id, salary, hire_date, mgr_id)          ║
+║  • Departments (id, name, location)                                  ║
+║  • Orders (id, customer_id, amount, order_date, status)              ║
+║  • Products (id, name, category, price, stock)                       ║
+║  • Students (id, name, score, class)                                 ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -261,15 +261,15 @@ FROM employees;
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  ROW_NUMBER vs RANK vs DENSE_RANK                                 ║
-║                                                                    ║
-║  Salary: 100, 100, 90, 80                                        ║
-║                                                                    ║
-║  ROW_NUMBER: 1, 2, 3, 4   (unique, arbitrary for ties)           ║
-║  RANK:       1, 1, 3, 4   (ties get same rank, gaps after)       ║
-║  DENSE_RANK: 1, 1, 2, 3   (ties get same rank, NO gaps)         ║
-║                                                                    ║
-║  Use ROW_NUMBER for pagination, DENSE_RANK for "Nth highest"     ║
+║  ROW_NUMBER vs RANK vs DENSE_RANK                                    ║
+║                                                                      ║
+║  Salary: 100, 100, 90, 80                                            ║
+║                                                                      ║
+║  ROW_NUMBER: 1, 2, 3, 4   (unique, arbitrary for ties)               ║
+║  RANK:       1, 1, 3, 4   (ties get same rank, gaps after)           ║
+║  DENSE_RANK: 1, 1, 2, 3   (ties get same rank, NO gaps)              ║
+║                                                                      ║
+║  Use ROW_NUMBER for pagination, DENSE_RANK for "Nth highest"         ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -645,12 +645,12 @@ COMMIT;
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  Isolation Level     │ Dirty Read │ Non-Repeatable │ Phantom     ║
-║  ────────────────────┼────────────┼────────────────┼──────────── ║
-║  READ UNCOMMITTED    │  Yes       │  Yes           │  Yes        ║
-║  READ COMMITTED      │  No        │  Yes           │  Yes        ║
-║  REPEATABLE READ     │  No        │  No            │  Yes        ║
-║  SERIALIZABLE        │  No        │  No            │  No         ║
+║  Isolation Level     │ Dirty Read │ Non-Repeatable │ Phantom         ║
+║  ────────────────────┼────────────┼────────────────┼────────────     ║
+║  READ UNCOMMITTED    │  Yes       │  Yes           │  Yes            ║
+║  READ COMMITTED      │  No        │  Yes           │  Yes            ║
+║  REPEATABLE READ     │  No        │  No            │  Yes            ║
+║  SERIALIZABLE        │  No        │  No            │  No             ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -708,15 +708,15 @@ EXPLAIN SELECT * FROM orders WHERE customer_id = 42 AND status = 'SHIPPED';
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  EXPLAIN type (best → worst):                                     ║
-║  const → eq_ref → ref → range → index → ALL                      ║
-║                                                                    ║
-║  const:   WHERE primary_key = 42                                  ║
-║  eq_ref:  JOIN on primary key (unique match)                      ║
-║  ref:     JOIN on non-unique index                                ║
-║  range:   WHERE price BETWEEN 10 AND 50                           ║
-║  index:   Full index scan (better than ALL but still slow)        ║
-║  ALL:     Full table scan (RED FLAG 🚩)                           ║
+║  EXPLAIN type (best → worst):                                        ║
+║  const → eq_ref → ref → range → index → ALL                          ║
+║                                                                      ║
+║  const:   WHERE primary_key = 42                                     ║
+║  eq_ref:  JOIN on primary key (unique match)                         ║
+║  ref:     JOIN on non-unique index                                   ║
+║  range:   WHERE price BETWEEN 10 AND 50                              ║
+║  index:   Full index scan (better than ALL but still slow)           ║
+║  ALL:     Full table scan (RED FLAG 🚩)                               ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -831,18 +831,18 @@ CREATE TABLE orders (
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  Query is slow? Follow this checklist:                            ║
-║                                                                    ║
-║  1. Run EXPLAIN — is it ALL (full table scan)?                    ║
-║  2. Is there an index on the WHERE/JOIN columns?                  ║
-║  3. Is a function breaking index usage?                           ║
-║  4. Is the query returning too many rows? (add LIMIT)             ║
-║  5. Is SELECT * fetching unnecessary columns?                     ║
-║  6. Is there an N+1 query problem in the app code?               ║
-║  7. Is the table very large? Consider partitioning.               ║
-║  8. Are statistics stale? ANALYZE TABLE.                          ║
-║  9. Is the query running during peak load? Check locks.           ║
-║  10. Can you cache the result instead of hitting DB every time?   ║
+║  Query is slow? Follow this checklist:                               ║
+║                                                                      ║
+║  1. Run EXPLAIN — is it ALL (full table scan)?                       ║
+║  2. Is there an index on the WHERE/JOIN columns?                     ║
+║  3. Is a function breaking index usage?                              ║
+║  4. Is the query returning too many rows? (add LIMIT)                ║
+║  5. Is SELECT * fetching unnecessary columns?                        ║
+║  6. Is there an N+1 query problem in the app code?                   ║
+║  7. Is the table very large? Consider partitioning.                  ║
+║  8. Are statistics stale? ANALYZE TABLE.                             ║
+║  9. Is the query running during peak load? Check locks.              ║
+║  10. Can you cache the result instead of hitting DB every time?      ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -977,26 +977,26 @@ JOIN logs l3 ON l3.id = l1.id + 2 AND l3.value = l1.value;
 ## Quick Reference — Pattern Cheat Sheet
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  PATTERN                        │  SQL TOOL                       ║
-║  ───────────────────────────────┼──────────────────────────────── ║
-║  Nth highest/lowest             │  DENSE_RANK() or LIMIT OFFSET  ║
-║  Top N per group                │  RANK() PARTITION BY            ║
-║  Running total                  │  SUM() OVER (ORDER BY ...)     ║
-║  Moving average                 │  AVG() OVER (ROWS BETWEEN)     ║
-║  Previous/Next row              │  LAG() / LEAD()                ║
-║  Compare with previous period   │  LAG() with date grouping      ║
-║  Find duplicates                │  GROUP BY + HAVING COUNT > 1   ║
-║  Find missing / no match        │  LEFT JOIN + IS NULL / NOT EXISTS ║
-║  Consecutive streak             │  ROW_NUMBER date subtraction    ║
-║  Pivot rows → columns          │  CASE WHEN inside SUM/COUNT    ║
-║  Hierarchy / Tree               │  Recursive CTE                  ║
-║  Gap detection                  │  Generate series + LEFT JOIN   ║
+╔════════════════════════════════════════════════════════════════════════╗
+║  PATTERN                        │  SQL TOOL                            ║
+║  ───────────────────────────────┼────────────────────────────────      ║
+║  Nth highest/lowest             │  DENSE_RANK() or LIMIT OFFSET        ║
+║  Top N per group                │  RANK() PARTITION BY                 ║
+║  Running total                  │  SUM() OVER (ORDER BY ...)           ║
+║  Moving average                 │  AVG() OVER (ROWS BETWEEN)           ║
+║  Previous/Next row              │  LAG() / LEAD()                      ║
+║  Compare with previous period   │  LAG() with date grouping            ║
+║  Find duplicates                │  GROUP BY + HAVING COUNT > 1         ║
+║  Find missing / no match        │  LEFT JOIN + IS NULL / NOT EXISTS    ║
+║  Consecutive streak             │  ROW_NUMBER date subtraction         ║
+║  Pivot rows → columns          │  CASE WHEN inside SUM/COUNT           ║
+║  Hierarchy / Tree               │  Recursive CTE                       ║
+║  Gap detection                  │  Generate series + LEFT JOIN         ║
 ║  Date overlaps                  │  A.start < B.end AND B.start < A.end ║
-║  Pagination (fast)             │  Keyset (WHERE id > ?)          ║
-║  % of total                     │  value / SUM() OVER ()         ║
-║  Upsert                         │  ON DUPLICATE KEY / ON CONFLICT ║
-╚══════════════════════════════════════════════════════════════════════╝
+║  Pagination (fast)             │  Keyset (WHERE id > ?)                ║
+║  % of total                     │  value / SUM() OVER ()               ║
+║  Upsert                         │  ON DUPLICATE KEY / ON CONFLICT      ║
+╚════════════════════════════════════════════════════════════════════════╝
 ```
 
 ---

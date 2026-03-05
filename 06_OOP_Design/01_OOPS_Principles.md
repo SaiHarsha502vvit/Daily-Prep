@@ -8,13 +8,13 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                 OBJECT-ORIENTED PROGRAMMING - COMPLETE UNDERSTANDING          ║
+║                 OBJECT-ORIENTED PROGRAMMING - COMPLETE UNDERSTANDING         ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ WHAT IS OOP?                                                                 │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ OOP is a programming PARADIGM (way of thinking) where software is organized │
+│ OOP is a programming PARADIGM (way of thinking) where software is organized  │
 │ around "objects" - bundles of related DATA (attributes) and BEHAVIOR         │
 │ (methods) that represent real-world entities or concepts.                    │
 │                                                                              │
@@ -22,14 +22,14 @@
 │ MANAGING COMPLEXITY through organization and abstraction.                    │
 │                                                                              │
 │ HISTORICAL EVOLUTION:                                                        │
-│ • 1960s: Simula (Norway) - First OOP language for simulations               │
-│ • 1970s: Smalltalk (Xerox PARC) - Pure OOP, introduced GUI                  │
-│ • 1980s: C++ (Bjarne Stroustrup) - Added OOP to C                           │
-│ • 1995: Java (Sun) - "Write once, run anywhere", pure OOP mainstream        │
+│ • 1960s: Simula (Norway) - First OOP language for simulations                │
+│ • 1970s: Smalltalk (Xerox PARC) - Pure OOP, introduced GUI                   │
+│ • 1980s: C++ (Bjarne Stroustrup) - Added OOP to C                            │
+│ • 1995: Java (Sun) - "Write once, run anywhere", pure OOP mainstream         │
 │ • Today: Python, JavaScript, Kotlin all support OOP                          │
 │                                                                              │
 │ PARADIGM EVOLUTION:                                                          │
-│ Machine Code → Assembly → Procedural → OOP → Functional → Hybrid            │
+│ Machine Code → Assembly → Procedural → OOP → Functional → Hybrid             │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -38,39 +38,39 @@
 │ CORE PROBLEM: As software grows, complexity grows EXPONENTIALLY              │
 │                                                                              │
 │ PROCEDURAL PROGRAMMING (Before OOP):                                         │
-│ ┌─────────────────────────────────────────────────────────────────┐         │
-│ │ Data here ──────► Functions there ──────► More data somewhere   │         │
+│ ┌─────────────────────────────────────────────────────────────────┐          │
+│ │ Data here ──────► Functions there ──────► More data somewhere   │          │
 │ │                      ↓                        ↓                  │         │
-│ │                 More functions ◄──────► Even more data          │         │
+│ │                 More functions ◄──────► Even more data          │          │
 │ │                                                                  │         │
 │ │ PROBLEMS:                                                        │         │
 │ │ • Anyone can modify any data from anywhere                       │         │
 │ │ • Change one function, break 10 others                           │         │
-│ │ • Hard to understand which functions use which data             │         │
+│ │ • Hard to understand which functions use which data             │          │
 │ │ • Code reuse requires copy-paste                                 │         │
-│ │ • Testing is nightmare (everything connected to everything)     │         │
-│ └─────────────────────────────────────────────────────────────────┘         │
+│ │ • Testing is nightmare (everything connected to everything)     │          │
+│ └─────────────────────────────────────────────────────────────────┘          │
 │                                                                              │
 │ OOP SOLUTION:                                                                │
-│ ┌─────────────────────────────────────────────────────────────────┐         │
-│ │        ┌─────────────┐       ┌─────────────┐                    │         │
+│ ┌─────────────────────────────────────────────────────────────────┐          │
+│ │        ┌─────────────┐       ┌─────────────┐                    │          │
 │ │        │   Object A   │       │   Object B   │                   │         │
-│ │        │ ┌─────────┐ │       │ ┌─────────┐ │                    │         │
-│ │        │ │ data    │ │       │ │ data    │ │                    │         │
-│ │        │ │ methods │ │◄─────►│ │ methods │ │                    │         │
-│ │        │ └─────────┘ │       │ └─────────┘ │                    │         │
-│ │        └─────────────┘       └─────────────┘                    │         │
+│ │        │ ┌─────────┐ │       │ ┌─────────┐ │                    │          │
+│ │        │ │ data    │ │       │ │ data    │ │                    │          │
+│ │        │ │ methods │ │◄─────►│ │ methods │ │                    │          │
+│ │        │ └─────────┘ │       │ └─────────┘ │                    │          │
+│ │        └─────────────┘       └─────────────┘                    │          │
 │ │                                                                  │         │
 │ │ BENEFITS:                                                        │         │
 │ │ • Data + related functions bundled together                      │         │
-│ │ • Clear boundaries - change inside without breaking outside     │         │
+│ │ • Clear boundaries - change inside without breaking outside     │          │
 │ │ • Reuse through inheritance and composition                      │         │
 │ │ • Model real-world entities naturally                            │         │
-│ └─────────────────────────────────────────────────────────────────┘         │
+│ └─────────────────────────────────────────────────────────────────┘          │
 │                                                                              │
 │ REAL-WORLD ANALOGY:                                                          │
-│ • Procedural: Factory floor with tools scattered everywhere                 │
-│ • OOP: Organized workstations with each worker having their own tools       │
+│ • Procedural: Factory floor with tools scattered everywhere                  │
+│ • OOP: Organized workstations with each worker having their own tools        │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -84,23 +84,23 @@
 │    → "Internal engine change doesn't require changing how you drive"         │
 │                                                                              │
 │ 3. REUSABILITY: Inherit and extend existing code                             │
-│    → "Don't reinvent the wheel, extend it to make a car"                    │
+│    → "Don't reinvent the wheel, extend it to make a car"                     │
 │                                                                              │
 │ 4. MODELING: Code structure matches real-world mental model                  │
-│    → "Customer object has orders, Order has items - intuitive!"             │
+│    → "Customer object has orders, Order has items - intuitive!"              │
 │                                                                              │
 │ 5. TEAM COLLABORATION: Clear interfaces between modules                      │
-│    → "You build PaymentService, I build OrderService, they just connect"    │
+│    → "You build PaymentService, I build OrderService, they just connect"     │
 │                                                                              │
 │ OOP vs PROCEDURAL vs FUNCTIONAL:                                             │
-│ ┌────────────────┬─────────────────────────────────────────────────────────┐│
-│ │ Paradigm       │ Best For                                                ││
-│ ├────────────────┼─────────────────────────────────────────────────────────┤│
-│ │ Procedural     │ Simple scripts, system utilities, quick tasks           ││
-│ │ OOP            │ Large applications, GUIs, simulations, enterprise       ││
-│ │ Functional     │ Data transformations, parallel processing, math-heavy   ││
-│ │ HYBRID ⭐     │ Modern apps use ALL based on context!                    ││
-│ └────────────────┴─────────────────────────────────────────────────────────┘│
+│ ┌────────────────┬─────────────────────────────────────────────────────────┐ │
+│ │ Paradigm       │ Best For                                                │ │
+│ ├────────────────┼─────────────────────────────────────────────────────────┤ │
+│ │ Procedural     │ Simple scripts, system utilities, quick tasks           │ │
+│ │ OOP            │ Large applications, GUIs, simulations, enterprise       │ │
+│ │ Functional     │ Data transformations, parallel processing, math-heavy   │ │
+│ │ HYBRID ⭐     │ Modern apps use ALL based on context!                    │  │
+│ └────────────────┴─────────────────────────────────────────────────────────┘ │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -109,22 +109,22 @@
 │                                                                              │
 │ USE ENCAPSULATION WHEN:                                                      │
 │ • Data has rules/constraints (balance can't be negative)                     │
-│ • Implementation might change (database → API)                              │
-│ • Need to control access (read-only, write-only)                            │
+│ • Implementation might change (database → API)                               │
+│ • Need to control access (read-only, write-only)                             │
 │                                                                              │
 │ USE ABSTRACTION WHEN:                                                        │
 │ • Implementation details shouldn't concern user                              │
 │ • Multiple implementations possible (different databases)                    │
-│ • Want to hide complexity from users of your code                           │
+│ • Want to hide complexity from users of your code                            │
 │                                                                              │
 │ USE INHERITANCE WHEN:                                                        │
-│ • TRUE "is-a" relationship (Dog is-a Animal)                                │
+│ • TRUE "is-a" relationship (Dog is-a Animal)                                 │
 │ • Shared behavior across related classes                                     │
-│ • ⚠️ BUT prefer composition when in doubt!                                  │
+│ • ⚠️ BUT prefer composition when in doubt!                                   │
 │                                                                              │
 │ USE POLYMORPHISM WHEN:                                                       │
-│ • Same operation on different types (calculate area of any shape)           │
-│ • Want extensibility (add new types without changing existing code)         │
+│ • Same operation on different types (calculate area of any shape)            │
+│ • Want extensibility (add new types without changing existing code)          │
 │ • Plugin architecture (add features without modifying core)                  │
 └──────────────────────────────────────────────────────────────────────────────┘
 
@@ -137,21 +137,21 @@
 │   Classes: Customer, Order, Product, Store                                   │
 │                                                                              │
 │ STEP 2: IDENTIFY VERBS → These become METHODS                                │
-│   "places order" → customer.placeOrder()                                    │
-│   "add to cart" → cart.addProduct()                                         │
+│   "places order" → customer.placeOrder()                                     │
+│   "add to cart" → cart.addProduct()                                          │
 │                                                                              │
 │ STEP 3: IDENTIFY ADJECTIVES → These become ATTRIBUTES                        │
 │   "premium customer" → customer.membershipLevel                              │
-│   "discounted product" → product.discountPercent                            │
+│   "discounted product" → product.discountPercent                             │
 │                                                                              │
 │ STEP 4: IDENTIFY RELATIONSHIPS                                               │
 │   Customer HAS-A Cart (composition)                                          │
 │   Order CONTAINS Products (aggregation)                                      │
-│   PremiumCustomer IS-A Customer (inheritance)                               │
+│   PremiumCustomer IS-A Customer (inheritance)                                │
 │                                                                              │
 │ THE MENTAL SHIFT:                                                            │
 │ PROCEDURAL: "What steps do I need to do?"                                    │
-│ OOP:        "What things exist and what can they do?"                       │
+│ OOP:        "What things exist and what can they do?"                        │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -160,11 +160,11 @@
 │                                                                              │
 │ 1. OVER-ENGINEERING:                                                         │
 │    Creating classes for everything, too many layers                          │
-│    Solution: Start simple, refactor when needed (YAGNI principle)           │
+│    Solution: Start simple, refactor when needed (YAGNI principle)            │
 │                                                                              │
 │ 2. MISUSING INHERITANCE:                                                     │
-│    Using inheritance for code reuse instead of true "is-a"                  │
-│    Example: Square extends Rectangle - WRONG! (violates LSP)                │
+│    Using inheritance for code reuse instead of true "is-a"                   │
+│    Example: Square extends Rectangle - WRONG! (violates LSP)                 │
 │    Solution: Use composition for code reuse                                  │
 │                                                                              │
 │ 3. GOD CLASSES:                                                              │
@@ -172,7 +172,7 @@
 │    Solution: Single Responsibility - one class, one job                      │
 │                                                                              │
 │ 4. ANEMIC DOMAIN MODEL:                                                      │
-│    Classes with only getters/setters, no behavior                           │
+│    Classes with only getters/setters, no behavior                            │
 │    Solution: Put behavior WITH the data it operates on                       │
 │                                                                              │
 │ 5. TIGHT COUPLING:                                                           │
@@ -188,18 +188,18 @@
 │ EXPECTED OUTPUTS OF GOOD OOP DESIGN                                          │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ ✅ READABLE: New team member understands system in hours, not weeks         │
-│ ✅ TESTABLE: Can unit test each class independently                          │
-│ ✅ EXTENSIBLE: Add new features without modifying existing code             │
-│ ✅ MAINTAINABLE: Bug in one place doesn't cascade everywhere                │
-│ ✅ REUSABLE: Classes work in different contexts                              │
+│ ✅ READABLE: New team member understands system in hours, not weeks           │
+│ ✅ TESTABLE: Can unit test each class independently                           │
+│ ✅ EXTENSIBLE: Add new features without modifying existing code               │
+│ ✅ MAINTAINABLE: Bug in one place doesn't cascade everywhere                  │
+│ ✅ REUSABLE: Classes work in different contexts                               │
 │                                                                              │
 │ METRICS OF GOOD OOP:                                                         │
 │ • High Cohesion: Class does ONE thing well                                   │
-│ • Low Coupling: Classes don't depend heavily on each other                  │
+│ • Low Coupling: Classes don't depend heavily on each other                   │
 │ • Small class sizes: < 200 lines typically                                   │
 │ • Shallow inheritance: Max 3 levels usually                                  │
-│ • Interface segregation: Many small interfaces > one big one                │
+│ • Interface segregation: Many small interfaces > one big one                 │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 

@@ -15,39 +15,39 @@
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHY: Why Learn SOLID Principles?                                               │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Reduces bugs: Changes don't break existing functionality                    │
-│  • Interview essential: Asked in every senior Java interview                   │
-│  • Spring is built on SOLID (IoC = DIP, @Component = SRP)                     │
-│  • Enables testability: Well-designed code is easy to test                    │
-│  • Team scalability: Multiple devs can work without conflicts                 │
+│  • Reduces bugs: Changes don't break existing functionality                     │
+│  • Interview essential: Asked in every senior Java interview                    │
+│  • Spring is built on SOLID (IoC = DIP, @Component = SRP)                       │
+│  • Enables testability: Well-designed code is easy to test                      │
+│  • Team scalability: Multiple devs can work without conflicts                   │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  HOW: How to Apply SOLID?                                                       │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • S: One class = One responsibility (UserService only handles users)         │
-│  • O: Extend behavior without modifying existing code (Strategy pattern)      │
-│  • L: Subtypes must be substitutable for their base types                     │
-│  • I: Many specific interfaces > one general interface                        │
-│  • D: Depend on abstractions, not concrete implementations                    │
+│  • S: One class = One responsibility (UserService only handles users)           │
+│  • O: Extend behavior without modifying existing code (Strategy pattern)        │
+│  • L: Subtypes must be substitutable for their base types                       │
+│  • I: Many specific interfaces > one general interface                          │
+│  • D: Depend on abstractions, not concrete implementations                      │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHEN: When to Apply Each Principle?                                            │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • SRP: Class has more than one reason to change → Split it                   │
-│  • OCP: Adding feature requires modifying existing code → Use abstraction     │
-│  • LSP: Subclass throws exceptions parent doesn't → Redesign hierarchy        │
-│  • ISP: Class implements methods it doesn't need → Split interface            │
-│  • DIP: Hard to test due to concrete dependencies → Inject interfaces         │
+│  • SRP: Class has more than one reason to change → Split it                     │
+│  • OCP: Adding feature requires modifying existing code → Use abstraction       │
+│  • LSP: Subclass throws exceptions parent doesn't → Redesign hierarchy          │
+│  • ISP: Class implements methods it doesn't need → Split interface              │
+│  • DIP: Hard to test due to concrete dependencies → Inject interfaces           │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHICH: Which Principles are Most Critical in Spring?                           │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  ESSENTIAL:     DIP (entire IoC is based on it), SRP (service layer design)   │
-│  IMPORTANT:     OCP (extensible configurations), ISP (repository interfaces)  │
-│  ADVANCED:      LSP (exception handling hierarchies)                           │
+│  ESSENTIAL:     DIP (entire IoC is based on it), SRP (service layer design)     │
+│  IMPORTANT:     OCP (extensible configurations), ISP (repository interfaces)    │
+│  ADVANCED:      LSP (exception handling hierarchies)                            │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -57,18 +57,18 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│              WHAT THIS PART COVERS                                               │
+│              WHAT THIS PART COVERS                                              │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  1. S - Single Responsibility Principle (SRP)                                  │
-│  2. O - Open/Closed Principle (OCP)                                            │
-│  3. L - Liskov Substitution Principle (LSP)                                    │
-│  4. I - Interface Segregation Principle (ISP)                                  │
-│  5. D - Dependency Inversion Principle (DIP)                                   │
+│                                                                                 │
+│  1. S - Single Responsibility Principle (SRP)                                   │
+│  2. O - Open/Closed Principle (OCP)                                             │
+│  3. L - Liskov Substitution Principle (LSP)                                     │
+│  4. I - Interface Segregation Principle (ISP)                                   │
+│  5. D - Dependency Inversion Principle (DIP)                                    │
 │  6. Complete Spring Boot Project Example                                        │
-│  7. Common Violations & Refactoring                                            │
+│  7. Common Violations & Refactoring                                             │
 │  8. SOLID in Microservices                                                      │
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -78,23 +78,23 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│              THE COST OF VIOLATING SOLID                                         │
+│              THE COST OF VIOLATING SOLID                                        │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  WITHOUT SOLID:                                                                 │
-│  • Adding features breaks existing code                                        │
-│  • Testing requires complex setup                                              │
-│  • Changes ripple through the codebase                                         │
-│  • Code becomes "fragile" - fix one bug, create three                         │
-│  • New team members struggle to understand                                     │
-│                                                                                  │
+│  • Adding features breaks existing code                                         │
+│  • Testing requires complex setup                                               │
+│  • Changes ripple through the codebase                                          │
+│  • Code becomes "fragile" - fix one bug, create three                           │
+│  • New team members struggle to understand                                      │
+│                                                                                 │
 │  WITH SOLID:                                                                    │
-│  • Features can be added without modifying existing code                       │
-│  • Each class can be tested in isolation                                       │
-│  • Changes are localized                                                       │
-│  • Code is modular and replaceable                                             │
-│  • The system is easier to understand                                          │
-│                                                                                  │
+│  • Features can be added without modifying existing code                        │
+│  • Each class can be tested in isolation                                        │
+│  • Changes are localized                                                        │
+│  • Code is modular and replaceable                                              │
+│  • The system is easier to understand                                           │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -108,18 +108,18 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│              SINGLE RESPONSIBILITY PRINCIPLE                                     │
+│              SINGLE RESPONSIBILITY PRINCIPLE                                    │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  KEY INSIGHT: "One reason to change" = "One actor/stakeholder"                 │
-│                                                                                  │
+│                                                                                 │
+│  KEY INSIGHT: "One reason to change" = "One actor/stakeholder"                  │
+│                                                                                 │
 │  If your class changes because:                                                 │
-│  • Business rules change → One responsibility                                  │
-│  • Database schema changes → Another responsibility                            │
-│  • UI requirements change → Another responsibility                             │
-│                                                                                  │
-│  Then your class has MULTIPLE responsibilities!                                │
-│                                                                                  │
+│  • Business rules change → One responsibility                                   │
+│  • Database schema changes → Another responsibility                             │
+│  • UI requirements change → Another responsibility                              │
+│                                                                                 │
+│  Then your class has MULTIPLE responsibilities!                                 │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -422,20 +422,20 @@ public class ReportService {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│              OPEN/CLOSED PRINCIPLE                                               │
+│              OPEN/CLOSED PRINCIPLE                                              │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  KEY INSIGHT: Add NEW behavior without changing EXISTING code                   │
-│                                                                                  │
+│                                                                                 │
 │  "Open for extension"    = You can add new functionality                        │
 │  "Closed for modification" = Without changing existing code                     │
-│                                                                                  │
-│  ACHIEVED THROUGH:                                                               │
+│                                                                                 │
+│  ACHIEVED THROUGH:                                                              │
 │  • Abstraction (interfaces/abstract classes)                                    │
 │  • Composition over inheritance                                                 │
 │  • Strategy pattern                                                             │
 │  • Plugin architecture                                                          │
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -773,20 +773,20 @@ public class RetryableNotificationDecorator implements NotificationSender {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│              LISKOV SUBSTITUTION PRINCIPLE                                       │
+│              LISKOV SUBSTITUTION PRINCIPLE                                      │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  If S is a subtype of T, then objects of type T can be replaced                │
-│  with objects of type S without breaking the program.                          │
-│                                                                                  │
+│                                                                                 │
+│  If S is a subtype of T, then objects of type T can be replaced                 │
+│  with objects of type S without breaking the program.                           │
+│                                                                                 │
 │  IN PRACTICE:                                                                   │
-│  • Subclass methods should not throw new exceptions                            │
-│  • Subclass methods should accept same or broader input                        │
-│  • Subclass methods should return same or narrower output                      │
-│  • Subclass should honor base class contracts (preconditions, postconditions)  │
-│                                                                                  │
-│  THE CLASSIC VIOLATION: Rectangle/Square problem                               │
-│                                                                                  │
+│  • Subclass methods should not throw new exceptions                             │
+│  • Subclass methods should accept same or broader input                         │
+│  • Subclass methods should return same or narrower output                       │
+│  • Subclass should honor base class contracts (preconditions, postconditions)   │
+│                                                                                 │
+│  THE CLASSIC VIOLATION: Rectangle/Square problem                                │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 

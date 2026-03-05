@@ -239,47 +239,47 @@ Total cost for n inserts:
 #### Method 1: Aggregate (Simplest)
 ```
 ╔════════════════════════════════════════════════════════────╗
-║  AGGREGATE METHOD: Count total work, divide by n          ║
+║  AGGREGATE METHOD: Count total work, divide by n           ║
 ╠═══════════════════════════════════════════════════════════ ╣
-║                                                           ║
-║  Total cost of n operations = T(n)                        ║
-║  Amortized cost per op      = T(n) / n                    ║
-║                                                           ║
-║  Dynamic Array Example:                                   ║
-║    T(n) = n + (1+2+4+...+n/2) < 2n + 1 < 3n              ║
-║    Amortized = 3n / n = O(1)                              ║
-║                                                           ║
-║  Stack with multipop(k) Example:                          ║
+║                                                            ║
+║  Total cost of n operations = T(n)                         ║
+║  Amortized cost per op      = T(n) / n                     ║
+║                                                            ║
+║  Dynamic Array Example:                                    ║
+║    T(n) = n + (1+2+4+...+n/2) < 2n + 1 < 3n                ║
+║    Amortized = 3n / n = O(1)                               ║
+║                                                            ║
+║  Stack with multipop(k) Example:                           ║
 ║    Each element pushed at most once, popped at most once   ║
-║    Total pushes + pops over n operations ≤ 2n             ║
-║    Amortized = 2n / n = O(1)                              ║
+║    Total pushes + pops over n operations ≤ 2n              ║
+║    Amortized = 2n / n = O(1)                               ║
 ╚═══════════════════════════════════════════════════════════ ╝
 ```
 
 #### Method 2: Accounting (The Coin Method)
 ```
 ╔═══════════════════════════════════════════════════════════════╗
-║  ACCOUNTING: Charge EXTRA on cheap ops, save for expensive   ║
+║  ACCOUNTING: Charge EXTRA on cheap ops, save for expensive    ║
 ╠═══════════════════════════════════════════════════════════════╣
-║                                                              ║
-║  Rule: Credit balance must NEVER go negative                 ║
-║                                                              ║
-║  Dynamic Array — Charge 3 per insert:                        ║
-║    $1 → pays for the insert itself                           ║
-║    $2 → saved as credit (stored on the element)              ║
-║                                                              ║
-║  When resize happens (double from m to 2m):                  ║
-║    Need to copy m elements                                   ║
-║    Each of the m/2 NEW elements since last resize saved $2   ║
-║    Total credit = m/2 × $2 = $m → exactly pays for copy!    ║
-║                                                              ║
-║  We charged $3 per operation → amortized cost = O(3) = O(1) ║
-║                                                              ║
-║  ┌─────────────────────────────────────┐                     ║
-║  │  $1   $1   $1   $1   $1   $1  $1   │                     ║
-║  │  [a]  [b]  [c]  [d]  [e]  [f] [g]  │ ← each has $2      ║
-║  │  $2   $2   $2   $2   $2   $2  $2   │    credit attached  ║
-║  └─────────────────────────────────────┘                     ║
+║                                                               ║
+║  Rule: Credit balance must NEVER go negative                  ║
+║                                                               ║
+║  Dynamic Array — Charge 3 per insert:                         ║
+║    $1 → pays for the insert itself                            ║
+║    $2 → saved as credit (stored on the element)               ║
+║                                                               ║
+║  When resize happens (double from m to 2m):                   ║
+║    Need to copy m elements                                    ║
+║    Each of the m/2 NEW elements since last resize saved $2    ║
+║    Total credit = m/2 × $2 = $m → exactly pays for copy!      ║
+║                                                               ║
+║  We charged $3 per operation → amortized cost = O(3) = O(1)   ║
+║                                                               ║
+║  ┌─────────────────────────────────────┐                      ║
+║  │  $1   $1   $1   $1   $1   $1  $1   │                       ║
+║  │  [a]  [b]  [c]  [d]  [e]  [f] [g]  │ ← each has $2         ║
+║  │  $2   $2   $2   $2   $2   $2  $2   │    credit attached    ║
+║  └─────────────────────────────────────┘                      ║
 ╚═══════════════════════════════════════════════════════════════╝
 ```
 
@@ -288,26 +288,26 @@ Total cost for n inserts:
 ╔══════════════════════════════════════════════════════════════╗
 ║  POTENTIAL: Define Φ (potential energy of data structure)    ║
 ╠══════════════════════════════════════════════════════════════╣
-║                                                             ║
-║  Amortized cost ĉᵢ = cᵢ + Φ(Dᵢ) − Φ(Dᵢ₋₁)               ║
+║                                                              ║
+║  Amortized cost ĉᵢ = cᵢ + Φ(Dᵢ) − Φ(Dᵢ₋₁)                    ║
 ║                     = actual cost + change in potential      ║
-║                                                             ║
-║  Requirement: Φ(Dₙ) ≥ Φ(D₀) (potential doesn't drop below ║
+║                                                              ║
+║  Requirement: Φ(Dₙ) ≥ Φ(D₀) (potential doesn't drop below    ║
 ║               starting value over entire sequence)           ║
-║                                                             ║
-║  Dynamic Array — Choose Φ = 2·size − capacity               ║
-║                                                             ║
-║  Normal insert (no resize):                                 ║
-║    cᵢ = 1                                                   ║
-║    ΔΦ = 2(size+1) − cap − (2·size − cap)  = +2             ║
-║    ĉᵢ = 1 + 2 = 3                                          ║
-║                                                             ║
-║  Insert + resize (cap doubles: m → 2m):                     ║
-║    cᵢ = m + 1            (copy m elements + insert 1)       ║
-║    ΔΦ = [2(m+1) − 2m] − [2m − m]  = 2 − m                 ║
-║    ĉᵢ = (m+1) + (2−m) = 3                                  ║
-║                                                             ║
-║  Both cases: amortized = 3 = O(1) ✓                         ║
+║                                                              ║
+║  Dynamic Array — Choose Φ = 2·size − capacity                ║
+║                                                              ║
+║  Normal insert (no resize):                                  ║
+║    cᵢ = 1                                                    ║
+║    ΔΦ = 2(size+1) − cap − (2·size − cap)  = +2               ║
+║    ĉᵢ = 1 + 2 = 3                                            ║
+║                                                              ║
+║  Insert + resize (cap doubles: m → 2m):                      ║
+║    cᵢ = m + 1            (copy m elements + insert 1)        ║
+║    ΔΦ = [2(m+1) − 2m] − [2m − m]  = 2 − m                    ║
+║    ĉᵢ = (m+1) + (2−m) = 3                                    ║
+║                                                              ║
+║  Both cases: amortized = 3 = O(1) ✓                          ║
 ╚══════════════════════════════════════════════════════════════╝
 ```
 
@@ -333,7 +333,7 @@ Total cost for n inserts:
 ║ HashMap.put()            ║ O(n) (rehash)     ║ O(1)                      ║
 ║ Stack multipop           ║ O(n)              ║ O(1) per op               ║
 ║ Monotonic stack (total)  ║ O(n) per push     ║ O(1) per element          ║
-║ Union-Find (path comp.)  ║ O(log n)          ║ O(α(n)) ≈ O(1)           ║
+║ Union-Find (path comp.)  ║ O(log n)          ║ O(α(n)) ≈ O(1)            ║
 ║ Splay tree operations    ║ O(n)              ║ O(log n)                  ║
 ║ Fibonacci heap decrease  ║ O(1)              ║ O(1) (with cascading cut) ║
 ╚══════════════════════════╩═══════════════════╩═══════════════════════════╝

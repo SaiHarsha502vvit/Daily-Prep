@@ -178,13 +178,13 @@ EDGE CASES:
 ┌────────────────────────────────┬──────────────────────────────────────────┐
 │ Edge Case                      │ Handling                                 │
 ├────────────────────────────────┼──────────────────────────────────────────┤
-│ 1×1 matrix                    │ Spiral = [matrix[0][0]], path = 0 steps │
-│ Single row [1,2,3]            │ Spiral = [1,2,3], no up/down movement   │
-│ Single column [[1],[2],[3]]   │ Spiral = [1,2,3], no left/right movement│
-│ Non-square matrix (m≠n)       │ Boundaries still work, check conditions │
-│ Start/end blocked             │ Return -1 (no path exists)              │
-│ All walls                     │ Return -1                                │
-│ 8-directional movement        │ Use 8-dir array instead of 4            │
+│ 1×1 matrix                    │ Spiral = [matrix[0][0]], path = 0 steps   │
+│ Single row [1,2,3]            │ Spiral = [1,2,3], no up/down movement     │
+│ Single column [[1],[2],[3]]   │ Spiral = [1,2,3], no left/right movement  │
+│ Non-square matrix (m≠n)       │ Boundaries still work, check conditions   │
+│ Start/end blocked             │ Return -1 (no path exists)                │
+│ All walls                     │ Return -1                                 │
+│ 8-directional movement        │ Use 8-dir array instead of 4              │
 └────────────────────────────────┴──────────────────────────────────────────┘
 
 COMMON MISTAKES:

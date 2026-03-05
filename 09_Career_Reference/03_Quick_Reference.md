@@ -12,39 +12,39 @@
 ╠═══════════════════════════════════════════════════════════════════╣
 ║                                                                   ║
 ║  STEP 1: NAME THE PATTERN                                         ║
-║  ┌───────────────────────────────────────────────────────────┐   ║
-║  │  "This is _______ pattern"                                │   ║
-║  │  (Sliding Window / Two Pointers / Frequency Count...)     │   ║
-║  └───────────────────────────────────────────────────────────┘   ║
+║  ┌───────────────────────────────────────────────────────────┐    ║
+║  │  "This is _______ pattern"                                │    ║
+║  │  (Sliding Window / Two Pointers / Frequency Count...)     │    ║
+║  └───────────────────────────────────────────────────────────┘    ║
 ║                           ↓                                       ║
 ║  STEP 2: WRITE SKELETON                                           ║
-║  ┌───────────────────────────────────────────────────────────┐   ║
-║  │  public static void solve(int[] arr) {                    │   ║
-║  │      for (int j = 0; j < arr.length; j++) {               │   ║
-║  │          // LOGIC GOES HERE                               │   ║
-║  │      }                                                    │   ║
-║  │  }                                                        │   ║
-║  └───────────────────────────────────────────────────────────┘   ║
+║  ┌───────────────────────────────────────────────────────────┐    ║
+║  │  public static void solve(int[] arr) {                    │    ║
+║  │      for (int j = 0; j < arr.length; j++) {               │    ║
+║  │          // LOGIC GOES HERE                               │    ║
+║  │      }                                                    │    ║
+║  │  }                                                        │    ║
+║  └───────────────────────────────────────────────────────────┘    ║
 ║                           ↓                                       ║
 ║  STEP 3: ADD INVARIANT (The rule that's always true)              ║
-║  ┌───────────────────────────────────────────────────────────┐   ║
-║  │  // window size = j - i + 1                               │   ║
-║  │  // OR: sum of window = current_sum                       │   ║
-║  │  // OR: left pointer < right pointer                      │   ║
-║  └───────────────────────────────────────────────────────────┘   ║
+║  ┌───────────────────────────────────────────────────────────┐    ║
+║  │  // window size = j - i + 1                               │    ║
+║  │  // OR: sum of window = current_sum                       │    ║
+║  │  // OR: left pointer < right pointer                      │    ║
+║  └───────────────────────────────────────────────────────────┘    ║
 ║                           ↓                                       ║
 ║  STEP 4: LAYER LOGIC (One line at a time)                         ║
-║  ┌───────────────────────────────────────────────────────────┐   ║
-║  │  First: Add the core operation                            │   ║
-║  │  Then: Add the condition check                            │   ║
-║  │  Then: Add the result update                              │   ║
-║  └───────────────────────────────────────────────────────────┘   ║
+║  ┌───────────────────────────────────────────────────────────┐    ║
+║  │  First: Add the core operation                            │    ║
+║  │  Then: Add the condition check                            │    ║
+║  │  Then: Add the result update                              │    ║
+║  └───────────────────────────────────────────────────────────┘    ║
 ║                           ↓                                       ║
 ║  STEP 5: EDGE CASES (At the very end)                             ║
-║  ┌───────────────────────────────────────────────────────────┐   ║
-║  │  if (arr == null || arr.length == 0) return;              │   ║
-║  │  if (n < 0) System.out.println("Invalid Input");          │   ║
-║  └───────────────────────────────────────────────────────────┘   ║
+║  ┌───────────────────────────────────────────────────────────┐    ║
+║  │  if (arr == null || arr.length == 0) return;              │    ║
+║  │  if (n < 0) System.out.println("Invalid Input");          │    ║
+║  └───────────────────────────────────────────────────────────┘    ║
 ╚═══════════════════════════════════════════════════════════════════╝
 ```
 
@@ -99,17 +99,17 @@
 ║  User Input: n = ?                                                ║
 ║              │                                                    ║
 ║              ▼                                                    ║
-║         ┌────────────┐                                           ║
-║         │  n == 0 ?  │──YES──→ print("ZERO") and return          ║
-║         └────────────┘                                           ║
+║         ┌────────────┐                                            ║
+║         │  n == 0 ?  │──YES──→ print("ZERO") and return           ║
+║         └────────────┘                                            ║
 ║              │ NO                                                 ║
 ║              ▼                                                    ║
-║         ┌────────────┐                                           ║
-║         │  n < 0 ?   │──YES──→ print("Invalid Input") and return ║
-║         └────────────┘                                           ║
+║         ┌────────────┐                                            ║
+║         │  n < 0 ?   │──YES──→ print("Invalid Input") and return  ║
+║         └────────────┘                                            ║
 ║              │ NO                                                 ║
 ║              ▼                                                    ║
-║         Continue with main logic...                              ║
+║         Continue with main logic...                               ║
 ║                                                                   ║
 ╚═══════════════════════════════════════════════════════════════════╝
 ```
@@ -138,26 +138,26 @@ if (n < 0) {
 ║  Array: [1, 3, 5, 2, 8, 1, 9]    k = 3                            ║
 ║                                                                   ║
 ║  Step 1: j=0                     Step 2: j=1                      ║
-║  ┌───┬───┬───┬───┬───┬───┬───┐   ┌───┬───┬───┬───┬───┬───┬───┐  ║
-║  │ 1 │ 3 │ 5 │ 2 │ 8 │ 1 │ 9 │   │ 1 │ 3 │ 5 │ 2 │ 8 │ 1 │ 9 │  ║
-║  └───┴───┴───┴───┴───┴───┴───┘   └───┴───┴───┴───┴───┴───┴───┘  ║
+║  ┌───┬───┬───┬───┬───┬───┬───┐   ┌───┬───┬───┬───┬───┬───┬───┐    ║
+║  │ 1 │ 3 │ 5 │ 2 │ 8 │ 1 │ 9 │   │ 1 │ 3 │ 5 │ 2 │ 8 │ 1 │ 9 │    ║
+║  └───┴───┴───┴───┴───┴───┴───┘   └───┴───┴───┴───┴───┴───┴───┘    ║
 ║    ↑                               ↑   ↑                          ║
 ║    i,j                             i   j                          ║
 ║  count: j-i+1 = 1                count: j-i+1 = 2                 ║
 ║  (not k yet)                     (not k yet)                      ║
 ║                                                                   ║
-║  Step 3: j=2  ← WINDOW READY!    Step 4: j=3  ← SLIDE!           ║
-║  ┌───┬───┬───┬───┬───┬───┬───┐   ┌───┬───┬───┬───┬───┬───┬───┐  ║
-║  │ 1 │ 3 │ 5 │ 2 │ 8 │ 1 │ 9 │   │ 1 │ 3 │ 5 │ 2 │ 8 │ 1 │ 9 │  ║
-║  └───┴───┴───┴───┴───┴───┴───┘   └───┴───┴───┴───┴───┴───┴───┘  ║
+║  Step 3: j=2  ← WINDOW READY!    Step 4: j=3  ← SLIDE!            ║
+║  ┌───┬───┬───┬───┬───┬───┬───┐   ┌───┬───┬───┬───┬───┬───┬───┐    ║
+║  │ 1 │ 3 │ 5 │ 2 │ 8 │ 1 │ 9 │   │ 1 │ 3 │ 5 │ 2 │ 8 │ 1 │ 9 │    ║
+║  └───┴───┴───┴───┴───┴───┴───┘   └───┴───┴───┴───┴───┴───┴───┘    ║
 ║    ↑       ↑                           ↑       ↑                  ║
 ║    i       j                           i       j                  ║
 ║  ├─────────┤                       ├─────────┤                    ║
-║  window [1,3,5]                    window [3,5,2]                  ║
+║  window [1,3,5]                    window [3,5,2]                 ║
 ║  count: 2-0+1 = 3 = k ✓           After slide: i++                ║
 ║  PROCESS NOW!                                                     ║
 ║                                                                   ║
-║  KEY INSIGHT: j - i + 1 == k means "window has k elements"       ║
+║  KEY INSIGHT: j - i + 1 == k means "window has k elements"        ║
 ╚═══════════════════════════════════════════════════════════════════╝
 ```
 
@@ -188,9 +188,9 @@ for (int j = 0; j < n; j++) {  // j expands window
 ║                                                                   ║
 ║  OPPOSITE DIRECTION (Palindrome check, Two Sum in sorted):        ║
 ║                                                                   ║
-║  ┌───┬───┬───┬───┬───┬───┬───┐                                   ║
-║  │ r │ a │ c │ e │ c │ a │ r │                                   ║
-║  └───┴───┴───┴───┴───┴───┴───┘                                   ║
+║  ┌───┬───┬───┬───┬───┬───┬───┐                                    ║
+║  │ r │ a │ c │ e │ c │ a │ r │                                    ║
+║  └───┴───┴───┴───┴───┴───┴───┘                                    ║
 ║    ↑                       ↑                                      ║
 ║   left                   right                                    ║
 ║    │                       │                                      ║
@@ -198,9 +198,9 @@ for (int j = 0; j < n; j++) {  // j expands window
 ║                                                                   ║
 ║  SAME DIRECTION (Remove duplicates, Fast-slow):                   ║
 ║                                                                   ║
-║  ┌───┬───┬───┬───┬───┬───┬───┐                                   ║
-║  │ 1 │ 1 │ 2 │ 2 │ 2 │ 3 │ 4 │                                   ║
-║  └───┴───┴───┴───┴───┴───┴───┘                                   ║
+║  ┌───┬───┬───┬───┬───┬───┬───┐                                    ║
+║  │ 1 │ 1 │ 2 │ 2 │ 2 │ 3 │ 4 │                                    ║
+║  └───┴───┴───┴───┴───┴───┴───┘                                    ║
 ║    ↑   ↑                                                          ║
 ║  slow fast                                                        ║
 ║    │   └───── moves every step                                    ║
@@ -240,9 +240,9 @@ for (int fast = 1; fast < arr.length; fast++) {
 ║  Array: [1, 3, 5, 7, 9, 11, 13, 15]    Target: 7                  ║
 ║                                                                   ║
 ║  Iteration 1:                                                     ║
-║  ┌───┬───┬───┬───┬───┬───┬───┬───┐                               ║
-║  │ 1 │ 3 │ 5 │ 7 │ 9 │ 11│ 13│ 15│                               ║
-║  └───┴───┴───┴───┴───┴───┴───┴───┘                               ║
+║  ┌───┬───┬───┬───┬───┬───┬───┬───┐                                ║
+║  │ 1 │ 3 │ 5 │ 7 │ 9 │ 11│ 13│ 15│                                ║
+║  └───┴───┴───┴───┴───┴───┴───┴───┘                                ║
 ║    ↑               ↑               ↑                              ║
 ║   lo             mid              hi                              ║
 ║                                                                   ║
@@ -273,26 +273,26 @@ return -1;  // Not found
 ║                                                                   ║
 ║  Input: "([{}])"                                                  ║
 ║                                                                   ║
-║  Step 1: '(' → push       Step 2: '[' → push                     ║
-║  ┌───┐                    ┌───┐                                  ║
-║  │ ( │                    │ [ │                                  ║
-║  └───┘                    ├───┤                                  ║
-║                           │ ( │                                  ║
-║                           └───┘                                  ║
+║  Step 1: '(' → push       Step 2: '[' → push                      ║
+║  ┌───┐                    ┌───┐                                   ║
+║  │ ( │                    │ [ │                                   ║
+║  └───┘                    ├───┤                                   ║
+║                           │ ( │                                   ║
+║                           └───┘                                   ║
 ║                                                                   ║
-║  Step 3: '{' → push       Step 4: '}' → pop, check match         ║
-║  ┌───┐                    ┌───┐                                  ║
-║  │ { │                    │ [ │   '{' matches '}' ✓              ║
-║  ├───┤                    ├───┤                                  ║
-║  │ [ │                    │ ( │                                  ║
-║  ├───┤                    └───┘                                  ║
-║  │ ( │                                                           ║
-║  └───┘                                                           ║
+║  Step 3: '{' → push       Step 4: '}' → pop, check match          ║
+║  ┌───┐                    ┌───┐                                   ║
+║  │ { │                    │ [ │   '{' matches '}' ✓               ║
+║  ├───┤                    ├───┤                                   ║
+║  │ [ │                    │ ( │                                   ║
+║  ├───┤                    └───┘                                   ║
+║  │ ( │                                                            ║
+║  └───┘                                                            ║
 ║                                                                   ║
-║  Step 5: ']' → pop        Step 6: ')' → pop                      ║
-║  ┌───┐                    Empty stack!                           ║
-║  │ ( │   '[' matches ']' ✓         '(' matches ')' ✓             ║
-║  └───┘                                                           ║
+║  Step 5: ']' → pop        Step 6: ')' → pop                       ║
+║  ┌───┐                    Empty stack!                            ║
+║  │ ( │   '[' matches ']' ✓         '(' matches ')' ✓              ║
+║  └───┘                                                            ║
 ║                                                                   ║
 ║  Final: Stack empty → BALANCED ✓                                  ║
 ╚═══════════════════════════════════════════════════════════════════╝
@@ -329,35 +329,35 @@ public static boolean isBalanced(String s) {
 ║                                                                           ║
 ║  MISTAKE #1: Sliding Window Index Confusion                               ║
 ║  ─────────────────────────────────────────────                            ║
-║  ❌ WRONG: for (j = i; j < i + k)   ← "Is it < or <=?"                    ║
-║  ✅ RIGHT: if (j - i + 1 == k)      ← "Count = k? Easy!"                  ║
+║  ❌ WRONG: for (j = i; j < i + k)   ← "Is it < or <=?"                     ║
+║  ✅ RIGHT: if (j - i + 1 == k)      ← "Count = k? Easy!"                   ║
 ║                                                                           ║
 ║  MISTAKE #2: Off-by-One in Range                                          ║
 ║  ─────────────────────────────────                                        ║
 ║  Range [3, 7] means: 3, 4, 5, 6, 7 (5 numbers)                            ║
-║  ❌ WRONG: for (i = 3; i < 7)       ← misses 7!                           ║
-║  ✅ RIGHT: for (i = 3; i <= 7)      ← includes 7 ✓                        ║
+║  ❌ WRONG: for (i = 3; i < 7)       ← misses 7!                            ║
+║  ✅ RIGHT: for (i = 3; i <= 7)      ← includes 7 ✓                         ║
 ║                                                                           ║
 ║  MISTAKE #3: Prime Number Check                                           ║
 ║  ────────────────────────────────                                         ║
-║  ❌ WRONG: for (i = 2; i < num/2)   ← Too slow, O(N)                      ║
-║  ✅ RIGHT: for (i = 2; i * i <= num) ← Fast, O(√N)                        ║
+║  ❌ WRONG: for (i = 2; i < num/2)   ← Too slow, O(N)                       ║
+║  ✅ RIGHT: for (i = 2; i * i <= num) ← Fast, O(√N)                         ║
 ║                                                                           ║
 ║  MISTAKE #4: Counter Timing                                               ║
 ║  ─────────────────────────────                                            ║
 ║  Problem: "Count should be 1, 2, 3..."                                    ║
-║  ❌ WRONG: print(count); count++;   ← prints 0, 1, 2...                   ║
-║  ✅ RIGHT: count++; print(count);   ← prints 1, 2, 3... ✓                 ║
+║  ❌ WRONG: print(count); count++;   ← prints 0, 1, 2...                    ║
+║  ✅ RIGHT: count++; print(count);   ← prints 1, 2, 3... ✓                  ║
 ║                                                                           ║
 ║  MISTAKE #5: Missing Input Validation                                     ║
 ║  ────────────────────────────────────                                     ║
-║  ❌ WRONG: Start processing immediately                                   ║
-║  ✅ RIGHT: if (n <= 0) print("Invalid Input"); return;                    ║
+║  ❌ WRONG: Start processing immediately                                    ║
+║  ✅ RIGHT: if (n <= 0) print("Invalid Input"); return;                     ║
 ║                                                                           ║
 ║  MISTAKE #6: String Comparison                                            ║
 ║  ───────────────────────────────                                          ║
-║  ❌ WRONG: if (s1 == s2)            ← Compares references!                ║
-║  ✅ RIGHT: if (s1.equals(s2))       ← Compares content ✓                  ║
+║  ❌ WRONG: if (s1 == s2)            ← Compares references!                 ║
+║  ✅ RIGHT: if (s1.equals(s2))       ← Compares content ✓                   ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 

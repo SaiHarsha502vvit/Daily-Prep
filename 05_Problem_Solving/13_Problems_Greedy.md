@@ -23,7 +23,7 @@
 │  - Dijkstra's shortest path                                     │
 │  - Fractional knapsack                                          │
 │                                                                 │
-│  ⚠️ GREEDY DOESN'T ALWAYS WORK:                                │
+│  ⚠️ GREEDY DOESN'T ALWAYS WORK:                                 │
 │  - 0/1 Knapsack → Need DP                                       │
 │  - Longest path → Need DP/Backtracking                          │
 └─────────────────────────────────────────────────────────────────┘
@@ -42,66 +42,66 @@
 │ WHY GREEDY PROBLEMS ARE TRICKY (AND IMPORTANT)                               │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ Greedy algorithms feel simple: "just pick the best choice."                │
-│ The HARD PART: proving the greedy choice is CORRECT.                       │
+│ Greedy algorithms feel simple: "just pick the best choice."                  │
+│ The HARD PART: proving the greedy choice is CORRECT.                         │
 │                                                                              │
-│ Greedy appears in ~15% of interviews. The trap:                             │
-│   - You often RECOGNIZE the greedy answer intuitively                      │
-│   - But you can't PROVE it → interviewer asks "why does this work?"       │
-│   - Or worse: you assume greedy works when it DOESN'T → wrong answer     │
+│ Greedy appears in ~15% of interviews. The trap:                              │
+│   - You often RECOGNIZE the greedy answer intuitively                        │
+│   - But you can't PROVE it → interviewer asks "why does this work?"          │
+│   - Or worse: you assume greedy works when it DOESN'T → wrong answer         │
 │                                                                              │
-│ TWO PROPERTIES REQUIRED (must have BOTH):                                   │
-│ 1. GREEDY CHOICE PROPERTY: The locally best choice leads to global best    │
-│ 2. OPTIMAL SUBSTRUCTURE: After making a choice, the remaining problem     │
-│    is a smaller version of the same problem                                │
+│ TWO PROPERTIES REQUIRED (must have BOTH):                                    │
+│ 1. GREEDY CHOICE PROPERTY: The locally best choice leads to global best      │
+│ 2. OPTIMAL SUBSTRUCTURE: After making a choice, the remaining problem        │
+│    is a smaller version of the same problem                                  │
 │                                                                              │
-│ WORKS vs DOESN'T WORK:                                                      │
-│ ┌────────────────────────┬────────────────────────────────────┐             │
-│ │ ✅ Greedy WORKS        │ ❌ Greedy FAILS (need DP)          │             │
-│ ├────────────────────────┼────────────────────────────────────┤             │
-│ │ Activity Selection     │ 0/1 Knapsack                      │             │
-│ │ Fractional Knapsack    │ Longest Increasing Subsequence     │             │
-│ │ Huffman Coding         │ Coin Change (arbitrary coins)      │             │
-│ │ Dijkstra's Algorithm   │ Edit Distance                     │             │
-│ │ Kruskal's MST          │ Matrix Chain Multiplication       │             │
-│ │ Jump Game I            │ Palindrome Partitioning min cuts  │             │
-│ └────────────────────────┴────────────────────────────────────┘             │
+│ WORKS vs DOESN'T WORK:                                                       │
+│ ┌────────────────────────┬────────────────────────────────────┐              │
+│ │ ✅ Greedy WORKS        │ ❌ Greedy FAILS (need DP)          │                │
+│ ├────────────────────────┼────────────────────────────────────┤              │
+│ │ Activity Selection     │ 0/1 Knapsack                      │               │
+│ │ Fractional Knapsack    │ Longest Increasing Subsequence     │              │
+│ │ Huffman Coding         │ Coin Change (arbitrary coins)      │              │
+│ │ Dijkstra's Algorithm   │ Edit Distance                     │               │
+│ │ Kruskal's MST          │ Matrix Chain Multiplication       │               │
+│ │ Jump Game I            │ Palindrome Partitioning min cuts  │               │
+│ └────────────────────────┴────────────────────────────────────┘              │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ THE MENTAL MODEL: "Sort + Scan + Never Look Back"                            │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ Almost EVERY greedy problem follows this 3-step recipe:                     │
+│ Almost EVERY greedy problem follows this 3-step recipe:                      │
 │                                                                              │
-│   STEP 1: SORT the input by some criterion                                  │
-│   STEP 2: SCAN left to right, making the best choice at each step          │
-│   STEP 3: NEVER reconsider a past choice                                   │
+│   STEP 1: SORT the input by some criterion                                   │
+│   STEP 2: SCAN left to right, making the best choice at each step            │
+│   STEP 3: NEVER reconsider a past choice                                     │
 │                                                                              │
 │ The KEY is knowing HOW to sort:                                              │
-│   Intervals:    Sort by END TIME → finish earliest, maximize room          │
-│   Jump Game:    Don't sort! Scan L→R, track farthest reachable            │
-│   Gas Station:  Scan L→R, track surplus (gas - cost). Reset at deficit.   │
-│   Task Scheduler: Sort by frequency → schedule most frequent first        │
-│   Assign Cookies: Sort both arrays → match smallest cookie to child      │
+│   Intervals:    Sort by END TIME → finish earliest, maximize room            │
+│   Jump Game:    Don't sort! Scan L→R, track farthest reachable               │
+│   Gas Station:  Scan L→R, track surplus (gas - cost). Reset at deficit.      │
+│   Task Scheduler: Sort by frequency → schedule most frequent first           │
+│   Assign Cookies: Sort both arrays → match smallest cookie to child          │
 │                                                                              │
-│ HOW TO VERIFY (Exchange Argument — the proof technique):                    │
-│   "If I swap my greedy choice with any other choice, the solution         │
-│    gets WORSE or stays the SAME → greedy is optimal."                    │
+│ HOW TO VERIFY (Exchange Argument — the proof technique):                     │
+│   "If I swap my greedy choice with any other choice, the solution            │
+│    gets WORSE or stays the SAME → greedy is optimal."                        │
 │                                                                              │
-│ WORKED EXAMPLE — Activity Selection:                                        │
-│   Activities: [(1,3), (2,5), (4,7), (6,8), (5,9)]                         │
-│   Sort by end: [(1,3), (2,5), (4,7), (6,8), (5,9)]                        │
+│ WORKED EXAMPLE — Activity Selection:                                         │
+│   Activities: [(1,3), (2,5), (4,7), (6,8), (5,9)]                            │
+│   Sort by end: [(1,3), (2,5), (4,7), (6,8), (5,9)]                           │
 │                                                                              │
-│   Pick (1,3) ✓ — ends earliest                                            │
-│   Skip (2,5)   — starts before 3? No, 2 < 3 ❌ — WAIT, 2 < 3 so skip   │
-│   Pick (4,7) ✓ — starts at 4 ≥ 3                                        │
-│   Pick (6,8)   — starts at 6 < 7? YES → skip                             │
-│   Skip (5,9)   — starts at 5 < 7 → skip                                  │
-│   Result: [(1,3), (4,7)] = 2 activities                                    │
+│   Pick (1,3) ✓ — ends earliest                                               │
+│   Skip (2,5)   — starts before 3? No, 2 < 3 ❌ — WAIT, 2 < 3 so skip          │
+│   Pick (4,7) ✓ — starts at 4 ≥ 3                                             │
+│   Pick (6,8)   — starts at 6 < 7? YES → skip                                 │
+│   Skip (5,9)   — starts at 5 < 7 → skip                                      │
+│   Result: [(1,3), (4,7)] = 2 activities                                      │
 │                                                                              │
-│   Proof: If we replaced (1,3) with (2,5), we'd free LESS room for        │
-│   future activities. Swapping always makes it worse → greedy is correct. │
+│   Proof: If we replaced (1,3) with (2,5), we'd free LESS room for            │
+│   future activities. Swapping always makes it worse → greedy is correct.     │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -131,99 +131,99 @@ public int maxNonOverlapping(int[][] intervals) {
 │ THE 3 GREEDY CATEGORIES IN THIS CHAPTER                                      │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ ┌──────────────────┬─────────────────────────────────┬───────────────────┐  │
-│ │ Category         │ Sorting / Scanning Strategy     │ Problems          │  │
-│ ├──────────────────┼─────────────────────────────────┼───────────────────┤  │
-│ │ 1. INTERVALS     │ Sort by end time (or start time)│ 189-193           │  │
-│ │                  │ Pick non-overlapping greedily   │ Meeting Rooms     │  │
+│ ┌──────────────────┬─────────────────────────────────┬───────────────────┐   │
+│ │ Category         │ Sorting / Scanning Strategy     │ Problems          │   │
+│ ├──────────────────┼─────────────────────────────────┼───────────────────┤   │
+│ │ 1. INTERVALS     │ Sort by end time (or start time)│ 189-193           │   │
+│ │                  │ Pick non-overlapping greedily   │ Meeting Rooms     │   │
 │ │                  │                                  │ Merge Intervals   │  │
-│ ├──────────────────┼─────────────────────────────────┼───────────────────┤  │
-│ │ 2. ARRAY GREEDY  │ Scan L→R, track running state  │ 194-197           │  │
-│ │                  │ (farthest reach, surplus, etc.) │ Jump Game         │  │
+│ ├──────────────────┼─────────────────────────────────┼───────────────────┤   │
+│ │ 2. ARRAY GREEDY  │ Scan L→R, track running state  │ 194-197           │    │
+│ │                  │ (farthest reach, surplus, etc.) │ Jump Game         │   │
 │ │                  │                                  │ Gas Station       │  │
-│ ├──────────────────┼─────────────────────────────────┼───────────────────┤  │
-│ │ 3. STRING/MATH   │ Problem-specific ordering       │ 198-201           │  │
-│ │                  │ (frequency, digit removal, etc.)│ Task Scheduler    │  │
-│ └──────────────────┴─────────────────────────────────┴───────────────────┘  │
+│ ├──────────────────┼─────────────────────────────────┼───────────────────┤   │
+│ │ 3. STRING/MATH   │ Problem-specific ordering       │ 198-201           │   │
+│ │                  │ (frequency, digit removal, etc.)│ Task Scheduler    │   │
+│ └──────────────────┴─────────────────────────────────┴───────────────────┘   │
 │                                                                              │
-│ PRIORITY: Master Intervals first — they appear in 50%+ of greedy Qs.      │
+│ PRIORITY: Master Intervals first — they appear in 50%+ of greedy Qs.         │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ ⚠️  COMMON MISTAKES IN GREEDY PROBLEMS                                      │
+│ ⚠️  COMMON MISTAKES IN GREEDY PROBLEMS                                       │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ MISTAKE 1: Assuming greedy works without verifying                          │
-│   WRONG: "Pick the highest-value item first."                              │
-│   0/1 Knapsack counterexample: W=50. Items: (60,10), (100,20), (120,30). │
-│   Greedy by value/weight picks 60+100=160. DP gets 100+120=220.           │
-│   RULE: If items can't be split → probably NOT greedy.                    │
+│ MISTAKE 1: Assuming greedy works without verifying                           │
+│   WRONG: "Pick the highest-value item first."                                │
+│   0/1 Knapsack counterexample: W=50. Items: (60,10), (100,20), (120,30).     │
+│   Greedy by value/weight picks 60+100=160. DP gets 100+120=220.              │
+│   RULE: If items can't be split → probably NOT greedy.                       │
 │                                                                              │
-│ MISTAKE 2: Sorting by wrong criterion for intervals                        │
-│   "Non-overlapping intervals" → sort by END time, not start time.         │
-│   "Merge intervals" → sort by START time, not end time.                   │
-│   Different problems need different sort keys!                             │
+│ MISTAKE 2: Sorting by wrong criterion for intervals                          │
+│   "Non-overlapping intervals" → sort by END time, not start time.            │
+│   "Merge intervals" → sort by START time, not end time.                      │
+│   Different problems need different sort keys!                               │
 │                                                                              │
-│ MISTAKE 3: Off-by-one in overlap detection                                  │
-│   [1,5] and [5,8] — do they overlap?                                      │
-│   If endpoints inclusive: YES (share point 5)                              │
-│   If end-exclusive: NO (5 is end of first, start of second)              │
-│   Always check problem definition! LeetCode usually: start ≤ x < end.   │
+│ MISTAKE 3: Off-by-one in overlap detection                                   │
+│   [1,5] and [5,8] — do they overlap?                                         │
+│   If endpoints inclusive: YES (share point 5)                                │
+│   If end-exclusive: NO (5 is end of first, start of second)                  │
+│   Always check problem definition! LeetCode usually: start ≤ x < end.        │
 │                                                                              │
-│ MISTAKE 4: Jump Game — forgetting that farthest updates continuously       │
-│   Wrong: only check if current index == farthest                           │
-│   Right: update farthest = max(farthest, i + nums[i]) at EVERY step      │
-│   If i > farthest at any point → can't reach end.                        │
+│ MISTAKE 4: Jump Game — forgetting that farthest updates continuously         │
+│   Wrong: only check if current index == farthest                             │
+│   Right: update farthest = max(farthest, i + nums[i]) at EVERY step          │
+│   If i > farthest at any point → can't reach end.                            │
 │                                                                              │
-│ MISTAKE 5: Gas Station — brute force O(n²) when O(n) suffices             │
-│   Key insight: if total gas ≥ total cost → answer always exists.          │
-│   Track surplus. When it goes negative → restart from next station.      │
-│   Single pass, O(n). Many candidates miss this optimization.              │
+│ MISTAKE 5: Gas Station — brute force O(n²) when O(n) suffices                │
+│   Key insight: if total gas ≥ total cost → answer always exists.             │
+│   Track surplus. When it goes negative → restart from next station.          │
+│   Single pass, O(n). Many candidates miss this optimization.                 │
 │                                                                              │
-│ MISTAKE 6: Trying greedy on Coin Change with arbitrary denominations       │
-│   Coins = [1, 3, 4], Amount = 6.                                          │
-│   Greedy picks 4+1+1 = 3 coins. Optimal: 3+3 = 2 coins.                 │
-│   Greedy only works for canonical coin systems (US coins: 1,5,10,25).     │
+│ MISTAKE 6: Trying greedy on Coin Change with arbitrary denominations         │
+│   Coins = [1, 3, 4], Amount = 6.                                             │
+│   Greedy picks 4+1+1 = 3 coins. Optimal: 3+3 = 2 coins.                      │
+│   Greedy only works for canonical coin systems (US coins: 1,5,10,25).        │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ DIFFICULTIES IN LEARNING GREEDY                                              │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ 1. "How do I know if greedy works vs DP?"                                   │
-│    → Try to find a counterexample. If you can swap the greedy choice with │
-│      another and get a better answer → greedy fails, use DP.             │
+│ 1. "How do I know if greedy works vs DP?"                                    │
+│    → Try to find a counterexample. If you can swap the greedy choice with    │
+│      another and get a better answer → greedy fails, use DP.                 │
 │                                                                              │
-│ 2. "The proof seems obvious but I can't formalize it"                      │
-│    → Exchange argument: Assume optimal solution differs from greedy.      │
-│      Show you can replace the different choice with greedy's choice       │
-│      without making the solution worse. That's the full proof.            │
+│ 2. "The proof seems obvious but I can't formalize it"                        │
+│    → Exchange argument: Assume optimal solution differs from greedy.         │
+│      Show you can replace the different choice with greedy's choice          │
+│      without making the solution worse. That's the full proof.               │
 │                                                                              │
-│ 3. "I keep getting TLE on interval problems"                                │
-│    → Are you sorting? Unsorted intervals → O(n²) comparisons.           │
-│      Sort by end time first → single O(n) pass after O(n log n) sort.   │
+│ 3. "I keep getting TLE on interval problems"                                 │
+│    → Are you sorting? Unsorted intervals → O(n²) comparisons.                │
+│      Sort by end time first → single O(n) pass after O(n log n) sort.        │
 │                                                                              │
-│ 4. "Jump Game II was way harder than Jump Game I"                           │
-│    → Jump I = "can you reach end?" (track farthest). Jump II = "min     │
-│      jumps to reach end?" (BFS-like greedy with level boundaries).       │
+│ 4. "Jump Game II was way harder than Jump Game I"                            │
+│    → Jump I = "can you reach end?" (track farthest). Jump II = "min          │
+│      jumps to reach end?" (BFS-like greedy with level boundaries).           │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ ⭐ EXPECTED OUTPUTS OF MASTERING GREEDY ⭐                                    │
+│ ⭐ EXPECTED OUTPUTS OF MASTERING GREEDY ⭐                                     │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ ✅ Instantly distinguish Greedy vs DP based on counterexample thinking     │
-│ ✅ Sort intervals by END time for scheduling, START time for merging       │
-│ ✅ Write interval greedy template (sort + scan + lastEnd) from memory      │
-│ ✅ Solve Jump Game in O(n) with farthest-reachable tracking                │
-│ ✅ Explain exchange argument proof at whiteboard                           │
-│ ✅ Recognize when greedy FAILS and pivot to DP                             │
+│ ✅ Instantly distinguish Greedy vs DP based on counterexample thinking        │
+│ ✅ Sort intervals by END time for scheduling, START time for merging          │
+│ ✅ Write interval greedy template (sort + scan + lastEnd) from memory         │
+│ ✅ Solve Jump Game in O(n) with farthest-reachable tracking                   │
+│ ✅ Explain exchange argument proof at whiteboard                              │
+│ ✅ Recognize when greedy FAILS and pivot to DP                                │
 │                                                                              │
 │ THE TRANSFORMATION:                                                          │
-│ FROM: "I always try greedy and sometimes it's wrong"                        │
-│   TO: "I check greedy-choice property + optimal substructure. If both     │
-│        hold, I sort by the right key, scan once, never look back.         │
-│        If not, I reach for DP and can explain WHY."                        │
+│ FROM: "I always try greedy and sometimes it's wrong"                         │
+│   TO: "I check greedy-choice property + optimal substructure. If both        │
+│        hold, I sort by the right key, scan once, never look back.            │
+│        If not, I reach for DP and can explain WHY."                          │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -387,7 +387,7 @@ public int eraseOverlapIntervals(int[][] intervals) {
 │                                                                │
 │  1───3                                                         │
 │    2─────6                                                     │
-│              8──10                                              │
+│              8──10                                             │
 │                     15──18                                     │
 │  └───────┘                                                     │
 │  Merged: [1,6]                                                 │

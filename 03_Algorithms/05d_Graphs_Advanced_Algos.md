@@ -558,23 +558,23 @@ public int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    LCA ALGORITHMS - COMPLETE COMPARISON                          │
+│                    LCA ALGORITHMS - COMPLETE COMPARISON                         │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  Problem: Find the lowest common ancestor of two nodes p and q in a tree        │
-│                                                                                  │
-│  Tree:         3                                                                 │
-│              /   \                                                               │
-│             5     1                                                              │
-│            / \   / \                                                             │
-│           6   2 0   8                                                            │
-│              / \                                                                 │
-│             7   4                                                                │
-│                                                                                  │
-│  LCA(5, 1) = 3                                                                   │
-│  LCA(5, 4) = 5                                                                   │
-│  LCA(6, 4) = 5                                                                   │
-│                                                                                  │
+│                                                                                 │
+│  Tree:         3                                                                │
+│              /   \                                                              │
+│             5     1                                                             │
+│            / \   / \                                                            │
+│           6   2 0   8                                                           │
+│              / \                                                                │
+│             7   4                                                               │
+│                                                                                 │
+│  LCA(5, 1) = 3                                                                  │
+│  LCA(5, 4) = 5                                                                  │
+│  LCA(6, 4) = 5                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1062,17 +1062,17 @@ private boolean dfs(int u, List<List<Integer>> adj,
 
 ```
 ╔══════════════════════════════════════════════════════════════╗
-║  SCC: Maximal set of vertices where EVERY vertex is         ║
-║  reachable from EVERY other vertex in the set               ║
-║                                                             ║
-║     ┌──→ 1 ──→ 2 ──┐        SCCs: {0}, {1, 2, 3, 4}       ║
-║     │    ↑    ↓    │                                       ║
-║     0    │    3    │        WHY IT MATTERS:                 ║
-║          │    ↓    │        - 2-SAT satisfiability          ║
-║          └─── 4 ←──┘        - Dead code elimination         ║
-║                              - Social network clusters      ║
-║                              - Condensing digraph to DAG    ║
-║  TIME: O(V + E)   SPACE: O(V)                              ║
+║  SCC: Maximal set of vertices where EVERY vertex is          ║
+║  reachable from EVERY other vertex in the set                ║
+║                                                              ║
+║     ┌──→ 1 ──→ 2 ──┐        SCCs: {0}, {1, 2, 3, 4}          ║
+║     │    ↑    ↓    │                                         ║
+║     0    │    3    │        WHY IT MATTERS:                  ║
+║          │    ↓    │        - 2-SAT satisfiability           ║
+║          └─── 4 ←──┘        - Dead code elimination          ║
+║                              - Social network clusters       ║
+║                              - Condensing digraph to DAG     ║
+║  TIME: O(V + E)   SPACE: O(V)                                ║
 ╚══════════════════════════════════════════════════════════════╝
 ```
 
@@ -1180,9 +1180,9 @@ public class TarjanSCC {
 ╔══════════════╦══════════════════════════════╦═══════════════════════════════╗
 ║              ║ Kosaraju                     ║ Tarjan                        ║
 ╠══════════════╬══════════════════════════════╬═══════════════════════════════╣
-║ Passes       ║ 2 DFS passes                ║ 1 DFS pass                    ║
+║ Passes       ║ 2 DFS passes                ║ 1 DFS pass                     ║
 ║ Extra memory ║ Reversed graph O(V+E)        ║ Stack + low-link arrays O(V)  ║
-║ Simpler code ║ ✓ (two simple DFS)          ║ ✗ (low-link logic tricky)     ║
+║ Simpler code ║ ✓ (two simple DFS)          ║ ✗ (low-link logic tricky)      ║
 ║ Better for   ║ Dense graphs, simple impl    ║ Online/streaming, less memory ║
 ║ 2-SAT        ║ Commonly used                ║ Also works                    ║
 ╚══════════════╩══════════════════════════════╩═══════════════════════════════╝
@@ -1205,24 +1205,24 @@ Otherwise: xᵢ = true if SCC(xᵢ) has higher topological order than SCC(¬xᵢ
 
 ```
 ╔════════════════════════════════════════════════════════════════╗
-║  A*: Best-first search with heuristic guidance                ║
-║                                                               ║
-║  f(n) = g(n) + h(n)                                          ║
-║         ↑         ↑                                           ║
-║    actual cost   heuristic (estimated cost to goal)           ║
-║    from start                                                 ║
-║                                                               ║
-║  GUARANTEE: If h(n) is admissible (never overestimates)       ║
-║             AND consistent (h(a) ≤ cost(a,b) + h(b))         ║
-║             → A* finds the OPTIMAL path                       ║
-║                                                               ║
-║  TIME: O(E) in best case, O(b^d) worst case                  ║
-║  SPACE: O(V)                                                  ║
-║                                                               ║
-║  USE CASES:                                                   ║
-║  - Grid shortest path (game AI, robotics)                     ║
-║  - Navigation / GPS routing                                   ║
-║  - Sliding puzzle (15-puzzle)                                 ║
+║  A*: Best-first search with heuristic guidance                 ║
+║                                                                ║
+║  f(n) = g(n) + h(n)                                            ║
+║         ↑         ↑                                            ║
+║    actual cost   heuristic (estimated cost to goal)            ║
+║    from start                                                  ║
+║                                                                ║
+║  GUARANTEE: If h(n) is admissible (never overestimates)        ║
+║             AND consistent (h(a) ≤ cost(a,b) + h(b))           ║
+║             → A* finds the OPTIMAL path                        ║
+║                                                                ║
+║  TIME: O(E) in best case, O(b^d) worst case                    ║
+║  SPACE: O(V)                                                   ║
+║                                                                ║
+║  USE CASES:                                                    ║
+║  - Grid shortest path (game AI, robotics)                      ║
+║  - Navigation / GPS routing                                    ║
+║  - Sliding puzzle (15-puzzle)                                  ║
 ╚════════════════════════════════════════════════════════════════╝
 ```
 
@@ -1297,13 +1297,13 @@ public class AStar {
 ║ Heuristic          ║ When to Use                              ║
 ╠════════════════════╬══════════════════════════════════════════╣
 ║ Manhattan distance ║ 4-directional grid (up/down/left/right)  ║
-║ |x₁-x₂| + |y₁-y₂|║                                          ║
+║ |x₁-x₂| + |y₁-y₂|║                                            ║
 ╠════════════════════╬══════════════════════════════════════════╣
 ║ Euclidean distance ║ 8-directional or free movement           ║
-║ √((x₁-x₂)²+(y₁-y₂)²)                                       ║
+║ √((x₁-x₂)²+(y₁-y₂)²)                                          ║
 ╠════════════════════╬══════════════════════════════════════════╣
 ║ Chebyshev distance ║ 8-directional grid (king moves)          ║
-║ max(|x₁-x₂|,|y₁-y₂|)                                        ║
+║ max(|x₁-x₂|,|y₁-y₂|)                                          ║
 ╠════════════════════╬══════════════════════════════════════════╣
 ║ h(n) = 0          ║ Degenerates to Dijkstra (always safe)     ║
 ╚════════════════════╩══════════════════════════════════════════╝
@@ -1311,37 +1311,37 @@ public class AStar {
 
 ### Curated Practice — Advanced Graph Algorithms
 ```
-╔════╦══════════════════════════════════════════════════════════════╦════════╗
-║  # ║ Problem                                                     ║ Diff.  ║
-╠════╬══════════════════════════════════════════════════════════════╬════════╣
-║  1 ║ Critical Connections (LC 1192)                               ║ Hard   ║
-║    ║ https://leetcode.com/problems/critical-connections-in-a-network/ ║       ║
-╠════╬══════════════════════════════════════════════════════════════╬════════╣
-║  2 ║ Shortest Path in Binary Matrix (LC 1091)                    ║ Medium ║
-║    ║ https://leetcode.com/problems/shortest-path-in-binary-matrix/ ║       ║
-╠════╬══════════════════════════════════════════════════════════════╬════════╣
-║  3 ║ Network Delay Time (LC 743)                                 ║ Medium ║
-║    ║ https://leetcode.com/problems/network-delay-time/            ║       ║
-╠════╬══════════════════════════════════════════════════════════════╬════════╣
-║  4 ║ Cheapest Flights Within K Stops (LC 787)                    ║ Medium ║
-║    ║ https://leetcode.com/problems/cheapest-flights-within-k-stops/ ║      ║
-╠════╬══════════════════════════════════════════════════════════════╬════════╣
-║  5 ║ Course Schedule II (LC 210) — Topo Sort                     ║ Medium ║
-║    ║ https://leetcode.com/problems/course-schedule-ii/            ║       ║
-╠════╬══════════════════════════════════════════════════════════════╬════════╣
-║  6 ║ Path with Maximum Probability (LC 1514) — Max Dijkstra      ║ Medium ║
-║    ║ https://leetcode.com/problems/path-with-maximum-probability/ ║       ║
-╠════╬══════════════════════════════════════════════════════════════╬════════╣
-║  7 ║ Minimum Cost to Make at Least One Valid Path (LC 1368)      ║ Hard   ║
-║    ║ https://leetcode.com/problems/minimum-cost-to-make-at-least-one-valid-path-in-a-grid/ ║ ║
-╠════╬══════════════════════════════════════════════════════════════╬════════╣
-║  8 ║ Redundant Connection II (LC 685) — Directed graph cycle     ║ Hard   ║
-║    ║ https://leetcode.com/problems/redundant-connection-ii/       ║       ║
-╠════╬══════════════════════════════════════════════════════════════╬════════╣
-║  9 ║ Swim in Rising Water (LC 778) — Binary Search + BFS/UF     ║ Hard   ║
-║    ║ https://leetcode.com/problems/swim-in-rising-water/          ║       ║
-╠════╬══════════════════════════════════════════════════════════════╬════════╣
-║ 10 ║ Find the City (LC 1334) — Floyd-Warshall                   ║ Medium ║
+╔════╦══════════════════════════════════════════════════════════════╦═══════════════════════════════════════════════╗
+║  # ║ Problem                                                     ║ Diff.                                          ║
+╠════╬══════════════════════════════════════════════════════════════╬═══════════════════════════════════════════════╣
+║  1 ║ Critical Connections (LC 1192)                               ║ Hard                                          ║
+║    ║ https://leetcode.com/problems/critical-connections-in-a-network/ ║                                           ║
+╠════╬══════════════════════════════════════════════════════════════╬═══════════════════════════════════════════════╣
+║  2 ║ Shortest Path in Binary Matrix (LC 1091)                    ║ Medium                                         ║
+║    ║ https://leetcode.com/problems/shortest-path-in-binary-matrix/ ║                                              ║
+╠════╬══════════════════════════════════════════════════════════════╬═══════════════════════════════════════════════╣
+║  3 ║ Network Delay Time (LC 743)                                 ║ Medium                                         ║
+║    ║ https://leetcode.com/problems/network-delay-time/            ║                                               ║
+╠════╬══════════════════════════════════════════════════════════════╬═══════════════════════════════════════════════╣
+║  4 ║ Cheapest Flights Within K Stops (LC 787)                    ║ Medium                                         ║
+║    ║ https://leetcode.com/problems/cheapest-flights-within-k-stops/ ║                                             ║
+╠════╬══════════════════════════════════════════════════════════════╬═══════════════════════════════════════════════╣
+║  5 ║ Course Schedule II (LC 210) — Topo Sort                     ║ Medium                                         ║
+║    ║ https://leetcode.com/problems/course-schedule-ii/            ║                                               ║
+╠════╬══════════════════════════════════════════════════════════════╬═══════════════════════════════════════════════╣
+║  6 ║ Path with Maximum Probability (LC 1514) — Max Dijkstra      ║ Medium                                         ║
+║    ║ https://leetcode.com/problems/path-with-maximum-probability/ ║                                               ║
+╠════╬══════════════════════════════════════════════════════════════╬═══════════════════════════════════════════════╣
+║  7 ║ Minimum Cost to Make at Least One Valid Path (LC 1368)      ║ Hard                                           ║
+║    ║ https://leetcode.com/problems/minimum-cost-to-make-at-least-one-valid-path-in-a-grid/ ║                      ║
+╠════╬══════════════════════════════════════════════════════════════╬═══════════════════════════════════════════════╣
+║  8 ║ Redundant Connection II (LC 685) — Directed graph cycle     ║ Hard                                           ║
+║    ║ https://leetcode.com/problems/redundant-connection-ii/       ║                                               ║
+╠════╬══════════════════════════════════════════════════════════════╬═══════════════════════════════════════════════╣
+║  9 ║ Swim in Rising Water (LC 778) — Binary Search + BFS/UF     ║ Hard                                            ║
+║    ║ https://leetcode.com/problems/swim-in-rising-water/          ║                                               ║
+╠════╬══════════════════════════════════════════════════════════════╬═══════════════════════════════════════════════╣
+║ 10 ║ Find the City (LC 1334) — Floyd-Warshall                   ║ Medium                                          ║
 ║    ║ https://leetcode.com/problems/find-the-city-with-the-smallest-number-of-neighbors-at-a-threshold-distance/ ║ ║
-╚════╩══════════════════════════════════════════════════════════════╩════════╝
+╚════╩══════════════════════════════════════════════════════════════╩═══════════════════════════════════════════════╝
 ```

@@ -29,126 +29,126 @@
 │ WHAT PROBLEM DOES UNION-FIND SOLVE?                                          │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ CORE PROBLEM: Dynamic grouping — elements get connected over time, and you  │
-│ need to repeatedly answer: "Are A and B in the same group?"                 │
+│ CORE PROBLEM: Dynamic grouping — elements get connected over time, and you   │
+│ need to repeatedly answer: "Are A and B in the same group?"                  │
 │                                                                              │
 │ WHY IS THIS HARD?                                                            │
 │                                                                              │
-│ ┌─────────────────────────────────────────────────────────────────────────┐ │
-│ │ APPROACH               │ UNION        │ FIND/CONNECTED │ WHY BAD      │ │
-│ │─────────────────────────┼──────────────┼────────────────┼──────────────│ │
-│ │ Maintain explicit sets  │ O(n) copy    │ O(1) lookup    │ Union slow   │ │
-│ │ BFS/DFS each query      │ O(1) add edge│ O(V+E) search  │ Find slow    │ │
-│ │ Boolean matrix          │ O(n) update  │ O(1) lookup    │ Union slow   │ │
-│ │ UNION-FIND (optimized)  │ O(α(n)) ≈ O(1) │ O(α(n)) ≈ O(1) │ BOTH FAST │ │
-│ └─────────────────────────────────────────────────────────────────────────┘ │
+│ ┌─────────────────────────────────────────────────────────────────────────┐  │
+│ │ APPROACH               │ UNION        │ FIND/CONNECTED │ WHY BAD      │    │
+│ │─────────────────────────┼──────────────┼────────────────┼──────────────│   │
+│ │ Maintain explicit sets  │ O(n) copy    │ O(1) lookup    │ Union slow   │   │
+│ │ BFS/DFS each query      │ O(1) add edge│ O(V+E) search  │ Find slow    │   │
+│ │ Boolean matrix          │ O(n) update  │ O(1) lookup    │ Union slow   │   │
+│ │ UNION-FIND (optimized)  │ O(α(n)) ≈ O(1) │ O(α(n)) ≈ O(1) │ BOTH FAST │    │
+│ └─────────────────────────────────────────────────────────────────────────┘  │
 │                                                                              │
-│ For 10⁶ elements with 10⁶ operations:                                      │
-│   BFS approach:    10⁶ × 10⁶ = 10¹² operations → 17 MINUTES               │
-│   Union-Find:      10⁶ × 4   = 4×10⁶ operations → 4 MILLISECONDS         │
-│   That's 250,000x faster!                                                   │
+│ For 10⁶ elements with 10⁶ operations:                                        │
+│   BFS approach:    10⁶ × 10⁶ = 10¹² operations → 17 MINUTES                  │
+│   Union-Find:      10⁶ × 4   = 4×10⁶ operations → 4 MILLISECONDS             │
+│   That's 250,000x faster!                                                    │
 │                                                                              │
 │ ANALOGY — Social Network Friend Groups:                                      │
-│   Imagine Facebook with 2 billion users. Person A adds Person B as friend.  │
-│   Now we need to check: "Are persons X and Y in the same friend circle?"   │
-│   You can't BFS through 2 billion users each time.                          │
-│   Union-Find: Each friend group has a "representative." Merging groups      │
-│   just changes one pointer. Checking? Follow pointers to representative.    │
+│   Imagine Facebook with 2 billion users. Person A adds Person B as friend.   │
+│   Now we need to check: "Are persons X and Y in the same friend circle?"     │
+│   You can't BFS through 2 billion users each time.                           │
+│   Union-Find: Each friend group has a "representative." Merging groups       │
+│   just changes one pointer. Checking? Follow pointers to representative.     │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ REAL-WORLD ORIGIN STORY                                                      │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ 1964 — GALLER & FISCHER AT THE UNIVERSITY OF MICHIGAN:                      │
+│ 1964 — GALLER & FISCHER AT THE UNIVERSITY OF MICHIGAN:                       │
 │   Problem: Compilers need to track which variables are EQUIVALENT.           │
-│   In FORTRAN, EQUIVALENCE statements make two variables share memory.       │
-│   Compiler needs to quickly answer: "Do x and y share the same memory?"    │
-│   Their solution: tree-based union-find with union by rank.                 │
+│   In FORTRAN, EQUIVALENCE statements make two variables share memory.        │
+│   Compiler needs to quickly answer: "Do x and y share the same memory?"      │
+│   Their solution: tree-based union-find with union by rank.                  │
 │                                                                              │
-│ 1975 — ROBERT TARJAN'S MASTERPIECE:                                         │
-│   Tarjan proved that with BOTH path compression AND union by rank,          │
-│   m operations on n elements takes O(m × α(n)) time.                       │
-│   α(n) = Inverse Ackermann function.                                        │
+│ 1975 — ROBERT TARJAN'S MASTERPIECE:                                          │
+│   Tarjan proved that with BOTH path compression AND union by rank,           │
+│   m operations on n elements takes O(m × α(n)) time.                         │
+│   α(n) = Inverse Ackermann function.                                         │
 │                                                                              │
-│   HOW SLOW DOES α(n) GROW?                                                  │
-│   α(1)        = 0                                                           │
-│   α(3)        = 1                                                           │
-│   α(7)        = 2                                                           │
-│   α(65535)    = 3                                                           │
-│   α(2^65536)  = 4  ← This number has 19,729 DIGITS!                       │
-│   For ANY practical n (even 10^80 atoms in universe), α(n) ≤ 4.           │
-│   Effectively O(1) per operation!                                           │
+│   HOW SLOW DOES α(n) GROW?                                                   │
+│   α(1)        = 0                                                            │
+│   α(3)        = 1                                                            │
+│   α(7)        = 2                                                            │
+│   α(65535)    = 3                                                            │
+│   α(2^65536)  = 4  ← This number has 19,729 DIGITS!                          │
+│   For ANY practical n (even 10^80 atoms in universe), α(n) ≤ 4.              │
+│   Effectively O(1) per operation!                                            │
 │                                                                              │
-│ 1985 — FREDMAN & SAKS prove: Union-Find is OPTIMAL.                        │
-│   You CANNOT do better than O(α(n)) amortized for this problem.            │
-│   Union-Find isn't just fast — it's the BEST POSSIBLE.                     │
+│ 1985 — FREDMAN & SAKS prove: Union-Find is OPTIMAL.                          │
+│   You CANNOT do better than O(α(n)) amortized for this problem.              │
+│   Union-Find isn't just fast — it's the BEST POSSIBLE.                       │
 │                                                                              │
 │ REAL-WORLD IMPACT TODAY:                                                     │
-│ • Network connectivity: "Can router A reach router B?" (Cisco, AWS)        │
-│ • Image segmentation: Connected component labeling in medical imaging       │
-│ • Percolation theory: "Does water flow through this rock?" (oil industry)  │
-│ • Social networks: Friend-of-friend grouping (Facebook, LinkedIn)          │
-│ • Kruskal's MST: Minimum-cost network wiring                              │
-│ • Game engines: Maze generation (random wall removal)                       │
+│ • Network connectivity: "Can router A reach router B?" (Cisco, AWS)          │
+│ • Image segmentation: Connected component labeling in medical imaging        │
+│ • Percolation theory: "Does water flow through this rock?" (oil industry)    │
+│ • Social networks: Friend-of-friend grouping (Facebook, LinkedIn)            │
+│ • Kruskal's MST: Minimum-cost network wiring                                 │
+│ • Game engines: Maze generation (random wall removal)                        │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ THE MENTAL MODEL: Family Trees                                               │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ Imagine every person points to their PARENT. The ROOT of the family         │
+│ Imagine every person points to their PARENT. The ROOT of the family          │
 │ is the "representative" of that family.                                      │
 │                                                                              │
-│ Initially: everyone is their own root (self-loops)                          │
-│   parent: [0, 1, 2, 3, 4]   →   [0] [1] [2] [3] [4]                      │
+│ Initially: everyone is their own root (self-loops)                           │
+│   parent: [0, 1, 2, 3, 4]   →   [0] [1] [2] [3] [4]                          │
 │                                                                              │
-│ Union(0,1): 1's root points to 0    Union(2,3): 3's root points to 2       │
+│ Union(0,1): 1's root points to 0    Union(2,3): 3's root points to 2         │
 │     [0]       [2]                                                            │
 │      ↑         ↑                                                             │
 │     [1]       [3]     [4]                                                    │
 │                                                                              │
-│ Union(0,2): Root of 2's tree points to root of 0's tree                     │
+│ Union(0,2): Root of 2's tree points to root of 0's tree                      │
 │          [0]                                                                 │
-│         ↗   ↖                                                               │
+│         ↗   ↖                                                                │
 │       [1]    [2]                                                             │
 │               ↑                                                              │
-│              [3]          [4]                                                 │
+│              [3]          [4]                                                │
 │                                                                              │
-│ Find(3)? Follow 3→2→0. Root = 0.                                           │
-│ Find(1)? Follow 1→0.    Root = 0.                                           │
-│ Same root → same group ✅                                                   │
+│ Find(3)? Follow 3→2→0. Root = 0.                                             │
+│ Find(1)? Follow 1→0.    Root = 0.                                            │
+│ Same root → same group ✅                                                     │
 │                                                                              │
 │ ═══════════════════════════════════════════════════════════════════          │
 │                                                                              │
 │ THE TWO OPTIMIZATIONS (both crucial):                                        │
 │                                                                              │
 │ OPTIMIZATION 1 — PATH COMPRESSION:                                           │
-│ After Find(3), make 3 point DIRECTLY to root:                               │
+│ After Find(3), make 3 point DIRECTLY to root:                                │
 │                                                                              │
-│   BEFORE Find(3):          AFTER Find(3):                                   │
+│   BEFORE Find(3):          AFTER Find(3):                                    │
 │        [0]                      [0]                                          │
-│       ↗   ↖                  ↗  ↑  ↖                                       │
+│       ↗   ↖                  ↗  ↑  ↖                                         │
 │     [1]    [2]             [1] [3] [2]                                       │
 │             ↑                                                                │
 │            [3]             Future Find(3) = O(1)!                            │
 │                                                                              │
 │ OPTIMIZATION 2 — UNION BY RANK (or SIZE):                                    │
-│ When merging two trees, attach the SHORTER tree under the TALLER one.       │
+│ When merging two trees, attach the SHORTER tree under the TALLER one.        │
 │                                                                              │
 │   WITHOUT rank:                WITH rank:                                    │
-│     [0]     [4]                 [0]          [4]                            │
-│    ↗ ↑ ↖     ↑                ↗ ↑ ↖           ↑                             │
-│  [1][3][2]  [5]              [1][3][2]        [5]                           │
+│     [0]     [4]                 [0]          [4]                             │
+│    ↗ ↑ ↖     ↑                ↗ ↑ ↖           ↑                              │
+│  [1][3][2]  [5]              [1][3][2]        [5]                            │
 │                                    ↑                                         │
 │   Union could create              [4]                                        │
 │   height-4 chain!                  ↑                                         │
 │                                   [5]                                        │
 │                                                                              │
-│   Bad: 0←1←2←3←4←5            Good: max height = log(n)                   │
-│   Find = O(n) worst case       Find = O(log n) worst case                  │
+│   Bad: 0←1←2←3←4←5            Good: max height = log(n)                      │
+│   Find = O(n) worst case       Find = O(log n) worst case                    │
 │                                                                              │
-│ BOTH TOGETHER: O(α(n)) ≈ O(1) amortized per operation!                     │
+│ BOTH TOGETHER: O(α(n)) ≈ O(1) amortized per operation!                       │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -200,106 +200,106 @@ class UnionFind {
 │ BENCHMARK: OPTIMIZATION IMPACT                                               │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ n = 1,000,000 elements, m = 1,000,000 union + find operations:             │
+│ n = 1,000,000 elements, m = 1,000,000 union + find operations:               │
 │                                                                              │
-│ ┌──────────────────────────┬────────────────┬──────────────────────────┐    │
-│ │ Implementation           │ Time           │ Operations               │    │
-│ ├──────────────────────────┼────────────────┼──────────────────────────┤    │
-│ │ BFS each query           │ ~17 minutes    │ 10⁶ × 10⁶ = 10¹²       │    │
-│ │ Naive UF (no opt)        │ ~4.2 seconds   │ 10⁶ × ~4200 (avg chain)│    │
-│ │ + Path compression only  │ ~320 ms        │ 10⁶ × ~320 (amortized) │    │
-│ │ + Union by rank only     │ ~200 ms        │ 10⁶ × ~20 (log bound)  │    │
-│ │ + BOTH (full UF)         │ ~8 ms          │ 10⁶ × ~4 ≈ α(n)       │    │
-│ └──────────────────────────┴────────────────┴──────────────────────────┘    │
+│ ┌──────────────────────────┬────────────────┬──────────────────────────┐     │
+│ │ Implementation           │ Time           │ Operations               │     │
+│ ├──────────────────────────┼────────────────┼──────────────────────────┤     │
+│ │ BFS each query           │ ~17 minutes    │ 10⁶ × 10⁶ = 10¹²       │       │
+│ │ Naive UF (no opt)        │ ~4.2 seconds   │ 10⁶ × ~4200 (avg chain)│       │
+│ │ + Path compression only  │ ~320 ms        │ 10⁶ × ~320 (amortized) │       │
+│ │ + Union by rank only     │ ~200 ms        │ 10⁶ × ~20 (log bound)  │       │
+│ │ + BOTH (full UF)         │ ~8 ms          │ 10⁶ × ~4 ≈ α(n)       │        │
+│ └──────────────────────────┴────────────────┴──────────────────────────┘     │
 │                                                                              │
-│ Going from naive → full optimization = 525x speedup!                        │
-│ Going from BFS → full UF = 127,500x speedup!                               │
+│ Going from naive → full optimization = 525x speedup!                         │
+│ Going from BFS → full UF = 127,500x speedup!                                 │
 │                                                                              │
 │ CPU/MEMORY INSIGHT:                                                          │
-│ • Union-Find uses just 2 arrays (parent + rank) → cache-friendly           │
-│ • BFS needs adjacency list + visited set + queue → scattered memory        │
-│ • Path compression makes trees nearly flat → fewer cache misses            │
-│ • parent[] array fits in L2 cache for n < 500K → incredibly fast          │
+│ • Union-Find uses just 2 arrays (parent + rank) → cache-friendly             │
+│ • BFS needs adjacency list + visited set + queue → scattered memory          │
+│ • Path compression makes trees nearly flat → fewer cache misses              │
+│ • parent[] array fits in L2 cache for n < 500K → incredibly fast             │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ WHEN TO USE UNION-FIND                                                       │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ ✅ USE WHEN:                          ❌ DON'T USE WHEN:                    │
-│ • Dynamic connectivity queries        • Need actual PATH between nodes      │
-│ • "Are X and Y connected?"            • Directed graph (use SCC/topo sort)  │
-│ • Count connected components          • Need to DELETE edges (hard!)        │
-│ • Detect cycles in undirected graph   • Small fixed graph (BFS simpler)    │
-│ • Kruskal's MST algorithm             • Need shortest path (use BFS/Dijkstra│
-│ • Online edge additions               • Need ALL components listed          │
-│ • Equivalence class tracking                                                │
+│ ✅ USE WHEN:                          ❌ DON'T USE WHEN:                       │
+│ • Dynamic connectivity queries        • Need actual PATH between nodes       │
+│ • "Are X and Y connected?"            • Directed graph (use SCC/topo sort)   │
+│ • Count connected components          • Need to DELETE edges (hard!)         │
+│ • Detect cycles in undirected graph   • Small fixed graph (BFS simpler)      │
+│ • Kruskal's MST algorithm             • Need shortest path (use BFS/Dijkstra │
+│ • Online edge additions               • Need ALL components listed           │
+│ • Equivalence class tracking                                                 │
 │                                                                              │
 │ SIGNAL WORDS in interviews:                                                  │
-│   "connected", "groups", "merge", "same component", "redundant edge",       │
+│   "connected", "groups", "merge", "same component", "redundant edge",        │
 │   "friends of friends", "accounts belong to same person",                    │
 │   "number of islands (with union)", "cycle in undirected graph"              │
 │                                                                              │
-│ TRICK: "Delete edges" → Process in REVERSE (add edges) + Union-Find        │
-│ This converts a delete problem into an add problem!                         │
+│ TRICK: "Delete edges" → Process in REVERSE (add edges) + Union-Find          │
+│ This converts a delete problem into an add problem!                          │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ UNION-FIND VARIANT FAMILIES                                                  │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ 1. BASIC UF — Just connectivity                                             │
+│ 1. BASIC UF — Just connectivity                                              │
 │    Problems: Number of Provinces, Redundant Connection                       │
 │                                                                              │
-│ 2. WEIGHTED UF — Edges carry values (ratios, distances)                     │
-│    Problems: Evaluate Division (a/b=2, b/c=3, what is a/c?)                │
-│    Trick: Each node stores weight-to-parent, find() multiplies along path  │
+│ 2. WEIGHTED UF — Edges carry values (ratios, distances)                      │
+│    Problems: Evaluate Division (a/b=2, b/c=3, what is a/c?)                  │
+│    Trick: Each node stores weight-to-parent, find() multiplies along path    │
 │                                                                              │
-│ 3. UF + SIZE TRACKING — Count elements per component                        │
+│ 3. UF + SIZE TRACKING — Count elements per component                         │
 │    Problems: Largest Component Size, Making a Large Island                   │
-│    Trick: Store size[] array, update on union                               │
+│    Trick: Store size[] array, update on union                                │
 │                                                                              │
-│ 4. UF WITH ROLLBACK — Undo unions (offline algorithms)                      │
-│    Problems: Dynamic connectivity with deletions                            │
-│    Trick: Use stack to record parent changes, pop to undo                   │
-│    Note: Can't use path compression with rollback!                          │
+│ 4. UF WITH ROLLBACK — Undo unions (offline algorithms)                       │
+│    Problems: Dynamic connectivity with deletions                             │
+│    Trick: Use stack to record parent changes, pop to undo                    │
+│    Note: Can't use path compression with rollback!                           │
 │                                                                              │
-│ 5. UF ON GRID — 2D grid connectivity                                        │
-│    Problems: Number of Islands II, Surrounded Regions                       │
-│    Trick: Map (row, col) → index: row * cols + col                         │
+│ 5. UF ON GRID — 2D grid connectivity                                         │
+│    Problems: Number of Islands II, Surrounded Regions                        │
+│    Trick: Map (row, col) → index: row * cols + col                           │
 │                                                                              │
-│ 6. UF + VIRTUAL NODES — Group nodes that share a property                   │
-│    Problems: Accounts Merge, Similar String Groups                          │
-│    Trick: Create virtual "property" nodes that real nodes connect through   │
+│ 6. UF + VIRTUAL NODES — Group nodes that share a property                    │
+│    Problems: Accounts Merge, Similar String Groups                           │
+│    Trick: Create virtual "property" nodes that real nodes connect through    │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ ⚠️  COMMON MISTAKES & HOW TO AVOID THEM                                     │
+│ ⚠️  COMMON MISTAKES & HOW TO AVOID THEM                                      │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ MISTAKE 1: Forgetting to use FIND() before comparing                        │
-│   WRONG: if(parent[a] == parent[b])  → Only checks DIRECT parent          │
-│   RIGHT: if(find(a) == find(b))      → Follows to ROOT                    │
+│ MISTAKE 1: Forgetting to use FIND() before comparing                         │
+│   WRONG: if(parent[a] == parent[b])  → Only checks DIRECT parent             │
+│   RIGHT: if(find(a) == find(b))      → Follows to ROOT                       │
 │                                                                              │
-│ MISTAKE 2: Union without finding roots first                                │
-│   WRONG: parent[a] = b;                                                    │
-│   RIGHT: parent[find(a)] = find(b);                                        │
+│ MISTAKE 2: Union without finding roots first                                 │
+│   WRONG: parent[a] = b;                                                      │
+│   RIGHT: parent[find(a)] = find(b);                                          │
 │                                                                              │
-│ MISTAKE 3: Not handling "already same component"                            │
-│   When union(a,b) but they're already connected → skip!                    │
-│   If you don't check, you might decrement component count twice.           │
+│ MISTAKE 3: Not handling "already same component"                             │
+│   When union(a,b) but they're already connected → skip!                      │
+│   If you don't check, you might decrement component count twice.             │
 │                                                                              │
-│ MISTAKE 4: Using path compression WITH rollback                             │
-│   Path compression changes parent of intermediate nodes.                    │
-│   If you need rollback, use union by rank ONLY (no path compression).      │
+│ MISTAKE 4: Using path compression WITH rollback                              │
+│   Path compression changes parent of intermediate nodes.                     │
+│   If you need rollback, use union by rank ONLY (no path compression).        │
 │                                                                              │
-│ MISTAKE 5: Off-by-one in grid mapping                                       │
-│   Grid (r,c) in m×n grid: index = r * n + c (NOT r * m + c!)              │
-│   Always double-check: n = number of COLUMNS.                              │
+│ MISTAKE 5: Off-by-one in grid mapping                                        │
+│   Grid (r,c) in m×n grid: index = r * n + c (NOT r * m + c!)                 │
+│   Always double-check: n = number of COLUMNS.                                │
 │                                                                              │
-│ MISTAKE 6: Applying UF to directed graphs                                   │
-│   Union-Find only works for UNDIRECTED connectivity.                        │
-│   For directed: use Tarjan's SCC or Kosaraju's algorithm.                  │
+│ MISTAKE 6: Applying UF to directed graphs                                    │
+│   Union-Find only works for UNDIRECTED connectivity.                         │
+│   For directed: use Tarjan's SCC or Kosaraju's algorithm.                    │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -307,42 +307,42 @@ class UnionFind {
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │ 1. "WHY NOT JUST USE BFS/DFS?"                                               │
-│    BFS/DFS: O(V+E) per query. For 10⁶ queries → way too slow.             │
-│    UF: amortized O(1). But UF can't find actual paths — different tools.   │
+│    BFS/DFS: O(V+E) per query. For 10⁶ queries → way too slow.                │
+│    UF: amortized O(1). But UF can't find actual paths — different tools.     │
 │                                                                              │
-│ 2. "PATH COMPRESSION IS CONFUSING"                                          │
-│    Think of it as: "After asking 'who's the family leader?',               │
-│    I just write the leader's name on everyone I visited."                   │
-│    One line: parent[x] = find(parent[x])  ← that's it!                    │
+│ 2. "PATH COMPRESSION IS CONFUSING"                                           │
+│    Think of it as: "After asking 'who's the family leader?',                 │
+│    I just write the leader's name on everyone I visited."                    │
+│    One line: parent[x] = find(parent[x])  ← that's it!                       │
 │                                                                              │
-│ 3. "RANK vs SIZE — WHICH TO USE?"                                           │
-│    Rank = tree height (doesn't change with path compression)               │
-│    Size = # of nodes in component (useful when you NEED component sizes)   │
-│    Both give same O(α(n)) guarantee. Use size when the problem asks for it.│
+│ 3. "RANK vs SIZE — WHICH TO USE?"                                            │
+│    Rank = tree height (doesn't change with path compression)                 │
+│    Size = # of nodes in component (useful when you NEED component sizes)     │
+│    Both give same O(α(n)) guarantee. Use size when the problem asks for it.  │
 │                                                                              │
 │ 4. "WEIGHTED UNION-FIND IS HARD"                                             │
-│    Example: a/b=2, b/c=3. What is a/c?                                    │
-│    Trick: Store weight[x] = ratio from x to parent.                        │
-│    Find compresses AND multiplies: weight[x] *= weight[parent[x]]          │
-│    Practice "Evaluate Division" (LC 399) until this clicks.                │
+│    Example: a/b=2, b/c=3. What is a/c?                                       │
+│    Trick: Store weight[x] = ratio from x to parent.                          │
+│    Find compresses AND multiplies: weight[x] *= weight[parent[x]]            │
+│    Practice "Evaluate Division" (LC 399) until this clicks.                  │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ ⭐ EXPECTED OUTPUTS OF MASTERING UNION-FIND ⭐                                │
+│ ⭐ EXPECTED OUTPUTS OF MASTERING UNION-FIND ⭐                                 │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ ✅ Can write full UF (path compression + rank) from memory in 2 minutes    │
-│ ✅ Instantly recognize "dynamic connectivity" → Union-Find                  │
-│ ✅ Know when BFS is better (need paths) vs UF (just connectivity)          │
-│ ✅ Handle grid-based UF (islands, regions)                                  │
-│ ✅ Implement weighted UF for ratio/equation problems                       │
-│ ✅ Know the reverse-deletion trick for "remove edges" problems             │
-│ ✅ Explain WHY α(n) ≤ 4 for all practical purposes                        │
+│ ✅ Can write full UF (path compression + rank) from memory in 2 minutes       │
+│ ✅ Instantly recognize "dynamic connectivity" → Union-Find                    │
+│ ✅ Know when BFS is better (need paths) vs UF (just connectivity)             │
+│ ✅ Handle grid-based UF (islands, regions)                                    │
+│ ✅ Implement weighted UF for ratio/equation problems                          │
+│ ✅ Know the reverse-deletion trick for "remove edges" problems                │
+│ ✅ Explain WHY α(n) ≤ 4 for all practical purposes                            │
 │                                                                              │
 │ THE TRANSFORMATION:                                                          │
-│ FROM: "I'll BFS every time I need connectivity"                             │
-│   TO: "This has dynamic merging — I'll use UF with path compression         │
-│        and union by rank for O(α(n)) per operation."                        │
+│ FROM: "I'll BFS every time I need connectivity"                              │
+│   TO: "This has dynamic merging — I'll use UF with path compression          │
+│        and union by rank for O(α(n)) per operation."                         │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -362,13 +362,13 @@ class UnionFind {
 ╠═══════════════════════════════════════════════════════════════╣
 ║                                                               ║
 ║  "Track which elements belong to the same group,              ║
-║   supporting UNION (merge groups) and FIND (check group)."   ║
+║   supporting UNION (merge groups) and FIND (check group)."    ║
 ║                                                               ║
 ║  Time Complexity with optimizations:                          ║
-║  • Find: O(α(n)) ≈ O(1) amortized                            ║
-║  • Union: O(α(n)) ≈ O(1) amortized                           ║
+║  • Find: O(α(n)) ≈ O(1) amortized                             ║
+║  • Union: O(α(n)) ≈ O(1) amortized                            ║
 ║                                                               ║
-║  α(n) = Inverse Ackermann function, grows EXTREMELY slowly   ║
+║  α(n) = Inverse Ackermann function, grows EXTREMELY slowly    ║
 ║  For all practical n, α(n) ≤ 4                                ║
 ║                                                               ║
 ╚═══════════════════════════════════════════════════════════════╝
@@ -409,16 +409,16 @@ Now: find(1) → 0, find(3) → 0
 │              THE TWO OPERATIONS                                 │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  1. FIND(x)                                                    │
-│     • Returns the "representative" (root) of x's group         │
-│     • If find(a) == find(b), then a and b are connected        │
+│  1. FIND(x)                                                     │
+│     • Returns the "representative" (root) of x's group          │
+│     • If find(a) == find(b), then a and b are connected         │
 │                                                                 │
-│  2. UNION(x, y)                                                │
-│     • Merges the groups containing x and y                     │
-│     • After union, find(x) == find(y)                          │
+│  2. UNION(x, y)                                                 │
+│     • Merges the groups containing x and y                      │
+│     • After union, find(x) == find(y)                           │
 │                                                                 │
-│  Helper: CONNECTED(x, y)                                       │
-│     • Returns find(x) == find(y)                               │
+│  Helper: CONNECTED(x, y)                                        │
+│     • Returns find(x) == find(y)                                │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -497,10 +497,10 @@ This is why we need optimizations.
 │              PATH COMPRESSION                                   │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  Idea: When we find the root, make all nodes on the path       │
-│        point DIRECTLY to the root.                             │
+│  Idea: When we find the root, make all nodes on the path        │
+│        point DIRECTLY to the root.                              │
 │                                                                 │
-│  Before find(0):          After find(0):                       │
+│  Before find(0):          After find(0):                        │
 │                                                                 │
 │       4                        4                                │
 │       |                      / | \                              │
@@ -512,7 +512,7 @@ This is why we need optimizations.
 │       |                                                         │
 │       0                                                         │
 │                                                                 │
-│  Next find(0) is O(1)!                                         │
+│  Next find(0) is O(1)!                                          │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -1240,27 +1240,27 @@ class UnionFindWithUndo {
 │              UNION-FIND PROBLEM TYPES                           │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  CONNECTED COMPONENTS:                                         │
-│  • Number of Connected Components                              │
+│  CONNECTED COMPONENTS:                                          │
+│  • Number of Connected Components                               │
 │  • Number of Provinces                                          │
 │  • Making a Large Island                                        │
 │                                                                 │
-│  CYCLE DETECTION:                                              │
-│  • Redundant Connection I/II                                   │
-│  • Graph Valid Tree                                            │
+│  CYCLE DETECTION:                                               │
+│  • Redundant Connection I/II                                    │
+│  • Graph Valid Tree                                             │
 │                                                                 │
-│  DYNAMIC CONNECTIVITY:                                         │
-│  • Number of Islands II                                        │
-│  • Accounts Merge                                              │
-│  • Longest Consecutive Sequence                                │
+│  DYNAMIC CONNECTIVITY:                                          │
+│  • Number of Islands II                                         │
+│  • Accounts Merge                                               │
+│  • Longest Consecutive Sequence                                 │
 │                                                                 │
-│  MST/GRAPH OPTIMIZATION:                                       │
-│  • Minimum Cost to Connect All Points                          │
-│  • Connecting Cities With Minimum Cost                         │
+│  MST/GRAPH OPTIMIZATION:                                        │
+│  • Minimum Cost to Connect All Points                           │
+│  • Connecting Cities With Minimum Cost                          │
 │                                                                 │
-│  WEIGHTED/RATIO PROBLEMS:                                      │
-│  • Evaluate Division                                           │
-│  • Smallest String With Swaps                                  │
+│  WEIGHTED/RATIO PROBLEMS:                                       │
+│  • Evaluate Division                                            │
+│  • Smallest String With Swaps                                   │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -1472,25 +1472,25 @@ public int largestIsland(int[][] grid) {
 │              UNION-FIND vs OTHER APPROACHES                     │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  USE UNION-FIND WHEN:                                          │
-│  • Need to merge groups dynamically                            │
-│  • Need to query if elements are in same group                 │
-│  • Process edges to build connected components                 │
-│  • Need MST with Kruskal's algorithm                           │
+│  USE UNION-FIND WHEN:                                           │
+│  • Need to merge groups dynamically                             │
+│  • Need to query if elements are in same group                  │
+│  • Process edges to build connected components                  │
+│  • Need MST with Kruskal's algorithm                            │
 │                                                                 │
-│  USE DFS/BFS INSTEAD WHEN:                                     │
-│  • Need to find actual path between nodes                      │
-│  • Need to process all nodes in component                      │
-│  • Graph is static (not changing)                              │
-│  • Need shortest path                                          │
+│  USE DFS/BFS INSTEAD WHEN:                                      │
+│  • Need to find actual path between nodes                       │
+│  • Need to process all nodes in component                       │
+│  • Graph is static (not changing)                               │
+│  • Need shortest path                                           │
 │                                                                 │
 │  COMPARISON:                                                    │
 │                                                                 │
-│  Operation          Union-Find    DFS/BFS                      │
-│  ─────────────────────────────────────────                     │
-│  Query connected    O(α(n)) ≈ O(1)   O(V+E)                   │
-│  Add edge           O(α(n)) ≈ O(1)   O(1)                     │
-│  Build components   O(E·α(n))         O(V+E)                   │
+│  Operation          Union-Find    DFS/BFS                       │
+│  ─────────────────────────────────────────                      │
+│  Query connected    O(α(n)) ≈ O(1)   O(V+E)                     │
+│  Add edge           O(α(n)) ≈ O(1)   O(1)                       │
+│  Build components   O(E·α(n))         O(V+E)                    │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -1536,18 +1536,18 @@ class UnionFind {
 │              UNION-FIND COMPLEXITIES                            │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  OPERATION        NAIVE      PATH COMP   RANK    BOTH          │
+│  OPERATION        NAIVE      PATH COMP   RANK    BOTH           │
 │  ─────────────────────────────────────────────────────────────  │
-│  Find             O(n)       O(log n)*   O(log n) O(α(n))      │
-│  Union            O(n)       O(log n)*   O(log n) O(α(n))      │
-│  Build (m ops)    O(mn)      O(m log n)  O(m log n) O(m·α(n)) │
+│  Find             O(n)       O(log n)*   O(log n) O(α(n))       │
+│  Union            O(n)       O(log n)*   O(log n) O(α(n))       │
+│  Build (m ops)    O(mn)      O(m log n)  O(m log n) O(m·α(n))   │
 │                                                                 │
 │  * Amortized                                                    │
 │                                                                 │
-│  Space: O(n) for parent and rank arrays                        │
+│  Space: O(n) for parent and rank arrays                         │
 │                                                                 │
-│  α(n) = Inverse Ackermann, practically O(1):                   │
-│  α(10^80) = 4  (# of atoms in universe!)                       │
+│  α(n) = Inverse Ackermann, practically O(1):                    │
+│  α(10^80) = 4  (# of atoms in universe!)                        │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -1562,27 +1562,27 @@ class UnionFind {
 ╠═══════════════════════════════════════════════════════════════╣
 ║                                                               ║
 ║  1. CORE OPERATIONS                                           ║
-║     • find(x): Get representative of x's group               ║
-║     • union(x,y): Merge groups of x and y                    ║
-║     • connected(x,y): Check if same group                    ║
+║     • find(x): Get representative of x's group                ║
+║     • union(x,y): Merge groups of x and y                     ║
+║     • connected(x,y): Check if same group                     ║
 ║                                                               ║
-║  2. OPTIMIZATIONS (ALWAYS USE BOTH!)                         ║
-║     • Path Compression: On find, make nodes point to root    ║
-║     • Union by Rank/Size: Attach smaller tree to larger      ║
+║  2. OPTIMIZATIONS (ALWAYS USE BOTH!)                          ║
+║     • Path Compression: On find, make nodes point to root     ║
+║     • Union by Rank/Size: Attach smaller tree to larger       ║
 ║                                                               ║
 ║  3. COMMON PATTERNS                                           ║
-║     • Count components: Track count, decrement on union      ║
-║     • Detect cycles: union() returns false                   ║
-║     • MST: Kruskal's algorithm with sorted edges             ║
+║     • Count components: Track count, decrement on union       ║
+║     • Detect cycles: union() returns false                    ║
+║     • MST: Kruskal's algorithm with sorted edges              ║
 ║                                                               ║
 ║  4. PROBLEM RECOGNITION                                       ║
-║     • "Group", "Connect", "Component"                        ║
-║     • "Same group/set", "Merge", "Union"                     ║
-║     • Dynamic connectivity queries                           ║
+║     • "Group", "Connect", "Component"                         ║
+║     • "Same group/set", "Merge", "Union"                      ║
+║     • Dynamic connectivity queries                            ║
 ║                                                               ║
 ║  5. EDGE CASES                                                ║
-║     • Self-loops (union(x,x) should be no-op)               ║
-║     • Already connected elements                             ║
+║     • Self-loops (union(x,x) should be no-op)                 ║
+║     • Already connected elements                              ║
 ║     • Empty graph                                             ║
 ║                                                               ║
 ╚═══════════════════════════════════════════════════════════════╝

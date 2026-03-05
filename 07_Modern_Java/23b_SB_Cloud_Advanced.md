@@ -211,37 +211,37 @@ resource "azurerm_key_vault" "main" {
 ### GCP Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                     GOOGLE CLOUD PLATFORM                       │
-├─────────────────────────────────────────────────────────────────┤
+┌──────────────────────────────────────────────────────────────────┐
+│                     GOOGLE CLOUD PLATFORM                        │
+├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │              Cloud CDN + Cloud Armor                     │   │
-│  └───────────────────────────┬─────────────────────────────┘   │
-│                              │                                  │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │              Global HTTP(S) Load Balancer                │   │
-│  └───────────────────────────┬─────────────────────────────┘   │
-│                              │                                  │
-│  ┌───────────────────────────┴───────────────────────────┐     │
-│  │                    GKE Autopilot                       │     │
-│  │  ┌──────────────────┐    ┌──────────────────┐         │     │
-│  │  │   Zone A         │    │   Zone B         │         │     │
-│  │  │  ┌────┐ ┌────┐   │    │  ┌────┐ ┌────┐   │         │     │
-│  │  │  │Pod │ │Pod │   │    │  │Pod │ │Pod │   │         │     │
-│  │  │  └────┘ └────┘   │    │  └────┘ └────┘   │         │     │
-│  │  └──────────────────┘    └──────────────────┘         │     │
-│  └───────────────────────────────────────────────────────┘     │
-│                              │                                  │
-│  ┌───────────────────────────┴───────────────────────────┐     │
-│  │              Managed Services                          │     │
-│  │  ┌────────┐  ┌─────────┐  ┌───────┐  ┌────────────┐  │     │
-│  │  │Cloud SQL│  │MemoryStore│  │ GCS  │  │Secret Mgr │  │     │
-│  │  │(Postgres)│ │ (Redis) │  │      │  │            │  │     │
-│  │  └────────┘  └─────────┘  └───────┘  └────────────┘  │     │
-│  └───────────────────────────────────────────────────────┘     │
+│  ┌─────────────────────────────────────────────────────────┐     │
+│  │              Cloud CDN + Cloud Armor                     │    │
+│  └───────────────────────────┬─────────────────────────────┘     │
+│                              │                                   │
+│  ┌─────────────────────────────────────────────────────────┐     │
+│  │              Global HTTP(S) Load Balancer                │    │
+│  └───────────────────────────┬─────────────────────────────┘     │
+│                              │                                   │
+│  ┌───────────────────────────┴───────────────────────────┐       │
+│  │                    GKE Autopilot                       │      │
+│  │  ┌──────────────────┐    ┌──────────────────┐         │       │
+│  │  │   Zone A         │    │   Zone B         │         │       │
+│  │  │  ┌────┐ ┌────┐   │    │  ┌────┐ ┌────┐   │         │       │
+│  │  │  │Pod │ │Pod │   │    │  │Pod │ │Pod │   │         │       │
+│  │  │  └────┘ └────┘   │    │  └────┘ └────┘   │         │       │
+│  │  └──────────────────┘    └──────────────────┘         │       │
+│  └───────────────────────────────────────────────────────┘       │
+│                              │                                   │
+│  ┌───────────────────────────┴───────────────────────────┐       │
+│  │              Managed Services                          │      │
+│  │  ┌────────┐  ┌─────────┐  ┌───────┐  ┌────────────┐  │        │
+│  │  │Cloud SQL│  │MemoryStore│  │ GCS  │  │Secret Mgr │  │       │
+│  │  │(Postgres)│ │ (Redis) │  │      │  │            │  │        │
+│  │  └────────┘  └─────────┘  └───────┘  └────────────┘  │        │
+│  └───────────────────────────────────────────────────────┘       │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ### GCP SDK Integration
@@ -887,32 +887,32 @@ management:
 ### Best Practices
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                   COST OPTIMIZATION STRATEGIES                  │
-├─────────────────────────────────────────────────────────────────┤
+┌──────────────────────────────────────────────────────────────────┐
+│                   COST OPTIMIZATION STRATEGIES                   │
+├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
-│  COMPUTE                                                        │
-│  ✅ Right-size instances based on actual usage                  │
-│  ✅ Use Spot/Preemptible instances for non-critical workloads   │
-│  ✅ Implement auto-scaling with proper thresholds               │
-│  ✅ Schedule non-prod environments to shut down                 │
+│  COMPUTE                                                         │
+│  ✅ Right-size instances based on actual usage                    │
+│  ✅ Use Spot/Preemptible instances for non-critical workloads     │
+│  ✅ Implement auto-scaling with proper thresholds                 │
+│  ✅ Schedule non-prod environments to shut down                   │
 │                                                                  │
-│  STORAGE                                                        │
-│  ✅ Use appropriate storage tiers (hot/cold/archive)            │
-│  ✅ Implement lifecycle policies for old data                   │
-│  ✅ Compress data before storing                                │
+│  STORAGE                                                         │
+│  ✅ Use appropriate storage tiers (hot/cold/archive)              │
+│  ✅ Implement lifecycle policies for old data                     │
+│  ✅ Compress data before storing                                  │
 │                                                                  │
-│  DATABASE                                                       │
-│  ✅ Use reserved instances for production                       │
-│  ✅ Implement read replicas for read-heavy workloads            │
-│  ✅ Use serverless options for variable workloads               │
+│  DATABASE                                                        │
+│  ✅ Use reserved instances for production                         │
+│  ✅ Implement read replicas for read-heavy workloads              │
+│  ✅ Use serverless options for variable workloads                 │
 │                                                                  │
-│  NETWORK                                                        │
-│  ✅ Use CDN for static content                                  │
-│  ✅ Minimize cross-region data transfer                         │
-│  ✅ Use private endpoints where possible                        │
+│  NETWORK                                                         │
+│  ✅ Use CDN for static content                                    │
+│  ✅ Minimize cross-region data transfer                           │
+│  ✅ Use private endpoints where possible                          │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ### Kubernetes Cost Optimization

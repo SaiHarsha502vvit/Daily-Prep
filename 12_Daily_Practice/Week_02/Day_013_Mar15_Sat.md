@@ -40,25 +40,25 @@
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
 │  BEAN SCOPES — Controls object lifecycle                            │
-│                                                                      │
-│  SINGLETON (default):                                                │
+│                                                                     │
+│  SINGLETON (default):                                               │
 │    ONE instance per application context. Shared by all.             │
-│    @Scope("singleton") or just @Service / @Component               │
-│    USE: Stateless services, repositories, controllers              │
-│                                                                      │
-│  PROTOTYPE:                                                          │
+│    @Scope("singleton") or just @Service / @Component                │
+│    USE: Stateless services, repositories, controllers               │
+│                                                                     │
+│  PROTOTYPE:                                                         │
 │    NEW instance every time it's requested.                          │
-│    @Scope("prototype")                                               │
+│    @Scope("prototype")                                              │
 │    USE: Stateful objects (shopping cart, form builder)              │
-│                                                                      │
-│  REQUEST (Web only):                                                 │
+│                                                                     │
+│  REQUEST (Web only):                                                │
 │    One per HTTP request. Destroyed after response sent.             │
-│    @Scope("request")                                                 │
+│    @Scope("request")                                                │
 │    USE: Request-specific data (user context)                        │
-│                                                                      │
-│  SESSION (Web only):                                                 │
+│                                                                     │
+│  SESSION (Web only):                                                │
 │    One per user session. Lives until session expires.               │
-│    @Scope("session")                                                 │
+│    @Scope("session")                                                │
 │    USE: User preferences, shopping cart                             │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -201,11 +201,11 @@ public class ProductController {
 │  SPRING DI RULES:                                                   │
 │  1. Always use constructor injection                                │
 │  2. Make fields final                                               │
-│  3. One constructor = @Autowired optional                          │
-│  4. Never use new XxxService() — let Spring manage it              │
-│  5. @Service for business logic, @Repository for data access       │
+│  3. One constructor = @Autowired optional                           │
+│  4. Never use new XxxService() — let Spring manage it               │
+│  5. @Service for business logic, @Repository for data access        │
 │  6. @Component for generic beans                                    │
-│  7. Singleton scope unless you have a reason for prototype         │
+│  7. Singleton scope unless you have a reason for prototype          │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 

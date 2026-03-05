@@ -11,31 +11,31 @@ Distributed tracing tracks requests across multiple services, helping debug and 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHY: Why Distributed Tracing?                                                  │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Debug microservices: "Which service caused the 500 error?"                 │
-│  • Performance bottlenecks: Find the slow service in the chain                │
-│  • Dependency mapping: Visualize how services communicate                     │
-│  • Production incidents: Trace exact path of failed requests                  │
-│  • SLA monitoring: Measure end-to-end latency across services                 │
+│  • Debug microservices: "Which service caused the 500 error?"                   │
+│  • Performance bottlenecks: Find the slow service in the chain                  │
+│  • Dependency mapping: Visualize how services communicate                       │
+│  • Production incidents: Trace exact path of failed requests                    │
+│  • SLA monitoring: Measure end-to-end latency across services                   │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  HOW: How Does Tracing Work?                                                    │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Trace ID: Unique ID for entire request journey across services             │
-│  • Span ID: Unique ID for each unit of work (DB call, API call)              │
-│  • Propagation: Headers carry trace context between services                  │
-│  • Collection: Spans sent to collector (Zipkin/Jaeger) for visualization      │
-│  • Sampling: Not all traces collected (configurable rate)                     │
+│  • Trace ID: Unique ID for entire request journey across services               │
+│  • Span ID: Unique ID for each unit of work (DB call, API call)                 │
+│  • Propagation: Headers carry trace context between services                    │
+│  • Collection: Spans sent to collector (Zipkin/Jaeger) for visualization        │
+│  • Sampling: Not all traces collected (configurable rate)                       │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHEN: When to Use Distributed Tracing?                                         │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Microservices: 3+ services communicating                                    │
-│  • Debugging: Request fails somewhere in the chain                            │
-│  • Performance: Need to find bottleneck services                              │
-│  • Production: Critical for observability at scale                            │
-│  • NOT needed: Single monolith, simple 2-service architecture                 │
+│  • Microservices: 3+ services communicating                                     │
+│  • Debugging: Request fails somewhere in the chain                              │
+│  • Performance: Need to find bottleneck services                                │
+│  • Production: Critical for observability at scale                              │
+│  • NOT needed: Single monolith, simple 2-service architecture                   │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -43,8 +43,8 @@ Distributed tracing tracks requests across multiple services, helping debug and 
 ├─────────────────────────────────────────────────────────────────────────────────┤
 │  SPRING BOOT 2.x: Spring Cloud Sleuth + Zipkin                                  │
 │  SPRING BOOT 3.x: Micrometer Tracing (Sleuth deprecated)                        │
-│  COLLECTORS:      Zipkin (simple), Jaeger (advanced), AWS X-Ray (cloud)        │
-│  METRICS:         Micrometer + Prometheus/Grafana for full observability       │
+│  COLLECTORS:      Zipkin (simple), Jaeger (advanced), AWS X-Ray (cloud)         │
+│  METRICS:         Micrometer + Prometheus/Grafana for full observability        │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -55,17 +55,17 @@ Distributed tracing tracks requests across multiple services, helping debug and 
 ### Core Concepts
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                         TRACE                                    │
+│                         TRACE                                   │
 │  Trace ID: abc123 (unique per request journey)                  │
-│                                                                  │
-│  ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐  │
-│  │  SPAN 1  │───▶│  SPAN 2  │───▶│  SPAN 3  │───▶│  SPAN 4  │  │
-│  │ Gateway  │    │ Service A│    │ Service B│    │ Database │  │
-│  │ span-001 │    │ span-002 │    │ span-003 │    │ span-004 │  │
-│  └──────────┘    └──────────┘    └──────────┘    └──────────┘  │
-│                                                                  │
-│  Parent-Child Relationships:                                     │
-│  span-001 (root) → span-002 → span-003 → span-004              │
+│                                                                 │
+│  ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐   │
+│  │  SPAN 1  │───▶│  SPAN 2  │───▶│  SPAN 3  │───▶│  SPAN 4  │   │
+│  │ Gateway  │    │ Service A│    │ Service B│    │ Database │   │
+│  │ span-001 │    │ span-002 │    │ span-003 │    │ span-004 │   │
+│  └──────────┘    └──────────┘    └──────────┘    └──────────┘   │
+│                                                                 │
+│  Parent-Child Relationships:                                    │
+│  span-001 (root) → span-002 → span-003 → span-004               │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1380,7 +1380,7 @@ Common Issues Identified:
 │ ├─ order-service (50ms)                  ✓ OK                  │
 │ │  ├─ inventory-service (20ms)           ✓ OK                  │
 │ │  ├─ payment-service (2.3s)             ⚠ SLOW                │
-│ │  │  └─ external-gateway (2.2s)         🔴 BOTTLENECK         │
+│ │  │  └─ external-gateway (2.2s)         🔴 BOTTLENECK          │
 │ │  └─ notification-service (100ms)       ✓ OK                  │
 └────────────────────────────────────────────────────────────────┘
 ```

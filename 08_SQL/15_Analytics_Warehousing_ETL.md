@@ -302,9 +302,9 @@ ORDER BY MIN(total);
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    DATA WAREHOUSE vs OLTP DATABASE                               │
+│                    DATA WAREHOUSE vs OLTP DATABASE                              │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  OLTP (Online Transaction Processing)    │  OLAP (Online Analytical Processing) │
 │  ─────────────────────────────────────   │  ──────────────────────────────────  │
 │  • Operational database                  │  • Data Warehouse / Data Mart        │
@@ -315,31 +315,31 @@ ORDER BY MIN(total);
 │  • Millisecond response                  │  • Seconds to minutes response       │
 │  • GB to TB                              │  • TB to PB                          │
 │  • MySQL, PostgreSQL, SQL Server         │  • Snowflake, Redshift, BigQuery     │
-│                                                                                  │
-│                                                                                  │
+│                                                                                 │
+│                                                                                 │
 │  DIMENSIONAL MODELING:                                                          │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │                                                                            ││
-│  │            ┌─────────────────┐                                             ││
-│  │            │   dim_product   │                                             ││
-│  │            │   (Dimension)   │                                             ││
-│  │            └────────┬────────┘                                             ││
-│  │                     │                                                      ││
-│  │  ┌─────────────┐    │    ┌─────────────┐                                  ││
-│  │  │ dim_customer│────┼────│  dim_date   │                                  ││
-│  │  │ (Dimension) │    │    │ (Dimension) │                                  ││
-│  │  └─────────────┘    │    └─────────────┘                                  ││
-│  │                     │                                                      ││
-│  │            ┌────────▼────────┐                                             ││
-│  │            │   fact_sales    │ ← Contains measures (amount, qty, etc.)    ││
-│  │            │    (Fact)       │   and foreign keys to dimensions            ││
-│  │            └─────────────────┘                                             ││
-│  │                                                                            ││
-│  │  STAR SCHEMA: Fact table in center, dimensions around it                   ││
-│  │  SNOWFLAKE SCHEMA: Dimensions normalized into sub-dimensions               ││
-│  │                                                                            ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │                                                                            │ │
+│  │            ┌─────────────────┐                                             │ │
+│  │            │   dim_product   │                                             │ │
+│  │            │   (Dimension)   │                                             │ │
+│  │            └────────┬────────┘                                             │ │
+│  │                     │                                                      │ │
+│  │  ┌─────────────┐    │    ┌─────────────┐                                  │  │
+│  │  │ dim_customer│────┼────│  dim_date   │                                  │  │
+│  │  │ (Dimension) │    │    │ (Dimension) │                                  │  │
+│  │  └─────────────┘    │    └─────────────┘                                  │  │
+│  │                     │                                                      │ │
+│  │            ┌────────▼────────┐                                             │ │
+│  │            │   fact_sales    │ ← Contains measures (amount, qty, etc.)    │  │
+│  │            │    (Fact)       │   and foreign keys to dimensions            │ │
+│  │            └─────────────────┘                                             │ │
+│  │                                                                            │ │
+│  │  STAR SCHEMA: Fact table in center, dimensions around it                   │ │
+│  │  SNOWFLAKE SCHEMA: Dimensions normalized into sub-dimensions               │ │
+│  │                                                                            │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 

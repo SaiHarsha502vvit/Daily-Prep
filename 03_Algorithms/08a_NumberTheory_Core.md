@@ -11,15 +11,15 @@
 ```
 ╔══════════════════════════════════════════════════════════════════════════════════╗
 ║  WHY THIS FILE EXISTS                                                            ║
-║                                                                                   ║
-║  GCD, LCM, Primes, Modular Arithmetic → appear in:                              ║
+║                                                                                  ║
+║  GCD, LCM, Primes, Modular Arithmetic → appear in:                               ║
 ║  • 40% of coding interviews (number theory questions)                            ║
 ║  • Encryption systems (RSA uses GCD, primes, modular exponentiation)             ║
 ║  • Database sharding (hash % shard_count needs coprime understanding)            ║
 ║  • Load balancing algorithms                                                     ║
 ║  • Game development (timing, frequencies)                                        ║
 ║  • Pattern programs → builds loop thinking essential for ALL DSA                 ║
-║                                                                                   ║
+║                                                                                  ║
 ║  START DATE: February 10, 2026                                                   ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
@@ -771,17 +771,17 @@ public class ModularArithmetic {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║  WHY PATTERN PROGRAMS?                                                        ║
-║                                                                                ║
-║  "Pattern programs are NOT just for beginners" - Every Senior Dev              ║
-║                                                                                ║
-║  They teach:                                                                   ║
-║  1. Nested loop thinking → Essential for 2D arrays, matrices                   ║
-║  2. Index relationships → The KEY to solving any grid problem                  ║
-║  3. Space management → Teaches precision with boundaries                       ║
-║  4. How to convert visual output to code logic                                 ║
-║                                                                                ║
-║  REAL USE: Table formatting, report generation, ASCII art for CLIs             ║
+║  WHY PATTERN PROGRAMS?                                                       ║
+║                                                                              ║
+║  "Pattern programs are NOT just for beginners" - Every Senior Dev            ║
+║                                                                              ║
+║  They teach:                                                                 ║
+║  1. Nested loop thinking → Essential for 2D arrays, matrices                 ║
+║  2. Index relationships → The KEY to solving any grid problem                ║
+║  3. Space management → Teaches precision with boundaries                     ║
+║  4. How to convert visual output to code logic                               ║
+║                                                                              ║
+║  REAL USE: Table formatting, report generation, ASCII art for CLIs           ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 

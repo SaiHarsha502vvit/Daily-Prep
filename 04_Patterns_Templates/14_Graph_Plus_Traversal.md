@@ -181,13 +181,13 @@ EDGE CASES:
 ┌──────────────────────────────────┬──────────────────────────────────────┐
 │ Edge Case                        │ Handling                             │
 ├──────────────────────────────────┼──────────────────────────────────────┤
-│ Disconnected graph               │ BFS/DFS may miss components — loop! │
-│ Self-loop                        │ Cycle detection catches this        │
-│ Empty graph (no edges)           │ All nodes are valid, indegree=0    │
-│ Grid with all 0s                 │ 0 islands                           │
-│ Grid with all 1s                 │ 1 island                            │
-│ Single node, no edges            │ Trivially works                    │
-│ Negative weights (Dijkstra)      │ Dijkstra FAILS! Use Bellman-Ford   │
+│ Disconnected graph               │ BFS/DFS may miss components — loop!  │
+│ Self-loop                        │ Cycle detection catches this         │
+│ Empty graph (no edges)           │ All nodes are valid, indegree=0      │
+│ Grid with all 0s                 │ 0 islands                            │
+│ Grid with all 1s                 │ 1 island                             │
+│ Single node, no edges            │ Trivially works                      │
+│ Negative weights (Dijkstra)      │ Dijkstra FAILS! Use Bellman-Ford     │
 └──────────────────────────────────┴──────────────────────────────────────┘
 
 COMMON MISTAKES:

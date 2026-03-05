@@ -10,19 +10,19 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                    WHY HASHMAP? — THE O(1) LOOKUP ENGINE                    ║
+║                    WHY HASHMAP? — THE O(1) LOOKUP ENGINE                     ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
 ║                                                                              ║
-║  WHY: HashMap reduces "search/lookup" from O(n) to O(1) average.            ║
+║  WHY: HashMap reduces "search/lookup" from O(n) to O(1) average.             ║
 ║  The most frequently used data structure in interviews — appears in ~40%     ║
 ║  of solutions as a helper structure. If you're stuck, ask: "Would a          ║
 ║  HashMap give me O(1) lookup for something I'm repeatedly searching?"        ║
 ║                                                                              ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
 ║                                                                              ║
-║  FORMAL DEFINITION (MIT 6.006 / KTH DD2350):                                ║
+║  FORMAL DEFINITION (MIT 6.006 / KTH DD2350):                                 ║
 ║                                                                              ║
-║  A hash function h: U → {0, 1, ..., m-1} maps a universe U of keys          ║
+║  A hash function h: U → {0, 1, ..., m-1} maps a universe U of keys           ║
 ║  to m slots (buckets).                                                       ║
 ║                                                                              ║
 ║  Under Simple Uniform Hashing Assumption (SUHA):                             ║
@@ -31,13 +31,13 @@
 ║    n = number of stored elements, m = number of slots                        ║
 ║                                                                              ║
 ║  Collision resolution:                                                       ║
-║    • Chaining: each slot holds a linked list → E[search] = O(1 + α)         ║
+║    • Chaining: each slot holds a linked list → E[search] = O(1 + α)          ║
 ║    • Open addressing (linear/quadratic probing, double hashing)              ║
-║    • Cuckoo hashing: worst-case O(1) lookup, amortized O(1) insert          ║
+║    • Cuckoo hashing: worst-case O(1) lookup, amortized O(1) insert           ║
 ║                                                                              ║
 ║  Amortized analysis of dynamic resizing:                                     ║
 ║    When α exceeds threshold, double table size and rehash all elements.      ║
-║    By aggregate method: n insertions cost O(n) + O(n/2) + O(n/4) + ...      ║
+║    By aggregate method: n insertions cost O(n) + O(n/2) + O(n/4) + ...       ║
 ║    = O(2n) total → O(1) amortized per insertion.                             ║
 ║                                                                              ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
@@ -52,7 +52,7 @@
 ║                                                                              ║
 ║  3. PREFIX SUM + HASHMAP: "How many subarrays sum to K?"                     ║
 ║     → Store prefix sum frequencies. If prefixSum[j] - K was seen before,     ║
-║       a valid subarray exists. THE most important medium-level pattern.       ║
+║       a valid subarray exists. THE most important medium-level pattern.      ║
 ║                                                                              ║
 ║  4. GROUPING: Group elements by some computed property                       ║
 ║     → Anagrams by sorted key, numbers by remainder, points by slope.         ║
@@ -64,13 +64,13 @@
 ╠══════════════════════════════════════════════════════════════════════════════╣
 ║                                                                              ║
 ║  CRITICAL INSIGHT:                                                           ║
-║  "If brute force is O(n²) because of nested search, HashMap makes the       ║
-║   inner search O(1) → total O(n)."                                          ║
+║  "If brute force is O(n²) because of nested search, HashMap makes the        ║
+║   inner search O(1) → total O(n)."                                           ║
 ║                                                                              ║
-║  Brute force Two-Sum: for each i, for each j → O(n²)                        ║
+║  Brute force Two-Sum: for each i, for each j → O(n²)                         ║
 ║  HashMap Two-Sum:     for each i, lookup complement → O(n)                   ║
 ║                                                                              ║
-║  This is THE fundamental optimization principle for HashMap problems.         ║
+║  This is THE fundamental optimization principle for HashMap problems.        ║
 ║                                                                              ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
 ║                                                                              ║
@@ -78,7 +78,7 @@
 ║                                                                              ║
 ║  Sliding window assumes: expanding window increases sum, shrinking           ║
 ║  decreases it (monotonicity). With negative numbers, this breaks —           ║
-║  adding an element can decrease the sum. Therefore:                           ║
+║  adding an element can decrease the sum. Therefore:                          ║
 ║    • Subarray sum = K with positives only → sliding window O(n)              ║
 ║    • Subarray sum = K with negatives → prefix sum + HashMap O(n)             ║
 ║                                                                              ║
@@ -87,7 +87,7 @@
 ║  JAVA HashMap INTERNALS:                                                     ║
 ║                                                                              ║
 ║  • Bucket array of Node<K,V> (linked list nodes)                             ║
-║  • When chain length > 8 AND table size ≥ 64 → treeify to Red-Black Tree    ║
+║  • When chain length > 8 AND table size ≥ 64 → treeify to Red-Black Tree     ║
 ║  • When chain length < 6 → untreeify back to linked list                     ║
 ║  • Default capacity: 16, load factor: 0.75                                   ║
 ║  • Rehash: doubles capacity when size > capacity × loadFactor                ║
@@ -100,12 +100,12 @@
 ║                                                                              ║
 ║  1. hashCode/equals CONTRACT: If a.equals(b), then                           ║
 ║     a.hashCode() == b.hashCode(). Override BOTH or NEITHER.                  ║
-║     Violating this → HashMap silently loses entries.                          ║
+║     Violating this → HashMap silently loses entries.                         ║
 ║                                                                              ║
 ║  2. ConcurrentModificationException: Never modify a HashMap while            ║
 ║     iterating with for-each. Use Iterator.remove() or collect keys first.    ║
 ║                                                                              ║
-║  3. null key/value: HashMap allows ONE null key and multiple null values.     ║
+║  3. null key/value: HashMap allows ONE null key and multiple null values.    ║
 ║     Hashtable/ConcurrentHashMap do NOT allow null. NPE surprises!            ║
 ║                                                                              ║
 ║  4. Integer cache: Integer.valueOf caches -128 to 127. Outside this range,   ║
@@ -116,8 +116,8 @@
 ║     • putIfAbsent(key, val): inserts only if key absent                      ║
 ║     • merge(key, 1, Integer::sum): best for frequency counting               ║
 ║                                                                              ║
-║  6. HashMap vs TreeMap: Need ordering? Use TreeMap O(log n).                  ║
-║     Need O(1)? Use HashMap. Need insertion order? Use LinkedHashMap.          ║
+║  6. HashMap vs TreeMap: Need ordering? Use TreeMap O(log n).                 ║
+║     Need O(1)? Use HashMap. Need insertion order? Use LinkedHashMap.         ║
 ║                                                                              ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
 ║                                                                              ║
@@ -1162,7 +1162,7 @@ APPROACH: DLL + HashMap
 ║ WHEN TO USE WHAT:                                                            ║
 ║  HashMap      → unordered, O(1) average, allows null key                     ║
 ║  TreeMap      → sorted keys, O(log n), NavigableMap (floor/ceiling)          ║
-║  LinkedHashMap→ insertion-order iteration, basis for LRU                      ║
+║  LinkedHashMap→ insertion-order iteration, basis for LRU                     ║
 ║  HashSet      → membership test only (no values)                             ║
 ║  ConcurrentHM → thread-safe, no null keys/values                             ║
 ║                                                                              ║
@@ -1202,7 +1202,7 @@ APPROACH: DLL + HashMap
 ║  □ Can prove O(1) for all operations in both designs                         ║
 ║                                                                              ║
 ║  PATTERN RECOGNITION:                                                        ║
-║  □ "O(n²) brute force with inner search" → HashMap makes it O(n)            ║
+║  □ "O(n²) brute force with inner search" → HashMap makes it O(n)             ║
 ║  □ "Count subarrays with property X" → prefix sum + HashMap                  ║
 ║  □ "Group things by property" → HashMap with computed key                    ║
 ║  □ "Need O(1) membership test" → HashSet                                     ║
@@ -1210,7 +1210,7 @@ APPROACH: DLL + HashMap
 ║                                                                              ║
 ║  EDGE CASES:                                                                 ║
 ║  □ Handle null keys, empty arrays, single-element arrays                     ║
-║  □ Java negative modulo: ((x % k) + k) % k                                  ║
+║  □ Java negative modulo: ((x % k) + k) % k                                   ║
 ║  □ Integer overflow in prefix sums → use long if needed                      ║
 ║  □ Duplicate values in input (distinguish value vs. index)                   ║
 ║                                                                              ║

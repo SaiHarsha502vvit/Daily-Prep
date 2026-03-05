@@ -15,39 +15,39 @@
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHY: Why Database Security Matters?                                            │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • SQL injection is #1 OWASP vulnerability - costs millions yearly             │
-│  • Data breaches destroy companies: reputation, lawsuits, fines               │
-│  • Compliance requirements: GDPR, HIPAA, PCI-DSS mandate security             │
-│  • Your API is only as secure as your data layer                              │
-│  • Audit trails are legally required in many industries                       │
+│  • SQL injection is #1 OWASP vulnerability - costs millions yearly              │
+│  • Data breaches destroy companies: reputation, lawsuits, fines                 │
+│  • Compliance requirements: GDPR, HIPAA, PCI-DSS mandate security               │
+│  • Your API is only as secure as your data layer                                │
+│  • Audit trails are legally required in many industries                         │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  HOW: How to Secure Database Layer?                                             │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Use parameterized queries (NEVER string concatenation)                     │
-│  • Hash passwords with BCrypt/Argon2 (NEVER plain text)                       │
-│  • Encrypt sensitive fields (SSN, credit cards) at rest                       │
-│  • Implement row-level security for multi-tenant apps                         │
-│  • Use connection pooling with encrypted credentials                          │
+│  • Use parameterized queries (NEVER string concatenation)                       │
+│  • Hash passwords with BCrypt/Argon2 (NEVER plain text)                         │
+│  • Encrypt sensitive fields (SSN, credit cards) at rest                         │
+│  • Implement row-level security for multi-tenant apps                           │
+│  • Use connection pooling with encrypted credentials                            │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHEN: When to Apply Security Measures?                                         │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • User management: Any app with authentication                                │
-│  • Row-level security: Multi-tenant, data isolation needed                    │
-│  • Encryption: PII, financial data, health records                            │
-│  • Audit logging: Compliance requirements, debugging security issues          │
-│  • SQL injection prevention: ALWAYS (every app with database)                 │
+│  • User management: Any app with authentication                                 │
+│  • Row-level security: Multi-tenant, data isolation needed                      │
+│  • Encryption: PII, financial data, health records                              │
+│  • Audit logging: Compliance requirements, debugging security issues            │
+│  • SQL injection prevention: ALWAYS (every app with database)                   │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHICH: Which Security Layers to Implement?                                     │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  ESSENTIAL:     Password hashing, SQL injection prevention, RBAC              │
-│  IMPORTANT:     Audit logging, method security, connection encryption         │
-│  ADVANCED:      Field encryption, row security, multi-tenancy isolation       │
+│  ESSENTIAL:     Password hashing, SQL injection prevention, RBAC                │
+│  IMPORTANT:     Audit logging, method security, connection encryption           │
+│  ADVANCED:      Field encryption, row security, multi-tenancy isolation         │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -57,22 +57,22 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│              WHAT THIS PART COVERS                                               │
+│              WHAT THIS PART COVERS                                              │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  1. User Management Entity Design                                               │
-│  2. Role-Based Access Control (RBAC)                                           │
+│  2. Role-Based Access Control (RBAC)                                            │
 │  3. Permission/Authority Management                                             │
-│  4. Password Security (BCrypt, Argon2)                                         │
+│  4. Password Security (BCrypt, Argon2)                                          │
 │  5. Custom UserDetailsService Implementation                                    │
-│  6. Method-Level Security (@PreAuthorize, @Secured)                           │
-│  7. Database Row-Level Security                                                │
-│  8. Audit Logging (Who did what, when)                                         │
+│  6. Method-Level Security (@PreAuthorize, @Secured)                             │
+│  7. Database Row-Level Security                                                 │
+│  8. Audit Logging (Who did what, when)                                          │
 │  9. SQL Injection Prevention                                                    │
 │  10. Encrypting Sensitive Data                                                  │
 │  11. Database Connection Security                                               │
 │  12. Multi-Tenancy Security                                                     │
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -86,30 +86,30 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│              USER-ROLE-PERMISSION MODEL                                          │
+│              USER-ROLE-PERMISSION MODEL                                         │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  ┌─────────────┐     ┌─────────────────┐     ┌─────────────┐                   │
-│  │    USER     │────►│   USER_ROLES    │◄────│    ROLE     │                   │
-│  │             │     │  (Join Table)   │     │             │                   │
-│  │ - id        │     │ - user_id       │     │ - id        │                   │
-│  │ - username  │     │ - role_id       │     │ - name      │                   │
-│  │ - email     │     └─────────────────┘     │ - desc      │                   │
+│                                                                                 │
+│  ┌─────────────┐     ┌─────────────────┐     ┌─────────────┐                    │
+│  │    USER     │────►│   USER_ROLES    │◄────│    ROLE     │                    │
+│  │             │     │  (Join Table)   │     │             │                    │
+│  │ - id        │     │ - user_id       │     │ - id        │                    │
+│  │ - username  │     │ - role_id       │     │ - name      │                    │
+│  │ - email     │     └─────────────────┘     │ - desc      │                    │
 │  │ - password  │                              └─────────────┘                   │
 │  │ - enabled   │                                     │                          │
 │  │ - locked    │                                     │                          │
-│  │ - expired   │     ┌─────────────────┐            │                          │
-│  └─────────────┘     │ ROLE_PERMISSIONS│◄───────────┘                          │
+│  │ - expired   │     ┌─────────────────┐            │                           │
+│  └─────────────┘     │ ROLE_PERMISSIONS│◄───────────┘                           │
 │                      │  (Join Table)   │                                        │
-│                      │ - role_id       │     ┌─────────────┐                   │
-│                      │ - permission_id │────►│ PERMISSION  │                   │
-│                      └─────────────────┘     │             │                   │
-│                                              │ - id        │                   │
-│                                              │ - name      │                   │
-│                                              │ - resource  │                   │
-│                                              │ - action    │                   │
-│                                              └─────────────┘                   │
-│                                                                                  │
+│                      │ - role_id       │     ┌─────────────┐                    │
+│                      │ - permission_id │────►│ PERMISSION  │                    │
+│                      └─────────────────┘     │             │                    │
+│                                              │ - id        │                    │
+│                                              │ - name      │                    │
+│                                              │ - resource  │                    │
+│                                              │ - action    │                    │
+│                                              └─────────────┘                    │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 

@@ -11,39 +11,39 @@
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHY: Why IoC & DI are Foundation of Spring?                                    │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • IoC IS Spring: Without it, there's no automatic wiring                      │
-│  • Testability: Mock dependencies easily for unit testing                     │
-│  • Loose coupling: Change implementations without changing classes            │
-│  • Interview must-know: "Explain @Autowired" asked in every interview         │
-│  • Configuration flexibility: Switch beans via profiles, conditions           │
+│  • IoC IS Spring: Without it, there's no automatic wiring                       │
+│  • Testability: Mock dependencies easily for unit testing                       │
+│  • Loose coupling: Change implementations without changing classes              │
+│  • Interview must-know: "Explain @Autowired" asked in every interview           │
+│  • Configuration flexibility: Switch beans via profiles, conditions             │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  HOW: How DI Works in Spring?                                                   │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • IoC Container: ApplicationContext creates and manages beans                │
-│  • Component Scanning: @Component/@Service/@Repository auto-detected          │
-│  • Constructor Injection: Preferred - immutable, testable                     │
-│  • Field Injection: @Autowired on fields - avoid (hard to test)               │
-│  • @Qualifier/@Primary: Resolve multiple implementations of same type         │
+│  • IoC Container: ApplicationContext creates and manages beans                  │
+│  • Component Scanning: @Component/@Service/@Repository auto-detected            │
+│  • Constructor Injection: Preferred - immutable, testable                       │
+│  • Field Injection: @Autowired on fields - avoid (hard to test)                 │
+│  • @Qualifier/@Primary: Resolve multiple implementations of same type           │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHEN: When to Use Each Bean Scope?                                             │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Singleton (default): Stateless services, repositories - most common        │
-│  • Prototype: Stateful beans, each injection gets new instance                │
-│  • Request: Per HTTP request - user context, request data                     │
-│  • Session: Per user session - shopping cart, user preferences                │
-│  • Application: Shared across entire app - config, global state               │
+│  • Singleton (default): Stateless services, repositories - most common          │
+│  • Prototype: Stateful beans, each injection gets new instance                  │
+│  • Request: Per HTTP request - user context, request data                       │
+│  • Session: Per user session - shopping cart, user preferences                  │
+│  • Application: Shared across entire app - config, global state                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHICH: Which DI Concepts to Master?                                            │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  ESSENTIAL:     Constructor injection, @Component, @Service, @Autowired       │
-│  IMPORTANT:     Bean scopes, @Qualifier, @Primary, @Configuration             │
-│  ADVANCED:      Circular dependency resolution, custom BeanPostProcessors     │
+│  ESSENTIAL:     Constructor injection, @Component, @Service, @Autowired         │
+│  IMPORTANT:     Bean scopes, @Qualifier, @Primary, @Configuration               │
+│  ADVANCED:      Circular dependency resolution, custom BeanPostProcessors       │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -59,53 +59,53 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    THE PROBLEM: TIGHT COUPLING                                   │
+│                    THE PROBLEM: TIGHT COUPLING                                  │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  WITHOUT IoC (Traditional approach):                                            │
-│                                                                                  │
+│                                                                                 │
 │  public class OrderService {                                                    │
 │      // OrderService CREATES its dependencies                                   │
-│      private UserRepository userRepo = new MySQLUserRepository();              │
-│      private EmailService email = new SMTPEmailService("smtp.gmail.com");      │
-│      private PaymentGateway payment = new StripePaymentGateway("sk_xxx");      │
-│                                                                                  │
-│      public void processOrder(Order order) {                                   │
+│      private UserRepository userRepo = new MySQLUserRepository();               │
+│      private EmailService email = new SMTPEmailService("smtp.gmail.com");       │
+│      private PaymentGateway payment = new StripePaymentGateway("sk_xxx");       │
+│                                                                                 │
+│      public void processOrder(Order order) {                                    │
 │          // Business logic using hardcoded implementations                      │
 │      }                                                                          │
 │  }                                                                              │
-│                                                                                  │
-│  PROBLEMS:                                                                       │
-│  ❌ Can't unit test (stuck with real database, real email)                     │
-│  ❌ Can't switch implementations (MySQL → PostgreSQL = rewrite!)               │
-│  ❌ Configuration scattered everywhere (API keys in code!)                      │
-│  ❌ Every class manages its own dependencies (circular dependencies!)          │
-│                                                                                  │
+│                                                                                 │
+│  PROBLEMS:                                                                      │
+│  ❌ Can't unit test (stuck with real database, real email)                       │
+│  ❌ Can't switch implementations (MySQL → PostgreSQL = rewrite!)                 │
+│  ❌ Configuration scattered everywhere (API keys in code!)                       │
+│  ❌ Every class manages its own dependencies (circular dependencies!)            │
+│                                                                                 │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  WITH IoC (Spring approach):                                                    │
-│                                                                                  │
+│                                                                                 │
 │  public class OrderService {                                                    │
-│      // Dependencies are INJECTED (someone else provides them)                 │
-│      private final UserRepository userRepo;                                    │
-│      private final EmailService email;                                         │
-│      private final PaymentGateway payment;                                     │
-│                                                                                  │
-│      public OrderService(UserRepository userRepo,                              │
-│                          EmailService email,                                   │
-│                          PaymentGateway payment) {                             │
-│          this.userRepo = userRepo;                                             │
-│          this.email = email;                                                   │
-│          this.payment = payment;                                               │
+│      // Dependencies are INJECTED (someone else provides them)                  │
+│      private final UserRepository userRepo;                                     │
+│      private final EmailService email;                                          │
+│      private final PaymentGateway payment;                                      │
+│                                                                                 │
+│      public OrderService(UserRepository userRepo,                               │
+│                          EmailService email,                                    │
+│                          PaymentGateway payment) {                              │
+│          this.userRepo = userRepo;                                              │
+│          this.email = email;                                                    │
+│          this.payment = payment;                                                │
 │      }                                                                          │
 │  }                                                                              │
-│                                                                                  │
-│  BENEFITS:                                                                       │
-│  ✅ Easy unit testing (inject mocks!)                                          │
-│  ✅ Switch implementations without changing code                               │
-│  ✅ Centralized configuration (application.yml)                                │
-│  ✅ IoC Container manages object lifecycle                                     │
-│                                                                                  │
+│                                                                                 │
+│  BENEFITS:                                                                      │
+│  ✅ Easy unit testing (inject mocks!)                                            │
+│  ✅ Switch implementations without changing code                                 │
+│  ✅ Centralized configuration (application.yml)                                  │
+│  ✅ IoC Container manages object lifecycle                                       │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -113,44 +113,44 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    "DON'T CALL US, WE'LL CALL YOU"                               │
+│                    "DON'T CALL US, WE'LL CALL YOU"                              │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  TRADITIONAL CONTROL:                                                           │
-│  ──────────────────────                                                          │
-│                                                                                  │
+│  ──────────────────────                                                         │
+│                                                                                 │
 │  ┌──────────────┐                                                               │
 │  │ OrderService │                                                               │
 │  │              │──creates──► MySQLUserRepository                               │
 │  │              │──creates──► SMTPEmailService                                  │
 │  │              │──creates──► StripePaymentGateway                              │
 │  └──────────────┘                                                               │
-│                                                                                  │
+│                                                                                 │
 │  OrderService is in CONTROL (creates its dependencies)                          │
-│                                                                                  │
+│                                                                                 │
 │  ═══════════════════════════════════════════════════════════════════════════    │
-│                                                                                  │
+│                                                                                 │
 │  INVERTED CONTROL (IoC):                                                        │
-│  ───────────────────────                                                         │
-│                                                                                  │
+│  ───────────────────────                                                        │
+│                                                                                 │
 │  ┌──────────────────────────────────────────────────────┐                       │
-│  │              SPRING IoC CONTAINER                     │                       │
-│  │                                                       │                       │
+│  │              SPRING IoC CONTAINER                     │                      │
+│  │                                                       │                      │
 │  │  1. Creates OrderService                             │                       │
 │  │  2. Creates UserRepository                           │                       │
 │  │  3. Creates EmailService                             │                       │
 │  │  4. Creates PaymentGateway                           │                       │
 │  │  5. INJECTS dependencies into OrderService           │                       │
-│  │                                                       │                       │
+│  │                                                       │                      │
 │  └──────────────────────────────────────────────────────┘                       │
-│                       │                                                          │
-│                       ▼                                                          │
+│                       │                                                         │
+│                       ▼                                                         │
 │  ┌──────────────┐                                                               │
-│  │ OrderService │ ← receives dependencies (didn't ask for specific impls)      │
+│  │ OrderService │ ← receives dependencies (didn't ask for specific impls)       │
 │  └──────────────┘                                                               │
-│                                                                                  │
-│  Control is INVERTED: Container controls object creation & wiring              │
-│                                                                                  │
+│                                                                                 │
+│  Control is INVERTED: Container controls object creation & wiring               │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -158,64 +158,64 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│              IoC CONTAINER BEAN RESOLUTION PROCESS                               │
-│                                                                                  │
+│              IoC CONTAINER BEAN RESOLUTION PROCESS                              │
+│                                                                                 │
 │  PHASE 1: COMPONENT SCANNING                                                    │
-│  ──────────────────────────────────────                                          │
+│  ──────────────────────────────────────                                         │
 │  Classpath scan → find @Component, @Service, @Repository, @Controller           │
-│                                                                                  │
+│                                                                                 │
 │       @Service            @Repository           @Controller                     │
 │    OrderService          OrderRepo             OrderController                  │
-│         │                    │                       │                           │
-│         ▼                    ▼                       ▼                           │
-│                                                                                  │
+│         │                    │                       │                          │
+│         ▼                    ▼                       ▼                          │
+│                                                                                 │
 │  PHASE 2: BeanDefinition CREATION                                               │
-│  ──────────────────────────────────────                                          │
+│  ──────────────────────────────────────                                         │
 │  Each class → BeanDefinition object (metadata about the bean)                   │
-│                                                                                  │
-│    BeanDefinition {                                                              │
+│                                                                                 │
+│    BeanDefinition {                                                             │
 │      name: "orderService"                                                       │
 │      class: OrderService.class                                                  │
 │      scope: SINGLETON                                                           │
 │      dependencies: [OrderRepo, NotificationService]                             │
-│    }                                                                             │
-│                                                                                  │
+│    }                                                                            │
+│                                                                                 │
 │  PHASE 3: DEPENDENCY GRAPH CONSTRUCTION                                         │
-│  ──────────────────────────────────────                                          │
-│  Container builds a directed graph of who-needs-whom:                            │
-│                                                                                  │
+│  ──────────────────────────────────────                                         │
+│  Container builds a directed graph of who-needs-whom:                           │
+│                                                                                 │
 │    OrderController ──depends──▶ OrderService                                    │
-│                                    │                                             │
+│                                    │                                            │
 │                          ┌─────────┴──────────┐                                 │
-│                          ▼                     ▼                                 │
+│                          ▼                     ▼                                │
 │                      OrderRepo        NotificationService                       │
-│                          │                     │                                 │
-│                          ▼                     ▼                                 │
+│                          │                     │                                │
+│                          ▼                     ▼                                │
 │                      DataSource           EmailClient                           │
-│                                                                                  │
+│                                                                                 │
 │  PHASE 4: CREATION ORDER (Topological Sort)                                     │
-│  ──────────────────────────────────────                                          │
+│  ──────────────────────────────────────                                         │
 │  Leaves first → dependents last:                                                │
-│                                                                                  │
+│                                                                                 │
 │    Step 1: DataSource        (no deps)                                          │
 │    Step 2: EmailClient       (no deps)                                          │
-│    Step 3: OrderRepo         (needs DataSource ✅)                              │
-│    Step 4: NotificationService (needs EmailClient ✅)                           │
-│    Step 5: OrderService      (needs OrderRepo ✅ + NotificationService ✅)      │
-│    Step 6: OrderController   (needs OrderService ✅)                            │
-│                                                                                  │
-│  PHASE 5: INJECTION                                                              │
-│  ──────────────────────────────────────                                          │
-│  Container injects references into constructor / fields:                         │
-│                                                                                  │
-│    new OrderController(                                                          │
+│    Step 3: OrderRepo         (needs DataSource ✅)                               │
+│    Step 4: NotificationService (needs EmailClient ✅)                            │
+│    Step 5: OrderService      (needs OrderRepo ✅ + NotificationService ✅)        │
+│    Step 6: OrderController   (needs OrderService ✅)                             │
+│                                                                                 │
+│  PHASE 5: INJECTION                                                             │
+│  ──────────────────────────────────────                                         │
+│  Container injects references into constructor / fields:                        │
+│                                                                                 │
+│    new OrderController(                                                         │
 │        container.getBean(OrderService.class)  ← already created                 │
-│    )                                                                             │
-│                                                                                  │
+│    )                                                                            │
+│                                                                                 │
 │  ⚠️  CIRCULAR DEPENDENCY?                                                       │
-│  A → B → A  ═══▶  Spring throws BeanCurrentlyInCreationException               │
+│  A → B → A  ═══▶  Spring throws BeanCurrentlyInCreationException                │
 │  Fix: @Lazy on one side, or redesign (extract shared logic)                     │
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -227,25 +227,25 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    SPRING BEAN DEFINITION                                        │
+│                    SPRING BEAN DEFINITION                                       │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  A Spring Bean is simply an object that is:                                     │
 │  1. Created by the Spring IoC Container                                         │
-│  2. Configured by Spring (dependencies injected)                               │
-│  3. Managed by Spring (lifecycle, scope)                                       │
-│                                                                                  │
-│  PLAIN JAVA OBJECT:                                                              │
+│  2. Configured by Spring (dependencies injected)                                │
+│  3. Managed by Spring (lifecycle, scope)                                        │
+│                                                                                 │
+│  PLAIN JAVA OBJECT:                                                             │
 │  User user = new User();  // You create it, you manage it                       │
-│                                                                                  │
-│  SPRING BEAN:                                                                    │
-│  @Component                                                                      │
-│  public class UserService { ... }  // Spring creates and manages it            │
-│                                                                                  │
-│  KEY INSIGHT:                                                                    │
-│  Spring Beans are the objects that live in Spring's ApplicationContext         │
-│  The container is a big Map<BeanName, Object> (simplified)                     │
-│                                                                                  │
+│                                                                                 │
+│  SPRING BEAN:                                                                   │
+│  @Component                                                                     │
+│  public class UserService { ... }  // Spring creates and manages it             │
+│                                                                                 │
+│  KEY INSIGHT:                                                                   │
+│  Spring Beans are the objects that live in Spring's ApplicationContext          │
+│  The container is a big Map<BeanName, Object> (simplified)                      │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -339,17 +339,17 @@ public class AppConfig { }
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    DEPENDENCY INJECTION TYPES COMPARISON                         │
+│                    DEPENDENCY INJECTION TYPES COMPARISON                        │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  ┌────────────────┬──────────────────┬─────────────────────────────────────────┐│
 │  │ Type           │ Recommended?     │ Use Case                                ││
 │  ├────────────────┼──────────────────┼─────────────────────────────────────────┤│
-│  │ Constructor    │ ✅ YES (Default) │ Required dependencies                   ││
+│  │ Constructor    │ ✅ YES (Default) │ Required dependencies                   │ │
 │  │ Setter         │ ⚠️ Sometimes     │ Optional dependencies                   ││
-│  │ Field          │ ❌ NO            │ Tests only (convenient but bad)         ││
+│  │ Field          │ ❌ NO            │ Tests only (convenient but bad)         │ │
 │  └────────────────┴──────────────────┴─────────────────────────────────────────┘│
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -605,22 +605,22 @@ public class UserService {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    BEAN SCOPE COMPARISON                                         │
+│                    BEAN SCOPE COMPARISON                                        │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  ┌────────────────┬─────────────────────────────────────────────────────────┐  │
-│  │ Scope          │ Description                                             │  │
-│  ├────────────────┼─────────────────────────────────────────────────────────┤  │
-│  │ singleton      │ One instance per container (DEFAULT)                    │  │
-│  │ prototype      │ New instance every time bean is requested              │  │
-│  │ request        │ One instance per HTTP request (Web only)               │  │
-│  │ session        │ One instance per HTTP session (Web only)               │  │
-│  │ application    │ One instance per ServletContext (Web only)             │  │
-│  │ websocket      │ One instance per WebSocket session                     │  │
-│  └────────────────┴─────────────────────────────────────────────────────────┘  │
-│                                                                                  │
+│                                                                                 │
+│  ┌────────────────┬─────────────────────────────────────────────────────────┐   │
+│  │ Scope          │ Description                                             │   │
+│  ├────────────────┼─────────────────────────────────────────────────────────┤   │
+│  │ singleton      │ One instance per container (DEFAULT)                    │   │
+│  │ prototype      │ New instance every time bean is requested              │    │
+│  │ request        │ One instance per HTTP request (Web only)               │    │
+│  │ session        │ One instance per HTTP session (Web only)               │    │
+│  │ application    │ One instance per ServletContext (Web only)             │    │
+│  │ websocket      │ One instance per WebSocket session                     │    │
+│  └────────────────┴─────────────────────────────────────────────────────────┘   │
+│                                                                                 │
 │  95% of beans are SINGLETON!                                                    │
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -771,44 +771,44 @@ public class OrderService {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    COMPLETE BEAN LIFECYCLE                                       │
+│                    COMPLETE BEAN LIFECYCLE                                      │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  ┌──────────────────────────────────────────────────────────────────────────┐  │
+│                                                                                 │
+│  ┌──────────────────────────────────────────────────────────────────────────┐   │
 │  │                                                                           │  │
-│  │  1. INSTANTIATE: Bean instance created (constructor called)              │  │
+│  │  1. INSTANTIATE: Bean instance created (constructor called)              │   │
 │  │         │                                                                 │  │
 │  │         ▼                                                                 │  │
-│  │  2. POPULATE PROPERTIES: Dependencies injected                           │  │
+│  │  2. POPULATE PROPERTIES: Dependencies injected                           │   │
 │  │         │                                                                 │  │
 │  │         ▼                                                                 │  │
-│  │  3. BEAN NAME AWARE: setBeanName() called if implements BeanNameAware   │  │
+│  │  3. BEAN NAME AWARE: setBeanName() called if implements BeanNameAware   │    │
 │  │         │                                                                 │  │
 │  │         ▼                                                                 │  │
-│  │  4. BEAN FACTORY AWARE: setBeanFactory() if implements BeanFactoryAware │  │
+│  │  4. BEAN FACTORY AWARE: setBeanFactory() if implements BeanFactoryAware │    │
 │  │         │                                                                 │  │
 │  │         ▼                                                                 │  │
-│  │  5. APPLICATION CONTEXT AWARE: setApplicationContext() if implements    │  │
+│  │  5. APPLICATION CONTEXT AWARE: setApplicationContext() if implements    │    │
 │  │         │                                                                 │  │
 │  │         ▼                                                                 │  │
-│  │  6. PRE-INITIALIZATION: BeanPostProcessor.postProcessBeforeInit()       │  │
+│  │  6. PRE-INITIALIZATION: BeanPostProcessor.postProcessBeforeInit()       │    │
 │  │         │                                                                 │  │
 │  │         ▼                                                                 │  │
-│  │  7. INITIALIZATION: @PostConstruct or InitializingBean.afterPropertiesSet│  │
+│  │  7. INITIALIZATION: @PostConstruct or InitializingBean.afterPropertiesSet│   │
 │  │         │                                                                 │  │
 │  │         ▼                                                                 │  │
-│  │  8. POST-INITIALIZATION: BeanPostProcessor.postProcessAfterInit()       │  │
+│  │  8. POST-INITIALIZATION: BeanPostProcessor.postProcessAfterInit()       │    │
 │  │         │                                                                 │  │
 │  │         ▼                                                                 │  │
-│  │  ═══════════════════════════════════════════════════════════════════     │  │
+│  │  ═══════════════════════════════════════════════════════════════════     │   │
 │  │                     BEAN IS READY FOR USE                                 │  │
-│  │  ═══════════════════════════════════════════════════════════════════     │  │
+│  │  ═══════════════════════════════════════════════════════════════════     │   │
 │  │         │                                                                 │  │
 │  │         ▼                                                                 │  │
-│  │  9. DESTRUCTION: @PreDestroy or DisposableBean.destroy()                │  │
+│  │  9. DESTRUCTION: @PreDestroy or DisposableBean.destroy()                │    │
 │  │                                                                           │  │
-│  └──────────────────────────────────────────────────────────────────────────┘  │
-│                                                                                  │
+│  └──────────────────────────────────────────────────────────────────────────┘   │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1330,28 +1330,28 @@ public class SecondListener {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                        CIRCULAR DEPENDENCIES IN SPRING                           │
+│                        CIRCULAR DEPENDENCIES IN SPRING                          │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  WHAT IS A CIRCULAR DEPENDENCY?                                                  │
+│                                                                                 │
+│  WHAT IS A CIRCULAR DEPENDENCY?                                                 │
 │  ─────────────────────────────────────────────────────────────────────────────  │
-│                                                                                  │
+│                                                                                 │
 │  Bean A depends on Bean B, and Bean B depends on Bean A                         │
-│                                                                                  │
+│                                                                                 │
 │     ┌─────────┐        needs        ┌─────────┐                                 │
 │     │  BeanA  │ ──────────────────► │  BeanB  │                                 │
-│     └─────────┘                      └─────────┘                                 │
-│          ▲                                │                                      │
-│          └────────────── needs ───────────┘                                      │
-│                                                                                  │
-│  THE PROBLEM:                                                                    │
+│     └─────────┘                      └─────────┘                                │
+│          ▲                                │                                     │
+│          └────────────── needs ───────────┘                                     │
+│                                                                                 │
+│  THE PROBLEM:                                                                   │
 │  To create A, Spring needs B. But to create B, Spring needs A.                  │
 │  = DEADLOCK! Neither can be created first.                                      │
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│  EXAMPLE OF CIRCULAR DEPENDENCY                                                  │
+│  EXAMPLE OF CIRCULAR DEPENDENCY                                                 │
 ├─────────────────────────────────────────────────────────────────────────────────┤
 
 // This code FAILS with BeanCurrentlyInCreationException
@@ -1383,24 +1383,24 @@ public class PaymentService {
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│  SOLUTIONS TO CIRCULAR DEPENDENCIES                                              │
+│  SOLUTIONS TO CIRCULAR DEPENDENCIES                                             │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  SOLUTION 1: REDESIGN (BEST APPROACH)                                           │
-│  ───────────────────────────────────────────────────────────────────────────── │
+│  ─────────────────────────────────────────────────────────────────────────────  │
 │  Extract shared logic into a third service:                                     │
-│                                                                                  │
+│                                                                                 │
 │     ┌─────────────┐          ┌─────────────┐                                    │
 │     │ OrderService│          │PaymentService│                                   │
 │     └──────┬──────┘          └──────┬──────┘                                    │
 │            │                        │                                           │
 │            ▼                        ▼                                           │
 │     ┌────────────────────────────────────┐                                      │
-│     │        SharedOrderLogic            │  ← New service both can use         │
+│     │        SharedOrderLogic            │  ← New service both can use          │
 │     └────────────────────────────────────┘                                      │
-│                                                                                  │
+│                                                                                 │
 │  SOLUTION 2: @Lazy ANNOTATION                                                   │
-│  ───────────────────────────────────────────────────────────────────────────── │
+│  ─────────────────────────────────────────────────────────────────────────────  │
 
 @Service
 public class OrderService {
@@ -1459,27 +1459,27 @@ spring.main.allow-circular-references=true
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│  DETECTING CIRCULAR DEPENDENCIES EARLY                                           │
+│  DETECTING CIRCULAR DEPENDENCIES EARLY                                          │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  COMPILE TIME: Use ArchUnit tests                                               │
-│                                                                                  │
-│    @Test                                                                         │
-│    void noCircularDependencies() {                                               │
+│                                                                                 │
+│    @Test                                                                        │
+│    void noCircularDependencies() {                                              │
 │        slices().matching("com.app.(*)..")                                       │
 │            .should().beFreeOfCycles()                                           │
-│            .check(classes);                                                      │
-│    }                                                                             │
-│                                                                                  │
-│  RUNTIME: Spring throws BeanCurrentlyInCreationException (default in 2.6+)     │
-│                                                                                  │
+│            .check(classes);                                                     │
+│    }                                                                            │
+│                                                                                 │
+│  RUNTIME: Spring throws BeanCurrentlyInCreationException (default in 2.6+)      │
+│                                                                                 │
 │  DESIGN TIME: Apply SOLID principles                                            │
-│    • Single Responsibility: Services doing too much tend to be circular        │
-│    • Dependency Inversion: Depend on abstractions, not concretes               │
-│                                                                                  │
-│  INTERVIEW TIP: "I prefer redesigning to remove the cycle rather than using    │
+│    • Single Responsibility: Services doing too much tend to be circular         │
+│    • Dependency Inversion: Depend on abstractions, not concretes                │
+│                                                                                 │
+│  INTERVIEW TIP: "I prefer redesigning to remove the cycle rather than using     │
 │  @Lazy because circular dependencies usually indicate poor design"              │
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 

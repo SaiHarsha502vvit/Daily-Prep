@@ -18,20 +18,20 @@
 ║  TWO SUM II - SORTED ARRAY                                                ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Array is SORTED. Find two numbers that add to target.                   ║
-║  Return 1-indexed positions.                                             ║
+║  Array is SORTED. Find two numbers that add to target.                    ║
+║  Return 1-indexed positions.                                              ║
 ║                                                                           ║
-║  Input: numbers = [2, 7, 11, 15], target = 9                             ║
+║  Input: numbers = [2, 7, 11, 15], target = 9                              ║
 ║  Output: [1, 2]                                                           ║
 ║                                                                           ║
 ║  Visual:                                                                  ║
-║  [2,  7,  11,  15]                                                       ║
+║  [2,  7,  11,  15]                                                        ║
 ║   ↑            ↑                                                          ║
-║   L            R   sum=17 > 9, move R left                               ║
+║   L            R   sum=17 > 9, move R left                                ║
 ║   ↑        ↑                                                              ║
-║   L        R       sum=13 > 9, move R left                               ║
+║   L        R       sum=13 > 9, move R left                                ║
 ║   ↑    ↑                                                                  ║
-║   L    R           sum=9 = target ✓                                      ║
+║   L    R           sum=9 = target ✓                                       ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -66,17 +66,17 @@ public int[] twoSum(int[] numbers, int target) {
 ║  3SUM                                                                     ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Find all unique triplets that sum to zero.                              ║
+║  Find all unique triplets that sum to zero.                               ║
 ║                                                                           ║
-║  Input: nums = [-1, 0, 1, 2, -1, -4]                                     ║
-║  Output: [[-1, -1, 2], [-1, 0, 1]]                                       ║
+║  Input: nums = [-1, 0, 1, 2, -1, -4]                                      ║
+║  Output: [[-1, -1, 2], [-1, 0, 1]]                                        ║
 ║                                                                           ║
 ║  Algorithm:                                                               ║
-║  1. Sort the array                                                       ║
-║  2. Fix one element, use two pointers for remaining                      ║
-║  3. Skip duplicates to avoid duplicate triplets                          ║
+║  1. Sort the array                                                        ║
+║  2. Fix one element, use two pointers for remaining                       ║
+║  3. Skip duplicates to avoid duplicate triplets                           ║
 ║                                                                           ║
-║  Sorted: [-4, -1, -1, 0, 1, 2]                                           ║
+║  Sorted: [-4, -1, -1, 0, 1, 2]                                            ║
 ║           ↑   ↑            ↑                                              ║
 ║           i   L            R                                              ║
 ║                                                                           ║
@@ -133,11 +133,11 @@ public List<List<Integer>> threeSum(int[] nums) {
 ║  3SUM CLOSEST                                                             ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Find three integers whose sum is closest to target.                     ║
+║  Find three integers whose sum is closest to target.                      ║
 ║                                                                           ║
-║  Input: nums = [-1, 2, 1, -4], target = 1                                ║
+║  Input: nums = [-1, 2, 1, -4], target = 1                                 ║
 ║  Output: 2                                                                ║
-║  Explanation: (-1) + 2 + 1 = 2, closest to target 1                      ║
+║  Explanation: (-1) + 2 + 1 = 2, closest to target 1                       ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -182,12 +182,12 @@ public int threeSumClosest(int[] nums, int target) {
 ║  4SUM                                                                     ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Find all unique quadruplets that sum to target.                         ║
+║  Find all unique quadruplets that sum to target.                          ║
 ║                                                                           ║
-║  Input: nums = [1, 0, -1, 0, -2, 2], target = 0                          ║
-║  Output: [[-2,-1,1,2], [-2,0,0,2], [-1,0,0,1]]                           ║
+║  Input: nums = [1, 0, -1, 0, -2, 2], target = 0                           ║
+║  Output: [[-2,-1,1,2], [-2,0,0,2], [-1,0,0,1]]                            ║
 ║                                                                           ║
-║  Pattern: Extend 3Sum with one more loop                                 ║
+║  Pattern: Extend 3Sum with one more loop                                  ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -242,41 +242,41 @@ public List<List<Integer>> fourSum(int[] nums, int target) {
 ║  (LeetCode 259 - Premium)                                                 ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Count triplets with sum LESS than target.                               ║
+║  Count triplets with sum LESS than target.                                ║
 ║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────   ║
+║  ─────────────────────────────────────────────────────────────────────    ║
 ║                                                                           ║
 ║  Example 1:                                                               ║
-║  Input: nums = [-2, 0, 1, 3], target = 2                                 ║
+║  Input: nums = [-2, 0, 1, 3], target = 2                                  ║
 ║  Output: 2                                                                ║
 ║  Explanation:                                                             ║
-║  (-2) + 0 + 1 = -1 < 2 ✓                                                 ║
-║  (-2) + 0 + 3 = 1 < 2 ✓                                                  ║
-║  (-2) + 1 + 3 = 2, not < 2                                               ║
-║  0 + 1 + 3 = 4, not < 2                                                  ║
+║  (-2) + 0 + 1 = -1 < 2 ✓                                                  ║
+║  (-2) + 0 + 3 = 1 < 2 ✓                                                   ║
+║  (-2) + 1 + 3 = 2, not < 2                                                ║
+║  0 + 1 + 3 = 4, not < 2                                                   ║
 ║                                                                           ║
 ║  Example 2:                                                               ║
-║  Input: nums = [], target = 0                                            ║
+║  Input: nums = [], target = 0                                             ║
 ║  Output: 0                                                                ║
 ║                                                                           ║
 ║  Example 3:                                                               ║
-║  Input: nums = [0], target = 0                                           ║
+║  Input: nums = [0], target = 0                                            ║
 ║  Output: 0                                                                ║
 ║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────   ║
+║  ─────────────────────────────────────────────────────────────────────    ║
 ║                                                                           ║
 ║  KEY INSIGHT:                                                             ║
-║  If nums[i] + nums[left] + nums[right] < target,                         ║
-║  Then ALL pairs (left, left+1), (left, left+2)...(left, right) work!     ║
-║  Count = right - left                                                    ║
+║  If nums[i] + nums[left] + nums[right] < target,                          ║
+║  Then ALL pairs (left, left+1), (left, left+2)...(left, right) work!      ║
+║  Count = right - left                                                     ║
 ║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────   ║
+║  ─────────────────────────────────────────────────────────────────────    ║
 ║                                                                           ║
 ║  Constraints:                                                             ║
-║  - n == nums.length                                                      ║
-║  - 0 <= n <= 3500                                                        ║
-║  - -100 <= nums[i] <= 100                                                ║
-║  - -100 <= target <= 100                                                 ║
+║  - n == nums.length                                                       ║
+║  - 0 <= n <= 3500                                                         ║
+║  - -100 <= nums[i] <= 100                                                 ║
+║  - -100 <= target <= 100                                                  ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -317,15 +317,15 @@ public int threeSumSmaller(int[] nums, int target) {
 ║  VALID TRIANGLE NUMBER                                                    ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Count triplets that can form a valid triangle.                          ║
-║  Triangle rule: sum of any two sides > third side                        ║
+║  Count triplets that can form a valid triangle.                           ║
+║  Triangle rule: sum of any two sides > third side                         ║
 ║                                                                           ║
-║  Input: nums = [2, 2, 3, 4]                                              ║
+║  Input: nums = [2, 2, 3, 4]                                               ║
 ║  Output: 3                                                                ║
-║  Valid: (2,3,4), (2,3,4), (2,2,3)                                        ║
+║  Valid: (2,3,4), (2,3,4), (2,2,3)                                         ║
 ║                                                                           ║
-║  KEY: After sorting, only need to check a + b > c                        ║
-║  (other conditions automatically satisfied)                              ║
+║  KEY: After sorting, only need to check a + b > c                         ║
+║  (other conditions automatically satisfied)                               ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -367,17 +367,17 @@ public int triangleNumber(int[] nums) {
 ║  REMOVE DUPLICATES FROM SORTED ARRAY                                      ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Remove duplicates in-place. Return new length.                          ║
+║  Remove duplicates in-place. Return new length.                           ║
 ║                                                                           ║
-║  Input: nums = [1, 1, 2]                                                 ║
-║  Output: 2, nums = [1, 2, _]                                             ║
+║  Input: nums = [1, 1, 2]                                                  ║
+║  Output: 2, nums = [1, 2, _]                                              ║
 ║                                                                           ║
 ║  Visual:                                                                  ║
-║  [1, 1, 2]                                                               ║
-║   ↑  ↑       slow=0, fast=1, same value, skip                            ║
-║   ↑     ↑    slow=0, fast=2, different! copy                             ║
-║      ↑  ↑    slow=1, nums[1]=2                                           ║
-║  Result: [1, 2, _], length = 2                                           ║
+║  [1, 1, 2]                                                                ║
+║   ↑  ↑       slow=0, fast=1, same value, skip                             ║
+║   ↑     ↑    slow=0, fast=2, different! copy                              ║
+║      ↑  ↑    slow=1, nums[1]=2                                            ║
+║  Result: [1, 2, _], length = 2                                            ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -410,12 +410,12 @@ public int removeDuplicates(int[] nums) {
 ║  REMOVE DUPLICATES II (Allow at most 2 duplicates)                        ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Each element can appear at most TWICE.                                  ║
+║  Each element can appear at most TWICE.                                   ║
 ║                                                                           ║
-║  Input: nums = [1, 1, 1, 2, 2, 3]                                        ║
-║  Output: 5, nums = [1, 1, 2, 2, 3, _]                                    ║
+║  Input: nums = [1, 1, 1, 2, 2, 3]                                         ║
+║  Output: 5, nums = [1, 1, 2, 2, 3, _]                                     ║
 ║                                                                           ║
-║  KEY: Compare with nums[slow - 2] instead of nums[slow - 1]              ║
+║  KEY: Compare with nums[slow - 2] instead of nums[slow - 1]               ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -448,10 +448,10 @@ public int removeDuplicates(int[] nums) {
 ║  REMOVE ELEMENT                                                           ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Remove all instances of val in-place. Return new length.                ║
+║  Remove all instances of val in-place. Return new length.                 ║
 ║                                                                           ║
-║  Input: nums = [3, 2, 2, 3], val = 3                                     ║
-║  Output: 2, nums = [2, 2, _, _]                                          ║
+║  Input: nums = [3, 2, 2, 3], val = 3                                      ║
+║  Output: 2, nums = [2, 2, _, _]                                           ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -482,19 +482,19 @@ public int removeElement(int[] nums, int val) {
 ║  SORT COLORS (Dutch National Flag Problem)                                ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Sort array with only 0s, 1s, and 2s in-place.                           ║
-║  One-pass algorithm with constant space.                                 ║
+║  Sort array with only 0s, 1s, and 2s in-place.                            ║
+║  One-pass algorithm with constant space.                                  ║
 ║                                                                           ║
-║  Input: nums = [2, 0, 2, 1, 1, 0]                                        ║
-║  Output: [0, 0, 1, 1, 2, 2]                                              ║
+║  Input: nums = [2, 0, 2, 1, 1, 0]                                         ║
+║  Output: [0, 0, 1, 1, 2, 2]                                               ║
 ║                                                                           ║
 ║  Three Pointers:                                                          ║
-║  - low: boundary for 0s (everything before low is 0)                     ║
-║  - mid: current element being examined                                   ║
-║  - high: boundary for 2s (everything after high is 2)                    ║
+║  - low: boundary for 0s (everything before low is 0)                      ║
+║  - mid: current element being examined                                    ║
+║  - high: boundary for 2s (everything after high is 2)                     ║
 ║                                                                           ║
 ║  Visual:                                                                  ║
-║  [0, 0, 0, | 1, 1, 1, | ?, ?, ? | 2, 2, 2]                               ║
+║  [0, 0, 0, | 1, 1, 1, | ?, ?, ? | 2, 2, 2]                                ║
 ║            ↑          ↑         ↑                                         ║
 ║           low        mid       high                                       ║
 ║                                                                           ║
@@ -539,11 +539,11 @@ private void swap(int[] nums, int i, int j) {
 ║  PARTITION ARRAY ACCORDING TO PIVOT                                       ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Rearrange so elements < pivot come before, = pivot in middle,           ║
-║  > pivot at end. Maintain relative order.                                ║
+║  Rearrange so elements < pivot come before, = pivot in middle,            ║
+║  > pivot at end. Maintain relative order.                                 ║
 ║                                                                           ║
-║  Input: nums = [9, 12, 5, 10, 14, 3, 10], pivot = 10                     ║
-║  Output: [9, 5, 3, 10, 10, 12, 14]                                       ║
+║  Input: nums = [9, 12, 5, 10, 14, 3, 10], pivot = 10                      ║
+║  Output: [9, 5, 3, 10, 10, 12, 14]                                        ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -586,16 +586,16 @@ public int[] pivotArray(int[] nums, int pivot) {
 ║  LINKED LIST CYCLE                                                        ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Detect if linked list has a cycle.                                      ║
+║  Detect if linked list has a cycle.                                       ║
 ║                                                                           ║
 ║  Visual (with cycle):                                                     ║
-║  3 → 2 → 0 → -4                                                          ║
+║  3 → 2 → 0 → -4                                                           ║
 ║      ↑__________|                                                         ║
 ║                                                                           ║
-║  Floyd's Cycle Detection (Tortoise & Hare):                              ║
-║  - Slow pointer moves 1 step                                             ║
-║  - Fast pointer moves 2 steps                                            ║
-║  - If they meet, there's a cycle                                         ║
+║  Floyd's Cycle Detection (Tortoise & Hare):                               ║
+║  - Slow pointer moves 1 step                                              ║
+║  - Fast pointer moves 2 steps                                             ║
+║  - If they meet, there's a cycle                                          ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -628,22 +628,22 @@ public boolean hasCycle(ListNode head) {
 ║  LINKED LIST CYCLE II - Find Start of Cycle                               ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Return the node where cycle begins. Return null if no cycle.            ║
+║  Return the node where cycle begins. Return null if no cycle.             ║
 ║                                                                           ║
 ║  MATHEMATICAL PROOF:                                                      ║
 ║  Let:                                                                     ║
-║  - Distance from head to cycle start = a                                 ║
-║  - Distance from cycle start to meeting point = b                        ║
-║  - Cycle length = c                                                      ║
+║  - Distance from head to cycle start = a                                  ║
+║  - Distance from cycle start to meeting point = b                         ║
+║  - Cycle length = c                                                       ║
 ║                                                                           ║
 ║  When they meet:                                                          ║
-║  - Slow traveled: a + b                                                  ║
-║  - Fast traveled: a + b + n*c (some multiple of cycle)                   ║
-║  - Fast = 2 * Slow → a + b + n*c = 2(a + b)                              ║
-║  - Therefore: a = n*c - b                                                ║
+║  - Slow traveled: a + b                                                   ║
+║  - Fast traveled: a + b + n*c (some multiple of cycle)                    ║
+║  - Fast = 2 * Slow → a + b + n*c = 2(a + b)                               ║
+║  - Therefore: a = n*c - b                                                 ║
 ║                                                                           ║
-║  After meeting: move one pointer to head, both move 1 step               ║
-║  They'll meet at cycle start!                                            ║
+║  After meeting: move one pointer to head, both move 1 step                ║
+║  They'll meet at cycle start!                                             ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -687,11 +687,11 @@ public ListNode detectCycle(ListNode head) {
 ║  MIDDLE OF LINKED LIST                                                    ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  When fast reaches end, slow is at middle.                               ║
-║  For even length, return second middle.                                  ║
+║  When fast reaches end, slow is at middle.                                ║
+║  For even length, return second middle.                                   ║
 ║                                                                           ║
-║  Odd:  1 → 2 → 3 → 4 → 5    Middle = 3                                  ║
-║  Even: 1 → 2 → 3 → 4 → 5 → 6    Middle = 4 (second)                      ║
+║  Odd:  1 → 2 → 3 → 4 → 5    Middle = 3                                    ║
+║  Even: 1 → 2 → 3 → 4 → 5 → 6    Middle = 4 (second)                       ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -720,14 +720,14 @@ public ListNode middleNode(ListNode head) {
 ║  REMOVE NTH NODE FROM END                                                 ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Remove the nth node from end of list.                                   ║
+║  Remove the nth node from end of list.                                    ║
 ║                                                                           ║
-║  Input: 1 → 2 → 3 → 4 → 5, n = 2                                        ║
-║  Output: 1 → 2 → 3 → 5                                                   ║
+║  Input: 1 → 2 → 3 → 4 → 5, n = 2                                          ║
+║  Output: 1 → 2 → 3 → 5                                                    ║
 ║                                                                           ║
-║  Technique: Advance fast pointer n steps first                           ║
-║  Then move both until fast reaches end                                   ║
-║  Slow will be at (n+1)th from end                                        ║
+║  Technique: Advance fast pointer n steps first                            ║
+║  Then move both until fast reaches end                                    ║
+║  Slow will be at (n+1)th from end                                         ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -769,38 +769,38 @@ public ListNode removeNthFromEnd(ListNode head, int n) {
 ║  (LeetCode 369 - Premium)                                                 ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Linked list represents a number. Add 1 to it.                           ║
-║  Most significant digit is at head.                                      ║
+║  Linked list represents a number. Add 1 to it.                            ║
+║  Most significant digit is at head.                                       ║
 ║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────   ║
+║  ─────────────────────────────────────────────────────────────────────    ║
 ║                                                                           ║
 ║  Example 1:                                                               ║
-║  Input: 1 → 2 → 3                                                        ║
-║  Output: 1 → 2 → 4                                                       ║
-║  Explanation: 123 + 1 = 124                                              ║
+║  Input: 1 → 2 → 3                                                         ║
+║  Output: 1 → 2 → 4                                                        ║
+║  Explanation: 123 + 1 = 124                                               ║
 ║                                                                           ║
 ║  Example 2:                                                               ║
-║  Input: 1 → 2 → 9                                                        ║
-║  Output: 1 → 3 → 0                                                       ║
-║  Explanation: 129 + 1 = 130                                              ║
+║  Input: 1 → 2 → 9                                                         ║
+║  Output: 1 → 3 → 0                                                        ║
+║  Explanation: 129 + 1 = 130                                               ║
 ║                                                                           ║
 ║  Example 3:                                                               ║
-║  Input: 9 → 9 → 9                                                        ║
-║  Output: 1 → 0 → 0 → 0                                                   ║
-║  Explanation: 999 + 1 = 1000                                             ║
+║  Input: 9 → 9 → 9                                                         ║
+║  Output: 1 → 0 → 0 → 0                                                    ║
+║  Explanation: 999 + 1 = 1000                                              ║
 ║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────   ║
+║  ─────────────────────────────────────────────────────────────────────    ║
 ║                                                                           ║
-║  KEY INSIGHT: Find rightmost non-9 digit                                 ║
-║  - Increment it                                                          ║
-║  - Set all following 9s to 0                                             ║
+║  KEY INSIGHT: Find rightmost non-9 digit                                  ║
+║  - Increment it                                                           ║
+║  - Set all following 9s to 0                                              ║
 ║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────   ║
+║  ─────────────────────────────────────────────────────────────────────    ║
 ║                                                                           ║
 ║  Constraints:                                                             ║
-║  - Number of nodes: [1, 100]                                             ║
-║  - 0 <= Node.val <= 9                                                    ║
-║  - Number doesn't have leading zeros except 0 itself                     ║
+║  - Number of nodes: [1, 100]                                              ║
+║  - 0 <= Node.val <= 9                                                     ║
+║  - Number doesn't have leading zeros except 0 itself                      ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```

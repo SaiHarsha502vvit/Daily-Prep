@@ -6,26 +6,26 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: CSS (Cascading Style Sheets) controls HOW HTML looks.     ║
-║        Layout, colors, typography, spacing, animations.           ║
-║                                                                    ║
-║  WHY:  HTML alone = newspaper from 1995. CSS = modern web.       ║
-║        Without CSS skills, you CAN'T build professional UIs.     ║
-║        React components need CSS. Debugging layout issues needs   ║
-║        deep CSS understanding.                                     ║
-║                                                                    ║
-║  WHO:  Every frontend developer. Even "backend-focused" devs     ║
-║        need CSS basics for full-stack work.                       ║
-║                                                                    ║
-║  WHEN: After HTML basics. Before learning any CSS framework.     ║
-║        CSS fundamentals are FOREVER — Tailwind/Bootstrap change. ║
-║                                                                    ║
-║  WHERE: Browsers render CSS. Every website, web app, email       ║
-║         template, mobile webview uses CSS.                        ║
-║                                                                    ║
-║  HOW:  CSS rules = selector { property: value; }                 ║
-║        Selector targets HTML. Properties change appearance.       ║
-║        The CASCADE determines which rule wins when conflicts.     ║
+║  WHAT: CSS (Cascading Style Sheets) controls HOW HTML looks.         ║
+║        Layout, colors, typography, spacing, animations.              ║
+║                                                                      ║
+║  WHY:  HTML alone = newspaper from 1995. CSS = modern web.           ║
+║        Without CSS skills, you CAN'T build professional UIs.         ║
+║        React components need CSS. Debugging layout issues needs      ║
+║        deep CSS understanding.                                       ║
+║                                                                      ║
+║  WHO:  Every frontend developer. Even "backend-focused" devs         ║
+║        need CSS basics for full-stack work.                          ║
+║                                                                      ║
+║  WHEN: After HTML basics. Before learning any CSS framework.         ║
+║        CSS fundamentals are FOREVER — Tailwind/Bootstrap change.     ║
+║                                                                      ║
+║  WHERE: Browsers render CSS. Every website, web app, email           ║
+║         template, mobile webview uses CSS.                           ║
+║                                                                      ║
+║  HOW:  CSS rules = selector { property: value; }                     ║
+║        Selector targets HTML. Properties change appearance.          ║
+║        The CASCADE determines which rule wins when conflicts.        ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -62,25 +62,25 @@ img[alt] { border: 2px solid green; } /* has attribute */
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  COMBINATOR VISUALIZATION:                                        ║
-║                                                                    ║
-║  HTML Structure:                                                   ║
-║  <div class="parent">                                             ║
-║    ├── <p>Direct child</p>          ← child (>)                  ║
-║    ├── <section>                                                   ║
-║    │     └── <p>Nested</p>          ← descendant (space)         ║
-║    ├── <p>Another child</p>         ← child (>)                  ║
-║    └── <p>Yet another</p>           ← child (>)                  ║
-║  </div>                                                            ║
-║  <p>Sibling after div</p>           ← adjacent sibling (+)       ║
-║  <p>Another sibling</p>             ← general sibling (~)        ║
-║                                                                    ║
-║  SELECTOR              │ WHAT IT TARGETS                          ║
-║  ──────────────────────┼──────────────────────────────────────    ║
-║  .parent p             │ ALL <p> inside .parent (any depth)      ║
-║  .parent > p           │ ONLY direct <p> children of .parent     ║
-║  .parent + p           │ First <p> immediately after .parent     ║
-║  .parent ~ p           │ ALL <p> siblings after .parent          ║
+║  COMBINATOR VISUALIZATION:                                           ║
+║                                                                      ║
+║  HTML Structure:                                                     ║
+║  <div class="parent">                                                ║
+║    ├── <p>Direct child</p>          ← child (>)                      ║
+║    ├── <section>                                                     ║
+║    │     └── <p>Nested</p>          ← descendant (space)             ║
+║    ├── <p>Another child</p>         ← child (>)                      ║
+║    └── <p>Yet another</p>           ← child (>)                      ║
+║  </div>                                                              ║
+║  <p>Sibling after div</p>           ← adjacent sibling (+)           ║
+║  <p>Another sibling</p>             ← general sibling (~)            ║
+║                                                                      ║
+║  SELECTOR              │ WHAT IT TARGETS                             ║
+║  ──────────────────────┼──────────────────────────────────────       ║
+║  .parent p             │ ALL <p> inside .parent (any depth)          ║
+║  .parent > p           │ ONLY direct <p> children of .parent         ║
+║  .parent + p           │ First <p> immediately after .parent         ║
+║  .parent ~ p           │ ALL <p> siblings after .parent              ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -137,20 +137,20 @@ li::marker { color: #3b82f6; }  /* Bullet/number color */
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  WHEN MULTIPLE RULES TARGET THE SAME ELEMENT, WHO WINS?          ║
-║                                                                    ║
-║  The CASCADE resolves in this ORDER (highest to lowest priority): ║
-║                                                                    ║
-║  ┌─────────────────────────────────────────────────────────┐      ║
-║  │ 1. !important declarations         (AVOID!)            │      ║
-║  │ 2. Inline styles (style="...")      (RARE)              │      ║
-║  │ 3. ID selectors (#id)              (HIGHEST specificity)│      ║
-║  │ 4. Class/attribute/pseudo-class    (.class, [attr])     │      ║
-║  │ 5. Element/pseudo-element          (p, ::before)        │      ║
-║  │ 6. Universal (*)                   (LOWEST specificity) │      ║
-║  └─────────────────────────────────────────────────────────┘      ║
-║                                                                    ║
-║  If SPECIFICITY is EQUAL → LAST rule in source order wins.       ║
+║  WHEN MULTIPLE RULES TARGET THE SAME ELEMENT, WHO WINS?              ║
+║                                                                      ║
+║  The CASCADE resolves in this ORDER (highest to lowest priority):    ║
+║                                                                      ║
+║  ┌─────────────────────────────────────────────────────────┐         ║
+║  │ 1. !important declarations         (AVOID!)            │          ║
+║  │ 2. Inline styles (style="...")      (RARE)              │         ║
+║  │ 3. ID selectors (#id)              (HIGHEST specificity)│         ║
+║  │ 4. Class/attribute/pseudo-class    (.class, [attr])     │         ║
+║  │ 5. Element/pseudo-element          (p, ::before)        │         ║
+║  │ 6. Universal (*)                   (LOWEST specificity) │         ║
+║  └─────────────────────────────────────────────────────────┘         ║
+║                                                                      ║
+║  If SPECIFICITY is EQUAL → LAST rule in source order wins.           ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -158,28 +158,28 @@ li::marker { color: #3b82f6; }  /* Bullet/number color */
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  SPECIFICITY = (Inline, IDs, Classes, Elements)                   ║
-║                                                                    ║
-║  Selector                    │ Specificity │ Score                ║
-║  ────────────────────────────┼─────────────┼──────                ║
-║  *                           │ (0,0,0,0)   │ 0                   ║
-║  p                           │ (0,0,0,1)   │ 1                   ║
-║  p.intro                     │ (0,0,1,1)   │ 11                  ║
-║  .nav .link                  │ (0,0,2,0)   │ 20                  ║
-║  #header                     │ (0,1,0,0)   │ 100                 ║
-║  #header .nav .link          │ (0,1,2,0)   │ 120                 ║
-║  #header .nav a:hover        │ (0,1,2,1)   │ 121                 ║
-║  style="color: red"          │ (1,0,0,0)   │ 1000                ║
-║                                                                    ║
-║  REASONING: Each category is a different "weight class."         ║
-║  100 classes CANNOT beat 1 ID. It's not really addition —        ║
-║  it's comparison by category: IDs beat Classes beat Elements.    ║
-║                                                                    ║
-║  TIPS:                                                            ║
-║  • :not() doesn't add specificity, but its ARGUMENT does         ║
-║  • :is() takes specificity of its MOST specific argument         ║
-║  • :where() has ZERO specificity (great for resets!)             ║
-║  • :has() takes specificity of its argument                      ║
+║  SPECIFICITY = (Inline, IDs, Classes, Elements)                      ║
+║                                                                      ║
+║  Selector                    │ Specificity │ Score                   ║
+║  ────────────────────────────┼─────────────┼──────                   ║
+║  *                           │ (0,0,0,0)   │ 0                       ║
+║  p                           │ (0,0,0,1)   │ 1                       ║
+║  p.intro                     │ (0,0,1,1)   │ 11                      ║
+║  .nav .link                  │ (0,0,2,0)   │ 20                      ║
+║  #header                     │ (0,1,0,0)   │ 100                     ║
+║  #header .nav .link          │ (0,1,2,0)   │ 120                     ║
+║  #header .nav a:hover        │ (0,1,2,1)   │ 121                     ║
+║  style="color: red"          │ (1,0,0,0)   │ 1000                    ║
+║                                                                      ║
+║  REASONING: Each category is a different "weight class."             ║
+║  100 classes CANNOT beat 1 ID. It's not really addition —            ║
+║  it's comparison by category: IDs beat Classes beat Elements.        ║
+║                                                                      ║
+║  TIPS:                                                               ║
+║  • :not() doesn't add specificity, but its ARGUMENT does             ║
+║  • :is() takes specificity of its MOST specific argument             ║
+║  • :where() has ZERO specificity (great for resets!)                 ║
+║  • :has() takes specificity of its argument                          ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -207,35 +207,35 @@ li::marker { color: #3b82f6; }  /* Bullet/number color */
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║                                                                    ║
-║  THE CSS BOX MODEL (Every element is a box):                      ║
-║                                                                    ║
-║  ┌─────────────────────────────────────────────────────────┐      ║
-║  │                    MARGIN                               │      ║
-║  │   ┌───────────────────────────────────────────────┐     │      ║
-║  │   │               BORDER                          │     │      ║
-║  │   │   ┌───────────────────────────────────────┐   │     │      ║
-║  │   │   │           PADDING                     │   │     │      ║
-║  │   │   │   ┌───────────────────────────────┐   │   │     │      ║
-║  │   │   │   │                               │   │   │     │      ║
-║  │   │   │   │        CONTENT                │   │   │     │      ║
-║  │   │   │   │     (width × height)          │   │   │     │      ║
-║  │   │   │   │                               │   │   │     │      ║
-║  │   │   │   └───────────────────────────────┘   │   │     │      ║
-║  │   │   │                                       │   │     │      ║
-║  │   │   └───────────────────────────────────────┘   │     │      ║
-║  │   │                                               │     │      ║
-║  │   └───────────────────────────────────────────────┘     │      ║
-║  │                                                         │      ║
-║  └─────────────────────────────────────────────────────────┘      ║
-║                                                                    ║
-║  CONTENT-BOX (default):                                           ║
-║    width: 300px = content is 300px                                ║
-║    Total = 300 + padding + border (BIGGER than you set!)         ║
-║                                                                    ║
-║  BORDER-BOX (what you want):                                     ║
-║    width: 300px = content + padding + border = 300px total       ║
-║    Content shrinks to fit. WHAT YOU SET IS WHAT YOU GET.         ║
+║                                                                      ║
+║  THE CSS BOX MODEL (Every element is a box):                         ║
+║                                                                      ║
+║  ┌─────────────────────────────────────────────────────────┐         ║
+║  │                    MARGIN                               │         ║
+║  │   ┌───────────────────────────────────────────────┐     │         ║
+║  │   │               BORDER                          │     │         ║
+║  │   │   ┌───────────────────────────────────────┐   │     │         ║
+║  │   │   │           PADDING                     │   │     │         ║
+║  │   │   │   ┌───────────────────────────────┐   │   │     │         ║
+║  │   │   │   │                               │   │   │     │         ║
+║  │   │   │   │        CONTENT                │   │   │     │         ║
+║  │   │   │   │     (width × height)          │   │   │     │         ║
+║  │   │   │   │                               │   │   │     │         ║
+║  │   │   │   └───────────────────────────────┘   │   │     │         ║
+║  │   │   │                                       │   │     │         ║
+║  │   │   └───────────────────────────────────────┘   │     │         ║
+║  │   │                                               │     │         ║
+║  │   └───────────────────────────────────────────────┘     │         ║
+║  │                                                         │         ║
+║  └─────────────────────────────────────────────────────────┘         ║
+║                                                                      ║
+║  CONTENT-BOX (default):                                              ║
+║    width: 300px = content is 300px                                   ║
+║    Total = 300 + padding + border (BIGGER than you set!)             ║
+║                                                                      ║
+║  BORDER-BOX (what you want):                                         ║
+║    width: 300px = content + padding + border = 300px total           ║
+║    Content shrinks to fit. WHAT YOU SET IS WHAT YOU GET.             ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -278,35 +278,35 @@ li::marker { color: #3b82f6; }  /* Bullet/number color */
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  MARGIN COLLAPSE: When vertical margins of adjacent elements     ║
-║  OVERLAP instead of adding up.                                    ║
-║                                                                    ║
-║  BEFORE understanding collapse:                                   ║
-║  You expect: margin-bottom(20px) + margin-top(30px) = 50px gap   ║
-║  Reality:    They COLLAPSE to max(20px, 30px) = 30px gap         ║
-║                                                                    ║
-║  ┌────────────────┐                                               ║
-║  │    Element A    │                                               ║
-║  │  margin-bottom: │                                               ║
-║  │     20px        │                                               ║
-║  └────────────────┘                                               ║
-║        ↕ 30px (NOT 50px) ← margins COLLAPSE to larger           ║
-║  ┌────────────────┐                                               ║
-║  │    Element B    │                                               ║
-║  │  margin-top:    │                                               ║
-║  │     30px        │                                               ║
-║  └────────────────┘                                               ║
-║                                                                    ║
-║  RULES:                                                           ║
-║  • Only VERTICAL margins collapse (not horizontal)               ║
-║  • Only ADJACENT siblings or parent-child (no border/padding)    ║
-║  • NOT in flexbox, grid, float, or absolute position contexts    ║
-║  • Negative margins: -20 + 30 = 10px (they add)                 ║
-║                                                                    ║
-║  FIX/PREVENT:                                                     ║
-║  • Use flexbox (gap never collapses)                             ║
-║  • Add border or padding to parent                               ║
-║  • Use overflow: hidden on parent                                ║
+║  MARGIN COLLAPSE: When vertical margins of adjacent elements         ║
+║  OVERLAP instead of adding up.                                       ║
+║                                                                      ║
+║  BEFORE understanding collapse:                                      ║
+║  You expect: margin-bottom(20px) + margin-top(30px) = 50px gap       ║
+║  Reality:    They COLLAPSE to max(20px, 30px) = 30px gap             ║
+║                                                                      ║
+║  ┌────────────────┐                                                  ║
+║  │    Element A    │                                                 ║
+║  │  margin-bottom: │                                                 ║
+║  │     20px        │                                                 ║
+║  └────────────────┘                                                  ║
+║        ↕ 30px (NOT 50px) ← margins COLLAPSE to larger                ║
+║  ┌────────────────┐                                                  ║
+║  │    Element B    │                                                 ║
+║  │  margin-top:    │                                                 ║
+║  │     30px        │                                                 ║
+║  └────────────────┘                                                  ║
+║                                                                      ║
+║  RULES:                                                              ║
+║  • Only VERTICAL margins collapse (not horizontal)                   ║
+║  • Only ADJACENT siblings or parent-child (no border/padding)        ║
+║  • NOT in flexbox, grid, float, or absolute position contexts        ║
+║  • Negative margins: -20 + 30 = 10px (they add)                      ║
+║                                                                      ║
+║  FIX/PREVENT:                                                        ║
+║  • Use flexbox (gap never collapses)                                 ║
+║  • Add border or padding to parent                                   ║
+║  • Use overflow: hidden on parent                                    ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -316,28 +316,28 @@ li::marker { color: #3b82f6; }  /* Bullet/number color */
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  display VALUE  │ BEHAVIOR                                        ║
-║  ───────────────┼─────────────────────────────────────────────    ║
-║  block          │ Takes full width. New line before/after.       ║
-║                 │ Can set width/height. <div>, <p>, <h1>         ║
-║  ───────────────┼─────────────────────────────────────────────    ║
-║  inline         │ Only as wide as content. NO width/height.      ║
-║                 │ Same line as neighbors. <span>, <a>, <strong>  ║
-║  ───────────────┼─────────────────────────────────────────────    ║
-║  inline-block   │ Inline flow BUT allows width/height.          ║
-║                 │ Best of both worlds. <img>, <button>           ║
-║  ───────────────┼─────────────────────────────────────────────    ║
-║  none           │ Element GONE from layout (not just invisible). ║
-║                 │ vs visibility: hidden (invisible but takes space)║
-║  ───────────────┼─────────────────────────────────────────────    ║
-║  flex           │ Element becomes FLEX CONTAINER.                ║
-║                 │ Children become flex items. (Chapter 2)        ║
-║  ───────────────┼─────────────────────────────────────────────    ║
-║  grid           │ Element becomes GRID CONTAINER.                ║
-║                 │ Children placed in grid cells. (Chapter 2)     ║
-║  ───────────────┼─────────────────────────────────────────────    ║
-║  contents       │ Element box disappears, children act as if     ║
-║                 │ they're direct children of grandparent.        ║
+║  display VALUE  │ BEHAVIOR                                           ║
+║  ───────────────┼─────────────────────────────────────────────       ║
+║  block          │ Takes full width. New line before/after.           ║
+║                 │ Can set width/height. <div>, <p>, <h1>             ║
+║  ───────────────┼─────────────────────────────────────────────       ║
+║  inline         │ Only as wide as content. NO width/height.          ║
+║                 │ Same line as neighbors. <span>, <a>, <strong>      ║
+║  ───────────────┼─────────────────────────────────────────────       ║
+║  inline-block   │ Inline flow BUT allows width/height.               ║
+║                 │ Best of both worlds. <img>, <button>               ║
+║  ───────────────┼─────────────────────────────────────────────       ║
+║  none           │ Element GONE from layout (not just invisible).     ║
+║                 │ vs visibility: hidden (invisible but takes space)  ║
+║  ───────────────┼─────────────────────────────────────────────       ║
+║  flex           │ Element becomes FLEX CONTAINER.                    ║
+║                 │ Children become flex items. (Chapter 2)            ║
+║  ───────────────┼─────────────────────────────────────────────       ║
+║  grid           │ Element becomes GRID CONTAINER.                    ║
+║                 │ Children placed in grid cells. (Chapter 2)         ║
+║  ───────────────┼─────────────────────────────────────────────       ║
+║  contents       │ Element box disappears, children act as if         ║
+║                 │ they're direct children of grandparent.            ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -400,28 +400,28 @@ li::marker { color: #3b82f6; }  /* Bullet/number color */
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  UNIT  │ RELATIVE TO      │ USE CASE                              ║
-║  ──────┼──────────────────┼───────────────────────────────────    ║
-║  px    │ Absolute (1/96") │ Borders, shadows, fine details       ║
-║  rem   │ Root font-size   │ Font sizes, spacing, MOST things     ║
-║  em    │ Parent font-size │ Relative to current text size        ║
-║  %     │ Parent element   │ Widths, heights, layout              ║
-║  vw    │ Viewport width   │ Full-width sections, fluid text      ║
-║  vh    │ Viewport height  │ Full-height sections, hero banners   ║
-║  dvh   │ Dynamic viewport │ Mobile-safe vh (accounts for toolbar)║
-║  ch    │ Width of "0"     │ Max-width for text (60-70ch ideal)   ║
-║  fr    │ Grid fraction    │ Grid column/row sizing               ║
-║                                                                    ║
-║  GOLDEN RULES:                                                    ║
-║  1. Use rem for font-size (scales with user preferences)         ║
-║  2. Use rem for spacing (consistent rhythm)                      ║
-║  3. Use px for borders and shadows (should NOT scale)            ║
-║  4. Use % or fr for layout widths                                ║
-║  5. NEVER use px for font-size (breaks accessibility!)           ║
-║                                                                    ║
-║  BASE: 1rem = 16px (browser default)                             ║
-║  TRICK: html { font-size: 62.5%; } → 1rem = 10px (easy math)   ║
-║         body { font-size: 1.6rem; } → back to 16px base         ║
+║  UNIT  │ RELATIVE TO      │ USE CASE                                 ║
+║  ──────┼──────────────────┼───────────────────────────────────       ║
+║  px    │ Absolute (1/96") │ Borders, shadows, fine details           ║
+║  rem   │ Root font-size   │ Font sizes, spacing, MOST things         ║
+║  em    │ Parent font-size │ Relative to current text size            ║
+║  %     │ Parent element   │ Widths, heights, layout                  ║
+║  vw    │ Viewport width   │ Full-width sections, fluid text          ║
+║  vh    │ Viewport height  │ Full-height sections, hero banners       ║
+║  dvh   │ Dynamic viewport │ Mobile-safe vh (accounts for toolbar)    ║
+║  ch    │ Width of "0"     │ Max-width for text (60-70ch ideal)       ║
+║  fr    │ Grid fraction    │ Grid column/row sizing                   ║
+║                                                                      ║
+║  GOLDEN RULES:                                                       ║
+║  1. Use rem for font-size (scales with user preferences)             ║
+║  2. Use rem for spacing (consistent rhythm)                          ║
+║  3. Use px for borders and shadows (should NOT scale)                ║
+║  4. Use % or fr for layout widths                                    ║
+║  5. NEVER use px for font-size (breaks accessibility!)               ║
+║                                                                      ║
+║  BASE: 1rem = 16px (browser default)                                 ║
+║  TRICK: html { font-size: 62.5%; } → 1rem = 10px (easy math)         ║
+║         body { font-size: 1.6rem; } → back to 16px base              ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -530,14 +530,14 @@ li::marker { color: #3b82f6; }  /* Bullet/number color */
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  POSITION │ RELATIVE TO         │ IN FLOW? │ USE CASE             ║
-║  ─────────┼─────────────────────┼──────────┼──────────────────    ║
-║  static   │ Normal document flow│ YES      │ Default (no offset)  ║
-║  relative │ Its normal position │ YES      │ Offset + context     ║
-║  absolute │ Nearest positioned  │ NO       │ Overlays, tooltips   ║
-║           │ ancestor            │          │                      ║
-║  fixed    │ Viewport            │ NO       │ Sticky nav, modals   ║
-║  sticky   │ Scroll threshold    │ YES*     │ Sticky headers       ║
+║  POSITION │ RELATIVE TO         │ IN FLOW? │ USE CASE                ║
+║  ─────────┼─────────────────────┼──────────┼──────────────────       ║
+║  static   │ Normal document flow│ YES      │ Default (no offset)     ║
+║  relative │ Its normal position │ YES      │ Offset + context        ║
+║  absolute │ Nearest positioned  │ NO       │ Overlays, tooltips      ║
+║           │ ancestor            │          │                         ║
+║  fixed    │ Viewport            │ NO       │ Sticky nav, modals      ║
+║  sticky   │ Scroll threshold    │ YES*     │ Sticky headers          ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -586,25 +586,25 @@ body {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  Z-INDEX GUIDE:                                                   ║
-║                                                                    ║
-║  z-index only works on POSITIONED elements (not static).         ║
-║                                                                    ║
-║  LAYER SYSTEM (use consistent values):                            ║
-║  ┌────────────────────────────────────┐                           ║
-║  │ z-index: 9999   MODAL OVERLAY     │ ← On top of everything   ║
-║  │ z-index: 1000   NAVIGATION        │                           ║
-║  │ z-index: 100    DROPDOWN/POPUP    │                           ║
-║  │ z-index: 50     STICKY ELEMENTS   │                           ║
-║  │ z-index: 10     FLOATING UI       │                           ║
-║  │ z-index: 1      JUST ABOVE NORMAL │                           ║
-║  │ z-index: 0      NORMAL LAYER      │                           ║
-║  │ z-index: -1     BEHIND CONTENT    │ ← Background decorations ║
-║  └────────────────────────────────────┘                           ║
-║                                                                    ║
-║  STACKING CONTEXT: z-index creates a new context.                ║
-║  Children of z-index:5 can NEVER be above a sibling with z:10.  ║
-║  This is why z-index "doesn't work" sometimes!                   ║
+║  Z-INDEX GUIDE:                                                      ║
+║                                                                      ║
+║  z-index only works on POSITIONED elements (not static).             ║
+║                                                                      ║
+║  LAYER SYSTEM (use consistent values):                               ║
+║  ┌────────────────────────────────────┐                              ║
+║  │ z-index: 9999   MODAL OVERLAY     │ ← On top of everything        ║
+║  │ z-index: 1000   NAVIGATION        │                               ║
+║  │ z-index: 100    DROPDOWN/POPUP    │                               ║
+║  │ z-index: 50     STICKY ELEMENTS   │                               ║
+║  │ z-index: 10     FLOATING UI       │                               ║
+║  │ z-index: 1      JUST ABOVE NORMAL │                               ║
+║  │ z-index: 0      NORMAL LAYER      │                               ║
+║  │ z-index: -1     BEHIND CONTENT    │ ← Background decorations      ║
+║  └────────────────────────────────────┘                              ║
+║                                                                      ║
+║  STACKING CONTEXT: z-index creates a new context.                    ║
+║  Children of z-index:5 can NEVER be above a sibling with z:10.       ║
+║  This is why z-index "doesn't work" sometimes!                       ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 

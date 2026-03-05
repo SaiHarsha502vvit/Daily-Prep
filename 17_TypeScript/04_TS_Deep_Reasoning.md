@@ -35,9 +35,9 @@
 ║                                                                  ║
 ║  The blueprints guide construction (development).                ║
 ║  Once the building is built (compiled), the blueprints are       ║
-║  stored in a drawer — they're NOT embedded in the walls.        ║
+║  stored in a drawer — they're NOT embedded in the walls.         ║
 ║                                                                  ║
-║  You can't walk into a building and ask "show me the blueprint  ║
+║  You can't walk into a building and ask "show me the blueprint   ║
 ║  for this room." The blueprint (type) was used during            ║
 ║  construction (compilation) and then ERASED.                     ║
 ╚══════════════════════════════════════════════════════════════════╝
@@ -217,19 +217,19 @@ const dog: Dog = cat; // No error?!
 ╔══════════════════════════════════════════════════════════════════╗
 ║  STRUCTURAL vs NOMINAL TYPING                                    ║
 ║                                                                  ║
-║  Java/C# (Nominal): "Are you wearing the RIGHT uniform?"        ║
+║  Java/C# (Nominal): "Are you wearing the RIGHT uniform?"         ║
 ║  → Cat and Dog must explicitly implement the same interface      ║
 ║  → Same shape ≠ same type                                        ║
 ║                                                                  ║
 ║  TypeScript (Structural): "Can you do the JOB?"                  ║
 ║  → If it has name:string and meow():void, it's compatible        ║
-║  → TS doesn't care what you CALL yourself, only what you CAN DO ║
+║  → TS doesn't care what you CALL yourself, only what you CAN DO  ║
 ║  → Like hiring: "Can you code in Java?" not "Did you go to MIT?" ║
 ║                                                                  ║
 ║  This is WHY:                                                    ║
-║  - An object literal with extra props can be assigned             ║
-║  - Classes from different files with same shape are compatible    ║
-║  - You don't need `implements` to satisfy an interface            ║
+║  - An object literal with extra props can be assigned            ║
+║  - Classes from different files with same shape are compatible   ║
+║  - You don't need `implements` to satisfy an interface           ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
@@ -261,7 +261,7 @@ const eur: Euros = usd; // ❌ Error! Different brands.
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
-║  strict: true = Seatbelt + Airbag + ABS + Lane Assist           ║
+║  strict: true = Seatbelt + Airbag + ABS + Lane Assist            ║
 ║                                                                  ║
 ║  It enables 8 individual flags:                                  ║
 ║                                                                  ║
@@ -308,7 +308,7 @@ const eur: Euros = usd; // ❌ Error! Different brands.
 ║    Wrapper<number> → { value: number; timestamp: Date }          ║
 ║                                                                  ║
 ║  Analogy: A gift box. The box is generic — it doesn't care       ║
-║  what's inside. But once you put shoes in (Wrapper<Shoes>),     ║
+║  what's inside. But once you put shoes in (Wrapper<Shoes>),      ║
 ║  the box "knows" it contains shoes and can tell you so.          ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
@@ -355,13 +355,13 @@ type B = IsString<number>;  // "no"
 ║     → More JS shipped to browser. Defeats tree shaking.          ║
 ║                                                                  ║
 ║  2. Numeric enums have unsafe reverse mapping:                   ║
-║     Color[999] = undefined, but TS won't complain               ║
+║     Color[999] = undefined, but TS won't complain                ║
 ║                                                                  ║
-║  3. const enum has different behavior and esbuild issues          ║
+║  3. const enum has different behavior and esbuild issues         ║
 ║                                                                  ║
 ║  ALTERNATIVE: Union types + as const                             ║
-║  const COLORS = ['red', 'green', 'blue'] as const;              ║
-║  type Color = typeof COLORS[number]; // 'red'|'green'|'blue'    ║
+║  const COLORS = ['red', 'green', 'blue'] as const;               ║
+║  type Color = typeof COLORS[number]; // 'red'|'green'|'blue'     ║
 ║  → No runtime code, tree-shakable, same type safety              ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```

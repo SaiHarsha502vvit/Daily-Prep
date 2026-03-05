@@ -52,65 +52,65 @@ MVCC (Multi-Version Concurrency Control):
 
 HOW MULTIPLE TRANSACTIONS SEE DIFFERENT DATA:
 
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │                                                                  │
-│  Row versions in database:                                      │
+│  Row versions in database:                                       │
 │                                                                  │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │ accounts row (id = 1):                                   │   │
-│  │                                                          │   │
-│  │ Version 1: balance = 1000, xmin = 10, xmax = 42         │   │
-│  │            (created by tx 10, deleted by tx 42)         │   │
-│  │                                                          │   │
-│  │ Version 2: balance = 900, xmin = 42, xmax = null        │   │
-│  │            (created by tx 42, still current)            │   │
-│  └─────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────┐     │
+│  │ accounts row (id = 1):                                   │    │
+│  │                                                          │    │
+│  │ Version 1: balance = 1000, xmin = 10, xmax = 42         │     │
+│  │            (created by tx 10, deleted by tx 42)         │     │
+│  │                                                          │    │
+│  │ Version 2: balance = 900, xmin = 42, xmax = null        │     │
+│  │            (created by tx 42, still current)            │     │
+│  └─────────────────────────────────────────────────────────┘     │
 │                                                                  │
-│  Transaction 50 runs: SELECT * FROM accounts WHERE id = 1;     │
+│  Transaction 50 runs: SELECT * FROM accounts WHERE id = 1;       │
 │                                                                  │
-│  Visibility check:                                              │
-│  • Is tx 42 committed? YES                                     │
-│  • 42 < 50 (tx 42 committed before tx 50 started)             │
-│  • Version 2 is visible to tx 50                               │
-│  • Returns: balance = 900                                       │
+│  Visibility check:                                               │
+│  • Is tx 42 committed? YES                                       │
+│  • 42 < 50 (tx 42 committed before tx 50 started)                │
+│  • Version 2 is visible to tx 50                                 │
+│  • Returns: balance = 900                                        │
 │                                                                  │
 │                                                                  │
-│  If tx 42 was still running when tx 50 started:                │
-│  • Version 2 would be invisible to tx 50                       │
-│  • tx 50 would see Version 1: balance = 1000                   │
-│  • This is "snapshot isolation"                                │
+│  If tx 42 was still running when tx 50 started:                  │
+│  • Version 2 would be invisible to tx 50                         │
+│  • tx 50 would see Version 1: balance = 1000                     │
+│  • This is "snapshot isolation"                                  │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 
 
 DEADLOCK DETECTION:
 ──────────────────
 
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │                                                                  │
-│  TX A: UPDATE accounts SET balance = 100 WHERE id = 1; (OK)    │
-│  TX B: UPDATE accounts SET balance = 200 WHERE id = 2; (OK)    │
-│  TX A: UPDATE accounts SET balance = 300 WHERE id = 2; (WAIT)  │
-│  TX B: UPDATE accounts SET balance = 400 WHERE id = 1; (WAIT)  │
+│  TX A: UPDATE accounts SET balance = 100 WHERE id = 1; (OK)      │
+│  TX B: UPDATE accounts SET balance = 200 WHERE id = 2; (OK)      │
+│  TX A: UPDATE accounts SET balance = 300 WHERE id = 2; (WAIT)    │
+│  TX B: UPDATE accounts SET balance = 400 WHERE id = 1; (WAIT)    │
 │                                                                  │
 │  DEADLOCK!                                                       │
 │                                                                  │
-│  Wait-for graph:                                                │
-│  ┌────┐        ┌────┐                                          │
-│  │ TX │───────►│ TX │                                          │
-│  │ A  │        │ B  │                                          │
-│  └────┘◄───────└────┘                                          │
-│    ▲              │                                             │
-│    │              │                                             │
-│    └──────────────┘                                             │
+│  Wait-for graph:                                                 │
+│  ┌────┐        ┌────┐                                            │
+│  │ TX │───────►│ TX │                                            │
+│  │ A  │        │ B  │                                            │
+│  └────┘◄───────└────┘                                            │
+│    ▲              │                                              │
+│    │              │                                              │
+│    └──────────────┘                                              │
 │                                                                  │
-│  Cycle detected! One transaction must be aborted.              │
-│  PostgreSQL aborts the one with less work done.                │
+│  Cycle detected! One transaction must be aborted.                │
+│  PostgreSQL aborts the one with less work done.                  │
 │                                                                  │
-│  ERROR: deadlock detected                                       │
-│  DETAIL: Process 1234 waits for ShareLock on transaction 567   │
+│  ERROR: deadlock detected                                        │
+│  DETAIL: Process 1234 waits for ShareLock on transaction 567     │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ### Connection Pooling Internals
@@ -123,71 +123,71 @@ WITHOUT CONNECTION POOLING:
 ──────────────────────────
 
 Each request:
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │                                                                  │
-│  1. TCP connection to DB (30-100ms)                             │
-│  2. SSL/TLS handshake (50-150ms)                                │
-│  3. Authentication (10-50ms)                                    │
-│  4. Allocate connection resources (memory, process)             │
-│  5. Execute query (10ms)                                        │
-│  6. Return results                                              │
-│  7. Close connection (release resources)                        │
+│  1. TCP connection to DB (30-100ms)                              │
+│  2. SSL/TLS handshake (50-150ms)                                 │
+│  3. Authentication (10-50ms)                                     │
+│  4. Allocate connection resources (memory, process)              │
+│  5. Execute query (10ms)                                         │
+│  6. Return results                                               │
+│  7. Close connection (release resources)                         │
 │                                                                  │
-│  TOTAL OVERHEAD: 100-300ms PER REQUEST!                         │
+│  TOTAL OVERHEAD: 100-300ms PER REQUEST!                          │
 │                                                                  │
-│  With 1000 requests/second:                                     │
-│  • 1000 connection setups                                       │
-│  • 1000 connection teardowns                                    │
-│  • Database overwhelmed!                                        │
+│  With 1000 requests/second:                                      │
+│  • 1000 connection setups                                        │
+│  • 1000 connection teardowns                                     │
+│  • Database overwhelmed!                                         │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 
 
 WITH CONNECTION POOLING (e.g., HikariCP):
 ────────────────────────────────────────
 
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │                      CONNECTION POOL                             │
-├─────────────────────────────────────────────────────────────────┤
+├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
-│  At startup, pool creates N connections:                        │
+│  At startup, pool creates N connections:                         │
 │                                                                  │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │                    POOL (20 connections)                 │   │
-│  │                                                          │   │
-│  │  ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐       ┌──────┐    │   │
-│  │  │Conn 1│ │Conn 2│ │Conn 3│ │Conn 4│ ..... │Conn20│    │   │
-│  │  │ IDLE │ │ BUSY │ │ IDLE │ │ BUSY │       │ IDLE │    │   │
-│  │  └──────┘ └──────┘ └──────┘ └──────┘       └──────┘    │   │
-│  └─────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────┐     │
+│  │                    POOL (20 connections)                 │    │
+│  │                                                          │    │
+│  │  ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐       ┌──────┐    │      │
+│  │  │Conn 1│ │Conn 2│ │Conn 3│ │Conn 4│ ..... │Conn20│    │      │
+│  │  │ IDLE │ │ BUSY │ │ IDLE │ │ BUSY │       │ IDLE │    │      │
+│  │  └──────┘ └──────┘ └──────┘ └──────┘       └──────┘    │      │
+│  └─────────────────────────────────────────────────────────┘     │
 │                                                                  │
-│  Request flow:                                                  │
-│  1. Request arrives                                             │
-│  2. Pool.getConnection() → Returns Conn 1 (IDLE → BUSY)        │
-│  3. Execute query (10ms)                                        │
-│  4. Connection.close() → Actually returns to pool (BUSY→IDLE)  │
+│  Request flow:                                                   │
+│  1. Request arrives                                              │
+│  2. Pool.getConnection() → Returns Conn 1 (IDLE → BUSY)          │
+│  3. Execute query (10ms)                                         │
+│  4. Connection.close() → Actually returns to pool (BUSY→IDLE)    │
 │                                                                  │
-│  OVERHEAD: ~0ms (connection already established!)               │
-│                                                                  │
-│                                                                  │
-│  HikariCP Configuration:                                        │
-│  ───────────────────────                                        │
-│  spring.datasource.hikari.minimum-idle=10                      │
-│  spring.datasource.hikari.maximum-pool-size=20                 │
-│  spring.datasource.hikari.idle-timeout=600000                  │
-│  spring.datasource.hikari.max-lifetime=1800000                 │
-│  spring.datasource.hikari.connection-timeout=30000             │
+│  OVERHEAD: ~0ms (connection already established!)                │
 │                                                                  │
 │                                                                  │
-│  Pool exhaustion:                                               │
-│  ───────────────                                                │
-│  If all 20 connections busy:                                    │
-│  • New requests wait in queue                                  │
-│  • If wait > connectionTimeout (30s) → Exception               │
-│  • Monitor this! Could indicate need for more connections      │
-│    or slow queries                                              │
+│  HikariCP Configuration:                                         │
+│  ───────────────────────                                         │
+│  spring.datasource.hikari.minimum-idle=10                        │
+│  spring.datasource.hikari.maximum-pool-size=20                   │
+│  spring.datasource.hikari.idle-timeout=600000                    │
+│  spring.datasource.hikari.max-lifetime=1800000                   │
+│  spring.datasource.hikari.connection-timeout=30000               │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+│                                                                  │
+│  Pool exhaustion:                                                │
+│  ───────────────                                                 │
+│  If all 20 connections busy:                                     │
+│  • New requests wait in queue                                    │
+│  • If wait > connectionTimeout (30s) → Exception                 │
+│  • Monitor this! Could indicate need for more connections        │
+│    or slow queries                                               │
+│                                                                  │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -259,46 +259,46 @@ CLOUD BENEFITS:
 ### AWS Services - Complete Map
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │                    AWS SERVICES ARCHITECTURE                     │
-├─────────────────────────────────────────────────────────────────┤
+├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
 │  COMPUTE                    STORAGE                              │
 │  ───────                    ───────                              │
-│  EC2 - Virtual Servers      S3 - Object Storage (files)         │
-│  Lambda - Serverless        EBS - Block Storage (disk)          │
-│  ECS/EKS - Containers       EFS - File System (shared)          │
-│  Fargate - Serverless Cont. Glacier - Archive Storage           │
-│  Lightsail - Simple VPS     Storage Gateway - Hybrid            │
+│  EC2 - Virtual Servers      S3 - Object Storage (files)          │
+│  Lambda - Serverless        EBS - Block Storage (disk)           │
+│  ECS/EKS - Containers       EFS - File System (shared)           │
+│  Fargate - Serverless Cont. Glacier - Archive Storage            │
+│  Lightsail - Simple VPS     Storage Gateway - Hybrid             │
 │                                                                  │
 │  DATABASE                   NETWORKING                           │
 │  ────────                   ──────────                           │
-│  RDS - Relational (MySQL,   VPC - Virtual Network               │
-│        PostgreSQL, etc.)    Route 53 - DNS                      │
-│  DynamoDB - NoSQL           CloudFront - CDN                    │
-│  Aurora - High-perf SQL     API Gateway - REST/WebSocket        │
-│  ElastiCache - Redis/Memc.  ELB - Load Balancer                 │
-│  DocumentDB - MongoDB       Direct Connect - Dedicated line     │
+│  RDS - Relational (MySQL,   VPC - Virtual Network                │
+│        PostgreSQL, etc.)    Route 53 - DNS                       │
+│  DynamoDB - NoSQL           CloudFront - CDN                     │
+│  Aurora - High-perf SQL     API Gateway - REST/WebSocket         │
+│  ElastiCache - Redis/Memc.  ELB - Load Balancer                  │
+│  DocumentDB - MongoDB       Direct Connect - Dedicated line      │
 │  Neptune - Graph DB                                              │
 │                                                                  │
 │  SECURITY                   MONITORING                           │
 │  ────────                   ──────────                           │
-│  IAM - Identity & Access    CloudWatch - Metrics/Logs           │
-│  KMS - Key Management       CloudTrail - API Audit              │
-│  WAF - Web App Firewall     X-Ray - Distributed Tracing         │
-│  Shield - DDoS Protection   Config - Resource Tracking          │
+│  IAM - Identity & Access    CloudWatch - Metrics/Logs            │
+│  KMS - Key Management       CloudTrail - API Audit               │
+│  WAF - Web App Firewall     X-Ray - Distributed Tracing          │
+│  Shield - DDoS Protection   Config - Resource Tracking           │
 │  Secrets Manager - Secrets                                       │
-│  Cognito - User Auth                                            │
+│  Cognito - User Auth                                             │
 │                                                                  │
 │  MESSAGING                  AI/ML                                │
 │  ─────────                  ─────                                │
-│  SQS - Message Queue        SageMaker - ML Platform             │
-│  SNS - Pub/Sub              Rekognition - Image Analysis        │
-│  EventBridge - Event Bus    Comprehend - NLP                    │
-│  Kinesis - Streaming        Polly - Text to Speech              │
-│  MQ - ActiveMQ/RabbitMQ     Transcribe - Speech to Text         │
+│  SQS - Message Queue        SageMaker - ML Platform              │
+│  SNS - Pub/Sub              Rekognition - Image Analysis         │
+│  EventBridge - Event Bus    Comprehend - NLP                     │
+│  Kinesis - Streaming        Polly - Text to Speech               │
+│  MQ - ActiveMQ/RabbitMQ     Transcribe - Speech to Text          │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ### AWS Architecture - Real Examples
@@ -306,136 +306,136 @@ CLOUD BENEFITS:
 #### Example 1: Simple Web Application
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │                    SIMPLE WEB APP ARCHITECTURE                   │
-├─────────────────────────────────────────────────────────────────┤
+├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
-│                         ┌─────────────┐                         │
-│         Internet ──────►│ CloudFront  │ (CDN)                   │
-│                         └──────┬──────┘                         │
+│                         ┌─────────────┐                          │
+│         Internet ──────►│ CloudFront  │ (CDN)                    │
+│                         └──────┬──────┘                          │
 │                                │                                 │
-│                         ┌──────▼──────┐                         │
-│                         │    ALB      │ (Load Balancer)         │
-│                         └──────┬──────┘                         │
+│                         ┌──────▼──────┐                          │
+│                         │    ALB      │ (Load Balancer)          │
+│                         └──────┬──────┘                          │
 │                                │                                 │
-│              ┌─────────────────┼─────────────────┐              │
-│              │                 │                 │              │
-│         ┌────▼────┐      ┌────▼────┐      ┌────▼────┐          │
-│         │   EC2   │      │   EC2   │      │   EC2   │          │
-│         │ (App)   │      │ (App)   │      │ (App)   │          │
-│         └────┬────┘      └────┬────┘      └────┬────┘          │
-│              │                 │                 │              │
-│              └─────────────────┼─────────────────┘              │
+│              ┌─────────────────┼─────────────────┐               │
+│              │                 │                 │               │
+│         ┌────▼────┐      ┌────▼────┐      ┌────▼────┐            │
+│         │   EC2   │      │   EC2   │      │   EC2   │            │
+│         │ (App)   │      │ (App)   │      │ (App)   │            │
+│         └────┬────┘      └────┬────┘      └────┬────┘            │
+│              │                 │                 │               │
+│              └─────────────────┼─────────────────┘               │
 │                                │                                 │
-│                         ┌──────▼──────┐                         │
-│                         │     RDS     │ (Database)              │
-│                         │  (Primary)  │                         │
-│                         └──────┬──────┘                         │
+│                         ┌──────▼──────┐                          │
+│                         │     RDS     │ (Database)               │
+│                         │  (Primary)  │                          │
+│                         └──────┬──────┘                          │
 │                                │                                 │
-│                         ┌──────▼──────┐                         │
-│                         │     RDS     │ (Read Replica)          │
-│                         │  (Replica)  │                         │
-│                         └─────────────┘                         │
+│                         ┌──────▼──────┐                          │
+│                         │     RDS     │ (Read Replica)           │
+│                         │  (Replica)  │                          │
+│                         └─────────────┘                          │
 │                                                                  │
-│  MONTHLY COST ESTIMATE:                                         │
-│  ├── EC2 (3x t3.medium): $90                                    │
-│  ├── RDS (db.t3.medium): $50                                    │
-│  ├── ALB: $20                                                   │
-│  ├── CloudFront: $10-50                                         │
-│  └── Total: ~$170-210/month                                     │
+│  MONTHLY COST ESTIMATE:                                          │
+│  ├── EC2 (3x t3.medium): $90                                     │
+│  ├── RDS (db.t3.medium): $50                                     │
+│  ├── ALB: $20                                                    │
+│  ├── CloudFront: $10-50                                          │
+│  └── Total: ~$170-210/month                                      │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 #### Example 2: Serverless Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │                    SERVERLESS ARCHITECTURE                       │
-├─────────────────────────────────────────────────────────────────┤
+├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
-│                         ┌─────────────┐                         │
-│         Internet ──────►│ CloudFront  │                         │
-│                         └──────┬──────┘                         │
+│                         ┌─────────────┐                          │
+│         Internet ──────►│ CloudFront  │                          │
+│                         └──────┬──────┘                          │
 │                                │                                 │
-│              ┌─────────────────┼─────────────────┐              │
-│              │                                   │              │
-│              ▼                                   ▼              │
-│       ┌─────────────┐                   ┌─────────────┐        │
-│       │     S3      │                   │ API Gateway │        │
-│       │(Static Site)│                   └──────┬──────┘        │
-│       └─────────────┘                          │               │
-│                                                │               │
-│                                         ┌──────▼──────┐        │
-│                                         │   Lambda    │        │
-│                                         │ (Functions) │        │
-│                                         └──────┬──────┘        │
-│                                                │               │
-│              ┌─────────────┬─────────────┬─────┴─────┐         │
-│              │             │             │           │         │
-│              ▼             ▼             ▼           ▼         │
-│       ┌──────────┐  ┌──────────┐  ┌──────────┐ ┌──────────┐   │
-│       │ DynamoDB │  │    S3    │  │   SES    │ │   SNS    │   │
-│       │(Database)│  │ (Files)  │  │ (Email)  │ │ (Notify) │   │
-│       └──────────┘  └──────────┘  └──────────┘ └──────────┘   │
-│                                                                │
-│  BENEFITS:                                                     │
-│  ├── Zero servers to manage                                    │
-│  ├── Auto-scaling (0 to millions)                             │
-│  ├── Pay only for execution time                              │
-│  └── High availability built-in                               │
-│                                                                │
-│  MONTHLY COST (Low traffic):                                   │
-│  ├── Lambda: $0-5 (free tier generous)                        │
-│  ├── API Gateway: $5-20                                        │
-│  ├── DynamoDB: $5-25                                          │
-│  ├── S3: $1-5                                                  │
-│  └── Total: ~$15-50/month                                      │
-│                                                                │
-└─────────────────────────────────────────────────────────────────┘
+│              ┌─────────────────┼─────────────────┐               │
+│              │                                   │               │
+│              ▼                                   ▼               │
+│       ┌─────────────┐                   ┌─────────────┐          │
+│       │     S3      │                   │ API Gateway │          │
+│       │(Static Site)│                   └──────┬──────┘          │
+│       └─────────────┘                          │                 │
+│                                                │                 │
+│                                         ┌──────▼──────┐          │
+│                                         │   Lambda    │          │
+│                                         │ (Functions) │          │
+│                                         └──────┬──────┘          │
+│                                                │                 │
+│              ┌─────────────┬─────────────┬─────┴─────┐           │
+│              │             │             │           │           │
+│              ▼             ▼             ▼           ▼           │
+│       ┌──────────┐  ┌──────────┐  ┌──────────┐ ┌──────────┐      │
+│       │ DynamoDB │  │    S3    │  │   SES    │ │   SNS    │      │
+│       │(Database)│  │ (Files)  │  │ (Email)  │ │ (Notify) │      │
+│       └──────────┘  └──────────┘  └──────────┘ └──────────┘      │
+│                                                                  │
+│  BENEFITS:                                                       │
+│  ├── Zero servers to manage                                      │
+│  ├── Auto-scaling (0 to millions)                                │
+│  ├── Pay only for execution time                                 │
+│  └── High availability built-in                                  │
+│                                                                  │
+│  MONTHLY COST (Low traffic):                                     │
+│  ├── Lambda: $0-5 (free tier generous)                           │
+│  ├── API Gateway: $5-20                                          │
+│  ├── DynamoDB: $5-25                                             │
+│  ├── S3: $1-5                                                    │
+│  └── Total: ~$15-50/month                                        │
+│                                                                  │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 #### Example 3: Microservices Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │                    MICROSERVICES ON AWS                          │
-├─────────────────────────────────────────────────────────────────┤
+├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
-│                     ┌─────────────────┐                         │
-│      Internet ─────►│  API Gateway    │                         │
-│                     │  (or ALB)       │                         │
-│                     └────────┬────────┘                         │
+│                     ┌─────────────────┐                          │
+│      Internet ─────►│  API Gateway    │                          │
+│                     │  (or ALB)       │                          │
+│                     └────────┬────────┘                          │
 │                              │                                   │
-│      ┌───────────────────────┼───────────────────────┐          │
-│      │                       │                       │          │
-│      ▼                       ▼                       ▼          │
-│ ┌─────────┐            ┌─────────┐            ┌─────────┐       │
-│ │  ECS    │            │  ECS    │            │  ECS    │       │
-│ │ User    │            │ Order   │            │ Payment │       │
-│ │ Service │            │ Service │            │ Service │       │
-│ └────┬────┘            └────┬────┘            └────┬────┘       │
-│      │                      │                      │            │
-│      │                      ▼                      │            │
-│      │               ┌─────────────┐               │            │
-│      │               │    SQS      │◄──────────────┘            │
-│      │               │ (Messages)  │                            │
-│      │               └──────┬──────┘                            │
-│      │                      │                                   │
-│      ▼                      ▼                                   │
-│ ┌─────────┐            ┌─────────┐                             │
-│ │   RDS   │            │ DynamoDB│                             │
-│ │ (Users) │            │ (Orders)│                             │
-│ └─────────┘            └─────────┘                             │
-│                                                                 │
-│  SUPPORTING SERVICES:                                           │
-│  ├── ECR: Container Registry                                    │
-│  ├── Secrets Manager: API Keys, DB passwords                   │
-│  ├── CloudWatch: Logging & Monitoring                          │
-│  ├── X-Ray: Distributed Tracing                                │
-│  └── CodePipeline: CI/CD                                       │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+│      ┌───────────────────────┼───────────────────────┐           │
+│      │                       │                       │           │
+│      ▼                       ▼                       ▼           │
+│ ┌─────────┐            ┌─────────┐            ┌─────────┐        │
+│ │  ECS    │            │  ECS    │            │  ECS    │        │
+│ │ User    │            │ Order   │            │ Payment │        │
+│ │ Service │            │ Service │            │ Service │        │
+│ └────┬────┘            └────┬────┘            └────┬────┘        │
+│      │                      │                      │             │
+│      │                      ▼                      │             │
+│      │               ┌─────────────┐               │             │
+│      │               │    SQS      │◄──────────────┘             │
+│      │               │ (Messages)  │                             │
+│      │               └──────┬──────┘                             │
+│      │                      │                                    │
+│      ▼                      ▼                                    │
+│ ┌─────────┐            ┌─────────┐                               │
+│ │   RDS   │            │ DynamoDB│                               │
+│ │ (Users) │            │ (Orders)│                               │
+│ └─────────┘            └─────────┘                               │
+│                                                                  │
+│  SUPPORTING SERVICES:                                            │
+│  ├── ECR: Container Registry                                     │
+│  ├── Secrets Manager: API Keys, DB passwords                     │
+│  ├── CloudWatch: Logging & Monitoring                            │
+│  ├── X-Ray: Distributed Tracing                                  │
+│  └── CodePipeline: CI/CD                                         │
+│                                                                  │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ### AWS Cost Optimization - Expert Level
@@ -496,37 +496,37 @@ COST OPTIMIZATION STRATEGIES:
 ### Azure Services - Complete Map
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │                    AZURE SERVICES MAP                            │
-├─────────────────────────────────────────────────────────────────┤
+├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
 │  AWS                    →     AZURE                              │
 │  ───                          ─────                              │
 │  EC2                    →     Virtual Machines                   │
 │  Lambda                 →     Azure Functions                    │
-│  ECS/EKS               →     AKS (Azure Kubernetes Service)     │
+│  ECS/EKS               →     AKS (Azure Kubernetes Service)      │
 │  S3                     →     Blob Storage                       │
 │  RDS                    →     Azure SQL Database                 │
-│  DynamoDB              →     Cosmos DB                          │
-│  CloudFront            →     Azure CDN / Front Door             │
-│  Route 53              →     Azure DNS                          │
+│  DynamoDB              →     Cosmos DB                           │
+│  CloudFront            →     Azure CDN / Front Door              │
+│  Route 53              →     Azure DNS                           │
 │  VPC                    →     Virtual Network                    │
 │  IAM                    →     Azure AD / RBAC                    │
-│  CloudWatch            →     Azure Monitor                      │
-│  SQS                    →     Azure Queue Storage / Service Bus │
+│  CloudWatch            →     Azure Monitor                       │
+│  SQS                    →     Azure Queue Storage / Service Bus  │
 │  SNS                    →     Notification Hubs                  │
-│  API Gateway           →     API Management                     │
-│  Cognito               →     Azure AD B2C                       │
-│  Secrets Manager       →     Key Vault                          │
+│  API Gateway           →     API Management                      │
+│  Cognito               →     Azure AD B2C                        │
+│  Secrets Manager       →     Key Vault                           │
 │                                                                  │
 │  AZURE UNIQUE SERVICES:                                          │
-│  ├── Azure DevOps: Complete CI/CD platform                      │
-│  ├── Power Platform: Low-code apps                              │
-│  ├── Azure Active Directory: Enterprise identity                │
-│  ├── Azure Synapse: Data analytics                              │
-│  └── Logic Apps: Workflow automation                            │
+│  ├── Azure DevOps: Complete CI/CD platform                       │
+│  ├── Power Platform: Low-code apps                               │
+│  ├── Azure Active Directory: Enterprise identity                 │
+│  ├── Azure Synapse: Data analytics                               │
+│  └── Logic Apps: Workflow automation                             │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ### Cloud Security Best Practices
@@ -808,51 +808,51 @@ HOW A VIRTUAL MACHINE WORKS:
 
 When you launch an EC2 instance...
 
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │                    PHYSICAL HOST SERVER                          │
 │                  (AWS Data Center)                               │
-├─────────────────────────────────────────────────────────────────┤
+├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
 │  Physical Hardware:                                              │
-│  ┌─────────────────────────────────────────────────────────────┐│
-│  │ CPU: 96 cores (Intel Xeon / AMD EPYC)                       ││
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │ CPU: 96 cores (Intel Xeon / AMD EPYC)                       │ │
 │  │ RAM: 768 GB                                                  ││
-│  │ Storage: NVMe SSDs + Network Storage                        ││
-│  │ Network: 100 Gbps                                           ││
-│  └─────────────────────────────────────────────────────────────┘│
+│  │ Storage: NVMe SSDs + Network Storage                        │ │
+│  │ Network: 100 Gbps                                           │ │
+│  └─────────────────────────────────────────────────────────────┘ │
 │                                                                  │
-│  HYPERVISOR (AWS Nitro System):                                 │
-│  ┌─────────────────────────────────────────────────────────────┐│
+│  HYPERVISOR (AWS Nitro System):                                  │
+│  ┌─────────────────────────────────────────────────────────────┐ │
 │  │                                                              ││
-│  │  The hypervisor divides physical resources:                 ││
+│  │  The hypervisor divides physical resources:                 │ │
 │  │                                                              ││
-│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐         ││
-│  │  │   VM 1      │  │   VM 2      │  │   VM 3      │         ││
-│  │  │ (Your EC2)  │  │ (Other user)│  │ (Other user)│         ││
-│  │  ├─────────────┤  ├─────────────┤  ├─────────────┤         ││
-│  │  │ 4 vCPUs     │  │ 16 vCPUs    │  │ 8 vCPUs     │         ││
-│  │  │ 16GB RAM    │  │ 64GB RAM    │  │ 32GB RAM    │         ││
-│  │  │ 100GB EBS   │  │ 500GB EBS   │  │ 200GB EBS   │         ││
-│  │  └─────────────┘  └─────────────┘  └─────────────┘         ││
+│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐         │  │
+│  │  │   VM 1      │  │   VM 2      │  │   VM 3      │         │  │
+│  │  │ (Your EC2)  │  │ (Other user)│  │ (Other user)│         │  │
+│  │  ├─────────────┤  ├─────────────┤  ├─────────────┤         │  │
+│  │  │ 4 vCPUs     │  │ 16 vCPUs    │  │ 8 vCPUs     │         │  │
+│  │  │ 16GB RAM    │  │ 64GB RAM    │  │ 32GB RAM    │         │  │
+│  │  │ 100GB EBS   │  │ 500GB EBS   │  │ 200GB EBS   │         │  │
+│  │  └─────────────┘  └─────────────┘  └─────────────┘         │  │
 │  │                                                              ││
 │  │  Isolation:                                                  ││
-│  │  • Each VM thinks it has its own hardware                   ││
-│  │  • VMs can't access each other's memory                     ││
-│  │  • CPU time slicing (fair scheduling)                       ││
+│  │  • Each VM thinks it has its own hardware                   │ │
+│  │  • VMs can't access each other's memory                     │ │
+│  │  • CPU time slicing (fair scheduling)                       │ │
 │  │                                                              ││
-│  └─────────────────────────────────────────────────────────────┘│
+│  └─────────────────────────────────────────────────────────────┘ │
 │                                                                  │
-│  NITRO CARDS (Hardware offload):                                │
-│  ┌─────────────────────────────────────────────────────────────┐│
-│  │ • Nitro Card for VPC (networking)                           ││
-│  │ • Nitro Card for EBS (storage I/O)                          ││
-│  │ • Nitro Security Chip (secure boot)                         ││
-│  │ • Nitro Controller (management)                             ││
+│  NITRO CARDS (Hardware offload):                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │ • Nitro Card for VPC (networking)                           │ │
+│  │ • Nitro Card for EBS (storage I/O)                          │ │
+│  │ • Nitro Security Chip (secure boot)                         │ │
+│  │ • Nitro Controller (management)                             │ │
 │  │                                                              ││
-│  │ This frees CPU for YOUR workload, not virtualization        ││
-│  └─────────────────────────────────────────────────────────────┘│
+│  │ This frees CPU for YOUR workload, not virtualization        │ │
+│  └─────────────────────────────────────────────────────────────┘ │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 
 
 EC2 LAUNCH PROCESS - INTERNAL FLOW:
@@ -903,39 +903,39 @@ HOW EBS (Elastic Block Store) WORKS:
 
 Your EC2 instance's "disk" is actually network-attached!
 
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │                   EBS ARCHITECTURE                               │
-├─────────────────────────────────────────────────────────────────┤
+├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
-│  YOUR EC2 INSTANCE           EBS STORAGE CLUSTER                │
-│  ┌──────────────┐           ┌──────────────────────────┐       │
-│  │              │           │                          │       │
-│  │    Your      │           │   EBS Volume             │       │
-│  │  Application │           │   ┌────────────────┐     │       │
-│  │      │       │           │   │ Block 1        │     │       │
-│  │      ▼       │           │   │ Block 2        │     │       │
-│  │   OS Disk    │◄─────────►│   │ Block 3        │     │       │
-│  │   Driver     │  Network  │   │ ...            │     │       │
-│  │              │  (NVMe)   │   │ Block N        │     │       │
-│  └──────────────┘           │   └────────────────┘     │       │
-│                             │                          │       │
-│                             │   Replicated to:        │       │
-│                             │   ┌────────────────┐     │       │
-│                             │   │ Replica (same  │     │       │
-│                             │   │ AZ)            │     │       │
-│                             │   └────────────────┘     │       │
-│                             │                          │       │
-│                             └──────────────────────────┘       │
+│  YOUR EC2 INSTANCE           EBS STORAGE CLUSTER                 │
+│  ┌──────────────┐           ┌──────────────────────────┐         │
+│  │              │           │                          │         │
+│  │    Your      │           │   EBS Volume             │         │
+│  │  Application │           │   ┌────────────────┐     │         │
+│  │      │       │           │   │ Block 1        │     │         │
+│  │      ▼       │           │   │ Block 2        │     │         │
+│  │   OS Disk    │◄─────────►│   │ Block 3        │     │         │
+│  │   Driver     │  Network  │   │ ...            │     │         │
+│  │              │  (NVMe)   │   │ Block N        │     │         │
+│  └──────────────┘           │   └────────────────┘     │         │
+│                             │                          │         │
+│                             │   Replicated to:        │          │
+│                             │   ┌────────────────┐     │         │
+│                             │   │ Replica (same  │     │         │
+│                             │   │ AZ)            │     │         │
+│                             │   └────────────────┘     │         │
+│                             │                          │         │
+│                             └──────────────────────────┘         │
 │                                                                  │
 │  KEY INSIGHT:                                                    │
-│  • EBS is NOT local disk                                        │
-│  • Data travels over network                                    │
-│  • But feels like local disk (NVMe interface)                   │
-│  • Automatic replication within AZ                              │
-│  • Can attach to different EC2 instances                        │
-│  • Snapshots → backed up to S3                                  │
+│  • EBS is NOT local disk                                         │
+│  • Data travels over network                                     │
+│  • But feels like local disk (NVMe interface)                    │
+│  • Automatic replication within AZ                               │
+│  • Can attach to different EC2 instances                         │
+│  • Snapshots → backed up to S3                                   │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 
 
 EBS VOLUME TYPES - WHEN TO USE:
@@ -964,68 +964,68 @@ EBS VOLUME TYPES - WHEN TO USE:
 HOW APPLICATION LOAD BALANCER (ALB) WORKS:
 ═════════════════════════════════════════
 
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │                  ALB ARCHITECTURE                                │
-├─────────────────────────────────────────────────────────────────┤
+├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
-│  User Request → DNS → ALB IP                                    │
+│  User Request → DNS → ALB IP                                     │
 │                                                                  │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │                APPLICATION LOAD BALANCER                 │   │
-│  │                                                          │   │
-│  │  ┌────────────────────────────────────────────────────┐ │   │
-│  │  │              LISTENER (port 443)                    │ │   │
-│  │  │                                                     │ │   │
-│  │  │  Receives request:                                  │ │   │
-│  │  │  GET /api/users HTTP/1.1                           │ │   │
-│  │  │  Host: api.myapp.com                               │ │   │
-│  │  │                                                     │ │   │
-│  │  └────────────────────┬───────────────────────────────┘ │   │
-│  │                       │                                  │   │
-│  │                       ▼                                  │   │
-│  │  ┌────────────────────────────────────────────────────┐ │   │
-│  │  │                 RULES ENGINE                        │ │   │
-│  │  │                                                     │ │   │
-│  │  │  Rule 1: IF path = /api/* → Target Group: API      │ │   │
-│  │  │  Rule 2: IF path = /static/* → Target Group: CDN   │ │   │
-│  │  │  Rule 3: IF host = admin.* → Target Group: Admin   │ │   │
-│  │  │  Default: Target Group: Web                        │ │   │
-│  │  │                                                     │ │   │
-│  │  │  Match: /api/users → API Target Group              │ │   │
-│  │  │                                                     │ │   │
-│  │  └────────────────────┬───────────────────────────────┘ │   │
-│  │                       │                                  │   │
-│  │                       ▼                                  │   │
-│  │  ┌────────────────────────────────────────────────────┐ │   │
-│  │  │              TARGET GROUP: API                      │ │   │
-│  │  │                                                     │ │   │
-│  │  │  Algorithm: Round Robin / Least Connections        │ │   │
-│  │  │                                                     │ │   │
-│  │  │  ┌─────────┐  ┌─────────┐  ┌─────────┐            │ │   │
-│  │  │  │ EC2 #1  │  │ EC2 #2  │  │ EC2 #3  │            │ │   │
-│  │  │  │Healthy ✓│  │Healthy ✓│  │Unhealthy✗│           │ │   │
-│  │  │  └─────────┘  └─────────┘  └─────────┘            │ │   │
-│  │  │        │            │                              │ │   │
-│  │  │        └─────┬──────┘                              │ │   │
-│  │  │              │                                     │ │   │
-│  │  │              ▼                                     │ │   │
-│  │  │       Forward to EC2 #1                           │ │   │
-│  │  │       (EC2 #3 excluded - failed health check)     │ │   │
-│  │  │                                                     │ │   │
-│  │  └────────────────────────────────────────────────────┘ │   │
-│  │                                                          │   │
-│  └─────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────┐     │
+│  │                APPLICATION LOAD BALANCER                 │    │
+│  │                                                          │    │
+│  │  ┌────────────────────────────────────────────────────┐ │     │
+│  │  │              LISTENER (port 443)                    │ │    │
+│  │  │                                                     │ │    │
+│  │  │  Receives request:                                  │ │    │
+│  │  │  GET /api/users HTTP/1.1                           │ │     │
+│  │  │  Host: api.myapp.com                               │ │     │
+│  │  │                                                     │ │    │
+│  │  └────────────────────┬───────────────────────────────┘ │     │
+│  │                       │                                  │    │
+│  │                       ▼                                  │    │
+│  │  ┌────────────────────────────────────────────────────┐ │     │
+│  │  │                 RULES ENGINE                        │ │    │
+│  │  │                                                     │ │    │
+│  │  │  Rule 1: IF path = /api/* → Target Group: API      │ │     │
+│  │  │  Rule 2: IF path = /static/* → Target Group: CDN   │ │     │
+│  │  │  Rule 3: IF host = admin.* → Target Group: Admin   │ │     │
+│  │  │  Default: Target Group: Web                        │ │     │
+│  │  │                                                     │ │    │
+│  │  │  Match: /api/users → API Target Group              │ │     │
+│  │  │                                                     │ │    │
+│  │  └────────────────────┬───────────────────────────────┘ │     │
+│  │                       │                                  │    │
+│  │                       ▼                                  │    │
+│  │  ┌────────────────────────────────────────────────────┐ │     │
+│  │  │              TARGET GROUP: API                      │ │    │
+│  │  │                                                     │ │    │
+│  │  │  Algorithm: Round Robin / Least Connections        │ │     │
+│  │  │                                                     │ │    │
+│  │  │  ┌─────────┐  ┌─────────┐  ┌─────────┐            │ │      │
+│  │  │  │ EC2 #1  │  │ EC2 #2  │  │ EC2 #3  │            │ │      │
+│  │  │  │Healthy ✓│  │Healthy ✓│  │Unhealthy✗│           │ │      │
+│  │  │  └─────────┘  └─────────┘  └─────────┘            │ │      │
+│  │  │        │            │                              │ │     │
+│  │  │        └─────┬──────┘                              │ │     │
+│  │  │              │                                     │ │     │
+│  │  │              ▼                                     │ │     │
+│  │  │       Forward to EC2 #1                           │ │      │
+│  │  │       (EC2 #3 excluded - failed health check)     │ │      │
+│  │  │                                                     │ │    │
+│  │  └────────────────────────────────────────────────────┘ │     │
+│  │                                                          │    │
+│  └─────────────────────────────────────────────────────────┘     │
 │                                                                  │
-│  HEALTH CHECK PROCESS:                                          │
-│  ────────────────────                                           │
-│  Every 30 seconds, ALB sends:                                   │
-│    GET /health HTTP/1.1                                         │
+│  HEALTH CHECK PROCESS:                                           │
+│  ────────────────────                                            │
+│  Every 30 seconds, ALB sends:                                    │
+│    GET /health HTTP/1.1                                          │
 │                                                                  │
-│  Expected: HTTP 200 within 5 seconds                            │
-│  If 2 consecutive failures → Mark unhealthy                     │
-│  If 3 consecutive successes → Mark healthy again                │
+│  Expected: HTTP 200 within 5 seconds                             │
+│  If 2 consecutive failures → Mark unhealthy                      │
+│  If 3 consecutive successes → Mark healthy again                 │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 
 
 ALB vs NLB vs CLB:
@@ -1057,62 +1057,62 @@ HOW S3 STORES YOUR DATA:
 
 S3 = Simple Storage Service, but internally very complex!
 
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │                    S3 ARCHITECTURE                               │
-├─────────────────────────────────────────────────────────────────┤
+├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
-│  PUT s3://my-bucket/photos/vacation.jpg                         │
+│  PUT s3://my-bucket/photos/vacation.jpg                          │
 │                                                                  │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │                    S3 FRONTEND                           │   │
-│  │                                                          │   │
-│  │  1. Authenticate (IAM / bucket policy)                  │   │
-│  │  2. Validate bucket name                                │   │
-│  │  3. Check object key format                             │   │
-│  │  4. Route to correct partition                          │   │
-│  └────────────────────────┬────────────────────────────────┘   │
-│                           │                                     │
-│                           ▼                                     │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │                  INDEX SERVICE                           │   │
-│  │                                                          │   │
-│  │  Key: "my-bucket/photos/vacation.jpg"                   │   │
-│  │       │                                                  │   │
-│  │       ▼                                                  │   │
-│  │  Hash → Determine storage partition                     │   │
-│  │       → Record metadata (size, timestamp, ETag)         │   │
-│  │                                                          │   │
-│  └────────────────────────┬────────────────────────────────┘   │
-│                           │                                     │
-│                           ▼                                     │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │                  STORAGE NODES                           │   │
-│  │                                                          │   │
-│  │  File split into chunks:                                │   │
-│  │                                                          │   │
-│  │  vacation.jpg (5MB) → [Chunk1] [Chunk2] [Chunk3]       │   │
-│  │                                                          │   │
-│  │  Each chunk replicated to 3+ facilities:                │   │
-│  │                                                          │   │
-│  │  ┌──────────┐  ┌──────────┐  ┌──────────┐              │   │
-│  │  │ AZ-1     │  │ AZ-2     │  │ AZ-3     │              │   │
-│  │  │ Chunk1 ✓ │  │ Chunk1 ✓ │  │ Chunk1 ✓ │              │   │
-│  │  │ Chunk2 ✓ │  │ Chunk2 ✓ │  │ Chunk2 ✓ │              │   │
-│  │  │ Chunk3 ✓ │  │ Chunk3 ✓ │  │ Chunk3 ✓ │              │   │
-│  │  └──────────┘  └──────────┘  └──────────┘              │   │
-│  │                                                          │   │
-│  │  PUT returns success only AFTER replication complete    │   │
-│  │                                                          │   │
-│  └─────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────┐     │
+│  │                    S3 FRONTEND                           │    │
+│  │                                                          │    │
+│  │  1. Authenticate (IAM / bucket policy)                  │     │
+│  │  2. Validate bucket name                                │     │
+│  │  3. Check object key format                             │     │
+│  │  4. Route to correct partition                          │     │
+│  └────────────────────────┬────────────────────────────────┘     │
+│                           │                                      │
+│                           ▼                                      │
+│  ┌─────────────────────────────────────────────────────────┐     │
+│  │                  INDEX SERVICE                           │    │
+│  │                                                          │    │
+│  │  Key: "my-bucket/photos/vacation.jpg"                   │     │
+│  │       │                                                  │    │
+│  │       ▼                                                  │    │
+│  │  Hash → Determine storage partition                     │     │
+│  │       → Record metadata (size, timestamp, ETag)         │     │
+│  │                                                          │    │
+│  └────────────────────────┬────────────────────────────────┘     │
+│                           │                                      │
+│                           ▼                                      │
+│  ┌─────────────────────────────────────────────────────────┐     │
+│  │                  STORAGE NODES                           │    │
+│  │                                                          │    │
+│  │  File split into chunks:                                │     │
+│  │                                                          │    │
+│  │  vacation.jpg (5MB) → [Chunk1] [Chunk2] [Chunk3]       │      │
+│  │                                                          │    │
+│  │  Each chunk replicated to 3+ facilities:                │     │
+│  │                                                          │    │
+│  │  ┌──────────┐  ┌──────────┐  ┌──────────┐              │      │
+│  │  │ AZ-1     │  │ AZ-2     │  │ AZ-3     │              │      │
+│  │  │ Chunk1 ✓ │  │ Chunk1 ✓ │  │ Chunk1 ✓ │              │      │
+│  │  │ Chunk2 ✓ │  │ Chunk2 ✓ │  │ Chunk2 ✓ │              │      │
+│  │  │ Chunk3 ✓ │  │ Chunk3 ✓ │  │ Chunk3 ✓ │              │      │
+│  │  └──────────┘  └──────────┘  └──────────┘              │      │
+│  │                                                          │    │
+│  │  PUT returns success only AFTER replication complete    │     │
+│  │                                                          │    │
+│  └─────────────────────────────────────────────────────────┘     │
 │                                                                  │
-│  S3 DURABILITY: 99.999999999% (11 9's)                         │
-│  ──────────────────────────────────────                         │
-│  If you store 10,000,000 objects:                              │
-│  Expect to lose 1 object every 10,000 years!                   │
+│  S3 DURABILITY: 99.999999999% (11 9's)                           │
+│  ──────────────────────────────────────                          │
+│  If you store 10,000,000 objects:                                │
+│  Expect to lose 1 object every 10,000 years!                     │
 │                                                                  │
-│  HOW? Multiple copies + continuous integrity checking          │
+│  HOW? Multiple copies + continuous integrity checking            │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 
 
 S3 STORAGE CLASSES:
@@ -1142,89 +1142,89 @@ S3 STORAGE CLASSES:
 HOW AUTO SCALING WORKS:
 ══════════════════════
 
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │                 AUTO SCALING ARCHITECTURE                        │
-├─────────────────────────────────────────────────────────────────┤
+├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │               CLOUDWATCH METRICS                         │   │
-│  │                                                          │   │
-│  │  CPU Utilization: [45%] [68%] [72%] [85%] [91%]        │   │
-│  │                                                          │   │
-│  │  Time:            10:00  10:01  10:02  10:03  10:04     │   │
-│  │                                                          │   │
-│  └─────────────────────────────┬───────────────────────────┘   │
-│                                │                                │
-│                                ▼                                │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │               CLOUDWATCH ALARM                           │   │
-│  │                                                          │   │
-│  │  Alarm: "HighCPU"                                       │   │
-│  │  Condition: CPU > 80% for 2 consecutive periods         │   │
-│  │                                                          │   │
-│  │  Status: ALARM! (85% and 91% exceeded threshold)        │   │
-│  │                                                          │   │
-│  └─────────────────────────────┬───────────────────────────┘   │
-│                                │                                │
-│                                ▼                                │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │               AUTO SCALING GROUP                         │   │
-│  │                                                          │   │
-│  │  Configuration:                                          │   │
-│  │  • Min: 2 instances                                     │   │
-│  │  • Max: 10 instances                                    │   │
-│  │  • Desired: 3 instances (current)                       │   │
-│  │                                                          │   │
-│  │  Scaling Policy:                                         │   │
-│  │  • Scale OUT: When CPU > 80%, add 2 instances           │   │
-│  │  • Scale IN: When CPU < 30%, remove 1 instance          │   │
-│  │  • Cooldown: 300 seconds (prevent thrashing)            │   │
-│  │                                                          │   │
-│  │  ACTION: Launch 2 new instances!                        │   │
-│  │                                                          │   │
-│  └─────────────────────────────┬───────────────────────────┘   │
-│                                │                                │
-│                                ▼                                │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │               LAUNCH TEMPLATE                            │   │
-│  │                                                          │   │
-│  │  Template specifies:                                     │   │
-│  │  • AMI: ami-0123456789                                  │   │
-│  │  • Instance type: t3.medium                             │   │
-│  │  • Security group: sg-web                               │   │
-│  │  • User data: startup script                            │   │
-│  │  • IAM role: web-server-role                            │   │
-│  │                                                          │   │
-│  └─────────────────────────────┬───────────────────────────┘   │
-│                                │                                │
-│                                ▼                                │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │               EC2 SERVICE                                │   │
-│  │                                                          │   │
-│  │  Launch new instances:                                   │   │
-│  │                                                          │   │
-│  │  Before:  [EC2-1] [EC2-2] [EC2-3]                       │   │
-│  │                                                          │   │
-│  │  After:   [EC2-1] [EC2-2] [EC2-3] [EC2-4] [EC2-5]       │   │
-│  │                                                          │   │
-│  │  Register with ALB target group                         │   │
-│  │  Wait for health check pass                              │   │
-│  │  Start receiving traffic                                 │   │
-│  │                                                          │   │
-│  └─────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────┐     │
+│  │               CLOUDWATCH METRICS                         │    │
+│  │                                                          │    │
+│  │  CPU Utilization: [45%] [68%] [72%] [85%] [91%]        │      │
+│  │                                                          │    │
+│  │  Time:            10:00  10:01  10:02  10:03  10:04     │     │
+│  │                                                          │    │
+│  └─────────────────────────────┬───────────────────────────┘     │
+│                                │                                 │
+│                                ▼                                 │
+│  ┌─────────────────────────────────────────────────────────┐     │
+│  │               CLOUDWATCH ALARM                           │    │
+│  │                                                          │    │
+│  │  Alarm: "HighCPU"                                       │     │
+│  │  Condition: CPU > 80% for 2 consecutive periods         │     │
+│  │                                                          │    │
+│  │  Status: ALARM! (85% and 91% exceeded threshold)        │     │
+│  │                                                          │    │
+│  └─────────────────────────────┬───────────────────────────┘     │
+│                                │                                 │
+│                                ▼                                 │
+│  ┌─────────────────────────────────────────────────────────┐     │
+│  │               AUTO SCALING GROUP                         │    │
+│  │                                                          │    │
+│  │  Configuration:                                          │    │
+│  │  • Min: 2 instances                                     │     │
+│  │  • Max: 10 instances                                    │     │
+│  │  • Desired: 3 instances (current)                       │     │
+│  │                                                          │    │
+│  │  Scaling Policy:                                         │    │
+│  │  • Scale OUT: When CPU > 80%, add 2 instances           │     │
+│  │  • Scale IN: When CPU < 30%, remove 1 instance          │     │
+│  │  • Cooldown: 300 seconds (prevent thrashing)            │     │
+│  │                                                          │    │
+│  │  ACTION: Launch 2 new instances!                        │     │
+│  │                                                          │    │
+│  └─────────────────────────────┬───────────────────────────┘     │
+│                                │                                 │
+│                                ▼                                 │
+│  ┌─────────────────────────────────────────────────────────┐     │
+│  │               LAUNCH TEMPLATE                            │    │
+│  │                                                          │    │
+│  │  Template specifies:                                     │    │
+│  │  • AMI: ami-0123456789                                  │     │
+│  │  • Instance type: t3.medium                             │     │
+│  │  • Security group: sg-web                               │     │
+│  │  • User data: startup script                            │     │
+│  │  • IAM role: web-server-role                            │     │
+│  │                                                          │    │
+│  └─────────────────────────────┬───────────────────────────┘     │
+│                                │                                 │
+│                                ▼                                 │
+│  ┌─────────────────────────────────────────────────────────┐     │
+│  │               EC2 SERVICE                                │    │
+│  │                                                          │    │
+│  │  Launch new instances:                                   │    │
+│  │                                                          │    │
+│  │  Before:  [EC2-1] [EC2-2] [EC2-3]                       │     │
+│  │                                                          │    │
+│  │  After:   [EC2-1] [EC2-2] [EC2-3] [EC2-4] [EC2-5]       │     │
+│  │                                                          │    │
+│  │  Register with ALB target group                         │     │
+│  │  Wait for health check pass                              │    │
+│  │  Start receiving traffic                                 │    │
+│  │                                                          │    │
+│  └─────────────────────────────────────────────────────────┘     │
 │                                                                  │
 │  TIMELINE:                                                       │
-│  ─────────                                                      │
-│  10:04 - Alarm triggers                                         │
-│  10:04 - ASG decides to launch                                  │
-│  10:05 - EC2 instances launching                                │
-│  10:06 - Instances running, health checks starting              │
-│  10:08 - Health checks pass, traffic routing begins             │
-│  10:09 - Load distributed, CPU drops to 60%                     │
+│  ─────────                                                       │
+│  10:04 - Alarm triggers                                          │
+│  10:04 - ASG decides to launch                                   │
+│  10:05 - EC2 instances launching                                 │
+│  10:06 - Instances running, health checks starting               │
+│  10:08 - Health checks pass, traffic routing begins              │
+│  10:09 - Load distributed, CPU drops to 60%                      │
 │                                                                  │
-│  TOTAL TIME: ~5 minutes to scale                                │
+│  TOTAL TIME: ~5 minutes to scale                                 │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ---

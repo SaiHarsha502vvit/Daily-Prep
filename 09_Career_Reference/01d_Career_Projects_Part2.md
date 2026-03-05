@@ -405,229 +405,229 @@ GITOPS WORKFLOW:
 ### OSI Model & TCP/IP
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │                    OSI MODEL vs TCP/IP                           │
-├─────────────────────────────────────────────────────────────────┤
+├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
-│  OSI Model              TCP/IP Model     Protocols              │
-│  ─────────              ───────────      ─────────              │
+│  OSI Model              TCP/IP Model     Protocols               │
+│  ─────────              ───────────      ─────────               │
 │                                                                  │
-│  ┌───────────────┐                                              │
-│  │ 7. Application │     ┌─────────────┐  HTTP, HTTPS, FTP,     │
-│  ├───────────────┤      │ Application │  SMTP, DNS, SSH,       │
-│  │ 6. Presentation│     │             │  WebSocket             │
-│  ├───────────────┤      └─────────────┘                        │
-│  │ 5. Session    │                                              │
-│  ├───────────────┤      ┌─────────────┐                        │
-│  │ 4. Transport  │      │  Transport  │  TCP, UDP              │
-│  ├───────────────┤      └─────────────┘                        │
-│  │ 3. Network    │      ┌─────────────┐  IP, ICMP, ARP         │
-│  ├───────────────┤      │  Internet   │                        │
-│  │ 2. Data Link  │      └─────────────┘                        │
-│  ├───────────────┤      ┌─────────────┐  Ethernet, Wi-Fi       │
-│  │ 1. Physical   │      │   Network   │                        │
-│  └───────────────┘      │   Access    │                        │
-│                         └─────────────┘                        │
+│  ┌───────────────┐                                               │
+│  │ 7. Application │     ┌─────────────┐  HTTP, HTTPS, FTP,       │
+│  ├───────────────┤      │ Application │  SMTP, DNS, SSH,         │
+│  │ 6. Presentation│     │             │  WebSocket               │
+│  ├───────────────┤      └─────────────┘                          │
+│  │ 5. Session    │                                               │
+│  ├───────────────┤      ┌─────────────┐                          │
+│  │ 4. Transport  │      │  Transport  │  TCP, UDP                │
+│  ├───────────────┤      └─────────────┘                          │
+│  │ 3. Network    │      ┌─────────────┐  IP, ICMP, ARP           │
+│  ├───────────────┤      │  Internet   │                          │
+│  │ 2. Data Link  │      └─────────────┘                          │
+│  ├───────────────┤      ┌─────────────┐  Ethernet, Wi-Fi         │
+│  │ 1. Physical   │      │   Network   │                          │
+│  └───────────────┘      │   Access    │                          │
+│                         └─────────────┘                          │
 │                                                                  │
 │  DATA FLOW:                                                      │
 │  ─────────                                                       │
 │  Application Data                                                │
-│       ↓ Add Header                                              │
-│  [TCP Header | Data]                                            │
-│       ↓ Add Header                                              │
-│  [IP Header | TCP Header | Data]                                │
-│       ↓ Add Header + Trailer                                    │
-│  [Ethernet | IP | TCP | Data | FCS]                             │
+│       ↓ Add Header                                               │
+│  [TCP Header | Data]                                             │
+│       ↓ Add Header                                               │
+│  [IP Header | TCP Header | Data]                                 │
+│       ↓ Add Header + Trailer                                     │
+│  [Ethernet | IP | TCP | Data | FCS]                              │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ### TCP vs UDP
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │                      TCP vs UDP                                  │
-├─────────────────────────────────────────────────────────────────┤
+├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
 │  Feature              TCP                    UDP                 │
 │  ───────              ───                    ───                 │
-│  Connection           Connection-oriented    Connectionless     │
-│  Reliability          Guaranteed delivery    Best effort        │
-│  Ordering             Ordered delivery       No ordering        │
-│  Flow Control         Yes (sliding window)   No                 │
-│  Error Checking       Checksum + ACK         Checksum only      │
-│  Speed                Slower                 Faster             │
-│  Header Size          20-60 bytes            8 bytes            │
-│  Use Cases            Web, Email, File       Video, Gaming,     │
-│                       Transfer               DNS, VoIP          │
+│  Connection           Connection-oriented    Connectionless      │
+│  Reliability          Guaranteed delivery    Best effort         │
+│  Ordering             Ordered delivery       No ordering         │
+│  Flow Control         Yes (sliding window)   No                  │
+│  Error Checking       Checksum + ACK         Checksum only       │
+│  Speed                Slower                 Faster              │
+│  Header Size          20-60 bytes            8 bytes             │
+│  Use Cases            Web, Email, File       Video, Gaming,      │
+│                       Transfer               DNS, VoIP           │
 │                                                                  │
-│  TCP 3-WAY HANDSHAKE:                                           │
-│  ───────────────────                                            │
+│  TCP 3-WAY HANDSHAKE:                                            │
+│  ───────────────────                                             │
 │  Client              Server                                      │
 │    │                   │                                         │
-│    │──── SYN ─────────►│  "Can we connect?"                     │
+│    │──── SYN ─────────►│  "Can we connect?"                      │
 │    │                   │                                         │
-│    │◄─── SYN-ACK ─────│  "Yes, let's connect"                   │
+│    │◄─── SYN-ACK ─────│  "Yes, let's connect"                    │
 │    │                   │                                         │
-│    │──── ACK ─────────►│  "Great, connected!"                   │
+│    │──── ACK ─────────►│  "Great, connected!"                    │
 │    │                   │                                         │
 │                                                                  │
-│  TCP CONNECTION CLOSE (4-WAY):                                  │
-│  ────────────────────────────                                   │
+│  TCP CONNECTION CLOSE (4-WAY):                                   │
+│  ────────────────────────────                                    │
 │  Client              Server                                      │
-│    │──── FIN ─────────►│                                        │
-│    │◄─── ACK ─────────│                                        │
-│    │◄─── FIN ─────────│                                        │
-│    │──── ACK ─────────►│                                        │
+│    │──── FIN ─────────►│                                         │
+│    │◄─── ACK ─────────│                                          │
+│    │◄─── FIN ─────────│                                          │
+│    │──── ACK ─────────►│                                         │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ### DNS - How It Works
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │                    DNS RESOLUTION FLOW                           │
-├─────────────────────────────────────────────────────────────────┤
+├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
-│  User types: www.example.com                                    │
+│  User types: www.example.com                                     │
 │                                                                  │
-│  ┌──────────┐                                                   │
-│  │ Browser  │ 1. Check browser cache                            │
-│  └────┬─────┘                                                   │
-│       │ Not found                                               │
-│  ┌────▼─────┐                                                   │
-│  │   OS     │ 2. Check OS cache (/etc/hosts)                    │
-│  └────┬─────┘                                                   │
-│       │ Not found                                               │
-│  ┌────▼─────────────┐                                           │
-│  │ Local DNS        │ 3. Query local DNS (ISP/Router)           │
-│  │ Resolver         │                                           │
-│  └────┬─────────────┘                                           │
-│       │ Not in cache                                            │
-│  ┌────▼─────────────┐                                           │
-│  │ Root DNS         │ 4. Query root server                      │
-│  │ Server           │    "Who handles .com?"                    │
-│  └────┬─────────────┘                                           │
-│       │ Returns TLD server                                      │
-│  ┌────▼─────────────┐                                           │
-│  │ TLD DNS Server   │ 5. Query .com TLD server                  │
-│  │ (.com)           │    "Who handles example.com?"             │
-│  └────┬─────────────┘                                           │
-│       │ Returns authoritative NS                                │
-│  ┌────▼─────────────┐                                           │
-│  │ Authoritative    │ 6. Query authoritative server             │
-│  │ DNS Server       │    "What's IP for www.example.com?"       │
-│  └────┬─────────────┘                                           │
-│       │ Returns IP: 93.184.216.34                               │
-│       ▼                                                         │
-│  IP cached at each level with TTL                               │
+│  ┌──────────┐                                                    │
+│  │ Browser  │ 1. Check browser cache                             │
+│  └────┬─────┘                                                    │
+│       │ Not found                                                │
+│  ┌────▼─────┐                                                    │
+│  │   OS     │ 2. Check OS cache (/etc/hosts)                     │
+│  └────┬─────┘                                                    │
+│       │ Not found                                                │
+│  ┌────▼─────────────┐                                            │
+│  │ Local DNS        │ 3. Query local DNS (ISP/Router)            │
+│  │ Resolver         │                                            │
+│  └────┬─────────────┘                                            │
+│       │ Not in cache                                             │
+│  ┌────▼─────────────┐                                            │
+│  │ Root DNS         │ 4. Query root server                       │
+│  │ Server           │    "Who handles .com?"                     │
+│  └────┬─────────────┘                                            │
+│       │ Returns TLD server                                       │
+│  ┌────▼─────────────┐                                            │
+│  │ TLD DNS Server   │ 5. Query .com TLD server                   │
+│  │ (.com)           │    "Who handles example.com?"              │
+│  └────┬─────────────┘                                            │
+│       │ Returns authoritative NS                                 │
+│  ┌────▼─────────────┐                                            │
+│  │ Authoritative    │ 6. Query authoritative server              │
+│  │ DNS Server       │    "What's IP for www.example.com?"        │
+│  └────┬─────────────┘                                            │
+│       │ Returns IP: 93.184.216.34                                │
+│       ▼                                                          │
+│  IP cached at each level with TTL                                │
 │                                                                  │
-│  DNS RECORD TYPES:                                              │
-│  ────────────────                                               │
-│  A      - IPv4 address (example.com → 93.184.216.34)           │
-│  AAAA   - IPv6 address                                          │
-│  CNAME  - Alias (www.example.com → example.com)                 │
-│  MX     - Mail server                                           │
-│  TXT    - Text records (SPF, DKIM, verification)               │
-│  NS     - Nameserver                                            │
-│  SOA    - Start of Authority                                    │
+│  DNS RECORD TYPES:                                               │
+│  ────────────────                                                │
+│  A      - IPv4 address (example.com → 93.184.216.34)             │
+│  AAAA   - IPv6 address                                           │
+│  CNAME  - Alias (www.example.com → example.com)                  │
+│  MX     - Mail server                                            │
+│  TXT    - Text records (SPF, DKIM, verification)                 │
+│  NS     - Nameserver                                             │
+│  SOA    - Start of Authority                                     │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ### Load Balancing Algorithms
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │                  LOAD BALANCING ALGORITHMS                       │
-├─────────────────────────────────────────────────────────────────┤
+├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
 │  1. ROUND ROBIN                                                  │
 │     Request 1 → Server A                                         │
 │     Request 2 → Server B                                         │
 │     Request 3 → Server C                                         │
-│     Request 4 → Server A (repeat)                               │
-│     Best for: Equal server capacity, stateless apps             │
+│     Request 4 → Server A (repeat)                                │
+│     Best for: Equal server capacity, stateless apps              │
 │                                                                  │
-│  2. WEIGHTED ROUND ROBIN                                        │
-│     Server A (weight: 3) → Gets 3 requests                      │
-│     Server B (weight: 2) → Gets 2 requests                      │
-│     Server C (weight: 1) → Gets 1 request                       │
-│     Best for: Servers with different capacities                 │
+│  2. WEIGHTED ROUND ROBIN                                         │
+│     Server A (weight: 3) → Gets 3 requests                       │
+│     Server B (weight: 2) → Gets 2 requests                       │
+│     Server C (weight: 1) → Gets 1 request                        │
+│     Best for: Servers with different capacities                  │
 │                                                                  │
-│  3. LEAST CONNECTIONS                                           │
-│     Server A: 5 connections → Skip                              │
-│     Server B: 2 connections → Choose this                       │
-│     Server C: 8 connections → Skip                              │
-│     Best for: Varying request processing times                  │
+│  3. LEAST CONNECTIONS                                            │
+│     Server A: 5 connections → Skip                               │
+│     Server B: 2 connections → Choose this                        │
+│     Server C: 8 connections → Skip                               │
+│     Best for: Varying request processing times                   │
 │                                                                  │
 │  4. IP HASH                                                      │
-│     hash(client_ip) % num_servers = server_index                │
-│     Same client → Same server (session persistence)             │
-│     Best for: Stateful applications                             │
+│     hash(client_ip) % num_servers = server_index                 │
+│     Same client → Same server (session persistence)              │
+│     Best for: Stateful applications                              │
 │                                                                  │
-│  5. LEAST RESPONSE TIME                                         │
-│     Choose server with lowest response time                     │
-│     Best for: Performance-critical applications                 │
+│  5. LEAST RESPONSE TIME                                          │
+│     Choose server with lowest response time                      │
+│     Best for: Performance-critical applications                  │
 │                                                                  │
-│  LAYER 4 vs LAYER 7 LOAD BALANCING:                            │
-│  ─────────────────────────────────                              │
-│  Layer 4 (Transport):                                           │
-│  ├── Works with TCP/UDP                                         │
-│  ├── Faster (no content inspection)                             │
-│  ├── Can't route based on content                               │
-│  └── Example: AWS NLB                                           │
+│  LAYER 4 vs LAYER 7 LOAD BALANCING:                              │
+│  ─────────────────────────────────                               │
+│  Layer 4 (Transport):                                            │
+│  ├── Works with TCP/UDP                                          │
+│  ├── Faster (no content inspection)                              │
+│  ├── Can't route based on content                                │
+│  └── Example: AWS NLB                                            │
 │                                                                  │
-│  Layer 7 (Application):                                         │
-│  ├── Works with HTTP/HTTPS                                      │
-│  ├── Can inspect headers, cookies, URL                          │
-│  ├── Content-based routing                                      │
-│  └── Example: AWS ALB, Nginx                                    │
+│  Layer 7 (Application):                                          │
+│  ├── Works with HTTP/HTTPS                                       │
+│  ├── Can inspect headers, cookies, URL                           │
+│  ├── Content-based routing                                       │
+│  └── Example: AWS ALB, Nginx                                     │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ### HTTPS/TLS Handshake
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │                    TLS 1.3 HANDSHAKE                             │
-├─────────────────────────────────────────────────────────────────┤
+├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
 │  Client                              Server                      │
 │    │                                   │                         │
-│    │────── ClientHello ──────────────►│                         │
+│    │────── ClientHello ──────────────►│                          │
 │    │       + Supported Ciphers         │                         │
 │    │       + Key Share (DH)            │                         │
 │    │                                   │                         │
-│    │◄───── ServerHello ───────────────│                         │
+│    │◄───── ServerHello ───────────────│                          │
 │    │       + Chosen Cipher             │                         │
 │    │       + Key Share (DH)            │                         │
 │    │       + Certificate               │                         │
 │    │       + Certificate Verify        │                         │
 │    │       + Finished                  │                         │
 │    │                                   │                         │
-│    │────── Finished ─────────────────►│                         │
+│    │────── Finished ─────────────────►│                          │
 │    │                                   │                         │
-│    │◄═════ Encrypted Data ═══════════►│                         │
+│    │◄═════ Encrypted Data ═══════════►│                          │
 │    │                                   │                         │
 │                                                                  │
-│  TLS 1.3 IMPROVEMENTS over 1.2:                                 │
-│  ├── 1-RTT handshake (was 2-RTT)                               │
-│  ├── 0-RTT for repeat connections                               │
-│  ├── Removed weak ciphers (RSA key exchange)                   │
-│  ├── Forward secrecy mandatory                                  │
-│  └── Encrypted handshake (from ServerHello)                    │
+│  TLS 1.3 IMPROVEMENTS over 1.2:                                  │
+│  ├── 1-RTT handshake (was 2-RTT)                                 │
+│  ├── 0-RTT for repeat connections                                │
+│  ├── Removed weak ciphers (RSA key exchange)                     │
+│  ├── Forward secrecy mandatory                                   │
+│  └── Encrypted handshake (from ServerHello)                      │
 │                                                                  │
-│  CERTIFICATE VALIDATION:                                        │
-│  ──────────────────────                                         │
-│  1. Check certificate not expired                               │
-│  2. Verify signature chain to root CA                           │
-│  3. Check certificate not revoked (OCSP/CRL)                   │
-│  4. Verify domain name matches certificate                      │
+│  CERTIFICATE VALIDATION:                                         │
+│  ──────────────────────                                          │
+│  1. Check certificate not expired                                │
+│  2. Verify signature chain to root CA                            │
+│  3. Check certificate not revoked (OCSP/CRL)                     │
+│  4. Verify domain name matches certificate                       │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -647,32 +647,32 @@ But user accesses: https://myapp.com
 
 HOW DOES THIS WORK? Let's trace EVERY step!
 
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │                                                                  │
-│   USER'S BROWSER                     YOUR SERVER                │
-│   ──────────────                     ───────────                │
+│   USER'S BROWSER                     YOUR SERVER                 │
+│   ──────────────                     ───────────                 │
 │                                                                  │
-│   1. User types: myapp.com                                      │
+│   1. User types: myapp.com                                       │
 │          │                                                       │
 │          ▼                                                       │
 │   2. DNS Resolution                                              │
-│      "What's IP of myapp.com?"                                  │
+│      "What's IP of myapp.com?"                                   │
 │          │                                                       │
 │          ▼                                                       │
-│      DNS returns: 54.23.167.89 (Your server's PUBLIC IP)        │
+│      DNS returns: 54.23.167.89 (Your server's PUBLIC IP)         │
 │          │                                                       │
 │          ▼                                                       │
-│   3. Browser connects to 54.23.167.89:443 (HTTPS = port 443)    │
+│   3. Browser connects to 54.23.167.89:443 (HTTPS = port 443)     │
 │          │                                                       │
 │          ▼                                                       │
-│   4. TLS Handshake (SSL certificate verification)               │
+│   4. TLS Handshake (SSL certificate verification)                │
 │          │                                                       │
 │          ▼                                                       │
 │   5. HTTP Request sent:                                          │
 │      GET / HTTP/1.1                                              │
 │      Host: myapp.com                                             │
 │          │                                                       │
-│          │                           ┌─────────────────────┐    │
+│          │                           ┌─────────────────────┐     │
 │          │                           │    YOUR SERVER       │    │
 │          │                           │                      │    │
 │          │                           │  Public IP:          │    │
@@ -689,9 +689,9 @@ HOW DOES THIS WORK? Let's trace EVERY step!
 │                                      │  Your Node.js/       │    │
 │                                      │  Spring Boot App     │    │
 │                                      │  (Port 3000)         │    │
-│                                      └─────────────────────┘    │
+│                                      └─────────────────────┘     │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ### Step-by-Step: Complete Packet Journey
@@ -710,22 +710,22 @@ OS checks /etc/hosts → Not found
 OS checks DNS cache → Not found
 
 Query to DNS Resolver (usually ISP):
-┌──────────────────────────────────────────────────────────────┐
-│ DNS Query Packet:                                             │
-│ ─────────────────                                             │
-│ Source IP: 192.168.1.100 (User's local IP)                   │
-│ Dest IP: 8.8.8.8 (Google DNS or ISP DNS)                     │
-│ Source Port: 54321 (random high port)                         │
-│ Dest Port: 53 (DNS always uses port 53)                       │
+┌────────────────────────────────────────────────────────────────┐
+│ DNS Query Packet:                                              │
+│ ─────────────────                                              │
+│ Source IP: 192.168.1.100 (User's local IP)                     │
+│ Dest IP: 8.8.8.8 (Google DNS or ISP DNS)                       │
+│ Source Port: 54321 (random high port)                          │
+│ Dest Port: 53 (DNS always uses port 53)                        │
 │ Protocol: UDP                                                  │
-│ Query: "What is A record for myapp.com?"                      │
-└──────────────────────────────────────────────────────────────┘
+│ Query: "What is A record for myapp.com?"                       │
+└────────────────────────────────────────────────────────────────┘
 
 DNS Response:
-┌──────────────────────────────────────────────────────────────┐
+┌───────────────────────────────────────────────────────────────┐
 │ myapp.com → 54.23.167.89                                      │
 │ TTL: 300 seconds (cache for 5 minutes)                        │
-└──────────────────────────────────────────────────────────────┘
+└───────────────────────────────────────────────────────────────┘
 
 
 STEP 2: TCP CONNECTION (3-way handshake, ~30-100ms)
@@ -735,18 +735,18 @@ Browser knows: Server IP = 54.23.167.89
 Browser wants: Connect to port 443 (HTTPS)
 
 Packet 1 - SYN:
-┌──────────────────────────────────────────────────────────────┐
-│ Source IP: 103.45.67.89 (User's PUBLIC IP via NAT)           │
+┌───────────────────────────────────────────────────────────────┐
+│ Source IP: 103.45.67.89 (User's PUBLIC IP via NAT)            │
 │ Dest IP: 54.23.167.89                                         │
 │ Source Port: 52431 (random)                                   │
 │ Dest Port: 443                                                │
 │ Flags: SYN                                                    │
 │ Sequence: 1000 (random starting number)                       │
-│ Window Size: 65535 (how much data can receive)               │
-└──────────────────────────────────────────────────────────────┘
+│ Window Size: 65535 (how much data can receive)                │
+└───────────────────────────────────────────────────────────────┘
 
 Packet 2 - SYN-ACK (Server responds):
-┌──────────────────────────────────────────────────────────────┐
+┌───────────────────────────────────────────────────────────────┐
 │ Source IP: 54.23.167.89                                       │
 │ Dest IP: 103.45.67.89                                         │
 │ Source Port: 443                                              │
@@ -754,15 +754,15 @@ Packet 2 - SYN-ACK (Server responds):
 │ Flags: SYN, ACK                                               │
 │ Sequence: 5000 (server's starting number)                     │
 │ Acknowledgment: 1001 (client's seq + 1)                       │
-└──────────────────────────────────────────────────────────────┘
+└───────────────────────────────────────────────────────────────┘
 
 Packet 3 - ACK (Connection established!):
-┌──────────────────────────────────────────────────────────────┐
+┌───────────────────────────────────────────────────────────────┐
 │ Flags: ACK                                                    │
 │ Sequence: 1001                                                │
 │ Acknowledgment: 5001                                          │
 │ → TCP CONNECTION ESTABLISHED!                                 │
-└──────────────────────────────────────────────────────────────┘
+└───────────────────────────────────────────────────────────────┘
 
 
 STEP 3: TLS HANDSHAKE (~100-300ms)
@@ -771,23 +771,23 @@ STEP 3: TLS HANDSHAKE (~100-300ms)
 Now browser and server exchange encryption keys...
 
 Client Hello:
-┌──────────────────────────────────────────────────────────────┐
+┌───────────────────────────────────────────────────────────────┐
 │ TLS Version: 1.3                                              │
 │ Supported Ciphers:                                            │
-│   - TLS_AES_256_GCM_SHA384                                   │
-│   - TLS_CHACHA20_POLY1305_SHA256                             │
-│ Supported Groups: x25519, secp256r1                          │
-│ Key Share: [client's public key for DH exchange]             │
+│   - TLS_AES_256_GCM_SHA384                                    │
+│   - TLS_CHACHA20_POLY1305_SHA256                              │
+│ Supported Groups: x25519, secp256r1                           │
+│ Key Share: [client's public key for DH exchange]              │
 │ SNI: myapp.com (Server Name Indication)                       │
-└──────────────────────────────────────────────────────────────┘
+└───────────────────────────────────────────────────────────────┘
 
 Server Hello + Certificate:
-┌──────────────────────────────────────────────────────────────┐
-│ Chosen Cipher: TLS_AES_256_GCM_SHA384                        │
+┌───────────────────────────────────────────────────────────────┐
+│ Chosen Cipher: TLS_AES_256_GCM_SHA384                         │
 │ Key Share: [server's public key]                              │
-│ Certificate: [X.509 certificate for myapp.com]               │
-│ Certificate Chain: myapp.com → Intermediate CA → Root CA     │
-└──────────────────────────────────────────────────────────────┘
+│ Certificate: [X.509 certificate for myapp.com]                │
+│ Certificate Chain: myapp.com → Intermediate CA → Root CA      │
+└───────────────────────────────────────────────────────────────┘
 
 → Both sides now compute shared secret using Diffie-Hellman
 → All further communication is ENCRYPTED
@@ -797,17 +797,17 @@ STEP 4: HTTP REQUEST (inside encrypted TLS tunnel)
 ──────────────────────────────────────────────────
 
 Encrypted HTTP Request:
-┌──────────────────────────────────────────────────────────────┐
+┌───────────────────────────────────────────────────────────────┐
 │ GET /api/users HTTP/1.1                                       │
 │ Host: myapp.com                                               │
 │ User-Agent: Chrome/120.0.0.0                                  │
 │ Accept: application/json                                      │
-│ Accept-Encoding: gzip, deflate, br                           │
+│ Accept-Encoding: gzip, deflate, br                            │
 │ Connection: keep-alive                                        │
 │ Cookie: session=abc123                                        │
 │                                                               │
-│ (This entire request is encrypted before sending)            │
-└──────────────────────────────────────────────────────────────┘
+│ (This entire request is encrypted before sending)             │
+└───────────────────────────────────────────────────────────────┘
 
 
 STEP 5: SERVER RECEIVES REQUEST
@@ -815,39 +815,39 @@ STEP 5: SERVER RECEIVES REQUEST
 
 Request arrives at server's Network Interface Card (NIC)
 
-┌──────────────────────────────────────────────────────────────┐
+┌───────────────────────────────────────────────────────────────┐
 │                         YOUR SERVER                           │
 │                                                               │
-│  ┌─────────────┐                                             │
-│  │ Network Card│ ← Receives ethernet frame                   │
-│  │ (NIC)       │                                             │
-│  └──────┬──────┘                                             │
+│  ┌─────────────┐                                              │
+│  │ Network Card│ ← Receives ethernet frame                    │
+│  │ (NIC)       │                                              │
+│  └──────┬──────┘                                              │
 │         │                                                     │
 │         ▼                                                     │
-│  ┌─────────────┐                                             │
-│  │ Linux Kernel│ ← Processes IP packet                       │
-│  │ Network     │                                             │
-│  │ Stack       │                                             │
-│  └──────┬──────┘                                             │
+│  ┌─────────────┐                                              │
+│  │ Linux Kernel│ ← Processes IP packet                        │
+│  │ Network     │                                              │
+│  │ Stack       │                                              │
+│  └──────┬──────┘                                              │
 │         │                                                     │
-│         │ Kernel checks: Which process listens on port 443?  │
-│         │                                                     │
-│         ▼                                                     │
-│  ┌─────────────┐                                             │
-│  │   Nginx     │ ← Process bound to port 443                 │
-│  │ (PID: 1234) │                                             │
-│  └──────┬──────┘                                             │
-│         │                                                     │
-│         │ Nginx reads nginx.conf:                            │
-│         │ "For myapp.com, proxy to localhost:3000"           │
+│         │ Kernel checks: Which process listens on port 443?   │
 │         │                                                     │
 │         ▼                                                     │
-│  ┌─────────────┐                                             │
-│  │ Your App    │ ← Your code finally runs!                   │
-│  │ (Port 3000) │                                             │
-│  └─────────────┘                                             │
+│  ┌─────────────┐                                              │
+│  │   Nginx     │ ← Process bound to port 443                  │
+│  │ (PID: 1234) │                                              │
+│  └──────┬──────┘                                              │
+│         │                                                     │
+│         │ Nginx reads nginx.conf:                             │
+│         │ "For myapp.com, proxy to localhost:3000"            │
+│         │                                                     │
+│         ▼                                                     │
+│  ┌─────────────┐                                              │
+│  │ Your App    │ ← Your code finally runs!                    │
+│  │ (Port 3000) │                                              │
+│  └─────────────┘                                              │
 │                                                               │
-└──────────────────────────────────────────────────────────────┘
+└───────────────────────────────────────────────────────────────┘
 ```
 
 ### How Port 80/443 Connects to Port 3000
@@ -949,28 +949,28 @@ IP ADDRESS TYPES - COMPLETE EXPLANATION:
 YOUR HOME NETWORK:
 ─────────────────
 
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │                        INTERNET                                  │
 │                           │                                      │
-│                    Public IP: 103.45.67.89                      │
+│                    Public IP: 103.45.67.89                       │
 │                    (Given by ISP)                                │
 │                           │                                      │
-│                     ┌─────▼─────┐                               │
-│                     │  Router   │                               │
-│                     │ (NAT)     │                               │
-│                     └─────┬─────┘                               │
+│                     ┌─────▼─────┐                                │
+│                     │  Router   │                                │
+│                     │ (NAT)     │                                │
+│                     └─────┬─────┘                                │
 │                           │                                      │
-│         ┌─────────────────┼─────────────────┐                   │
-│         │                 │                 │                   │
-│    ┌────▼────┐      ┌────▼────┐      ┌────▼────┐              │
-│    │ Laptop  │      │ Phone   │      │ Desktop │              │
-│    │192.168. │      │192.168. │      │192.168. │              │
-│    │  1.100  │      │  1.101  │      │  1.102  │              │
-│    └─────────┘      └─────────┘      └─────────┘              │
+│         ┌─────────────────┼─────────────────┐                    │
+│         │                 │                 │                    │
+│    ┌────▼────┐      ┌────▼────┐      ┌────▼────┐                 │
+│    │ Laptop  │      │ Phone   │      │ Desktop │                 │
+│    │192.168. │      │192.168. │      │192.168. │                 │
+│    │  1.100  │      │  1.101  │      │  1.102  │                 │
+│    └─────────┘      └─────────┘      └─────────┘                 │
 │                                                                  │
-│    These are PRIVATE IPs (not routable on internet)            │
+│    These are PRIVATE IPs (not routable on internet)              │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 
 
 PRIVATE IP RANGES (RFC 1918):
@@ -988,36 +988,36 @@ NAT (Network Address Translation) - How it works:
 Your laptop (192.168.1.100) wants to access google.com
 
 OUTGOING:
-┌──────────────────────────────────────────────────────────────┐
+┌───────────────────────────────────────────────────────────────┐
 │ Original packet from laptop:                                  │
-│   Source: 192.168.1.100:54321                                │
-│   Dest: 142.250.190.78:443 (google.com)                      │
+│   Source: 192.168.1.100:54321                                 │
+│   Dest: 142.250.190.78:443 (google.com)                       │
 │                                                               │
 │ Router NAT translation table:                                 │
-│ ┌────────────────────────────────────────────────────────┐   │
-│ │ Internal IP:Port    │ External IP:Port  │ Destination │   │
-│ ├────────────────────────────────────────────────────────┤   │
-│ │ 192.168.1.100:54321 │ 103.45.67.89:40001│ google.com  │   │
-│ └────────────────────────────────────────────────────────┘   │
+│ ┌────────────────────────────────────────────────────────┐    │
+│ │ Internal IP:Port    │ External IP:Port  │ Destination │     │
+│ ├────────────────────────────────────────────────────────┤    │
+│ │ 192.168.1.100:54321 │ 103.45.67.89:40001│ google.com  │     │
+│ └────────────────────────────────────────────────────────┘    │
 │                                                               │
 │ Packet sent to internet:                                      │
-│   Source: 103.45.67.89:40001 (public IP)                     │
-│   Dest: 142.250.190.78:443                                   │
-└──────────────────────────────────────────────────────────────┘
+│   Source: 103.45.67.89:40001 (public IP)                      │
+│   Dest: 142.250.190.78:443                                    │
+└───────────────────────────────────────────────────────────────┘
 
 INCOMING (response):
-┌──────────────────────────────────────────────────────────────┐
+┌───────────────────────────────────────────────────────────────┐
 │ Google responds:                                              │
-│   Source: 142.250.190.78:443                                 │
-│   Dest: 103.45.67.89:40001                                   │
+│   Source: 142.250.190.78:443                                  │
+│   Dest: 103.45.67.89:40001                                    │
 │                                                               │
 │ Router looks up NAT table:                                    │
-│   40001 → 192.168.1.100:54321                                │
+│   40001 → 192.168.1.100:54321                                 │
 │                                                               │
 │ Packet delivered to laptop:                                   │
-│   Source: 142.250.190.78:443                                 │
-│   Dest: 192.168.1.100:54321                                  │
-└──────────────────────────────────────────────────────────────┘
+│   Source: 142.250.190.78:443                                  │
+│   Dest: 192.168.1.100:54321                                   │
+└───────────────────────────────────────────────────────────────┘
 
 
 PORT FORWARDING (for servers):
@@ -1027,12 +1027,12 @@ Your home server runs on 192.168.1.50:3000
 You want external access
 
 Router port forwarding rule:
-┌──────────────────────────────────────────────────────────────┐
+┌───────────────────────────────────────────────────────────────┐
 │ External: 103.45.67.89:8080                                   │
 │ Internal: 192.168.1.50:3000                                   │
 │                                                               │
-│ Now: http://103.45.67.89:8080 → your server!                 │
-└──────────────────────────────────────────────────────────────┘
+│ Now: http://103.45.67.89:8080 → your server!                  │
+└───────────────────────────────────────────────────────────────┘
 
 
 WHY SERVERS HAVE STATIC PUBLIC IPs:
@@ -1064,76 +1064,76 @@ PROCESS - COMPLETE EXPLANATION:
 When you run: node server.js
 
 Operating System creates a PROCESS:
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │                         PROCESS                                  │
 │                     (PID: 5678)                                  │
-├─────────────────────────────────────────────────────────────────┤
+├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
-│  ┌─────────────────────────────────────────────────────────────┐│
+│  ┌─────────────────────────────────────────────────────────────┐ │
 │  │                    VIRTUAL MEMORY SPACE                      ││
-│  │                   (4GB on 32-bit, 128TB on 64-bit)          ││
-│  ├─────────────────────────────────────────────────────────────┤│
+│  │                   (4GB on 32-bit, 128TB on 64-bit)          │ │
+│  ├─────────────────────────────────────────────────────────────┤ │
 │  │                                                              ││
-│  │  HIGH ADDRESSES (e.g., 0xFFFFFFFF)                          ││
-│  │  ┌──────────────────────────────────────────────────────┐   ││
+│  │  HIGH ADDRESSES (e.g., 0xFFFFFFFF)                          │ │
+│  │  ┌──────────────────────────────────────────────────────┐   │ │
 │  │  │                    KERNEL SPACE                       │   ││
 │  │  │        (OS kernel, not accessible by process)         │   ││
-│  │  └──────────────────────────────────────────────────────┘   ││
+│  │  └──────────────────────────────────────────────────────┘   │ │
 │  │                                                              ││
-│  │  ┌──────────────────────────────────────────────────────┐   ││
+│  │  ┌──────────────────────────────────────────────────────┐   │ │
 │  │  │                      STACK                            │   ││
 │  │  │    - Function call frames                             │   ││
 │  │  │    - Local variables                                  │   ││
 │  │  │    - Return addresses                                 │   ││
 │  │  │    - Grows DOWNWARD ↓                                 │   ││
-│  │  └──────────────────────────────────────────────────────┘   ││
+│  │  └──────────────────────────────────────────────────────┘   │ │
 │  │                         │                                    ││
 │  │                         ▼ (grows down)                       ││
 │  │                                                              ││
 │  │                         ▲ (grows up)                         ││
 │  │                         │                                    ││
-│  │  ┌──────────────────────────────────────────────────────┐   ││
+│  │  ┌──────────────────────────────────────────────────────┐   │ │
 │  │  │                      HEAP                             │   ││
 │  │  │    - Dynamic memory allocation                        │   ││
 │  │  │    - Objects, arrays                                  │   ││
 │  │  │    - malloc(), new                                    │   ││
 │  │  │    - Grows UPWARD ↑                                   │   ││
-│  │  └──────────────────────────────────────────────────────┘   ││
+│  │  └──────────────────────────────────────────────────────┘   │ │
 │  │                                                              ││
-│  │  ┌──────────────────────────────────────────────────────┐   ││
+│  │  ┌──────────────────────────────────────────────────────┐   │ │
 │  │  │                  BSS SEGMENT                          │   ││
 │  │  │    - Uninitialized global variables                   │   ││
 │  │  │    - static int count;                                │   ││
-│  │  └──────────────────────────────────────────────────────┘   ││
+│  │  └──────────────────────────────────────────────────────┘   │ │
 │  │                                                              ││
-│  │  ┌──────────────────────────────────────────────────────┐   ││
+│  │  ┌──────────────────────────────────────────────────────┐   │ │
 │  │  │                  DATA SEGMENT                         │   ││
 │  │  │    - Initialized global variables                     │   ││
 │  │  │    - static int count = 10;                           │   ││
-│  │  └──────────────────────────────────────────────────────┘   ││
+│  │  └──────────────────────────────────────────────────────┘   │ │
 │  │                                                              ││
-│  │  ┌──────────────────────────────────────────────────────┐   ││
+│  │  ┌──────────────────────────────────────────────────────┐   │ │
 │  │  │                  TEXT SEGMENT                         │   ││
 │  │  │    - Executable code                                  │   ││
 │  │  │    - Read-only                                        │   ││
-│  │  └──────────────────────────────────────────────────────┘   ││
-│  │  LOW ADDRESSES (e.g., 0x00000000)                           ││
+│  │  └──────────────────────────────────────────────────────┘   │ │
+│  │  LOW ADDRESSES (e.g., 0x00000000)                           │ │
 │  │                                                              ││
-│  └─────────────────────────────────────────────────────────────┘│
+│  └─────────────────────────────────────────────────────────────┘ │
 │                                                                  │
-│  PROCESS CONTROL BLOCK (PCB) - OS maintains this:              │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │ PID: 5678                                                │   │
-│  │ State: RUNNING / READY / BLOCKED / ZOMBIE               │   │
-│  │ Program Counter: Current instruction address            │   │
-│  │ CPU Registers: Saved register values                    │   │
-│  │ Memory Limits: Stack/heap boundaries                    │   │
-│  │ Open Files: File descriptors [0, 1, 2, 3...]           │   │
-│  │ Parent PID: 1234                                        │   │
-│  │ Priority: Nice value (-20 to +19)                       │   │
-│  └─────────────────────────────────────────────────────────┘   │
+│  PROCESS CONTROL BLOCK (PCB) - OS maintains this:                │
+│  ┌─────────────────────────────────────────────────────────┐     │
+│  │ PID: 5678                                                │    │
+│  │ State: RUNNING / READY / BLOCKED / ZOMBIE               │     │
+│  │ Program Counter: Current instruction address            │     │
+│  │ CPU Registers: Saved register values                    │     │
+│  │ Memory Limits: Stack/heap boundaries                    │     │
+│  │ Open Files: File descriptors [0, 1, 2, 3...]           │      │
+│  │ Parent PID: 1234                                        │     │
+│  │ Priority: Nice value (-20 to +19)                       │     │
+│  └─────────────────────────────────────────────────────────┘     │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 
 
 PROCESS LIFECYCLE:
@@ -1171,13 +1171,13 @@ THREAD - COMPLETE EXPLANATION:
 
 Thread = Lightweight process (shares process resources)
 
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │                         PROCESS                                  │
-│                      (PID: 5678)                                │
-├─────────────────────────────────────────────────────────────────┤
+│                      (PID: 5678)                                 │
+├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
-│  SHARED BETWEEN ALL THREADS:                                    │
-│  ┌─────────────────────────────────────────────────────────────┐│
+│  SHARED BETWEEN ALL THREADS:                                     │
+│  ┌─────────────────────────────────────────────────────────────┐ │
 │  │ • Code (Text) segment                                        ││
 │  │ • Data segment (global variables)                            ││
 │  │ • Heap (dynamically allocated memory)                        ││
@@ -1185,22 +1185,22 @@ Thread = Lightweight process (shares process resources)
 │  │ • Signal handlers                                            ││
 │  │ • Current working directory                                  ││
 │  │ • User and group IDs                                         ││
-│  └─────────────────────────────────────────────────────────────┘│
+│  └─────────────────────────────────────────────────────────────┘ │
 │                                                                  │
-│  UNIQUE TO EACH THREAD:                                         │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐          │
-│  │   Thread 1   │  │   Thread 2   │  │   Thread 3   │          │
-│  │   (Main)     │  │   (Worker)   │  │   (Worker)   │          │
-│  ├──────────────┤  ├──────────────┤  ├──────────────┤          │
-│  │ Thread ID    │  │ Thread ID    │  │ Thread ID    │          │
-│  │ Stack        │  │ Stack        │  │ Stack        │          │
-│  │ Registers    │  │ Registers    │  │ Registers    │          │
-│  │ Program Cnt  │  │ Program Cnt  │  │ Program Cnt  │          │
-│  │ Stack Ptr    │  │ Stack Ptr    │  │ Stack Ptr    │          │
-│  │ Priority     │  │ Priority     │  │ Priority     │          │
-│  └──────────────┘  └──────────────┘  └──────────────┘          │
+│  UNIQUE TO EACH THREAD:                                          │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐            │
+│  │   Thread 1   │  │   Thread 2   │  │   Thread 3   │            │
+│  │   (Main)     │  │   (Worker)   │  │   (Worker)   │            │
+│  ├──────────────┤  ├──────────────┤  ├──────────────┤            │
+│  │ Thread ID    │  │ Thread ID    │  │ Thread ID    │            │
+│  │ Stack        │  │ Stack        │  │ Stack        │            │
+│  │ Registers    │  │ Registers    │  │ Registers    │            │
+│  │ Program Cnt  │  │ Program Cnt  │  │ Program Cnt  │            │
+│  │ Stack Ptr    │  │ Stack Ptr    │  │ Stack Ptr    │            │
+│  │ Priority     │  │ Priority     │  │ Priority     │            │
+│  └──────────────┘  └──────────────┘  └──────────────┘            │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 
 
 THREAD vs PROCESS - KEY DIFFERENCES:
@@ -1259,45 +1259,45 @@ User 3 → Thread 3 → Process request → Response → Thread dies
 User 1000 → Thread 1000 → Process request → Response → Thread dies
 
 PROBLEM:
-┌──────────────────────────────────────────────────────────────┐
-│ 1000 threads × 1MB stack = 1GB RAM just for stacks!          │
+┌───────────────────────────────────────────────────────────────┐
+│ 1000 threads × 1MB stack = 1GB RAM just for stacks!           │
 │ Thread creation overhead: ~1ms per thread                     │
 │ Context switching: OS must switch between 1000 threads        │
 │ = SLOW and MEMORY HUNGRY                                      │
-└──────────────────────────────────────────────────────────────┘
+└───────────────────────────────────────────────────────────────┘
 
 
 THREAD POOL MODEL (Reuse threads):
 ─────────────────────────────────
 
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │                        THREAD POOL                               │
 │                       (e.g., 200 threads)                        │
-├─────────────────────────────────────────────────────────────────┤
+├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │                   REQUEST QUEUE                          │   │
-│  │    [Req1] [Req2] [Req3] ... [Req1000]                   │   │
-│  └──────────────────────────┬──────────────────────────────┘   │
-│                             │                                   │
-│         ┌───────────────────┼───────────────────┐              │
-│         │                   │                   │              │
-│         ▼                   ▼                   ▼              │
-│   ┌──────────┐       ┌──────────┐       ┌──────────┐          │
-│   │ Thread 1 │       │ Thread 2 │       │Thread 200│          │
-│   │ Pick Req │       │ Pick Req │       │ Pick Req │          │
-│   │ Process  │       │ Process  │       │ Process  │          │
-│   │ Return   │       │ Return   │       │ Return   │          │
-│   │ Pick Next│       │ Pick Next│       │ Pick Next│          │
-│   └──────────┘       └──────────┘       └──────────┘          │
+│  ┌─────────────────────────────────────────────────────────┐     │
+│  │                   REQUEST QUEUE                          │    │
+│  │    [Req1] [Req2] [Req3] ... [Req1000]                   │     │
+│  └──────────────────────────┬──────────────────────────────┘     │
+│                             │                                    │
+│         ┌───────────────────┼───────────────────┐                │
+│         │                   │                   │                │
+│         ▼                   ▼                   ▼                │
+│   ┌──────────┐       ┌──────────┐       ┌──────────┐             │
+│   │ Thread 1 │       │ Thread 2 │       │Thread 200│             │
+│   │ Pick Req │       │ Pick Req │       │ Pick Req │             │
+│   │ Process  │       │ Process  │       │ Process  │             │
+│   │ Return   │       │ Return   │       │ Return   │             │
+│   │ Pick Next│       │ Pick Next│       │ Pick Next│             │
+│   └──────────┘       └──────────┘       └──────────┘             │
 │                                                                  │
 │  Benefits:                                                       │
-│  • Only 200 threads × 1MB = 200MB RAM                          │
-│  • No thread creation overhead                                  │
-│  • Less context switching                                       │
-│  • Handles 1000+ requests with 200 threads                      │
+│  • Only 200 threads × 1MB = 200MB RAM                            │
+│  • No thread creation overhead                                   │
+│  • Less context switching                                        │
+│  • Handles 1000+ requests with 200 threads                       │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 
 
 JAVA SPRING BOOT THREAD MODEL:
@@ -1317,47 +1317,47 @@ EVENT LOOP MODEL (Node.js):
 
 Node.js uses SINGLE THREAD + Event Loop (non-blocking I/O)
 
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │                      NODE.JS EVENT LOOP                          │
-├─────────────────────────────────────────────────────────────────┤
+├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
 │  Single Thread (Main Thread):                                    │
-│  ┌─────────────────────────────────────────────────────────────┐│
+│  ┌─────────────────────────────────────────────────────────────┐ │
 │  │                                                              ││
-│  │  ┌──────────────────────────────────────────────────────┐   ││
+│  │  ┌──────────────────────────────────────────────────────┐   │ │
 │  │  │                   EVENT QUEUE                         │   ││
-│  │  │  [HTTP Req] [Timer] [File Read Done] [DB Query Done] │   ││
-│  │  └──────────────────────────┬───────────────────────────┘   ││
+│  │  │  [HTTP Req] [Timer] [File Read Done] [DB Query Done] │   │ │
+│  │  └──────────────────────────┬───────────────────────────┘   │ │
 │  │                             │                                ││
 │  │                             ▼                                ││
-│  │  ┌──────────────────────────────────────────────────────┐   ││
+│  │  ┌──────────────────────────────────────────────────────┐   │ │
 │  │  │                   EVENT LOOP                          │   ││
 │  │  │                                                       │   ││
-│  │  │  while(true) {                                       │   ││
-│  │  │    event = queue.pop()                               │   ││
-│  │  │    callback = getCallback(event)                     │   ││
-│  │  │    callback()  // Execute synchronously              │   ││
-│  │  │  }                                                   │   ││
-│  │  └──────────────────────────────────────────────────────┘   ││
+│  │  │  while(true) {                                       │   │ │
+│  │  │    event = queue.pop()                               │   │ │
+│  │  │    callback = getCallback(event)                     │   │ │
+│  │  │    callback()  // Execute synchronously              │   │ │
+│  │  │  }                                                   │   │ │
+│  │  └──────────────────────────────────────────────────────┘   │ │
 │  │                                                              ││
-│  └─────────────────────────────────────────────────────────────┘│
+│  └─────────────────────────────────────────────────────────────┘ │
 │                                                                  │
-│  Background Thread Pool (libuv, 4 threads default):             │
-│  ┌─────────────────────────────────────────────────────────────┐│
+│  Background Thread Pool (libuv, 4 threads default):              │
+│  ┌─────────────────────────────────────────────────────────────┐ │
 │  │  • File I/O                                                  ││
 │  │  • DNS lookups                                               ││
 │  │  • Some crypto operations                                    ││
 │  │  • Compression                                               ││
-│  └─────────────────────────────────────────────────────────────┘│
+│  └─────────────────────────────────────────────────────────────┘ │
 │                                                                  │
-│  OS handles (not threads):                                      │
-│  ┌─────────────────────────────────────────────────────────────┐│
-│  │  • Network I/O (uses epoll/kqueue/IOCP)                     ││
+│  OS handles (not threads):                                       │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │  • Network I/O (uses epoll/kqueue/IOCP)                     │ │
 │  │  • Timers                                                    ││
 │  │  • Async DNS (via c-ares)                                    ││
-│  └─────────────────────────────────────────────────────────────┘│
+│  └─────────────────────────────────────────────────────────────┘ │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 
 WHY NODE.JS CAN HANDLE MANY CONNECTIONS:
 ───────────────────────────────────────
@@ -1380,55 +1380,55 @@ HOW SYSTEM OVERLOAD HAPPENS:
 
 SCENARIO: Your server gets more traffic than it can handle
 
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │                    OVERLOAD PROGRESSION                          │
-├─────────────────────────────────────────────────────────────────┤
+├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
-│  Stage 1: Normal Operation                                      │
-│  ─────────────────────────                                      │
-│  CPU: 40%   RAM: 60%   Response Time: 50ms                      │
-│  Thread Pool: 50/200 threads active                             │
-│  ✓ Everything fine                                              │
+│  Stage 1: Normal Operation                                       │
+│  ─────────────────────────                                       │
+│  CPU: 40%   RAM: 60%   Response Time: 50ms                       │
+│  Thread Pool: 50/200 threads active                              │
+│  ✓ Everything fine                                               │
 │                                                                  │
-│  Stage 2: High Load                                             │
-│  ───────────────────                                            │
-│  CPU: 75%   RAM: 80%   Response Time: 200ms                     │
-│  Thread Pool: 180/200 threads active                            │
-│  ⚠ Getting busy, queue building up                              │
+│  Stage 2: High Load                                              │
+│  ───────────────────                                             │
+│  CPU: 75%   RAM: 80%   Response Time: 200ms                      │
+│  Thread Pool: 180/200 threads active                             │
+│  ⚠ Getting busy, queue building up                               │
 │                                                                  │
-│  Stage 3: Saturation                                            │
-│  ───────────────────                                            │
-│  CPU: 95%   RAM: 90%   Response Time: 2000ms                    │
-│  Thread Pool: 200/200 threads (MAX)                             │
-│  Queue: 500 requests waiting                                    │
-│  ⚠ Requests timing out                                          │
+│  Stage 3: Saturation                                             │
+│  ───────────────────                                             │
+│  CPU: 95%   RAM: 90%   Response Time: 2000ms                     │
+│  Thread Pool: 200/200 threads (MAX)                              │
+│  Queue: 500 requests waiting                                     │
+│  ⚠ Requests timing out                                           │
 │                                                                  │
-│  Stage 4: Collapse                                              │
-│  ─────────────────                                              │
-│  CPU: 100%  RAM: 98%   Response Time: TIMEOUT                   │
-│  Thread Pool: All threads busy, new connections rejected        │
-│  Queue: FULL (10000), dropping requests                         │
-│  ✗ System unresponsive                                          │
+│  Stage 4: Collapse                                               │
+│  ─────────────────                                               │
+│  CPU: 100%  RAM: 98%   Response Time: TIMEOUT                    │
+│  Thread Pool: All threads busy, new connections rejected         │
+│  Queue: FULL (10000), dropping requests                          │
+│  ✗ System unresponsive                                           │
 │                                                                  │
-│  Stage 5: OOM (Out of Memory)                                   │
-│  ───────────────────────────                                    │
+│  Stage 5: OOM (Out of Memory)                                    │
+│  ───────────────────────────                                     │
 │  RAM: 100%                                                       │
-│  OOM Killer: Kills processes to free memory                     │
-│  ✗ Your app may be killed                                       │
+│  OOM Killer: Kills processes to free memory                      │
+│  ✗ Your app may be killed                                        │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 
 
 WHAT HAPPENS IN EACH RESOURCE:
 ─────────────────────────────
 
 CPU OVERLOAD:
-┌──────────────────────────────────────────────────────────────┐
+┌───────────────────────────────────────────────────────────────┐
 │ • Context switching overhead increases                        │
-│ • CPU spends more time switching than doing work             │
-│ • Scheduler can't keep up                                    │
-│ • "Thrashing" - system doing work but nothing productive     │
-└──────────────────────────────────────────────────────────────┘
+│ • CPU spends more time switching than doing work              │
+│ • Scheduler can't keep up                                     │
+│ • "Thrashing" - system doing work but nothing productive      │
+└───────────────────────────────────────────────────────────────┘
 
 RAM OVERLOAD:
 ┌──────────────────────────────────────────────────────────────┐
@@ -1663,80 +1663,80 @@ BROWSER RENDERING PIPELINE:
 
 When browser receives HTML:
 
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │                    CRITICAL RENDERING PATH                       │
-├─────────────────────────────────────────────────────────────────┤
+├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
-│  1. HTML PARSING → DOM Tree                                     │
-│  ──────────────────────────                                     │
+│  1. HTML PARSING → DOM Tree                                      │
+│  ──────────────────────────                                      │
 │                                                                  │
-│  <html>                       ┌─────────┐                       │
-│    <head>                     │  html   │                       │
-│      <title>                  └────┬────┘                       │
-│    </head>              ┌──────────┼──────────┐                 │
-│    <body>               │                     │                 │
-│      <div>          ┌───▼───┐            ┌───▼───┐              │
-│        <p>          │  head │            │  body │              │
-│      </div>         └───┬───┘            └───┬───┘              │
+│  <html>                       ┌─────────┐                        │
+│    <head>                     │  html   │                        │
+│      <title>                  └────┬────┘                        │
+│    </head>              ┌──────────┼──────────┐                  │
+│    <body>               │                     │                  │
+│      <div>          ┌───▼───┐            ┌───▼───┐               │
+│        <p>          │  head │            │  body │               │
+│      </div>         └───┬───┘            └───┬───┘               │
 │    </body>              │                    │                   │
-│  </html>            ┌───▼───┐            ┌───▼───┐              │
-│                     │ title │            │  div  │              │
-│                     └───────┘            └───┬───┘              │
+│  </html>            ┌───▼───┐            ┌───▼───┐               │
+│                     │ title │            │  div  │               │
+│                     └───────┘            └───┬───┘               │
 │                                              │                   │
-│                                          ┌───▼───┐              │
-│                                          │   p   │              │
-│                                          └───────┘              │
+│                                          ┌───▼───┐               │
+│                                          │   p   │               │
+│                                          └───────┘               │
 │                                                                  │
-│  2. CSS PARSING → CSSOM Tree                                    │
-│  ───────────────────────────                                    │
+│  2. CSS PARSING → CSSOM Tree                                     │
+│  ───────────────────────────                                     │
 │                                                                  │
-│  body { color: black; }       ┌─────────┐                       │
-│  div { display: flex; }       │  body   │                       │
-│  p { font-size: 16px; }       │ color:  │                       │
-│                               │  black  │                       │
-│                               └────┬────┘                       │
+│  body { color: black; }       ┌─────────┐                        │
+│  div { display: flex; }       │  body   │                        │
+│  p { font-size: 16px; }       │ color:  │                        │
+│                               │  black  │                        │
+│                               └────┬────┘                        │
 │                                    │                             │
-│                               ┌────▼────┐                       │
-│                               │   div   │                       │
-│                               │display: │                       │
-│                               │  flex   │                       │
-│                               └────┬────┘                       │
+│                               ┌────▼────┐                        │
+│                               │   div   │                        │
+│                               │display: │                        │
+│                               │  flex   │                        │
+│                               └────┬────┘                        │
 │                                    │                             │
-│                               ┌────▼────┐                       │
-│                               │    p    │                       │
-│                               │font-size│                       │
-│                               │  16px   │                       │
-│                               └─────────┘                       │
+│                               ┌────▼────┐                        │
+│                               │    p    │                        │
+│                               │font-size│                        │
+│                               │  16px   │                        │
+│                               └─────────┘                        │
 │                                                                  │
-│  3. RENDER TREE (DOM + CSSOM)                                   │
-│  ────────────────────────────                                   │
+│  3. RENDER TREE (DOM + CSSOM)                                    │
+│  ────────────────────────────                                    │
 │                                                                  │
-│  • Combines DOM and CSSOM                                       │
-│  • Only visible elements (no <head>, display:none)             │
-│  • Contains computed styles                                     │
+│  • Combines DOM and CSSOM                                        │
+│  • Only visible elements (no <head>, display:none)               │
+│  • Contains computed styles                                      │
 │                                                                  │
-│  4. LAYOUT (Reflow)                                             │
-│  ──────────────────                                             │
+│  4. LAYOUT (Reflow)                                              │
+│  ──────────────────                                              │
 │                                                                  │
-│  • Calculate exact position and size                            │
-│  • "Where does each element go?"                                │
-│  • Triggered by: resize, content change, style change          │
+│  • Calculate exact position and size                             │
+│  • "Where does each element go?"                                 │
+│  • Triggered by: resize, content change, style change            │
 │                                                                  │
 │  5. PAINT                                                        │
-│  ───────                                                        │
+│  ───────                                                         │
 │                                                                  │
-│  • Convert to actual pixels                                     │
-│  • Draw text, colors, shadows, borders                         │
-│  • Create paint records                                         │
+│  • Convert to actual pixels                                      │
+│  • Draw text, colors, shadows, borders                           │
+│  • Create paint records                                          │
 │                                                                  │
 │  6. COMPOSITE                                                    │
-│  ────────────                                                   │
+│  ────────────                                                    │
 │                                                                  │
-│  • Combine layers (for animations, overlaps)                   │
-│  • Send to GPU                                                  │
-│  • Display on screen                                            │
+│  • Combine layers (for animations, overlaps)                     │
+│  • Send to GPU                                                   │
+│  • Display on screen                                             │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 
 
 PERFORMANCE IMPACT:
@@ -1768,76 +1768,76 @@ BROWSER EVENT LOOP:
 
 JavaScript is single-threaded, but handles async through Event Loop
 
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │                    JAVASCRIPT RUNTIME                            │
-├─────────────────────────────────────────────────────────────────┤
+├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
-│  ┌─────────────────────────────────────────────────────────────┐│
+│  ┌─────────────────────────────────────────────────────────────┐ │
 │  │                      CALL STACK                              ││
 │  │                                                              ││
-│  │  • Executes code synchronously                              ││
-│  │  • LIFO (Last In, First Out)                                ││
-│  │  • One function at a time                                   ││
+│  │  • Executes code synchronously                              │ │
+│  │  • LIFO (Last In, First Out)                                │ │
+│  │  • One function at a time                                   │ │
 │  │                                                              ││
-│  │  ┌─────────────────────────────────────────────────────┐   ││
-│  │  │ calculateSum()                                       │   ││
-│  │  ├─────────────────────────────────────────────────────┤   ││
-│  │  │ processData()                                        │   ││
-│  │  ├─────────────────────────────────────────────────────┤   ││
-│  │  │ main()                                               │   ││
-│  │  └─────────────────────────────────────────────────────┘   ││
-│  └─────────────────────────────────────────────────────────────┘│
+│  │  ┌─────────────────────────────────────────────────────┐   │  │
+│  │  │ calculateSum()                                       │   │ │
+│  │  ├─────────────────────────────────────────────────────┤   │  │
+│  │  │ processData()                                        │   │ │
+│  │  ├─────────────────────────────────────────────────────┤   │  │
+│  │  │ main()                                               │   │ │
+│  │  └─────────────────────────────────────────────────────┘   │  │
+│  └─────────────────────────────────────────────────────────────┘ │
 │                              │                                   │
-│                              │ When call stack empty,           │
-│                              │ event loop checks queues         │
+│                              │ When call stack empty,            │
+│                              │ event loop checks queues          │
 │                              ▼                                   │
-│  ┌──────────────────────────────────────────────────────────── │
-│  │                      EVENT LOOP                              │
-│  │                                                              │
-│  │  while (true) {                                             │
-│  │    if (callStack.isEmpty()) {                               │
-│  │      // 1. Run ALL microtasks first                         │
-│  │      while (microtaskQueue.hasItems()) {                   │
-│  │        task = microtaskQueue.dequeue()                     │
-│  │        callStack.push(task)                                │
-│  │        execute(task)                                       │
-│  │      }                                                      │
-│  │      // 2. Run ONE macrotask                               │
-│  │      if (macrotaskQueue.hasItems()) {                      │
-│  │        task = macrotaskQueue.dequeue()                     │
-│  │        callStack.push(task)                                │
-│  │        execute(task)                                       │
-│  │      }                                                      │
-│  │      // 3. Render (if needed, ~60fps = every 16.67ms)      │
-│  │      if (shouldRender()) {                                  │
-│  │        render()                                             │
-│  │      }                                                      │
-│  │    }                                                        │
-│  │  }                                                          │
-│  └──────────────────────────────────────────────────────────── │
+│  ┌────────────────────────────────────────────────────────────   │
+│  │                      EVENT LOOP                               │
+│  │                                                               │
+│  │  while (true) {                                               │
+│  │    if (callStack.isEmpty()) {                                 │
+│  │      // 1. Run ALL microtasks first                           │
+│  │      while (microtaskQueue.hasItems()) {                      │
+│  │        task = microtaskQueue.dequeue()                        │
+│  │        callStack.push(task)                                   │
+│  │        execute(task)                                          │
+│  │      }                                                        │
+│  │      // 2. Run ONE macrotask                                  │
+│  │      if (macrotaskQueue.hasItems()) {                         │
+│  │        task = macrotaskQueue.dequeue()                        │
+│  │        callStack.push(task)                                   │
+│  │        execute(task)                                          │
+│  │      }                                                        │
+│  │      // 3. Render (if needed, ~60fps = every 16.67ms)         │
+│  │      if (shouldRender()) {                                    │
+│  │        render()                                               │
+│  │      }                                                        │
+│  │    }                                                          │
+│  │  }                                                            │
+│  └────────────────────────────────────────────────────────────   │
 │                                                                  │
-│  ┌─────────────────────────────────────────────────────────────┐│
+│  ┌─────────────────────────────────────────────────────────────┐ │
 │  │              MICROTASK QUEUE (High Priority)                 ││
 │  │                                                              ││
-│  │  • Promise.then/catch/finally                               ││
-│  │  • queueMicrotask()                                         ││
-│  │  • MutationObserver                                         ││
+│  │  • Promise.then/catch/finally                               │ │
+│  │  • queueMicrotask()                                         │ │
+│  │  • MutationObserver                                         │ │
 │  │                                                              ││
-│  │  [Promise1] [Promise2] [Promise3]                           ││
-│  └─────────────────────────────────────────────────────────────┘│
+│  │  [Promise1] [Promise2] [Promise3]                           │ │
+│  └─────────────────────────────────────────────────────────────┘ │
 │                                                                  │
-│  ┌─────────────────────────────────────────────────────────────┐│
+│  ┌─────────────────────────────────────────────────────────────┐ │
 │  │              MACROTASK QUEUE (Lower Priority)                ││
 │  │                                                              ││
 │  │  • setTimeout/setInterval                                    ││
-│  │  • DOM events (click, scroll)                               ││
-│  │  • Network responses (fetch/XHR)                            ││
+│  │  • DOM events (click, scroll)                               │ │
+│  │  • Network responses (fetch/XHR)                            │ │
 │  │  • I/O operations                                            ││
 │  │                                                              ││
-│  │  [Timeout1] [Click] [FetchResponse]                         ││
-│  └─────────────────────────────────────────────────────────────┘│
+│  │  [Timeout1] [Click] [FetchResponse]                         │ │
+│  └─────────────────────────────────────────────────────────────┘ │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 
 
 EXAMPLE - ORDER OF EXECUTION:
@@ -1866,55 +1866,55 @@ WHY?
 CORE WEB VITALS (Google):
 ═════════════════════════
 
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │                      CORE WEB VITALS                             │
-├─────────────────────────────────────────────────────────────────┤
+├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
-│  1. LCP (Largest Contentful Paint)                              │
-│  ─────────────────────────────────                              │
-│  "When did main content load?"                                  │
+│  1. LCP (Largest Contentful Paint)                               │
+│  ─────────────────────────────────                               │
+│  "When did main content load?"                                   │
 │                                                                  │
-│  Good: ≤ 2.5s    Needs Work: 2.5-4s    Poor: > 4s              │
+│  Good: ≤ 2.5s    Needs Work: 2.5-4s    Poor: > 4s                │
 │                                                                  │
-│  Measures: Largest image, video, or text block                 │
-│                                                                  │
-│  Improve:                                                        │
-│  • Optimize images (WebP, proper sizing)                       │
-│  • Preload critical resources                                  │
-│  • Use CDN                                                      │
-│  • Remove render-blocking CSS/JS                               │
-│                                                                  │
-│                                                                  │
-│  2. FID (First Input Delay) → INP (Interaction to Next Paint)  │
-│  ────────────────────────────────────────────────────────────   │
-│  "How quickly does page respond to interaction?"                │
-│                                                                  │
-│  Good: ≤ 100ms   Needs Work: 100-300ms   Poor: > 300ms         │
-│                                                                  │
-│  Measures: Time from click to browser response                  │
+│  Measures: Largest image, video, or text block                   │
 │                                                                  │
 │  Improve:                                                        │
-│  • Break up long tasks (< 50ms each)                           │
-│  • Use web workers for heavy computation                       │
-│  • Reduce JavaScript execution time                            │
-│  • Defer non-critical JavaScript                               │
+│  • Optimize images (WebP, proper sizing)                         │
+│  • Preload critical resources                                    │
+│  • Use CDN                                                       │
+│  • Remove render-blocking CSS/JS                                 │
 │                                                                  │
 │                                                                  │
-│  3. CLS (Cumulative Layout Shift)                               │
-│  ────────────────────────────────                               │
-│  "Does content jump around while loading?"                      │
+│  2. FID (First Input Delay) → INP (Interaction to Next Paint)    │
+│  ────────────────────────────────────────────────────────────    │
+│  "How quickly does page respond to interaction?"                 │
 │                                                                  │
-│  Good: ≤ 0.1     Needs Work: 0.1-0.25    Poor: > 0.25          │
+│  Good: ≤ 100ms   Needs Work: 100-300ms   Poor: > 300ms           │
 │                                                                  │
-│  Measures: Unexpected layout shifts                             │
+│  Measures: Time from click to browser response                   │
 │                                                                  │
 │  Improve:                                                        │
-│  • Set explicit dimensions on images/videos                    │
-│  • Reserve space for ads/embeds                                │
-│  • Avoid inserting content above existing content              │
-│  • Use CSS contain property                                     │
+│  • Break up long tasks (< 50ms each)                             │
+│  • Use web workers for heavy computation                         │
+│  • Reduce JavaScript execution time                              │
+│  • Defer non-critical JavaScript                                 │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+│                                                                  │
+│  3. CLS (Cumulative Layout Shift)                                │
+│  ────────────────────────────────                                │
+│  "Does content jump around while loading?"                       │
+│                                                                  │
+│  Good: ≤ 0.1     Needs Work: 0.1-0.25    Poor: > 0.25            │
+│                                                                  │
+│  Measures: Unexpected layout shifts                              │
+│                                                                  │
+│  Improve:                                                        │
+│  • Set explicit dimensions on images/videos                      │
+│  • Reserve space for ads/embeds                                  │
+│  • Avoid inserting content above existing content                │
+│  • Use CSS contain property                                      │
+│                                                                  │
+└──────────────────────────────────────────────────────────────────┘
 
 
 PAGE LOAD TIMELINE:
@@ -1947,75 +1947,75 @@ TTI (Time to Interactive): < 3.8s
 CONTAINER vs VIRTUAL MACHINE - INTERNAL DIFFERENCE:
 ══════════════════════════════════════════════════
 
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │              VIRTUAL MACHINE                                     │
-├─────────────────────────────────────────────────────────────────┤
+├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │                    YOUR HOST OS                          │   │
-│  │                    (Windows/Mac)                         │   │
-│  └─────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────┐     │
+│  │                    YOUR HOST OS                          │    │
+│  │                    (Windows/Mac)                         │    │
+│  └─────────────────────────────────────────────────────────┘     │
 │                          │                                       │
 │                          ▼                                       │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │                    HYPERVISOR                            │   │
-│  │               (VirtualBox/VMware)                        │   │
-│  │                                                          │   │
-│  │   ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  │   │
-│  │   │     VM 1     │  │     VM 2     │  │     VM 3     │  │   │
-│  │   ├──────────────┤  ├──────────────┤  ├──────────────┤  │   │
-│  │   │   Your App   │  │   Your App   │  │   Your App   │  │   │
-│  │   ├──────────────┤  ├──────────────┤  ├──────────────┤  │   │
-│  │   │  Libraries   │  │  Libraries   │  │  Libraries   │  │   │
-│  │   ├──────────────┤  ├──────────────┤  ├──────────────┤  │   │
-│  │   │   FULL OS    │  │   FULL OS    │  │   FULL OS    │  │   │
-│  │   │ (Ubuntu 2GB) │  │ (CentOS 3GB) │  │ (Alpine 1GB) │  │   │
-│  │   └──────────────┘  └──────────────┘  └──────────────┘  │   │
-│  │                                                          │   │
-│  │   Each VM has FULL kernel = Heavy (GBs), slow startup   │   │
-│  │                                                          │   │
-│  └─────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────┐     │
+│  │                    HYPERVISOR                            │    │
+│  │               (VirtualBox/VMware)                        │    │
+│  │                                                          │    │
+│  │   ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  │     │
+│  │   │     VM 1     │  │     VM 2     │  │     VM 3     │  │     │
+│  │   ├──────────────┤  ├──────────────┤  ├──────────────┤  │     │
+│  │   │   Your App   │  │   Your App   │  │   Your App   │  │     │
+│  │   ├──────────────┤  ├──────────────┤  ├──────────────┤  │     │
+│  │   │  Libraries   │  │  Libraries   │  │  Libraries   │  │     │
+│  │   ├──────────────┤  ├──────────────┤  ├──────────────┤  │     │
+│  │   │   FULL OS    │  │   FULL OS    │  │   FULL OS    │  │     │
+│  │   │ (Ubuntu 2GB) │  │ (CentOS 3GB) │  │ (Alpine 1GB) │  │     │
+│  │   └──────────────┘  └──────────────┘  └──────────────┘  │     │
+│  │                                                          │    │
+│  │   Each VM has FULL kernel = Heavy (GBs), slow startup   │     │
+│  │                                                          │    │
+│  └─────────────────────────────────────────────────────────┘     │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 
 
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │              DOCKER CONTAINERS                                   │
-├─────────────────────────────────────────────────────────────────┤
+├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │                    HOST OS KERNEL                        │   │
-│  │                  (Linux/Windows)                         │   │
-│  │                                                          │   │
-│  │  Kernel provides isolation through:                     │   │
-│  │  • NAMESPACES (what container can SEE)                  │   │
-│  │  • CGROUPS (what container can USE)                     │   │
-│  │                                                          │   │
-│  └─────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────┐     │
+│  │                    HOST OS KERNEL                        │    │
+│  │                  (Linux/Windows)                         │    │
+│  │                                                          │    │
+│  │  Kernel provides isolation through:                     │     │
+│  │  • NAMESPACES (what container can SEE)                  │     │
+│  │  • CGROUPS (what container can USE)                     │     │
+│  │                                                          │    │
+│  └─────────────────────────────────────────────────────────┘     │
 │                          │                                       │
 │                          ▼                                       │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │                    DOCKER ENGINE                         │   │
-│  │                                                          │   │
-│  │   ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  │   │
-│  │   │ Container 1  │  │ Container 2  │  │ Container 3  │  │   │
-│  │   ├──────────────┤  ├──────────────┤  ├──────────────┤  │   │
-│  │   │   Your App   │  │   Your App   │  │   Your App   │  │   │
-│  │   ├──────────────┤  ├──────────────┤  ├──────────────┤  │   │
-│  │   │  Libraries   │  │  Libraries   │  │  Libraries   │  │   │
-│  │   │   (50 MB)    │  │   (30 MB)    │  │   (20 MB)    │  │   │
-│  │   └──────────────┘  └──────────────┘  └──────────────┘  │   │
-│  │         │                 │                 │            │   │
-│  │         └─────────────────┼─────────────────┘            │   │
-│  │                           │                              │   │
-│  │                    SHARED KERNEL                         │   │
-│  │                    (No OS per container!)               │   │
-│  │                                                          │   │
-│  └─────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────┐     │
+│  │                    DOCKER ENGINE                         │    │
+│  │                                                          │    │
+│  │   ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  │     │
+│  │   │ Container 1  │  │ Container 2  │  │ Container 3  │  │     │
+│  │   ├──────────────┤  ├──────────────┤  ├──────────────┤  │     │
+│  │   │   Your App   │  │   Your App   │  │   Your App   │  │     │
+│  │   ├──────────────┤  ├──────────────┤  ├──────────────┤  │     │
+│  │   │  Libraries   │  │  Libraries   │  │  Libraries   │  │     │
+│  │   │   (50 MB)    │  │   (30 MB)    │  │   (20 MB)    │  │     │
+│  │   └──────────────┘  └──────────────┘  └──────────────┘  │     │
+│  │         │                 │                 │            │    │
+│  │         └─────────────────┼─────────────────┘            │    │
+│  │                           │                              │    │
+│  │                    SHARED KERNEL                         │    │
+│  │                    (No OS per container!)               │     │
+│  │                                                          │    │
+│  └─────────────────────────────────────────────────────────┘     │
 │                                                                  │
-│  Containers share host kernel = Light (MBs), instant start     │
+│  Containers share host kernel = Light (MBs), instant start       │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 
 
 LINUX NAMESPACES - HOW ISOLATION WORKS:
@@ -2051,22 +2051,22 @@ CGROUPS - RESOURCE LIMITING:
 
 docker run --memory=512m --cpus=0.5 myapp
 
-┌──────────────────────────────────────────────────────────────────┐
+┌───────────────────────────────────────────────────────────────────┐
 │                     CGROUP LIMITS                                 │
 │                                                                   │
 │  Memory:                                                          │
 │  /sys/fs/cgroup/memory/docker/<container_id>/memory.limit_in_bytes│
-│  → 536870912 (512 MB)                                            │
-│  If exceeded → Container killed (OOM)                            │
+│  → 536870912 (512 MB)                                             │
+│  If exceeded → Container killed (OOM)                             │
 │                                                                   │
 │  CPU:                                                             │
-│  /sys/fs/cgroup/cpu/docker/<container_id>/cpu.cfs_quota_us       │
-│  → 50000 (50% of one CPU core)                                   │
+│  /sys/fs/cgroup/cpu/docker/<container_id>/cpu.cfs_quota_us        │
+│  → 50000 (50% of one CPU core)                                    │
 │                                                                   │
 │  I/O:                                                             │
-│  Can limit disk read/write speed                                 │
+│  Can limit disk read/write speed                                  │
 │                                                                   │
-└──────────────────────────────────────────────────────────────────┘
+└───────────────────────────────────────────────────────────────────┘
 ```
 
 ### Docker Image Layers
@@ -2085,77 +2085,77 @@ Dockerfile:
 └────────────────────────────────────────────────────────────────┘
 
 Creates layered image:
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │                    IMAGE LAYERS                                  │
-├─────────────────────────────────────────────────────────────────┤
+├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │ Layer 5: CMD ["java", "-jar", "app.jar"]  (metadata)    │   │
-│  │ SHA256: abc123... Size: 0 bytes                         │   │
-│  └─────────────────────────────────────────────────────────┘   │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │ Layer 4: EXPOSE 8080                       (metadata)    │   │
-│  │ SHA256: def456... Size: 0 bytes                         │   │
-│  └─────────────────────────────────────────────────────────┘   │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │ Layer 3: COPY app.jar                      (your code)   │   │
-│  │ SHA256: ghi789... Size: 50 MB                           │   │
-│  └─────────────────────────────────────────────────────────┘   │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │ Layer 2: WORKDIR /app                                    │   │
-│  │ SHA256: jkl012... Size: 0 bytes                         │   │
-│  └─────────────────────────────────────────────────────────┘   │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │ Layer 1: openjdk:17-slim                 (base image)    │   │
-│  │ SHA256: mno345... Size: 200 MB                          │   │
-│  │ Contains: Debian + JDK 17                               │   │
-│  └─────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────┐     │
+│  │ Layer 5: CMD ["java", "-jar", "app.jar"]  (metadata)    │     │
+│  │ SHA256: abc123... Size: 0 bytes                         │     │
+│  └─────────────────────────────────────────────────────────┘     │
+│  ┌─────────────────────────────────────────────────────────┐     │
+│  │ Layer 4: EXPOSE 8080                       (metadata)    │    │
+│  │ SHA256: def456... Size: 0 bytes                         │     │
+│  └─────────────────────────────────────────────────────────┘     │
+│  ┌─────────────────────────────────────────────────────────┐     │
+│  │ Layer 3: COPY app.jar                      (your code)   │    │
+│  │ SHA256: ghi789... Size: 50 MB                           │     │
+│  └─────────────────────────────────────────────────────────┘     │
+│  ┌─────────────────────────────────────────────────────────┐     │
+│  │ Layer 2: WORKDIR /app                                    │    │
+│  │ SHA256: jkl012... Size: 0 bytes                         │     │
+│  └─────────────────────────────────────────────────────────┘     │
+│  ┌─────────────────────────────────────────────────────────┐     │
+│  │ Layer 1: openjdk:17-slim                 (base image)    │    │
+│  │ SHA256: mno345... Size: 200 MB                          │     │
+│  │ Contains: Debian + JDK 17                               │     │
+│  └─────────────────────────────────────────────────────────┘     │
 │                                                                  │
-│  TOTAL: ~250 MB                                                 │
+│  TOTAL: ~250 MB                                                  │
 │                                                                  │
 │  KEY INSIGHT:                                                    │
-│  • Layers are READ-ONLY                                         │
-│  • Layers are CACHED and REUSED                                 │
-│  • If Layer 1 unchanged, Docker uses cached version            │
-│  • Only Layer 3 (your code) changes on rebuild                 │
-│  • Second build: ~5 seconds instead of 5 minutes!              │
+│  • Layers are READ-ONLY                                          │
+│  • Layers are CACHED and REUSED                                  │
+│  • If Layer 1 unchanged, Docker uses cached version              │
+│  • Only Layer 3 (your code) changes on rebuild                   │
+│  • Second build: ~5 seconds instead of 5 minutes!                │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 
 
 CONTAINER WRITABLE LAYER:
 ────────────────────────
 
 When container runs:
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │                                                                  │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │         CONTAINER LAYER (Read-Write)                     │   │
-│  │                                                          │   │
-│  │  • Log files written by app                             │   │
-│  │  • Temp files                                           │   │
-│  │  • Runtime data                                         │   │
-│  │                                                          │   │
-│  │  DELETED when container stops!                          │   │
-│  │  (Unless using volumes)                                  │   │
-│  │                                                          │   │
-│  └─────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────┐     │
+│  │         CONTAINER LAYER (Read-Write)                     │    │
+│  │                                                          │    │
+│  │  • Log files written by app                             │     │
+│  │  • Temp files                                           │     │
+│  │  • Runtime data                                         │     │
+│  │                                                          │    │
+│  │  DELETED when container stops!                          │     │
+│  │  (Unless using volumes)                                  │    │
+│  │                                                          │    │
+│  └─────────────────────────────────────────────────────────┘     │
 │                          │                                       │
 │                          │ Union Mount (OverlayFS)               │
 │                          │                                       │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │         IMAGE LAYERS (Read-Only)                         │   │
-│  │                                                          │   │
-│  │  Layer 5, Layer 4, Layer 3, Layer 2, Layer 1            │   │
-│  │                                                          │   │
-│  │  SHARED between all containers using same image!        │   │
-│  │                                                          │   │
-│  └─────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────┐     │
+│  │         IMAGE LAYERS (Read-Only)                         │    │
+│  │                                                          │    │
+│  │  Layer 5, Layer 4, Layer 3, Layer 2, Layer 1            │     │
+│  │                                                          │    │
+│  │  SHARED between all containers using same image!        │     │
+│  │                                                          │    │
+│  └─────────────────────────────────────────────────────────┘     │
 │                                                                  │
-│  10 containers from same image = 1 copy of image layers        │
-│  + 10 small writable layers                                     │
+│  10 containers from same image = 1 copy of image layers          │
+│  + 10 small writable layers                                      │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ### Kubernetes Internals

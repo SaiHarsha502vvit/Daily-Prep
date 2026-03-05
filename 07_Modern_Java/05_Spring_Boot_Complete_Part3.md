@@ -11,39 +11,39 @@
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHY: Why AOP & Auto-Configuration?                                             │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • @Transactional magic: Without AOP knowledge, it's unexplainable            │
-│  • Cross-cutting concerns: Logging, security, caching - applied everywhere    │
-│  • Debug proxy issues: "Why isn't @Transactional working?" - now you'll know │
-│  • Auto-config: Understand why adding dependency enables features             │
-│  • Custom starters: Build your own Spring Boot starters for libraries         │
+│  • @Transactional magic: Without AOP knowledge, it's unexplainable              │
+│  • Cross-cutting concerns: Logging, security, caching - applied everywhere      │
+│  • Debug proxy issues: "Why isn't @Transactional working?" - now you'll know    │
+│  • Auto-config: Understand why adding dependency enables features               │
+│  • Custom starters: Build your own Spring Boot starters for libraries           │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  HOW: How AOP Creates Magic?                                                    │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Proxy wrapping: Spring creates proxy around your bean                       │
-│  • Pointcuts: Define WHERE advice applies (method patterns)                   │
-│  • Advice types: @Before, @After, @Around - WHEN code runs                    │
-│  • Auto-config: @ConditionalOnClass, META-INF/spring.factories                │
-│  • Starters: Pre-configured dependencies + auto-configuration                 │
+│  • Proxy wrapping: Spring creates proxy around your bean                        │
+│  • Pointcuts: Define WHERE advice applies (method patterns)                     │
+│  • Advice types: @Before, @After, @Around - WHEN code runs                      │
+│  • Auto-config: @ConditionalOnClass, META-INF/spring.factories                  │
+│  • Starters: Pre-configured dependencies + auto-configuration                   │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHEN: When to Use AOP?                                                         │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Logging: Log all service method entries/exits                               │
-│  • Security: Check authorization before method execution                      │
-│  • Transactions: @Transactional uses AOP (already built-in)                   │
-│  • Caching: @Cacheable wraps methods with cache logic                         │
-│  • Performance: Measure method execution time across all services             │
+│  • Logging: Log all service method entries/exits                                │
+│  • Security: Check authorization before method execution                        │
+│  • Transactions: @Transactional uses AOP (already built-in)                     │
+│  • Caching: @Cacheable wraps methods with cache logic                           │
+│  • Performance: Measure method execution time across all services               │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHICH: Which AOP Concepts to Master?                                           │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  ESSENTIAL:     Proxy limitations, @Around advice, pointcut expressions        │
-│  IMPORTANT:     Self-invocation problem, @EnableAspectJAutoProxy              │
-│  ADVANCED:      Custom auto-configuration, conditional bean creation          │
+│  ESSENTIAL:     Proxy limitations, @Around advice, pointcut expressions         │
+│  IMPORTANT:     Self-invocation problem, @EnableAspectJAutoProxy                │
+│  ADVANCED:      Custom auto-configuration, conditional bean creation            │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -59,40 +59,40 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    THE CROSS-CUTTING PROBLEM                                     │
+│                    THE CROSS-CUTTING PROBLEM                                    │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  WITHOUT AOP (Logging everywhere):                                              │
-│                                                                                  │
-│  @Service                                                                        │
-│  public class UserService {                                                      │
+│                                                                                 │
+│  @Service                                                                       │
+│  public class UserService {                                                     │
 │      public User findById(Long id) {                                            │
-│          log.info("Entering findById with id={}", id);        // REPEATED!     │
+│          log.info("Entering findById with id={}", id);        // REPEATED!      │
 │          long start = System.currentTimeMillis();              // REPEATED!     │
-│          try {                                                  // REPEATED!     │
+│          try {                                                  // REPEATED!    │
 │              User user = userRepo.findById(id);                                 │
-│              log.info("Exiting findById, took {}ms",                             │
+│              log.info("Exiting findById, took {}ms",                            │
 │                       System.currentTimeMillis() - start);     // REPEATED!     │
-│              return user;                                                        │
+│              return user;                                                       │
 │          } catch (Exception e) {                               // REPEATED!     │
 │              log.error("Error in findById", e);                // REPEATED!     │
-│              throw e;                                                            │
-│          }                                                                       │
+│              throw e;                                                           │
+│          }                                                                      │
 │      }                                                                          │
-│                                                                                  │
+│                                                                                 │
 │      public void createUser(User user) {                                        │
 │          log.info("Entering createUser");                      // REPEATED!     │
 │          long start = System.currentTimeMillis();              // REPEATED!     │
-│          // Same boilerplate... in EVERY method!                               │
+│          // Same boilerplate... in EVERY method!                                │
 │      }                                                                          │
 │  }                                                                              │
-│                                                                                  │
-│  PROBLEMS:                                                                       │
-│  ❌ Code duplication everywhere                                                 │
-│  ❌ Business logic buried under infrastructure code                            │
-│  ❌ Adding new concern (security?) = modify every method                       │
-│  ❌ Hard to maintain, easy to forget                                           │
-│                                                                                  │
+│                                                                                 │
+│  PROBLEMS:                                                                      │
+│  ❌ Code duplication everywhere                                                  │
+│  ❌ Business logic buried under infrastructure code                              │
+│  ❌ Adding new concern (security?) = modify every method                         │
+│  ❌ Hard to maintain, easy to forget                                             │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -100,35 +100,35 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    WITH AOP (Separation of Concerns)                             │
+│                    WITH AOP (Separation of Concerns)                            │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  @Service                                                                        │
-│  public class UserService {                                                      │
+│                                                                                 │
+│  @Service                                                                       │
+│  public class UserService {                                                     │
 │      public User findById(Long id) {                                            │
-│          return userRepo.findById(id);  // Pure business logic!                │
+│          return userRepo.findById(id);  // Pure business logic!                 │
 │      }                                                                          │
-│                                                                                  │
+│                                                                                 │
 │      public void createUser(User user) {                                        │
-│          userRepo.save(user);           // Clean!                              │
+│          userRepo.save(user);           // Clean!                               │
 │      }                                                                          │
 │  }                                                                              │
-│                                                                                  │
-│  @Aspect                                                                         │
-│  @Component                                                                      │
+│                                                                                 │
+│  @Aspect                                                                        │
+│  @Component                                                                     │
 │  public class LoggingAspect {                                                   │
 │      @Around("execution(* com.example.service.*.*(..))")                        │
-│      public Object logMethod(ProceedingJoinPoint pjp) {                        │
-│          // Logging logic defined ONCE, applied everywhere!                    │
+│      public Object logMethod(ProceedingJoinPoint pjp) {                         │
+│          // Logging logic defined ONCE, applied everywhere!                     │
 │      }                                                                          │
 │  }                                                                              │
-│                                                                                  │
-│  BENEFITS:                                                                       │
-│  ✅ Business logic is clean and focused                                        │
-│  ✅ Cross-cutting logic defined once                                           │
-│  ✅ Easy to add/remove/modify concerns                                         │
-│  ✅ Single Responsibility Principle maintained                                 │
-│                                                                                  │
+│                                                                                 │
+│  BENEFITS:                                                                      │
+│  ✅ Business logic is clean and focused                                          │
+│  ✅ Cross-cutting logic defined once                                             │
+│  ✅ Easy to add/remove/modify concerns                                           │
+│  ✅ Single Responsibility Principle maintained                                   │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -138,31 +138,31 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    AOP VOCABULARY                                                │
+│                    AOP VOCABULARY                                               │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  ┌────────────────┬────────────────────────────────────────────────────────────┐│
 │  │ Term           │ Definition                                                 ││
 │  ├────────────────┼────────────────────────────────────────────────────────────┤│
-│  │ Aspect         │ Module containing cross-cutting logic (like LoggingAspect)││
-│  │ Advice         │ Action taken (before, after, around a method)             ││
-│  │ Join Point     │ Point in execution (method call, exception thrown)        ││
-│  │ Pointcut       │ Expression selecting join points (which methods)          ││
-│  │ Target         │ Object being advised (original bean)                      ││
-│  │ Proxy          │ Wrapper object created by Spring (contains advice)        ││
-│  │ Weaving        │ Process of applying aspects to targets                    ││
+│  │ Aspect         │ Module containing cross-cutting logic (like LoggingAspect)│ │
+│  │ Advice         │ Action taken (before, after, around a method)             │ │
+│  │ Join Point     │ Point in execution (method call, exception thrown)        │ │
+│  │ Pointcut       │ Expression selecting join points (which methods)          │ │
+│  │ Target         │ Object being advised (original bean)                      │ │
+│  │ Proxy          │ Wrapper object created by Spring (contains advice)        │ │
+│  │ Weaving        │ Process of applying aspects to targets                    │ │
 │  └────────────────┴────────────────────────────────────────────────────────────┘│
-│                                                                                  │
-│  VISUAL METAPHOR:                                                                │
-│                                                                                  │
+│                                                                                 │
+│  VISUAL METAPHOR:                                                               │
+│                                                                                 │
 │  Aspect = Security guard rules                                                  │
-│  Advice = Check ID, log entry, call police                                     │
+│  Advice = Check ID, log entry, call police                                      │
 │  Join Point = Every door in the building                                        │
-│  Pointcut = "Front entrance and emergency exits"                               │
-│  Target = The actual rooms behind the doors                                    │
-│  Proxy = The security checkpoint                                               │
-│  Weaving = Installing the security system                                      │
-│                                                                                  │
+│  Pointcut = "Front entrance and emergency exits"                                │
+│  Target = The actual rooms behind the doors                                     │
+│  Proxy = The security checkpoint                                                │
+│  Weaving = Installing the security system                                       │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -311,35 +311,35 @@ public class ComprehensiveAspect {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    ADVICE EXECUTION ORDER                                        │
+│                    ADVICE EXECUTION ORDER                                       │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  METHOD CALL: userService.findById(1)                                           │
-│                                                                                  │
-│  ┌─────────────────────────────────────────────────────────────────────────┐   │
+│                                                                                 │
+│  ┌─────────────────────────────────────────────────────────────────────────┐    │
 │  │                                                                          │   │
-│  │  @Around (before proceed) ────────────────────────────┐                 │   │
+│  │  @Around (before proceed) ────────────────────────────┐                 │    │
 │  │      │                                                 │                 │   │
 │  │      ▼                                                 │                 │   │
-│  │  @Before ─────────────────────────────────────┐       │                 │   │
+│  │  @Before ─────────────────────────────────────┐       │                 │    │
 │  │      │                                         │       │                 │   │
 │  │      ▼                                         │       │                 │   │
-│  │  ═══════════════════════════════════════════  │       │                 │   │
-│  │  ║     ACTUAL METHOD EXECUTION            ║  │       │                 │   │
-│  │  ═══════════════════════════════════════════  │       │                 │   │
+│  │  ═══════════════════════════════════════════  │       │                 │    │
+│  │  ║     ACTUAL METHOD EXECUTION            ║  │       │                 │     │
+│  │  ═══════════════════════════════════════════  │       │                 │    │
 │  │      │                                         │       │                 │   │
-│  │      ▼ (if success)        ▼ (if exception)   │       │                 │   │
-│  │  @AfterReturning        @AfterThrowing ───────┘       │                 │   │
+│  │      ▼ (if success)        ▼ (if exception)   │       │                 │    │
+│  │  @AfterReturning        @AfterThrowing ───────┘       │                 │    │
 │  │      │                      │                          │                 │   │
 │  │      └───────┬──────────────┘                          │                 │   │
 │  │              ▼                                         │                 │   │
-│  │          @After ───────────────────────────────────────┘                │   │
+│  │          @After ───────────────────────────────────────┘                │    │
 │  │              │                                                           │   │
 │  │              ▼                                                           │   │
-│  │  @Around (after proceed) ────────────────────────────────────────────   │   │
+│  │  @Around (after proceed) ────────────────────────────────────────────   │    │
 │  │                                                                          │   │
 │  └──────────────────────────────────────────────────────────────────────────┘   │
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -488,12 +488,12 @@ public class PointcutExamplesAspect {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    SPRING AOP = PROXY-BASED AOP                                  │
+│                    SPRING AOP = PROXY-BASED AOP                                 │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  ORIGINAL BEAN:                                                                  │
+│                                                                                 │
+│  ORIGINAL BEAN:                                                                 │
 │  ┌────────────────────────────────────────┐                                     │
-│  │          UserService                    │                                     │
+│  │          UserService                    │                                    │
 │  │  ┌──────────────────────────────────┐  │                                     │
 │  │  │ findById(Long id)                │  │                                     │
 │  │  └──────────────────────────────────┘  │                                     │
@@ -501,25 +501,25 @@ public class PointcutExamplesAspect {
 │  │  │ createUser(User user)            │  │                                     │
 │  │  └──────────────────────────────────┘  │                                     │
 │  └────────────────────────────────────────┘                                     │
-│                                                                                  │
+│                                                                                 │
 │  AFTER AOP (What Spring actually injects):                                      │
-│  ┌────────────────────────────────────────────────────────────────────┐        │
+│  ┌────────────────────────────────────────────────────────────────────┐         │
 │  │                    PROXY                                            │        │
-│  │  ┌──────────────────────────────────────────────────────────────┐  │        │
+│  │  ┌──────────────────────────────────────────────────────────────┐  │         │
 │  │  │ findById(Long id)                                             │  │        │
 │  │  │   → Execute @Before advice                                    │  │        │
-│  │  │   → Execute @Around advice (before)                          │  │        │
-│  │  │   → Delegate to REAL UserService.findById()                  │  │        │
-│  │  │   → Execute @Around advice (after)                           │  │        │
-│  │  │   → Execute @AfterReturning advice                           │  │        │
-│  │  └──────────────────────────────────────────────────────────────┘  │        │
+│  │  │   → Execute @Around advice (before)                          │  │         │
+│  │  │   → Delegate to REAL UserService.findById()                  │  │         │
+│  │  │   → Execute @Around advice (after)                           │  │         │
+│  │  │   → Execute @AfterReturning advice                           │  │         │
+│  │  └──────────────────────────────────────────────────────────────┘  │         │
 │  │                           │                                         │        │
 │  │                    ┌──────▼──────┐                                  │        │
 │  │                    │ REAL BEAN   │                                  │        │
 │  │                    │ UserService │                                  │        │
 │  │                    └─────────────┘                                  │        │
-│  └────────────────────────────────────────────────────────────────────┘        │
-│                                                                                  │
+│  └────────────────────────────────────────────────────────────────────┘         │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1040,21 +1040,21 @@ public class EmailService {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    PROFILE-BASED CONFIGURATION                                   │
+│                    PROFILE-BASED CONFIGURATION                                  │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  application.yml          → Default (always loaded)                             │
 │  application-dev.yml      → Development (local)                                 │
 │  application-test.yml     → Testing (CI/CD)                                     │
 │  application-staging.yml  → Staging (pre-prod)                                  │
 │  application-prod.yml     → Production                                          │
-│                                                                                  │
+│                                                                                 │
 │  LOADING ORDER (later overrides earlier):                                       │
-│  1. application.yml                                                              │
+│  1. application.yml                                                             │
 │  2. application-{profile}.yml                                                   │
-│  3. Environment variables                                                        │
-│  4. Command line arguments                                                       │
-│                                                                                  │
+│  3. Environment variables                                                       │
+│  4. Command line arguments                                                      │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 

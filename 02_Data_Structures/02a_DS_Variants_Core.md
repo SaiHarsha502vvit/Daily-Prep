@@ -14,7 +14,7 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║              COMPLETE DATA STRUCTURE VARIANT HIERARCHY                        ║
+║              COMPLETE DATA STRUCTURE VARIANT HIERARCHY                       ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
                          DATA STRUCTURES
@@ -103,7 +103,7 @@ SPECIALIZED:
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                    SINGLY LINKED LIST - COMPLETE GUIDE                        ║
+║                    SINGLY LINKED LIST - COMPLETE GUIDE                       ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -114,9 +114,9 @@ SPECIALIZED:
 │ 2. NEXT - Reference/pointer to the next node                                │
 │                                                                             │
 │ VISUAL:                                                                     │
-│  ┌────┬────┐    ┌────┬────┐    ┌────┬────┐    ┌────┬────┐                  │
-│  │ 10 │  ●─┼───▶│ 20 │  ●─┼───▶│ 30 │  ●─┼───▶│ 40 │null│                  │
-│  └────┴────┘    └────┴────┘    └────┴────┘    └────┴────┘                  │
+│  ┌────┬────┐    ┌────┬────┐    ┌────┬────┐    ┌────┬────┐                   │
+│  │ 10 │  ●─┼───▶│ 20 │  ●─┼───▶│ 30 │  ●─┼───▶│ 40 │null│                   │
+│  └────┴────┘    └────┴────┘    └────┴────┘    └────┴────┘                   │
 │   head                                          tail                        │
 │                                                                             │
 │ KEY PROPERTY: Can only traverse FORWARD (one direction)                     │
@@ -140,15 +140,15 @@ SPECIALIZED:
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │ WHEN TO USE?                                                                │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│ ✅ Frequent insertions/deletions at beginning                               │
-│ ✅ Don't know size in advance                                               │
-│ ✅ Memory is fragmented (non-contiguous is OK)                              │
-│ ✅ Implementing stack (LIFO)                                                │
+│ ✅ Frequent insertions/deletions at beginning                                │
+│ ✅ Don't know size in advance                                                │
+│ ✅ Memory is fragmented (non-contiguous is OK)                               │
+│ ✅ Implementing stack (LIFO)                                                 │
 │                                                                             │
-│ ❌ Need random access by index                                              │
-│ ❌ Need backward traversal                                                  │
-│ ❌ Delete at end frequently (use doubly linked)                             │
-│ ❌ Memory efficiency is critical (pointers add overhead)                    │
+│ ❌ Need random access by index                                               │
+│ ❌ Need backward traversal                                                   │
+│ ❌ Delete at end frequently (use doubly linked)                              │
+│ ❌ Memory efficiency is critical (pointers add overhead)                     │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -451,7 +451,7 @@ public class SinglyLinkedList<T> {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                    DOUBLY LINKED LIST - COMPLETE GUIDE                        ║
+║                    DOUBLY LINKED LIST - COMPLETE GUIDE                       ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -465,9 +465,9 @@ public class SinglyLinkedList<T> {
 │ VISUAL:                                                                     │
 │     null                                                           null     │
 │      ↑                                                              ↑       │
-│  ┌───┴───────┐    ┌───────────┐    ┌───────────┐    ┌───────────┬──┴──┐    │
-│  │prev│10│next│◄──►│prev│20│next│◄──►│prev│30│next│◄──►│prev│40│next│    │
-│  └───────────┘    └───────────┘    └───────────┘    └───────────────┘      │
+│  ┌───┴───────┐    ┌───────────┐    ┌───────────┐    ┌───────────┬──┴──┐     │
+│  │prev│10│next│◄──►│prev│20│next│◄──►│prev│30│next│◄──►│prev│40│next│       │
+│  └───────────┘    └───────────┘    └───────────┘    └───────────────┘       │
 │     head                                                   tail             │
 │                                                                             │
 │ KEY PROPERTY: Can traverse BOTH directions (forward AND backward)           │
@@ -501,16 +501,16 @@ public class SinglyLinkedList<T> {
 │ TIME COMPLEXITY COMPARISON                                                  │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│ Operation              │ Singly  │ Doubly  │ Winner                        │
+│ Operation              │ Singly  │ Doubly  │ Winner                         │
 │ ─────────────────────────────────────────────────────────────────────────── │
-│ Access by index        │ O(n)    │ O(n)    │ Tie                           │
-│ Insert at head         │ O(1)    │ O(1)    │ Tie                           │
-│ Insert at tail         │ O(1)*   │ O(1)    │ Tie                           │
-│ Delete at head         │ O(1)    │ O(1)    │ Tie                           │
-│ Delete at tail         │ O(n)    │ O(1)    │ DOUBLY 🏆                     │
-│ Delete given node      │ O(n)    │ O(1)    │ DOUBLY 🏆                     │
-│ Traverse backward      │ O(n²)   │ O(n)    │ DOUBLY 🏆                     │
-│ Memory per node        │ Less    │ More    │ SINGLY (if memory matters)    │
+│ Access by index        │ O(n)    │ O(n)    │ Tie                            │
+│ Insert at head         │ O(1)    │ O(1)    │ Tie                            │
+│ Insert at tail         │ O(1)*   │ O(1)    │ Tie                            │
+│ Delete at head         │ O(1)    │ O(1)    │ Tie                            │
+│ Delete at tail         │ O(n)    │ O(1)    │ DOUBLY 🏆                       │
+│ Delete given node      │ O(n)    │ O(1)    │ DOUBLY 🏆                       │
+│ Traverse backward      │ O(n²)   │ O(n)    │ DOUBLY 🏆                       │
+│ Memory per node        │ Less    │ More    │ SINGLY (if memory matters)     │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -912,7 +912,7 @@ public class DoublyLinkedList<T> {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                    CIRCULAR LINKED LIST - COMPLETE GUIDE                      ║
+║                    CIRCULAR LINKED LIST - COMPLETE GUIDE                     ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -922,26 +922,26 @@ public class DoublyLinkedList<T> {
 │ No NULL at end - forms a CIRCLE!                                            │
 │                                                                             │
 │ SINGLY CIRCULAR:                                                            │
-│       ┌────────────────────────────────────────┐                           │
-│       │                                        │                           │
-│       ▼                                        │                           │
-│  ┌────┬────┐  ┌────┬────┐  ┌────┬────┐  ┌────┬─┴──┐                        │
-│  │ 10 │  ●─┼─▶│ 20 │  ●─┼─▶│ 30 │  ●─┼─▶│ 40 │  ● │                        │
-│  └────┴────┘  └────┴────┘  └────┴────┘  └────┴────┘                        │
+│       ┌────────────────────────────────────────┐                            │
+│       │                                        │                            │
+│       ▼                                        │                            │
+│  ┌────┬────┐  ┌────┬────┐  ┌────┬────┐  ┌────┬─┴──┐                         │
+│  │ 10 │  ●─┼─▶│ 20 │  ●─┼─▶│ 30 │  ●─┼─▶│ 40 │  ● │                         │
+│  └────┴────┘  └────┴────┘  └────┴────┘  └────┴────┘                         │
 │     head                                  tail                              │
 │                                                                             │
 │ DOUBLY CIRCULAR:                                                            │
-│       ┌────────────────────────────────────────┐                           │
-│       │      ┌──────────────────────────────┐  │                           │
-│       ▼      │                              │  ▼                           │
-│  ┌───┬───┬───┴┐  ┌───┬───┬───┐  ┌───┬───┬──┴┐                             │
-│  │ ● │10 │ ●──┼─▶│ ● │20 │ ●─┼─▶│ ● │30 │ ● │                             │
-│  └─▲─┴───┴────┘  └─▲─┴───┴───┘  └───┴───┴─▲─┘                             │
-│    │               │                       │                               │
-│    └───────────────┴───────────────────────┘                               │
+│       ┌────────────────────────────────────────┐                            │
+│       │      ┌──────────────────────────────┐  │                            │
+│       ▼      │                              │  ▼                            │
+│  ┌───┬───┬───┴┐  ┌───┬───┬───┐  ┌───┬───┬──┴┐                               │
+│  │ ● │10 │ ●──┼─▶│ ● │20 │ ●─┼─▶│ ● │30 │ ● │                               │
+│  └─▲─┴───┴────┘  └─▲─┴───┴───┘  └───┴───┴─▲─┘                               │
+│    │               │                       │                                │
+│    └───────────────┴───────────────────────┘                                │
 │                                                                             │
-│ KEY PROPERTY: Can traverse the entire list starting from ANY node!         │
-│               No "end" - goes round and round.                             │
+│ KEY PROPERTY: Can traverse the entire list starting from ANY node!          │
+│               No "end" - goes round and round.                              │
 └─────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -949,22 +949,22 @@ public class DoublyLinkedList<T> {
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │ 1. ROUND-ROBIN SCHEDULING:                                                  │
-│    - Process1 → Process2 → Process3 → Process1 → ...                       │
-│    - CPU gives time to each process in circular order                      │
+│    - Process1 → Process2 → Process3 → Process1 → ...                        │
+│    - CPU gives time to each process in circular order                       │
 │                                                                             │
 │ 2. MULTIPLAYER GAME TURNS:                                                  │
-│    - Player1 → Player2 → Player3 → Player1 → ...                          │
-│    - No need to reset to beginning                                         │
+│    - Player1 → Player2 → Player3 → Player1 → ...                            │
+│    - No need to reset to beginning                                          │
 │                                                                             │
 │ 3. CIRCULAR BUFFER/QUEUE:                                                   │
 │    - Audio streaming                                                        │
 │    - Producer-consumer problems                                             │
 │                                                                             │
 │ 4. REPEATED TRAVERSAL:                                                      │
-│    - Carousel/slideshow that loops                                         │
+│    - Carousel/slideshow that loops                                          │
 │    - Music playlist on repeat                                               │
 │                                                                             │
-│ KEY INSIGHT: Useful when you need to wrap around!                          │
+│ KEY INSIGHT: Useful when you need to wrap around!                           │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1166,51 +1166,51 @@ public class CircularLinkedList<T> {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║               CIRCULAR DOUBLY LINKED LIST - COMPLETE GUIDE                    ║
+║               CIRCULAR DOUBLY LINKED LIST - COMPLETE GUIDE                   ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │ WHAT IS IT?                                                                 │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │ Combines BOTH concepts:                                                     │
-│ • Doubly: Each node has prev AND next pointers                             │
-│ • Circular: Last node connects to first, first connects to last            │
+│ • Doubly: Each node has prev AND next pointers                              │
+│ • Circular: Last node connects to first, first connects to last             │
 │                                                                             │
 │ VISUAL:                                                                     │
-│     ┌───────────────────────────────────────────────────────────┐          │
-│     │                                                           │          │
-│     │    ┌─────────────────────────────────────────────────┐    │          │
-│     │    │                                                 │    │          │
-│     ▼    │                                                 ▼    │          │
-│  ┌──┴──┬───┬─────┐  ┌─────┬───┬─────┐  ┌─────┬───┬──┴──┐       │          │
+│     ┌───────────────────────────────────────────────────────────┐           │
+│     │                                                           │           │
+│     │    ┌─────────────────────────────────────────────────┐    │           │
+│     │    │                                                 │    │           │
+│     ▼    │                                                 ▼    │           │
+│  ┌──┴──┬───┬─────┐  ┌─────┬───┬─────┐  ┌─────┬───┬──┴──┐       │            │
 │  │prev │ A │ next│◄─►│prev │ B │ next│◄─►│prev │ C │next │       │          │
-│  └─────┴───┴──┬──┘  └─────┴───┴─────┘  └──┬──┴───┴─────┘       │          │
-│               │                           │                     │          │
-│               └───────────────────────────┘                     │          │
-│     ▲                                                           │          │
-│     └───────────────────────────────────────────────────────────┘          │
+│  └─────┴───┴──┬──┘  └─────┴───┴─────┘  └──┬──┴───┴─────┘       │            │
+│               │                           │                     │           │
+│               └───────────────────────────┘                     │           │
+│     ▲                                                           │           │
+│     └───────────────────────────────────────────────────────────┘           │
 │                                                                             │
-│ KEY: A.prev = C, C.next = A (circular in BOTH directions!)                 │
+│ KEY: A.prev = C, C.next = A (circular in BOTH directions!)                  │
 └─────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │ ADVANTAGES                                                                  │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│ ✅ O(1) insertion at both ends                                              │
-│ ✅ O(1) deletion at both ends                                               │
-│ ✅ O(1) deletion of any node (given reference)                              │
-│ ✅ Can traverse in both directions                                          │
-│ ✅ Can wrap around in both directions                                       │
-│ ✅ No need to check for null at boundaries                                  │
+│ ✅ O(1) insertion at both ends                                               │
+│ ✅ O(1) deletion at both ends                                                │
+│ ✅ O(1) deletion of any node (given reference)                               │
+│ ✅ Can traverse in both directions                                           │
+│ ✅ Can wrap around in both directions                                        │
+│ ✅ No need to check for null at boundaries                                   │
 │                                                                             │
-│ ❌ More memory (two pointers per node)                                      │
+│ ❌ More memory (two pointers per node)                                       │
 │ ❌ More complex code                                                         │
 │                                                                             │
 │ PERFECT FOR:                                                                │
-│ • Deque (double-ended queue) implementation                                │
-│ • Applications needing wrap-around in both directions                      │
-│ • When you frequently access both ends                                     │
+│ • Deque (double-ended queue) implementation                                 │
+│ • Applications needing wrap-around in both directions                       │
+│ • When you frequently access both ends                                      │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1383,57 +1383,57 @@ public class CircularDoublyLinkedList<T> {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                       SKIP LIST - COMPLETE GUIDE                              ║
+║                       SKIP LIST - COMPLETE GUIDE                             ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │ WHAT IS IT?                                                                 │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│ A probabilistic data structure that allows O(log n) search, insert, and    │
-│ delete in a SORTED linked list. It's like a "fast lane" over the list!     │
+│ A probabilistic data structure that allows O(log n) search, insert, and     │
+│ delete in a SORTED linked list. It's like a "fast lane" over the list!      │
 │                                                                             │
 │ INVENTED: 1989 by William Pugh                                              │
 │                                                                             │
 │ VISUAL - MULTIPLE LAYERS OF LINKED LISTS:                                   │
 │                                                                             │
-│ Level 3: HEAD ────────────────────────────────────────────> 50 ────> NIL   │
+│ Level 3: HEAD ────────────────────────────────────────────> 50 ────> NIL    │
 │            │                                                  │             │
-│ Level 2: HEAD ──────────────> 25 ────────────────────────> 50 ────> NIL   │
+│ Level 2: HEAD ──────────────> 25 ────────────────────────> 50 ────> NIL     │
 │            │                   │                              │             │
-│ Level 1: HEAD ───> 10 ──────> 25 ──────> 35 ──────────────> 50 ────> NIL   │
+│ Level 1: HEAD ───> 10 ──────> 25 ──────> 35 ──────────────> 50 ────> NIL    │
 │            │       │           │          │                   │             │
-│ Level 0: HEAD ─> 5 ─> 10 ─> 20 ─> 25 ─> 30 ─> 35 ─> 40 ─> 50 ─> 60 ─> NIL │
+│ Level 0: HEAD ─> 5 ─> 10 ─> 20 ─> 25 ─> 30 ─> 35 ─> 40 ─> 50 ─> 60 ─> NIL   │
 │                                                                             │
 │ SEARCH FOR 35:                                                              │
-│ 1. Start at Level 3: HEAD -> 50 (too big, go down)                         │
-│ 2. Level 2: HEAD -> 25 -> 50 (25 < 35 < 50, go down from 25)              │
-│ 3. Level 1: 25 -> 35 (FOUND!)                                              │
+│ 1. Start at Level 3: HEAD -> 50 (too big, go down)                          │
+│ 2. Level 2: HEAD -> 25 -> 50 (25 < 35 < 50, go down from 25)                │
+│ 3. Level 1: 25 -> 35 (FOUND!)                                               │
 │                                                                             │
-│ Only visited: HEAD, 50, 25, 35 = 4 nodes instead of 7!                     │
+│ Only visited: HEAD, 50, 25, 35 = 4 nodes instead of 7!                      │
 └─────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │ WHY USE SKIP LIST?                                                          │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│ PROBLEM: Sorted linked list has O(n) search                                │
-│ SOLUTION: Add "express lanes" for faster traversal                         │
+│ PROBLEM: Sorted linked list has O(n) search                                 │
+│ SOLUTION: Add "express lanes" for faster traversal                          │
 │                                                                             │
 │ COMPARISON:                                                                 │
-│ ┌───────────────────────┬──────────────┬──────────────┬──────────────────┐ │
-│ │ Operation             │ Linked List  │ BST          │ Skip List        │ │
-│ ├───────────────────────┼──────────────┼──────────────┼──────────────────┤ │
-│ │ Search                │ O(n)         │ O(log n)*    │ O(log n) avg     │ │
-│ │ Insert                │ O(n)         │ O(log n)*    │ O(log n) avg     │ │
-│ │ Delete                │ O(n)         │ O(log n)*    │ O(log n) avg     │ │
-│ │ Ordered iteration     │ O(n)         │ O(n)         │ O(n)             │ │
-│ │ Implementation        │ Simple       │ Complex      │ Moderate         │ │
-│ │ Concurrent access     │ Hard         │ Very hard    │ Easier!          │ │
-│ └───────────────────────┴──────────────┴──────────────┴──────────────────┘ │
-│ * BST worst case is O(n) if unbalanced                                     │
+│ ┌───────────────────────┬──────────────┬──────────────┬──────────────────┐  │
+│ │ Operation             │ Linked List  │ BST          │ Skip List        │  │
+│ ├───────────────────────┼──────────────┼──────────────┼──────────────────┤  │
+│ │ Search                │ O(n)         │ O(log n)*    │ O(log n) avg     │  │
+│ │ Insert                │ O(n)         │ O(log n)*    │ O(log n) avg     │  │
+│ │ Delete                │ O(n)         │ O(log n)*    │ O(log n) avg     │  │
+│ │ Ordered iteration     │ O(n)         │ O(n)         │ O(n)             │  │
+│ │ Implementation        │ Simple       │ Complex      │ Moderate         │  │
+│ │ Concurrent access     │ Hard         │ Very hard    │ Easier!          │  │
+│ └───────────────────────┴──────────────┴──────────────┴──────────────────┘  │
+│ * BST worst case is O(n) if unbalanced                                      │
 │                                                                             │
-│ KEY ADVANTAGE: Easier to implement concurrent (thread-safe) version!       │
-│ This is why Redis uses skip list for sorted sets!                          │
+│ KEY ADVANTAGE: Easier to implement concurrent (thread-safe) version!        │
+│ This is why Redis uses skip list for sorted sets!                           │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 

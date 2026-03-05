@@ -97,25 +97,25 @@ class FenwickTree {
 ║                      SEGMENT TREE — THEORY & CODE                            ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
 ║  A Segment Tree allows:                                                      ║
-║  • Range Query (sum/min/max/gcd) in O(log n)                                ║
+║  • Range Query (sum/min/max/gcd) in O(log n)                                 ║
 ║  • Point Update in O(log n)                                                  ║
 ║  • Range Update with Lazy Propagation in O(log n)                            ║
 ║  • Uses O(4n) space (built as complete binary tree in array)                 ║
 ║                                                                              ║
 ║  WHEN TO USE vs BIT/FENWICK:                                                 ║
-║  • BIT: Only prefix-sum/point-update. Simpler, less memory.                 ║
-║  • Segment Tree: Range update, range min/max, lazy propagation.             ║
+║  • BIT: Only prefix-sum/point-update. Simpler, less memory.                  ║
+║  • Segment Tree: Range update, range min/max, lazy propagation.              ║
 ║    More powerful but ~2× more code.                                          ║
 ║                                                                              ║
 ║  VISUAL:                                                                     ║
-║  Array: [1, 3, 5, 7, 9, 11]                                                 ║
+║  Array: [1, 3, 5, 7, 9, 11]                                                  ║
 ║                                                                              ║
-║                    [0,5]=36                                                   ║
-║                  /          \                                                 ║
-║            [0,2]=9         [3,5]=27                                           ║
-║            /    \          /     \                                            ║
+║                    [0,5]=36                                                  ║
+║                  /          \                                                ║
+║            [0,2]=9         [3,5]=27                                          ║
+║            /    \          /     \                                           ║
 ║        [0,1]=4  [2]=5  [3,4]=16  [5]=11                                      ║
-║        /    \          /    \                                                 ║
+║        /    \          /    \                                                ║
 ║     [0]=1  [1]=3   [3]=7  [4]=9                                              ║
 ║                                                                              ║
 ║  Each node stores aggregate (sum/min/max) of its range.                      ║
@@ -823,9 +823,9 @@ Array: [3, 1, 4, 1, 5, 9, 2, 6]
 Sparse Table (for MIN):
 ┌───────────────────────────────────────────────────────────────┐
 │ k=0 (2^0=1): [3, 1, 4, 1, 5, 9, 2, 6]  (each element itself)  │
-│ k=1 (2^1=2): [1, 1, 1, 1, 5, 2, 2, -]  (min of 2)            │
-│ k=2 (2^2=4): [1, 1, 1, 1, 2, 2, -, -]  (min of 4)            │
-│ k=3 (2^3=8): [1, -, -, -, -, -, -, -]  (min of 8)            │
+│ k=1 (2^1=2): [1, 1, 1, 1, 5, 2, 2, -]  (min of 2)             │
+│ k=2 (2^2=4): [1, 1, 1, 1, 2, 2, -, -]  (min of 4)             │
+│ k=3 (2^3=8): [1, -, -, -, -, -, -, -]  (min of 8)             │
 └───────────────────────────────────────────────────────────────┘
 
 Query(2, 6): min(sparse[2][2], sparse[3][2]) = min(1, 2) = 1
@@ -900,13 +900,13 @@ VISUAL EXAMPLE - Next Greater Element:
 Array: [4, 5, 2, 10, 8]
 
 Step by step (decreasing stack, process right to left):
-┌──────────────────────────────────────────────────────────────┐
-│ i=4: arr[4]=8   Stack=[]      → NGE=-1   Stack=[8]          │
-│ i=3: arr[3]=10  Stack=[8]     → 10>8, pop → NGE=-1  Stack=[10]│
-│ i=2: arr[2]=2   Stack=[10]    → 2<10 → NGE=10  Stack=[10,2] │
+┌────────────────────────────────────────────────────────────────┐
+│ i=4: arr[4]=8   Stack=[]      → NGE=-1   Stack=[8]             │
+│ i=3: arr[3]=10  Stack=[8]     → 10>8, pop → NGE=-1  Stack=[10] │
+│ i=2: arr[2]=2   Stack=[10]    → 2<10 → NGE=10  Stack=[10,2]    │
 │ i=1: arr[1]=5   Stack=[10,2]  → 5>2, pop → NGE=10  Stack=[10,5]│
-│ i=0: arr[0]=4   Stack=[10,5]  → 4<5 → NGE=5   Stack=[10,5,4]│
-└──────────────────────────────────────────────────────────────┘
+│ i=0: arr[0]=4   Stack=[10,5]  → 4<5 → NGE=5   Stack=[10,5,4]   │
+└────────────────────────────────────────────────────────────────┘
 
 Result: [5, 10, 10, -1, -1]
 ```
@@ -983,12 +983,12 @@ PROBLEM: Find maximum in each sliding window of size k
 Array: [1, 3, -1, -3, 5, 3, 6, 7], k=3
 
 ┌─────────────────────────────────────────────────────────────────┐
-│ Window [1,3,-1]     Deque: [3,-1]     Max: 3                   │
-│ Window [3,-1,-3]    Deque: [3,-1,-3]  Max: 3                   │
-│ Window [-1,-3,5]    Deque: [5]        Max: 5                   │
-│ Window [-3,5,3]     Deque: [5,3]      Max: 5                   │
-│ Window [5,3,6]      Deque: [6]        Max: 6                   │
-│ Window [3,6,7]      Deque: [7]        Max: 7                   │
+│ Window [1,3,-1]     Deque: [3,-1]     Max: 3                    │
+│ Window [3,-1,-3]    Deque: [3,-1,-3]  Max: 3                    │
+│ Window [-1,-3,5]    Deque: [5]        Max: 5                    │
+│ Window [-3,5,3]     Deque: [5,3]      Max: 5                    │
+│ Window [5,3,6]      Deque: [6]        Max: 6                    │
+│ Window [3,6,7]      Deque: [7]        Max: 7                    │
 └─────────────────────────────────────────────────────────────────┘
 
 Result: [3, 3, 5, 5, 6, 7]
@@ -1034,26 +1034,26 @@ RING BUFFER: Fixed-size buffer that wraps around
 
 STRUCTURE:
 ┌─────────────────────────────────────────────────────────┐
-│         ┌───┬───┬───┬───┬───┬───┬───┬───┐             │
-│         │ A │ B │ C │ D │ E │   │   │   │             │
-│         └───┴───┴───┴───┴───┴───┴───┴───┘             │
-│           ↑                   ↑                        │
-│         HEAD                TAIL                       │
-│         (read)              (write)                    │
-│                                                        │
-│  After adding F, G, H, I:                             │
-│         ┌───┬───┬───┬───┬───┬───┬───┬───┐             │
-│         │ A │ B │ C │ D │ E │ F │ G │ H │             │
-│         └───┴───┴───┴───┴───┴───┴───┴───┘             │
-│           ↑                               ↑            │
-│         HEAD                            TAIL           │
-│                                                        │
-│  After adding I (wraps around):                       │
-│         ┌───┬───┬───┬───┬───┬───┬───┬───┐             │
-│         │ I │ B │ C │ D │ E │ F │ G │ H │             │
-│         └───┴───┴───┴───┴───┴───┴───┴───┘             │
-│             ↑ ↑                                        │
-│          TAIL HEAD                                     │
+│         ┌───┬───┬───┬───┬───┬───┬───┬───┐               │
+│         │ A │ B │ C │ D │ E │   │   │   │               │
+│         └───┴───┴───┴───┴───┴───┴───┴───┘               │
+│           ↑                   ↑                         │
+│         HEAD                TAIL                        │
+│         (read)              (write)                     │
+│                                                         │
+│  After adding F, G, H, I:                               │
+│         ┌───┬───┬───┬───┬───┬───┬───┬───┐               │
+│         │ A │ B │ C │ D │ E │ F │ G │ H │               │
+│         └───┴───┴───┴───┴───┴───┴───┴───┘               │
+│           ↑                               ↑             │
+│         HEAD                            TAIL            │
+│                                                         │
+│  After adding I (wraps around):                         │
+│         ┌───┬───┬───┬───┬───┬───┬───┬───┐               │
+│         │ I │ B │ C │ D │ E │ F │ G │ H │               │
+│         └───┴───┴───┴───┴───┴───┴───┴───┘               │
+│             ↑ ↑                                         │
+│          TAIL HEAD                                      │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -1145,28 +1145,28 @@ QUADTREE: Tree where each node has exactly 4 children
 STRUCTURE:
 ┌─────────────────────────────────────────────────────────────────┐
 │                                                                 │
-│    ┌─────────────┬─────────────┐                               │
-│    │             │             │                               │
-│    │     NW      │     NE      │                               │
-│    │             │             │                               │
-│    ├─────────────┼─────────────┤                               │
-│    │             │             │                               │
-│    │     SW      │     SE      │                               │
-│    │             │             │                               │
-│    └─────────────┴─────────────┘                               │
+│    ┌─────────────┬─────────────┐                                │
+│    │             │             │                                │
+│    │     NW      │     NE      │                                │
+│    │             │             │                                │
+│    ├─────────────┼─────────────┤                                │
+│    │             │             │                                │
+│    │     SW      │     SE      │                                │
+│    │             │             │                                │
+│    └─────────────┴─────────────┘                                │
 │                                                                 │
 │  Each quadrant can be subdivided further if needed              │
 │                                                                 │
-│  Example: Storing points (3,7), (5,2), (8,8), (1,4)            │
+│  Example: Storing points (3,7), (5,2), (8,8), (1,4)             │
 │                                                                 │
-│    10┌─────────────┬─────────────┐                             │
-│      │    (3,7)    │    (8,8)    │                             │
-│    5 │    (1,4)    │             │                             │
-│      ├─────────────┼─────────────┤                             │
-│      │             │    (5,2)    │                             │
-│    0 │             │             │                             │
-│      └─────────────┴─────────────┘                             │
-│      0      5      10                                          │
+│    10┌─────────────┬─────────────┐                              │
+│      │    (3,7)    │    (8,8)    │                              │
+│    5 │    (1,4)    │             │                              │
+│      ├─────────────┼─────────────┤                              │
+│      │             │    (5,2)    │                              │
+│    0 │             │             │                              │
+│      └─────────────┴─────────────┘                              │
+│      0      5      10                                           │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1270,21 +1270,21 @@ Used in: Blockchain, Git, Databases (PostgreSQL), P2P networks
 STRUCTURE:
 ┌─────────────────────────────────────────────────────────────────┐
 │                                                                 │
-│                    [Root Hash: abcd1234]                       │
+│                    [Root Hash: abcd1234]                        │
 │                           /        \                            │
-│              [Hash: ab12]           [Hash: cd34]               │
+│              [Hash: ab12]           [Hash: cd34]                │
 │               /       \              /        \                 │
-│         [H: a1]    [H: b2]     [H: c3]     [H: d4]             │
+│         [H: a1]    [H: b2]     [H: c3]     [H: d4]              │
 │            |          |           |           |                 │
 │         Block A   Block B     Block C     Block D               │
 │                                                                 │
 │  VERIFICATION:                                                  │
-│  To verify Block C is unchanged:                               │
-│  1. Hash Block C → should match [H: c3]                        │
-│  2. Combine with [H: d4] → should match [Hash: cd34]           │
-│  3. Combine with [Hash: ab12] → should match Root              │
+│  To verify Block C is unchanged:                                │
+│  1. Hash Block C → should match [H: c3]                         │
+│  2. Combine with [H: d4] → should match [Hash: cd34]            │
+│  3. Combine with [Hash: ab12] → should match Root               │
 │                                                                 │
-│  Only need O(log n) hashes to verify any block!                │
+│  Only need O(log n) hashes to verify any block!                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1433,30 +1433,30 @@ HEAP/PRIORITY QUEUE:
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                    COMPLETE COMPLEXITY REFERENCE                            │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│ DATA STRUCTURE      │ ACCESS │ SEARCH │ INSERT │ DELETE │ SPACE            │
-├─────────────────────┼────────┼────────┼────────┼────────┼──────────────────┤
-│ Array               │ O(1)   │ O(n)   │ O(n)   │ O(n)   │ O(n)             │
-│ Dynamic Array       │ O(1)   │ O(n)   │ O(1)*  │ O(n)   │ O(n)             │
-│ Singly Linked List  │ O(n)   │ O(n)   │ O(1)   │ O(1)   │ O(n)             │
-│ Doubly Linked List  │ O(n)   │ O(n)   │ O(1)   │ O(1)   │ O(n)             │
-│ Stack               │ O(n)   │ O(n)   │ O(1)   │ O(1)   │ O(n)             │
-│ Queue               │ O(n)   │ O(n)   │ O(1)   │ O(1)   │ O(n)             │
-│ Hash Table          │ N/A    │ O(1)*  │ O(1)*  │ O(1)*  │ O(n)             │
-│ BST (balanced)      │ O(logn)│ O(logn)│ O(logn)│ O(logn)│ O(n)             │
-│ BST (worst)         │ O(n)   │ O(n)   │ O(n)   │ O(n)   │ O(n)             │
-│ AVL Tree            │ O(logn)│ O(logn)│ O(logn)│ O(logn)│ O(n)             │
-│ Red-Black Tree      │ O(logn)│ O(logn)│ O(logn)│ O(logn)│ O(n)             │
-│ B-Tree              │ O(logn)│ O(logn)│ O(logn)│ O(logn)│ O(n)             │
-│ Heap                │ O(1)†  │ O(n)   │ O(logn)│ O(logn)│ O(n)             │
-│ Trie                │ O(m)   │ O(m)   │ O(m)   │ O(m)   │ O(ALPHABET*m*n)  │
-│ Segment Tree        │ O(logn)│ O(logn)│ O(logn)│ O(logn)│ O(4n)            │
-│ Fenwick Tree        │ N/A    │ O(logn)│ O(logn)│ N/A    │ O(n)             │
-│ Sparse Table        │ O(1)   │ O(1)   │ N/A    │ N/A    │ O(n log n)       │
-│ Disjoint Set        │ N/A    │ O(α)   │ O(α)   │ N/A    │ O(n)             │
-│ Skip List           │ O(logn)│ O(logn)│ O(logn)│ O(logn)│ O(n log n)*      │
-│ Bloom Filter        │ N/A    │ O(k)   │ O(k)   │ N/A    │ O(m) bits        │
-│ QuadTree            │ O(logn)│ O(logn)│ O(logn)│ O(logn)│ O(n)             │
-└─────────────────────┴────────┴────────┴────────┴────────┴──────────────────┘
+│ DATA STRUCTURE      │ ACCESS │ SEARCH │ INSERT │ DELETE │ SPACE             │
+├─────────────────────┼────────┼────────┼────────┼────────┼───────────────────┤
+│ Array               │ O(1)   │ O(n)   │ O(n)   │ O(n)   │ O(n)              │
+│ Dynamic Array       │ O(1)   │ O(n)   │ O(1)*  │ O(n)   │ O(n)              │
+│ Singly Linked List  │ O(n)   │ O(n)   │ O(1)   │ O(1)   │ O(n)              │
+│ Doubly Linked List  │ O(n)   │ O(n)   │ O(1)   │ O(1)   │ O(n)              │
+│ Stack               │ O(n)   │ O(n)   │ O(1)   │ O(1)   │ O(n)              │
+│ Queue               │ O(n)   │ O(n)   │ O(1)   │ O(1)   │ O(n)              │
+│ Hash Table          │ N/A    │ O(1)*  │ O(1)*  │ O(1)*  │ O(n)              │
+│ BST (balanced)      │ O(logn)│ O(logn)│ O(logn)│ O(logn)│ O(n)              │
+│ BST (worst)         │ O(n)   │ O(n)   │ O(n)   │ O(n)   │ O(n)              │
+│ AVL Tree            │ O(logn)│ O(logn)│ O(logn)│ O(logn)│ O(n)              │
+│ Red-Black Tree      │ O(logn)│ O(logn)│ O(logn)│ O(logn)│ O(n)              │
+│ B-Tree              │ O(logn)│ O(logn)│ O(logn)│ O(logn)│ O(n)              │
+│ Heap                │ O(1)†  │ O(n)   │ O(logn)│ O(logn)│ O(n)              │
+│ Trie                │ O(m)   │ O(m)   │ O(m)   │ O(m)   │ O(ALPHABET*m*n)   │
+│ Segment Tree        │ O(logn)│ O(logn)│ O(logn)│ O(logn)│ O(4n)             │
+│ Fenwick Tree        │ N/A    │ O(logn)│ O(logn)│ N/A    │ O(n)              │
+│ Sparse Table        │ O(1)   │ O(1)   │ N/A    │ N/A    │ O(n log n)        │
+│ Disjoint Set        │ N/A    │ O(α)   │ O(α)   │ N/A    │ O(n)              │
+│ Skip List           │ O(logn)│ O(logn)│ O(logn)│ O(logn)│ O(n log n)*       │
+│ Bloom Filter        │ N/A    │ O(k)   │ O(k)   │ N/A    │ O(m) bits         │
+│ QuadTree            │ O(logn)│ O(logn)│ O(logn)│ O(logn)│ O(n)              │
+└─────────────────────┴────────┴────────┴────────┴────────┴───────────────────┘
 
 * = amortized or average case
 † = O(1) for peek/min, O(log n) for extract

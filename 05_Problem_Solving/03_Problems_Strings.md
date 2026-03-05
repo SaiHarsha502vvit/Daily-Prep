@@ -18,26 +18,26 @@
 ║  ISOMORPHIC STRINGS                                                       ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Two strings are isomorphic if characters in s can be replaced to get t. ║
-║  Mapping must be one-to-one (each char maps to exactly one char).        ║
+║  Two strings are isomorphic if characters in s can be replaced to get t.  ║
+║  Mapping must be one-to-one (each char maps to exactly one char).         ║
 ║  Order of characters must be preserved.                                   ║
 ║                                                                           ║
 ║  Input: s = "egg", t = "add"                                              ║
 ║  Output: true                                                             ║
-║  Explanation: e → a, g → d                                               ║
+║  Explanation: e → a, g → d                                                ║
 ║               egg → add ✓                                                 ║
 ║                                                                           ║
 ║  Input: s = "foo", t = "bar"                                              ║
 ║  Output: false                                                            ║
-║  Explanation: o maps to both 'a' and 'r' - not allowed                   ║
+║  Explanation: o maps to both 'a' and 'r' - not allowed                    ║
 ║                                                                           ║
 ║  Input: s = "paper", t = "title"                                          ║
 ║  Output: true                                                             ║
-║  Explanation: p→t, a→i, e→l, r→e                                         ║
+║  Explanation: p→t, a→i, e→l, r→e                                          ║
 ║                                                                           ║
 ║  Input: s = "badc", t = "baba"                                            ║
 ║  Output: false                                                            ║
-║  Explanation: d and c both map to 'a' - not allowed                      ║
+║  Explanation: d and c both map to 'a' - not allowed                       ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -96,24 +96,24 @@ public boolean isIsomorphicMap(String s, String t) {
 ║  WORD PATTERN                                                             ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Check if string follows same pattern as given pattern.                  ║
-║  Pattern char → word must be bijective (one-to-one).                     ║
+║  Check if string follows same pattern as given pattern.                   ║
+║  Pattern char → word must be bijective (one-to-one).                      ║
 ║                                                                           ║
-║  Input: pattern = "abba", s = "dog cat cat dog"                          ║
+║  Input: pattern = "abba", s = "dog cat cat dog"                           ║
 ║  Output: true                                                             ║
-║  Explanation: a→dog, b→cat                                               ║
+║  Explanation: a→dog, b→cat                                                ║
 ║                                                                           ║
-║  Input: pattern = "abba", s = "dog cat cat fish"                         ║
+║  Input: pattern = "abba", s = "dog cat cat fish"                          ║
 ║  Output: false                                                            ║
-║  Explanation: a→dog but also a→fish (inconsistent)                       ║
+║  Explanation: a→dog but also a→fish (inconsistent)                        ║
 ║                                                                           ║
-║  Input: pattern = "aaaa", s = "dog cat cat dog"                          ║
+║  Input: pattern = "aaaa", s = "dog cat cat dog"                           ║
 ║  Output: false                                                            ║
-║  Explanation: a→dog, a→cat (inconsistent)                                ║
+║  Explanation: a→dog, a→cat (inconsistent)                                 ║
 ║                                                                           ║
-║  Input: pattern = "abba", s = "dog dog dog dog"                          ║
+║  Input: pattern = "abba", s = "dog dog dog dog"                           ║
 ║  Output: false                                                            ║
-║  Explanation: b must map to different word than a                        ║
+║  Explanation: b must map to different word than a                         ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -158,42 +158,42 @@ public boolean wordPattern(String pattern, String s) {
 ║  (LeetCode Premium - Full Problem Description)                            ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Given a pattern and a string s, find if s follows the same pattern.     ║
+║  Given a pattern and a string s, find if s follows the same pattern.      ║
 ║                                                                           ║
-║  Here, "follow" means a full match, such that there is a bijection       ║
-║  between a letter in pattern and a non-empty substring in s.             ║
+║  Here, "follow" means a full match, such that there is a bijection        ║
+║  between a letter in pattern and a non-empty substring in s.              ║
 ║                                                                           ║
-║  NOTE: Unlike Word Pattern I, words are NOT separated by spaces!         ║
-║  You must determine where words begin and end.                           ║
+║  NOTE: Unlike Word Pattern I, words are NOT separated by spaces!          ║
+║  You must determine where words begin and end.                            ║
 ║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────   ║
+║  ─────────────────────────────────────────────────────────────────────    ║
 ║                                                                           ║
 ║  Example 1:                                                               ║
-║  Input: pattern = "abab", s = "redblueredblue"                           ║
+║  Input: pattern = "abab", s = "redblueredblue"                            ║
 ║  Output: true                                                             ║
-║  Explanation: a→"red", b→"blue"                                          ║
-║  "redblueredblue" matches "abab"                                         ║
+║  Explanation: a→"red", b→"blue"                                           ║
+║  "redblueredblue" matches "abab"                                          ║
 ║                                                                           ║
 ║  Example 2:                                                               ║
-║  Input: pattern = "aaaa", s = "asdasdasdasd"                             ║
+║  Input: pattern = "aaaa", s = "asdasdasdasd"                              ║
 ║  Output: true                                                             ║
 ║  Explanation: a→"asd"                                                     ║
 ║                                                                           ║
 ║  Example 3:                                                               ║
-║  Input: pattern = "aabb", s = "xyzabcxzyabc"                             ║
+║  Input: pattern = "aabb", s = "xyzabcxzyabc"                              ║
 ║  Output: false                                                            ║
 ║  Explanation: No valid mapping exists                                     ║
 ║                                                                           ║
 ║  Example 4:                                                               ║
 ║  Input: pattern = "ab", s = "aa"                                          ║
 ║  Output: false                                                            ║
-║  Explanation: a→"a", b→"a" violates bijection (two chars map to same)    ║
+║  Explanation: a→"a", b→"a" violates bijection (two chars map to same)     ║
 ║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────   ║
+║  ─────────────────────────────────────────────────────────────────────    ║
 ║                                                                           ║
 ║  Constraints:                                                             ║
-║  - 1 <= pattern.length, s.length <= 20                                   ║
-║  - pattern and s consist of only lowercase English letters               ║
+║  - 1 <= pattern.length, s.length <= 20                                    ║
+║  - pattern and s consist of only lowercase English letters                ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -257,33 +257,33 @@ private boolean backtrack(String pattern, int pIdx, String s, int sIdx,
 ║  (Custom Premium-Style Problem)                                           ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Given an array of strings, group all isomorphic strings together.       ║
+║  Given an array of strings, group all isomorphic strings together.        ║
 ║                                                                           ║
-║  Two strings are isomorphic if the characters in one string can be       ║
-║  replaced to get the other string while preserving the order.            ║
+║  Two strings are isomorphic if the characters in one string can be        ║
+║  replaced to get the other string while preserving the order.             ║
 ║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────   ║
+║  ─────────────────────────────────────────────────────────────────────    ║
 ║                                                                           ║
 ║  Example 1:                                                               ║
-║  Input: ["egg", "add", "foo", "bar", "paper", "title", "abc", "xyz"]     ║
-║  Output: [["egg", "add"], ["foo"], ["bar", "abc", "xyz"],                ║
-║           ["paper", "title"]]                                            ║
+║  Input: ["egg", "add", "foo", "bar", "paper", "title", "abc", "xyz"]      ║
+║  Output: [["egg", "add"], ["foo"], ["bar", "abc", "xyz"],                 ║
+║           ["paper", "title"]]                                             ║
 ║                                                                           ║
 ║  Explanation:                                                             ║
-║  - "egg" ↔ "add" (pattern: 011)                                          ║
-║  - "foo" alone (pattern: 011, but different length group)                ║
-║  - "bar", "abc", "xyz" (pattern: 012)                                    ║
-║  - "paper" ↔ "title" (pattern: 01023)                                    ║
+║  - "egg" ↔ "add" (pattern: 011)                                           ║
+║  - "foo" alone (pattern: 011, but different length group)                 ║
+║  - "bar", "abc", "xyz" (pattern: 012)                                     ║
+║  - "paper" ↔ "title" (pattern: 01023)                                     ║
 ║                                                                           ║
 ║  Example 2:                                                               ║
-║  Input: ["aab", "xxy", "xyz", "abc", "def", "aba"]                       ║
-║  Output: [["aab", "xxy"], ["xyz", "abc", "def"], ["aba"]]                ║
+║  Input: ["aab", "xxy", "xyz", "abc", "def", "aba"]                        ║
+║  Output: [["aab", "xxy"], ["xyz", "abc", "def"], ["aba"]]                 ║
 ║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────   ║
+║  ─────────────────────────────────────────────────────────────────────    ║
 ║                                                                           ║
 ║  Constraints:                                                             ║
-║  - 1 <= words.length <= 1000                                             ║
-║  - 1 <= words[i].length <= 20                                            ║
+║  - 1 <= words.length <= 1000                                              ║
+║  - 1 <= words[i].length <= 20                                             ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -331,8 +331,8 @@ private String getPattern(String s) {
 ║  VALID ANAGRAM                                                            ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Given two strings s and t, return true if t is an anagram of s.         ║
-║  Anagram = same characters, same frequency, different order.             ║
+║  Given two strings s and t, return true if t is an anagram of s.          ║
+║  Anagram = same characters, same frequency, different order.              ║
 ║                                                                           ║
 ║  Input: s = "anagram", t = "nagaram"                                      ║
 ║  Output: true                                                             ║
@@ -373,7 +373,7 @@ public boolean isAnagram(String s, String t) {
 ║  FIND ALL ANAGRAMS IN A STRING                                            ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Find all start indices of p's anagrams in s.                            ║
+║  Find all start indices of p's anagrams in s.                             ║
 ║                                                                           ║
 ║  Input: s = "cbaebabacd", p = "abc"                                       ║
 ║  Output: [0, 6]                                                           ║
@@ -429,25 +429,25 @@ public List<Integer> findAnagrams(String s, String p) {
 ║  (LeetCode Premium - Full Problem Description)                            ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  A strobogrammatic number is a number that looks the same when rotated   ║
-║  180 degrees (looked at upside down).                                    ║
+║  A strobogrammatic number is a number that looks the same when rotated    ║
+║  180 degrees (looked at upside down).                                     ║
 ║                                                                           ║
-║  Given a string num representing an integer, return true if num is a     ║
+║  Given a string num representing an integer, return true if num is a      ║
 ║  strobogrammatic number.                                                  ║
 ║                                                                           ║
 ║  Valid strobogrammatic digits:                                            ║
-║  - 0 rotated is 0                                                        ║
-║  - 1 rotated is 1                                                        ║
-║  - 6 rotated is 9                                                        ║
-║  - 8 rotated is 8                                                        ║
-║  - 9 rotated is 6                                                        ║
+║  - 0 rotated is 0                                                         ║
+║  - 1 rotated is 1                                                         ║
+║  - 6 rotated is 9                                                         ║
+║  - 8 rotated is 8                                                         ║
+║  - 9 rotated is 6                                                         ║
 ║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────   ║
+║  ─────────────────────────────────────────────────────────────────────    ║
 ║                                                                           ║
 ║  Example 1:                                                               ║
 ║  Input: num = "69"                                                        ║
 ║  Output: true                                                             ║
-║  Explanation: 69 rotated 180° is 69                                      ║
+║  Explanation: 69 rotated 180° is 69                                       ║
 ║                                                                           ║
 ║  Example 2:                                                               ║
 ║  Input: num = "88"                                                        ║
@@ -456,18 +456,18 @@ public List<Integer> findAnagrams(String s, String p) {
 ║  Example 3:                                                               ║
 ║  Input: num = "962"                                                       ║
 ║  Output: false                                                            ║
-║  Explanation: 962 rotated is 296 ≠ 962                                   ║
+║  Explanation: 962 rotated is 296 ≠ 962                                    ║
 ║                                                                           ║
 ║  Example 4:                                                               ║
 ║  Input: num = "1"                                                         ║
 ║  Output: true                                                             ║
 ║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────   ║
+║  ─────────────────────────────────────────────────────────────────────    ║
 ║                                                                           ║
 ║  Constraints:                                                             ║
-║  - 1 <= num.length <= 50                                                 ║
-║  - num consists of only digits                                           ║
-║  - num does not have leading zeros except for zero itself                ║
+║  - 1 <= num.length <= 50                                                  ║
+║  - num consists of only digits                                            ║
+║  - num does not have leading zeros except for zero itself                 ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -511,31 +511,31 @@ public boolean isStrobogrammatic(String num) {
 ║  (LeetCode Premium - Full Problem Description)                            ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Given an integer n, return all the strobogrammatic numbers that are of  ║
-║  length n. A strobogrammatic number is a number that looks the same      ║
-║  when rotated 180 degrees.                                               ║
+║  Given an integer n, return all the strobogrammatic numbers that are of   ║
+║  length n. A strobogrammatic number is a number that looks the same       ║
+║  when rotated 180 degrees.                                                ║
 ║                                                                           ║
-║  You may return the answer in any order.                                 ║
+║  You may return the answer in any order.                                  ║
 ║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────   ║
+║  ─────────────────────────────────────────────────────────────────────    ║
 ║                                                                           ║
 ║  Example 1:                                                               ║
 ║  Input: n = 2                                                             ║
-║  Output: ["11", "69", "88", "96"]                                        ║
+║  Output: ["11", "69", "88", "96"]                                         ║
 ║                                                                           ║
 ║  Example 2:                                                               ║
 ║  Input: n = 1                                                             ║
-║  Output: ["0", "1", "8"]                                                 ║
+║  Output: ["0", "1", "8"]                                                  ║
 ║                                                                           ║
 ║  Example 3:                                                               ║
 ║  Input: n = 3                                                             ║
 ║  Output: ["101", "111", "181", "609", "619", "689",                       ║
 ║           "808", "818", "888", "906", "916", "986"]                       ║
 ║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────   ║
+║  ─────────────────────────────────────────────────────────────────────    ║
 ║                                                                           ║
 ║  Constraints:                                                             ║
-║  - 1 <= n <= 14                                                          ║
+║  - 1 <= n <= 14                                                           ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -581,12 +581,12 @@ private List<String> helper(int n, int finalLength) {
 ║  VALID PALINDROME II                                                      ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Given string s, return true if it can become palindrome after deleting  ║
-║  at most one character.                                                  ║
+║  Given string s, return true if it can become palindrome after deleting   ║
+║  at most one character.                                                   ║
 ║                                                                           ║
 ║  Input: s = "abca"                                                        ║
 ║  Output: true                                                             ║
-║  Explanation: Delete 'c' → "aba" or delete 'b' → "aca"                   ║
+║  Explanation: Delete 'c' → "aba" or delete 'b' → "aca"                    ║
 ║                                                                           ║
 ║  Input: s = "abc"                                                         ║
 ║  Output: false                                                            ║
@@ -632,38 +632,38 @@ private boolean isPalindrome(String s, int left, int right) {
 ║  (LeetCode Premium - Full Problem Description)                            ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Given a string s, return true if a permutation of the string could      ║
+║  Given a string s, return true if a permutation of the string could       ║
 ║  form a palindrome.                                                       ║
 ║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────   ║
+║  ─────────────────────────────────────────────────────────────────────    ║
 ║                                                                           ║
 ║  Example 1:                                                               ║
 ║  Input: s = "code"                                                        ║
 ║  Output: false                                                            ║
-║  Explanation: No permutation of "code" is a palindrome.                  ║
+║  Explanation: No permutation of "code" is a palindrome.                   ║
 ║                                                                           ║
 ║  Example 2:                                                               ║
 ║  Input: s = "aab"                                                         ║
 ║  Output: true                                                             ║
-║  Explanation: "aba" is a palindrome permutation.                         ║
+║  Explanation: "aba" is a palindrome permutation.                          ║
 ║                                                                           ║
 ║  Example 3:                                                               ║
 ║  Input: s = "carerac"                                                     ║
 ║  Output: true                                                             ║
-║  Explanation: "carerac" → "racecar" is a palindrome.                     ║
+║  Explanation: "carerac" → "racecar" is a palindrome.                      ║
 ║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────   ║
+║  ─────────────────────────────────────────────────────────────────────    ║
 ║                                                                           ║
 ║  KEY INSIGHT:                                                             ║
-║  A string can form a palindrome if at most ONE character has odd count.  ║
-║  - Even length: all chars must have even count                           ║
-║  - Odd length: exactly one char has odd count (middle char)              ║
+║  A string can form a palindrome if at most ONE character has odd count.   ║
+║  - Even length: all chars must have even count                            ║
+║  - Odd length: exactly one char has odd count (middle char)               ║
 ║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────   ║
+║  ─────────────────────────────────────────────────────────────────────    ║
 ║                                                                           ║
 ║  Constraints:                                                             ║
-║  - 1 <= s.length <= 5000                                                 ║
-║  - s consists of only lowercase English letters                          ║
+║  - 1 <= s.length <= 5000                                                  ║
+║  - s consists of only lowercase English letters                           ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```

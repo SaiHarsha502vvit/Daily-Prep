@@ -6,21 +6,21 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: The absolute foundations of JavaScript — types, variables,  ║
-║        scope, coercion, hoisting — things that trip up everyone.   ║
-║                                                                    ║
-║  WHY:  Every JS bug traces back to misunderstanding these basics.  ║
-║        Closures won't make sense without scope. Async won't make   ║
-║        sense without the event loop. This chapter is the bedrock.  ║
-║                                                                    ║
-║  WHO:  Anyone writing JS — frontend, backend (Node), full-stack.  ║
-║                                                                    ║
-║  WHEN: Before learning React, Node, or any framework.             ║
-║                                                                    ║
-║  WHERE: Browsers (Chrome V8), Node.js (V8), Deno, Bun.           ║
-║                                                                    ║
-║  HOW:  Read each concept → understand the reasoning → run the     ║
-║        examples in browser console (F12) → predict before you run.║
+║  WHAT: The absolute foundations of JavaScript — types, variables,    ║
+║        scope, coercion, hoisting — things that trip up everyone.     ║
+║                                                                      ║
+║  WHY:  Every JS bug traces back to misunderstanding these basics.    ║
+║        Closures won't make sense without scope. Async won't make     ║
+║        sense without the event loop. This chapter is the bedrock.    ║
+║                                                                      ║
+║  WHO:  Anyone writing JS — frontend, backend (Node), full-stack.     ║
+║                                                                      ║
+║  WHEN: Before learning React, Node, or any framework.                ║
+║                                                                      ║
+║  WHERE: Browsers (Chrome V8), Node.js (V8), Deno, Bun.               ║
+║                                                                      ║
+║  HOW:  Read each concept → understand the reasoning → run the        ║
+║        examples in browser console (F12) → predict before you run.   ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -30,30 +30,30 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  JavaScript is a DYNAMIC, WEAKLY-TYPED, SINGLE-THREADED language  ║
-║  with FIRST-CLASS FUNCTIONS and PROTOTYPE-BASED inheritance.      ║
-║                                                                    ║
-║  Let's break each word down:                                       ║
-║                                                                    ║
-║  DYNAMIC: Types are determined at RUNTIME, not compile-time.      ║
-║           → let x = 5; x = "hello"; // perfectly legal            ║
-║           WHY this matters: flexibility, but also bugs.            ║
-║                                                                    ║
-║  WEAKLY-TYPED: JS will COERCE types to make operations work.     ║
-║           → "5" + 3 = "53" (string wins), "5" - 3 = 2 (math wins)║
-║           WHY this matters: unexpected behavior if you don't know. ║
-║                                                                    ║
-║  SINGLE-THREADED: Only ONE call stack. One thing at a time.       ║
-║           → But HOW does async work then? → The EVENT LOOP.       ║
-║           WHY this matters: no race conditions, but blocking is bad║
-║                                                                    ║
-║  FIRST-CLASS FUNCTIONS: Functions are values — pass them around.  ║
-║           → const greet = function() {}; // function in a variable║
-║           WHY this matters: enables callbacks, closures, FP style. ║
-║                                                                    ║
-║  PROTOTYPE-BASED: No classical classes (until ES6 sugar).         ║
-║           → Objects inherit from other objects via prototype chain.║
-║           WHY this matters: understanding `this`, inheritance.     ║
+║  JavaScript is a DYNAMIC, WEAKLY-TYPED, SINGLE-THREADED language     ║
+║  with FIRST-CLASS FUNCTIONS and PROTOTYPE-BASED inheritance.         ║
+║                                                                      ║
+║  Let's break each word down:                                         ║
+║                                                                      ║
+║  DYNAMIC: Types are determined at RUNTIME, not compile-time.         ║
+║           → let x = 5; x = "hello"; // perfectly legal               ║
+║           WHY this matters: flexibility, but also bugs.              ║
+║                                                                      ║
+║  WEAKLY-TYPED: JS will COERCE types to make operations work.         ║
+║           → "5" + 3 = "53" (string wins), "5" - 3 = 2 (math wins)    ║
+║           WHY this matters: unexpected behavior if you don't know.   ║
+║                                                                      ║
+║  SINGLE-THREADED: Only ONE call stack. One thing at a time.          ║
+║           → But HOW does async work then? → The EVENT LOOP.          ║
+║           WHY this matters: no race conditions, but blocking is bad  ║
+║                                                                      ║
+║  FIRST-CLASS FUNCTIONS: Functions are values — pass them around.     ║
+║           → const greet = function() {}; // function in a variable   ║
+║           WHY this matters: enables callbacks, closures, FP style.   ║
+║                                                                      ║
+║  PROTOTYPE-BASED: No classical classes (until ES6 sugar).            ║
+║           → Objects inherit from other objects via prototype chain.  ║
+║           WHY this matters: understanding `this`, inheritance.       ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -61,26 +61,26 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  Your JS code → Engine (V8 in Chrome/Node) → Machine code        ║
-║                                                                    ║
-║  ┌─────────────────────────────────────────────────────────┐       ║
-║  │  SOURCE CODE: let x = 5 + 3;                           │       ║
-║  │       │                                                  │       ║
-║  │       ▼                                                  │       ║
-║  │  PARSER → Abstract Syntax Tree (AST)                    │       ║
-║  │       │                                                  │       ║
-║  │       ▼                                                  │       ║
-║  │  INTERPRETER (Ignition) → Bytecode (runs immediately)   │       ║
-║  │       │                                                  │       ║
-║  │       ▼ (if code runs frequently → "hot")               │       ║
-║  │  JIT COMPILER (TurboFan) → Optimized machine code       │       ║
-║  │                                                          │       ║
-║  │  This is why JS is fast despite being "interpreted"      │       ║
-║  └─────────────────────────────────────────────────────────┘       ║
-║                                                                    ║
-║  REASONING: V8 uses JIT (Just-In-Time) compilation.               ║
-║  It interprets first (fast startup) then optimizes hot paths       ║
-║  (fast execution). Best of both worlds.                            ║
+║  Your JS code → Engine (V8 in Chrome/Node) → Machine code            ║
+║                                                                      ║
+║  ┌─────────────────────────────────────────────────────────┐         ║
+║  │  SOURCE CODE: let x = 5 + 3;                           │          ║
+║  │       │                                                  │        ║
+║  │       ▼                                                  │        ║
+║  │  PARSER → Abstract Syntax Tree (AST)                    │         ║
+║  │       │                                                  │        ║
+║  │       ▼                                                  │        ║
+║  │  INTERPRETER (Ignition) → Bytecode (runs immediately)   │         ║
+║  │       │                                                  │        ║
+║  │       ▼ (if code runs frequently → "hot")               │         ║
+║  │  JIT COMPILER (TurboFan) → Optimized machine code       │         ║
+║  │                                                          │        ║
+║  │  This is why JS is fast despite being "interpreted"      │        ║
+║  └─────────────────────────────────────────────────────────┘         ║
+║                                                                      ║
+║  REASONING: V8 uses JIT (Just-In-Time) compilation.                  ║
+║  It interprets first (fast startup) then optimizes hot paths         ║
+║  (fast execution). Best of both worlds.                              ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -90,30 +90,30 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  JS has 7 PRIMITIVE types + 1 OBJECT type = 8 total               ║
-║                                                                    ║
-║  PRIMITIVES (immutable, stored by VALUE):                          ║
-║  ┌───────────────┬─────────────────────────────────────────┐       ║
-║  │ Type          │ Example                    │ typeof     │       ║
-║  ├───────────────┼─────────────────────────────────────────┤       ║
-║  │ number        │ 42, 3.14, NaN, Infinity   │ "number"   │       ║
-║  │ string        │ "hello", 'world', `hi`    │ "string"   │       ║
-║  │ boolean       │ true, false                │ "boolean"  │       ║
-║  │ undefined     │ undefined (not assigned)   │ "undefined"│       ║
-║  │ null          │ null (intentional empty)   │ "object" ⚠│       ║
-║  │ symbol        │ Symbol("id") (unique)      │ "symbol"   │       ║
-║  │ bigint        │ 9007199254740992n          │ "bigint"   │       ║
-║  └───────────────┴─────────────────────────────────────────┘       ║
-║                                                                    ║
-║  NON-PRIMITIVE (mutable, stored by REFERENCE):                     ║
-║  ┌───────────────┬─────────────────────────────────────────┐       ║
-║  │ object        │ {}, [], function, Date, RegExp, Map,    │       ║
-║  │               │ Set, WeakMap, WeakSet                   │       ║
-║  └───────────────┴─────────────────────────────────────────┘       ║
-║                                                                    ║
-║  ⚠ typeof null === "object" is a BUG from 1995. Never fixed.     ║
-║  ⚠ typeof NaN === "number" — NaN is "Not a Number" but is a      ║
-║     number type. Use Number.isNaN() to check.                      ║
+║  JS has 7 PRIMITIVE types + 1 OBJECT type = 8 total                  ║
+║                                                                      ║
+║  PRIMITIVES (immutable, stored by VALUE):                            ║
+║  ┌───────────────┬─────────────────────────────────────────┐         ║
+║  │ Type          │ Example                    │ typeof     │         ║
+║  ├───────────────┼─────────────────────────────────────────┤         ║
+║  │ number        │ 42, 3.14, NaN, Infinity   │ "number"   │          ║
+║  │ string        │ "hello", 'world', `hi`    │ "string"   │          ║
+║  │ boolean       │ true, false                │ "boolean"  │         ║
+║  │ undefined     │ undefined (not assigned)   │ "undefined"│         ║
+║  │ null          │ null (intentional empty)   │ "object" ⚠│          ║
+║  │ symbol        │ Symbol("id") (unique)      │ "symbol"   │         ║
+║  │ bigint        │ 9007199254740992n          │ "bigint"   │         ║
+║  └───────────────┴─────────────────────────────────────────┘         ║
+║                                                                      ║
+║  NON-PRIMITIVE (mutable, stored by REFERENCE):                       ║
+║  ┌───────────────┬─────────────────────────────────────────┐         ║
+║  │ object        │ {}, [], function, Date, RegExp, Map,    │         ║
+║  │               │ Set, WeakMap, WeakSet                   │         ║
+║  └───────────────┴─────────────────────────────────────────┘         ║
+║                                                                      ║
+║  ⚠ typeof null === "object" is a BUG from 1995. Never fixed.         ║
+║  ⚠ typeof NaN === "number" — NaN is "Not a Number" but is a          ║
+║     number type. Use Number.isNaN() to check.                        ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -143,19 +143,19 @@ let obj5 = JSON.parse(JSON.stringify(obj1)); // Deep copy (old way)
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  MEMORY VISUALIZATION:                                             ║
-║                                                                    ║
-║  STACK (primitives)         HEAP (objects)                         ║
-║  ┌──────────────┐           ┌──────────────────┐                   ║
-║  │ a: 10        │           │ { name: "Harsha" }│ ← address 0x1A  ║
-║  │ b: 20        │           └──────────────────┘                   ║
-║  │ obj1: 0x1A ──┼──────────────────┘                               ║
-║  │ obj2: 0x1A ──┼──────────────────┘  (same address!)              ║
-║  └──────────────┘                                                  ║
-║                                                                    ║
-║  REASONING: Primitives are small → stored directly on stack.       ║
-║  Objects can be large → stored on heap, stack holds a pointer.     ║
-║  Assignment copies what's on the stack (value OR pointer).         ║
+║  MEMORY VISUALIZATION:                                               ║
+║                                                                      ║
+║  STACK (primitives)         HEAP (objects)                           ║
+║  ┌──────────────┐           ┌──────────────────┐                     ║
+║  │ a: 10        │           │ { name: "Harsha" }│ ← address 0x1A     ║
+║  │ b: 20        │           └──────────────────┘                     ║
+║  │ obj1: 0x1A ──┼──────────────────┘                                 ║
+║  │ obj2: 0x1A ──┼──────────────────┘  (same address!)                ║
+║  └──────────────┘                                                    ║
+║                                                                      ║
+║  REASONING: Primitives are small → stored directly on stack.         ║
+║  Objects can be large → stored on heap, stack holds a pointer.       ║
+║  Assignment copies what's on the stack (value OR pointer).           ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -167,11 +167,11 @@ let obj5 = JSON.parse(JSON.stringify(obj1)); // Deep copy (old way)
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: JS automatically converts types when operators expect them. ║
-║  WHY:  Brendan Eich designed JS in 10 days for beginners.         ║
-║        He wanted "5" + 3 to "just work" instead of crashing.       ║
-║  WHEN: Every comparison (==), arithmetic, string concatenation.    ║
-║  HOW:  Internal algorithms: ToPrimitive, ToNumber, ToString.      ║
+║  WHAT: JS automatically converts types when operators expect them.   ║
+║  WHY:  Brendan Eich designed JS in 10 days for beginners.            ║
+║        He wanted "5" + 3 to "just work" instead of crashing.         ║
+║  WHEN: Every comparison (==), arithmetic, string concatenation.      ║
+║  HOW:  Internal algorithms: ToPrimitive, ToNumber, ToString.         ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -210,18 +210,18 @@ if ([]) console.log("truthy!");  // PRINTS! empty array is truthy
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  == (loose equality): Converts types THEN compares                ║
-║  === (strict equality): Compares WITHOUT conversion               ║
-║                                                                    ║
-║  RULE: ALWAYS use === unless you have a specific reason for ==.   ║
-║                                                                    ║
-║  REASONING: == has 22 type conversion rules in the spec.          ║
-║  Nobody can remember all 22. === has 0 conversion rules.          ║
-║  Predictable code > clever code.                                   ║
-║                                                                    ║
-║  The ONLY acceptable == use:                                       ║
-║  if (value == null) // checks for BOTH null and undefined          ║
-║  // equivalent to: if (value === null || value === undefined)      ║
+║  == (loose equality): Converts types THEN compares                   ║
+║  === (strict equality): Compares WITHOUT conversion                  ║
+║                                                                      ║
+║  RULE: ALWAYS use === unless you have a specific reason for ==.      ║
+║                                                                      ║
+║  REASONING: == has 22 type conversion rules in the spec.             ║
+║  Nobody can remember all 22. === has 0 conversion rules.             ║
+║  Predictable code > clever code.                                     ║
+║                                                                      ║
+║  The ONLY acceptable == use:                                         ║
+║  if (value == null) // checks for BOTH null and undefined            ║
+║  // equivalent to: if (value === null || value === undefined)        ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -233,14 +233,14 @@ if ([]) console.log("truthy!");  // PRINTS! empty array is truthy
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: var (1995), let (2015/ES6), const (2015/ES6)               ║
-║  WHY three? var had bugs (hoisting, no block scope). let/const    ║
-║  were added to FIX those bugs while keeping var for backward       ║
-║  compatibility.                                                    ║
-║  WHEN to use each:                                                 ║
-║  • const: DEFAULT choice. ~90% of variables.                      ║
-║  • let: When you NEED to reassign (loops, accumulators).          ║
-║  • var: NEVER in modern code. Legacy only.                        ║
+║  WHAT: var (1995), let (2015/ES6), const (2015/ES6)                  ║
+║  WHY three? var had bugs (hoisting, no block scope). let/const       ║
+║  were added to FIX those bugs while keeping var for backward         ║
+║  compatibility.                                                      ║
+║  WHEN to use each:                                                   ║
+║  • const: DEFAULT choice. ~90% of variables.                         ║
+║  • let: When you NEED to reassign (loops, accumulators).             ║
+║  • var: NEVER in modern code. Legacy only.                           ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -276,20 +276,20 @@ obj = {};               // ❌ TypeError! Can't reassign the variable.
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  COMPARISON TABLE:                                                 ║
-║  ┌──────────┬──────────┬──────────┬──────────┐                     ║
-║  │ Feature  │  var     │  let     │  const   │                     ║
-║  ├──────────┼──────────┼──────────┼──────────┤                     ║
-║  │ Scope    │ function │  block   │  block   │                     ║
-║  │ Hoisting │ yes(undef)│ yes(TDZ)│ yes(TDZ) │                     ║
-║  │ Reassign │  yes     │  yes    │  NO      │                     ║
-║  │ Redeclare│  yes     │  no     │  no      │                     ║
-║  │ Use in   │  never   │ ~10%    │ ~90%     │                     ║
-║  │ 2025+    │          │         │          │                     ║
-║  └──────────┴──────────┴──────────┴──────────┘                     ║
-║                                                                    ║
-║  TDZ = Temporal Dead Zone (the time between hoisting and          ║
-║  declaration where accessing the variable throws an error)         ║
+║  COMPARISON TABLE:                                                   ║
+║  ┌──────────┬──────────┬──────────┬──────────┐                       ║
+║  │ Feature  │  var     │  let     │  const   │                       ║
+║  ├──────────┼──────────┼──────────┼──────────┤                       ║
+║  │ Scope    │ function │  block   │  block   │                       ║
+║  │ Hoisting │ yes(undef)│ yes(TDZ)│ yes(TDZ) │                       ║
+║  │ Reassign │  yes     │  yes    │  NO      │                        ║
+║  │ Redeclare│  yes     │  no     │  no      │                        ║
+║  │ Use in   │  never   │ ~10%    │ ~90%     │                        ║
+║  │ 2025+    │          │         │          │                        ║
+║  └──────────┴──────────┴──────────┴──────────┘                       ║
+║                                                                      ║
+║  TDZ = Temporal Dead Zone (the time between hoisting and             ║
+║  declaration where accessing the variable throws an error)           ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -301,43 +301,43 @@ obj = {};               // ❌ TypeError! Can't reassign the variable.
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: Scope determines WHERE a variable is accessible.           ║
-║  WHY:  Without scope, all variables would be global → chaos.      ║
-║  HOW:  JS uses LEXICAL (static) scoping — scope is determined     ║
-║        by WHERE you WRITE the code, not where you call it.         ║
+║  WHAT: Scope determines WHERE a variable is accessible.              ║
+║  WHY:  Without scope, all variables would be global → chaos.         ║
+║  HOW:  JS uses LEXICAL (static) scoping — scope is determined        ║
+║        by WHERE you WRITE the code, not where you call it.           ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  THREE TYPES OF SCOPE:                                             ║
-║                                                                    ║
-║  ┌─── GLOBAL SCOPE ────────────────────────────────────────┐       ║
-║  │  const API_URL = "https://api.example.com";             │       ║
-║  │  // Accessible EVERYWHERE. Attached to window (browser).│       ║
-║  │                                                          │       ║
-║  │  ┌─── FUNCTION SCOPE ───────────────────────────────┐   │       ║
-║  │  │  function greet(name) {                           │   │       ║
-║  │  │    const msg = "Hello " + name;                   │   │       ║
-║  │  │    // msg accessible here + inner blocks          │   │       ║
-║  │  │                                                   │   │       ║
-║  │  │    ┌─── BLOCK SCOPE ──────────────────────┐      │   │       ║
-║  │  │    │  if (name) {                          │      │   │       ║
+║  THREE TYPES OF SCOPE:                                               ║
+║                                                                      ║
+║  ┌─── GLOBAL SCOPE ────────────────────────────────────────┐         ║
+║  │  const API_URL = "https://api.example.com";             │         ║
+║  │  // Accessible EVERYWHERE. Attached to window (browser).│         ║
+║  │                                                          │        ║
+║  │  ┌─── FUNCTION SCOPE ───────────────────────────────┐   │         ║
+║  │  │  function greet(name) {                           │   │        ║
+║  │  │    const msg = "Hello " + name;                   │   │        ║
+║  │  │    // msg accessible here + inner blocks          │   │        ║
+║  │  │                                                   │   │        ║
+║  │  │    ┌─── BLOCK SCOPE ──────────────────────┐      │   │         ║
+║  │  │    │  if (name) {                          │      │   │        ║
 ║  │  │    │    const upper = name.toUpperCase();   │      │   │       ║
 ║  │  │    │    // upper only accessible HERE       │      │   │       ║
-║  │  │    │    // Can access msg (outer scope) ✅ │      │   │       ║
-║  │  │    │    // Can access API_URL (global) ✅  │      │   │       ║
-║  │  │    │  }                                    │      │   │       ║
-║  │  │    └───────────────────────────────────────┘      │   │       ║
-║  │  │    // upper NOT accessible here ❌               │   │       ║
-║  │  │  }                                                │   │       ║
-║  │  └───────────────────────────────────────────────────┘   │       ║
-║  │  // msg NOT accessible here ❌                          │       ║
-║  └──────────────────────────────────────────────────────────┘       ║
-║                                                                    ║
-║  RULE: Inner scopes can access outer scopes (scope chain).        ║
-║  Outer scopes CANNOT access inner scopes.                          ║
-║  This is the foundation of CLOSURES (next chapter).               ║
+║  │  │    │    // Can access msg (outer scope) ✅ │      │   │         ║
+║  │  │    │    // Can access API_URL (global) ✅  │      │   │         ║
+║  │  │    │  }                                    │      │   │        ║
+║  │  │    └───────────────────────────────────────┘      │   │        ║
+║  │  │    // upper NOT accessible here ❌               │   │          ║
+║  │  │  }                                                │   │        ║
+║  │  └───────────────────────────────────────────────────┘   │        ║
+║  │  // msg NOT accessible here ❌                          │          ║
+║  └──────────────────────────────────────────────────────────┘        ║
+║                                                                      ║
+║  RULE: Inner scopes can access outer scopes (scope chain).           ║
+║  Outer scopes CANNOT access inner scopes.                            ║
+║  This is the foundation of CLOSURES (next chapter).                  ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -379,16 +379,16 @@ function outer() {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: JS "moves" declarations to the top of their scope BEFORE    ║
-║        executing any code. (Technically, it's about creation       ║
-║        phase vs execution phase — nothing physically moves.)       ║
-║                                                                    ║
-║  WHY:  The JS engine makes TWO passes:                            ║
-║        Pass 1 (Creation): Find all declarations, allocate memory. ║
-║        Pass 2 (Execution): Run code line by line.                 ║
-║                                                                    ║
-║  WHEN: This happens with var, function declarations, let/const.   ║
-║        But BEHAVIOR differs between them.                          ║
+║  WHAT: JS "moves" declarations to the top of their scope BEFORE      ║
+║        executing any code. (Technically, it's about creation         ║
+║        phase vs execution phase — nothing physically moves.)         ║
+║                                                                      ║
+║  WHY:  The JS engine makes TWO passes:                               ║
+║        Pass 1 (Creation): Find all declarations, allocate memory.    ║
+║        Pass 2 (Execution): Run code line by line.                    ║
+║                                                                      ║
+║  WHEN: This happens with var, function declarations, let/const.      ║
+║        But BEHAVIOR differs between them.                            ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -427,22 +427,22 @@ let y = 10;
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  HOISTING SUMMARY:                                                 ║
-║                                                                    ║
-║  ┌───────────────────┬────────────┬────────────────────┐           ║
-║  │ Declaration       │ Hoisted?   │ Value before line? │           ║
-║  ├───────────────────┼────────────┼────────────────────┤           ║
-║  │ var x = 5         │ Yes        │ undefined          │           ║
-║  │ let x = 5         │ Yes (TDZ)  │ ReferenceError     │           ║
-║  │ const x = 5       │ Yes (TDZ)  │ ReferenceError     │           ║
-║  │ function f() {}   │ Yes (full) │ The function itself│           ║
-║  │ var f = () => {}  │ Yes        │ undefined          │           ║
-║  │ class C {}        │ Yes (TDZ)  │ ReferenceError     │           ║
-║  └───────────────────┴────────────┴────────────────────┘           ║
-║                                                                    ║
-║  REASONING: TDZ exists to catch bugs. If you use a variable       ║
-║  before declaring it, that's almost certainly a mistake.           ║
-║  let/const throw immediately instead of silently being undefined.  ║
+║  HOISTING SUMMARY:                                                   ║
+║                                                                      ║
+║  ┌───────────────────┬────────────┬────────────────────┐             ║
+║  │ Declaration       │ Hoisted?   │ Value before line? │             ║
+║  ├───────────────────┼────────────┼────────────────────┤             ║
+║  │ var x = 5         │ Yes        │ undefined          │             ║
+║  │ let x = 5         │ Yes (TDZ)  │ ReferenceError     │             ║
+║  │ const x = 5       │ Yes (TDZ)  │ ReferenceError     │             ║
+║  │ function f() {}   │ Yes (full) │ The function itself│             ║
+║  │ var f = () => {}  │ Yes        │ undefined          │             ║
+║  │ class C {}        │ Yes (TDZ)  │ ReferenceError     │             ║
+║  └───────────────────┴────────────┴────────────────────┘             ║
+║                                                                      ║
+║  REASONING: TDZ exists to catch bugs. If you use a variable          ║
+║  before declaring it, that's almost certainly a mistake.             ║
+║  let/const throw immediately instead of silently being undefined.    ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -505,31 +505,31 @@ const { a, ...rest } = { a: 1, b: 2, c: 3 };
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  Every time JS runs code, it creates an EXECUTION CONTEXT.        ║
-║                                                                    ║
-║  ┌─────────────────────────────────────────────────────────┐       ║
-║  │  EXECUTION CONTEXT contains:                            │       ║
-║  │                                                          │       ║
-║  │  1. Variable Environment (variables, functions)          │       ║
-║  │  2. Scope Chain (link to parent scopes)                  │       ║
-║  │  3. `this` binding (depends on HOW function is called)   │       ║
-║  └─────────────────────────────────────────────────────────┘       ║
-║                                                                    ║
-║  TYPES:                                                            ║
-║  • Global Execution Context: Created when script starts.          ║
-║    In browser: this = window. In Node: this = module.exports.     ║
-║                                                                    ║
-║  • Function Execution Context: Created for each function call.    ║
-║    Has its own variables, scope chain, and `this`.                ║
-║                                                                    ║
-║  CALL STACK:                                                       ║
-║  ┌───────────────┐                                                 ║
-║  │ inner()       │ ← currently executing                          ║
-║  │ outer()       │ ← waiting for inner() to finish               ║
-║  │ Global        │ ← waiting for outer() to finish               ║
-║  └───────────────┘                                                 ║
-║  Functions are PUSHED when called, POPPED when they return.       ║
-║  Stack Overflow = too many pushes without pops (infinite recursion)║
+║  Every time JS runs code, it creates an EXECUTION CONTEXT.           ║
+║                                                                      ║
+║  ┌─────────────────────────────────────────────────────────┐         ║
+║  │  EXECUTION CONTEXT contains:                            │         ║
+║  │                                                          │        ║
+║  │  1. Variable Environment (variables, functions)          │        ║
+║  │  2. Scope Chain (link to parent scopes)                  │        ║
+║  │  3. `this` binding (depends on HOW function is called)   │        ║
+║  └─────────────────────────────────────────────────────────┘         ║
+║                                                                      ║
+║  TYPES:                                                              ║
+║  • Global Execution Context: Created when script starts.             ║
+║    In browser: this = window. In Node: this = module.exports.        ║
+║                                                                      ║
+║  • Function Execution Context: Created for each function call.       ║
+║    Has its own variables, scope chain, and `this`.                   ║
+║                                                                      ║
+║  CALL STACK:                                                         ║
+║  ┌───────────────┐                                                   ║
+║  │ inner()       │ ← currently executing                             ║
+║  │ outer()       │ ← waiting for inner() to finish                   ║
+║  │ Global        │ ← waiting for outer() to finish                   ║
+║  └───────────────┘                                                   ║
+║  Functions are PUSHED when called, POPPED when they return.          ║
+║  Stack Overflow = too many pushes without pops (infinite recursion)  ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 

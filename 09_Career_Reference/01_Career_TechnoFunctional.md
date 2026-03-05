@@ -40,7 +40,7 @@ Business Problem → Technical Solution → Business Impact → Continuous Impro
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    TECHNO-FUNCTIONAL EXPERT                      │
+│                    TECHNO-FUNCTIONAL EXPERT                     │
 ├─────────────────┬─────────────────┬─────────────────────────────┤
 │   TECHNICAL     │    DOMAIN       │     SOFT SKILLS             │
 │   EXCELLENCE    │    EXPERTISE    │     MASTERY                 │
@@ -130,20 +130,20 @@ System Designer thinks:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    SCALING STRATEGIES                        │
+│                    SCALING STRATEGIES                       │
 ├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│  VERTICAL SCALING          HORIZONTAL SCALING                │
-│  (Scale Up)                (Scale Out)                       │
-│                                                              │
+│                                                             │
+│  VERTICAL SCALING          HORIZONTAL SCALING               │
+│  (Scale Up)                (Scale Out)                      │
+│                                                             │
 │  ┌─────────┐               ┌───┐ ┌───┐ ┌───┐                │
 │  │ BIGGER  │               │ S │ │ S │ │ S │                │
 │  │ SERVER  │      vs       │ 1 │ │ 2 │ │ 3 │                │
 │  │         │               └───┘ └───┘ └───┘                │
-│  └─────────┘                                                 │
-│                                                              │
-│  Pros: Simple              Pros: Unlimited scale             │
-│  Cons: Has limits          Cons: Complexity                  │
+│  └─────────┘                                                │
+│                                                             │
+│  Pros: Simple              Pros: Unlimited scale            │
+│  Cons: Has limits          Cons: Complexity                 │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -168,9 +168,9 @@ System Designer thinks:
 #### 3. Caching Strategies
 
 ```
-┌─────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────┐
 │                    CACHING LAYERS                            │
-├─────────────────────────────────────────────────────────────┤
+├──────────────────────────────────────────────────────────────┤
 │                                                              │
 │  CLIENT ─────► CDN ─────► APP CACHE ─────► DB CACHE ─────► DB│
 │                                                              │
@@ -179,7 +179,7 @@ System Designer thinks:
 │                                                              │
 │  Cache Hit Rate Target: > 95%                                │
 │  Latency: 1ms (cache) vs 50-200ms (DB)                       │
-└─────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────┘
 ```
 
 #### 4. Load Balancing
@@ -279,18 +279,18 @@ Step 5: WRAP UP (5 min)
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    AWS SERVICE MAP                           │
+│                    AWS SERVICE MAP                          │
 ├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│  COMPUTE          STORAGE           DATABASE                 │
+│                                                             │
+│  COMPUTE          STORAGE           DATABASE                │
 │  ┌─────────┐      ┌─────────┐       ┌─────────┐             │
 │  │ EC2     │      │ S3      │       │ RDS     │             │
 │  │ Lambda  │      │ EBS     │       │ DynamoDB│             │
 │  │ ECS/EKS │      │ EFS     │       │ Aurora  │             │
 │  │ Fargate │      │ Glacier │       │ ElastiC │             │
 │  └─────────┘      └─────────┘       └─────────┘             │
-│                                                              │
-│  NETWORKING       SECURITY          MONITORING               │
+│                                                             │
+│  NETWORKING       SECURITY          MONITORING              │
 │  ┌─────────┐      ┌─────────┐       ┌─────────┐             │
 │  │ VPC     │      │ IAM     │       │CloudWatch│            │
 │  │ Route53 │      │ KMS     │       │ X-Ray   │             │
@@ -306,7 +306,7 @@ Step 5: WRAP UP (5 min)
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                EC2 PRICING MODELS                            │
+│                EC2 PRICING MODELS                           │
 ├──────────────┬──────────────┬──────────────┬────────────────┤
 │ ON-DEMAND    │ RESERVED     │ SPOT         │ SAVINGS PLAN   │
 ├──────────────┼──────────────┼──────────────┼────────────────┤
@@ -349,7 +349,7 @@ Step 5: WRAP UP (5 min)
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                  S3 STORAGE CLASSES                          │
+│                  S3 STORAGE CLASSES                         │
 ├─────────────────┬─────────────┬─────────────────────────────┤
 │ STORAGE CLASS   │ COST/GB     │ USE CASE                    │
 ├─────────────────┼─────────────┼─────────────────────────────┤
@@ -370,21 +370,21 @@ Day 365+:    Glacier Deep Archive (save 96%)
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    AZURE SERVICE MAP                         │
+│                    AZURE SERVICE MAP                        │
 ├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│  AWS                    AZURE                                │
-│  ───                    ─────                                │
-│  EC2          ────►     Virtual Machines                     │
-│  Lambda       ────►     Azure Functions                      │
-│  S3           ────►     Blob Storage                         │
-│  RDS          ────►     Azure SQL Database                   │
-│  DynamoDB     ────►     Cosmos DB                            │
-│  CloudWatch   ────►     Azure Monitor                        │
-│  VPC          ────►     Virtual Network                      │
-│  IAM          ────►     Azure AD / RBAC                      │
-│  EKS          ────►     AKS (Azure Kubernetes Service)       │
-│  SQS/SNS      ────►     Service Bus                          │
+│                                                             │
+│  AWS                    AZURE                               │
+│  ───                    ─────                               │
+│  EC2          ────►     Virtual Machines                    │
+│  Lambda       ────►     Azure Functions                     │
+│  S3           ────►     Blob Storage                        │
+│  RDS          ────►     Azure SQL Database                  │
+│  DynamoDB     ────►     Cosmos DB                           │
+│  CloudWatch   ────►     Azure Monitor                       │
+│  VPC          ────►     Virtual Network                     │
+│  IAM          ────►     Azure AD / RBAC                     │
+│  EKS          ────►     AKS (Azure Kubernetes Service)      │
+│  SQS/SNS      ────►     Service Bus                         │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -394,28 +394,28 @@ Day 365+:    Glacier Deep Archive (save 96%)
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    MICROSERVICES                             │
+│                    MICROSERVICES                            │
 ├─────────────────────────────────────────────────────────────┤
-│                                                              │
+│                                                             │
 │         ┌──────────────────────────────┐                    │
 │         │       API GATEWAY            │                    │
 │         │    (Authentication, Routing) │                    │
 │         └──────────────┬───────────────┘                    │
-│                        │                                     │
+│                        │                                    │
 │    ┌───────────────────┼───────────────────┐                │
 │    │                   │                   │                │
 │    ▼                   ▼                   ▼                │
-│ ┌──────┐          ┌──────┐          ┌──────┐               │
-│ │User  │          │Order │          │Payment│              │
-│ │Svc   │          │Svc   │          │Svc    │              │
-│ └──┬───┘          └──┬───┘          └──┬────┘              │
+│ ┌──────┐          ┌──────┐          ┌──────┐                │
+│ │User  │          │Order │          │Payment│               │
+│ │Svc   │          │Svc   │          │Svc    │               │
+│ └──┬───┘          └──┬───┘          └──┬────┘               │
 │    │                 │                 │                    │
 │    ▼                 ▼                 ▼                    │
-│ ┌──────┐          ┌──────┐          ┌──────┐               │
-│ │User  │          │Order │          │Payment│              │
-│ │DB    │          │DB    │          │DB     │              │
-│ └──────┘          └──────┘          └──────┘               │
-│                                                              │
+│ ┌──────┐          ┌──────┐          ┌──────┐                │
+│ │User  │          │Order │          │Payment│               │
+│ │DB    │          │DB    │          │DB     │               │
+│ └──────┘          └──────┘          └──────┘                │
+│                                                             │
 │  Each service: Own database, Independent deployment         │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -424,12 +424,12 @@ Day 365+:    Glacier Deep Archive (save 96%)
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                  EVENT-DRIVEN PATTERN                        │
+│                  EVENT-DRIVEN PATTERN                       │
 ├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│  Producer ────► Event Bus ────► Consumers                    │
-│                 (Kafka/SQS)                                  │
-│                                                              │
+│                                                             │
+│  Producer ────► Event Bus ────► Consumers                   │
+│                 (Kafka/SQS)                                 │
+│                                                             │
 │  ┌──────────┐    ┌─────────┐    ┌──────────────┐            │
 │  │Order     │───►│ ORDER   │───►│ Inventory    │            │
 │  │Service   │    │ CREATED │    │ Service      │            │
@@ -440,7 +440,7 @@ Day 365+:    Glacier Deep Archive (save 96%)
 │                              └─►│ Analytics    │            │
 │                                 │ Service      │            │
 │                                 └──────────────┘            │
-│                                                              │
+│                                                             │
 │  Benefits: Loose coupling, Scalability, Resilience          │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -449,22 +449,22 @@ Day 365+:    Glacier Deep Archive (save 96%)
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    SERVERLESS PATTERN                        │
+│                    SERVERLESS PATTERN                       │
 ├─────────────────────────────────────────────────────────────┤
-│                                                              │
+│                                                             │
 │  Client ──► API Gateway ──► Lambda ──► DynamoDB             │
-│                   │                                          │
-│                   └──► Lambda ──► S3                         │
-│                                                              │
-│  Pricing: Pay only for execution time                        │
-│  Scaling: Automatic (0 to millions)                          │
-│  Management: Zero server maintenance                         │
-│                                                              │
-│  Use Cases:                                                  │
-│  • REST APIs                                                 │
-│  • File processing                                           │
-│  • Scheduled tasks                                           │
-│  • Event processing                                          │
+│                   │                                         │
+│                   └──► Lambda ──► S3                        │
+│                                                             │
+│  Pricing: Pay only for execution time                       │
+│  Scaling: Automatic (0 to millions)                         │
+│  Management: Zero server maintenance                        │
+│                                                             │
+│  Use Cases:                                                 │
+│  • REST APIs                                                │
+│  • File processing                                          │
+│  • Scheduled tasks                                          │
+│  • Event processing                                         │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -520,21 +520,21 @@ SPECIALTY
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                  CORE BANKING ARCHITECTURE                   │
+│                  CORE BANKING ARCHITECTURE                  │
 ├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐     │
-│  │ CHANNELS    │    │ MIDDLEWARE  │    │ CORE SYSTEM │     │
-│  ├─────────────┤    ├─────────────┤    ├─────────────┤     │
-│  │ Mobile App  │───►│ API Gateway │───►│ Account     │     │
-│  │ Web Banking │    │ ESB         │    │ Management  │     │
-│  │ ATM         │    │ Integration │    │             │     │
-│  │ Branch      │    │ Layer       │    │ Transaction │     │
-│  │ USSD        │    │             │    │ Processing  │     │
-│  └─────────────┘    └─────────────┘    │             │     │
+│                                                             │
+│  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐      │
+│  │ CHANNELS    │    │ MIDDLEWARE  │    │ CORE SYSTEM │      │
+│  ├─────────────┤    ├─────────────┤    ├─────────────┤      │
+│  │ Mobile App  │───►│ API Gateway │───►│ Account     │      │
+│  │ Web Banking │    │ ESB         │    │ Management  │      │
+│  │ ATM         │    │ Integration │    │             │      │
+│  │ Branch      │    │ Layer       │    │ Transaction │      │
+│  │ USSD        │    │             │    │ Processing  │      │
+│  └─────────────┘    └─────────────┘    │             │      │
 │                                         │ GL Posting  │     │
 │                                         └──────┬──────┘     │
-│                                                │             │
+│                                                │            │
 │                                         ┌──────▼──────┐     │
 │                                         │  DATABASE   │     │
 │                                         │  (Oracle)   │     │
@@ -558,28 +558,28 @@ SPECIALTY
 #### Payment Processing Flow
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                 UPI PAYMENT FLOW                             │
-├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│  PAYER           PSP            NPCI            PAYEE        │
-│  (You)        (PhonePe)      (Switch)         (Merchant)    │
-│    │              │              │               │           │
-│    │──Pay Req────►│              │               │           │
-│    │              │──Validate───►│               │           │
-│    │              │              │──Check Acct──►│           │
-│    │              │              │◄──Confirm────│           │
-│    │              │◄──Route──────│               │           │
-│    │◄──PIN Req───│              │               │           │
-│    │──PIN────────►│              │               │           │
-│    │              │──Debit Req──►│               │           │
-│    │              │              │──Debit───────►│           │
+┌───────────────────────────────────────────────────────────────┐
+│                 UPI PAYMENT FLOW                              │
+├───────────────────────────────────────────────────────────────┤
+│                                                               │
+│  PAYER           PSP            NPCI            PAYEE         │
+│  (You)        (PhonePe)      (Switch)         (Merchant)      │
+│    │              │              │               │            │
+│    │──Pay Req────►│              │               │            │
+│    │              │──Validate───►│               │            │
+│    │              │              │──Check Acct──►│            │
+│    │              │              │◄──Confirm────│             │
+│    │              │◄──Route──────│               │            │
+│    │◄──PIN Req───│              │               │             │
+│    │──PIN────────►│              │               │            │
+│    │              │──Debit Req──►│               │            │
+│    │              │              │──Debit───────►│            │
 │    │              │              │──Credit──────►│(Payee Bank)│
-│    │              │◄──Success───│               │           │
-│    │◄──Success───│              │               │           │
+│    │              │◄──Success───│               │             │
+│    │◄──Success───│              │               │             │
 │    │              │               │               │           │
-│  ◄──────────── ~2-3 seconds ────────────────────►           │
-└─────────────────────────────────────────────────────────────┘
+│  ◄──────────── ~2-3 seconds ────────────────────►             │
+└───────────────────────────────────────────────────────────────┘
 ```
 
 ### Banking Data Structures
@@ -777,21 +777,21 @@ Tech Stack:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                  HEALTHCARE IT ECOSYSTEM                     │
+│                  HEALTHCARE IT ECOSYSTEM                    │
 ├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐     │
-│  │  CLINICAL   │    │   ADMIN     │    │  ANALYTICS  │     │
-│  │  SYSTEMS    │    │  SYSTEMS    │    │  PLATFORM   │     │
-│  ├─────────────┤    ├─────────────┤    ├─────────────┤     │
-│  │ EHR/EMR     │    │ Billing     │    │ Population  │     │
-│  │ Lab Systems │◄──►│ Scheduling  │◄──►│ Health      │     │
-│  │ Imaging     │    │ Insurance   │    │ AI/ML       │     │
-│  │ Pharmacy    │    │ Claims      │    │ Reporting   │     │
-│  └─────────────┘    └─────────────┘    └─────────────┘     │
+│                                                             │
+│  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐      │
+│  │  CLINICAL   │    │   ADMIN     │    │  ANALYTICS  │      │
+│  │  SYSTEMS    │    │  SYSTEMS    │    │  PLATFORM   │      │
+│  ├─────────────┤    ├─────────────┤    ├─────────────┤      │
+│  │ EHR/EMR     │    │ Billing     │    │ Population  │      │
+│  │ Lab Systems │◄──►│ Scheduling  │◄──►│ Health      │      │
+│  │ Imaging     │    │ Insurance   │    │ AI/ML       │      │
+│  │ Pharmacy    │    │ Claims      │    │ Reporting   │      │
+│  └─────────────┘    └─────────────┘    └─────────────┘      │
 │         │                  │                  │             │
 │         └──────────────────┼──────────────────┘             │
-│                            │                                 │
+│                            │                                │
 │                   ┌────────▼────────┐                       │
 │                   │  INTEGRATION    │                       │
 │                   │  ENGINE         │                       │
@@ -923,14 +923,14 @@ Features:
 
 Architecture:
 ┌─────────────────────────────────────────────────────────────┐
-│                                                              │
+│                                                             │
 │  Upload ──► Preprocessing ──► AI Model ──► Results          │
 │    │              │              │            │             │
 │    ▼              ▼              ▼            ▼             │
 │  DICOM        Normalize      ResNet/       Heatmap          │
 │  Parser       Resize         VGG/Custom    Generation       │
-│               Augment                       + Report         │
-│                                                              │
+│               Augment                       + Report        │
+│                                                             │
 └─────────────────────────────────────────────────────────────┘
 
 ML Approach:
@@ -964,21 +964,21 @@ ML Approach:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                  TELECOM NETWORK ARCHITECTURE                │
+│                  TELECOM NETWORK ARCHITECTURE               │
 ├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐     │
-│  │  ACCESS     │    │   CORE      │    │  SERVICES   │     │
-│  │  NETWORK    │    │   NETWORK   │    │  LAYER      │     │
-│  ├─────────────┤    ├─────────────┤    ├─────────────┤     │
-│  │ Cell Towers │───►│ Routing     │───►│ Billing     │     │
-│  │ Wi-Fi       │    │ Switching   │    │ CRM         │     │
-│  │ Fiber       │    │ Core (EPC)  │    │ VAS         │     │
-│  │ 5G NR       │    │ IMS         │    │ OTT         │     │
-│  └─────────────┘    └─────────────┘    └─────────────┘     │
+│                                                             │
+│  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐      │
+│  │  ACCESS     │    │   CORE      │    │  SERVICES   │      │
+│  │  NETWORK    │    │   NETWORK   │    │  LAYER      │      │
+│  ├─────────────┤    ├─────────────┤    ├─────────────┤      │
+│  │ Cell Towers │───►│ Routing     │───►│ Billing     │      │
+│  │ Wi-Fi       │    │ Switching   │    │ CRM         │      │
+│  │ Fiber       │    │ Core (EPC)  │    │ VAS         │      │
+│  │ 5G NR       │    │ IMS         │    │ OTT         │      │
+│  └─────────────┘    └─────────────┘    └─────────────┘      │
 │         │                  │                  │             │
 │         └──────────────────┴──────────────────┘             │
-│                            │                                 │
+│                            │                                │
 │                   ┌────────▼────────┐                       │
 │                   │      OSS/BSS    │                       │
 │                   │  (Operations &  │                       │
@@ -1006,14 +1006,14 @@ ML Approach:
 ```
 CDR (Call Detail Record):
 ┌─────────────────────────────────────────────────────────────┐
-│  Calling Number: +91-9876543210                              │
-│  Called Number:  +91-9123456789                              │
+│  Calling Number: +91-9876543210                             │
+│  Called Number:  +91-9123456789                             │
 │  Start Time:     2024-01-15 14:30:00                        │
-│  Duration:       180 seconds                                 │
-│  Call Type:      Voice                                       │
-│  Cell Tower:     MH-MUM-123                                  │
-│  Cost:           ₹3.00                                       │
-│  Quality Score:  4.5/5                                       │
+│  Duration:       180 seconds                                │
+│  Call Type:      Voice                                      │
+│  Cell Tower:     MH-MUM-123                                 │
+│  Cost:           ₹3.00                                      │
+│  Quality Score:  4.5/5                                      │
 └─────────────────────────────────────────────────────────────┘
 
 Processing Pipeline:
@@ -1070,9 +1070,9 @@ Features:
 
 Architecture:
 ┌─────────────────────────────────────────────────────────────┐
-│                                                              │
+│                                                             │
 │  Network ──► Collectors ──► Time-Series DB ──► Dashboard    │
-│  Devices     (SNMP/gRPC)    (InfluxDB/        (Grafana)    │
+│  Devices     (SNMP/gRPC)    (InfluxDB/        (Grafana)     │
 │                              Prometheus)                    │
 │                                 │                           │
 │                                 ▼                           │
@@ -1112,7 +1112,7 @@ Features:
 
 Rating Engine Design:
 ┌─────────────────────────────────────────────────────────────┐
-│                                                              │
+│                                                             │
 │  CDR Input ──► Validation ──► Rating ──► Charging           │
 │       │            │            │           │               │
 │       │            ▼            ▼           ▼               │
@@ -1120,7 +1120,7 @@ Rating Engine Design:
 │       │        Check        Lookup       Update             │
 │       │                                                     │
 │       └───► Mediation ──► Aggregation ──► Invoice           │
-│                                                              │
+│                                                             │
 └─────────────────────────────────────────────────────────────┘
 
 Technical Challenges:
@@ -1140,17 +1140,17 @@ Technical Challenges:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│              MINDSET TRANSFORMATION                          │
+│              MINDSET TRANSFORMATION                         │
 ├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│  EMPLOYEE MINDSET          PRODUCT MINDSET                   │
-│  ─────────────────         ───────────────                   │
-│  "Tell me what to do"      "Let me solve this problem"       │
+│                                                             │
+│  EMPLOYEE MINDSET          PRODUCT MINDSET                  │
+│  ─────────────────         ───────────────                  │
+│  "Tell me what to do"      "Let me solve this problem"      │
 │  "It's not my job"         "How can I help?"                │
-│  "Requirements are unclear" "Let me clarify and propose"     │
-│  "It's working"            "Is it valuable to users?"        │
-│  "Feature is done"         "Let's measure the impact"        │
-│                                                              │
+│  "Requirements are unclear" "Let me clarify and propose"    │
+│  "It's working"            "Is it valuable to users?"       │
+│  "Feature is done"         "Let's measure the impact"       │
+│                                                             │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -1312,16 +1312,16 @@ RESULT: Quantify the outcome
 ```
 GOOD TECHNICAL WRITING:
 ┌─────────────────────────────────────────────────────────────┐
-│                                                              │
+│                                                             │
 │  ✓ Executive summary first (TL;DR)                          │
-│  ✓ Clear problem statement                                   │
+│  ✓ Clear problem statement                                  │
 │  ✓ Visual diagrams > walls of text                          │
 │  ✓ Numbered steps for processes                             │
 │  ✓ Code examples for implementation                         │
 │  ✓ Trade-offs explicitly stated                             │
 │  ✓ Risks and mitigations                                    │
 │  ✓ Timeline and milestones                                  │
-│                                                              │
+│                                                             │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -1359,25 +1359,25 @@ DO:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                  SMART CITY PLATFORM                         │
+│                  SMART CITY PLATFORM                        │
 ├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐     │
-│  │  SENSORS    │    │  DATA       │    │ APPLICATIONS│     │
-│  │  & DEVICES  │    │  PLATFORM   │    │             │     │
-│  ├─────────────┤    ├─────────────┤    ├─────────────┤     │
-│  │ Traffic     │───►│ IoT Hub     │───►│ Traffic Mgmt│     │
-│  │ Air Quality │    │ Stream Proc │    │ Health Alert│     │
-│  │ Water Meters│    │ Data Lake   │    │ Utility Bill│     │
-│  │ Health      │    │ ML Platform │    │ Citizen App │     │
-│  └─────────────┘    └─────────────┘    └─────────────┘     │
-│                                                              │
-│  Domains Covered:                                            │
-│  • Telecom: IoT connectivity, network management             │
-│  • Healthcare: Health monitoring, emergency response         │
-│  • Banking: Utility payments, citizen transactions           │
-│  • Government: Citizen services, data governance             │
-│                                                              │
+│                                                             │
+│  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐      │
+│  │  SENSORS    │    │  DATA       │    │ APPLICATIONS│      │
+│  │  & DEVICES  │    │  PLATFORM   │    │             │      │
+│  ├─────────────┤    ├─────────────┤    ├─────────────┤      │
+│  │ Traffic     │───►│ IoT Hub     │───►│ Traffic Mgmt│      │
+│  │ Air Quality │    │ Stream Proc │    │ Health Alert│      │
+│  │ Water Meters│    │ Data Lake   │    │ Utility Bill│      │
+│  │ Health      │    │ ML Platform │    │ Citizen App │      │
+│  └─────────────┘    └─────────────┘    └─────────────┘      │
+│                                                             │
+│  Domains Covered:                                           │
+│  • Telecom: IoT connectivity, network management            │
+│  • Healthcare: Health monitoring, emergency response        │
+│  • Banking: Utility payments, citizen transactions          │
+│  • Government: Citizen services, data governance            │
+│                                                             │
 └─────────────────────────────────────────────────────────────┘
 ```
 

@@ -159,12 +159,12 @@ EDGE CASES:
 ┌──────────────────────────────┬─────────────────────────────────────────┐
 │ Edge Case                    │ Handling                                │
 ├──────────────────────────────┼─────────────────────────────────────────┤
-│ k = 1                        │ Heap of size 1 = max element          │
-│ k = n                        │ Heap of size n → just min of all     │
-│ All same values [3,3,3,3]    │ Works correctly, peek always = 3     │
-│ Negative numbers             │ PQ handles naturally                  │
-│ Single element stream        │ Median = that element                 │
-│ k > n (invalid)              │ Handle before processing             │
+│ k = 1                        │ Heap of size 1 = max element            │
+│ k = n                        │ Heap of size n → just min of all        │
+│ All same values [3,3,3,3]    │ Works correctly, peek always = 3        │
+│ Negative numbers             │ PQ handles naturally                    │
+│ Single element stream        │ Median = that element                   │
+│ k > n (invalid)              │ Handle before processing                │
 └──────────────────────────────┴─────────────────────────────────────────┘
 
 COMMON MISTAKES:

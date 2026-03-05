@@ -11,20 +11,20 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WHY THREAD POOLS?                                                               │
-│                                                                                  │
+│  WHY THREAD POOLS?                                                              │
+│                                                                                 │
 │  Creating a thread = ~1ms + ~512KB stack memory                                 │
-│  If 10,000 requests → 10,000 threads → 5GB just for stacks!                   │
-│                                                                                  │
+│  If 10,000 requests → 10,000 threads → 5GB just for stacks!                     │
+│                                                                                 │
 │  Thread pool: Create N threads once, reuse them for millions of tasks.          │
-│                                                                                  │
-│  ┌──── Thread Pool (size=4) ────┐         ┌── Task Queue ──┐                   │
-│  │  [T1] [T2] [T3] [T4]        │ ◄────── │ Task5, Task6.. │                   │
-│  │   ↓    ↓    ↓    ↓          │         └─────────────────┘                   │
+│                                                                                 │
+│  ┌──── Thread Pool (size=4) ────┐         ┌── Task Queue ──┐                    │
+│  │  [T1] [T2] [T3] [T4]        │ ◄────── │ Task5, Task6.. │                     │
+│  │   ↓    ↓    ↓    ↓          │         └─────────────────┘                    │
 │  │  Idle  Working Idle Working  │                                               │
 │  └──────────────────────────────┘                                               │
-│                                                                                  │
-│  T1 finishes → grabs Task5 from queue → starts working                         │
+│                                                                                 │
+│  T1 finishes → grabs Task5 from queue → starts working                          │
 │  No new thread created! Just reused.                                            │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -68,14 +68,14 @@ ThreadPoolExecutor production = new ThreadPoolExecutor(
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  REJECTION POLICIES (when queue is full AND max threads reached):               │
-│                                                                                  │
-│  AbortPolicy (default) — throws RejectedExecutionException                     │
-│  CallerRunsPolicy      — caller thread runs the task (natural backpressure)    │
+│                                                                                 │
+│  AbortPolicy (default) — throws RejectedExecutionException                      │
+│  CallerRunsPolicy      — caller thread runs the task (natural backpressure)     │
 │  DiscardPolicy         — silently drops the task (dangerous!)                   │
-│  DiscardOldestPolicy   — drops oldest queued task, retries new one             │
-│                                                                                  │
+│  DiscardOldestPolicy   — drops oldest queued task, retries new one              │
+│                                                                                 │
 │  PRODUCTION RULE: Almost always use CallerRunsPolicy                            │
-│  → Slows down the producer naturally when system is overloaded                 │
+│  → Slows down the producer naturally when system is overloaded                  │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -114,15 +114,15 @@ executor.awaitTermination(10, TimeUnit.SECONDS);
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│  Future PROBLEMS:                                                                │
+│  Future PROBLEMS:                                                               │
 │  • get() blocks the calling thread                                              │
 │  • Can't chain multiple async operations                                        │
 │  • No way to combine futures                                                    │
-│  • No callback support                                                           │
-│                                                                                  │
+│  • No callback support                                                          │
+│                                                                                 │
 │  CompletableFuture SOLVES ALL OF THESE.                                         │
 │  It's Java's Promise (like JavaScript Promise).                                 │
-│                                                                                  │
+│                                                                                 │
 │  Pattern: Start async → Chain transformations → Handle errors → Combine         │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -227,8 +227,8 @@ CompletableFuture<String> logged = CompletableFuture
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│  COMPLETABLEFUTURE CHEAT SHEET                                                   │
-│                                                                                  │
+│  COMPLETABLEFUTURE CHEAT SHEET                                                  │
+│                                                                                 │
 │  ┌─────────────────────┬──────────────────────────────────────────────┐         │
 │  │ Operation           │ Description                                  │         │
 │  ├─────────────────────┼──────────────────────────────────────────────┤         │
@@ -244,12 +244,12 @@ CompletableFuture<String> logged = CompletableFuture
 │  │ anyOf()             │ Wait for first                               │         │
 │  │ exceptionally()     │ Handle exception, provide fallback           │         │
 │  │ handle()            │ Access result + exception                    │         │
-│  │ whenComplete()      │ Observe result + exception (no transform)   │         │
+│  │ whenComplete()      │ Observe result + exception (no transform)   │          │
 │  │ join()              │ Block and get result (unchecked exception)   │         │
 │  └─────────────────────┴──────────────────────────────────────────────┘         │
-│                                                                                  │
-│  PRODUCTION PATTERN — Custom Executor:                                           │
-│  ExecutorService myPool = Executors.newFixedThreadPool(10);                      │
+│                                                                                 │
+│  PRODUCTION PATTERN — Custom Executor:                                          │
+│  ExecutorService myPool = Executors.newFixedThreadPool(10);                     │
 │  CompletableFuture.supplyAsync(() -> work(), myPool);                           │
 │  // DON'T use common pool in prod — it's shared across JVM!                     │
 └─────────────────────────────────────────────────────────────────────────────────┘
@@ -309,20 +309,20 @@ if (!sl.validate(stamp)) {    // Check if a write happened
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│  synchronized vs ReentrantLock                                                   │
-│                                                                                  │
-│  ┌─────────────────────┬──────────────────┬──────────────────────┐             │
+│  synchronized vs ReentrantLock                                                  │
+│                                                                                 │
+│  ┌─────────────────────┬──────────────────┬──────────────────────┐              │
 │  │ Feature             │ synchronized     │ ReentrantLock         │             │
-│  ├─────────────────────┼──────────────────┼──────────────────────┤             │
-│  │ Auto-release        │ ✅ Yes           │ ❌ Manual (finally)  │             │
-│  │ tryLock             │ ❌ No            │ ✅ Yes               │             │
-│  │ Fairness            │ ❌ No            │ ✅ new RL(true)      │             │
-│  │ Multiple conditions │ ❌ 1 wait set    │ ✅ newCondition()    │             │
-│  │ Interruptible       │ ❌ No            │ ✅ lockInterruptibly │             │
-│  │ Performance         │ Similar          │ Similar              │             │
-│  │ Simplicity          │ ✅ Simpler       │ ❌ More verbose      │             │
-│  └─────────────────────┴──────────────────┴──────────────────────┘             │
-│                                                                                  │
+│  ├─────────────────────┼──────────────────┼──────────────────────┤              │
+│  │ Auto-release        │ ✅ Yes           │ ❌ Manual (finally)  │                │
+│  │ tryLock             │ ❌ No            │ ✅ Yes               │                │
+│  │ Fairness            │ ❌ No            │ ✅ new RL(true)      │                │
+│  │ Multiple conditions │ ❌ 1 wait set    │ ✅ newCondition()    │                │
+│  │ Interruptible       │ ❌ No            │ ✅ lockInterruptibly │                │
+│  │ Performance         │ Similar          │ Similar              │              │
+│  │ Simplicity          │ ✅ Simpler       │ ❌ More verbose      │                │
+│  └─────────────────────┴──────────────────┴──────────────────────┘              │
+│                                                                                 │
 │  RULE: Use synchronized by default.                                             │
 │        Use ReentrantLock when you NEED tryLock, fairness, or conditions.        │
 └─────────────────────────────────────────────────────────────────────────────────┘
@@ -335,28 +335,28 @@ if (!sl.validate(stamp)) {    // Check if a write happened
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  THE PROBLEM VIRTUAL THREADS SOLVE                                              │
-│                                                                                  │
-│  Platform thread: 1 Java thread = 1 OS thread                                  │
+│                                                                                 │
+│  Platform thread: 1 Java thread = 1 OS thread                                   │
 │    - Each costs ~1MB of stack memory                                            │
 │    - OS can handle ~10,000 threads before struggling                            │
-│    - Most time spent WAITING (I/O, network, DB)                                │
-│                                                                                  │
+│    - Most time spent WAITING (I/O, network, DB)                                 │
+│                                                                                 │
 │  Virtual thread: Lightweight, JVM-managed                                       │
 │    - ~1KB of stack (grows as needed)                                            │
 │    - Can run MILLIONS of virtual threads                                        │
-│    - When blocked on I/O → JVM unmounts from carrier thread                    │
+│    - When blocked on I/O → JVM unmounts from carrier thread                     │
 │    - Carrier thread picks up another virtual thread                             │
-│                                                                                  │
+│                                                                                 │
 │  Platform threads:     Virtual threads:                                         │
-│  ┌────┐ ┌────┐         ┌──┐┌──┐┌──┐┌──┐┌──┐┌──┐                             │
-│  │ T1 │ │ T2 │         │v1││v2││v3││v4││v5││v6│                              │
-│  └──┬─┘ └──┬─┘         └─┬┘└─┬┘└─┬┘└─┬┘└─┬┘└─┬┘                             │
-│     │      │              └───┴───┼───┘   │   │                               │
-│     │      │                      │       └───┘                               │
-│  ┌──┴──┐┌──┴──┐           ┌──────┴─────┐┌────┴──┐                            │
-│  │OS T1││OS T2│           │ Carrier T1  ││Car T2 │                            │
-│  └─────┘└─────┘           └────────────┘└────────┘                            │
-│  2 OS threads              2 OS threads carry 6 virtual threads               │
+│  ┌────┐ ┌────┐         ┌──┐┌──┐┌──┐┌──┐┌──┐┌──┐                                 │
+│  │ T1 │ │ T2 │         │v1││v2││v3││v4││v5││v6│                                 │
+│  └──┬─┘ └──┬─┘         └─┬┘└─┬┘└─┬┘└─┬┘└─┬┘└─┬┘                                 │
+│     │      │              └───┴───┼───┘   │   │                                 │
+│     │      │                      │       └───┘                                 │
+│  ┌──┴──┐┌──┴──┐           ┌──────┴─────┐┌────┴──┐                               │
+│  │OS T1││OS T2│           │ Carrier T1  ││Car T2 │                              │
+│  └─────┘└─────┘           └────────────┘└────────┘                              │
+│  2 OS threads              2 OS threads carry 6 virtual threads                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -394,21 +394,21 @@ try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│  VIRTUAL THREADS — WHEN TO USE                                                   │
-│                                                                                  │
-│  ✅ USE for:                           ❌ DON'T USE for:                         │
+│  VIRTUAL THREADS — WHEN TO USE                                                  │
+│                                                                                 │
+│  ✅ USE for:                           ❌ DON'T USE for:                          │
 │  • I/O-bound tasks (HTTP, DB, files)  • CPU-bound computation                   │
 │  • High-concurrency servers           • Tasks with long synchronized blocks     │
 │  • Replacing thread-per-request model • Tasks needing thread-local state        │
 │  • Replacing reactive (WebFlux) for   • When you need precise thread control    │
 │    simpler I/O-bound concurrent code                                            │
-│                                                                                  │
+│                                                                                 │
 │  GOTCHAS:                                                                       │
 │  • Don't pool virtual threads (they're cheap, just create new ones)             │
 │  • synchronized blocks PIN the carrier thread (use ReentrantLock instead)       │
 │  • ThreadLocal works but costs more memory per virtual thread                   │
-│  • Not faster for CPU work — only for I/O waiting                              │
-│                                                                                  │
+│  • Not faster for CPU work — only for I/O waiting                               │
+│                                                                                 │
 │  STRUCTURED CONCURRENCY (Preview, Java 21+):                                    │
 │  try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {                │
 │      var user  = scope.fork(() -> fetchUser(id));                               │
@@ -484,8 +484,8 @@ for (int i = 0; i < tasks.size(); i++) {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│  PRODUCTION CONCURRENCY CHECKLIST                                                │
-│                                                                                  │
+│  PRODUCTION CONCURRENCY CHECKLIST                                               │
+│                                                                                 │
 │  □ Use ThreadPoolExecutor (not raw Executors factory methods)                   │
 │  □ Set bounded queues (prevent OOM)                                             │
 │  □ Name your threads (ThreadFactory with meaningful names)                      │
@@ -494,7 +494,7 @@ for (int i = 0; i < tasks.size(); i++) {
 │  □ Prefer concurrent collections over synchronized wrappers                     │
 │  □ Use CompletableFuture over raw Future                                        │
 │  □ Set timeouts on all blocking calls                                           │
-│  □ Use virtual threads for I/O-bound work (Java 21+)                           │
+│  □ Use virtual threads for I/O-bound work (Java 21+)                            │
 │  □ Monitor thread pool metrics (queue size, active count, rejection count)      │
 │  □ Implement graceful shutdown (shutdown + awaitTermination)                    │
 │  □ Log thread name in every log statement                                       │

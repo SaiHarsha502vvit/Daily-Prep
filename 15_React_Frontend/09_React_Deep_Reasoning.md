@@ -13,13 +13,13 @@
 ║  Junior:   "useState manages component state"                    ║
 ║  Interviewer: "Can a component have more than one state?"        ║
 ║  Junior:   "...yes?"                                             ║
-║  Interviewer: "What happens when you call setState 3 times?"    ║
+║  Interviewer: "What happens when you call setState 3 times?"     ║
 ║  Junior:   *freezes*                                             ║
 ║                                                                  ║
-║  Senior:   "Yes, a component can have unlimited states — each   ║
+║  Senior:   "Yes, a component can have unlimited states — each    ║
 ║            useState call manages an independent piece. When you  ║
 ║            call setState 3 times IN an event handler, React      ║
-║            BATCHES them — one re-render, not three. But OUTSIDE ║
+║            BATCHES them — one re-render, not three. But OUTSIDE  ║
 ║            an event handler (before React 18), each setState     ║
 ║            caused a separate re-render. React 18's automatic     ║
 ║            batching fixed this for ALL cases."                   ║
@@ -91,16 +91,16 @@ function Counter() {
 ╔══════════════════════════════════════════════════════════════════╗
 ║  THE SNAPSHOT PRINCIPLE                                          ║
 ║                                                                  ║
-║  When handleClick runs, `count` is a SNAPSHOT — frozen at 0.    ║
-║  It's like taking a photo: the photo doesn't change when the    ║
-║  subject moves. `count` in this render is ALWAYS 0.             ║
+║  When handleClick runs, `count` is a SNAPSHOT — frozen at 0.     ║
+║  It's like taking a photo: the photo doesn't change when the     ║
+║  subject moves. `count` in this render is ALWAYS 0.              ║
 ║                                                                  ║
-║  setCount(count + 2) → setCount(0 + 2) → queue: set to 2       ║
-║  setCount(count + 3) → setCount(0 + 3) → queue: set to 3       ║
-║  setCount(count + 4) → setCount(0 + 4) → queue: set to 4       ║
+║  setCount(count + 2) → setCount(0 + 2) → queue: set to 2         ║
+║  setCount(count + 3) → setCount(0 + 3) → queue: set to 3         ║
+║  setCount(count + 4) → setCount(0 + 4) → queue: set to 4         ║
 ║                                                                  ║
-║  React processes queue: 2 → 3 → 4. Final: count = 4            ║
-║  Each call REPLACES the previous, because they all use the      ║
+║  React processes queue: 2 → 3 → 4. Final: count = 4              ║
+║  Each call REPLACES the previous, because they all use the       ║
 ║  same stale snapshot (0).                                        ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
@@ -125,12 +125,12 @@ function handleClick() {
 ╔══════════════════════════════════════════════════════════════════╗
 ║  THE RELAY RACE ANALOGY                                          ║
 ║                                                                  ║
-║  setCount(count + 2)     = "Start at the photo (0), add 2"      ║
-║  setCount(count + 3)     = "Start at the photo (0), add 3"      ║
+║  setCount(count + 2)     = "Start at the photo (0), add 2"       ║
+║  setCount(count + 3)     = "Start at the photo (0), add 3"       ║
 ║  → Both look at the same photo. Last one wins.                   ║
 ║                                                                  ║
-║  setCount(prev => prev + 2)  = "Take baton, add 2, pass on"     ║
-║  setCount(prev => prev + 3)  = "Take baton, add 3, pass on"     ║
+║  setCount(prev => prev + 2)  = "Take baton, add 2, pass on"      ║
+║  setCount(prev => prev + 3)  = "Take baton, add 3, pass on"      ║
 ║  → Each runner receives what the previous runner passed.         ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
@@ -266,7 +266,7 @@ function Parent({ children }) {
 ║                                                                  ║
 ║  Analogy: GPS vs manual directions                               ║
 ║  Manual directions (imperative DOM): "Turn left, then right..."  ║
-║  GPS (declarative VDOM): "I want to be HERE" — GPS figures out  ║
+║  GPS (declarative VDOM): "I want to be HERE" — GPS figures out   ║
 ║  the route. Slightly slower, but you never get lost.             ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
@@ -296,9 +296,9 @@ React's diff algorithm is O(n) — it sacrifices perfect diff for speed.
 ```
 ╔══════════════════════════════════════════════════════════════════╗
 ║  WRONG MENTAL MODEL (lifecycle-based):                           ║
-║  useEffect(fn, [])     = componentDidMount                      ║
-║  useEffect(fn, [dep])  = componentDidUpdate                     ║
-║  useEffect(fn)         = componentDidMount + componentDidUpdate ║
+║  useEffect(fn, [])     = componentDidMount                       ║
+║  useEffect(fn, [dep])  = componentDidUpdate                      ║
+║  useEffect(fn)         = componentDidMount + componentDidUpdate  ║
 ║                                                                  ║
 ║  RIGHT MENTAL MODEL (synchronization-based):                     ║
 ║  useEffect = SYNCHRONIZE with external system                    ║
@@ -310,7 +310,7 @@ React's diff algorithm is O(n) — it sacrifices perfect diff for speed.
 ║  - It checks: "Has the target temperature (dependency) changed?" ║
 ║  - If yes: turn on/off heater (run effect)                       ║
 ║  - Cleanup: turn off old heater before starting new one          ║
-║  - It doesn't care about "mount" or "update" — just sync.       ║
+║  - It doesn't care about "mount" or "update" — just sync.        ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
@@ -381,17 +381,17 @@ const filteredList = useMemo(
 ║  Without keys (or with index keys), React matches by POSITION:   ║
 ║                                                                  ║
 ║  Before delete "Bob":    After delete "Bob":                     ║
-║  index 0 → Alice         index 0 → Alice   (same position ✓)    ║
-║  index 1 → Bob           index 1 → Charlie (React thinks this   ║
-║  index 2 → Charlie                         is Bob updated!)     ║
+║  index 0 → Alice         index 0 → Alice   (same position ✓)     ║
+║  index 1 → Bob           index 1 → Charlie (React thinks this    ║
+║  index 2 → Charlie                         is Bob updated!)      ║
 ║                                                                  ║
-║  React: "Item at index 1 changed from Bob to Charlie"           ║
+║  React: "Item at index 1 changed from Bob to Charlie"            ║
 ║  Reality: We DELETED Bob and Charlie should keep its state       ║
 ║                                                                  ║
 ║  With unique keys, React matches by IDENTITY:                    ║
-║  key="alice" → Alice     key="alice" → Alice  (matched ✓)       ║
-║  key="bob"   → Bob       key="charlie"→ Charlie (matched ✓)     ║
-║  key="charlie"→ Charlie  Bob is GONE (removed from DOM)         ║
+║  key="alice" → Alice     key="alice" → Alice  (matched ✓)        ║
+║  key="bob"   → Bob       key="charlie"→ Charlie (matched ✓)      ║
+║  key="charlie"→ Charlie  Bob is GONE (removed from DOM)          ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
@@ -427,7 +427,7 @@ const filteredList = useMemo(
 ║  useState:                                                       ║
 ║  → Like a BILLBOARD on the highway                               ║
 ║  → Everyone (the component) sees the current value               ║
-║  → Changing it (setState) triggers a RE-RENDER (new paint job)  ║
+║  → Changing it (setState) triggers a RE-RENDER (new paint job)   ║
 ║  → The re-render shows the new value to users                    ║
 ║                                                                  ║
 ║  useRef:                                                         ║
@@ -436,8 +436,8 @@ const filteredList = useMemo(
 ║  → Changing it does NOT trigger a re-render                      ║
 ║  → Nobody sees the change until next render (if ever)            ║
 ║                                                                  ║
-║  RULE: Need UI to update?         → useState                    ║
-║        Need to store without UI?  → useRef                      ║
+║  RULE: Need UI to update?         → useState                     ║
+║        Need to store without UI?  → useRef                       ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
@@ -493,12 +493,12 @@ function Component() {
 ║    2. CPU to compare dependencies on every render                ║
 ║    3. Code complexity (harder to read)                           ║
 ║                                                                  ║
-║  If the computation is CHEAP (< 1ms), the memoization overhead  ║
+║  If the computation is CHEAP (< 1ms), the memoization overhead   ║
 ║  may cost MORE than just recomputing!                            ║
 ║                                                                  ║
 ║  Analogy: Buying a safe to protect $5                            ║
 ║  The safe costs more than what you're protecting.                ║
-║  Only buy a safe (useMemo) when protecting something valuable   ║
+║  Only buy a safe (useMemo) when protecting something valuable    ║
 ║  (expensive computation or preventing cascade re-renders).       ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
@@ -559,11 +559,11 @@ Need to memoize?
 ║  about a DIFFERENT part of the signal.                           ║
 ║                                                                  ║
 ║  Context({ user, theme, cart, notifications })                   ║
-║  → Change `notifications` → ALL consumers re-render             ║
+║  → Change `notifications` → ALL consumers re-render              ║
 ║    Even the UserAvatar that only reads `user`!                   ║
 ║                                                                  ║
-║  Redux/Zustand: Each component SELECTS what it cares about.     ║
-║  → Change `notifications` → only NotificationBadge re-renders  ║
+║  Redux/Zustand: Each component SELECTS what it cares about.      ║
+║  → Change `notifications` → only NotificationBadge re-renders    ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
@@ -601,12 +601,12 @@ const CartContext = createContext([]);
 ║  THE PUPPET vs PET ANALOGY                                       ║
 ║                                                                  ║
 ║  Controlled = Puppet                                             ║
-║  → React holds the strings. Input shows WHAT REACT TELLS IT.    ║
+║  → React holds the strings. Input shows WHAT REACT TELLS IT.     ║
 ║  → value={state} + onChange={setState}                           ║
 ║  → Single source of truth: React state                           ║
 ║                                                                  ║
 ║  Uncontrolled = Pet                                              ║
-║  → The input manages itself. You ask "what's your value?" later.║
+║  → The input manages itself. You ask "what's your value?" later. ║
 ║  → defaultValue + ref.current.value                              ║
 ║  → Source of truth: the DOM                                      ║
 ╚══════════════════════════════════════════════════════════════════╝
@@ -657,7 +657,7 @@ function Uncontrolled() {
 ║                                                                  ║
 ║  New React (Fiber Reconciler):                                   ║
 ║  → Chef prepares dishes in small chunks (time-slicing)           ║
-║  → After each dish: "Any urgent VIP orders?" (user input)       ║
+║  → After each dish: "Any urgent VIP orders?" (user input)        ║
 ║  → VIP orders (clicks, typing) interrupt and get served first    ║
 ║  → Then chef resumes the big meal                                ║
 ║                                                                  ║

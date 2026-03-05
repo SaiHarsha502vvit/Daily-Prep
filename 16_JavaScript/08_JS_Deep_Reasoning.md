@@ -8,14 +8,14 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
-║  THE FREEZE PATTERN                                             ║
+║  THE FREEZE PATTERN                                              ║
 ║                                                                  ║
 ║  Junior:   "I know closures capture variables"                   ║
-║  Interviewer: "But WHY does this print 5,5,5,5,5 instead of    ║
+║  Interviewer: "But WHY does this print 5,5,5,5,5 instead of      ║
 ║               0,1,2,3,4?"                                        ║
 ║  Junior:   *freezes*                                             ║
 ║                                                                  ║
-║  Senior:   "Because var is function-scoped, so the loop shares  ║
+║  Senior:   "Because var is function-scoped, so the loop shares   ║
 ║            ONE binding. The closure captures the variable, not   ║
 ║            its value at that moment. Each iteration doesn't      ║
 ║            create a new scope — it mutates the same variable.    ║
@@ -69,21 +69,21 @@ console.log('4');
 ╔══════════════════════════════════════════════════════════════════╗
 ║  THE EVENT LOOP — Like a Restaurant Kitchen                      ║
 ║                                                                  ║
-║  🧑‍🍳 Chef (Call Stack) = Synchronous code                         ║
-║  📋 VIP Order Queue (Microtask Queue) = Promises, queueMicrotask║
-║  📝 Regular Order Queue (Macrotask Queue) = setTimeout, setInt.  ║
+║  🧑‍🍳 Chef (Call Stack) = Synchronous code                        ║
+║  📋 VIP Order Queue (Microtask Queue) = Promises, queueMicrotask  ║
+║  📝 Regular Order Queue (Macrotask Queue) = setTimeout, setInt.   ║
 ║                                                                  ║
 ║  RULE: Chef finishes CURRENT dish → checks ALL VIP orders        ║
 ║        → then takes ONE regular order → repeat                   ║
 ║                                                                  ║
-║  Step 1: console.log('1')        → Stack: execute → prints "1"  ║
-║  Step 2: setTimeout(fn, 0)       → Web API → Macrotask Queue    ║
-║  Step 3: Promise.then(fn)        → Microtask Queue              ║
-║  Step 4: console.log('4')        → Stack: execute → prints "4"  ║
-║  Step 5: Stack empty → drain Microtask Queue → prints "3"       ║
-║  Step 6: Take next Macrotask → prints "2"                       ║
+║  Step 1: console.log('1')        → Stack: execute → prints "1"   ║
+║  Step 2: setTimeout(fn, 0)       → Web API → Macrotask Queue     ║
+║  Step 3: Promise.then(fn)        → Microtask Queue               ║
+║  Step 4: console.log('4')        → Stack: execute → prints "4"   ║
+║  Step 5: Stack empty → drain Microtask Queue → prints "3"        ║
+║  Step 6: Take next Macrotask → prints "2"                        ║
 ║                                                                  ║
-║  OUTPUT: 1, 4, 3, 2                                             ║
+║  OUTPUT: 1, 4, 3, 2                                              ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
@@ -144,11 +144,11 @@ for (var i = 0; i < 5; i++) {
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
-║  WHY 5,5,5,5,5 — The Shared Whiteboard Analogy                  ║
+║  WHY 5,5,5,5,5 — The Shared Whiteboard Analogy                   ║
 ║                                                                  ║
 ║  var i = shared whiteboard in the function                       ║
 ║  Each setTimeout callback gets a REFERENCE to that whiteboard    ║
-║  NOT a snapshot of what was written when it was created           ║
+║  NOT a snapshot of what was written when it was created          ║
 ║                                                                  ║
 ║  Loop iteration 0: "Hey callback, when you run, read whiteboard" ║
 ║  Loop iteration 1: "Hey callback, when you run, read whiteboard" ║
@@ -235,24 +235,24 @@ fn();               // ?
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
-║  `this` BINDING RULES — Like "Whose Name Tag Am I Wearing?"     ║
+║  `this` BINDING RULES — Like "Whose Name Tag Am I Wearing?"      ║
 ║                                                                  ║
 ║  Priority (highest → lowest):                                    ║
 ║                                                                  ║
-║  1. new Binding       → new Person()    → this = new object     ║
+║  1. new Binding       → new Person()    → this = new object      ║
 ║     "Creating a new person — they get their own name tag"        ║
 ║                                                                  ║
-║  2. Explicit Binding  → fn.call(obj)    → this = obj            ║
-║     "I'm TELLING you whose name tag to wear"                    ║
+║  2. Explicit Binding  → fn.call(obj)    → this = obj             ║
+║     "I'm TELLING you whose name tag to wear"                     ║
 ║     Also: fn.apply(obj), fn.bind(obj)                            ║
 ║                                                                  ║
-║  3. Implicit Binding  → obj.greet()     → this = obj            ║
+║  3. Implicit Binding  → obj.greet()     → this = obj             ║
 ║     "The object before the dot owns the name tag"                ║
 ║                                                                  ║
-║  4. Arrow Function    → () => {}        → this = enclosing scope║
+║  4. Arrow Function    → () => {}        → this = enclosing scope ║
 ║     "I don't have my own name tag — I use my parent's"           ║
 ║                                                                  ║
-║  5. Default Binding   → greet()         → this = window/undef   ║
+║  5. Default Binding   → greet()         → this = window/undef    ║
 ║     "Nobody claimed me — I'm a free agent"                       ║
 ║     (window in browser, undefined in strict mode)                ║
 ╚══════════════════════════════════════════════════════════════════╝
@@ -308,7 +308,7 @@ class Button {
 ║  2. null == undefined? → true (SPECIAL RULE — they're "nothing") ║
 ║  3. Number vs String? → Convert string to number, then compare   ║
 ║  4. Boolean vs anything? → Convert boolean to number first       ║
-║     true → 1, false → 0, then re-apply algorithm                ║
+║     true → 1, false → 0, then re-apply algorithm                 ║
 ║  5. Object vs primitive? → Call ToPrimitive (valueOf/toString)   ║
 ║  6. Otherwise? → false                                           ║
 ╚══════════════════════════════════════════════════════════════════╝
@@ -368,13 +368,13 @@ const c = 3;
 ║  Phase 1: CREATION (scanning)                                    ║
 ║    - var a    → allocate memory, initialize to undefined         ║
 ║    - let b    → allocate memory, DO NOT initialize (TDZ)         ║
-║    - const c  → allocate memory, DO NOT initialize (TDZ)        ║
+║    - const c  → allocate memory, DO NOT initialize (TDZ)         ║
 ║    - function → allocate memory, STORE the entire function       ║
 ║                                                                  ║
 ║  Phase 2: EXECUTION (line by line)                               ║
 ║    - console.log(a) → undefined (var was initialized)            ║
-║    - console.log(b) → ReferenceError! (in TDZ)                  ║
-║    - console.log(c) → ReferenceError! (in TDZ)                  ║
+║    - console.log(b) → ReferenceError! (in TDZ)                   ║
+║    - console.log(c) → ReferenceError! (in TDZ)                   ║
 ║                                                                  ║
 ║  var:   hoisted + initialized to undefined                       ║
 ║  let:   hoisted + NOT initialized (Temporal Dead Zone)           ║
@@ -452,14 +452,14 @@ console.log('E');
 ║                                                                  ║
 ║  Priority (runs first → last):                                   ║
 ║                                                                  ║
-║  1. 🔴 Call Stack (synchronous) — console.log('E')              ║
-║  2. 🟡 Microtask Queue — Promise.then, queueMicrotask,          ║
+║  1. 🔴 Call Stack (synchronous) — console.log('E')                ║
+║  2. 🟡 Microtask Queue — Promise.then, queueMicrotask,            ║
 ║                          MutationObserver                        ║
-║  3. 🟢 Animation Frame — requestAnimationFrame (before repaint) ║
-║  4. 🔵 Macrotask Queue — setTimeout, setInterval, I/O           ║
+║  3. 🟢 Animation Frame — requestAnimationFrame (before repaint)   ║
+║  4. 🔵 Macrotask Queue — setTimeout, setInterval, I/O             ║
 ║                                                                  ║
-║  OUTPUT: E, B, C, D, A                                          ║
-║  (sync first → all microtasks → rAF → macrotask)                ║
+║  OUTPUT: E, B, C, D, A                                           ║
+║  (sync first → all microtasks → rAF → macrotask)                 ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
@@ -551,14 +551,14 @@ These use COMPLETELY DIFFERENT algorithms:
 ║     Step 1: false → 0                                            ║
 ║     Step 2: [].toString() → ""                                   ║
 ║     Step 3: "" → 0                                               ║
-║     Step 4: 0 == 0 → TRUE                                       ║
+║     Step 4: 0 == 0 → TRUE                                        ║
 ║                                                                  ║
 ║  [] ? ... → Uses ToBoolean (truthiness check)                    ║
 ║     Rule: ALL objects are truthy (no conversion, just check)     ║
 ║     [] is an object → truthy → 'yes'                             ║
 ║                                                                  ║
 ║  THESE ARE DIFFERENT OPERATIONS!                                 ║
-║  == performs TYPE COERCION (complex multi-step algorithm)         ║
+║  == performs TYPE COERCION (complex multi-step algorithm)        ║
 ║  ? performs TRUTHINESS CHECK (simple: is it in the falsy list?)  ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
@@ -600,7 +600,7 @@ It IS syntactic sugar, but saying "just syntactic sugar" dismisses crucial diffe
 ║                                                                  ║
 ║  4. LOOP ITERATION                                               ║
 ║     Promise: Can't use for...of with sequential async operations ║
-║     await:   for (const item of items) await process(item);     ║
+║     await:   for (const item of items) await process(item);      ║
 ║                                                                  ║
 ║  5. IMPLICIT PROMISE WRAPPING                                    ║
 ║     async function always returns a Promise, even if you         ║
@@ -673,10 +673,10 @@ const results = await Promise.all(promises); // all at once!
 ║  → Every book you register stays cataloged FOREVER               ║
 ║  → Even if nobody reads it, the library keeps it (memory leak)   ║
 ║                                                                  ║
-║  WeakMap = Library with automatic book retirement                 ║
-║  → When nobody is reading a book (no references), it's removed  ║
+║  WeakMap = Library with automatic book retirement                ║
+║  → When nobody is reading a book (no references), it's removed   ║
 ║  → The catalog doesn't prevent retirement (weak reference)       ║
-║  → You can't browse the catalog (not iterable) — by design!     ║
+║  → You can't browse the catalog (not iterable) — by design!      ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
@@ -728,8 +728,8 @@ function processElement(element) {
 ║              Used for: asynchronous I/O                          ║
 ║                                                                  ║
 ║  Analogy:                                                        ║
-║  Generator = Bookmark in a book. You read, pause, come back.    ║
-║  Async     = Ordering food delivery. You wait, do other things. ║
+║  Generator = Bookmark in a book. You read, pause, come back.     ║
+║  Async     = Ordering food delivery. You wait, do other things.  ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
@@ -765,18 +765,18 @@ fib.next(); // { value: 2, done: false }
 ╔══════════════════════════════════════════════════════════════════╗
 ║  THE RULER ANALOGY                                               ║
 ║                                                                  ║
-║  Imagine a ruler that only has marks at 1/2, 1/4, 1/8, 1/16... ║
-║  (powers of 2). Now try to measure 1/10 (0.1).                  ║
+║  Imagine a ruler that only has marks at 1/2, 1/4, 1/8, 1/16...   ║
+║  (powers of 2). Now try to measure 1/10 (0.1).                   ║
 ║  You can't land exactly on it — you get close but not exact.     ║
 ║                                                                  ║
 ║  Binary representation:                                          ║
 ║  0.1 = 0.0001100110011001100110011... (repeating forever)        ║
-║  Stored as: 0.1000000000000000055511151231257827021181583...      ║
+║  Stored as: 0.1000000000000000055511151231257827021181583...     ║
 ║                                                                  ║
 ║  0.2 = 0.001100110011001100110011... (repeating forever)         ║
-║  Stored as: 0.2000000000000000111022302462515654042363167...      ║
+║  Stored as: 0.2000000000000000111022302462515654042363167...     ║
 ║                                                                  ║
-║  0.1 + 0.2 = 0.30000000000000004  (not exactly 0.3)             ║
+║  0.1 + 0.2 = 0.30000000000000004  (not exactly 0.3)              ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
@@ -809,22 +809,22 @@ Math.abs(0.1 + 0.2 - 0.3) < Number.EPSILON  // true
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
-║  THE TDZ IS A TIME ZONE, NOT A CODE ZONE                        ║
+║  THE TDZ IS A TIME ZONE, NOT A CODE ZONE                         ║
 ║                                                                  ║
 ║  {                                                               ║
-║    // ← TDZ for `x` STARTS here (scope begins)                  ║
-║    console.log(x); // ReferenceError: x is in TDZ               ║
-║    // ← TDZ continues...                                        ║
-║    let x = 10;     // ← TDZ ENDS here (initialization)          ║
-║    console.log(x); // 10 ✅                                     ║
+║    // ← TDZ for `x` STARTS here (scope begins)                   ║
+║    console.log(x); // ReferenceError: x is in TDZ                ║
+║    // ← TDZ continues...                                         ║
+║    let x = 10;     // ← TDZ ENDS here (initialization)           ║
+║    console.log(x); // 10 ✅                                       ║
 ║  }                                                               ║
 ║                                                                  ║
 ║  The variable EXISTS in memory (hoisted), but accessing it       ║
-║  before initialization is FORBIDDEN by the spec. This is by     ║
+║  before initialization is FORBIDDEN by the spec. This is by      ║
 ║  DESIGN — to catch bugs early.                                   ║
 ║                                                                  ║
 ║  var: "Here's undefined until you initialize" = silent bug       ║
-║  let: "You CAN'T use this yet" = loud error (better!)           ║
+║  let: "You CAN'T use this yet" = loud error (better!)            ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
@@ -849,14 +849,14 @@ Math.abs(0.1 + 0.2 - 0.3) < Number.EPSILON  // true
 ║                                                                  ║
 ║  WITHOUT delegation (1000 buttons = 1000 handlers):              ║
 ║  → Like hiring a personal receptionist for each room             ║
-║  → Adding 1000 rooms? Hire 1000 more people.                    ║
+║  → Adding 1000 rooms? Hire 1000 more people.                     ║
 ║  → Expensive, slow to set up, wasteful.                          ║
 ║                                                                  ║
 ║  WITH delegation (1 handler on parent):                          ║
-║  → Like having ONE receptionist at the front desk               ║
-║  → Any room request comes to the desk first (event bubbles up)  ║
-║  → Desk checks which room the request is for (event.target)     ║
-║  → Works for rooms that haven't been built yet! (dynamic)       ║
+║  → Like having ONE receptionist at the front desk                ║
+║  → Any room request comes to the desk first (event bubbles up)   ║
+║  → Desk checks which room the request is for (event.target)      ║
+║  → Works for rooms that haven't been built yet! (dynamic)        ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 

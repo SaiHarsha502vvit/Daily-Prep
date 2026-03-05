@@ -132,26 +132,26 @@ RESULT: O(1) average for get/put/contains
 ```
 ┌────────────────────────────────────────────────────────────────┐
 │  HashMap INTERNALS (Java 8+)                                   │
-│                                                                 │
-│  1. Key → hashCode() → index = hash % capacity                │
-│                                                                 │
+│                                                                │
+│  1. Key → hashCode() → index = hash % capacity                 │
+│                                                                │
 │  2. Array of buckets:                                          │
 │     [0] → null                                                 │
-│     [1] → ("apple",5) → ("kiwi",3) → null    ← COLLISION!   │
-│     [2] → ("banana",7) → null                                 │
+│     [1] → ("apple",5) → ("kiwi",3) → null    ← COLLISION!      │
+│     [2] → ("banana",7) → null                                  │
 │     [3] → null                                                 │
 │     ...                                                        │
-│                                                                 │
-│  3. COLLISION HANDLING:                                         │
-│     ≤ 8 entries in bucket → Linked List (O(n) worst case)     │
-│     > 8 entries in bucket → Red-Black Tree (O(log n))         │
+│                                                                │
+│  3. COLLISION HANDLING:                                        │
+│     ≤ 8 entries in bucket → Linked List (O(n) worst case)      │
+│     > 8 entries in bucket → Red-Black Tree (O(log n))          │
 │     This is why Java 8 HashMap is better than Java 7!          │
-│                                                                 │
+│                                                                │
 │  4. LOAD FACTOR = 0.75                                         │
-│     When 75% full → resize to 2x capacity → rehash all keys   │
+│     When 75% full → resize to 2x capacity → rehash all keys    │
 │     Rehashing is O(n) but amortized over many operations       │
-│                                                                 │
-│  COMPLEXITY:                                                    │
+│                                                                │
+│  COMPLEXITY:                                                   │
 │    Average: O(1) for get/put/remove                            │
 │    Worst:   O(log n) per bucket (tree) or O(n) (pathological)  │
 │    Space:   O(n)                                               │

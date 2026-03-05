@@ -6,21 +6,21 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: Functions are FIRST-CLASS citizens in JS. They can be       ║
-║        stored in variables, passed as arguments, returned from     ║
-║        other functions. Closures emerge from this + lexical scope. ║
-║                                                                    ║
-║  WHY:  Closures power React hooks, event handlers, callbacks,     ║
-║        module patterns, currying, memoization — everything.        ║
-║        "If you understand closures, you understand JS."            ║
-║                                                                    ║
-║  WHO:  Every JS developer. Every React developer (useState IS     ║
-║        a closure). Every Node developer (callbacks are closures).  ║
-║                                                                    ║
-║  WHEN: After understanding scope (Chapter 1).                     ║
-║                                                                    ║
-║  HOW:  Functions create scope → inner functions remember outer     ║
-║        scope → that's a closure. It's that simple (and profound). ║
+║  WHAT: Functions are FIRST-CLASS citizens in JS. They can be         ║
+║        stored in variables, passed as arguments, returned from       ║
+║        other functions. Closures emerge from this + lexical scope.   ║
+║                                                                      ║
+║  WHY:  Closures power React hooks, event handlers, callbacks,        ║
+║        module patterns, currying, memoization — everything.          ║
+║        "If you understand closures, you understand JS."              ║
+║                                                                      ║
+║  WHO:  Every JS developer. Every React developer (useState IS        ║
+║        a closure). Every Node developer (callbacks are closures).    ║
+║                                                                      ║
+║  WHEN: After understanding scope (Chapter 1).                        ║
+║                                                                      ║
+║  HOW:  Functions create scope → inner functions remember outer       ║
+║        scope → that's a closure. It's that simple (and profound).    ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -54,18 +54,18 @@ const factorial = function fact(n) {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  WHEN TO USE WHICH:                                                ║
-║  ┌──────────────────┬───────────────────────────────────────┐      ║
-║  │ Type             │ Best For                              │      ║
-║  ├──────────────────┼───────────────────────────────────────┤      ║
-║  │ Declaration      │ Main functions, utility functions     │      ║
-║  │ Arrow (const)    │ Callbacks, array methods, short fns   │      ║
-║  │ Expression       │ Conditional function assignment       │      ║
-║  └──────────────────┴───────────────────────────────────────┘      ║
-║                                                                    ║
-║  REASONING: Arrow functions are shorter but can't be used as       ║
-║  constructors and don't have their own `this`. Declarations are    ║
-║  hoisted, which some teams consider cleaner for readability.       ║
+║  WHEN TO USE WHICH:                                                  ║
+║  ┌──────────────────┬───────────────────────────────────────┐        ║
+║  │ Type             │ Best For                              │        ║
+║  ├──────────────────┼───────────────────────────────────────┤        ║
+║  │ Declaration      │ Main functions, utility functions     │        ║
+║  │ Arrow (const)    │ Callbacks, array methods, short fns   │        ║
+║  │ Expression       │ Conditional function assignment       │        ║
+║  └──────────────────┴───────────────────────────────────────┘        ║
+║                                                                      ║
+║  REASONING: Arrow functions are shorter but can't be used as         ║
+║  constructors and don't have their own `this`. Declarations are      ║
+║  hoisted, which some teams consider cleaner for readability.         ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -111,16 +111,16 @@ createComponent({ tag: "h1", className: "title", children: ["Hello"] });
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: `this` refers to the OBJECT that is executing the current  ║
-║        function. But WHICH object depends on HOW the function is   ║
-║        called, not where it's written.                             ║
-║                                                                    ║
-║  WHY confusing: In Java, `this` always refers to the instance.    ║
-║  In JS, `this` changes based on CALL SITE — 4 rules + arrow.     ║
-║                                                                    ║
-║  ANALOGY: `this` is like the word "I" in English. When YOU say    ║
-║  "I", it refers to you. When I say "I", it refers to me.          ║
-║  The meaning depends on WHO IS SPEAKING (who called the function).║
+║  WHAT: `this` refers to the OBJECT that is executing the current     ║
+║        function. But WHICH object depends on HOW the function is     ║
+║        called, not where it's written.                               ║
+║                                                                      ║
+║  WHY confusing: In Java, `this` always refers to the instance.       ║
+║  In JS, `this` changes based on CALL SITE — 4 rules + arrow.         ║
+║                                                                      ║
+║  ANALOGY: `this` is like the word "I" in English. When YOU say       ║
+║  "I", it refers to you. When I say "I", it refers to me.             ║
+║  The meaning depends on WHO IS SPEAKING (who called the function).   ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -180,25 +180,25 @@ const obj2 = {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  `this` DETERMINATION FLOWCHART:                                   ║
-║                                                                    ║
-║  Is it an ARROW function?                                          ║
-║  ├── YES → `this` = enclosing lexical scope's `this`             ║
-║  └── NO ↓                                                         ║
-║                                                                    ║
-║  Called with NEW keyword?                                          ║
-║  ├── YES → `this` = newly created object                         ║
-║  └── NO ↓                                                         ║
-║                                                                    ║
-║  Called with call/apply/bind?                                      ║
-║  ├── YES → `this` = specified object                             ║
-║  └── NO ↓                                                         ║
-║                                                                    ║
-║  Called as object.method()?                                        ║
-║  ├── YES → `this` = object before the dot                       ║
-║  └── NO ↓                                                         ║
-║                                                                    ║
-║  Default: `this` = window (or undefined in strict mode)           ║
+║  `this` DETERMINATION FLOWCHART:                                     ║
+║                                                                      ║
+║  Is it an ARROW function?                                            ║
+║  ├── YES → `this` = enclosing lexical scope's `this`                 ║
+║  └── NO ↓                                                            ║
+║                                                                      ║
+║  Called with NEW keyword?                                            ║
+║  ├── YES → `this` = newly created object                             ║
+║  └── NO ↓                                                            ║
+║                                                                      ║
+║  Called with call/apply/bind?                                        ║
+║  ├── YES → `this` = specified object                                 ║
+║  └── NO ↓                                                            ║
+║                                                                      ║
+║  Called as object.method()?                                          ║
+║  ├── YES → `this` = object before the dot                            ║
+║  └── NO ↓                                                            ║
+║                                                                      ║
+║  Default: `this` = window (or undefined in strict mode)              ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -210,21 +210,21 @@ const obj2 = {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: A closure is a function that REMEMBERS the variables from  ║
-║        its outer (enclosing) scope even AFTER the outer function  ║
-║        has returned.                                               ║
-║                                                                    ║
-║  WHY:  Closures enable data privacy, factory functions, partial   ║
-║        application, memoization, and React hooks (useState).       ║
-║                                                                    ║
-║  HOW:  When a function is created, it captures a reference to its ║
-║        surrounding scope (not a copy). This reference persists     ║
-║        even after the outer function finishes executing.           ║
-║                                                                    ║
-║  ANALOGY: A closure is like a backpack. When a function is born   ║
-║  inside another function, it packs the outer function's variables  ║
-║  into its backpack. Even after leaving the outer function (the     ║
-║  house), the inner function still carries those variables.         ║
+║  WHAT: A closure is a function that REMEMBERS the variables from     ║
+║        its outer (enclosing) scope even AFTER the outer function     ║
+║        has returned.                                                 ║
+║                                                                      ║
+║  WHY:  Closures enable data privacy, factory functions, partial      ║
+║        application, memoization, and React hooks (useState).         ║
+║                                                                      ║
+║  HOW:  When a function is created, it captures a reference to its    ║
+║        surrounding scope (not a copy). This reference persists       ║
+║        even after the outer function finishes executing.             ║
+║                                                                      ║
+║  ANALOGY: A closure is like a backpack. When a function is born      ║
+║  inside another function, it packs the outer function's variables    ║
+║  into its backpack. Even after leaving the outer function (the       ║
+║  house), the inner function still carries those variables.           ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -254,20 +254,20 @@ counter(); // 3
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  CLOSURE MEMORY VISUALIZATION:                                     ║
-║                                                                    ║
-║  After outer() returns:                                            ║
-║                                                                    ║
-║  ┌─ counter variable ─────────────────────────────────────┐        ║
-║  │  Points to inner function                              │        ║
-║  │  inner function carries a "backpack":                  │        ║
-║  │  ┌─── Closure Scope ──────────────────┐               │        ║
-║  │  │  count: 0 → 1 → 2 → 3 (persists!) │               │        ║
-║  │  └────────────────────────────────────┘               │        ║
-║  └────────────────────────────────────────────────────────┘        ║
-║                                                                    ║
-║  outer()'s execution context is gone, but the closure keeps       ║
-║  count alive because inner still references it.                    ║
+║  CLOSURE MEMORY VISUALIZATION:                                       ║
+║                                                                      ║
+║  After outer() returns:                                              ║
+║                                                                      ║
+║  ┌─ counter variable ─────────────────────────────────────┐          ║
+║  │  Points to inner function                              │          ║
+║  │  inner function carries a "backpack":                  │          ║
+║  │  ┌─── Closure Scope ──────────────────┐               │           ║
+║  │  │  count: 0 → 1 → 2 → 3 (persists!) │               │            ║
+║  │  └────────────────────────────────────┘               │           ║
+║  └────────────────────────────────────────────────────────┘          ║
+║                                                                      ║
+║  outer()'s execution context is gone, but the closure keeps          ║
+║  count alive because inner still references it.                      ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -401,11 +401,11 @@ for (var i = 0; i < 3; i++) {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: A function that takes another function as argument OR       ║
-║        returns a function.                                         ║
-║  WHY:  Enables composition, abstraction, and declarative code.    ║
-║  WHO:  Used everywhere: Array methods, event handlers, Express    ║
-║        middleware, React components.                               ║
+║  WHAT: A function that takes another function as argument OR         ║
+║        returns a function.                                           ║
+║  WHY:  Enables composition, abstraction, and declarative code.       ║
+║  WHO:  Used everywhere: Array methods, event handlers, Express       ║
+║        middleware, React components.                                 ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 

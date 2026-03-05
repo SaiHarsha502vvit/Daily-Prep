@@ -66,11 +66,11 @@ public boolean isPrime(int n) {
 ║  COUNT PRIMES                                                             ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Count the number of prime numbers less than n.                          ║
+║  Count the number of prime numbers less than n.                           ║
 ║                                                                           ║
 ║  Input: n = 10                                                            ║
 ║  Output: 4                                                                ║
-║  Explanation: Primes less than 10 are 2, 3, 5, 7                         ║
+║  Explanation: Primes less than 10 are 2, 3, 5, 7                          ║
 ║                                                                           ║
 ║  Input: n = 0                                                             ║
 ║  Output: 0                                                                ║
@@ -78,10 +78,10 @@ public boolean isPrime(int n) {
 ║  Use: SIEVE OF ERATOSTHENES                                               ║
 ║                                                                           ║
 ║  Visual for n=30:                                                         ║
-║  2  3  4  5  6  7  8  9  10 11 12 13 14 15...                            ║
-║  ✓  ✓  ✗  ✓  ✗  ✓  ✗  ✗  ✗  ✓  ✗  ✓  ✗  ✗                             ║
-║     Mark all multiples of 2 as non-prime                                 ║
-║     Mark all multiples of 3 as non-prime                                 ║
+║  2  3  4  5  6  7  8  9  10 11 12 13 14 15...                             ║
+║  ✓  ✓  ✗  ✓  ✗  ✓  ✗  ✗  ✗  ✓  ✗  ✓  ✗  ✗                                 ║
+║     Mark all multiples of 2 as non-prime                                  ║
+║     Mark all multiples of 3 as non-prime                                  ║
 ║     ... continue till √n                                                  ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
@@ -119,13 +119,13 @@ public int countPrimes(int n) {
 ║  FIND THE NTH PRIME NUMBER                                                ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Given n, find the nth prime number.                                     ║
+║  Given n, find the nth prime number.                                      ║
 ║                                                                           ║
 ║  Input: n = 1                                                             ║
 ║  Output: 2 (1st prime)                                                    ║
 ║                                                                           ║
 ║  Input: n = 5                                                             ║
-║  Output: 11 (5th prime: 2, 3, 5, 7, 11)                                  ║
+║  Output: 11 (5th prime: 2, 3, 5, 7, 11)                                   ║
 ║                                                                           ║
 ║  Input: n = 10                                                            ║
 ║  Output: 29 (10th prime)                                                  ║
@@ -174,20 +174,20 @@ private boolean isPrime(int n) {
 ║  FIND PREVIOUS AND NEXT PRIME                                             ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Given a number n, find the nearest prime less than n (previous prime)   ║
-║  and nearest prime greater than n (next prime).                          ║
+║  Given a number n, find the nearest prime less than n (previous prime)    ║
+║  and nearest prime greater than n (next prime).                           ║
 ║                                                                           ║
 ║  Input: n = 10                                                            ║
-║  Output: Previous = 7, Next = 11                                         ║
+║  Output: Previous = 7, Next = 11                                          ║
 ║                                                                           ║
 ║  Input: n = 14                                                            ║
-║  Output: Previous = 13, Next = 17                                        ║
+║  Output: Previous = 13, Next = 17                                         ║
 ║                                                                           ║
 ║  Input: n = 7 (n is prime)                                                ║
-║  Output: Previous = 5, Next = 11                                         ║
+║  Output: Previous = 5, Next = 11                                          ║
 ║                                                                           ║
 ║  Edge case: n = 2                                                         ║
-║  Output: Previous = -1 (no prime before 2), Next = 3                     ║
+║  Output: Previous = -1 (no prime before 2), Next = 3                      ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -232,19 +232,19 @@ private int findNextPrime(int n) {
 ║  FIND ALL PRIME FACTORS                                                   ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Given a number n, find all its prime factors.                           ║
+║  Given a number n, find all its prime factors.                            ║
 ║                                                                           ║
 ║  Input: n = 12                                                            ║
 ║  Output: [2, 2, 3]                                                        ║
-║  Explanation: 12 = 2 × 2 × 3                                             ║
+║  Explanation: 12 = 2 × 2 × 3                                              ║
 ║                                                                           ║
 ║  Input: n = 100                                                           ║
 ║  Output: [2, 2, 5, 5]                                                     ║
-║  Explanation: 100 = 2 × 2 × 5 × 5                                        ║
+║  Explanation: 100 = 2 × 2 × 5 × 5                                         ║
 ║                                                                           ║
 ║  Input: n = 315                                                           ║
 ║  Output: [3, 3, 5, 7]                                                     ║
-║  Explanation: 315 = 3 × 3 × 5 × 7                                        ║
+║  Explanation: 315 = 3 × 3 × 5 × 7                                         ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -288,41 +288,41 @@ public List<Integer> primeFactors(int n) {
 ║  (LeetCode Premium - Full Problem Description)                            ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Given two positive integers left and right, find the two integers num1  ║
+║  Given two positive integers left and right, find the two integers num1   ║
 ║  and num2 such that:                                                      ║
-║  - left <= num1 < num2 <= right                                          ║
+║  - left <= num1 < num2 <= right                                           ║
 ║  - Both num1 and num2 are prime numbers                                   ║
-║  - num2 - num1 is the minimum amongst all other pairs                    ║
+║  - num2 - num1 is the minimum amongst all other pairs                     ║
 ║                                                                           ║
-║  Return the positive integer array [num1, num2]. If there are multiple   ║
-║  pairs with the minimum gap, return the one with smallest num1. If no    ║
-║  such pair exists, return [-1, -1].                                      ║
+║  Return the positive integer array [num1, num2]. If there are multiple    ║
+║  pairs with the minimum gap, return the one with smallest num1. If no     ║
+║  such pair exists, return [-1, -1].                                       ║
 ║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────   ║
+║  ─────────────────────────────────────────────────────────────────────    ║
 ║                                                                           ║
 ║  Example 1:                                                               ║
-║  Input: left = 10, right = 19                                            ║
+║  Input: left = 10, right = 19                                             ║
 ║  Output: [11, 13]                                                         ║
 ║  Explanation:                                                             ║
-║  Primes in range: 11, 13, 17, 19                                         ║
-║  Differences: 13-11=2, 17-13=4, 19-17=2                                  ║
-║  Minimum difference is 2. Pairs: (11,13) and (17,19)                     ║
-║  Return (11,13) as it has smaller num1.                                  ║
+║  Primes in range: 11, 13, 17, 19                                          ║
+║  Differences: 13-11=2, 17-13=4, 19-17=2                                   ║
+║  Minimum difference is 2. Pairs: (11,13) and (17,19)                      ║
+║  Return (11,13) as it has smaller num1.                                   ║
 ║                                                                           ║
 ║  Example 2:                                                               ║
-║  Input: left = 4, right = 6                                              ║
+║  Input: left = 4, right = 6                                               ║
 ║  Output: [-1, -1]                                                         ║
-║  Explanation: Only one prime (5) in range, need at least 2.              ║
+║  Explanation: Only one prime (5) in range, need at least 2.               ║
 ║                                                                           ║
 ║  Example 3:                                                               ║
-║  Input: left = 1, right = 1000000                                        ║
+║  Input: left = 1, right = 1000000                                         ║
 ║  Output: [2, 3]                                                           ║
-║  Explanation: Twin primes (difference = 1 only for 2,3)                  ║
+║  Explanation: Twin primes (difference = 1 only for 2,3)                   ║
 ║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────   ║
+║  ─────────────────────────────────────────────────────────────────────    ║
 ║                                                                           ║
 ║  Constraints:                                                             ║
-║  - 1 <= left <= right <= 10^6                                            ║
+║  - 1 <= left <= right <= 10^6                                             ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -373,20 +373,20 @@ public int[] closestPrimes(int left, int right) {
 ║  NTH FIBONACCI NUMBER                                                     ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Fibonacci Sequence: 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, ...               ║
+║  Fibonacci Sequence: 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, ...                 ║
 ║  F(0) = 0, F(1) = 1                                                       ║
-║  F(n) = F(n-1) + F(n-2) for n > 1                                        ║
+║  F(n) = F(n-1) + F(n-2) for n > 1                                         ║
 ║                                                                           ║
 ║  Input: n = 4                                                             ║
 ║  Output: 3                                                                ║
-║  Explanation: F(4) = F(3) + F(2) = 2 + 1 = 3                             ║
+║  Explanation: F(4) = F(3) + F(2) = 2 + 1 = 3                              ║
 ║                                                                           ║
 ║  Input: n = 10                                                            ║
 ║  Output: 55                                                               ║
 ║                                                                           ║
 ║  Visual:                                                                  ║
-║  Index:  0  1  2  3  4  5  6  7   8   9   10                             ║
-║  Value:  0  1  1  2  3  5  8  13  21  34  55                             ║
+║  Index:  0  1  2  3  4  5  6  7   8   9   10                              ║
+║  Value:  0  1  1  2  3  5  8  13  21  34  55                              ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -436,18 +436,18 @@ private int fibHelper(int n, int[] memo) {
 ║  SUM OF FIRST N FIBONACCI NUMBERS                                         ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Find the sum of first n Fibonacci numbers.                              ║
+║  Find the sum of first n Fibonacci numbers.                               ║
 ║                                                                           ║
 ║  Input: n = 5                                                             ║
 ║  Output: 7                                                                ║
-║  Explanation: F(0)+F(1)+F(2)+F(3)+F(4) = 0+1+1+2+3 = 7                   ║
+║  Explanation: F(0)+F(1)+F(2)+F(3)+F(4) = 0+1+1+2+3 = 7                    ║
 ║                                                                           ║
 ║  Input: n = 10                                                            ║
 ║  Output: 88                                                               ║
-║  Explanation: 0+1+1+2+3+5+8+13+21+34 = 88                                ║
+║  Explanation: 0+1+1+2+3+5+8+13+21+34 = 88                                 ║
 ║                                                                           ║
-║  FORMULA: Sum of first n Fib = F(n+2) - 1                                ║
-║  Proof: F(0) + F(1) + ... + F(n) = F(n+2) - 1                            ║
+║  FORMULA: Sum of first n Fib = F(n+2) - 1                                 ║
+║  Proof: F(0) + F(1) + ... + F(n) = F(n+2) - 1                             ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -488,16 +488,16 @@ public int sumFibonacciFormula(int n) {
 ║  CHECK IF NUMBER IS A FIBONACCI NUMBER                                    ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Given a number, check if it belongs to Fibonacci sequence.              ║
+║  Given a number, check if it belongs to Fibonacci sequence.               ║
 ║                                                                           ║
 ║  Input: n = 8                                                             ║
-║  Output: true (8 is F(6))                                                ║
+║  Output: true (8 is F(6))                                                 ║
 ║                                                                           ║
 ║  Input: n = 10                                                            ║
 ║  Output: false                                                            ║
 ║                                                                           ║
-║  PROPERTY: A number is Fibonacci if and only if one of                   ║
-║  (5*n² + 4) or (5*n² - 4) is a perfect square.                           ║
+║  PROPERTY: A number is Fibonacci if and only if one of                    ║
+║  (5*n² + 4) or (5*n² - 4) is a perfect square.                            ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -539,14 +539,14 @@ public boolean isFibonacciIterative(int n) {
 ║  N-TH TRIBONACCI NUMBER                                                   ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Tribonacci: T(n) = T(n-1) + T(n-2) + T(n-3)                             ║
-║  T(0) = 0, T(1) = 1, T(2) = 1                                            ║
+║  Tribonacci: T(n) = T(n-1) + T(n-2) + T(n-3)                              ║
+║  T(0) = 0, T(1) = 1, T(2) = 1                                             ║
 ║                                                                           ║
-║  Sequence: 0, 1, 1, 2, 4, 7, 13, 24, 44, 81, ...                        ║
+║  Sequence: 0, 1, 1, 2, 4, 7, 13, 24, 44, 81, ...                          ║
 ║                                                                           ║
 ║  Input: n = 4                                                             ║
 ║  Output: 4                                                                ║
-║  Explanation: T(4) = T(3) + T(2) + T(1) = 2 + 1 + 1 = 4                  ║
+║  Explanation: T(4) = T(3) + T(2) + T(1) = 2 + 1 + 1 = 4                   ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -579,17 +579,17 @@ public int tribonacci(int n) {
 ║  CLIMBING STAIRS                                                          ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  You can climb 1 or 2 steps at a time.                                   ║
-║  How many distinct ways to climb n stairs?                               ║
+║  You can climb 1 or 2 steps at a time.                                    ║
+║  How many distinct ways to climb n stairs?                                ║
 ║                                                                           ║
 ║  Input: n = 3                                                             ║
 ║  Output: 3                                                                ║
-║  Ways: [1,1,1], [1,2], [2,1]                                             ║
+║  Ways: [1,1,1], [1,2], [2,1]                                              ║
 ║                                                                           ║
 ║  Input: n = 5                                                             ║
 ║  Output: 8                                                                ║
 ║                                                                           ║
-║  PATTERN: ways(n) = ways(n-1) + ways(n-2) = Fibonacci!                   ║
+║  PATTERN: ways(n) = ways(n-1) + ways(n-2) = Fibonacci!                    ║
 ║  n=1: 1 way                                                               ║
 ║  n=2: 2 ways                                                              ║
 ║  n=3: 3 ways                                                              ║
@@ -626,11 +626,11 @@ public int climbStairs(int n) {
 ║  SUM OF DIGITS                                                            ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Find the sum of all digits of a given number.                           ║
+║  Find the sum of all digits of a given number.                            ║
 ║                                                                           ║
 ║  Input: n = 12345                                                         ║
 ║  Output: 15                                                               ║
-║  Explanation: 1 + 2 + 3 + 4 + 5 = 15                                     ║
+║  Explanation: 1 + 2 + 3 + 4 + 5 = 15                                      ║
 ║                                                                           ║
 ║  Input: n = 9999                                                          ║
 ║  Output: 36                                                               ║
@@ -668,17 +668,17 @@ public int sumOfDigitsRecursive(int n) {
 ║  ADD DIGITS (DIGITAL ROOT)                                                ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Repeatedly add digits until single digit remains.                       ║
+║  Repeatedly add digits until single digit remains.                        ║
 ║                                                                           ║
 ║  Input: num = 38                                                          ║
 ║  Output: 2                                                                ║
-║  Explanation: 3 + 8 = 11, 1 + 1 = 2                                      ║
+║  Explanation: 3 + 8 = 11, 1 + 1 = 2                                       ║
 ║                                                                           ║
 ║  Input: num = 9999                                                        ║
 ║  Output: 9                                                                ║
 ║  Explanation: 36 → 9                                                      ║
 ║                                                                           ║
-║  FORMULA: Digital Root = 1 + (num - 1) % 9  (for num > 0)                ║
+║  FORMULA: Digital Root = 1 + (num - 1) % 9  (for num > 0)                 ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -716,8 +716,8 @@ public int addDigitsIterative(int num) {
 ║  REVERSE INTEGER                                                          ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Reverse digits of a 32-bit signed integer.                              ║
-║  Return 0 if result overflows.                                           ║
+║  Reverse digits of a 32-bit signed integer.                               ║
+║  Return 0 if result overflows.                                            ║
 ║                                                                           ║
 ║  Input: x = 123                                                           ║
 ║  Output: 321                                                              ║
@@ -767,7 +767,7 @@ public int reverse(int x) {
 ║  PALINDROME NUMBER                                                        ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Check if integer is palindrome (reads same forwards and backwards).     ║
+║  Check if integer is palindrome (reads same forwards and backwards).      ║
 ║                                                                           ║
 ║  Input: x = 121                                                           ║
 ║  Output: true                                                             ║
@@ -813,17 +813,17 @@ public boolean isPalindrome(int x) {
 ║  HAPPY NUMBER                                                             ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Starting with any positive integer, replace the number by the sum of    ║
-║  the squares of its digits. Repeat until it equals 1 (happy), or loops   ║
-║  endlessly in a cycle (not happy).                                       ║
+║  Starting with any positive integer, replace the number by the sum of     ║
+║  the squares of its digits. Repeat until it equals 1 (happy), or loops    ║
+║  endlessly in a cycle (not happy).                                        ║
 ║                                                                           ║
 ║  Input: n = 19                                                            ║
 ║  Output: true                                                             ║
 ║  Explanation:                                                             ║
-║  1² + 9² = 82                                                            ║
-║  8² + 2² = 68                                                            ║
-║  6² + 8² = 100                                                           ║
-║  1² + 0² + 0² = 1 ✓                                                      ║
+║  1² + 9² = 82                                                             ║
+║  8² + 2² = 68                                                             ║
+║  6² + 8² = 100                                                            ║
+║  1² + 0² + 0² = 1 ✓                                                       ║
 ║                                                                           ║
 ║  Input: n = 2                                                             ║
 ║  Output: false (enters cycle)                                             ║
@@ -868,19 +868,19 @@ private int sumSquareDigits(int n) {
 ║  GCD - GREATEST COMMON DIVISOR                                            ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Find the largest number that divides both a and b.                      ║
+║  Find the largest number that divides both a and b.                       ║
 ║                                                                           ║
 ║  Input: a = 48, b = 18                                                    ║
 ║  Output: 6                                                                ║
-║  Explanation: Divisors of 48: 1,2,3,4,6,8,12,16,24,48                    ║
-║               Divisors of 18: 1,2,3,6,9,18                               ║
+║  Explanation: Divisors of 48: 1,2,3,4,6,8,12,16,24,48                     ║
+║               Divisors of 18: 1,2,3,6,9,18                                ║
 ║               Common: 1,2,3,6 → GCD = 6                                   ║
 ║                                                                           ║
 ║  EUCLIDEAN ALGORITHM:                                                     ║
-║  GCD(a, b) = GCD(b, a % b)                                               ║
-║  GCD(a, 0) = a                                                           ║
+║  GCD(a, b) = GCD(b, a % b)                                                ║
+║  GCD(a, 0) = a                                                            ║
 ║                                                                           ║
-║  48, 18 → 18, 12 → 12, 6 → 6, 0 → GCD = 6                                ║
+║  48, 18 → 18, 12 → 12, 6 → 6, 0 → GCD = 6                                 ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -920,40 +920,40 @@ public int lcm(int a, int b) {
 ║  (LeetCode Premium - Full Problem Description)                            ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Given an integer array nums, return the greatest common divisor of the  ║
+║  Given an integer array nums, return the greatest common divisor of the   ║
 ║  smallest number and largest number in nums.                              ║
 ║                                                                           ║
-║  The GCD of two numbers is the largest positive integer that evenly      ║
+║  The GCD of two numbers is the largest positive integer that evenly       ║
 ║  divides both numbers.                                                    ║
 ║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────   ║
+║  ─────────────────────────────────────────────────────────────────────    ║
 ║                                                                           ║
 ║  Example 1:                                                               ║
-║  Input: nums = [2, 5, 6, 9, 10]                                          ║
+║  Input: nums = [2, 5, 6, 9, 10]                                           ║
 ║  Output: 2                                                                ║
 ║  Explanation:                                                             ║
-║  Smallest = 2, Largest = 10                                              ║
-║  GCD(2, 10) = 2                                                          ║
+║  Smallest = 2, Largest = 10                                               ║
+║  GCD(2, 10) = 2                                                           ║
 ║                                                                           ║
 ║  Example 2:                                                               ║
-║  Input: nums = [7, 5, 6, 8, 3]                                           ║
+║  Input: nums = [7, 5, 6, 8, 3]                                            ║
 ║  Output: 1                                                                ║
 ║  Explanation:                                                             ║
-║  Smallest = 3, Largest = 8                                               ║
-║  GCD(3, 8) = 1                                                           ║
+║  Smallest = 3, Largest = 8                                                ║
+║  GCD(3, 8) = 1                                                            ║
 ║                                                                           ║
 ║  Example 3:                                                               ║
 ║  Input: nums = [3, 3]                                                     ║
 ║  Output: 3                                                                ║
 ║  Explanation:                                                             ║
-║  Smallest = 3, Largest = 3                                               ║
-║  GCD(3, 3) = 3                                                           ║
+║  Smallest = 3, Largest = 3                                                ║
+║  GCD(3, 3) = 3                                                            ║
 ║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────   ║
+║  ─────────────────────────────────────────────────────────────────────    ║
 ║                                                                           ║
 ║  Constraints:                                                             ║
-║  - 2 <= nums.length <= 1000                                              ║
-║  - 1 <= nums[i] <= 1000                                                  ║
+║  - 2 <= nums.length <= 1000                                               ║
+║  - 1 <= nums[i] <= 1000                                                   ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```

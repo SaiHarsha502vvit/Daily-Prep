@@ -10,11 +10,11 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════════╗
-║  ✅ Catch bugs at COMPILE time, not runtime                                     ║
-║  ✅ Autocompletion in IDE (know exact props, return types)                      ║
-║  ✅ Self-documenting: types ARE documentation                                   ║
-║  ✅ Refactoring confidence: rename a prop, find all usages instantly            ║
-║  ✅ Industry standard for production React apps                                 ║
+║  ✅ Catch bugs at COMPILE time, not runtime                                       ║
+║  ✅ Autocompletion in IDE (know exact props, return types)                        ║
+║  ✅ Self-documenting: types ARE documentation                                     ║
+║  ✅ Refactoring confidence: rename a prop, find all usages instantly              ║
+║  ✅ Industry standard for production React apps                                   ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -195,14 +195,14 @@ function CustomButton({ variant, isLoading, children, ...rest }: CustomButtonPro
 ╔════════════════════════════════╦══════════════════════════════════════════════╗
 ║ What                          ║ Type                                          ║
 ╠════════════════════════════════╬══════════════════════════════════════════════╣
-║ Component children            ║ React.ReactNode                              ║
-║ Single element child          ║ React.ReactElement                           ║
-║ Style object                  ║ React.CSSProperties                          ║
-║ Ref to DOM element            ║ React.RefObject<HTMLDivElement>              ║
-║ Set state function            ║ React.Dispatch<SetStateAction<T>>           ║
-║ onChange for input            ║ React.ChangeEvent<HTMLInputElement>          ║
-║ onClick for button            ║ React.MouseEvent<HTMLButtonElement>          ║
-║ onSubmit for form             ║ React.FormEvent<HTMLFormElement>             ║
+║ Component children            ║ React.ReactNode                               ║
+║ Single element child          ║ React.ReactElement                            ║
+║ Style object                  ║ React.CSSProperties                           ║
+║ Ref to DOM element            ║ React.RefObject<HTMLDivElement>               ║
+║ Set state function            ║ React.Dispatch<SetStateAction<T>>             ║
+║ onChange for input            ║ React.ChangeEvent<HTMLInputElement>           ║
+║ onClick for button            ║ React.MouseEvent<HTMLButtonElement>           ║
+║ onSubmit for form             ║ React.FormEvent<HTMLFormElement>              ║
 ╚════════════════════════════════╩══════════════════════════════════════════════╝
 ```
 

@@ -77,25 +77,25 @@ WHY snapshots? → Any version can be reconstructed instantly
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                    YOUR COMPUTER                         │
-│                                                          │
-│   ┌──────────────┐  git add  ┌──────────────┐          │
+│                    YOUR COMPUTER                        │
+│                                                         │
+│   ┌──────────────┐  git add  ┌──────────────┐           │
 │   │  WORKING     │ ───────── │   STAGING     │          │
 │   │  DIRECTORY   │           │   AREA        │          │
 │   │              │  ◄─────── │   (Index)     │          │
-│   │  (your files │  git      │              │          │
+│   │  (your files │  git      │              │           │
 │   │   as you     │  restore) │  (files ready │          │
 │   │   edit them) │           │   to commit)  │          │
-│   └──────────────┘           └───────┬──────┘          │
+│   └──────────────┘           └───────┬──────┘           │
 │                                       │ git commit      │
 │                                       ▼                 │
-│                              ┌──────────────┐          │
+│                              ┌──────────────┐           │
 │                              │  LOCAL REPO   │          │
 │                              │  (.git folder)│          │
-│                              │              │          │
+│                              │              │           │
 │                              │  (permanent   │          │
 │                              │   history)    │          │
-│                              └───────┬──────┘          │
+│                              └───────┬──────┘           │
 │                                       │ git push        │
 └───────────────────────────────────────┼─────────────────┘
                                         ▼

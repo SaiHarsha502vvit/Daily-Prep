@@ -286,14 +286,14 @@ function useDebounce(value, delay = 300) {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════════╗
-║  RULE 1: Only call hooks at the TOP LEVEL                                       ║
-║    ❌ if (condition) { useState(...) }                                           ║
-║    ❌ for (let i...) { useEffect(...) }                                          ║
-║    ✅ Always same hooks in same order every render                              ║
+║  RULE 1: Only call hooks at the TOP LEVEL                                        ║
+║    ❌ if (condition) { useState(...) }                                            ║
+║    ❌ for (let i...) { useEffect(...) }                                           ║
+║    ✅ Always same hooks in same order every render                                ║
 ║                                                                                  ║
-║  RULE 2: Only call hooks from React FUNCTIONS                                   ║
-║    ✅ Function components                                                        ║
-║    ✅ Custom hooks (useXxx)                                                      ║
+║  RULE 2: Only call hooks from React FUNCTIONS                                    ║
+║    ✅ Function components                                                         ║
+║    ✅ Custom hooks (useXxx)                                                       ║
 ║    ❌ Regular JavaScript functions                                                ║
 ║    ❌ Class components                                                            ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝

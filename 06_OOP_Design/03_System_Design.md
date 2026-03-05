@@ -14,11 +14,11 @@
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ WHAT IS SYSTEM DESIGN?                                                       │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ System Design is the process of defining the ARCHITECTURE, COMPONENTS,      │
-│ MODULES, INTERFACES, and DATA for a system to satisfy specified             │
+│ System Design is the process of defining the ARCHITECTURE, COMPONENTS,       │
+│ MODULES, INTERFACES, and DATA for a system to satisfy specified              │
 │ requirements.                                                                │
 │                                                                              │
-│ KEY INSIGHT: It's about making DECISIONS that balance trade-offs!           │
+│ KEY INSIGHT: It's about making DECISIONS that balance trade-offs!            │
 │ • Performance vs Cost                                                        │
 │ • Consistency vs Availability                                                │
 │ • Simplicity vs Flexibility                                                  │
@@ -26,25 +26,25 @@
 │                                                                              │
 │ ANALOGY:                                                                     │
 │ • Architect designing a building:                                            │
-│   - Understands user needs (families, offices, shops)                       │
-│   - Plans structure (foundation, floors, rooms)                             │
-│   - Chooses materials (concrete, steel, glass)                              │
-│   - Considers constraints (budget, land, regulations)                       │
+│   - Understands user needs (families, offices, shops)                        │
+│   - Plans structure (foundation, floors, rooms)                              │
+│   - Chooses materials (concrete, steel, glass)                               │
+│   - Considers constraints (budget, land, regulations)                        │
 │                                                                              │
 │ • Software System Designer:                                                  │
-│   - Understands user needs (features, performance)                          │
-│   - Plans structure (services, databases, APIs)                             │
-│   - Chooses technologies (languages, frameworks, cloud)                     │
-│   - Considers constraints (budget, team size, deadlines)                    │
+│   - Understands user needs (features, performance)                           │
+│   - Plans structure (services, databases, APIs)                              │
+│   - Chooses technologies (languages, frameworks, cloud)                      │
+│   - Considers constraints (budget, team size, deadlines)                     │
 │                                                                              │
 │ HISTORICAL EVOLUTION:                                                        │
-│ • 1960s: Monolithic systems - everything in one place                       │
-│ • 1970s: Modular programming - break into modules                           │
-│ • 1980s: Client-Server - separate presentation from logic                   │
-│ • 1990s: 3-Tier Architecture - presentation, logic, data                    │
-│ • 2000s: SOA (Service-Oriented Architecture)                                │
-│ • 2010s: Microservices - small, independent services                        │
-│ • 2020s: Serverless, Edge Computing, AI-integrated systems                  │
+│ • 1960s: Monolithic systems - everything in one place                        │
+│ • 1970s: Modular programming - break into modules                            │
+│ • 1980s: Client-Server - separate presentation from logic                    │
+│ • 1990s: 3-Tier Architecture - presentation, logic, data                     │
+│ • 2000s: SOA (Service-Oriented Architecture)                                 │
+│ • 2010s: Microservices - small, independent services                         │
+│ • 2020s: Serverless, Edge Computing, AI-integrated systems                   │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -52,28 +52,28 @@
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │ PROBLEM 1: COMPLEXITY                                                        │
-│ • Modern apps have millions of lines of code                                │
-│ • Without structure, it becomes unmaintainable                              │
-│ • System design breaks complexity into manageable pieces                    │
+│ • Modern apps have millions of lines of code                                 │
+│ • Without structure, it becomes unmaintainable                               │
+│ • System design breaks complexity into manageable pieces                     │
 │                                                                              │
 │ PROBLEM 2: SCALE                                                             │
-│ • What works for 100 users fails for 1 million                              │
-│ • System design plans for growth                                            │
+│ • What works for 100 users fails for 1 million                               │
+│ • System design plans for growth                                             │
 │                                                                              │
 │ PROBLEM 3: RELIABILITY                                                       │
 │ • Systems must work 24/7                                                     │
-│ • Single points of failure cause outages                                    │
-│ • System design builds redundancy                                           │
+│ • Single points of failure cause outages                                     │
+│ • System design builds redundancy                                            │
 │                                                                              │
 │ PROBLEM 4: TEAM COORDINATION                                                 │
-│ • Multiple teams work on same product                                       │
-│ • Need clear boundaries and interfaces                                      │
-│ • System design enables parallel development                                │
+│ • Multiple teams work on same product                                        │
+│ • Need clear boundaries and interfaces                                       │
+│ • System design enables parallel development                                 │
 │                                                                              │
 │ REAL-WORLD FAILURES WITHOUT GOOD DESIGN:                                     │
-│ • 2017: Amazon S3 outage took down half the internet                        │
-│ • 2019: Facebook outage - 14 hours, $90 million lost                        │
-│ • 2021: Fastly CDN outage - major sites down globally                       │
+│ • 2017: Amazon S3 outage took down half the internet                         │
+│ • 2019: Facebook outage - 14 hours, $90 million lost                         │
+│ • 2021: Fastly CDN outage - major sites down globally                        │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -81,26 +81,26 @@
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │ 1. CAREER GROWTH:                                                            │
-│    • Junior: Write code given specifications                                │
+│    • Junior: Write code given specifications                                 │
 │    • Mid-level: Design features                                              │
 │    • Senior: Design systems                                                  │
-│    • Architect: Design organizations of systems                             │
+│    • Architect: Design organizations of systems                              │
 │                                                                              │
 │ 2. INTERVIEW ESSENTIAL:                                                      │
-│    • Every senior interview has system design round                         │
-│    • Tests thinking ability, not memorization                               │
+│    • Every senior interview has system design round                          │
+│    • Tests thinking ability, not memorization                                │
 │                                                                              │
 │ 3. BETTER CODE:                                                              │
-│    • Understanding the big picture improves your components                 │
-│    • Know how your code fits in the system                                  │
+│    • Understanding the big picture improves your components                  │
+│    • Know how your code fits in the system                                   │
 │                                                                              │
 │ 4. BUSINESS IMPACT:                                                          │
-│    • Good design saves millions in infrastructure                           │
-│    • Bad design costs companies everything (see failures above)             │
+│    • Good design saves millions in infrastructure                            │
+│    • Bad design costs companies everything (see failures above)              │
 │                                                                              │
 │ 5. PROBLEM-SOLVING:                                                          │
-│    • System design is ultimate problem-solving                              │
-│    • Balancing constraints with creative solutions                          │
+│    • System design is ultimate problem-solving                               │
+│    • Balancing constraints with creative solutions                           │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -111,25 +111,25 @@
 │                                                                              │
 │ • What components do I need?                                                 │
 │ • How do they communicate?                                                   │
-│ • What happens when something fails?                                        │
+│ • What happens when something fails?                                         │
 │ • How will this scale?                                                       │
 │                                                                              │
 │ SPECIFIC SCENARIOS:                                                          │
 │                                                                              │
 │ 1. STARTING A NEW PROJECT:                                                   │
-│    → Define architecture before coding                                      │
+│    → Define architecture before coding                                       │
 │                                                                              │
 │ 2. ADDING A MAJOR FEATURE:                                                   │
-│    → Plan how it fits in existing system                                    │
+│    → Plan how it fits in existing system                                     │
 │                                                                              │
 │ 3. PERFORMANCE PROBLEMS:                                                     │
-│    → Analyze system bottlenecks                                             │
+│    → Analyze system bottlenecks                                              │
 │                                                                              │
 │ 4. SCALING NEEDS:                                                            │
-│    → Redesign for higher load                                               │
+│    → Redesign for higher load                                                │
 │                                                                              │
 │ 5. INTEGRATION:                                                              │
-│    → Connect with external systems                                          │
+│    → Connect with external systems                                           │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -137,34 +137,34 @@
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │ STEP 1: UNDERSTAND REQUIREMENTS (5-10 min)                                   │
-│ ─────────────────────────────────────────                                   │
+│ ─────────────────────────────────────────                                    │
 │ Functional Requirements:                                                     │
-│ • What should the system DO?                                                │
-│ • What are the core features?                                               │
-│ • Who are the users?                                                        │
+│ • What should the system DO?                                                 │
+│ • What are the core features?                                                │
+│ • Who are the users?                                                         │
 │                                                                              │
 │ Non-Functional Requirements:                                                 │
 │ • How many users? (Scale)                                                    │
 │ • How fast? (Latency)                                                        │
-│ • How reliable? (Availability)                                              │
-│ • How consistent? (Data integrity)                                          │
+│ • How reliable? (Availability)                                               │
+│ • How consistent? (Data integrity)                                           │
 │                                                                              │
 │ STEP 2: ESTIMATE SCALE (5 min)                                               │
-│ ───────────────────────────────                                             │
+│ ───────────────────────────────                                              │
 │ • Daily Active Users (DAU)                                                   │
 │ • Requests per second (RPS)                                                  │
 │ • Data storage needs                                                         │
 │ • Read vs Write ratio                                                        │
 │                                                                              │
 │ STEP 3: HIGH-LEVEL DESIGN (10-15 min)                                        │
-│ ─────────────────────────────────────                                       │
+│ ─────────────────────────────────────                                        │
 │ • Draw main components                                                       │
 │ • Show data flow                                                             │
 │ • Identify databases needed                                                  │
 │ • Plan API structure                                                         │
 │                                                                              │
 │ STEP 4: DEEP DIVE (15-20 min)                                                │
-│ ─────────────────────────────                                               │
+│ ─────────────────────────────                                                │
 │ • Design specific components                                                 │
 │ • Database schema                                                            │
 │ • API endpoints                                                              │
@@ -172,7 +172,7 @@
 │ • Handle edge cases                                                          │
 │                                                                              │
 │ STEP 5: IDENTIFY BOTTLENECKS (5 min)                                         │
-│ ────────────────────────────────────                                        │
+│ ────────────────────────────────────                                         │
 │ • What could fail?                                                           │
 │ • What could be slow?                                                        │
 │ • How to add redundancy?                                                     │
@@ -185,39 +185,39 @@
 │                                                                              │
 │ 1. "WHERE DO I START?":                                                      │
 │    Solution: Always start with REQUIREMENTS                                  │
-│    Ask clarifying questions before designing                                │
+│    Ask clarifying questions before designing                                 │
 │                                                                              │
 │ 2. "TOO MANY OPTIONS":                                                       │
-│    Solution: There's no perfect answer! Explain trade-offs                  │
-│    Pick one approach and justify it                                         │
+│    Solution: There's no perfect answer! Explain trade-offs                   │
+│    Pick one approach and justify it                                          │
 │                                                                              │
 │ 3. "DON'T KNOW ALL TECHNOLOGIES":                                            │
-│    Solution: Focus on CONCEPTS, not specific tools                          │
-│    "We need a cache" is better than "We need Redis"                        │
+│    Solution: Focus on CONCEPTS, not specific tools                           │
+│    "We need a cache" is better than "We need Redis"                          │
 │                                                                              │
 │ 4. "CAN'T ESTIMATE SCALE":                                                   │
-│    Solution: Use approximations with reasoning                              │
-│    "If 1 million users, and each makes 10 requests/day..."                 │
+│    Solution: Use approximations with reasoning                               │
+│    "If 1 million users, and each makes 10 requests/day..."                   │
 │                                                                              │
 │ 5. "GOING TOO DEEP TOO EARLY":                                               │
-│    Solution: Start broad, then drill down                                   │
-│    Don't design database schema before knowing components                   │
+│    Solution: Start broad, then drill down                                    │
+│    Don't design database schema before knowing components                    │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ EXPECTED OUTPUTS OF MASTERING SYSTEM DESIGN                                  │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ ✅ STRUCTURED THINKING: Break any problem into components                   │
-│ ✅ TRADE-OFF ANALYSIS: Understand costs of decisions                        │
-│ ✅ SCALABILITY MINDSET: Design for growth from the start                    │
-│ ✅ INTERVIEW SUCCESS: Ace system design rounds                               │
-│ ✅ CAREER ADVANCEMENT: Move to senior/architect roles                       │
-│ ✅ BETTER COMMUNICATION: Explain technical decisions clearly                │
+│ ✅ STRUCTURED THINKING: Break any problem into components                     │
+│ ✅ TRADE-OFF ANALYSIS: Understand costs of decisions                          │
+│ ✅ SCALABILITY MINDSET: Design for growth from the start                      │
+│ ✅ INTERVIEW SUCCESS: Ace system design rounds                                │
+│ ✅ CAREER ADVANCEMENT: Move to senior/architect roles                         │
+│ ✅ BETTER COMMUNICATION: Explain technical decisions clearly                  │
 │                                                                              │
 │ THE TRANSFORMATION:                                                          │
-│ FROM: "I can write code for features"                                       │
-│   TO: "I can design systems that teams build"                               │
+│ FROM: "I can write code for features"                                        │
+│   TO: "I can design systems that teams build"                                │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -235,23 +235,23 @@
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ WHAT IS A USER FLOW?                                                         │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ A USER FLOW is the PATH a user takes through your application to complete   │
+│ A USER FLOW is the PATH a user takes through your application to complete    │
 │ a specific task or goal.                                                     │
 │                                                                              │
 │ EXAMPLE - E-commerce Purchase Flow:                                          │
 │                                                                              │
-│ ┌─────────┐   ┌─────────┐   ┌─────────┐   ┌─────────┐   ┌─────────┐        │
-│ │ Browse  │──▶│ View    │──▶│ Add to  │──▶│Checkout │──▶│ Payment │        │
-│ │Products │   │ Product │   │  Cart   │   │  Page   │   │ Success │        │
-│ └─────────┘   └─────────┘   └─────────┘   └─────────┘   └─────────┘        │
+│ ┌─────────┐   ┌─────────┐   ┌─────────┐   ┌─────────┐   ┌─────────┐          │
+│ │ Browse  │──▶│ View    │──▶│ Add to  │──▶│Checkout │──▶│ Payment │          │
+│ │Products │   │ Product │   │  Cart   │   │  Page   │   │ Success │          │
+│ └─────────┘   └─────────┘   └─────────┘   └─────────┘   └─────────┘          │
 │      │              │             │             │                            │
 │      ▼              ▼             ▼             ▼                            │
-│   [Search]    [Reviews]    [Update Qty]   [Apply Coupon]                   │
-│   [Filter]    [Similar]    [Remove]       [Change Address]                 │
+│   [Search]    [Reviews]    [Update Qty]   [Apply Coupon]                     │
+│   [Filter]    [Similar]    [Remove]       [Change Address]                   │
 │                                                                              │
 │ KEY INSIGHT:                                                                 │
-│ Every screen, button, and action is part of a FLOW!                         │
-│ Good design makes flows INTUITIVE and EFFICIENT.                            │
+│ Every screen, button, and action is part of a FLOW!                          │
+│ Good design makes flows INTUITIVE and EFFICIENT.                             │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -259,24 +259,24 @@
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │ PROBLEM 1: CONFUSION                                                         │
-│ • "Where do I click next?"                                                  │
-│ • Solution: Map every step clearly                                          │
+│ • "Where do I click next?"                                                   │
+│ • Solution: Map every step clearly                                           │
 │                                                                              │
 │ PROBLEM 2: DROP-OFF                                                          │
-│ • Users abandon halfway through a process                                   │
-│ • Solution: Minimize steps, reduce friction                                 │
+│ • Users abandon halfway through a process                                    │
+│ • Solution: Minimize steps, reduce friction                                  │
 │                                                                              │
 │ PROBLEM 3: ERRORS                                                            │
-│ • Users get stuck in error states                                           │
-│ • Solution: Plan error paths and recovery                                   │
+│ • Users get stuck in error states                                            │
+│ • Solution: Plan error paths and recovery                                    │
 │                                                                              │
 │ PROBLEM 4: DEVELOPMENT CHAOS                                                 │
-│ • Developers don't know what to build                                       │
-│ • Solution: User flows serve as specifications                              │
+│ • Developers don't know what to build                                        │
+│ • Solution: User flows serve as specifications                               │
 │                                                                              │
 │ REAL IMPACT:                                                                 │
-│ • Amazon: Removing one click increased revenue by $300M/year               │
-│ • Airbnb: Simplifying booking flow increased conversions 30%               │
+│ • Amazon: Removing one click increased revenue by $300M/year                 │
+│ • Airbnb: Simplifying booking flow increased conversions 30%                 │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -284,30 +284,30 @@
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │ STEP 1: IDENTIFY THE GOAL                                                    │
-│ • What does the user want to accomplish?                                    │
-│ • Example: "User wants to purchase a product"                               │
+│ • What does the user want to accomplish?                                     │
+│ • Example: "User wants to purchase a product"                                │
 │                                                                              │
 │ STEP 2: IDENTIFY ENTRY POINTS                                                │
-│ • How does the user start this flow?                                        │
-│ • Example: Homepage, search results, email link, ad click                   │
+│ • How does the user start this flow?                                         │
+│ • Example: Homepage, search results, email link, ad click                    │
 │                                                                              │
 │ STEP 3: MAP THE HAPPY PATH                                                   │
-│ • The ideal path with no errors                                             │
+│ • The ideal path with no errors                                              │
 │ • Minimum steps to achieve goal                                              │
 │                                                                              │
 │ STEP 4: MAP ALTERNATIVE PATHS                                                │
-│ • What if user wants to change something?                                   │
-│ • What if user wants to go back?                                            │
+│ • What if user wants to change something?                                    │
+│ • What if user wants to go back?                                             │
 │                                                                              │
 │ STEP 5: MAP ERROR PATHS                                                      │
 │ • What if payment fails?                                                     │
-│ • What if item is out of stock?                                             │
+│ • What if item is out of stock?                                              │
 │ • How does user recover?                                                     │
 │                                                                              │
 │ STEP 6: IDENTIFY DATA NEEDED                                                 │
-│ • What data do we need at each step?                                        │
-│ • What data do we collect from user?                                        │
-│ • What data do we show to user?                                             │
+│ • What data do we need at each step?                                         │
+│ • What data do we collect from user?                                         │
+│ • What data do we show to user?                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ## User Flow Notation
@@ -379,17 +379,17 @@ USER FLOW SYMBOLS:
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ WHAT IS FEATURE CREATION?                                                    │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ The complete process of taking a user need or business requirement and      │
+│ The complete process of taking a user need or business requirement and       │
 │ turning it into working software.                                            │
 │                                                                              │
 │ STAGES:                                                                      │
-│ 1. IDEATION: "Users need X"                                                 │
-│ 2. SPECIFICATION: "X means exactly this behavior"                           │
-│ 3. DESIGN: "X will be built using these components"                         │
-│ 4. IMPLEMENTATION: "Here's the code for X"                                  │
-│ 5. TESTING: "X works as expected"                                           │
-│ 6. DEPLOYMENT: "X is live for users"                                        │
-│ 7. MONITORING: "X is performing well"                                       │
+│ 1. IDEATION: "Users need X"                                                  │
+│ 2. SPECIFICATION: "X means exactly this behavior"                            │
+│ 3. DESIGN: "X will be built using these components"                          │
+│ 4. IMPLEMENTATION: "Here's the code for X"                                   │
+│ 5. TESTING: "X works as expected"                                            │
+│ 6. DEPLOYMENT: "X is live for users"                                         │
+│ 7. MONITORING: "X is performing well"                                        │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -397,10 +397,10 @@ USER FLOW SYMBOLS:
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │ □ UNDERSTANDING PHASE:                                                       │
-│   □ What problem does this feature solve?                                   │
+│   □ What problem does this feature solve?                                    │
 │   □ Who are the users?                                                       │
-│   □ What's the success metric?                                              │
-│   □ What are the constraints (time, tech, resources)?                       │
+│   □ What's the success metric?                                               │
+│   □ What are the constraints (time, tech, resources)?                        │
 │                                                                              │
 │ □ DESIGN PHASE:                                                              │
 │   □ User flow mapped?                                                        │
@@ -524,29 +524,29 @@ USER FLOW SYMBOLS:
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                    DATA FLOWS - COMPLETE UNDERSTANDING                        ║
+║                    DATA FLOWS - COMPLETE UNDERSTANDING                       ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ WHAT IS A DATA FLOW?                                                         │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ A DATA FLOW shows how data moves through a system - from input to storage   │
+│ A DATA FLOW shows how data moves through a system - from input to storage    │
 │ to output, including all transformations along the way.                      │
 │                                                                              │
 │ KEY INSIGHT: Follow the DATA to understand any system!                       │
 │                                                                              │
 │ EXAMPLE - Order Processing Data Flow:                                        │
 │                                                                              │
-│ User Input     API Gateway     Order Service    Database      Notification  │
-│ ──────────     ───────────     ─────────────    ────────      ────────────  │
+│ User Input     API Gateway     Order Service    Database      Notification   │
+│ ──────────     ───────────     ─────────────    ────────      ────────────   │
 │                                                                              │
-│ {               {               {               INSERT         Email/SMS    │
-│  items: [...],   validated      order_id: 123,  INTO orders    "Order       │
-│  address: ...    sanitized      status: NEW,    VALUES (...)   confirmed!"  │
-│  payment: ...    authenticated  total: $99                                  │
+│ {               {               {               INSERT         Email/SMS     │
+│  items: [...],   validated      order_id: 123,  INTO orders    "Order        │
+│  address: ...    sanitized      status: NEW,    VALUES (...)   confirmed!"   │
+│  payment: ...    authenticated  total: $99                                   │
 │ }             }              }                                               │
 │                                                                              │
-│ ────▶ Transforms at each step! ────▶                                        │
+│ ────▶ Transforms at each step! ────▶                                         │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ## Types of Data Flows
@@ -554,39 +554,39 @@ USER FLOW SYMBOLS:
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ 1. SYNCHRONOUS DATA FLOW                                                     │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ User ───▶ API ───▶ Service ───▶ Database                                    │
+│ User ───▶ API ───▶ Service ───▶ Database                                     │
 │   │                                   │                                      │
 │   └───────────────◀───────────────────┘                                      │
 │                Response                                                      │
 │                                                                              │
 │ CHARACTERISTICS:                                                             │
-│ • Request waits for response                                                │
+│ • Request waits for response                                                 │
 │ • Simple to understand                                                       │
 │ • Limited scalability                                                        │
 │                                                                              │
 │ USE WHEN:                                                                    │
-│ • User needs immediate response                                             │
-│ • Operation is fast (<100ms)                                                │
-│ • Data consistency is critical                                              │
+│ • User needs immediate response                                              │
+│ • Operation is fast (<100ms)                                                 │
+│ • Data consistency is critical                                               │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ 2. ASYNCHRONOUS DATA FLOW                                                    │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ User ───▶ API ───▶ Message Queue ───▶ Worker ───▶ Database                  │
+│ User ───▶ API ───▶ Message Queue ───▶ Worker ───▶ Database                   │
 │   │          │                                                               │
 │   └◀─────────┘                                                               │
 │   "Accepted"                                                                 │
 │                                                                              │
 │ CHARACTERISTICS:                                                             │
-│ • Request returns immediately                                               │
-│ • Processing happens in background                                          │
+│ • Request returns immediately                                                │
+│ • Processing happens in background                                           │
 │ • Highly scalable                                                            │
 │                                                                              │
 │ USE WHEN:                                                                    │
-│ • Operation is slow (sending email, generating report)                      │
-│ • High throughput needed                                                    │
-│ • Can tolerate eventual consistency                                         │
+│ • Operation is slow (sending email, generating report)                       │
+│ • High throughput needed                                                     │
+│ • Can tolerate eventual consistency                                          │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -594,13 +594,13 @@ USER FLOW SYMBOLS:
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                        Event Bus                                             │
 │                           │                                                  │
-│    ┌──────────────────────┼──────────────────────┐                          │
+│    ┌──────────────────────┼──────────────────────┐                           │
 │    │                      │                      │                           │
 │    ▼                      ▼                      ▼                           │
-│ ┌──────┐             ┌──────┐              ┌──────┐                         │
-│ │Notif.│             │Analyt│              │Invent│                         │
-│ │Service│            │Service│             │Service│                        │
-│ └──────┘             └──────┘              └──────┘                         │
+│ ┌──────┐             ┌──────┐              ┌──────┐                          │
+│ │Notif.│             │Analyt│              │Invent│                          │
+│ │Service│            │Service│             │Service│                         │
+│ └──────┘             └──────┘              └──────┘                          │
 │                                                                              │
 │ CHARACTERISTICS:                                                             │
 │ • Services react to events                                                   │
@@ -608,9 +608,9 @@ USER FLOW SYMBOLS:
 │ • Multiple consumers per event                                               │
 │                                                                              │
 │ USE WHEN:                                                                    │
-│ • Multiple services need same data                                          │
-│ • Services should be independent                                            │
-│ • Need to add new consumers easily                                          │
+│ • Multiple services need same data                                           │
+│ • Services should be independent                                             │
+│ • Need to add new consumers easily                                           │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -620,7 +620,7 @@ USER FLOW SYMBOLS:
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║              DESIGNING SYSTEMS: OOP vs FUNCTIONAL STYLE                       ║
+║              DESIGNING SYSTEMS: OOP vs FUNCTIONAL STYLE                      ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -628,43 +628,43 @@ USER FLOW SYMBOLS:
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │ BEST FOR:                                                                    │
-│ • Systems with many ENTITIES (User, Order, Product)                         │
-│ • Complex BEHAVIOR associated with data                                     │
-│ • Need for INHERITANCE and polymorphism                                     │
-│ • Long-lived STATEFUL objects                                               │
+│ • Systems with many ENTITIES (User, Order, Product)                          │
+│ • Complex BEHAVIOR associated with data                                      │
+│ • Need for INHERITANCE and polymorphism                                      │
+│ • Long-lived STATEFUL objects                                                │
 │                                                                              │
-│ EXAMPLE - E-commerce Order System (OOP):                                    │
+│ EXAMPLE - E-commerce Order System (OOP):                                     │
 │                                                                              │
-│ ┌─────────────────────────────────────────────────────────────────────────┐ │
-│ │                           Order                                         │ │
-│ │ ─────────────────────────────────────────────────────────────────────── │ │
-│ │ - orderId: Long                                                         │ │
-│ │ - items: List<OrderItem>                                                │ │
-│ │ - status: OrderStatus                                                   │ │
-│ │ - customer: Customer                                                    │ │
-│ │ ─────────────────────────────────────────────────────────────────────── │ │
-│ │ + addItem(item): void                                                   │ │
-│ │ + removeItem(itemId): void                                              │ │
-│ │ + calculateTotal(): Money                                               │ │
-│ │ + submit(): void                                                        │ │
-│ │ + cancel(): void                                                        │ │
-│ └─────────────────────────────────────────────────────────────────────────┘ │
+│ ┌─────────────────────────────────────────────────────────────────────────┐  │
+│ │                           Order                                         │  │
+│ │ ─────────────────────────────────────────────────────────────────────── │  │
+│ │ - orderId: Long                                                         │  │
+│ │ - items: List<OrderItem>                                                │  │
+│ │ - status: OrderStatus                                                   │  │
+│ │ - customer: Customer                                                    │  │
+│ │ ─────────────────────────────────────────────────────────────────────── │  │
+│ │ + addItem(item): void                                                   │  │
+│ │ + removeItem(itemId): void                                              │  │
+│ │ + calculateTotal(): Money                                               │  │
+│ │ + submit(): void                                                        │  │
+│ │ + cancel(): void                                                        │  │
+│ └─────────────────────────────────────────────────────────────────────────┘  │
 │                                                                              │
-│ // OOP - Behavior lives with data                                           │
+│ // OOP - Behavior lives with data                                            │
 │ public class Order {                                                         │
-│     private List<OrderItem> items;                                          │
-│     private OrderStatus status;                                             │
+│     private List<OrderItem> items;                                           │
+│     private OrderStatus status;                                              │
 │                                                                              │
-│     public Money calculateTotal() {                                         │
-│         return items.stream()                                               │
-│             .map(OrderItem::getSubtotal)                                    │
-│             .reduce(Money.ZERO, Money::add);                                │
+│     public Money calculateTotal() {                                          │
+│         return items.stream()                                                │
+│             .map(OrderItem::getSubtotal)                                     │
+│             .reduce(Money.ZERO, Money::add);                                 │
 │     }                                                                        │
 │                                                                              │
-│     public void submit() {                                                  │
-│         validateItems();                                                    │
-│         validatePayment();                                                  │
-│         this.status = OrderStatus.SUBMITTED;                                │
+│     public void submit() {                                                   │
+│         validateItems();                                                     │
+│         validatePayment();                                                   │
+│         this.status = OrderStatus.SUBMITTED;                                 │
 │     }                                                                        │
 │ }                                                                            │
 └──────────────────────────────────────────────────────────────────────────────┘
@@ -674,38 +674,38 @@ USER FLOW SYMBOLS:
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │ BEST FOR:                                                                    │
-│ • Data TRANSFORMATIONS (ETL, pipelines)                                     │
+│ • Data TRANSFORMATIONS (ETL, pipelines)                                      │
 │ • STATELESS operations                                                       │
 │ • CONCURRENT processing                                                      │
-│ • Mathematical/logical computations                                         │
+│ • Mathematical/logical computations                                          │
 │                                                                              │
-│ EXAMPLE - Data Processing Pipeline (Functional):                            │
+│ EXAMPLE - Data Processing Pipeline (Functional):                             │
 │                                                                              │
-│ // Functional - Data flows through transformations                          │
-│ public class OrderProcessor {                                               │
+│ // Functional - Data flows through transformations                           │
+│ public class OrderProcessor {                                                │
 │                                                                              │
-│     // Pure function - no side effects                                      │
-│     public static Money calculateTotal(List<OrderItem> items) {             │
-│         return items.stream()                                               │
-│             .map(item -> item.price().multiply(item.quantity()))            │
-│             .reduce(Money.ZERO, Money::add);                                │
+│     // Pure function - no side effects                                       │
+│     public static Money calculateTotal(List<OrderItem> items) {              │
+│         return items.stream()                                                │
+│             .map(item -> item.price().multiply(item.quantity()))             │
+│             .reduce(Money.ZERO, Money::add);                                 │
 │     }                                                                        │
 │                                                                              │
-│     // Pipeline of transformations                                          │
-│     public static OrderSummary processOrder(OrderRequest request) {         │
-│         return validateRequest(request)                                     │
-│             .map(OrderProcessor::enrichWithInventory)                       │
-│             .map(OrderProcessor::calculatePricing)                          │
-│             .map(OrderProcessor::applyDiscounts)                            │
-│             .map(OrderProcessor::createSummary)                             │
-│             .orElseThrow(InvalidOrderException::new);                       │
+│     // Pipeline of transformations                                           │
+│     public static OrderSummary processOrder(OrderRequest request) {          │
+│         return validateRequest(request)                                      │
+│             .map(OrderProcessor::enrichWithInventory)                        │
+│             .map(OrderProcessor::calculatePricing)                           │
+│             .map(OrderProcessor::applyDiscounts)                             │
+│             .map(OrderProcessor::createSummary)                              │
+│             .orElseThrow(InvalidOrderException::new);                        │
 │     }                                                                        │
 │ }                                                                            │
 │                                                                              │
 │ BENEFITS:                                                                    │
-│ • Easy to test (pure functions)                                             │
+│ • Easy to test (pure functions)                                              │
 │ • Easy to parallelize                                                        │
-│ • Easy to reason about (no hidden state)                                    │
+│ • Easy to reason about (no hidden state)                                     │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -715,32 +715,32 @@ USER FLOW SYMBOLS:
 │ REAL SYSTEMS USE BOTH!                                                       │
 │                                                                              │
 │ • OOP for DOMAIN ENTITIES:                                                   │
-│   User, Order, Product, Payment                                             │
+│   User, Order, Product, Payment                                              │
 │                                                                              │
 │ • Functional for DATA PROCESSING:                                            │
-│   Validation, Transformation, Calculation                                   │
+│   Validation, Transformation, Calculation                                    │
 │                                                                              │
 │ EXAMPLE:                                                                     │
 │                                                                              │
 │ // Domain entity (OOP)                                                       │
 │ public class Order {                                                         │
-│     private List<OrderItem> items;                                          │
+│     private List<OrderItem> items;                                           │
 │                                                                              │
-│     // Uses functional internally!                                          │
-│     public Money getTotal() {                                               │
-│         return items.stream()                                               │
-│             .map(OrderItem::getSubtotal)                                    │
-│             .reduce(Money.ZERO, Money::add);                                │
+│     // Uses functional internally!                                           │
+│     public Money getTotal() {                                                │
+│         return items.stream()                                                │
+│             .map(OrderItem::getSubtotal)                                     │
+│             .reduce(Money.ZERO, Money::add);                                 │
 │     }                                                                        │
 │ }                                                                            │
 │                                                                              │
-│ // Service (Functional processing with OOP entities)                        │
+│ // Service (Functional processing with OOP entities)                         │
 │ public class OrderService {                                                  │
-│     public List<Order> getHighValueOrders(List<Order> orders) {             │
-│         return orders.stream()                                              │
-│             .filter(o -> o.getTotal().isGreaterThan(Money.of(1000)))       │
-│             .sorted(comparing(Order::getTotal).reversed())                  │
-│             .collect(toList());                                             │
+│     public List<Order> getHighValueOrders(List<Order> orders) {              │
+│         return orders.stream()                                               │
+│             .filter(o -> o.getTotal().isGreaterThan(Money.of(1000)))         │
+│             .sorted(comparing(Order::getTotal).reversed())                   │
+│             .collect(toList());                                              │
 │     }                                                                        │
 │ }                                                                            │
 └──────────────────────────────────────────────────────────────────────────────┘
@@ -752,46 +752,46 @@ USER FLOW SYMBOLS:
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                COMMON SYSTEM ARCHITECTURE PATTERNS                            ║
+║                COMMON SYSTEM ARCHITECTURE PATTERNS                           ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ 1. MONOLITHIC ARCHITECTURE                                                   │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ ┌─────────────────────────────────────────────────────────────────────────┐ │
-│ │                         SINGLE APPLICATION                              │ │
-│ │ ┌───────────┐ ┌───────────┐ ┌───────────┐ ┌───────────┐                │ │
-│ │ │   UI      │ │  Users    │ │  Orders   │ │ Payments  │                │ │
-│ │ │  Layer    │ │  Module   │ │  Module   │ │  Module   │                │ │
-│ │ └───────────┘ └───────────┘ └───────────┘ └───────────┘                │ │
-│ │                         │                                               │ │
-│ │                   ┌─────┴─────┐                                         │ │
-│ │                   │  Database │                                         │ │
-│ │                   └───────────┘                                         │ │
-│ └─────────────────────────────────────────────────────────────────────────┘ │
+│ ┌─────────────────────────────────────────────────────────────────────────┐  │
+│ │                         SINGLE APPLICATION                              │  │
+│ │ ┌───────────┐ ┌───────────┐ ┌───────────┐ ┌───────────┐                │   │
+│ │ │   UI      │ │  Users    │ │  Orders   │ │ Payments  │                │   │
+│ │ │  Layer    │ │  Module   │ │  Module   │ │  Module   │                │   │
+│ │ └───────────┘ └───────────┘ └───────────┘ └───────────┘                │   │
+│ │                         │                                               │  │
+│ │                   ┌─────┴─────┐                                         │  │
+│ │                   │  Database │                                         │  │
+│ │                   └───────────┘                                         │  │
+│ └─────────────────────────────────────────────────────────────────────────┘  │
 │                                                                              │
-│ PROS: Simple, easy to develop, easy to deploy                               │
-│ CONS: Hard to scale, hard to maintain as it grows                           │
-│ USE WHEN: Small team, MVP, simple domain                                    │
+│ PROS: Simple, easy to develop, easy to deploy                                │
+│ CONS: Hard to scale, hard to maintain as it grows                            │
+│ USE WHEN: Small team, MVP, simple domain                                     │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ 2. MICROSERVICES ARCHITECTURE                                                │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐               │
-│ │  User    │    │  Order   │    │ Payment  │    │ Notific. │               │
-│ │ Service  │    │ Service  │    │ Service  │    │ Service  │               │
-│ └────┬─────┘    └────┬─────┘    └────┬─────┘    └────┬─────┘               │
+│ ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐                 │
+│ │  User    │    │  Order   │    │ Payment  │    │ Notific. │                 │
+│ │ Service  │    │ Service  │    │ Service  │    │ Service  │                 │
+│ └────┬─────┘    └────┬─────┘    └────┬─────┘    └────┬─────┘                 │
 │      │               │               │               │                       │
-│   ┌──┴──┐         ┌──┴──┐         ┌──┴──┐         ┌──┴──┐                   │
-│   │ DB1 │         │ DB2 │         │ DB3 │         │ DB4 │                   │
-│   └─────┘         └─────┘         └─────┘         └─────┘                   │
+│   ┌──┴──┐         ┌──┴──┐         ┌──┴──┐         ┌──┴──┐                    │
+│   │ DB1 │         │ DB2 │         │ DB3 │         │ DB4 │                    │
+│   └─────┘         └─────┘         └─────┘         └─────┘                    │
 │                                                                              │
 │ PROS: Scalable, independent deployment, tech diversity                       │
-│ CONS: Complex, distributed system challenges, operational overhead          │
-│ USE WHEN: Large team, complex domain, need to scale independently           │
+│ CONS: Complex, distributed system challenges, operational overhead           │
+│ USE WHEN: Large team, complex domain, need to scale independently            │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -804,14 +804,14 @@ USER FLOW SYMBOLS:
 │                    └───────────┬─────────────┘                               │
 │              ┌─────────────────┼─────────────────┐                           │
 │              │                 │                 │                           │
-│         ┌────┴────┐       ┌────┴────┐       ┌────┴────┐                     │
-│         │Producer │       │Consumer │       │Consumer │                     │
-│         │(Orders) │       │(Inventory)│     │(Analytics)│                   │
-│         └─────────┘       └─────────┘       └─────────┘                     │
+│         ┌────┴────┐       ┌────┴────┐       ┌────┴────┐                      │
+│         │Producer │       │Consumer │       │Consumer │                      │
+│         │(Orders) │       │(Inventory)│     │(Analytics)│                    │
+│         └─────────┘       └─────────┘       └─────────┘                      │
 │                                                                              │
-│ PROS: Loose coupling, real-time, scalable                                   │
-│ CONS: Eventual consistency, debugging harder                                │
-│ USE WHEN: Real-time processing, many consumers, async workflows             │
+│ PROS: Loose coupling, real-time, scalable                                    │
+│ CONS: Eventual consistency, debugging harder                                 │
+│ USE WHEN: Real-time processing, many consumers, async workflows              │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -819,21 +819,21 @@ USER FLOW SYMBOLS:
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │     WRITES                              READS                                │
-│   ┌─────────┐                        ┌─────────┐                            │
-│   │ Command │                        │  Query  │                            │
-│   │ Service │                        │ Service │                            │
-│   └────┬────┘                        └────┬────┘                            │
+│   ┌─────────┐                        ┌─────────┐                             │
+│   │ Command │                        │  Query  │                             │
+│   │ Service │                        │ Service │                             │
+│   └────┬────┘                        └────┬────┘                             │
 │        │                                  │                                  │
 │        ▼                                  ▼                                  │
-│   ┌─────────┐      sync/async       ┌─────────┐                            │
-│   │  Write  │ ─────────────────────▶│  Read   │                            │
-│   │   DB    │                       │   DB    │                            │
-│   └─────────┘                       └─────────┘                            │
-│   (normalized)                      (denormalized)                          │
+│   ┌─────────┐      sync/async       ┌─────────┐                              │
+│   │  Write  │ ─────────────────────▶│  Read   │                              │
+│   │   DB    │                       │   DB    │                              │
+│   └─────────┘                       └─────────┘                              │
+│   (normalized)                      (denormalized)                           │
 │                                                                              │
-│ PROS: Optimized reads AND writes, scalable                                  │
-│ CONS: Complexity, eventual consistency                                      │
-│ USE WHEN: Read-heavy systems, complex queries, different read/write needs   │
+│ PROS: Optimized reads AND writes, scalable                                   │
+│ CONS: Complexity, eventual consistency                                       │
+│ USE WHEN: Read-heavy systems, complex queries, different read/write needs    │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -956,7 +956,7 @@ MESSAGE FLOW:
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║              SYSTEM DESIGN PRACTICE PROBLEMS                                  ║
+║              SYSTEM DESIGN PRACTICE PROBLEMS                                 ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 BEGINNER LEVEL:

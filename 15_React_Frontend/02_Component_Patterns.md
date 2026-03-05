@@ -122,19 +122,19 @@ const ProtectedDashboard = withAuth(Dashboard);
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════════╗
-║  APPROACH          │ PROS                     │ CONS                            ║
-║────────────────────┼──────────────────────────┼───────────────────────────────║
-║  CSS Modules       │ Scoped, no conflicts     │ Still CSS files                 ║
-║  (.module.css)     │ Works with any tooling   │ Dynamic styles = awkward        ║
-║────────────────────┼──────────────────────────┼───────────────────────────────║
-║  Tailwind CSS      │ Utility-first, fast      │ Long class strings             ║
-║                    │ No naming, consistent    │ Learning curve                  ║
-║────────────────────┼──────────────────────────┼───────────────────────────────║
-║  styled-components │ CSS-in-JS, dynamic props │ Runtime overhead               ║
+║  APPROACH          │ PROS                     │ CONS                             ║
+║────────────────────┼──────────────────────────┼───────────────────────────────   ║
+║  CSS Modules       │ Scoped, no conflicts     │ Still CSS files                  ║
+║  (.module.css)     │ Works with any tooling   │ Dynamic styles = awkward         ║
+║────────────────────┼──────────────────────────┼───────────────────────────────   ║
+║  Tailwind CSS      │ Utility-first, fast      │ Long class strings               ║
+║                    │ No naming, consistent    │ Learning curve                   ║
+║────────────────────┼──────────────────────────┼───────────────────────────────   ║
+║  styled-components │ CSS-in-JS, dynamic props │ Runtime overhead                 ║
 ║                    │ Full JS power             │ Bundle size                     ║
-║────────────────────┼──────────────────────────┼───────────────────────────────║
-║  Inline styles     │ Simple, dynamic          │ No pseudo-classes, media query  ║
-║  (style={{}})      │ No tooling               │ Not recommended for production  ║
+║────────────────────┼──────────────────────────┼───────────────────────────────   ║
+║  Inline styles     │ Simple, dynamic          │ No pseudo-classes, media query   ║
+║  (style={{}})      │ No tooling               │ Not recommended for production   ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 

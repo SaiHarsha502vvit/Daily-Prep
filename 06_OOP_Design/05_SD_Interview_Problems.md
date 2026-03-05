@@ -13,33 +13,33 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════════╗
-║  SYSTEM DESIGN INTERVIEW FRAMEWORK (45 minutes)                                 ║
+║  SYSTEM DESIGN INTERVIEW FRAMEWORK (45 minutes)                                  ║
 ║                                                                                  ║
-║  STEP 1: Requirements (5 min)                                                   ║
-║    → Functional: What can users do?                                             ║
-║    → Non-functional: Scale? Latency? Consistency?                               ║
-║    → Constraints: Users? QPS? Storage?                                          ║
+║  STEP 1: Requirements (5 min)                                                    ║
+║    → Functional: What can users do?                                              ║
+║    → Non-functional: Scale? Latency? Consistency?                                ║
+║    → Constraints: Users? QPS? Storage?                                           ║
 ║                                                                                  ║
-║  STEP 2: High-Level Design (10 min)                                             ║
+║  STEP 2: High-Level Design (10 min)                                              ║
 ║    → Draw API endpoints                                                          ║
-║    → Core components (services, databases, caches)                              ║
+║    → Core components (services, databases, caches)                               ║
 ║    → Data flow diagram                                                           ║
 ║                                                                                  ║
-║  STEP 3: Detailed Design (15 min)                                               ║
-║    → Database schema & choice (SQL vs NoSQL)                                    ║
-║    → API design (endpoints, payloads)                                           ║
-║    → Key algorithms (hashing, ranking, etc.)                                    ║
+║  STEP 3: Detailed Design (15 min)                                                ║
+║    → Database schema & choice (SQL vs NoSQL)                                     ║
+║    → API design (endpoints, payloads)                                            ║
+║    → Key algorithms (hashing, ranking, etc.)                                     ║
 ║                                                                                  ║
-║  STEP 4: Scale & Bottlenecks (10 min)                                           ║
+║  STEP 4: Scale & Bottlenecks (10 min)                                            ║
 ║    → Identify bottlenecks                                                        ║
 ║    → Caching strategy                                                            ║
-║    → Database sharding/replication                                              ║
+║    → Database sharding/replication                                               ║
 ║    → Load balancing                                                              ║
 ║                                                                                  ║
-║  STEP 5: Trade-offs & Edge Cases (5 min)                                        ║
-║    → What would break at 100x scale?                                            ║
+║  STEP 5: Trade-offs & Edge Cases (5 min)                                         ║
+║    → What would break at 100x scale?                                             ║
 ║    → CAP theorem trade-offs                                                      ║
-║    → Failure scenarios & recovery                                               ║
+║    → Failure scenarios & recovery                                                ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -70,8 +70,8 @@ Back-of-envelope:
 ## High-Level Design
 ```
 ┌──────────┐     ┌──────────────┐     ┌─────────────┐     ┌──────────┐
-│  Client   │────→│ Load Balancer│────→│ App Server  │────→│ Database │
-│ (browser) │     └──────────────┘     │  (shorten/  │     │ (URL     │
+│  Client   │────→│ Load Balancer│────→│ App Server  │────→│ Database│
+│ (browser) │     └──────────────┘     │  (shorten/  │     │ (URL    │
 └──────────┘                           │   redirect) │     │  mapping)│
                                        └──────┬──────┘     └──────────┘
                                               │
@@ -86,33 +86,33 @@ Back-of-envelope:
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  SHORT URL GENERATION — 3 Approaches                                            │
-│                                                                                  │
-│  1. Hash + Truncate:                                                             │
-│     MD5(longURL) → take first 7 chars of base62                                │
+│                                                                                 │
+│  1. Hash + Truncate:                                                            │
+│     MD5(longURL) → take first 7 chars of base62                                 │
 │     Problem: collisions! Need to check DB, retry with salt.                     │
-│                                                                                  │
-│  2. Auto-increment ID + Base62:  ← RECOMMENDED                                 │
-│     Database gives ID 12345 → convert to base62 → "dnh"                        │
+│                                                                                 │
+│  2. Auto-increment ID + Base62:  ← RECOMMENDED                                  │
+│     Database gives ID 12345 → convert to base62 → "dnh"                         │
 │     No collisions! But IDs are predictable (sequential).                        │
-│                                                                                  │
-│  3. Pre-generated Key Service:                                                   │
+│                                                                                 │
+│  3. Pre-generated Key Service:                                                  │
 │     Separate service pre-generates unique keys, hands them out.                 │
 │     Keys stored in two tables: used_keys and unused_keys.                       │
 │     App server requests batch of keys → fast, no collision.                     │
-│                                                                                  │
-│  DATABASE CHOICE:                                                                │
-│  → NoSQL (DynamoDB/Cassandra) — simple key-value, massive scale                │
+│                                                                                 │
+│  DATABASE CHOICE:                                                               │
+│  → NoSQL (DynamoDB/Cassandra) — simple key-value, massive scale                 │
 │  → Schema: { shortUrl: "abc123", longUrl: "https://...",                        │
-│              createdAt: timestamp, expiresAt: timestamp, userId: "..." }         │
-│                                                                                  │
+│              createdAt: timestamp, expiresAt: timestamp, userId: "..." }        │
+│                                                                                 │
 │  CACHING: Redis/Memcached for hot URLs                                          │
-│  → 80/20 rule: 20% of URLs get 80% of traffic                                 │
+│  → 80/20 rule: 20% of URLs get 80% of traffic                                   │
 │  → Cache most-accessed short→long mappings                                      │
 │  → LRU eviction policy                                                          │
-│                                                                                  │
+│                                                                                 │
 │  REDIRECT: Use HTTP 301 (permanent) or 302 (temporary)                          │
-│  → 301: Browser caches redirect → less server load, but can't track analytics  │
-│  → 302: Every request hits server → more load, but full analytics  ← BETTER    │
+│  → 301: Browser caches redirect → less server load, but can't track analytics   │
+│  → 302: Every request hits server → more load, but full analytics  ← BETTER     │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -140,30 +140,30 @@ Scale:
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  TWO APPROACHES TO NEWS FEED                                                    │
-│                                                                                  │
+│                                                                                 │
 │  APPROACH 1: Pull (Fan-out on Read)                                             │
 │  ────────────────────────────────────                                           │
-│  When user opens feed:                                                           │
+│  When user opens feed:                                                          │
 │  1. Get list of followed user IDs                                               │
 │  2. For each followed user, fetch their recent tweets                           │
-│  3. Merge & sort by timestamp                                                    │
-│  4. Return top N                                                                 │
-│                                                                                  │
+│  3. Merge & sort by timestamp                                                   │
+│  4. Return top N                                                                │
+│                                                                                 │
 │  ✅ Simple, works for new tweets immediately                                     │
-│  ❌ SLOW at read time (merge 200+ users' tweets on every request!)              │
+│  ❌ SLOW at read time (merge 200+ users' tweets on every request!)               │
 │  ❌ High read latency                                                            │
-│                                                                                  │
-│  APPROACH 2: Push (Fan-out on Write)    ← TWITTER'S APPROACH                   │
+│                                                                                 │
+│  APPROACH 2: Push (Fan-out on Write)    ← TWITTER'S APPROACH                    │
 │  ────────────────────────────────────                                           │
-│  When user posts a tweet:                                                        │
-│  1. Write tweet to tweets table                                                  │
-│  2. Look up all followers                                                        │
+│  When user posts a tweet:                                                       │
+│  1. Write tweet to tweets table                                                 │
+│  2. Look up all followers                                                       │
 │  3. Insert tweet ID into each follower's pre-computed feed cache                │
-│                                                                                  │
+│                                                                                 │
 │  ✅ Feed reads are blazing fast (just read pre-computed list)                    │
 │  ❌ Write is expensive (celebrity posts → fan-out to 50M followers!)             │
 │  ❌ Wasted work for inactive users                                               │
-│                                                                                  │
+│                                                                                 │
 │  HYBRID (What Twitter actually does):                                           │
 │  → Regular users: Push model (fan-out their tweets to followers)                │
 │  → Celebrities (>1M followers): Pull model at read time                         │
@@ -200,38 +200,38 @@ Scale: 50M DAU, each user sends 40 msgs/day = 2B msgs/day
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  CHAT SERVICE ARCHITECTURE                                                      │
-│                                                                                  │
-│  ┌──────┐  WebSocket  ┌────────────┐  Message Queue  ┌──────────────┐          │
-│  │Client│◄───────────►│ Chat Server │◄──────────────→│ Message Store│          │
+│                                                                                 │
+│  ┌──────┐  WebSocket  ┌────────────┐  Message Queue  ┌──────────────┐           │
+│  │Client│◄───────────►│ Chat Server │◄──────────────→│ Message Store│           │
 │  └──────┘             │ (stateful!) │                 │ (Cassandra)  │          │
-│                       └──────┬─────┘                 └──────────────┘          │
-│                              │                                                   │
+│                       └──────┬─────┘                 └──────────────┘           │
+│                              │                                                  │
 │                       ┌──────┴──────┐                                           │
-│                       │ Presence    │                                            │
-│                       │ Service     │                                            │
-│                       │ (Redis)     │                                            │
+│                       │ Presence    │                                           │
+│                       │ Service     │                                           │
+│                       │ (Redis)     │                                           │
 │                       └─────────────┘                                           │
-│                                                                                  │
-│  KEY DECISIONS:                                                                  │
+│                                                                                 │
+│  KEY DECISIONS:                                                                 │
 │  1. WebSocket for real-time bidirectional communication                         │
 │     (HTTP long polling as fallback)                                             │
 │  2. Chat servers are STATEFUL — each client connected to specific server        │
-│     → Need a session mapping: userId → chatServerId                            │
-│  3. Message delivery:                                                            │
+│     → Need a session mapping: userId → chatServerId                             │
+│  3. Message delivery:                                                           │
 │     → User online: push via WebSocket                                           │
 │     → User offline: store in DB, push notification                              │
 │  4. Message ordering: Server timestamp + sequence number per conversation       │
 │  5. Group messages: Store once, deliver to each member's connection             │
 │  6. Read receipts: Separate "last_read" pointer per user per conversation       │
-│                                                                                  │
-│  DATABASE SCHEMA:                                                                │
+│                                                                                 │
+│  DATABASE SCHEMA:                                                               │
 │  messages: {msg_id, conversation_id, sender_id, content, timestamp, type}       │
 │  conversations: {conv_id, type(1-on-1/group), participants[], created_at}       │
-│                                                                                  │
-│  WHY CASSANDRA?                                                                  │
+│                                                                                 │
+│  WHY CASSANDRA?                                                                 │
 │  → Write-heavy workload (2B msgs/day)                                           │
 │  → Partition key: conversation_id                                               │
-│  → Clustering key: timestamp                                                     │
+│  → Clustering key: timestamp                                                    │
 │  → Natural time-series data model                                               │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -243,40 +243,40 @@ Scale: 50M DAU, each user sends 40 msgs/day = 2B msgs/day
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  PURPOSE: Prevent abuse, protect resources, enforce SLAs                        │
-│                                                                                  │
+│                                                                                 │
 │  ALGORITHM 1: Token Bucket                                                      │
 │  ─────────────────────────────                                                  │
 │  Bucket holds N tokens. Each request takes 1 token.                             │
 │  Tokens added at rate R per second. If empty, reject request.                   │
-│                                                                                  │
-│  Bucket: [●●●●●___]  capacity=8, current=5                                     │
-│  Request arrives → take token → [●●●●____]                                     │
-│  Refill (every 1/R sec) → [●●●●●___]                                          │
+│                                                                                 │
+│  Bucket: [●●●●●___]  capacity=8, current=5                                      │
+│  Request arrives → take token → [●●●●____]                                      │
+│  Refill (every 1/R sec) → [●●●●●___]                                            │
 │  Bucket full → tokens overflow (don't exceed capacity)                          │
-│  Bucket empty → REJECT (HTTP 429 Too Many Requests)                            │
-│                                                                                  │
+│  Bucket empty → REJECT (HTTP 429 Too Many Requests)                             │
+│                                                                                 │
 │  ✅ Allows bursts (up to bucket size)                                            │
 │  ✅ Simple to implement                                                          │
-│  ✅ Memory efficient: 2 numbers per user (tokens, last_refill_time)             │
-│                                                                                  │
+│  ✅ Memory efficient: 2 numbers per user (tokens, last_refill_time)              │
+│                                                                                 │
 │  ALGORITHM 2: Sliding Window Log                                                │
 │  ────────────────────────────────                                               │
 │  Store timestamp of each request in sorted set.                                 │
 │  On new request: remove timestamps older than window, count remaining.          │
 │  If count >= limit → reject.                                                    │
-│                                                                                  │
+│                                                                                 │
 │  ✅ Most accurate                                                                │
 │  ❌ Memory intensive (stores every timestamp)                                    │
-│                                                                                  │
+│                                                                                 │
 │  ALGORITHM 3: Sliding Window Counter (BEST for most cases)                      │
 │  ─────────────────────────────────────                                          │
 │  Combine fixed window counters with sliding ratio.                              │
-│  Estimate = prev_window_count × overlap% + curr_window_count                   │
-│  ✅ Low memory    ✅ Smooths edge cases    ✅ Reasonably accurate               │
-│                                                                                  │
-│  DISTRIBUTED RATE LIMITING:                                                      │
-│  → Redis + Lua script (atomic increment + expire)                              │
-│  → Key: "rate:{userId}:{minute}" → INCR → compare to limit                    │
+│  Estimate = prev_window_count × overlap% + curr_window_count                    │
+│  ✅ Low memory    ✅ Smooths edge cases    ✅ Reasonably accurate                  │
+│                                                                                 │
+│  DISTRIBUTED RATE LIMITING:                                                     │
+│  → Redis + Lua script (atomic increment + expire)                               │
+│  → Key: "rate:{userId}:{minute}" → INCR → compare to limit                      │
 │  → Set TTL equal to window size                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -289,28 +289,28 @@ Scale: 50M DAU, each user sends 40 msgs/day = 2B msgs/day
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  TYPES: Push notification, SMS, Email                                           │
 │  SCALE: 10M notifications/day, multiple channels                                │
-│                                                                                  │
-│  ┌──────────┐     ┌────────────┐     ┌───────────────┐                         │
+│                                                                                 │
+│  ┌──────────┐     ┌────────────┐     ┌───────────────┐                          │
 │  │ Triggers  │────→│ Notification│────→│ Message Queue │                        │
 │  │ (events)  │     │  Service    │     │ (Kafka/SQS)  │                         │
-│  └──────────┘     └────────────┘     └───────┬───────┘                         │
+│  └──────────┘     └────────────┘     └───────┬───────┘                          │
 │                                       ┌──────┼──────┐                           │
 │                                       ▼      ▼      ▼                           │
-│                                   ┌──────┐┌─────┐┌──────┐                      │
+│                                   ┌──────┐┌─────┐┌──────┐                       │
 │                                   │ Push ││Email││ SMS  │                       │
-│                                   │Worker││Worker││Worker│                       │
-│                                   └──┬───┘└──┬──┘└──┬───┘                      │
+│                                   │Worker││Worker││Worker│                      │
+│                                   └──┬───┘└──┬──┘└──┬───┘                       │
 │                                      ▼       ▼      ▼                           │
 │                                   APNs/FCM  SMTP  Twilio                        │
-│                                                                                  │
-│  KEY DESIGN POINTS:                                                              │
-│  1. Decouple with message queue (don't block main flow)                        │
+│                                                                                 │
+│  KEY DESIGN POINTS:                                                             │
+│  1. Decouple with message queue (don't block main flow)                         │
 │  2. Separate workers per channel (push, email, SMS)                             │
 │  3. Template system: "Hi {name}, your order {orderId} shipped"                  │
 │  4. Preference service: user opts out of email but keeps push                   │
 │  5. Rate limiting per user per channel (no notification spam)                   │
 │  6. Retry with exponential backoff for failed deliveries                        │
-│  7. Analytics: delivered, opened, clicked                                        │
+│  7. Analytics: delivered, opened, clicked                                       │
 │  8. Priority queues: password reset > marketing email                           │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -322,41 +322,41 @@ Scale: 50M DAU, each user sends 40 msgs/day = 2B msgs/day
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHY: Reduce DB load, sub-millisecond reads                                     │
-│                                                                                  │
-│  CORE DECISIONS:                                                                 │
-│                                                                                  │
-│  1. EVICTION POLICY:                                                             │
-│     LRU (Least Recently Used) — most common                                    │
+│                                                                                 │
+│  CORE DECISIONS:                                                                │
+│                                                                                 │
+│  1. EVICTION POLICY:                                                            │
+│     LRU (Least Recently Used) — most common                                     │
 │     LFU (Least Frequently Used) — better for skewed access                      │
 │     TTL (Time To Live) — expire after fixed time                                │
-│                                                                                  │
-│  2. CACHE PATTERNS:                                                              │
+│                                                                                 │
+│  2. CACHE PATTERNS:                                                             │
 │     Cache-Aside (Lazy Loading):                                                 │
-│       Read: Check cache → miss → read DB → write cache → return                │
+│       Read: Check cache → miss → read DB → write cache → return                 │
 │       Write: Write DB → invalidate cache                                        │
-│       ✅ Only caches what's needed  ❌ Cache miss penalty                        │
-│                                                                                  │
-│     Write-Through:                                                               │
+│       ✅ Only caches what's needed  ❌ Cache miss penalty                         │
+│                                                                                 │
+│     Write-Through:                                                              │
 │       Write: Write cache AND DB simultaneously                                  │
-│       ✅ Cache always fresh  ❌ Write latency (two writes)                       │
-│                                                                                  │
-│     Write-Behind (Write-Back):                                                   │
+│       ✅ Cache always fresh  ❌ Write latency (two writes)                        │
+│                                                                                 │
+│     Write-Behind (Write-Back):                                                  │
 │       Write: Write cache → async write DB later                                 │
-│       ✅ Low write latency  ❌ Risk of data loss                                 │
-│                                                                                  │
-│  3. DISTRIBUTED CACHING:                                                         │
+│       ✅ Low write latency  ❌ Risk of data loss                                  │
+│                                                                                 │
+│  3. DISTRIBUTED CACHING:                                                        │
 │     → Consistent hashing to distribute keys across cache nodes                  │
-│     → When node dies, only 1/N keys need redistribution                        │
+│     → When node dies, only 1/N keys need redistribution                         │
 │     → Virtual nodes for better distribution                                     │
-│                                                                                  │
-│  4. CACHE PROBLEMS:                                                              │
+│                                                                                 │
+│  4. CACHE PROBLEMS:                                                             │
 │     Cache stampede: Many threads miss cache simultaneously → DB crushed         │
-│     Fix: Distributed lock (only one thread fetches, others wait)               │
-│                                                                                  │
-│     Cache penetration: Queries for non-existent keys always miss               │
-│     Fix: Cache null results with short TTL, or use Bloom filter               │
-│                                                                                  │
-│     Cache avalanche: Many keys expire at same time → sudden DB load            │
+│     Fix: Distributed lock (only one thread fetches, others wait)                │
+│                                                                                 │
+│     Cache penetration: Queries for non-existent keys always miss                │
+│     Fix: Cache null results with short TTL, or use Bloom filter                 │
+│                                                                                 │
+│     Cache avalanche: Many keys expire at same time → sudden DB load             │
 │     Fix: Add random jitter to TTL values                                        │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -367,47 +367,47 @@ Scale: 50M DAU, each user sends 40 msgs/day = 2B msgs/day
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│  MICROSERVICES ARCHITECTURE                                                      │
-│                                                                                  │
-│  ┌──────────┐     ┌──────────────┐                                             │
+│  MICROSERVICES ARCHITECTURE                                                     │
+│                                                                                 │
+│  ┌──────────┐     ┌──────────────┐                                              │
 │  │  Client   │────→│  API Gateway  │                                            │
-│  └──────────┘     └──────┬───────┘                                             │
-│                          │                                                       │
+│  └──────────┘     └──────┬───────┘                                              │
+│                          │                                                      │
 │        ┌─────────────────┼─────────────────┐                                    │
 │        ▼                 ▼                 ▼                                    │
-│  ┌───────────┐    ┌───────────┐    ┌───────────┐                               │
-│  │  Product   │    │  Order     │    │  Payment   │                              │
-│  │  Service   │    │  Service   │    │  Service   │                              │
-│  └─────┬─────┘    └─────┬─────┘    └─────┬─────┘                              │
-│        │                │                │                                       │
-│  ┌─────┴─────┐    ┌─────┴─────┐    ┌─────┴─────┐                              │
-│  │  Product   │    │  Order     │    │  Payment   │                              │
-│  │  DB        │    │  DB        │    │  DB        │                              │
-│  └───────────┘    └───────────┘    └───────────┘                               │
-│        │                │                │                                       │
+│  ┌───────────┐    ┌───────────┐    ┌───────────┐                                │
+│  │  Product   │    │  Order     │    │  Payment   │                             │
+│  │  Service   │    │  Service   │    │  Service   │                             │
+│  └─────┬─────┘    └─────┬─────┘    └─────┬─────┘                                │
+│        │                │                │                                      │
+│  ┌─────┴─────┐    ┌─────┴─────┐    ┌─────┴─────┐                                │
+│  │  Product   │    │  Order     │    │  Payment   │                             │
+│  │  DB        │    │  DB        │    │  DB        │                             │
+│  └───────────┘    └───────────┘    └───────────┘                                │
+│        │                │                │                                      │
 │        └────────────────┼────────────────┘                                      │
-│                         ▼                                                        │
-│                  ┌──────────────┐                                                │
+│                         ▼                                                       │
+│                  ┌──────────────┐                                               │
 │                  │  Kafka/SQS   │  (Event bus for cross-service communication)  │
-│                  └──────────────┘                                                │
-│                                                                                  │
-│  KEY CHALLENGES:                                                                 │
-│                                                                                  │
+│                  └──────────────┘                                               │
+│                                                                                 │
+│  KEY CHALLENGES:                                                                │
+│                                                                                 │
 │  1. INVENTORY MANAGEMENT (race condition):                                      │
-│     100 users buy last item simultaneously                                     │
+│     100 users buy last item simultaneously                                      │
 │     → Optimistic locking: UPDATE inventory SET qty=qty-1                        │
 │       WHERE product_id=X AND qty > 0                                            │
-│     → If affected rows = 0 → out of stock                                      │
-│                                                                                  │
+│     → If affected rows = 0 → out of stock                                       │
+│                                                                                 │
 │  2. ORDER SAGA (distributed transaction):                                       │
-│     Reserve inventory → Charge payment → Create shipment                       │
-│     If payment fails → compensate (release inventory)                          │
-│     → Use Saga pattern with compensation steps                                 │
-│                                                                                  │
+│     Reserve inventory → Charge payment → Create shipment                        │
+│     If payment fails → compensate (release inventory)                           │
+│     → Use Saga pattern with compensation steps                                  │
+│                                                                                 │
 │  3. SEARCH: Elasticsearch for product catalog                                   │
-│     → Sync from Product DB via CDC (Change Data Capture)                       │
-│                                                                                  │
-│  4. CART: Redis (fast, TTL for abandoned carts)                                │
+│     → Sync from Product DB via CDC (Change Data Capture)                        │
+│                                                                                 │
+│  4. CART: Redis (fast, TTL for abandoned carts)                                 │
 │     → Merge guest cart with user cart on login                                  │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -419,26 +419,26 @@ Scale: 50M DAU, each user sends 40 msgs/day = 2B msgs/day
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  PURPOSE: Crawl billions of web pages, build search index                       │
-│                                                                                  │
-│  ARCHITECTURE:                                                                   │
-│  ┌────────────┐     ┌──────────────┐     ┌────────────┐                        │
-│  │  URL        │────→│  Fetcher      │────→│  Parser     │                       │
-│  │  Frontier   │     │  (HTTP GET)   │     │  (Extract   │                       │
+│                                                                                 │
+│  ARCHITECTURE:                                                                  │
+│  ┌────────────┐     ┌──────────────┐     ┌────────────┐                         │
+│  │  URL        │────→│  Fetcher      │────→│  Parser     │                      │
+│  │  Frontier   │     │  (HTTP GET)   │     │  (Extract   │                      │
 │  │  (priority  │     └──────────────┘     │   links,    │                       │
 │  │   queue)    │                          │   content)  │                       │
-│  └──────┬─────┘                          └──────┬─────┘                        │
-│         │                                        │                               │
+│  └──────┬─────┘                          └──────┬─────┘                         │
+│         │                                        │                              │
 │         │◄──── new URLs ────────────────────────┘                               │
-│         │                                                                        │
+│         │                                                                       │
 │  ┌──────┴──────┐                          ┌────────────┐                        │
-│  │  URL Filter  │                          │  Content    │                       │
-│  │  (visited?   │                          │  Store      │                       │
-│  │   robots.txt │                          │  (S3/HDFS)  │                       │
-│  │   Bloom      │                          └────────────┘                        │
-│  │   filter)    │                                                                │
+│  │  URL Filter  │                          │  Content    │                      │
+│  │  (visited?   │                          │  Store      │                      │
+│  │   robots.txt │                          │  (S3/HDFS)  │                      │
+│  │   Bloom      │                          └────────────┘                       │
+│  │   filter)    │                                                               │
 │  └─────────────┘                                                                │
-│                                                                                  │
-│  KEY DESIGN POINTS:                                                              │
+│                                                                                 │
+│  KEY DESIGN POINTS:                                                             │
 │  1. URL Frontier: Priority queue (important pages first)                        │
 │     + Politeness queue (one queue per domain, rate limited)                     │
 │  2. Deduplication: Bloom filter for "already visited?" check                    │
@@ -447,9 +447,9 @@ Scale: 50M DAU, each user sends 40 msgs/day = 2B msgs/day
 │  4. DNS resolution: Cache DNS lookups (huge performance gain)                   │
 │  5. Content dedup: SimHash/MinHash for near-duplicate pages                     │
 │  6. Trap detection: Infinite URL generators, calendar pages                     │
-│     → Max depth limit, URL pattern detection                                   │
-│  7. Consistent hashing: Distribute URLs to crawler workers                     │
-│     → Same domain always goes to same worker (politeness)                      │
+│     → Max depth limit, URL pattern detection                                    │
+│  7. Consistent hashing: Distribute URLs to crawler workers                      │
+│     → Same domain always goes to same worker (politeness)                       │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -461,14 +461,14 @@ Scale: 50M DAU, each user sends 40 msgs/day = 2B msgs/day
 ┌──────────────────┬──────────────────────────────────────────────────────────────┐
 │ Problem          │ Key Concepts Tested                                          │
 ├──────────────────┼──────────────────────────────────────────────────────────────┤
-│ URL Shortener    │ Hashing, base62, NoSQL, caching, HTTP redirects             │
-│ Twitter Feed     │ Fan-out, message queues, Redis sorted sets, hybrid approach │
-│ Chat System      │ WebSocket, presence, Cassandra, message ordering            │
-│ Rate Limiter     │ Token bucket, sliding window, Redis Lua, distributed state  │
-│ Notifications    │ Message queues, worker pools, templates, retry/backpressure │
-│ Dist. Cache      │ Consistent hashing, LRU, cache patterns, cache stampede     │
-│ E-Commerce       │ Saga pattern, inventory locking, search, microservices      │
-│ Web Crawler      │ BFS, Bloom filter, politeness, robots.txt, URL frontier     │
+│ URL Shortener    │ Hashing, base62, NoSQL, caching, HTTP redirects              │
+│ Twitter Feed     │ Fan-out, message queues, Redis sorted sets, hybrid approach  │
+│ Chat System      │ WebSocket, presence, Cassandra, message ordering             │
+│ Rate Limiter     │ Token bucket, sliding window, Redis Lua, distributed state   │
+│ Notifications    │ Message queues, worker pools, templates, retry/backpressure  │
+│ Dist. Cache      │ Consistent hashing, LRU, cache patterns, cache stampede      │
+│ E-Commerce       │ Saga pattern, inventory locking, search, microservices       │
+│ Web Crawler      │ BFS, Bloom filter, politeness, robots.txt, URL frontier      │
 └──────────────────┴──────────────────────────────────────────────────────────────┘
 ```
 

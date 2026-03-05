@@ -4,14 +4,14 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  Design patterns are PROVEN SOLUTIONS to RECURRING PROBLEMS.      ║
-║                                                                    ║
-║  Without patterns:  "I'll figure out a way to do this..."         ║
-║  With patterns:     "This is a Strategy problem — I know exactly  ║
-║                      how to structure this."                       ║
-║                                                                    ║
-║  Interview Reality: "Can you give me an example of [Pattern]?"    ║
-║  → Expected for mid-level and above                              ║
+║  Design patterns are PROVEN SOLUTIONS to RECURRING PROBLEMS.         ║
+║                                                                      ║
+║  Without patterns:  "I'll figure out a way to do this..."            ║
+║  With patterns:     "This is a Strategy problem — I know exactly     ║
+║                      how to structure this."                         ║
+║                                                                      ║
+║  Interview Reality: "Can you give me an example of [Pattern]?"       ║
+║  → Expected for mid-level and above                                  ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -21,23 +21,23 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  CREATIONAL (5)         STRUCTURAL (7)        BEHAVIORAL (11)     ║
-║  How objects are        How objects are        How objects         ║
-║  CREATED                COMPOSED              COMMUNICATE         ║
-║  ─────────────         ─────────────         ─────────────       ║
-║  Singleton ★           Adapter ★             Strategy ★          ║
-║  Factory Method ★      Decorator ★           Observer ★          ║
-║  Abstract Factory      Facade ★              Template Method ★   ║
-║  Builder ★             Proxy ★               Iterator            ║
-║  Prototype             Composite             Command             ║
-║                        Bridge                Chain of Resp ★     ║
-║                        Flyweight             State               ║
-║                                              Mediator            ║
-║                                              Memento             ║
-║                                              Visitor             ║
-║                                              Interpreter         ║
-║                                                                    ║
-║  ★ = Most commonly asked in interviews / used in practice         ║
+║  CREATIONAL (5)         STRUCTURAL (7)        BEHAVIORAL (11)        ║
+║  How objects are        How objects are        How objects           ║
+║  CREATED                COMPOSED              COMMUNICATE            ║
+║  ─────────────         ─────────────         ─────────────           ║
+║  Singleton ★           Adapter ★             Strategy ★              ║
+║  Factory Method ★      Decorator ★           Observer ★              ║
+║  Abstract Factory      Facade ★              Template Method ★       ║
+║  Builder ★             Proxy ★               Iterator                ║
+║  Prototype             Composite             Command                 ║
+║                        Bridge                Chain of Resp ★         ║
+║                        Flyweight             State                   ║
+║                                              Mediator                ║
+║                                              Memento                 ║
+║                                              Visitor                 ║
+║                                              Interpreter             ║
+║                                                                      ║
+║  ★ = Most commonly asked in interviews / used in practice            ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -49,9 +49,9 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  PROBLEM: Need exactly ONE instance of a class globally.           ║
-║  ANALOGY: There's only ONE President of a country at a time.      ║
-║  USE: Database connection pool, Logger, Configuration, Cache       ║
+║  PROBLEM: Need exactly ONE instance of a class globally.             ║
+║  ANALOGY: There's only ONE President of a country at a time.         ║
+║  USE: Database connection pool, Logger, Configuration, Cache         ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -246,7 +246,7 @@ User user = new User.Builder("Sai", "Harsha", "sai@example.com")
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
 ║  PROBLEM: You have an existing interface but need a different one.   ║
-║  ANALOGY: A power adapter that converts US plug → EU socket.         ║ 
+║  ANALOGY: A power adapter that converts US plug → EU socket.         ║
 ║  USE: Integrating third-party libraries, legacy system wrappers.     ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
@@ -545,10 +545,10 @@ cart.setDiscountStrategy(price -> price * 0.9); // 10% off inline
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  PROBLEM: Object changes → multiple others need to know.          ║
-║  ANALOGY: YouTube subscription — when channel uploads, you get    ║
-║           notified (along with all other subscribers).             ║
-║  USE: Event systems, UI updates, pub/sub, reactive programming.  ║
+║  PROBLEM: Object changes → multiple others need to know.             ║
+║  ANALOGY: YouTube subscription — when channel uploads, you get       ║
+║           notified (along with all other subscribers).               ║
+║  USE: Event systems, UI updates, pub/sub, reactive programming.      ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -612,10 +612,10 @@ orderService.placeOrder(new Order(/*...*/));
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  PROBLEM: Same algorithm steps, different implementation details.  ║
-║  ANALOGY: A recipe — same steps (prep, cook, serve) but           ║
-║           ingredients/method differ for each dish.                  ║
-║  USE: Frameworks (Spring's JdbcTemplate), data processing pipes  ║
+║  PROBLEM: Same algorithm steps, different implementation details.    ║
+║  ANALOGY: A recipe — same steps (prep, cook, serve) but              ║
+║           ingredients/method differ for each dish.                   ║
+║  USE: Frameworks (Spring's JdbcTemplate), data processing pipes      ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -683,9 +683,9 @@ importer.importData(); // runs the whole pipeline
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  PROBLEM: Multiple handlers, unknown which one handles request.   ║
-║  ANALOGY: Customer support escalation — Level 1 → 2 → Manager.  ║
-║  USE: Middleware, validation chains, logging, servlet filters.    ║
+║  PROBLEM: Multiple handlers, unknown which one handles request.      ║
+║  ANALOGY: Customer support escalation — Level 1 → 2 → Manager.       ║
+║  USE: Middleware, validation chains, logging, servlet filters.       ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -753,20 +753,20 @@ chain.handle(request);
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  PATTERN               │  WHERE IT APPEARS IN SPRING              ║
-╠════════════════════════╪══════════════════════════════════════════╣
-║  Singleton             │  @Component, @Service, @Bean (default)   ║
-║  Factory               │  BeanFactory, FactoryBean                ║
-║  Builder               │  ResponseEntity.ok().body(data).build()  ║
-║  Proxy                 │  @Transactional, @Cacheable, @Async      ║
-║  Template Method       │  JdbcTemplate, RestTemplate              ║
-║  Observer              │  ApplicationEvent + @EventListener       ║
-║  Strategy              │  AuthenticationProvider implementations  ║
-║  Decorator             │  HttpServletRequestWrapper               ║
-║  Adapter               │  HandlerAdapter in MVC                   ║
-║  Chain of Resp         │  Security Filter Chain                   ║
-║  Facade                │  Spring Data JPA Repository              ║
-║  Composite             │  CompositeCacheManager                   ║
+║  PATTERN               │  WHERE IT APPEARS IN SPRING                 ║
+╠════════════════════════╪═════════════════════════════════════════════╣
+║  Singleton             │  @Component, @Service, @Bean (default)      ║
+║  Factory               │  BeanFactory, FactoryBean                   ║
+║  Builder               │  ResponseEntity.ok().body(data).build()     ║
+║  Proxy                 │  @Transactional, @Cacheable, @Async         ║
+║  Template Method       │  JdbcTemplate, RestTemplate                 ║
+║  Observer              │  ApplicationEvent + @EventListener          ║
+║  Strategy              │  AuthenticationProvider implementations     ║
+║  Decorator             │  HttpServletRequestWrapper                  ║
+║  Adapter               │  HandlerAdapter in MVC                      ║
+║  Chain of Resp         │  Security Filter Chain                      ║
+║  Facade                │  Spring Data JPA Repository                 ║
+║  Composite             │  CompositeCacheManager                      ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -776,21 +776,21 @@ chain.handle(request);
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  WHEN YOU NEED TO...              │  USE THIS PATTERN             ║
-╠═══════════════════════════════════╪═══════════════════════════════╣
-║  Create objects flexibly          │  Factory / Abstract Factory   ║
-║  Build complex objects step by    │  Builder                      ║
-║  step                             │                               ║
-║  Ensure one instance              │  Singleton                    ║
-║  Make incompatible code work      │  Adapter                      ║
-║  Add behavior without modifying   │  Decorator                    ║
-║  Simplify a complex subsystem     │  Facade                       ║
-║  Control access or add caching    │  Proxy                        ║
-║  Swap algorithms at runtime       │  Strategy                     ║
-║  Notify subscribers of changes    │  Observer                     ║
-║  Define algorithm skeleton        │  Template Method              ║
-║  Process through multiple steps   │  Chain of Responsibility      ║
-║  Represent tree structures        │  Composite                    ║
+║  WHEN YOU NEED TO...              │  USE THIS PATTERN                ║
+╠═══════════════════════════════════╪══════════════════════════════════╣
+║  Create objects flexibly          │  Factory / Abstract Factory      ║
+║  Build complex objects step by    │  Builder                         ║
+║  step                             │                                  ║
+║  Ensure one instance              │  Singleton                       ║
+║  Make incompatible code work      │  Adapter                         ║
+║  Add behavior without modifying   │  Decorator                       ║
+║  Simplify a complex subsystem     │  Facade                          ║
+║  Control access or add caching    │  Proxy                           ║
+║  Swap algorithms at runtime       │  Strategy                        ║
+║  Notify subscribers of changes    │  Observer                        ║
+║  Define algorithm skeleton        │  Template Method                 ║
+║  Process through multiple steps   │  Chain of Responsibility         ║
+║  Represent tree structures        │  Composite                       ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -829,19 +829,19 @@ A: Global state, hard to test (use DI instead), hides dependencies,
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  Design patterns are a SHARED VOCABULARY between developers.      ║
-║                                                                    ║
-║  Without patterns:                                                 ║
-║  "I made a class that wraps another class and adds logging        ║
-║   before calling the original method and..."                       ║
-║                                                                    ║
-║  With patterns:                                                    ║
-║  "I used a Decorator for logging."                                 ║
-║  → Everyone immediately understands the architecture.             ║
-║                                                                    ║
-║  ⚠️ WARNING: Don't force patterns where they're not needed.      ║
-║  The cure shouldn't be worse than the disease.                    ║
-║  Simple problems deserve simple solutions.                         ║
+║  Design patterns are a SHARED VOCABULARY between developers.         ║
+║                                                                      ║
+║  Without patterns:                                                   ║
+║  "I made a class that wraps another class and adds logging           ║
+║   before calling the original method and..."                         ║
+║                                                                      ║
+║  With patterns:                                                      ║
+║  "I used a Decorator for logging."                                   ║
+║  → Everyone immediately understands the architecture.                ║
+║                                                                      ║
+║  ⚠️ WARNING: Don't force patterns where they're not needed.          ║
+║  The cure shouldn't be worse than the disease.                       ║
+║  Simple problems deserve simple solutions.                           ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 

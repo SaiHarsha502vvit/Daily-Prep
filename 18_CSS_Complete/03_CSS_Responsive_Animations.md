@@ -6,20 +6,20 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: Making websites work on ALL screen sizes + adding motion  ║
-║        and visual delight through CSS animations.                 ║
-║                                                                    ║
-║  WHY:  60%+ of web traffic is mobile. A non-responsive site =   ║
-║        losing majority of users. Animations provide feedback,    ║
-║        guide attention, and make UIs feel polished/professional. ║
-║                                                                    ║
-║  WHO:  Every frontend developer. Responsive is not optional.     ║
-║                                                                    ║
-║  WHEN: Responsive: from project START (mobile-first approach).   ║
-║        Animations: after layout works. Enhance, don't distract.  ║
-║                                                                    ║
-║  HOW:  Media queries, fluid units (%, vw, clamp), CSS           ║
-║        transforms, transitions, @keyframes animations.            ║
+║  WHAT: Making websites work on ALL screen sizes + adding motion      ║
+║        and visual delight through CSS animations.                    ║
+║                                                                      ║
+║  WHY:  60%+ of web traffic is mobile. A non-responsive site =        ║
+║        losing majority of users. Animations provide feedback,        ║
+║        guide attention, and make UIs feel polished/professional.     ║
+║                                                                      ║
+║  WHO:  Every frontend developer. Responsive is not optional.         ║
+║                                                                      ║
+║  WHEN: Responsive: from project START (mobile-first approach).       ║
+║        Animations: after layout works. Enhance, don't distract.      ║
+║                                                                      ║
+║  HOW:  Media queries, fluid units (%, vw, clamp), CSS                ║
+║        transforms, transitions, @keyframes animations.               ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -89,31 +89,31 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  STANDARD BREAKPOINTS (Tailwind-inspired):                        ║
-║                                                                    ║
-║  Name  │ Min-Width │ Typical Device                               ║
-║  ──────┼───────────┼──────────────────────────────────            ║
-║  sm    │ 640px     │ Large phone (landscape)                      ║
-║  md    │ 768px     │ Tablet                                       ║
-║  lg    │ 1024px    │ Small laptop / Tablet landscape             ║
-║  xl    │ 1280px    │ Desktop                                      ║
-║  2xl   │ 1536px    │ Large desktop                                ║
-║                                                                    ║
-║  CSS CUSTOM PROPERTIES for reuse:                                 ║
-║  :root {                                                          ║
-║      --bp-sm: 640px;                                              ║
-║      --bp-md: 768px;                                              ║
-║      --bp-lg: 1024px;                                             ║
-║      --bp-xl: 1280px;                                             ║
-║  }                                                                ║
-║  /* Note: Can't use CSS vars in media queries!                   ║
-║     Use preprocessor variables or just hardcode. */              ║
-║                                                                    ║
-║  MOBILE-FIRST vs DESKTOP-FIRST:                                  ║
-║  Mobile-first: min-width (scale UP)   ← RECOMMENDED             ║
-║  Desktop-first: max-width (scale DOWN)                           ║
-║  Mobile-first is better because mobile constraints force you     ║
-║  to prioritize content. Enhancing is easier than reducing.       ║
+║  STANDARD BREAKPOINTS (Tailwind-inspired):                           ║
+║                                                                      ║
+║  Name  │ Min-Width │ Typical Device                                  ║
+║  ──────┼───────────┼──────────────────────────────────               ║
+║  sm    │ 640px     │ Large phone (landscape)                         ║
+║  md    │ 768px     │ Tablet                                          ║
+║  lg    │ 1024px    │ Small laptop / Tablet landscape                 ║
+║  xl    │ 1280px    │ Desktop                                         ║
+║  2xl   │ 1536px    │ Large desktop                                   ║
+║                                                                      ║
+║  CSS CUSTOM PROPERTIES for reuse:                                    ║
+║  :root {                                                             ║
+║      --bp-sm: 640px;                                                 ║
+║      --bp-md: 768px;                                                 ║
+║      --bp-lg: 1024px;                                                ║
+║      --bp-xl: 1280px;                                                ║
+║  }                                                                   ║
+║  /* Note: Can't use CSS vars in media queries!                       ║
+║     Use preprocessor variables or just hardcode. */                  ║
+║                                                                      ║
+║  MOBILE-FIRST vs DESKTOP-FIRST:                                      ║
+║  Mobile-first: min-width (scale UP)   ← RECOMMENDED                  ║
+║  Desktop-first: max-width (scale DOWN)                               ║
+║  Mobile-first is better because mobile constraints force you         ║
+║  to prioritize content. Enhancing is easier than reducing.           ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -250,19 +250,19 @@ h1 {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  WHY TRANSFORM IS SPECIAL:                                        ║
-║                                                                    ║
-║  Transforms are GPU-accelerated. They don't trigger layout       ║
-║  recalculation (reflow). This makes them FAST for animations.    ║
-║                                                                    ║
-║  SLOW (triggers reflow):        FAST (GPU, no reflow):           ║
-║  ├── left, top, right, bottom   ├── transform: translate()       ║
-║  ├── width, height              ├── transform: scale()           ║
-║  ├── margin, padding            ├── transform: rotate()          ║
-║  └── font-size                  ├── opacity                      ║
-║                                  └── filter                       ║
-║                                                                    ║
-║  RULE: Animate ONLY transform and opacity for 60fps.             ║
+║  WHY TRANSFORM IS SPECIAL:                                           ║
+║                                                                      ║
+║  Transforms are GPU-accelerated. They don't trigger layout           ║
+║  recalculation (reflow). This makes them FAST for animations.        ║
+║                                                                      ║
+║  SLOW (triggers reflow):        FAST (GPU, no reflow):               ║
+║  ├── left, top, right, bottom   ├── transform: translate()           ║
+║  ├── width, height              ├── transform: scale()               ║
+║  ├── margin, padding            ├── transform: rotate()              ║
+║  └── font-size                  ├── opacity                          ║
+║                                  └── filter                          ║
+║                                                                      ║
+║  RULE: Animate ONLY transform and opacity for 60fps.                 ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -305,30 +305,30 @@ h1 {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  TIMING FUNCTION: Controls acceleration of animation              ║
-║                                                                    ║
-║  ease (default):    slow → fast → slow                           ║
-║  ░░▓▓▓████████▓▓░░                                               ║
-║                                                                    ║
-║  ease-in:           slow → fast (accelerate)                     ║
-║  ░░░░░▓▓▓██████████                                              ║
-║                                                                    ║
-║  ease-out:          fast → slow (decelerate)                     ║
-║  ██████████▓▓▓░░░░░                                              ║
-║                                                                    ║
-║  ease-in-out:       slow → fast → slow                           ║
-║  ░░░▓▓████████▓▓░░░                                              ║
-║                                                                    ║
-║  linear:            constant speed                                ║
-║  ██████████████████                                               ║
-║                                                                    ║
-║  CUSTOM: cubic-bezier(x1, y1, x2, y2)                           ║
-║  Bouncy:  cubic-bezier(0.68, -0.55, 0.265, 1.55)               ║
-║  Snappy:  cubic-bezier(0.25, 0.1, 0.25, 1.0)                   ║
-║                                                                    ║
-║  PRO TIP: Use ease-out for ENTRANCES (element arriving).        ║
-║           Use ease-in for EXITS (element leaving).               ║
-║           Use ease-in-out for moves.                              ║
+║  TIMING FUNCTION: Controls acceleration of animation                 ║
+║                                                                      ║
+║  ease (default):    slow → fast → slow                               ║
+║  ░░▓▓▓████████▓▓░░                                                   ║
+║                                                                      ║
+║  ease-in:           slow → fast (accelerate)                         ║
+║  ░░░░░▓▓▓██████████                                                  ║
+║                                                                      ║
+║  ease-out:          fast → slow (decelerate)                         ║
+║  ██████████▓▓▓░░░░░                                                  ║
+║                                                                      ║
+║  ease-in-out:       slow → fast → slow                               ║
+║  ░░░▓▓████████▓▓░░░                                                  ║
+║                                                                      ║
+║  linear:            constant speed                                   ║
+║  ██████████████████                                                  ║
+║                                                                      ║
+║  CUSTOM: cubic-bezier(x1, y1, x2, y2)                                ║
+║  Bouncy:  cubic-bezier(0.68, -0.55, 0.265, 1.55)                     ║
+║  Snappy:  cubic-bezier(0.25, 0.1, 0.25, 1.0)                         ║
+║                                                                      ║
+║  PRO TIP: Use ease-out for ENTRANCES (element arriving).             ║
+║           Use ease-in for EXITS (element leaving).                   ║
+║           Use ease-in-out for moves.                                 ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -448,21 +448,21 @@ h1 {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  animation-fill-mode:                                             ║
-║                                                                    ║
-║  none (default): Element snaps back to original after animation  ║
-║  Before  → [Animation runs...] → After (back to original)       ║
-║                                                                    ║
-║  forwards: Element STAYS at the final keyframe                   ║
-║  Before  → [Animation runs...] → Stays at 100% state            ║
-║                                                                    ║
-║  backwards: Element takes 0% state during delay                  ║
-║  At 0% state → [delay...] → [Animation runs...] → Original      ║
-║                                                                    ║
-║  both: Combines forwards + backwards                             ║
-║  At 0% state → [delay...] → [Animation runs...] → At 100%      ║
-║                                                                    ║
-║  MOST USED: forwards (keep the end state after animation)        ║
+║  animation-fill-mode:                                                ║
+║                                                                      ║
+║  none (default): Element snaps back to original after animation      ║
+║  Before  → [Animation runs...] → After (back to original)            ║
+║                                                                      ║
+║  forwards: Element STAYS at the final keyframe                       ║
+║  Before  → [Animation runs...] → Stays at 100% state                 ║
+║                                                                      ║
+║  backwards: Element takes 0% state during delay                      ║
+║  At 0% state → [delay...] → [Animation runs...] → Original           ║
+║                                                                      ║
+║  both: Combines forwards + backwards                                 ║
+║  At 0% state → [delay...] → [Animation runs...] → At 100%            ║
+║                                                                      ║
+║  MOST USED: forwards (keep the end state after animation)            ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -587,29 +587,29 @@ h1 {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  60 FPS ANIMATION RULES:                                         ║
-║                                                                    ║
-║  ✅ DO animate:                                                   ║
-║  • transform (translate, scale, rotate)  ← GPU accelerated      ║
-║  • opacity                               ← GPU accelerated      ║
-║  • filter (blur, brightness)             ← GPU accelerated      ║
-║                                                                    ║
-║  ❌ AVOID animating:                                              ║
-║  • width, height       ← Triggers layout + paint + composite    ║
-║  • margin, padding     ← Triggers layout + paint + composite    ║
-║  • top, left, right    ← Triggers layout + paint + composite    ║
-║  • border-radius       ← Triggers paint + composite             ║
-║  • box-shadow          ← Expensive paint                        ║
-║  • color               ← Triggers paint                         ║
-║                                                                    ║
-║  BROWSER RENDERING PIPELINE:                                      ║
-║  JS → Style → Layout → Paint → Composite                        ║
-║                                                                    ║
-║  transform/opacity skip Layout AND Paint → fastest!              ║
-║  (Only Composite step needed = GPU handles it)                   ║
-║                                                                    ║
-║  FORCE GPU LAYER: will-change: transform;                        ║
-║  (Use sparingly — each layer uses GPU memory)                    ║
+║  60 FPS ANIMATION RULES:                                             ║
+║                                                                      ║
+║  ✅ DO animate:                                                       ║
+║  • transform (translate, scale, rotate)  ← GPU accelerated           ║
+║  • opacity                               ← GPU accelerated           ║
+║  • filter (blur, brightness)             ← GPU accelerated           ║
+║                                                                      ║
+║  ❌ AVOID animating:                                                  ║
+║  • width, height       ← Triggers layout + paint + composite         ║
+║  • margin, padding     ← Triggers layout + paint + composite         ║
+║  • top, left, right    ← Triggers layout + paint + composite         ║
+║  • border-radius       ← Triggers paint + composite                  ║
+║  • box-shadow          ← Expensive paint                             ║
+║  • color               ← Triggers paint                              ║
+║                                                                      ║
+║  BROWSER RENDERING PIPELINE:                                         ║
+║  JS → Style → Layout → Paint → Composite                             ║
+║                                                                      ║
+║  transform/opacity skip Layout AND Paint → fastest!                  ║
+║  (Only Composite step needed = GPU handles it)                       ║
+║                                                                      ║
+║  FORCE GPU LAYER: will-change: transform;                            ║
+║  (Use sparingly — each layer uses GPU memory)                        ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 

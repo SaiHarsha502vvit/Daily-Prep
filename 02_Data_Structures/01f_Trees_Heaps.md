@@ -12,26 +12,26 @@
 HIERARCHICAL STRUCTURE:
 ┌────────────────────────────────────────────────────┐
 │                                                    │
-│              ┌───┐                                │
-│              │ A │  ← Root                        │
-│              └─┬─┘                                │
-│         ┌─────┴─────┐                            │
-│         ▼           ▼                            │
-│      ┌───┐       ┌───┐                          │
-│      │ B │       │ C │  ← Children of A         │
-│      └─┬─┘       └─┬─┘                          │
-│     ┌──┴──┐     ┌──┴──┐                        │
-│     ▼     ▼     ▼     ▼                        │
-│   ┌───┐ ┌───┐ ┌───┐ ┌───┐                     │
-│   │ D │ │ E │ │ F │ │ G │  ← Leaves           │
-│   └───┘ └───┘ └───┘ └───┘                     │
-│                                                │
-│ Properties:                                   │
-│ - One root node                               │
-│ - Each node has 0+ children                   │
-│ - No cycles                                   │
-│ - One path from root to any node              │
-│                                                │
+│              ┌───┐                                 │
+│              │ A │  ← Root                         │
+│              └─┬─┘                                 │
+│         ┌─────┴─────┐                              │
+│         ▼           ▼                              │
+│      ┌───┐       ┌───┐                             │
+│      │ B │       │ C │  ← Children of A            │
+│      └─┬─┘       └─┬─┘                             │
+│     ┌──┴──┐     ┌──┴──┐                            │
+│     ▼     ▼     ▼     ▼                            │
+│   ┌───┐ ┌───┐ ┌───┐ ┌───┐                          │
+│   │ D │ │ E │ │ F │ │ G │  ← Leaves                │
+│   └───┘ └───┘ └───┘ └───┘                          │
+│                                                    │
+│ Properties:                                        │
+│ - One root node                                    │
+│ - Each node has 0+ children                        │
+│ - No cycles                                        │
+│ - One path from root to any node                   │
+│                                                    │
 └────────────────────────────────────────────────────┘
 ```
 

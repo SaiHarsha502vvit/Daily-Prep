@@ -44,30 +44,30 @@ Today: Powers everything from your phone to Mars rovers
 
 ```
 ┌────────────────────────────────────────────┐
-│              YOU (Human)                    │
-│                  │                          │
-│           Type commands                     │
-│                  ▼                          │
+│              YOU (Human)                   │
+│                  │                         │
+│           Type commands                    │
+│                  ▼                         │
 │         ┌──────────────┐                   │
 │         │    SHELL     │ ← Bash, Zsh       │
-│         │  (Interpreter)│                   │
-│         │              │                    │
-│         │  Translates  │                    │
-│         │  commands to │                    │
-│         │  kernel calls│                    │
+│         │  (Interpreter)│                  │
+│         │              │                   │
+│         │  Translates  │                   │
+│         │  commands to │                   │
+│         │  kernel calls│                   │
 │         └──────┬───────┘                   │
-│                ▼                            │
+│                ▼                           │
 │         ┌──────────────┐                   │
 │         │   KERNEL     │ ← Linux core      │
-│         │              │                    │
-│         │  Controls:   │                    │
-│         │  - CPU       │                    │
-│         │  - Memory    │                    │
-│         │  - Disk      │                    │
-│         │  - Network   │                    │
+│         │              │                   │
+│         │  Controls:   │                   │
+│         │  - CPU       │                   │
+│         │  - Memory    │                   │
+│         │  - Disk      │                   │
+│         │  - Network   │                   │
 │         └──────────────┘                   │
 │         ┌──────────────┐                   │
-│         │  HARDWARE    │                    │
+│         │  HARDWARE    │                   │
 │         └──────────────┘                   │
 └────────────────────────────────────────────┘
 

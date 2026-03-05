@@ -87,11 +87,11 @@ public class OrderReportService {
 ## 🎯 From Problem to Function
 
 ```
-╔══════════════════════════════════════════════════════════════════════════════╗
+╔═══════════════════════════════════════════════════════════════════════════════╗
 ║        DSA IN REAL WORLD: INPUT → FUNCTION → OUTPUT                           ║
 ║                                                                               ║
 ║  This section shows you how DSA concepts become actual work tasks             ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+╚═══════════════════════════════════════════════════════════════════════════════╝
 ```
 
 ### Example 1: Binary Search in Billing System
@@ -675,117 +675,117 @@ public class OrganizationService {
 ## 🎓 From Theory to Production: The Right Way
 
 ```
-╔══════════════════════════════════════════════════════════════════════════════╗
+╔═══════════════════════════════════════════════════════════════════════════════╗
 ║              THE JUNIOR → SENIOR PATH (WHAT I RECOMMEND)                      ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+╚═══════════════════════════════════════════════════════════════════════════════╝
 
 You asked: "Learn functionalities first, then architecture?"
 
 ABSOLUTELY YES. Here's the detailed path:
 
-┌──────────────────────────────────────────────────────────────────────────────┐
+┌───────────────────────────────────────────────────────────────────────────────┐
 │                           LEVEL 0: FRESHER                                    │
 │                        (Where you are now)                                    │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ FOCUS: Write SMALL, CORRECT functions                                        │
-│                                                                              │
-│ What to learn:                                                               │
-│ ┌────────────────────────────────────────────────────────────────────────┐  │
-│ │ 1. Write a function that validates an email address                    │  │
-│ │ 2. Write a function that calculates GST                                │  │
-│ │ 3. Write a function that checks if array has duplicates                │  │
-│ │ 4. Write a function that finds the maximum in a list                   │  │
-│ │ 5. Write a function that sorts a list of orders by date                │  │
-│ │ 6. Write a function that groups items by category                      │  │
-│ │ 7. Write a function that calculates moving average                     │  │
-│ │ 8. Write a function that validates a PAN number format                 │  │
-│ │ 9. Write a function that calculates age from date of birth             │  │
-│ │ 10. Write a function that checks if two time ranges overlap            │  │
-│ └────────────────────────────────────────────────────────────────────────┘  │
-│                                                                              │
-│ DON'T WORRY ABOUT: Architecture, microservices, deployment                  │
-│                                                                              │
-│ TIME: 3-6 months                                                            │
-└──────────────────────────────────────────────────────────────────────────────┘
+├───────────────────────────────────────────────────────────────────────────────┤
+│                                                                               │
+│ FOCUS: Write SMALL, CORRECT functions                                         │
+│                                                                               │
+│ What to learn:                                                                │
+│ ┌────────────────────────────────────────────────────────────────────────┐    │
+│ │ 1. Write a function that validates an email address                    │    │
+│ │ 2. Write a function that calculates GST                                │    │
+│ │ 3. Write a function that checks if array has duplicates                │    │
+│ │ 4. Write a function that finds the maximum in a list                   │    │
+│ │ 5. Write a function that sorts a list of orders by date                │    │
+│ │ 6. Write a function that groups items by category                      │    │
+│ │ 7. Write a function that calculates moving average                     │    │
+│ │ 8. Write a function that validates a PAN number format                 │    │
+│ │ 9. Write a function that calculates age from date of birth             │    │
+│ │ 10. Write a function that checks if two time ranges overlap            │    │
+│ └────────────────────────────────────────────────────────────────────────┘    │
+│                                                                               │
+│ DON'T WORRY ABOUT: Architecture, microservices, deployment                    │
+│                                                                               │
+│ TIME: 3-6 months                                                              │
+└───────────────────────────────────────────────────────────────────────────────┘
                                     ↓
-┌──────────────────────────────────────────────────────────────────────────────┐
+┌───────────────────────────────────────────────────────────────────────────────┐
 │                       LEVEL 1: JUNIOR DEVELOPER                               │
 │                    (After getting first job)                                  │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ FOCUS: Combine functions into FEATURES                                       │
-│                                                                              │
-│ What to learn:                                                               │
-│ ┌────────────────────────────────────────────────────────────────────────┐  │
-│ │ 1. Build a login feature (validate, hash password, create session)     │  │
-│ │ 2. Build a CRUD for "Products" (create, read, update, delete)         │  │
-│ │ 3. Build an invoice generation feature                                 │  │
-│ │ 4. Build a simple approval workflow (submit → approve → complete)     │  │
-│ │ 5. Build a search with filters and pagination                         │  │
-│ │ 6. Write unit tests for your functions                                 │  │
-│ │ 7. Handle errors gracefully (what if database is down?)               │  │
-│ │ 8. Read and understand existing code in the project                    │  │
-│ └────────────────────────────────────────────────────────────────────────┘  │
-│                                                                              │
-│ DON'T WORRY ABOUT: System design, scaling, infrastructure                   │
-│                                                                              │
-│ TIME: 1-2 years                                                             │
-└──────────────────────────────────────────────────────────────────────────────┘
+├───────────────────────────────────────────────────────────────────────────────┤
+│                                                                               │
+│ FOCUS: Combine functions into FEATURES                                        │
+│                                                                               │
+│ What to learn:                                                                │
+│ ┌────────────────────────────────────────────────────────────────────────┐    │
+│ │ 1. Build a login feature (validate, hash password, create session)     │    │
+│ │ 2. Build a CRUD for "Products" (create, read, update, delete)         │     │
+│ │ 3. Build an invoice generation feature                                 │    │
+│ │ 4. Build a simple approval workflow (submit → approve → complete)     │     │
+│ │ 5. Build a search with filters and pagination                         │     │
+│ │ 6. Write unit tests for your functions                                 │    │
+│ │ 7. Handle errors gracefully (what if database is down?)               │     │
+│ │ 8. Read and understand existing code in the project                    │    │
+│ └────────────────────────────────────────────────────────────────────────┘    │
+│                                                                               │
+│ DON'T WORRY ABOUT: System design, scaling, infrastructure                     │
+│                                                                               │
+│ TIME: 1-2 years                                                               │
+└───────────────────────────────────────────────────────────────────────────────┘
                                     ↓
-┌──────────────────────────────────────────────────────────────────────────────┐
+┌───────────────────────────────────────────────────────────────────────────────┐
 │                       LEVEL 2: MID-LEVEL DEVELOPER                            │
 │                         (2-4 years experience)                                │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ FOCUS: Design SERVICES and MODULES                                           │
-│                                                                              │
-│ What to learn:                                                               │
-│ ┌────────────────────────────────────────────────────────────────────────┐  │
-│ │ 1. Design database schema for a module (e.g., Orders module)          │  │
-│ │ 2. Design REST APIs with proper naming and versioning                 │  │
-│ │ 3. Implement caching strategies                                        │  │
-│ │ 4. Handle concurrent requests (race conditions)                        │  │
-│ │ 5. Write integration tests                                             │  │
-│ │ 6. Performance optimization (queries, algorithms)                      │  │
-│ │ 7. Mentor junior developers                                            │  │
-│ │ 8. Participate in code reviews                                         │  │
-│ └────────────────────────────────────────────────────────────────────────┘  │
-│                                                                              │
-│ NOW START THINKING ABOUT: Service boundaries, API design                    │
-│                                                                              │
-│ TIME: 2-3 years                                                             │
-└──────────────────────────────────────────────────────────────────────────────┘
+├───────────────────────────────────────────────────────────────────────────────┤
+│                                                                               │
+│ FOCUS: Design SERVICES and MODULES                                            │
+│                                                                               │
+│ What to learn:                                                                │
+│ ┌────────────────────────────────────────────────────────────────────────┐    │
+│ │ 1. Design database schema for a module (e.g., Orders module)          │     │
+│ │ 2. Design REST APIs with proper naming and versioning                 │     │
+│ │ 3. Implement caching strategies                                        │    │
+│ │ 4. Handle concurrent requests (race conditions)                        │    │
+│ │ 5. Write integration tests                                             │    │
+│ │ 6. Performance optimization (queries, algorithms)                      │    │
+│ │ 7. Mentor junior developers                                            │    │
+│ │ 8. Participate in code reviews                                         │    │
+│ └────────────────────────────────────────────────────────────────────────┘    │
+│                                                                               │
+│ NOW START THINKING ABOUT: Service boundaries, API design                      │
+│                                                                               │
+│ TIME: 2-3 years                                                               │
+└───────────────────────────────────────────────────────────────────────────────┘
                                     ↓
-┌──────────────────────────────────────────────────────────────────────────────┐
+┌───────────────────────────────────────────────────────────────────────────────┐
 │                        LEVEL 3: SENIOR DEVELOPER                              │
 │                         (4-7 years experience)                                │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ FOCUS: Design SYSTEMS and ARCHITECTURES                                      │
-│                                                                              │
-│ What to learn:                                                               │
-│ ┌────────────────────────────────────────────────────────────────────────┐  │
-│ │ 1. Design entire ERP module (Finance, HR, etc.)                        │  │
-│ │ 2. Choose tech stack for new projects                                  │  │
-│ │ 3. Design for scalability (10x, 100x growth)                          │  │
-│ │ 4. Security architecture                                               │  │
-│ │ 5. Integration with external systems                                   │  │
-│ │ 6. Disaster recovery, high availability                                │  │
-│ │ 7. Lead a team of developers                                           │  │
-│ │ 8. Make build vs buy decisions                                         │  │
-│ └────────────────────────────────────────────────────────────────────────┘  │
-│                                                                              │
-│ NOW YOU DESIGN: Microservices, event-driven systems, data pipelines         │
-└──────────────────────────────────────────────────────────────────────────────┘
+├───────────────────────────────────────────────────────────────────────────────┤
+│                                                                               │
+│ FOCUS: Design SYSTEMS and ARCHITECTURES                                       │
+│                                                                               │
+│ What to learn:                                                                │
+│ ┌────────────────────────────────────────────────────────────────────────┐    │
+│ │ 1. Design entire ERP module (Finance, HR, etc.)                        │    │
+│ │ 2. Choose tech stack for new projects                                  │    │
+│ │ 3. Design for scalability (10x, 100x growth)                          │     │
+│ │ 4. Security architecture                                               │    │
+│ │ 5. Integration with external systems                                   │    │
+│ │ 6. Disaster recovery, high availability                                │    │
+│ │ 7. Lead a team of developers                                           │    │
+│ │ 8. Make build vs buy decisions                                         │    │
+│ └────────────────────────────────────────────────────────────────────────┘    │
+│                                                                               │
+│ NOW YOU DESIGN: Microservices, event-driven systems, data pipelines           │
+└───────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Why This Order Works (Psychology)
 
 ```
-╔══════════════════════════════════════════════════════════════════════════════╗
+╔═══════════════════════════════════════════════════════════════════════════════╗
 ║         WHY "SMALL TO BIG" IS PSYCHOLOGICALLY CORRECT                         ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+╚═══════════════════════════════════════════════════════════════════════════════╝
 
 1. CONFIDENCE BUILDS INCREMENTALLY
    ┌──────────────────────────────────────────────────────────────────────────┐
@@ -845,9 +845,9 @@ ABSOLUTELY YES. Here's the detailed path:
 ## 📋 What to Do Starting Today
 
 ```
-╔══════════════════════════════════════════════════════════════════════════════╗
+╔═══════════════════════════════════════════════════════════════════════════════╗
 ║                 YOUR 30-DAY STARTER PLAN                                      ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+╚═══════════════════════════════════════════════════════════════════════════════╝
 
 WEEK 1: MASTER BASIC FUNCTIONS
 ┌────────────────────────────────────────────────────────────────────────────┐
@@ -906,11 +906,11 @@ WEEK 4: BUILD MINI-MODULE
 ## 🧠 HOW TO ACTUALLY LEARN (Not Just Read)
 
 ```
-╔══════════════════════════════════════════════════════════════════════════════╗
+╔═══════════════════════════════════════════════════════════════════════════════╗
 ║     USE THESE 6 TECHNIQUES TO ACTUALLY RETAIN WHAT YOU LEARN                  ║
 ║                                                                               ║
-║     Full details: 09_Career_Reference/04_Brain_Psychology.md                 ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+║     Full details: 09_Career_Reference/04_Brain_Psychology.md                  ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ TECHNIQUE 1: ACTIVE RECALL                                                   │
@@ -1053,9 +1053,9 @@ DAILY SCHEDULE:
 ## 🎯 Final Message
 
 ```
-╔══════════════════════════════════════════════════════════════════════════════╗
+╔═══════════════════════════════════════════════════════════════════════════════╗
 ║                      TO YOU, THE ASPIRING DEVELOPER                           ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+╚═══════════════════════════════════════════════════════════════════════════════╝
 
 You said: "I have good knowledge in theory, applying logic is critical to me"
 

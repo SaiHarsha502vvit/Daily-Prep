@@ -36,21 +36,21 @@
 ║                                                                      ║
 ║  HTTP Request arrives at your Spring Boot application:               ║
 ║                                                                      ║
-║  ┌──────────────── SERVLET CONTAINER (Tomcat) ──────────────────┐   ║
+║  ┌──────────────── SERVLET CONTAINER (Tomcat) ──────────────────┐    ║
 ║  │                                                               │   ║
-║  │  [Request] → FILTER 1 → FILTER 2 → FILTER 3 →               │   ║
+║  │  [Request] → FILTER 1 → FILTER 2 → FILTER 3 →               │     ║
 ║  │                                                               │   ║
 ║  │              ┌── DISPATCHER SERVLET ──────────────────┐       │   ║
 ║  │              │                                        │       │   ║
 ║  │              │  HandlerMapping → "Which controller?"  │       │   ║
-║  │              │  HandlerAdapter → "Call the method"     │       │   ║
+║  │              │  HandlerAdapter → "Call the method"     │       │  ║
 ║  │              │  ViewResolver → "Render the response"  │       │   ║
 ║  │              │                                        │       │   ║
-║  │              │  @Controller methods live HERE          │       │   ║
+║  │              │  @Controller methods live HERE          │       │  ║
 ║  │              └────────────────────────────────────────┘       │   ║
 ║  │                                                               │   ║
-║  │  ← FILTER 3 ← FILTER 2 ← FILTER 1 ← [Response]             │   ║
-║  └──────────────────────────────────────────────────────────────┘   ║
+║  │  ← FILTER 3 ← FILTER 2 ← FILTER 1 ← [Response]             │      ║
+║  └──────────────────────────────────────────────────────────────┘    ║
 ║                                                                      ║
 ║  FILTER = Security guard at the building entrance                    ║
 ║  → Runs BEFORE and AFTER the request reaches Spring                  ║
@@ -148,15 +148,15 @@ Client → Tomcat → Filter1 → Filter2 → Filter3
 ║  → "Scan classpath and auto-configure beans based on what's      ║
 ║     on the classpath"                                            ║
 ║  → Found spring-boot-starter-web? → Configure Tomcat,            ║
-║    DispatcherServlet, Jackson, error handling...                  ║
-║  → Found spring-boot-starter-data-jpa? → Configure DataSource,  ║
+║    DispatcherServlet, Jackson, error handling...                 ║
+║  → Found spring-boot-starter-data-jpa? → Configure DataSource,   ║
 ║    EntityManagerFactory, TransactionManager...                   ║
 ║                                                                  ║
 ║  @ComponentScan                                                  ║
 ║  → "Scan THIS package and sub-packages for @Component,           ║
 ║    @Service, @Repository, @Controller"                           ║
 ║  → THIS is why your main class should be in the ROOT package     ║
-║  → If main class is in com.app, it scans com.app.** only        ║
+║  → If main class is in com.app, it scans com.app.** only         ║
 ║  → Classes in com.other will NOT be found!                       ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
@@ -265,7 +265,7 @@ public class MyConfig {
 ║  All calls from OUTSIDE go through the proxy.                    ║
 ║  The proxy adds behavior (transaction, security, caching).       ║
 ║                                                                  ║
-║  [Caller] → [Proxy: begin TX] → [Your Bean] → [Proxy: commit]   ║
+║  [Caller] → [Proxy: begin TX] → [Your Bean] → [Proxy: commit]    ║
 ║                                                                  ║
 ║  BUT! If your bean calls ITS OWN method:                         ║
 ║  [Your Bean] → this.internalMethod()                             ║
@@ -441,24 +441,24 @@ public class OrderService {
 ║                                                                  ║
 ║  FIELD INJECTION (the lazy way):                                 ║
 ║  @Autowired private UserRepository repo;                         ║
-║  ❌ Can't make fields final (no immutability)                    ║
-║  ❌ Hidden dependencies (not visible in constructor)             ║
-║  ❌ Can't use without Spring (can't new + inject in tests)       ║
-║  ❌ Allows too many dependencies (no visible bloat signal)       ║
+║  ❌ Can't make fields final (no immutability)                     ║
+║  ❌ Hidden dependencies (not visible in constructor)              ║
+║  ❌ Can't use without Spring (can't new + inject in tests)        ║
+║  ❌ Allows too many dependencies (no visible bloat signal)        ║
 ║                                                                  ║
 ║  SETTER INJECTION (for optional deps):                           ║
 ║  @Autowired public void setRepo(UserRepository repo) {...}       ║
 ║  ⚠️ Bean can exist in partially initialized state                ║
-║  ✅ Good for optional/changeable dependencies                    ║
+║  ✅ Good for optional/changeable dependencies                     ║
 ║                                                                  ║
 ║  CONSTRUCTOR INJECTION (the right way):                          ║
-║  public UserService(UserRepository repo) { this.repo = repo; }  ║
-║  ✅ Immutable (final fields)                                     ║
-║  ✅ All dependencies visible in constructor                      ║
-║  ✅ Works without Spring (easy testing: new UserService(mock))   ║
-║  ✅ Fails fast if dependency missing (constructor error)         ║
-║  ✅ Too many params? Signal to split the class                   ║
-║  ✅ No @Autowired needed if single constructor (Spring auto)     ║
+║  public UserService(UserRepository repo) { this.repo = repo; }   ║
+║  ✅ Immutable (final fields)                                      ║
+║  ✅ All dependencies visible in constructor                       ║
+║  ✅ Works without Spring (easy testing: new UserService(mock))    ║
+║  ✅ Fails fast if dependency missing (constructor error)          ║
+║  ✅ Too many params? Signal to split the class                    ║
+║  ✅ No @Autowired needed if single constructor (Spring auto)      ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
@@ -507,10 +507,10 @@ UserService service = new UserService(mockRepo, mockEmail, mockCache);
 ║  During creation, Spring injects Prototype ShoppingCart.         ║
 ║  That cart is created ONCE and stored in OrderService forever.   ║
 ║                                                                  ║
-║  Result: ALL users share the SAME cart!                           ║
+║  Result: ALL users share the SAME cart!                          ║
 ║  The prototype is "trapped" inside the singleton.                ║
 ║                                                                  ║
-║  It's like installing a fresh coffee cup holder once —            ║
+║  It's like installing a fresh coffee cup holder once —           ║
 ║  the "fresh cup each time" promise is broken because the         ║
 ║  holder only gets filled once (at singleton creation).           ║
 ╚══════════════════════════════════════════════════════════════════╝
@@ -556,7 +556,7 @@ public class ShoppingCart { ... }
 ```
 ╔══════════════════════════════════════════════════════════════════╗
 ║  @Controller = View Returns (traditional MVC web apps)           ║
-║  → Return value is a VIEW NAME (JSP, Thymeleaf template)        ║
+║  → Return value is a VIEW NAME (JSP, Thymeleaf template)         ║
 ║  → DispatcherServlet passes to ViewResolver to render HTML       ║
 ║                                                                  ║
 ║  @RestController = @Controller + @ResponseBody on every method   ║
@@ -574,7 +574,7 @@ public class ShoppingCart { ... }
 ║  You CAN use @Controller for REST APIs:                          ║
 ║  @Controller                                                     ║
 ║  public class UserController {                                   ║
-║    @ResponseBody  // ← Must add this to EACH method             ║
+║    @ResponseBody  // ← Must add this to EACH method              ║
 ║    @GetMapping("/users")                                         ║
 ║    public List<User> getUsers() { ... }                          ║
 ║  }                                                               ║
@@ -682,7 +682,7 @@ public class StorageConfig {
 ║  and redirect it to a thread pool.                               ║
 ║                                                                  ║
 ║  @EnableAsync tells Spring: "Create those proxies."              ║
-║  Without it, @Async is just an annotation — no behavior.        ║
+║  Without it, @Async is just an annotation — no behavior.         ║
 ║                                                                  ║
 ║  SAME GOTCHAS:                                                   ║
 ║  1. Self-call bypasses proxy → runs synchronously                ║

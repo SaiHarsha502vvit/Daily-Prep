@@ -1802,18 +1802,18 @@ _"Data structures + Algorithms = Programs. Master both, master programming."_
 # 🚀 PART FINAL: ADVANCED TOPICS & MODERN ALGORITHMS
 
 ```
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║          ADVANCED DSA - FROM BASICS TO CUTTING EDGE                              ║
-╠══════════════════════════════════════════════════════════════════════════════════╣
+╔═══════════════════════════════════════════════════════════════════════════════════╗
+║          ADVANCED DSA - FROM BASICS TO CUTTING EDGE                               ║
+╠═══════════════════════════════════════════════════════════════════════════════════╣
 ║                                                                                   ║
-║  This section covers advanced topics that build on the fundamentals:             ║
-║  • String matching algorithms (beyond basic search)                              ║
-║  • Randomized algorithms and their applications                                  ║
-║  • Approximate algorithms for NP-hard problems                                   ║
-║  • Modern data structures used in production systems                             ║
-║  • Interview-level advanced patterns                                             ║
+║  This section covers advanced topics that build on the fundamentals:              ║
+║  • String matching algorithms (beyond basic search)                               ║
+║  • Randomized algorithms and their applications                                   ║
+║  • Approximate algorithms for NP-hard problems                                    ║
+║  • Modern data structures used in production systems                              ║
+║  • Interview-level advanced patterns                                              ║
 ║                                                                                   ║
-╚══════════════════════════════════════════════════════════════════════════════════╝
+╚═══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
 

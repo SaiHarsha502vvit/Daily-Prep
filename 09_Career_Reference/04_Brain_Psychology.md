@@ -8,7 +8,7 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║        BRAIN RETENTION - COMPLETE UNDERSTANDING & GROWTH MINDSET              ║
+║        BRAIN RETENTION - COMPLETE UNDERSTANDING & GROWTH MINDSET             ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -18,41 +18,41 @@
 │                                                                              │
 │ KEY INSIGHT: Your brain is NOT a hard drive!                                 │
 │ • Hard drive: Store once → retrieve forever                                  │
-│ • Brain: Store → strengthened by USE → forgotten if unused                  │
+│ • Brain: Store → strengthened by USE → forgotten if unused                   │
 │                                                                              │
 │ MEMORY IS A SKILL, NOT A TALENT!                                             │
 │ • Anyone can develop excellent memory                                        │
-│ • It requires TECHNIQUE, not just repetition                                │
-│ • Understanding beats memorization every time                               │
+│ • It requires TECHNIQUE, not just repetition                                 │
+│ • Understanding beats memorization every time                                │
 │                                                                              │
 │ NEUROSCIENCE OF MEMORY:                                                      │
-│ • Short-term → Long-term requires CONSOLIDATION                             │
-│ • Sleep is essential for memory consolidation                               │
-│ • Emotions enhance memory (that's why stories stick)                        │
-│ • Connections to existing knowledge strengthen memory                       │
-│ • Active recall strengthens memory more than re-reading                     │
+│ • Short-term → Long-term requires CONSOLIDATION                              │
+│ • Sleep is essential for memory consolidation                                │
+│ • Emotions enhance memory (that's why stories stick)                         │
+│ • Connections to existing knowledge strengthen memory                        │
+│ • Active recall strengthens memory more than re-reading                      │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ WHAT PROBLEM DOES THIS SOLVE?                                                │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ PROBLEM 1: "I learned this last week and forgot it"                         │
-│ → Without review, 90% is forgotten in 1 week (Ebbinghaus)                   │
+│ PROBLEM 1: "I learned this last week and forgot it"                          │
+│ → Without review, 90% is forgotten in 1 week (Ebbinghaus)                    │
 │                                                                              │
-│ PROBLEM 2: "I understand when reading but can't apply"                      │
-│ → Recognition ≠ Recall. You need active retrieval practice.                │
+│ PROBLEM 2: "I understand when reading but can't apply"                       │
+│ → Recognition ≠ Recall. You need active retrieval practice.                  │
 │                                                                              │
-│ PROBLEM 3: "I've solved 500 problems but still can't solve new ones"        │
-│ → Solving without UNDERSTANDING builds no transferable skills               │
+│ PROBLEM 3: "I've solved 500 problems but still can't solve new ones"         │
+│ → Solving without UNDERSTANDING builds no transferable skills                │
 │                                                                              │
-│ PROBLEM 4: "Interview blank - I knew this!"                                 │
-│ → Stress impairs retrieval. Need stronger memory traces.                   │
+│ PROBLEM 4: "Interview blank - I knew this!"                                  │
+│ → Stress impairs retrieval. Need stronger memory traces.                     │
 │                                                                              │
 │ THE CORE ISSUE: Most people study WRONG!                                     │
-│ • Re-reading notes = feels productive but doesn't build memory             │
-│ • Solving same problems = comfort, not growth                               │
-│ • Cramming = temporary memory, gone after exam                              │
+│ • Re-reading notes = feels productive but doesn't build memory               │
+│ • Solving same problems = comfort, not growth                                │
+│ • Cramming = temporary memory, gone after exam                               │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -60,52 +60,52 @@
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │ 1. PATTERNS MUST BE INSTANT:                                                 │
-│    Interview gives you 30-45 minutes                                        │
-│    No time to "figure out" which pattern to use                             │
-│    Must RECOGNIZE instantly from problem structure                          │
+│    Interview gives you 30-45 minutes                                         │
+│    No time to "figure out" which pattern to use                              │
+│    Must RECOGNIZE instantly from problem structure                           │
 │                                                                              │
 │ 2. KNOWLEDGE COMPOUNDS:                                                      │
 │    DP builds on recursion                                                    │
 │    Graph algorithms build on trees                                           │
 │    Advanced patterns combine basic ones                                      │
-│    If you forget basics, advanced becomes impossible                        │
+│    If you forget basics, advanced becomes impossible                         │
 │                                                                              │
 │ 3. REAL WORK NEEDS RECALL:                                                   │
 │    At work, you can't Google everything                                      │
-│    Need to KNOW when to use HashMap vs TreeMap                              │
-│    Quick decisions require internalized knowledge                           │
+│    Need to KNOW when to use HashMap vs TreeMap                               │
+│    Quick decisions require internalized knowledge                            │
 │                                                                              │
 │ 4. CONFIDENCE COMES FROM MASTERY:                                            │
-│    "I've seen this pattern 20 times" → confident                            │
-│    "I think I saw something similar..." → anxious                           │
+│    "I've seen this pattern 20 times" → confident                             │
+│    "I think I saw something similar..." → anxious                            │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ ⭐ GROWTH MINDSET FOR LEARNING ⭐                                            │
+│ ⭐ GROWTH MINDSET FOR LEARNING ⭐                                              │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │ FIXED MINDSET:                                                               │
 │ • "I have a bad memory"                                                      │
-│ • "Some people just get it faster"                                          │
-│ • "I'm not smart enough for hard algorithms"                                │
-│ • "I keep forgetting, maybe I'm not meant for this"                        │
+│ • "Some people just get it faster"                                           │
+│ • "I'm not smart enough for hard algorithms"                                 │
+│ • "I keep forgetting, maybe I'm not meant for this"                          │
 │                                                                              │
 │ GROWTH MINDSET:                                                              │
-│ • "Memory is a skill I can develop"                                         │
-│ • "Struggling means my brain is growing"                                    │
-│ • "If I don't understand, I need a different explanation"                   │
-│ • "Forgetting is normal - it's a signal to review"                         │
+│ • "Memory is a skill I can develop"                                          │
+│ • "Struggling means my brain is growing"                                     │
+│ • "If I don't understand, I need a different explanation"                    │
+│ • "Forgetting is normal - it's a signal to review"                           │
 │                                                                              │
 │ THE TRUTH:                                                                   │
-│ ┌─────────────────────────────────────────────────────────────────────────┐ │
-│ │ STRUGGLE = GROWTH                                                       │ │
-│ │                                                                         │ │
-│ │ When learning feels hard, your brain is building new connections!      │ │
-│ │ Easy learning = weak memory                                             │ │
-│ │ Difficult learning = strong memory                                      │ │
-│ │                                                                         │ │
-│ │ Don't avoid hard problems - they're building your brain!               │ │
-│ └─────────────────────────────────────────────────────────────────────────┘ │
+│ ┌─────────────────────────────────────────────────────────────────────────┐  │
+│ │ STRUGGLE = GROWTH                                                       │  │
+│ │                                                                         │  │
+│ │ When learning feels hard, your brain is building new connections!      │   │
+│ │ Easy learning = weak memory                                             │  │
+│ │ Difficult learning = strong memory                                      │  │
+│ │                                                                         │  │
+│ │ Don't avoid hard problems - they're building your brain!               │   │
+│ └─────────────────────────────────────────────────────────────────────────┘  │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -113,39 +113,39 @@
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │ 1. ENCODING: Getting information IN                                          │
-│    • Active processing beats passive reading                                │
-│    • Multiple formats (visual, verbal, kinesthetic) help                   │
-│    • Emotional connection strengthens encoding                              │
+│    • Active processing beats passive reading                                 │
+│    • Multiple formats (visual, verbal, kinesthetic) help                     │
+│    • Emotional connection strengthens encoding                               │
 │                                                                              │
 │ 2. CONSOLIDATION: Making it STICK                                            │
-│    • Happens during sleep! (Sleep is crucial)                               │
-│    • Review within 24 hours to consolidate                                  │
-│    • Connections to existing knowledge help                                 │
+│    • Happens during sleep! (Sleep is crucial)                                │
+│    • Review within 24 hours to consolidate                                   │
+│    • Connections to existing knowledge help                                  │
 │                                                                              │
 │ 3. RETRIEVAL: Getting information OUT                                        │
-│    • Practice RETRIEVAL, not just exposure                                  │
-│    • The harder the retrieval, the stronger the memory                     │
-│    • Testing yourself > re-reading                                         │
+│    • Practice RETRIEVAL, not just exposure                                   │
+│    • The harder the retrieval, the stronger the memory                       │
+│    • Testing yourself > re-reading                                           │
 │                                                                              │
 │ OPTIMAL LEARNING CYCLE:                                                      │
-│ Learn → Sleep → Review → Retrieve → Apply → Teach                           │
-│   ↑________________________________________________↓                        │
+│ Learn → Sleep → Review → Retrieve → Apply → Teach                            │
+│   ↑________________________________________________↓                         │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ EXPECTED OUTPUTS OF MASTERING RETENTION                                      │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ ✅ INSTANT PATTERN RECOGNITION: See problem → Know approach immediately    │
-│ ✅ LONG-TERM KNOWLEDGE: Remember what you learned months ago                │
-│ ✅ STRESS-RESISTANT RECALL: Retrieve knowledge even under pressure          │
-│ ✅ TRANSFERABLE SKILLS: Apply patterns to new, unseen problems             │
-│ ✅ CONFIDENT INTERVIEWS: Know you KNOW the material                         │
-│ ✅ COMPOUNDING PROGRESS: Build on solid foundations                         │
+│ ✅ INSTANT PATTERN RECOGNITION: See problem → Know approach immediately       │
+│ ✅ LONG-TERM KNOWLEDGE: Remember what you learned months ago                  │
+│ ✅ STRESS-RESISTANT RECALL: Retrieve knowledge even under pressure            │
+│ ✅ TRANSFERABLE SKILLS: Apply patterns to new, unseen problems                │
+│ ✅ CONFIDENT INTERVIEWS: Know you KNOW the material                           │
+│ ✅ COMPOUNDING PROGRESS: Build on solid foundations                           │
 │                                                                              │
 │ THE TRANSFORMATION:                                                          │
-│ FROM: "I've solved this before but can't remember how"                      │
-│   TO: "I know exactly how to approach this type of problem"                 │
+│ FROM: "I've solved this before but can't remember how"                       │
+│   TO: "I know exactly how to approach this type of problem"                  │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -685,8 +685,8 @@ Success!
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║           6 SCIENTIFICALLY-PROVEN LEARNING TECHNIQUES                         ║
-║                                                                               ║
+║           6 SCIENTIFICALLY-PROVEN LEARNING TECHNIQUES                        ║
+║                                                                              ║
 ║   These are battle-tested methods used by top students worldwide             ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
@@ -695,7 +695,7 @@ Success!
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                         ACTIVE RECALL                                         │
+│                         ACTIVE RECALL                                        │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │   PROCESS:                                                                   │
@@ -706,26 +706,26 @@ Success!
 │   4. Then check against notes                                                │
 │                                                                              │
 │   WHY IT WORKS:                                                              │
-│   ┌────────────────────────────────────────────────────────────────────────┐│
-│   │ "Reading FEELS productive. Recalling BUILDS mastery."                  ││
-│   └────────────────────────────────────────────────────────────────────────┘│
+│   ┌────────────────────────────────────────────────────────────────────────┐ │
+│   │ "Reading FEELS productive. Recalling BUILDS mastery."                  │ │
+│   └────────────────────────────────────────────────────────────────────────┘ │
 │                                                                              │
 │   DSA APPLICATION:                                                           │
 │   ─────────────────                                                          │
-│   • After learning Binary Search, close notes                               │
-│   • Ask: "What are the 3 steps of binary search?"                          │
+│   • After learning Binary Search, close notes                                │
+│   • Ask: "What are the 3 steps of binary search?"                            │
 │   • Write from memory                                                        │
 │   • Check if correct                                                         │
 │                                                                              │
 │   EXAMPLE QUESTIONS TO ASK YOURSELF:                                         │
-│   • "What is the time complexity of this algorithm?"                        │
-│   • "When would I use Two Pointers vs Sliding Window?"                      │
-│   • "What are the edge cases for this problem?"                             │
-│   • "Can I write the template without looking?"                             │
+│   • "What is the time complexity of this algorithm?"                         │
+│   • "When would I use Two Pointers vs Sliding Window?"                       │
+│   • "What are the edge cases for this problem?"                              │
+│   • "Can I write the template without looking?"                              │
 │                                                                              │
 │   DAILY PRACTICE:                                                            │
-│   Close all notes → Write down everything you remember about today's topic  │
-│   → Check → Note what you forgot → Review those parts tomorrow              │
+│   Close all notes → Write down everything you remember about today's topic   │
+│   → Check → Note what you forgot → Review those parts tomorrow               │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -734,40 +734,40 @@ Success!
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                       45-15 FOCUS BLOCKS                                      │
+│                       45-15 FOCUS BLOCKS                                     │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │   THE RULE:                                                                  │
 │   ═════════                                                                  │
-│   • 45 minutes: DEEP WORK (no distractions!)                                │
-│   • 15 minutes: BREAK (NO scrolling! Walk, water, stretch)                  │
+│   • 45 minutes: DEEP WORK (no distractions!)                                 │
+│   • 15 minutes: BREAK (NO scrolling! Walk, water, stretch)                   │
 │   • Repeat 3-4 times                                                         │
 │                                                                              │
 │   WHY IT WORKS:                                                              │
-│   ┌────────────────────────────────────────────────────────────────────────┐│
-│   │ "Your brain LOVES clear start-stop cycles."                            ││
-│   └────────────────────────────────────────────────────────────────────────┘│
+│   ┌────────────────────────────────────────────────────────────────────────┐ │
+│   │ "Your brain LOVES clear start-stop cycles."                            │ │
+│   └────────────────────────────────────────────────────────────────────────┘ │
 │                                                                              │
 │   TIMELINE EXAMPLE:                                                          │
 │   ───────────────────                                                        │
-│   09:00-09:45 → Deep work (Problem solving)                                 │
-│   09:45-10:00 → Break (walk, stretch, water)                                │
-│   10:00-10:45 → Deep work (Learn new pattern)                               │
+│   09:00-09:45 → Deep work (Problem solving)                                  │
+│   09:45-10:00 → Break (walk, stretch, water)                                 │
+│   10:00-10:45 → Deep work (Learn new pattern)                                │
 │   10:45-11:00 → Break                                                        │
-│   11:00-11:45 → Deep work (Practice problems)                               │
+│   11:00-11:45 → Deep work (Practice problems)                                │
 │   11:45-12:00 → Break                                                        │
-│   12:00-12:45 → Deep work (Review and revise)                               │
+│   12:00-12:45 → Deep work (Review and revise)                                │
 │                                                                              │
-│   = 3 hours of QUALITY study (worth 6+ hours of distracted study)           │
+│   = 3 hours of QUALITY study (worth 6+ hours of distracted study)            │
 │                                                                              │
 │   BREAK RULES:                                                               │
 │   ────────────                                                               │
-│   ✅ DO: Walk, stretch, drink water, look at nature, rest eyes              │
-│   ❌ DON'T: Social media, YouTube, phone (these tire your brain!)           │
+│   ✅ DO: Walk, stretch, drink water, look at nature, rest eyes                │
+│   ❌ DON'T: Social media, YouTube, phone (these tire your brain!)             │
 │                                                                              │
 │   WHY NO PHONE?                                                              │
-│   Phone activates same brain areas as studying → No real rest               │
-│   Walking/nature → Different brain areas → Real rest                        │
+│   Phone activates same brain areas as studying → No real rest                │
+│   Walking/nature → Different brain areas → Real rest                         │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -776,22 +776,22 @@ Success!
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                       BLURTING TECHNIQUE                                      │
+│                       BLURTING TECHNIQUE                                     │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │   PROCESS:                                                                   │
 │   ════════                                                                   │
 │   1. Study a topic thoroughly                                                │
 │   2. CLOSE the book/notes                                                    │
-│   3. Dump EVERYTHING you remember on paper (blurt it out!)                  │
+│   3. Dump EVERYTHING you remember on paper (blurt it out!)                   │
 │   4. Fill gaps in a DIFFERENT COLOR                                          │
 │   5. You instantly SEE your weak areas!                                      │
 │                                                                              │
 │   WHY IT WORKS:                                                              │
-│   ┌────────────────────────────────────────────────────────────────────────┐│
-│   │ You can't hide from what you don't know.                               ││
-│   │ The different color shows exactly what needs more work.                ││
-│   └────────────────────────────────────────────────────────────────────────┘│
+│   ┌────────────────────────────────────────────────────────────────────────┐ │
+│   │ You can't hide from what you don't know.                               │ │
+│   │ The different color shows exactly what needs more work.                │ │
+│   └────────────────────────────────────────────────────────────────────────┘ │
 │                                                                              │
 │   DSA EXAMPLE:                                                               │
 │   ─────────────                                                              │
@@ -805,17 +805,17 @@ Success!
 │                                                                              │
 │   FILL GAPS (in RED/different color):                                        │
 │   "Binary search works on sorted arrays                                      │
-│    Mid = left + (right - left) / 2  ← [OVERFLOW FIX!]                       │
+│    Mid = left + (right - left) / 2  ← [OVERFLOW FIX!]                        │
 │    If target > mid, search right half                                        │
-│    If target < mid, search LEFT half ← [FORGOT!]                            │
+│    If target < mid, search LEFT half ← [FORGOT!]                             │
 │    Time complexity is O(log n)                                               │
-│    EDGE CASES: empty array, single element ← [FORGOT!]"                     │
+│    EDGE CASES: empty array, single element ← [FORGOT!]"                      │
 │                                                                              │
 │   Now you know EXACTLY what to review!                                       │
 │                                                                              │
-│   RECOMMENDED:                                                                │
+│   RECOMMENDED:                                                               │
 │   Do this after completing each chapter/pattern                              │
-│   Keep your blurt papers - they become revision sheets!                     │
+│   Keep your blurt papers - they become revision sheets!                      │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -824,12 +824,12 @@ Success!
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                       2-3-7 REVISION RULE                                     │
+│                       2-3-7 REVISION RULE                                    │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │   THE RULE:                                                                  │
 │   ═════════                                                                  │
-│   After learning something new, revise it on:                               │
+│   After learning something new, revise it on:                                │
 │                                                                              │
 │       Day 1: Learn it                                                        │
 │          ↓                                                                   │
@@ -840,37 +840,37 @@ Success!
 │       Day 7: Third revision (week later)                                     │
 │                                                                              │
 │   WHY IT WORKS:                                                              │
-│   ┌────────────────────────────────────────────────────────────────────────┐│
-│   │ "Spaced repetition BEATS last-minute cramming."                        ││
-│   │                                                                        ││
-│   │ Each revision strengthens the memory trace.                            ││
-│   │ By Day 7, it's in long-term memory.                                    ││
-│   └────────────────────────────────────────────────────────────────────────┘│
+│   ┌────────────────────────────────────────────────────────────────────────┐ │
+│   │ "Spaced repetition BEATS last-minute cramming."                        │ │
+│   │                                                                        │ │
+│   │ Each revision strengthens the memory trace.                            │ │
+│   │ By Day 7, it's in long-term memory.                                    │ │
+│   └────────────────────────────────────────────────────────────────────────┘ │
 │                                                                              │
 │   PRACTICAL IMPLEMENTATION:                                                  │
 │   ─────────────────────────                                                  │
 │                                                                              │
-│   Day 1 (Mon): Learn Two Pointers pattern                                   │
-│   Day 2 (Tue): Quick revision of Two Pointers (10 min)                      │
-│                + Learn Sliding Window (new topic)                           │
-│   Day 3 (Wed): Quick revision of Two Pointers + Sliding Window              │
-│                + Learn Binary Search (new topic)                            │
-│   Day 7 (Sun): WEEKLY REVIEW - All topics from the week                     │
+│   Day 1 (Mon): Learn Two Pointers pattern                                    │
+│   Day 2 (Tue): Quick revision of Two Pointers (10 min)                       │
+│                + Learn Sliding Window (new topic)                            │
+│   Day 3 (Wed): Quick revision of Two Pointers + Sliding Window               │
+│                + Learn Binary Search (new topic)                             │
+│   Day 7 (Sun): WEEKLY REVIEW - All topics from the week                      │
 │                                                                              │
 │   REVISION ≠ RE-READING:                                                     │
 │   ──────────────────────                                                     │
-│   ❌ Don't: Re-read notes passively                                         │
-│   ✅ Do: Try to recall from memory, then check                              │
+│   ❌ Don't: Re-read notes passively                                           │
+│   ✅ Do: Try to recall from memory, then check                                │
 │                                                                              │
 │   TRACKING TIP:                                                              │
 │   Keep a simple table:                                                       │
-│   ┌────────────────────┬────────┬────────┬────────┬────────┐               │
-│   │ Topic              │ Day 1  │ Day 2  │ Day 3  │ Day 7  │               │
-│   ├────────────────────┼────────┼────────┼────────┼────────┤               │
-│   │ Two Pointers       │ ✓ Mon  │ ✓ Tue  │ ✓ Wed  │ ✓ Sun  │               │
-│   │ Sliding Window     │ ✓ Tue  │ ✓ Wed  │ ✓ Thu  │ ✓ Mon  │               │
-│   │ Binary Search      │ ✓ Wed  │ ✓ Thu  │ ✓ Fri  │ ✓ Tue  │               │
-│   └────────────────────┴────────┴────────┴────────┴────────┘               │
+│   ┌────────────────────┬────────┬────────┬────────┬────────┐                 │
+│   │ Topic              │ Day 1  │ Day 2  │ Day 3  │ Day 7  │                 │
+│   ├────────────────────┼────────┼────────┼────────┼────────┤                 │
+│   │ Two Pointers       │ ✓ Mon  │ ✓ Tue  │ ✓ Wed  │ ✓ Sun  │                 │
+│   │ Sliding Window     │ ✓ Tue  │ ✓ Wed  │ ✓ Thu  │ ✓ Mon  │                 │
+│   │ Binary Search      │ ✓ Wed  │ ✓ Thu  │ ✓ Fri  │ ✓ Tue  │                 │
+│   └────────────────────┴────────┴────────┴────────┴────────┘                 │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -879,49 +879,49 @@ Success!
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                       FEYNMAN TECHNIQUE                                       │
+│                       FEYNMAN TECHNIQUE                                      │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │   THE RULE:                                                                  │
 │   ═════════                                                                  │
-│   Explain the topic in simple language...                                   │
-│   ...as if teaching a 10-year-old child.                                    │
+│   Explain the topic in simple language...                                    │
+│   ...as if teaching a 10-year-old child.                                     │
 │                                                                              │
 │   KEY INSIGHT:                                                               │
-│   ┌────────────────────────────────────────────────────────────────────────┐│
-│   │ "If you can't SIMPLIFY it, you don't UNDERSTAND it yet."               ││
-│   └────────────────────────────────────────────────────────────────────────┘│
+│   ┌────────────────────────────────────────────────────────────────────────┐ │
+│   │ "If you can't SIMPLIFY it, you don't UNDERSTAND it yet."               │ │
+│   └────────────────────────────────────────────────────────────────────────┘ │
 │                                                                              │
 │   THE 4 STEPS:                                                               │
 │   ─────────────                                                              │
-│   1. Write the topic name at top of page                                    │
-│   2. Explain it in SIMPLE words (no jargon!)                                │
-│   3. Identify gaps - where did you struggle to explain?                     │
-│   4. Go back to source, fill gaps, simplify further                        │
+│   1. Write the topic name at top of page                                     │
+│   2. Explain it in SIMPLE words (no jargon!)                                 │
+│   3. Identify gaps - where did you struggle to explain?                      │
+│   4. Go back to source, fill gaps, simplify further                          │
 │                                                                              │
-│   DSA EXAMPLE: Explaining Hash Table to a 10-year-old                       │
+│   DSA EXAMPLE: Explaining Hash Table to a 10-year-old                        │
 │   ─────────────────────────────────────────────────────────────────────────  │
 │                                                                              │
-│   BAD (complex): "A hash table is a data structure that implements         │
-│   an associative array abstract data type using a hash function             │
-│   to compute an index into an array of buckets."                            │
+│   BAD (complex): "A hash table is a data structure that implements           │
+│   an associative array abstract data type using a hash function              │
+│   to compute an index into an array of buckets."                             │
 │                                                                              │
-│   GOOD (simple): "Imagine a school with 100 lockers numbered 1-100.         │
-│   Each student's name is converted to a locker number using a magic         │
-│   formula (hash function). When you want to find Rahul's stuff,             │
-│   you use the formula to know exactly which locker to check.                │
-│   You don't check all 100 lockers - you go directly to his!"                │
+│   GOOD (simple): "Imagine a school with 100 lockers numbered 1-100.          │
+│   Each student's name is converted to a locker number using a magic          │
+│   formula (hash function). When you want to find Rahul's stuff,              │
+│   you use the formula to know exactly which locker to check.                 │
+│   You don't check all 100 lockers - you go directly to his!"                 │
 │                                                                              │
 │   ANOTHER EXAMPLE: Binary Search                                             │
 │   ───────────────────────────────                                            │
-│   "Imagine finding a word in a dictionary. You don't start from             │
-│   page 1. You open to the middle. Is your word before or after?             │
-│   Then you take that half and open to ITS middle. Keep doing this           │
-│   until you find the word. That's binary search!"                           │
+│   "Imagine finding a word in a dictionary. You don't start from              │
+│   page 1. You open to the middle. Is your word before or after?              │
+│   Then you take that half and open to ITS middle. Keep doing this            │
+│   until you find the word. That's binary search!"                            │
 │                                                                              │
 │   PRACTICE THIS:                                                             │
-│   Pretend you're teaching your younger sibling or cousin                    │
-│   If they wouldn't understand, simplify more!                               │
+│   Pretend you're teaching your younger sibling or cousin                     │
+│   If they wouldn't understand, simplify more!                                │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -930,58 +930,58 @@ Success!
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                     QUESTION FIRST APPROACH                                   │
+│                     QUESTION FIRST APPROACH                                  │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │   THE RULE:                                                                  │
 │   ═════════                                                                  │
-│   Start with Previous Year Questions (PYQs) / Problems BEFORE theory.       │
+│   Start with Previous Year Questions (PYQs) / Problems BEFORE theory.        │
 │                                                                              │
 │   KEY INSIGHT:                                                               │
-│   ┌────────────────────────────────────────────────────────────────────────┐│
-│   │ "It trains your brain to study with PURPOSE."                          ││
-│   │                                                                        ││
-│   │ You know WHAT to look for when reading theory.                         ││
-│   │ Your brain is primed to absorb relevant information.                   ││
-│   └────────────────────────────────────────────────────────────────────────┘│
+│   ┌────────────────────────────────────────────────────────────────────────┐ │
+│   │ "It trains your brain to study with PURPOSE."                          │ │
+│   │                                                                        │ │
+│   │ You know WHAT to look for when reading theory.                         │ │
+│   │ Your brain is primed to absorb relevant information.                   │ │
+│   └────────────────────────────────────────────────────────────────────────┘ │
 │                                                                              │
 │   THE PROCESS:                                                               │
 │   ─────────────                                                              │
-│   1. Look at problems/questions on the topic FIRST                          │
-│   2. Try to solve (even if you fail completely)                             │
+│   1. Look at problems/questions on the topic FIRST                           │
+│   2. Try to solve (even if you fail completely)                              │
 │   3. Note what you don't know                                                │
-│   4. NOW read the theory (with questions in mind)                           │
-│   5. Return to problems with fresh understanding                            │
+│   4. NOW read the theory (with questions in mind)                            │
+│   5. Return to problems with fresh understanding                             │
 │                                                                              │
 │   DSA APPLICATION:                                                           │
 │   ────────────────                                                           │
 │   WRONG ORDER:                                                               │
-│   Read all about DP → Watch videos → Then try problems                      │
-│   (You don't know WHAT to focus on, so you learn everything vaguely)        │
+│   Read all about DP → Watch videos → Then try problems                       │
+│   (You don't know WHAT to focus on, so you learn everything vaguely)         │
 │                                                                              │
 │   RIGHT ORDER:                                                               │
-│   Look at DP problems first → Notice patterns → Read theory →               │
-│   "Ah, THIS is why I need memoization!" → Solve with understanding          │
+│   Look at DP problems first → Notice patterns → Read theory →                │
+│   "Ah, THIS is why I need memoization!" → Solve with understanding           │
 │                                                                              │
 │   EXAMPLE WORKFLOW:                                                          │
 │   ───────────────────                                                        │
-│   Day 1: Open Sliding Window problems                                       │
-│          Try 2-3 problems (probably fail, that's OK!)                       │
-│          Note: "I don't understand how to track the window"                 │
+│   Day 1: Open Sliding Window problems                                        │
+│          Try 2-3 problems (probably fail, that's OK!)                        │
+│          Note: "I don't understand how to track the window"                  │
 │                                                                              │
-│   Day 1: Read Sliding Window theory                                         │
-│          Focus on: "How to track window efficiently"                        │
-│          Everything clicks because you KNOW what you need!                  │
+│   Day 1: Read Sliding Window theory                                          │
+│          Focus on: "How to track window efficiently"                         │
+│          Everything clicks because you KNOW what you need!                   │
 │                                                                              │
 │   Day 1: Return to problems                                                  │
 │          Solve with understanding                                            │
 │                                                                              │
 │   WHY THIS WORKS:                                                            │
 │   ─────────────────                                                          │
-│   • Creates curiosity (your brain WANTS answers)                            │
-│   • Activates retrieval when reading (connecting to questions)              │
-│   • Makes learning targeted, not random                                     │
-│   • Shows you exactly what matters for interviews                           │
+│   • Creates curiosity (your brain WANTS answers)                             │
+│   • Activates retrieval when reading (connecting to questions)               │
+│   • Makes learning targeted, not random                                      │
+│   • Shows you exactly what matters for interviews                            │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -990,7 +990,7 @@ Success!
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║              THE ULTIMATE DAILY LEARNING WORKFLOW                             ║
+║              THE ULTIMATE DAILY LEARNING WORKFLOW                            ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 MORNING SESSION (45-15-45-15):
@@ -1034,8 +1034,8 @@ WEEKLY SCHEDULE (2-3-7 Rule):
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │                                                                              │
-│   This system turns 3 hours of study into more learning                     │
-│   than most people get in 8 hours of unfocused work!                        │
+│   This system turns 3 hours of study into more learning                      │
+│   than most people get in 8 hours of unfocused work!                         │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```

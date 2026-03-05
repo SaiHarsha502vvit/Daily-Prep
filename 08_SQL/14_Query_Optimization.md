@@ -8,56 +8,56 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    QUERY OPTIMIZATION CHECKLIST                                  │
+│                    QUERY OPTIMIZATION CHECKLIST                                 │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  1. SELECT ONLY WHAT YOU NEED                                                   │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │  BAD:  SELECT * FROM large_table WHERE id = 1;                             ││
-│  │  GOOD: SELECT id, name, email FROM large_table WHERE id = 1;               ││
-│  │                                                                            ││
-│  │  Why: Less data transfer, possible covering index usage                    ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │  BAD:  SELECT * FROM large_table WHERE id = 1;                             │ │
+│  │  GOOD: SELECT id, name, email FROM large_table WHERE id = 1;               │ │
+│  │                                                                            │ │
+│  │  Why: Less data transfer, possible covering index usage                    │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 │  2. USE PROPER INDEXES                                                          │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │  • Index columns in WHERE, JOIN, ORDER BY                                  ││
-│  │  • Composite indexes for multi-column filters                              ││
-│  │  • Covering indexes to avoid table lookups                                 ││
-│  │  • But don't over-index (hurts writes)                                     ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │  • Index columns in WHERE, JOIN, ORDER BY                                  │ │
+│  │  • Composite indexes for multi-column filters                              │ │
+│  │  • Covering indexes to avoid table lookups                                 │ │
+│  │  • But don't over-index (hurts writes)                                     │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 │  3. AVOID FUNCTIONS ON INDEXED COLUMNS                                          │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │  BAD:  WHERE YEAR(created_at) = 2024                                       ││
-│  │  GOOD: WHERE created_at >= '2024-01-01' AND created_at < '2025-01-01'      ││
-│  │                                                                            ││
-│  │  BAD:  WHERE LOWER(email) = 'test@example.com'                             ││
-│  │  GOOD: Create functional index or store lowercase version                  ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │  BAD:  WHERE YEAR(created_at) = 2024                                       │ │
+│  │  GOOD: WHERE created_at >= '2024-01-01' AND created_at < '2025-01-01'      │ │
+│  │                                                                            │ │
+│  │  BAD:  WHERE LOWER(email) = 'test@example.com'                             │ │
+│  │  GOOD: Create functional index or store lowercase version                  │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 │  4. USE JOINS INSTEAD OF SUBQUERIES (when possible)                             │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │  BAD:  WHERE id IN (SELECT id FROM other_table WHERE ...)                  ││
-│  │  GOOD: JOIN other_table ON ... WHERE ...                                   ││
-│  │                                                                            ││
-│  │  (Modern optimizers often rewrite, but explicit JOINs are clearer)         ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │  BAD:  WHERE id IN (SELECT id FROM other_table WHERE ...)                  │ │
+│  │  GOOD: JOIN other_table ON ... WHERE ...                                   │ │
+│  │                                                                            │ │
+│  │  (Modern optimizers often rewrite, but explicit JOINs are clearer)         │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 │  5. LIMIT EARLY                                                                 │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │  • Use LIMIT to reduce result set                                          ││
-│  │  • Filter in subqueries before joins                                       ││
-│  │  • Use EXISTS instead of COUNT(*) for existence checks                     ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │  • Use LIMIT to reduce result set                                          │ │
+│  │  • Filter in subqueries before joins                                       │ │
+│  │  • Use EXISTS instead of COUNT(*) for existence checks                     │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 │  6. BATCH OPERATIONS                                                            │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │  • INSERT multiple rows in single statement                                ││
-│  │  • DELETE/UPDATE in batches with LIMIT                                     ││
-│  │  • Use transactions for related operations                                 ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │  • INSERT multiple rows in single statement                                │ │
+│  │  • DELETE/UPDATE in batches with LIMIT                                     │ │
+│  │  • Use transactions for related operations                                 │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -179,10 +179,10 @@ WHERE e.salary > 80000;
 EXPLAIN Output Interpretation:
 
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│ id │ select_type │ table │ type   │ key          │ rows │ Extra           │
-├────┼─────────────┼───────┼────────┼──────────────┼──────┼─────────────────┤
-│ 1  │ SIMPLE      │ e     │ range  │ idx_salary   │ 50   │ Using where     │
-│ 1  │ SIMPLE      │ d     │ eq_ref │ PRIMARY      │ 1    │ NULL            │
+│ id │ select_type │ table │ type   │ key          │ rows │ Extra             │
+├────┼─────────────┼───────┼────────┼──────────────┼──────┼───────────────────┤
+│ 1  │ SIMPLE      │ e     │ range  │ idx_salary   │ 50   │ Using where       │
+│ 1  │ SIMPLE      │ d     │ eq_ref │ PRIMARY      │ 1    │ NULL              │
 └─────────────────────────────────────────────────────────────────────────────┘
 
 Reading this:

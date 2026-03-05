@@ -33,20 +33,20 @@ PROPERTIES:
 │                    ASYMPTOTIC NOTATIONS                         │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  Big-O (O):     UPPER BOUND (Worst Case)                       │
-│                 f(n) = O(g(n)) means f(n) ≤ c·g(n)             │
+│  Big-O (O):     UPPER BOUND (Worst Case)                        │
+│                 f(n) = O(g(n)) means f(n) ≤ c·g(n)              │
 │                 "At most this much"                             │
 │                                                                 │
-│  Big-Omega (Ω): LOWER BOUND (Best Case)                        │
-│                 f(n) = Ω(g(n)) means f(n) ≥ c·g(n)             │
+│  Big-Omega (Ω): LOWER BOUND (Best Case)                         │
+│                 f(n) = Ω(g(n)) means f(n) ≥ c·g(n)              │
 │                 "At least this much"                            │
 │                                                                 │
-│  Big-Theta (Θ): TIGHT BOUND (Average Case)                     │
-│                 f(n) = Θ(g(n)) means c₁·g(n) ≤ f(n) ≤ c₂·g(n) │
+│  Big-Theta (Θ): TIGHT BOUND (Average Case)                      │
+│                 f(n) = Θ(g(n)) means c₁·g(n) ≤ f(n) ≤ c₂·g(n)   │
 │                 "Exactly this much"                             │
 │                                                                 │
-│  Little-o (o): Strictly less than (not tight)                  │
-│  Little-ω (ω): Strictly greater than (not tight)               │
+│  Little-o (o): Strictly less than (not tight)                   │
+│  Little-ω (ω): Strictly greater than (not tight)                │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 
@@ -108,7 +108,7 @@ int[][] matrix = new int[n][n];  // O(n²) space
 │ their solutions.                                                            │
 │                                                                             │
 │ HISTORICAL CONTEXT:                                                         │
-│ - Named after military strategy "divide et impera" (divide and rule)       │
+│ - Named after military strategy "divide et impera" (divide and rule)        │
 │ - Formalized in computer science in 1960s                                   │
 │ - Foundation for many efficient algorithms                                  │
 └─────────────────────────────────────────────────────────────────────────────┘
@@ -119,18 +119,18 @@ int[][] matrix = new int[n][n];  // O(n²) space
 │ CORE PROBLEM: Large problems that are too complex to solve directly         │
 │                                                                             │
 │ EXAMPLE - Sorting 1 million numbers:                                        │
-│ BRUTE FORCE: Compare all pairs → O(n²) = 10¹² comparisons                  │
-│ D&C (Merge Sort): Split, sort halves, merge → O(n log n) = 2×10⁷           │
+│ BRUTE FORCE: Compare all pairs → O(n²) = 10¹² comparisons                   │
+│ D&C (Merge Sort): Split, sort halves, merge → O(n log n) = 2×10⁷            │
 │                                                                             │
 │ WHY DOES D&C WORK BETTER?                                                   │
-│ • Reduces problem size EXPONENTIALLY (n → n/2 → n/4 → ...)                 │
+│ • Reduces problem size EXPONENTIALLY (n → n/2 → n/4 → ...)                  │
 │ • Each level does O(n) work, but only log(n) levels                         │
-│ • Total: O(n) × O(log n) = O(n log n)                                      │
+│ • Total: O(n) × O(log n) = O(n log n)                                       │
 │                                                                             │
 │ REAL-WORLD ANALOGY:                                                         │
 │ Organizing a library of 1000 books alphabetically:                          │
 │ • One person doing everything: VERY SLOW                                    │
-│ • Split books in half, give each half to a helper, merge results: FASTER   │
+│ • Split books in half, give each half to a helper, merge results: FASTER    │
 │ • Keep splitting until each person has ~10 books: FASTEST                   │
 └─────────────────────────────────────────────────────────────────────────────┘
 
@@ -173,13 +173,13 @@ int[][] matrix = new int[n][n];  // O(n²) space
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │ WHEN TO USE DIVIDE AND CONQUER?                                             │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│ ✅ USE D&C WHEN:                                                            │
+│ ✅ USE D&C WHEN:                                                             │
 │    • Problem can be broken into SIMILAR subproblems                         │
 │    • Subproblems are INDEPENDENT (don't share data/state)                   │
 │    • Solutions can be COMBINED efficiently                                  │
 │    • Problem has a NATURAL recursive structure                              │
 │                                                                             │
-│ ❌ DON'T USE D&C WHEN:                                                      │
+│ ❌ DON'T USE D&C WHEN:                                                       │
 │    • Subproblems OVERLAP (use Dynamic Programming instead)                  │
 │    • Problem doesn't break into similar subproblems                         │
 │    • Combining solutions is as expensive as solving original                │
@@ -199,22 +199,22 @@ int[][] matrix = new int[n][n];  // O(n²) space
 │ DIFFICULTIES & COMMON MISTAKES                                              │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │ 1. CHOOSING WRONG BASE CASE:                                                │
-│    Wrong: if (n == 0) → causes infinite recursion for n=1                  │
-│    Right: if (n <= 1) → handles both 0 and 1                               │
+│    Wrong: if (n == 0) → causes infinite recursion for n=1                   │
+│    Right: if (n <= 1) → handles both 0 and 1                                │
 │                                                                             │
 │ 2. NOT REDUCING PROBLEM SIZE:                                               │
-│    Wrong: mergeSort(arr, 0, n) recursively with same range                 │
-│    Right: mergeSort(arr, 0, mid) and mergeSort(arr, mid+1, n)              │
+│    Wrong: mergeSort(arr, 0, n) recursively with same range                  │
+│    Right: mergeSort(arr, 0, mid) and mergeSort(arr, mid+1, n)               │
 │                                                                             │
 │ 3. STACK OVERFLOW:                                                          │
 │    Problem: Too deep recursion (n = 10^6)                                   │
 │    Solution: Convert to iterative or increase stack size                    │
 │                                                                             │
 │ 4. INEFFICIENT COMBINE STEP:                                                │
-│    If combine is O(n²), overall becomes O(n² log n) - defeats purpose!     │
+│    If combine is O(n²), overall becomes O(n² log n) - defeats purpose!      │
 │                                                                             │
 │ 5. OVERLAPPING SUBPROBLEMS (misusing D&C):                                  │
-│    Fibonacci with D&C → O(2ⁿ) because subproblems overlap                  │
+│    Fibonacci with D&C → O(2ⁿ) because subproblems overlap                   │
 │    Solution: Use DP with memoization instead                                │
 └─────────────────────────────────────────────────────────────────────────────┘
 
@@ -227,26 +227,26 @@ int[][] matrix = new int[n][n];  // O(n²) space
 │ where:                                                                      │
 │   a = number of subproblems                                                 │
 │   b = size reduction factor                                                 │
-│   f(n) = work done outside recursion (divide + combine)                    │
+│   f(n) = work done outside recursion (divide + combine)                     │
 │                                                                             │
 │ COMMON D&C ALGORITHMS & THEIR COMPLEXITY:                                   │
 │ ┌────────────────────┬──────────┬───────────────────┬────────────────────┐  │
 │ │ Algorithm          │ a  │ b  │ f(n)  │ T(n)                            │  │
-│ ├────────────────────┼────┼────┼───────┼────────────────────────────────┤  │
+│ ├────────────────────┼────┼────┼───────┼────────────────────────────────┤   │
 │ │ Binary Search      │ 1  │ 2  │ O(1)  │ O(log n)                        │  │
 │ │ Merge Sort         │ 2  │ 2  │ O(n)  │ O(n log n)                      │  │
 │ │ Quick Sort (avg)   │ 2  │ 2  │ O(n)  │ O(n log n)                      │  │
-│ │ Strassen's Matrix  │ 7  │ 2  │ O(n²) │ O(n^2.807) [log₂7]             │  │
-│ │ Karatsuba Multiply │ 3  │ 2  │ O(n)  │ O(n^1.585) [log₂3]             │  │
-│ └────────────────────┴────┴────┴───────┴────────────────────────────────┘  │
+│ │ Strassen's Matrix  │ 7  │ 2  │ O(n²) │ O(n^2.807) [log₂7]             │   │
+│ │ Karatsuba Multiply │ 3  │ 2  │ O(n)  │ O(n^1.585) [log₂3]             │   │
+│ └────────────────────┴────┴────┴───────┴────────────────────────────────┘   │
 │                                                                             │
 │ EXAMPLE OUTPUT (Merge Sort):                                                │
-│ Input:  [38, 27, 43, 3, 9, 82, 10]                                         │
-│ Divide: [38, 27, 43, 3] | [9, 82, 10]                                      │
-│ Divide: [38, 27] | [43, 3] | [9, 82] | [10]                                │
-│ Conquer: [27, 38] | [3, 43] | [9, 82] | [10]                               │
-│ Combine: [3, 27, 38, 43] | [9, 10, 82]                                     │
-│ Output: [3, 9, 10, 27, 38, 43, 82]                                         │
+│ Input:  [38, 27, 43, 3, 9, 82, 10]                                          │
+│ Divide: [38, 27, 43, 3] | [9, 82, 10]                                       │
+│ Divide: [38, 27] | [43, 3] | [9, 82] | [10]                                 │
+│ Conquer: [27, 38] | [3, 43] | [9, 82] | [10]                                │
+│ Combine: [3, 27, 38, 43] | [9, 10, 82]                                      │
+│ Output: [3, 9, 10, 27, 38, 43, 82]                                          │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -258,21 +258,21 @@ int[][] matrix = new int[n][n];  // O(n²) space
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                    BINARY SEARCH - COMPLETE UNDERSTANDING                     ║
+║                    BINARY SEARCH - COMPLETE UNDERSTANDING                    ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ WHAT IS BINARY SEARCH?                                                       │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ A search algorithm that finds a target value in a SORTED array by           │
+│ A search algorithm that finds a target value in a SORTED array by            │
 │ repeatedly dividing the search interval in half.                             │
 │                                                                              │
-│ INVENTOR: While the concept is ancient, the first bug-free implementation   │
-│ took 16 years after the algorithm was published (1946-1962)!                │
+│ INVENTOR: While the concept is ancient, the first bug-free implementation    │
+│ took 16 years after the algorithm was published (1946-1962)!                 │
 │                                                                              │
-│ FUN FACT: Even experienced programmers often write buggy binary search.     │
-│ Jon Bentley found that 90% of professional programmers couldn't write      │
-│ a correct binary search in 2 hours!                                         │
+│ FUN FACT: Even experienced programmers often write buggy binary search.      │
+│ Jon Bentley found that 90% of professional programmers couldn't write        │
+│ a correct binary search in 2 hours!                                          │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -286,7 +286,7 @@ int[][] matrix = new int[n][n];  // O(n²) space
 │ DRAMATIC DIFFERENCE:                                                         │
 │ Array size 1,000,000:                                                        │
 │ • Linear: Up to 1,000,000 comparisons                                        │
-│ • Binary: Up to 20 comparisons (log₂ 1,000,000 ≈ 20)                        │
+│ • Binary: Up to 20 comparisons (log₂ 1,000,000 ≈ 20)                         │
 │                                                                              │
 │ That's 50,000x fewer comparisons!                                            │
 │                                                                              │
@@ -306,49 +306,49 @@ int[][] matrix = new int[n][n];  // O(n²) space
 │ THE LOGIC:                                                                   │
 │ If array is sorted and middle element is:                                    │
 │ • Equal to target → FOUND!                                                   │
-│ • Greater than target → Target must be in LEFT half (all right are bigger)  │
-│ • Less than target → Target must be in RIGHT half (all left are smaller)   │
+│ • Greater than target → Target must be in LEFT half (all right are bigger)   │
+│ • Less than target → Target must be in RIGHT half (all left are smaller)     │
 │                                                                              │
 │ Each comparison eliminates HALF of remaining elements!                       │
-│ n → n/2 → n/4 → n/8 → ... → 1                                               │
+│ n → n/2 → n/4 → n/8 → ... → 1                                                │
 │ This takes log₂(n) steps                                                     │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ WHEN TO USE BINARY SEARCH?                                                   │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ ✅ USE WHEN:                                                                │
-│    • Data is SORTED (or can be sorted once, searched many times)            │
+│ ✅ USE WHEN:                                                                  │
+│    • Data is SORTED (or can be sorted once, searched many times)             │
 │    • Random access is possible (arrays, not linked lists)                    │
 │    • Finding exact match                                                     │
 │    • Finding insertion point                                                 │
 │    • Finding first/last occurrence of a value                                │
-│    • Search space can be divided (not just arrays - see variations!)        │
+│    • Search space can be divided (not just arrays - see variations!)         │
 │                                                                              │
-│ ❌ DON'T USE WHEN:                                                          │
+│ ❌ DON'T USE WHEN:                                                            │
 │    • Data is unsorted and won't be searched again                            │
 │    • Data changes frequently (maintain sorted = expensive)                   │
 │    • Sequential access only (linked lists)                                   │
-│    • Very small arrays (linear search is fine for n < 10)                   │
+│    • Very small arrays (linear search is fine for n < 10)                    │
 │                                                                              │
-│ INTERVIEW SIGNAL: "Find in sorted array" or "Search space" = BINARY SEARCH  │
+│ INTERVIEW SIGNAL: "Find in sorted array" or "Search space" = BINARY SEARCH   │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ DIFFICULTIES & COMMON BUGS                                                   │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │ 1. INTEGER OVERFLOW IN MID CALCULATION:                                      │
-│    WRONG: int mid = (left + right) / 2;  // Can overflow!                   │
-│    RIGHT: int mid = left + (right - left) / 2;                              │
+│    WRONG: int mid = (left + right) / 2;  // Can overflow!                    │
+│    RIGHT: int mid = left + (right - left) / 2;                               │
 │                                                                              │
 │ 2. INFINITE LOOP (Wrong termination):                                        │
-│    WRONG: while (left < right)  with mid = left + (right-left)/2           │
+│    WRONG: while (left < right)  with mid = left + (right-left)/2             │
 │           If left=4, right=5: mid=4, never terminates!                       │
 │    RIGHT: Match loop condition with update logic                             │
 │                                                                              │
 │ 3. OFF-BY-ONE ERRORS:                                                        │
-│    When to use left = mid vs left = mid + 1?                                │
-│    When to use right = mid vs right = mid - 1?                              │
+│    When to use left = mid vs left = mid + 1?                                 │
+│    When to use right = mid vs right = mid - 1?                               │
 │    Solution: Think about whether mid could be the answer                     │
 │                                                                              │
 │ 4. EMPTY ARRAY:                                                              │
@@ -367,11 +367,11 @@ int[][] matrix = new int[n][n];  // O(n²) space
 │                                                                              │
 │ OUTPUTS:                                                                     │
 │ • Found: Return index of target                                              │
-│ • Not found: Return -1 OR insertion point (depends on variant)              │
+│ • Not found: Return -1 OR insertion point (depends on variant)               │
 │                                                                              │
 │ NUMBER OF COMPARISONS:                                                       │
 │ • Best case: 1 (target is at mid)                                            │
-│ • Worst case: ⌈log₂(n+1)⌉                                                   │
+│ • Worst case: ⌈log₂(n+1)⌉                                                    │
 │ • Average case: log₂(n) - 1                                                  │
 │                                                                              │
 │ ┌────────────────┬──────────────────────────────────────────────────────────┐│

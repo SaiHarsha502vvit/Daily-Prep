@@ -11,39 +11,39 @@
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHY: Why Clean Architecture?                                                   │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Technical debt: Bad architecture = slow development over time               │
-│  • Team productivity: Good structure = multiple devs work without conflicts   │
-│  • Testability: Layered code = easy to mock and unit test                     │
-│  • Maintenance: Clear boundaries = change one thing without breaking others   │
-│  • Interview: "How do you structure a Spring Boot project?"                   │
+│  • Technical debt: Bad architecture = slow development over time                │
+│  • Team productivity: Good structure = multiple devs work without conflicts     │
+│  • Testability: Layered code = easy to mock and unit test                       │
+│  • Maintenance: Clear boundaries = change one thing without breaking others     │
+│  • Interview: "How do you structure a Spring Boot project?"                     │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  HOW: How to Structure a Spring Boot Project?                                   │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Layered: Controller → Service → Repository (classic Spring pattern)        │
-│  • Package by feature: user/, order/, payment/ (better for large apps)        │
-│  • Hexagonal: Ports & Adapters for framework independence                      │
-│  • Shared kernel: Common DTOs, exceptions, utilities in /common               │
-│  • Configuration: Separate config classes for different concerns              │
+│  • Layered: Controller → Service → Repository (classic Spring pattern)          │
+│  • Package by feature: user/, order/, payment/ (better for large apps)          │
+│  • Hexagonal: Ports & Adapters for framework independence                       │
+│  • Shared kernel: Common DTOs, exceptions, utilities in /common                 │
+│  • Configuration: Separate config classes for different concerns                │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHEN: When to Use Each Architecture Style?                                     │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Simple layered: Small projects, MVPs, learning                              │
-│  • Package by feature: Large monoliths, future microservice extraction        │
-│  • Hexagonal: When business logic is complex, need framework independence     │
-│  • Modular monolith: When you might need microservices later                  │
-│  • CQRS: Read/write patterns differ significantly                             │
+│  • Simple layered: Small projects, MVPs, learning                               │
+│  • Package by feature: Large monoliths, future microservice extraction          │
+│  • Hexagonal: When business logic is complex, need framework independence       │
+│  • Modular monolith: When you might need microservices later                    │
+│  • CQRS: Read/write patterns differ significantly                               │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHICH: Which Quality Practices to Follow?                                      │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  ESSENTIAL:     Layered architecture, exception handling, logging              │
-│  IMPORTANT:     Code review, consistent naming, DTO patterns                   │
-│  ADVANCED:      Domain-driven design, event sourcing, modular boundaries       │
+│  ESSENTIAL:     Layered architecture, exception handling, logging               │
+│  IMPORTANT:     Code review, consistent naming, DTO patterns                    │
+│  ADVANCED:      Domain-driven design, event sourcing, modular boundaries        │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -57,56 +57,56 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    SPRING BOOT LAYERED ARCHITECTURE                              │
+│                    SPRING BOOT LAYERED ARCHITECTURE                             │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │                           ┌─────────────────┐                                   │
 │                           │     CLIENT      │                                   │
 │                           │  (Browser/App)  │                                   │
 │                           └───────┬─────────┘                                   │
 │                                   │                                             │
-│  ┌────────────────────────────────┼────────────────────────────────────────┐   │
+│  ┌────────────────────────────────┼────────────────────────────────────────┐    │
 │  │                                │                                         │   │
-│  │  ┌─────────────────────────────▼─────────────────────────────────────┐  │   │
+│  │  ┌─────────────────────────────▼─────────────────────────────────────┐  │    │
 │  │  │                    CONTROLLER LAYER                                │  │   │
 │  │  │                                                                    │  │   │
-│  │  │  • @RestController, @Controller                                   │  │   │
-│  │  │  • Request/Response handling                                      │  │   │
-│  │  │  • Validation (@Valid)                                            │  │   │
-│  │  │  • Authentication/Authorization                                   │  │   │
-│  │  │  • Exception handling (@ControllerAdvice)                        │  │   │
-│  │  │  • DTO ↔ External communication                                   │  │   │
+│  │  │  • @RestController, @Controller                                   │  │    │
+│  │  │  • Request/Response handling                                      │  │    │
+│  │  │  • Validation (@Valid)                                            │  │    │
+│  │  │  • Authentication/Authorization                                   │  │    │
+│  │  │  • Exception handling (@ControllerAdvice)                        │  │     │
+│  │  │  • DTO ↔ External communication                                   │  │    │
 │  │  │                                                                    │  │   │
-│  │  └────────────────────────────┬──────────────────────────────────────┘  │   │
-│  │                               │ DTOs                                    │   │
-│  │  ┌────────────────────────────▼──────────────────────────────────────┐  │   │
+│  │  └────────────────────────────┬──────────────────────────────────────┘  │    │
+│  │                               │ DTOs                                    │    │
+│  │  ┌────────────────────────────▼──────────────────────────────────────┐  │    │
 │  │  │                     SERVICE LAYER                                  │  │   │
 │  │  │                                                                    │  │   │
-│  │  │  • @Service                                                       │  │   │
-│  │  │  • Business logic                                                 │  │   │
-│  │  │  • Transaction management (@Transactional)                       │  │   │
-│  │  │  • Orchestration between components                              │  │   │
-│  │  │  • Domain rules enforcement                                      │  │   │
-│  │  │  • DTO ↔ Entity mapping                                          │  │   │
+│  │  │  • @Service                                                       │  │    │
+│  │  │  • Business logic                                                 │  │    │
+│  │  │  • Transaction management (@Transactional)                       │  │     │
+│  │  │  • Orchestration between components                              │  │     │
+│  │  │  • Domain rules enforcement                                      │  │     │
+│  │  │  • DTO ↔ Entity mapping                                          │  │     │
 │  │  │                                                                    │  │   │
-│  │  └────────────────────────────┬──────────────────────────────────────┘  │   │
-│  │                               │ Entities                                │   │
-│  │  ┌────────────────────────────▼──────────────────────────────────────┐  │   │
+│  │  └────────────────────────────┬──────────────────────────────────────┘  │    │
+│  │                               │ Entities                                │    │
+│  │  ┌────────────────────────────▼──────────────────────────────────────┐  │    │
 │  │  │                   REPOSITORY LAYER                                 │  │   │
 │  │  │                                                                    │  │   │
-│  │  │  • @Repository                                                    │  │   │
-│  │  │  • Data access (JpaRepository)                                   │  │   │
-│  │  │  • Custom queries                                                 │  │   │
-│  │  │  • NO business logic here!                                       │  │   │
+│  │  │  • @Repository                                                    │  │    │
+│  │  │  • Data access (JpaRepository)                                   │  │     │
+│  │  │  • Custom queries                                                 │  │    │
+│  │  │  • NO business logic here!                                       │  │     │
 │  │  │                                                                    │  │   │
-│  │  └────────────────────────────┬──────────────────────────────────────┘  │   │
-│  │                               │                                         │   │
-│  └───────────────────────────────┼─────────────────────────────────────────┘   │
+│  │  └────────────────────────────┬──────────────────────────────────────┘  │    │
+│  │                               │                                         │    │
+│  └───────────────────────────────┼─────────────────────────────────────────┘    │
 │                                  │                                              │
-│                           ┌──────▼──────┐                                      │
-│                           │  DATABASE   │                                      │
-│                           └─────────────┘                                      │
-│                                                                                  │
+│                           ┌──────▼──────┐                                       │
+│                           │  DATABASE   │                                       │
+│                           └─────────────┘                                       │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -116,12 +116,12 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    RECOMMENDED PACKAGE STRUCTURE                                 │
+│                    RECOMMENDED PACKAGE STRUCTURE                                │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  OPTION 1: LAYER-BASED (Traditional)                                            │
 │  ═══════════════════════════════════                                            │
-│                                                                                  │
+│                                                                                 │
 │  com.company.myapp/                                                             │
 │  ├── MyApplication.java                                                         │
 │  ├── controller/                                                                │
@@ -155,14 +155,14 @@
 │  └── config/                                                                    │
 │      ├── SecurityConfig.java                                                    │
 │      └── OpenApiConfig.java                                                     │
-│                                                                                  │
-│  ✅ PROS: Easy to navigate by layer                                            │
-│  ❌ CONS: Related code spread across packages                                  │
-│                                                                                  │
-│                                                                                  │
+│                                                                                 │
+│  ✅ PROS: Easy to navigate by layer                                              │
+│  ❌ CONS: Related code spread across packages                                    │
+│                                                                                 │
+│                                                                                 │
 │  OPTION 2: FEATURE/DOMAIN-BASED (Recommended for larger apps)                   │
-│  ═════════════════════════════════════════════════════════════                   │
-│                                                                                  │
+│  ═════════════════════════════════════════════════════════════                  │
+│                                                                                 │
 │  com.company.myapp/                                                             │
 │  ├── MyApplication.java                                                         │
 │  ├── user/                                                                      │
@@ -185,10 +185,10 @@
 │      ├── exception/                                                             │
 │      ├── config/                                                                │
 │      └── util/                                                                  │
-│                                                                                  │
-│  ✅ PROS: All related code together, easy to refactor to microservices        │
-│  ❌ CONS: Less obvious layer separation                                        │
-│                                                                                  │
+│                                                                                 │
+│  ✅ PROS: All related code together, easy to refactor to microservices           │
+│  ❌ CONS: Less obvious layer separation                                          │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1099,66 +1099,66 @@ class UserApiIntegrationTest {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    SPRING BOOT MASTERY CHECKLIST                                 │
+│                    SPRING BOOT MASTERY CHECKLIST                                │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  ARCHITECTURE:                                                                   │
+│                                                                                 │
+│  ARCHITECTURE:                                                                  │
 │  □ Clear separation: Controller → Service → Repository                          │
-│  □ DTOs for API contracts, Entities for persistence                            │
+│  □ DTOs for API contracts, Entities for persistence                             │
 │  □ Single Responsibility in each class                                          │
 │  □ Dependency injection via constructor (final fields)                          │
-│                                                                                  │
-│  CONTROLLERS:                                                                    │
+│                                                                                 │
+│  CONTROLLERS:                                                                   │
 │  □ @Valid on request bodies                                                     │
 │  □ Appropriate HTTP status codes                                                │
 │  □ ResponseEntity for explicit control                                          │
 │  □ No business logic (delegate to service)                                      │
 │  □ API versioning strategy                                                      │
-│                                                                                  │
-│  SERVICES:                                                                       │
-│  □ @Transactional (class level) + @Transactional(readOnly) for reads           │
+│                                                                                 │
+│  SERVICES:                                                                      │
+│  □ @Transactional (class level) + @Transactional(readOnly) for reads            │
 │  □ Business logic and validation                                                │
 │  □ Return DTOs, not entities                                                    │
 │  □ Logging for important operations                                             │
 │  □ Meaningful exceptions                                                        │
-│                                                                                  │
+│                                                                                 │
 │  JPA/REPOSITORIES:                                                              │
-│  □ LAZY fetch for all relationships                                            │
-│  □ JOIN FETCH or @EntityGraph to prevent N+1                                   │
-│  □ Use Optional for single-result queries                                      │
-│  □ Pageable for large result sets                                              │
-│  □ @Query for complex queries                                                  │
-│                                                                                  │
-│  VALIDATION:                                                                     │
+│  □ LAZY fetch for all relationships                                             │
+│  □ JOIN FETCH or @EntityGraph to prevent N+1                                    │
+│  □ Use Optional for single-result queries                                       │
+│  □ Pageable for large result sets                                               │
+│  □ @Query for complex queries                                                   │
+│                                                                                 │
+│  VALIDATION:                                                                    │
 │  □ Bean validation annotations on DTOs                                          │
 │  □ Custom validators for complex rules                                          │
 │  □ Validation groups for create vs update                                       │
-│                                                                                  │
-│  ERROR HANDLING:                                                                 │
+│                                                                                 │
+│  ERROR HANDLING:                                                                │
 │  □ Global @RestControllerAdvice                                                 │
 │  □ Custom exception hierarchy                                                   │
 │  □ Consistent error response format                                             │
 │  □ Don't expose internal errors to clients                                      │
-│                                                                                  │
-│  CONFIGURATION:                                                                  │
-│  □ Profile-specific configs (dev, prod)                                        │
-│  □ @ConfigurationProperties for type safety                                    │
-│  □ Secrets from environment variables                                          │
+│                                                                                 │
+│  CONFIGURATION:                                                                 │
+│  □ Profile-specific configs (dev, prod)                                         │
+│  □ @ConfigurationProperties for type safety                                     │
+│  □ Secrets from environment variables                                           │
 │  □ open-in-view: false                                                          │
-│                                                                                  │
-│  TESTING:                                                                        │
-│  □ Unit tests for services (Mockito)                                           │
-│  □ @WebMvcTest for controllers                                                 │
-│  □ @DataJpaTest for repositories                                               │
-│  □ @SpringBootTest for integration                                             │
-│  □ Testcontainers for realistic database testing                               │
-│                                                                                  │
-│  SECURITY:                                                                       │
-│  □ Authentication (JWT, OAuth2, etc.)                                          │
-│  □ Authorization (@PreAuthorize)                                               │
-│  □ CORS configuration                                                          │
-│  □ Password encoding                                                           │
-│                                                                                  │
+│                                                                                 │
+│  TESTING:                                                                       │
+│  □ Unit tests for services (Mockito)                                            │
+│  □ @WebMvcTest for controllers                                                  │
+│  □ @DataJpaTest for repositories                                                │
+│  □ @SpringBootTest for integration                                              │
+│  □ Testcontainers for realistic database testing                                │
+│                                                                                 │
+│  SECURITY:                                                                      │
+│  □ Authentication (JWT, OAuth2, etc.)                                           │
+│  □ Authorization (@PreAuthorize)                                                │
+│  □ CORS configuration                                                           │
+│  □ Password encoding                                                            │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1168,29 +1168,29 @@ class UserApiIntegrationTest {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                                                                                  │
+│                                                                                 │
 │  You've completed the Spring Boot Mastery Guide covering:                       │
-│                                                                                  │
+│                                                                                 │
 │  Part 1: Java Foundations (JVM, Memory, GC, Threading)                          │
-│  Part 2: Spring Core (IoC, DI, Beans, Lifecycle)                               │
-│  Part 3: AOP & Spring Boot Auto-Configuration                                  │
-│  Part 4: Data Access, Web, Security, Testing                                   │
-│  Part 5: Lombok & DTOs                                                         │
-│  Part 6: Service & Repository Best Practices                                   │
-│  Part 7: Controllers & REST API Architecture                                   │
-│  Part 8: JPA & Hibernate Deep Dive                                             │
-│  Part 9: Clean Architecture & Quality Code                                     │
-│                                                                                  │
+│  Part 2: Spring Core (IoC, DI, Beans, Lifecycle)                                │
+│  Part 3: AOP & Spring Boot Auto-Configuration                                   │
+│  Part 4: Data Access, Web, Security, Testing                                    │
+│  Part 5: Lombok & DTOs                                                          │
+│  Part 6: Service & Repository Best Practices                                    │
+│  Part 7: Controllers & REST API Architecture                                    │
+│  Part 8: JPA & Hibernate Deep Dive                                              │
+│  Part 9: Clean Architecture & Quality Code                                      │
+│                                                                                 │
 │  You now have the knowledge to:                                                 │
-│  ✅ Understand why Spring works the way it does                                │
-│  ✅ Design clean, maintainable architectures                                   │
-│  ✅ Write production-quality code                                              │
-│  ✅ Handle errors properly                                                     │
-│  ✅ Test at every level                                                        │
-│  ✅ Configure for different environments                                       │
-│                                                                                  │
-│  Keep practicing! Build projects to reinforce these concepts.                  │
-│                                                                                  │
+│  ✅ Understand why Spring works the way it does                                  │
+│  ✅ Design clean, maintainable architectures                                     │
+│  ✅ Write production-quality code                                                │
+│  ✅ Handle errors properly                                                       │
+│  ✅ Test at every level                                                          │
+│  ✅ Configure for different environments                                         │
+│                                                                                 │
+│  Keep practicing! Build projects to reinforce these concepts.                   │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 

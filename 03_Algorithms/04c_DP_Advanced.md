@@ -769,12 +769,12 @@ MISTAKE 6: Redundant states
 ╔══════════════════════════════════════════════════════════════════════════════════╗
 ║          ADVANCED DYNAMIC PROGRAMMING - COMPETITIVE PROGRAMMING LEVEL            ║
 ╠══════════════════════════════════════════════════════════════════════════════════╣
-║                                                                                   ║
+║                                                                                  ║
 ║  This section covers advanced DP patterns used in:                               ║
-║  • Competitive programming (Codeforces, ICPC, IOI)                              ║
+║  • Competitive programming (Codeforces, ICPC, IOI)                               ║
 ║  • Technical interviews at top companies                                         ║
 ║  • Real-world optimization problems                                              ║
-║                                                                                   ║
+║                                                                                  ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -782,22 +782,22 @@ MISTAKE 6: Redundant states
 
 ````
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    DIGIT DP - THE PATTERN                                        │
+│                    DIGIT DP - THE PATTERN                                       │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  PROBLEM TYPE: Count numbers in range [L, R] with some digit property          │
-│  Examples:                                                                       │
+│                                                                                 │
+│  PROBLEM TYPE: Count numbers in range [L, R] with some digit property           │
+│  Examples:                                                                      │
 │  • Count numbers with digit sum = K                                             │
 │  • Count numbers without repeated digits                                        │
 │  • Count numbers divisible by D                                                 │
-│                                                                                  │
-│  KEY IDEA: Build number digit by digit, tracking:                              │
-│  • Position (which digit we're placing)                                        │
-│  • Tight bound (are we still bounded by limit?)                                │
-│  • Problem-specific state (sum, remainder, etc.)                               │
-│                                                                                  │
-│                                                                                  │
-│  TEMPLATE:                                                                       │
+│                                                                                 │
+│  KEY IDEA: Build number digit by digit, tracking:                               │
+│  • Position (which digit we're placing)                                         │
+│  • Tight bound (are we still bounded by limit?)                                 │
+│  • Problem-specific state (sum, remainder, etc.)                                │
+│                                                                                 │
+│                                                                                 │
+│  TEMPLATE:                                                                      │
 │  ───────────                                                                    │
 ```java
 // Count numbers from 0 to N with digit sum = targetSum
@@ -876,29 +876,29 @@ long solve(String N, int pos, int prev, boolean tight) {
 ```
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│ BITMASK DP - COMPLETE GUIDE │
+│ BITMASK DP - COMPLETE GUIDE                                                     │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│ │
-│ WHEN TO USE: Small n (≤ 20), need to track which elements are "used" │
-│ │
-│ BITMASK OPERATIONS: │
-│ ┌──────────────────────────────────────────────────────────────────────────┐ │
-│ │ Operation │ Code │ Example │ │
-│ ├────────────────────────────┼─────────────────────┼───────────────────────┤ │
-│ │ Check if bit i is set │ (mask >> i) & 1 │ mask=5: bit 0,2 set │ │
-│ │ Set bit i │ mask | (1 << i) │ 5|2=7 (set bit 1) │ │
-│ │ Clear bit i │ mask & ~(1 << i) │ 7&~2=5 (clear bit 1) │ │
-│ │ Toggle bit i │ mask ^ (1 << i) │ 5^4=1 (toggle bit 2) │ │
-│ │ Count set bits │ Integer.bitCount() │ bitCount(5)=2 │ │
-│ │ Lowest set bit │ mask & (-mask) │ 12&(-12)=4 │ │
-│ │ Clear lowest set bit │ mask & (mask-1) │ 12&11=8 │ │
-│ │ Check if power of 2 │ (mask & (mask-1))==0│ isPow2(8)=true │ │
-│ │ Iterate all subsets of mask│ See code below │ │ │
-│ └──────────────────────────────────────────────────────────────────────────┘ │
-│ │
-│ │
-│ TRAVELING SALESMAN PROBLEM (TSP): │
-│ ────────────────────────────────── │
+│                                                                                 │
+│ WHEN TO USE: Small n (≤ 20), need to track which elements are "used"            │
+│                                                                                 │
+│ BITMASK OPERATIONS:                                                             │
+│ ┌──────────────────────────────────────────────────────────────────────────┐    │
+│ │ Operation │ Code │ Example │                                                  │
+│ ├────────────────────────────┼─────────────────────┼───────────────────────┤    │
+│ │ Check if bit i is set │ (mask >> i) & 1 │ mask=5: bit 0,2 set │               │
+│ │ Set bit i │ mask | (1 << i) │ 5|2=7 (set bit 1) │                             │
+│ │ Clear bit i │ mask & ~(1 << i) │ 7&~2=5 (clear bit 1) │                       │
+│ │ Toggle bit i │ mask ^ (1 << i) │ 5^4=1 (toggle bit 2) │                       │
+│ │ Count set bits │ Integer.bitCount() │ bitCount(5)=2 │                         │
+│ │ Lowest set bit │ mask & (-mask) │ 12&(-12)=4 │                                │
+│ │ Clear lowest set bit │ mask & (mask-1) │ 12&11=8 │                            │
+│ │ Check if power of 2 │ (mask & (mask-1))==0│ isPow2(8)=true │                  │
+│ │ Iterate all subsets of mask│ See code below │ │                               │
+│ └──────────────────────────────────────────────────────────────────────────┘    │
+│                                                                                 │
+│                                                                                 │
+│ TRAVELING SALESMAN PROBLEM (TSP):                                               │
+│ ──────────────────────────────────                                              │
 
 ```java
 // dp[mask][i] = min cost to visit cities in mask, ending at city i
@@ -994,21 +994,21 @@ int assignmentProblem(int[][] cost) {
 ```
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│ INTERVAL DP - THE PATTERN │
+│ INTERVAL DP - THE PATTERN                                                       │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│ │
-│ WHEN TO USE: Optimal solution for range [i,j] depends on smaller ranges │
-│ │
-│ CLASSIC PROBLEMS: │
-│ • Matrix chain multiplication │
-│ • Optimal BST │
-│ • Palindrome partitioning │
-│ • Burst balloons │
-│ • Stone game │
-│ │
-│ │
-│ TEMPLATE: │
-│ ─────────── │
+│                                                                                 │
+│ WHEN TO USE: Optimal solution for range [i,j] depends on smaller ranges         │
+│                                                                                 │
+│ CLASSIC PROBLEMS:                                                               │
+│ • Matrix chain multiplication                                                   │
+│ • Optimal BST                                                                   │
+│ • Palindrome partitioning                                                       │
+│ • Burst balloons                                                                │
+│ • Stone game                                                                    │
+│                                                                                 │
+│                                                                                 │
+│ TEMPLATE:                                                                       │
+│ ───────────                                                                     │
 
 ```java
 // dp[i][j] = optimal solution for interval [i, j]
@@ -1190,16 +1190,16 @@ int minCost(int n, int[] cuts) {
 ```
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│ TREE DP - THE PATTERN │
+│ TREE DP - THE PATTERN                                                           │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│ │
-│ WHEN TO USE: Compute optimal values on tree structures │
-│ │
-│ KEY INSIGHT: Process children first (post-order), then compute parent │
-│ │
-│ │
-│ BASIC TREE DP - MAXIMUM INDEPENDENT SET: │
-│ ───────────────────────────────────────── │
+│                                                                                 │
+│ WHEN TO USE: Compute optimal values on tree structures                          │
+│                                                                                 │
+│ KEY INSIGHT: Process children first (post-order), then compute parent           │
+│                                                                                 │
+│                                                                                 │
+│ BASIC TREE DP - MAXIMUM INDEPENDENT SET:                                        │
+│ ─────────────────────────────────────────                                       │
 
 ```java
 // Select maximum weight of non-adjacent nodes
@@ -1322,40 +1322,40 @@ void dfs2(int v, int parent) {
 ```
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│ CONVEX HULL TRICK (CHT) │
+│ CONVEX HULL TRICK (CHT)                                                         │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│ │
-│ WHEN TO USE: Recurrence of form dp[i] = min(dp[j] + b[j] _ a[i]) for j < i │
-│ Reduces O(n²) to O(n) or O(n log n) │
-│ │
-│ CONDITIONS: │
-│ • Slopes b[j] are monotonic │
-│ • Query values a[i] are monotonic │
-│ • Want minimum (or can convert to minimum) │
-│ │
-│ │
-│ INTUITION: │
-│ ─────────── │
-│ Each j gives a line: y = b[j] _ x + dp[j] │
-│ Query for x = a[i]: find line with minimum y │
-│ Maintain lower convex hull of lines │
-│ │
-│ VISUALIZATION: │
-│ y │ │
-│ │ ╱ line 3 (b=4) │
-│ │ ╱ │
-│ │╱ ╱ line 2 (b=2) │
-│ │ ╱ │
-│ │ ╱ ╱ line 1 (b=1) │
-│ │ ╱ ╱ │
-│ │ ╱ ╱ │
-│ │╱──╱───────────────── x │
-│ ╱╲ │
-│ ╱ ╲ Convex hull (only these lines can be optimal) │
-│ │
-│ │
-│ IMPLEMENTATION (monotonic slopes and queries): │
-│ ───────────────────────────────────────────── │
+│                                                                                 │
+│ WHEN TO USE: Recurrence of form dp[i] = min(dp[j] + b[j] _ a[i]) for j < i      │
+│ Reduces O(n²) to O(n) or O(n log n)                                             │
+│                                                                                 │
+│ CONDITIONS:                                                                     │
+│ • Slopes b[j] are monotonic                                                     │
+│ • Query values a[i] are monotonic                                               │
+│ • Want minimum (or can convert to minimum)                                      │
+│                                                                                 │
+│                                                                                 │
+│ INTUITION:                                                                      │
+│ ───────────                                                                     │
+│ Each j gives a line: y = b[j] _ x + dp[j]                                       │
+│ Query for x = a[i]: find line with minimum y                                    │
+│ Maintain lower convex hull of lines                                             │
+│                                                                                 │
+│ VISUALIZATION:                                                                  │
+│ y │                                                                             │
+│ │ ╱ line 3 (b=4)                                                                │
+│ │ ╱                                                                             │
+│ │╱ ╱ line 2 (b=2)                                                               │
+│ │ ╱                                                                             │
+│ │ ╱ ╱ line 1 (b=1)                                                              │
+│ │ ╱ ╱                                                                           │
+│ │ ╱ ╱                                                                           │
+│ │╱──╱───────────────── x                                                        │
+│ ╱╲                                                                              │
+│ ╱ ╲ Convex hull (only these lines can be optimal)                               │
+│                                                                                 │
+│                                                                                 │
+│ IMPLEMENTATION (monotonic slopes and queries):                                  │
+│ ─────────────────────────────────────────────                                   │
 
 ```java
 class ConvexHullTrick {
@@ -1413,18 +1413,18 @@ for (int i = 1; i < n; i++) {
 ```
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│ DIVIDE AND CONQUER DP │
+│ DIVIDE AND CONQUER DP                                                           │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│ │
-│ WHEN TO USE: dp[i][j] = min(dp[i-1][k] + cost(k+1, j)) for k < j │
-│ And: optimal k for j₁ ≤ optimal k for j₂ when j₁ < j₂ │
-│ (This is the "monotonicity of optimal splits" property) │
-│ │
-│ Reduces O(n × m × n) to O(n × m × log n) │
-│ │
-│ │
-│ IMPLEMENTATION: │
-│ ─────────────── │
+│                                                                                 │
+│ WHEN TO USE: dp[i][j] = min(dp[i-1][k] + cost(k+1, j)) for k < j                │
+│ And: optimal k for j₁ ≤ optimal k for j₂ when j₁ < j₂                           │
+│ (This is the "monotonicity of optimal splits" property)                         │
+│                                                                                 │
+│ Reduces O(n × m × n) to O(n × m × log n)                                        │
+│                                                                                 │
+│                                                                                 │
+│ IMPLEMENTATION:                                                                 │
+│ ───────────────                                                                 │
 
 ```java
 // dp[i][j] = optimal value using exactly i partitions ending at j
@@ -1492,33 +1492,33 @@ long cost(int l, int r) {
 ```
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│ BROKEN PROFILE DP - GRID TILING │
+│ BROKEN PROFILE DP - GRID TILING                                                 │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│ │
-│ WHEN TO USE: Tiling problems on small grids (width ≤ 20) │
-│ • Count ways to tile grid with dominoes │
-│ • Place non-attacking pieces │
-│ • Grid coloring with adjacent constraints │
-│ │
-│ │
-│ CONCEPT: Track "profile" (pattern of filled cells at boundary) │
-│ ───────────────────────────────────────────────────────────── │
-│ │
-│ Grid (3×4): Profile after processing cell (1,2): │
-│ ┌───┬───┬───┬───┐ ┌───┬───┬───┬───┐ │
-│ │ ✓ │ ✓ │ ✓ │ │ │ ✓ │ ✓ │ ✓ │ │ │
-│ ├───┼───┼───┼───┤ ├───┼───╔═══╗───┤ │
-│ │ ✓ │ ✓ │▐▌ │ │ ← here │ ✓ │ ✓ ║ ? ║ │ ← profile = mask of '?' │
-│ ├───┼───┼───┼───┤ ├───┼───╚═══╝───┤ cells just below boundary │
-│ │ │ │ │ │ │ │ │ │ │ │
-│ └───┴───┴───┴───┘ └───┴───┴───┴───┘ │
-│ │
-│ Profile = bitmask of m bits (grid width) │
-│ Bit i set = cell above current in column i is filled │
-│ │
-│ │
-│ DOMINO TILING (count ways to tile n×m grid with 1×2 dominoes): │
-│ ────────────────────────────────────────────────────────────── │
+│                                                                                 │
+│ WHEN TO USE: Tiling problems on small grids (width ≤ 20)                        │
+│ • Count ways to tile grid with dominoes                                         │
+│ • Place non-attacking pieces                                                    │
+│ • Grid coloring with adjacent constraints                                       │
+│                                                                                 │
+│                                                                                 │
+│ CONCEPT: Track "profile" (pattern of filled cells at boundary)                  │
+│ ─────────────────────────────────────────────────────────────                   │
+│                                                                                 │
+│ Grid (3×4): Profile after processing cell (1,2):                                │
+│ ┌───┬───┬───┬───┐ ┌───┬───┬───┬───┐                                             │
+│ │ ✓ │ ✓ │ ✓ │ │ │ ✓ │ ✓ │ ✓ │ │                                                 │
+│ ├───┼───┼───┼───┤ ├───┼───╔═══╗───┤                                             │
+│ │ ✓ │ ✓ │▐▌ │ │ ← here │ ✓ │ ✓ ║ ? ║ │ ← profile = mask of '?'                  │
+│ ├───┼───┼───┼───┤ ├───┼───╚═══╝───┤ cells just below boundary                   │
+│ │ │ │ │ │ │ │ │ │ │                                                             │
+│ └───┴───┴───┴───┘ └───┴───┴───┴───┘                                             │
+│                                                                                 │
+│ Profile = bitmask of m bits (grid width)                                        │
+│ Bit i set = cell above current in column i is filled                            │
+│                                                                                 │
+│                                                                                 │
+│ DOMINO TILING (count ways to tile n×m grid with 1×2 dominoes):                  │
+│ ──────────────────────────────────────────────────────────────                  │
 
 ```java
 // Count ways to tile n×m grid with dominoes
@@ -1583,37 +1583,37 @@ long dominoTiling(int n, int m) {
 ```
 
 ╔══════════════════════════════════════════════════════════════════════════════════╗
-║ DP PATTERNS QUICK REFERENCE ║
+║ DP PATTERNS QUICK REFERENCE                                                      ║
 ╠══════════════════════════════════════════════════════════════════════════════════╣
-║ ║
-║ ┌─────────────────────────────────────────────────────────────────────────────┐║
-║ │ Pattern │ Signal │ Time │ Space │║
-║ ├───────────────────┼─────────────────────────┼───────────┼───────────────────┤║
-║ │ Linear DP │ One sequence │ O(n) │ O(1) to O(n) │║
-║ │ Two-sequence DP │ Compare two strings │ O(nm) │ O(m) with rolling│║
-║ │ Interval DP │ Range [i,j] optimal │ O(n³) │ O(n²) │║
-║ │ Tree DP │ Tree structure │ O(n) │ O(n) │║
-║ │ Bitmask DP │ n ≤ 20, subsets │ O(2ⁿ × n) │ O(2ⁿ) │║
-║ │ Digit DP │ Count in range [L,R] │ O(d × s) │ O(d × s) │║
-║ │ Broken Profile │ Grid, width ≤ 20 │ O(nm × 2ᵐ)│ O(2ᵐ) │║
-║ │ D&C Optimization │ Monotonic opt split │ O(nm log n)│ O(nm) │║
-║ │ Convex Hull Trick│ Linear transition │ O(n) │ O(n) │║
-║ │ Knuth Optimization│Quadratic → near-linear │ O(n²) │ O(n²) │║
-║ └─────────────────────────────────────────────────────────────────────────────┘║
-║ ║
-║ RECURRENCE PATTERNS: ║
-║ • dp[i] = f(dp[i-1], dp[i-2], ...) → Linear/Fibonacci type ║
-║ • dp[i][j] = f(dp[i-1][j-1], dp[i-1][j], dp[i][j-1]) → Grid DP ║
-║ • dp[i][j] = min/max(dp[i][k] + dp[k][j] + c) → Interval DP ║
-║ • dp[mask] = f(dp[mask ^ (1<<k)]) → Bitmask DP ║
-║ • dp[v] = g(dp[children]) → Tree DP ║
-║ ║
-║ SPACE OPTIMIZATION CHECKLIST: ║
-║ □ Can I use rolling array? (only need prev row/rows) ║
-║ □ Can I use single array with careful iteration order? ║
-║ □ Can I compress coordinates? ║
-║ □ Can I use bitmask instead of array? ║
-║ ║
+║                                                                                  ║
+║ ┌─────────────────────────────────────────────────────────────────────────────┐  ║
+║ │ Pattern │ Signal │ Time │ Space │                                              ║
+║ ├───────────────────┼─────────────────────────┼───────────┼───────────────────┤  ║
+║ │ Linear DP │ One sequence │ O(n) │ O(1) to O(n) │                               ║
+║ │ Two-sequence DP │ Compare two strings │ O(nm) │ O(m) with rolling│             ║
+║ │ Interval DP │ Range [i,j] optimal │ O(n³) │ O(n²) │                            ║
+║ │ Tree DP │ Tree structure │ O(n) │ O(n) │                                       ║
+║ │ Bitmask DP │ n ≤ 20, subsets │ O(2ⁿ × n) │ O(2ⁿ) │                             ║
+║ │ Digit DP │ Count in range [L,R] │ O(d × s) │ O(d × s) │                        ║
+║ │ Broken Profile │ Grid, width ≤ 20 │ O(nm × 2ᵐ)│ O(2ᵐ) │                        ║
+║ │ D&C Optimization │ Monotonic opt split │ O(nm log n)│ O(nm) │                  ║
+║ │ Convex Hull Trick│ Linear transition │ O(n) │ O(n) │                           ║
+║ │ Knuth Optimization│Quadratic → near-linear │ O(n²) │ O(n²) │                   ║
+║ └─────────────────────────────────────────────────────────────────────────────┘  ║
+║                                                                                  ║
+║ RECURRENCE PATTERNS:                                                             ║
+║ • dp[i] = f(dp[i-1], dp[i-2], ...) → Linear/Fibonacci type                       ║
+║ • dp[i][j] = f(dp[i-1][j-1], dp[i-1][j], dp[i][j-1]) → Grid DP                   ║
+║ • dp[i][j] = min/max(dp[i][k] + dp[k][j] + c) → Interval DP                      ║
+║ • dp[mask] = f(dp[mask ^ (1<<k)]) → Bitmask DP                                   ║
+║ • dp[v] = g(dp[children]) → Tree DP                                              ║
+║                                                                                  ║
+║ SPACE OPTIMIZATION CHECKLIST:                                                    ║
+║ □ Can I use rolling array? (only need prev row/rows)                             ║
+║ □ Can I use single array with careful iteration order?                           ║
+║ □ Can I compress coordinates?                                                    ║
+║ □ Can I use bitmask instead of array?                                            ║
+║                                                                                  ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 
 ```

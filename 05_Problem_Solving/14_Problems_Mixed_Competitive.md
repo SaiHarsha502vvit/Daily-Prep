@@ -758,7 +758,7 @@ public int subarraySum(int[] nums, int k) {
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│              📊 PRACTICE PROBLEMS SUMMARY                       │
+│              📊 PRACTICE PROBLEMS SUMMARY                        │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │  SECTION 1-3: Basic Math, Strings, Arrays     (~30 problems)    │
@@ -773,18 +773,18 @@ public int subarraySum(int[] nums, int k) {
 │  SECTION 12: Greedy Algorithms                (13 problems)     │
 │  SECTION 13: HackerEarth & Codeforces         (14 problems)     │
 │                                                                 │
-│  ═══════════════════════════════════════════════════════════   │
+│  ═══════════════════════════════════════════════════════════    │
 │  TOTAL: ~210+ PROBLEMS WITH SOLUTIONS & VISUALIZATIONS          │
-│  ═══════════════════════════════════════════════════════════   │
+│  ═══════════════════════════════════════════════════════════    │
 │                                                                 │
-│  🎯 All problems include:                                       │
+│  🎯 All problems include:                                        │
 │  • ASCII box visualizations                                     │
 │  • Step-by-step explanations                                    │
 │  • Optimized Java solutions                                     │
 │  • Time/Space complexity                                        │
 │  • LeetCode links (free) or full descriptions (premium)         │
 │                                                                 │
-│  💪 Keep practicing and good luck! 💪                           │
+│  💪 Keep practicing and good luck! 💪                             │
 └─────────────────────────────────────────────────────────────────┘
 ```
 

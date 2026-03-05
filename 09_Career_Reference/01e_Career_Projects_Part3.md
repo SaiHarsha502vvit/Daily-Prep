@@ -77,89 +77,89 @@ WHAT HAPPENS WHEN YOU CREATE A DEPLOYMENT:
 
 kubectl apply -f deployment.yaml
 
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │              POD SCHEDULING FLOW                                 │
-├─────────────────────────────────────────────────────────────────┤
+├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
-│  STEP 1: User submits deployment                                │
-│  ───────────────────────────────                                │
+│  STEP 1: User submits deployment                                 │
+│  ───────────────────────────────                                 │
 │                                                                  │
-│  kubectl → API Server → Validate → Store in etcd               │
+│  kubectl → API Server → Validate → Store in etcd                 │
 │                                                                  │
-│  etcd now has:                                                  │
+│  etcd now has:                                                   │
 │  {                                                               │
-│    "kind": "Deployment",                                        │
-│    "spec": { "replicas": 3, ... }                               │
+│    "kind": "Deployment",                                         │
+│    "spec": { "replicas": 3, ... }                                │
 │  }                                                               │
 │                                                                  │
 │                                                                  │
-│  STEP 2: Deployment Controller creates ReplicaSet              │
-│  ─────────────────────────────────────────────────             │
+│  STEP 2: Deployment Controller creates ReplicaSet                │
+│  ─────────────────────────────────────────────────               │
 │                                                                  │
-│  Controller Manager watches for Deployment changes              │
-│  → Sees new Deployment                                          │
-│  → Creates ReplicaSet with same spec                           │
-│                                                                  │
-│                                                                  │
-│  STEP 3: ReplicaSet Controller creates Pods                    │
-│  ─────────────────────────────────────────────                  │
-│                                                                  │
-│  ReplicaSet controller watches for ReplicaSet changes          │
-│  → Sees ReplicaSet needs 3 replicas                            │
-│  → Current pods: 0                                              │
-│  → Creates 3 Pod objects in etcd                               │
-│                                                                  │
-│  Pods in etcd:                                                  │
-│  { "name": "myapp-abc12", "node": null, "status": "Pending" }  │
-│  { "name": "myapp-def34", "node": null, "status": "Pending" }  │
-│  { "name": "myapp-ghi56", "node": null, "status": "Pending" }  │
+│  Controller Manager watches for Deployment changes               │
+│  → Sees new Deployment                                           │
+│  → Creates ReplicaSet with same spec                             │
 │                                                                  │
 │                                                                  │
-│  STEP 4: Scheduler assigns Pods to Nodes                       │
-│  ──────────────────────────────────────                        │
+│  STEP 3: ReplicaSet Controller creates Pods                      │
+│  ─────────────────────────────────────────────                   │
 │                                                                  │
-│  Scheduler watches for Pods with node = null                   │
-│  → Finds 3 unscheduled pods                                     │
+│  ReplicaSet controller watches for ReplicaSet changes            │
+│  → Sees ReplicaSet needs 3 replicas                              │
+│  → Current pods: 0                                               │
+│  → Creates 3 Pod objects in etcd                                 │
 │                                                                  │
-│  For each pod, Scheduler:                                       │
-│                                                                  │
-│  a) FILTERING: Which nodes CAN run this pod?                   │
-│     ┌─────────────────────────────────────────────────────┐    │
-│     │ Node 1: Has 4GB free RAM, pod needs 2GB → ✓ PASS    │    │
-│     │ Node 2: Has 1GB free RAM, pod needs 2GB → ✗ FAIL    │    │
-│     │ Node 3: Has taint "gpu=true", pod has no tolerance  │    │
-│     │         → ✗ FAIL                                     │    │
-│     │ Node 4: Has 8GB free RAM → ✓ PASS                   │    │
-│     └─────────────────────────────────────────────────────┘    │
-│                                                                  │
-│  b) SCORING: Which passing node is BEST?                       │
-│     ┌─────────────────────────────────────────────────────┐    │
-│     │ Node 1: Score = 60 (balanced resources)             │    │
-│     │ Node 4: Score = 80 (more resources, same zone)      │    │
-│     │                                                      │    │
-│     │ Winner: Node 4                                       │    │
-│     └─────────────────────────────────────────────────────┘    │
-│                                                                  │
-│  c) BINDING: Update pod in etcd with node assignment           │
-│     { "name": "myapp-abc12", "node": "node-4" }                │
+│  Pods in etcd:                                                   │
+│  { "name": "myapp-abc12", "node": null, "status": "Pending" }    │
+│  { "name": "myapp-def34", "node": null, "status": "Pending" }    │
+│  { "name": "myapp-ghi56", "node": null, "status": "Pending" }    │
 │                                                                  │
 │                                                                  │
-│  STEP 5: Kubelet creates the container                         │
-│  ────────────────────────────────────                          │
+│  STEP 4: Scheduler assigns Pods to Nodes                         │
+│  ──────────────────────────────────────                          │
 │                                                                  │
-│  Kubelet on Node 4 watches for pods assigned to it             │
-│  → Sees myapp-abc12 assigned                                   │
-│  → Pulls image (if not cached)                                 │
-│  → Creates container via containerd                            │
-│  → Sets up networking (CNI)                                    │
-│  → Mounts volumes                                              │
-│  → Starts container                                            │
-│  → Reports status: "Running"                                   │
+│  Scheduler watches for Pods with node = null                     │
+│  → Finds 3 unscheduled pods                                      │
+│                                                                  │
+│  For each pod, Scheduler:                                        │
+│                                                                  │
+│  a) FILTERING: Which nodes CAN run this pod?                     │
+│     ┌─────────────────────────────────────────────────────┐      │
+│     │ Node 1: Has 4GB free RAM, pod needs 2GB → ✓ PASS    │      │
+│     │ Node 2: Has 1GB free RAM, pod needs 2GB → ✗ FAIL    │      │
+│     │ Node 3: Has taint "gpu=true", pod has no tolerance  │      │
+│     │         → ✗ FAIL                                     │     │
+│     │ Node 4: Has 8GB free RAM → ✓ PASS                   │      │
+│     └─────────────────────────────────────────────────────┘      │
+│                                                                  │
+│  b) SCORING: Which passing node is BEST?                         │
+│     ┌─────────────────────────────────────────────────────┐      │
+│     │ Node 1: Score = 60 (balanced resources)             │      │
+│     │ Node 4: Score = 80 (more resources, same zone)      │      │
+│     │                                                      │     │
+│     │ Winner: Node 4                                       │     │
+│     └─────────────────────────────────────────────────────┘      │
+│                                                                  │
+│  c) BINDING: Update pod in etcd with node assignment             │
+│     { "name": "myapp-abc12", "node": "node-4" }                  │
 │                                                                  │
 │                                                                  │
-│  TOTAL TIME: 2-30 seconds (depending on image pull)            │
+│  STEP 5: Kubelet creates the container                           │
+│  ────────────────────────────────────                            │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+│  Kubelet on Node 4 watches for pods assigned to it               │
+│  → Sees myapp-abc12 assigned                                     │
+│  → Pulls image (if not cached)                                   │
+│  → Creates container via containerd                              │
+│  → Sets up networking (CNI)                                      │
+│  → Mounts volumes                                                │
+│  → Starts container                                              │
+│  → Reports status: "Running"                                     │
+│                                                                  │
+│                                                                  │
+│  TOTAL TIME: 2-30 seconds (depending on image pull)              │
+│                                                                  │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ### Kubernetes Service Networking
@@ -171,77 +171,77 @@ HOW SERVICES ROUTE TRAFFIC:
 Service: myapp-service (ClusterIP: 10.96.45.123, Port: 80)
 Pods: myapp-abc (10.244.1.5:8080), myapp-def (10.244.2.8:8080)
 
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │              SERVICE NETWORKING                                  │
-├─────────────────────────────────────────────────────────────────┤
+├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
-│  Client Pod sends request:                                      │
-│  curl http://myapp-service:80/api/users                        │
+│  Client Pod sends request:                                       │
+│  curl http://myapp-service:80/api/users                          │
 │                                                                  │
-│  STEP 1: DNS RESOLUTION                                         │
-│  ─────────────────────────                                      │
+│  STEP 1: DNS RESOLUTION                                          │
+│  ─────────────────────────                                       │
 │                                                                  │
-│  CoreDNS (cluster DNS):                                        │
-│  myapp-service.default.svc.cluster.local → 10.96.45.123        │
-│                                                                  │
-│                                                                  │
-│  STEP 2: IPTABLES/IPVS RULES (kube-proxy)                      │
-│  ─────────────────────────────────────────                      │
-│                                                                  │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │                 IPTABLES RULES                           │   │
-│  │                 (on every node)                          │   │
-│  │                                                          │   │
-│  │  RULE: If destination = 10.96.45.123:80                 │   │
-│  │        → DNAT to one of:                                 │   │
-│  │           - 10.244.1.5:8080 (50% probability)           │   │
-│  │           - 10.244.2.8:8080 (50% probability)           │   │
-│  │                                                          │   │
-│  │  This is random load balancing!                         │   │
-│  │                                                          │   │
-│  └─────────────────────────────────────────────────────────┘   │
+│  CoreDNS (cluster DNS):                                          │
+│  myapp-service.default.svc.cluster.local → 10.96.45.123          │
 │                                                                  │
 │                                                                  │
-│  STEP 3: PACKET ROUTING                                         │
-│  ───────────────────────                                        │
+│  STEP 2: IPTABLES/IPVS RULES (kube-proxy)                        │
+│  ─────────────────────────────────────────                       │
 │                                                                  │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │                                                          │   │
-│  │  Client Pod ──► 10.96.45.123:80 (Service IP)            │   │
-│  │       │                                                  │   │
-│  │       │ iptables DNAT                                   │   │
-│  │       ▼                                                  │   │
-│  │  10.244.2.8:8080 (Pod IP - selected randomly)           │   │
-│  │       │                                                  │   │
-│  │       │ If pod on same node: direct delivery            │   │
-│  │       │ If pod on different node: route via overlay     │   │
-│  │       ▼                                                  │   │
-│  │  myapp-def Pod receives request                         │   │
-│  │                                                          │   │
-│  └─────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────┐     │
+│  │                 IPTABLES RULES                           │    │
+│  │                 (on every node)                          │    │
+│  │                                                          │    │
+│  │  RULE: If destination = 10.96.45.123:80                 │     │
+│  │        → DNAT to one of:                                 │    │
+│  │           - 10.244.1.5:8080 (50% probability)           │     │
+│  │           - 10.244.2.8:8080 (50% probability)           │     │
+│  │                                                          │    │
+│  │  This is random load balancing!                         │     │
+│  │                                                          │    │
+│  └─────────────────────────────────────────────────────────┘     │
+│                                                                  │
+│                                                                  │
+│  STEP 3: PACKET ROUTING                                          │
+│  ───────────────────────                                         │
+│                                                                  │
+│  ┌─────────────────────────────────────────────────────────┐     │
+│  │                                                          │    │
+│  │  Client Pod ──► 10.96.45.123:80 (Service IP)            │     │
+│  │       │                                                  │    │
+│  │       │ iptables DNAT                                   │     │
+│  │       ▼                                                  │    │
+│  │  10.244.2.8:8080 (Pod IP - selected randomly)           │     │
+│  │       │                                                  │    │
+│  │       │ If pod on same node: direct delivery            │     │
+│  │       │ If pod on different node: route via overlay     │     │
+│  │       ▼                                                  │    │
+│  │  myapp-def Pod receives request                         │     │
+│  │                                                          │    │
+│  └─────────────────────────────────────────────────────────┘     │
 │                                                                  │
 │                                                                  │
 │  SERVICE TYPES:                                                  │
-│  ─────────────                                                  │
+│  ─────────────                                                   │
 │                                                                  │
-│  ClusterIP (default):                                           │
-│  • Internal cluster IP only                                    │
-│  • Not accessible from outside                                 │
+│  ClusterIP (default):                                            │
+│  • Internal cluster IP only                                      │
+│  • Not accessible from outside                                   │
 │                                                                  │
 │  NodePort:                                                       │
-│  • Exposes on each node's IP at static port (30000-32767)     │
-│  • curl http://node-ip:30123                                   │
+│  • Exposes on each node's IP at static port (30000-32767)        │
+│  • curl http://node-ip:30123                                     │
 │                                                                  │
 │  LoadBalancer:                                                   │
-│  • Creates cloud load balancer (AWS ELB, GCP LB)               │
-│  • Gets external IP                                            │
+│  • Creates cloud load balancer (AWS ELB, GCP LB)                 │
+│  • Gets external IP                                              │
 │                                                                  │
 │  Ingress:                                                        │
-│  • HTTP/HTTPS routing                                          │
-│  • Path-based routing (/api → service1, /web → service2)       │
-│  • TLS termination                                              │
+│  • HTTP/HTTPS routing                                            │
+│  • Path-based routing (/api → service1, /web → service2)         │
+│  • TLS termination                                               │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -251,32 +251,32 @@ Pods: myapp-abc (10.244.1.5:8080), myapp-def (10.244.2.8:8080)
 ### The Three Pillars
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │              OBSERVABILITY - THREE PILLARS                       │
-├─────────────────────────────────────────────────────────────────┤
+├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
-│  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐         │
-│  │   METRICS   │    │    LOGS     │    │   TRACES    │         │
-│  └─────────────┘    └─────────────┘    └─────────────┘         │
+│  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐           │
+│  │   METRICS   │    │    LOGS     │    │   TRACES    │           │
+│  └─────────────┘    └─────────────┘    └─────────────┘           │
 │                                                                  │
-│  WHAT happened?     WHY it happened?   WHERE it happened?       │
+│  WHAT happened?     WHY it happened?   WHERE it happened?        │
 │                                                                  │
-│  Numbers over time  Text events        Request journey          │
-│  CPU, Memory, QPS   Errors, Debug      Across services          │
-│  Aggregatable       Searchable         Distributed              │
+│  Numbers over time  Text events        Request journey           │
+│  CPU, Memory, QPS   Errors, Debug      Across services           │
+│  Aggregatable       Searchable         Distributed               │
 │                                                                  │
-│  Tools:             Tools:             Tools:                   │
-│  Prometheus         ELK Stack          Jaeger                   │
-│  Grafana            Loki               Zipkin                   │
-│  Datadog            Splunk             AWS X-Ray                │
+│  Tools:             Tools:             Tools:                    │
+│  Prometheus         ELK Stack          Jaeger                    │
+│  Grafana            Loki               Zipkin                    │
+│  Datadog            Splunk             AWS X-Ray                 │
 │                                                                  │
-│  Example:           Example:           Example:                 │
-│  HTTP 500 rate      Stack trace        Request: UserSvc →       │
-│  increased 50%      NullPointer        OrderSvc → PaymentSvc    │
-│  at 3:45 PM         at UserService     latency breakdown        │
-│                     line 127                                    │
+│  Example:           Example:           Example:                  │
+│  HTTP 500 rate      Stack trace        Request: UserSvc →        │
+│  increased 50%      NullPointer        OrderSvc → PaymentSvc     │
+│  at 3:45 PM         at UserService     latency breakdown         │
+│                     line 127                                     │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ### Prometheus + Grafana Setup
@@ -652,47 +652,47 @@ _Stage 4 Complete! Ready for Stage 5: Complete Application Scenarios_
 ### Scenario 1: Finance Application (Banking/Fintech)
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │            BANKING APPLICATION - COMPLETE ARCHITECTURE           │
-├─────────────────────────────────────────────────────────────────┤
+├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
-│                     ┌─────────────────┐                         │
-│   Mobile App ──────►│   API Gateway   │◄────── Web App          │
-│                     │  (Kong/AWS)     │                         │
-│                     └────────┬────────┘                         │
+│                     ┌─────────────────┐                          │
+│   Mobile App ──────►│   API Gateway   │◄────── Web App           │
+│                     │  (Kong/AWS)     │                          │
+│                     └────────┬────────┘                          │
 │                              │                                   │
-│           ┌──────────────────┼──────────────────┐               │
-│           │                  │                  │               │
-│           ▼                  ▼                  ▼               │
-│   ┌───────────────┐  ┌───────────────┐  ┌───────────────┐      │
-│   │    Auth       │  │   Account     │  │  Transaction  │      │
-│   │   Service     │  │   Service     │  │   Service     │      │
-│   │               │  │               │  │               │      │
-│   │ - Login/MFA   │  │ - Balance     │  │ - Transfer    │      │
-│   │ - JWT/OAuth   │  │ - Statement   │  │ - Payment     │      │
-│   │ - Session     │  │ - KYC         │  │ - History     │      │
-│   └───────┬───────┘  └───────┬───────┘  └───────┬───────┘      │
-│           │                  │                  │               │
-│           ▼                  ▼                  ▼               │
-│   ┌───────────────┐  ┌───────────────┐  ┌───────────────┐      │
-│   │    Redis      │  │  PostgreSQL   │  │  PostgreSQL   │      │
-│   │  (Sessions)   │  │  (Accounts)   │  │  (Ledger)     │      │
-│   └───────────────┘  └───────────────┘  └───────────────┘      │
+│           ┌──────────────────┼──────────────────┐                │
+│           │                  │                  │                │
+│           ▼                  ▼                  ▼                │
+│   ┌───────────────┐  ┌───────────────┐  ┌───────────────┐        │
+│   │    Auth       │  │   Account     │  │  Transaction  │        │
+│   │   Service     │  │   Service     │  │   Service     │        │
+│   │               │  │               │  │               │        │
+│   │ - Login/MFA   │  │ - Balance     │  │ - Transfer    │        │
+│   │ - JWT/OAuth   │  │ - Statement   │  │ - Payment     │        │
+│   │ - Session     │  │ - KYC         │  │ - History     │        │
+│   └───────┬───────┘  └───────┬───────┘  └───────┬───────┘        │
+│           │                  │                  │                │
+│           ▼                  ▼                  ▼                │
+│   ┌───────────────┐  ┌───────────────┐  ┌───────────────┐        │
+│   │    Redis      │  │  PostgreSQL   │  │  PostgreSQL   │        │
+│   │  (Sessions)   │  │  (Accounts)   │  │  (Ledger)     │        │
+│   └───────────────┘  └───────────────┘  └───────────────┘        │
 │                                                                  │
-│   ADDITIONAL SERVICES:                                          │
-│   ┌───────────────┐  ┌───────────────┐  ┌───────────────┐      │
-│   │   Fraud       │  │ Notification  │  │   Reporting   │      │
-│   │  Detection    │  │   Service     │  │   Service     │      │
-│   │  (ML Model)   │  │ (Email/SMS)   │  │  (Analytics)  │      │
-│   └───────────────┘  └───────────────┘  └───────────────┘      │
+│   ADDITIONAL SERVICES:                                           │
+│   ┌───────────────┐  ┌───────────────┐  ┌───────────────┐        │
+│   │   Fraud       │  │ Notification  │  │   Reporting   │        │
+│   │  Detection    │  │   Service     │  │   Service     │        │
+│   │  (ML Model)   │  │ (Email/SMS)   │  │  (Analytics)  │        │
+│   └───────────────┘  └───────────────┘  └───────────────┘        │
 │                                                                  │
-│   EVENT STREAMING:                                              │
-│   ┌─────────────────────────────────────────────────────┐      │
-│   │                    Apache Kafka                      │      │
-│   │  Topics: transactions, audit-log, notifications     │      │
-│   └─────────────────────────────────────────────────────┘      │
+│   EVENT STREAMING:                                               │
+│   ┌─────────────────────────────────────────────────────┐        │
+│   │                    Apache Kafka                      │       │
+│   │  Topics: transactions, audit-log, notifications     │        │
+│   └─────────────────────────────────────────────────────┘        │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 #### Transaction Service - Double Entry Ledger
@@ -905,50 +905,50 @@ public class FinancialCalculations {
 ### Scenario 2: E-Commerce Platform
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │              E-COMMERCE PLATFORM ARCHITECTURE                    │
-├─────────────────────────────────────────────────────────────────┤
+├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
-│                         ┌──────────────┐                        │
-│                         │   CDN        │                        │
-│                         │ (CloudFront) │                        │
-│                         └──────┬───────┘                        │
+│                         ┌──────────────┐                         │
+│                         │   CDN        │                         │
+│                         │ (CloudFront) │                         │
+│                         └──────┬───────┘                         │
 │                                │                                 │
-│   ┌────────────────────────────┼────────────────────────────┐   │
-│   │                            │                            │   │
-│   ▼                            ▼                            ▼   │
-│ ┌──────────┐            ┌──────────────┐            ┌──────────┐│
-│ │  React   │            │  API Gateway │            │  Admin   ││
-│ │   SPA    │            │              │            │  Portal  ││
-│ └──────────┘            └──────┬───────┘            └──────────┘│
+│   ┌────────────────────────────┼────────────────────────────┐    │
+│   │                            │                            │    │
+│   ▼                            ▼                            ▼    │
+│ ┌──────────┐            ┌──────────────┐            ┌──────────┐ │
+│ │  React   │            │  API Gateway │            │  Admin   │ │
+│ │   SPA    │            │              │            │  Portal  │ │
+│ └──────────┘            └──────┬───────┘            └──────────┘ │
 │                                │                                 │
-│        ┌───────────────────────┼───────────────────────┐        │
-│        │           │           │           │           │        │
-│        ▼           ▼           ▼           ▼           ▼        │
-│   ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐  │
-│   │ Product │ │  Cart   │ │  Order  │ │ Payment │ │ Search  │  │
-│   │ Service │ │ Service │ │ Service │ │ Service │ │ Service │  │
-│   └────┬────┘ └────┬────┘ └────┬────┘ └────┬────┘ └────┬────┘  │
-│        │           │           │           │           │        │
-│        ▼           ▼           ▼           ▼           ▼        │
-│   ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐  │
-│   │PostgreSQL│ │  Redis  │ │PostgreSQL│ │ Stripe │ │Elastic- │  │
-│   │(Products)│ │ (Cart)  │ │(Orders) │ │  API   │ │ search  │  │
-│   └─────────┘ └─────────┘ └─────────┘ └─────────┘ └─────────┘  │
+│        ┌───────────────────────┼───────────────────────┐         │
+│        │           │           │           │           │         │
+│        ▼           ▼           ▼           ▼           ▼         │
+│   ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐    │
+│   │ Product │ │  Cart   │ │  Order  │ │ Payment │ │ Search  │    │
+│   │ Service │ │ Service │ │ Service │ │ Service │ │ Service │    │
+│   └────┬────┘ └────┬────┘ └────┬────┘ └────┬────┘ └────┬────┘    │
+│        │           │           │           │           │         │
+│        ▼           ▼           ▼           ▼           ▼         │
+│   ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐    │
+│   │PostgreSQL│ │  Redis  │ │PostgreSQL│ │ Stripe │ │Elastic- │   │
+│   │(Products)│ │ (Cart)  │ │(Orders) │ │  API   │ │ search  │    │
+│   └─────────┘ └─────────┘ └─────────┘ └─────────┘ └─────────┘    │
 │                                                                  │
-│   ADDITIONAL:                                                   │
-│   ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐              │
-│   │Inventory│ │Shipping │ │  Email  │ │Analytics│              │
-│   │ Service │ │ Service │ │ Service │ │ Service │              │
-│   └─────────┘ └─────────┘ └─────────┘ └─────────┘              │
+│   ADDITIONAL:                                                    │
+│   ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐                │
+│   │Inventory│ │Shipping │ │  Email  │ │Analytics│                │
+│   │ Service │ │ Service │ │ Service │ │ Service │                │
+│   └─────────┘ └─────────┘ └─────────┘ └─────────┘                │
 │                                                                  │
-│   MESSAGE QUEUE (Async operations):                             │
-│   ┌─────────────────────────────────────────────────────────┐  │
-│   │                      RabbitMQ / SQS                      │  │
-│   │  Queues: order-processing, inventory-updates, emails    │  │
-│   └─────────────────────────────────────────────────────────┘  │
+│   MESSAGE QUEUE (Async operations):                              │
+│   ┌─────────────────────────────────────────────────────────┐    │
+│   │                      RabbitMQ / SQS                      │   │
+│   │  Queues: order-processing, inventory-updates, emails    │    │
+│   └─────────────────────────────────────────────────────────┘    │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 #### Cart Service with Redis
@@ -1277,49 +1277,49 @@ public class ProductSearchService {
 ### Scenario 3: Real-Time Chat Application
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │               REAL-TIME CHAT ARCHITECTURE                        │
-├─────────────────────────────────────────────────────────────────┤
+├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
-│   ┌────────────┐     ┌────────────┐     ┌────────────┐         │
-│   │  Client 1  │     │  Client 2  │     │  Client N  │         │
-│   │  (React)   │     │  (Mobile)  │     │  (Web)     │         │
-│   └─────┬──────┘     └─────┬──────┘     └─────┬──────┘         │
-│         │                  │                  │                 │
-│         └──────────────────┼──────────────────┘                 │
+│   ┌────────────┐     ┌────────────┐     ┌────────────┐           │
+│   │  Client 1  │     │  Client 2  │     │  Client N  │           │
+│   │  (React)   │     │  (Mobile)  │     │  (Web)     │           │
+│   └─────┬──────┘     └─────┬──────┘     └─────┬──────┘           │
+│         │                  │                  │                  │
+│         └──────────────────┼──────────────────┘                  │
 │                            │                                     │
 │                    WebSocket Connection                          │
 │                            │                                     │
-│                    ┌───────▼───────┐                            │
-│                    │ Load Balancer │                            │
-│                    │ (Sticky/WS)   │                            │
-│                    └───────┬───────┘                            │
+│                    ┌───────▼───────┐                             │
+│                    │ Load Balancer │                             │
+│                    │ (Sticky/WS)   │                             │
+│                    └───────┬───────┘                             │
 │                            │                                     │
-│         ┌──────────────────┼──────────────────┐                 │
-│         │                  │                  │                 │
-│         ▼                  ▼                  ▼                 │
-│   ┌───────────┐     ┌───────────┐     ┌───────────┐            │
-│   │  Chat     │     │  Chat     │     │  Chat     │            │
-│   │ Server 1  │◄───►│ Server 2  │◄───►│ Server 3  │            │
-│   └─────┬─────┘     └─────┬─────┘     └─────┬─────┘            │
-│         │                 │                 │                   │
-│         └─────────────────┼─────────────────┘                   │
+│         ┌──────────────────┼──────────────────┐                  │
+│         │                  │                  │                  │
+│         ▼                  ▼                  ▼                  │
+│   ┌───────────┐     ┌───────────┐     ┌───────────┐              │
+│   │  Chat     │     │  Chat     │     │  Chat     │              │
+│   │ Server 1  │◄───►│ Server 2  │◄───►│ Server 3  │              │
+│   └─────┬─────┘     └─────┬─────┘     └─────┬─────┘              │
+│         │                 │                 │                    │
+│         └─────────────────┼─────────────────┘                    │
 │                           │                                      │
-│                    ┌──────▼──────┐                              │
-│                    │    Redis    │  Pub/Sub for cross-server   │
-│                    │   Pub/Sub   │  message delivery           │
-│                    └──────┬──────┘                              │
+│                    ┌──────▼──────┐                               │
+│                    │    Redis    │  Pub/Sub for cross-server     │
+│                    │   Pub/Sub   │  message delivery             │
+│                    └──────┬──────┘                               │
 │                           │                                      │
-│         ┌─────────────────┼─────────────────┐                   │
-│         │                 │                 │                   │
-│   ┌─────▼─────┐    ┌──────▼──────┐   ┌──────▼──────┐           │
-│   │  MongoDB  │    │   Redis     │   │   S3/CDN   │           │
-│   │ Messages  │    │  Presence   │   │  Media     │           │
-│   │ History   │    │  Online/    │   │  Files     │           │
-│   └───────────┘    │  Typing     │   └────────────┘           │
-│                    └─────────────┘                              │
+│         ┌─────────────────┼─────────────────┐                    │
+│         │                 │                 │                    │
+│   ┌─────▼─────┐    ┌──────▼──────┐   ┌──────▼──────┐             │
+│   │  MongoDB  │    │   Redis     │   │   S3/CDN   │              │
+│   │ Messages  │    │  Presence   │   │  Media     │              │
+│   │ History   │    │  Online/    │   │  Files     │              │
+│   └───────────┘    │  Typing     │   └────────────┘              │
+│                    └─────────────┘                               │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 #### WebSocket Chat Server (Node.js/Socket.io)
@@ -1581,49 +1581,49 @@ export function useChat(token: string) {
 ### Scenario 4: Distributed System Patterns
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │              DISTRIBUTED SYSTEM PATTERNS                         │
-├─────────────────────────────────────────────────────────────────┤
+├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
-│  1. CIRCUIT BREAKER PATTERN                                     │
-│  ──────────────────────────                                     │
+│  1. CIRCUIT BREAKER PATTERN                                      │
+│  ──────────────────────────                                      │
 │                                                                  │
-│   ┌─────────────────────────────────────────────────────────┐   │
+│   ┌─────────────────────────────────────────────────────────┐    │
 │   │                                                          │   │
-│   │    CLOSED ────────► OPEN ────────► HALF-OPEN            │   │
+│   │    CLOSED ────────► OPEN ────────► HALF-OPEN            │    │
 │   │      ▲                               │                   │   │
 │   │      │                               │                   │   │
 │   │      └───────────────────────────────┘                   │   │
 │   │                                                          │   │
-│   │  CLOSED: Normal operation, requests pass through        │   │
-│   │  OPEN: Failures exceeded threshold, fail fast           │   │
-│   │  HALF-OPEN: Test if service recovered                   │   │
+│   │  CLOSED: Normal operation, requests pass through        │    │
+│   │  OPEN: Failures exceeded threshold, fail fast           │    │
+│   │  HALF-OPEN: Test if service recovered                   │    │
 │   │                                                          │   │
-│   └─────────────────────────────────────────────────────────┘   │
+│   └─────────────────────────────────────────────────────────┘    │
 │                                                                  │
-│  2. RETRY PATTERN WITH EXPONENTIAL BACKOFF                      │
-│  ─────────────────────────────────────────                      │
+│  2. RETRY PATTERN WITH EXPONENTIAL BACKOFF                       │
+│  ─────────────────────────────────────────                       │
 │                                                                  │
-│   Attempt 1: Immediate                                          │
-│   Attempt 2: Wait 1 second                                      │
-│   Attempt 3: Wait 2 seconds                                     │
-│   Attempt 4: Wait 4 seconds                                     │
-│   Attempt 5: Wait 8 seconds (with jitter)                       │
+│   Attempt 1: Immediate                                           │
+│   Attempt 2: Wait 1 second                                       │
+│   Attempt 3: Wait 2 seconds                                      │
+│   Attempt 4: Wait 4 seconds                                      │
+│   Attempt 5: Wait 8 seconds (with jitter)                        │
 │                                                                  │
-│  3. BULKHEAD PATTERN                                            │
-│  ───────────────────                                            │
+│  3. BULKHEAD PATTERN                                             │
+│  ───────────────────                                             │
 │                                                                  │
-│   ┌─────────────────────────────────────────────────────────┐   │
-│   │  Service A         Service B         Service C          │   │
-│   │  ┌─────────┐       ┌─────────┐       ┌─────────┐       │   │
-│   │  │ Pool: 10│       │ Pool: 20│       │ Pool: 5 │       │   │
-│   │  │ threads │       │ threads │       │ threads │       │   │
-│   │  └─────────┘       └─────────┘       └─────────┘       │   │
+│   ┌─────────────────────────────────────────────────────────┐    │
+│   │  Service A         Service B         Service C          │    │
+│   │  ┌─────────┐       ┌─────────┐       ┌─────────┐       │     │
+│   │  │ Pool: 10│       │ Pool: 20│       │ Pool: 5 │       │     │
+│   │  │ threads │       │ threads │       │ threads │       │     │
+│   │  └─────────┘       └─────────┘       └─────────┘       │     │
 │   │                                                          │   │
-│   │  If Service A fails, B and C continue unaffected        │   │
-│   └─────────────────────────────────────────────────────────┘   │
+│   │  If Service A fails, B and C continue unaffected        │    │
+│   └─────────────────────────────────────────────────────────┘    │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 #### Resilience4j Implementation
@@ -1943,124 +1943,124 @@ public void processOutbox() {
 ## 🔬 QUICK REFERENCE: Deep Internals Summary
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│           ALL THE "HOW IT ACTUALLY WORKS" IN ONE PLACE          │
-├─────────────────────────────────────────────────────────────────┤
+┌──────────────────────────────────────────────────────────────────┐
+│           ALL THE "HOW IT ACTUALLY WORKS" IN ONE PLACE           │
+├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
-│  🌐 NETWORKING - User Request Journey                           │
-│  ───────────────────────────────────                            │
-│  1. User types myapp.com                                        │
-│  2. DNS Resolution → Get IP (54.23.167.89)                      │
-│  3. TCP 3-way handshake (SYN → SYN-ACK → ACK)                  │
-│  4. TLS Handshake (exchange keys, verify certificate)          │
-│  5. HTTP Request sent (encrypted)                               │
-│  6. Nginx (port 443) receives, decrypts                        │
-│  7. Nginx reverse proxies to localhost:3000                    │
-│  8. Your app processes request                                  │
-│  9. Response travels back same path                            │
+│  🌐 NETWORKING - User Request Journey                             │
+│  ───────────────────────────────────                             │
+│  1. User types myapp.com                                         │
+│  2. DNS Resolution → Get IP (54.23.167.89)                       │
+│  3. TCP 3-way handshake (SYN → SYN-ACK → ACK)                    │
+│  4. TLS Handshake (exchange keys, verify certificate)            │
+│  5. HTTP Request sent (encrypted)                                │
+│  6. Nginx (port 443) receives, decrypts                          │
+│  7. Nginx reverse proxies to localhost:3000                      │
+│  8. Your app processes request                                   │
+│  9. Response travels back same path                              │
 │                                                                  │
-│  Key: Port 3000 not exposed! Nginx routes 443 → 3000          │
-│                                                                  │
-│                                                                  │
-│  🖥️ OS - Process & Thread Internals                             │
-│  ──────────────────────────────────                             │
-│  Process = Running program with:                                │
-│  • Virtual address space (Stack, Heap, Code, Data)             │
-│  • PID, File descriptors, Registers                            │
-│                                                                  │
-│  Thread = Lightweight, shares process memory                    │
-│  • Own: Stack (~1-8MB), Registers, Thread ID                   │
-│  • Shared: Heap, Code, Files                                   │
-│                                                                  │
-│  100 threads × 8MB stack = 800MB RAM just for stacks!          │
-│  → Use Thread Pools (reuse threads)                            │
-│  → Or Event Loop (Node.js single thread)                       │
+│  Key: Port 3000 not exposed! Nginx routes 443 → 3000             │
 │                                                                  │
 │                                                                  │
-│  💾 DATABASE - Query Execution                                  │
-│  ────────────────────────────                                   │
-│  1. Parser → Tokenize → AST                                    │
-│  2. Optimizer → Choose best execution plan                     │
-│     (Index scan vs Full table scan)                            │
-│  3. Executor → Run the plan                                    │
-│  4. Storage Engine → B+ Tree index lookup O(log n)             │
-│  5. Buffer Pool → Check RAM cache before disk                  │
-│  6. Return Result                                               │
+│  🖥️ OS - Process & Thread Internals                              │
+│  ──────────────────────────────────                              │
+│  Process = Running program with:                                 │
+│  • Virtual address space (Stack, Heap, Code, Data)               │
+│  • PID, File descriptors, Registers                              │
 │                                                                  │
-│  Key: Index = O(log n), Full scan = O(n)                       │
-│  Millions of rows? Index = 20 comparisons, Scan = millions!    │
+│  Thread = Lightweight, shares process memory                     │
+│  • Own: Stack (~1-8MB), Registers, Thread ID                     │
+│  • Shared: Heap, Code, Files                                     │
 │                                                                  │
-│                                                                  │
-│  ☁️ CLOUD - Virtual Machine Internals                          │
-│  ──────────────────────────────────                             │
-│  Physical Server (96 cores, 768GB RAM)                         │
-│       │                                                         │
-│       ▼                                                         │
-│  Hypervisor (AWS Nitro) divides resources                      │
-│       │                                                         │
-│  ┌────┴────┬────────┬────────┐                                 │
-│  VM1       VM2       VM3                                        │
-│  (Your EC2)                                                     │
-│                                                                  │
-│  EBS = Network-attached storage (not local disk!)              │
-│  Load Balancer = Routes to healthy instances                   │
-│  Auto Scaling = Add instances when CPU > 80%                   │
+│  100 threads × 8MB stack = 800MB RAM just for stacks!            │
+│  → Use Thread Pools (reuse threads)                              │
+│  → Or Event Loop (Node.js single thread)                         │
 │                                                                  │
 │                                                                  │
-│  🐳 DOCKER - Container Internals                                │
-│  ──────────────────────────────                                 │
-│  Container ≠ VM                                                 │
-│  Container = Process with isolation via:                       │
-│  • Namespaces (what it sees)                                   │
-│  • Cgroups (what it uses)                                      │
+│  💾 DATABASE - Query Execution                                    │
+│  ────────────────────────────                                    │
+│  1. Parser → Tokenize → AST                                      │
+│  2. Optimizer → Choose best execution plan                       │
+│     (Index scan vs Full table scan)                              │
+│  3. Executor → Run the plan                                      │
+│  4. Storage Engine → B+ Tree index lookup O(log n)               │
+│  5. Buffer Pool → Check RAM cache before disk                    │
+│  6. Return Result                                                │
 │                                                                  │
-│  Image = Read-only layers (cached, reusable)                   │
-│  Container Layer = Writable (deleted on stop)                  │
-│                                                                  │
-│  10 containers, same image = 1 copy of layers                  │
-│                                                                  │
-│                                                                  │
-│  ⚙️ KUBERNETES - Pod Scheduling                                 │
-│  ─────────────────────────────                                  │
-│  1. kubectl apply → API Server → etcd                          │
-│  2. Deployment Controller → Creates ReplicaSet                 │
-│  3. ReplicaSet Controller → Creates Pods                       │
-│  4. Scheduler → Assigns Pod to Node                            │
-│     (Filter nodes, Score nodes, Bind)                          │
-│  5. Kubelet on Node → Pulls image, Creates container           │
-│                                                                  │
-│  Service = Stable IP for dynamic Pods                          │
-│  Ingress = HTTP routing (/api → svc1, /web → svc2)            │
+│  Key: Index = O(log n), Full scan = O(n)                         │
+│  Millions of rows? Index = 20 comparisons, Scan = millions!      │
 │                                                                  │
 │                                                                  │
-│  🍃 SPRING BOOT - Request Lifecycle                             │
-│  ──────────────────────────────────                             │
-│  1. Tomcat thread picks up request                             │
-│  2. Filter Chain (Security, CORS, etc.)                        │
-│  3. DispatcherServlet → Handler Mapping                        │
-│  4. Find Controller method                                      │
-│  5. Argument Resolution (@PathVariable, @RequestBody)          │
-│  6. YOUR CODE RUNS                                             │
-│  7. Return Value Handling (JSON serialization)                 │
-│  8. Response sent                                               │
+│  ☁️ CLOUD - Virtual Machine Internals                            │
+│  ──────────────────────────────────                              │
+│  Physical Server (96 cores, 768GB RAM)                           │
+│       │                                                          │
+│       ▼                                                          │
+│  Hypervisor (AWS Nitro) divides resources                        │
+│       │                                                          │
+│  ┌────┴────┬────────┬────────┐                                   │
+│  VM1       VM2       VM3                                         │
+│  (Your EC2)                                                      │
 │                                                                  │
-│  @Transactional = Proxy wraps your method                      │
-│  → BEGIN before, COMMIT/ROLLBACK after                         │
+│  EBS = Network-attached storage (not local disk!)                │
+│  Load Balancer = Routes to healthy instances                     │
+│  Auto Scaling = Add instances when CPU > 80%                     │
 │                                                                  │
 │                                                                  │
-│  🎨 BROWSER - Rendering Pipeline                                │
-│  ──────────────────────────────                                 │
-│  HTML → DOM Tree                                               │
-│  CSS  → CSSOM Tree                                             │
-│  DOM + CSSOM → Render Tree                                     │
-│  Layout → Calculate positions                                   │
-│  Paint → Draw pixels                                           │
-│  Composite → Send to GPU                                       │
+│  🐳 DOCKER - Container Internals                                  │
+│  ──────────────────────────────                                  │
+│  Container ≠ VM                                                  │
+│  Container = Process with isolation via:                         │
+│  • Namespaces (what it sees)                                     │
+│  • Cgroups (what it uses)                                        │
 │                                                                  │
-│  transform animations = GPU only (fast)                        │
-│  layout changes = Full pipeline (slow)                         │
+│  Image = Read-only layers (cached, reusable)                     │
+│  Container Layer = Writable (deleted on stop)                    │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+│  10 containers, same image = 1 copy of layers                    │
+│                                                                  │
+│                                                                  │
+│  ⚙️ KUBERNETES - Pod Scheduling                                  │
+│  ─────────────────────────────                                   │
+│  1. kubectl apply → API Server → etcd                            │
+│  2. Deployment Controller → Creates ReplicaSet                   │
+│  3. ReplicaSet Controller → Creates Pods                         │
+│  4. Scheduler → Assigns Pod to Node                              │
+│     (Filter nodes, Score nodes, Bind)                            │
+│  5. Kubelet on Node → Pulls image, Creates container             │
+│                                                                  │
+│  Service = Stable IP for dynamic Pods                            │
+│  Ingress = HTTP routing (/api → svc1, /web → svc2)               │
+│                                                                  │
+│                                                                  │
+│  🍃 SPRING BOOT - Request Lifecycle                               │
+│  ──────────────────────────────────                              │
+│  1. Tomcat thread picks up request                               │
+│  2. Filter Chain (Security, CORS, etc.)                          │
+│  3. DispatcherServlet → Handler Mapping                          │
+│  4. Find Controller method                                       │
+│  5. Argument Resolution (@PathVariable, @RequestBody)            │
+│  6. YOUR CODE RUNS                                               │
+│  7. Return Value Handling (JSON serialization)                   │
+│  8. Response sent                                                │
+│                                                                  │
+│  @Transactional = Proxy wraps your method                        │
+│  → BEGIN before, COMMIT/ROLLBACK after                           │
+│                                                                  │
+│                                                                  │
+│  🎨 BROWSER - Rendering Pipeline                                  │
+│  ──────────────────────────────                                  │
+│  HTML → DOM Tree                                                 │
+│  CSS  → CSSOM Tree                                               │
+│  DOM + CSSOM → Render Tree                                       │
+│  Layout → Calculate positions                                    │
+│  Paint → Draw pixels                                             │
+│  Composite → Send to GPU                                         │
+│                                                                  │
+│  transform animations = GPU only (fast)                          │
+│  layout changes = Full pipeline (slow)                           │
+│                                                                  │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -2068,47 +2068,47 @@ public void processOutbox() {
 ## 🎯 Summary: Your Complete Learning Path
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │                    YOUR JOURNEY MAP                              │
-├─────────────────────────────────────────────────────────────────┤
+├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
-│  PHASE 1: DSA FOUNDATION (Month 1-2)                            │
-│  ├── Arrays, Strings, Hashing                                   │
-│  ├── Two Pointers, Sliding Window                               │
-│  ├── Trees, Graphs, DP                                          │
-│  └── ✅ See: 26_Ultimate_DataStructures_Algorithms_Guide.md     │
+│  PHASE 1: DSA FOUNDATION (Month 1-2)                             │
+│  ├── Arrays, Strings, Hashing                                    │
+│  ├── Two Pointers, Sliding Window                                │
+│  ├── Trees, Graphs, DP                                           │
+│  └── ✅ See: 26_Ultimate_DataStructures_Algorithms_Guide.md       │
 │                                                                  │
-│  PHASE 2: SYSTEM DESIGN (Month 2-3)                             │
-│  ├── Database Design & SQL                                      │
-│  ├── API Design (REST, GraphQL)                                 │
-│  ├── Scalability Patterns                                       │
-│  └── ✅ Covered in this guide                                   │
+│  PHASE 2: SYSTEM DESIGN (Month 2-3)                              │
+│  ├── Database Design & SQL                                       │
+│  ├── API Design (REST, GraphQL)                                  │
+│  ├── Scalability Patterns                                        │
+│  └── ✅ Covered in this guide                                     │
 │                                                                  │
-│  PHASE 3: FULL-STACK (Month 3-4)                                │
-│  ├── Frontend (React/Vue)                                       │
-│  ├── Backend (Spring/Node)                                      │
-│  ├── Database (SQL + NoSQL)                                     │
-│  └── ✅ Covered in this guide                                   │
+│  PHASE 3: FULL-STACK (Month 3-4)                                 │
+│  ├── Frontend (React/Vue)                                        │
+│  ├── Backend (Spring/Node)                                       │
+│  ├── Database (SQL + NoSQL)                                      │
+│  └── ✅ Covered in this guide                                     │
 │                                                                  │
-│  PHASE 4: CLOUD & DEVOPS (Month 4-5)                            │
-│  ├── AWS/Azure Services                                         │
-│  ├── Docker & Kubernetes                                        │
-│  ├── CI/CD Pipelines                                            │
-│  └── ✅ Covered in this guide                                   │
+│  PHASE 4: CLOUD & DEVOPS (Month 4-5)                             │
+│  ├── AWS/Azure Services                                          │
+│  ├── Docker & Kubernetes                                         │
+│  ├── CI/CD Pipelines                                             │
+│  └── ✅ Covered in this guide                                     │
 │                                                                  │
-│  PHASE 5: DOMAIN EXPERTISE (Month 5-6)                          │
-│  ├── Choose: Banking/Healthcare/E-commerce                      │
-│  ├── Build complete projects                                    │
-│  ├── Learn domain-specific patterns                             │
-│  └── ✅ Scenarios covered in this guide                         │
+│  PHASE 5: DOMAIN EXPERTISE (Month 5-6)                           │
+│  ├── Choose: Banking/Healthcare/E-commerce                       │
+│  ├── Build complete projects                                     │
+│  ├── Learn domain-specific patterns                              │
+│  └── ✅ Scenarios covered in this guide                           │
 │                                                                  │
-│  PHASE 6: SOFT SKILLS (Ongoing)                                 │
-│  ├── Communication                                              │
-│  ├── Client Management                                          │
-│  ├── Problem Solving                                            │
-│  └── ✅ Covered in Part 2 (Freelancer Guide)                    │
+│  PHASE 6: SOFT SKILLS (Ongoing)                                  │
+│  ├── Communication                                               │
+│  ├── Client Management                                           │
+│  ├── Problem Solving                                             │
+│  └── ✅ Covered in Part 2 (Freelancer Guide)                      │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 
 PROJECTS TO BUILD:
 ──────────────────

@@ -15,39 +15,39 @@
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHY: Why Testing is Non-Negotiable?                                            │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Bug in production costs 100x more to fix than in development               │
-│  • Tests = documentation that never gets outdated                             │
-│  • Refactoring confidence: change code without fear of breaking things        │
-│  • CI/CD requirement: automated deployment needs automated testing            │
-│  • Interview essential: All senior interviews include testing questions       │
+│  • Bug in production costs 100x more to fix than in development                 │
+│  • Tests = documentation that never gets outdated                               │
+│  • Refactoring confidence: change code without fear of breaking things          │
+│  • CI/CD requirement: automated deployment needs automated testing              │
+│  • Interview essential: All senior interviews include testing questions         │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  HOW: How to Test in Spring Boot?                                               │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • JUnit 5: Test framework (@Test, @BeforeEach, assertions)                    │
-│  • Mockito: Mock dependencies (@Mock, @InjectMocks, when/thenReturn)          │
-│  • @SpringBootTest: Full integration test with entire context                 │
-│  • @WebMvcTest: Test only controllers with MockMvc                            │
-│  • @DataJpaTest: Test only repositories with in-memory DB                     │
+│  • JUnit 5: Test framework (@Test, @BeforeEach, assertions)                     │
+│  • Mockito: Mock dependencies (@Mock, @InjectMocks, when/thenReturn)            │
+│  • @SpringBootTest: Full integration test with entire context                   │
+│  • @WebMvcTest: Test only controllers with MockMvc                              │
+│  • @DataJpaTest: Test only repositories with in-memory DB                       │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHEN: When to Use Each Test Type?                                              │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Unit tests: Business logic in services (70% of tests)                      │
-│  • Integration tests: Database operations, API contracts (20%)                │
-│  • E2E tests: Critical user flows only (10%)                                  │
-│  • TestContainers: When in-memory DB isn't realistic enough                   │
-│  • TDD: When requirements are clear, write tests first                        │
+│  • Unit tests: Business logic in services (70% of tests)                        │
+│  • Integration tests: Database operations, API contracts (20%)                  │
+│  • E2E tests: Critical user flows only (10%)                                    │
+│  • TestContainers: When in-memory DB isn't realistic enough                     │
+│  • TDD: When requirements are clear, write tests first                          │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHICH: Which Testing Tools to Master?                                          │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  ESSENTIAL:     JUnit 5, Mockito, @SpringBootTest, MockMvc                     │
-│  IMPORTANT:     TestContainers, @DataJpaTest, @WebMvcTest                      │
-│  ADVANCED:      JMeter, Gatling, ArchUnit, Contract Testing                    │
+│  ESSENTIAL:     JUnit 5, Mockito, @SpringBootTest, MockMvc                      │
+│  IMPORTANT:     TestContainers, @DataJpaTest, @WebMvcTest                       │
+│  ADVANCED:      JMeter, Gatling, ArchUnit, Contract Testing                     │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -79,12 +79,12 @@
 ```
 🎯 Testing Benefits:
 ┌─────────────────────────────────────────────────────────────┐
-│  ✅ Catch bugs early (cheaper to fix)                       │
-│  ✅ Documentation through code                              │
-│  ✅ Refactoring confidence                                  │
-│  ✅ Design improvement (testable = good design)             │
-│  ✅ Regression prevention                                   │
-│  ✅ Continuous Integration enablement                       │
+│  ✅ Catch bugs early (cheaper to fix)                        │
+│  ✅ Documentation through code                               │
+│  ✅ Refactoring confidence                                   │
+│  ✅ Design improvement (testable = good design)              │
+│  ✅ Regression prevention                                    │
+│  ✅ Continuous Integration enablement                        │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -721,15 +721,15 @@ class StaticMockTest {
 ```
 🎯 Spring Boot Test Annotations:
 ┌────────────────────────────────────────────────────────────────────┐
-│ @SpringBootTest         │ Full application context (integration)  │
-│ @WebMvcTest             │ Only web layer (controllers)            │
-│ @DataJpaTest            │ Only JPA components (repositories)      │
-│ @WebFluxTest            │ Only WebFlux components                 │
-│ @JsonTest               │ Only JSON serialization                 │
-│ @RestClientTest         │ Only REST client components             │
-│ @MockBean               │ Add mock to Spring context              │
-│ @SpyBean                │ Add spy to Spring context               │
-│ @TestConfiguration      │ Test-specific configuration             │
+│ @SpringBootTest         │ Full application context (integration)   │
+│ @WebMvcTest             │ Only web layer (controllers)             │
+│ @DataJpaTest            │ Only JPA components (repositories)       │
+│ @WebFluxTest            │ Only WebFlux components                  │
+│ @JsonTest               │ Only JSON serialization                  │
+│ @RestClientTest         │ Only REST client components              │
+│ @MockBean               │ Add mock to Spring context               │
+│ @SpyBean                │ Add spy to Spring context                │
+│ @TestConfiguration      │ Test-specific configuration              │
 └────────────────────────────────────────────────────────────────────┘
 ```
 

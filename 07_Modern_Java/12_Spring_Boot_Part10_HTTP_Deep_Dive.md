@@ -11,39 +11,39 @@
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHY: Why Understand HTTP Deeply?                                               │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Debug network issues: "Why is my API slow?" - headers, connections         │
-│  • API design: Right status codes, headers make intuitive APIs                │
-│  • Security: CORS, cookies, authentication headers                            │
-│  • Performance: Caching, compression, keep-alive connections                  │
-│  • Interview: Network questions are common in backend interviews              │
+│  • Debug network issues: "Why is my API slow?" - headers, connections           │
+│  • API design: Right status codes, headers make intuitive APIs                  │
+│  • Security: CORS, cookies, authentication headers                              │
+│  • Performance: Caching, compression, keep-alive connections                    │
+│  • Interview: Network questions are common in backend interviews                │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  HOW: How HTTP Request/Response Cycle Works?                                    │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • DNS lookup: Domain → IP address resolution                                  │
-│  • TCP handshake: Establish connection (3-way handshake)                       │
-│  • TLS negotiation: HTTPS encryption setup                                     │
+│  • DNS lookup: Domain → IP address resolution                                   │
+│  • TCP handshake: Establish connection (3-way handshake)                        │
+│  • TLS negotiation: HTTPS encryption setup                                      │
 │  • Request: Method + URL + Headers + Body                                       │
-│  • Response: Status + Headers + Body                                           │
+│  • Response: Status + Headers + Body                                            │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHEN: When to Use Each HTTP Method?                                            │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • GET: Retrieve data (safe, idempotent, cacheable)                            │
-│  • POST: Create new resource (not idempotent)                                  │
-│  • PUT: Replace entire resource (idempotent)                                   │
-│  • PATCH: Partial update (not always idempotent)                               │
-│  • DELETE: Remove resource (idempotent)                                        │
+│  • GET: Retrieve data (safe, idempotent, cacheable)                             │
+│  • POST: Create new resource (not idempotent)                                   │
+│  • PUT: Replace entire resource (idempotent)                                    │
+│  • PATCH: Partial update (not always idempotent)                                │
+│  • DELETE: Remove resource (idempotent)                                         │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHICH: Which HTTP Concepts to Master?                                          │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  ESSENTIAL:     Status codes, methods, headers, request/response structure     │
-│  IMPORTANT:     CORS, cookies, caching headers, content types                  │
-│  ADVANCED:      HTTP/2, WebSocket, long polling, streaming                     │
+│  ESSENTIAL:     Status codes, methods, headers, request/response structure      │
+│  IMPORTANT:     CORS, cookies, caching headers, content types                   │
+│  ADVANCED:      HTTP/2, WebSocket, long polling, streaming                      │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -57,94 +57,94 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│              THE COMPLETE JOURNEY OF AN HTTP REQUEST                             │
+│              THE COMPLETE JOURNEY OF AN HTTP REQUEST                            │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  YOU TYPE: http://api.myapp.com/users/123?include=orders                        │
-│                                                                                  │
+│                                                                                 │
 │  STEP 1: DNS RESOLUTION                                                         │
 │  ══════════════════════                                                         │
-│                                                                                  │
+│                                                                                 │
 │   Browser → "What's the IP of api.myapp.com?"                                   │
-│                                                                                  │
+│                                                                                 │
 │   1. Check browser cache                                                        │
-│   2. Check OS cache (/etc/hosts, DNS cache)                                    │
-│   3. Query DNS resolver (ISP's DNS)                                            │
-│   4. Resolver queries: Root → TLD (.com) → Authoritative DNS                   │
+│   2. Check OS cache (/etc/hosts, DNS cache)                                     │
+│   3. Query DNS resolver (ISP's DNS)                                             │
+│   4. Resolver queries: Root → TLD (.com) → Authoritative DNS                    │
 │   5. Returns: 52.34.198.76                                                      │
-│                                                                                  │
-│   ┌─────────┐    ┌─────────┐    ┌──────────┐    ┌─────────────┐               │
-│   │ Browser ├────► ISP DNS ├────► Root DNS ├────► .com TLD    │               │
-│   └─────────┘    └─────────┘    └──────────┘    └──────┬──────┘               │
+│                                                                                 │
+│   ┌─────────┐    ┌─────────┐    ┌──────────┐    ┌─────────────┐                 │
+│   │ Browser ├────► ISP DNS ├────► Root DNS ├────► .com TLD    │                 │
+│   └─────────┘    └─────────┘    └──────────┘    └──────┬──────┘                 │
 │                                                         │                       │
 │                                                         ▼                       │
-│                                              ┌─────────────────┐               │
-│                                              │ Authoritative   │               │
-│                                              │ DNS for myapp   │               │
-│                                              │ → 52.34.198.76  │               │
-│                                              └─────────────────┘               │
-│                                                                                  │
+│                                              ┌─────────────────┐                │
+│                                              │ Authoritative   │                │
+│                                              │ DNS for myapp   │                │
+│                                              │ → 52.34.198.76  │                │
+│                                              └─────────────────┘                │
+│                                                                                 │
 │  STEP 2: TCP CONNECTION (Three-Way Handshake)                                   │
 │  ═════════════════════════════════════════════                                  │
-│                                                                                  │
-│   ┌─────────┐                              ┌─────────┐                         │
-│   │ Client  │                              │ Server  │                         │
-│   └────┬────┘                              └────┬────┘                         │
+│                                                                                 │
+│   ┌─────────┐                              ┌─────────┐                          │
+│   │ Client  │                              │ Server  │                          │
+│   └────┬────┘                              └────┬────┘                          │
 │        │                                        │                               │
-│        │  ──── SYN (seq=100) ─────────────────► │   1. Client sends SYN       │
+│        │  ──── SYN (seq=100) ─────────────────► │   1. Client sends SYN         │
 │        │                                        │                               │
-│        │  ◄─── SYN-ACK (seq=300, ack=101) ──── │   2. Server responds         │
+│        │  ◄─── SYN-ACK (seq=300, ack=101) ──── │   2. Server responds           │
 │        │                                        │                               │
-│        │  ──── ACK (ack=301) ─────────────────► │   3. Connection established │
+│        │  ──── ACK (ack=301) ─────────────────► │   3. Connection established   │
 │        │                                        │                               │
 │   Connection now ESTABLISHED                                                    │
-│                                                                                  │
-│  STEP 3: TLS HANDSHAKE (for HTTPS)                                             │
+│                                                                                 │
+│  STEP 3: TLS HANDSHAKE (for HTTPS)                                              │
 │  ══════════════════════════════════                                             │
-│                                                                                  │
+│                                                                                 │
 │   Client                                   Server                               │
 │     │                                        │                                  │
-│     │─── ClientHello (TLS versions, ─────────► │                               │
+│     │─── ClientHello (TLS versions, ─────────► │                                │
 │     │          cipher suites)                │                                  │
 │     │                                        │                                  │
-│     │ ◄── ServerHello + Certificate ─────────│                                 │
+│     │ ◄── ServerHello + Certificate ─────────│                                  │
 │     │                                        │                                  │
-│     │─── Verify cert, Generate session ─────►│                                 │
+│     │─── Verify cert, Generate session ─────►│                                  │
 │     │         key, send encrypted            │                                  │
 │     │                                        │                                  │
-│     │ ◄── Acknowledge encrypted ─────────────│                                 │
+│     │ ◄── Acknowledge encrypted ─────────────│                                  │
 │     │           connection                   │                                  │
-│                                                                                  │
+│                                                                                 │
 │  STEP 4: HTTP REQUEST SENT                                                      │
 │  ══════════════════════════                                                     │
-│                                                                                  │
+│                                                                                 │
 │  GET /users/123?include=orders HTTP/1.1                                         │
 │  Host: api.myapp.com                                                            │
 │  User-Agent: Mozilla/5.0                                                        │
 │  Accept: application/json                                                       │
 │  Authorization: Bearer eyJhbGciOiJIUzI1...                                      │
 │  Connection: keep-alive                                                         │
-│                                                                                  │
+│                                                                                 │
 │  STEP 5: SERVER PROCESSES (Spring Boot)                                         │
 │  ═══════════════════════════════════════                                        │
-│                                                                                  │
-│  Tomcat → DispatcherServlet → HandlerMapping → Controller → Service → DB       │
-│                                                                                  │
+│                                                                                 │
+│  Tomcat → DispatcherServlet → HandlerMapping → Controller → Service → DB        │
+│                                                                                 │
 │  STEP 6: HTTP RESPONSE RETURNED                                                 │
 │  ══════════════════════════════                                                 │
-│                                                                                  │
+│                                                                                 │
 │  HTTP/1.1 200 OK                                                                │
 │  Content-Type: application/json                                                 │
 │  Content-Length: 256                                                            │
-│                                                                                  │
-│  {"id": 123, "name": "John", "orders": [...]}                                  │
-│                                                                                  │
+│                                                                                 │
+│  {"id": 123, "name": "John", "orders": [...]}                                   │
+│                                                                                 │
 │  STEP 7: TCP CONNECTION CLOSE (or kept alive)                                   │
 │  ═════════════════════════════════════════════                                  │
-│                                                                                  │
+│                                                                                 │
 │  With HTTP/1.1 Keep-Alive, connection stays open for reuse                      │
-│  Without it: FIN → FIN-ACK → FIN → FIN-ACK (4-way handshake)                   │
-│                                                                                  │
+│  Without it: FIN → FIN-ACK → FIN → FIN-ACK (4-way handshake)                    │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -154,69 +154,69 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    ANATOMY OF AN HTTP REQUEST                                    │
+│                    ANATOMY OF AN HTTP REQUEST                                   │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  ┌─────────────── REQUEST LINE ───────────────┐                                │
-│  │                                            │                                │
-│  │  POST /api/v1/users/123/orders HTTP/1.1    │                                │
-│  │  ───┬── ─────────┬───────────── ────┬───   │                                │
-│  │     │            │                  │      │                                │
-│  │   METHOD        URL               VERSION  │                                │
-│  │                                            │                                │
-│  └────────────────────────────────────────────┘                                │
-│                                                                                  │
-│  ┌─────────────── HEADERS ────────────────────┐                                │
-│  │                                            │                                │
-│  │  Host: api.myapp.com                       │ ← Required in HTTP/1.1        │
-│  │  Content-Type: application/json            │ ← What format body is in      │
-│  │  Content-Length: 89                        │ ← Body size in bytes          │
-│  │  Accept: application/json                  │ ← What format you want back   │
-│  │  Authorization: Bearer eyJhbGc...          │ ← Authentication token        │
-│  │  User-Agent: PostmanRuntime/7.29.0         │ ← Client info                 │
-│  │  Cache-Control: no-cache                   │ ← Caching behavior            │
-│  │  X-Request-ID: abc-123-def                 │ ← Custom header               │
-│  │                                            │                                │
-│  └────────────────────────────────────────────┘                                │
-│                                                                                  │
-│  ┌─────────────── BLANK LINE ─────────────────┐                                │
-│  │  (separates headers from body)             │                                │
-│  └────────────────────────────────────────────┘                                │
-│                                                                                  │
-│  ┌─────────────── BODY (optional) ────────────┐                                │
-│  │                                            │                                │
-│  │  {                                         │                                │
-│  │    "productId": 456,                       │                                │
-│  │    "quantity": 2                           │                                │
-│  │  }                                         │                                │
-│  │                                            │                                │
-│  └────────────────────────────────────────────┘                                │
-│                                                                                  │
-│  ═══════════════════════════════════════════════════════════════════════════   │
-│                                                                                  │
+│                                                                                 │
+│  ┌─────────────── REQUEST LINE ───────────────┐                                 │
+│  │                                            │                                 │
+│  │  POST /api/v1/users/123/orders HTTP/1.1    │                                 │
+│  │  ───┬── ─────────┬───────────── ────┬───   │                                 │
+│  │     │            │                  │      │                                 │
+│  │   METHOD        URL               VERSION  │                                 │
+│  │                                            │                                 │
+│  └────────────────────────────────────────────┘                                 │
+│                                                                                 │
+│  ┌─────────────── HEADERS ────────────────────┐                                 │
+│  │                                            │                                 │
+│  │  Host: api.myapp.com                       │ ← Required in HTTP/1.1          │
+│  │  Content-Type: application/json            │ ← What format body is in        │
+│  │  Content-Length: 89                        │ ← Body size in bytes            │
+│  │  Accept: application/json                  │ ← What format you want back     │
+│  │  Authorization: Bearer eyJhbGc...          │ ← Authentication token          │
+│  │  User-Agent: PostmanRuntime/7.29.0         │ ← Client info                   │
+│  │  Cache-Control: no-cache                   │ ← Caching behavior              │
+│  │  X-Request-ID: abc-123-def                 │ ← Custom header                 │
+│  │                                            │                                 │
+│  └────────────────────────────────────────────┘                                 │
+│                                                                                 │
+│  ┌─────────────── BLANK LINE ─────────────────┐                                 │
+│  │  (separates headers from body)             │                                 │
+│  └────────────────────────────────────────────┘                                 │
+│                                                                                 │
+│  ┌─────────────── BODY (optional) ────────────┐                                 │
+│  │                                            │                                 │
+│  │  {                                         │                                 │
+│  │    "productId": 456,                       │                                 │
+│  │    "quantity": 2                           │                                 │
+│  │  }                                         │                                 │
+│  │                                            │                                 │
+│  └────────────────────────────────────────────┘                                 │
+│                                                                                 │
+│  ═══════════════════════════════════════════════════════════════════════════    │
+│                                                                                 │
 │  HEADERS DETAILED:                                                              │
 │  ─────────────────                                                              │
-│                                                                                  │
+│                                                                                 │
 │  GENERAL HEADERS:                                                               │
-│  │ Cache-Control    │ no-cache, no-store, max-age=3600                        │
-│  │ Connection       │ keep-alive, close                                        │
-│  │ Date             │ Wed, 12 Feb 2026 10:30:00 GMT                           │
+│  │ Cache-Control    │ no-cache, no-store, max-age=3600                          │
+│  │ Connection       │ keep-alive, close                                         │
+│  │ Date             │ Wed, 12 Feb 2026 10:30:00 GMT                             │
 │  │                                                                              │
 │  REQUEST HEADERS:                                                               │
-│  │ Accept           │ application/json, text/html, */*                        │
-│  │ Accept-Encoding  │ gzip, deflate, br                                       │
-│  │ Accept-Language  │ en-US,en;q=0.9                                          │
-│  │ Authorization    │ Bearer token, Basic base64creds                         │
-│  │ Host             │ api.myapp.com (required!)                               │
-│  │ User-Agent       │ Browser/App identifier                                   │
-│  │ Cookie           │ session=abc123                                          │
-│  │ Referer          │ Previous page URL                                       │
+│  │ Accept           │ application/json, text/html, */*                          │
+│  │ Accept-Encoding  │ gzip, deflate, br                                         │
+│  │ Accept-Language  │ en-US,en;q=0.9                                            │
+│  │ Authorization    │ Bearer token, Basic base64creds                           │
+│  │ Host             │ api.myapp.com (required!)                                 │
+│  │ User-Agent       │ Browser/App identifier                                    │
+│  │ Cookie           │ session=abc123                                            │
+│  │ Referer          │ Previous page URL                                         │
 │  │                                                                              │
-│  ENTITY HEADERS (about the body):                                              │
-│  │ Content-Type     │ application/json, multipart/form-data                   │
-│  │ Content-Length   │ Size in bytes                                           │
-│  │ Content-Encoding │ gzip                                                    │
-│                                                                                  │
+│  ENTITY HEADERS (about the body):                                               │
+│  │ Content-Type     │ application/json, multipart/form-data                     │
+│  │ Content-Length   │ Size in bytes                                             │
+│  │ Content-Encoding │ gzip                                                      │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -226,74 +226,74 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    ANATOMY OF AN HTTP RESPONSE                                   │
+│                    ANATOMY OF AN HTTP RESPONSE                                  │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  ┌─────────────── STATUS LINE ────────────────┐                                │
-│  │                                            │                                │
-│  │  HTTP/1.1 201 Created                      │                                │
-│  │  ────┬─── ─┬─ ───┬───                      │                                │
-│  │      │     │     │                         │                                │
-│  │   VERSION CODE  PHRASE                     │                                │
-│  │                                            │                                │
-│  └────────────────────────────────────────────┘                                │
-│                                                                                  │
-│  ┌─────────────── RESPONSE HEADERS ───────────┐                                │
-│  │                                            │                                │
-│  │  Content-Type: application/json            │                                │
-│  │  Content-Length: 89                        │                                │
-│  │  Location: /api/v1/orders/789              │ ← For 201, where created      │
-│  │  Cache-Control: max-age=3600               │                                │
-│  │  X-RateLimit-Remaining: 99                 │ ← Custom response header      │
-│  │  Set-Cookie: session=xyz; HttpOnly         │                                │
-│  │                                            │                                │
-│  └────────────────────────────────────────────┘                                │
-│                                                                                  │
-│  ┌─────────────── RESPONSE BODY ──────────────┐                                │
-│  │                                            │                                │
-│  │  {                                         │                                │
-│  │    "id": 789,                              │                                │
-│  │    "status": "pending"                     │                                │
-│  │  }                                         │                                │
-│  │                                            │                                │
-│  └────────────────────────────────────────────┘                                │
-│                                                                                  │
-│  ═══════════════════════════════════════════════════════════════════════════   │
-│                                                                                  │
+│                                                                                 │
+│  ┌─────────────── STATUS LINE ────────────────┐                                 │
+│  │                                            │                                 │
+│  │  HTTP/1.1 201 Created                      │                                 │
+│  │  ────┬─── ─┬─ ───┬───                      │                                 │
+│  │      │     │     │                         │                                 │
+│  │   VERSION CODE  PHRASE                     │                                 │
+│  │                                            │                                 │
+│  └────────────────────────────────────────────┘                                 │
+│                                                                                 │
+│  ┌─────────────── RESPONSE HEADERS ───────────┐                                 │
+│  │                                            │                                 │
+│  │  Content-Type: application/json            │                                 │
+│  │  Content-Length: 89                        │                                 │
+│  │  Location: /api/v1/orders/789              │ ← For 201, where created        │
+│  │  Cache-Control: max-age=3600               │                                 │
+│  │  X-RateLimit-Remaining: 99                 │ ← Custom response header        │
+│  │  Set-Cookie: session=xyz; HttpOnly         │                                 │
+│  │                                            │                                 │
+│  └────────────────────────────────────────────┘                                 │
+│                                                                                 │
+│  ┌─────────────── RESPONSE BODY ──────────────┐                                 │
+│  │                                            │                                 │
+│  │  {                                         │                                 │
+│  │    "id": 789,                              │                                 │
+│  │    "status": "pending"                     │                                 │
+│  │  }                                         │                                 │
+│  │                                            │                                 │
+│  └────────────────────────────────────────────┘                                 │
+│                                                                                 │
+│  ═══════════════════════════════════════════════════════════════════════════    │
+│                                                                                 │
 │  STATUS CODES REFERENCE:                                                        │
 │  ───────────────────────                                                        │
-│                                                                                  │
+│                                                                                 │
 │  1xx INFORMATIONAL:                                                             │
-│  │ 100 Continue        │ Keep sending the request                              │
-│  │ 101 Switching       │ Changing protocols (WebSocket upgrade)                │
-│                                                                                  │
+│  │ 100 Continue        │ Keep sending the request                               │
+│  │ 101 Switching       │ Changing protocols (WebSocket upgrade)                 │
+│                                                                                 │
 │  2xx SUCCESS:                                                                   │
-│  │ 200 OK              │ Standard success                                      │
-│  │ 201 Created         │ Resource created (POST)                               │
-│  │ 202 Accepted        │ Request accepted, processing async                    │
-│  │ 204 No Content      │ Success but no body (DELETE)                          │
-│                                                                                  │
+│  │ 200 OK              │ Standard success                                       │
+│  │ 201 Created         │ Resource created (POST)                                │
+│  │ 202 Accepted        │ Request accepted, processing async                     │
+│  │ 204 No Content      │ Success but no body (DELETE)                           │
+│                                                                                 │
 │  3xx REDIRECTION:                                                               │
-│  │ 301 Moved Permanent │ URL changed permanently                               │
-│  │ 302 Found           │ Temporary redirect                                    │
-│  │ 304 Not Modified    │ Cached version is still valid                         │
-│                                                                                  │
+│  │ 301 Moved Permanent │ URL changed permanently                                │
+│  │ 302 Found           │ Temporary redirect                                     │
+│  │ 304 Not Modified    │ Cached version is still valid                          │
+│                                                                                 │
 │  4xx CLIENT ERROR:                                                              │
-│  │ 400 Bad Request     │ Invalid syntax/data                                   │
-│  │ 401 Unauthorized    │ Not authenticated                                     │
-│  │ 403 Forbidden       │ Authenticated but not authorized                      │
-│  │ 404 Not Found       │ Resource doesn't exist                                │
-│  │ 405 Method Not      │ Wrong HTTP method                                     │
-│  │ 409 Conflict        │ State conflict (duplicate, etc.)                      │
-│  │ 422 Unprocessable   │ Valid syntax, invalid semantics                       │
-│  │ 429 Too Many Reqs   │ Rate limit exceeded                                   │
-│                                                                                  │
+│  │ 400 Bad Request     │ Invalid syntax/data                                    │
+│  │ 401 Unauthorized    │ Not authenticated                                      │
+│  │ 403 Forbidden       │ Authenticated but not authorized                       │
+│  │ 404 Not Found       │ Resource doesn't exist                                 │
+│  │ 405 Method Not      │ Wrong HTTP method                                      │
+│  │ 409 Conflict        │ State conflict (duplicate, etc.)                       │
+│  │ 422 Unprocessable   │ Valid syntax, invalid semantics                        │
+│  │ 429 Too Many Reqs   │ Rate limit exceeded                                    │
+│                                                                                 │
 │  5xx SERVER ERROR:                                                              │
-│  │ 500 Internal Error  │ Generic server error                                  │
-│  │ 502 Bad Gateway     │ Upstream server error                                 │
-│  │ 503 Service Unavail │ Server temporarily unavailable                        │
-│  │ 504 Gateway Timeout │ Upstream server timeout                               │
-│                                                                                  │
+│  │ 500 Internal Error  │ Generic server error                                   │
+│  │ 502 Bad Gateway     │ Upstream server error                                  │
+│  │ 503 Service Unavail │ Server temporarily unavailable                         │
+│  │ 504 Gateway Timeout │ Upstream server timeout                                │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -307,33 +307,33 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                         URL STRUCTURE BREAKDOWN                                  │
+│                         URL STRUCTURE BREAKDOWN                                 │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  https://api.myapp.com:8080/api/v1/users/123/orders?status=pending&limit=10     │
 │  ──┬──  ───────┬──────  ─┬─ ──────────┬──────────── ───────────┬────────────    │
 │    │           │         │            │                        │                │
 │  SCHEME      HOST      PORT         PATH              QUERY STRING              │
-│                                                                                  │
+│                                                                                 │
 │  BREAKING DOWN THE PATH:                                                        │
 │  ══════════════════════                                                         │
-│                                                                                  │
+│                                                                                 │
 │  /api/v1/users/123/orders                                                       │
 │   ─┬─ ─┬─ ──┬─ ─┬─ ──┬──                                                        │
 │    │   │    │   │    │                                                          │
 │    │   │    │   │    └── Resource: orders                                       │
 │    │   │    │   │                                                               │
-│    │   │    │   └─────── PATH VARIABLE: 123 (user ID)                          │
+│    │   │    │   └─────── PATH VARIABLE: 123 (user ID)                           │
 │    │   │    │                                                                   │
 │    │   │    └─────────── Resource: users                                        │
 │    │   │                                                                        │
 │    │   └──────────────── Version: v1                                            │
 │    │                                                                            │
 │    └──────────────────── Base path                                              │
-│                                                                                  │
+│                                                                                 │
 │  BREAKING DOWN QUERY STRING:                                                    │
 │  ════════════════════════════                                                   │
-│                                                                                  │
+│                                                                                 │
 │  ?status=pending&limit=10                                                       │
 │  ─ ────┬─ ───┬── ─ ──┬─ ─┬                                                      │
 │  │     │     │   │   │   │                                                      │
@@ -348,7 +348,7 @@
 │  │     └──────────────────── Key                                                │
 │  │                                                                              │
 │  └────────────────────────── Query start marker                                 │
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -717,9 +717,9 @@ public class RequestParamExamplesController {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│               @PathVariable vs @RequestParam DECISION GUIDE                      │
+│               @PathVariable vs @RequestParam DECISION GUIDE                     │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  ┌─────────────────────────────────────┬─────────────────────────────────────┐  │
 │  │         @PathVariable               │         @RequestParam               │  │
 │  ├─────────────────────────────────────┼─────────────────────────────────────┤  │
@@ -729,58 +729,58 @@ public class RequestParamExamplesController {
 │  │  /products/electronics/laptops      │  /products?page=2&size=10           │  │
 │  │                                     │                                     │  │
 │  ├─────────────────────────────────────┼─────────────────────────────────────┤  │
-│  │  IDENTIFIES a resource              │  FILTERS or MODIFIES the request   │  │
+│  │  IDENTIFIES a resource              │  FILTERS or MODIFIES the request   │   │
 │  │                                     │                                     │  │
 │  │  Required (part of URL)             │  Usually optional                   │  │
 │  │                                     │                                     │  │
 │  │  "WHICH specific thing?"            │  "HOW do you want it?"              │  │
 │  │                                     │                                     │  │
 │  └─────────────────────────────────────┴─────────────────────────────────────┘  │
-│                                                                                  │
-│  ═══════════════════════════════════════════════════════════════════════════   │
-│                                                                                  │
-│  USE @PathVariable FOR:                 │  USE @RequestParam FOR:              │
-│  ───────────────────────                │  ────────────────────────            │
+│                                                                                 │
+│  ═══════════════════════════════════════════════════════════════════════════    │
+│                                                                                 │
+│  USE @PathVariable FOR:                 │  USE @RequestParam FOR:               │
+│  ───────────────────────                │  ────────────────────────             │
 │                                         │                                       │
-│  • Resource IDs                         │  • Search/filter criteria            │
-│  • Unique identifiers (UUID, slug)      │  • Pagination (page, size)           │
-│  • Nested resources                     │  • Sorting (sortBy, sortDir)         │
-│  • Required path segments               │  • Optional filters                  │
-│  • Hierarchical data                    │  • Boolean flags                     │
-│                                         │  • Multiple values (arrays)          │
-│                                                                                  │
-│  ═══════════════════════════════════════════════════════════════════════════   │
-│                                                                                  │
+│  • Resource IDs                         │  • Search/filter criteria             │
+│  • Unique identifiers (UUID, slug)      │  • Pagination (page, size)            │
+│  • Nested resources                     │  • Sorting (sortBy, sortDir)          │
+│  • Required path segments               │  • Optional filters                   │
+│  • Hierarchical data                    │  • Boolean flags                      │
+│                                         │  • Multiple values (arrays)           │
+│                                                                                 │
+│  ═══════════════════════════════════════════════════════════════════════════    │
+│                                                                                 │
 │  COMBINED USAGE (Common Pattern):                                               │
 │  ════════════════════════════════                                               │
-│                                                                                  │
-│  GET /api/v1/users/123/orders?status=pending&page=0&size=10                    │
+│                                                                                 │
+│  GET /api/v1/users/123/orders?status=pending&page=0&size=10                     │
 │               ─┬─       ─┬─     ───┬───       ──┬──   ──┬──                     │
 │                │         │         │            │       │                       │
-│         @PathVariable   @PathVariable   @RequestParam @RequestParam            │
+│         @PathVariable   @PathVariable   @RequestParam @RequestParam             │
 │            userId        orderId         status       page/size                 │
-│                                                                                  │
+│                                                                                 │
 │  @GetMapping("/users/{userId}/orders")                                          │
 │  public Page<OrderResponse> getUserOrders(                                      │
-│      @PathVariable Long userId,                    // REQUIRED - which user?   │
-│      @RequestParam(required=false) OrderStatus status,  // OPTIONAL - filter   │
-│      @RequestParam(defaultValue="0") int page,    // OPTIONAL - pagination     │
-│      @RequestParam(defaultValue="20") int size);                               │
-│                                                                                  │
-│  ═══════════════════════════════════════════════════════════════════════════   │
-│                                                                                  │
+│      @PathVariable Long userId,                    // REQUIRED - which user?    │
+│      @RequestParam(required=false) OrderStatus status,  // OPTIONAL - filter    │
+│      @RequestParam(defaultValue="0") int page,    // OPTIONAL - pagination      │
+│      @RequestParam(defaultValue="20") int size);                                │
+│                                                                                 │
+│  ═══════════════════════════════════════════════════════════════════════════    │
+│                                                                                 │
 │  ANTI-PATTERNS (DON'T DO):                                                      │
 │  ══════════════════════════                                                     │
-│                                                                                  │
-│  ❌ /users?id=123              →  ✅ /users/123                                 │
+│                                                                                 │
+│  ❌ /users?id=123              →  ✅ /users/123                                   │
 │     (Use path for IDs)                                                          │
-│                                                                                  │
-│  ❌ /search/John/Seattle       →  ✅ /search?name=John&city=Seattle             │
+│                                                                                 │
+│  ❌ /search/John/Seattle       →  ✅ /search?name=John&city=Seattle               │
 │     (Use params for filters)                                                    │
-│                                                                                  │
-│  ❌ /users/123/active/true     →  ✅ /users/123?active=true                     │
+│                                                                                 │
+│  ❌ /users/123/active/true     →  ✅ /users/123?active=true                       │
 │     (Use param for state)                                                       │
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -794,93 +794,93 @@ public class RequestParamExamplesController {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    POSTMAN TESTING GUIDE                                         │
+│                    POSTMAN TESTING GUIDE                                        │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  1. CREATE NEW REQUEST                                                          │
 │  ═════════════════════                                                          │
-│                                                                                  │
-│  ┌───────────────────────────────────────────────────────────────────────────┐ │
-│  │  [GET ▼] │ http://localhost:8080/api/v1/users/123?active=true      [Send] │ │
-│  └───────────────────────────────────────────────────────────────────────────┘ │
-│                                                                                  │
+│                                                                                 │
+│  ┌───────────────────────────────────────────────────────────────────────────┐  │
+│  │  [GET ▼] │ http://localhost:8080/api/v1/users/123?active=true      [Send] │  │
+│  └───────────────────────────────────────────────────────────────────────────┘  │
+│                                                                                 │
 │  2. PATH VARIABLES IN POSTMAN                                                   │
 │  ════════════════════════════                                                   │
-│                                                                                  │
-│  URL: http://localhost:8080/api/v1/users/:userId/orders/:orderId               │
-│                                                                                  │
+│                                                                                 │
+│  URL: http://localhost:8080/api/v1/users/:userId/orders/:orderId                │
+│                                                                                 │
 │  Go to "Params" tab:                                                            │
-│  ┌────────────────┬─────────────┐                                              │
-│  │ Path Variables │             │                                              │
-│  ├────────────────┼─────────────┤                                              │
-│  │ userId         │ 123         │                                              │
-│  │ orderId        │ 456         │                                              │
-│  └────────────────┴─────────────┘                                              │
-│                                                                                  │
-│  Result: http://localhost:8080/api/v1/users/123/orders/456                     │
-│                                                                                  │
+│  ┌────────────────┬─────────────┐                                               │
+│  │ Path Variables │             │                                               │
+│  ├────────────────┼─────────────┤                                               │
+│  │ userId         │ 123         │                                               │
+│  │ orderId        │ 456         │                                               │
+│  └────────────────┴─────────────┘                                               │
+│                                                                                 │
+│  Result: http://localhost:8080/api/v1/users/123/orders/456                      │
+│                                                                                 │
 │  3. QUERY PARAMETERS IN POSTMAN                                                 │
 │  ═══════════════════════════════                                                │
-│                                                                                  │
+│                                                                                 │
 │  Go to "Params" tab:                                                            │
-│  ┌─────────────────┬─────────────┐                                             │
-│  │ Query Params    │             │                                             │
-│  ├─────────────────┼─────────────┤                                             │
-│  │ status          │ PENDING     │                                             │
-│  │ page            │ 0           │                                             │
-│  │ size            │ 20          │                                             │
-│  │ sort            │ created,desc│                                             │
-│  └─────────────────┴─────────────┘                                             │
-│                                                                                  │
-│  Result: ?status=PENDING&page=0&size=20&sort=created,desc                      │
-│                                                                                  │
+│  ┌─────────────────┬─────────────┐                                              │
+│  │ Query Params    │             │                                              │
+│  ├─────────────────┼─────────────┤                                              │
+│  │ status          │ PENDING     │                                              │
+│  │ page            │ 0           │                                              │
+│  │ size            │ 20          │                                              │
+│  │ sort            │ created,desc│                                              │
+│  └─────────────────┴─────────────┘                                              │
+│                                                                                 │
+│  Result: ?status=PENDING&page=0&size=20&sort=created,desc                       │
+│                                                                                 │
 │  4. HEADERS IN POSTMAN                                                          │
 │  ═════════════════════                                                          │
-│                                                                                  │
+│                                                                                 │
 │  Go to "Headers" tab:                                                           │
-│  ┌─────────────────────┬────────────────────────────────────┐                  │
-│  │ Key                 │ Value                              │                  │
-│  ├─────────────────────┼────────────────────────────────────┤                  │
-│  │ Content-Type        │ application/json                   │                  │
-│  │ Accept              │ application/json                   │                  │
-│  │ Authorization       │ Bearer eyJhbGciOiJIUzI1NiIsIn...   │                  │
-│  │ X-Request-ID        │ abc-123-def                        │                  │
-│  └─────────────────────┴────────────────────────────────────┘                  │
-│                                                                                  │
+│  ┌─────────────────────┬────────────────────────────────────┐                   │
+│  │ Key                 │ Value                              │                   │
+│  ├─────────────────────┼────────────────────────────────────┤                   │
+│  │ Content-Type        │ application/json                   │                   │
+│  │ Accept              │ application/json                   │                   │
+│  │ Authorization       │ Bearer eyJhbGciOiJIUzI1NiIsIn...   │                   │
+│  │ X-Request-ID        │ abc-123-def                        │                   │
+│  └─────────────────────┴────────────────────────────────────┘                   │
+│                                                                                 │
 │  5. REQUEST BODY (POST/PUT)                                                     │
 │  ══════════════════════════                                                     │
-│                                                                                  │
-│  Go to "Body" tab → Select "raw" → Select "JSON"                               │
-│                                                                                  │
+│                                                                                 │
+│  Go to "Body" tab → Select "raw" → Select "JSON"                                │
+│                                                                                 │
 │  {                                                                              │
-│    "email": "john@example.com",                                                │
-│    "password": "SecretPass123",                                                │
-│    "name": "John Doe"                                                          │
+│    "email": "john@example.com",                                                 │
+│    "password": "SecretPass123",                                                 │
+│    "name": "John Doe"                                                           │
 │  }                                                                              │
-│                                                                                  │
+│                                                                                 │
 │  6. FORM DATA (File Upload)                                                     │
 │  ══════════════════════════                                                     │
-│                                                                                  │
-│  Go to "Body" tab → Select "form-data"                                         │
-│  ┌─────────────────────┬────────────┬─────────────────┐                        │
-│  │ Key                 │ Type       │ Value           │                        │
-│  ├─────────────────────┼────────────┼─────────────────┤                        │
-│  │ file                │ File       │ [Select File]   │                        │
-│  │ description         │ Text       │ My document     │                        │
-│  └─────────────────────┴────────────┴─────────────────┘                        │
-│                                                                                  │
+│                                                                                 │
+│  Go to "Body" tab → Select "form-data"                                          │
+│  ┌─────────────────────┬────────────┬─────────────────┐                         │
+│  │ Key                 │ Type       │ Value           │                         │
+│  ├─────────────────────┼────────────┼─────────────────┤                         │
+│  │ file                │ File       │ [Select File]   │                         │
+│  │ description         │ Text       │ My document     │                         │
+│  └─────────────────────┴────────────┴─────────────────┘                         │
+│                                                                                 │
 │  7. AUTHORIZATION TAB                                                           │
 │  ═════════════════════                                                          │
-│                                                                                  │
+│                                                                                 │
 │  Type: Bearer Token                                                             │
-│  Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...                                │
-│                                                                                  │
+│  Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...                                 │
+│                                                                                 │
 │  OR                                                                             │
-│                                                                                  │
+│                                                                                 │
 │  Type: Basic Auth                                                               │
 │  Username: admin                                                                │
 │  Password: secret123                                                            │
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -890,79 +890,79 @@ public class RequestParamExamplesController {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    POSTMAN PRO TIPS                                              │
+│                    POSTMAN PRO TIPS                                             │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  ENVIRONMENT VARIABLES                                                          │
 │  ═════════════════════                                                          │
-│                                                                                  │
+│                                                                                 │
 │  Create environments: Development, Staging, Production                          │
-│                                                                                  │
-│  Variables:                                                                      │
-│  ┌────────────────┬───────────────────────────────────┐                        │
-│  │ Variable       │ Value                             │                        │
-│  ├────────────────┼───────────────────────────────────┤                        │
-│  │ baseUrl        │ http://localhost:8080             │  ← Dev                 │
-│  │ baseUrl        │ https://api.staging.myapp.com     │  ← Staging            │
-│  │ baseUrl        │ https://api.myapp.com             │  ← Prod               │
-│  │ accessToken    │ (set via script)                  │                        │
-│  └────────────────┴───────────────────────────────────┘                        │
-│                                                                                  │
-│  Usage in URL: {{baseUrl}}/api/v1/users                                        │
-│  Usage in Header: Bearer {{accessToken}}                                       │
-│                                                                                  │
-│                                                                                  │
+│                                                                                 │
+│  Variables:                                                                     │
+│  ┌────────────────┬───────────────────────────────────┐                         │
+│  │ Variable       │ Value                             │                         │
+│  ├────────────────┼───────────────────────────────────┤                         │
+│  │ baseUrl        │ http://localhost:8080             │  ← Dev                  │
+│  │ baseUrl        │ https://api.staging.myapp.com     │  ← Staging              │
+│  │ baseUrl        │ https://api.myapp.com             │  ← Prod                 │
+│  │ accessToken    │ (set via script)                  │                         │
+│  └────────────────┴───────────────────────────────────┘                         │
+│                                                                                 │
+│  Usage in URL: {{baseUrl}}/api/v1/users                                         │
+│  Usage in Header: Bearer {{accessToken}}                                        │
+│                                                                                 │
+│                                                                                 │
 │  PRE-REQUEST SCRIPT (JavaScript)                                                │
 │  ════════════════════════════════                                               │
-│                                                                                  │
+│                                                                                 │
 │  // Set timestamp                                                               │
-│  pm.environment.set("timestamp", Date.now());                                  │
-│                                                                                  │
+│  pm.environment.set("timestamp", Date.now());                                   │
+│                                                                                 │
 │  // Generate random email                                                       │
-│  pm.environment.set("randomEmail",                                             │
-│      "test" + Math.random().toString(36).substring(7) + "@example.com");       │
-│                                                                                  │
-│                                                                                  │
+│  pm.environment.set("randomEmail",                                              │
+│      "test" + Math.random().toString(36).substring(7) + "@example.com");        │
+│                                                                                 │
+│                                                                                 │
 │  TEST SCRIPT (Validate Response)                                                │
 │  ═══════════════════════════════                                                │
-│                                                                                  │
+│                                                                                 │
 │  // Check status code                                                           │
-│  pm.test("Status is 200", function() {                                         │
-│      pm.response.to.have.status(200);                                          │
+│  pm.test("Status is 200", function() {                                          │
+│      pm.response.to.have.status(200);                                           │
 │  });                                                                            │
-│                                                                                  │
+│                                                                                 │
 │  // Check response body                                                         │
-│  pm.test("Has user ID", function() {                                           │
-│      const json = pm.response.json();                                          │
-│      pm.expect(json.id).to.exist;                                              │
+│  pm.test("Has user ID", function() {                                            │
+│      const json = pm.response.json();                                           │
+│      pm.expect(json.id).to.exist;                                               │
 │  });                                                                            │
-│                                                                                  │
-│  // Save token from login response for future requests                         │
-│  var json = pm.response.json();                                                │
-│  pm.environment.set("accessToken", json.accessToken);                          │
-│                                                                                  │
-│                                                                                  │
+│                                                                                 │
+│  // Save token from login response for future requests                          │
+│  var json = pm.response.json();                                                 │
+│  pm.environment.set("accessToken", json.accessToken);                           │
+│                                                                                 │
+│                                                                                 │
 │  COLLECTION RUNNER (Automated Testing)                                          │
 │  ══════════════════════════════════════                                         │
-│                                                                                  │
+│                                                                                 │
 │  Organize requests in folders:                                                  │
-│                                                                                  │
-│  📁 My API Collection                                                          │
-│  ├── 📁 Auth                                                                   │
-│  │   ├── POST /auth/login                                                      │
-│  │   └── POST /auth/refresh                                                    │
-│  ├── 📁 Users                                                                  │
-│  │   ├── GET /users (list)                                                     │
-│  │   ├── GET /users/:id                                                        │
-│  │   ├── POST /users                                                           │
-│  │   ├── PUT /users/:id                                                        │
-│  │   └── DELETE /users/:id                                                     │
-│  └── 📁 Orders                                                                 │
-│      ├── GET /users/:userId/orders                                             │
-│      └── POST /users/:userId/orders                                            │
-│                                                                                  │
-│  Run entire collection → Click "Runner" → Select collection → Run!             │
-│                                                                                  │
+│                                                                                 │
+│  📁 My API Collection                                                            │
+│  ├── 📁 Auth                                                                     │
+│  │   ├── POST /auth/login                                                       │
+│  │   └── POST /auth/refresh                                                     │
+│  ├── 📁 Users                                                                    │
+│  │   ├── GET /users (list)                                                      │
+│  │   ├── GET /users/:id                                                         │
+│  │   ├── POST /users                                                            │
+│  │   ├── PUT /users/:id                                                         │
+│  │   └── DELETE /users/:id                                                      │
+│  └── 📁 Orders                                                                   │
+│      ├── GET /users/:userId/orders                                              │
+│      └── POST /users/:userId/orders                                             │
+│                                                                                 │
+│  Run entire collection → Click "Runner" → Select collection → Run!              │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -976,60 +976,60 @@ public class RequestParamExamplesController {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    NETWORK PROTOCOLS OVERVIEW                                    │
+│                    NETWORK PROTOCOLS OVERVIEW                                   │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  OSI MODEL LAYERS:                                                              │
 │  ══════════════════                                                             │
-│                                                                                  │
-│  Layer 7: APPLICATION   │ HTTP, HTTPS, FTP, SMTP, POP3, IMAP, DNS              │
-│  Layer 6: PRESENTATION  │ SSL/TLS, JPEG, ASCII                                 │
-│  Layer 5: SESSION       │ NetBIOS, PPTP                                        │
-│  Layer 4: TRANSPORT     │ TCP, UDP                                             │
-│  Layer 3: NETWORK       │ IP, ICMP                                             │
-│  Layer 2: DATA LINK     │ Ethernet, WiFi                                       │
-│  Layer 1: PHYSICAL      │ Cables, Radio waves                                  │
-│                                                                                  │
-│  ═══════════════════════════════════════════════════════════════════════════   │
-│                                                                                  │
+│                                                                                 │
+│  Layer 7: APPLICATION   │ HTTP, HTTPS, FTP, SMTP, POP3, IMAP, DNS               │
+│  Layer 6: PRESENTATION  │ SSL/TLS, JPEG, ASCII                                  │
+│  Layer 5: SESSION       │ NetBIOS, PPTP                                         │
+│  Layer 4: TRANSPORT     │ TCP, UDP                                              │
+│  Layer 3: NETWORK       │ IP, ICMP                                              │
+│  Layer 2: DATA LINK     │ Ethernet, WiFi                                        │
+│  Layer 1: PHYSICAL      │ Cables, Radio waves                                   │
+│                                                                                 │
+│  ═══════════════════════════════════════════════════════════════════════════    │
+│                                                                                 │
 │  PROTOCOL COMPARISON TABLE:                                                     │
 │  ══════════════════════════                                                     │
-│                                                                                  │
-│  ┌──────────┬──────────┬────────────────────────────────────────────────────┐  │
-│  │ Protocol │ Port     │ Purpose                                            │  │
-│  ├──────────┼──────────┼────────────────────────────────────────────────────┤  │
-│  │ HTTP     │ 80       │ Web pages (unencrypted)                            │  │
-│  │ HTTPS    │ 443      │ Secure web (encrypted with TLS)                    │  │
-│  │ FTP      │ 21       │ File transfer (command)                            │  │
-│  │ FTPS     │ 990      │ Secure FTP                                         │  │
-│  │ SFTP     │ 22       │ FTP over SSH                                       │  │
-│  │ SSH      │ 22       │ Secure shell (remote access)                       │  │
-│  │ SMTP     │ 25, 587  │ Sending email                                      │  │
-│  │ POP3     │ 110, 995 │ Download email (delete from server)                │  │
-│  │ IMAP     │ 143, 993 │ Sync email (keep on server)                        │  │
-│  │ DNS      │ 53       │ Domain name resolution                             │  │
-│  │ WebSocket│ 80, 443  │ Bidirectional real-time communication             │  │
-│  │ MQTT     │ 1883     │ IoT messaging                                      │  │
-│  │ gRPC     │ 443      │ High-performance RPC                               │  │
-│  └──────────┴──────────┴────────────────────────────────────────────────────┘  │
-│                                                                                  │
-│  ═══════════════════════════════════════════════════════════════════════════   │
-│                                                                                  │
+│                                                                                 │
+│  ┌──────────┬──────────┬────────────────────────────────────────────────────┐   │
+│  │ Protocol │ Port     │ Purpose                                            │   │
+│  ├──────────┼──────────┼────────────────────────────────────────────────────┤   │
+│  │ HTTP     │ 80       │ Web pages (unencrypted)                            │   │
+│  │ HTTPS    │ 443      │ Secure web (encrypted with TLS)                    │   │
+│  │ FTP      │ 21       │ File transfer (command)                            │   │
+│  │ FTPS     │ 990      │ Secure FTP                                         │   │
+│  │ SFTP     │ 22       │ FTP over SSH                                       │   │
+│  │ SSH      │ 22       │ Secure shell (remote access)                       │   │
+│  │ SMTP     │ 25, 587  │ Sending email                                      │   │
+│  │ POP3     │ 110, 995 │ Download email (delete from server)                │   │
+│  │ IMAP     │ 143, 993 │ Sync email (keep on server)                        │   │
+│  │ DNS      │ 53       │ Domain name resolution                             │   │
+│  │ WebSocket│ 80, 443  │ Bidirectional real-time communication             │    │
+│  │ MQTT     │ 1883     │ IoT messaging                                      │   │
+│  │ gRPC     │ 443      │ High-performance RPC                               │   │
+│  └──────────┴──────────┴────────────────────────────────────────────────────┘   │
+│                                                                                 │
+│  ═══════════════════════════════════════════════════════════════════════════    │
+│                                                                                 │
 │  TCP vs UDP:                                                                    │
 │  ═══════════                                                                    │
-│                                                                                  │
-│  ┌─────────────────────────────────┬─────────────────────────────────────────┐ │
-│  │          TCP                    │           UDP                           │ │
-│  ├─────────────────────────────────┼─────────────────────────────────────────┤ │
-│  │ Connection-oriented             │ Connectionless                          │ │
-│  │ Reliable (acknowledges data)    │ Unreliable (fire and forget)           │ │
-│  │ Ordered delivery                │ No order guarantee                      │ │
-│  │ Error checking + retransmission │ Basic error checking only              │ │
-│  │ Slower but reliable             │ Faster but may lose data               │ │
-│  │                                 │                                         │ │
-│  │ HTTP, HTTPS, SSH, Email         │ DNS, Video streaming, Gaming, VoIP     │ │
-│  └─────────────────────────────────┴─────────────────────────────────────────┘ │
-│                                                                                  │
+│                                                                                 │
+│  ┌─────────────────────────────────┬─────────────────────────────────────────┐  │
+│  │          TCP                    │           UDP                           │  │
+│  ├─────────────────────────────────┼─────────────────────────────────────────┤  │
+│  │ Connection-oriented             │ Connectionless                          │  │
+│  │ Reliable (acknowledges data)    │ Unreliable (fire and forget)           │   │
+│  │ Ordered delivery                │ No order guarantee                      │  │
+│  │ Error checking + retransmission │ Basic error checking only              │   │
+│  │ Slower but reliable             │ Faster but may lose data               │   │
+│  │                                 │                                         │  │
+│  │ HTTP, HTTPS, SSH, Email         │ DNS, Video streaming, Gaming, VoIP     │   │
+│  └─────────────────────────────────┴─────────────────────────────────────────┘  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 

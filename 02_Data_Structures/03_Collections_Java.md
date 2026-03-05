@@ -10,48 +10,48 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║              JAVA COLLECTIONS - COMPLETE UNDERSTANDING                        ║
+║              JAVA COLLECTIONS - COMPLETE UNDERSTANDING                       ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ WHAT IS THE COLLECTIONS FRAMEWORK?                                           │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ A unified architecture for representing and manipulating collections of     │
+│ A unified architecture for representing and manipulating collections of      │
 │ objects. It provides:                                                        │
-│ • INTERFACES: Define behavior (List, Set, Map, Queue)                       │
-│ • IMPLEMENTATIONS: Actual classes (ArrayList, HashMap, etc.)                │
-│ • ALGORITHMS: Static methods (sort, search, shuffle)                        │
+│ • INTERFACES: Define behavior (List, Set, Map, Queue)                        │
+│ • IMPLEMENTATIONS: Actual classes (ArrayList, HashMap, etc.)                 │
+│ • ALGORITHMS: Static methods (sort, search, shuffle)                         │
 │                                                                              │
 │ HISTORICAL EVOLUTION:                                                        │
-│ • Java 1.0 (1996): Only Vector, Hashtable, Stack                           │
-│ • Java 1.2 (1998): Collections Framework introduced - Revolution!           │
-│ • Java 1.4 (2002): LinkedHashMap/Set added                                  │
-│ • Java 1.5 (2004): Generics! No more casting                                │
-│ • Java 1.6 (2006): NavigableSet, NavigableMap                               │
-│ • Java 1.7 (2011): Diamond operator <>                                      │
-│ • Java 1.8 (2014): Streams, forEach, removeIf                               │
-│ • Java 9+ (2017+): Immutable factories (List.of, Set.of)                    │
+│ • Java 1.0 (1996): Only Vector, Hashtable, Stack                             │
+│ • Java 1.2 (1998): Collections Framework introduced - Revolution!            │
+│ • Java 1.4 (2002): LinkedHashMap/Set added                                   │
+│ • Java 1.5 (2004): Generics! No more casting                                 │
+│ • Java 1.6 (2006): NavigableSet, NavigableMap                                │
+│ • Java 1.7 (2011): Diamond operator <>                                       │
+│ • Java 1.8 (2014): Streams, forEach, removeIf                                │
+│ • Java 9+ (2017+): Immutable factories (List.of, Set.of)                     │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ WHAT PROBLEM DOES IT SOLVE?                                                  │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │ BEFORE COLLECTIONS (Java 1.0):                                               │
-│ • Arrays: Fixed size, primitive operations only                             │
-│ • Vector: Thread-safe but slow, inconsistent API                            │
-│ • Hashtable: No null keys, synchronized (slow)                              │
-│ • Every company wrote their own data structures!                            │
+│ • Arrays: Fixed size, primitive operations only                              │
+│ • Vector: Thread-safe but slow, inconsistent API                             │
+│ • Hashtable: No null keys, synchronized (slow)                               │
+│ • Every company wrote their own data structures!                             │
 │                                                                              │
 │ PROBLEMS:                                                                    │
-│ • No standard way to group objects                                          │
-│ • Code not reusable across projects                                         │
-│ • Algorithms had to be rewritten for each type                              │
-│ • No common interface → Hard to write generic code                          │
+│ • No standard way to group objects                                           │
+│ • Code not reusable across projects                                          │
+│ • Algorithms had to be rewritten for each type                               │
+│ • No common interface → Hard to write generic code                           │
 │                                                                              │
 │ COLLECTIONS SOLUTION:                                                        │
-│ • Standard interfaces (List, Set, Map) that work anywhere                   │
+│ • Standard interfaces (List, Set, Map) that work anywhere                    │
 │ • Multiple implementations to choose from                                    │
-│ • Generic algorithms that work with any implementation                      │
+│ • Generic algorithms that work with any implementation                       │
 │ • Type safety with generics                                                  │
 └──────────────────────────────────────────────────────────────────────────────┘
 
@@ -59,35 +59,35 @@
 │ THE BIG PICTURE - COLLECTIONS HIERARCHY                                      │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│                    ┌─────────────┐                                          │
-│                    │  Iterable   │ (for-each loops)                         │
-│                    └──────┬──────┘                                          │
+│                    ┌─────────────┐                                           │
+│                    │  Iterable   │ (for-each loops)                          │
+│                    └──────┬──────┘                                           │
 │                           │                                                  │
-│                    ┌──────┴──────┐                                          │
-│                    │ Collection  │ (add, remove, size, contains)            │
-│                    └──────┬──────┘                                          │
-│           ┌───────────────┼───────────────┐                                 │
+│                    ┌──────┴──────┐                                           │
+│                    │ Collection  │ (add, remove, size, contains)             │
+│                    └──────┬──────┘                                           │
+│           ┌───────────────┼───────────────┐                                  │
 │           │               │               │                                  │
-│    ┌──────┴──────┐ ┌──────┴──────┐ ┌──────┴──────┐                         │
-│    │    List     │ │    Set      │ │   Queue     │                         │
-│    │ (ordered)   │ │ (unique)    │ │ (FIFO)      │                         │
-│    └──────┬──────┘ └──────┬──────┘ └──────┬──────┘                         │
+│    ┌──────┴──────┐ ┌──────┴──────┐ ┌──────┴──────┐                           │
+│    │    List     │ │    Set      │ │   Queue     │                           │
+│    │ (ordered)   │ │ (unique)    │ │ (FIFO)      │                           │
+│    └──────┬──────┘ └──────┬──────┘ └──────┬──────┘                           │
 │           │               │               │                                  │
-│    ArrayList        HashSet          LinkedList                             │
-│    LinkedList       TreeSet          PriorityQueue                          │
-│    Vector           LinkedHashSet    ArrayDeque                             │
+│    ArrayList        HashSet          LinkedList                              │
+│    LinkedList       TreeSet          PriorityQueue                           │
+│    Vector           LinkedHashSet    ArrayDeque                              │
 │                                                                              │
-│                    ┌─────────────┐                                          │
-│                    │    Map      │ (key-value pairs)                        │
-│                    └──────┬──────┘                                          │
+│                    ┌─────────────┐                                           │
+│                    │    Map      │ (key-value pairs)                         │
+│                    └──────┬──────┘                                           │
 │                           │                                                  │
-│              ┌────────────┼────────────┐                                    │
+│              ┌────────────┼────────────┐                                     │
 │              │            │            │                                     │
-│         HashMap      TreeMap    LinkedHashMap                               │
-│         Hashtable                                                           │
+│         HashMap      TreeMap    LinkedHashMap                                │
+│         Hashtable                                                            │
 │                                                                              │
-│ KEY INSIGHT: Same interface, DIFFERENT implementations!                     │
-│ List list = new ArrayList<>();  // Can swap to LinkedList easily           │
+│ KEY INSIGHT: Same interface, DIFFERENT implementations!                      │
+│ List list = new ArrayList<>();  // Can swap to LinkedList easily             │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -95,27 +95,27 @@
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │ QUESTION 1: Do you need KEY-VALUE pairs?                                     │
-│ • YES → Use MAP (HashMap, TreeMap, LinkedHashMap)                           │
-│ • NO → Continue to Question 2                                               │
+│ • YES → Use MAP (HashMap, TreeMap, LinkedHashMap)                            │
+│ • NO → Continue to Question 2                                                │
 │                                                                              │
 │ QUESTION 2: Do you need UNIQUE elements only?                                │
-│ • YES → Use SET (HashSet, TreeSet, LinkedHashSet)                           │
-│ • NO → Continue to Question 3                                               │
+│ • YES → Use SET (HashSet, TreeSet, LinkedHashSet)                            │
+│ • NO → Continue to Question 3                                                │
 │                                                                              │
 │ QUESTION 3: Do you need FIFO/LIFO ordering?                                  │
-│ • FIFO → Queue (LinkedList, ArrayDeque)                                     │
-│ • LIFO → Stack (ArrayDeque preferred over Stack class)                      │
-│ • Priority → PriorityQueue                                                  │
-│ • NO → Use LIST                                                             │
+│ • FIFO → Queue (LinkedList, ArrayDeque)                                      │
+│ • LIFO → Stack (ArrayDeque preferred over Stack class)                       │
+│ • Priority → PriorityQueue                                                   │
+│ • NO → Use LIST                                                              │
 │                                                                              │
-│ QUESTION 4: (For Lists) What operations dominate?                           │
-│ • Random access (get by index) → ArrayList                                  │
-│ • Insert/Delete in middle → LinkedList                                      │
+│ QUESTION 4: (For Lists) What operations dominate?                            │
+│ • Random access (get by index) → ArrayList                                   │
+│ • Insert/Delete in middle → LinkedList                                       │
 │                                                                              │
-│ QUESTION 5: (For Sets/Maps) Do you need ordering?                           │
-│ • No ordering needed → Hash variant (fastest)                               │
-│ • Sorted order needed → Tree variant (O(log n))                            │
-│ • Insertion order → LinkedHash variant                                      │
+│ QUESTION 5: (For Sets/Maps) Do you need ordering?                            │
+│ • No ordering needed → Hash variant (fastest)                                │
+│ • Sorted order needed → Tree variant (O(log n))                              │
+│ • Insertion order → LinkedHash variant                                       │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -123,35 +123,35 @@
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │ 1. TOO MANY CHOICES:                                                         │
-│    "Should I use ArrayList or LinkedList?"                                  │
-│    Solution: ArrayList for 95% of cases (better cache locality)            │
+│    "Should I use ArrayList or LinkedList?"                                   │
+│    Solution: ArrayList for 95% of cases (better cache locality)              │
 │                                                                              │
 │ 2. GENERICS CONFUSION:                                                       │
-│    "What's <E>, <K,V>, <?>"                                                 │
-│    Solution: E = Element type, K = Key, V = Value, ? = Unknown              │
+│    "What's <E>, <K,V>, <?>"                                                  │
+│    Solution: E = Element type, K = Key, V = Value, ? = Unknown               │
 │                                                                              │
 │ 3. CONCURRENT MODIFICATION:                                                  │
 │    Removing while iterating throws exception                                 │
-│    Solution: Use Iterator.remove() or removeIf()                            │
+│    Solution: Use Iterator.remove() or removeIf()                             │
 │                                                                              │
 │ 4. EQUALS/HASHCODE:                                                          │
-│    Custom objects don't work in HashSet/HashMap                             │
-│    Solution: Override both equals() AND hashCode()                          │
+│    Custom objects don't work in HashSet/HashMap                              │
+│    Solution: Override both equals() AND hashCode()                           │
 │                                                                              │
 │ 5. MUTABILITY:                                                               │
-│    Arrays.asList() returns fixed-size list                                  │
-│    Solution: new ArrayList<>(Arrays.asList(...))                            │
+│    Arrays.asList() returns fixed-size list                                   │
+│    Solution: new ArrayList<>(Arrays.asList(...))                             │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ EXPECTED OUTPUTS OF MASTERING COLLECTIONS                                    │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ ✅ INSTANT CHOICE: See requirement → Know which collection to use           │
-│ ✅ EFFICIENT CODE: Pick implementation with best time complexity            │
-│ ✅ CLEAN CODE: Use streams and built-in methods                             │
-│ ✅ BUG-FREE: Avoid common pitfalls (concurrent modification, etc.)         │
-│ ✅ INTERVIEW READY: Explain trade-offs between implementations              │
+│ ✅ INSTANT CHOICE: See requirement → Know which collection to use             │
+│ ✅ EFFICIENT CODE: Pick implementation with best time complexity              │
+│ ✅ CLEAN CODE: Use streams and built-in methods                               │
+│ ✅ BUG-FREE: Avoid common pitfalls (concurrent modification, etc.)            │
+│ ✅ INTERVIEW READY: Explain trade-offs between implementations                │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 

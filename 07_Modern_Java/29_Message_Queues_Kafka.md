@@ -14,20 +14,20 @@
 ```
 ╔══════════════════════════════════════════════════════════════════════════════════╗
 ║  WITHOUT QUEUE (Synchronous):                                                    ║
-║  Order Service ──HTTP──→ Payment Service ──HTTP──→ Email Service                ║
-║  Problem: If email is slow/down, entire order fails!                            ║
+║  Order Service ──HTTP──→ Payment Service ──HTTP──→ Email Service                 ║
+║  Problem: If email is slow/down, entire order fails!                             ║
 ║                                                                                  ║
 ║  WITH QUEUE (Asynchronous):                                                      ║
-║  Order Service ──→ [Queue] ──→ Payment Worker                                   ║
+║  Order Service ──→ [Queue] ──→ Payment Worker                                    ║
 ║                    [Queue] ──→ Email Worker                                      ║
 ║                    [Queue] ──→ Analytics Worker                                  ║
 ║                                                                                  ║
 ║  BENEFITS:                                                                       ║
-║  ✅ Decoupling: Producer doesn't know about consumers                           ║
-║  ✅ Buffering: Queue absorbs traffic spikes                                     ║
-║  ✅ Resilience: Consumer down? Messages wait in queue                           ║
-║  ✅ Scalability: Add more consumers to process faster                           ║
-║  ✅ Ordering: Messages processed in sequence (within partition)                 ║
+║  ✅ Decoupling: Producer doesn't know about consumers                             ║
+║  ✅ Buffering: Queue absorbs traffic spikes                                       ║
+║  ✅ Resilience: Consumer down? Messages wait in queue                             ║
+║  ✅ Scalability: Add more consumers to process faster                             ║
+║  ✅ Ordering: Messages processed in sequence (within partition)                   ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -58,30 +58,30 @@ PUB/SUB (Publish-Subscribe):
 ╔══════════════════════════════════════════════════════════════════════════════════╗
 ║  KAFKA ARCHITECTURE                                                              ║
 ║                                                                                  ║
-║  ┌──────────┐     ┌──────────────────────────────────────────────┐              ║
+║  ┌──────────┐     ┌──────────────────────────────────────────────┐               ║
 ║  │ Producer  │────→│               Kafka Cluster                  │              ║
 ║  │ (app)     │     │                                              │              ║
-║  └──────────┘     │  Topic: "orders"                             │              ║
-║                    │  ┌─────────┐ ┌─────────┐ ┌─────────┐       │              ║
-║                    │  │Partition│ │Partition│ │Partition│       │              ║
-║  ┌──────────┐     │  │   0     │ │   1     │ │   2     │       │              ║
-║  │ Producer  │────→│  │[0,1,2] │ │[0,1,2,3]│ │[0,1]   │       │              ║
-║  └──────────┘     │  └─────────┘ └─────────┘ └─────────┘       │              ║
-║                    │        ↓           ↓           ↓              │              ║
-║                    └────────┼───────────┼───────────┼──────────────┘              ║
-║                             ↓           ↓           ↓                             ║
+║  └──────────┘     │  Topic: "orders"                             │               ║
+║                    │  ┌─────────┐ ┌─────────┐ ┌─────────┐       │                ║
+║                    │  │Partition│ │Partition│ │Partition│       │                ║
+║  ┌──────────┐     │  │   0     │ │   1     │ │   2     │       │                 ║
+║  │ Producer  │────→│  │[0,1,2] │ │[0,1,2,3]│ │[0,1]   │       │                  ║
+║  └──────────┘     │  └─────────┘ └─────────┘ └─────────┘       │                 ║
+║                    │        ↓           ↓           ↓              │             ║
+║                    └────────┼───────────┼───────────┼──────────────┘             ║
+║                             ↓           ↓           ↓                            ║
 ║                    ┌──────────────────────────────────────────────┐              ║
-║                    │          Consumer Group "payment"             │              ║
+║                    │          Consumer Group "payment"             │             ║
 ║                    │  Consumer A     Consumer B     Consumer C    │              ║
-║                    │  (reads P0)     (reads P1)     (reads P2)   │              ║
+║                    │  (reads P0)     (reads P1)     (reads P2)   │               ║
 ║                    └──────────────────────────────────────────────┘              ║
 ║                                                                                  ║
 ║  KEY CONCEPTS:                                                                   ║
-║  Topic: Named feed of messages (like a database table)                          ║
-║  Partition: Ordered, immutable log. Messages appended to end.                   ║
-║  Offset: Position of message in partition (like array index)                    ║
-║  Consumer Group: Consumers that share work. Each partition → one consumer.      ║
-║  Broker: A Kafka server. Cluster has multiple brokers for reliability.          ║
+║  Topic: Named feed of messages (like a database table)                           ║
+║  Partition: Ordered, immutable log. Messages appended to end.                    ║
+║  Offset: Position of message in partition (like array index)                     ║
+║  Consumer Group: Consumers that share work. Each partition → one consumer.       ║
+║  Broker: A Kafka server. Cluster has multiple brokers for reliability.           ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -89,29 +89,29 @@ PUB/SUB (Publish-Subscribe):
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│  ORDERING: Guaranteed WITHIN a partition, NOT across partitions                  │
+│  ORDERING: Guaranteed WITHIN a partition, NOT across partitions                 │
 │  → To order all messages for user123: use userId as partition key               │
-│  → hash("user123") % num_partitions → always same partition                    │
-│                                                                                  │
-│  DELIVERY SEMANTICS:                                                             │
+│  → hash("user123") % num_partitions → always same partition                     │
+│                                                                                 │
+│  DELIVERY SEMANTICS:                                                            │
 │  ┌──────────────────┬────────────────────────────────────────────────────────┐  │
 │  │ At-most-once     │ Fire and forget. May lose messages. (auto-commit fast) │  │
 │  │ At-least-once    │ Retry on failure. May get duplicates. (DEFAULT)        │  │
 │  │ Exactly-once     │ Idempotent producer + transactional consumer.          │  │
 │  │                  │ Kafka supports this since 0.11 (enable.idempotence)    │  │
 │  └──────────────────┴────────────────────────────────────────────────────────┘  │
-│                                                                                  │
-│  REPLICATION:                                                                    │
-│  → Each partition has 1 leader + N-1 followers (ISR = in-sync replicas)        │
-│  → Writes go to leader, replicated to followers                                │
-│  → acks=0: Don't wait (fast, may lose)                                         │
-│  → acks=1: Leader acknowledges (balanced)                                      │
-│  → acks=all: All ISR acknowledge (safest, slowest)                             │
-│                                                                                  │
-│  RETENTION:                                                                      │
+│                                                                                 │
+│  REPLICATION:                                                                   │
+│  → Each partition has 1 leader + N-1 followers (ISR = in-sync replicas)         │
+│  → Writes go to leader, replicated to followers                                 │
+│  → acks=0: Don't wait (fast, may lose)                                          │
+│  → acks=1: Leader acknowledges (balanced)                                       │
+│  → acks=all: All ISR acknowledge (safest, slowest)                              │
+│                                                                                 │
+│  RETENTION:                                                                     │
 │  → Time-based: retain messages for 7 days (default)                             │
 │  → Size-based: retain up to 1GB per partition                                   │
-│  → Compacted: Keep only latest value per key (like a changelog)                │
+│  → Compacted: Keep only latest value per key (like a changelog)                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -174,20 +174,20 @@ public class PaymentEventConsumer {
 ## Part 5: RabbitMQ vs Kafka vs SQS
 
 ```
-┌──────────────┬──────────────────┬─────────────────┬──────────────────┐
-│              │ Kafka            │ RabbitMQ         │ AWS SQS          │
-├──────────────┼──────────────────┼─────────────────┼──────────────────┤
-│ Model        │ Distributed log  │ Message broker   │ Managed queue    │
+┌──────────────┬──────────────────┬─────────────────┬────────────────────┐
+│              │ Kafka            │ RabbitMQ         │ AWS SQS           │
+├──────────────┼──────────────────┼─────────────────┼────────────────────┤
+│ Model        │ Distributed log  │ Message broker   │ Managed queue     │
 │ Ordering     │ Per partition    │ Per queue         │ Best-effort/FIFO │
-│ Throughput   │ Millions msg/sec │ Thousands msg/sec│ Depends on config│
+│ Throughput   │ Millions msg/sec │ Thousands msg/sec│ Depends on config │
 │ Retention    │ Configurable     │ Until consumed    │ 14 days max      │
-│ Replay       │ Yes (re-read)   │ No (consumed=gone)│ No               │
-│ Best for     │ Event streaming, │ Task queues,     │ Simple async,    │
-│              │ log aggregation  │ RPC, routing     │ serverless       │
-│ Complexity   │ High (ZK/KRaft) │ Medium           │ Low (managed)    │
-│ When to use  │ High throughput, │ Complex routing, │ AWS ecosystem,   │
-│              │ event sourcing   │ low latency      │ simple queuing   │
-└──────────────┴──────────────────┴─────────────────┴──────────────────┘
+│ Replay       │ Yes (re-read)   │ No (consumed=gone)│ No                │
+│ Best for     │ Event streaming, │ Task queues,     │ Simple async,     │
+│              │ log aggregation  │ RPC, routing     │ serverless        │
+│ Complexity   │ High (ZK/KRaft) │ Medium           │ Low (managed)      │
+│ When to use  │ High throughput, │ Complex routing, │ AWS ecosystem,    │
+│              │ event sourcing   │ low latency      │ simple queuing    │
+└──────────────┴──────────────────┴─────────────────┴────────────────────┘
 ```
 
 ---
@@ -197,30 +197,30 @@ public class PaymentEventConsumer {
 ```
 ╔══════════════════════════════════════════════════════════════════════════════════╗
 ║  PATTERN 1: Event Notification                                                   ║
-║  Order Service publishes: { type: "ORDER_CREATED", orderId: "123" }             ║
-║  Consumers react: send email, update analytics, reserve inventory               ║
-║  → Lightweight events, consumers fetch details if needed                        ║
+║  Order Service publishes: { type: "ORDER_CREATED", orderId: "123" }              ║
+║  Consumers react: send email, update analytics, reserve inventory                ║
+║  → Lightweight events, consumers fetch details if needed                         ║
 ║                                                                                  ║
-║  PATTERN 2: Event-Carried State Transfer                                        ║
-║  Order Service publishes: { type: "ORDER_CREATED", orderId: "123",              ║
-║    customer: "John", items: [...], total: 99.99 }                               ║
-║  → Fat events, consumers don't need to call back                               ║
-║  → Trade-off: larger messages, but fully decoupled                             ║
+║  PATTERN 2: Event-Carried State Transfer                                         ║
+║  Order Service publishes: { type: "ORDER_CREATED", orderId: "123",               ║
+║    customer: "John", items: [...], total: 99.99 }                                ║
+║  → Fat events, consumers don't need to call back                                 ║
+║  → Trade-off: larger messages, but fully decoupled                               ║
 ║                                                                                  ║
-║  PATTERN 3: Event Sourcing                                                      ║
-║  Don't store current state — store all events                                   ║
-║  AccountCreated → Deposited($100) → Withdrawn($30) → Deposited($50)           ║
-║  Current balance = replay events = $100 - $30 + $50 = $120                     ║
-║  → Complete audit trail, can rebuild state at any point in time                 ║
-║  → Complex: need snapshots for performance, eventual consistency               ║
+║  PATTERN 3: Event Sourcing                                                       ║
+║  Don't store current state — store all events                                    ║
+║  AccountCreated → Deposited($100) → Withdrawn($30) → Deposited($50)              ║
+║  Current balance = replay events = $100 - $30 + $50 = $120                       ║
+║  → Complete audit trail, can rebuild state at any point in time                  ║
+║  → Complex: need snapshots for performance, eventual consistency                 ║
 ║                                                                                  ║
-║  PATTERN 4: Outbox Pattern (Transactional Messaging)                            ║
-║  Problem: How to atomically update DB AND publish event?                        ║
+║  PATTERN 4: Outbox Pattern (Transactional Messaging)                             ║
+║  Problem: How to atomically update DB AND publish event?                         ║
 ║  Solution:                                                                       ║
-║  1. In SAME transaction: update orders table + insert into outbox table         ║
-║  2. Separate process polls outbox table → publishes to Kafka                   ║
-║  3. Mark outbox row as published                                                ║
-║  → Guarantees: if DB updated, event WILL be published (eventually)             ║
+║  1. In SAME transaction: update orders table + insert into outbox table          ║
+║  2. Separate process polls outbox table → publishes to Kafka                     ║
+║  3. Mark outbox row as published                                                 ║
+║  → Guarantees: if DB updated, event WILL be published (eventually)               ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 

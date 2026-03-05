@@ -13,12 +13,12 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════════╗
-║  1. CLARIFY requirements (2 min): What entities? What operations?               ║
-║  2. IDENTIFY objects & relationships (5 min): Nouns → classes, Verbs → methods ║
-║  3. DEFINE interfaces first (3 min): Program to interfaces                      ║
-║  4. APPLY patterns (5 min): Strategy, Observer, Factory, etc.                   ║
-║  5. CODE key classes (15 min): Focus on core logic, not boilerplate            ║
-║  6. DISCUSS extensibility (5 min): "What if we add X?"                         ║
+║  1. CLARIFY requirements (2 min): What entities? What operations?                ║
+║  2. IDENTIFY objects & relationships (5 min): Nouns → classes, Verbs → methods   ║
+║  3. DEFINE interfaces first (3 min): Program to interfaces                       ║
+║  4. APPLY patterns (5 min): Strategy, Observer, Factory, etc.                    ║
+║  5. CODE key classes (15 min): Focus on core logic, not boilerplate              ║
+║  6. DISCUSS extensibility (5 min): "What if we add X?"                           ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -216,16 +216,16 @@ class BookingService {
 ╔══════════════════════════════════════════════════════════════════════════════════╗
 ║  Timeline of concurrent booking:                                                 ║
 ║                                                                                  ║
-║  User A selects seat A1 at t=0    →  lockSeats("A1") → SUCCESS (locked for A) ║
-║  User B selects seat A1 at t=1    →  lockSeats("A1") → FAIL (already LOCKED)   ║
+║  User A selects seat A1 at t=0    →  lockSeats("A1") → SUCCESS (locked for A)    ║
+║  User B selects seat A1 at t=1    →  lockSeats("A1") → FAIL (already LOCKED)     ║
 ║                                                                                  ║
-║  User A pays at t=3              →  confirmBooking → BOOKED                     ║
-║  OR User A doesn't pay by t=5   →  auto-release → AVAILABLE again              ║
+║  User A pays at t=3              →  confirmBooking → BOOKED                      ║
+║  OR User A doesn't pay by t=5   →  auto-release → AVAILABLE again                ║
 ║                                                                                  ║
-║  DATABASE-LEVEL: Use SELECT ... FOR UPDATE (pessimistic lock)                   ║
+║  DATABASE-LEVEL: Use SELECT ... FOR UPDATE (pessimistic lock)                    ║
 ║  OR optimistic lock with version column:                                         ║
-║  UPDATE seat_status SET status='LOCKED', version=version+1                      ║
-║  WHERE seat_id='A1' AND status='AVAILABLE' AND version=current_version          ║
+║  UPDATE seat_status SET status='LOCKED', version=version+1                       ║
+║  WHERE seat_id='A1' AND status='AVAILABLE' AND version=current_version           ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -464,13 +464,13 @@ class LoggerConfig {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════════╗
-║  PRINCIPLE          │ WHERE WE APPLIED IT                                       ║
-║─────────────────────┼─────────────────────────────────────────────────────────║
-║  S - Single Resp.   │ BookingService only books, PricingStrategy only prices   ║
-║  O - Open/Closed    │ New split types without changing ExpenseService           ║
-║  L - Liskov Sub.    │ EqualSplit/ExactSplit both work wherever Split is used    ║
-║  I - Interface Seg. │ Small interfaces: PricingStrategy, LogAppender            ║
-║  D - Dependency Inv.│ ParkingLot depends on PricingStrategy interface, not impl ║
+║  PRINCIPLE          │ WHERE WE APPLIED IT                                        ║
+║─────────────────────┼─────────────────────────────────────────────────────────   ║
+║  S - Single Resp.   │ BookingService only books, PricingStrategy only prices     ║
+║  O - Open/Closed    │ New split types without changing ExpenseService            ║
+║  L - Liskov Sub.    │ EqualSplit/ExactSplit both work wherever Split is used     ║
+║  I - Interface Seg. │ Small interfaces: PricingStrategy, LogAppender             ║
+║  D - Dependency Inv.│ ParkingLot depends on PricingStrategy interface, not impl  ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 

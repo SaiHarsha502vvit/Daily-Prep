@@ -8,51 +8,51 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    SUBQUERY TYPES                                                │
+│                    SUBQUERY TYPES                                               │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  1. SCALAR SUBQUERY - Returns single value                                      │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │  SELECT * FROM employees                                                   ││
-│  │  WHERE salary > (SELECT AVG(salary) FROM employees);                       ││
-│  │               └──────────────────────────────────────┘                     ││
-│  │                    Returns: 85000 (single value)                           ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │  SELECT * FROM employees                                                   │ │
+│  │  WHERE salary > (SELECT AVG(salary) FROM employees);                       │ │
+│  │               └──────────────────────────────────────┘                     │ │
+│  │                    Returns: 85000 (single value)                           │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 │  2. ROW SUBQUERY - Returns single row                                           │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │  SELECT * FROM employees                                                   ││
-│  │  WHERE (dept_id, job_title) = (SELECT dept_id, job_title                  ││
-│  │                                 FROM employees WHERE emp_id = 1);          ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │  SELECT * FROM employees                                                   │ │
+│  │  WHERE (dept_id, job_title) = (SELECT dept_id, job_title                  │  │
+│  │                                 FROM employees WHERE emp_id = 1);          │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 │  3. COLUMN SUBQUERY - Returns single column (multiple rows)                     │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │  SELECT * FROM employees                                                   ││
-│  │  WHERE dept_id IN (SELECT dept_id FROM departments                        ││
-│  │                    WHERE location = 'New York');                           ││
-│  │                └─────────────────────────────────────────┘                 ││
-│  │                     Returns: (1, 2, 5) - list of values                    ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │  SELECT * FROM employees                                                   │ │
+│  │  WHERE dept_id IN (SELECT dept_id FROM departments                        │  │
+│  │                    WHERE location = 'New York');                           │ │
+│  │                └─────────────────────────────────────────┘                 │ │
+│  │                     Returns: (1, 2, 5) - list of values                    │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 │  4. TABLE SUBQUERY - Returns multiple rows and columns                          │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │  SELECT d.dept_name, sub.avg_salary                                        ││
-│  │  FROM departments d                                                        ││
-│  │  JOIN (SELECT dept_id, AVG(salary) as avg_salary                          ││
-│  │        FROM employees GROUP BY dept_id) sub                                ││
-│  │  ON d.dept_id = sub.dept_id;                                               ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │  SELECT d.dept_name, sub.avg_salary                                        │ │
+│  │  FROM departments d                                                        │ │
+│  │  JOIN (SELECT dept_id, AVG(salary) as avg_salary                          │  │
+│  │        FROM employees GROUP BY dept_id) sub                                │ │
+│  │  ON d.dept_id = sub.dept_id;                                               │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 │  5. CORRELATED SUBQUERY - References outer query                                │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │  SELECT * FROM employees e                                                 ││
-│  │  WHERE salary > (SELECT AVG(salary) FROM employees                        ││
-│  │                  WHERE dept_id = e.dept_id);   ←─ References e             ││
-│  │                                                                            ││
-│  │  Executes subquery ONCE PER ROW in outer query (can be slow!)             ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │  SELECT * FROM employees e                                                 │ │
+│  │  WHERE salary > (SELECT AVG(salary) FROM employees                        │  │
+│  │                  WHERE dept_id = e.dept_id);   ←─ References e             │ │
+│  │                                                                            │ │
+│  │  Executes subquery ONCE PER ROW in outer query (can be slow!)             │  │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 

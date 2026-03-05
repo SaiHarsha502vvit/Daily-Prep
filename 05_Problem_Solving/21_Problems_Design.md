@@ -6,17 +6,17 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                DESIGN PROBLEMS FUNDAMENTALS                      │
+│                DESIGN PROBLEMS FUNDAMENTALS                     │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │  WHAT "DESIGN" MEANS IN INTERVIEWS:                             │
 │  Not system design (that's a separate round).                   │
 │  These are DATA STRUCTURE DESIGN problems:                      │
-│  "Implement class X with operations A, B, C in O(?) time"      │
+│  "Implement class X with operations A, B, C in O(?) time"       │
 │                                                                 │
 │  THE 5 CATEGORIES:                                              │
 │  ┌──────────────┬─────────────────────────────────────────────┐ │
-│  │ Cache Design  │ LRU, LFU, TTL Cache                       │ │
+│  │ Cache Design  │ LRU, LFU, TTL Cache                       │  │
 │  │ Stack/Queue   │ Min Stack, Max Queue, Stack using Queues   │ │
 │  │ Iterator      │ Flatten 2D, Peeking Iterator, Zigzag       │ │
 │  │ Trie/Search   │ Autocomplete, Word Dictionary, File System │ │
@@ -24,11 +24,11 @@
 │  └──────────────┴─────────────────────────────────────────────┘ │
 │                                                                 │
 │  DECISION FRAMEWORK:                                            │
-│  • Need O(1) get + O(1) put?     → HashMap + LinkedList        │
-│  • Need O(1) min/max?            → Two stacks / Monotonic      │
-│  • Need prefix search?           → Trie                        │
-│  • Need ordered iteration?       → TreeMap / BST               │
-│  • Need O(1) random access + insert? → HashMap + ArrayList     │
+│  • Need O(1) get + O(1) put?     → HashMap + LinkedList         │
+│  • Need O(1) min/max?            → Two stacks / Monotonic       │
+│  • Need prefix search?           → Trie                         │
+│  • Need ordered iteration?       → TreeMap / BST                │
+│  • Need O(1) random access + insert? → HashMap + ArrayList      │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -46,26 +46,26 @@
 │ THE REAL-WORLD ORIGIN                                                        │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ 📖 LRU Cache: Every CPU has an LRU cache. When L1 cache is full, the        │
+│ 📖 LRU Cache: Every CPU has an LRU cache. When L1 cache is full, the          │
 │    Least Recently Used line gets evicted. Your browser uses LRU for its      │
 │    tab memory management. CDNs use LRU for content caching.                  │
 │                                                                              │
-│ 📖 Min Stack: Trading systems need to track the minimum stock price seen     │
+│ 📖 Min Stack: Trading systems need to track the minimum stock price seen      │
 │    so far in O(1). Each new price is "pushed" and we need instant access     │
 │    to the running minimum for stop-loss calculations.                        │
 │                                                                              │
-│ 📖 Trie: Every search engine autocomplete (Google, VSCode Ctrl+P) uses a    │
+│ 📖 Trie: Every search engine autocomplete (Google, VSCode Ctrl+P) uses a      │
 │    Trie. When you type "mer", it instantly finds "merge", "mercury",         │
-│    "merchant" by walking the prefix tree — O(L) instead of O(N·L).          │
+│    "merchant" by walking the prefix tree — O(L) instead of O(N·L).           │
 │                                                                              │
-│ 📖 Iterator: Java's Iterator pattern (hasNext/next) powers every for-each   │
+│ 📖 Iterator: Java's Iterator pattern (hasNext/next) powers every for-each     │
 │    loop. Database cursors, file line readers, paginated APIs — all iterators.│
 │                                                                              │
-│ FUNDAMENTAL PRINCIPLE:                                                        │
+│ FUNDAMENTAL PRINCIPLE:                                                       │
 │ Design problems test your ability to COMBINE basic data structures           │
-│ to achieve better time complexity than any single structure offers.           │
+│ to achieve better time complexity than any single structure offers.          │
 │                                                                              │
-│ LRU Cache = HashMap (O(1) lookup) + Doubly Linked List (O(1) removal)       │
+│ LRU Cache = HashMap (O(1) lookup) + Doubly Linked List (O(1) removal)        │
 │ Neither alone gives O(1) get AND O(1) eviction. Together they do.            │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
@@ -82,10 +82,10 @@
 │  ┌─────────────────────────┬────────────────────────────────────────────┐    │
 │  │ Need                    │ Combine                                    │    │
 │  ├─────────────────────────┼────────────────────────────────────────────┤    │
-│  │ O(1) access + O(1) order│ HashMap + Doubly Linked List              │    │
-│  │ O(1) access + O(1) rand │ HashMap + ArrayList                       │    │
-│  │ O(1) min + O(1) push/pop│ Two stacks (main + min tracker)           │    │
-│  │ O(L) prefix + O(1) check│ Trie (array of children)                  │    │
+│  │ O(1) access + O(1) order│ HashMap + Doubly Linked List              │     │
+│  │ O(1) access + O(1) rand │ HashMap + ArrayList                       │     │
+│  │ O(1) min + O(1) push/pop│ Two stacks (main + min tracker)           │     │
+│  │ O(L) prefix + O(1) check│ Trie (array of children)                  │     │
 │  │ O(log n) rank queries   │ TreeMap + augmented BST                    │    │
 │  └─────────────────────────┴────────────────────────────────────────────┘    │
 │                                                                              │
@@ -99,10 +99,10 @@
 │ 3. Forgetting edge cases: empty structure, single element, capacity=0        │
 │ 4. Not separating the "what" (interface) from "how" (implementation)         │
 │ 5. Using LinkedHashMap in interviews — shows framework knowledge but not     │
-│    understanding. Implement from scratch first, mention LinkedHashMap as      │
-│    "production shortcut".                                                     │
+│    understanding. Implement from scratch first, mention LinkedHashMap as     │
+│    "production shortcut".                                                    │
 │ 6. Thread-safety: interviewers sometimes ask "what if concurrent?" Know      │
-│    ConcurrentHashMap, ReadWriteLock, lock striping.                           │
+│    ConcurrentHashMap, ReadWriteLock, lock striping.                          │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -816,14 +816,14 @@ KEY: Using "null" markers preserves the tree structure uniquely.
 
 ```
 ╔═══════════════════════════════════════════════════════════════════════════╗
-║  FLATTEN NESTED LIST ITERATOR (LeetCode 341 - Medium)                      ║
+║  FLATTEN NESTED LIST ITERATOR (LeetCode 341 - Medium)                     ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Given nested list of integers, implement iterator to flatten it.        ║
-║  Example: [[1,1],2,[1,1]] → 1, 1, 2, 1, 1                              ║
+║  Given nested list of integers, implement iterator to flatten it.         ║
+║  Example: [[1,1],2,[1,1]] → 1, 1, 2, 1, 1                                 ║
 ║                                                                           ║
-║  KEY: Use stack. Push elements in reverse. Flatten on hasNext().         ║
-║  TIME: O(1) amortized next/hasNext | SPACE: O(D) depth of nesting       ║
+║  KEY: Use stack. Push elements in reverse. Flatten on hasNext().          ║
+║  TIME: O(1) amortized next/hasNext | SPACE: O(D) depth of nesting         ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -863,10 +863,10 @@ public class NestedIterator implements Iterator<Integer> {
 ║  DESIGN CIRCULAR QUEUE (LeetCode 622 - Medium)                            ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Implement circular queue with: enQueue, deQueue, Front, Rear,           ║
+║  Implement circular queue with: enQueue, deQueue, Front, Rear,            ║
 ║  isEmpty, isFull.                                                         ║
 ║                                                                           ║
-║  KEY: Array with head/tail pointers, modular arithmetic.                 ║
+║  KEY: Array with head/tail pointers, modular arithmetic.                  ║
 ║  All operations O(1)                                                      ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -912,16 +912,16 @@ class MyCircularQueue {
 
 ```
 ╔═══════════════════════════════════════════════════════════════════════════╗
-║  SNAPSHOT ARRAY (LeetCode 1146 - Medium)                                   ║
+║  SNAPSHOT ARRAY (LeetCode 1146 - Medium)                                  ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Implement: set(index, val), snap() → snapId, get(index, snapId)        ║
+║  Implement: set(index, val), snap() → snapId, get(index, snapId)          ║
 ║                                                                           ║
-║  Example:                                                                ║
-║  set(0,5) → snap()=0 → set(0,6) → get(0,0) → 5                        ║
+║  Example:                                                                 ║
+║  set(0,5) → snap()=0 → set(0,6) → get(0,0) → 5                            ║
 ║                                                                           ║
-║  KEY: Store list of (snapId, value) per index. Binary search on get.     ║
-║  set/snap O(1), get O(log S) where S = number of snaps                   ║
+║  KEY: Store list of (snapId, value) per index. Binary search on get.      ║
+║  set/snap O(1), get O(log S) where S = number of snaps                    ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -977,11 +977,11 @@ class SnapshotArray {
 ║  STOCK PRICE FLUCTUATION (LeetCode 2034 - Medium)                         ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Implement: update(timestamp, price), current(), maximum(), minimum()    ║
-║  update can CORRECT previous timestamp's price.                          ║
+║  Implement: update(timestamp, price), current(), maximum(), minimum()     ║
+║  update can CORRECT previous timestamp's price.                           ║
 ║                                                                           ║
-║  KEY: HashMap for timestamp→price + TreeMap for price frequencies.       ║
-║  update O(log n), current/max/min O(1)                                   ║
+║  KEY: HashMap for timestamp→price + TreeMap for price frequencies.        ║
+║  update O(log n), current/max/min O(1)                                    ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -1026,15 +1026,15 @@ class StockPrice {
 ║  FIND MEDIAN FROM DATA STREAM (LeetCode 295 - Hard)                       ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  addNum(int num) — add integer from data stream                          ║
-║  findMedian() — return median of all elements so far                     ║
+║  addNum(int num) — add integer from data stream                           ║
+║  findMedian() — return median of all elements so far                      ║
 ║                                                                           ║
-║  Example:                                                                ║
-║  add(1), add(2) → median=1.5, add(3) → median=2.0                      ║
+║  Example:                                                                 ║
+║  add(1), add(2) → median=1.5, add(3) → median=2.0                         ║
 ║                                                                           ║
-║  KEY: Two heaps — maxHeap for lower half, minHeap for upper half.        ║
-║  Keep balanced: |maxHeap.size - minHeap.size| <= 1                       ║
-║  addNum O(log n), findMedian O(1)                                        ║
+║  KEY: Two heaps — maxHeap for lower half, minHeap for upper half.         ║
+║  Keep balanced: |maxHeap.size - minHeap.size| <= 1                        ║
+║  addNum O(log n), findMedian O(1)                                         ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 

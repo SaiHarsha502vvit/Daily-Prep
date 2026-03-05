@@ -10,8 +10,8 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║ COMPANY: Flipkart / Amazon                                                    ║
-║ SYSTEM: Order Management                                                      ║
+║ COMPANY: Flipkart / Amazon                                                   ║
+║ SYSTEM: Order Management                                                     ║
 ║ INCIDENT: Customer clicked "Place Order" twice due to slow network           ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
@@ -102,8 +102,8 @@ public class DuplicateOrderDetector {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║ COMPANY: Any E-commerce                                                       ║
-║ SYSTEM: Cart & Checkout                                                       ║
+║ COMPANY: Any E-commerce                                                      ║
+║ SYSTEM: Cart & Checkout                                                      ║
 ║ FEATURE: Calculate final price with multiple discount rules                  ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
@@ -219,8 +219,8 @@ public class CartCalculator {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║ COMPANY: Amazon / Flipkart                                                    ║
-║ SYSTEM: Search                                                                ║
+║ COMPANY: Amazon / Flipkart                                                   ║
+║ SYSTEM: Search                                                               ║
 ║ FEATURE: Show suggestions as user types                                      ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
@@ -325,7 +325,7 @@ public class ProductAutocomplete {
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
 ║ COMPANY: Any Bank / Payment Gateway                                          ║
-║ SYSTEM: Fraud Detection                                                       ║
+║ SYSTEM: Fraud Detection                                                      ║
 ║ INCIDENT: Card stolen, thief made 10 transactions in 5 minutes               ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
@@ -418,7 +418,7 @@ public class FraudDetector {
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
 ║ COMPANY: HDFC / ICICI / Any Bank                                             ║
-║ SYSTEM: Loan Management                                                       ║
+║ SYSTEM: Loan Management                                                      ║
 ║ FEATURE: Calculate EMI and generate amortization schedule                    ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
@@ -521,9 +521,9 @@ public class EMICalculator {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║ COMPANY: Any Bank                                                             ║
-║ SYSTEM: Core Banking                                                          ║
-║ BUG: Two transfers happening simultaneously caused wrong balance              ║
+║ COMPANY: Any Bank                                                            ║
+║ SYSTEM: Core Banking                                                         ║
+║ BUG: Two transfers happening simultaneously caused wrong balance             ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 THE BUG:
@@ -650,8 +650,8 @@ public class BankTest {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║ COMPANY: Swiggy / Zomato                                                      ║
-║ SYSTEM: Partner Assignment                                                    ║
+║ COMPANY: Swiggy / Zomato                                                     ║
+║ SYSTEM: Partner Assignment                                                   ║
 ║ FEATURE: Find 3 nearest available delivery partners                          ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
@@ -776,8 +776,8 @@ public class DeliveryPartnerFinder {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║ COMPANY: Zomato / Google Maps                                                 ║
-║ SYSTEM: Rating & Reviews                                                      ║
+║ COMPANY: Zomato / Google Maps                                                ║
+║ SYSTEM: Rating & Reviews                                                     ║
 ║ CHALLENGE: New restaurant with 2 five-star reviews shows higher than         ║
 ║            established restaurant with 4.8 from 500 reviews                  ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
@@ -887,8 +887,8 @@ public class RatingCalculator {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║ COMPANY: Facebook / LinkedIn                                                  ║
-║ SYSTEM: Friend Suggestions                                                    ║
+║ COMPANY: Facebook / LinkedIn                                                 ║
+║ SYSTEM: Friend Suggestions                                                   ║
 ║ FEATURE: "You have 15 mutual friends with John"                              ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
@@ -990,8 +990,8 @@ public class MutualFriendsFinder {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║ COMPANY: Twitter / Instagram / Facebook                                       ║
-║ SYSTEM: Feed Generation                                                       ║
+║ COMPANY: Twitter / Instagram / Facebook                                      ║
+║ SYSTEM: Feed Generation                                                      ║
 ║ CHALLENGE: Merge posts from 500 friends, show most recent first              ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
@@ -1075,8 +1075,8 @@ public class NewsFeedGenerator {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║ COMPANY: Uber / Ola                                                           ║
-║ SYSTEM: Dynamic Pricing                                                       ║
+║ COMPANY: Uber / Ola                                                          ║
+║ SYSTEM: Dynamic Pricing                                                      ║
 ║ FEATURE: Increase price when demand > supply                                 ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
@@ -1178,8 +1178,8 @@ public class SurgePricingCalculator {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║ COMPANY: Uber / Ola                                                           ║
-║ SYSTEM: Dispatch                                                              ║
+║ COMPANY: Uber / Ola                                                          ║
+║ SYSTEM: Dispatch                                                             ║
 ║ CHALLENGE: Match N riders with M drivers optimally                           ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```

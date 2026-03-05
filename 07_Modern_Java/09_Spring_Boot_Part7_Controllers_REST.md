@@ -11,39 +11,39 @@
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHY: Why REST Controllers?                                                     │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • REST is the standard: Web APIs, mobile apps, microservices                  │
-│  • HTTP verbs: GET, POST, PUT, DELETE map to CRUD operations                   │
-│  • Status codes: 200, 201, 400, 404, 500 communicate results                   │
-│  • JSON by default: @RestController auto-serializes to JSON                    │
-│  • Interview must-know: API design is tested in every backend interview       │
+│  • REST is the standard: Web APIs, mobile apps, microservices                   │
+│  • HTTP verbs: GET, POST, PUT, DELETE map to CRUD operations                    │
+│  • Status codes: 200, 201, 400, 404, 500 communicate results                    │
+│  • JSON by default: @RestController auto-serializes to JSON                     │
+│  • Interview must-know: API design is tested in every backend interview         │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  HOW: How Controllers Handle Requests?                                          │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • @GetMapping: Retrieve resource - GET /api/users/{id}                        │
-│  • @PostMapping: Create resource - POST /api/users                             │
-│  • @PutMapping: Update entire resource - PUT /api/users/{id}                   │
-│  • @DeleteMapping: Remove resource - DELETE /api/users/{id}                    │
-│  • @Valid: Trigger bean validation on request body                            │
+│  • @GetMapping: Retrieve resource - GET /api/users/{id}                         │
+│  • @PostMapping: Create resource - POST /api/users                              │
+│  • @PutMapping: Update entire resource - PUT /api/users/{id}                    │
+│  • @DeleteMapping: Remove resource - DELETE /api/users/{id}                     │
+│  • @Valid: Trigger bean validation on request body                              │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHEN: When to Use Which Parameter Type?                                        │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • @PathVariable: Resource identifier - /users/{id}                            │
-│  • @RequestParam: Filters, pagination - /users?status=active&page=1          │
-│  • @RequestBody: Create/Update data - JSON payload                             │
-│  • @RequestHeader: Auth tokens, API keys, custom headers                       │
-│  • ResponseEntity: Full control over status, headers, body                    │
+│  • @PathVariable: Resource identifier - /users/{id}                             │
+│  • @RequestParam: Filters, pagination - /users?status=active&page=1             │
+│  • @RequestBody: Create/Update data - JSON payload                              │
+│  • @RequestHeader: Auth tokens, API keys, custom headers                        │
+│  • ResponseEntity: Full control over status, headers, body                      │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHICH: Which Controller Patterns to Use?                                       │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  ESSENTIAL:     @RestController, @RequestMapping, @Valid, ResponseEntity       │
-│  IMPORTANT:     @ControllerAdvice for global exceptions, API versioning        │
-│  ADVANCED:      HATEOAS, content negotiation, file uploads                     │
+│  ESSENTIAL:     @RestController, @RequestMapping, @Valid, ResponseEntity        │
+│  IMPORTANT:     @ControllerAdvice for global exceptions, API versioning         │
+│  ADVANCED:      HATEOAS, content negotiation, file uploads                      │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -116,43 +116,43 @@ public class UserController {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    HTTP METHODS & SPRING MAPPINGS                                │
+│                    HTTP METHODS & SPRING MAPPINGS                               │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  HTTP Method    Annotation        Purpose              Idempotent   Safe        │
 │  ──────────────────────────────────────────────────────────────────────────     │
-│  GET            @GetMapping       Read resource           ✅         ✅         │
-│  POST           @PostMapping      Create resource         ❌         ❌         │
-│  PUT            @PutMapping       Replace resource        ✅         ❌         │
-│  PATCH          @PatchMapping     Partial update          ❌*        ❌         │
-│  DELETE         @DeleteMapping    Delete resource         ✅         ❌         │
-│  HEAD           @RequestMapping   Get headers only        ✅         ✅         │
-│  OPTIONS        @RequestMapping   Get allowed methods     ✅         ✅         │
-│                                                                                  │
+│  GET            @GetMapping       Read resource           ✅         ✅           │
+│  POST           @PostMapping      Create resource         ❌         ❌           │
+│  PUT            @PutMapping       Replace resource        ✅         ❌           │
+│  PATCH          @PatchMapping     Partial update          ❌*        ❌           │
+│  DELETE         @DeleteMapping    Delete resource         ✅         ❌           │
+│  HEAD           @RequestMapping   Get headers only        ✅         ✅           │
+│  OPTIONS        @RequestMapping   Get allowed methods     ✅         ✅           │
+│                                                                                 │
 │  *PATCH can be idempotent depending on implementation                           │
-│                                                                                  │
-│  Idempotent = Same request N times = Same result                               │
-│  Safe = Doesn't modify server state                                            │
-│                                                                                  │
+│                                                                                 │
+│  Idempotent = Same request N times = Same result                                │
+│  Safe = Doesn't modify server state                                             │
+│                                                                                 │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  RESTful URL Design:                                                            │
-│                                                                                  │
-│  ✅ GOOD (Noun-based, resource-oriented):                                       │
-│  GET    /api/v1/users                    → Get all users                       │
-│  GET    /api/v1/users/123                → Get user 123                        │
-│  POST   /api/v1/users                    → Create user                         │
-│  PUT    /api/v1/users/123                → Replace user 123                    │
-│  PATCH  /api/v1/users/123                → Update user 123                     │
-│  DELETE /api/v1/users/123                → Delete user 123                     │
-│  GET    /api/v1/users/123/orders         → Get orders of user 123             │
-│  POST   /api/v1/users/123/orders         → Create order for user 123          │
-│                                                                                  │
-│  ❌ BAD (Verb-based, RPC style):                                               │
-│  GET    /api/v1/getUser?id=123           → Don't use verbs in URL             │
-│  POST   /api/v1/createUser               → POST already means create          │
-│  GET    /api/v1/deleteUser?id=123        → Don't use GET for deletion         │
-│                                                                                  │
+│                                                                                 │
+│  ✅ GOOD (Noun-based, resource-oriented):                                        │
+│  GET    /api/v1/users                    → Get all users                        │
+│  GET    /api/v1/users/123                → Get user 123                         │
+│  POST   /api/v1/users                    → Create user                          │
+│  PUT    /api/v1/users/123                → Replace user 123                     │
+│  PATCH  /api/v1/users/123                → Update user 123                      │
+│  DELETE /api/v1/users/123                → Delete user 123                      │
+│  GET    /api/v1/users/123/orders         → Get orders of user 123               │
+│  POST   /api/v1/users/123/orders         → Create order for user 123            │
+│                                                                                 │
+│  ❌ BAD (Verb-based, RPC style):                                                 │
+│  GET    /api/v1/getUser?id=123           → Don't use verbs in URL               │
+│  POST   /api/v1/createUser               → POST already means create            │
+│  GET    /api/v1/deleteUser?id=123        → Don't use GET for deletion           │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -992,25 +992,25 @@ public class UserController {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    CONTROLLER BEST PRACTICES                                     │
+│                    CONTROLLER BEST PRACTICES                                    │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  1. THIN CONTROLLERS                                                            │
 │  ─────────────────────                                                          │
 │  Controllers should:                                                            │
-│  ✅ Receive request                                                             │
-│  ✅ Validate (via @Valid)                                                       │
-│  ✅ Delegate to service                                                         │
-│  ✅ Return response                                                             │
-│                                                                                  │
+│  ✅ Receive request                                                              │
+│  ✅ Validate (via @Valid)                                                        │
+│  ✅ Delegate to service                                                          │
+│  ✅ Return response                                                              │
+│                                                                                 │
 │  Controllers should NOT:                                                        │
-│  ❌ Contain business logic                                                      │
-│  ❌ Access repositories directly                                                │
-│  ❌ Have complex conditionals                                                   │
-│  ❌ Do data transformation (use mapper in service)                             │
-│                                                                                  │
+│  ❌ Contain business logic                                                       │
+│  ❌ Access repositories directly                                                 │
+│  ❌ Have complex conditionals                                                    │
+│  ❌ Do data transformation (use mapper in service)                               │
+│                                                                                 │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  2. USE MEANINGFUL HTTP STATUS CODES                                            │
 │  ──────────────────────────────────────                                         │
 │  200 OK          - Successful GET, PUT, PATCH                                   │
@@ -1020,12 +1020,12 @@ public class UserController {
 │  401 Unauthorized- Missing/invalid authentication                               │
 │  403 Forbidden   - Authenticated but not authorized                             │
 │  404 Not Found   - Resource doesn't exist                                       │
-│  409 Conflict    - Duplicate resource (e.g., email exists)                     │
-│  422 Unprocessable Entity - Business rule violation                            │
+│  409 Conflict    - Duplicate resource (e.g., email exists)                      │
+│  422 Unprocessable Entity - Business rule violation                             │
 │  500 Internal Error - Unexpected server error                                   │
-│                                                                                  │
+│                                                                                 │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  3. CONSISTENT RESPONSE FORMAT                                                  │
 │  ─────────────────────────────────                                              │
 │  // Success response                                                            │
@@ -1033,38 +1033,38 @@ public class UserController {
 │    "data": { ... },                                                             │
 │    "message": "Success"                                                         │
 │  }                                                                              │
-│                                                                                  │
+│                                                                                 │
 │  // Error response                                                              │
 │  {                                                                              │
 │    "timestamp": "2024-01-15T10:30:00Z",                                         │
 │    "status": 404,                                                               │
 │    "error": "Not Found",                                                        │
-│    "errorCode": "USER_NOT_FOUND",                                              │
-│    "message": "User not found with id: 123",                                   │
-│    "path": "/api/v1/users/123"                                                 │
+│    "errorCode": "USER_NOT_FOUND",                                               │
+│    "message": "User not found with id: 123",                                    │
+│    "path": "/api/v1/users/123"                                                  │
 │  }                                                                              │
-│                                                                                  │
+│                                                                                 │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  4. DOCUMENT WITH OPENAPI                                                       │
 │  ───────────────────────────                                                    │
-│  @Operation(summary = "Get user by ID")                                        │
-│  @ApiResponses({                                                               │
-│    @ApiResponse(responseCode = "200", description = "User found"),             │
-│    @ApiResponse(responseCode = "404", description = "User not found")          │
+│  @Operation(summary = "Get user by ID")                                         │
+│  @ApiResponses({                                                                │
+│    @ApiResponse(responseCode = "200", description = "User found"),              │
+│    @ApiResponse(responseCode = "404", description = "User not found")           │
 │  })                                                                             │
-│  @GetMapping("/{id}")                                                          │
-│  public UserResponse getUser(@PathVariable Long id) { }                        │
-│                                                                                  │
+│  @GetMapping("/{id}")                                                           │
+│  public UserResponse getUser(@PathVariable Long id) { }                         │
+│                                                                                 │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  5. PAGINATION BEST PRACTICES                                                   │
 │  ─────────────────────────────────                                              │
-│  - Default page size (e.g., 20)                                                │
-│  - Max page size limit (e.g., 100)                                             │
+│  - Default page size (e.g., 20)                                                 │
+│  - Max page size limit (e.g., 100)                                              │
 │  - Return pagination metadata                                                   │
-│  - Use cursor-based for real-time data                                         │
-│                                                                                  │
+│  - Use cursor-based for real-time data                                          │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 

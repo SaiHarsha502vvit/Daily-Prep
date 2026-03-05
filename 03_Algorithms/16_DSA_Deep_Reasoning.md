@@ -31,7 +31,7 @@
 ║  Big O measures GROWTH RATE, not speed.                          ║
 ║                                                                  ║
 ║  THE RESTAURANT ANALOGY:                                         ║
-║  O(1): Microwave — same time whether 1 item or party of 100.    ║
+║  O(1): Microwave — same time whether 1 item or party of 100.     ║
 ║        But that "constant" time could be 5 minutes!              ║
 ║  O(n): Grill — time grows linearly with order count.             ║
 ║  O(n²): Handshake — each person shakes hands with everyone.      ║
@@ -46,11 +46,11 @@
 ║                                                                  ║
 ║  2. Constants matter in practice:                                ║
 ║     O(n) with constant 1000 → 1000n                              ║
-║     O(n²) with constant 0.001 → 0.001n²                         ║
+║     O(n²) with constant 0.001 → 0.001n²                          ║
 ║     Below n=1,000,000, the "slower" algorithm is faster!         ║
 ║                                                                  ║
 ║  3. Big O describes WORST CASE (usually). Average case exists:   ║
-║     Quicksort: O(n²) worst, O(n log n) average                  ║
+║     Quicksort: O(n²) worst, O(n log n) average                   ║
 ║     HashMap: O(n) worst, O(1) average                            ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
@@ -67,14 +67,14 @@
 ║  THE FILING CABINET (from Java chapter, deeper here):            ║
 ║                                                                  ║
 ║  BEST CASE O(1): Each key goes to a unique bucket.               ║
-║  hash("Alice") → bucket 3, hash("Bob") → bucket 7               ║
+║  hash("Alice") → bucket 3, hash("Bob") → bucket 7                ║
 ║  Direct access. No searching.                                    ║
 ║                                                                  ║
 ║  WORST CASE O(n): All keys hash to SAME bucket.                  ║
-║  hash("Alice") → bucket 3, hash("Bob") → bucket 3,              ║
+║  hash("Alice") → bucket 3, hash("Bob") → bucket 3,               ║
 ║  hash("Charlie") → bucket 3...                                   ║
 ║  Now bucket 3 is a linked list → must scan all entries.          ║
-║  (Java 8: converts to tree at 8 entries → O(log n) worst case)  ║
+║  (Java 8: converts to tree at 8 entries → O(log n) worst case)   ║
 ║                                                                  ║
 ║  WHEN THIS HAPPENS IN REAL LIFE:                                 ║
 ║  1. Bad hashCode that returns same value for many keys           ║
@@ -83,9 +83,9 @@
 ║     entries rehashed → O(n) for that one operation               ║
 ║                                                                  ║
 ║  AMORTIZED O(1): Most operations are O(1). Occasionally O(n)     ║
-║  for resize. Spread across all operations → amortized O(1).     ║
+║  for resize. Spread across all operations → amortized O(1).      ║
 ║                                                                  ║
-║  Like rent: You pay $12,000/year in one lump (O(n) resize).     ║
+║  Like rent: You pay $12,000/year in one lump (O(n) resize).      ║
 ║  Amortized: $1,000/month (O(1) per operation).                   ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
@@ -102,14 +102,14 @@
 ║  THE MOVING HOUSE ANALOGY                                        ║
 ║                                                                  ║
 ║  Mergesort: Hire a moving company with warehouses.               ║
-║  → Always O(n log n) ✅                                          ║
-║  → Needs O(n) extra space (the warehouse!) ❌                    ║
+║  → Always O(n log n) ✅                                           ║
+║  → Needs O(n) extra space (the warehouse!) ❌                     ║
 ║  → Lots of copying between warehouse and house                   ║
 ║  → Cache-unfriendly (data jumps between locations)               ║
 ║                                                                  ║
 ║  Quicksort: Sort everything IN your house.                       ║
-║  → O(n log n) average, O(n²) worst ⚠️                           ║
-║  → O(log n) extra space (just the recursion stack) ✅            ║
+║  → O(n log n) average, O(n²) worst ⚠️                            ║
+║  → O(log n) extra space (just the recursion stack) ✅             ║
 ║  → IN-PLACE — data stays where it is                             ║
 ║  → CACHE-FRIENDLY — sequential access patterns                   ║
 ║  → Smaller constant factor (fewer swaps, less overhead)          ║
@@ -117,12 +117,12 @@
 ║  WHY CACHE MATTERS:                                              ║
 ║  CPU cache loads adjacent memory. Quicksort accesses elements    ║
 ║  near each other → cache hits. Mergesort copies between          ║
-║  arrays → cache misses. This is 2-3x difference in practice!    ║
+║  arrays → cache misses. This is 2-3x difference in practice!     ║
 ║                                                                  ║
 ║  REAL-WORLD:                                                     ║
-║  Java Arrays.sort(primitives) → Dual-Pivot Quicksort            ║
+║  Java Arrays.sort(primitives) → Dual-Pivot Quicksort             ║
 ║  Java Arrays.sort(objects) → TimSort (merge-based, stable)       ║
-║  Why? Objects are references → cache doesn't matter as much.    ║
+║  Why? Objects are references → cache doesn't matter as much.     ║
 ║  Stability matters for objects. Quicksort is unstable.           ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
@@ -139,7 +139,7 @@
 ║  THE BUILDING SEARCH ANALOGY                                     ║
 ║                                                                  ║
 ║  BFS (Breadth-First) = Floor by floor                            ║
-║  → Check ALL rooms on floor 1, then ALL on floor 2, then 3...   ║
+║  → Check ALL rooms on floor 1, then ALL on floor 2, then 3...    ║
 ║  → Uses a QUEUE (FIFO)                                           ║
 ║  → Memory: O(width of widest level)                              ║
 ║                                                                  ║
@@ -150,7 +150,7 @@
 ║                                                                  ║
 ║  DECISION FRAMEWORK:                                             ║
 ║                                                                  ║
-║  "Is the answer CLOSE to the start?" → BFS                      ║
+║  "Is the answer CLOSE to the start?" → BFS                       ║
 ║  (Shortest path, level-order, minimum steps)                     ║
 ║                                                                  ║
 ║  "Is the answer at the END/LEAF?" → DFS                          ║
@@ -198,14 +198,14 @@ Word ladder (min transforms)  → BFS ✅
 ║  DP = Exploring ALL routes and picking the overall best          ║
 ║  → Considers all options, remembers results (memoization)        ║
 ║  → CAN reconstruct the optimal path                              ║
-║  → Slower: usually O(n²) or O(n × m)                            ║
+║  → Slower: usually O(n²) or O(n × m)                             ║
 ║  → Works for OVERLAPPING subproblems + optimal substructure      ║
 ║                                                                  ║
 ║  HOW TO TELL:                                                    ║
 ║  1. Can a greedy counterexample be found?                        ║
 ║     Coin change: coins [1, 3, 4], target 6                       ║
-║     Greedy: 4+1+1 = 3 coins                                     ║
-║     Optimal: 3+3 = 2 coins → Greedy FAILS → Use DP              ║
+║     Greedy: 4+1+1 = 3 coins                                      ║
+║     Optimal: 3+3 = 2 coins → Greedy FAILS → Use DP               ║
 ║                                                                  ║
 ║  2. Does the problem have optimal substructure?                  ║
 ║     "Can I build the answer from answers to smaller problems?"   ║
@@ -229,7 +229,7 @@ Word ladder (min transforms)  → BFS ✅
 ║  THE STACK OF PLATES ANALOGY                                     ║
 ║                                                                  ║
 ║  Each recursive call = a new plate on the stack                  ║
-║  Each plate holds: local variables, return address                ║
+║  Each plate holds: local variables, return address               ║
 ║  Stack has limited height (usually ~10,000 frames in Java)       ║
 ║                                                                  ║
 ║  factorial(100000) → 100,000 plates → stack overflow!            ║
@@ -289,11 +289,11 @@ int fib(int n) {
 ║  You have records sorted by NAME:                                ║
 ║  [Alice-A, Alice-B, Bob-A, Charlie-A]                            ║
 ║                                                                  ║
-║  Now sort by DEPARTMENT (all Alice entries same dept):            ║
-║  Stable:   [Alice-A, Alice-B, Bob-A, Charlie-A]                 ║
-║             ↑ Original name order preserved within department     ║
-║  Unstable: [Alice-B, Alice-A, Bob-A, Charlie-A]                 ║
-║             ↑ Alice's might swap — previous sort lost!            ║
+║  Now sort by DEPARTMENT (all Alice entries same dept):           ║
+║  Stable:   [Alice-A, Alice-B, Bob-A, Charlie-A]                  ║
+║             ↑ Original name order preserved within department    ║
+║  Unstable: [Alice-B, Alice-A, Bob-A, Charlie-A]                  ║
+║             ↑ Alice's might swap — previous sort lost!           ║
 ║                                                                  ║
 ║  WHEN IT MATTERS:                                                ║
 ║  • Multi-column sorting (sort by city, then by name)             ║
@@ -320,11 +320,11 @@ int fib(int n) {
 ║  PATTERN 1: Opposite ends (sorted array)                         ║
 ║  [1, 3, 5, 7, 9]                                                 ║
 ║   L→          ←R                                                 ║
-║  Use: Two Sum (sorted), Container With Most Water, Valid          ║
+║  Use: Two Sum (sorted), Container With Most Water, Valid         ║
 ║       Palindrome, 3Sum                                           ║
 ║                                                                  ║
 ║  PATTERN 2: Same direction (fast & slow)                         ║
-║  [1, 1, 2, 3, 3, 4]                                             ║
+║  [1, 1, 2, 3, 3, 4]                                              ║
 ║   S  F→                                                          ║
 ║  Use: Remove duplicates, Linked list cycle detection (Floyd's),  ║
 ║       Move zeroes, Remove element                                ║
@@ -335,7 +335,7 @@ int fib(int n) {
 ║  Use: Merge sorted arrays, Intersection, Compare strings         ║
 ║                                                                  ║
 ║  WHY IT WORKS: Reduces O(n²) brute force to O(n) by              ║
-║  eliminating impossible pairs. Each pointer moves one direction   ║
+║  eliminating impossible pairs. Each pointer moves one direction  ║
 ║  → total work is O(n), not O(n²).                                ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
@@ -401,14 +401,14 @@ int fib(int n) {
 ║  → To insert in middle: shift everything right. Slow.            ║
 ║  → But CPU cache loads the whole shelf area. Traversal is FAST.  ║
 ║                                                                  ║
-║  LinkedList = Items in boxes, each with a note saying             ║
+║  LinkedList = Items in boxes, each with a note saying            ║
 ║  "next box is in aisle 47, shelf 3."                             ║
 ║  → To insert: change one note. Fast.                             ║
-║  → To find item 50: follow 50 notes. Slow.                      ║
+║  → To find item 50: follow 50 notes. Slow.                       ║
 ║  → Each next pointer jumps to random memory. Cache MISSES.       ║
 ║                                                                  ║
 ║  BENCHMARK REALITY:                                              ║
-║  ArrayList is faster than LinkedList for ALMOST everything        ║
+║  ArrayList is faster than LinkedList for ALMOST everything       ║
 ║  in practice due to CPU cache efficiency. LinkedList only wins   ║
 ║  for frequent add/remove at BOTH ends (use ArrayDeque instead).  ║
 ║                                                                  ║

@@ -214,23 +214,23 @@ _Practice consistently. Aim for 2-3 problems daily. Review solutions even for pr
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    DATA ENGINEERING SQL REQUIREMENTS                             │
+│                    DATA ENGINEERING SQL REQUIREMENTS                            │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  Data Engineers deal with:                                                      │
 │  • VOLUME: Billions of rows daily                                               │
 │  • VELOCITY: Real-time data streams                                             │
 │  • VARIETY: Multiple sources, formats                                           │
 │  • VERACITY: Data quality issues everywhere                                     │
-│                                                                                  │
+│                                                                                 │
 │  Key SQL Skills Required:                                                       │
-│  1. Bulk Data Operations - INSERT millions efficiently                         │
-│  2. ETL Transformations - Clean, transform, load                               │
-│  3. Query Optimization - Make queries 100x faster                             │
-│  4. Window Functions - Analytics without aggregation loss                      │
-│  5. CTEs & Recursive Queries - Complex data hierarchies                       │
-│  6. Data Quality Checks - Validate before insert                              │
-│                                                                                  │
+│  1. Bulk Data Operations - INSERT millions efficiently                          │
+│  2. ETL Transformations - Clean, transform, load                                │
+│  3. Query Optimization - Make queries 100x faster                               │
+│  4. Window Functions - Analytics without aggregation loss                       │
+│  5. CTEs & Recursive Queries - Complex data hierarchies                         │
+│  6. Data Quality Checks - Validate before insert                                │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -449,18 +449,18 @@ TRUNCATE TABLE large_table RESTART IDENTITY CASCADE;  -- Reset sequences, cascad
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    ETL DATA PIPELINE                                             │
+│                    ETL DATA PIPELINE                                            │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  RAW DATA ──────> STAGING ──────> CLEANED ──────> DATA WAREHOUSE                │
 │  (messy)          (as-is)        (validated)     (analytics-ready)              │
-│                                                                                  │
+│                                                                                 │
 │  Source Systems:    Landing Zone:    Cleaning:        Final Tables:             │
 │  • CSV files        • raw_sales      • Handle NULLs   • fact_sales              │
 │  • APIs             • raw_users      • Fix types      • dim_customers           │
 │  • Databases        • raw_products   • Deduplicate    • dim_products            │
 │                                      • Validate       • dim_date                │
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 

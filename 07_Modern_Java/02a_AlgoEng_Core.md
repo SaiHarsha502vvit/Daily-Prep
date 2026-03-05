@@ -16,155 +16,155 @@
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ ⭐ THE FUNDAMENTAL SHIFT - FIXED vs GROWTH MINDSET ⭐                        │
+│ ⭐ THE FUNDAMENTAL SHIFT - FIXED vs GROWTH MINDSET ⭐                          │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │ FIXED MINDSET (Consumer):                                                    │
 │ • "I need to memorize all algorithms"                                        │
-│ • "If I don't know the pattern, I can't solve it"                           │
+│ • "If I don't know the pattern, I can't solve it"                            │
 │ • "Smart people just know the answers"                                       │
 │ • "This problem is too hard for me"                                          │
-│ • "I'll never be as good as competitive programmers"                        │
+│ • "I'll never be as good as competitive programmers"                         │
 │                                                                              │
 │ GROWTH MINDSET (Creator):                                                    │
-│ • "I can figure out any algorithm from first principles"                    │
-│ • "Patterns are tools I can CREATE, not just USE"                           │
-│ • "Every expert started where I am now"                                     │
-│ • "Difficulty means I'm about to learn something new"                       │
-│ • "My thinking muscles grow stronger with each problem"                     │
+│ • "I can figure out any algorithm from first principles"                     │
+│ • "Patterns are tools I can CREATE, not just USE"                            │
+│ • "Every expert started where I am now"                                      │
+│ • "Difficulty means I'm about to learn something new"                        │
+│ • "My thinking muscles grow stronger with each problem"                      │
 │                                                                              │
 │ KEY REALIZATION:                                                             │
-│ ┌─────────────────────────────────────────────────────────────────────────┐ │
-│ │  Dijkstra INVENTED his algorithm because GPS didn't exist!              │ │
-│ │  Kadane CREATED his algorithm by observing patterns!                    │ │
-│ │  Google's PageRank was INVENTED by two PhD students!                    │ │
-│ │                                                                         │ │
-│ │  THEY WERE NOT BORN KNOWING THESE - THEY CREATED THEM!                 │ │
-│ │  AND YOU CAN CREATE NEW ALGORITHMS TOO!                                 │ │
-│ └─────────────────────────────────────────────────────────────────────────┘ │
+│ ┌─────────────────────────────────────────────────────────────────────────┐  │
+│ │  Dijkstra INVENTED his algorithm because GPS didn't exist!              │  │
+│ │  Kadane CREATED his algorithm by observing patterns!                    │  │
+│ │  Google's PageRank was INVENTED by two PhD students!                    │  │
+│ │                                                                         │  │
+│ │  THEY WERE NOT BORN KNOWING THESE - THEY CREATED THEM!                 │   │
+│ │  AND YOU CAN CREATE NEW ALGORITHMS TOO!                                 │  │
+│ └─────────────────────────────────────────────────────────────────────────┘  │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ WHAT IS AN "ENGINEERING MINDSET"?                                            │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ DEFINITION: A way of thinking that approaches problems SYSTEMATICALLY,      │
-│ understands TRADE-OFFS, and CREATES solutions rather than just applying     │
+│ DEFINITION: A way of thinking that approaches problems SYSTEMATICALLY,       │
+│ understands TRADE-OFFS, and CREATES solutions rather than just applying      │
 │ memorized patterns.                                                          │
 │                                                                              │
 │ EVOLUTION OF ENGINEERING THINKING:                                           │
-│ • 1940s-50s: "Programming is typing code"                                   │
-│ • 1960s: "Programming is following instructions"                            │
-│ • 1970s: "Programming is structured problem-solving" (Dijkstra)            │
-│ • 1980s: "Programming is managing complexity" (Brooks)                      │
-│ • 1990s: "Programming is designing systems" (Gang of Four)                  │
-│ • 2000s: "Programming is engineering solutions" (Agile)                     │
-│ • TODAY: "Programming is CREATING VALUE through computation"               │
+│ • 1940s-50s: "Programming is typing code"                                    │
+│ • 1960s: "Programming is following instructions"                             │
+│ • 1970s: "Programming is structured problem-solving" (Dijkstra)              │
+│ • 1980s: "Programming is managing complexity" (Brooks)                       │
+│ • 1990s: "Programming is designing systems" (Gang of Four)                   │
+│ • 2000s: "Programming is engineering solutions" (Agile)                      │
+│ • TODAY: "Programming is CREATING VALUE through computation"                 │
 │                                                                              │
 │ THE CORE OF ENGINEERING MINDSET:                                             │
-│ 1. DECOMPOSITION: Break complex → simple pieces                             │
-│ 2. PATTERN RECOGNITION: See similarities across domains                     │
-│ 3. ABSTRACTION: Hide complexity, expose simplicity                          │
-│ 4. TRADE-OFF ANALYSIS: Understand costs of choices                          │
+│ 1. DECOMPOSITION: Break complex → simple pieces                              │
+│ 2. PATTERN RECOGNITION: See similarities across domains                      │
+│ 3. ABSTRACTION: Hide complexity, expose simplicity                           │
+│ 4. TRADE-OFF ANALYSIS: Understand costs of choices                           │
 │ 5. ITERATION: Improve through feedback                                       │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ ⭐⭐⭐ HOW TO CREATE YOUR OWN ALGORITHM - STEP BY STEP ⭐⭐⭐                │
+│ ⭐⭐⭐ HOW TO CREATE YOUR OWN ALGORITHM - STEP BY STEP ⭐⭐⭐                      │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │ STEP 1: UNDERSTAND THE PROBLEM DEEPLY                                        │
-│ ────────────────────────────────────────                                    │
+│ ────────────────────────────────────────                                     │
 │ Don't just read - INTERROGATE the problem!                                   │
 │                                                                              │
 │ Questions to ask:                                                            │
-│ • What EXACTLY is the input? (type, size, range, constraints)               │
-│ • What EXACTLY is the output? (format, precision, ordering)                 │
-│ • What makes a solution CORRECT? (definition of "answer")                   │
-│ • What are the EDGE CASES? (empty, single, max, negative, duplicate)        │
+│ • What EXACTLY is the input? (type, size, range, constraints)                │
+│ • What EXACTLY is the output? (format, precision, ordering)                  │
+│ • What makes a solution CORRECT? (definition of "answer")                    │
+│ • What are the EDGE CASES? (empty, single, max, negative, duplicate)         │
 │                                                                              │
-│ EXAMPLE: "Find two numbers in array that sum to target"                     │
+│ EXAMPLE: "Find two numbers in array that sum to target"                      │
 │ INTERROGATE:                                                                 │
-│ - Can numbers repeat? (affects which technique works)                       │
-│ - Return indices or values? (affects what we track)                         │
-│ - Multiple valid answers? (affects when to stop)                            │
-│ - Negative numbers? (affects sorting approaches)                            │
+│ - Can numbers repeat? (affects which technique works)                        │
+│ - Return indices or values? (affects what we track)                          │
+│ - Multiple valid answers? (affects when to stop)                             │
+│ - Negative numbers? (affects sorting approaches)                             │
 │                                                                              │
 │ ──────────────────────────────────────────────────────────────────────────── │
 │                                                                              │
-│ STEP 2: SOLVE IT THE DUMBEST WAY POSSIBLE (BRUTE FORCE)                     │
-│ ────────────────────────────────────────────────────────                    │
+│ STEP 2: SOLVE IT THE DUMBEST WAY POSSIBLE (BRUTE FORCE)                      │
+│ ────────────────────────────────────────────────────────                     │
 │ This is CRUCIAL! Don't skip this step!                                       │
 │                                                                              │
 │ WHY BRUTE FORCE FIRST?                                                       │
 │ • Ensures you UNDERSTAND the problem                                         │
-│ • Gives you a WORKING solution to compare against                           │
+│ • Gives you a WORKING solution to compare against                            │
 │ • Reveals the STRUCTURE of the problem                                       │
 │ • Shows you WHERE the inefficiency is                                        │
 │                                                                              │
 │ EXAMPLE: Two Sum                                                             │
-│ Brute Force: Check every pair → O(n²)                                       │
+│ Brute Force: Check every pair → O(n²)                                        │
 │ for i in range(n):                                                           │
 │     for j in range(i+1, n):                                                  │
-│         if arr[i] + arr[j] == target: return [i, j]                         │
+│         if arr[i] + arr[j] == target: return [i, j]                          │
 │                                                                              │
 │ ──────────────────────────────────────────────────────────────────────────── │
 │                                                                              │
 │ STEP 3: IDENTIFY THE WASTE                                                   │
-│ ───────────────────────────                                                 │
+│ ───────────────────────────                                                  │
 │ Look at your brute force and ask:                                            │
 │                                                                              │
-│ "What work am I doing REPEATEDLY that I could do ONCE?"                     │
+│ "What work am I doing REPEATEDLY that I could do ONCE?"                      │
 │                                                                              │
 │ COMMON TYPES OF WASTE:                                                       │
 │ • SEARCH waste: Looking for same thing multiple times                        │
-│   → FIX: Use HashMap for O(1) lookup                                        │
+│   → FIX: Use HashMap for O(1) lookup                                         │
 │                                                                              │
 │ • COMPARISON waste: Comparing things in wrong order                          │
-│   → FIX: Sort first, then compare smartly                                   │
+│   → FIX: Sort first, then compare smartly                                    │
 │                                                                              │
 │ • COMPUTATION waste: Calculating same thing repeatedly                       │
-│   → FIX: Precompute (prefix sums, memoization)                              │
+│   → FIX: Precompute (prefix sums, memoization)                               │
 │                                                                              │
 │ • TRAVERSAL waste: Walking same path multiple times                          │
-│   → FIX: Sliding window, two pointers                                       │
+│   → FIX: Sliding window, two pointers                                        │
 │                                                                              │
 │ EXAMPLE: Two Sum                                                             │
-│ WASTE: For each arr[i], I'm SEARCHING for target-arr[i]                     │
-│        Each search is O(n) → Total O(n²)                                    │
-│ FIX: Store values in HashMap, search becomes O(1)                           │
+│ WASTE: For each arr[i], I'm SEARCHING for target-arr[i]                      │
+│        Each search is O(n) → Total O(n²)                                     │
+│ FIX: Store values in HashMap, search becomes O(1)                            │
 │      Total: O(n)!                                                            │
 │                                                                              │
 │ ──────────────────────────────────────────────────────────────────────────── │
 │                                                                              │
 │ STEP 4: APPLY OR INVENT THE FIX                                              │
-│ ───────────────────────────────                                             │
+│ ───────────────────────────────                                              │
 │ Once you identify the waste, the fix often suggests itself!                  │
 │                                                                              │
 │ WASTE TYPE         →    TYPICAL FIX                                          │
-│ ────────────────────────────────────                                        │
+│ ────────────────────────────────────                                         │
 │ Repeated search    →    HashMap / HashSet                                    │
 │ Check all pairs    →    Sort + Two Pointers                                  │
 │ Recompute sums     →    Prefix Sums                                          │
 │ Recompute ranges   →    Sliding Window                                       │
 │ Recalculate same   →    Memoization / DP                                     │
-│ Check all subsets  →    Bitmask / Backtrack + Pruning                       │
+│ Check all subsets  →    Bitmask / Backtrack + Pruning                        │
 │ Check entire space →    Binary Search                                        │
 │                                                                              │
-│ IF NO KNOWN FIX EXISTS → YOU INVENT ONE!                                    │
+│ IF NO KNOWN FIX EXISTS → YOU INVENT ONE!                                     │
 │                                                                              │
 │ ──────────────────────────────────────────────────────────────────────────── │
 │                                                                              │
 │ STEP 5: VERIFY AND OPTIMIZE                                                  │
-│ ───────────────────────────                                                 │
+│ ───────────────────────────                                                  │
 │ • Test with edge cases                                                       │
 │ • Analyze complexity (time & space)                                          │
-│ • Ask: "Can this be even better?"                                           │
+│ • Ask: "Can this be even better?"                                            │
 │ • Document your reasoning for future you!                                    │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ ⭐⭐⭐ HOW TO CREATE YOUR OWN DATA STRUCTURE ⭐⭐⭐                          │
+│ ⭐⭐⭐ HOW TO CREATE YOUR OWN DATA STRUCTURE ⭐⭐⭐                                │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │ DATA STRUCTURES ARE JUST ALGORITHMS + ORGANIZATION!                          │
@@ -172,10 +172,10 @@
 │ THE CREATION PROCESS:                                                        │
 │                                                                              │
 │ 1. LIST THE OPERATIONS YOU NEED                                              │
-│    • What operations must be fast? (insert, delete, search, min, max?)      │
+│    • What operations must be fast? (insert, delete, search, min, max?)       │
 │    • What complexity is acceptable?                                          │
 │                                                                              │
-│ 2. FIND EXISTING DS THAT PARTIALLY SOLVE IT                                 │
+│ 2. FIND EXISTING DS THAT PARTIALLY SOLVE IT                                  │
 │    • HashMap: O(1) lookup                                                    │
 │    • LinkedList: O(1) insert/delete at ends                                  │
 │    • Heap: O(1) min/max                                                      │
@@ -191,58 +191,58 @@
 │ EXAMPLE 1: Create MinStack (Stack with O(1) getMin)                          │
 │                                                                              │
 │ OPERATIONS NEEDED:                                                           │
-│ • push(x)  → O(1)                                                           │
-│ • pop()    → O(1)                                                           │
-│ • top()    → O(1)                                                           │
-│ • getMin() → O(1)  ← This is the challenge!                                 │
+│ • push(x)  → O(1)                                                            │
+│ • pop()    → O(1)                                                            │
+│ • top()    → O(1)                                                            │
+│ • getMin() → O(1)  ← This is the challenge!                                  │
 │                                                                              │
 │ ANALYSIS:                                                                    │
 │ • Stack gives O(1) push/pop/top                                              │
 │ • But tracking min across changes?                                           │
 │                                                                              │
-│ INSIGHT: What if I track min AT EACH LEVEL of stack?                        │
+│ INSIGHT: What if I track min AT EACH LEVEL of stack?                         │
 │                                                                              │
 │ SOLUTION: Use TWO stacks!                                                    │
 │ • Main stack: actual values                                                  │
-│ • Min stack: minimum value at each point                                    │
+│ • Min stack: minimum value at each point                                     │
 │                                                                              │
 │ push(5): main=[5], min=[5]                                                   │
 │ push(3): main=[5,3], min=[5,3]                                               │
-│ push(7): main=[5,3,7], min=[5,3,3]  ← min stays 3                           │
+│ push(7): main=[5,3,7], min=[5,3,3]  ← min stays 3                            │
 │ pop():   main=[5,3], min=[5,3]                                               │
-│ getMin(): return min.peek() → 3                                             │
+│ getMin(): return min.peek() → 3                                              │
 │                                                                              │
-│ YOU JUST CREATED A NEW DATA STRUCTURE! 🎉                                    │
+│ YOU JUST CREATED A NEW DATA STRUCTURE! 🎉                                     │
 │                                                                              │
 │ ──────────────────────────────────────────────────────────────────────────── │
 │                                                                              │
-│ EXAMPLE 2: Create LRU Cache (O(1) get and put with capacity limit)          │
+│ EXAMPLE 2: Create LRU Cache (O(1) get and put with capacity limit)           │
 │                                                                              │
 │ OPERATIONS NEEDED:                                                           │
-│ • get(key)     → O(1), and mark as recently used                            │
-│ • put(key,val) → O(1), and if full, remove LEAST recent                     │
+│ • get(key)     → O(1), and mark as recently used                             │
+│ • put(key,val) → O(1), and if full, remove LEAST recent                      │
 │                                                                              │
 │ ANALYSIS:                                                                    │
 │ • HashMap: O(1) get/put for values                                           │
 │ • But tracking "least recently used"?                                        │
 │                                                                              │
-│ INSIGHT: Need ordering that can change dynamically                          │
-│          + O(1) move-to-front and remove-from-back                          │
+│ INSIGHT: Need ordering that can change dynamically                           │
+│          + O(1) move-to-front and remove-from-back                           │
 │                                                                              │
 │ SOLUTION: HashMap + DoublyLinkedList!                                        │
-│ • HashMap: key → node in list                                               │
-│ • List: maintains order (front = recent, back = least recent)               │
+│ • HashMap: key → node in list                                                │
+│ • List: maintains order (front = recent, back = least recent)                │
 │                                                                              │
 │ get(key):                                                                    │
-│   1. Find node in HashMap → O(1)                                            │
-│   2. Move node to front of list → O(1)                                      │
+│   1. Find node in HashMap → O(1)                                             │
+│   2. Move node to front of list → O(1)                                       │
 │                                                                              │
 │ put(key, val):                                                               │
-│   1. If exists: update + move to front                                      │
+│   1. If exists: update + move to front                                       │
 │   2. If new: add to front                                                    │
-│   3. If over capacity: remove from back                                     │
+│   3. If over capacity: remove from back                                      │
 │                                                                              │
-│ ANOTHER NEW DATA STRUCTURE! 🎉                                               │
+│ ANOTHER NEW DATA STRUCTURE! 🎉                                                │
 │                                                                              │
 │ ──────────────────────────────────────────────────────────────────────────── │
 │                                                                              │
@@ -255,20 +255,20 @@
 │                                                                              │
 │ SOLUTION: Queue + Monotonic Deque!                                           │
 │ • Main queue: actual values                                                  │
-│ • Deque: maintains potential max candidates (decreasing order)              │
+│ • Deque: maintains potential max candidates (decreasing order)               │
 │                                                                              │
 │ enqueue(x):                                                                  │
 │   1. Add to main queue                                                       │
-│   2. Remove from back of deque while back < x                               │
-│   3. Add x to back of deque                                                 │
+│   2. Remove from back of deque while back < x                                │
+│   3. Add x to back of deque                                                  │
 │                                                                              │
 │ dequeue():                                                                   │
 │   1. Remove from main queue                                                  │
-│   2. If removed value == front of deque, remove from deque too              │
+│   2. If removed value == front of deque, remove from deque too               │
 │                                                                              │
 │ getMax(): return front of deque                                              │
 │                                                                              │
-│ WHY IT WORKS: Deque only keeps "candidates" that could be max!              │
+│ WHY IT WORKS: Deque only keeps "candidates" that could be max!               │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -276,26 +276,26 @@
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │ FORMULA FOR INNOVATION:                                                      │
-│ ┌─────────────────────────────────────────────────────────────────────────┐ │
-│ │    NEW SOLUTION = (ALGORITHM A) + (ALGORITHM B) + (DATA STRUCTURE C)   │ │
-│ └─────────────────────────────────────────────────────────────────────────┘ │
+│ ┌─────────────────────────────────────────────────────────────────────────┐  │
+│ │    NEW SOLUTION = (ALGORITHM A) + (ALGORITHM B) + (DATA STRUCTURE C)   │   │
+│ └─────────────────────────────────────────────────────────────────────────┘  │
 │                                                                              │
 │ POWERFUL COMBINATIONS:                                                       │
 │                                                                              │
 │ • Binary Search + Greedy = Optimization Problems                             │
-│   "Binary search on the answer, greedy to validate"                         │
+│   "Binary search on the answer, greedy to validate"                          │
 │                                                                              │
 │ • DFS + Memoization = Tree/Graph DP                                          │
 │   "Explore recursively, cache results"                                       │
 │                                                                              │
 │ • Sliding Window + HashMap = Substring Problems                              │
-│   "Window tracks range, map tracks counts"                                  │
+│   "Window tracks range, map tracks counts"                                   │
 │                                                                              │
-│ • Two Pointers + Sorting = Pair/Triplet Problems                            │
-│   "Sort to enable smart pointer movement"                                   │
+│ • Two Pointers + Sorting = Pair/Triplet Problems                             │
+│   "Sort to enable smart pointer movement"                                    │
 │                                                                              │
 │ • BFS + Priority Queue = Shortest Path                                       │
-│   "Explore level by level, prioritize by cost"                              │
+│   "Explore level by level, prioritize by cost"                               │
 │                                                                              │
 │ • Union-Find + Edge Processing = Connected Components                        │
 │   "Process edges, unify components"                                          │
@@ -305,7 +305,7 @@
 │ • Trie: Stores words efficiently                                             │
 │ • Priority Queue: Ranks suggestions                                          │
 │ • Caching: Remembers recent queries                                          │
-│ Algorithm: Trie traversal + PQ ranking + LRU caching                        │
+│ Algorithm: Trie traversal + PQ ranking + LRU caching                         │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -317,58 +317,58 @@
 │ 1. AFTER SOLVING ANY PROBLEM:                                                │
 │    □ Write down WHY your solution works                                      │
 │    □ Identify WHAT PATTERN it uses                                           │
-│    □ Think of 2 OTHER problems this pattern solves                          │
-│    □ What if constraints changed? Would solution change?                    │
+│    □ Think of 2 OTHER problems this pattern solves                           │
+│    □ What if constraints changed? Would solution change?                     │
 │                                                                              │
 │ 2. WHEN STUCK ON A PROBLEM:                                                  │
 │    □ Write brute force FIRST                                                 │
 │    □ Identify the WASTE                                                      │
-│    □ Look at hints ONLY after 20 min of real trying                         │
-│    □ After seeing solution, RECREATE it from memory                         │
+│    □ Look at hints ONLY after 20 min of real trying                          │
+│    □ After seeing solution, RECREATE it from memory                          │
 │    □ Solve 3 similar problems to reinforce                                   │
 │                                                                              │
 │ 3. WEEKLY REVIEW:                                                            │
 │    □ What patterns did I learn this week?                                    │
 │    □ What connections between patterns did I discover?                       │
 │    □ What problems challenged me most? Why?                                  │
-│    □ Can I explain each solution to a beginner?                             │
+│    □ Can I explain each solution to a beginner?                              │
 │                                                                              │
 │ 4. CREATIVE CHALLENGES:                                                      │
-│    □ Take a solved problem → Add a constraint → Re-solve                    │
+│    □ Take a solved problem → Add a constraint → Re-solve                     │
 │    □ Combine two problems into one                                           │
-│    □ Create your own problem and solve it                                   │
+│    □ Create your own problem and solve it                                    │
 │    □ Optimize an existing solution further                                   │
 │                                                                              │
 │ PROGRESS METRICS:                                                            │
 │ • Not: "How many problems did I solve?"                                      │
-│ • But: "How many patterns can I explain and apply?"                         │
-│        "How often can I solve problems I haven't seen before?"              │
-│        "How quickly do I identify the right approach?"                      │
+│ • But: "How many patterns can I explain and apply?"                          │
+│        "How often can I solve problems I haven't seen before?"               │
+│        "How quickly do I identify the right approach?"                       │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ EXPECTED OUTPUTS OF ENGINEERING MINDSET                                      │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ ✅ CONFIDENCE: "I can figure out problems I've never seen"                  │
-│ ✅ CREATIVITY: "I can combine patterns in new ways"                         │
-│ ✅ ANALYSIS: "I understand WHY solutions work"                               │
-│ ✅ OPTIMIZATION: "I know how to improve any brute force"                    │
-│ ✅ CREATION: "I can design new algorithms and data structures"              │
-│ ✅ TRANSFER: "I can apply knowledge across domains"                         │
-│ ✅ COMMUNICATION: "I can explain complex ideas simply"                      │
+│ ✅ CONFIDENCE: "I can figure out problems I've never seen"                    │
+│ ✅ CREATIVITY: "I can combine patterns in new ways"                           │
+│ ✅ ANALYSIS: "I understand WHY solutions work"                                │
+│ ✅ OPTIMIZATION: "I know how to improve any brute force"                      │
+│ ✅ CREATION: "I can design new algorithms and data structures"                │
+│ ✅ TRANSFER: "I can apply knowledge across domains"                           │
+│ ✅ COMMUNICATION: "I can explain complex ideas simply"                        │
 │                                                                              │
 │ THE ULTIMATE TRANSFORMATION:                                                 │
-│ ┌─────────────────────────────────────────────────────────────────────────┐ │
-│ │   FROM: "I need to learn all the algorithms"                            │ │
-│ │     TO: "I can CREATE algorithms when needed"                           │ │
-│ │                                                                         │ │
-│ │   FROM: "This problem needs a data structure I don't know"             │ │
-│ │     TO: "I'll COMBINE existing structures to solve this"                │ │
-│ │                                                                         │ │
-│ │   FROM: "Smart people just know the answers"                            │ │
-│ │     TO: "I have a PROCESS to find answers"                              │ │
-│ └─────────────────────────────────────────────────────────────────────────┘ │
+│ ┌─────────────────────────────────────────────────────────────────────────┐  │
+│ │   FROM: "I need to learn all the algorithms"                            │  │
+│ │     TO: "I can CREATE algorithms when needed"                           │  │
+│ │                                                                         │  │
+│ │   FROM: "This problem needs a data structure I don't know"             │   │
+│ │     TO: "I'll COMBINE existing structures to solve this"                │  │
+│ │                                                                         │  │
+│ │   FROM: "Smart people just know the answers"                            │  │
+│ │     TO: "I have a PROCESS to find answers"                              │  │
+│ └─────────────────────────────────────────────────────────────────────────┘  │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 

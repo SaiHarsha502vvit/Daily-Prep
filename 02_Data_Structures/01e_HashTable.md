@@ -135,17 +135,17 @@ CONCEPT:
 
 EXAMPLE: Phone Book
 ┌────────────────────────────────────────────────────┐
-│ Name "Alice" → hash("Alice") → 3                  │
+│ Name "Alice" → hash("Alice") → 3                   │
 │                                                    │
-│ Index: 0      1      2      3      4      5       │
-│      ┌──────┬──────┬──────┬──────┬──────┬──────┐ │
-│      │      │ Bob  │      │Alice │      │Carol │ │
-│      │      │555-  │      │555-  │      │555-  │ │
-│      │      │1234  │      │5678  │      │9999  │ │
-│      └──────┴──────┴──────┴──────┴──────┴──────┘ │
+│ Index: 0      1      2      3      4      5        │
+│      ┌──────┬──────┬──────┬──────┬──────┬──────┐   │
+│      │      │ Bob  │      │Alice │      │Carol │   │
+│      │      │555-  │      │555-  │      │555-  │   │
+│      │      │1234  │      │5678  │      │9999  │   │
+│      └──────┴──────┴──────┴──────┴──────┴──────┘   │
 │                                                    │
-│ get("Alice") → hash("Alice") → 3 → return 555-5678│
-│ Time: O(1)!                                       │
+│ get("Alice") → hash("Alice") → 3 → return 555-5678 │
+│ Time: O(1)!                                        │
 └────────────────────────────────────────────────────┘
 ```
 
@@ -330,7 +330,7 @@ QUESTIONS:
 SOLUTION - HashMap + Doubly Linked List:
 ┌─────────────────────────────────────────────┐
 │  HashMap: url → Node                        │
-│  LinkedList: Most Recent ←→ ... ←→ Least   │
+│  LinkedList: Most Recent ←→ ... ←→ Least    │
 │                                             │
 │  Access image:                              │
 │  1. O(1) lookup in HashMap                  │

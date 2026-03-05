@@ -147,8 +147,8 @@ XOR (^) - Exactly one is 1      NOT (~) - Flip the bit
 │ 0 │ 0 │   0   │               │ 0 │   1   │
 │ 0 │ 1 │   1   │               │ 1 │   0   │
 │ 1 │ 0 │   1   │               └───┴───────┘
-│ 1 │ 1 │   0   │
-└───┴───┴───────┘
+│ 1 │ 1 │   0                               │
+└───┴───┴───────────────────────────────────┘
 ```
 
 ### Practical Examples
@@ -202,9 +202,9 @@ LEFT SHIFT (<<) - Multiply by 2^n
 ┌─────────────────────────────────────────┐
 │  5 << 1  =  10                          │
 │                                         │
-│  Before: 0 0 0 0 0 1 0 1  (5)          │
+│  Before: 0 0 0 0 0 1 0 1  (5)           │
 │                    ↓ ↓ ↓                │
-│  After:  0 0 0 0 1 0 1 0  (10)         │
+│  After:  0 0 0 0 1 0 1 0  (10)          │
 │                                         │
 │  Bits shift LEFT, 0s fill from right    │
 └─────────────────────────────────────────┘
@@ -213,9 +213,9 @@ RIGHT SHIFT (>>) - Divide by 2^n
 ┌─────────────────────────────────────────┐
 │  20 >> 2  =  5                          │
 │                                         │
-│  Before: 0 0 0 1 0 1 0 0  (20)         │
+│  Before: 0 0 0 1 0 1 0 0  (20)          │
 │            ↓ ↓ ↓ ↓                      │
-│  After:  0 0 0 0 0 1 0 1  (5)          │
+│  After:  0 0 0 0 0 1 0 1  (5)           │
 │                                         │
 │  Bits shift RIGHT, sign bit fills left  │
 └─────────────────────────────────────────┘
@@ -366,11 +366,11 @@ n >> k    // n / 2^k
 ┌─────────────────────────────────────────────────────────────────┐
 │                     XOR PROPERTIES                              │
 ├─────────────────────────────────────────────────────────────────┤
-│  1. a ^ 0 = a       (XOR with 0 gives same number)             │
-│  2. a ^ a = 0       (XOR with itself gives 0)                  │
-│  3. a ^ b = b ^ a   (Commutative - order doesn't matter)       │
-│  4. (a^b)^c = a^(b^c) (Associative - grouping doesn't matter)  │
-│  5. a ^ b ^ a = b   (Self-inverse - cancels out)               │
+│  1. a ^ 0 = a       (XOR with 0 gives same number)              │
+│  2. a ^ a = 0       (XOR with itself gives 0)                   │
+│  3. a ^ b = b ^ a   (Commutative - order doesn't matter)        │
+│  4. (a^b)^c = a^(b^c) (Associative - grouping doesn't matter)   │
+│  5. a ^ b ^ a = b   (Self-inverse - cancels out)                │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1060,11 +1060,11 @@ clearBit: n & ~(1 << i)
 ├─────────────────────────────────────────────────────────────────┤
 │  • Negative numbers (sign bit handling)                         │
 │  • Integer overflow (when shifting)                             │
-│  • Empty array (XOR of nothing = 0)                            │
-│  • n = 0 (special case for many operations)                    │
-│  • n = Integer.MIN_VALUE (-2^31, cannot negate)                │
-│  • Shift by 32 or more (undefined behavior)                    │
-│  • Java >> vs >>> (signed vs unsigned shift)                   │
+│  • Empty array (XOR of nothing = 0)                             │
+│  • n = 0 (special case for many operations)                     │
+│  • n = Integer.MIN_VALUE (-2^31, cannot negate)                 │
+│  • Shift by 32 or more (undefined behavior)                     │
+│  • Java >> vs >>> (signed vs unsigned shift)                    │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1074,14 +1074,14 @@ clearBit: n & ~(1 << i)
 ┌─────────────────────────────────────────────────────────────────┐
 │                    INTERVIEW STRATEGIES                         │
 ├─────────────────────────────────────────────────────────────────┤
-│  1. When you see "O(1) space" - think bits                     │
-│  2. When elements appear k times - think XOR or bit counting   │
-│  3. When dealing with subsets - think bitmask                  │
-│  4. When finding unique/missing - think XOR                    │
-│  5. When asked "power of 2" - think n & (n-1)                  │
-│  6. When optimizing arithmetic - think shifts                  │
-│  7. Always mention time/space complexity                       │
-│  8. Test with examples: 0, 1, negative, MAX_VALUE              │
+│  1. When you see "O(1) space" - think bits                      │
+│  2. When elements appear k times - think XOR or bit counting    │
+│  3. When dealing with subsets - think bitmask                   │
+│  4. When finding unique/missing - think XOR                     │
+│  5. When asked "power of 2" - think n & (n-1)                   │
+│  6. When optimizing arithmetic - think shifts                   │
+│  7. Always mention time/space complexity                        │
+│  8. Test with examples: 0, 1, negative, MAX_VALUE               │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1091,7 +1091,7 @@ clearBit: n & ~(1 << i)
 
 ```
 ╔═══════════════════════════════════════════════════════════════╗
-║     MASTER THESE 3 AND YOU'LL SOLVE 80% OF BIT PROBLEMS      ║
+║     MASTER THESE 3 AND YOU'LL SOLVE 80% OF BIT PROBLEMS       ║
 ╠═══════════════════════════════════════════════════════════════╣
 ║                                                               ║
 ║  1. XOR PROPERTIES                                            ║

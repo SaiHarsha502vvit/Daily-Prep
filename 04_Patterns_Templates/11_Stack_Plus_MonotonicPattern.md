@@ -176,13 +176,13 @@ KEY: Stack stores elements waiting for their NGE.
 ┌────────────────────────────────┬─────────────────────────────────────────┐
 │ Edge Case                      │ Handling                                │
 ├────────────────────────────────┼─────────────────────────────────────────┤
-│ All decreasing [5,4,3,2,1]    │ No element has NGE → all -1            │
-│ All increasing [1,2,3,4,5]    │ Every element except last has NGE      │
-│ All same values [3,3,3]       │ No strictly greater → all -1           │
-│ Single element [7]            │ No NGE → -1                            │
-│ Circular array (NGE II)       │ Loop 2×n, use index % n               │
-│ Histogram: all same height    │ Area = height × n                      │
-│ Histogram: sorted ascending   │ Stack never pops until cleanup         │
+│ All decreasing [5,4,3,2,1]    │ No element has NGE → all -1              │
+│ All increasing [1,2,3,4,5]    │ Every element except last has NGE        │
+│ All same values [3,3,3]       │ No strictly greater → all -1             │
+│ Single element [7]            │ No NGE → -1                              │
+│ Circular array (NGE II)       │ Loop 2×n, use index % n                  │
+│ Histogram: all same height    │ Area = height × n                        │
+│ Histogram: sorted ascending   │ Stack never pops until cleanup           │
 └────────────────────────────────┴─────────────────────────────────────────┘
 ```
 

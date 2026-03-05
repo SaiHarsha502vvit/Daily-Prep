@@ -41,19 +41,19 @@
 ║  → Can grab same ingredients (shared state → race conditions!)       ║
 ║  → One chef dropping a knife → whole kitchen affected                ║
 ║  → MEDIUM cost to hire (create thread ~1MB stack per thread)         ║
-║  → Scheduled by the OS (preemptive — OS decides who cooks when)     ║
+║  → Scheduled by the OS (preemptive — OS decides who cooks when)      ║
 ║                                                                      ║
 ║  COROUTINE = A recipe step a chef can pause and resume               ║
-║  → Chef says "pasta is boiling, I'll do the sauce meanwhile"        ║
+║  → Chef says "pasta is boiling, I'll do the sauce meanwhile"         ║
 ║  → Chef VOLUNTARILY pauses pasta, switches to sauce                  ║
-║  → NO OS involvement — the program decides when to switch           ║
+║  → NO OS involvement — the program decides when to switch            ║
 ║  → EXTREMELY cheap (~few KB, no OS thread needed)                    ║
 ║  → Runs on top of threads (many coroutines per thread)               ║
 ║                                                                      ║
 ║  NUMBERS:                                                            ║
 ║  Processes: ~10-100 (expensive)                                      ║
 ║  OS Threads: ~1000-10000 (each needs ~1MB stack)                     ║
-║  Coroutines: ~100,000-1,000,000+ (each needs ~few KB)               ║
+║  Coroutines: ~100,000-1,000,000+ (each needs ~few KB)                ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -64,10 +64,10 @@ PROCESS A                    PROCESS B
 ┌──────────────────┐         ┌──────────────────┐
 │ Code             │         │ Code             │
 │ Data/Heap        │         │ Data/Heap        │
-│ ┌──────┐ ┌────┐ │         │ ┌──────┐         │
-│ │Thread│ │Thrd│ │         │ │Thread│         │
-│ │Stack │ │Stck│ │         │ │Stack │         │
-│ └──────┘ └────┘ │         │ └──────┘         │
+│ ┌──────┐ ┌────┐ │         │ ┌──────┐          │
+│ │Thread│ │Thrd│ │         │ │Thread│          │
+│ │Stack │ │Stck│ │         │ │Stack │          │
+│ └──────┘ └────┘ │         │ └──────┘          │
 └──────────────────┘         └──────────────────┘
 ↑ Separate address spaces    ↑ Separate address space
   Threads share heap            
@@ -75,11 +75,11 @@ PROCESS A                    PROCESS B
 WITHIN A THREAD:
 ┌─────────────────────────────────────────┐
 │  Thread (OS-managed, ~1MB stack)        │
-│  ┌──────────┐ ┌──────────┐ ┌────────┐  │
-│  │Coroutine1│ │Coroutine2│ │Corou3  │  │
-│  │ ~2KB     │ │ ~2KB     │ │~2KB    │  │
-│  │(paused)  │ │(running) │ │(paused)│  │
-│  └──────────┘ └──────────┘ └────────┘  │
+│  ┌──────────┐ ┌──────────┐ ┌────────┐   │
+│  │Coroutine1│ │Coroutine2│ │Corou3  │   │
+│  │ ~2KB     │ │ ~2KB     │ │~2KB    │   │
+│  │(paused)  │ │(running) │ │(paused)│   │
+│  └──────────┘ └──────────┘ └────────┘   │
 └─────────────────────────────────────────┘
 ```
 
@@ -98,13 +98,13 @@ WITHIN A THREAD:
 ║                                                                      ║
 ║  Normal function:                                                    ║
 ║  ┌────────┐                                                          ║
-║  │ start  │ → runs to completion → returns                          ║
+║  │ start  │ → runs to completion → returns                           ║
 ║  └────────┘                                                          ║
 ║  Can only: CALL other functions and RETURN                           ║
 ║                                                                      ║
 ║  Coroutine:                                                          ║
 ║  ┌────────┐        ┌──────────┐        ┌──────────┐                  ║
-║  │ start  │ → runs → SUSPEND  │ → ... → RESUME   │ → runs → end    ║
+║  │ start  │ → runs → SUSPEND  │ → ... → RESUME   │ → runs → end      ║
 ║  └────────┘        └──────────┘        └──────────┘                  ║
 ║  Can: CALL, RETURN, and also SUSPEND (yield control)                 ║
 ║  When suspended, state is saved. When resumed, continues exactly.    ║
@@ -157,12 +157,12 @@ suspend fun fetchUserData(): User {
 ║  It's a snapshot of "what remains to be done" in a computation.      ║
 ║                                                                      ║
 ║  In code:                                                            ║
-║  int x = 5;           ← Already done                                ║
-║  int y = x + 3;       ← CONTINUATION starts here                    ║
-║  print(y * 2);        ←   and includes this                         ║
+║  int x = 5;           ← Already done                                 ║
+║  int y = x + 3;       ← CONTINUATION starts here                     ║
+║  print(y * 2);        ←   and includes this                          ║
 ║                                                                      ║
 ║  A continuation object CAPTURES this "rest of computation"           ║
-║  as a first-class value — you can store it, pass it around,         ║
+║  as a first-class value — you can store it, pass it around,          ║
 ║  call it later, or even call it MULTIPLE TIMES.                      ║
 ║                                                                      ║
 ║  This is the theoretical foundation for:                             ║
@@ -281,7 +281,7 @@ add(3, 4, function(result) {
 ║  → GIL prevents true parallelism even with threads                   ║
 ║                                                                      ║
 ║  RUST:                                                               ║
-║  → async fn returns impl Future                                     ║
+║  → async fn returns impl Future                                      ║
 ║  → Zero-cost abstraction: futures are state machines, no allocation  ║
 ║  → Must be driven by an executor (tokio, async-std)                  ║
 ║  → Futures are LAZY — do nothing until polled                        ║
@@ -314,7 +314,7 @@ add(3, 4, function(result) {
 ║  KEY INSIGHT: Virtual threads make BLOCKING code non-blocking        ║
 ║  without changing the code.                                          ║
 ║                                                                      ║
-║  Old way: Thread per request, blocking IO → 10,000 threads max      ║
+║  Old way: Thread per request, blocking IO → 10,000 threads max       ║
 ║  New way: Virtual thread per request, same blocking code →           ║
 ║           1,000,000 concurrent requests!                             ║
 ╚══════════════════════════════════════════════════════════════════════╝
@@ -354,7 +354,7 @@ executor.submit(() -> {
 ║  → Managed by the operating system                                   ║
 ║  → ~1MB stack, expensive context switch                              ║
 ║  → OS scheduler decides when to run (preemptive)                     ║
-║  → Used by: Java (traditional), C, C++, Rust                        ║
+║  → Used by: Java (traditional), C, C++, Rust                         ║
 ║                                                                      ║
 ║  GREEN THREAD:                                                       ║
 ║  → Managed by the RUNTIME/VM, not the OS                             ║
@@ -362,14 +362,14 @@ executor.submit(() -> {
 ║  → PROBLEM: Can't use multiple CPU cores (M:1 mapping)               ║
 ║  → History: Java 1.0 used green threads, then switched to OS threads ║
 ║                                                                      ║
-║  VIRTUAL THREAD (Java 21) / GOROUTINE (Go):                         ║
+║  VIRTUAL THREAD (Java 21) / GOROUTINE (Go):                          ║
 ║  → Best of both: user-space scheduling + multi-core                  ║
 ║  → M:N mapping: M virtual threads on N OS threads                    ║
 ║  → Runtime multiplexes virtual threads across thread pool            ║
 ║  → Gets multi-core parallelism WITHOUT per-request OS thread cost    ║
 ║                                                                      ║
 ║  EVOLUTION:                                                          ║
-║  Green threads (M:1) → OS threads (1:1) → Virtual threads (M:N)     ║
+║  Green threads (M:1) → OS threads (1:1) → Virtual threads (M:N)      ║
 ║  Problems of past  →  Current standard →  Future standard            ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
@@ -388,21 +388,21 @@ executor.submit(() -> {
 ║                                                                      ║
 ║  JavaScript = ONE chef, ONE kitchen, BUT with timers and helpers.    ║
 ║                                                                      ║
-║  ┌──────────────────────────────────────────────────────────┐       ║
-║  │  Call Stack (single thread — runs JS code)               │       ║
-║  │  ┌────────────────────────────────────┐                  │       ║
-║  │  │ Currently executing function       │                  │       ║
-║  │  └────────────────────────────────────┘                  │       ║
+║  ┌──────────────────────────────────────────────────────────┐        ║
+║  │  Call Stack (single thread — runs JS code)               │        ║
+║  │  ┌────────────────────────────────────┐                  │        ║
+║  │  │ Currently executing function       │                  │        ║
+║  │  └────────────────────────────────────┘                  │        ║
 ║  │              ↓ when stack is empty ↓                      │       ║
-║  │  ┌────────────────────────────────────┐                  │       ║
-║  │  │ Microtask Queue (Promises, queueM) │ ← checked FIRST │       ║
-║  │  └────────────────────────────────────┘                  │       ║
-║  │  ┌────────────────────────────────────┐                  │       ║
-║  │  │ Macrotask Queue (setTimeout, IO)   │ ← checked AFTER │       ║
-║  │  └────────────────────────────────────┘                  │       ║
-║  └──────────────────────────────────────────────────────────┘       ║
+║  │  ┌────────────────────────────────────┐                  │        ║
+║  │  │ Microtask Queue (Promises, queueM) │ ← checked FIRST │         ║
+║  │  └────────────────────────────────────┘                  │        ║
+║  │  ┌────────────────────────────────────┐                  │        ║
+║  │  │ Macrotask Queue (setTimeout, IO)   │ ← checked AFTER │         ║
+║  │  └────────────────────────────────────┘                  │        ║
+║  └──────────────────────────────────────────────────────────┘        ║
 ║                                                                      ║
-║  IO operations (file read, HTTP) are delegated to the OS/libuv      ║
+║  IO operations (file read, HTTP) are delegated to the OS/libuv       ║
 ║  thread pool. When complete, callbacks are queued.                   ║
 ║  The event loop picks them up when the call stack is empty.          ║
 ║                                                                      ║
@@ -424,14 +424,14 @@ executor.submit(() -> {
 ║                                                                      ║
 ║  GOROUTINE = Lightweight coroutine (starts at ~2KB stack)            ║
 ║  → M:N scheduling: M goroutines on N OS threads                      ║
-║  → go func() { ... } — that's it, it's running                      ║
+║  → go func() { ... } — that's it, it's running                       ║
 ║  → Millions possible (vs thousands of OS threads)                    ║
 ║                                                                      ║
 ║  CHANNEL = Typed pipe for goroutine communication                    ║
 ║  → ch := make(chan int) — create a channel                           ║
 ║  → ch <- 42 — send (blocks until receiver ready)                     ║
 ║  → val := <-ch — receive (blocks until sender ready)                 ║
-║  → Synchronization built in — no explicit locks!                      ║
+║  → Synchronization built in — no explicit locks!                     ║
 ║                                                                      ║
 ║  CSP (Communicating Sequential Processes):                           ║
 ║  → Each goroutine is a sequential process                            ║
@@ -457,7 +457,7 @@ executor.submit(() -> {
 ║  THE JUGGLING ANALOGY (Rob Pike's definition):                       ║
 ║                                                                      ║
 ║  CONCURRENCY = Dealing with multiple things at once.                 ║
-║  → One juggler with 3 balls — only holds ONE at a time              ║
+║  → One juggler with 3 balls — only holds ONE at a time               ║
 ║  → Switches rapidly between them (interleaving)                      ║
 ║  → STRUCTURE of the program                                          ║
 ║  → Example: Single-core CPU running multiple threads via switching   ║
@@ -493,7 +493,7 @@ executor.submit(() -> {
 ║  DEADLOCK: Two people each holding one chopstick, each needs the     ║
 ║  other's to eat. Neither releases. Both starve forever.              ║
 ║  → Both STOPPED. No progress.                                        ║
-║  → Fix: Lock ordering, timeout, lock-free algorithms                ║
+║  → Fix: Lock ordering, timeout, lock-free algorithms                 ║
 ║                                                                      ║
 ║  LIVELOCK: Two people in a hallway, both stepping aside to let the   ║
 ║  other pass. They keep stepping the SAME direction. Neither passes.  ║

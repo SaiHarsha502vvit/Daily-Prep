@@ -12,7 +12,7 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║     WHY EVERY DEVELOPER SHOULD UNDERSTAND ERP SYSTEMS                         ║
+║     WHY EVERY DEVELOPER SHOULD UNDERSTAND ERP SYSTEMS                        ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -20,12 +20,12 @@
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │ 70% of enterprise software is about:                                         │
-│ • Managing MONEY (Finance, Accounting, Billing)                             │
-│ • Managing PEOPLE (HR, Payroll, Hierarchy)                                  │
-│ • Managing THINGS (Inventory, Logistics, Supply Chain)                      │
-│ • Managing PROCESSES (Workflows, Approvals, Notifications)                  │
+│ • Managing MONEY (Finance, Accounting, Billing)                              │
+│ • Managing PEOPLE (HR, Payroll, Hierarchy)                                   │
+│ • Managing THINGS (Inventory, Logistics, Supply Chain)                       │
+│ • Managing PROCESSES (Workflows, Approvals, Notifications)                   │
 │                                                                              │
-│ Companies like TCS, Infosys, Wipro, Accenture primarily work on ERP!        │
+│ Companies like TCS, Infosys, Wipro, Accenture primarily work on ERP!         │
 │                                                                              │
 │ Understanding ERP = Understanding how businesses run = Job security!         │
 └──────────────────────────────────────────────────────────────────────────────┘
@@ -34,15 +34,15 @@
 │ WHAT YOU'LL LEARN                                                            │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ 1. How to convert BUSINESS RULES into CODE                                  │
-│ 2. How to design DATABASES for real-world problems                          │
-│ 3. How to create UNIQUE IDs (Order numbers, Tracking IDs)                   │
-│ 4. How to build HIERARCHY systems (Employee trees)                          │
-│ 5. How to automate FINANCE (Invoices, Taxes, Payments)                      │
-│ 6. How to build WORKFLOW engines (Approvals, Notifications)                 │
-│ 7. How to handle EDGE CASES (What if tracking IDs run out?)                 │
+│ 1. How to convert BUSINESS RULES into CODE                                   │
+│ 2. How to design DATABASES for real-world problems                           │
+│ 3. How to create UNIQUE IDs (Order numbers, Tracking IDs)                    │
+│ 4. How to build HIERARCHY systems (Employee trees)                           │
+│ 5. How to automate FINANCE (Invoices, Taxes, Payments)                       │
+│ 6. How to build WORKFLOW engines (Approvals, Notifications)                  │
+│ 7. How to handle EDGE CASES (What if tracking IDs run out?)                  │
 │                                                                              │
-│ This is what separates JUNIOR developers from SENIOR developers!            │
+│ This is what separates JUNIOR developers from SENIOR developers!             │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -54,7 +54,7 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║  ERP = ONE SYSTEM that connects ALL departments of a company                  ║
+║  ERP = ONE SYSTEM that connects ALL departments of a company                 ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 BEFORE ERP (Chaos):
@@ -73,14 +73,14 @@ BEFORE ERP (Chaos):
 
 AFTER ERP (Connected):
 ┌──────────────────────────────────────────────────────────────┐
-│                     SINGLE ERP SYSTEM                         │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐     │
-│  │ Finance  │  │    HR    │  │ Inventory│  │  Sales   │     │
-│  │  Module  │──│  Module  │──│  Module  │──│  Module  │     │
-│  └──────────┘  └──────────┘  └──────────┘  └──────────┘     │
+│                     SINGLE ERP SYSTEM                        │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐      │
+│  │ Finance  │  │    HR    │  │ Inventory│  │  Sales   │      │
+│  │  Module  │──│  Module  │──│  Module  │──│  Module  │      │
+│  └──────────┘  └──────────┘  └──────────┘  └──────────┘      │
 │         │            │             │             │           │
 │         └────────────┴─────────────┴─────────────┘           │
-│                          ↓                                    │
+│                          ↓                                   │
 │              ┌───────────────────────┐                       │
 │              │   SINGLE DATABASE     │                       │
 │              │   (One Source of      │                       │
@@ -93,59 +93,59 @@ AFTER ERP (Connected):
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                        ORACLE ERP CLOUD - ALL MODULES                         │
+│                        ORACLE ERP CLOUD - ALL MODULES                        │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  ┌─────────────────────────────────────────────────────────────────────┐     │
 │  │                        FINANCIAL MODULES                             │    │
-│  ├─────────────────────────────────────────────────────────────────────┤    │
-│  │ • General Ledger (GL)     - All financial transactions              │    │
-│  │ • Accounts Payable (AP)   - Money you OWE to vendors                │    │
-│  │ • Accounts Receivable (AR)- Money OWED to you by customers          │    │
-│  │ • Fixed Assets (FA)       - Company property (computers, furniture) │    │
-│  │ • Cash Management         - Bank accounts, reconciliation           │    │
-│  │ • Tax Management          - GST, VAT, Income Tax automation         │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
+│  ├─────────────────────────────────────────────────────────────────────┤     │
+│  │ • General Ledger (GL)     - All financial transactions              │     │
+│  │ • Accounts Payable (AP)   - Money you OWE to vendors                │     │
+│  │ • Accounts Receivable (AR)- Money OWED to you by customers          │     │
+│  │ • Fixed Assets (FA)       - Company property (computers, furniture) │     │
+│  │ • Cash Management         - Bank accounts, reconciliation           │     │
+│  │ • Tax Management          - GST, VAT, Income Tax automation         │     │
+│  └─────────────────────────────────────────────────────────────────────┘     │
 │                                                                              │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  ┌─────────────────────────────────────────────────────────────────────┐     │
 │  │                          HCM MODULES                                 │    │
 │  │                    (Human Capital Management)                        │    │
-│  ├─────────────────────────────────────────────────────────────────────┤    │
-│  │ • Core HR                 - Employee records, departments           │    │
-│  │ • Payroll                 - Salary calculation, deductions          │    │
-│  │ • Recruitment             - Job postings, applications, hiring      │    │
-│  │ • Performance Management  - Goals, reviews, ratings                 │    │
-│  │ • Learning Management     - Training courses, certifications        │    │
-│  │ • Workforce Management    - Attendance, leaves, shifts              │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
+│  ├─────────────────────────────────────────────────────────────────────┤     │
+│  │ • Core HR                 - Employee records, departments           │     │
+│  │ • Payroll                 - Salary calculation, deductions          │     │
+│  │ • Recruitment             - Job postings, applications, hiring      │     │
+│  │ • Performance Management  - Goals, reviews, ratings                 │     │
+│  │ • Learning Management     - Training courses, certifications        │     │
+│  │ • Workforce Management    - Attendance, leaves, shifts              │     │
+│  └─────────────────────────────────────────────────────────────────────┘     │
 │                                                                              │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  ┌─────────────────────────────────────────────────────────────────────┐     │
 │  │                          SCM MODULES                                 │    │
 │  │                    (Supply Chain Management)                         │    │
-│  ├─────────────────────────────────────────────────────────────────────┤    │
-│  │ • Procurement             - Purchase orders, vendor management      │    │
-│  │ • Inventory Management    - Stock levels, warehouses                │    │
-│  │ • Order Management        - Customer orders, fulfillment            │    │
-│  │ • Logistics               - Shipping, tracking, delivery            │    │
-│  │ • Manufacturing           - Production planning, BOM                │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
+│  ├─────────────────────────────────────────────────────────────────────┤     │
+│  │ • Procurement             - Purchase orders, vendor management      │     │
+│  │ • Inventory Management    - Stock levels, warehouses                │     │
+│  │ • Order Management        - Customer orders, fulfillment            │     │
+│  │ • Logistics               - Shipping, tracking, delivery            │     │
+│  │ • Manufacturing           - Production planning, BOM                │     │
+│  └─────────────────────────────────────────────────────────────────────┘     │
 │                                                                              │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  ┌─────────────────────────────────────────────────────────────────────┐     │
 │  │                         CRM MODULES                                  │    │
 │  │                  (Customer Relationship Management)                  │    │
-│  ├─────────────────────────────────────────────────────────────────────┤    │
-│  │ • Sales Automation        - Leads, opportunities, quotes            │    │
-│  │ • Marketing               - Campaigns, analytics                    │    │
-│  │ • Service                 - Tickets, support, SLAs                  │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
+│  ├─────────────────────────────────────────────────────────────────────┤     │
+│  │ • Sales Automation        - Leads, opportunities, quotes            │     │
+│  │ • Marketing               - Campaigns, analytics                    │     │
+│  │ • Service                 - Tickets, support, SLAs                  │     │
+│  └─────────────────────────────────────────────────────────────────────┘     │
 │                                                                              │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  ┌─────────────────────────────────────────────────────────────────────┐     │
 │  │                      PROJECT MANAGEMENT                              │    │
-│  ├─────────────────────────────────────────────────────────────────────┤    │
-│  │ • Project Costing         - Budget vs actual tracking               │    │
-│  │ • Resource Management     - Who works on what                       │    │
-│  │ • Time & Expense          - Timesheets, expense reports             │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
+│  ├─────────────────────────────────────────────────────────────────────┤     │
+│  │ • Project Costing         - Budget vs actual tracking               │     │
+│  │ • Resource Management     - Who works on what                       │     │
+│  │ • Time & Expense          - Timesheets, expense reports             │     │
+│  └─────────────────────────────────────────────────────────────────────┘     │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -157,7 +157,7 @@ AFTER ERP (Connected):
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║            THE 5-STEP DOMAIN TO CODE TRANSLATION                              ║
+║            THE 5-STEP DOMAIN TO CODE TRANSLATION                             ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 Step 1: UNDERSTAND THE BUSINESS PROCESS
@@ -194,20 +194,20 @@ REAL WORLD SCENARIO:
 ┌────────────────────────────────────────────────────────────────┐
 │ Reliance Industries has:                                       │
 │                                                                │
-│ • 1 Chairman (Mukesh Ambani)                                  │
-│   └── 5 Executive Directors                                   │
-│       └── 20 Vice Presidents                                  │
-│           └── 100 General Managers                            │
-│               └── 500 Managers                                │
-│                   └── 2000 Team Leads                         │
-│                       └── 10000 Employees                     │
+│ • 1 Chairman (Mukesh Ambani)                                   │
+│   └── 5 Executive Directors                                    │
+│       └── 20 Vice Presidents                                   │
+│           └── 100 General Managers                             │
+│               └── 500 Managers                                 │
+│                   └── 2000 Team Leads                          │
+│                       └── 10000 Employees                      │
 │                                                                │
-│ BUSINESS RULES:                                               │
-│ 1. Every employee has ONE manager (except CEO)                │
-│ 2. A manager can have MANY subordinates                       │
-│ 3. Emails go UP the chain for approvals                       │
-│ 4. Reports go DOWN the chain for information                  │
-│ 5. Salary changes need manager + HR approval                  │
+│ BUSINESS RULES:                                                │
+│ 1. Every employee has ONE manager (except CEO)                 │
+│ 2. A manager can have MANY subordinates                        │
+│ 3. Emails go UP the chain for approvals                        │
+│ 4. Reports go DOWN the chain for information                   │
+│ 5. Salary changes need manager + HR approval                   │
 └────────────────────────────────────────────────────────────────┘
 ```
 
@@ -652,22 +652,22 @@ public class OrgChartController {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║           THE TRACKING ID / ORDER NUMBER PROBLEM                              ║
+║           THE TRACKING ID / ORDER NUMBER PROBLEM                             ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 SCENARIO (Amazon):
 ┌────────────────────────────────────────────────────────────────┐
 │ You order a phone on Amazon                                    │
 │                                                                │
-│ Order ID:      402-1234567-8901234                            │
+│ Order ID:      402-1234567-8901234                             │
 │ Tracking ID:   AMZN1234567890                                  │
 │                                                                │
 │ QUESTIONS:                                                     │
-│ 1. How do they generate UNIQUE IDs?                           │
-│ 2. What if millions of orders come at same millisecond?       │
-│ 3. What if IDs "run out"?                                     │
-│ 4. How to make IDs meaningful (not just random)?              │
-│ 5. How to prevent guessing other people's orders?             │
+│ 1. How do they generate UNIQUE IDs?                            │
+│ 2. What if millions of orders come at same millisecond?        │
+│ 3. What if IDs "run out"?                                      │
+│ 4. How to make IDs meaningful (not just random)?               │
+│ 5. How to prevent guessing other people's orders?              │
 └────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1142,18 +1142,18 @@ WHERE status IN ('ACTIVE', 'DELIVERED');
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║           THE FOUNDATION OF ALL FINANCIAL SYSTEMS                             ║
+║           THE FOUNDATION OF ALL FINANCIAL SYSTEMS                            ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 GOLDEN RULE OF ACCOUNTING:
 ┌────────────────────────────────────────────────────────────────┐
 │                                                                │
-│     For every DEBIT, there must be an equal CREDIT            │
+│     For every DEBIT, there must be an equal CREDIT             │
 │                                                                │
-│     Assets = Liabilities + Equity                             │
+│     Assets = Liabilities + Equity                              │
 │                                                                │
-│     DEBIT increases:  Assets, Expenses                        │
-│     CREDIT increases: Liabilities, Equity, Revenue            │
+│     DEBIT increases:  Assets, Expenses                         │
+│     CREDIT increases: Liabilities, Equity, Revenue             │
 │                                                                │
 └────────────────────────────────────────────────────────────────┘
 
@@ -1161,14 +1161,14 @@ EXAMPLE: Company buys a laptop for ₹60,000 cash
 
 ┌─────────────────────────────────────────────────────────────────┐
 │ JOURNAL ENTRY:                                                  │
-├───────────────┬──────────────┬──────────────┬──────────────────┤
-│ Account       │ Type         │ Debit (₹)    │ Credit (₹)       │
-├───────────────┼──────────────┼──────────────┼──────────────────┤
-│ Equipment     │ Asset        │ 60,000       │                  │
-│ Cash          │ Asset        │              │ 60,000           │
-├───────────────┼──────────────┼──────────────┼──────────────────┤
-│ TOTAL         │              │ 60,000       │ 60,000  ✓        │
-└───────────────┴──────────────┴──────────────┴──────────────────┘
+├───────────────┬──────────────┬──────────────┬───────────────────┤
+│ Account       │ Type         │ Debit (₹)    │ Credit (₹)        │
+├───────────────┼──────────────┼──────────────┼───────────────────┤
+│ Equipment     │ Asset        │ 60,000       │                   │
+│ Cash          │ Asset        │              │ 60,000            │
+├───────────────┼──────────────┼──────────────┼───────────────────┤
+│ TOTAL         │              │ 60,000       │ 60,000  ✓         │
+└───────────────┴──────────────┴──────────────┴───────────────────┘
 
 Explanation:
 - Equipment (laptop) INCREASED → Debit Equipment

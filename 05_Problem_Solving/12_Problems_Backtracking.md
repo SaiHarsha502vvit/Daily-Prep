@@ -41,60 +41,60 @@
 │ WHEN IS BACKTRACKING THE ANSWER?                                             │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ SIGNAL: "Generate ALL valid combinations/permutations/subsets"              │
+│ SIGNAL: "Generate ALL valid combinations/permutations/subsets"               │
 │                                                                              │
-│ If the problem says "find ALL", "list ALL", "generate ALL" → Backtracking. │
-│ DP finds the COUNT or BEST. Backtracking finds the ACTUAL solutions.       │
+│ If the problem says "find ALL", "list ALL", "generate ALL" → Backtracking.   │
+│ DP finds the COUNT or BEST. Backtracking finds the ACTUAL solutions.         │
 │                                                                              │
-│ ┌───────────────────────┬─────────────────┬─────────────────────────┐       │
-│ │ Find...               │ Use             │ Why                     │       │
-│ │───────────────────────┼─────────────────┼─────────────────────────│       │
-│ │ Count of valid combos │ DP              │ Don't need actual combos│       │
-│ │ Best/min/max value    │ DP or Greedy    │ One answer needed       │       │
-│ │ ALL valid combos      │ BACKTRACKING    │ Must enumerate          │       │
-│ │ ANY one valid answer  │ Backtracking    │ Stop at first found     │       │
-│ │ Is a valid answer     │ Constraint prop │ Sudoku, N-Queens        │       │
-│ │ possible?             │ + Backtracking  │                         │       │
-│ └───────────────────────┴─────────────────┴─────────────────────────┘       │
+│ ┌───────────────────────┬─────────────────┬─────────────────────────┐        │
+│ │ Find...               │ Use             │ Why                     │        │
+│ │───────────────────────┼─────────────────┼─────────────────────────│        │
+│ │ Count of valid combos │ DP              │ Don't need actual combos│        │
+│ │ Best/min/max value    │ DP or Greedy    │ One answer needed       │        │
+│ │ ALL valid combos      │ BACKTRACKING    │ Must enumerate          │        │
+│ │ ANY one valid answer  │ Backtracking    │ Stop at first found     │        │
+│ │ Is a valid answer     │ Constraint prop │ Sudoku, N-Queens        │        │
+│ │ possible?             │ + Backtracking  │                         │        │
+│ └───────────────────────┴─────────────────┴─────────────────────────┘        │
 │                                                                              │
 │ REAL-WORLD BACKTRACKING:                                                     │
-│ • Sudoku solvers: Try a number, check constraints, undo if stuck           │
-│ • Chess engines: Explore moves, evaluate, undo (minimax + pruning)         │
-│ • Compiler regex: Match patterns by trying alternatives                     │
-│ • Combinatorial testing: Generate all test case combinations               │
-│ • Circuit design: SAT solvers use backtracking with clause learning        │
+│ • Sudoku solvers: Try a number, check constraints, undo if stuck             │
+│ • Chess engines: Explore moves, evaluate, undo (minimax + pruning)           │
+│ • Compiler regex: Match patterns by trying alternatives                      │
+│ • Combinatorial testing: Generate all test case combinations                 │
+│ • Circuit design: SAT solvers use backtracking with clause learning          │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ THE MENTAL MODEL: Decision Tree Exploration                                  │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ EVERY backtracking problem = exploring a DECISION TREE:                     │
+│ EVERY backtracking problem = exploring a DECISION TREE:                      │
 │                                                                              │
-│   At each node: make a CHOICE (include/exclude, pick a number, place queen)│
-│   Leaf nodes:   VALID solution → add to result  OR  DEAD END → backtrack   │
+│   At each node: make a CHOICE (include/exclude, pick a number, place queen)  │
+│   Leaf nodes:   VALID solution → add to result  OR  DEAD END → backtrack     │
 │                                                                              │
-│   Example: Subsets of [1,2,3]                                               │
-│                            []                                               │
-│                      ╱           ╲                                          │
-│                   +1               skip 1                                   │
+│   Example: Subsets of [1,2,3]                                                │
+│                            []                                                │
+│                      ╱           ╲                                           │
+│                   +1               skip 1                                    │
 │                  [1]                  []                                     │
-│                ╱     ╲            ╱      ╲                                  │
-│             +2      skip 2     +2       skip 2                              │
-│           [1,2]     [1]       [2]        []                                │
-│          ╱    ╲    ╱   ╲     ╱   ╲     ╱   ╲                              │
-│      [1,2,3][1,2][1,3] [1] [2,3] [2] [3]  []                             │
+│                ╱     ╲            ╱      ╲                                   │
+│             +2      skip 2     +2       skip 2                               │
+│           [1,2]     [1]       [2]        []                                  │
+│          ╱    ╲    ╱   ╲     ╱   ╲     ╱   ╲                                 │
+│      [1,2,3][1,2][1,3] [1] [2,3] [2] [3]  []                                 │
 │                                                                              │
-│   Result: [[], [1], [2], [3], [1,2], [1,3], [2,3], [1,2,3]]               │
+│   Result: [[], [1], [2], [3], [1,2], [1,3], [2,3], [1,2,3]]                  │
 │                                                                              │
-│   KEY INSIGHT: Backtracking = DFS on this decision tree.                    │
-│   PRUNING = skip branches that CANNOT lead to valid solutions.             │
+│   KEY INSIGHT: Backtracking = DFS on this decision tree.                     │
+│   PRUNING = skip branches that CANNOT lead to valid solutions.               │
 │                                                                              │
-│   THE CHOOSE-EXPLORE-UNCHOOSE FRAMEWORK:                                    │
-│   for each option in choices:                                               │
-│       CHOOSE:   add option to current path                                 │
-│       EXPLORE:  recurse to next decision                                   │
-│       UNCHOOSE: remove option from current path (BACKTRACK!)               │
+│   THE CHOOSE-EXPLORE-UNCHOOSE FRAMEWORK:                                     │
+│   for each option in choices:                                                │
+│       CHOOSE:   add option to current path                                   │
+│       EXPLORE:  recurse to next decision                                     │
+│       UNCHOOSE: remove option from current path (BACKTRACK!)                 │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -121,102 +121,102 @@ void backtrack(List<List<Integer>> result, List<Integer> current,
 │ THE 4 TYPES OF BACKTRACKING PROBLEMS                                         │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ ┌──────────────────┬───────────────────────────┬───────────────────────┐    │
-│ │ Type             │ Decision at each step     │ Avoid duplicates      │    │
-│ ├──────────────────┼───────────────────────────┼───────────────────────┤    │
+│ ┌──────────────────┬───────────────────────────┬───────────────────────┐     │
+│ │ Type             │ Decision at each step     │ Avoid duplicates      │     │
+│ ├──────────────────┼───────────────────────────┼───────────────────────┤     │
 │ │ SUBSETS           │ Include or skip element i │ start from i+1        │    │
 │ │ COMBINATIONS      │ Pick k from n             │ start from i+1        │    │
 │ │ PERMUTATIONS      │ Place each unused element │ boolean[] used        │    │
 │ │ CONSTRAINT SAT.   │ Try valid values at pos   │ isValid() check       │    │
-│ └──────────────────┴───────────────────────────┴───────────────────────┘    │
+│ └──────────────────┴───────────────────────────┴───────────────────────┘     │
 │                                                                              │
 │ WORKED EXAMPLES OF EACH:                                                     │
 │                                                                              │
-│ SUBSETS [1,2,3]: Start from index i. Include or skip.                       │
-│   Each node can add to result → 2ⁿ = 8 subsets.                           │
+│ SUBSETS [1,2,3]: Start from index i. Include or skip.                        │
+│   Each node can add to result → 2ⁿ = 8 subsets.                              │
 │                                                                              │
-│ COMBINATIONS (k=2): Same as subsets but only add when path.size() == k.    │
-│   Result: [1,2], [1,3], [2,3]. Never go back to earlier indices.           │
+│ COMBINATIONS (k=2): Same as subsets but only add when path.size() == k.      │
+│   Result: [1,2], [1,3], [2,3]. Never go back to earlier indices.             │
 │                                                                              │
-│ PERMUTATIONS [1,2,3]: Can use any unused element at each position.         │
-│   Position 0: try 1,2,3. Position 1: try remaining 2. Position 2: last 1. │
-│   Result: [1,2,3], [1,3,2], [2,1,3], [2,3,1], [3,1,2], [3,2,1].         │
+│ PERMUTATIONS [1,2,3]: Can use any unused element at each position.           │
+│   Position 0: try 1,2,3. Position 1: try remaining 2. Position 2: last 1.    │
+│   Result: [1,2,3], [1,3,2], [2,1,3], [2,3,1], [3,1,2], [3,2,1].              │
 │                                                                              │
-│ N-QUEENS: Place queen in each row. Check no attacks.                        │
-│   Row 0: try col 0,1,...,n-1. Row 1: try cols that don't conflict. Etc.   │
-│   Prune: skip cols that are attacked by existing queens.                    │
+│ N-QUEENS: Place queen in each row. Check no attacks.                         │
+│   Row 0: try col 0,1,...,n-1. Row 1: try cols that don't conflict. Etc.      │
+│   Prune: skip cols that are attacked by existing queens.                     │
 │                                                                              │
-│ HANDLING DUPLICATES (critical for variants):                                │
-│   Input [1,2,2]: Without handling → [1,2,2] appears twice.                │
-│   Fix: 1. SORT the input array first                                       │
-│        2. Skip if nums[i] == nums[i-1] AND i > start                     │
-│   This prunes duplicate branches at the SAME tree level.                    │
+│ HANDLING DUPLICATES (critical for variants):                                 │
+│   Input [1,2,2]: Without handling → [1,2,2] appears twice.                   │
+│   Fix: 1. SORT the input array first                                         │
+│        2. Skip if nums[i] == nums[i-1] AND i > start                         │
+│   This prunes duplicate branches at the SAME tree level.                     │
 │                                                                              │
-│   Visual:      [1, 2a, 2b]  (sorted)                                       │
-│      Level 1: Try 1, Try 2a, SKIP 2b (same as 2a at this level)           │
-│      Under 1: Try 2a, Try 2b (OK, different level)                         │
+│   Visual:      [1, 2a, 2b]  (sorted)                                         │
+│      Level 1: Try 1, Try 2a, SKIP 2b (same as 2a at this level)              │
+│      Under 1: Try 2a, Try 2b (OK, different level)                           │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ ⚠️  COMMON MISTAKES IN BACKTRACKING                                         │
+│ ⚠️  COMMON MISTAKES IN BACKTRACKING                                          │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ MISTAKE 1: Forgetting to make a COPY when adding to result                  │
-│   WRONG: result.add(current)     → current keeps changing!                 │
-│   RIGHT: result.add(new ArrayList<>(current))                              │
+│ MISTAKE 1: Forgetting to make a COPY when adding to result                   │
+│   WRONG: result.add(current)     → current keeps changing!                   │
+│   RIGHT: result.add(new ArrayList<>(current))                                │
 │                                                                              │
-│ MISTAKE 2: Wrong starting index for combinations/subsets                    │
-│   Subsets: start from i+1 (don't pick same element again)                  │
-│   Combo with repeat: start from i (CAN reuse same element)                 │
-│   Permutations: start from 0 with used[] array                             │
+│ MISTAKE 2: Wrong starting index for combinations/subsets                     │
+│   Subsets: start from i+1 (don't pick same element again)                    │
+│   Combo with repeat: start from i (CAN reuse same element)                   │
+│   Permutations: start from 0 with used[] array                               │
 │                                                                              │
-│ MISTAKE 3: Not sorting before duplicate handling                            │
-│   Duplicate skip works ONLY on sorted input.                               │
-│   [2,1,2] → skip logic breaks. Sort to [1,2,2] first.                    │
+│ MISTAKE 3: Not sorting before duplicate handling                             │
+│   Duplicate skip works ONLY on sorted input.                                 │
+│   [2,1,2] → skip logic breaks. Sort to [1,2,2] first.                        │
 │                                                                              │
-│ MISTAKE 4: Wrong pruning in N-Queens (forgetting diagonals)                │
-│   Must check: same column, same diagonal (r-c), same anti-diagonal (r+c). │
-│   Use HashSets for O(1) conflict checking.                                 │
+│ MISTAKE 4: Wrong pruning in N-Queens (forgetting diagonals)                  │
+│   Must check: same column, same diagonal (r-c), same anti-diagonal (r+c).    │
+│   Use HashSets for O(1) conflict checking.                                   │
 │                                                                              │
 │ MISTAKE 5: Stack overflow on deep recursion                                  │
-│   Permutations of n=15 elements = 15! = 1.3 TRILLION → don't even try.   │
-│   Always check constraints: n ≤ 8 for permutations, n ≤ 20 for subsets.  │
+│   Permutations of n=15 elements = 15! = 1.3 TRILLION → don't even try.       │
+│   Always check constraints: n ≤ 8 for permutations, n ≤ 20 for subsets.      │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ COMPLEXITY — WHY THIS IS ALWAYS EXPONENTIAL                                  │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ ┌──────────────────┬──────────────────┬───────────────────────────┐         │
-│ │ Problem Type     │ Time Complexity  │ Example for n=10          │         │
-│ ├──────────────────┼──────────────────┼───────────────────────────┤         │
-│ │ Subsets          │ O(n × 2ⁿ)       │ 10 × 1024 = 10,240      │         │
-│ │ Combinations C(n,k)│ O(C(n,k) × k)│ C(10,5) × 5 = 1,260     │         │
-│ │ Permutations     │ O(n × n!)       │ 10 × 3,628,800 = 36M    │         │
-│ │ N-Queens         │ O(n!)           │ 10! = 3,628,800          │         │
-│ │ Sudoku           │ O(9^empty)      │ Varies, heavily pruned   │         │
-│ └──────────────────┴──────────────────┴───────────────────────────┘         │
+│ ┌──────────────────┬──────────────────┬───────────────────────────┐          │
+│ │ Problem Type     │ Time Complexity  │ Example for n=10          │          │
+│ ├──────────────────┼──────────────────┼───────────────────────────┤          │
+│ │ Subsets          │ O(n × 2ⁿ)       │ 10 × 1024 = 10,240      │             │
+│ │ Combinations C(n,k)│ O(C(n,k) × k)│ C(10,5) × 5 = 1,260     │              │
+│ │ Permutations     │ O(n × n!)       │ 10 × 3,628,800 = 36M    │             │
+│ │ N-Queens         │ O(n!)           │ 10! = 3,628,800          │            │
+│ │ Sudoku           │ O(9^empty)      │ Varies, heavily pruned   │            │
+│ └──────────────────┴──────────────────┴───────────────────────────┘          │
 │                                                                              │
-│ Backtracking is EXPONENTIAL — but that's OK!                                │
-│ These problems fundamentally REQUIRE exponential output.                    │
-│ The efficiency comes from PRUNING, not from avoiding exponential time.     │
+│ Backtracking is EXPONENTIAL — but that's OK!                                 │
+│ These problems fundamentally REQUIRE exponential output.                     │
+│ The efficiency comes from PRUNING, not from avoiding exponential time.       │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ ⭐ EXPECTED OUTPUTS OF MASTERING BACKTRACKING ⭐                              │
+│ ⭐ EXPECTED OUTPUTS OF MASTERING BACKTRACKING ⭐                               │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ ✅ Instantly classify: subsets / combinations / permutations / constraint   │
-│ ✅ Write the Choose-Explore-Unchoose template from memory                   │
-│ ✅ Handle duplicates with sort + skip pattern                              │
-│ ✅ Know when to use start index vs used[] array                            │
-│ ✅ Implement N-Queens with proper pruning (cols, diags, anti-diags)        │
-│ ✅ Always remember to COPY current list before adding to result            │
+│ ✅ Instantly classify: subsets / combinations / permutations / constraint     │
+│ ✅ Write the Choose-Explore-Unchoose template from memory                     │
+│ ✅ Handle duplicates with sort + skip pattern                                 │
+│ ✅ Know when to use start index vs used[] array                               │
+│ ✅ Implement N-Queens with proper pruning (cols, diags, anti-diags)           │
+│ ✅ Always remember to COPY current list before adding to result               │
 │                                                                              │
 │ THE TRANSFORMATION:                                                          │
-│ FROM: "I have no idea how to generate all combinations"                     │
-│   TO: "This is a subsets problem. Sort, start from i+1, skip duplicates.  │
-│        Choose-Explore-Unchoose. O(n × 2ⁿ)."                               │
+│ FROM: "I have no idea how to generate all combinations"                      │
+│   TO: "This is a subsets problem. Sort, start from i+1, skip duplicates.     │
+│        Choose-Explore-Unchoose. O(n × 2ⁿ)."                                  │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -881,7 +881,7 @@ private List<String> construct(char[][] board) {
 ┌────────────────────────────────────────────────────────────────┐
 │  SUDOKU SOLVER                                                 │
 ├────────────────────────────────────────────────────────────────┤
-│  Fill 9x9 grid so each row, column, and 3x3 box               │
+│  Fill 9x9 grid so each row, column, and 3x3 box                │
 │  contains digits 1-9 exactly once                              │
 │                                                                │
 │  ┌───┬───┬───╫───┬───┬───╫───┬───┬───┐                         │

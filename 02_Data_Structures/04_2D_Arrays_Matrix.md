@@ -10,7 +10,7 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║              2D ARRAYS & MATRICES - COMPLETE UNDERSTANDING                    ║
+║              2D ARRAYS & MATRICES - COMPLETE UNDERSTANDING                   ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -20,19 +20,19 @@
 │ Think of it as a TABLE or GRID.                                              │
 │                                                                              │
 │ KEY INSIGHT: In memory, it's still LINEAR!                                   │
-│ The "2D" is just an abstraction for human understanding.                    │
+│ The "2D" is just an abstraction for human understanding.                     │
 │                                                                              │
 │ ANALOGY:                                                                     │
-│ • Excel Spreadsheet: Rows and columns of cells                              │
-│ • Chess Board: 8x8 grid of squares                                          │
-│ • Seating Chart: Rows of seats in a theater                                 │
-│ • Pixel Grid: Image = matrix of color values                                │
+│ • Excel Spreadsheet: Rows and columns of cells                               │
+│ • Chess Board: 8x8 grid of squares                                           │
+│ • Seating Chart: Rows of seats in a theater                                  │
+│ • Pixel Grid: Image = matrix of color values                                 │
 │                                                                              │
 │ HISTORICAL CONTEXT:                                                          │
-│ • 1958: FORTRAN introduced multidimensional arrays                          │
-│ • 1979: VisiCalc (first spreadsheet) = 2D array in action                   │
-│ • 1980s: Image processing using matrices                                    │
-│ • Today: Every screen you see is a 2D array of pixels!                      │
+│ • 1958: FORTRAN introduced multidimensional arrays                           │
+│ • 1979: VisiCalc (first spreadsheet) = 2D array in action                    │
+│ • 1980s: Image processing using matrices                                     │
+│ • Today: Every screen you see is a 2D array of pixels!                       │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -40,23 +40,23 @@
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │ PROBLEM 1: Representing GRID-BASED data                                      │
-│ • Maps: Geographic data in grid form                                        │
-│ • Games: Chess, Sudoku, Tic-Tac-Toe boards                                  │
-│ • Images: Pixels arranged in grid                                           │
+│ • Maps: Geographic data in grid form                                         │
+│ • Games: Chess, Sudoku, Tic-Tac-Toe boards                                   │
+│ • Images: Pixels arranged in grid                                            │
 │                                                                              │
 │ PROBLEM 2: Representing RELATIONSHIPS between two sets                       │
 │ • Graph adjacency matrix: connections between nodes                          │
 │ • Distance matrix: distances between cities                                  │
-│ • Transition matrix: state changes in systems                               │
+│ • Transition matrix: state changes in systems                                │
 │                                                                              │
 │ PROBLEM 3: Table-structured data                                             │
-│ • Spreadsheets: Rows of records, columns of fields                          │
-│ • Databases: Conceptually stored as tables                                  │
+│ • Spreadsheets: Rows of records, columns of fields                           │
+│ • Databases: Conceptually stored as tables                                   │
 │                                                                              │
 │ WITHOUT 2D ARRAYS:                                                           │
-│ • Would need multiple 1D arrays with manual coordination                    │
-│ • Prone to index mismatch errors                                            │
-│ • Harder to visualize and reason about                                      │
+│ • Would need multiple 1D arrays with manual coordination                     │
+│ • Prone to index mismatch errors                                             │
+│ • Harder to visualize and reason about                                       │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -64,24 +64,24 @@
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │ 1. INTERVIEW ESSENTIAL:                                                      │
-│    30-40% of DSA interview questions involve matrices                       │
-│    Spiral traversal, island counting, path finding, etc.                    │
+│    30-40% of DSA interview questions involve matrices                        │
+│    Spiral traversal, island counting, path finding, etc.                     │
 │                                                                              │
 │ 2. FOUNDATION FOR ADVANCED TOPICS:                                           │
-│    • Graph algorithms use adjacency matrices                                │
-│    • Dynamic Programming often uses 2D tables                               │
-│    • Image processing is matrix operations                                  │
+│    • Graph algorithms use adjacency matrices                                 │
+│    • Dynamic Programming often uses 2D tables                                │
+│    • Image processing is matrix operations                                   │
 │                                                                              │
 │ 3. REAL-WORLD UBIQUITY:                                                      │
-│    • Every image, video frame, game board                                   │
-│    • Machine learning uses matrices extensively                             │
-│    • Scientific computing relies on matrix math                             │
+│    • Every image, video frame, game board                                    │
+│    • Machine learning uses matrices extensively                              │
+│    • Scientific computing relies on matrix math                              │
 │                                                                              │
 │ 4. PATTERN RECOGNITION:                                                      │
 │    Matrix problems have common patterns:                                     │
-│    • Traversal patterns (row, column, diagonal, spiral)                    │
-│    • Search patterns (DFS, BFS on grid)                                     │
-│    • Transform patterns (rotate, flip, transpose)                          │
+│    • Traversal patterns (row, column, diagonal, spiral)                      │
+│    • Search patterns (DFS, BFS on grid)                                      │
+│    • Transform patterns (rotate, flip, transpose)                            │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -89,23 +89,23 @@
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │ USE 2D ARRAY WHEN:                                                           │
-│ • Data naturally has ROW and COLUMN structure                               │
-│ • You need RANDOM ACCESS by two indices                                     │
-│ • Problems involve NEIGHBORS (up, down, left, right)                        │
-│ • You're modeling a GRID or BOARD                                           │
+│ • Data naturally has ROW and COLUMN structure                                │
+│ • You need RANDOM ACCESS by two indices                                      │
+│ • Problems involve NEIGHBORS (up, down, left, right)                         │
+│ • You're modeling a GRID or BOARD                                            │
 │                                                                              │
 │ COMMON PROBLEM PATTERNS:                                                     │
-│ • "Given a matrix..." → 2D array                                            │
-│ • "Given a grid..." → 2D array                                              │
-│ • "Given a board..." → 2D array                                             │
-│ • "Find path in maze..." → 2D array + BFS/DFS                              │
-│ • "Count islands..." → 2D array + flood fill                               │
-│ • "Rotate image..." → 2D array transformation                              │
+│ • "Given a matrix..." → 2D array                                             │
+│ • "Given a grid..." → 2D array                                               │
+│ • "Given a board..." → 2D array                                              │
+│ • "Find path in maze..." → 2D array + BFS/DFS                                │
+│ • "Count islands..." → 2D array + flood fill                                 │
+│ • "Rotate image..." → 2D array transformation                                │
 │                                                                              │
 │ ALTERNATIVE REPRESENTATIONS:                                                 │
-│ • Sparse matrix → Use HashMap of coordinates                                │
-│ • Very large grid → Use coordinate compression                              │
-│ • Dynamic size → Use ArrayList of ArrayLists                                │
+│ • Sparse matrix → Use HashMap of coordinates                                 │
+│ • Very large grid → Use coordinate compression                               │
+│ • Dynamic size → Use ArrayList of ArrayLists                                 │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -113,36 +113,36 @@
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │ 1. INDEX CONFUSION:                                                          │
-│    "Is it [row][col] or [col][row]?"                                        │
-│    Solution: ALWAYS use [row][col] in Java. Row = y, Col = x               │
+│    "Is it [row][col] or [col][row]?"                                         │
+│    Solution: ALWAYS use [row][col] in Java. Row = y, Col = x                 │
 │                                                                              │
 │ 2. BOUNDARY CHECKING:                                                        │
-│    ArrayIndexOutOfBounds is common                                          │
-│    Solution: Always check 0 <= row < rows && 0 <= col < cols               │
+│    ArrayIndexOutOfBounds is common                                           │
+│    Solution: Always check 0 <= row < rows && 0 <= col < cols                 │
 │                                                                              │
 │ 3. TRAVERSAL ORDER:                                                          │
-│    "Which direction first?"                                                 │
-│    Solution: Use direction arrays: dx = {0,0,1,-1}, dy = {1,-1,0,0}        │
+│    "Which direction first?"                                                  │
+│    Solution: Use direction arrays: dx = {0,0,1,-1}, dy = {1,-1,0,0}          │
 │                                                                              │
 │ 4. MODIFYING WHILE TRAVERSING:                                               │
 │    Changing values affects later iterations                                  │
-│    Solution: Use visited array or mark with special value                   │
+│    Solution: Use visited array or mark with special value                    │
 │                                                                              │
 │ 5. JAGGED ARRAYS:                                                            │
-│    "Rows have different lengths!"                                           │
-│    Solution: Use matrix[i].length for each row's column count              │
+│    "Rows have different lengths!"                                            │
+│    Solution: Use matrix[i].length for each row's column count                │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ EXPECTED OUTPUTS OF MASTERING 2D ARRAYS                                      │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ ✅ INSTANT TRAVERSAL: Write any traversal pattern without thinking          │
-│ ✅ BOUNDARY MASTERY: Never get IndexOutOfBounds again                       │
-│ ✅ PATTERN LIBRARY: Know spiral, diagonal, zigzag, layer-by-layer          │
-│ ✅ PROBLEM RECOGNITION: See "grid" → Know 5+ approaches instantly           │
-│ ✅ TRANSFORMATION SKILLS: Rotate, flip, transpose without confusion        │
-│ ✅ ADVANCED READY: Ready for graph theory and DP on grids                   │
+│ ✅ INSTANT TRAVERSAL: Write any traversal pattern without thinking            │
+│ ✅ BOUNDARY MASTERY: Never get IndexOutOfBounds again                         │
+│ ✅ PATTERN LIBRARY: Know spiral, diagonal, zigzag, layer-by-layer             │
+│ ✅ PROBLEM RECOGNITION: See "grid" → Know 5+ approaches instantly             │
+│ ✅ TRANSFORMATION SKILLS: Rotate, flip, transpose without confusion           │
+│ ✅ ADVANCED READY: Ready for graph theory and DP on grids                     │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -160,9 +160,9 @@ YOUR BRAIN THINKS:            COMPUTER STORES:
 │ 1 │ 2 │ 3 │ 4 │   Row 0    │ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │ 7 │ 8 │ 9 │10 │11 │12 │
 ├───┼───┼───┼───┤            └───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┘
 │ 5 │ 6 │ 7 │ 8 │   Row 1     ↑Row0 ends↑    ↑Row1 ends↑    ↑Row2 ends↑
-├───┼───┼───┼───┤
+├───┼───┼───┼────────────────────────────────────────────────────────────────┤
 │ 9 │10 │11 │12 │   Row 2    Memory is LINEAR! Rows stored CONSECUTIVELY.
-└───┴───┴───┴───┘
+└───┴───┴───┴────────────────────────────────────────────────────────────────┘
 
 WHY THIS MATTERS:
 - arr[i][j] = baseAddress + (i × numColumns + j) × elementSize
@@ -1091,22 +1091,22 @@ private static void dfsIsland(int[][] grid, int r, int c,
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    MATRIX PROBLEM RECOGNITION GUIDE                              │
+│                    MATRIX PROBLEM RECOGNITION GUIDE                             │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  "Find shortest distance..."          → BFS                                      │
+│                                                                                 │
+│  "Find shortest distance..."          → BFS                                     │
 │  "Can wrap around edges..."           → Use modulo: (pos + delta + size) % size │
 │  "Find NxN square with property..."   → Nested loops, check all positions       │
-│  "Count distinct shapes..."           → DFS + normalize coordinates              │
-│  "Path from A to B..."                → BFS (shortest) or DFS (any path)         │
-│  "Rotate matrix..."                   → Formula: new[j][n-1-i] = old[i][j]       │
+│  "Count distinct shapes..."           → DFS + normalize coordinates             │
+│  "Path from A to B..."                → BFS (shortest) or DFS (any path)        │
+│  "Rotate matrix..."                   → Formula: new[j][n-1-i] = old[i][j]      │
 │  "Transform based on neighbors..."    → Need copy or process in specific order  │
-│                                                                                  │
-│  COMMON EDGE CASES:                                                              │
-│  • Empty matrix                  • Single cell                                   │
+│                                                                                 │
+│  COMMON EDGE CASES:                                                             │
+│  • Empty matrix                  • Single cell                                  │
 │  • No valid path exists          • Target not found                             │
 │  • All cells are same value      • Wrap-around boundaries                       │
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 

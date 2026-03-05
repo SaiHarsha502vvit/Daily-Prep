@@ -6,13 +6,13 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                    SLIDING WINDOW - COMPLETE UNDERSTANDING                    ║
+║                    SLIDING WINDOW - COMPLETE UNDERSTANDING                   ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ WHAT IS SLIDING WINDOW?                                                      │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ A technique that maintains a "window" (subarray/substring) that "slides"    │
+│ A technique that maintains a "window" (subarray/substring) that "slides"     │
 │ across the data structure, processing elements as the window moves.          │
 │                                                                              │
 │ Instead of recomputing everything for each window position, we:              │
@@ -26,12 +26,12 @@
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ WHAT PROBLEM DOES IT SOLVE?                                                  │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ CORE PROBLEM: Efficiently computing something over all contiguous subarrays │
+│ CORE PROBLEM: Efficiently computing something over all contiguous subarrays  │
 │                                                                              │
 │ EXAMPLE: "Find maximum sum of any 3 consecutive elements"                    │
 │ Array: [1, 4, 2, 10, 2, 3, 1, 0, 20]                                         │
 │                                                                              │
-│ BRUTE FORCE: For each starting position i, sum arr[i] to arr[i+2]           │
+│ BRUTE FORCE: For each starting position i, sum arr[i] to arr[i+2]            │
 │ • Window 0-2: 1+4+2 = 7                                                      │
 │ • Window 1-3: 4+2+10 = 16                                                    │
 │ • Window 2-4: 2+10+2 = 14 ... and so on                                      │
@@ -39,14 +39,14 @@
 │                                                                              │
 │ SLIDING WINDOW: Reuse previous sum!                                          │
 │ • Window 0-2: sum = 1+4+2 = 7                                                │
-│ • Window 1-3: sum = 7 - arr[0] + arr[3] = 7 - 1 + 10 = 16                   │
-│ • Window 2-4: sum = 16 - arr[1] + arr[4] = 16 - 4 + 2 = 14                  │
-│ Time: O(n) - each element added and removed exactly ONCE!                   │
+│ • Window 1-3: sum = 7 - arr[0] + arr[3] = 7 - 1 + 10 = 16                    │
+│ • Window 2-4: sum = 16 - arr[1] + arr[4] = 16 - 4 + 2 = 14                   │
+│ Time: O(n) - each element added and removed exactly ONCE!                    │
 │                                                                              │
 │ REAL-WORLD APPLICATIONS:                                                     │
 │ • Network: "Average packets per second over last 5 seconds"                  │
 │ • Finance: "Moving average of stock price over 20 days"                      │
-│ • DNA: "Find all substrings of length 10 with pattern X"                    │
+│ • DNA: "Find all substrings of length 10 with pattern X"                     │
 │ • Streaming: "Process data chunks efficiently"                               │
 └──────────────────────────────────────────────────────────────────────────────┘
 
@@ -62,21 +62,21 @@
 │                                                                              │
 │ BRUTE FORCE WASTE:                                                           │
 │ Window 1: compute(a) + compute(b) + compute(c)                               │
-│ Window 2: compute(b) + compute(c) + compute(d)  ← b,c computed AGAIN!       │
+│ Window 2: compute(b) + compute(c) + compute(d)  ← b,c computed AGAIN!        │
 │                                                                              │
 │ SLIDING WINDOW EFFICIENCY:                                                   │
 │ Window 1: result = f(a) + f(b) + f(c)                                        │
-│ Window 2: result = result - f(a) + f(d)   ← Only compute what's NEW!        │
+│ Window 2: result = result - f(a) + f(d)   ← Only compute what's NEW!         │
 │                                                                              │
 │ n elements, k window size:                                                   │
-│ • Brute force: O(n×k) - recompute k elements for each of n windows          │
-│ • Sliding window: O(n) - each element processed exactly twice (add+remove)  │
+│ • Brute force: O(n×k) - recompute k elements for each of n windows           │
+│ • Sliding window: O(n) - each element processed exactly twice (add+remove)   │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ WHEN TO USE SLIDING WINDOW?                                                  │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ ✅ USE SLIDING WINDOW WHEN (Signals in problem):                            │
+│ ✅ USE SLIDING WINDOW WHEN (Signals in problem):                              │
 │    • "Contiguous subarray/substring"                                         │
 │    • "Of size k" or "at most k"                                              │
 │    • "Maximum/minimum sum/length"                                            │
@@ -93,11 +93,11 @@
 │    → Window size changes based on condition                                  │
 │    → Expand right pointer, shrink left pointer when condition violated       │
 │                                                                              │
-│ ❌ DON'T USE SLIDING WINDOW WHEN:                                           │
+│ ❌ DON'T USE SLIDING WINDOW WHEN:                                             │
 │    • Problem asks about non-contiguous elements                              │
 │    • Order doesn't matter (use sorting/hashmap)                              │
 │    • Need to find subarrays that aren't consecutive                          │
-│    • Problem involves negative numbers with sum conditions (can be tricky)  │
+│    • Problem involves negative numbers with sum conditions (can be tricky)   │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -105,47 +105,47 @@
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │ FIXED SIZE WINDOW TEMPLATE:                                                  │
-│ ┌────────────────────────────────────────────────────────────────┐          │
-│ │ 1. Initialize: Process first k elements (build first window)  │          │
-│ │ 2. Slide: For each new position:                               │          │
-│ │    a. Add new element (entering from right)                    │          │
-│ │    b. Remove old element (leaving from left)                   │          │
-│ │    c. Update answer                                            │          │
-│ │ 3. Return answer                                               │          │
-│ └────────────────────────────────────────────────────────────────┘          │
+│ ┌────────────────────────────────────────────────────────────────┐           │
+│ │ 1. Initialize: Process first k elements (build first window)  │            │
+│ │ 2. Slide: For each new position:                               │           │
+│ │    a. Add new element (entering from right)                    │           │
+│ │    b. Remove old element (leaving from left)                   │           │
+│ │    c. Update answer                                            │           │
+│ │ 3. Return answer                                               │           │
+│ └────────────────────────────────────────────────────────────────┘           │
 │                                                                              │
 │ VARIABLE SIZE WINDOW TEMPLATE:                                               │
-│ ┌────────────────────────────────────────────────────────────────┐          │
-│ │ 1. left = 0, right = 0                                         │          │
-│ │ 2. Expand right until condition met or window too big          │          │
+│ ┌────────────────────────────────────────────────────────────────┐           │
+│ │ 1. left = 0, right = 0                                         │           │
+│ │ 2. Expand right until condition met or window too big          │           │
 │ │ 3. While condition violated:                                    │          │
-│ │    a. Remove arr[left] from window                             │          │
-│ │    b. Move left++                                              │          │
-│ │ 4. Update answer if valid window                               │          │
-│ │ 5. Move right++                                                │          │
-│ │ 6. Repeat until right reaches end                              │          │
-│ └────────────────────────────────────────────────────────────────┘          │
+│ │    a. Remove arr[left] from window                             │           │
+│ │    b. Move left++                                              │           │
+│ │ 4. Update answer if valid window                               │           │
+│ │ 5. Move right++                                                │           │
+│ │ 6. Repeat until right reaches end                              │           │
+│ └────────────────────────────────────────────────────────────────┘           │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ DIFFICULTIES & COMMON MISTAKES                                               │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │ 1. OFF-BY-ONE ERRORS (Most Common!):                                         │
-│    "Window has k elements" = j - i + 1 == k (NOT j - i == k!)               │
+│    "Window has k elements" = j - i + 1 == k (NOT j - i == k!)                │
 │    Solution: Count = rightIndex - leftIndex + 1                              │
 │                                                                              │
 │ 2. FORGETTING TO REMOVE WHEN SHRINKING:                                      │
 │    Must undo the effect of element leaving window                            │
 │    Sum window: sum -= arr[left]                                              │
-│    Freq map: map[arr[left]]-- and remove if 0                               │
+│    Freq map: map[arr[left]]-- and remove if 0                                │
 │                                                                              │
 │ 3. VARIABLE WINDOW TERMINATION:                                              │
 │    When to shrink? When to stop expanding?                                   │
-│    Solution: Clear condition check before/after each operation              │
+│    Solution: Clear condition check before/after each operation               │
 │                                                                              │
 │ 4. NEGATIVE NUMBERS:                                                         │
-│    "Max sum subarray" with negatives - sliding window doesn't work directly │
-│    Solution: Use Kadane's algorithm for that specific problem               │
+│    "Max sum subarray" with negatives - sliding window doesn't work directly  │
+│    Solution: Use Kadane's algorithm for that specific problem                │
 │                                                                              │
 │ 5. EDGE CASES:                                                               │
 │    Empty array, k > array length, single element                             │
@@ -158,11 +158,11 @@
 │ TIME COMPLEXITY: O(n)                                                        │
 │ • Each element is added to window exactly ONCE                               │
 │ • Each element is removed from window at most ONCE                           │
-│ • Total operations ≤ 2n → O(n)                                              │
+│ • Total operations ≤ 2n → O(n)                                               │
 │                                                                              │
 │ SPACE COMPLEXITY:                                                            │
-│ • Basic sliding window: O(1) - just pointers and running total              │
-│ • With frequency map: O(k) or O(alphabet) for character problems            │
+│ • Basic sliding window: O(1) - just pointers and running total               │
+│ • With frequency map: O(k) or O(alphabet) for character problems             │
 │                                                                              │
 │ TYPICAL OUTPUT TYPES:                                                        │
 │ • Single value: max/min sum, max/min length                                  │
@@ -214,54 +214,54 @@
 ║  ═══════════════════════════════════════════════════════════════════════  ║
 ║                                                                           ║
 ║  WINDOW 1: i=0, j=2                                                       ║
-║  ┌───┬───┬───┬───┬───┬───┐                                               ║
-║  │ 2 │ 1 │ 5 │ 1 │ 3 │ 2 │                                               ║
-║  └───┴───┴───┴───┴───┴───┘                                               ║
+║  ┌───┬───┬───┬───┬───┬───┐                                                ║
+║  │ 2 │ 1 │ 5 │ 1 │ 3 │ 2 │                                                ║
+║  └───┴───┴───┴───┴───┴───┘                                                ║
 ║    ↑       ↑                                                              ║
 ║    i       j                                                              ║
 ║  ├─────────┤                                                              ║
 ║   window [2,1,5]                                                          ║
 ║                                                                           ║
-║  Count = j - i + 1 = 2 - 0 + 1 = 3 ✅ (equals k, process window!)         ║
+║  Count = j - i + 1 = 2 - 0 + 1 = 3 ✅ (equals k, process window!)          ║
 ║                                                                           ║
 ║  ═══════════════════════════════════════════════════════════════════════  ║
 ║                                                                           ║
 ║  WINDOW 2: i=1, j=3 (after sliding)                                       ║
-║  ┌───┬───┬───┬───┬───┬───┐                                               ║
-║  │ 2 │ 1 │ 5 │ 1 │ 3 │ 2 │                                               ║
-║  └───┴───┴───┴───┴───┴───┘                                               ║
+║  ┌───┬───┬───┬───┬───┬───┐                                                ║
+║  │ 2 │ 1 │ 5 │ 1 │ 3 │ 2 │                                                ║
+║  └───┴───┴───┴───┴───┴───┘                                                ║
 ║        ↑       ↑                                                          ║
 ║        i       j                                                          ║
 ║      ├─────────┤                                                          ║
 ║       window [1,5,1]                                                      ║
 ║                                                                           ║
-║  Count = j - i + 1 = 3 - 1 + 1 = 3 ✅                                     ║
+║  Count = j - i + 1 = 3 - 1 + 1 = 3 ✅                                      ║
 ║                                                                           ║
 ║  ═══════════════════════════════════════════════════════════════════════  ║
 ║                                                                           ║
 ║  WINDOW 3: i=2, j=4                                                       ║
-║  ┌───┬───┬───┬───┬───┬───┐                                               ║
-║  │ 2 │ 1 │ 5 │ 1 │ 3 │ 2 │                                               ║
-║  └───┴───┴───┴───┴───┴───┘                                               ║
+║  ┌───┬───┬───┬───┬───┬───┐                                                ║
+║  │ 2 │ 1 │ 5 │ 1 │ 3 │ 2 │                                                ║
+║  └───┴───┴───┴───┴───┴───┘                                                ║
 ║            ↑       ↑                                                      ║
 ║            i       j                                                      ║
 ║          ├─────────┤                                                      ║
 ║           window [5,1,3]                                                  ║
 ║                                                                           ║
-║  Count = j - i + 1 = 4 - 2 + 1 = 3 ✅                                     ║
+║  Count = j - i + 1 = 4 - 2 + 1 = 3 ✅                                      ║
 ║                                                                           ║
 ║  ═══════════════════════════════════════════════════════════════════════  ║
 ║                                                                           ║
 ║  WINDOW 4: i=3, j=5 (FINAL)                                               ║
-║  ┌───┬───┬───┬───┬───┬───┐                                               ║
-║  │ 2 │ 1 │ 5 │ 1 │ 3 │ 2 │                                               ║
-║  └───┴───┴───┴───┴───┴───┘                                               ║
+║  ┌───┬───┬───┬───┬───┬───┐                                                ║
+║  │ 2 │ 1 │ 5 │ 1 │ 3 │ 2 │                                                ║
+║  └───┴───┴───┴───┴───┴───┘                                                ║
 ║                ↑       ↑                                                  ║
 ║                i       j                                                  ║
 ║              ├─────────┤                                                  ║
 ║               window [1,3,2]                                              ║
 ║                                                                           ║
-║  Count = j - i + 1 = 5 - 3 + 1 = 3 ✅                                     ║
+║  Count = j - i + 1 = 5 - 3 + 1 = 3 ✅                                      ║
 ║                                                                           ║
 ║  ═══════════════════════════════════════════════════════════════════════  ║
 ║                                                                           ║
@@ -318,36 +318,36 @@ Count = j - i + 1 = 4 - 2 + 1 = 3 ✅
 ║                                                                           ║
 ║  These THREE expressions are MATHEMATICALLY EQUIVALENT:                   ║
 ║                                                                           ║
-║  ┌─────────────────────────────────────────────────────────────────────┐ ║
-║  │                                                                     │ ║
-║  │     j - i + 1 = k       ← "Window has K elements" ⭐ BEST!          │ ║
-║  │           ↕                                                         │ ║
-║  │     j = i + k - 1       ← "j is at last valid position"             │ ║
-║  │           ↕                                                         │ ║
-║  │     j < i + k           ← "j hasn't crossed boundary"               │ ║
-║  │                                                                     │ ║
-║  └─────────────────────────────────────────────────────────────────────┘ ║
+║  ┌─────────────────────────────────────────────────────────────────────┐  ║
+║  │                                                                     │  ║
+║  │     j - i + 1 = k       ← "Window has K elements" ⭐ BEST!          │   ║
+║  │           ↕                                                         │  ║
+║  │     j = i + k - 1       ← "j is at last valid position"             │  ║
+║  │           ↕                                                         │  ║
+║  │     j < i + k           ← "j hasn't crossed boundary"               │  ║
+║  │                                                                     │  ║
+║  └─────────────────────────────────────────────────────────────────────┘  ║
 ║                                                                           ║
 ║  Mathematical Proof:                                                      ║
 ║  ──────────────────                                                       ║
 ║                                                                           ║
-║  Start with:      j - i + 1 = k                                          ║
+║  Start with:      j - i + 1 = k                                           ║
 ║                                                                           ║
-║  Rearrange:       j - i = k - 1                                          ║
-║                   j = i + k - 1          (second form)                   ║
+║  Rearrange:       j - i = k - 1                                           ║
+║                   j = i + k - 1          (second form)                    ║
 ║                                                                           ║
-║  For loop condition, we want j to go from i to i+k-1:                    ║
-║  That means:      j < i + k              (third form)                    ║
+║  For loop condition, we want j to go from i to i+k-1:                     ║
+║  That means:      j < i + k              (third form)                     ║
 ║                                                                           ║
-║  WHY THE FIRST IS BEST:                                                  ║
+║  WHY THE FIRST IS BEST:                                                   ║
 ║  ─────────────────────                                                    ║
 ║                                                                           ║
-║  ❌ "j < i + k" → You think: "Wait, is it < or <=?"                      ║
-║  ❌ "j = i + k - 1" → You think: "Should I subtract 1?"                  ║
-║  ✅ "j - i + 1 = k" → You think: "Do I have k elements? Simple!"         ║
+║  ❌ "j < i + k" → You think: "Wait, is it < or <=?"                        ║
+║  ❌ "j = i + k - 1" → You think: "Should I subtract 1?"                    ║
+║  ✅ "j - i + 1 = k" → You think: "Do I have k elements? Simple!"           ║
 ║                                                                           ║
-║  The first form is a QUESTION, not a FORMULA.                            ║
-║  Questions are easier to remember than formulas!                         ║
+║  The first form is a QUESTION, not a FORMULA.                             ║
+║  Questions are easier to remember than formulas!                          ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -375,35 +375,35 @@ j < i + k              ← "j hasn't crossed boundary"
 ║  Test Case: i = 0, k = 3                                                  ║
 ║  We want elements at indices: 0, 1, 2 (3 elements)                        ║
 ║                                                                           ║
-║  ┌──────────────────────────────────────────────────────────────────────┐║
-║  │ USING j < i + k:                                                     │║
-║  │                                                                      │║
-║  │   j < 0 + 3                                                          │║
-║  │   j < 3                                                              │║
-║  │                                                                      │║
-║  │   Valid j: 0, 1, 2  ✅ (3 elements — CORRECT!)                       │║
-║  └──────────────────────────────────────────────────────────────────────┘║
+║  ┌──────────────────────────────────────────────────────────────────────┐ ║
+║  │ USING j < i + k:                                                     │ ║
+║  │                                                                      │ ║
+║  │   j < 0 + 3                                                          │ ║
+║  │   j < 3                                                              │ ║
+║  │                                                                      │ ║
+║  │   Valid j: 0, 1, 2  ✅ (3 elements — CORRECT!)                       │  ║
+║  └──────────────────────────────────────────────────────────────────────┘ ║
 ║                                                                           ║
-║  ┌──────────────────────────────────────────────────────────────────────┐║
-║  │ USING j <= i + k:  ❌ WRONG                                          │║
-║  │                                                                      │║
-║  │   j <= 0 + 3                                                         │║
-║  │   j <= 3                                                             │║
-║  │                                                                      │║
-║  │   Valid j: 0, 1, 2, 3  ❌ (4 elements — TOO MANY!)                    │║
-║  └──────────────────────────────────────────────────────────────────────┘║
+║  ┌──────────────────────────────────────────────────────────────────────┐ ║
+║  │ USING j <= i + k:  ❌ WRONG                                          │  ║
+║  │                                                                      │ ║
+║  │   j <= 0 + 3                                                         │ ║
+║  │   j <= 3                                                             │ ║
+║  │                                                                      │ ║
+║  │   Valid j: 0, 1, 2, 3  ❌ (4 elements — TOO MANY!)                    │ ║
+║  └──────────────────────────────────────────────────────────────────────┘ ║
 ║                                                                           ║
-║  ┌──────────────────────────────────────────────────────────────────────┐║
-║  │ USING j < k:  ❌ WRONG (after first window)                          │║
-║  │                                                                      │║
-║  │   After i moves to 1:                                                │║
-║  │   j < 3                                                              │║
-║  │                                                                      │║
-║  │   Valid j: 0, 1, 2  ❌ (We need 1, 2, 3 now!)                         │║
-║  └──────────────────────────────────────────────────────────────────────┘║
+║  ┌──────────────────────────────────────────────────────────────────────┐ ║
+║  │ USING j < k:  ❌ WRONG (after first window)                          │  ║
+║  │                                                                      │ ║
+║  │   After i moves to 1:                                                │ ║
+║  │   j < 3                                                              │ ║
+║  │                                                                      │ ║
+║  │   Valid j: 0, 1, 2  ❌ (We need 1, 2, 3 now!)                         │ ║
+║  └──────────────────────────────────────────────────────────────────────┘ ║
 ║                                                                           ║
-║  CONCLUSION: Only "j < i + k" works, but it's HARD to remember!          ║
-║  SOLUTION: Use "j - i + 1 == k" and NEVER think about it again!          ║
+║  CONCLUSION: Only "j < i + k" works, but it's HARD to remember!           ║
+║  SOLUTION: Use "j - i + 1 == k" and NEVER think about it again!           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -454,28 +454,28 @@ Valid j: 0, 1, 2  ❌ (We need 1, 2, 3!)
 ║  for (int j = 0; j < n; j++) {  // j expands window (right pointer)       ║
 ║                                                                           ║
 ║      // STEP 1: EXPAND - Include arr[j] in window                         ║
-║      // (add to sum, add to hashmap, etc.)                               ║
+║      // (add to sum, add to hashmap, etc.)                                ║
 ║                                                                           ║
-║      if (j - i + 1 == k) {  // STEP 2: CHECK - "Do I have K elements?"   ║
+║      if (j - i + 1 == k) {  // STEP 2: CHECK - "Do I have K elements?"    ║
 ║                                                                           ║
 ║          // STEP 3: PROCESS - Window is ready, do something               ║
-║          // (compare max, print result, etc.)                            ║
+║          // (compare max, print result, etc.)                             ║
 ║                                                                           ║
-║          // STEP 4: SHRINK - Remove arr[i] from window                   ║
-║          // (subtract from sum, remove from hashmap, etc.)               ║
+║          // STEP 4: SHRINK - Remove arr[i] from window                    ║
+║          // (subtract from sum, remove from hashmap, etc.)                ║
 ║                                                                           ║
-║          i++;  // STEP 5: SLIDE - Move window forward                    ║
+║          i++;  // STEP 5: SLIDE - Move window forward                     ║
 ║      }                                                                    ║
 ║  }                                                                        ║
 ║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────   ║
+║  ─────────────────────────────────────────────────────────────────────    ║
 ║                                                                           ║
 ║  WHY THIS IS PERFECT:                                                     ║
 ║                                                                           ║
-║  ✅ You count elements (j - i + 1), not indices                           ║
-║  ✅ No confusion about < vs <=                                            ║
-║  ✅ Clear 5-step process: EXPAND → CHECK → PROCESS → SHRINK → SLIDE      ║
-║  ✅ Works for ANY window problem with small modifications                 ║
+║  ✅ You count elements (j - i + 1), not indices                            ║
+║  ✅ No confusion about < vs <=                                             ║
+║  ✅ Clear 5-step process: EXPAND → CHECK → PROCESS → SHRINK → SLIDE        ║
+║  ✅ Works for ANY window problem with small modifications                  ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```

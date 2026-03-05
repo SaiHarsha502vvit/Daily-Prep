@@ -86,14 +86,14 @@ SELECT COALESCE(phone, email, 'No contact') AS contact FROM users;
 ╔══════════════════════════════════════════════════════════════════╗
 ║  SQL EXECUTION ORDER (not the order you write it!):              ║
 ║                                                                  ║
-║  1. FROM / JOIN       ← Identify the tables                     ║
+║  1. FROM / JOIN       ← Identify the tables                      ║
 ║  2. WHERE             ← Filter INDIVIDUAL rows                   ║
 ║  3. GROUP BY          ← Create groups                            ║
 ║  4. HAVING            ← Filter GROUPS (after aggregation)        ║
 ║  5. SELECT            ← Choose columns, compute expressions      ║
 ║  6. DISTINCT          ← Remove duplicates                        ║
 ║  7. ORDER BY          ← Sort results                             ║
-║  8. LIMIT/OFFSET      ← Pagination                              ║
+║  8. LIMIT/OFFSET      ← Pagination                               ║
 ║                                                                  ║
 ║  WHERE runs at step 2 — groups don't exist yet!                  ║
 ║  HAVING runs at step 4 — groups have been created.               ║
@@ -141,20 +141,20 @@ HAVING COUNT(*) > 5;      -- Then filter groups
 ║  [Alice, Bob, Charlie]        [Locker1→Alice, Locker2→Bob]       ║
 ║                                                                  ║
 ║  INNER JOIN: Only students WITH lockers dance.                   ║
-║  Result: [Alice+Locker1, Bob+Locker2]  (Charlie excluded)       ║
+║  Result: [Alice+Locker1, Bob+Locker2]  (Charlie excluded)        ║
 ║                                                                  ║
 ║  LEFT JOIN: ALL students dance. No locker? Dance alone (NULL).   ║
-║  Result: [Alice+Locker1, Bob+Locker2, Charlie+NULL]             ║
+║  Result: [Alice+Locker1, Bob+Locker2, Charlie+NULL]              ║
 ║                                                                  ║
 ║  RIGHT JOIN: ALL lockers shown. No student? NULL.                ║
-║  Result: [Alice+Locker1, Bob+Locker2]                           ║
+║  Result: [Alice+Locker1, Bob+Locker2]                            ║
 ║  (Same as INNER here since all lockers have students)            ║
 ║                                                                  ║
 ║  FULL OUTER JOIN: Everyone, even if no match. NULLs fill gaps.   ║
-║  Result: [Alice+Locker1, Bob+Locker2, Charlie+NULL]             ║
+║  Result: [Alice+Locker1, Bob+Locker2, Charlie+NULL]              ║
 ║                                                                  ║
 ║  CROSS JOIN: Every student × every locker (Cartesian product).   ║
-║  3 students × 2 lockers = 6 rows. Rarely useful intentionally.  ║
+║  3 students × 2 lockers = 6 rows. Rarely useful intentionally.   ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
@@ -182,32 +182,32 @@ LEFT JOIN customers c ON o.customer_id = c.id AND c.country = 'US';
 ║  THE BOOK INDEX ANALOGY (literally!)                             ║
 ║                                                                  ║
 ║  An index at the back of a textbook:                             ║
-║  "binary search" → pages 45, 67, 112                            ║
+║  "binary search" → pages 45, 67, 112                             ║
 ║  → Fast to FIND specific terms (O(log n) vs full scan)           ║
 ║  → But the index itself takes SPACE (extra pages)                ║
 ║  → And updating the index when content changes costs TIME        ║
 ║                                                                  ║
 ║  WHEN INDEXES HELP:                                              ║
-║  ✅ WHERE column = value (equality lookup)                       ║
-║  ✅ WHERE column > value (range queries)                         ║
-║  ✅ JOIN conditions (matching foreign keys)                      ║
-║  ✅ ORDER BY / GROUP BY (already sorted in index)                ║
-║  ✅ Columns with HIGH cardinality (many unique values)           ║
+║  ✅ WHERE column = value (equality lookup)                        ║
+║  ✅ WHERE column > value (range queries)                          ║
+║  ✅ JOIN conditions (matching foreign keys)                       ║
+║  ✅ ORDER BY / GROUP BY (already sorted in index)                 ║
+║  ✅ Columns with HIGH cardinality (many unique values)            ║
 ║                                                                  ║
 ║  WHEN INDEXES HURT:                                              ║
-║  ❌ Write-heavy tables (every INSERT/UPDATE modifies index)      ║
-║  ❌ Low cardinality columns (boolean "active" → 50% match        ║
+║  ❌ Write-heavy tables (every INSERT/UPDATE modifies index)       ║
+║  ❌ Low cardinality columns (boolean "active" → 50% match         ║
 ║     → index doesn't help, full scan is faster)                   ║
-║  ❌ Small tables (full scan of 100 rows < index lookup overhead) ║
-║  ❌ Columns rarely used in WHERE/JOIN                            ║
+║  ❌ Small tables (full scan of 100 rows < index lookup overhead)  ║
+║  ❌ Columns rarely used in WHERE/JOIN                             ║
 ║  ❌ Wide indexes (indexing large TEXT columns)                    ║
 ║                                                                  ║
 ║  COMPOSITE INDEX ORDER MATTERS:                                  ║
-║  INDEX(a, b, c) helps: WHERE a=1, WHERE a=1 AND b=2,            ║
+║  INDEX(a, b, c) helps: WHERE a=1, WHERE a=1 AND b=2,             ║
 ║                         WHERE a=1 AND b=2 AND c=3                ║
 ║  Does NOT help: WHERE b=2 (leftmost column not used!)            ║
 ║  Think: Phone book sorted by (Last, First, Middle)               ║
-║  Can find all "Smith" → "Smith, John" → "Smith, John, A."       ║
+║  Can find all "Smith" → "Smith, John" → "Smith, John, A."        ║
 ║  Cannot use it to find all "John" (first names not sorted first) ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
@@ -229,20 +229,20 @@ LEFT JOIN customers c ON o.customer_id = c.id AND c.country = 'US';
 ║                                                                  ║
 ║  READ COMMITTED (most common — Postgres default):                ║
 ║  You can only read SUBMITTED answer sheets.                      ║
-║  ✅ No dirty reads                                               ║
-║  ❌ Non-repeatable read: You read Bob's score=80. Read again     ║
+║  ✅ No dirty reads                                                ║
+║  ❌ Non-repeatable read: You read Bob's score=80. Read again      ║
 ║     → score=90 (Bob submitted a correction between reads).       ║
 ║                                                                  ║
 ║  REPEATABLE READ (MySQL InnoDB default):                         ║
 ║  Once you read Bob's score, it's FROZEN for your transaction.    ║
-║  ✅ No dirty reads, no non-repeatable reads                      ║
-║  ❌ Phantom read: You count "students with score > 80" = 10.     ║
+║  ✅ No dirty reads, no non-repeatable reads                       ║
+║  ❌ Phantom read: You count "students with score > 80" = 10.      ║
 ║     Count again → 11! (New student appeared — a phantom.)        ║
 ║                                                                  ║
 ║  SERIALIZABLE (strictest):                                       ║
 ║  Everyone takes the exam ONE AT A TIME.                          ║
-║  ✅ No problems at all                                           ║
-║  ❌ Extremely slow — transactions queue up                       ║
+║  ✅ No problems at all                                            ║
+║  ❌ Extremely slow — transactions queue up                        ║
 ║                                                                  ║
 ║  ┌─────────────────┬───────┬──────────────┬─────────┐            ║
 ║  │ Level           │ Dirty │ Non-Repeat   │ Phantom │            ║
@@ -305,9 +305,9 @@ LEFT JOIN customers c ON o.customer_id = c.id AND c.country = 'US';
 ║  "What did customer 1 order?" → 1 trip                           ║
 ║  "What did customer 2 order?" → 1 trip                           ║
 ║  ... repeat N times.                                             ║
-║  Total: 1 (get customers) + N (get each order) = N+1 queries!   ║
+║  Total: 1 (get customers) + N (get each order) = N+1 queries!    ║
 ║                                                                  ║
-║  GOOD: "Give me ALL orders at once." → 1 or 2 queries total.    ║
+║  GOOD: "Give me ALL orders at once." → 1 or 2 queries total.     ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
@@ -345,24 +345,24 @@ private Set<Employee> employees;
 ║                                                                  ║
 ║  RED FLAGS to look for:                                          ║
 ║                                                                  ║
-║  🔴 "Seq Scan" / "Full Table Scan"                               ║
+║  🔴 "Seq Scan" / "Full Table Scan"                                ║
 ║     → Reading EVERY row. Missing index?                          ║
 ║                                                                  ║
-║  🔴 "rows" is much larger than "filtered"                        ║
+║  🔴 "rows" is much larger than "filtered"                         ║
 ║     → Scanning many rows but keeping few. Index would help.      ║
 ║                                                                  ║
-║  🔴 "Using filesort"                                             ║
+║  🔴 "Using filesort"                                              ║
 ║     → Sorting in memory/disk, not using index. Add covering      ║
 ║       index with ORDER BY columns.                               ║
 ║                                                                  ║
-║  🔴 "Using temporary"                                            ║
+║  🔴 "Using temporary"                                             ║
 ║     → Creating temp table. Usually GROUP BY or DISTINCT.         ║
 ║                                                                  ║
-║  🟢 "Using index" (covering index)                               ║
+║  🟢 "Using index" (covering index)                                ║
 ║     → Reading only from index, not touching table. FAST!         ║
 ║                                                                  ║
-║  🟢 "Index range scan"                                           ║
-║     → Using index to scan a range. Good for WHERE col > 50.     ║
+║  🟢 "Index range scan"                                            ║
+║     → Using index to scan a range. Good for WHERE col > 50.      ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
@@ -384,22 +384,22 @@ EXPLAIN ANALYZE SELECT * FROM orders WHERE customer_id = 42;
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
-║  NORMALIZATION = Organizing data to eliminate redundancy          ║
+║  NORMALIZATION = Organizing data to eliminate redundancy         ║
 ║  "Every piece of data lives in ONE place."                       ║
-║  ✅ No update anomalies                                          ║
-║  ✅ Less storage                                                 ║
-║  ❌ More JOINs needed → slower reads for complex queries         ║
+║  ✅ No update anomalies                                           ║
+║  ✅ Less storage                                                  ║
+║  ❌ More JOINs needed → slower reads for complex queries          ║
 ║                                                                  ║
 ║  DENORMALIZATION = Intentionally adding redundancy               ║
 ║  "Store computed/duplicate data for faster reads."               ║
-║  ✅ Faster reads (fewer JOINs)                                   ║
-║  ❌ Update anomalies (must update in multiple places)            ║
-║  ❌ More storage                                                 ║
+║  ✅ Faster reads (fewer JOINs)                                    ║
+║  ❌ Update anomalies (must update in multiple places)             ║
+║  ❌ More storage                                                  ║
 ║                                                                  ║
 ║  WHEN TO DENORMALIZE:                                            ║
 ║  • Read-heavy systems (10:1 read-to-write ratio)                 ║
-║  • Reporting/analytics databases                                ║
-║  • Caching frequently joined data                               ║
+║  • Reporting/analytics databases                                 ║
+║  • Caching frequently joined data                                ║
 ║  • After profiling shows JOINs are the bottleneck                ║
 ║                                                                  ║
 ║  RULE: Normalize first (3NF). Denormalize only when              ║
@@ -421,7 +421,7 @@ EXPLAIN ANALYZE SELECT * FROM orders WHERE customer_id = 42;
 ║  You LOSE individual row details.                                ║
 ║                                                                  ║
 ║  Window Function: "Calculate across a set BUT KEEP every row."   ║
-║  100 rows → calculation → 100 result rows (with new columns).   ║
+║  100 rows → calculation → 100 result rows (with new columns).    ║
 ║  You KEEP individual row details AND get aggregate info.         ║
 ║                                                                  ║
 ║  Analogy: CLASS RANKING                                          ║

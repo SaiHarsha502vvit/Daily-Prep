@@ -8,26 +8,26 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    AGGREGATE FUNCTIONS - SUMMARY                                 │
+│                    AGGREGATE FUNCTIONS - SUMMARY                                │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  Aggregate functions perform calculations on a SET of values and return         │
 │  a SINGLE value. They ignore NULL values (except COUNT(*)).                     │
-│                                                                                  │
-│  ┌──────────────────────────────────────────────────────────────────────────┐  │
-│  │  Function       │ Description                        │ Example           │  │
-│  ├─────────────────┼────────────────────────────────────┼───────────────────┤  │
-│  │ COUNT(*)        │ Count all rows                     │ COUNT(*)          │  │
-│  │ COUNT(column)   │ Count non-NULL values              │ COUNT(email)      │  │
-│  │ COUNT(DISTINCT) │ Count unique values                │ COUNT(DISTINCT d) │  │
-│  │ SUM(column)     │ Sum of all values                  │ SUM(salary)       │  │
-│  │ AVG(column)     │ Average of all values              │ AVG(price)        │  │
-│  │ MIN(column)     │ Minimum value                      │ MIN(hire_date)    │  │
-│  │ MAX(column)     │ Maximum value                      │ MAX(salary)       │  │
-│  │ GROUP_CONCAT()  │ Concatenate values (MySQL)         │ GROUP_CONCAT(name)│  │
-│  │ STRING_AGG()    │ Concatenate values (PostgreSQL)    │ STRING_AGG(n,',') │  │
-│  └──────────────────────────────────────────────────────────────────────────┘  │
-│                                                                                  │
+│                                                                                 │
+│  ┌──────────────────────────────────────────────────────────────────────────┐   │
+│  │  Function       │ Description                        │ Example           │   │
+│  ├─────────────────┼────────────────────────────────────┼───────────────────┤   │
+│  │ COUNT(*)        │ Count all rows                     │ COUNT(*)          │   │
+│  │ COUNT(column)   │ Count non-NULL values              │ COUNT(email)      │   │
+│  │ COUNT(DISTINCT) │ Count unique values                │ COUNT(DISTINCT d) │   │
+│  │ SUM(column)     │ Sum of all values                  │ SUM(salary)       │   │
+│  │ AVG(column)     │ Average of all values              │ AVG(price)        │   │
+│  │ MIN(column)     │ Minimum value                      │ MIN(hire_date)    │   │
+│  │ MAX(column)     │ Maximum value                      │ MAX(salary)       │   │
+│  │ GROUP_CONCAT()  │ Concatenate values (MySQL)         │ GROUP_CONCAT(name)│   │
+│  │ STRING_AGG()    │ Concatenate values (PostgreSQL)    │ STRING_AGG(n,',') │   │
+│  └──────────────────────────────────────────────────────────────────────────┘   │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -79,27 +79,27 @@ FROM employees WHERE dept_id = 1;
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    GROUP BY - HOW IT WORKS                                       │
+│                    GROUP BY - HOW IT WORKS                                      │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  GROUP BY divides rows into groups based on column values.                      │
 │  Aggregate functions are then applied to each group separately.                 │
-│                                                                                  │
+│                                                                                 │
 │  Original Data:                    After GROUP BY dept_id:                      │
-│  ┌──────────────────────────┐     ┌────────────────────────────────────────┐  │
-│  │ emp_id │ dept │ salary   │     │ dept │ count │ sum_sal  │ avg_sal     │  │
-│  ├────────┼──────┼──────────┤     ├──────┼───────┼──────────┼─────────────┤  │
-│  │ 1      │ 1    │ 100000   │     │ 1    │ 3     │ 280000   │ 93333.33    │  │
-│  │ 2      │ 1    │ 80000    │     │ 2    │ 2     │ 150000   │ 75000.00    │  │
-│  │ 3      │ 1    │ 100000   │     └────────────────────────────────────────┘  │
-│  │ 4      │ 2    │ 90000    │                                                  │
-│  │ 5      │ 2    │ 60000    │     SELECT dept_id,                              │
-│  └──────────────────────────┘            COUNT(*) AS count,                    │
-│                                          SUM(salary) AS sum_sal,               │
-│                                          AVG(salary) AS avg_sal                │
-│                                   FROM employees                               │
-│                                   GROUP BY dept_id;                            │
-│                                                                                  │
+│  ┌──────────────────────────┐     ┌────────────────────────────────────────┐    │
+│  │ emp_id │ dept │ salary   │     │ dept │ count │ sum_sal  │ avg_sal     │     │
+│  ├────────┼──────┼──────────┤     ├──────┼───────┼──────────┼─────────────┤     │
+│  │ 1      │ 1    │ 100000   │     │ 1    │ 3     │ 280000   │ 93333.33    │     │
+│  │ 2      │ 1    │ 80000    │     │ 2    │ 2     │ 150000   │ 75000.00    │     │
+│  │ 3      │ 1    │ 100000   │     └────────────────────────────────────────┘    │
+│  │ 4      │ 2    │ 90000    │                                                   │
+│  │ 5      │ 2    │ 60000    │     SELECT dept_id,                               │
+│  └──────────────────────────┘            COUNT(*) AS count,                     │
+│                                          SUM(salary) AS sum_sal,                │
+│                                          AVG(salary) AS avg_sal                 │
+│                                   FROM employees                                │
+│                                   GROUP BY dept_id;                             │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 

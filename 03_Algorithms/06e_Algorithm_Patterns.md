@@ -9,68 +9,68 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    P VS NP - THE MILLENNIUM PRIZE PROBLEM                        │
+│                    P VS NP - THE MILLENNIUM PRIZE PROBLEM                       │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  COMPLEXITY CLASSES:                                                             │
+│                                                                                 │
+│  COMPLEXITY CLASSES:                                                            │
 │  ────────────────────                                                           │
-│                                                                                  │
-│  P (Polynomial Time):                                                            │
-│  • Problems solvable in O(n^k) for some constant k                             │
-│  • Examples: Sorting, Shortest Path, MST, Matrix Multiplication                │
-│  • These are "tractable" - efficient algorithms exist                          │
-│                                                                                  │
+│                                                                                 │
+│  P (Polynomial Time):                                                           │
+│  • Problems solvable in O(n^k) for some constant k                              │
+│  • Examples: Sorting, Shortest Path, MST, Matrix Multiplication                 │
+│  • These are "tractable" - efficient algorithms exist                           │
+│                                                                                 │
 │  NP (Nondeterministic Polynomial Time):                                         │
 │  • Problems where solutions can be VERIFIED in polynomial time                  │
 │  • NOT "Non-Polynomial"!                                                        │
-│  • Examples: SAT, Traveling Salesman, Vertex Cover                             │
-│                                                                                  │
-│  NP-Complete:                                                                    │
+│  • Examples: SAT, Traveling Salesman, Vertex Cover                              │
+│                                                                                 │
+│  NP-Complete:                                                                   │
 │  • Hardest problems in NP                                                       │
-│  • If any NP-Complete problem has a polynomial solution → P = NP               │
-│  • 21 original NP-Complete problems (Karp's 21)                                │
-│                                                                                  │
-│  NP-Hard:                                                                        │
+│  • If any NP-Complete problem has a polynomial solution → P = NP                │
+│  • 21 original NP-Complete problems (Karp's 21)                                 │
+│                                                                                 │
+│  NP-Hard:                                                                       │
 │  • At least as hard as NP-Complete                                              │
-│  • May not even be in NP (solution might not be verifiable in poly time)       │
-│  • Example: Halting Problem (undecidable!)                                     │
-│                                                                                  │
-│                                                                                  │
+│  • May not even be in NP (solution might not be verifiable in poly time)        │
+│  • Example: Halting Problem (undecidable!)                                      │
+│                                                                                 │
+│                                                                                 │
 │  VISUAL RELATIONSHIP (if P ≠ NP):                                               │
-│  ┌──────────────────────────────────────────────────────────────────────────┐  │
-│  │                                                                          │  │
-│  │                        NP-Hard                                           │  │
-│  │                  ┌─────────────────────────────────┐                    │  │
-│  │                  │                                 │                    │  │
-│  │                  │     NP-Complete                 │                    │  │
-│  │    ┌─────────────┼─────────────────────────────────┤                    │  │
-│  │    │             │                                 │                    │  │
-│  │    │      NP     │    • SAT                        │                    │  │
-│  │    │             │    • 3-SAT                      │                    │  │
-│  │    │  ┌──────┐   │    • Vertex Cover               │                    │  │
-│  │    │  │  P   │   │    • Hamiltonian Path           │                    │  │
-│  │    │  │      │   │    • Traveling Salesman         │                    │  │
-│  │    │  └──────┘   │    • Graph Coloring             │                    │  │
-│  │    │             │    • Subset Sum                 │                    │  │
-│  │    └─────────────┴─────────────────────────────────┘                    │  │
-│  │                                                                          │  │
-│  └──────────────────────────────────────────────────────────────────────────┘  │
-│                                                                                  │
-│                                                                                  │
-│  PROVING NP-COMPLETENESS:                                                        │
+│  ┌──────────────────────────────────────────────────────────────────────────┐   │
+│  │                                                                          │   │
+│  │                        NP-Hard                                           │   │
+│  │                  ┌─────────────────────────────────┐                    │    │
+│  │                  │                                 │                    │    │
+│  │                  │     NP-Complete                 │                    │    │
+│  │    ┌─────────────┼─────────────────────────────────┤                    │    │
+│  │    │             │                                 │                    │    │
+│  │    │      NP     │    • SAT                        │                    │    │
+│  │    │             │    • 3-SAT                      │                    │    │
+│  │    │  ┌──────┐   │    • Vertex Cover               │                    │    │
+│  │    │  │  P   │   │    • Hamiltonian Path           │                    │    │
+│  │    │  │      │   │    • Traveling Salesman         │                    │    │
+│  │    │  └──────┘   │    • Graph Coloring             │                    │    │
+│  │    │             │    • Subset Sum                 │                    │    │
+│  │    └─────────────┴─────────────────────────────────┘                    │    │
+│  │                                                                          │   │
+│  └──────────────────────────────────────────────────────────────────────────┘   │
+│                                                                                 │
+│                                                                                 │
+│  PROVING NP-COMPLETENESS:                                                       │
 │  ─────────────────────────                                                      │
 │  To show problem X is NP-Complete:                                              │
-│  1. Show X is in NP (solution verifiable in poly time)                         │
-│  2. Show X is NP-Hard (reduce known NP-Complete problem to X in poly time)    │
-│                                                                                  │
-│  Reduction: If A reduces to B in polynomial time, written A ≤_p B:             │
-│  • We can transform any instance of A to an instance of B                      │
-│  • Transformation takes polynomial time                                        │
-│  • Solution to transformed B gives solution to original A                      │
-│                                                                                  │
-│  If B has polynomial solution and A ≤_p B → A has polynomial solution         │
-│  Contrapositive: If A has no poly solution and A ≤_p B → B has no poly sol   │
-│                                                                                  │
+│  1. Show X is in NP (solution verifiable in poly time)                          │
+│  2. Show X is NP-Hard (reduce known NP-Complete problem to X in poly time)      │
+│                                                                                 │
+│  Reduction: If A reduces to B in polynomial time, written A ≤_p B:              │
+│  • We can transform any instance of A to an instance of B                       │
+│  • Transformation takes polynomial time                                         │
+│  • Solution to transformed B gives solution to original A                       │
+│                                                                                 │
+│  If B has polynomial solution and A ≤_p B → A has polynomial solution           │
+│  Contrapositive: If A has no poly solution and A ≤_p B → B has no poly sol      │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -78,38 +78,38 @@
 
 ````
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    APPROXIMATION ALGORITHMS FOR NP-HARD PROBLEMS                 │
+│                    APPROXIMATION ALGORITHMS FOR NP-HARD PROBLEMS                │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  Since NP-Hard problems likely have no efficient exact solution,                │
 │  we settle for APPROXIMATE solutions with GUARANTEED bounds.                    │
-│                                                                                  │
-│  APPROXIMATION RATIO:                                                            │
+│                                                                                 │
+│  APPROXIMATION RATIO:                                                           │
 │  ─────────────────────                                                          │
-│  For minimization: ALG/OPT ≤ α                                                 │
-│  For maximization: OPT/ALG ≤ α                                                 │
-│                                                                                  │
+│  For minimization: ALG/OPT ≤ α                                                  │
+│  For maximization: OPT/ALG ≤ α                                                  │
+│                                                                                 │
 │  α = 1: Optimal solution                                                        │
-│  α = 2: At most 2x worse than optimal                                          │
-│                                                                                  │
-│                                                                                  │
+│  α = 2: At most 2x worse than optimal                                           │
+│                                                                                 │
+│                                                                                 │
 │  EXAMPLE 1: VERTEX COVER (2-Approximation)                                      │
 │  ──────────────────────────────────────────                                     │
 │  Problem: Find minimum set of vertices that covers all edges                    │
-│                                                                                  │
-│  Greedy Algorithm:                                                               │
+│                                                                                 │
+│  Greedy Algorithm:                                                              │
 │  1. While uncovered edges exist:                                                │
-│     a. Pick any uncovered edge (u, v)                                          │
-│     b. Add BOTH u and v to cover                                               │
-│     c. Remove all edges incident to u or v                                     │
-│                                                                                  │
+│     a. Pick any uncovered edge (u, v)                                           │
+│     b. Add BOTH u and v to cover                                                │
+│     c. Remove all edges incident to u or v                                      │
+│                                                                                 │
 │  Why 2-approximation?                                                           │
-│  • Each iteration picks an edge (u,v) and adds 2 vertices                      │
-│  • Optimal solution MUST include at least one of u, v                          │
-│  • So OPT ≥ (edges picked)                                                     │
-│  • Our ALG = 2 × (edges picked)                                                │
-│  • Therefore ALG/OPT ≤ 2                                                       │
-│                                                                                  │
+│  • Each iteration picks an edge (u,v) and adds 2 vertices                       │
+│  • Optimal solution MUST include at least one of u, v                           │
+│  • So OPT ≥ (edges picked)                                                      │
+│  • Our ALG = 2 × (edges picked)                                                 │
+│  • Therefore ALG/OPT ≤ 2                                                        │
+│                                                                                 │
 ```java
 public Set<Integer> vertexCover2Approx(int n, int[][] edges) {
     Set<Integer> cover = new HashSet<>();
@@ -176,20 +176,20 @@ public Set<Integer> vertexCover2Approx(int n, int[][] edges) {
 ```
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│ RANDOMIZED ALGORITHMS - DEEP DIVE │
+│ RANDOMIZED ALGORITHMS - DEEP DIVE                                               │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│ │
-│ TWO TYPES: │
-│ ─────────── │
-│ 1. Las Vegas: Always correct, expected polynomial time │
-│ Example: Randomized QuickSort │
-│ │
-│ 2. Monte Carlo: May be wrong, but guaranteed polynomial time │
-│ Example: Primality testing, Min-Cut │
-│ │
-│ │
-│ RANDOMIZED QUICKSORT: │
-│ ───────────────────── │
+│                                                                                 │
+│ TWO TYPES:                                                                      │
+│ ───────────                                                                     │
+│ 1. Las Vegas: Always correct, expected polynomial time                          │
+│ Example: Randomized QuickSort                                                   │
+│                                                                                 │
+│ 2. Monte Carlo: May be wrong, but guaranteed polynomial time                    │
+│ Example: Primality testing, Min-Cut                                             │
+│                                                                                 │
+│                                                                                 │
+│ RANDOMIZED QUICKSORT:                                                           │
+│ ─────────────────────                                                           │
 
 ```java
 void randomizedQuickSort(int[] arr, int low, int high) {
@@ -279,27 +279,27 @@ private boolean millerRabinTest(long n, long d, int r, long a) {
 ```
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│ STRING MATCHING ALGORITHMS - COMPLETE COMPARISON │
+│ STRING MATCHING ALGORITHMS - COMPLETE COMPARISON                                │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│ │
-│ ALGORITHM COMPARISON: │
-│ ┌─────────────────────┬────────────────┬────────────────┬──────────────────┐ │
-│ │ Algorithm │ Preprocessing │ Search Time │ Space │ │
-│ ├─────────────────────┼────────────────┼────────────────┼──────────────────┤ │
-│ │ Naive │ O(1) │ O(nm) │ O(1) │ │
-│ │ KMP │ O(m) │ O(n) │ O(m) │ │
-│ │ Boyer-Moore │ O(m + σ) │ O(nm) worst │ O(m + σ) │ │
-│ │ │ │ O(n/m) best │ │ │
-│ │ Rabin-Karp │ O(m) │ O(nm) worst │ O(1) │ │
-│ │ │ │ O(n+m) expected│ │ │
-│ │ Z-Algorithm │ O(m) │ O(n) │ O(n+m) │ │
-│ │ Suffix Array │ O(n log n) │ O(m log n) │ O(n) │ │
-│ │ Suffix Tree │ O(n) │ O(m) │ O(n) │ │
-│ │ Aho-Corasick │ O(Σ|patterns|) │ O(n+matches) │ O(Σ|patterns|·σ) │ │
-│ └─────────────────────┴────────────────┴────────────────┴──────────────────┘ │
-│ │
-│ n = text length, m = pattern length, σ = alphabet size │
-│ │
+│                                                                                 │
+│ ALGORITHM COMPARISON:                                                           │
+│ ┌─────────────────────┬────────────────┬────────────────┬──────────────────┐    │
+│ │ Algorithm │ Preprocessing │ Search Time │ Space │                             │
+│ ├─────────────────────┼────────────────┼────────────────┼──────────────────┤    │
+│ │ Naive │ O(1) │ O(nm) │ O(1) │                                                 │
+│ │ KMP │ O(m) │ O(n) │ O(m) │                                                    │
+│ │ Boyer-Moore │ O(m + σ) │ O(nm) worst │ O(m + σ) │                             │
+│ │ │ │ O(n/m) best │ │                                                           │
+│ │ Rabin-Karp │ O(m) │ O(nm) worst │ O(1) │                                      │
+│ │ │ │ O(n+m) expected│ │                                                        │
+│ │ Z-Algorithm │ O(m) │ O(n) │ O(n+m) │                                          │
+│ │ Suffix Array │ O(n log n) │ O(m log n) │ O(n) │                               │
+│ │ Suffix Tree │ O(n) │ O(m) │ O(n) │                                            │
+│ │ Aho-Corasick │ O(Σ|patterns|) │ O(n+matches) │ O(Σ|patterns|·σ) │             │
+│ └─────────────────────┴────────────────┴────────────────┴──────────────────┘    │
+│                                                                                 │
+│ n = text length, m = pattern length, σ = alphabet size                          │
+│                                                                                 │
 
 ```java
 // Z-ALGORITHM: Find all occurrences of pattern in text
@@ -415,23 +415,23 @@ class AhoCorasick {
 ```
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│ MAXIMUM FLOW - COMPLETE GUIDE │
+│ MAXIMUM FLOW - COMPLETE GUIDE                                                   │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│ │
-│ PROBLEM: Find maximum flow from source s to sink t in a directed graph │
-│ with edge capacities │
-│ │
-│ ALGORITHM COMPARISON: │
-│ ┌─────────────────────┬────────────────────────┬────────────────────────────┐ │
-│ │ Algorithm │ Time Complexity │ Notes │ │
-│ ├─────────────────────┼────────────────────────┼────────────────────────────┤ │
-│ │ Ford-Fulkerson │ O(E × maxFlow) │ Uses DFS, may not terminate│ │
-│ │ Edmonds-Karp │ O(V × E²) │ Uses BFS for augmenting │ │
-│ │ Dinic │ O(V² × E) │ Level graph + blocking flow│ │
-│ │ Push-Relabel │ O(V² × E) │ Different approach │ │
-│ │ Dinic (unit cap) │ O(E × √V) │ For unit capacity graphs │ │
-│ └─────────────────────┴────────────────────────┴────────────────────────────┘ │
-│ │
+│                                                                                 │
+│ PROBLEM: Find maximum flow from source s to sink t in a directed graph          │
+│ with edge capacities                                                            │
+│                                                                                 │
+│ ALGORITHM COMPARISON:                                                           │
+│ ┌─────────────────────┬────────────────────────┬────────────────────────────┐   │
+│ │ Algorithm │ Time Complexity │ Notes │                                         │
+│ ├─────────────────────┼────────────────────────┼────────────────────────────┤   │
+│ │ Ford-Fulkerson │ O(E × maxFlow) │ Uses DFS, may not terminate│                │
+│ │ Edmonds-Karp │ O(V × E²) │ Uses BFS for augmenting │                          │
+│ │ Dinic │ O(V² × E) │ Level graph + blocking flow│                              │
+│ │ Push-Relabel │ O(V² × E) │ Different approach │                               │
+│ │ Dinic (unit cap) │ O(E × √V) │ For unit capacity graphs │                     │
+│ └─────────────────────┴────────────────────────┴────────────────────────────┘   │
+│                                                                                 │
 
 ```java
 // DINIC'S ALGORITHM - O(V²E)
@@ -518,9 +518,9 @@ class Dinic {
 ```
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│ COMPUTATIONAL GEOMETRY - ESSENTIAL ALGORITHMS │
+│ COMPUTATIONAL GEOMETRY - ESSENTIAL ALGORITHMS                                   │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│ │
+│                                                                                 │
 
 ```java
 // CONVEX HULL - Graham Scan O(n log n)
@@ -610,52 +610,52 @@ boolean onSegment(int[] a, int[] b, int[] c) {
 ```
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│ WHEN TO USE WHICH PARADIGM │
+│ WHEN TO USE WHICH PARADIGM                                                      │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│ │
-│ DIVIDE AND CONQUER: │
-│ • Problem can be split into independent subproblems │
-│ • Subproblems are similar to original │
-│ • Examples: Merge Sort, Quick Sort, Binary Search, Strassen's Matrix │
-│ │
-│ DYNAMIC PROGRAMMING: │
-│ • Optimal substructure: optimal solution uses optimal subsolutions │
-│ • Overlapping subproblems: same subproblems solved multiple times │
-│ • Examples: Fibonacci, Knapsack, LCS, Edit Distance, Matrix Chain │
-│ │
-│ GREEDY: │
-│ • Local optimal choice leads to global optimal │
-│ • No need to reconsider past choices │
-│ • Examples: Huffman, Activity Selection, Dijkstra, MST (Prim, Kruskal) │
-│ │
-│ BACKTRACKING: │
-│ • Find all (or some) solutions │
-│ • Build solution incrementally, abandon if invalid │
-│ • Examples: N-Queens, Sudoku, Subset Sum, Permutations │
-│ │
-│ BRANCH AND BOUND: │
-│ • Optimization problems │
-│ • Use bounds to prune search space │
-│ • Examples: TSP, Integer Linear Programming, 0/1 Knapsack │
-│ │
-│ │
-│ COMPLEXITY CHEAT SHEET: │
-│ ┌──────────────────────┬────────────────────────────────────────────────────┐ │
-│ │ If you see... │ Think about... │ │
-│ ├──────────────────────┼────────────────────────────────────────────────────┤ │
-│ │ Sorted array │ Binary search O(log n) │ │
-│ │ Find all subsets │ 2^n solutions (exponential) │ │
-│ │ Find all permutations│ n! solutions (factorial) │ │
-│ │ Shortest path │ BFS (unweighted), Dijkstra (weighted) │ │
-│ │ Connected components │ DFS/BFS/Union-Find │ │
-│ │ Optimal order │ DP on intervals │ │
-│ │ Maximum/Minimum │ DP, Greedy, or Binary search on answer │ │
-│ │ Graph with cycles │ May need to detect or handle cycles │ │
-│ │ String matching │ KMP, Z-algorithm, Rolling hash │ │
-│ │ Range queries │ Segment Tree, Fenwick Tree │ │
-│ │ Multiple patterns │ Trie, Aho-Corasick │ │
-│ └──────────────────────┴────────────────────────────────────────────────────┘ │
-│ │
+│                                                                                 │
+│ DIVIDE AND CONQUER:                                                             │
+│ • Problem can be split into independent subproblems                             │
+│ • Subproblems are similar to original                                           │
+│ • Examples: Merge Sort, Quick Sort, Binary Search, Strassen's Matrix            │
+│                                                                                 │
+│ DYNAMIC PROGRAMMING:                                                            │
+│ • Optimal substructure: optimal solution uses optimal subsolutions              │
+│ • Overlapping subproblems: same subproblems solved multiple times               │
+│ • Examples: Fibonacci, Knapsack, LCS, Edit Distance, Matrix Chain               │
+│                                                                                 │
+│ GREEDY:                                                                         │
+│ • Local optimal choice leads to global optimal                                  │
+│ • No need to reconsider past choices                                            │
+│ • Examples: Huffman, Activity Selection, Dijkstra, MST (Prim, Kruskal)          │
+│                                                                                 │
+│ BACKTRACKING:                                                                   │
+│ • Find all (or some) solutions                                                  │
+│ • Build solution incrementally, abandon if invalid                              │
+│ • Examples: N-Queens, Sudoku, Subset Sum, Permutations                          │
+│                                                                                 │
+│ BRANCH AND BOUND:                                                               │
+│ • Optimization problems                                                         │
+│ • Use bounds to prune search space                                              │
+│ • Examples: TSP, Integer Linear Programming, 0/1 Knapsack                       │
+│                                                                                 │
+│                                                                                 │
+│ COMPLEXITY CHEAT SHEET:                                                         │
+│ ┌──────────────────────┬────────────────────────────────────────────────────┐   │
+│ │ If you see... │ Think about... │                                              │
+│ ├──────────────────────┼────────────────────────────────────────────────────┤   │
+│ │ Sorted array │ Binary search O(log n) │                                       │
+│ │ Find all subsets │ 2^n solutions (exponential) │                              │
+│ │ Find all permutations│ n! solutions (factorial) │                             │
+│ │ Shortest path │ BFS (unweighted), Dijkstra (weighted) │                       │
+│ │ Connected components │ DFS/BFS/Union-Find │                                   │
+│ │ Optimal order │ DP on intervals │                                             │
+│ │ Maximum/Minimum │ DP, Greedy, or Binary search on answer │                    │
+│ │ Graph with cycles │ May need to detect or handle cycles │                     │
+│ │ String matching │ KMP, Z-algorithm, Rolling hash │                            │
+│ │ Range queries │ Segment Tree, Fenwick Tree │                                  │
+│ │ Multiple patterns │ Trie, Aho-Corasick │                                      │
+│ └──────────────────────┴────────────────────────────────────────────────────┘   │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ```

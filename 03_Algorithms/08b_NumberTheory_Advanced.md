@@ -711,7 +711,7 @@ private static TreeNode deserializeHelper(Queue<String> queue) {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════════╗
-║  THE TABLE EVERY DEVELOPER SHOULD MEMORIZE                                      ║
+║  THE TABLE EVERY DEVELOPER SHOULD MEMORIZE                                       ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 
 | Real Incident                           | DSA Used                    | Why That DSA               |
@@ -758,8 +758,8 @@ private static TreeNode deserializeHelper(Queue<String> queue) {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════════╗
-║  📅 GCD, PATTERNS & ALGORITHMS STUDY PLAN                                      ║
-║  Start: February 10, 2026 (Tuesday)                                             ║
+║  📅 GCD, PATTERNS & ALGORITHMS STUDY PLAN                                         ║
+║  Start: February 10, 2026 (Tuesday)                                              ║
 ║  Duration: 4 Weeks                                                               ║
 ║  Daily Time: 3-4 hours                                                           ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝

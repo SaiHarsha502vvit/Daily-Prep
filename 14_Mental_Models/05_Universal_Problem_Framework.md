@@ -8,12 +8,12 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
-│  1. READ    → Understand what's asked (not what you assume) │
-│  2. CLASSIFY → What type of problem is this?                │
-│  3. PLAN    → Choose strategy, design approach              │
-│  4. CODE    → Translate plan to code                        │
-│  5. TEST    → Verify with examples and edge cases           │
-│  6. OPTIMIZE → Can we do better?                            │
+│  1. READ    → Understand what's asked (not what you assume)  │
+│  2. CLASSIFY → What type of problem is this?                 │
+│  3. PLAN    → Choose strategy, design approach               │
+│  4. CODE    → Translate plan to code                         │
+│  5. TEST    → Verify with examples and edge cases            │
+│  6. OPTIMIZE → Can we do better?                             │
 └──────────────────────────────────────────────────────────────┘
 ```
 

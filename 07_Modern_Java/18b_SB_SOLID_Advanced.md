@@ -10,19 +10,19 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│              INTERFACE SEGREGATION PRINCIPLE                                     │
+│              INTERFACE SEGREGATION PRINCIPLE                                    │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  FAT INTERFACE PROBLEMS:                                                        │
 │  • Implementing classes forced to provide dummy implementations                 │
-│  • Changes to unused methods affect implementers                               │
-│  • Hard to understand what's actually needed                                   │
-│                                                                                  │
-│  SOLUTION: Small, focused interfaces                                           │
-│  • Each interface represents one capability                                    │
-│  • Classes implement only what they need                                       │
-│  • Easier to test and mock                                                     │
-│                                                                                  │
+│  • Changes to unused methods affect implementers                                │
+│  • Hard to understand what's actually needed                                    │
+│                                                                                 │
+│  SOLUTION: Small, focused interfaces                                            │
+│  • Each interface represents one capability                                     │
+│  • Classes implement only what they need                                        │
+│  • Easier to test and mock                                                      │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -257,33 +257,33 @@ public interface OrderRepository extends JpaRepository<Order, Long> {}
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│              DEPENDENCY INVERSION PRINCIPLE                                      │
+│              DEPENDENCY INVERSION PRINCIPLE                                     │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  HIGH-LEVEL MODULES should not depend on LOW-LEVEL MODULES                     │
+│                                                                                 │
+│  HIGH-LEVEL MODULES should not depend on LOW-LEVEL MODULES                      │
 │  BOTH should depend on ABSTRACTIONS                                             │
-│                                                                                  │
-│  ❌ WRONG:                                                                      │
-│  ┌──────────────────┐         ┌──────────────────┐                             │
-│  │  OrderService    │────────►│  MySQLRepository │                             │
-│  │  (High-level)    │         │  (Low-level)     │                             │
-│  └──────────────────┘         └──────────────────┘                             │
-│                                                                                  │
-│  ✅ RIGHT:                                                                      │
-│  ┌──────────────────┐         ┌──────────────────┐                             │
-│  │  OrderService    │────────►│  Repository      │◄─────────┐                  │
-│  │  (High-level)    │         │  (Abstraction)   │          │                  │
-│  └──────────────────┘         └──────────────────┘          │                  │
+│                                                                                 │
+│  ❌ WRONG:                                                                       │
+│  ┌──────────────────┐         ┌──────────────────┐                              │
+│  │  OrderService    │────────►│  MySQLRepository │                              │
+│  │  (High-level)    │         │  (Low-level)     │                              │
+│  └──────────────────┘         └──────────────────┘                              │
+│                                                                                 │
+│  ✅ RIGHT:                                                                       │
+│  ┌──────────────────┐         ┌──────────────────┐                              │
+│  │  OrderService    │────────►│  Repository      │◄─────────┐                   │
+│  │  (High-level)    │         │  (Abstraction)   │          │                   │
+│  └──────────────────┘         └──────────────────┘          │                   │
 │                                        ▲                     │                  │
 │                                        │                     │                  │
-│                               ┌────────┴────────┐           │                  │
-│                               │ MySQLRepository │           │                  │
-│                               │ (Low-level)     │           │                  │
-│                               └─────────────────┘           │                  │
-│                               ┌─────────────────┐           │                  │
-│                               │ PostgresRepo    │───────────┘                  │
-│                               └─────────────────┘                              │
-│                                                                                  │
+│                               ┌────────┴────────┐           │                   │
+│                               │ MySQLRepository │           │                   │
+│                               │ (Low-level)     │           │                   │
+│                               └─────────────────┘           │                   │
+│                               ┌─────────────────┐           │                   │
+│                               │ PostgresRepo    │───────────┘                   │
+│                               └─────────────────┘                               │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1000,35 +1000,35 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│              SOLID VIOLATION CODE SMELLS                                         │
+│              SOLID VIOLATION CODE SMELLS                                        │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  SRP VIOLATIONS:                                                                │
-│  • Class name contains "And" or "Manager"                                      │
-│  • Class has > 500 lines of code                                               │
-│  • Multiple @Autowired fields (> 5-7)                                          │
-│  • Methods using completely different sets of fields                           │
-│                                                                                  │
+│  • Class name contains "And" or "Manager"                                       │
+│  • Class has > 500 lines of code                                                │
+│  • Multiple @Autowired fields (> 5-7)                                           │
+│  • Methods using completely different sets of fields                            │
+│                                                                                 │
 │  OCP VIOLATIONS:                                                                │
-│  • switch/if-else chains on type/enum                                          │
-│  • Adding features requires modifying existing classes                         │
-│  • "instanceof" checks scattered in code                                       │
-│                                                                                  │
+│  • switch/if-else chains on type/enum                                           │
+│  • Adding features requires modifying existing classes                          │
+│  • "instanceof" checks scattered in code                                        │
+│                                                                                 │
 │  LSP VIOLATIONS:                                                                │
-│  • throw UnsupportedOperationException in subclass                            │
-│  • Subclass overrides with empty method body                                   │
-│  • Subclass changes method behavior unexpectedly                               │
-│                                                                                  │
+│  • throw UnsupportedOperationException in subclass                              │
+│  • Subclass overrides with empty method body                                    │
+│  • Subclass changes method behavior unexpectedly                                │
+│                                                                                 │
 │  ISP VIOLATIONS:                                                                │
-│  • Implementing class has empty/dummy methods                                  │
-│  • Interface has > 10 methods                                                  │
-│  • Unrelated methods grouped in one interface                                  │
-│                                                                                  │
+│  • Implementing class has empty/dummy methods                                   │
+│  • Interface has > 10 methods                                                   │
+│  • Unrelated methods grouped in one interface                                   │
+│                                                                                 │
 │  DIP VIOLATIONS:                                                                │
-│  • "new" keyword for service classes                                           │
-│  • Concrete class in constructor parameters                                    │
-│  • Hard-coded class names (e.g., MySQLRepository)                             │
-│                                                                                  │
+│  • "new" keyword for service classes                                            │
+│  • Concrete class in constructor parameters                                     │
+│  • Hard-coded class names (e.g., MySQLRepository)                               │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 

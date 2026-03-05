@@ -28,8 +28,8 @@
 ║  PROBLEM: Container With Most Water                                       ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Given array of heights, find two lines that form container with         ║
-║  maximum water.                                                          ║
+║  Given array of heights, find two lines that form container with          ║
+║  maximum water.                                                           ║
 ║                                                                           ║
 ║  Visual:                                                                  ║
 ║            |                                                              ║
@@ -37,10 +37,10 @@
 ║      |  |  |  |  |  |                                                     ║
 ║   |  |  |  |  |  |  |  |                                                  ║
 ║   ─────────────────────                                                   ║
-║   1  8  6  2  5  4  8  3  7                                              ║
+║   1  8  6  2  5  4  8  3  7                                               ║
 ║   ↑                       ↑                                               ║
-║   These two lines form max area                                          ║
-║   Area = min(8, 7) × distance = 7 × 7 = 49                               ║
+║   These two lines form max area                                           ║
+║   Area = min(8, 7) × distance = 7 × 7 = 49                                ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -91,18 +91,18 @@ public int maxArea(int[] height) {
 ║  PROBLEM: 3Sum                                                            ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Find all unique triplets that sum to zero.                              ║
+║  Find all unique triplets that sum to zero.                               ║
 ║                                                                           ║
-║  Input: [-1, 0, 1, 2, -1, -4]                                            ║
-║  Output: [[-1, -1, 2], [-1, 0, 1]]                                       ║
+║  Input: [-1, 0, 1, 2, -1, -4]                                             ║
+║  Output: [[-1, -1, 2], [-1, 0, 1]]                                        ║
 ║                                                                           ║
 ║  Approach:                                                                ║
-║  1. Sort array                                                           ║
-║  2. For each element, use two pointers to find pairs                     ║
+║  1. Sort array                                                            ║
+║  2. For each element, use two pointers to find pairs                      ║
 ║                                                                           ║
-║  Sorted: [-4, -1, -1, 0, 1, 2]                                           ║
+║  Sorted: [-4, -1, -1, 0, 1, 2]                                            ║
 ║            ↑                                                              ║
-║           fix one, find pair that sums to -nums[i]                       ║
+║           fix one, find pair that sums to -nums[i]                        ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -174,7 +174,7 @@ public List<List<Integer>> threeSum(int[] nums) {
 ║    ↑───────↑                                                              ║
 ║    └───────┘ "bca" length 3                                               ║
 ║                                                                           ║
-║  When we see repeat, shrink window from left                             ║
+║  When we see repeat, shrink window from left                              ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -225,17 +225,17 @@ public int lengthOfLongestSubstring(String s) {
 ║  Output: 9 (subarray [5, 1, 3])                                           ║
 ║                                                                           ║
 ║  Visual:                                                                  ║
-║  ┌─────────┐                                                             ║
-║  2  1  5  1  3  2     sum = 8                                            ║
-║  └─────────┘                                                             ║
+║  ┌─────────┐                                                              ║
+║  2  1  5  1  3  2     sum = 8                                             ║
+║  └─────────┘                                                              ║
 ║                                                                           ║
-║     ┌─────────┐                                                          ║
-║  2  1  5  1  3  2     sum = 7                                            ║
-║     └─────────┘                                                          ║
+║     ┌─────────┐                                                           ║
+║  2  1  5  1  3  2     sum = 7                                             ║
+║     └─────────┘                                                           ║
 ║                                                                           ║
-║        ┌─────────┐                                                       ║
-║  2  1  5  1  3  2     sum = 9 ⭐ MAX                                      ║
-║        └─────────┘                                                       ║
+║        ┌─────────┐                                                        ║
+║  2  1  5  1  3  2     sum = 9 ⭐ MAX                                       ║
+║        └─────────┘                                                        ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -278,7 +278,7 @@ public int maxSumSubarrayK(int[] arr, int k) {
 ║  PROBLEM: Search in Rotated Sorted Array                                  ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Array was sorted, then rotated at some pivot.                           ║
+║  Array was sorted, then rotated at some pivot.                            ║
 ║  Find target in O(log N).                                                 ║
 ║                                                                           ║
 ║  Original: [0, 1, 2, 4, 5, 6, 7]                                          ║
@@ -292,8 +292,8 @@ public int maxSumSubarrayK(int[] arr, int k) {
 ║   ↑        ↑        ↑                                                     ║
 ║  low      mid     high                                                    ║
 ║                                                                           ║
-║  Left half [4,5,6,7] is sorted (arr[low] <= arr[mid])                    ║
-║  Check if target is in sorted half, else search other half              ║
+║  Left half [4,5,6,7] is sorted (arr[low] <= arr[mid])                     ║
+║  Check if target is in sorted half, else search other half                ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -345,22 +345,22 @@ public int search(int[] nums, int target) {
 ║  PROBLEM: Find Peak Element                                               ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Peak = element greater than its neighbors.                              ║
-║  nums[-1] and nums[n] are considered -∞.                                 ║
+║  Peak = element greater than its neighbors.                               ║
+║  nums[-1] and nums[n] are considered -∞.                                  ║
 ║                                                                           ║
 ║  Input: [1, 2, 3, 1]                                                      ║
 ║  Output: 2 (index of element 3)                                           ║
 ║                                                                           ║
 ║  Visual:                                                                  ║
 ║         3 ← peak                                                          ║
-║        /\                                                                ║
+║        /\                                                                 ║
 ║       2  \                                                                ║
 ║      /    1                                                               ║
 ║     1                                                                     ║
 ║                                                                           ║
 ║  Binary Search approach:                                                  ║
-║  - If arr[mid] < arr[mid+1], peak is on RIGHT                            ║
-║  - If arr[mid] > arr[mid+1], peak is on LEFT (including mid)             ║
+║  - If arr[mid] < arr[mid+1], peak is on RIGHT                             ║
+║  - If arr[mid] > arr[mid+1], peak is on LEFT (including mid)              ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -403,7 +403,7 @@ public int findPeakElement(int[] nums) {
 ║  PROBLEM: Rotate Array                                                    ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Rotate array to the right by k steps.                                   ║
+║  Rotate array to the right by k steps.                                    ║
 ║                                                                           ║
 ║  Input: [1, 2, 3, 4, 5, 6, 7], k = 3                                      ║
 ║  Output: [5, 6, 7, 1, 2, 3, 4]                                            ║

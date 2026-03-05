@@ -29,25 +29,25 @@
 ║                                                                  ║
 ║  You're organizing a large concert. Different coordination needs:║
 ║                                                                  ║
-║  Semaphore     = Parking lot gate                               ║
-║    "Only 50 cars at a time. Car leaves → next car enters."      ║
+║  Semaphore     = Parking lot gate                                ║
+║    "Only 50 cars at a time. Car leaves → next car enters."       ║
 ║    → Controls concurrent access to N resources                   ║
 ║                                                                  ║
 ║  CountDownLatch = Pre-show checklist                             ║
-║    "Sound ✓, Lights ✓, Security ✓ → Open the doors!"           ║
-║    → Wait until N tasks complete, then proceed. ONE-TIME use.   ║
+║    "Sound ✓, Lights ✓, Security ✓ → Open the doors!"             ║
+║    → Wait until N tasks complete, then proceed. ONE-TIME use.    ║
 ║                                                                  ║
-║  CyclicBarrier = Band performing in rounds                      ║
-║    "All 4 musicians ready? → Play verse. All ready? → Chorus." ║
-║    → N threads sync at a point, REUSABLE for multiple rounds.   ║
+║  CyclicBarrier = Band performing in rounds                       ║
+║    "All 4 musicians ready? → Play verse. All ready? → Chorus."   ║
+║    → N threads sync at a point, REUSABLE for multiple rounds.    ║
 ║                                                                  ║
-║  Phaser        = Flexible stage management                      ║
-║    "Phase 1: 5 crew set up. Phase 2: 3 crew handle sound."     ║
-║    → Dynamic: participants can join/leave between phases.       ║
+║  Phaser        = Flexible stage management                       ║
+║    "Phase 1: 5 crew set up. Phase 2: 3 crew handle sound."       ║
+║    → Dynamic: participants can join/leave between phases.        ║
 ║                                                                  ║
-║  Exchanger     = Backstage pass swap                            ║
-║    "I give you my VIP pass, you give me your backstage pass."   ║
-║    → Two threads each give and receive one item.                ║
+║  Exchanger     = Backstage pass swap                             ║
+║    "I give you my VIP pass, you give me your backstage pass."    ║
+║    → Two threads each give and receive one item.                 ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
@@ -55,23 +55,23 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│  Your Scenario                        │  Use This                  │
-│ ──────────────────────────────────────┼────────────────────────── │
-│  Limit concurrent connections/threads │  Semaphore                 │
-│  Wait for N tasks to finish, then go  │  CountDownLatch            │
-│  N threads meet at barrier, repeat    │  CyclicBarrier             │
-│  Threads arrive at phases dynamically │  Phaser                    │
-│  Two threads exchange data            │  Exchanger                 │
-│  Exclusive access (mutual exclusion)  │  ReentrantLock / synch     │
-│  Many readers, few writers            │  ReadWriteLock             │
-│  Optimistic reads, rare writes        │  StampedLock               │
-│  Wait for a condition                 │  Condition (with Lock)     │
+│  Your Scenario                        │  Use This                   │
+│ ──────────────────────────────────────┼──────────────────────────   │
+│  Limit concurrent connections/threads │  Semaphore                  │
+│  Wait for N tasks to finish, then go  │  CountDownLatch             │
+│  N threads meet at barrier, repeat    │  CyclicBarrier              │
+│  Threads arrive at phases dynamically │  Phaser                     │
+│  Two threads exchange data            │  Exchanger                  │
+│  Exclusive access (mutual exclusion)  │  ReentrantLock / synch      │
+│  Many readers, few writers            │  ReadWriteLock              │
+│  Optimistic reads, rare writes        │  StampedLock                │
+│  Wait for a condition                 │  Condition (with Lock)      │
 │                                                                     │
-│  SHORTCUT:                                                         │
-│  "How many can access at once?"       → Semaphore(N)              │
-│  "Wait until all N finish?"           → CountDownLatch(N)         │
-│  "All N threads meet, then repeat?"   → CyclicBarrier(N)         │
-│  "Phases with dynamic participants?"  → Phaser                    │
+│  SHORTCUT:                                                          │
+│  "How many can access at once?"       → Semaphore(N)                │
+│  "Wait until all N finish?"           → CountDownLatch(N)           │
+│  "All N threads meet, then repeat?"   → CyclicBarrier(N)            │
+│  "Phases with dynamic participants?"  → Phaser                      │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -86,24 +86,24 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
-║  THE PARKING LOT ANALOGY                                        ║
+║  THE PARKING LOT ANALOGY                                         ║
 ║                                                                  ║
 ║  Lock = single-car garage                                        ║
-║  → ONE thread enters at a time                                  ║
-║  → The thread that locked MUST unlock (owner-based)             ║
+║  → ONE thread enters at a time                                   ║
+║  → The thread that locked MUST unlock (owner-based)              ║
 ║                                                                  ║
 ║  Semaphore = parking lot with N spots                            ║
-║  → N threads can enter simultaneously                           ║
-║  → ANY thread can release a permit (not owner-based!)           ║
-║  → When full, next thread waits until a spot opens              ║
+║  → N threads can enter simultaneously                            ║
+║  → ANY thread can release a permit (not owner-based!)            ║
+║  → When full, next thread waits until a spot opens               ║
 ║                                                                  ║
 ║  KEY DIFFERENCE:                                                 ║
-║  Lock:      1 thread, owner releases                            ║
-║  Semaphore: N threads, anyone can release                       ║
+║  Lock:      1 thread, owner releases                             ║
+║  Semaphore: N threads, anyone can release                        ║
 ║                                                                  ║
-║  Semaphore(1) ≈ Lock, but WITHOUT ownership enforcement         ║
-║  → Thread A acquires, Thread B can release → INTENTIONAL!       ║
-║  → Useful for signaling between threads                         ║
+║  Semaphore(1) ≈ Lock, but WITHOUT ownership enforcement          ║
+║  → Thread A acquires, Thread B can release → INTENTIONAL!        ║
+║  → Useful for signaling between threads                          ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
@@ -149,24 +149,24 @@ public class ConnectionPool {
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │  Semaphore is built on AbstractQueuedSynchronizer (AQS):        │
-│                                                                  │
+│                                                                 │
 │  AQS.state = number of available permits                        │
-│                                                                  │
-│  acquire():                                                      │
+│                                                                 │
+│  acquire():                                                     │
 │    1. CAS: state = state - 1                                    │
 │    2. If state >= 0 → proceed (got permit)                      │
-│    3. If state < 0 → park thread in CLH queue (wait)           │
-│                                                                  │
-│  release():                                                      │
+│    3. If state < 0 → park thread in CLH queue (wait)            │
+│                                                                 │
+│  release():                                                     │
 │    1. CAS: state = state + 1                                    │
 │    2. If threads waiting → unpark next thread in queue          │
-│                                                                  │
-│  Fair vs Unfair:                                                 │
+│                                                                 │
+│  Fair vs Unfair:                                                │
 │    Fair (true):    FIFO — longest-waiting thread gets next      │
 │    Unfair (false): Barging — any thread can jump ahead          │
 │    → Unfair is ~10x faster (fewer context switches)             │
 │    → Fair prevents starvation but lower throughput              │
-│                                                                  │
+│                                                                 │
 │  tryAcquire(timeout):                                           │
 │    → Non-blocking attempt with timeout                          │
 │    → Return false instead of blocking forever                   │
@@ -187,22 +187,22 @@ public class ConnectionPool {
 ╔══════════════════════════════════════════════════════════════════╗
 ║  THE ROCKET LAUNCH ANALOGY                                       ║
 ║                                                                  ║
-║  Mission Control: "We launch when 5 systems report READY"       ║
+║  Mission Control: "We launch when 5 systems report READY"        ║
 ║                                                                  ║
 ║  CountDownLatch(5):                                              ║
 ║                                                                  ║
-║  Navigation system: "Ready!" → countDown() → count = 4         ║
-║  Fuel system:       "Ready!" → countDown() → count = 3         ║
-║  Guidance system:   "Ready!" → countDown() → count = 2         ║
-║  Communication:     "Ready!" → countDown() → count = 1         ║
-║  Life support:      "Ready!" → countDown() → count = 0         ║
+║  Navigation system: "Ready!" → countDown() → count = 4           ║
+║  Fuel system:       "Ready!" → countDown() → count = 3           ║
+║  Guidance system:   "Ready!" → countDown() → count = 2           ║
+║  Communication:     "Ready!" → countDown() → count = 1           ║
+║  Life support:      "Ready!" → countDown() → count = 0           ║
 ║                                                                  ║
-║  Mission Control: await() returns → "3... 2... 1... LAUNCH!"   ║
+║  Mission Control: await() returns → "3... 2... 1... LAUNCH!"     ║
 ║                                                                  ║
 ║  CRITICAL: The latch is ONE-TIME.                                ║
-║  Once count reaches 0, it stays 0 forever.                      ║
-║  Cannot reset. Cannot reuse. It's a burned bridge.              ║
-║  Need reusable? → Use CyclicBarrier.                            ║
+║  Once count reaches 0, it stays 0 forever.                       ║
+║  Cannot reset. Cannot reuse. It's a burned bridge.               ║
+║  Need reusable? → Use CyclicBarrier.                             ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
@@ -289,30 +289,30 @@ startGun.countDown();      // BANG! All 10 threads released at once
 ╔══════════════════════════════════════════════════════════════════╗
 ║  THE HIKING GROUP ANALOGY                                        ║
 ║                                                                  ║
-║  5 hikers agree: "Nobody moves on until everyone reaches the    ║
+║  5 hikers agree: "Nobody moves on until everyone reaches the     ║
 ║  checkpoint."                                                    ║
 ║                                                                  ║
 ║  Checkpoint 1 (valley):                                          ║
-║  Alice arrives → waits... (1/5)                                 ║
-║  Bob arrives → waits... (2/5)                                   ║
-║  Charlie arrives → waits... (3/5)                               ║
-║  Dave arrives → waits... (4/5)                                  ║
-║  Eve arrives → ALL HERE! (5/5)                                  ║
-║  → Everyone moves to next section                               ║
+║  Alice arrives → waits... (1/5)                                  ║
+║  Bob arrives → waits... (2/5)                                    ║
+║  Charlie arrives → waits... (3/5)                                ║
+║  Dave arrives → waits... (4/5)                                   ║
+║  Eve arrives → ALL HERE! (5/5)                                   ║
+║  → Everyone moves to next section                                ║
 ║                                                                  ║
 ║  Checkpoint 2 (mountain):                                        ║
-║  Same thing — barrier RESETS automatically!                     ║
+║  Same thing — barrier RESETS automatically!                      ║
 ║                                                                  ║
 ║  KEY DIFFERENCES from CountDownLatch:                            ║
-║  ┌────────────────────┬─────────────────┬──────────────────┐    ║
+║  ┌────────────────────┬─────────────────┬──────────────────┐     ║
 ║  │                    │ CountDownLatch   │ CyclicBarrier    │    ║
-║  ├────────────────────┼─────────────────┼──────────────────┤    ║
-║  │ Reusable?          │ ❌ One-shot     │ ✅ Auto-resets   │    ║
-║  │ Who counts?        │ Any thread      │ Waiting threads  │    ║
-║  │ Barrier action?    │ ❌ None         │ ✅ Runnable      │    ║
-║  │ Threads wait?      │ Only awaiting   │ ALL participants │    ║
-║  │ Can reset?         │ ❌              │ ✅ .reset()      │    ║
-║  └────────────────────┴─────────────────┴──────────────────┘    ║
+║  ├────────────────────┼─────────────────┼──────────────────┤     ║
+║  │ Reusable?          │ ❌ One-shot     │ ✅ Auto-resets   │       ║
+║  │ Who counts?        │ Any thread      │ Waiting threads  │     ║
+║  │ Barrier action?    │ ❌ None         │ ✅ Runnable      │       ║
+║  │ Threads wait?      │ Only awaiting   │ ALL participants │     ║
+║  │ Can reset?         │ ❌              │ ✅ .reset()      │       ║
+║  └────────────────────┴─────────────────┴──────────────────┘     ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
@@ -366,22 +366,22 @@ public class ParallelSimulation {
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │  WHAT HAPPENS WHEN ONE THREAD FAILS AT A BARRIER?               │
-│                                                                  │
+│                                                                 │
 │  If Thread 3 throws exception while others await:               │
 │  → barrier.await() throws BrokenBarrierException for ALL        │
 │  → The barrier is "broken" — all waiting threads wake up        │
 │  → Future calls to await() also throw BrokenBarrierException    │
 │  → Must call barrier.reset() to reuse                           │
-│                                                                  │
+│                                                                 │
 │  If Thread 3 is interrupted:                                    │
 │  → Thread 3 gets InterruptedException                           │
 │  → Others get BrokenBarrierException                            │
 │  → Barrier is broken                                            │
-│                                                                  │
+│                                                                 │
 │  If Thread 3's await() times out:                               │
 │  → Thread 3 gets TimeoutException                               │
 │  → Others get BrokenBarrierException                            │
-│                                                                  │
+│                                                                 │
 │  LESSON: One thread's failure cascades to ALL waiting threads.  │
 │  Always handle BrokenBarrierException in production code!       │
 └─────────────────────────────────────────────────────────────────┘
@@ -398,21 +398,21 @@ public class ParallelSimulation {
 ║  THE RELAY RACE ANALOGY                                          ║
 ║                                                                  ║
 ║  Phaser = A relay race where:                                    ║
-║  → Runners can JOIN mid-race (register)                         ║
-║  → Runners can DROP OUT (arriveAndDeregister)                   ║
-║  → Number of runners changes between legs (phases)              ║
+║  → Runners can JOIN mid-race (register)                          ║
+║  → Runners can DROP OUT (arriveAndDeregister)                    ║
+║  → Number of runners changes between legs (phases)               ║
 ║                                                                  ║
 ║  vs CyclicBarrier:                                               ║
-║  CyclicBarrier = Fixed team size. If one quits, barrier breaks! ║
-║  Phaser = Dynamic. Team adapts. Phase advances normally.        ║
+║  CyclicBarrier = Fixed team size. If one quits, barrier breaks!  ║
+║  Phaser = Dynamic. Team adapts. Phase advances normally.         ║
 ║                                                                  ║
 ║  WHEN TO USE PHASER:                                             ║
-║  → When participant count changes between phases                ║
-║  → When you need phase completion callbacks (onAdvance)         ║
-║  → When CyclicBarrier is too rigid                              ║
-║  → When CountDownLatch needs multiple rounds                    ║
+║  → When participant count changes between phases                 ║
+║  → When you need phase completion callbacks (onAdvance)          ║
+║  → When CyclicBarrier is too rigid                               ║
+║  → When CountDownLatch needs multiple rounds                     ║
 ║                                                                  ║
-║  Phaser can REPLACE both CountDownLatch and CyclicBarrier!      ║
+║  Phaser can REPLACE both CountDownLatch and CyclicBarrier!       ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
@@ -484,24 +484,24 @@ phaser.arriveAndAwaitAdvance();  // Waiter proceeds when all arrive
 ### Deep Reasoning
 
 ```
-╔══════════════════════════════════════════════════════════════════╗
-║  THE BATON PASS ANALOGY                                          ║
-║                                                                  ║
-║  Two runners meet at a point. Each gives their baton to the     ║
-║  other. Both must arrive before either can leave.                ║
-║                                                                  ║
-║  Thread A has: buffer1 (full data)                               ║
-║  Thread B has: buffer2 (empty buffer)                            ║
-║                                                                  ║
+╔════════════════════════════════════════════════════════════════════╗
+║  THE BATON PASS ANALOGY                                            ║
+║                                                                    ║
+║  Two runners meet at a point. Each gives their baton to the        ║
+║  other. Both must arrive before either can leave.                  ║
+║                                                                    ║
+║  Thread A has: buffer1 (full data)                                 ║
+║  Thread B has: buffer2 (empty buffer)                              ║
+║                                                                    ║
 ║  exchanger.exchange(buffer1) → Thread A gives buffer1, gets buffer2║
 ║  exchanger.exchange(buffer2) → Thread B gives buffer2, gets buffer1║
-║                                                                  ║
-║  USE CASE: Double-buffered data pipeline                        ║
-║  → Producer fills buffer1, consumer processes buffer2            ║
-║  → At the exchange point, they SWAP buffers                     ║
-║  → Producer fills (now-empty) buffer2, consumer processes buffer1║
-║  → Never idle — always one buffer being filled, one processed   ║
-╚══════════════════════════════════════════════════════════════════╝
+║                                                                    ║
+║  USE CASE: Double-buffered data pipeline                           ║
+║  → Producer fills buffer1, consumer processes buffer2              ║
+║  → At the exchange point, they SWAP buffers                        ║
+║  → Producer fills (now-empty) buffer2, consumer processes buffer1  ║
+║  → Never idle — always one buffer being filled, one processed      ║
+╚════════════════════════════════════════════════════════════════════╝
 ```
 
 ```java
@@ -544,25 +544,25 @@ new Thread(() -> {
 ╔══════════════════════════════════════════════════════════════════╗
 ║  THE HALLWAY ANALOGIES                                           ║
 ║                                                                  ║
-║  DEADLOCK = Two people in a narrow hallway, face to face        ║
-║  → "You go first!" "No, YOU go first!"                          ║
-║  → Neither moves. Both stuck forever.                           ║
-║  → Threads: A holds lock1, wants lock2.                         ║
-║             B holds lock2, wants lock1.                         ║
-║             Neither can proceed. CPU idle.                      ║
+║  DEADLOCK = Two people in a narrow hallway, face to face         ║
+║  → "You go first!" "No, YOU go first!"                           ║
+║  → Neither moves. Both stuck forever.                            ║
+║  → Threads: A holds lock1, wants lock2.                          ║
+║             B holds lock2, wants lock1.                          ║
+║             Neither can proceed. CPU idle.                       ║
 ║                                                                  ║
-║  LIVELOCK = Two people in a hallway, both politely stepping     ║
-║  → "Oh, I'll step left!" "I'll step left too!"                 ║
-║  → "Sorry, I'll step right!" "I'll step right too!"            ║
-║  → Both MOVING but making ZERO progress.                        ║
-║  → Threads: A backs off, B backs off, A retries, B retries...  ║
-║             Both active. CPU busy. Nothing accomplished.        ║
+║  LIVELOCK = Two people in a hallway, both politely stepping      ║
+║  → "Oh, I'll step left!" "I'll step left too!"                   ║
+║  → "Sorry, I'll step right!" "I'll step right too!"              ║
+║  → Both MOVING but making ZERO progress.                         ║
+║  → Threads: A backs off, B backs off, A retries, B retries...    ║
+║             Both active. CPU busy. Nothing accomplished.         ║
 ║                                                                  ║
-║  STARVATION = One person always getting pushed to back of line  ║
-║  → Every time they're about to enter, someone with higher       ║
+║  STARVATION = One person always getting pushed to back of line   ║
+║  → Every time they're about to enter, someone with higher        ║
 ║    priority cuts in front                                        ║
-║  → They're alive, making no progress, but OTHERS are.          ║
-║  → Thread with low priority never gets CPU time.                ║
+║  → They're alive, making no progress, but OTHERS are.            ║
+║  → Thread with low priority never gets CPU time.                 ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
@@ -622,23 +622,23 @@ Semaphore fairSemaphore = new Semaphore(5, true);  // Fair = true
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │  ALL FOUR must be true simultaneously for deadlock:             │
-│                                                                  │
+│                                                                 │
 │  1. Mutual Exclusion — Resource held exclusively                │
 │     (only one thread can hold the lock)                         │
-│                                                                  │
+│                                                                 │
 │  2. Hold and Wait — Thread holds resource while waiting         │
 │     (Thread A has lock1, waiting for lock2)                     │
-│                                                                  │
+│                                                                 │
 │  3. No Preemption — Cannot forcibly take a resource             │
 │     (can't steal a lock from another thread)                    │
-│                                                                  │
-│  4. Circular Wait — A→B→C→A chain of waiting                   │
+│                                                                 │
+│  4. Circular Wait — A→B→C→A chain of waiting                    │
 │     (A waits for B, B waits for A)                              │
-│                                                                  │
+│                                                                 │
 │  BREAK ANY ONE to prevent deadlock:                             │
 │  → Lock ordering breaks #4 (no circular chain possible)         │
-│  → tryLock with timeout breaks #2 (release if can't get second)│
-│  → Lock-free algorithms break #1 (CAS instead of locks)        │
+│  → tryLock with timeout breaks #2 (release if can't get second) │
+│  → Lock-free algorithms break #1 (CAS instead of locks)         │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -652,24 +652,24 @@ Semaphore fairSemaphore = new Semaphore(5, true);  // Fair = true
 ╔══════════════════════════════════════════════════════════════════╗
 ║  synchronized vs ReentrantLock                                   ║
 ║                                                                  ║
-║  synchronized = Automatic car (simple, the JVM manages locks)   ║
-║  ReentrantLock = Manual car (more control, more responsibility) ║
+║  synchronized = Automatic car (simple, the JVM manages locks)    ║
+║  ReentrantLock = Manual car (more control, more responsibility)  ║
 ║                                                                  ║
 ║  ReentrantLock ADDS:                                             ║
-║  1. tryLock()           → Non-blocking attempt                  ║
-║  2. tryLock(timeout)    → Bounded waiting (avoids deadlock)     ║
-║  3. lockInterruptibly() → Can cancel waiting thread             ║
-║  4. fairness policy     → FIFO ordering to prevent starvation   ║
-║  5. Multiple Conditions → Multiple wait-sets (not just one)     ║
-║  6. Lock across methods → Lock in methodA, unlock in methodB   ║
+║  1. tryLock()           → Non-blocking attempt                   ║
+║  2. tryLock(timeout)    → Bounded waiting (avoids deadlock)      ║
+║  3. lockInterruptibly() → Can cancel waiting thread              ║
+║  4. fairness policy     → FIFO ordering to prevent starvation    ║
+║  5. Multiple Conditions → Multiple wait-sets (not just one)      ║
+║  6. Lock across methods → Lock in methodA, unlock in methodB     ║
 ║                                                                  ║
 ║  synchronized WINS at:                                           ║
-║  1. Simplicity (no unlock in finally needed)                    ║
-║  2. JVM optimization (biased/thin/fat lock escalation)          ║
-║  3. Structured locking (scope-based, no unlock bugs)            ║
+║  1. Simplicity (no unlock in finally needed)                     ║
+║  2. JVM optimization (biased/thin/fat lock escalation)           ║
+║  3. Structured locking (scope-based, no unlock bugs)             ║
 ║                                                                  ║
-║  RULE: Use synchronized by default. Switch to ReentrantLock     ║
-║  only when you need tryLock, fairness, or multiple conditions.  ║
+║  RULE: Use synchronized by default. Switch to ReentrantLock      ║
+║  only when you need tryLock, fairness, or multiple conditions.   ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 

@@ -32,29 +32,29 @@
 ║                                                                  ║
 ║  Every Java object is like a passport:                           ║
 ║                                                                  ║
-║  ┌─────────────────────────────────────────────┐                ║
-║  │ OBJECT HEADER (passport cover + stamps)     │                ║
-║  │  ┌───────────────────────────────────────┐  │                ║
-║  │  │ Mark Word (8 bytes / 64-bit JVM)      │  │                ║
-║  │  │ → Identity: hashCode                  │  │                ║
-║  │  │ → Age stamp: GC generation age        │  │                ║
-║  │  │ → Lock state: biased/thin/fat         │  │                ║
-║  │  └───────────────────────────────────────┘  │                ║
-║  │  ┌───────────────────────────────────────┐  │                ║
-║  │  │ Klass Pointer (4 bytes compressed)    │  │                ║
-║  │  │ → "What type am I?" → points to       │  │                ║
+║  ┌─────────────────────────────────────────────┐                 ║
+║  │ OBJECT HEADER (passport cover + stamps)     │                 ║
+║  │  ┌───────────────────────────────────────┐  │                 ║
+║  │  │ Mark Word (8 bytes / 64-bit JVM)      │  │                 ║
+║  │  │ → Identity: hashCode                  │  │                 ║
+║  │  │ → Age stamp: GC generation age        │  │                 ║
+║  │  │ → Lock state: biased/thin/fat         │  │                 ║
+║  │  └───────────────────────────────────────┘  │                 ║
+║  │  ┌───────────────────────────────────────┐  │                 ║
+║  │  │ Klass Pointer (4 bytes compressed)    │  │                 ║
+║  │  │ → "What type am I?" → points to       │  │                 ║
 ║  │  │   class metadata in Metaspace          │  │                ║
-║  │  └───────────────────────────────────────┘  │                ║
-║  ├─────────────────────────────────────────────┤                ║
-║  │ INSTANCE DATA (passport pages)              │                ║
-║  │  → Your fields: int age, String name, etc. │                ║
-║  ├─────────────────────────────────────────────┤                ║
-║  │ PADDING (empty pages for alignment)         │                ║
-║  │  → Pad to multiple of 8 bytes              │                ║
-║  └─────────────────────────────────────────────┘                ║
+║  │  └───────────────────────────────────────┘  │                 ║
+║  ├─────────────────────────────────────────────┤                 ║
+║  │ INSTANCE DATA (passport pages)              │                 ║
+║  │  → Your fields: int age, String name, etc. │                  ║
+║  ├─────────────────────────────────────────────┤                 ║
+║  │ PADDING (empty pages for alignment)         │                 ║
+║  │  → Pad to multiple of 8 bytes              │                  ║
+║  └─────────────────────────────────────────────┘                 ║
 ║                                                                  ║
-║  EVERY object has this structure. Even `new Object()`:          ║
-║  Header (12 bytes) + Padding (4 bytes) = 16 bytes minimum      ║
+║  EVERY object has this structure. Even `new Object()`:           ║
+║  Header (12 bytes) + Padding (4 bytes) = 16 bytes minimum        ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
@@ -62,26 +62,26 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
-│  64-bit JVM with Compressed Oops (default for heap < 32GB)      │
-│                                                                   │
-│  new Object():                                                    │
+│  64-bit JVM with Compressed Oops (default for heap < 32GB)       │
+│                                                                  │
+│  new Object():                                                   │
 │  ┌────────────┬──────────────┬──────────┐                        │
 │  │ Mark Word  │ Klass Pointer│ Padding  │ = 16 bytes             │
 │  │ (8 bytes)  │ (4 bytes)    │ (4 bytes)│                        │
 │  └────────────┴──────────────┴──────────┘                        │
-│                                                                   │
-│  new int[0]:                                                      │
+│                                                                  │
+│  new int[0]:                                                     │
 │  ┌────────────┬──────────────┬────────────┬──────────┐           │
 │  │ Mark Word  │ Klass Pointer│ Array Len  │ Padding  │ = 16 bytes│
 │  │ (8 bytes)  │ (4 bytes)    │ (4 bytes)  │ (0 bytes)│           │
 │  └────────────┴──────────────┴────────────┴──────────┘           │
-│                                                                   │
+│                                                                  │
 │  class Point { int x; int y; }                                   │
 │  ┌────────────┬──────────────┬──────┬──────┐                     │
 │  │ Mark Word  │ Klass Pointer│  x   │  y   │ = 24 bytes          │
-│  │ (8 bytes)  │ (4 bytes)    │(4 b) │(4 b) │ (header=12+data=8) │
+│  │ (8 bytes)  │ (4 bytes)    │(4 b) │(4 b) │ (header=12+data=8)  │
 │  └────────────┴──────────────┴──────┴──────┘   padded to 24      │
-│                                                                   │
+│                                                                  │
 │  ⚠️ Arrays have an EXTRA 4-byte length field in header           │
 │  ⚠️ Everything padded to multiple of 8 bytes (object alignment)  │
 └──────────────────────────────────────────────────────────────────┘
@@ -99,37 +99,37 @@
 ║                                                                  ║
 ║  The Mark Word is like a mood ring on every object:              ║
 ║                                                                  ║
-║  The SAME 64 bits mean DIFFERENT things depending on state:     ║
+║  The SAME 64 bits mean DIFFERENT things depending on state:      ║
 ║                                                                  ║
-║  State: NORMAL (no lock)                                        ║
-║  ┌──────────────────┬────────┬────────┬────────┐                ║
-║  │ identity hashCode│ unused │ GC age │ state  │                ║
+║  State: NORMAL (no lock)                                         ║
+║  ┌──────────────────┬────────┬────────┬────────┐                 ║
+║  │ identity hashCode│ unused │ GC age │ state  │                 ║
 ║  │ (31 bits)        │ (1 bit)│ (4 bits)│ (3 bits)│               ║
-║  └──────────────────┴────────┴────────┴────────┘                ║
+║  └──────────────────┴────────┴────────┴────────┘                 ║
 ║                                                                  ║
 ║  State: BIASED LOCK                                              ║
-║  ┌──────────────────┬────────┬────────┬────────┐                ║
-║  │ thread ID        │ epoch  │ GC age │ state  │                ║
+║  ┌──────────────────┬────────┬────────┬────────┐                 ║
+║  │ thread ID        │ epoch  │ GC age │ state  │                 ║
 ║  │ (54 bits)        │ (2 bits)│ (4 bits)│(3 bits)│               ║
-║  └──────────────────┴────────┴────────┴────────┘                ║
+║  └──────────────────┴────────┴────────┴────────┘                 ║
 ║                                                                  ║
 ║  State: THIN LOCK (lightweight)                                  ║
-║  ┌──────────────────────────────────────┬────────┐              ║
-║  │ pointer to lock record on stack      │ state  │              ║
+║  ┌──────────────────────────────────────┬────────┐               ║
+║  │ pointer to lock record on stack      │ state  │               ║
 ║  │ (62 bits)                            │ (2 bits)│              ║
-║  └──────────────────────────────────────┴────────┘              ║
+║  └──────────────────────────────────────┴────────┘               ║
 ║                                                                  ║
-║  State: FAT LOCK (heavyweight / monitor)                        ║
-║  ┌──────────────────────────────────────┬────────┐              ║
-║  │ pointer to ObjectMonitor (OS mutex)  │ state  │              ║
+║  State: FAT LOCK (heavyweight / monitor)                         ║
+║  ┌──────────────────────────────────────┬────────┐               ║
+║  │ pointer to ObjectMonitor (OS mutex)  │ state  │               ║
 ║  │ (62 bits)                            │ (2 bits)│              ║
-║  └──────────────────────────────────────┴────────┘              ║
+║  └──────────────────────────────────────┴────────┘               ║
 ║                                                                  ║
-║  State: GC (marked for garbage collection)                      ║
-║  ┌──────────────────────────────────────┬────────┐              ║
-║  │ forwarding pointer                   │ state  │              ║
+║  State: GC (marked for garbage collection)                       ║
+║  ┌──────────────────────────────────────┬────────┐               ║
+║  │ forwarding pointer                   │ state  │               ║
 ║  │ (62 bits)                            │ (2 bits)│              ║
-║  └──────────────────────────────────────┴────────┘              ║
+║  └──────────────────────────────────────┴────────┘               ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
@@ -138,7 +138,7 @@
 ```
 ┌────────────────────────────────────────────────────────────────┐
 │ Last 3 bits of mark word determine the object's lock state:    │
-│                                                                 │
+│                                                                │
 │   Bits  │  State              │  What It Means                 │
 │  ───────┼─────────────────────┼──────────────────────────────  │
 │   001   │  Normal (unlocked)  │  hashCode stored, no lock      │
@@ -146,11 +146,11 @@
 │   00    │  Thin Lock          │  CAS-based lightweight lock    │
 │   10    │  Fat Lock           │  OS mutex (heavyweight)        │
 │   11    │  GC marked          │  Being garbage collected       │
-│                                                                 │
+│                                                                │
 │ ⚠️ Notice: biased locking was DEPRECATED in Java 15            │
 │    and REMOVED in Java 18+ (JEP 374)                           │
-│    Reason: complexity didn't justify the small performance gain │
-│    for modern workloads with many short-lived objects           │
+│    Reason: complexity didn't justify the small performance gain│
+│    for modern workloads with many short-lived objects          │
 └────────────────────────────────────────────────────────────────┘
 ```
 
@@ -187,30 +187,30 @@ synchronized(obj) {
 ### Deep Reasoning
 
 ```
-╔══════════════════════════════════════════════════════════════════╗
-║  THE EMPLOYEE ID BADGE ANALOGY                                   ║
-║                                                                  ║
-║  Klass Pointer = ID badge that says "I work in Department X"    ║
-║                                                                  ║
-║  Object in heap: "I am a String"                                ║
-║        │                                                         ║
-║        └──→ Klass Pointer ──→ String.class metadata             ║
-║                                  (in Metaspace, NOT heap)        ║
-║                                  Contains:                       ║
+╔═══════════════════════════════════════════════════════════════════╗
+║  THE EMPLOYEE ID BADGE ANALOGY                                    ║
+║                                                                   ║
+║  Klass Pointer = ID badge that says "I work in Department X"      ║
+║                                                                   ║
+║  Object in heap: "I am a String"                                  ║
+║        │                                                          ║
+║        └──→ Klass Pointer ──→ String.class metadata               ║
+║                                  (in Metaspace, NOT heap)         ║
+║                                  Contains:                        ║
 ║                                    → vtable (virtual method table)║
-║                                    → field offsets               ║
-║                                    → interface table (itable)    ║
-║                                    → class hierarchy info        ║
-║                                    → access flags                ║
-║                                                                  ║
-║  With Compressed Oops (heap < 32GB):                             ║
-║    Klass pointer = 4 bytes (shifted by 3 bits, like zip codes)  ║
-║    Actual address = compressed_pointer << 3                      ║
-║                                                                  ║
-║  Without Compressed Oops (heap ≥ 32GB):                         ║
-║    Klass pointer = 8 bytes (full 64-bit address)                ║
-║    Every object header grows by 4 bytes!                         ║
-╚══════════════════════════════════════════════════════════════════╝
+║                                    → field offsets                ║
+║                                    → interface table (itable)     ║
+║                                    → class hierarchy info         ║
+║                                    → access flags                 ║
+║                                                                   ║
+║  With Compressed Oops (heap < 32GB):                              ║
+║    Klass pointer = 4 bytes (shifted by 3 bits, like zip codes)    ║
+║    Actual address = compressed_pointer << 3                       ║
+║                                                                   ║
+║  Without Compressed Oops (heap ≥ 32GB):                           ║
+║    Klass pointer = 8 bytes (full 64-bit address)                  ║
+║    Every object header grows by 4 bytes!                          ║
+╚═══════════════════════════════════════════════════════════════════╝
 ```
 
 ### Why This Matters: `instanceof` Performance
@@ -249,19 +249,19 @@ if (obj instanceof String s) {
 ║                                                                  ║
 ║  CPU reads memory in aligned chunks (like shelves of fixed width)║
 ║                                                                  ║
-║  If a `long` (8 bytes) starts at address 5:                     ║
-║  → CPU must do TWO reads (bytes 0-7 and bytes 8-15)            ║
-║  → Then combine them = SLOW                                    ║
+║  If a `long` (8 bytes) starts at address 5:                      ║
+║  → CPU must do TWO reads (bytes 0-7 and bytes 8-15)              ║
+║  → Then combine them = SLOW                                      ║
 ║                                                                  ║
-║  If a `long` starts at address 8 (aligned):                     ║
-║  → CPU does ONE read = FAST                                    ║
+║  If a `long` starts at address 8 (aligned):                      ║
+║  → CPU does ONE read = FAST                                      ║
 ║                                                                  ║
 ║  JVM RULES for field ordering:                                   ║
-║  1. Fields are NOT laid out in declaration order                ║
-║  2. JVM reorders to minimize padding                            ║
-║  3. Larger fields first: longs, doubles → ints → shorts → bytes ║
-║  4. Object references grouped together (for GC card marking)    ║
-║  5. Final padding to 8-byte boundary                            ║
+║  1. Fields are NOT laid out in declaration order                 ║
+║  2. JVM reorders to minimize padding                             ║
+║  3. Larger fields first: longs, doubles → ints → shorts → bytes  ║
+║  4. Object references grouped together (for GC card marking)     ║
+║  5. Final padding to 8-byte boundary                             ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
@@ -317,9 +317,9 @@ class BadLayout {
 │  new int[10]               │  56 bytes     │  40 bytes       │
 │  new HashMap<>()           │  ~128 bytes   │  0 entries      │
 │  new ArrayList<>()         │  ~64 bytes    │  0 elements     │
-│                                                               │
+│                                                              │
 │  LESSON: Boxing int→Integer costs 12 extra bytes (300%!)     │
-│  This is why IntStream exists — avoids boxing overhead.       │
+│  This is why IntStream exists — avoids boxing overhead.      │
 └──────────────────────────────────────────────────────────────┘
 ```
 
@@ -337,25 +337,25 @@ class BadLayout {
 ║  THE BATHROOM LOCK ANALOGY                                       ║
 ║                                                                  ║
 ║  BIASED LOCK (you live alone):                                   ║
-║  → Bathroom door has your name on it permanently                ║
-║  → You walk in without checking — ZERO cost                    ║
-║  → If a guest arrives, name must be erased (revoke bias)       ║
-║  → Cost: ~0 for single thread, expensive revocation            ║
+║  → Bathroom door has your name on it permanently                 ║
+║  → You walk in without checking — ZERO cost                      ║
+║  → If a guest arrives, name must be erased (revoke bias)         ║
+║  → Cost: ~0 for single thread, expensive revocation              ║
 ║                                                                  ║
-║  THIN LOCK (you have a roommate):                               ║
-║  → Bathroom has a sign you flip: "OCCUPIED" / "FREE"           ║
-║  → Quick check (CAS operation) — done in user-space            ║
-║  → If sign is stuck, you spin (try again a few times)          ║
-║  → Cost: one CAS instruction (~10-20 nanoseconds)              ║
+║  THIN LOCK (you have a roommate):                                ║
+║  → Bathroom has a sign you flip: "OCCUPIED" / "FREE"             ║
+║  → Quick check (CAS operation) — done in user-space              ║
+║  → If sign is stuck, you spin (try again a few times)            ║
+║  → Cost: one CAS instruction (~10-20 nanoseconds)                ║
 ║                                                                  ║
-║  FAT LOCK (it's a public bathroom):                             ║
-║  → Bathroom has a full queue management system (OS mutex)       ║
-║  → You take a number, sit and wait (thread parked / blocked)   ║
-║  → OS kernel involved: context switch = expensive              ║
-║  → Cost: ~1-10 microseconds (100-1000x more than thin lock!)   ║
+║  FAT LOCK (it's a public bathroom):                              ║
+║  → Bathroom has a full queue management system (OS mutex)        ║
+║  → You take a number, sit and wait (thread parked / blocked)     ║
+║  → OS kernel involved: context switch = expensive                ║
+║  → Cost: ~1-10 microseconds (100-1000x more than thin lock!)     ║
 ║                                                                  ║
-║  ESCALATION PATH (only goes UP, never back down):              ║
-║  Biased ──[contention]──→ Thin ──[spinning fails]──→ Fat      ║
+║  ESCALATION PATH (only goes UP, never back down):                ║
+║  Biased ──[contention]──→ Thin ──[spinning fails]──→ Fat         ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
@@ -363,30 +363,30 @@ class BadLayout {
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│  Step-by-step lock escalation:                                   │
-│                                                                  │
-│  1. NEW OBJECT → Mark word: unlocked (state bits = 001)        │
-│                                                                  │
+│  Step-by-step lock escalation:                                  │
+│                                                                 │
+│  1. NEW OBJECT → Mark word: unlocked (state bits = 001)         │
+│                                                                 │
 │  2. First synchronized(obj) by Thread A:                        │
-│     → JVM sets biased lock (write thread A's ID into mark word)│
-│     → Future locks by Thread A: check ID match → FREE!         │
-│     → Mark word state bits: 101 (biased)                       │
-│                                                                  │
+│     → JVM sets biased lock (write thread A's ID into mark word) │
+│     → Future locks by Thread A: check ID match → FREE!          │
+│     → Mark word state bits: 101 (biased)                        │
+│                                                                 │
 │  3. Thread B tries synchronized(obj):                           │
-│     → Thread A's bias must be REVOKED (stop-the-world pause!)  │
-│     → Escalate to thin lock (CAS-based)                        │
+│     → Thread A's bias must be REVOKED (stop-the-world pause!)   │
+│     → Escalate to thin lock (CAS-based)                         │
 │     → Mark word now points to lock record on stack              │
-│     → State bits: 00 (thin/lightweight)                        │
-│                                                                  │
-│  4. Thread B spins (retries CAS) but Thread A holds too long:  │
-│     → JVM decides: "spinning is wasting CPU"                   │
-│     → Escalate to fat lock (OS mutex, ObjectMonitor)           │
-│     → Thread B is PARKED (sleeping, no CPU usage)              │
-│     → State bits: 10 (heavyweight)                             │
-│                                                                  │
-│  5. Thread A releases → OS wakes Thread B → Thread B acquires  │
-│                                                                  │
-│  ⚠️ Once inflated to fat lock, it stays fat for that object!   │
+│     → State bits: 00 (thin/lightweight)                         │
+│                                                                 │
+│  4. Thread B spins (retries CAS) but Thread A holds too long:   │
+│     → JVM decides: "spinning is wasting CPU"                    │
+│     → Escalate to fat lock (OS mutex, ObjectMonitor)            │
+│     → Thread B is PARKED (sleeping, no CPU usage)               │
+│     → State bits: 10 (heavyweight)                              │
+│                                                                 │
+│  5. Thread A releases → OS wakes Thread B → Thread B acquires   │
+│                                                                 │
+│  ⚠️ Once inflated to fat lock, it stays fat for that object!    │
 │  (Deflation is possible but rare — implementation-dependent)    │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -402,51 +402,51 @@ class BadLayout {
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
-║  THE PHONE DIRECTORY ANALOGY (vtable)                           ║
+║  THE PHONE DIRECTORY ANALOGY (vtable)                            ║
 ║                                                                  ║
-║  Every class has a VIRTUAL METHOD TABLE (vtable):               ║
-║  Like a phone directory listing methods and their addresses     ║
+║  Every class has a VIRTUAL METHOD TABLE (vtable):                ║
+║  Like a phone directory listing methods and their addresses      ║
 ║                                                                  ║
 ║  class Animal:                                                   ║
-║    vtable = [ eat → Animal.eat, makeSound → Animal.makeSound ] ║
+║    vtable = [ eat → Animal.eat, makeSound → Animal.makeSound ]   ║
 ║                                                                  ║
 ║  class Dog extends Animal:                                       ║
-║    vtable = [ eat → Animal.eat, makeSound → Dog.makeSound ]    ║
-║                     ↑ inherited          ↑ OVERRIDDEN           ║
+║    vtable = [ eat → Animal.eat, makeSound → Dog.makeSound ]      ║
+║                     ↑ inherited          ↑ OVERRIDDEN            ║
 ║                                                                  ║
-║  When JVM executes: animal.makeSound()                          ║
-║  1. Read animal's klass pointer → Dog.class metadata            ║
-║  2. Look at vtable index for makeSound() → slot #1             ║
-║  3. Find: Dog.makeSound (address: 0x1A2B3C)                    ║
-║  4. Jump to 0x1A2B3C → execute Dog.makeSound()                 ║
+║  When JVM executes: animal.makeSound()                           ║
+║  1. Read animal's klass pointer → Dog.class metadata             ║
+║  2. Look at vtable index for makeSound() → slot #1               ║
+║  3. Find: Dog.makeSound (address: 0x1A2B3C)                      ║
+║  4. Jump to 0x1A2B3C → execute Dog.makeSound()                   ║
 ║                                                                  ║
-║  This is called VIRTUAL DISPATCH (invokevirtual bytecode)       ║
-║  → Runtime cost: 1 pointer dereference + 1 table lookup         ║
-║  → JIT compiler often INLINES this to zero cost!               ║
+║  This is called VIRTUAL DISPATCH (invokevirtual bytecode)        ║
+║  → Runtime cost: 1 pointer dereference + 1 table lookup          ║
+║  → JIT compiler often INLINES this to zero cost!                 ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
 ### The 5 Bytecode Invoke Instructions
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  Bytecode        │ When Used              │ Dispatch Method     │
-│ ─────────────────┼────────────────────────┼─────────────────── │
-│ invokevirtual    │ Normal instance methods │ vtable lookup       │
+┌────────────────────────────────────────────────────────────────────┐
+│  Bytecode        │ When Used              │ Dispatch Method        │
+│ ─────────────────┼────────────────────────┼───────────────────     │
+│ invokevirtual    │ Normal instance methods │ vtable lookup         │
 │ invokeinterface  │ Interface methods       │ itable lookup (slower)│
-│ invokespecial    │ Constructors, super,    │ STATIC binding      │
-│                  │ private methods         │ (no lookup needed)  │
-│ invokestatic     │ Static methods          │ STATIC binding      │
-│ invokedynamic    │ Lambdas, string concat  │ Bootstrap method    │
-│                  │ (Java 7+)              │ (resolved once)     │
-│                                                                  │
-│ PERFORMANCE HIERARCHY:                                           │
-│ invokestatic ≈ invokespecial > invokevirtual > invokeinterface  │
-│ (direct call)                  (vtable)        (itable search)  │
-│                                                                  │
-│ BUT: JIT compiler makes this nearly irrelevant in practice.     │
-│ Monomorphic calls (only one type ever seen) are INLINED.        │
-└─────────────────────────────────────────────────────────────────┘
+│ invokespecial    │ Constructors, super,    │ STATIC binding        │
+│                  │ private methods         │ (no lookup needed)    │
+│ invokestatic     │ Static methods          │ STATIC binding        │
+│ invokedynamic    │ Lambdas, string concat  │ Bootstrap method      │
+│                  │ (Java 7+)              │ (resolved once)        │
+│                                                                    │
+│ PERFORMANCE HIERARCHY:                                             │
+│ invokestatic ≈ invokespecial > invokevirtual > invokeinterface     │
+│ (direct call)                  (vtable)        (itable search)     │
+│                                                                    │
+│ BUT: JIT compiler makes this nearly irrelevant in practice.        │
+│ Monomorphic calls (only one type ever seen) are INLINED.           │
+└────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Why Interface Calls Are Slightly Slower
@@ -476,22 +476,22 @@ s.makeSound();      // invokeinterface → must search itable!
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
-║  THE NAME TAG vs EMPLOYEE BADGE ANALOGY                         ║
+║  THE NAME TAG vs EMPLOYEE BADGE ANALOGY                          ║
 ║                                                                  ║
-║  OVERRIDING (instance methods) = Employee Badge                 ║
-║  → Machine reads your badge (runtime type) to decide access    ║
-║  → You ARE a Dog, so Dog.makeSound() runs, regardless of       ║
-║    whether someone labeled you "Animal"                         ║
-║  → Dynamic dispatch: "What type IS this object?"               ║
+║  OVERRIDING (instance methods) = Employee Badge                  ║
+║  → Machine reads your badge (runtime type) to decide access      ║
+║  → You ARE a Dog, so Dog.makeSound() runs, regardless of         ║
+║    whether someone labeled you "Animal"                          ║
+║  → Dynamic dispatch: "What type IS this object?"                 ║
 ║                                                                  ║
-║  HIDING (static methods) = Name Tag                             ║
-║  → People read the name tag (compile-time type) on your desk   ║
-║  → Your desk says "Animal", so Animal.staticMethod() runs      ║
-║  → Even if there's a newer "Dog.staticMethod()"                ║
-║  → Static dispatch: "What type does the VARIABLE say?"         ║
+║  HIDING (static methods) = Name Tag                              ║
+║  → People read the name tag (compile-time type) on your desk     ║
+║  → Your desk says "Animal", so Animal.staticMethod() runs        ║
+║  → Even if there's a newer "Dog.staticMethod()"                  ║
+║  → Static dispatch: "What type does the VARIABLE say?"           ║
 ║                                                                  ║
-║  WHY? Static methods belong to the CLASS, not the OBJECT.       ║
-║  There IS no object to check at runtime → no polymorphism.     ║
+║  WHY? Static methods belong to the CLASS, not the OBJECT.        ║
+║  There IS no object to check at runtime → no polymorphism.       ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
@@ -531,20 +531,20 @@ public class Test {
 ### The Full Comparison
 
 ```
-┌───────────────────┬─────────────────────────┬───────────────────────┐
-│ Feature           │ Overriding              │ Hiding                │
-├───────────────────┼─────────────────────────┼───────────────────────┤
-│ Applies to        │ Instance methods        │ Static methods        │
-│ Dispatch          │ Runtime (dynamic)       │ Compile-time (static) │
-│ @Override         │ ✅ Compiler checks      │ ❌ Not applicable     │
-│ Polymorphism      │ ✅ Yes                  │ ❌ No                 │
-│ Bytecode          │ invokevirtual (vtable)  │ invokestatic (direct) │
-│ Binding           │ Late binding            │ Early binding         │
+┌───────────────────┬─────────────────────────┬─────────────────────────┐
+│ Feature           │ Overriding              │ Hiding                  │
+├───────────────────┼─────────────────────────┼─────────────────────────┤
+│ Applies to        │ Instance methods        │ Static methods          │
+│ Dispatch          │ Runtime (dynamic)       │ Compile-time (static)   │
+│ @Override         │ ✅ Compiler checks      │ ❌ Not applicable         │
+│ Polymorphism      │ ✅ Yes                  │ ❌ No                     │
+│ Bytecode          │ invokevirtual (vtable)  │ invokestatic (direct)   │
+│ Binding           │ Late binding            │ Early binding           │
 │ Which runs?       │ Object's actual type    │ Variable's declared type│
-│ Can change access │ Same or WIDER           │ Same or WIDER         │
-│ Can change return │ Covariant (subtype)     │ Must match exactly    │
-│ fields?           │ Fields are HIDDEN too!  │ Fields are HIDDEN too!│
-└───────────────────┴─────────────────────────┴───────────────────────┘
+│ Can change access │ Same or WIDER           │ Same or WIDER           │
+│ Can change return │ Covariant (subtype)     │ Must match exactly      │
+│ fields?           │ Fields are HIDDEN too!  │ Fields are HIDDEN too!  │
+└───────────────────┴─────────────────────────┴─────────────────────────┘
 ```
 
 ### Field Hiding Too!
@@ -572,23 +572,23 @@ System.out.println(((Child) obj).x);  // 20 (Child's x — need cast!)
 ╔══════════════════════════════════════════════════════════════════╗
 ║  WHY IMMUTABLE BY DEFAULT?                                       ║
 ║                                                                  ║
-║  Mutable object = A whiteboard anyone can erase and rewrite     ║
-║  Immutable object = A printed document — read it, can't change  ║
+║  Mutable object = A whiteboard anyone can erase and rewrite      ║
+║  Immutable object = A printed document — read it, can't change   ║
 ║                                                                  ║
 ║  Benefits:                                                       ║
-║  → Thread-safe WITHOUT synchronization (nothing to corrupt)     ║
-║  → Safe as HashMap key (hashCode never changes)                 ║
-║  → Safe to share references (no defensive copies needed)        ║
-║  → Easier to reason about (predictable state)                   ║
-║  → Cacheable (String pool, Integer cache work this way)         ║
+║  → Thread-safe WITHOUT synchronization (nothing to corrupt)      ║
+║  → Safe as HashMap key (hashCode never changes)                  ║
+║  → Safe to share references (no defensive copies needed)         ║
+║  → Easier to reason about (predictable state)                    ║
+║  → Cacheable (String pool, Integer cache work this way)          ║
 ║                                                                  ║
-║  The 5 rules of immutability (Effective Java Item 17):          ║
-║  1. Don't provide mutators (setters)                            ║
-║  2. Make class final (prevent subclass from adding mutability)  ║
-║  3. Make all fields final                                       ║
-║  4. Make all fields private                                     ║
-║  5. Ensure exclusive access to mutable components               ║
-║     (defensive copy mutable fields in constructor AND getter)   ║
+║  The 5 rules of immutability (Effective Java Item 17):           ║
+║  1. Don't provide mutators (setters)                             ║
+║  2. Make class final (prevent subclass from adding mutability)   ║
+║  3. Make all fields final                                        ║
+║  4. Make all fields private                                      ║
+║  5. Ensure exclusive access to mutable components                ║
+║     (defensive copy mutable fields in constructor AND getter)    ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
@@ -716,27 +716,27 @@ sealed interface Shape permits Circle, Rectangle, Triangle {
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
-║  record = "I'm just data. Give me equals, hashCode, toString." ║
+║  record = "I'm just data. Give me equals, hashCode, toString."   ║
 ║                                                                  ║
 ║  WHAT YOU GET FREE:                                              ║
-║  → final class (can't extend, only implement interfaces)       ║
-║  → private final fields                                         ║
-║  → All-args constructor                                         ║
-║  → Accessor methods (name(), not getName())                    ║
-║  → equals() based on ALL fields                                ║
-║  → hashCode() based on ALL fields                              ║
-║  → toString() with field names and values                      ║
+║  → final class (can't extend, only implement interfaces)         ║
+║  → private final fields                                          ║
+║  → All-args constructor                                          ║
+║  → Accessor methods (name(), not getName())                      ║
+║  → equals() based on ALL fields                                  ║
+║  → hashCode() based on ALL fields                                ║
+║  → toString() with field names and values                        ║
 ║                                                                  ║
-║  WHAT YOU CAN CUSTOMIZE:                                        ║
-║  → Compact constructor (for validation)                        ║
-║  → Additional methods                                          ║
-║  → Additional static methods                                    ║
-║  → Implement interfaces                                         ║
+║  WHAT YOU CAN CUSTOMIZE:                                         ║
+║  → Compact constructor (for validation)                          ║
+║  → Additional methods                                            ║
+║  → Additional static methods                                     ║
+║  → Implement interfaces                                          ║
 ║                                                                  ║
-║  WHAT YOU CANNOT DO:                                            ║
-║  → Extend another class (records extend Record implicitly)      ║
-║  → Add instance fields (only the record components)            ║
-║  → Make fields mutable (always final)                          ║
+║  WHAT YOU CANNOT DO:                                             ║
+║  → Extend another class (records extend Record implicitly)       ║
+║  → Add instance fields (only the record components)              ║
+║  → Make fields mutable (always final)                            ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 

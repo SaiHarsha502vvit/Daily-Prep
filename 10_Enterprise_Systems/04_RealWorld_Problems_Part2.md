@@ -10,8 +10,8 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║ COMPANY: Netflix / Hotstar / YouTube                                          ║
-║ SYSTEM: User Experience                                                       ║
+║ COMPANY: Netflix / Hotstar / YouTube                                         ║
+║ SYSTEM: User Experience                                                      ║
 ║ FEATURE: "Continue Watching" shows last 20 videos you watched                ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
@@ -148,8 +148,8 @@ public class WatchHistoryService {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║ COMPANY: Netflix / YouTube                                                    ║
-║ SYSTEM: Recommendation Engine                                                 ║
+║ COMPANY: Netflix / YouTube                                                   ║
+║ SYSTEM: Recommendation Engine                                                ║
 ║ FEATURE: "Because you watched X, you might like Y"                           ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
@@ -251,8 +251,8 @@ public class VideoRecommender {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║ COMPANY: YouTube / Netflix                                                    ║
-║ SYSTEM: Video Player                                                          ║
+║ COMPANY: YouTube / Netflix                                                   ║
+║ SYSTEM: Video Player                                                         ║
 ║ CHALLENGE: Adjust video quality based on network speed                       ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
@@ -353,8 +353,8 @@ public class AdaptiveBitrateController {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║ COMPANY: Practo / Apollo247                                                   ║
-║ SYSTEM: Appointment Booking                                                   ║
+║ COMPANY: Practo / Apollo247                                                  ║
+║ SYSTEM: Appointment Booking                                                  ║
 ║ CHALLENGE: Find available slots, prevent double booking                      ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
@@ -491,8 +491,8 @@ public class AppointmentScheduler {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║ COMPANY: Any Healthcare App                                                   ║
-║ SYSTEM: Prescription Safety                                                   ║
+║ COMPANY: Any Healthcare App                                                  ║
+║ SYSTEM: Prescription Safety                                                  ║
 ║ CHALLENGE: Check if prescribed medicines have dangerous interactions         ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
@@ -595,8 +595,8 @@ public class MedicineInteractionChecker {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║ COMPANY: MakeMyTrip / Cleartrip                                               ║
-║ SYSTEM: Flight Search                                                         ║
+║ COMPANY: MakeMyTrip / Cleartrip                                              ║
+║ SYSTEM: Flight Search                                                        ║
 ║ FEATURE: Find cheapest flight route (with connections)                       ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
@@ -727,8 +727,8 @@ public class FlightSearchEngine {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║ COMPANY: OYO / Booking.com                                                    ║
-║ SYSTEM: Inventory Management                                                  ║
+║ COMPANY: OYO / Booking.com                                                   ║
+║ SYSTEM: Inventory Management                                                 ║
 ║ CHALLENGE: Check room availability for date ranges efficiently               ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
@@ -861,8 +861,8 @@ public class HotelRoomInventory {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║ COMPANY: Delhivery / Amazon Logistics                                         ║
-║ SYSTEM: Route Planning                                                        ║
+║ COMPANY: Delhivery / Amazon Logistics                                        ║
+║ SYSTEM: Route Planning                                                       ║
 ║ CHALLENGE: Delivery person has 10 stops - find optimal route                 ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
@@ -1001,8 +1001,8 @@ public class DeliveryRouteOptimizer {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║ COMPANY: Any Logistics                                                        ║
-║ SYSTEM: Shipment Tracking                                                     ║
+║ COMPANY: Any Logistics                                                       ║
+║ SYSTEM: Shipment Tracking                                                    ║
 ║ FEATURE: Track package through states with valid transitions only            ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
@@ -1135,8 +1135,8 @@ public class PackageTracker {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║ COMPANY: WhatsApp / Slack                                                     ║
-║ SYSTEM: Messaging                                                             ║
+║ COMPANY: WhatsApp / Slack                                                    ║
+║ SYSTEM: Messaging                                                            ║
 ║ CHALLENGE: Messages sent at same time from different devices                 ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 

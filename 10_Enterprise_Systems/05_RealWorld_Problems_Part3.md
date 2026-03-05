@@ -10,8 +10,8 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║ COMPANY: Splitwise / PhonePe                                                  ║
-║ SYSTEM: Bill Splitting                                                        ║
+║ COMPANY: Splitwise / PhonePe                                                 ║
+║ SYSTEM: Bill Splitting                                                       ║
 ║ CHALLENGE: Minimize number of transactions to settle debts                   ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
@@ -145,8 +145,8 @@ public class DebtSimplifier {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║ COMPANY: Every API-based company                                              ║
-║ SYSTEM: API Gateway                                                           ║
+║ COMPANY: Every API-based company                                             ║
+║ SYSTEM: API Gateway                                                          ║
 ║ CHALLENGE: Limit requests to 100 per minute per user                         ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
@@ -334,8 +334,8 @@ public class RateLimiterService {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║ COMPANY: Google / Amazon Search                                               ║
-║ SYSTEM: Search Bar                                                            ║
+║ COMPANY: Google / Amazon Search                                              ║
+║ SYSTEM: Search Bar                                                           ║
 ║ FEATURE: Show top 5 suggestions as user types                                ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
@@ -496,8 +496,8 @@ public class SearchAutocomplete {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║ COMPANY: Twitter / Reddit                                                     ║
-║ SYSTEM: Trending Topics                                                       ║
+║ COMPANY: Twitter / Reddit                                                    ║
+║ SYSTEM: Trending Topics                                                      ║
 ║ CHALLENGE: Find top 10 trending hashtags from millions of tweets             ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
@@ -648,8 +648,8 @@ public class TrendingTopicsService {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║ COMPANY: Any Data Company                                                     ║
-║ SYSTEM: ETL Pipeline                                                          ║
+║ COMPANY: Any Data Company                                                    ║
+║ SYSTEM: ETL Pipeline                                                         ║
 ║ CHALLENGE: Sort 100GB CSV file with only 4GB RAM                             ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
@@ -814,8 +814,8 @@ public class ExternalSort {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║ COMPANY: Google Drive / Dropbox                                               ║
-║ SYSTEM: Storage Optimization                                                  ║
+║ COMPANY: Google Drive / Dropbox                                              ║
+║ SYSTEM: Storage Optimization                                                 ║
 ║ CHALLENGE: Find and remove duplicate files to save storage                   ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
@@ -978,9 +978,9 @@ public class DuplicateFileFinder {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║ COMPANY: Ludo King / PUBG                                                     ║
-║ SYSTEM: Gaming Leaderboard                                                    ║
-║ FEATURES: Update score, Get rank, Get top K, Get players around rank N      ║
+║ COMPANY: Ludo King / PUBG                                                    ║
+║ SYSTEM: Gaming Leaderboard                                                   ║
+║ FEATURES: Update score, Get rank, Get top K, Get players around rank N       ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -1142,8 +1142,8 @@ public class GameLeaderboard {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║ COMPANY: PUBG / Valorant / Chess.com                                          ║
-║ SYSTEM: Multiplayer Matchmaking                                               ║
+║ COMPANY: PUBG / Valorant / Chess.com                                         ║
+║ SYSTEM: Multiplayer Matchmaking                                              ║
 ║ CHALLENGE: Match players with similar skill for fair games                   ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```

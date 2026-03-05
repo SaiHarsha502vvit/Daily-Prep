@@ -106,12 +106,12 @@ PHYSICAL REALITY:
 ┌────────────────────────────────────────────────────┐
 │ Nodes scattered across memory, connected by refs   │
 │                                                    │
-│  ┌────┬────┐    ┌────┬────┐    ┌────┬────┐       │
-│  │ 10 │ ●──┼───→│ 20 │ ●──┼───→│ 30 │null│       │
-│  └────┴────┘    └────┴────┘    └────┴────┘       │
-│  addr: 5000     addr: 2000     addr: 8000        │
+│  ┌────┬────┐    ┌────┬────┐    ┌────┬────┐         │
+│  │ 10 │ ●──┼───→│ 20 │ ●──┼───→│ 30 │null│         │
+│  └────┴────┘    └────┴────┘    └────┴────┘         │
+│  addr: 5000     addr: 2000     addr: 8000          │
 │                                                    │
-│ NOT CONTIGUOUS = Scattered in memory              │
+│ NOT CONTIGUOUS = Scattered in memory               │
 └────────────────────────────────────────────────────┘
 
 WHY NON-CONTIGUOUS IS USEFUL:

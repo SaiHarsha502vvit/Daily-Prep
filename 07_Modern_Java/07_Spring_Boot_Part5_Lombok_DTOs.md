@@ -11,31 +11,31 @@
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHY: Why Lombok & DTOs?                                                        │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Java verbosity: 80 lines of getters/setters → 1 annotation                  │
-│  • DTOs decouple: Don't expose entities to API - control what's returned       │
-│  • Security: Hide sensitive fields (password) from responses                   │
-│  • API versioning: Change DTO without changing entity/database                 │
-│  • Industry standard: Every Spring Boot project uses Lombok                    │
+│  • Java verbosity: 80 lines of getters/setters → 1 annotation                   │
+│  • DTOs decouple: Don't expose entities to API - control what's returned        │
+│  • Security: Hide sensitive fields (password) from responses                    │
+│  • API versioning: Change DTO without changing entity/database                  │
+│  • Industry standard: Every Spring Boot project uses Lombok                     │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│  HOW: How Does Lombok Work?                                                      │
+│  HOW: How Does Lombok Work?                                                     │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Annotation processing: Generates code at compile time (not reflection)      │
-│  • @Data: Generates getters, setters, equals, hashCode, toString               │
-│  • @Builder: Fluent builder pattern for object creation                        │
-│  • @RequiredArgsConstructor: Constructor for final fields (perfect for DI)    │
-│  • ModelMapper/MapStruct: Convert Entity ↔ DTO automatically                  │
+│  • Annotation processing: Generates code at compile time (not reflection)       │
+│  • @Data: Generates getters, setters, equals, hashCode, toString                │
+│  • @Builder: Fluent builder pattern for object creation                         │
+│  • @RequiredArgsConstructor: Constructor for final fields (perfect for DI)      │
+│  • ModelMapper/MapStruct: Convert Entity ↔ DTO automatically                    │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHEN: When to Use DTOs?                                                        │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • ALWAYS for APIs: Never expose entities directly to clients                  │
-│  • Request DTOs: Validate and filter incoming data                             │
-│  • Response DTOs: Control exactly what fields are returned                     │
-│  • Different views: UserSummaryDTO vs UserDetailDTO for different endpoints   │
-│  • Cross-cutting: DTOs can aggregate data from multiple entities              │
+│  • ALWAYS for APIs: Never expose entities directly to clients                   │
+│  • Request DTOs: Validate and filter incoming data                              │
+│  • Response DTOs: Control exactly what fields are returned                      │
+│  • Different views: UserSummaryDTO vs UserDetailDTO for different endpoints     │
+│  • Cross-cutting: DTOs can aggregate data from multiple entities                │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -174,9 +174,9 @@ public class User {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    LOMBOK COMPILATION PROCESS                                    │
+│                    LOMBOK COMPILATION PROCESS                                   │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  ┌─────────────────┐                                                            │
 │  │  User.java      │                                                            │
 │  │  @Data          │                                                            │
@@ -184,20 +184,20 @@ public class User {
 │  │    String name; │                                                            │
 │  │  }              │                                                            │
 │  └────────┬────────┘                                                            │
-│           │                                                                      │
-│           ▼                                                                      │
-│  ┌─────────────────────────────────────────────────────────────────────────┐   │
+│           │                                                                     │
+│           ▼                                                                     │
+│  ┌─────────────────────────────────────────────────────────────────────────┐    │
 │  │                    JAVA COMPILER (javac)                                 │   │
 │  │                                                                          │   │
-│  │  1. Parse source code → Abstract Syntax Tree (AST)                      │   │
-│  │  2. LOMBOK HOOKS IN via Annotation Processor API                        │   │
-│  │  3. Lombok MODIFIES the AST (adds methods to tree)                      │   │
-│  │  4. Compiler continues with modified AST                                │   │
-│  │  5. Generates bytecode with all Lombok methods                          │   │
+│  │  1. Parse source code → Abstract Syntax Tree (AST)                      │    │
+│  │  2. LOMBOK HOOKS IN via Annotation Processor API                        │    │
+│  │  3. Lombok MODIFIES the AST (adds methods to tree)                      │    │
+│  │  4. Compiler continues with modified AST                                │    │
+│  │  5. Generates bytecode with all Lombok methods                          │    │
 │  │                                                                          │   │
-│  └─────────────────────────────────────────────────────────────────────────┘   │
-│           │                                                                      │
-│           ▼                                                                      │
+│  └─────────────────────────────────────────────────────────────────────────┘    │
+│           │                                                                     │
+│           ▼                                                                     │
 │  ┌─────────────────┐                                                            │
 │  │  User.class     │  ← Contains all generated methods!                         │
 │  │  getName()      │                                                            │
@@ -206,10 +206,10 @@ public class User {
 │  │  hashCode()     │                                                            │
 │  │  toString()     │                                                            │
 │  └─────────────────┘                                                            │
-│                                                                                  │
-│  KEY INSIGHT: Lombok modifies bytecode at COMPILE time, not runtime            │
-│  There's NO runtime overhead - methods exist in .class file                    │
-│                                                                                  │
+│                                                                                 │
+│  KEY INSIGHT: Lombok modifies bytecode at COMPILE time, not runtime             │
+│  There's NO runtime overhead - methods exist in .class file                     │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -756,26 +756,26 @@ public class Counter {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    LOMBOK BEST PRACTICES                                         │
+│                    LOMBOK BEST PRACTICES                                        │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  ✅ DO:                                                                          │
-│  ───────                                                                         │
+│  ───────                                                                        │
 │  • Use @RequiredArgsConstructor for Spring DI                                   │
 │  • Use @Builder for complex object creation                                     │
 │  • Use @Value for immutable DTOs                                                │
 │  • Use @Slf4j for logging                                                       │
 │  • Exclude sensitive fields from @ToString                                      │
-│  • Use onlyExplicitlyIncluded for @EqualsAndHashCode in JPA                    │
-│                                                                                  │
+│  • Use onlyExplicitlyIncluded for @EqualsAndHashCode in JPA                     │
+│                                                                                 │
 │  ❌ DON'T:                                                                       │
-│  ──────────                                                                      │
-│  • Use @Data on JPA entities without customization                             │
-│  • Include collections in @ToString (lazy loading issues)                      │
-│  • Use @EqualsAndHashCode with all fields on JPA entities                      │
+│  ──────────                                                                     │
+│  • Use @Data on JPA entities without customization                              │
+│  • Include collections in @ToString (lazy loading issues)                       │
+│  • Use @EqualsAndHashCode with all fields on JPA entities                       │
 │  • Overuse @SneakyThrows                                                        │
-│  • Forget that Lombok is a compile-time tool                                   │
-│                                                                                  │
+│  • Forget that Lombok is a compile-time tool                                    │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -819,43 +819,43 @@ lombok.experimental.flagUsage = warning
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    THE DTO PROBLEM                                               │
+│                    THE DTO PROBLEM                                              │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  WITHOUT DTOs (Exposing Entity Directly):                                       │
-│                                                                                  │
-│  @Entity                                                                         │
-│  public class User {                                                             │
+│                                                                                 │
+│  @Entity                                                                        │
+│  public class User {                                                            │
 │      private Long id;                                                           │
-│      private String email;                                                       │
-│      private String passwordHash;     // 🔴 EXPOSED TO CLIENT!                 │
-│      private String ssn;              // 🔴 EXPOSED TO CLIENT!                 │
-│      private List<Order> orders;      // 🔴 LazyInitializationException!       │
-│      private LocalDateTime lastLogin; // 🔴 Internal data exposed!             │
+│      private String email;                                                      │
+│      private String passwordHash;     // 🔴 EXPOSED TO CLIENT!                   │
+│      private String ssn;              // 🔴 EXPOSED TO CLIENT!                   │
+│      private List<Order> orders;      // 🔴 LazyInitializationException!         │
+│      private LocalDateTime lastLogin; // 🔴 Internal data exposed!               │
 │  }                                                                              │
-│                                                                                  │
-│  PROBLEMS:                                                                       │
-│  ❌ Security: Sensitive data exposed                                            │
-│  ❌ Performance: Loading unnecessary relationships                              │
-│  ❌ Coupling: API tied to database schema                                       │
-│  ❌ Versioning: Changing entity breaks all clients                             │
-│                                                                                  │
+│                                                                                 │
+│  PROBLEMS:                                                                      │
+│  ❌ Security: Sensitive data exposed                                             │
+│  ❌ Performance: Loading unnecessary relationships                               │
+│  ❌ Coupling: API tied to database schema                                        │
+│  ❌ Versioning: Changing entity breaks all clients                               │
+│                                                                                 │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  WITH DTOs (Clean API Contract):                                                │
-│                                                                                  │
+│                                                                                 │
 │  public record UserResponse(                                                    │
 │      Long id,                                                                   │
 │      String email,                                                              │
 │      String displayName                                                         │
 │  ) {}                                                                           │
-│                                                                                  │
-│  BENEFITS:                                                                       │
-│  ✅ Security: Only expose what's needed                                        │
-│  ✅ Performance: Load only required data                                       │
-│  ✅ Decoupling: API independent of database                                    │
-│  ✅ Versioning: Can evolve API without changing entity                        │
-│                                                                                  │
+│                                                                                 │
+│  BENEFITS:                                                                      │
+│  ✅ Security: Only expose what's needed                                          │
+│  ✅ Performance: Load only required data                                         │
+│  ✅ Decoupling: API independent of database                                      │
+│  ✅ Versioning: Can evolve API without changing entity                           │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1188,11 +1188,11 @@ public class UserService {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    DTO ARCHITECTURE                                              │
+│                    DTO ARCHITECTURE                                             │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  PACKAGE STRUCTURE:                                                              │
-│                                                                                  │
+│                                                                                 │
+│  PACKAGE STRUCTURE:                                                             │
+│                                                                                 │
 │  com.example.myapp/                                                             │
 │  ├── controller/                                                                │
 │  │   └── UserController.java                                                    │
@@ -1215,7 +1215,7 @@ public class UserService {
 │  │       └── ApiResponse.java                                                   │
 │  └── mapper/                         ← DTO mappers                              │
 │      └── UserMapper.java                                                        │
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 

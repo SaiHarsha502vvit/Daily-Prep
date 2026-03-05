@@ -9,25 +9,25 @@
 
 ````
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    STRING ALGORITHMS HIERARCHY                                   │
+│                    STRING ALGORITHMS HIERARCHY                                  │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  PATTERN MATCHING ALGORITHMS:                                                   │
-│  ┌──────────────────────────────────────────────────────────────────────────┐  │
-│  │ Algorithm    │ Time     │ Space │ Best For                              │  │
-│  ├──────────────┼──────────┼───────┼───────────────────────────────────────┤  │
-│  │ Naive        │ O(nm)    │ O(1)  │ Short patterns, simple cases          │  │
-│  │ KMP          │ O(n+m)   │ O(m)  │ Single pattern, streaming             │  │
-│  │ Rabin-Karp   │ O(n+m)†  │ O(1)  │ Multiple patterns same length         │  │
-│  │ Z-Algorithm  │ O(n+m)   │ O(n)  │ All occurrences, string analysis     │  │
-│  │ Aho-Corasick │ O(n+m+z) │ O(m)  │ Multiple patterns simultaneously     │  │
-│  │ Suffix Array │ O(n log n)│O(n) │ Multiple queries on same text        │  │
-│  │ Suffix Tree  │ O(n)     │ O(n)  │ Complex string operations            │  │
-│  └──────────────────────────────────────────────────────────────────────────┘  │
-│  † Average case, O(nm) worst case with poor hash                               │
-│                                                                                  │
-│                                                                                  │
-│  Z-ALGORITHM (All pattern occurrences):                                        │
+│  ┌──────────────────────────────────────────────────────────────────────────┐   │
+│  │ Algorithm    │ Time     │ Space │ Best For                              │    │
+│  ├──────────────┼──────────┼───────┼───────────────────────────────────────┤    │
+│  │ Naive        │ O(nm)    │ O(1)  │ Short patterns, simple cases          │    │
+│  │ KMP          │ O(n+m)   │ O(m)  │ Single pattern, streaming             │    │
+│  │ Rabin-Karp   │ O(n+m)†  │ O(1)  │ Multiple patterns same length         │    │
+│  │ Z-Algorithm  │ O(n+m)   │ O(n)  │ All occurrences, string analysis     │     │
+│  │ Aho-Corasick │ O(n+m+z) │ O(m)  │ Multiple patterns simultaneously     │     │
+│  │ Suffix Array │ O(n log n)│O(n) │ Multiple queries on same text        │      │
+│  │ Suffix Tree  │ O(n)     │ O(n)  │ Complex string operations            │     │
+│  └──────────────────────────────────────────────────────────────────────────┘   │
+│  † Average case, O(nm) worst case with poor hash                                │
+│                                                                                 │
+│                                                                                 │
+│  Z-ALGORITHM (All pattern occurrences):                                         │
 │  ──────────────────────────────────────                                         │
 ```java
 // Z[i] = length of longest substring starting at i that matches prefix
@@ -147,17 +147,17 @@ class AhoCorasick {
 ```
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│ RANDOMIZED ALGORITHMS - POWER OF RANDOMNESS │
+│ RANDOMIZED ALGORITHMS - POWER OF RANDOMNESS                                     │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│ │
-│ WHY RANDOMIZATION? │
-│ • Simpler algorithms with good expected performance │
-│ • Avoid adversarial worst cases │
-│ • Handle uncertain or dynamic data │
-│ │
-│ │
-│ QUICKSELECT (Find k-th smallest element): │
-│ ────────────────────────────────────────── │
+│                                                                                 │
+│ WHY RANDOMIZATION?                                                              │
+│ • Simpler algorithms with good expected performance                             │
+│ • Avoid adversarial worst cases                                                 │
+│ • Handle uncertain or dynamic data                                              │
+│                                                                                 │
+│                                                                                 │
+│ QUICKSELECT (Find k-th smallest element):                                       │
+│ ──────────────────────────────────────────                                      │
 
 ```java
 // O(n) expected, O(n²) worst case
@@ -280,14 +280,14 @@ int[] reservoirSample(Iterator<Integer> stream, int k) {
 ```
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│ APPROXIMATION ALGORITHMS FOR NP-HARD PROBLEMS │
+│ APPROXIMATION ALGORITHMS FOR NP-HARD PROBLEMS                                   │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│ │
-│ When optimal is too slow, get "good enough" in polynomial time! │
-│ │
-│ │
-│ VERTEX COVER - 2-APPROXIMATION: │
-│ ───────────────────────────────── │
+│                                                                                 │
+│ When optimal is too slow, get "good enough" in polynomial time!                 │
+│                                                                                 │
+│                                                                                 │
+│ VERTEX COVER - 2-APPROXIMATION:                                                 │
+│ ─────────────────────────────────                                               │
 
 ```java
 // Find vertex cover at most 2x optimal
@@ -412,11 +412,11 @@ List<Integer> tspApprox(int[][] dist, int n) {
 ```
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│ PRODUCTION-GRADE DATA STRUCTURES │
+│ PRODUCTION-GRADE DATA STRUCTURES                                                │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│ │
-│ COUNT-MIN SKETCH (Approximate frequency counting): │
-│ ────────────────────────────────────────────────── │
+│                                                                                 │
+│ COUNT-MIN SKETCH (Approximate frequency counting):                              │
+│ ──────────────────────────────────────────────────                              │
 
 ```java
 class CountMinSketch {
@@ -600,11 +600,11 @@ class CuckooFilter {
 ```
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│ ADVANCED INTERVIEW PATTERNS │
+│ ADVANCED INTERVIEW PATTERNS                                                     │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│ │
-│ PATTERN 1: MONOTONIC STACK VARIATIONS │
-│ ───────────────────────────────────────── │
+│                                                                                 │
+│ PATTERN 1: MONOTONIC STACK VARIATIONS                                           │
+│ ─────────────────────────────────────────                                       │
 
 ```java
 // Next Greater Element with circular array
@@ -806,56 +806,56 @@ int closestSum(int[] nums, int target) {
 ```
 
 ╔══════════════════════════════════════════════════════════════════════════════════╗
-║ DSA MASTERY CHECKLIST ║
+║ DSA MASTERY CHECKLIST                                                            ║
 ╠══════════════════════════════════════════════════════════════════════════════════╣
-║ ║
-║ FUNDAMENTALS (Must master completely): ║
-║ □ Arrays: Access, insertion, deletion, resizing ║
-║ □ Strings: Manipulation, comparison, pattern matching basics ║
-║ □ Linked Lists: Singly, doubly, circular, operations ║
-║ □ Stacks: Implementation, applications (parentheses, monotonic) ║
-║ □ Queues: Regular, circular, deque, priority queue ║
-║ □ Hash Tables: Collision handling, load factor, rehashing ║
-║ □ Binary Trees: Traversals, BST operations, balancing concepts ║
-║ □ Heaps: Build, insert, extract, heapify ║
-║ □ Graphs: Representations, BFS, DFS, connectivity ║
-║ ║
-║ INTERMEDIATE (Should be comfortable): ║
-║ □ Sorting: Merge, Quick, Heap, Counting, Radix ║
-║ □ Searching: Binary search and variations ║
-║ □ Recursion: Base case, state, backtracking ║
-║ □ Dynamic Programming: 1D, 2D, state transitions ║
-║ □ Graph Algorithms: Dijkstra, Bellman-Ford, Topological sort ║
-║ □ Tree Algorithms: LCA, diameter, tree DP basics ║
-║ □ Two Pointers: Same direction, opposite direction ║
-║ □ Sliding Window: Fixed size, variable size ║
-║ ║
-║ ADVANCED (Know concepts and when to apply): ║
-║ □ Segment Trees: Range queries and updates ║
-║ □ Fenwick Trees: Prefix sums, point updates ║
-║ □ Union-Find: Path compression, union by rank ║
-║ □ Tries: String operations, prefix matching ║
-║ □ AVL/Red-Black: Self-balancing concepts ║
-║ □ String Algorithms: KMP, Z-algorithm, Rabin-Karp ║
-║ □ Graph Advanced: MST, SCC, articulation points ║
-║ □ DP Optimization: Bitmask, interval, divide and conquer ║
-║ ║
-║ EXPERT (For competitive programming): ║
-║ □ Suffix Arrays/Trees ║
-║ □ Heavy-Light Decomposition ║
-║ □ Centroid Decomposition ║
-║ □ Persistent Data Structures ║
-║ □ Convex Hull Trick ║
-║ □ FFT for polynomial multiplication ║
-║ □ Network Flow algorithms ║
-║ ║
-║ PRACTICAL KNOWLEDGE (For interviews): ║
-║ □ Complexity analysis (time and space) ║
-║ □ Trade-off discussions ║
-║ □ Code optimization techniques ║
-║ □ Testing and edge cases ║
-║ □ Communication and problem-solving approach ║
-║ ║
+║                                                                                  ║
+║ FUNDAMENTALS (Must master completely):                                           ║
+║ □ Arrays: Access, insertion, deletion, resizing                                  ║
+║ □ Strings: Manipulation, comparison, pattern matching basics                     ║
+║ □ Linked Lists: Singly, doubly, circular, operations                             ║
+║ □ Stacks: Implementation, applications (parentheses, monotonic)                  ║
+║ □ Queues: Regular, circular, deque, priority queue                               ║
+║ □ Hash Tables: Collision handling, load factor, rehashing                        ║
+║ □ Binary Trees: Traversals, BST operations, balancing concepts                   ║
+║ □ Heaps: Build, insert, extract, heapify                                         ║
+║ □ Graphs: Representations, BFS, DFS, connectivity                                ║
+║                                                                                  ║
+║ INTERMEDIATE (Should be comfortable):                                            ║
+║ □ Sorting: Merge, Quick, Heap, Counting, Radix                                   ║
+║ □ Searching: Binary search and variations                                        ║
+║ □ Recursion: Base case, state, backtracking                                      ║
+║ □ Dynamic Programming: 1D, 2D, state transitions                                 ║
+║ □ Graph Algorithms: Dijkstra, Bellman-Ford, Topological sort                     ║
+║ □ Tree Algorithms: LCA, diameter, tree DP basics                                 ║
+║ □ Two Pointers: Same direction, opposite direction                               ║
+║ □ Sliding Window: Fixed size, variable size                                      ║
+║                                                                                  ║
+║ ADVANCED (Know concepts and when to apply):                                      ║
+║ □ Segment Trees: Range queries and updates                                       ║
+║ □ Fenwick Trees: Prefix sums, point updates                                      ║
+║ □ Union-Find: Path compression, union by rank                                    ║
+║ □ Tries: String operations, prefix matching                                      ║
+║ □ AVL/Red-Black: Self-balancing concepts                                         ║
+║ □ String Algorithms: KMP, Z-algorithm, Rabin-Karp                                ║
+║ □ Graph Advanced: MST, SCC, articulation points                                  ║
+║ □ DP Optimization: Bitmask, interval, divide and conquer                         ║
+║                                                                                  ║
+║ EXPERT (For competitive programming):                                            ║
+║ □ Suffix Arrays/Trees                                                            ║
+║ □ Heavy-Light Decomposition                                                      ║
+║ □ Centroid Decomposition                                                         ║
+║ □ Persistent Data Structures                                                     ║
+║ □ Convex Hull Trick                                                              ║
+║ □ FFT for polynomial multiplication                                              ║
+║ □ Network Flow algorithms                                                        ║
+║                                                                                  ║
+║ PRACTICAL KNOWLEDGE (For interviews):                                            ║
+║ □ Complexity analysis (time and space)                                           ║
+║ □ Trade-off discussions                                                          ║
+║ □ Code optimization techniques                                                   ║
+║ □ Testing and edge cases                                                         ║
+║ □ Communication and problem-solving approach                                     ║
+║                                                                                  ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 
 ```
@@ -867,16 +867,16 @@ int closestSum(int[] nums, int target) {
 ```
 
 ╔══════════════════════════════════════════════════════════════════════════════════╗
-║ JVM INTERNALS - THE COMPLETE GUIDE FOR BUILDING FRAMEWORKS ║
+║ JVM INTERNALS - THE COMPLETE GUIDE FOR BUILDING FRAMEWORKS                       ║
 ╠══════════════════════════════════════════════════════════════════════════════════╣
-║ ║
-║ Why JVM knowledge matters: ║
-║ • Understand WHY your code performs the way it does ║
-║ • Debug memory issues (leaks, OOM errors) ║
-║ • Build frameworks like Spring, Hibernate, Mockito ║
-║ • Optimize applications for production ║
-║ • Ace senior-level Java interviews ║
-║ ║
+║                                                                                  ║
+║ Why JVM knowledge matters:                                                       ║
+║ • Understand WHY your code performs the way it does                              ║
+║ • Debug memory issues (leaks, OOM errors)                                        ║
+║ • Build frameworks like Spring, Hibernate, Mockito                               ║
+║ • Optimize applications for production                                           ║
+║ • Ace senior-level Java interviews                                               ║
+║                                                                                  ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 
 ```

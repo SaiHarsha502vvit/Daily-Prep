@@ -15,42 +15,42 @@
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHY: Why Microservices?                                                        │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Scale independently: Scale only the service that needs it                   │
-│  • Team autonomy: Different teams own different services                       │
-│  • Technology freedom: Each service can use best-fit technology               │
-│  • Fault isolation: One service failure doesn't crash everything              │
-│  • Faster deployment: Deploy one service without touching others              │
+│  • Scale independently: Scale only the service that needs it                    │
+│  • Team autonomy: Different teams own different services                        │
+│  • Technology freedom: Each service can use best-fit technology                 │
+│  • Fault isolation: One service failure doesn't crash everything                │
+│  • Faster deployment: Deploy one service without touching others                │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  HOW: How Do Microservices Communicate?                                         │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Service Discovery: Eureka/Consul finds service locations dynamically       │
-│  • API Gateway: Single entry, routing, auth, rate limiting (Spring Cloud)    │
-│  • Circuit Breaker: Resilience4j prevents cascade failures                    │
-│  • Event-Driven: Kafka/RabbitMQ for async communication                       │
-│  • Config Server: Centralized configuration management                        │
+│  • Service Discovery: Eureka/Consul finds service locations dynamically         │
+│  • API Gateway: Single entry, routing, auth, rate limiting (Spring Cloud)       │
+│  • Circuit Breaker: Resilience4j prevents cascade failures                      │
+│  • Event-Driven: Kafka/RabbitMQ for async communication                         │
+│  • Config Server: Centralized configuration management                          │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHEN: When to Use Microservices?                                               │
 ├─────────────────────────────────────────────────────────────────────────────────┤
 │  USE MICROSERVICES:                                                             │
-│  • Large teams (5+ developers per team)                                        │
-│  • Independent scaling needs                                                   │
-│  • Complex domain with clear boundaries                                        │
-│                                                                                  │
+│  • Large teams (5+ developers per team)                                         │
+│  • Independent scaling needs                                                    │
+│  • Complex domain with clear boundaries                                         │
+│                                                                                 │
 │  STICK WITH MONOLITH:                                                           │
-│  • Small team, MVP, unclear domain boundaries                                  │
-│  • Simple CRUD apps, limited scaling needs                                     │
+│  • Small team, MVP, unclear domain boundaries                                   │
+│  • Simple CRUD apps, limited scaling needs                                      │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHICH: Which Patterns to Master?                                               │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  ESSENTIAL:     API Gateway, Service Discovery, Circuit Breaker                │
-│  IMPORTANT:     Config Server, Load Balancing, Saga Pattern                    │
-│  ADVANCED:      CQRS, Event Sourcing, Service Mesh                             │
+│  ESSENTIAL:     API Gateway, Service Discovery, Circuit Breaker                 │
+│  IMPORTANT:     Config Server, Load Balancing, Saga Pattern                     │
+│  ADVANCED:      CQRS, Event Sourcing, Service Mesh                              │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -83,10 +83,10 @@
 🏢 MONOLITHIC ARCHITECTURE
 ┌─────────────────────────────────────────────────────────────────┐
 │                     Single Application                          │
-│  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐            │
-│  │  User   │  │  Order  │  │ Payment │  │Inventory│            │
-│  │ Service │  │ Service │  │ Service │  │ Service │            │
-│  └────┬────┘  └────┬────┘  └────┬────┘  └────┬────┘            │
+│  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐             │
+│  │  User   │  │  Order  │  │ Payment │  │Inventory│             │
+│  │ Service │  │ Service │  │ Service │  │ Service │             │
+│  └────┬────┘  └────┬────┘  └────┬────┘  └────┬────┘             │
 │       └────────────┴────────────┴────────────┘                  │
 │                        │                                        │
 │                 ┌──────┴──────┐                                 │
@@ -97,20 +97,20 @@
 🌐 MICROSERVICES ARCHITECTURE
 ┌─────────────────────────────────────────────────────────────────┐
 │                      API Gateway                                │
-│  ┌─────────────────────────────────────────────────────────┐   │
+│  ┌─────────────────────────────────────────────────────────┐    │
 │  │        Load Balancer / Reverse Proxy                     │   │
-│  └───────────────────┬─────────────────────────────────────┘   │
+│  └───────────────────┬─────────────────────────────────────┘    │
 │            ┌─────────┼─────────┬───────────┐                    │
 │            ▼         ▼         ▼           ▼                    │
-│     ┌───────────┐ ┌───────────┐ ┌───────────┐ ┌───────────┐    │
-│     │   User    │ │   Order   │ │  Payment  │ │ Inventory │    │
-│     │  Service  │ │  Service  │ │  Service  │ │  Service  │    │
-│     └─────┬─────┘ └─────┬─────┘ └─────┬─────┘ └─────┬─────┘    │
+│     ┌───────────┐ ┌───────────┐ ┌───────────┐ ┌───────────┐     │
+│     │   User    │ │   Order   │ │  Payment  │ │ Inventory │     │
+│     │  Service  │ │  Service  │ │  Service  │ │  Service  │     │
+│     └─────┬─────┘ └─────┬─────┘ └─────┬─────┘ └─────┬─────┘     │
 │           │             │             │             │           │
-│     ┌─────┴─────┐ ┌─────┴─────┐ ┌─────┴─────┐ ┌─────┴─────┐    │
-│     │  User DB  │ │ Order DB  │ │Payment DB │ │Inventory  │    │
-│     │ (Postgres)│ │  (Mongo)  │ │ (Postgres)│ │   DB      │    │
-│     └───────────┘ └───────────┘ └───────────┘ └───────────┘    │
+│     ┌─────┴─────┐ ┌─────┴─────┐ ┌─────┴─────┐ ┌─────┴─────┐     │
+│     │  User DB  │ │ Order DB  │ │Payment DB │ │Inventory  │     │
+│     │ (Postgres)│ │  (Mongo)  │ │ (Postgres)│ │   DB      │     │
+│     └───────────┘ └───────────┘ └───────────┘ └───────────┘     │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -130,23 +130,23 @@
 ┌─────────────────────────────────────────────────────────────────────┐
 │                    SPRING CLOUD ECOSYSTEM                           │
 ├─────────────────────────────────────────────────────────────────────┤
-│  ┌───────────────┐    ┌───────────────┐    ┌───────────────┐       │
-│  │ Service       │    │ API Gateway   │    │ Config Server │       │
-│  │ Discovery     │    │               │    │               │       │
-│  │ (Eureka)      │    │ (Gateway)     │    │ (Config)      │       │
-│  └───────────────┘    └───────────────┘    └───────────────┘       │
+│  ┌───────────────┐    ┌───────────────┐    ┌───────────────┐        │
+│  │ Service       │    │ API Gateway   │    │ Config Server │        │
+│  │ Discovery     │    │               │    │               │        │
+│  │ (Eureka)      │    │ (Gateway)     │    │ (Config)      │        │
+│  └───────────────┘    └───────────────┘    └───────────────┘        │
 │                                                                     │
-│  ┌───────────────┐    ┌───────────────┐    ┌───────────────┐       │
-│  │ Circuit       │    │ Distributed   │    │ Load          │       │
-│  │ Breaker       │    │ Tracing       │    │ Balancing     │       │
-│  │ (Resilience4j)│    │ (Sleuth)      │    │ (LoadBalancer)│       │
-│  └───────────────┘    └───────────────┘    └───────────────┘       │
+│  ┌───────────────┐    ┌───────────────┐    ┌───────────────┐        │
+│  │ Circuit       │    │ Distributed   │    │ Load          │        │
+│  │ Breaker       │    │ Tracing       │    │ Balancing     │        │
+│  │ (Resilience4j)│    │ (Sleuth)      │    │ (LoadBalancer)│        │
+│  └───────────────┘    └───────────────┘    └───────────────┘        │
 │                                                                     │
-│  ┌───────────────┐    ┌───────────────┐    ┌───────────────┐       │
-│  │ Message       │    │ Security      │    │ Monitoring    │       │
-│  │ Broker        │    │               │    │               │       │
-│  │ (Stream)      │    │ (Security)    │    │ (Actuator)    │       │
-│  └───────────────┘    └───────────────┘    └───────────────┘       │
+│  ┌───────────────┐    ┌───────────────┐    ┌───────────────┐        │
+│  │ Message       │    │ Security      │    │ Monitoring    │        │
+│  │ Broker        │    │               │    │               │        │
+│  │ (Stream)      │    │ (Security)    │    │ (Actuator)    │        │
+│  └───────────────┘    └───────────────┘    └───────────────┘        │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -160,17 +160,17 @@
 Without Service Discovery:
 ┌─────────────────────────────────────────────────────────────────┐
 │  Service A needs to call Service B                              │
-│  ❌ Hard-coded URLs: http://192.168.1.100:8080                  │
-│  ❌ What if Service B moves?                                    │
-│  ❌ What if we scale to multiple instances?                     │
+│  ❌ Hard-coded URLs: http://192.168.1.100:8080                   │
+│  ❌ What if Service B moves?                                     │
+│  ❌ What if we scale to multiple instances?                      │
 └─────────────────────────────────────────────────────────────────┘
 
 With Service Discovery:
 ┌─────────────────────────────────────────────────────────────────┐
 │  Service A calls "order-service" (logical name)                 │
-│  ✅ Service Registry resolves to healthy instance               │
-│  ✅ Automatic failover to other instances                       │
-│  ✅ Dynamic scaling without config changes                      │
+│  ✅ Service Registry resolves to healthy instance                │
+│  ✅ Automatic failover to other instances                        │
+│  ✅ Dynamic scaling without config changes                       │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -449,18 +449,18 @@ Without API Gateway:
 │  Client → User Service (port 8081)                              │
 │  Client → Order Service (port 8082)                             │
 │  Client → Payment Service (port 8083)                           │
-│  ❌ Client needs to know all service locations                  │
-│  ❌ Cross-cutting concerns duplicated                           │
-│  ❌ Protocol translation complex                                │
+│  ❌ Client needs to know all service locations                   │
+│  ❌ Cross-cutting concerns duplicated                            │
+│  ❌ Protocol translation complex                                 │
 └─────────────────────────────────────────────────────────────────┘
 
 With API Gateway:
 ┌─────────────────────────────────────────────────────────────────┐
 │  Client → API Gateway (port 8080)                               │
 │  Gateway → User/Order/Payment Services                          │
-│  ✅ Single entry point                                          │
-│  ✅ Centralized auth, rate limiting, logging                    │
-│  ✅ Request routing and aggregation                             │
+│  ✅ Single entry point                                           │
+│  ✅ Centralized auth, rate limiting, logging                     │
+│  ✅ Request routing and aggregation                              │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -804,19 +804,19 @@ public class FallbackController {
 Without Circuit Breaker:
 ┌─────────────────────────────────────────────────────────────────┐
 │  Service A → Service B (failing)                                │
-│  ❌ Requests keep failing                                       │
-│  ❌ Threads blocked waiting for timeout                         │
-│  ❌ Cascading failures to other services                        │
-│  ❌ Resources exhausted                                         │
+│  ❌ Requests keep failing                                        │
+│  ❌ Threads blocked waiting for timeout                          │
+│  ❌ Cascading failures to other services                         │
+│  ❌ Resources exhausted                                          │
 └─────────────────────────────────────────────────────────────────┘
 
 With Circuit Breaker:
 ┌─────────────────────────────────────────────────────────────────┐
 │  Service A → Circuit Breaker → Service B                        │
-│  ✅ Fast fail when service down                                 │
-│  ✅ Fallback response immediately                               │
-│  ✅ Periodic health checks                                      │
-│  ✅ Automatic recovery when service recovers                    │
+│  ✅ Fast fail when service down                                  │
+│  ✅ Fallback response immediately                                │
+│  ✅ Periodic health checks                                       │
+│  ✅ Automatic recovery when service recovers                     │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -826,32 +826,32 @@ With Circuit Breaker:
 ┌─────────────────────────────────────────────────────────────────┐
 │                  CIRCUIT BREAKER STATES                         │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │   ┌────────────────┐                                            │
 │   │     CLOSED     │ ←─── Normal operation                      │
 │   │  (Requests     │      All requests pass through             │
 │   │   pass through)│                                            │
 │   └───────┬────────┘                                            │
-│           │ Failure threshold exceeded                           │
-│           ▼                                                      │
+│           │ Failure threshold exceeded                          │
+│           ▼                                                     │
 │   ┌────────────────┐                                            │
-│   │      OPEN      │ ←─── Circuit tripped                        │
+│   │      OPEN      │ ←─── Circuit tripped                       │
 │   │  (Requests     │      All requests fail fast                │
 │   │   fail fast)   │      Fallback returned                     │
 │   └───────┬────────┘                                            │
-│           │ Wait duration elapsed                                │
-│           ▼                                                      │
+│           │ Wait duration elapsed                               │
+│           ▼                                                     │
 │   ┌────────────────┐                                            │
 │   │   HALF-OPEN    │ ←─── Testing phase                         │
 │   │  (Limited      │      Limited requests allowed              │
 │   │   requests)    │                                            │
 │   └───────┬────────┘                                            │
-│           │                                                      │
-│     Success  │  Failure                                          │
-│        │     │     │                                             │
-│        ▼     │     ▼                                             │
-│    CLOSED    │   OPEN                                            │
-│              │                                                   │
+│           │                                                     │
+│     Success  │  Failure                                         │
+│        │     │     │                                            │
+│        ▼     │     ▼                                            │
+│    CLOSED    │   OPEN                                           │
+│              │                                                  │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1201,22 +1201,22 @@ public class UserServiceLoadBalancerConfig {
 ┌─────────────────────────────────────────────────────────────────┐
 │                  LOAD BALANCING STRATEGIES                      │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
+│                                                                 │
 │  Round Robin          │ Equal distribution, sequential          │
 │  Instance 1 → 2 → 3 → 1 → 2 → 3...                              │
-│                                                                  │
-│  Random               │ Random instance selection                │
+│                                                                 │
+│  Random               │ Random instance selection               │
 │  Good for stateless services                                    │
-│                                                                  │
-│  Weighted             │ Based on capacity/health                 │
-│  Instance 1 (w=3) gets 3x traffic of Instance 2 (w=1)          │
-│                                                                  │
-│  Zone Aware           │ Prefer same availability zone            │
+│                                                                 │
+│  Weighted             │ Based on capacity/health                │
+│  Instance 1 (w=3) gets 3x traffic of Instance 2 (w=1)           │
+│                                                                 │
+│  Zone Aware           │ Prefer same availability zone           │
 │  Reduces latency, contains failures                             │
-│                                                                  │
-│  Health-Based         │ Only route to healthy instances          │
+│                                                                 │
+│  Health-Based         │ Only route to healthy instances         │
 │  Respects health indicators                                     │
-│                                                                  │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 

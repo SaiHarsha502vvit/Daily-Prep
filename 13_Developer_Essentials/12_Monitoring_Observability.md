@@ -13,20 +13,20 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════════╗
-║  PILLAR 1: METRICS (What is happening?)                                         ║
-║  → Numerical time-series data: CPU 85%, latency 120ms, errors 5/min           ║
-║  → Tools: Prometheus, Datadog, CloudWatch                                       ║
-║  → Dashboards: Grafana                                                          ║
+║  PILLAR 1: METRICS (What is happening?)                                          ║
+║  → Numerical time-series data: CPU 85%, latency 120ms, errors 5/min              ║
+║  → Tools: Prometheus, Datadog, CloudWatch                                        ║
+║  → Dashboards: Grafana                                                           ║
 ║                                                                                  ║
-║  PILLAR 2: LOGS (Why did it happen?)                                            ║
-║  → Detailed event records with context                                          ║
-║  → Tools: ELK Stack (Elasticsearch + Logstash + Kibana), Loki, Splunk         ║
-║  → Structured JSON logs with correlation IDs                                    ║
+║  PILLAR 2: LOGS (Why did it happen?)                                             ║
+║  → Detailed event records with context                                           ║
+║  → Tools: ELK Stack (Elasticsearch + Logstash + Kibana), Loki, Splunk            ║
+║  → Structured JSON logs with correlation IDs                                     ║
 ║                                                                                  ║
-║  PILLAR 3: TRACES (Where did it happen?)                                        ║
-║  → Follow a request across multiple services                                    ║
-║  → Tools: Jaeger, Zipkin, AWS X-Ray, OpenTelemetry                             ║
-║  → Trace ID propagated through headers                                          ║
+║  PILLAR 3: TRACES (Where did it happen?)                                         ║
+║  → Follow a request across multiple services                                     ║
+║  → Tools: Jaeger, Zipkin, AWS X-Ray, OpenTelemetry                               ║
+║  → Trace ID propagated through headers                                           ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -35,11 +35,11 @@
 ## Prometheus + Grafana Stack
 
 ```
-┌────────────┐  scrape /metrics  ┌────────────┐  query  ┌──────────┐
-│ Your App   │◄──────────────────│ Prometheus  │◄───────│ Grafana   │
-│ (exposes   │  every 15s         │ (stores     │        │ (visual   │
+┌────────────┐  scrape /metrics  ┌────────────┐  query  ┌──────────────┐
+│ Your App   │◄──────────────────│ Prometheus  │◄───────│ Grafana      │
+│ (exposes   │  every 15s         │ (stores     │        │ (visual     │
 │  /metrics) │                    │  time-series)│       │  dashboards)│
-└────────────┘                   └──────┬─────┘        └──────────┘
+└────────────┘                   └──────┬─────┘        └───────────────┘
                                         │
                                  ┌──────▼──────┐
                                  │ Alertmanager │
@@ -48,10 +48,10 @@
 
 4 GOLDEN SIGNALS (Google SRE):
 ┌──────────────┬──────────────────────────────────────────────────────────┐
-│ Latency      │ Time to serve a request (p50, p95, p99)                 │
+│ Latency      │ Time to serve a request (p50, p95, p99)                  │
 │ Traffic      │ Requests per second (throughput)                         │
-│ Errors       │ Rate of failed requests (5xx, 4xx)                      │
-│ Saturation   │ How "full" is your system (CPU, memory, disk, queue)   │
+│ Errors       │ Rate of failed requests (5xx, 4xx)                       │
+│ Saturation   │ How "full" is your system (CPU, memory, disk, queue)     │
 └──────────────┴──────────────────────────────────────────────────────────┘
 
 Spring Boot + Micrometer (auto-exposes Prometheus metrics):
@@ -88,9 +88,9 @@ Spring Boot + Micrometer (auto-exposes Prometheus metrics):
 
 ```
 ┌────────────┐     ┌───────────┐     ┌───────────────┐     ┌──────────┐
-│ App Logs   │────→│ Filebeat/  │────→│ Logstash       │────→│ Elastic  │
-│ (JSON to   │     │ Fluentd    │     │ (parse,        │     │ search   │
-│  stdout)   │     │ (ship logs)│     │  transform,    │     │ (index,  │
+│ App Logs   │────→│ Filebeat/  │────→│ Logstash       │────→│ Elastic│
+│ (JSON to   │     │ Fluentd    │     │ (parse,        │     │ search │
+│  stdout)   │     │ (ship logs)│     │  transform,    │     │ (index,│
 └────────────┘     └───────────┘     │  enrich)       │     │  search) │
                                       └───────────────┘     └────┬─────┘
                                                                  │
@@ -109,24 +109,24 @@ Modern alternative: Grafana Loki (lighter, labels-based, pairs with Grafana)
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════════╗
-║  Request from browser → API Gateway → Order Service → Payment Service          ║
+║  Request from browser → API Gateway → Order Service → Payment Service            ║
 ║                                                                                  ║
-║  Trace ID: abc-123 (same across ALL services for this request)                 ║
+║  Trace ID: abc-123 (same across ALL services for this request)                   ║
 ║                                                                                  ║
-║  ┌─── API Gateway (Span 1) ─────────────────────────────────────────┐          ║
-║  │  ┌─── Order Service (Span 2) ──────────────────────────┐        │          ║
-║  │  │  ┌─── DB Query (Span 3) ──────┐                     │        │          ║
-║  │  │  └─────────── 15ms ───────────┘                     │        │          ║
-║  │  │  ┌─── Payment Service (Span 4) ────────────────┐    │        │          ║
-║  │  │  │  ┌─── Stripe API (Span 5) ──────────┐      │    │        │          ║
-║  │  │  │  └──────────── 200ms ───────────────┘      │    │        │          ║
-║  │  │  └──────────────── 250ms ──────────────────────┘    │        │          ║
-║  │  └───────────────────── 280ms ─────────────────────────┘        │          ║
-║  └────────────────────────── 300ms ────────────────────────────────┘          ║
+║  ┌─── API Gateway (Span 1) ─────────────────────────────────────────┐            ║
+║  │  ┌─── Order Service (Span 2) ──────────────────────────┐        │             ║
+║  │  │  ┌─── DB Query (Span 3) ──────┐                     │        │             ║
+║  │  │  └─────────── 15ms ───────────┘                     │        │             ║
+║  │  │  ┌─── Payment Service (Span 4) ────────────────┐    │        │             ║
+║  │  │  │  ┌─── Stripe API (Span 5) ──────────┐      │    │        │              ║
+║  │  │  │  └──────────── 200ms ───────────────┘      │    │        │              ║
+║  │  │  └──────────────── 250ms ──────────────────────┘    │        │             ║
+║  │  └───────────────────── 280ms ─────────────────────────┘        │             ║
+║  └────────────────────────── 300ms ────────────────────────────────┘             ║
 ║                                                                                  ║
-║  → Immediately see: Payment Service (Stripe API call) is the bottleneck!       ║
+║  → Immediately see: Payment Service (Stripe API call) is the bottleneck!         ║
 ║                                                                                  ║
-║  OpenTelemetry (standard): auto-instruments Spring Boot, propagates trace IDs  ║
+║  OpenTelemetry (standard): auto-instruments Spring Boot, propagates trace IDs    ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -136,23 +136,23 @@ Modern alternative: Grafana Loki (lighter, labels-based, pairs with Grafana)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│  GOOD ALERTS:                                                                    │
-│  ✅ Error rate > 5% for 5 minutes → Page on-call                               │
-│  ✅ P99 latency > 2s for 10 minutes → Warn in Slack                            │
-│  ✅ Disk usage > 85% → Ticket                                                  │
-│  ✅ Zero orders in last 30 min (business hours) → Investigate                  │
-│                                                                                  │
+│  GOOD ALERTS:                                                                   │
+│  ✅ Error rate > 5% for 5 minutes → Page on-call                                 │
+│  ✅ P99 latency > 2s for 10 minutes → Warn in Slack                              │
+│  ✅ Disk usage > 85% → Ticket                                                    │
+│  ✅ Zero orders in last 30 min (business hours) → Investigate                    │
+│                                                                                 │
 │  BAD ALERTS (alert fatigue):                                                    │
-│  ❌ CPU > 80% (spikes are normal, care about sustained)                        │
-│  ❌ Any single 500 error (noise)                                               │
-│  ❌ Alerts without runbook (what do I DO about this?)                          │
-│                                                                                  │
+│  ❌ CPU > 80% (spikes are normal, care about sustained)                          │
+│  ❌ Any single 500 error (noise)                                                 │
+│  ❌ Alerts without runbook (what do I DO about this?)                            │
+│                                                                                 │
 │  EVERY ALERT SHOULD HAVE:                                                       │
 │  1. What is broken (symptom)                                                    │
-│  2. What is the impact (users can't checkout)                                  │
+│  2. What is the impact (users can't checkout)                                   │
 │  3. Runbook link (how to investigate and fix)                                   │
 │  4. Dashboard link (see current state)                                          │
-│  5. Severity (P1: everything down, P2: degraded, P3: potential issue)          │
+│  5. Severity (P1: everything down, P2: degraded, P3: potential issue)           │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 

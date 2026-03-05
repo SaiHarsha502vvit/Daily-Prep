@@ -14,35 +14,35 @@
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ WHAT ARE DESIGN PATTERNS?                                                    │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ Design patterns are REUSABLE SOLUTIONS to COMMON problems that occur in     │
+│ Design patterns are REUSABLE SOLUTIONS to COMMON problems that occur in      │
 │ software design. They are templates, not finished code.                      │
 │                                                                              │
-│ KEY INSIGHT: Patterns are like RECIPES in cooking!                          │
-│ • Recipe tells you the approach, not exact ingredients                      │
-│ • You adapt the recipe to your specific needs                               │
-│ • Knowing recipes makes you a better cook/developer                         │
+│ KEY INSIGHT: Patterns are like RECIPES in cooking!                           │
+│ • Recipe tells you the approach, not exact ingredients                       │
+│ • You adapt the recipe to your specific needs                                │
+│ • Knowing recipes makes you a better cook/developer                          │
 │                                                                              │
 │ ANALOGY:                                                                     │
-│ ┌─────────────────────────────────────────────────────────────────────────┐ │
-│ │ WITHOUT PATTERNS:                                                       │ │
-│ │ "I need to make food" → Start from scratch every time                   │ │
-│ │                                                                         │ │
-│ │ WITH PATTERNS:                                                          │ │
-│ │ "I need to make curry" → Use curry recipe (known solution)              │ │
-│ │ "I need to bake" → Use baking techniques (known approach)               │ │
-│ │                                                                         │ │
-│ │ IN SOFTWARE:                                                            │ │
-│ │ "I need one global config" → Use Singleton pattern                      │ │
-│ │ "I need to create objects flexibly" → Use Factory pattern               │ │
-│ └─────────────────────────────────────────────────────────────────────────┘ │
+│ ┌─────────────────────────────────────────────────────────────────────────┐  │
+│ │ WITHOUT PATTERNS:                                                       │  │
+│ │ "I need to make food" → Start from scratch every time                   │  │
+│ │                                                                         │  │
+│ │ WITH PATTERNS:                                                          │  │
+│ │ "I need to make curry" → Use curry recipe (known solution)              │  │
+│ │ "I need to bake" → Use baking techniques (known approach)               │  │
+│ │                                                                         │  │
+│ │ IN SOFTWARE:                                                            │  │
+│ │ "I need one global config" → Use Singleton pattern                      │  │
+│ │ "I need to create objects flexibly" → Use Factory pattern               │  │
+│ └─────────────────────────────────────────────────────────────────────────┘  │
 │                                                                              │
 │ HISTORICAL EVOLUTION:                                                        │
-│ • 1977: Christopher Alexander - patterns in architecture                    │
-│ • 1987: Kent Beck & Ward Cunningham - patterns in software                  │
-│ • 1994: Gang of Four (GoF) book - 23 classic patterns                       │
-│ • 2000s: Enterprise patterns, Web patterns emerged                          │
-│ • 2010s: Microservices patterns, Cloud patterns                             │
-│ • Today: Patterns for AI, serverless, reactive systems                     │
+│ • 1977: Christopher Alexander - patterns in architecture                     │
+│ • 1987: Kent Beck & Ward Cunningham - patterns in software                   │
+│ • 1994: Gang of Four (GoF) book - 23 classic patterns                        │
+│ • 2000s: Enterprise patterns, Web patterns emerged                           │
+│ • 2010s: Microservices patterns, Cloud patterns                              │
+│ • Today: Patterns for AI, serverless, reactive systems                       │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -51,27 +51,27 @@
 │                                                                              │
 │ PROBLEM 1: REINVENTING THE WHEEL                                             │
 │ • Developers solve same problems repeatedly                                  │
-│ • Each solution is different, often suboptimal                              │
-│ • Patterns provide PROVEN solutions                                         │
+│ • Each solution is different, often suboptimal                               │
+│ • Patterns provide PROVEN solutions                                          │
 │                                                                              │
 │ PROBLEM 2: COMMUNICATION                                                     │
-│ • "I used a thing that creates objects..." (vague)                          │
-│ • "I used the Factory pattern" (precise, everyone understands)              │
-│ • Patterns give us a COMMON VOCABULARY                                      │
+│ • "I used a thing that creates objects..." (vague)                           │
+│ • "I used the Factory pattern" (precise, everyone understands)               │
+│ • Patterns give us a COMMON VOCABULARY                                       │
 │                                                                              │
 │ PROBLEM 3: MAINTAINABILITY                                                   │
-│ • Spaghetti code is hard to change                                          │
-│ • Patterns enforce STRUCTURE and SEPARATION                                 │
+│ • Spaghetti code is hard to change                                           │
+│ • Patterns enforce STRUCTURE and SEPARATION                                  │
 │                                                                              │
 │ PROBLEM 4: FLEXIBILITY                                                       │
 │ • Requirements change constantly                                             │
-│ • Patterns make code ADAPTABLE to change                                    │
+│ • Patterns make code ADAPTABLE to change                                     │
 │                                                                              │
 │ REAL-WORLD EXAMPLES:                                                         │
-│ • Java Collections use Iterator pattern                                     │
-│ • Spring Framework uses Factory, Singleton, Proxy patterns                  │
-│ • React uses Observer pattern (state updates)                               │
-│ • Android uses Builder pattern (AlertDialog.Builder)                        │
+│ • Java Collections use Iterator pattern                                      │
+│ • Spring Framework uses Factory, Singleton, Proxy patterns                   │
+│ • React uses Observer pattern (state updates)                                │
+│ • Android uses Builder pattern (AlertDialog.Builder)                         │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -79,28 +79,28 @@
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │ 1. BETTER CODE QUALITY:                                                      │
-│    • Patterns are battle-tested solutions                                   │
-│    • Fewer bugs, easier maintenance                                         │
+│    • Patterns are battle-tested solutions                                    │
+│    • Fewer bugs, easier maintenance                                          │
 │                                                                              │
 │ 2. FASTER DEVELOPMENT:                                                       │
-│    • Don't waste time designing from scratch                                │
-│    • Apply known solutions to new problems                                  │
+│    • Don't waste time designing from scratch                                 │
+│    • Apply known solutions to new problems                                   │
 │                                                                              │
 │ 3. TEAM COMMUNICATION:                                                       │
-│    • "Use Strategy pattern here" - everyone understands                     │
-│    • Code reviews become easier                                             │
+│    • "Use Strategy pattern here" - everyone understands                      │
+│    • Code reviews become easier                                              │
 │                                                                              │
 │ 4. INTERVIEW SUCCESS:                                                        │
-│    • OOP/Design interviews test pattern knowledge                           │
-│    • Shows architectural thinking ability                                   │
+│    • OOP/Design interviews test pattern knowledge                            │
+│    • Shows architectural thinking ability                                    │
 │                                                                              │
 │ 5. FRAMEWORK UNDERSTANDING:                                                  │
-│    • Spring, Hibernate, React all use patterns                              │
-│    • Understanding patterns = understanding frameworks                      │
+│    • Spring, Hibernate, React all use patterns                               │
+│    • Understanding patterns = understanding frameworks                       │
 │                                                                              │
 │ 6. CAREER GROWTH:                                                            │
-│    • Senior developers MUST know patterns                                   │
-│    • Required for system design and architecture roles                     │
+│    • Senior developers MUST know patterns                                    │
+│    • Required for system design and architecture roles                       │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -108,28 +108,28 @@
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │ USE PATTERNS WHEN:                                                           │
-│ ✅ You recognize a recurring problem                                        │
-│ ✅ You need flexibility for future changes                                  │
-│ ✅ You're building frameworks or libraries                                  │
-│ ✅ Multiple classes need to work together                                   │
-│ ✅ You want to follow SOLID principles                                      │
+│ ✅ You recognize a recurring problem                                          │
+│ ✅ You need flexibility for future changes                                    │
+│ ✅ You're building frameworks or libraries                                    │
+│ ✅ Multiple classes need to work together                                     │
+│ ✅ You want to follow SOLID principles                                        │
 │                                                                              │
 │ DON'T USE PATTERNS WHEN:                                                     │
-│ ❌ Simple code does the job                                                 │
-│ ❌ You're forcing a pattern where it doesn't fit                            │
-│ ❌ Pattern adds unnecessary complexity                                       │
-│ ❌ One-time scripts or throwaway code                                       │
+│ ❌ Simple code does the job                                                   │
+│ ❌ You're forcing a pattern where it doesn't fit                              │
+│ ❌ Pattern adds unnecessary complexity                                        │
+│ ❌ One-time scripts or throwaway code                                         │
 │                                                                              │
 │ GOLDEN RULE:                                                                 │
-│ ┌─────────────────────────────────────────────────────────────────────────┐ │
-│ │  "Use patterns to SOLVE problems, not to SHOW OFF knowledge"            │ │
-│ │                                                                         │ │
-│ │  Over-engineering with patterns is as bad as no patterns!              │ │
-│ └─────────────────────────────────────────────────────────────────────────┘ │
+│ ┌─────────────────────────────────────────────────────────────────────────┐  │
+│ │  "Use patterns to SOLVE problems, not to SHOW OFF knowledge"            │  │
+│ │                                                                         │  │
+│ │  Over-engineering with patterns is as bad as no patterns!              │   │
+│ └─────────────────────────────────────────────────────────────────────────┘  │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ ⭐ GROWTH MINDSET: FROM PATTERN USER TO PATTERN CREATOR ⭐                   │
+│ ⭐ GROWTH MINDSET: FROM PATTERN USER TO PATTERN CREATOR ⭐                     │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │ LEVEL 1 - LEARNER:                                                           │
@@ -139,17 +139,17 @@
 │ "I can implement Singleton correctly"                                        │
 │                                                                              │
 │ LEVEL 3 - RECOGNIZER:                                                        │
-│ "I can identify when to use Singleton in my code"                           │
+│ "I can identify when to use Singleton in my code"                            │
 │                                                                              │
 │ LEVEL 4 - COMBINER:                                                          │
-│ "I can combine multiple patterns to solve complex problems"                 │
+│ "I can combine multiple patterns to solve complex problems"                  │
 │                                                                              │
 │ LEVEL 5 - CREATOR:                                                           │
-│ "I can create new patterns for recurring problems in my domain"             │
+│ "I can create new patterns for recurring problems in my domain"              │
 │                                                                              │
 │ THE TRUTH:                                                                   │
-│ GoF patterns were CREATED by observing recurring solutions!                 │
-│ YOU can observe patterns in your domain and document them too!              │
+│ GoF patterns were CREATED by observing recurring solutions!                  │
+│ YOU can observe patterns in your domain and document them too!               │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -157,32 +157,32 @@
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │ 1. CREATIONAL PATTERNS (Object Creation)                                     │
-│    "HOW do I create objects?"                                               │
-│    • Singleton, Factory, Abstract Factory, Builder, Prototype               │
+│    "HOW do I create objects?"                                                │
+│    • Singleton, Factory, Abstract Factory, Builder, Prototype                │
 │                                                                              │
 │ 2. STRUCTURAL PATTERNS (Object Composition)                                  │
-│    "HOW do I structure classes and objects?"                                │
-│    • Adapter, Bridge, Composite, Decorator, Facade, Proxy                   │
+│    "HOW do I structure classes and objects?"                                 │
+│    • Adapter, Bridge, Composite, Decorator, Facade, Proxy                    │
 │                                                                              │
 │ 3. BEHAVIORAL PATTERNS (Object Interaction)                                  │
-│    "HOW do objects communicate and behave?"                                 │
-│    • Observer, Strategy, Command, Iterator, State, Template Method          │
+│    "HOW do objects communicate and behave?"                                  │
+│    • Observer, Strategy, Command, Iterator, State, Template Method           │
 │                                                                              │
 │ QUICK SELECTION GUIDE:                                                       │
-│ ┌──────────────────────────────────────────────────────────────────────────┐│
-│ │ NEED                              │ PATTERN                              ││
-│ │ ────────────────────────────────────────────────────────────────────────││
-│ │ Only one instance                 │ Singleton                            ││
-│ │ Create objects without specifying │ Factory                              ││
-│ │ Complex object construction       │ Builder                              ││
-│ │ Convert interface                 │ Adapter                              ││
-│ │ Add behavior dynamically          │ Decorator                            ││
-│ │ Simplify complex subsystem        │ Facade                               ││
-│ │ Notify multiple objects           │ Observer                             ││
-│ │ Swap algorithms at runtime        │ Strategy                             ││
-│ │ Undo/Redo operations              │ Command                              ││
-│ │ Different behavior based on state │ State                                ││
-│ └──────────────────────────────────────────────────────────────────────────┘│
+│ ┌──────────────────────────────────────────────────────────────────────────┐ │
+│ │ NEED                              │ PATTERN                              │ │
+│ │ ────────────────────────────────────────────────────────────────────────│  │
+│ │ Only one instance                 │ Singleton                            │ │
+│ │ Create objects without specifying │ Factory                              │ │
+│ │ Complex object construction       │ Builder                              │ │
+│ │ Convert interface                 │ Adapter                              │ │
+│ │ Add behavior dynamically          │ Decorator                            │ │
+│ │ Simplify complex subsystem        │ Facade                               │ │
+│ │ Notify multiple objects           │ Observer                             │ │
+│ │ Swap algorithms at runtime        │ Strategy                             │ │
+│ │ Undo/Redo operations              │ Command                              │ │
+│ │ Different behavior based on state │ State                                │ │
+│ └──────────────────────────────────────────────────────────────────────────┘ │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -190,38 +190,38 @@
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │ 1. "TOO ABSTRACT":                                                           │
-│    Solution: Study with REAL examples, not just UML diagrams                │
+│    Solution: Study with REAL examples, not just UML diagrams                 │
 │                                                                              │
 │ 2. "DON'T KNOW WHEN TO USE":                                                 │
-│    Solution: Learn the PROBLEM each pattern solves first                    │
+│    Solution: Learn the PROBLEM each pattern solves first                     │
 │                                                                              │
 │ 3. "PATTERNS LOOK SIMILAR":                                                  │
-│    Solution: Focus on INTENT, not just structure                            │
-│    Factory vs Builder: Factory - which type, Builder - how to construct    │
+│    Solution: Focus on INTENT, not just structure                             │
+│    Factory vs Builder: Factory - which type, Builder - how to construct      │
 │                                                                              │
 │ 4. "OVER-ENGINEERING":                                                       │
-│    Solution: Start simple, add patterns when complexity grows               │
+│    Solution: Start simple, add patterns when complexity grows                │
 │                                                                              │
 │ 5. "TOO MANY PATTERNS":                                                      │
-│    Solution: Master 10 essential patterns first                             │
-│    Singleton, Factory, Builder, Adapter, Decorator, Facade,                │
-│    Observer, Strategy, Command, Template Method                             │
+│    Solution: Master 10 essential patterns first                              │
+│    Singleton, Factory, Builder, Adapter, Decorator, Facade,                  │
+│    Observer, Strategy, Command, Template Method                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ EXPECTED OUTPUTS OF MASTERING DESIGN PATTERNS                                │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ ✅ PATTERN RECOGNITION: See problem → Know which pattern applies           │
-│ ✅ CLEAN CODE: Write maintainable, flexible code                            │
-│ ✅ FRAMEWORK MASTERY: Understand how Spring, React, etc. work              │
-│ ✅ INTERVIEW SUCCESS: Ace OOP design interview rounds                      │
-│ ✅ COMMUNICATION: Discuss design precisely with team                        │
-│ ✅ ARCHITECTURE THINKING: Design systems, not just features                 │
+│ ✅ PATTERN RECOGNITION: See problem → Know which pattern applies              │
+│ ✅ CLEAN CODE: Write maintainable, flexible code                              │
+│ ✅ FRAMEWORK MASTERY: Understand how Spring, React, etc. work                 │
+│ ✅ INTERVIEW SUCCESS: Ace OOP design interview rounds                         │
+│ ✅ COMMUNICATION: Discuss design precisely with team                          │
+│ ✅ ARCHITECTURE THINKING: Design systems, not just features                   │
 │                                                                              │
 │ THE TRANSFORMATION:                                                          │
-│ FROM: "I'll figure out how to structure this code"                          │
-│   TO: "This is a Strategy pattern problem, I know exactly how to design it"│
+│ FROM: "I'll figure out how to structure this code"                           │
+│   TO: "This is a Strategy pattern problem, I know exactly how to design it"  │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -233,37 +233,37 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                         SINGLETON PATTERN                                     ║
+║                         SINGLETON PATTERN                                    ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ WHAT IS IT?                                                                  │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ Ensures a class has ONLY ONE INSTANCE and provides a global point of access.│
+│ Ensures a class has ONLY ONE INSTANCE and provides a global point of access. │
 │                                                                              │
 │ ANALOGY: Government of a country                                             │
 │ • There's only ONE government at a time                                      │
-│ • Everyone accesses the SAME government                                     │
-│ • Creating a second government causes chaos                                 │
+│ • Everyone accesses the SAME government                                      │
+│ • Creating a second government causes chaos                                  │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ WHAT PROBLEM DOES IT SOLVE?                                                  │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ • Database connections: Only one connection pool needed                     │
-│ • Configuration: One config object shared across app                        │
-│ • Logging: One logger instance for entire application                       │
-│ • Cache: One cache instance to avoid inconsistency                          │
+│ • Database connections: Only one connection pool needed                      │
+│ • Configuration: One config object shared across app                         │
+│ • Logging: One logger instance for entire application                        │
+│ • Cache: One cache instance to avoid inconsistency                           │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ WHEN TO USE                                                                  │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ ✅ When exactly one instance is needed                                      │
-│ ✅ When global access is required                                           │
-│ ✅ When instance is expensive to create                                     │
-│ ❌ Don't use when you might need multiple instances later                   │
-│ ❌ Don't use for everything (makes testing harder)                          │
+│ ✅ When exactly one instance is needed                                        │
+│ ✅ When global access is required                                             │
+│ ✅ When instance is expensive to create                                       │
+│ ❌ Don't use when you might need multiple instances later                     │
+│ ❌ Don't use for everything (makes testing harder)                            │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 IMPLEMENTATION:
@@ -342,32 +342,32 @@ Logger.getInstance().log("Order placed");
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                         FACTORY PATTERN                                       ║
+║                         FACTORY PATTERN                                      ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ WHAT IS IT?                                                                  │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ Creates objects WITHOUT exposing the creation logic to the client.          │
-│ Refers to the newly created object through a common interface.              │
+│ Creates objects WITHOUT exposing the creation logic to the client.           │
+│ Refers to the newly created object through a common interface.               │
 │                                                                              │
 │ ANALOGY: Pizza Restaurant                                                    │
-│ • You order "Margherita" → Kitchen creates it (you don't know how)         │
-│ • You order "Pepperoni" → Kitchen creates it (different recipe)            │
-│ • You just ask for a type, factory handles the creation                    │
+│ • You order "Margherita" → Kitchen creates it (you don't know how)           │
+│ • You order "Pepperoni" → Kitchen creates it (different recipe)              │
+│ • You just ask for a type, factory handles the creation                      │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ WHAT PROBLEM DOES IT SOLVE?                                                  │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │ WITHOUT FACTORY:                                                             │
-│ if (type.equals("dog")) animal = new Dog();                                 │
-│ else if (type.equals("cat")) animal = new Cat();                            │
-│ // This code is scattered everywhere!                                       │
+│ if (type.equals("dog")) animal = new Dog();                                  │
+│ else if (type.equals("cat")) animal = new Cat();                             │
+│ // This code is scattered everywhere!                                        │
 │                                                                              │
 │ WITH FACTORY:                                                                │
-│ Animal animal = AnimalFactory.create(type);                                 │
-│ // Creation logic in ONE place!                                             │
+│ Animal animal = AnimalFactory.create(type);                                  │
+│ // Creation logic in ONE place!                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 IMPLEMENTATION:
@@ -447,18 +447,18 @@ Document doc = parser.parse(content);
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                         BUILDER PATTERN                                       ║
+║                         BUILDER PATTERN                                      ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ WHAT IS IT?                                                                  │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ Separates the construction of a complex object from its representation.     │
-│ Allows step-by-step construction with fluent interface.                     │
+│ Separates the construction of a complex object from its representation.      │
+│ Allows step-by-step construction with fluent interface.                      │
 │                                                                              │
 │ ANALOGY: Building a Custom Burger                                            │
 │ • Start with bun                                                             │
-│ • Add patty (or multiple)                                                   │
+│ • Add patty (or multiple)                                                    │
 │ • Add cheese (optional)                                                      │
 │ • Add vegetables (optional)                                                  │
 │ • Add sauces (optional)                                                      │
@@ -469,16 +469,16 @@ Document doc = parser.parse(content);
 │ WHAT PROBLEM DOES IT SOLVE?                                                  │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │ WITHOUT BUILDER (Telescoping constructor anti-pattern):                      │
-│ new User(name, email, phone, address, age, null, null, null, null, true);   │
-│ // What are all these nulls? Confusing and error-prone!                     │
+│ new User(name, email, phone, address, age, null, null, null, null, true);    │
+│ // What are all these nulls? Confusing and error-prone!                      │
 │                                                                              │
 │ WITH BUILDER:                                                                │
 │ User.builder()                                                               │
 │     .name("John")                                                            │
-│     .email("john@email.com")                                                │
+│     .email("john@email.com")                                                 │
 │     .age(25)                                                                 │
 │     .build();                                                                │
-│ // Clear, readable, flexible!                                               │
+│ // Clear, readable, flexible!                                                │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 IMPLEMENTATION:
@@ -578,18 +578,18 @@ REAL-WORLD: StringBuilder, HttpRequest.Builder, AlertDialog.Builder
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                         ADAPTER PATTERN                                       ║
+║                         ADAPTER PATTERN                                      ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ WHAT IS IT?                                                                  │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ Allows incompatible interfaces to work together by wrapping an object      │
-│ with an adapter that translates calls.                                      │
+│ Allows incompatible interfaces to work together by wrapping an object        │
+│ with an adapter that translates calls.                                       │
 │                                                                              │
 │ ANALOGY: Power Adapter                                                       │
-│ • US plug (110V) → Adapter → European socket (220V)                        │
-│ • The adapter makes incompatible things work together                       │
+│ • US plug (110V) → Adapter → European socket (220V)                          │
+│ • The adapter makes incompatible things work together                        │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -597,7 +597,7 @@ REAL-WORLD: StringBuilder, HttpRequest.Builder, AlertDialog.Builder
 ├──────────────────────────────────────────────────────────────────────────────┤
 │ • Legacy code integration                                                    │
 │ • Third-party library integration                                            │
-│ • Working with different data formats                                       │
+│ • Working with different data formats                                        │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 IMPLEMENTATION:
@@ -644,21 +644,21 @@ REAL-WORLD: Arrays.asList(), InputStreamReader
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                         DECORATOR PATTERN                                     ║
+║                         DECORATOR PATTERN                                    ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ WHAT IS IT?                                                                  │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ Attaches additional responsibilities to an object DYNAMICALLY.              │
-│ Provides flexible alternative to subclassing for extending functionality.   │
+│ Attaches additional responsibilities to an object DYNAMICALLY.               │
+│ Provides flexible alternative to subclassing for extending functionality.    │
 │                                                                              │
 │ ANALOGY: Coffee Shop                                                         │
-│ • Base: Plain Coffee ($2)                                                   │
-│ • Add Milk decorator: +$0.50                                                │
-│ • Add Sugar decorator: +$0.25                                               │
-│ • Add Whip decorator: +$0.75                                                │
-│ • Total: $3.50 (same coffee, enhanced!)                                    │
+│ • Base: Plain Coffee ($2)                                                    │
+│ • Add Milk decorator: +$0.50                                                 │
+│ • Add Sugar decorator: +$0.25                                                │
+│ • Add Whip decorator: +$0.75                                                 │
+│ • Total: $3.50 (same coffee, enhanced!)                                      │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 IMPLEMENTATION:
@@ -736,19 +736,19 @@ REAL-WORLD: BufferedInputStream, Collections.synchronizedList()
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                         FACADE PATTERN                                        ║
+║                         FACADE PATTERN                                       ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ WHAT IS IT?                                                                  │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ Provides a SIMPLIFIED INTERFACE to a complex subsystem.                     │
-│ Hides complexity behind a simple API.                                       │
+│ Provides a SIMPLIFIED INTERFACE to a complex subsystem.                      │
+│ Hides complexity behind a simple API.                                        │
 │                                                                              │
 │ ANALOGY: Universal Remote                                                    │
-│ • TV, Sound System, DVD Player, Lights - all complex                        │
-│ • Remote has one button: "Watch Movie"                                      │
-│ • Behind scenes: dims lights, turns on TV, selects HDMI, starts player     │
+│ • TV, Sound System, DVD Player, Lights - all complex                         │
+│ • Remote has one button: "Watch Movie"                                       │
+│ • Behind scenes: dims lights, turns on TV, selects HDMI, starts player       │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 IMPLEMENTATION:
@@ -828,19 +828,19 @@ REAL-WORLD: JDBC (hides database complexity), SLF4J (hides logging frameworks)
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                         OBSERVER PATTERN                                      ║
+║                         OBSERVER PATTERN                                     ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ WHAT IS IT?                                                                  │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ Defines a one-to-many dependency between objects so that when one object   │
-│ changes state, all dependents are notified and updated automatically.       │
+│ Defines a one-to-many dependency between objects so that when one object     │
+│ changes state, all dependents are notified and updated automatically.        │
 │                                                                              │
 │ ANALOGY: Newsletter Subscription                                             │
 │ • You subscribe to a newsletter                                              │
-│ • When new content is published, all subscribers get notified               │
-│ • Subscribers can unsubscribe anytime                                       │
+│ • When new content is published, all subscribers get notified                │
+│ • Subscribers can unsubscribe anytime                                        │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 IMPLEMENTATION:
@@ -933,19 +933,19 @@ REAL-WORLD: Event listeners, React state updates, RxJava
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                         STRATEGY PATTERN                                      ║
+║                         STRATEGY PATTERN                                     ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ WHAT IS IT?                                                                  │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ Defines a family of algorithms, encapsulates each one, and makes them      │
-│ interchangeable. Lets the algorithm vary independently from clients.        │
+│ Defines a family of algorithms, encapsulates each one, and makes them        │
+│ interchangeable. Lets the algorithm vary independently from clients.         │
 │                                                                              │
 │ ANALOGY: Navigation App                                                      │
-│ • Same destination, different strategies: Car, Walk, Bike, Transit          │
-│ • You choose the strategy, app calculates route using that strategy        │
-│ • Strategies are interchangeable                                            │
+│ • Same destination, different strategies: Car, Walk, Bike, Transit           │
+│ • You choose the strategy, app calculates route using that strategy          │
+│ • Strategies are interchangeable                                             │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 IMPLEMENTATION:
@@ -1033,20 +1033,20 @@ REAL-WORLD: Sorting algorithms (Collections.sort with Comparator), Compression
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                         COMMAND PATTERN                                       ║
+║                         COMMAND PATTERN                                      ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ WHAT IS IT?                                                                  │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ Encapsulates a request as an object, allowing you to parameterize clients, │
-│ queue requests, log operations, and support undo/redo.                      │
+│ Encapsulates a request as an object, allowing you to parameterize clients,   │
+│ queue requests, log operations, and support undo/redo.                       │
 │                                                                              │
 │ ANALOGY: Restaurant Order                                                    │
-│ • Waiter writes order on paper (Command object)                             │
-│ • Takes it to kitchen (passes to invoker)                                   │
-│ • Chef executes the order (receiver)                                        │
-│ • Order can be queued, logged, undone                                       │
+│ • Waiter writes order on paper (Command object)                              │
+│ • Takes it to kitchen (passes to invoker)                                    │
+│ • Chef executes the order (receiver)                                         │
+│ • Order can be queued, logged, undone                                        │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 IMPLEMENTATION:
@@ -1146,7 +1146,7 @@ REAL-WORLD: Text editors (undo/redo), Task schedulers, Transaction systems
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║              COMBINING PATTERNS FOR COMPLEX SOLUTIONS                         ║
+║              COMBINING PATTERNS FOR COMPLEX SOLUTIONS                        ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 EXAMPLE: E-commerce Order System using Multiple Patterns
@@ -1245,19 +1245,19 @@ order.setStatus(OrderStatus.PAID); // Notifies observers
 ╔════════════════╦═══════════════════════════════════════════════════════════════╗
 ║   PATTERN      ║   USE WHEN                                                    ║
 ╠════════════════╬═══════════════════════════════════════════════════════════════╣
-║ Singleton      ║ Need exactly one instance (config, logger, connection pool)  ║
-║ Factory        ║ Create objects without specifying exact class                ║
-║ Builder        ║ Complex object with many optional parameters                 ║
-║ Adapter        ║ Make incompatible interfaces work together                   ║
-║ Decorator      ║ Add behavior dynamically without changing original           ║
-║ Facade         ║ Simplify complex subsystem with single interface             ║
-║ Observer       ║ One-to-many notification when state changes                  ║
-║ Strategy       ║ Swap algorithms at runtime                                   ║
-║ Command        ║ Need undo/redo, queue operations, log operations             ║
-║ State          ║ Object behavior depends on its state                         ║
-║ Template       ║ Define algorithm skeleton, let subclasses fill steps         ║
-║ Composite      ║ Tree structure of objects (file system, UI components)       ║
-║ Proxy          ║ Control access, lazy loading, caching                        ║
+║ Singleton      ║ Need exactly one instance (config, logger, connection pool)   ║
+║ Factory        ║ Create objects without specifying exact class                 ║
+║ Builder        ║ Complex object with many optional parameters                  ║
+║ Adapter        ║ Make incompatible interfaces work together                    ║
+║ Decorator      ║ Add behavior dynamically without changing original            ║
+║ Facade         ║ Simplify complex subsystem with single interface              ║
+║ Observer       ║ One-to-many notification when state changes                   ║
+║ Strategy       ║ Swap algorithms at runtime                                    ║
+║ Command        ║ Need undo/redo, queue operations, log operations              ║
+║ State          ║ Object behavior depends on its state                          ║
+║ Template       ║ Define algorithm skeleton, let subclasses fill steps          ║
+║ Composite      ║ Tree structure of objects (file system, UI components)        ║
+║ Proxy          ║ Control access, lazy loading, caching                         ║
 ╚════════════════╩═══════════════════════════════════════════════════════════════╝
 ```
 

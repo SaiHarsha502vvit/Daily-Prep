@@ -6,23 +6,23 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: How JS handles asynchronous operations despite being        ║
-║        SINGLE-THREADED. Event loop, callbacks, promises, async.    ║
-║                                                                    ║
-║  WHY:  Every web app does async: API calls, file reads, timers,   ║
-║        user events, animations. Without understanding async, you   ║
-║        WILL have bugs — race conditions, callback hell, unhandled  ║
-║        promise rejections, stale closures in React.                ║
-║                                                                    ║
-║  WHO:  Every developer. Frontend (fetch, events), Backend (DB,    ║
-║        file I/O, HTTP), React (useEffect, data fetching).         ║
-║                                                                    ║
-║  WHEN: After understanding closures and scope (they're essential  ║
-║        for understanding how async callbacks capture variables).   ║
-║                                                                    ║
-║  HOW:  JS delegates async work to browser/Node APIs. When done,   ║
-║        the result goes to a QUEUE. The EVENT LOOP moves it to     ║
-║        the call stack when the stack is empty.                     ║
+║  WHAT: How JS handles asynchronous operations despite being          ║
+║        SINGLE-THREADED. Event loop, callbacks, promises, async.      ║
+║                                                                      ║
+║  WHY:  Every web app does async: API calls, file reads, timers,      ║
+║        user events, animations. Without understanding async, you     ║
+║        WILL have bugs — race conditions, callback hell, unhandled    ║
+║        promise rejections, stale closures in React.                  ║
+║                                                                      ║
+║  WHO:  Every developer. Frontend (fetch, events), Backend (DB,       ║
+║        file I/O, HTTP), React (useEffect, data fetching).            ║
+║                                                                      ║
+║  WHEN: After understanding closures and scope (they're essential     ║
+║        for understanding how async callbacks capture variables).     ║
+║                                                                      ║
+║  HOW:  JS delegates async work to browser/Node APIs. When done,      ║
+║        the result goes to a QUEUE. The EVENT LOOP moves it to        ║
+║        the call stack when the stack is empty.                       ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -34,53 +34,53 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  WHY single-threaded?                                              ║
-║  JS was designed for the DOM. If two threads modified the same     ║
-║  DOM element simultaneously → race condition → crash/corruption.   ║
-║  One thread = no data races on the DOM. Simpler mental model.     ║
-║                                                                    ║
-║  BUT HOW does it handle async then?                               ║
-║  The EVENT LOOP — JS's secret weapon.                             ║
+║  WHY single-threaded?                                                ║
+║  JS was designed for the DOM. If two threads modified the same       ║
+║  DOM element simultaneously → race condition → crash/corruption.     ║
+║  One thread = no data races on the DOM. Simpler mental model.        ║
+║                                                                      ║
+║  BUT HOW does it handle async then?                                  ║
+║  The EVENT LOOP — JS's secret weapon.                                ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  THE EVENT LOOP ARCHITECTURE:                                      ║
-║                                                                    ║
-║  ┌─────────────────────────────────────────────────────────┐       ║
-║  │  YOUR JS CODE                                           │       ║
-║  │  ┌──────────────┐    ┌────────────────────────────┐    │       ║
-║  │  │  CALL STACK  │    │  WEB APIs (browser) or     │    │       ║
-║  │  │              │    │  C++ APIs (Node)            │    │       ║
-║  │  │ ┌──────────┐ │    │                              │    │       ║
-║  │  │ │ func3()  │ │    │  • setTimeout/setInterval    │    │       ║
-║  │  │ │ func2()  │ │    │  • fetch / XMLHttpRequest    │    │       ║
-║  │  │ │ func1()  │ │    │  • addEventListener          │    │       ║
-║  │  │ │ global   │ │    │  • geolocation               │    │       ║
-║  │  │ └──────────┘ │    │  • FileReader                │    │       ║
-║  │  └──────────────┘    └─────────────┬──────────────┘    │       ║
-║  │         ▲                          │                    │       ║
-║  │         │                          ▼                    │       ║
-║  │         │              ┌───────────────────────┐       │       ║
-║  │         │              │  CALLBACK QUEUES      │       │       ║
-║  │         │              │                        │       ║
-║  │    EVENT LOOP          │  Microtask Queue:     │       │       ║
-║  │    (checks if          │  Promise.then()        │       │       ║
-║  │     stack is           │  queueMicrotask()      │       │       ║
-║  │     empty, then        │  MutationObserver      │       │       ║
-║  │     moves next         │                        │       │       ║
-║  │     task to stack)     │  Macrotask Queue:     │       │       ║
-║  │         │              │  setTimeout()          │       │       ║
-║  │         │              │  setInterval()         │       │       ║
-║  │         └──────────────│  I/O callbacks         │       │       ║
-║  │                        │  UI rendering          │       │       ║
-║  │                        └───────────────────────┘       │       ║
-║  └─────────────────────────────────────────────────────────┘       ║
-║                                                                    ║
-║  CRITICAL RULE:                                                    ║
-║  Microtasks ALWAYS run before macrotasks.                          ║
-║  After each macrotask, ALL pending microtasks run first.           ║
+║  THE EVENT LOOP ARCHITECTURE:                                        ║
+║                                                                      ║
+║  ┌─────────────────────────────────────────────────────────┐         ║
+║  │  YOUR JS CODE                                           │         ║
+║  │  ┌──────────────┐    ┌────────────────────────────┐    │          ║
+║  │  │  CALL STACK  │    │  WEB APIs (browser) or     │    │          ║
+║  │  │              │    │  C++ APIs (Node)            │    │         ║
+║  │  │ ┌──────────┐ │    │                              │    │        ║
+║  │  │ │ func3()  │ │    │  • setTimeout/setInterval    │    │        ║
+║  │  │ │ func2()  │ │    │  • fetch / XMLHttpRequest    │    │        ║
+║  │  │ │ func1()  │ │    │  • addEventListener          │    │        ║
+║  │  │ │ global   │ │    │  • geolocation               │    │        ║
+║  │  │ └──────────┘ │    │  • FileReader                │    │        ║
+║  │  └──────────────┘    └─────────────┬──────────────┘    │          ║
+║  │         ▲                          │                    │         ║
+║  │         │                          ▼                    │         ║
+║  │         │              ┌───────────────────────┐       │          ║
+║  │         │              │  CALLBACK QUEUES      │       │          ║
+║  │         │              │                        │                 ║
+║  │    EVENT LOOP          │  Microtask Queue:     │       │          ║
+║  │    (checks if          │  Promise.then()        │       │         ║
+║  │     stack is           │  queueMicrotask()      │       │         ║
+║  │     empty, then        │  MutationObserver      │       │         ║
+║  │     moves next         │                        │       │         ║
+║  │     task to stack)     │  Macrotask Queue:     │       │          ║
+║  │         │              │  setTimeout()          │       │         ║
+║  │         │              │  setInterval()         │       │         ║
+║  │         └──────────────│  I/O callbacks         │       │         ║
+║  │                        │  UI rendering          │       │         ║
+║  │                        └───────────────────────┘       │          ║
+║  └─────────────────────────────────────────────────────────┘         ║
+║                                                                      ║
+║  CRITICAL RULE:                                                      ║
+║  Microtasks ALWAYS run before macrotasks.                            ║
+║  After each macrotask, ALL pending microtasks run first.             ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -107,18 +107,18 @@ console.log("4");                          // Sync → call stack
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  STEP-BY-STEP TRACE:                                               ║
-║                                                                    ║
-║  CALL STACK          MICROTASK Q     MACROTASK Q    OUTPUT         ║
-║  ─────────────       ──────────      ──────────     ──────         ║
-║  log("1")            []              []             "1"            ║
-║  setTimeout(cb,0)    []              [cb→"2"]       "1"            ║
-║  Promise.then(cb)    [cb→"3"]        [cb→"2"]       "1"            ║
-║  log("4")            [cb→"3"]        [cb→"2"]       "1","4"        ║
-║  ← stack empty →                                                   ║
-║  cb→"3"              []              [cb→"2"]       "1","4","3"    ║
-║  ← microtasks done →                                              ║
-║  cb→"2"              []              []             "1","4","3","2"║
+║  STEP-BY-STEP TRACE:                                                 ║
+║                                                                      ║
+║  CALL STACK          MICROTASK Q     MACROTASK Q    OUTPUT           ║
+║  ─────────────       ──────────      ──────────     ──────           ║
+║  log("1")            []              []             "1"              ║
+║  setTimeout(cb,0)    []              [cb→"2"]       "1"              ║
+║  Promise.then(cb)    [cb→"3"]        [cb→"2"]       "1"              ║
+║  log("4")            [cb→"3"]        [cb→"2"]       "1","4"          ║
+║  ← stack empty →                                                     ║
+║  cb→"3"              []              [cb→"2"]       "1","4","3"      ║
+║  ← microtasks done →                                                 ║
+║  cb→"2"              []              []             "1","4","3","2"  ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -170,28 +170,28 @@ getUser(1, (err, user) => {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: A Promise is an object representing a FUTURE value.        ║
-║        It will eventually be either FULFILLED (success) or        ║
-║        REJECTED (failure).                                        ║
-║                                                                    ║
-║  WHY:  Promises solve callback hell with chaining (.then).        ║
-║        They provide .catch for centralized error handling.         ║
-║        They enable async/await (Chapter section 4).                ║
-║                                                                    ║
-║  ANALOGY: A promise is like an order receipt at a restaurant.     ║
-║  You place an order → get a receipt (promise). Eventually:        ║
-║  • Your food arrives (fulfilled) → enjoy it (.then)               ║
-║  • Kitchen is out of ingredients (rejected) → handle it (.catch)  ║
-║  • While waiting, you can do other things (non-blocking).         ║
-║                                                                    ║
-║  STATES:                                                           ║
-║  ┌──────────┐    resolve()    ┌───────────┐                       ║
-║  │ PENDING  │───────────────→│ FULFILLED │                       ║
-║  │          │                 └───────────┘                       ║
-║  │          │    reject()     ┌───────────┐                       ║
-║  │          │───────────────→│ REJECTED  │                       ║
-║  └──────────┘                 └───────────┘                       ║
-║  Once settled (fulfilled/rejected), a promise NEVER changes state.║
+║  WHAT: A Promise is an object representing a FUTURE value.           ║
+║        It will eventually be either FULFILLED (success) or           ║
+║        REJECTED (failure).                                           ║
+║                                                                      ║
+║  WHY:  Promises solve callback hell with chaining (.then).           ║
+║        They provide .catch for centralized error handling.           ║
+║        They enable async/await (Chapter section 4).                  ║
+║                                                                      ║
+║  ANALOGY: A promise is like an order receipt at a restaurant.        ║
+║  You place an order → get a receipt (promise). Eventually:           ║
+║  • Your food arrives (fulfilled) → enjoy it (.then)                  ║
+║  • Kitchen is out of ingredients (rejected) → handle it (.catch)     ║
+║  • While waiting, you can do other things (non-blocking).            ║
+║                                                                      ║
+║  STATES:                                                             ║
+║  ┌──────────┐    resolve()    ┌───────────┐                          ║
+║  │ PENDING  │───────────────→│ FULFILLED │                           ║
+║  │          │                 └───────────┘                          ║
+║  │          │    reject()     ┌───────────┐                          ║
+║  │          │───────────────→│ REJECTED  │                           ║
+║  └──────────┘                 └───────────┘                          ║
+║  Once settled (fulfilled/rejected), a promise NEVER changes state.   ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -270,15 +270,15 @@ const first = await Promise.any([p1, p2, p3]);
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  PROMISE METHODS COMPARISON:                                       ║
-║  ┌───────────────────┬────────────┬────────────┬─────────────────┐ ║
-║  │ Method            │ Resolves   │ Rejects    │ Use Case        │ ║
-║  ├───────────────────┼────────────┼────────────┼─────────────────┤ ║
-║  │ Promise.all       │ ALL fulfill│ ANY rejects│ Need all results│ ║
-║  │ Promise.allSettled│ ALL settle │ Never      │ Check each      │ ║
-║  │ Promise.race      │ First done │ First done │ Timeout/fastest │ ║
-║  │ Promise.any       │ First win  │ ALL reject │ Multiple sources│ ║
-║  └───────────────────┴────────────┴────────────┴─────────────────┘ ║
+║  PROMISE METHODS COMPARISON:                                         ║
+║  ┌───────────────────┬────────────┬────────────┬─────────────────┐   ║
+║  │ Method            │ Resolves   │ Rejects    │ Use Case        │   ║
+║  ├───────────────────┼────────────┼────────────┼─────────────────┤   ║
+║  │ Promise.all       │ ALL fulfill│ ANY rejects│ Need all results│   ║
+║  │ Promise.allSettled│ ALL settle │ Never      │ Check each      │   ║
+║  │ Promise.race      │ First done │ First done │ Timeout/fastest │   ║
+║  │ Promise.any       │ First win  │ ALL reject │ Multiple sources│   ║
+║  └───────────────────┴────────────┴────────────┴─────────────────┘   ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -290,15 +290,15 @@ const first = await Promise.any([p1, p2, p3]);
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: Syntactic sugar over Promises. Makes async code LOOK and   ║
-║        BEHAVE like synchronous code.                               ║
-║                                                                    ║
-║  WHY:  .then chains are better than callbacks, but still messy    ║
-║        for complex flows. async/await reads top-to-bottom.        ║
-║                                                                    ║
-║  HOW:  `async` marks a function as returning a Promise.           ║
-║        `await` pauses execution until the Promise resolves.       ║
-║        (The thread isn't blocked — other code can run!)           ║
+║  WHAT: Syntactic sugar over Promises. Makes async code LOOK and      ║
+║        BEHAVE like synchronous code.                                 ║
+║                                                                      ║
+║  WHY:  .then chains are better than callbacks, but still messy       ║
+║        for complex flows. async/await reads top-to-bottom.           ║
+║                                                                      ║
+║  HOW:  `async` marks a function as returning a Promise.              ║
+║        `await` pauses execution until the Promise resolves.          ║
+║        (The thread isn't blocked — other code can run!)              ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -510,31 +510,31 @@ console.log("end");
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  EVENT LOOP CYCLE:                                                 ║
-║                                                                    ║
-║  ┌─────────────────────────────────────────────────────────┐       ║
-║  │ 1. Execute ALL synchronous code in call stack           │       ║
-║  │                │                                        │       ║
-║  │                ▼                                        │       ║
-║  │ 2. Drain ENTIRE microtask queue                         │       ║
-║  │    (including microtasks added DURING this step!)       │       ║
-║  │                │                                        │       ║
-║  │                ▼                                        │       ║
-║  │ 3. Pick ONE macrotask from macrotask queue             │       ║
-║  │                │                                        │       ║
-║  │                ▼                                        │       ║
-║  │ 4. Drain ENTIRE microtask queue again                   │       ║
-║  │                │                                        │       ║
-║  │                ▼                                        │       ║
-║  │ 5. Render/paint (if needed)                            │       ║
-║  │                │                                        │       ║
-║  │                ▼                                        │       ║
-║  │ 6. Go to step 3 (next macrotask)                       │       ║
-║  └─────────────────────────────────────────────────────────┘       ║
-║                                                                    ║
-║  IMPLICATION: Microtasks can starve macrotasks!                   ║
-║  If microtasks keep adding more microtasks, setTimeout callbacks  ║
-║  and UI rendering NEVER run. The page freezes.                    ║
+║  EVENT LOOP CYCLE:                                                   ║
+║                                                                      ║
+║  ┌─────────────────────────────────────────────────────────┐         ║
+║  │ 1. Execute ALL synchronous code in call stack           │         ║
+║  │                │                                        │         ║
+║  │                ▼                                        │         ║
+║  │ 2. Drain ENTIRE microtask queue                         │         ║
+║  │    (including microtasks added DURING this step!)       │         ║
+║  │                │                                        │         ║
+║  │                ▼                                        │         ║
+║  │ 3. Pick ONE macrotask from macrotask queue             │          ║
+║  │                │                                        │         ║
+║  │                ▼                                        │         ║
+║  │ 4. Drain ENTIRE microtask queue again                   │         ║
+║  │                │                                        │         ║
+║  │                ▼                                        │         ║
+║  │ 5. Render/paint (if needed)                            │          ║
+║  │                │                                        │         ║
+║  │                ▼                                        │         ║
+║  │ 6. Go to step 3 (next macrotask)                       │          ║
+║  └─────────────────────────────────────────────────────────┘         ║
+║                                                                      ║
+║  IMPLICATION: Microtasks can starve macrotasks!                      ║
+║  If microtasks keep adding more microtasks, setTimeout callbacks     ║
+║  and UI rendering NEVER run. The page freezes.                       ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 

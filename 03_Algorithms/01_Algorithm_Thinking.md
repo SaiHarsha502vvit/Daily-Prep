@@ -10,27 +10,27 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║         ALGORITHM THINKING - COMPLETE UNDERSTANDING & GROWTH MINDSET          ║
+║         ALGORITHM THINKING - COMPLETE UNDERSTANDING & GROWTH MINDSET         ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ WHAT IS ALGORITHMIC THINKING?                                                │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ Algorithmic thinking is a METHOD of thinking about problems that involves:  │
+│ Algorithmic thinking is a METHOD of thinking about problems that involves:   │
 │ • Breaking problems into SMALLER, manageable parts                           │
-│ • Finding PATTERNS across different problems                                  │
+│ • Finding PATTERNS across different problems                                 │
 │ • Creating STEP-BY-STEP solutions                                            │
 │ • GENERALIZING solutions to apply broadly                                    │
 │                                                                              │
-│ KEY INSIGHT: It's NOT about memorizing algorithms - it's about developing   │
+│ KEY INSIGHT: It's NOT about memorizing algorithms - it's about developing    │
 │ a THINKING PROCESS that lets you CREATE solutions.                           │
 │                                                                              │
 │ HISTORICAL PERSPECTIVE:                                                      │
-│ • 300 BC: Euclid's GCD algorithm (first recorded algorithm)                 │
-│ • 820 AD: Al-Khwarizmi (the word "algorithm" comes from his name!)          │
-│ • 1936: Alan Turing - formalized what "computable" means                    │
-│ • 1960s: Structured programming - algorithms became science                 │
-│ • Today: Millions of algorithms, but THINKING process is universal!         │
+│ • 300 BC: Euclid's GCD algorithm (first recorded algorithm)                  │
+│ • 820 AD: Al-Khwarizmi (the word "algorithm" comes from his name!)           │
+│ • 1936: Alan Turing - formalized what "computable" means                     │
+│ • 1960s: Structured programming - algorithms became science                  │
+│ • Today: Millions of algorithms, but THINKING process is universal!          │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -58,43 +58,43 @@
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ ⭐ THE GROWTH MINDSET FOR CREATING YOUR OWN ALGORITHMS ⭐                    │
+│ ⭐ THE GROWTH MINDSET FOR CREATING YOUR OWN ALGORITHMS ⭐                      │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ "I can ONLY use algorithms I've learned" ← FIXED MINDSET                    │
-│ "I can CREATE algorithms for new problems" ← GROWTH MINDSET                 │
+│ "I can ONLY use algorithms I've learned" ← FIXED MINDSET                     │
+│ "I can CREATE algorithms for new problems" ← GROWTH MINDSET                  │
 │                                                                              │
-│ THE TRUTH: Every algorithm was INVENTED by someone facing a new problem!    │
+│ THE TRUTH: Every algorithm was INVENTED by someone facing a new problem!     │
 │                                                                              │
 │ HOW ALGORITHMS GET INVENTED:                                                 │
-│ ┌─────────────────────────────────────────────────────────────────────────┐ │
-│ │ 1. OBSERVATION: "I keep doing the same work repeatedly"                 │ │
+│ ┌─────────────────────────────────────────────────────────────────────────┐  │
+│ │ 1. OBSERVATION: "I keep doing the same work repeatedly"                 │  │
 │ │        ↓                                                                 │ │
-│ │ 2. QUESTION: "Can I eliminate this repetition?"                         │ │
+│ │ 2. QUESTION: "Can I eliminate this repetition?"                         │  │
 │ │        ↓                                                                 │ │
-│ │ 3. EXPERIMENT: "What if I store/precompute/organize differently?"       │ │
+│ │ 3. EXPERIMENT: "What if I store/precompute/organize differently?"       │  │
 │ │        ↓                                                                 │ │
-│ │ 4. GENERALIZE: "This works for other problems too!"                     │ │
+│ │ 4. GENERALIZE: "This works for other problems too!"                     │  │
 │ │        ↓                                                                 │ │
-│ │ 5. PATTERN BORN: Now it's a named algorithm!                            │ │
-│ └─────────────────────────────────────────────────────────────────────────┘ │
+│ │ 5. PATTERN BORN: Now it's a named algorithm!                            │  │
+│ └─────────────────────────────────────────────────────────────────────────┘  │
 │                                                                              │
 │ YOU CAN DO THIS TOO!                                                         │
 │                                                                              │
 │ EXAMPLE - How you might "invent" Sliding Window:                             │
 │ Problem: "Find max sum of 3 consecutive elements"                            │
-│ Brute force: For each start, sum next 3 elements → O(n*k)                   │
+│ Brute force: For each start, sum next 3 elements → O(n*k)                    │
 │                                                                              │
 │ OBSERVATION: "I'm adding same numbers multiple times!"                       │
-│   sum(0,1,2) = a + b + c                                                    │
-│   sum(1,2,3) = b + c + d  ← I already know b+c from previous!              │
+│   sum(0,1,2) = a + b + c                                                     │
+│   sum(1,2,3) = b + c + d  ← I already know b+c from previous!                │
 │                                                                              │
-│ INVENTION: "Instead of re-summing, I'll ADD new - REMOVE old!"              │
-│   sum(1,2,3) = sum(0,1,2) - a + d  → O(n)!                                  │
+│ INVENTION: "Instead of re-summing, I'll ADD new - REMOVE old!"               │
+│   sum(1,2,3) = sum(0,1,2) - a + d  → O(n)!                                   │
 │                                                                              │
-│ CONGRATULATIONS: You just "invented" Sliding Window! 🎉                      │
+│ CONGRATULATIONS: You just "invented" Sliding Window! 🎉                       │
 │                                                                              │
-│ THE SECRET: Every algorithm is just this process applied!                   │
+│ THE SECRET: Every algorithm is just this process applied!                    │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -103,7 +103,7 @@
 │                                                                              │
 │ 1. ALWAYS START WITH BRUTE FORCE                                             │
 │    "What's the simplest way to solve this?"                                  │
-│    Don't worry about efficiency first - get CORRECT solution                │
+│    Don't worry about efficiency first - get CORRECT solution                 │
 │                                                                              │
 │ 2. IDENTIFY THE WASTE                                                        │
 │    "Where am I repeating work?"                                              │
@@ -113,8 +113,8 @@
 │ 3. ASK THE MAGIC QUESTIONS                                                   │
 │    "Can I precompute something?"                                             │
 │    "Can I sort first?"                                                       │
-│    "Can I use extra space to save time?"                                    │
-│    "Can I process while reading input?"                                     │
+│    "Can I use extra space to save time?"                                     │
+│    "Can I process while reading input?"                                      │
 │    "Can I divide the problem?"                                               │
 │                                                                              │
 │ 4. LOOK FOR STRUCTURE                                                        │
@@ -126,7 +126,7 @@
 │ 5. COMBINE KNOWN TECHNIQUES                                                  │
 │    Binary Search + Greedy = Optimization                                     │
 │    HashMap + Sliding Window = Substring problems                             │
-│    DFS + Memoization = Tree DP                                              │
+│    DFS + Memoization = Tree DP                                               │
 │                                                                              │
 │ 6. TEST AND REFINE                                                           │
 │    Does it work for edge cases?                                              │
@@ -141,24 +141,24 @@
 │ SAME GROWTH MINDSET APPLIES!                                                 │
 │                                                                              │
 │ EXAMPLE - How LRU Cache was "invented":                                      │
-│ PROBLEM: Cache with limited space, need to decide what to remove            │
+│ PROBLEM: Cache with limited space, need to decide what to remove             │
 │                                                                              │
-│ OBSERVATION: "Most recently used items are more likely to be used again"    │
+│ OBSERVATION: "Most recently used items are more likely to be used again"     │
 │                                                                              │
-│ NEED: Fast lookup (HashMap) + Fast ordering (LinkedList)                    │
+│ NEED: Fast lookup (HashMap) + Fast ordering (LinkedList)                     │
 │                                                                              │
-│ INVENTION: Combine HashMap + DoublyLinkedList!                              │
+│ INVENTION: Combine HashMap + DoublyLinkedList!                               │
 │   HashMap: O(1) lookup of any item                                           │
-│   LinkedList: O(1) move-to-front and remove-from-back                       │
+│   LinkedList: O(1) move-to-front and remove-from-back                        │
 │                                                                              │
-│ RESULT: LRU Cache - a NEW DATA STRUCTURE from combining existing ones!      │
+│ RESULT: LRU Cache - a NEW DATA STRUCTURE from combining existing ones!       │
 │                                                                              │
 │ YOUR TURN - Try these exercises:                                             │
-│ • Can you create a "MinStack" (stack with O(1) getMin)?                     │
-│ • Can you create a "MaxQueue" (queue with O(1) getMax)?                     │
-│ • Can you create a "FrequencyStack" (pop most frequent element)?           │
+│ • Can you create a "MinStack" (stack with O(1) getMin)?                      │
+│ • Can you create a "MaxQueue" (queue with O(1) getMax)?                      │
+│ • Can you create a "FrequencyStack" (pop most frequent element)?             │
 │                                                                              │
-│ HINT: Combine existing structures + maintain extra state!                   │
+│ HINT: Combine existing structures + maintain extra state!                    │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -167,43 +167,43 @@
 │                                                                              │
 │ 1. JUMPING TO CODE TOO FAST:                                                 │
 │    Want to code immediately without thinking                                 │
-│    Solution: Force yourself to write solution in WORDS first                │
+│    Solution: Force yourself to write solution in WORDS first                 │
 │                                                                              │
 │ 2. NOT SEEING PATTERNS:                                                      │
 │    Each problem feels unique and new                                         │
-│    Solution: After solving, ask "What similar problems use this?"           │
+│    Solution: After solving, ask "What similar problems use this?"            │
 │                                                                              │
 │ 3. ANALYSIS PARALYSIS:                                                       │
-│    Overthinking, trying to find optimal solution immediately                │
-│    Solution: Solve brute force first, THEN optimize                         │
+│    Overthinking, trying to find optimal solution immediately                 │
+│    Solution: Solve brute force first, THEN optimize                          │
 │                                                                              │
 │ 4. FEAR OF INEFFICIENCY:                                                     │
-│    "This solution is O(n²), it must be wrong"                               │
-│    Solution: Check constraints! O(n²) for n=100 is FINE                     │
+│    "This solution is O(n²), it must be wrong"                                │
+│    Solution: Check constraints! O(n²) for n=100 is FINE                      │
 │                                                                              │
 │ 5. MEMORIZING VS UNDERSTANDING:                                              │
 │    Memorizing solutions doesn't help with new problems                       │
-│    Solution: For each solution, understand WHY it works                     │
+│    Solution: For each solution, understand WHY it works                      │
 │                                                                              │
 │ 6. GIVING UP TOO EARLY:                                                      │
-│    "I don't know the algorithm for this"                                    │
-│    Solution: YOU can create the algorithm! Use the process above.           │
+│    "I don't know the algorithm for this"                                     │
+│    Solution: YOU can create the algorithm! Use the process above.            │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ EXPECTED OUTPUTS OF ALGORITHMIC THINKING                                     │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ ✅ PROBLEM DECOMPOSITION: Break any problem into smaller pieces             │
-│ ✅ PATTERN RECOGNITION: See connections across different problems           │
-│ ✅ MULTIPLE APPROACHES: Generate several solutions, pick best               │
-│ ✅ COMPLEXITY ANALYSIS: Predict time/space before coding                    │
-│ ✅ EDGE CASE AWARENESS: Naturally think about boundaries                    │
-│ ✅ OPTIMIZATION PATH: Know how to improve brute force                       │
-│ ✅ CONFIDENCE: "I can figure this out even if I haven't seen it before"    │
+│ ✅ PROBLEM DECOMPOSITION: Break any problem into smaller pieces               │
+│ ✅ PATTERN RECOGNITION: See connections across different problems             │
+│ ✅ MULTIPLE APPROACHES: Generate several solutions, pick best                 │
+│ ✅ COMPLEXITY ANALYSIS: Predict time/space before coding                      │
+│ ✅ EDGE CASE AWARENESS: Naturally think about boundaries                      │
+│ ✅ OPTIMIZATION PATH: Know how to improve brute force                         │
+│ ✅ CONFIDENCE: "I can figure this out even if I haven't seen it before"       │
 │                                                                              │
 │ THE ULTIMATE OUTPUT:                                                         │
-│ Transform from "I need to know the algorithm" to                            │
+│ Transform from "I need to know the algorithm" to                             │
 │                 "I can CREATE the algorithm"                                 │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -219,20 +219,20 @@
 │                  THE 5-STEP FRAMEWORK                      │
 ├────────────────────────────────────────────────────────────┤
 │                                                            │
-│   1. UNDERSTAND 📖                                         │
-│      └─ What is the input? Output? Constraints?           │
+│   1. UNDERSTAND 📖                                          │
+│      └─ What is the input? Output? Constraints?            │
 │                                                            │
-│   2. EXAMPLES 📝                                           │
-│      └─ Work through 2-3 examples by hand                 │
+│   2. EXAMPLES 📝                                            │
+│      └─ Work through 2-3 examples by hand                  │
 │                                                            │
-│   3. BRUTE FORCE 💪                                        │
-│      └─ What's the simplest (maybe slow) solution?        │
+│   3. BRUTE FORCE 💪                                         │
+│      └─ What's the simplest (maybe slow) solution?         │
 │                                                            │
-│   4. OPTIMIZE 🚀                                           │
-│      └─ Where is the repetition? Can we save work?        │
+│   4. OPTIMIZE 🚀                                            │
+│      └─ Where is the repetition? Can we save work?         │
 │                                                            │
-│   5. CODE 💻                                               │
-│      └─ Translate logic to code                           │
+│   5. CODE 💻                                                │
+│      └─ Translate logic to code                            │
 │                                                            │
 └────────────────────────────────────────────────────────────┘
 ```
@@ -373,11 +373,11 @@ SIGNAL PHRASES:
 MENTAL MODEL:
 ┌─────────────────────────────────────────┐
 │ Instead of recalculating for each       │
-│ starting position...                     │
+│ starting position...                    │
 │                                         │
 │ SLIDE a window and UPDATE incrementally │
 │                                         │
-│ [1, 2, 3, 4, 5, 6, 7, 8]              │
+│ [1, 2, 3, 4, 5, 6, 7, 8]                │
 │  └─────┘                window size 3   │
 │     └─────┘              slide right    │
 │        └─────┘           slide right    │
@@ -473,12 +473,12 @@ MENTAL MODEL:
 │                                         │
 │ YES → Binary Search possible!           │
 │                                         │
-│ [1, 3, 5, 7, 9, 11, 13, 15]           │
+│ [1, 3, 5, 7, 9, 11, 13, 15]             │
 │              ↑                          │
 │           middle                        │
 │                                         │
-│ Target < middle → search LEFT half     │
-│ Target > middle → search RIGHT half    │
+│ Target < middle → search LEFT half      │
+│ Target > middle → search RIGHT half     │
 └─────────────────────────────────────────┘
 ```
 

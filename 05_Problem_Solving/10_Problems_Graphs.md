@@ -53,48 +53,48 @@
 │ WHY ARE GRAPHS SO IMPORTANT?                                                 │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ Graphs model RELATIONSHIPS. Any system with connections is a graph:         │
+│ Graphs model RELATIONSHIPS. Any system with connections is a graph:          │
 │                                                                              │
-│ • Social networks: 2.9B Facebook users, each a node, friendships = edges   │
-│ • Internet: Every router = node, cable = edge. BGP uses shortest path      │
-│ • Google Maps: Every intersection = node, road = weighted edge             │
-│ • Course prerequisites: courses = nodes, "must take A before B" = edge     │
-│ • Package dependencies: npm packages = nodes, imports = edges              │
-│ • Airline routes: cities = nodes, flights = weighted edges                 │
+│ • Social networks: 2.9B Facebook users, each a node, friendships = edges     │
+│ • Internet: Every router = node, cable = edge. BGP uses shortest path        │
+│ • Google Maps: Every intersection = node, road = weighted edge               │
+│ • Course prerequisites: courses = nodes, "must take A before B" = edge       │
+│ • Package dependencies: npm packages = nodes, imports = edges                │
+│ • Airline routes: cities = nodes, flights = weighted edges                   │
 │                                                                              │
-│ Graph problems appear in 15-20% of coding interviews.                       │
+│ Graph problems appear in 15-20% of coding interviews.                        │
 │ Companies love  them because they test: traversal logic, cycle handling,     │
-│ shortest paths, topological ordering, and connected components.             │
+│ shortest paths, topological ordering, and connected components.              │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ THE MENTAL MODEL: "What are the NODES? What are the EDGES?"                  │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ EVERY graph problem starts with this question. Once you answer it,          │
-│ the problem reduces to a STANDARD graph algorithm.                          │
+│ EVERY graph problem starts with this question. Once you answer it,           │
+│ the problem reduces to a STANDARD graph algorithm.                           │
 │                                                                              │
-│ ┌──────────────────────┬──────────────────┬──────────────────────┐          │
-│ │ Problem              │ Node =           │ Edge =               │          │
-│ ├──────────────────────┼──────────────────┼──────────────────────┤          │
-│ │ Number of Islands    │ Cell (r,c)       │ Adjacent land cells  │          │
-│ │ Course Schedule      │ Course number    │ Prerequisite         │          │
-│ │ Word Ladder          │ Word             │ Differ by 1 letter   │          │
-│ │ Cheapest Flights     │ City             │ Flight (weighted)    │          │
-│ │ Clone Graph          │ Graph node       │ Neighbor pointer     │          │
-│ │ Accounts Merge       │ Email address    │ Same account         │          │
-│ │ Alien Dictionary     │ Character        │ Order relationship   │          │
-│ └──────────────────────┴──────────────────┴──────────────────────┘          │
+│ ┌──────────────────────┬──────────────────┬──────────────────────┐           │
+│ │ Problem              │ Node =           │ Edge =               │           │
+│ ├──────────────────────┼──────────────────┼──────────────────────┤           │
+│ │ Number of Islands    │ Cell (r,c)       │ Adjacent land cells  │           │
+│ │ Course Schedule      │ Course number    │ Prerequisite         │           │
+│ │ Word Ladder          │ Word             │ Differ by 1 letter   │           │
+│ │ Cheapest Flights     │ City             │ Flight (weighted)    │           │
+│ │ Clone Graph          │ Graph node       │ Neighbor pointer     │           │
+│ │ Accounts Merge       │ Email address    │ Same account         │           │
+│ │ Alien Dictionary     │ Character        │ Order relationship   │           │
+│ └──────────────────────┴──────────────────┴──────────────────────┘           │
 │                                                                              │
 │ GRID AS GRAPH:                                                               │
-│   Grid is just a graph with implicit edges!                                 │
-│   ┌───┬───┬───┐                                                             │
-│   │ 1 │ 1 │ 0 │    Node (0,0) connects to → (0,1) and (1,0)              │
-│   ├───┼───┼───┤    Node (0,1) connects to → (0,0), (0,2), (1,1)          │
-│   │ 1 │ 0 │ 0 │    4-directional: dirs = {{0,1},{0,-1},{1,0},{-1,0}}      │
-│   ├───┼───┼───┤                                                             │
-│   │ 0 │ 0 │ 1 │    V = rows × cols,  E = up to 4 × V                     │
-│   └───┴───┴───┘    Time for BFS/DFS on grid: O(rows × cols)               │
+│   Grid is just a graph with implicit edges!                                  │
+│   ┌───┬───┬───┐                                                              │
+│   │ 1 │ 1 │ 0 │    Node (0,0) connects to → (0,1) and (1,0)                  │
+│   ├───┼───┼───┤    Node (0,1) connects to → (0,0), (0,2), (1,1)              │
+│   │ 1 │ 0 │ 0 │    4-directional: dirs = {{0,1},{0,-1},{1,0},{-1,0}}         │
+│   ├───┼───┼───┤                                                              │
+│   │ 0 │ 0 │ 1 │    V = rows × cols,  E = up to 4 × V                         │
+│   └───┴───┴───┘    Time for BFS/DFS on grid: O(rows × cols)                  │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -146,121 +146,121 @@ void dfs(int[][] grid, int r, int c, boolean[][] visited) {
 │ THE 6 GRAPH PROBLEM PATTERNS                                                 │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ ┌──────────────────────┬──────────────────────────┬────────────────────┐    │
-│ │ Pattern              │ Algorithm                │ Problems           │    │
-│ ├──────────────────────┼──────────────────────────┼────────────────────┤    │
-│ │ 1. TRAVERSAL/EXPLORE │ BFS or DFS on grid/graph │ Islands, Flood Fill│    │
-│ │ 2. CYCLE DETECTION   │ DFS 3-color / Kahn's     │ Course Schedule    │    │
-│ │ 3. SHORTEST PATH     │ BFS (unwtd) / Dijkstra   │ Word Ladder, Maze │    │
-│ │ 4. CONNECTIVITY      │ Union-Find or DFS         │ Components, Merge │    │
-│ │ 5. ORDERING          │ Topological Sort          │ Alien Dictionary  │    │
-│ │ 6. CLASSIFICATION    │ BFS 2-coloring            │ Bipartite         │    │
-│ └──────────────────────┴──────────────────────────┴────────────────────┘    │
+│ ┌──────────────────────┬──────────────────────────┬────────────────────┐     │
+│ │ Pattern              │ Algorithm                │ Problems           │     │
+│ ├──────────────────────┼──────────────────────────┼────────────────────┤     │
+│ │ 1. TRAVERSAL/EXPLORE │ BFS or DFS on grid/graph │ Islands, Flood Fill│     │
+│ │ 2. CYCLE DETECTION   │ DFS 3-color / Kahn's     │ Course Schedule    │     │
+│ │ 3. SHORTEST PATH     │ BFS (unwtd) / Dijkstra   │ Word Ladder, Maze │      │
+│ │ 4. CONNECTIVITY      │ Union-Find or DFS         │ Components, Merge │     │
+│ │ 5. ORDERING          │ Topological Sort          │ Alien Dictionary  │     │
+│ │ 6. CLASSIFICATION    │ BFS 2-coloring            │ Bipartite         │     │
+│ └──────────────────────┴──────────────────────────┴────────────────────┘     │
 │                                                                              │
 │ DECISION TREE FOR INTERVIEWS:                                                │
 │                                                                              │
-│   "Shortest path?" ──Yes──→ Weighted? ──Yes──→ All non-negative? ──Yes──→  │
-│                                                       Dijkstra O((V+E)logV)│
-│                                          No───→ Bellman-Ford O(VE)         │
-│                              No───→ BFS O(V+E)                             │
+│   "Shortest path?" ──Yes──→ Weighted? ──Yes──→ All non-negative? ──Yes──→    │
+│                                                       Dijkstra O((V+E)logV)  │
+│                                          No───→ Bellman-Ford O(VE)           │
+│                              No───→ BFS O(V+E)                               │
 │                                                                              │
-│   "Order/dependency?"──Yes──→ Topological Sort (Kahn's BFS or DFS post)    │
+│   "Order/dependency?"──Yes──→ Topological Sort (Kahn's BFS or DFS post)      │
 │                                                                              │
-│   "Connected?" ──Yes──→ Dynamic (edges added)? ──Yes──→ Union-Find         │
-│                                                  No───→ DFS/BFS            │
+│   "Connected?" ──Yes──→ Dynamic (edges added)? ──Yes──→ Union-Find           │
+│                                                  No───→ DFS/BFS              │
 │                                                                              │
-│   "Cycle?" ──Yes──→ Directed? ──Yes──→ DFS 3-color or Kahn's (topo fails) │
-│                                 No───→ Union-Find or DFS                   │
+│   "Cycle?" ──Yes──→ Directed? ──Yes──→ DFS 3-color or Kahn's (topo fails)    │
+│                                 No───→ Union-Find or DFS                     │
 │                                                                              │
-│   "Explore all cells/nodes?" ──Yes──→ DFS (simpler) or BFS (level-aware)  │
+│   "Explore all cells/nodes?" ──Yes──→ DFS (simpler) or BFS (level-aware)     │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ ⚠️  COMMON MISTAKES IN GRAPH PROBLEMS                                       │
+│ ⚠️  COMMON MISTAKES IN GRAPH PROBLEMS                                        │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ MISTAKE 1: Forgetting visited check → infinite loop                         │
-│   DFS without marking visited → cycles → stack overflow                    │
-│   BFS without visited → add same node to queue hundreds of times           │
-│   Fix: ALWAYS mark visited BEFORE adding to queue/recursing.               │
+│ MISTAKE 1: Forgetting visited check → infinite loop                          │
+│   DFS without marking visited → cycles → stack overflow                      │
+│   BFS without visited → add same node to queue hundreds of times             │
+│   Fix: ALWAYS mark visited BEFORE adding to queue/recursing.                 │
 │                                                                              │
-│ MISTAKE 2: BFS visited timing — marking when DEQUEUING instead of ENQUEUING│
-│   WRONG: mark visited when you poll(). Allows duplicates in queue.         │
-│   RIGHT: mark visited when you offer(). Each node enters queue ONCE.       │
+│ MISTAKE 2: BFS visited timing — marking when DEQUEUING instead of ENQUEUING  │
+│   WRONG: mark visited when you poll(). Allows duplicates in queue.           │
+│   RIGHT: mark visited when you offer(). Each node enters queue ONCE.         │
 │                                                                              │
-│ MISTAKE 3: Directed vs Undirected cycle detection                           │
-│   Undirected: Visiting an already-visited node (not parent) = cycle.       │
-│   Directed: Need 3-color DFS: WHITE(unvisited), GRAY(in-progress), BLACK. │
-│   Visiting a GRAY node = back edge = cycle. WRONG: treating BLACK as cycle.│
+│ MISTAKE 3: Directed vs Undirected cycle detection                            │
+│   Undirected: Visiting an already-visited node (not parent) = cycle.         │
+│   Directed: Need 3-color DFS: WHITE(unvisited), GRAY(in-progress), BLACK.    │
+│   Visiting a GRAY node = back edge = cycle. WRONG: treating BLACK as cycle.  │
 │                                                                              │
-│ MISTAKE 4: Off-by-one in BFS level counting                                │
-│   Steps = number of BFS levels, NOT number of nodes processed.             │
-│   Must process entire level before incrementing step count.                │
-│   Fix: Use `int size = queue.size()` loop pattern.                         │
+│ MISTAKE 4: Off-by-one in BFS level counting                                  │
+│   Steps = number of BFS levels, NOT number of nodes processed.               │
+│   Must process entire level before incrementing step count.                  │
+│   Fix: Use `int size = queue.size()` loop pattern.                           │
 │                                                                              │
-│ MISTAKE 5: Building adjacency list wrong for undirected graphs             │
-│   Must add BOTH directions: graph[a].add(b) AND graph[b].add(a).          │
-│   Forgetting one direction → some paths unreachable.                       │
+│ MISTAKE 5: Building adjacency list wrong for undirected graphs               │
+│   Must add BOTH directions: graph[a].add(b) AND graph[b].add(a).             │
+│   Forgetting one direction → some paths unreachable.                         │
 │                                                                              │
-│ MISTAKE 6: Not handling disconnected components                             │
-│   "Count components" — must loop through ALL nodes, not just start from 0. │
-│   Some nodes might not be reachable from node 0!                           │
+│ MISTAKE 6: Not handling disconnected components                              │
+│   "Count components" — must loop through ALL nodes, not just start from 0.   │
+│   Some nodes might not be reachable from node 0!                             │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ GRAPH REPRESENTATION — CHOOSING THE RIGHT ONE                                │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ ┌──────────────────┬─────────────────┬───────────────────────────────┐      │
-│ │ Representation   │ Space           │ When to Use                   │      │
-│ ├──────────────────┼─────────────────┼───────────────────────────────┤      │
-│ │ Adjacency List   │ O(V + E)        │ Sparse graphs (most problems)│      │
-│ │ Adjacency Matrix │ O(V²)           │ Dense graphs, O(1) edge check│      │
-│ │ Edge List        │ O(E)            │ Kruskal's MST, simple union  │      │
-│ │ Implicit (Grid)  │ O(R×C)          │ Grid problems (no extra graph)│     │
-│ └──────────────────┴─────────────────┴───────────────────────────────┘      │
+│ ┌──────────────────┬─────────────────┬───────────────────────────────┐       │
+│ │ Representation   │ Space           │ When to Use                   │       │
+│ ├──────────────────┼─────────────────┼───────────────────────────────┤       │
+│ │ Adjacency List   │ O(V + E)        │ Sparse graphs (most problems)│        │
+│ │ Adjacency Matrix │ O(V²)           │ Dense graphs, O(1) edge check│        │
+│ │ Edge List        │ O(E)            │ Kruskal's MST, simple union  │        │
+│ │ Implicit (Grid)  │ O(R×C)          │ Grid problems (no extra graph)│       │
+│ └──────────────────┴─────────────────┴───────────────────────────────┘       │
 │                                                                              │
-│ 95% of interview graphs: Use Adjacency List (HashMap or List of Lists).    │
-│ Grid problems: Don't build explicit graph! Use dirs array directly.        │
+│ 95% of interview graphs: Use Adjacency List (HashMap or List of Lists).      │
+│ Grid problems: Don't build explicit graph! Use dirs array directly.          │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ COMPLEXITY CHEAT SHEET                                                       │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ V = vertices, E = edges                                                     │
-│  BFS/DFS traversal:   O(V + E) time,  O(V) space                          │
-│  Dijkstra (min-heap): O((V+E) log V), O(V) space                          │
-│  Bellman-Ford:        O(V × E),       O(V) space                          │
-│  Union-Find:          O(E × α(V)),    O(V) space                          │
-│  Topological sort:    O(V + E),       O(V) space                          │
-│  Floyd-Warshall:      O(V³),          O(V²) space                         │
+│ V = vertices, E = edges                                                      │
+│  BFS/DFS traversal:   O(V + E) time,  O(V) space                             │
+│  Dijkstra (min-heap): O((V+E) log V), O(V) space                             │
+│  Bellman-Ford:        O(V × E),       O(V) space                             │
+│  Union-Find:          O(E × α(V)),    O(V) space                             │
+│  Topological sort:    O(V + E),       O(V) space                             │
+│  Floyd-Warshall:      O(V³),          O(V²) space                            │
 │                                                                              │
-│  Grid problems: V = R×C, E ≤ 4×R×C → O(R×C) for BFS/DFS                 │
+│  Grid problems: V = R×C, E ≤ 4×R×C → O(R×C) for BFS/DFS                      │
 │                                                                              │
 │  Interview constraints guide:                                                │
-│    n ≤ 10⁴ → O(V+E) BFS/DFS works easily                                 │
-│    n ≤ 10³ → Dijkstra or O(V²) algorithms fine                            │
-│    n ≤ 400 → Floyd-Warshall O(V³) possible                                │
-│    n ≤ 20  → Bitmask DP on graph states                                    │
+│    n ≤ 10⁴ → O(V+E) BFS/DFS works easily                                     │
+│    n ≤ 10³ → Dijkstra or O(V²) algorithms fine                               │
+│    n ≤ 400 → Floyd-Warshall O(V³) possible                                   │
+│    n ≤ 20  → Bitmask DP on graph states                                      │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ ⭐ EXPECTED OUTPUTS OF MASTERING GRAPH PROBLEMS ⭐                            │
+│ ⭐ EXPECTED OUTPUTS OF MASTERING GRAPH PROBLEMS ⭐                             │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ ✅ Identify nodes & edges in ANY problem in 30 seconds                      │
-│ ✅ Choose BFS vs DFS vs Dijkstra vs Union-Find instantly                    │
-│ ✅ Write BFS/DFS templates from memory in 2 minutes                        │
-│ ✅ Handle directed vs undirected correctly (cycle detection, traversal)     │
-│ ✅ Build adjacency list from edge list or grid                             │
-│ ✅ Implement topological sort (both Kahn's BFS and DFS post-order)         │
-│ ✅ Know Dijkstra for weighted shortest path                                │
+│ ✅ Identify nodes & edges in ANY problem in 30 seconds                        │
+│ ✅ Choose BFS vs DFS vs Dijkstra vs Union-Find instantly                      │
+│ ✅ Write BFS/DFS templates from memory in 2 minutes                           │
+│ ✅ Handle directed vs undirected correctly (cycle detection, traversal)       │
+│ ✅ Build adjacency list from edge list or grid                                │
+│ ✅ Implement topological sort (both Kahn's BFS and DFS post-order)            │
+│ ✅ Know Dijkstra for weighted shortest path                                   │
 │                                                                              │
 │ THE TRANSFORMATION:                                                          │
-│ FROM: "I don't even know where to start with this graph problem"            │
-│   TO: "Nodes = cities, edges = flights. Weighted shortest path →           │
-│        Dijkstra with min-heap. O((V+E) log V)."                            │
+│ FROM: "I don't even know where to start with this graph problem"             │
+│   TO: "Nodes = cities, edges = flights. Weighted shortest path →             │
+│        Dijkstra with min-heap. O((V+E) log V)."                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -282,7 +282,7 @@ void dfs(int[][] grid, int r, int c, boolean[][] visited) {
 │  NUMBER OF ISLANDS - Count connected components of '1's        │
 ├────────────────────────────────────────────────────────────────┤
 │  grid = [                                                      │
-│    ["1","1","0","0","0"],                                       │
+│    ["1","1","0","0","0"],                                      │
 │    ["1","1","0","0","0"],   Island 1: top-left 1s              │
 │    ["0","0","1","0","0"],   Island 2: middle 1                 │
 │    ["0","0","0","1","1"]    Island 3: bottom-right 1s          │
@@ -393,14 +393,14 @@ public int numIslandsBFS(char[][] grid) {
 │  MAX AREA OF ISLAND                                            │
 ├────────────────────────────────────────────────────────────────┤
 │  grid = [                                                      │
-│    [0,0,1,0,0,0,0,1,0,0,0,0,0],                                 │
-│    [0,0,0,0,0,0,0,1,1,1,0,0,0],                                 │
-│    [0,1,1,0,1,0,0,0,0,0,0,0,0],                                 │
-│    [0,1,0,0,1,1,0,0,1,0,1,0,0],                                 │
-│    [0,1,0,0,1,1,0,0,1,1,1,0,0],                                 │
-│    [0,0,0,0,0,0,0,0,0,0,1,0,0],                                 │
-│    [0,0,0,0,0,0,0,1,1,1,0,0,0],                                 │
-│    [0,0,0,0,0,0,0,1,1,0,0,0,0]                                  │
+│    [0,0,1,0,0,0,0,1,0,0,0,0,0],                                │
+│    [0,0,0,0,0,0,0,1,1,1,0,0,0],                                │
+│    [0,1,1,0,1,0,0,0,0,0,0,0,0],                                │
+│    [0,1,0,0,1,1,0,0,1,0,1,0,0],                                │
+│    [0,1,0,0,1,1,0,0,1,1,1,0,0],                                │
+│    [0,0,0,0,0,0,0,0,0,0,1,0,0],                                │
+│    [0,0,0,0,0,0,0,1,1,1,0,0,0],                                │
+│    [0,0,0,0,0,0,0,1,1,0,0,0,0]                                 │
 │  ]                                                             │
 │                                                                │
 │  Maximum area = 6 (the island in middle-right)                 │
@@ -1672,7 +1672,7 @@ private boolean bfs(int[][] graph, int[] colors, int start) {
 ┌────────────────────────────────────────────────────────────────┐
 │  FIND THE TOWN JUDGE                                           │
 ├────────────────────────────────────────────────────────────────┤
-│  In a town of n people, one might be the judge.               │
+│  In a town of n people, one might be the judge.                │
 │  The judge:                                                    │
 │  1. Trusts nobody                                              │
 │  2. Everybody else trusts the judge                            │

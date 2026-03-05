@@ -9,7 +9,7 @@
 ```
 ╔══════════════════════════════════════════════════════════════════════════════════╗
 ║  WHY PATTERN PROGRAMS?                                                           ║
-║                                                                                   ║
+║                                                                                  ║
 ║  1. INTERVIEW REALITY: Asked in 90% of fresher interviews                        ║
 ║  2. BUILDS LOOP THINKING: Foundation for ALL DSA                                 ║
 ║  3. TEACHES OBSERVATION: Any pattern = rows + columns + relationship             ║
@@ -18,7 +18,7 @@
 ║     • Image processing (pixel manipulation)                                      ║
 ║     • Matrix transformations                                                     ║
 ║     • Report formatting                                                          ║
-║                                                                                   ║
+║                                                                                  ║
 ║  START DATE: February 10, 2026                                                   ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
@@ -1880,29 +1880,29 @@ public static void rotate90(int[][] matrix) {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                        PATTERN SOLVING FORMULAS                                  │
+│                        PATTERN SOLVING FORMULAS                                 │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  RIGHT TRIANGLE:  Row i → print (i+1) items, starting col=0                     │
 │  LEFT TRIANGLE:   Row i → print (n-i) spaces, then (i+1) items                  │
 │  PYRAMID:         Row i → print (n-i-1) spaces, then (2i+1) items               │
 │  INVERTED:        Row i → print i spaces, then (2(n-i)-1) items                 │
 │  DIAMOND:         Pyramid (0 to n-1) + Inverted Pyramid (n-2 to 0)              │
 │  SANDGLASS:       Inverted (0 to n-1) + Pyramid (1 to n-1)                      │
-│                                                                                  │
-│  HOLLOW:          Print content only when:                                       │
+│                                                                                 │
+│  HOLLOW:          Print content only when:                                      │
 │                   i==0 OR i==n-1 OR j==0 OR j==current_row_width-1              │
-│                                                                                  │
-│  NUMBER PATTERNS:                                                                │
+│                                                                                 │
+│  NUMBER PATTERNS:                                                               │
 │    Row number:     Print (i) for all columns                                    │
 │    Column number:  Print (j) for all columns                                    │
 │    Floyd's:        Use single counter (num++), don't reset                      │
 │    Pascal's:       value = prev_value * (row - col) / col                       │
-│                                                                                  │
-│  CHARACTER PATTERNS:                                                             │
+│                                                                                 │
+│  CHARACTER PATTERNS:                                                            │
 │    Convert: 'A' + index gives character                                         │
-│    Wrap:    if (ch > 'Z') ch = 'A' or use '*'                                  │
-│                                                                                  │
+│    Wrap:    if (ch > 'Z') ch = 'A' or use '*'                                   │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 

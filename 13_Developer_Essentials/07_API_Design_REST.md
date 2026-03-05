@@ -10,20 +10,20 @@
 
 ```
 ┌─────────────┐     HTTP Request      ┌──────────────┐
-│   Frontend   │ ──────────────────>   │   Backend    │
-│  (React/     │                       │  (Spring     │
-│   Angular)   │ <──────────────────   │   Boot)      │
-│              │     HTTP Response     │              │
-└─────────────┘                        └──────────────┘
+│   Frontend   │ ──────────────────>   │   Backend   │
+│  (React/     │                       │  (Spring    │
+│   Angular)   │ <──────────────────   │   Boot)     │
+│              │     HTTP Response     │             │
+└─────────────┘                        └─────────────┘
 
 ┌─────────────┐     HTTP Request      ┌──────────────┐
-│   Mobile     │ ──────────────────>   │   Your API   │
-│   App        │ <──────────────────   │              │
+│   Mobile     │ ──────────────────>   │   Your API  │
+│   App        │ <──────────────────   │             │
 └─────────────┘     HTTP Response     └──────────────┘
 
 ┌─────────────┐     HTTP Request      ┌──────────────┐
-│   Partner    │ ──────────────────>   │   Your API   │
-│   Company    │ <──────────────────   │              │
+│   Partner    │ ──────────────────>   │   Your API  │
+│   Company    │ <──────────────────   │             │
 └─────────────┘     HTTP Response     └──────────────┘
 
 Your API = a CONTRACT. Once published, breaking changes = TRUST broken.

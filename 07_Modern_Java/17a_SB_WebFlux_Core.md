@@ -15,45 +15,45 @@
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHY: Why Learn Reactive Programming?                                           │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Handle 10-100x more concurrent users with same hardware                     │
-│  • Modern systems need: real-time data, streaming, high concurrency            │
-│  • Netflix, Twitter, LinkedIn use reactive for millions of connections         │
-│  • Required for cloud-native microservices at scale                            │
-│  • Non-blocking = better resource utilization = cost savings                   │
+│  • Handle 10-100x more concurrent users with same hardware                      │
+│  • Modern systems need: real-time data, streaming, high concurrency             │
+│  • Netflix, Twitter, LinkedIn use reactive for millions of connections          │
+│  • Required for cloud-native microservices at scale                             │
+│  • Non-blocking = better resource utilization = cost savings                    │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  HOW: How Does WebFlux Work?                                                    │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Event loop model (not thread-per-request)                                   │
-│  • Mono = 0 or 1 element, Flux = 0 to N elements                              │
-│  • Backpressure: subscriber controls data flow rate                            │
-│  • Non-blocking I/O with Netty server                                          │
-│  • Functional or annotation-based programming models                           │
+│  • Event loop model (not thread-per-request)                                    │
+│  • Mono = 0 or 1 element, Flux = 0 to N elements                                │
+│  • Backpressure: subscriber controls data flow rate                             │
+│  • Non-blocking I/O with Netty server                                           │
+│  • Functional or annotation-based programming models                            │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHEN: When to Use WebFlux vs MVC?                                              │
 ├─────────────────────────────────────────────────────────────────────────────────┤
 │  USE WEBFLUX WHEN:                                                              │
-│  • High concurrency (10K+ concurrent connections)                              │
-│  • Streaming data (SSE, WebSocket, real-time feeds)                            │
-│  • Microservices calling many external APIs                                    │
-│  • Already using reactive stack (R2DBC, MongoDB Reactive)                      │
-│                                                                                  │
+│  • High concurrency (10K+ concurrent connections)                               │
+│  • Streaming data (SSE, WebSocket, real-time feeds)                             │
+│  • Microservices calling many external APIs                                     │
+│  • Already using reactive stack (R2DBC, MongoDB Reactive)                       │
+│                                                                                 │
 │  STICK WITH MVC WHEN:                                                           │
-│  • CRUD applications with moderate traffic                                     │
-│  • Team unfamiliar with reactive paradigm                                      │
-│  • Using blocking libraries (JDBC, JPA)                                        │
-│  • Simpler debugging and stack traces needed                                   │
+│  • CRUD applications with moderate traffic                                      │
+│  • Team unfamiliar with reactive paradigm                                       │
+│  • Using blocking libraries (JDBC, JPA)                                         │
+│  • Simpler debugging and stack traces needed                                    │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHICH: Which Components to Master?                                             │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  ESSENTIAL:     Mono, Flux, WebClient, @RestController reactive                │
-│  IMPORTANT:     R2DBC, RouterFunction, error operators                         │
-│  ADVANCED:      Backpressure, Schedulers, testing StepVerifier                 │
+│  ESSENTIAL:     Mono, Flux, WebClient, @RestController reactive                 │
+│  IMPORTANT:     R2DBC, RouterFunction, error operators                          │
+│  ADVANCED:      Backpressure, Schedulers, testing StepVerifier                  │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -63,20 +63,20 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│              WHAT THIS PART COVERS                                               │
+│              WHAT THIS PART COVERS                                              │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  1. Reactive Programming Fundamentals                                           │
-│  2. Project Reactor: Mono & Flux                                               │
+│  2. Project Reactor: Mono & Flux                                                │
 │  3. Spring WebFlux Basics                                                       │
 │  4. Functional Endpoints (RouterFunction)                                       │
-│  5. Reactive Data Access (R2DBC)                                               │
-│  6. WebClient (Reactive HTTP Client)                                           │
-│  7. Error Handling in Reactive Streams                                         │
+│  5. Reactive Data Access (R2DBC)                                                │
+│  6. WebClient (Reactive HTTP Client)                                            │
+│  7. Error Handling in Reactive Streams                                          │
 │  8. Testing Reactive Code                                                       │
-│  9. Backpressure & Performance                                                 │
-│  10. When to Use WebFlux vs MVC                                                │
-│                                                                                  │
+│  9. Backpressure & Performance                                                  │
+│  10. When to Use WebFlux vs MVC                                                 │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -90,32 +90,32 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│              TRADITIONAL vs REACTIVE                                             │
+│              TRADITIONAL vs REACTIVE                                            │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  TRADITIONAL (Spring MVC) - Thread-per-Request:                                │
-│  ┌─────────────────────────────────────────────────────────────────────┐       │
-│  │  Request → Thread 1 (BLOCKED waiting for DB) → Response            │       │
-│  │  Request → Thread 2 (BLOCKED waiting for API) → Response           │       │
-│  │  Request → Thread 3 (BLOCKED waiting for file) → Response          │       │
-│  │  ...                                                                │       │
-│  │  Request → Thread 200 (Max threads!) → Queue/Reject                │       │
-│  └─────────────────────────────────────────────────────────────────────┘       │
-│                                                                                  │
-│  Problem: Each thread uses ~1MB memory, wastes time waiting                    │
-│                                                                                  │
+│                                                                                 │
+│  TRADITIONAL (Spring MVC) - Thread-per-Request:                                 │
+│  ┌─────────────────────────────────────────────────────────────────────┐        │
+│  │  Request → Thread 1 (BLOCKED waiting for DB) → Response            │         │
+│  │  Request → Thread 2 (BLOCKED waiting for API) → Response           │         │
+│  │  Request → Thread 3 (BLOCKED waiting for file) → Response          │         │
+│  │  ...                                                                │        │
+│  │  Request → Thread 200 (Max threads!) → Queue/Reject                │         │
+│  └─────────────────────────────────────────────────────────────────────┘        │
+│                                                                                 │
+│  Problem: Each thread uses ~1MB memory, wastes time waiting                     │
+│                                                                                 │
 │  REACTIVE (Spring WebFlux) - Event Loop:                                        │
-│  ┌─────────────────────────────────────────────────────────────────────┐       │
-│  │  Event Loop Thread (never blocks!)                                  │       │
-│  │    ├── Receives request 1 → Starts async DB call → Moves on       │       │
-│  │    ├── Receives request 2 → Starts async API call → Moves on      │       │
-│  │    ├── DB callback arrives → Sends response 1                      │       │
-│  │    ├── Receives request 3 → Starts async work → Moves on          │       │
-│  │    └── API callback arrives → Sends response 2                     │       │
-│  └─────────────────────────────────────────────────────────────────────┘       │
-│                                                                                  │
-│  Benefit: 10-100x more concurrent connections with same resources              │
-│                                                                                  │
+│  ┌─────────────────────────────────────────────────────────────────────┐        │
+│  │  Event Loop Thread (never blocks!)                                  │        │
+│  │    ├── Receives request 1 → Starts async DB call → Moves on       │          │
+│  │    ├── Receives request 2 → Starts async API call → Moves on      │          │
+│  │    ├── DB callback arrives → Sends response 1                      │         │
+│  │    ├── Receives request 3 → Starts async work → Moves on          │          │
+│  │    └── API callback arrives → Sends response 2                     │         │
+│  └─────────────────────────────────────────────────────────────────────┘        │
+│                                                                                 │
+│  Benefit: 10-100x more concurrent connections with same resources               │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -197,29 +197,29 @@ public interface Processor<T, R> extends Subscriber<T>, Publisher<R> {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│              MONO vs FLUX                                                        │
+│              MONO vs FLUX                                                       │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  MONO<T> - 0 or 1 element                                                       │
-│  ┌─────────────────────────────────────────────────────────────────────┐       │
-│  │  Like Optional<T> but ASYNC                                         │       │
+│  ┌─────────────────────────────────────────────────────────────────────┐        │
+│  │  Like Optional<T> but ASYNC                                         │        │
 │  │                                                                      │       │
-│  │  Mono.just("Hello")           // 1 element                          │       │
-│  │  Mono.empty()                 // 0 elements                         │       │
-│  │  Mono.error(new Ex())         // Error signal                       │       │
-│  └─────────────────────────────────────────────────────────────────────┘       │
-│                                                                                  │
+│  │  Mono.just("Hello")           // 1 element                          │        │
+│  │  Mono.empty()                 // 0 elements                         │        │
+│  │  Mono.error(new Ex())         // Error signal                       │        │
+│  └─────────────────────────────────────────────────────────────────────┘        │
+│                                                                                 │
 │  FLUX<T> - 0 to N elements                                                      │
-│  ┌─────────────────────────────────────────────────────────────────────┐       │
-│  │  Like Stream<T> but ASYNC                                           │       │
+│  ┌─────────────────────────────────────────────────────────────────────┐        │
+│  │  Like Stream<T> but ASYNC                                           │        │
 │  │                                                                      │       │
-│  │  Flux.just("A", "B", "C")     // 3 elements                         │       │
-│  │  Flux.range(1, 100)           // 100 elements                       │       │
-│  │  Flux.interval(Duration)       // Infinite elements                 │       │
-│  └─────────────────────────────────────────────────────────────────────┘       │
-│                                                                                  │
+│  │  Flux.just("A", "B", "C")     // 3 elements                         │        │
+│  │  Flux.range(1, 100)           // 100 elements                       │        │
+│  │  Flux.interval(Duration)       // Infinite elements                 │        │
+│  └─────────────────────────────────────────────────────────────────────┘        │
+│                                                                                 │
 │  KEY INSIGHT: Nothing happens until you SUBSCRIBE!                              │
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -951,25 +951,25 @@ public class UserHandler {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│              R2DBC vs JDBC                                                       │
+│              R2DBC vs JDBC                                                      │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  JDBC (Traditional):                                                            │
-│  • Blocking - Thread waits for database response                               │
-│  • Uses thread pool (HikariCP)                                                 │
-│  • Works with JPA/Hibernate                                                    │
-│                                                                                  │
+│  • Blocking - Thread waits for database response                                │
+│  • Uses thread pool (HikariCP)                                                  │
+│  • Works with JPA/Hibernate                                                     │
+│                                                                                 │
 │  R2DBC (Reactive):                                                              │
-│  • Non-blocking - Event loop handles responses                                 │
-│  • Uses connection pool (r2dbc-pool)                                           │
-│  • Works with Spring Data R2DBC (no JPA!)                                      │
-│                                                                                  │
-│  ⚠️ IMPORTANT: R2DBC does NOT support JPA features:                            │
+│  • Non-blocking - Event loop handles responses                                  │
+│  • Uses connection pool (r2dbc-pool)                                            │
+│  • Works with Spring Data R2DBC (no JPA!)                                       │
+│                                                                                 │
+│  ⚠️ IMPORTANT: R2DBC does NOT support JPA features:                             │
 │  • No lazy loading                                                              │
-│  • No @OneToMany, @ManyToOne                                                   │
-│  • No JPQL (uses simple queries or @Query)                                     │
+│  • No @OneToMany, @ManyToOne                                                    │
+│  • No JPQL (uses simple queries or @Query)                                      │
 │  • Manual joins required                                                        │
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 

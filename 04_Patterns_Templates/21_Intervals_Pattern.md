@@ -5,42 +5,42 @@
 # 📚 INTERVAL PROBLEMS — THE COMPLETE PATTERN GUIDE
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │                 INTERVALS FUNDAMENTALS                           │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  AN INTERVAL = [start, end] representing a continuous range     │
-│                                                                 │
-│  WHY A DEDICATED PATTERN?                                       │
-│  Intervals appear in scheduling, calendars, bandwidth,          │
-│  resource allocation, genomics ... ~15 LC problems form a       │
-│  tight family where ONE core technique solves them all.         │
-│                                                                 │
-│  THE 6 INTERVAL RELATIONSHIPS between [a,b] and [c,d]:         │
-│                                                                 │
-│  1. No overlap (a before c):  a──b     c──d                    │
-│  2. Overlap (partial):        a────b                            │
-│                                  c────d                         │
-│  3. a contains c:             a────────b                        │
-│                                 c──d                            │
-│  4. c contains a:               a──b                            │
-│                               c────────d                        │
-│  5. Overlap (reverse):          a────b                          │
-│                               c────d                            │
-│  6. No overlap (c before a):  c──d     a──b                    │
-│                                                                 │
-│  KEY INSIGHT: Sort by start → reduces 6 cases to 2-3 checks.   │
-│                                                                 │
-│  DECISION TREE:                                                 │
-│  ┌── Merge overlapping?     → Merge Intervals (LC 56)           │
-│  ├── Insert into sorted?    → Insert Interval (LC 57)           │
-│  ├── Max simultaneous?      → Meeting Rooms II (LC 253)         │
-│  ├── Can I attend all?      → Meeting Rooms (LC 252)            │
-│  ├── Remove min to avoid?   → Non-overlapping Intervals (LC 435)│
+├──────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  AN INTERVAL = [start, end] representing a continuous range      │
+│                                                                  │
+│  WHY A DEDICATED PATTERN?                                        │
+│  Intervals appear in scheduling, calendars, bandwidth,           │
+│  resource allocation, genomics ... ~15 LC problems form a        │
+│  tight family where ONE core technique solves them all.          │
+│                                                                  │
+│  THE 6 INTERVAL RELATIONSHIPS between [a,b] and [c,d]:           │
+│                                                                  │
+│  1. No overlap (a before c):  a──b     c──d                      │
+│  2. Overlap (partial):        a────b                             │
+│                                  c────d                          │
+│  3. a contains c:             a────────b                         │
+│                                 c──d                             │
+│  4. c contains a:               a──b                             │
+│                               c────────d                         │
+│  5. Overlap (reverse):          a────b                           │
+│                               c────d                             │
+│  6. No overlap (c before a):  c──d     a──b                      │
+│                                                                  │
+│  KEY INSIGHT: Sort by start → reduces 6 cases to 2-3 checks.     │
+│                                                                  │
+│  DECISION TREE:                                                  │
+│  ┌── Merge overlapping?     → Merge Intervals (LC 56)            │
+│  ├── Insert into sorted?    → Insert Interval (LC 57)            │
+│  ├── Max simultaneous?      → Meeting Rooms II (LC 253)          │
+│  ├── Can I attend all?      → Meeting Rooms (LC 252)             │
+│  ├── Remove min to avoid?   → Non-overlapping Intervals (LC 435) │
 │  ├── Find intersection?     → Interval List Intersections(LC 986)│
-│  └── Min platforms/rooms?   → Sweep Line / Min Heap             │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+│  └── Min platforms/rooms?   → Sweep Line / Min Heap              │
+│                                                                  │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -56,21 +56,21 @@
 │ THE REAL-WORLD ORIGIN                                                        │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ 📖 CALENDAR APPS: Google Calendar must detect overlapping events.            │
-│    When you schedule 2-3pm and 2:30-4pm, it highlights the conflict.        │
+│ 📖 CALENDAR APPS: Google Calendar must detect overlapping events.             │
+│    When you schedule 2-3pm and 2:30-4pm, it highlights the conflict.         │
 │    This is literally the Overlapping Intervals check.                        │
 │                                                                              │
-│ 📖 MEETING ROOMS: Amazon's meeting room allocator uses a min-heap           │
-│    of end times. When a new meeting starts, check if any room is free       │
-│    (earliest end time ≤ new start). If not, allocate a new room.           │
+│ 📖 MEETING ROOMS: Amazon's meeting room allocator uses a min-heap             │
+│    of end times. When a new meeting starts, check if any room is free        │
+│    (earliest end time ≤ new start). If not, allocate a new room.             │
 │                                                                              │
-│ 📖 NETWORK BANDWIDTH: Merging bandwidth reservation intervals to            │
+│ 📖 NETWORK BANDWIDTH: Merging bandwidth reservation intervals to              │
 │    find total allocated vs available capacity.                               │
 │                                                                              │
-│ 📖 GENOMICS: Gene expression intervals on chromosomes — merging             │
+│ 📖 GENOMICS: Gene expression intervals on chromosomes — merging               │
 │    overlapping regions to find functional units.                             │
 │                                                                              │
-│ 📖 OPERATING SYSTEMS: Memory allocation = interval management.              │
+│ 📖 OPERATING SYSTEMS: Memory allocation = interval management.                │
 │    malloc/free creates and merges free memory intervals.                     │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
@@ -84,25 +84,25 @@
 │  Sort all intervals by start time.                                           │
 │  Iterate once, maintaining some running state (last end, merged list, etc.)  │
 │  Works for: Merge, Insert, Non-overlapping, Intersections                    │
-│  Time: O(n log n) for sort + O(n) scan = O(n log n)                        │
+│  Time: O(n log n) for sort + O(n) scan = O(n log n)                          │
 │                                                                              │
 │  TECHNIQUE 2: SWEEP LINE (Event-based)                                       │
 │  ─────────────────────────────────────                                       │
-│  Convert intervals to events: +1 at start, -1 at end.                       │
-│  Sort all events by time. Sweep left to right, tracking count.              │
+│  Convert intervals to events: +1 at start, -1 at end.                        │
+│  Sort all events by time. Sweep left to right, tracking count.               │
 │  Works for: Meeting Rooms II, Max Overlap, Minimum Platforms                 │
 │  Time: O(n log n)                                                            │
 │                                                                              │
-│  TECHNIQUE 2b: SORT + MIN-HEAP (variant of sweep)                           │
+│  TECHNIQUE 2b: SORT + MIN-HEAP (variant of sweep)                            │
 │  ───────────────────────────────────────────────                             │
-│  Sort by start. Min-heap of end times tracks active intervals.              │
-│  When new interval starts: pop expired (end ≤ start), push new end.        │
+│  Sort by start. Min-heap of end times tracks active intervals.               │
+│  When new interval starts: pop expired (end ≤ start), push new end.          │
 │  Heap size = current overlap count.                                          │
 │  Works for: Meeting Rooms II, Min Platforms                                  │
 │                                                                              │
 │  WHICH TECHNIQUE TO USE:                                                     │
-│  • "Merge/modify intervals" → Sort + Scan                                   │
-│  • "Count/max simultaneous" → Sweep Line or Min-Heap                        │
+│  • "Merge/modify intervals" → Sort + Scan                                    │
+│  • "Count/max simultaneous" → Sweep Line or Min-Heap                         │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 
@@ -110,15 +110,15 @@
 │ THE OVERLAP CHECK — MEMORIZE THIS                                            │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│  Two intervals [a,b] and [c,d] OVERLAP if and only if:                      │
+│  Two intervals [a,b] and [c,d] OVERLAP if and only if:                       │
 │                                                                              │
-│       a ≤ d  AND  c ≤ b                                                    │
+│       a ≤ d  AND  c ≤ b                                                      │
 │                                                                              │
-│  Equivalently, they DON'T overlap if:  b < c  OR  d < a                    │
+│  Equivalently, they DON'T overlap if:  b < c  OR  d < a                      │
 │                                                                              │
-│  After sorting by start (a ≤ c), overlap simplifies to:                    │
+│  After sorting by start (a ≤ c), overlap simplifies to:                      │
 │                                                                              │
-│       c ≤ b   (next start ≤ current end)                                   │
+│       c ≤ b   (next start ≤ current end)                                     │
 │                                                                              │
 │  This ONE check drives 80% of interval problems.                             │
 │                                                                              │
@@ -132,9 +132,9 @@
 │    • Merge/Insert → sort by START                                            │
 │    • Non-overlapping removal → sort by END (greedy)                          │
 │    • Meeting Rooms II → sort by START                                        │
-│ 3. Off-by-one: [1,5] and [5,8] — do they overlap?                          │
+│ 3. Off-by-one: [1,5] and [5,8] — do they overlap?                            │
 │    Problem-dependent! Read carefully. Usually YES for intervals.             │
-│ 4. Forgetting Integer.compare() for comparator (a[0]-b[0] overflows)       │
+│ 4. Forgetting Integer.compare() for comparator (a[0]-b[0] overflows)         │
 │ 5. Not extending existing interval's end with Math.max during merge          │
 │ 6. Using == instead of <= for overlap check                                  │
 └──────────────────────────────────────────────────────────────────────────────┘
@@ -479,24 +479,24 @@ COMPLEXITY: Time O(n log n) | Space O(1)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                    INTERVAL PROBLEMS CHEATSHEET                          │
+│                    INTERVAL PROBLEMS CHEATSHEET                         │
 ├─────────────────────────────────────────────────────────────────────────┤
 │                                                                         │
-│  PROBLEM TYPE        │ SORT BY  │ TECHNIQUE        │ LC#               │
+│  PROBLEM TYPE        │ SORT BY  │ TECHNIQUE        │ LC#                │
 │  ════════════════════╪══════════╪══════════════════╪═══════════════════ │
-│  Merge overlapping   │ START    │ Linear scan      │ 56                │
-│  Insert + merge      │ (sorted) │ 3-phase scan     │ 57                │
-│  Can attend all?     │ START    │ Adjacent check   │ 252               │
-│  Min rooms needed    │ START    │ Min-Heap / Sweep │ 253               │
-│  Min removals        │ END      │ Greedy keep early│ 435               │
-│  List intersections  │ (sorted) │ Two pointers     │ 986               │
-│  Min arrows          │ END      │ Greedy groups    │ 452               │
-│  Employee free time  │ START    │ Merge + gaps     │ 759               │
+│  Merge overlapping   │ START    │ Linear scan      │ 56                 │
+│  Insert + merge      │ (sorted) │ 3-phase scan     │ 57                 │
+│  Can attend all?     │ START    │ Adjacent check   │ 252                │
+│  Min rooms needed    │ START    │ Min-Heap / Sweep │ 253                │
+│  Min removals        │ END      │ Greedy keep early│ 435                │
+│  List intersections  │ (sorted) │ Two pointers     │ 986                │
+│  Min arrows          │ END      │ Greedy groups    │ 452                │
+│  Employee free time  │ START    │ Merge + gaps     │ 759                │
 │                                                                         │
 │  GOLDEN RULES:                                                          │
 │  1. Sort by START for merge/overlap problems                            │
 │  2. Sort by END for greedy selection/removal problems                   │
-│  3. Overlap check: next.start ≤ curr.end (after sorting by start)      │
+│  3. Overlap check: next.start ≤ curr.end (after sorting by start)       │
 │  4. For "max simultaneous": use Sweep Line or Min-Heap                  │
 │  5. Use Integer.compare() to avoid overflow in comparators              │
 │                                                                         │

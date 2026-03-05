@@ -6,18 +6,18 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│          RECURSION & SUBSETS FUNDAMENTALS                        │
+│          RECURSION & SUBSETS FUNDAMENTALS                       │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  WHY COMBINED? Subsets are THE classic recursion application.    │
-│  Every subset problem is a recursion tree of include/exclude.    │
+│  WHY COMBINED? Subsets are THE classic recursion application.   │
+│  Every subset problem is a recursion tree of include/exclude.   │
 │                                                                 │
 │  THE SUBSET UNIVERSE:                                           │
 │  ┌─────────────┬────────────────────────────────────────────┐   │
 │  │ Generate    │ Power Set, Combinations, Permutations      │   │
-│  │ Count       │ Count subsets with sum K, Target Sum        │   │
-│  │ Optimize    │ Partition Equal Subset, Min Diff Partition  │   │
-│  │ Constrain   │ Subsets without duplicates, K-size subsets  │   │
+│  │ Count       │ Count subsets with sum K, Target Sum        │  │
+│  │ Optimize    │ Partition Equal Subset, Min Diff Partition  │  │
+│  │ Constrain   │ Subsets without duplicates, K-size subsets  │  │
 │  └─────────────┴────────────────────────────────────────────┘   │
 │                                                                 │
 │  RECURSION → MEMOIZATION → DP PIPELINE:                         │
@@ -48,75 +48,75 @@
 │ THE REAL-WORLD ORIGIN                                                        │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ 📖 SUBSETS IN NATURE: The power set of DNA base pairs determines all         │
+│ 📖 SUBSETS IN NATURE: The power set of DNA base pairs determines all          │
 │    possible gene combinations. With 20,000 genes, your body expresses        │
 │    different subsets in different cells — that's why skin ≠ brain.           │
 │                                                                              │
-│ 📖 FEATURE FLAGS: Netflix has ~150 feature flags. Each flag is on/off.       │
+│ 📖 FEATURE FLAGS: Netflix has ~150 feature flags. Each flag is on/off.        │
 │    That's 2^150 possible configurations — more than atoms in the universe.   │
-│    They test SUBSETS of flags for A/B testing.                                │
+│    They test SUBSETS of flags for A/B testing.                               │
 │                                                                              │
-│ 📖 PORTFOLIO OPTIMIZATION: Given n stocks, find the subset that              │
+│ 📖 PORTFOLIO OPTIMIZATION: Given n stocks, find the subset that               │
 │    maximizes return for a given risk budget. This IS the Subset Sum          │
-│    problem in finance.                                                        │
+│    problem in finance.                                                       │
 │                                                                              │
-│ 📖 KNAPSACK PROBLEM: Amazon's warehouse packing = Knapsack.                 │
+│ 📖 KNAPSACK PROBLEM: Amazon's warehouse packing = Knapsack.                   │
 │    "Which subset of items fits in this box with maximum value?"              │
 │                                                                              │
 │ FUNDAMENTAL INSIGHT:                                                         │
 │ Subset problems are fundamentally about CHOICES.                             │
-│ At each element, you make a binary choice: INCLUDE or EXCLUDE.              │
+│ At each element, you make a binary choice: INCLUDE or EXCLUDE.               │
 │ This creates a recursion tree of depth n with 2^n leaves.                    │
 │                                                                              │
-│ THE RECURSION TREE for {1, 2, 3}:                                           │
+│ THE RECURSION TREE for {1, 2, 3}:                                            │
 │                      {}                                                      │
-│                 /         \                                                   │
-│             {1}            {}                  ← include/exclude 1          │
-│            /    \        /    \                                               │
-│         {1,2}  {1}    {2}    {}                ← include/exclude 2          │
-│         / \   / \    / \    / \                                               │
-│     {1,2,3}{1,2}{1,3}{1}{2,3}{2}{3}{}         ← include/exclude 3          │
+│                 /         \                                                  │
+│             {1}            {}                  ← include/exclude 1           │
+│            /    \        /    \                                              │
+│         {1,2}  {1}    {2}    {}                ← include/exclude 2           │
+│         / \   / \    / \    / \                                              │
+│     {1,2,3}{1,2}{1,3}{1}{2,3}{2}{3}{}         ← include/exclude 3            │
 │                                                                              │
-│ Leaves = all 2^3 = 8 subsets of {1,2,3}                                     │
+│ Leaves = all 2^3 = 8 subsets of {1,2,3}                                      │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ THE MENTAL MODEL: "Include or Exclude — That's All Recursion Is"            │
+│ THE MENTAL MODEL: "Include or Exclude — That's All Recursion Is"             │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │  TEMPLATE FOR ALL SUBSET PROBLEMS:                                           │
 │                                                                              │
-│  void solve(int index, int[] nums, <state>) {                               │
+│  void solve(int index, int[] nums, <state>) {                                │
 │      if (index == nums.length) {                                             │
 │          // BASE: process current subset                                     │
 │          return;                                                             │
 │      }                                                                       │
 │      // CHOICE 1: Include nums[index]                                        │
 │      <add nums[index] to state>                                              │
-│      solve(index + 1, nums, <state>);                                       │
-│      <remove nums[index] from state>    // BACKTRACK                        │
+│      solve(index + 1, nums, <state>);                                        │
+│      <remove nums[index] from state>    // BACKTRACK                         │
 │                                                                              │
 │      // CHOICE 2: Exclude nums[index]                                        │
-│      solve(index + 1, nums, <state>);                                       │
+│      solve(index + 1, nums, <state>);                                        │
 │  }                                                                           │
 │                                                                              │
 │  WHEN TO USE EACH VARIANT:                                                   │
 │  • Generate all subsets → Backtracking template above                        │
-│  • Count subsets with property → Recursion + Memoization → DP               │
+│  • Count subsets with property → Recursion + Memoization → DP                │
 │  • Optimize over subsets → DP (Knapsack family)                              │
 │  • Enumerate with constraints → Backtracking + Pruning                       │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ THE RECURSION → DP PIPELINE (MIT 6.006 Framework)                           │
+│ THE RECURSION → DP PIPELINE (MIT 6.006 Framework)                            │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │  STEP 1: PURE RECURSION (Brute Force)                                        │
-│  int count(int[] nums, int i, int target) {                                 │
-│      if (i == nums.length) return target == 0 ? 1 : 0;                      │
-│      return count(nums, i+1, target - nums[i])   // include                 │
+│  int count(int[] nums, int i, int target) {                                  │
+│      if (i == nums.length) return target == 0 ? 1 : 0;                       │
+│      return count(nums, i+1, target - nums[i])   // include                  │
 │           + count(nums, i+1, target);              // exclude                │
 │  }                                                                           │
 │  Time: O(2^n) — explores every subset                                        │
@@ -125,49 +125,49 @@
 │  State = (index, remaining target)                                           │
 │  Same (i, target) can be reached via different paths!                        │
 │  Example: {1,2,3}, target=3                                                  │
-│    Path 1: include 1, exclude 2 → (i=2, target=2)                           │
-│    Path 2: exclude 1, include 2 → (i=2, target=1) ← different!             │
+│    Path 1: include 1, exclude 2 → (i=2, target=2)                            │
+│    Path 2: exclude 1, include 2 → (i=2, target=1) ← different!               │
 │    But with larger arrays, overlaps multiply.                                │
 │                                                                              │
 │  STEP 3: ADD MEMOIZATION (Top-Down DP)                                       │
 │  Map<String, Integer> memo = new HashMap<>();                                │
-│  int count(int[] nums, int i, int target) {                                 │
-│      if (i == nums.length) return target == 0 ? 1 : 0;                      │
+│  int count(int[] nums, int i, int target) {                                  │
+│      if (i == nums.length) return target == 0 ? 1 : 0;                       │
 │      String key = i + "," + target;                                          │
 │      if (memo.containsKey(key)) return memo.get(key);                        │
-│      int result = count(nums, i+1, target-nums[i])                          │
+│      int result = count(nums, i+1, target-nums[i])                           │
 │                 + count(nums, i+1, target);                                  │
 │      memo.put(key, result);                                                  │
 │      return result;                                                          │
 │  }                                                                           │
-│  Time: O(n × target)                                                        │
+│  Time: O(n × target)                                                         │
 │                                                                              │
 │  STEP 4: BOTTOM-UP DP                                                        │
 │  dp[i][t] = number of subsets from first i elements summing to t             │
 │  dp[0][0] = 1                                                                │
-│  dp[i][t] = dp[i-1][t] + dp[i-1][t - nums[i-1]]                            │
-│  Time: O(n × target), Space: O(n × target)                                  │
+│  dp[i][t] = dp[i-1][t] + dp[i-1][t - nums[i-1]]                              │
+│  Time: O(n × target), Space: O(n × target)                                   │
 │                                                                              │
 │  STEP 5: SPACE OPTIMIZATION (1D DP)                                          │
 │  Process target RIGHT TO LEFT (so we don't overwrite needed values)          │
-│  for each num: for t = target to num: dp[t] += dp[t - num]                  │
-│  Time: O(n × target), Space: O(target)                                      │
+│  for each num: for t = target to num: dp[t] += dp[t - num]                   │
+│  Time: O(n × target), Space: O(target)                                       │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ COMMON MISTAKES                                                              │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ 1. Forgetting to BACKTRACK: after recursing with include, remove the element│
+│ 1. Forgetting to BACKTRACK: after recursing with include, remove the element │
 │ 2. Not handling DUPLICATES: [1,2,2] generates duplicate subsets if naive.    │
 │    Fix: sort + skip nums[i] == nums[i-1] at same recursion level.            │
 │ 3. Confusing SUBSETS vs SUBSEQUENCES vs SUBARRAYS:                           │
-│    Subset: any elements, order doesn't matter → {1,3} from {1,2,3}         │
-│    Subsequence: maintain relative order → {1,3} from {1,2,3}               │
-│    Subarray: contiguous → {1,2} from {1,2,3}, NOT {1,3}                    │
+│    Subset: any elements, order doesn't matter → {1,3} from {1,2,3}           │
+│    Subsequence: maintain relative order → {1,3} from {1,2,3}                 │
+│    Subarray: contiguous → {1,2} from {1,2,3}, NOT {1,3}                      │
 │ 4. Integer overflow in counting: use long or modular arithmetic.             │
-│ 5. Off-by-one in DP: dp[i] means "using first i items" not "item at i".    │
-│ 6. In 1D DP for 0/1 knapsack, iterating target LEFT-TO-RIGHT instead of     │
+│ 5. Off-by-one in DP: dp[i] means "using first i items" not "item at i".      │
+│ 6. In 1D DP for 0/1 knapsack, iterating target LEFT-TO-RIGHT instead of      │
 │    RIGHT-TO-LEFT (causes items to be used multiple times = unbounded!)       │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -860,15 +860,15 @@ The nth Catalan number C(n) = (2n)! / ((n+1)! × n!)
 ║  PALINDROME PARTITIONING (LeetCode 131 - Medium)                          ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Partition string s so every substring is a palindrome.                  ║
-║  Return all possible partitions.                                         ║
+║  Partition string s so every substring is a palindrome.                   ║
+║  Return all possible partitions.                                          ║
 ║                                                                           ║
-║  Example: s = "aab"                                                      ║
-║  Output: [["a","a","b"], ["aa","b"]]                                     ║
+║  Example: s = "aab"                                                       ║
+║  Output: [["a","a","b"], ["aa","b"]]                                      ║
 ║                                                                           ║
-║  KEY: Backtrack trying each prefix. If prefix is palindrome, recurse     ║
-║  on remaining suffix.                                                    ║
-║  TIME: O(n × 2^n) | SPACE: O(n) recursion depth                         ║
+║  KEY: Backtrack trying each prefix. If prefix is palindrome, recurse      ║
+║  on remaining suffix.                                                     ║
+║  TIME: O(n × 2^n) | SPACE: O(n) recursion depth                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -915,14 +915,14 @@ private boolean isPalindrome(String s) {
 ║  COMBINATIONS (LeetCode 77 - Medium)                                      ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Given n and k, return all possible combinations of k numbers            ║
-║  chosen from range [1, n].                                               ║
+║  Given n and k, return all possible combinations of k numbers             ║
+║  chosen from range [1, n].                                                ║
 ║                                                                           ║
-║  Example: n = 4, k = 2                                                   ║
-║  Output: [[1,2],[1,3],[1,4],[2,3],[2,4],[3,4]]                          ║
+║  Example: n = 4, k = 2                                                    ║
+║  Output: [[1,2],[1,3],[1,4],[2,3],[2,4],[3,4]]                            ║
 ║                                                                           ║
-║  KEY: Standard backtracking. Prune when remaining < needed.              ║
-║  TIME: O(C(n,k) × k) | SPACE: O(k)                                     ║
+║  KEY: Standard backtracking. Prune when remaining < needed.               ║
+║  TIME: O(C(n,k) × k) | SPACE: O(k)                                        ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -959,15 +959,15 @@ private void backtrack(int n, int k, int start, List<Integer> path,
 ║  N-QUEENS (LeetCode 51 - Hard)                                            ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Place n queens on n×n chessboard so no two attack each other.           ║
-║  Return all distinct solutions.                                          ║
+║  Place n queens on n×n chessboard so no two attack each other.            ║
+║  Return all distinct solutions.                                           ║
 ║                                                                           ║
-║  Example: n = 4                                                          ║
-║  Output: [[".Q..","...Q","Q...","..Q."],                                ║
-║           ["..Q.","Q...","...Q",".Q.."]]                                ║
+║  Example: n = 4                                                           ║
+║  Output: [[".Q..","...Q","Q...","..Q."],                                  ║
+║           ["..Q.","Q...","...Q",".Q.."]]                                  ║
 ║                                                                           ║
-║  KEY: Place row by row. Track cols, diags, anti-diags with sets.         ║
-║  TIME: O(n!) | SPACE: O(n²)                                             ║
+║  KEY: Place row by row. Track cols, diags, anti-diags with sets.          ║
+║  TIME: O(n!) | SPACE: O(n²)                                               ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 

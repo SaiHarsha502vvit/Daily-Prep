@@ -27,22 +27,22 @@
 ╔══════════════════════════════════════════════════════════════════╗
 ║  DEVELOPER SQL vs ANALYST SQL                                    ║
 ║                                                                  ║
-║  Developer: "Get me user #42's orders"                          ║
-║  Analyst:   "Show me Week-1 retention for users who signed     ║
-║              up in January vs February, segmented by plan type" ║
+║  Developer: "Get me user #42's orders"                           ║
+║  Analyst:   "Show me Week-1 retention for users who signed       ║
+║              up in January vs February, segmented by plan type"  ║
 ║                                                                  ║
-║  Developer: SELECT → WHERE → JOIN → done                       ║
-║  Analyst:   WITH → WINDOW → CASE → GROUP BY → HAVING → layers ║
+║  Developer: SELECT → WHERE → JOIN → done                         ║
+║  Analyst:   WITH → WINDOW → CASE → GROUP BY → HAVING → layers    ║
 ║                                                                  ║
-║  Developer thinks in ROWS (fetch this record)                   ║
-║  Analyst thinks in GROUPS and TRENDS (what's the pattern?)     ║
+║  Developer thinks in ROWS (fetch this record)                    ║
+║  Analyst thinks in GROUPS and TRENDS (what's the pattern?)       ║
 ║                                                                  ║
-║  KEY TOOLS FOR ANALYSTS:                                        ║
-║  → CTEs (WITH clause) — readable multi-step queries             ║
-║  → Window functions — calculations across related rows          ║
-║  → CASE WHEN — pivoting and conditional aggregation             ║
-║  → Date functions — time-based grouping and comparison          ║
-║  → Self-joins — comparing current vs historical data            ║
+║  KEY TOOLS FOR ANALYSTS:                                         ║
+║  → CTEs (WITH clause) — readable multi-step queries              ║
+║  → Window functions — calculations across related rows           ║
+║  → CASE WHEN — pivoting and conditional aggregation              ║
+║  → Date functions — time-based grouping and comparison           ║
+║  → Self-joins — comparing current vs historical data             ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
@@ -99,20 +99,20 @@ CREATE TABLE experiments (
 ║  WHAT IS COHORT ANALYSIS?                                        ║
 ║                                                                  ║
 ║  A "cohort" = a group of users who share a common trait          ║
-║  Usually: "signed up in the same month"                         ║
+║  Usually: "signed up in the same month"                          ║
 ║                                                                  ║
 ║  You track each cohort OVER TIME:                                ║
 ║                                                                  ║
-║  Cohort      │ Month 0  │ Month 1  │ Month 2  │ Month 3  │     ║
-║  ────────────┼──────────┼──────────┼──────────┼──────────┤     ║
-║  Jan signup  │ 1000     │ 400 (40%)│ 250 (25%)│ 200 (20%)│     ║
-║  Feb signup  │ 1200     │ 540 (45%)│ 360 (30%)│          │     ║
-║  Mar signup  │ 800      │ 400 (50%)│          │          │     ║
+║  Cohort      │ Month 0  │ Month 1  │ Month 2  │ Month 3  │       ║
+║  ────────────┼──────────┼──────────┼──────────┼──────────┤       ║
+║  Jan signup  │ 1000     │ 400 (40%)│ 250 (25%)│ 200 (20%)│       ║
+║  Feb signup  │ 1200     │ 540 (45%)│ 360 (30%)│          │       ║
+║  Mar signup  │ 800      │ 400 (50%)│          │          │       ║
 ║                                                                  ║
 ║  WHAT THIS TELLS YOU:                                            ║
-║  → "Users signing up later months have BETTER retention"        ║
-║  → "We lose 50-60% of users in first month — fix onboarding!"  ║
-║  → "Month-3 retention stabilizes around 20% — our core users"  ║
+║  → "Users signing up later months have BETTER retention"         ║
+║  → "We lose 50-60% of users in first month — fix onboarding!"    ║
+║  → "Month-3 retention stabilizes around 20% — our core users"    ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
@@ -197,17 +197,17 @@ ORDER BY cohort_month;
 ║  ┌────────────────────────────────┐                              ║
 ║  │    Visit Homepage (10,000)     │  100%                        ║
 ║  │  ┌──────────────────────────┐  │                              ║
-║  │  │  View Product (6,000)    │  │  60% (40% dropped off!)     ║
+║  │  │  View Product (6,000)    │  │  60% (40% dropped off!)      ║
 ║  │  │  ┌────────────────────┐  │  │                              ║
 ║  │  │  │ Add to Cart (2,000)│  │  │  33% of viewers              ║
 ║  │  │  │  ┌──────────────┐  │  │  │                              ║
 ║  │  │  │  │ Purchase(800)│  │  │  │  40% of add-to-cart          ║
-║  │  │  │  └──────────────┘  │  │  │  8% overall conversion!     ║
+║  │  │  │  └──────────────┘  │  │  │  8% overall conversion!      ║
 ║  │  │  └────────────────────┘  │  │                              ║
 ║  │  └──────────────────────────┘  │                              ║
 ║  └────────────────────────────────┘                              ║
 ║                                                                  ║
-║  The biggest drop happens Homepage→Product (40% lost).          ║
+║  The biggest drop happens Homepage→Product (40% lost).           ║
 ║  Fix THAT step for maximum impact!                               ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
@@ -338,20 +338,20 @@ GROUP BY c.cohort_month, cs.cohort_size;
 ╔══════════════════════════════════════════════════════════════════╗
 ║  A/B TESTING WITH SQL                                            ║
 ║                                                                  ║
-║  Goal: "Did changing the button color increase purchases?"      ║
+║  Goal: "Did changing the button color increase purchases?"       ║
 ║                                                                  ║
-║  Control (A):   Old blue button → 10,000 users                 ║
-║  Treatment (B): New green button → 10,000 users                ║
+║  Control (A):   Old blue button → 10,000 users                   ║
+║  Treatment (B): New green button → 10,000 users                  ║
 ║                                                                  ║
 ║  Metrics to compare:                                             ║
-║  → Conversion rate (% who purchased)                            ║
-║  → Revenue per user                                             ║
-║  → Average order value                                          ║
+║  → Conversion rate (% who purchased)                             ║
+║  → Revenue per user                                              ║
+║  → Average order value                                           ║
 ║                                                                  ║
 ║  STATISTICAL RIGOR:                                              ║
-║  → Sample size: enough users to detect meaningful difference    ║
-║  → Significance: p-value or confidence interval                 ║
-║  → Segment analysis: does the effect hold across all groups?    ║
+║  → Sample size: enough users to detect meaningful difference     ║
+║  → Significance: p-value or confidence interval                  ║
+║  → Segment analysis: does the effect hold across all groups?     ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
@@ -424,24 +424,24 @@ ORDER BY u.plan_type, e.variant;
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
-║  RFM = Recency, Frequency, Monetary                             ║
+║  RFM = Recency, Frequency, Monetary                              ║
 ║                                                                  ║
-║  Score each customer on 3 dimensions (1-5 each):                ║
+║  Score each customer on 3 dimensions (1-5 each):                 ║
 ║                                                                  ║
-║  Recency:   How RECENTLY did they purchase?                     ║
-║             (5 = this week, 1 = 6+ months ago)                  ║
+║  Recency:   How RECENTLY did they purchase?                      ║
+║             (5 = this week, 1 = 6+ months ago)                   ║
 ║                                                                  ║
-║  Frequency:  How OFTEN do they purchase?                        ║
-║             (5 = 50+ orders, 1 = 1 order)                       ║
+║  Frequency:  How OFTEN do they purchase?                         ║
+║             (5 = 50+ orders, 1 = 1 order)                        ║
 ║                                                                  ║
-║  Monetary:   How much do they SPEND?                            ║
-║             (5 = top 20%, 1 = bottom 20%)                       ║
+║  Monetary:   How much do they SPEND?                             ║
+║             (5 = top 20%, 1 = bottom 20%)                        ║
 ║                                                                  ║
 ║  SEGMENTS:                                                       ║
-║  RFM = 555  → Champions (best customers — reward them!)        ║
-║  RFM = 511  → New customers (high recency, low frequency)      ║
-║  RFM = 155  → At risk (were big spenders, haven't been back)   ║
-║  RFM = 111  → Lost (haven't bought recently, rarely, cheaply)  ║
+║  RFM = 555  → Champions (best customers — reward them!)          ║
+║  RFM = 511  → New customers (high recency, low frequency)        ║
+║  RFM = 155  → At risk (were big spenders, haven't been back)     ║
+║  RFM = 111  → Lost (haven't bought recently, rarely, cheaply)    ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
@@ -654,22 +654,22 @@ ORDER BY order_date;
 ### Window Functions Cheat Sheet for Analysts
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  FUNCTION              │  PURPOSE                    │  EXAMPLE │
-│ ───────────────────────┼─────────────────────────────┼──────── │
-│  ROW_NUMBER()          │  Sequential rank (no ties)  │  Top N   │
-│  RANK()                │  Rank with gaps (1,2,2,4)   │  Leaderboard│
-│  DENSE_RANK()          │  Rank no gaps (1,2,2,3)     │  Percentile│
-│  NTILE(n)              │  Divide into n equal groups  │  Quartiles│
-│  LAG(col, n)           │  Previous row value          │  Change   │
-│  LEAD(col, n)          │  Next row value              │  Forecast │
-│  FIRST_VALUE(col)      │  First in window             │  Baseline │
-│  LAST_VALUE(col)       │  Last in window              │  Latest   │
-│  SUM() OVER()          │  Running total              │  Cumulative│
-│  AVG() OVER(ROWS...)   │  Moving average             │  Smoothing│
+┌─────────────────────────────────────────────────────────────────────┐
+│  FUNCTION              │  PURPOSE                    │  EXAMPLE     │
+│ ───────────────────────┼─────────────────────────────┼────────      │
+│  ROW_NUMBER()          │  Sequential rank (no ties)  │  Top N       │
+│  RANK()                │  Rank with gaps (1,2,2,4)   │  Leaderboard │
+│  DENSE_RANK()          │  Rank no gaps (1,2,2,3)     │  Percentile  │
+│  NTILE(n)              │  Divide into n equal groups  │  Quartiles  │
+│  LAG(col, n)           │  Previous row value          │  Change     │
+│  LEAD(col, n)          │  Next row value              │  Forecast   │
+│  FIRST_VALUE(col)      │  First in window             │  Baseline   │
+│  LAST_VALUE(col)       │  Last in window              │  Latest     │
+│  SUM() OVER()          │  Running total              │  Cumulative  │
+│  AVG() OVER(ROWS...)   │  Moving average             │  Smoothing   │
 │  PERCENT_RANK()        │  Percentile (0-1 range)     │  Distribution│
-│  CUME_DIST()           │  Cumulative distribution    │  Percentile│
-└─────────────────────────────────────────────────────────────────┘
+│  CUME_DIST()           │  Cumulative distribution    │  Percentile  │
+└─────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Top N Per Group (Analyst's Best Friend)

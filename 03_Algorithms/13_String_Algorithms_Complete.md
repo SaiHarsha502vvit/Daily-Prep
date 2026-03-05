@@ -26,14 +26,14 @@
 ┌─────────────────────────────────────────────────────────────────┐
 │           WHERE STRING ALGORITHMS ARE USED                      │
 ├─────────────────────────────────────────────────────────────────┤
-│  • Text Editors (Find & Replace)                               │
-│  • Search Engines (Pattern matching)                           │
-│  • DNA Sequencing (Substring search)                           │
-│  • Plagiarism Detection (Similarity)                           │
-│  • Antivirus (Signature matching)                              │
-│  • Network Intrusion Detection                                 │
-│  • Spell Checkers                                              │
-│  • Data Compression                                            │
+│  • Text Editors (Find & Replace)                                │
+│  • Search Engines (Pattern matching)                            │
+│  • DNA Sequencing (Substring search)                            │
+│  • Plagiarism Detection (Similarity)                            │
+│  • Antivirus (Signature matching)                               │
+│  • Network Intrusion Detection                                  │
+│  • Spell Checkers                                               │
+│  • Data Compression                                             │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -234,16 +234,16 @@ Step 4: Full match found at index 5!
 ┌─────────────────────────────────────────────────────────────────┐
 │              KMP COMPLEXITY                                     │
 ├─────────────────────────────────────────────────────────────────┤
-│  LPS Construction: O(m) where m = pattern length               │
-│  Search: O(n) where n = text length                            │
-│  Total: O(n + m)                                               │
+│  LPS Construction: O(m) where m = pattern length                │
+│  Search: O(n) where n = text length                             │
+│  Total: O(n + m)                                                │
 │                                                                 │
-│  Space: O(m) for LPS array                                     │
+│  Space: O(m) for LPS array                                      │
 │                                                                 │
 │  Why O(n)?                                                      │
-│  - i never decreases (always moves forward in text)            │
-│  - j can decrease but total decreases ≤ total increases        │
-│  - Each char in text visited at most twice                     │
+│  - i never decreases (always moves forward in text)             │
+│  - j can decrease but total decreases ≤ total increases         │
+│  - Each char in text visited at most twice                      │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -390,20 +390,20 @@ Final Z = [-, 1, 0, 3, 1, 0, 2, 2, 1]
 │              Z-ALGORITHM vs KMP                                 │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  Both: O(n + m) time, O(m) space                               │
+│  Both: O(n + m) time, O(m) space                                │
 │                                                                 │
 │  Z-Algorithm:                                                   │
-│  ✓ Conceptually simpler                                        │
-│  ✓ More intuitive (direct prefix matching)                     │
-│  ✓ Useful for many string problems                             │
-│  ✗ Requires concatenation (extra space for search)             │
+│  ✓ Conceptually simpler                                         │
+│  ✓ More intuitive (direct prefix matching)                      │
+│  ✓ Useful for many string problems                              │
+│  ✗ Requires concatenation (extra space for search)              │
 │                                                                 │
 │  KMP:                                                           │
-│  ✓ True O(m) space (no concatenation)                          │
-│  ✓ Better for streaming (online algorithm)                     │
-│  ✗ LPS logic more complex                                      │
+│  ✓ True O(m) space (no concatenation)                           │
+│  ✓ Better for streaming (online algorithm)                      │
+│  ✗ LPS logic more complex                                       │
 │                                                                 │
-│  Interview tip: Know both, use whichever feels natural         │
+│  Interview tip: Know both, use whichever feels natural          │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -536,21 +536,21 @@ Window 3: "BCD" (slide right)
 │              RABIN-KARP USE CASES                               │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  ✓ Multiple pattern search (efficient)                         │
-│    Same text, many patterns → compute text hashes once         │
+│  ✓ Multiple pattern search (efficient)                          │
+│    Same text, many patterns → compute text hashes once          │
 │                                                                 │
-│  ✓ 2D pattern matching                                         │
-│    Find matrix in larger matrix                                │
+│  ✓ 2D pattern matching                                          │
+│    Find matrix in larger matrix                                 │
 │                                                                 │
-│  ✓ Finding repeated substrings                                 │
-│    Hash all substrings of length k, find duplicates           │
+│  ✓ Finding repeated substrings                                  │
+│    Hash all substrings of length k, find duplicates             │
 │                                                                 │
-│  ✓ Plagiarism detection                                        │
-│    Hash sentences/paragraphs, compare across documents         │
+│  ✓ Plagiarism detection                                         │
+│    Hash sentences/paragraphs, compare across documents          │
 │                                                                 │
 │  Complexity:                                                    │
-│  Average: O(n + m)                                             │
-│  Worst (many collisions): O(n * m)                             │
+│  Average: O(n + m)                                              │
+│  Worst (many collisions): O(n * m)                              │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -1152,23 +1152,23 @@ private String findDuplicateOfLength(String s, int len) {
 │              ALGORITHM SELECTION GUIDE                          │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  "Find pattern in text"                                        │
-│    → KMP or Z-algorithm (single pattern)                       │
-│    → Rabin-Karp (multiple patterns)                            │
+│  "Find pattern in text"                                         │
+│    → KMP or Z-algorithm (single pattern)                        │
+│    → Rabin-Karp (multiple patterns)                             │
 │                                                                 │
-│  "Check if prefix exists" / "Autocomplete"                     │
+│  "Check if prefix exists" / "Autocomplete"                      │
 │    → Trie                                                       │
 │                                                                 │
-│  "Longest palindrome"                                          │
-│    → Manacher's (O(n))                                         │
-│    → DP with memo (O(n²) but simpler)                          │
+│  "Longest palindrome"                                           │
+│    → Manacher's (O(n))                                          │
+│    → DP with memo (O(n²) but simpler)                           │
 │                                                                 │
-│  "Repeated substring" / "Count substrings"                     │
-│    → Rolling hash + Binary search                              │
-│    → Suffix array                                              │
+│  "Repeated substring" / "Count substrings"                      │
+│    → Rolling hash + Binary search                               │
+│    → Suffix array                                               │
 │                                                                 │
-│  "Is X a rotation of Y?"                                       │
-│    → KMP: search Y in X+X                                      │
+│  "Is X a rotation of Y?"                                        │
+│    → KMP: search Y in X+X                                       │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -1225,20 +1225,20 @@ private int[] buildLPS(String pattern) {
 ║            STRING ALGORITHMS - MASTER THESE                   ║
 ╠═══════════════════════════════════════════════════════════════╣
 ║                                                               ║
-║  1. KMP - Pattern matching in O(n+m)                         ║
-║     Key: LPS array, never recheck matched characters         ║
+║  1. KMP - Pattern matching in O(n+m)                          ║
+║     Key: LPS array, never recheck matched characters          ║
 ║                                                               ║
-║  2. RABIN-KARP - Rolling hash for multiple patterns          ║
-║     Key: Hash comparison, verify on match                    ║
+║  2. RABIN-KARP - Rolling hash for multiple patterns           ║
+║     Key: Hash comparison, verify on match                     ║
 ║                                                               ║
-║  3. Z-ALGORITHM - Alternative to KMP, more intuitive         ║
-║     Key: Z[i] = prefix match length at position i            ║
+║  3. Z-ALGORITHM - Alternative to KMP, more intuitive          ║
+║     Key: Z[i] = prefix match length at position i             ║
 ║                                                               ║
-║  4. TRIE - Prefix search & autocomplete                      ║
-║     Key: Tree of characters, end-of-word markers             ║
+║  4. TRIE - Prefix search & autocomplete                       ║
+║     Key: Tree of characters, end-of-word markers              ║
 ║                                                               ║
-║  Interview Tip: KMP is asked most often.                     ║
-║  Know how to build LPS and explain the skip logic.           ║
+║  Interview Tip: KMP is asked most often.                      ║
+║  Know how to build LPS and explain the skip logic.            ║
 ║                                                               ║
 ╚═══════════════════════════════════════════════════════════════╝
 ```

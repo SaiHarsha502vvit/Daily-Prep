@@ -14,52 +14,52 @@
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ WHAT IS THIS GUIDE ABOUT?                                                    │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ This guide connects ABSTRACT algorithms to REAL problems they were created  │
-│ to solve. Every algorithm you learn was invented by someone facing a real   │
+│ This guide connects ABSTRACT algorithms to REAL problems they were created   │
+│ to solve. Every algorithm you learn was invented by someone facing a real    │
 │ challenge - not created in a vacuum!                                         │
 │                                                                              │
 │ KEY INSIGHT:                                                                 │
-│ Algorithms are NOT just academic exercises - they're SOLUTIONS to problems  │
-│ that cost companies millions of dollars or affected millions of users.      │
+│ Algorithms are NOT just academic exercises - they're SOLUTIONS to problems   │
+│ that cost companies millions of dollars or affected millions of users.       │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ WHAT PROBLEM DOES THIS APPROACH SOLVE?                                       │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ PROBLEM 1: "I know the algorithm but don't know WHEN to use it"             │
-│ → Knowing the origin tells you the problem TYPE it was designed for        │
+│ PROBLEM 1: "I know the algorithm but don't know WHEN to use it"              │
+│ → Knowing the origin tells you the problem TYPE it was designed for          │
 │                                                                              │
-│ PROBLEM 2: "I memorize but quickly forget algorithms"                       │
-│ → Stories are 22x more memorable than facts (Stanford research)            │
+│ PROBLEM 2: "I memorize but quickly forget algorithms"                        │
+│ → Stories are 22x more memorable than facts (Stanford research)              │
 │                                                                              │
-│ PROBLEM 3: "I can't adapt algorithms to new problems"                       │
-│ → Understanding WHY it works helps you modify it                           │
+│ PROBLEM 3: "I can't adapt algorithms to new problems"                        │
+│ → Understanding WHY it works helps you modify it                             │
 │                                                                              │
-│ PROBLEM 4: "Interview asks: Why this approach?"                             │
-│ → Knowing the origin lets you explain trade-offs convincingly              │
+│ PROBLEM 4: "Interview asks: Why this approach?"                              │
+│ → Knowing the origin lets you explain trade-offs convincingly                │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ ⭐ GROWTH MINDSET: FROM CONSUMER TO CREATOR ⭐                               │
+│ ⭐ GROWTH MINDSET: FROM CONSUMER TO CREATOR ⭐                                 │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ When you read these origin stories, notice the PATTERN:                     │
+│ When you read these origin stories, notice the PATTERN:                      │
 │                                                                              │
 │ 1. Someone faced a REAL PROBLEM                                              │
-│ 2. Existing solutions were TOO SLOW / used TOO MUCH MEMORY                  │
-│ 3. They OBSERVED a pattern or structure in the data                         │
-│ 4. They INVENTED a technique to exploit that structure                      │
-│ 5. It became a named algorithm we learn today                               │
+│ 2. Existing solutions were TOO SLOW / used TOO MUCH MEMORY                   │
+│ 3. They OBSERVED a pattern or structure in the data                          │
+│ 4. They INVENTED a technique to exploit that structure                       │
+│ 5. It became a named algorithm we learn today                                │
 │                                                                              │
 │ THE TRANSFORMATION:                                                          │
 │                                                                              │
-│ BEFORE: "I need to learn Dijkstra's algorithm"                              │
-│ AFTER: "Dijkstra faced the same problem I have - finding shortest paths.   │
-│         Let me understand HIS thinking process so I can think like him"    │
+│ BEFORE: "I need to learn Dijkstra's algorithm"                               │
+│ AFTER: "Dijkstra faced the same problem I have - finding shortest paths.     │
+│         Let me understand HIS thinking process so I can think like him"      │
 │                                                                              │
-│ REMEMBER: Dijkstra wasn't born knowing Dijkstra's algorithm!                │
-│ He CREATED it by thinking carefully about a problem.                        │
+│ REMEMBER: Dijkstra wasn't born knowing Dijkstra's algorithm!                 │
+│ He CREATED it by thinking carefully about a problem.                         │
 │ YOU can create algorithms too!                                               │
 └──────────────────────────────────────────────────────────────────────────────┘
 
@@ -70,25 +70,25 @@
 │ FOR EACH ALGORITHM:                                                          │
 │ 1. READ the origin story first                                               │
 │ 2. UNDERSTAND the problem they faced                                         │
-│ 3. THINK: "What would I have tried?"                                        │
-│ 4. SEE how their solution emerged from the problem                          │
-│ 5. CONNECT to LeetCode problems with same structure                         │
+│ 3. THINK: "What would I have tried?"                                         │
+│ 4. SEE how their solution emerged from the problem                           │
+│ 5. CONNECT to LeetCode problems with same structure                          │
 │                                                                              │
 │ AFTER READING:                                                               │
 │ • Can you explain WHY this algorithm works?                                  │
 │ • Can you identify similar problems?                                         │
-│ • Can you predict when this algorithm will help?                            │
+│ • Can you predict when this algorithm will help?                             │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ EXPECTED OUTPUTS                                                             │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ ✅ PATTERN RECOGNITION: See a problem → Remember similar origin story       │
-│ ✅ LONG-TERM MEMORY: Stories stick better than formulas                     │
-│ ✅ INTERVIEW CONFIDENCE: Explain WHY, not just WHAT                         │
-│ ✅ PROBLEM-SOLVING: Think like inventors, not memorizers                    │
-│ ✅ MOTIVATION: Algorithms become exciting, not boring!                      │
+│ ✅ PATTERN RECOGNITION: See a problem → Remember similar origin story         │
+│ ✅ LONG-TERM MEMORY: Stories stick better than formulas                       │
+│ ✅ INTERVIEW CONFIDENCE: Explain WHY, not just WHAT                           │
+│ ✅ PROBLEM-SOLVING: Think like inventors, not memorizers                      │
+│ ✅ MOTIVATION: Algorithms become exciting, not boring!                        │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -285,10 +285,10 @@ SLIDING WINDOW PROTOCOL:
 │              └─────────┘            │
 │              WINDOW (size 3)        │
 │                                     │
-│ Send 1, 2, 3 at once               │
-│ Get ACK for 1 → slide window       │
+│ Send 1, 2, 3 at once                │
+│ Get ACK for 1 → slide window        │
 │              [2] [3] [4]            │
-│ Get ACK for 2 → slide window       │
+│ Get ACK for 2 → slide window        │
 │                  [3] [4] [5]        │
 └─────────────────────────────────────┘
 

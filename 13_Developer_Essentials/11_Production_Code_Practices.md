@@ -15,18 +15,18 @@
 ╔══════════════════════════════════════════════════════════════════════════════════╗
 ║  12 principles for building cloud-native, production-ready applications          ║
 ║                                                                                  ║
-║   1. Codebase     │ One codebase in version control, many deploys              ║
-║   2. Dependencies │ Explicitly declare and isolate (pom.xml, package.json)     ║
-║   3. Config       │ Store in environment variables, NOT in code                ║
-║   4. Backing Svcs │ Treat DB, cache, queue as attached resources (swap easily) ║
-║   5. Build/Release│ Strict separation: build → release → run                   ║
-║   6. Processes     │ Stateless. Store shared state in DB/cache, not memory     ║
-║   7. Port Binding │ App is self-contained, exports HTTP via port binding       ║
-║   8. Concurrency  │ Scale out via process model (more instances, not threads)  ║
-║   9. Disposability│ Fast startup, graceful shutdown (handle SIGTERM)           ║
-║  10. Dev/Prod Par.│ Keep dev, staging, prod as similar as possible             ║
-║  11. Logs         │ Treat logs as event streams (stdout, not files)            ║
-║  12. Admin Procs. │ Run admin tasks as one-off processes (migrations, scripts) ║
+║   1. Codebase     │ One codebase in version control, many deploys                ║
+║   2. Dependencies │ Explicitly declare and isolate (pom.xml, package.json)       ║
+║   3. Config       │ Store in environment variables, NOT in code                  ║
+║   4. Backing Svcs │ Treat DB, cache, queue as attached resources (swap easily)   ║
+║   5. Build/Release│ Strict separation: build → release → run                     ║
+║   6. Processes     │ Stateless. Store shared state in DB/cache, not memory       ║
+║   7. Port Binding │ App is self-contained, exports HTTP via port binding         ║
+║   8. Concurrency  │ Scale out via process model (more instances, not threads)    ║
+║   9. Disposability│ Fast startup, graceful shutdown (handle SIGTERM)             ║
+║  10. Dev/Prod Par.│ Keep dev, staging, prod as similar as possible               ║
+║  11. Logs         │ Treat logs as event streams (stdout, not files)              ║
+║  12. Admin Procs. │ Run admin tasks as one-off processes (migrations, scripts)   ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -97,14 +97,14 @@ public class RequestFilter implements Filter {
 ├───────────┼──────────────────────────────────────────────────────────────────┤
 │ ERROR     │ Something failed that needs human attention NOW                  │
 │           │ e.g., payment gateway down, data corruption                      │
-│ WARN      │ Something unexpected but handled. Monitor trends.               │
+│ WARN      │ Something unexpected but handled. Monitor trends.                │
 │           │ e.g., retry succeeded, cache miss, deprecated API call           │
-│ INFO      │ Business-significant events. "What happened?"                   │
+│ INFO      │ Business-significant events. "What happened?"                    │
 │           │ e.g., order placed, user registered, deployment started          │
-│ DEBUG     │ Detailed flow for troubleshooting. Off in prod.                 │
-│           │ e.g., SQL queries, request/response bodies                      │
-│ TRACE     │ Very fine-grained. Almost never in prod.                        │
-│           │ e.g., entering/exiting methods, variable values                 │
+│ DEBUG     │ Detailed flow for troubleshooting. Off in prod.                  │
+│           │ e.g., SQL queries, request/response bodies                       │
+│ TRACE     │ Very fine-grained. Almost never in prod.                         │
+│           │ e.g., entering/exiting methods, variable values                  │
 └───────────┴──────────────────────────────────────────────────────────────────┘
 ```
 
@@ -237,26 +237,26 @@ public PaymentResult processPayment(PaymentRequest req) {
 ```
 ╔══════════════════════════════════════════════════════════════════════════════════╗
 ║  REST API Checklist:                                                             ║
-║  ✅ Use proper HTTP methods (GET=read, POST=create, PUT=replace, PATCH=update) ║
-║  ✅ Meaningful status codes (200, 201, 400, 401, 403, 404, 409, 500)          ║
-║  ✅ Consistent error response format                                            ║
-║  ✅ Versioning (URI: /api/v1/ or Header: Accept: application/vnd.api.v1+json)  ║
-║  ✅ Pagination (page/size or cursor-based for large datasets)                  ║
-║  ✅ Rate limiting (return 429 + Retry-After header)                            ║
-║  ✅ Request validation (Jakarta Bean Validation: @NotNull, @Size, @Email)      ║
-║  ✅ CORS configuration for frontend                                             ║
-║  ✅ Idempotency keys for POST requests (prevent duplicate processing)          ║
-║  ✅ Request/response logging with sensitive data masking                        ║
+║  ✅ Use proper HTTP methods (GET=read, POST=create, PUT=replace, PATCH=update)    ║
+║  ✅ Meaningful status codes (200, 201, 400, 401, 403, 404, 409, 500)              ║
+║  ✅ Consistent error response format                                              ║
+║  ✅ Versioning (URI: /api/v1/ or Header: Accept: application/vnd.api.v1+json)     ║
+║  ✅ Pagination (page/size or cursor-based for large datasets)                     ║
+║  ✅ Rate limiting (return 429 + Retry-After header)                               ║
+║  ✅ Request validation (Jakarta Bean Validation: @NotNull, @Size, @Email)         ║
+║  ✅ CORS configuration for frontend                                               ║
+║  ✅ Idempotency keys for POST requests (prevent duplicate processing)             ║
+║  ✅ Request/response logging with sensitive data masking                          ║
 ║                                                                                  ║
 ║  Pagination Example:                                                             ║
-║  GET /api/v1/orders?page=0&size=20&sort=createdAt,desc                         ║
-║  → { content: [...], page: 0, size: 20, totalElements: 143, totalPages: 8 }   ║
+║  GET /api/v1/orders?page=0&size=20&sort=createdAt,desc                           ║
+║  → { content: [...], page: 0, size: 20, totalElements: 143, totalPages: 8 }      ║
 ║                                                                                  ║
 ║  Idempotency Example:                                                            ║
-║  POST /api/v1/payments                                                          ║
-║  Header: Idempotency-Key: abc-123-def                                           ║
-║  → First call: process payment, store result keyed by "abc-123-def"            ║
-║  → Second call: return stored result (no double charge)                         ║
+║  POST /api/v1/payments                                                           ║
+║  Header: Idempotency-Key: abc-123-def                                            ║
+║  → First call: process payment, store result keyed by "abc-123-def"              ║
+║  → Second call: return stored result (no double charge)                          ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 

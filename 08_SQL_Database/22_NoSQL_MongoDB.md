@@ -13,20 +13,20 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════════╗
-║  TYPE              │ EXAMPLES          │ DATA MODEL     │ BEST FOR              ║
-║────────────────────┼───────────────────┼────────────────┼────────────────────║
-║  Document Store    │ MongoDB, CouchDB  │ JSON documents │ Flexible schema,     ║
-║                    │ Firestore         │ (nested)       │ content mgmt, catalogs║
-║────────────────────┼───────────────────┼────────────────┼────────────────────║
-║  Key-Value Store   │ Redis, DynamoDB   │ key → blob     │ Caching, sessions,   ║
-║                    │ Memcached         │                │ real-time counters    ║
-║────────────────────┼───────────────────┼────────────────┼────────────────────║
-║  Column-Family     │ Cassandra, HBase  │ Wide columns,  │ Time-series, IoT,    ║
-║                    │ ScyllaDB          │ row key        │ write-heavy workloads ║
-║────────────────────┼───────────────────┼────────────────┼────────────────────║
-║  Graph Database    │ Neo4j, Amazon     │ Nodes + edges  │ Social networks,     ║
-║                    │ Neptune           │ + properties   │ recommendations,     ║
-║                    │                   │                │ fraud detection       ║
+║  TYPE              │ EXAMPLES          │ DATA MODEL     │ BEST FOR               ║
+║────────────────────┼───────────────────┼────────────────┼────────────────────    ║
+║  Document Store    │ MongoDB, CouchDB  │ JSON documents │ Flexible schema,       ║
+║                    │ Firestore         │ (nested)       │ content mgmt, catalogs ║
+║────────────────────┼───────────────────┼────────────────┼────────────────────    ║
+║  Key-Value Store   │ Redis, DynamoDB   │ key → blob     │ Caching, sessions,     ║
+║                    │ Memcached         │                │ real-time counters     ║
+║────────────────────┼───────────────────┼────────────────┼────────────────────    ║
+║  Column-Family     │ Cassandra, HBase  │ Wide columns,  │ Time-series, IoT,      ║
+║                    │ ScyllaDB          │ row key        │ write-heavy workloads  ║
+║────────────────────┼───────────────────┼────────────────┼────────────────────    ║
+║  Graph Database    │ Neo4j, Amazon     │ Nodes + edges  │ Social networks,       ║
+║                    │ Neptune           │ + properties   │ recommendations,       ║
+║                    │                   │                │ fraud detection        ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -37,23 +37,23 @@
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  CHOOSE SQL WHEN:                          CHOOSE NoSQL WHEN:                   │
-│  ✅ Complex queries with JOINs             ✅ Flexible/evolving schema          │
-│  ✅ ACID transactions required             ✅ Massive write throughput          │
-│  ✅ Strong consistency needed              ✅ Horizontal scaling needed          │
-│  ✅ Well-defined, stable schema            ✅ Data naturally nested/denorm.      │
-│  ✅ Complex reporting/analytics            ✅ Low latency at any scale           │
-│                                                                                  │
-│  EXAMPLES:                                  EXAMPLES:                            │
-│  • Banking, financial systems              • Product catalogs (MongoDB)           │
-│  • Order management                        • Session storage (Redis)             │
-│  • User accounts with roles                • Chat messages (Cassandra)           │
-│  • Anything needing ad-hoc queries         • Social graphs (Neo4j)               │
-│                                                                                  │
+│  ✅ Complex queries with JOINs             ✅ Flexible/evolving schema            │
+│  ✅ ACID transactions required             ✅ Massive write throughput            │
+│  ✅ Strong consistency needed              ✅ Horizontal scaling needed           │
+│  ✅ Well-defined, stable schema            ✅ Data naturally nested/denorm.       │
+│  ✅ Complex reporting/analytics            ✅ Low latency at any scale            │
+│                                                                                 │
+│  EXAMPLES:                                  EXAMPLES:                           │
+│  • Banking, financial systems              • Product catalogs (MongoDB)         │
+│  • Order management                        • Session storage (Redis)            │
+│  • User accounts with roles                • Chat messages (Cassandra)          │
+│  • Anything needing ad-hoc queries         • Social graphs (Neo4j)              │
+│                                                                                 │
 │  COMMON PATTERN: Polyglot persistence — use BOTH                                │
 │  → PostgreSQL for orders (ACID)                                                 │
-│  → Redis for caching/sessions                                                    │
-│  → Elasticsearch for search                                                      │
-│  → MongoDB for product catalog                                                   │
+│  → Redis for caching/sessions                                                   │
+│  → Elasticsearch for search                                                     │
+│  → MongoDB for product catalog                                                  │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -108,23 +108,23 @@ db.events.createIndex({ createdAt: 1 }, { expireAfterSeconds: 86400 }) // TTL in
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════════╗
-║  EMBED (Denormalize):                      REFERENCE (Normalize):               ║
-║  Store related data in same document       Store ID, look up separately         ║
+║  EMBED (Denormalize):                      REFERENCE (Normalize):                ║
+║  Store related data in same document       Store ID, look up separately          ║
 ║                                                                                  ║
 ║  // Embedded                               // Referenced                         ║
 ║  { name: "John",                           { name: "John",                       ║
 ║    address: { city: "NYC" } }                addressId: ObjectId("...") }        ║
 ║                                                                                  ║
-║  ✅ Single read (fast)                     ✅ Data not duplicated               ║
-║  ✅ Atomic updates                         ✅ Many-to-many relationships        ║
-║  ❌ Document size limit (16MB)             ❌ Requires $lookup (JOIN)            ║
-║  ❌ Data duplication                       ❌ Multiple reads                     ║
+║  ✅ Single read (fast)                     ✅ Data not duplicated                  ║
+║  ✅ Atomic updates                         ✅ Many-to-many relationships           ║
+║  ❌ Document size limit (16MB)             ❌ Requires $lookup (JOIN)              ║
+║  ❌ Data duplication                       ❌ Multiple reads                       ║
 ║                                                                                  ║
 ║  RULE OF THUMB:                                                                  ║
-║  → 1:1 or 1:Few → EMBED (address in user)                                     ║
-║  → 1:Many (bounded) → EMBED (orders in user, if < 100)                         ║
-║  → 1:Many (unbounded) → REFERENCE (comments on a viral post)                   ║
-║  → Many:Many → REFERENCE (students ↔ courses)                                  ║
+║  → 1:1 or 1:Few → EMBED (address in user)                                        ║
+║  → 1:Many (bounded) → EMBED (orders in user, if < 100)                           ║
+║  → 1:Many (unbounded) → REFERENCE (comments on a viral post)                     ║
+║  → Many:Many → REFERENCE (students ↔ courses)                                    ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 

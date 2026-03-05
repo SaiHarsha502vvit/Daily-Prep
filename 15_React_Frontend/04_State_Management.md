@@ -10,19 +10,19 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════════╗
-║  LOCAL STATE (useState): Form inputs, toggles, component-specific data         ║
-║  → Default choice. Keep state close to where it's used.                        ║
+║  LOCAL STATE (useState): Form inputs, toggles, component-specific data           ║
+║  → Default choice. Keep state close to where it's used.                          ║
 ║                                                                                  ║
-║  LIFTED STATE: Shared between siblings → lift to nearest common parent         ║
+║  LIFTED STATE: Shared between siblings → lift to nearest common parent           ║
 ║                                                                                  ║
-║  CONTEXT: Theme, auth, locale — read by many, updated rarely                   ║
-║  → NOT for frequently changing data (causes re-renders to all consumers)       ║
+║  CONTEXT: Theme, auth, locale — read by many, updated rarely                     ║
+║  → NOT for frequently changing data (causes re-renders to all consumers)         ║
 ║                                                                                  ║
-║  EXTERNAL STORE (Redux/Zustand): Complex app-wide state with frequent updates  ║
-║  → Shopping cart, dashboard filters, real-time data                            ║
+║  EXTERNAL STORE (Redux/Zustand): Complex app-wide state with frequent updates    ║
+║  → Shopping cart, dashboard filters, real-time data                              ║
 ║                                                                                  ║
-║  SERVER STATE (React Query/SWR): Data from API that needs caching/syncing     ║
-║  → MOST "global state" is actually server state!                               ║
+║  SERVER STATE (React Query/SWR): Data from API that needs caching/syncing        ║
+║  → MOST "global state" is actually server state!                                 ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -224,12 +224,12 @@ function CartButton() {
 │ Solution         │ When to Use                                        │
 ├──────────────────┼────────────────────────────────────────────────────┤
 │ useState         │ Local component state (default)                    │
-│ useReducer       │ Complex local state with many transitions         │
-│ Context          │ Theme, auth, locale (infrequent updates)          │
-│ Redux Toolkit    │ Large app, many devs, complex cross-cutting state │
-│ Zustand          │ Simple global state, minimal boilerplate          │
-│ React Query      │ Server state (API data, caching, sync)           │
-│ Jotai/Recoil     │ Atomic state, fine-grained reactivity            │
+│ useReducer       │ Complex local state with many transitions          │
+│ Context          │ Theme, auth, locale (infrequent updates)           │
+│ Redux Toolkit    │ Large app, many devs, complex cross-cutting state  │
+│ Zustand          │ Simple global state, minimal boilerplate           │
+│ React Query      │ Server state (API data, caching, sync)             │
+│ Jotai/Recoil     │ Atomic state, fine-grained reactivity              │
 └──────────────────┴────────────────────────────────────────────────────┘
 ```
 

@@ -6,24 +6,24 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: Advanced type system features that make TS extremely       ║
-║        powerful — generics, mapped types, conditional types,      ║
-║        utility types, template literal types.                      ║
-║                                                                    ║
-║  WHY:  Real codebases need FLEXIBLE yet SAFE types:              ║
-║        • A function that works with any array type                ║
-║        • An API response wrapper generic over the data shape      ║
-║        • Making some fields optional while keeping others required║
-║        • Creating new types from existing ones automatically      ║
-║                                                                    ║
-║  WHO:  Intermediate-to-advanced TS developers, library authors,  ║
-║        anyone working with complex API types or state management. ║
-║                                                                    ║
-║  WHEN: After mastering basic types, interfaces, and unions.      ║
-║                                                                    ║
-║  HOW:  Generics provide the "type variables." Utility types,     ║
-║        mapped types, and conditional types build on that for      ║
-║        sophisticated type transformations.                         ║
+║  WHAT: Advanced type system features that make TS extremely          ║
+║        powerful — generics, mapped types, conditional types,         ║
+║        utility types, template literal types.                        ║
+║                                                                      ║
+║  WHY:  Real codebases need FLEXIBLE yet SAFE types:                  ║
+║        • A function that works with any array type                   ║
+║        • An API response wrapper generic over the data shape         ║
+║        • Making some fields optional while keeping others required   ║
+║        • Creating new types from existing ones automatically         ║
+║                                                                      ║
+║  WHO:  Intermediate-to-advanced TS developers, library authors,      ║
+║        anyone working with complex API types or state management.    ║
+║                                                                      ║
+║  WHEN: After mastering basic types, interfaces, and unions.          ║
+║                                                                      ║
+║  HOW:  Generics provide the "type variables." Utility types,         ║
+║        mapped types, and conditional types build on that for         ║
+║        sophisticated type transformations.                           ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -35,16 +35,16 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  ANALOGY: Generics are FUNCTION PARAMETERS, but for TYPES.       ║
-║                                                                    ║
-║  Regular function:  function add(a: number, b: number) → number  ║
-║  Generic function:  function first<T>(arr: T[]) → T              ║
-║                                                                    ║
-║  `a` and `b` are VALUE parameters (filled with values at call).  ║
-║  `T` is a TYPE parameter (filled with types at call).            ║
-║                                                                    ║
-║  first<number>([1, 2, 3]) → T becomes number → returns number   ║
-║  first<string>(["a", "b"]) → T becomes string → returns string  ║
+║  ANALOGY: Generics are FUNCTION PARAMETERS, but for TYPES.           ║
+║                                                                      ║
+║  Regular function:  function add(a: number, b: number) → number      ║
+║  Generic function:  function first<T>(arr: T[]) → T                  ║
+║                                                                      ║
+║  `a` and `b` are VALUE parameters (filled with values at call).      ║
+║  `T` is a TYPE parameter (filled with types at call).                ║
+║                                                                      ║
+║  first<number>([1, 2, 3]) → T becomes number → returns number        ║
+║  first<string>(["a", "b"]) → T becomes string → returns string       ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -200,11 +200,11 @@ class QueryBuilder<T> {
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  TS provides 15+ built-in utility types. These transform          ║
-║  existing types into new ones WITHOUT rewriting.                   ║
-║                                                                    ║
-║  WHY: Avoid duplicating type definitions. If User changes,        ║
-║  all derived types (PartialUser, UserSummary) update too.         ║
+║  TS provides 15+ built-in utility types. These transform             ║
+║  existing types into new ones WITHOUT rewriting.                     ║
+║                                                                      ║
+║  WHY: Avoid duplicating type definitions. If User changes,           ║
+║  all derived types (PartialUser, UserSummary) update too.            ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -311,21 +311,21 @@ type CreateUserParams = Parameters<typeof createUser>;
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
-║  Utility Type         │ What It Does          │ Use Case           ║
-║  ─────────────────────┼───────────────────────┼──────────────────  ║
-║  Partial<T>           │ All props optional     │ Update/patch APIs  ║
-║  Required<T>          │ All props required     │ Config defaults    ║
-║  Readonly<T>          │ All props readonly     │ Immutable data     ║
-║  Pick<T, K>           │ Keep only K props      │ API responses      ║
-║  Omit<T, K>           │ Remove K props         │ Create DTOs        ║
-║  Record<K, V>         │ Object K→V mapping     │ Dictionaries       ║
-║  Extract<T, U>        │ Keep matching types    │ Filter unions      ║
-║  Exclude<T, U>        │ Remove matching types  │ Filter unions      ║
-║  NonNullable<T>       │ Remove null/undefined  │ After null check   ║
-║  ReturnType<F>        │ Function return type   │ Infer from fn      ║
-║  Parameters<F>        │ Function param tuple   │ Wrapper functions  ║
-║  Awaited<T>           │ Unwrap Promise<T>      │ Async return types ║
-║  ConstructorParams<C> │ Constructor params     │ Factory patterns   ║
+║  Utility Type         │ What It Does          │ Use Case             ║
+║  ─────────────────────┼───────────────────────┼──────────────────    ║
+║  Partial<T>           │ All props optional     │ Update/patch APIs   ║
+║  Required<T>          │ All props required     │ Config defaults     ║
+║  Readonly<T>          │ All props readonly     │ Immutable data      ║
+║  Pick<T, K>           │ Keep only K props      │ API responses       ║
+║  Omit<T, K>           │ Remove K props         │ Create DTOs         ║
+║  Record<K, V>         │ Object K→V mapping     │ Dictionaries        ║
+║  Extract<T, U>        │ Keep matching types    │ Filter unions       ║
+║  Exclude<T, U>        │ Remove matching types  │ Filter unions       ║
+║  NonNullable<T>       │ Remove null/undefined  │ After null check    ║
+║  ReturnType<F>        │ Function return type   │ Infer from fn       ║
+║  Parameters<F>        │ Function param tuple   │ Wrapper functions   ║
+║  Awaited<T>           │ Unwrap Promise<T>      │ Async return types  ║
+║  ConstructorParams<C> │ Constructor params     │ Factory patterns    ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 

@@ -18,22 +18,22 @@
 ║  BINARY SEARCH - THE FOUNDATION                                           ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Search for target in sorted array. Return index or -1.                  ║
+║  Search for target in sorted array. Return index or -1.                   ║
 ║                                                                           ║
-║  Input: nums = [-1, 0, 3, 5, 9, 12], target = 9                          ║
+║  Input: nums = [-1, 0, 3, 5, 9, 12], target = 9                           ║
 ║  Output: 4                                                                ║
 ║                                                                           ║
 ║  Visual:                                                                  ║
-║  [-1, 0, 3, 5, 9, 12]                                                    ║
-║        L     M      R     mid=5 < 9, search right                        ║
-║              L  M   R     mid=9 = target ✓                               ║
+║  [-1, 0, 3, 5, 9, 12]                                                     ║
+║        L     M      R     mid=5 < 9, search right                         ║
+║              L  M   R     mid=9 = target ✓                                ║
 ║                                                                           ║
 ║  Template:                                                                ║
-║  while (left <= right)                                                   ║
-║      mid = left + (right - left) / 2                                     ║
-║      if target found: return mid                                         ║
-║      if target > mid: left = mid + 1                                     ║
-║      else: right = mid - 1                                               ║
+║  while (left <= right)                                                    ║
+║      mid = left + (right - left) / 2                                      ║
+║      if target found: return mid                                          ║
+║      if target > mid: left = mid + 1                                      ║
+║      else: right = mid - 1                                                ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -69,15 +69,15 @@ public int search(int[] nums, int target) {
 ║  SEARCH INSERT POSITION                                                   ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Find index where target should be inserted to keep array sorted.        ║
+║  Find index where target should be inserted to keep array sorted.         ║
 ║                                                                           ║
-║  Input: nums = [1, 3, 5, 6], target = 5                                  ║
+║  Input: nums = [1, 3, 5, 6], target = 5                                   ║
 ║  Output: 2                                                                ║
 ║                                                                           ║
-║  Input: nums = [1, 3, 5, 6], target = 2                                  ║
+║  Input: nums = [1, 3, 5, 6], target = 2                                   ║
 ║  Output: 1                                                                ║
 ║                                                                           ║
-║  Input: nums = [1, 3, 5, 6], target = 7                                  ║
+║  Input: nums = [1, 3, 5, 6], target = 7                                   ║
 ║  Output: 4                                                                ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
@@ -114,15 +114,15 @@ public int searchInsert(int[] nums, int target) {
 ║  FIRST BAD VERSION                                                        ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Versions 1, 2, ..., n. One is bad. All after it are bad too.           ║
-║  Find the first bad version.                                             ║
+║  Versions 1, 2, ..., n. One is bad. All after it are bad too.             ║
+║  Find the first bad version.                                              ║
 ║                                                                           ║
-║  Input: n = 5, bad = 4                                                   ║
-║  Versions: [G, G, G, B, B]                                               ║
+║  Input: n = 5, bad = 4                                                    ║
+║  Versions: [G, G, G, B, B]                                                ║
 ║             1  2  3  4  5                                                 ║
 ║  Output: 4                                                                ║
 ║                                                                           ║
-║  Pattern: Find leftmost true (first bad)                                 ║
+║  Pattern: Find leftmost true (first bad)                                  ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -158,15 +158,15 @@ public int firstBadVersion(int n) {
 ║  FIND FIRST AND LAST POSITION                                             ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Find starting and ending position of target in sorted array.            ║
+║  Find starting and ending position of target in sorted array.             ║
 ║                                                                           ║
-║  Input: nums = [5, 7, 7, 8, 8, 10], target = 8                           ║
+║  Input: nums = [5, 7, 7, 8, 8, 10], target = 8                            ║
 ║  Output: [3, 4]                                                           ║
 ║                                                                           ║
-║  Input: nums = [5, 7, 7, 8, 8, 10], target = 6                           ║
+║  Input: nums = [5, 7, 7, 8, 8, 10], target = 6                            ║
 ║  Output: [-1, -1]                                                         ║
 ║                                                                           ║
-║  Two binary searches: Find leftmost, find rightmost                      ║
+║  Two binary searches: Find leftmost, find rightmost                       ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -229,17 +229,17 @@ private int findLast(int[] nums, int target) {
 ║  FIND SMALLEST LETTER GREATER THAN TARGET                                 ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Sorted array of letters. Find smallest letter GREATER than target.      ║
-║  Letters wrap around (if none greater, return first letter).             ║
+║  Sorted array of letters. Find smallest letter GREATER than target.       ║
+║  Letters wrap around (if none greater, return first letter).              ║
 ║                                                                           ║
-║  Input: letters = ["c","f","j"], target = "a"                            ║
+║  Input: letters = ["c","f","j"], target = "a"                             ║
 ║  Output: "c"                                                              ║
 ║                                                                           ║
-║  Input: letters = ["c","f","j"], target = "c"                            ║
+║  Input: letters = ["c","f","j"], target = "c"                             ║
 ║  Output: "f"                                                              ║
 ║                                                                           ║
-║  Input: letters = ["c","f","j"], target = "k"                            ║
-║  Output: "c" (wrap around)                                               ║
+║  Input: letters = ["c","f","j"], target = "k"                             ║
+║  Output: "c" (wrap around)                                                ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -275,20 +275,20 @@ public char nextGreatestLetter(char[] letters, char target) {
 ║  SEARCH IN ROTATED SORTED ARRAY                                           ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Array was sorted then rotated at unknown pivot.                         ║
-║  No duplicates. Search for target.                                       ║
+║  Array was sorted then rotated at unknown pivot.                          ║
+║  No duplicates. Search for target.                                        ║
 ║                                                                           ║
-║  Input: nums = [4, 5, 6, 7, 0, 1, 2], target = 0                         ║
+║  Input: nums = [4, 5, 6, 7, 0, 1, 2], target = 0                          ║
 ║  Output: 4                                                                ║
 ║                                                                           ║
 ║  Visual:                                                                  ║
-║  Original: [0, 1, 2, 4, 5, 6, 7]                                         ║
-║  Rotated:  [4, 5, 6, 7, 0, 1, 2]                                         ║
+║  Original: [0, 1, 2, 4, 5, 6, 7]                                          ║
+║  Rotated:  [4, 5, 6, 7, 0, 1, 2]                                          ║
 ║             ↑        ↑                                                    ║
-║           sorted   sorted                                                ║
+║           sorted   sorted                                                 ║
 ║                                                                           ║
-║  KEY: One half is ALWAYS sorted                                          ║
-║  Check if target is in sorted half, then decide direction                ║
+║  KEY: One half is ALWAYS sorted                                           ║
+║  Check if target is in sorted half, then decide direction                 ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -335,14 +335,14 @@ public int search(int[] nums, int target) {
 ║  SEARCH IN ROTATED SORTED ARRAY II (WITH DUPLICATES)                      ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Same as above but array may have duplicates.                            ║
+║  Same as above but array may have duplicates.                             ║
 ║                                                                           ║
-║  Input: nums = [2, 5, 6, 0, 0, 1, 2], target = 0                         ║
+║  Input: nums = [2, 5, 6, 0, 0, 1, 2], target = 0                          ║
 ║  Output: true                                                             ║
 ║                                                                           ║
-║  EDGE CASE: nums[left] == nums[mid] == nums[right]                       ║
-║  Example: [1, 0, 1, 1, 1] - can't determine which half is sorted         ║
-║  Solution: Skip duplicates by left++, right--                            ║
+║  EDGE CASE: nums[left] == nums[mid] == nums[right]                        ║
+║  Example: [1, 0, 1, 1, 1] - can't determine which half is sorted          ║
+║  Solution: Skip duplicates by left++, right--                             ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -392,9 +392,9 @@ public boolean search(int[] nums, int target) {
 ║  FIND MINIMUM IN ROTATED SORTED ARRAY                                     ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Find minimum element in rotated sorted array (no duplicates).           ║
+║  Find minimum element in rotated sorted array (no duplicates).            ║
 ║                                                                           ║
-║  Input: nums = [3, 4, 5, 1, 2]                                           ║
+║  Input: nums = [3, 4, 5, 1, 2]                                            ║
 ║  Output: 1                                                                ║
 ║                                                                           ║
 ║  Visual:                                                                  ║
@@ -404,9 +404,9 @@ public boolean search(int[] nums, int target) {
 ║               2                                                           ║
 ║             1   ← minimum                                                 ║
 ║                                                                           ║
-║  KEY: Compare mid with right                                             ║
-║  - If mid > right: min is in right half                                  ║
-║  - If mid < right: min is in left half (including mid)                   ║
+║  KEY: Compare mid with right                                              ║
+║  - If mid > right: min is in right half                                   ║
+║  - If mid < right: min is in left half (including mid)                    ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -444,13 +444,13 @@ public int findMin(int[] nums) {
 ║  SQRT(X) - Binary Search on Answer                                        ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Find integer square root (truncate decimals).                           ║
+║  Find integer square root (truncate decimals).                            ║
 ║                                                                           ║
 ║  Input: x = 8                                                             ║
-║  Output: 2 (√8 = 2.828..., truncated to 2)                               ║
+║  Output: 2 (√8 = 2.828..., truncated to 2)                                ║
 ║                                                                           ║
-║  Binary search range: [1, x]                                             ║
-║  Find largest n where n*n <= x                                           ║
+║  Binary search range: [1, x]                                              ║
+║  Find largest n where n*n <= x                                            ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -489,19 +489,19 @@ public int mySqrt(int x) {
 ║  KOKO EATING BANANAS                                                      ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Koko eats k bananas/hour. Guard returns in h hours.                     ║
-║  Find minimum k to eat all bananas before guard returns.                 ║
+║  Koko eats k bananas/hour. Guard returns in h hours.                      ║
+║  Find minimum k to eat all bananas before guard returns.                  ║
 ║                                                                           ║
-║  Input: piles = [3, 6, 7, 11], h = 8                                     ║
+║  Input: piles = [3, 6, 7, 11], h = 8                                      ║
 ║  Output: 4                                                                ║
-║  Explanation: At k=4, time needed:                                       ║
-║  pile 3: ceil(3/4) = 1 hour                                              ║
-║  pile 6: ceil(6/4) = 2 hours                                             ║
-║  pile 7: ceil(7/4) = 2 hours                                             ║
-║  pile 11: ceil(11/4) = 3 hours                                           ║
-║  Total: 8 hours ≤ 8 ✓                                                    ║
+║  Explanation: At k=4, time needed:                                        ║
+║  pile 3: ceil(3/4) = 1 hour                                               ║
+║  pile 6: ceil(6/4) = 2 hours                                              ║
+║  pile 7: ceil(7/4) = 2 hours                                              ║
+║  pile 11: ceil(11/4) = 3 hours                                            ║
+║  Total: 8 hours ≤ 8 ✓                                                     ║
 ║                                                                           ║
-║  Binary search on k: range [1, max(piles)]                               ║
+║  Binary search on k: range [1, max(piles)]                                ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -544,19 +544,19 @@ private boolean canFinish(int[] piles, int h, int k) {
 ║  CAPACITY TO SHIP PACKAGES                                                ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Find minimum ship capacity to ship all packages in days days.           ║
-║  Packages must be shipped IN ORDER.                                      ║
+║  Find minimum ship capacity to ship all packages in days days.            ║
+║  Packages must be shipped IN ORDER.                                       ║
 ║                                                                           ║
-║  Input: weights = [1,2,3,4,5,6,7,8,9,10], days = 5                       ║
+║  Input: weights = [1,2,3,4,5,6,7,8,9,10], days = 5                        ║
 ║  Output: 15                                                               ║
 ║  Explanation:                                                             ║
-║  Day 1: 1,2,3,4,5 (sum=15)                                               ║
-║  Day 2: 6,7 (sum=13)                                                     ║
-║  Day 3: 8 (sum=8)                                                        ║
-║  Day 4: 9 (sum=9)                                                        ║
-║  Day 5: 10 (sum=10)                                                      ║
+║  Day 1: 1,2,3,4,5 (sum=15)                                                ║
+║  Day 2: 6,7 (sum=13)                                                      ║
+║  Day 3: 8 (sum=8)                                                         ║
+║  Day 4: 9 (sum=9)                                                         ║
+║  Day 5: 10 (sum=10)                                                       ║
 ║                                                                           ║
-║  Binary search on capacity: [max(weights), sum(weights)]                 ║
+║  Binary search on capacity: [max(weights), sum(weights)]                  ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -606,16 +606,16 @@ private boolean canShip(int[] weights, int days, int capacity) {
 ║  SPLIT ARRAY LARGEST SUM                                                  ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Split array into k subarrays. Minimize the largest subarray sum.        ║
+║  Split array into k subarrays. Minimize the largest subarray sum.         ║
 ║                                                                           ║
-║  Input: nums = [7,2,5,10,8], k = 2                                       ║
+║  Input: nums = [7,2,5,10,8], k = 2                                        ║
 ║  Output: 18                                                               ║
 ║  Explanation:                                                             ║
-║  Split: [7,2,5] and [10,8]                                               ║
-║  Sums: 14 and 18                                                         ║
-║  Largest sum = 18 (minimized)                                            ║
+║  Split: [7,2,5] and [10,8]                                                ║
+║  Sums: 14 and 18                                                          ║
+║  Largest sum = 18 (minimized)                                             ║
 ║                                                                           ║
-║  Binary search on max sum allowed                                        ║
+║  Binary search on max sum allowed                                         ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -665,38 +665,38 @@ private boolean canSplit(int[] nums, int k, int maxSum) {
 ║  (LeetCode 719 - Hard)                                                    ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Given array nums, define distance between pair (i,j) as |nums[i]-nums[j]║
-║  Find the k-th smallest distance among all pairs.                        ║
+║  Given array nums, define distance between pair (i,j) as |nums[i]-nums[j] ║
+║  Find the k-th smallest distance among all pairs.                         ║
 ║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────   ║
+║  ─────────────────────────────────────────────────────────────────────    ║
 ║                                                                           ║
 ║  Example 1:                                                               ║
-║  Input: nums = [1, 3, 1], k = 1                                          ║
+║  Input: nums = [1, 3, 1], k = 1                                           ║
 ║  Output: 0                                                                ║
 ║  Explanation:                                                             ║
-║  All distances: (1,3)=2, (1,1)=0, (3,1)=2                                ║
-║  Sorted: [0, 2, 2]                                                       ║
-║  1st smallest = 0                                                        ║
+║  All distances: (1,3)=2, (1,1)=0, (3,1)=2                                 ║
+║  Sorted: [0, 2, 2]                                                        ║
+║  1st smallest = 0                                                         ║
 ║                                                                           ║
 ║  Example 2:                                                               ║
-║  Input: nums = [1, 1, 1], k = 2                                          ║
+║  Input: nums = [1, 1, 1], k = 2                                           ║
 ║  Output: 0                                                                ║
 ║                                                                           ║
 ║  Example 3:                                                               ║
-║  Input: nums = [1, 6, 1], k = 3                                          ║
+║  Input: nums = [1, 6, 1], k = 3                                           ║
 ║  Output: 5                                                                ║
 ║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────   ║
+║  ─────────────────────────────────────────────────────────────────────    ║
 ║                                                                           ║
-║  APPROACH: Binary search on distance + count pairs with dist <= mid      ║
+║  APPROACH: Binary search on distance + count pairs with dist <= mid       ║
 ║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────   ║
+║  ─────────────────────────────────────────────────────────────────────    ║
 ║                                                                           ║
 ║  Constraints:                                                             ║
-║  - n == nums.length                                                      ║
-║  - 2 <= n <= 10^4                                                        ║
-║  - 0 <= nums[i] <= 10^6                                                  ║
-║  - 1 <= k <= n * (n - 1) / 2                                             ║
+║  - n == nums.length                                                       ║
+║  - 2 <= n <= 10^4                                                         ║
+║  - 0 <= nums[i] <= 10^6                                                   ║
+║  - 1 <= k <= n * (n - 1) / 2                                              ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -749,13 +749,13 @@ private int countPairs(int[] nums, int maxDist) {
 ║  FIND PEAK ELEMENT (LeetCode 162 - Medium)                                ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  A peak element is strictly greater than its neighbors.                  ║
-║  Return index of ANY peak. nums[-1] = nums[n] = -∞.                     ║
+║  A peak element is strictly greater than its neighbors.                   ║
+║  Return index of ANY peak. nums[-1] = nums[n] = -∞.                       ║
 ║                                                                           ║
-║  Example: nums = [1,2,3,1]  →  Output: 2 (nums[2]=3 is peak)           ║
+║  Example: nums = [1,2,3,1]  →  Output: 2 (nums[2]=3 is peak)              ║
 ║                                                                           ║
-║  KEY: If nums[mid] < nums[mid+1], peak must be on right side.           ║
-║  TIME: O(log n) | SPACE: O(1)                                            ║
+║  KEY: If nums[mid] < nums[mid+1], peak must be on right side.             ║
+║  TIME: O(log n) | SPACE: O(1)                                             ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -784,15 +784,15 @@ public int findPeakElement(int[] nums) {
 ║  SEARCH A 2D MATRIX (LeetCode 74 - Medium)                                ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Each row sorted left to right. First int of each row > last of prev.    ║
-║  Determine if target exists in matrix.                                   ║
+║  Each row sorted left to right. First int of each row > last of prev.     ║
+║  Determine if target exists in matrix.                                    ║
 ║                                                                           ║
-║  Example:                                                                ║
-║  matrix = [[1,3,5,7],[10,11,16,20],[23,30,34,60]], target = 3           ║
+║  Example:                                                                 ║
+║  matrix = [[1,3,5,7],[10,11,16,20],[23,30,34,60]], target = 3             ║
 ║  Output: true                                                             ║
 ║                                                                           ║
-║  KEY: Treat as sorted 1D array. index → row=idx/cols, col=idx%cols      ║
-║  TIME: O(log(m*n)) | SPACE: O(1)                                         ║
+║  KEY: Treat as sorted 1D array. index → row=idx/cols, col=idx%cols        ║
+║  TIME: O(log(m*n)) | SPACE: O(1)                                          ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -824,15 +824,15 @@ public boolean searchMatrix(int[][] matrix, int target) {
 ║  TIME BASED KEY-VALUE STORE (LeetCode 981 - Medium)                       ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  set(key, value, timestamp) — store key-value with timestamp             ║
-║  get(key, timestamp) — return value with largest timestamp <= given      ║
+║  set(key, value, timestamp) — store key-value with timestamp              ║
+║  get(key, timestamp) — return value with largest timestamp <= given       ║
 ║                                                                           ║
-║  Example:                                                                ║
-║  set("foo","bar",1), get("foo",1) → "bar"                               ║
-║  get("foo",3) → "bar", set("foo","bar2",4), get("foo",5) → "bar2"      ║
+║  Example:                                                                 ║
+║  set("foo","bar",1), get("foo",1) → "bar"                                 ║
+║  get("foo",3) → "bar", set("foo","bar2",4), get("foo",5) → "bar2"         ║
 ║                                                                           ║
-║  KEY: Binary search on timestamps for each key.                          ║
-║  TIME: set O(1), get O(log n) | SPACE: O(n)                             ║
+║  KEY: Binary search on timestamps for each key.                           ║
+║  TIME: set O(1), get O(log n) | SPACE: O(n)                               ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -869,19 +869,19 @@ class TimeMap {
 
 ```
 ╔═══════════════════════════════════════════════════════════════════════════╗
-║  MEDIAN OF TWO SORTED ARRAYS (LeetCode 4 - Hard)                         ║
+║  MEDIAN OF TWO SORTED ARRAYS (LeetCode 4 - Hard)                          ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Given two sorted arrays nums1 and nums2, return the median.             ║
-║  Overall runtime must be O(log(m+n)).                                    ║
+║  Given two sorted arrays nums1 and nums2, return the median.              ║
+║  Overall runtime must be O(log(m+n)).                                     ║
 ║                                                                           ║
-║  Example:                                                                ║
-║  nums1 = [1,3], nums2 = [2]  →  Output: 2.0                            ║
-║  nums1 = [1,2], nums2 = [3,4]  →  Output: 2.5                          ║
+║  Example:                                                                 ║
+║  nums1 = [1,3], nums2 = [2]  →  Output: 2.0                               ║
+║  nums1 = [1,2], nums2 = [3,4]  →  Output: 2.5                             ║
 ║                                                                           ║
-║  KEY: Binary search on partition of shorter array.                       ║
-║  Split both arrays so left half has (m+n+1)/2 elements.                  ║
-║  TIME: O(log(min(m,n))) | SPACE: O(1)                                    ║
+║  KEY: Binary search on partition of shorter array.                        ║
+║  Split both arrays so left half has (m+n+1)/2 elements.                   ║
+║  TIME: O(log(min(m,n))) | SPACE: O(1)                                     ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -927,19 +927,19 @@ public double findMedianSortedArrays(int[] nums1, int[] nums2) {
 
 ```
 ╔═══════════════════════════════════════════════════════════════════════════╗
-║  MAGNETIC FORCE BETWEEN TWO BALLS (LeetCode 1552 - Medium)               ║
+║  MAGNETIC FORCE BETWEEN TWO BALLS (LeetCode 1552 - Medium)                ║
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
-║  Place m balls in basket positions to maximize minimum magnetic force    ║
-║  (distance) between any two balls.                                       ║
+║  Place m balls in basket positions to maximize minimum magnetic force     ║
+║  (distance) between any two balls.                                        ║
 ║                                                                           ║
-║  Example:                                                                ║
-║  position = [1,2,3,4,7], m = 3  →  Output: 3                           ║
-║  Place at positions 1, 4, 7 → min distance = 3                          ║
+║  Example:                                                                 ║
+║  position = [1,2,3,4,7], m = 3  →  Output: 3                              ║
+║  Place at positions 1, 4, 7 → min distance = 3                            ║
 ║                                                                           ║
-║  KEY: Binary search on answer (minimum distance).                        ║
-║  For each candidate distance, greedily check if m balls fit.             ║
-║  TIME: O(n log(maxDist)) | SPACE: O(1)                                   ║
+║  KEY: Binary search on answer (minimum distance).                         ║
+║  For each candidate distance, greedily check if m balls fit.              ║
+║  TIME: O(n log(maxDist)) | SPACE: O(1)                                    ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 

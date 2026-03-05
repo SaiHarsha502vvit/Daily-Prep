@@ -12,15 +12,15 @@
 ╔══════════════════════════════════════════════════════════════════════════════════╗
 ║  WHEN DOES A COMPONENT RE-RENDER?                                                ║
 ║                                                                                  ║
-║  1. Its state changes (useState setter called)                                  ║
-║  2. Its parent re-renders (props may have changed)                              ║
-║  3. Context value it consumes changes                                           ║
+║  1. Its state changes (useState setter called)                                   ║
+║  2. Its parent re-renders (props may have changed)                               ║
+║  3. Context value it consumes changes                                            ║
 ║                                                                                  ║
-║  REACT RE-RENDER ≠ DOM UPDATE                                                   ║
-║  Re-render: React calls your component function → creates virtual DOM          ║
-║  DOM update: React diffs old vs new virtual DOM → updates only changed nodes   ║
+║  REACT RE-RENDER ≠ DOM UPDATE                                                    ║
+║  Re-render: React calls your component function → creates virtual DOM            ║
+║  DOM update: React diffs old vs new virtual DOM → updates only changed nodes     ║
 ║                                                                                  ║
-║  Most re-renders are fine! Only optimize when you MEASURE a problem.           ║
+║  Most re-renders are fine! Only optimize when you MEASURE a problem.             ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -178,21 +178,21 @@ const mutation = useMutation({
 ```
 ╔══════════════════════════════════════════════════════════════════════════════════╗
 ║  ENVIRONMENT VARIABLES (Vite):                                                   ║
-║  .env                → VITE_API_URL=http://localhost:8080                       ║
-║  .env.production     → VITE_API_URL=https://api.myapp.com                      ║
-║  Access: import.meta.env.VITE_API_URL                                           ║
-║  RULE: Only VITE_ prefixed vars are exposed to client!                         ║
+║  .env                → VITE_API_URL=http://localhost:8080                        ║
+║  .env.production     → VITE_API_URL=https://api.myapp.com                        ║
+║  Access: import.meta.env.VITE_API_URL                                            ║
+║  RULE: Only VITE_ prefixed vars are exposed to client!                           ║
 ║                                                                                  ║
 ║  BUILD & DEPLOY PIPELINE:                                                        ║
-║  npm run build → dist/ folder (static HTML/CSS/JS)                             ║
-║  Deploy dist/ to: Vercel, Netlify, S3+CloudFront, Nginx                        ║
+║  npm run build → dist/ folder (static HTML/CSS/JS)                               ║
+║  Deploy dist/ to: Vercel, Netlify, S3+CloudFront, Nginx                          ║
 ║                                                                                  ║
 ║  ESSENTIAL TOOLING:                                                              ║
-║  Build: Vite (fast HMR, optimized builds)                                      ║
-║  Lint: ESLint + Prettier (consistent code)                                     ║
-║  Type check: tsc --noEmit (CI check)                                           ║
-║  Test: Vitest (unit/integration) + Playwright (E2E)                            ║
-║  CI: GitHub Actions → lint + type-check + test + build + deploy               ║
+║  Build: Vite (fast HMR, optimized builds)                                        ║
+║  Lint: ESLint + Prettier (consistent code)                                       ║
+║  Type check: tsc --noEmit (CI check)                                             ║
+║  Test: Vitest (unit/integration) + Playwright (E2E)                              ║
+║  CI: GitHub Actions → lint + type-check + test + build + deploy                  ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 

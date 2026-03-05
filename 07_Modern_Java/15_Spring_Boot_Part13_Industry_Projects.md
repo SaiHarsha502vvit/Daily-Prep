@@ -11,38 +11,38 @@
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHY: Why Build Real-World Projects?                                            │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Portfolio: TODO apps won't impress - E-commerce, Payment systems will      │
-│  • Interview: "Show me something non-trivial you've built"                   │
-│  • Experience: Real problems teach real solutions                             │
-│  • Confidence: "I've built payment integration" > "I know Spring Boot"       │
-│  • Job-ready: Gap between tutorials and production is huge                    │
+│  • Portfolio: TODO apps won't impress - E-commerce, Payment systems will        │
+│  • Interview: "Show me something non-trivial you've built"                      │
+│  • Experience: Real problems teach real solutions                               │
+│  • Confidence: "I've built payment integration" > "I know Spring Boot"          │
+│  • Job-ready: Gap between tutorials and production is huge                      │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  HOW: How Top Companies Structure Spring Boot Apps?                             │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Domain-driven: Package by feature (user/, order/, payment/)                │
-│  • Multi-module: Shared libraries, separate deployables                       │
-│  • Event-driven: Kafka/RabbitMQ for async operations                          │
-│  • Observability: Metrics, tracing, logging in every service                  │
-│  • CI/CD: Automated testing, deployment pipelines                             │
+│  • Domain-driven: Package by feature (user/, order/, payment/)                  │
+│  • Multi-module: Shared libraries, separate deployables                         │
+│  • Event-driven: Kafka/RabbitMQ for async operations                            │
+│  • Observability: Metrics, tracing, logging in every service                    │
+│  • CI/CD: Automated testing, deployment pipelines                               │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHEN: When to Build Which Type of Project?                                     │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Beginner: Blog platform, URL shortener, basic CRUD                          │
-│  • Intermediate: E-commerce, booking system, notification service             │
-│  • Advanced: Payment gateway, real-time chat, distributed system               │
-│  • Expert: Event sourcing, multi-tenant SaaS, microservices platform          │
+│  • Beginner: Blog platform, URL shortener, basic CRUD                           │
+│  • Intermediate: E-commerce, booking system, notification service               │
+│  • Advanced: Payment gateway, real-time chat, distributed system                │
+│  • Expert: Event sourcing, multi-tenant SaaS, microservices platform            │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  WHICH: Which Projects Stand Out in Interviews?                                 │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  IMPRESSIVE:    Payment integration, real-time features, microservices         │
-│  GOOD:          E-commerce with cart, booking with availability                │
-│  AVOID:         TODO apps, basic CRUD without business logic                   │
+│  IMPRESSIVE:    Payment integration, real-time features, microservices          │
+│  GOOD:          E-commerce with cart, booking with availability                 │
+│  AVOID:         TODO apps, basic CRUD without business logic                    │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -56,59 +56,59 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│              SPRING BOOT IN ENTERPRISE - REAL EXAMPLES                           │
+│              SPRING BOOT IN ENTERPRISE - REAL EXAMPLES                          │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  🔶 AMAZON (AWS)                                                                │
+│                                                                                 │
+│  🔶 AMAZON (AWS)                                                                 │
 │  ────────────────                                                               │
 │  • Internal developer portals                                                   │
-│  • Microservices for order processing                                          │
+│  • Microservices for order processing                                           │
 │  • Inventory management systems                                                 │
 │  • Configuration management services                                            │
 │  • API Gateway implementations                                                  │
-│                                                                                  │
-│  🔷 MICROSOFT                                                                   │
+│                                                                                 │
+│  🔷 MICROSOFT                                                                    │
 │  ────────────────                                                               │
-│  • Azure Spring Cloud (managed Spring Boot)                                    │
+│  • Azure Spring Cloud (managed Spring Boot)                                     │
 │  • LinkedIn backend services                                                    │
-│  • Internal tooling and automation                                             │
-│  • Enterprise integration services                                             │
-│                                                                                  │
-│  🟠 ORACLE                                                                      │
+│  • Internal tooling and automation                                              │
+│  • Enterprise integration services                                              │
+│                                                                                 │
+│  🟠 ORACLE                                                                       │
 │  ────────────────                                                               │
-│  • Cloud infrastructure services                                               │
-│  • Database management portals                                                 │
-│  • Billing and subscription systems                                            │
-│  • Internal employee systems                                                   │
-│                                                                                  │
-│  🟢 NETFLIX                                                                     │
+│  • Cloud infrastructure services                                                │
+│  • Database management portals                                                  │
+│  • Billing and subscription systems                                             │
+│  • Internal employee systems                                                    │
+│                                                                                 │
+│  🟢 NETFLIX                                                                      │
 │  ────────────────                                                               │
-│  • Contributed Spring Cloud Netflix (Eureka, Zuul)                            │
-│  • Content delivery services                                                   │
-│  • Recommendation engine APIs                                                  │
-│  • A/B testing platforms                                                       │
-│                                                                                  │
-│  🔴 VERIZON                                                                     │
+│  • Contributed Spring Cloud Netflix (Eureka, Zuul)                              │
+│  • Content delivery services                                                    │
+│  • Recommendation engine APIs                                                   │
+│  • A/B testing platforms                                                        │
+│                                                                                 │
+│  🔴 VERIZON                                                                      │
 │  ────────────────                                                               │
-│  • Network monitoring systems                                                  │
-│  • Customer portal backends                                                    │
-│  • Billing integration services                                                │
-│  • IoT device management                                                       │
-│                                                                                  │
-│  🟣 SALESFORCE                                                                  │
+│  • Network monitoring systems                                                   │
+│  • Customer portal backends                                                     │
+│  • Billing integration services                                                 │
+│  • IoT device management                                                        │
+│                                                                                 │
+│  🟣 SALESFORCE                                                                   │
 │  ────────────────                                                               │
-│  • Integration middleware                                                      │
-│  • Event processing pipelines                                                  │
-│  • Analytics services                                                          │
-│  • Multi-tenant SaaS backends                                                 │
-│                                                                                  │
-│  💼 EUROFINS                                                                    │
+│  • Integration middleware                                                       │
+│  • Event processing pipelines                                                   │
+│  • Analytics services                                                           │
+│  • Multi-tenant SaaS backends                                                   │
+│                                                                                 │
+│  💼 EUROFINS                                                                     │
 │  ────────────────                                                               │
-│  • Laboratory Information Management Systems (LIMS)                           │
-│  • Sample tracking and workflow                                                │
-│  • Report generation services                                                  │
-│  • Compliance and audit systems                                                │
-│                                                                                  │
+│  • Laboratory Information Management Systems (LIMS)                             │
+│  • Sample tracking and workflow                                                 │
+│  • Report generation services                                                   │
+│  • Compliance and audit systems                                                 │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -122,46 +122,46 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│              PROJECT: MULTI-CHANNEL NOTIFICATION ENGINE                          │
+│              PROJECT: MULTI-CHANNEL NOTIFICATION ENGINE                         │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  WHAT IT IS:                                                                     │
+│                                                                                 │
+│  WHAT IT IS:                                                                    │
 │  A centralized service that sends notifications via Email, SMS, Push,           │
 │  Slack, Teams, etc. Used by ALL major companies internally.                     │
-│                                                                                  │
+│                                                                                 │
 │  REAL-WORLD USAGE:                                                              │
 │  • Amazon: Order updates, delivery alerts                                       │
 │  • Banks: Transaction alerts, fraud warnings                                    │
-│  • Healthcare: Appointment reminders, lab results                              │
-│  • Enterprise: System alerts, approval workflows                               │
-│                                                                                  │
-│  ARCHITECTURE:                                                                   │
-│                                                                                  │
-│  ┌─────────────┐     ┌──────────────────┐     ┌──────────────────┐            │
-│  │   Client    │────►│  Notification    │────►│   Message        │            │
-│  │   Services  │     │  API             │     │   Queue          │            │
-│  └─────────────┘     └──────────────────┘     └────────┬─────────┘            │
+│  • Healthcare: Appointment reminders, lab results                               │
+│  • Enterprise: System alerts, approval workflows                                │
+│                                                                                 │
+│  ARCHITECTURE:                                                                  │
+│                                                                                 │
+│  ┌─────────────┐     ┌──────────────────┐     ┌──────────────────┐              │
+│  │   Client    │────►│  Notification    │────►│   Message        │              │
+│  │   Services  │     │  API             │     │   Queue          │              │
+│  └─────────────┘     └──────────────────┘     └────────┬─────────┘              │
 │                                                         │                       │
-│                      ┌──────────────────────────────────┼────────────┐         │
-│                      │                                  │            │         │
-│                      ▼                                  ▼            ▼         │
-│              ┌───────────────┐              ┌───────────────┐ ┌───────────┐   │
-│              │ Email Worker  │              │ SMS Worker    │ │ Push      │   │
-│              │ (SMTP/SES)    │              │ (Twilio)      │ │ Worker    │   │
-│              └───────────────┘              └───────────────┘ └───────────┘   │
-│                                                                                  │
-│  DSA USED:                                                                       │
+│                      ┌──────────────────────────────────┼────────────┐          │
+│                      │                                  │            │          │
+│                      ▼                                  ▼            ▼          │
+│              ┌───────────────┐              ┌───────────────┐ ┌───────────┐     │
+│              │ Email Worker  │              │ SMS Worker    │ │ Push      │     │
+│              │ (SMTP/SES)    │              │ (Twilio)      │ │ Worker    │     │
+│              └───────────────┘              └───────────────┘ └───────────┘     │
+│                                                                                 │
+│  DSA USED:                                                                      │
 │  • Priority Queue: Urgent notifications first                                   │
 │  • Rate Limiting: Prevent notification spam                                     │
 │  • Template Engine: Dynamic content generation                                  │
-│  • Retry with Exponential Backoff: Failed delivery handling                    │
-│                                                                                  │
-│  FREE APIs:                                                                      │
-│  • Email: JavaMail (SMTP), SendGrid (free tier)                               │
-│  • SMS: Twilio (free trial)                                                    │
-│  • Push: Firebase Cloud Messaging (free)                                       │
-│  • Slack/Discord: Free webhooks                                                │
-│                                                                                  │
+│  • Retry with Exponential Backoff: Failed delivery handling                     │
+│                                                                                 │
+│  FREE APIs:                                                                     │
+│  • Email: JavaMail (SMTP), SendGrid (free tier)                                 │
+│  • SMS: Twilio (free trial)                                                     │
+│  • Push: Firebase Cloud Messaging (free)                                        │
+│  • Slack/Discord: Free webhooks                                                 │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -346,36 +346,36 @@ public class SlackNotificationSender implements NotificationSender {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│              PROJECT: FEATURE FLAG MANAGEMENT SYSTEM                             │
+│              PROJECT: FEATURE FLAG MANAGEMENT SYSTEM                            │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  WHAT IT IS:                                                                     │
+│                                                                                 │
+│  WHAT IT IS:                                                                    │
 │  System to toggle features on/off without deployment, run experiments,          │
 │  and gradually roll out new features to users.                                  │
-│                                                                                  │
+│                                                                                 │
 │  REAL-WORLD USAGE:                                                              │
-│  • Netflix: Testing new UI features on % of users                              │
-│  • Facebook: Gradual feature rollouts                                          │
-│  • Amazon: A/B testing checkout flows                                          │
-│  • Microsoft: Feature gating in Windows/Office                                 │
-│                                                                                  │
+│  • Netflix: Testing new UI features on % of users                               │
+│  • Facebook: Gradual feature rollouts                                           │
+│  • Amazon: A/B testing checkout flows                                           │
+│  • Microsoft: Feature gating in Windows/Office                                  │
+│                                                                                 │
 │  COMMERCIAL ALTERNATIVES ($$):                                                  │
-│  LaunchDarkly, Split.io, Optimizely - ALL expensive!                          │
-│                                                                                  │
+│  LaunchDarkly, Split.io, Optimizely - ALL expensive!                            │
+│                                                                                 │
 │  FEATURES TO BUILD:                                                             │
-│  ✅ Boolean flags (on/off)                                                     │
-│  ✅ Percentage rollout (show to X% of users)                                   │
-│  ✅ User targeting (specific users/groups)                                     │
-│  ✅ A/B testing with analytics                                                 │
-│  ✅ Environment-specific flags (dev/staging/prod)                              │
-│  ✅ Real-time toggle (no restart needed)                                       │
-│  ✅ Audit log (who changed what, when)                                         │
-│                                                                                  │
-│  DSA USED:                                                                       │
-│  • Hashing: Consistent assignment to variants                                  │
-│  • Caching: Fast flag evaluation                                               │
-│  • Binary Search: Percentage bucket allocation                                 │
-│                                                                                  │
+│  ✅ Boolean flags (on/off)                                                       │
+│  ✅ Percentage rollout (show to X% of users)                                     │
+│  ✅ User targeting (specific users/groups)                                       │
+│  ✅ A/B testing with analytics                                                   │
+│  ✅ Environment-specific flags (dev/staging/prod)                                │
+│  ✅ Real-time toggle (no restart needed)                                         │
+│  ✅ Audit log (who changed what, when)                                           │
+│                                                                                 │
+│  DSA USED:                                                                      │
+│  • Hashing: Consistent assignment to variants                                   │
+│  • Caching: Fast flag evaluation                                                │
+│  • Binary Search: Percentage bucket allocation                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -621,37 +621,37 @@ public class CheckoutController {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│              PROJECT: REAL-TIME ANALYTICS & METRICS PLATFORM                     │
+│              PROJECT: REAL-TIME ANALYTICS & METRICS PLATFORM                    │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  WHAT IT IS:                                                                     │
+│                                                                                 │
+│  WHAT IT IS:                                                                    │
 │  System to collect, process, and visualize real-time application metrics.       │
 │  Every enterprise needs this for monitoring.                                    │
-│                                                                                  │
+│                                                                                 │
 │  REAL-WORLD USAGE:                                                              │
 │  • All companies: Application performance monitoring                            │
-│  • E-commerce: Real-time sales dashboards                                      │
-│  • Social media: Engagement metrics                                            │
-│  • DevOps: System health monitoring                                            │
-│                                                                                  │
+│  • E-commerce: Real-time sales dashboards                                       │
+│  • Social media: Engagement metrics                                             │
+│  • DevOps: System health monitoring                                             │
+│                                                                                 │
 │  COMMERCIAL ALTERNATIVES ($$):                                                  │
-│  DataDog ($$$), New Relic ($$), Splunk ($$$)                                  │
-│                                                                                  │
+│  DataDog ($$$), New Relic ($$), Splunk ($$$)                                    │
+│                                                                                 │
 │  FEATURES TO BUILD:                                                             │
-│  ✅ Event ingestion API (high throughput)                                      │
-│  ✅ Real-time aggregations (count, sum, avg)                                   │
-│  ✅ Time-series data storage                                                   │
-│  ✅ Sliding window analytics                                                   │
-│  ✅ WebSocket for live updates                                                 │
-│  ✅ Custom metric definitions                                                  │
-│  ✅ Alert rules (threshold breaches)                                           │
-│                                                                                  │
-│  DSA USED:                                                                       │
-│  • Sliding Window: Rolling averages, rate calculations                         │
-│  • Time-Series: Efficient storage and queries                                  │
-│  • Bloom Filter: Unique visitor counting                                       │
-│  • Min/Max Heap: Top-K metrics                                                 │
-│                                                                                  │
+│  ✅ Event ingestion API (high throughput)                                        │
+│  ✅ Real-time aggregations (count, sum, avg)                                     │
+│  ✅ Time-series data storage                                                     │
+│  ✅ Sliding window analytics                                                     │
+│  ✅ WebSocket for live updates                                                   │
+│  ✅ Custom metric definitions                                                    │
+│  ✅ Alert rules (threshold breaches)                                             │
+│                                                                                 │
+│  DSA USED:                                                                      │
+│  • Sliding Window: Rolling averages, rate calculations                          │
+│  • Time-Series: Efficient storage and queries                                   │
+│  • Bloom Filter: Unique visitor counting                                        │
+│  • Min/Max Heap: Top-K metrics                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -918,37 +918,37 @@ public class AnalyticsController {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│              PROJECT: WORKFLOW/APPROVAL ENGINE                                   │
+│              PROJECT: WORKFLOW/APPROVAL ENGINE                                  │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  WHAT IT IS:                                                                     │
+│                                                                                 │
+│  WHAT IT IS:                                                                    │
 │  System to define and execute multi-step business workflows with approvals,     │
 │  conditions, and automated actions.                                             │
-│                                                                                  │
+│                                                                                 │
 │  REAL-WORLD USAGE:                                                              │
 │  • HR: Leave approval, onboarding workflows                                     │
 │  • Finance: Expense approval, purchase orders                                   │
 │  • IT: Change management, access requests                                       │
 │  • Sales: Quote approvals, contract workflows                                   │
-│                                                                                  │
+│                                                                                 │
 │  COMMERCIAL ALTERNATIVES ($$):                                                  │
-│  Camunda ($), ServiceNow ($$$), Jira Workflows                                 │
-│                                                                                  │
+│  Camunda ($), ServiceNow ($$$), Jira Workflows                                  │
+│                                                                                 │
 │  FEATURES TO BUILD:                                                             │
-│  ✅ Visual workflow designer (define steps, conditions)                        │
-│  ✅ Approval chains (sequential, parallel)                                      │
-│  ✅ Conditional branching (if amount > $1000, add VP approval)                 │
-│  ✅ Auto-escalation (if not approved in X days)                                │
-│  ✅ Email/Slack notifications at each step                                     │
-│  ✅ Audit trail                                                                 │
-│  ✅ SLA tracking                                                                │
-│                                                                                  │
-│  DSA USED:                                                                       │
+│  ✅ Visual workflow designer (define steps, conditions)                          │
+│  ✅ Approval chains (sequential, parallel)                                       │
+│  ✅ Conditional branching (if amount > $1000, add VP approval)                   │
+│  ✅ Auto-escalation (if not approved in X days)                                  │
+│  ✅ Email/Slack notifications at each step                                       │
+│  ✅ Audit trail                                                                  │
+│  ✅ SLA tracking                                                                 │
+│                                                                                 │
+│  DSA USED:                                                                      │
 │  • Graph/DAG: Workflow definition                                               │
 │  • State Machine: Workflow execution                                            │
 │  • Queue: Pending tasks                                                         │
 │  • Topological Sort: Step ordering                                              │
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1281,33 +1281,33 @@ public class WorkflowEngine {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│              PROJECT: RESOURCE BOOKING & SCHEDULING SYSTEM                       │
+│              PROJECT: RESOURCE BOOKING & SCHEDULING SYSTEM                      │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  WHAT IT IS:                                                                     │
+│                                                                                 │
+│  WHAT IT IS:                                                                    │
 │  System to manage bookings for any resource - meeting rooms, equipment,         │
 │  vehicles, employees' time, etc.                                                │
-│                                                                                  │
+│                                                                                 │
 │  REAL-WORLD USAGE:                                                              │
 │  • Google/Microsoft: Meeting room booking                                       │
-│  • Hospitals: Doctor appointments, equipment scheduling                        │
-│  • Car rentals: Vehicle availability                                           │
-│  • Consulting firms: Employee allocation                                       │
-│                                                                                  │
+│  • Hospitals: Doctor appointments, equipment scheduling                         │
+│  • Car rentals: Vehicle availability                                            │
+│  • Consulting firms: Employee allocation                                        │
+│                                                                                 │
 │  FEATURES TO BUILD:                                                             │
-│  ✅ Resource management (rooms, equipment, people)                             │
-│  ✅ Availability checking                                                       │
-│  ✅ Booking with conflict detection                                            │
-│  ✅ Recurring bookings                                                          │
-│  ✅ Waitlist management                                                         │
-│  ✅ Calendar view API                                                           │
-│  ✅ Reminders and notifications                                                │
-│                                                                                  │
-│  DSA USED:                                                                       │
-│  • Interval Trees: Conflict detection                                          │
-│  • Priority Queue: Waitlist management                                         │
-│  • Binary Search: Finding available slots                                      │
-│                                                                                  │
+│  ✅ Resource management (rooms, equipment, people)                               │
+│  ✅ Availability checking                                                        │
+│  ✅ Booking with conflict detection                                              │
+│  ✅ Recurring bookings                                                           │
+│  ✅ Waitlist management                                                          │
+│  ✅ Calendar view API                                                            │
+│  ✅ Reminders and notifications                                                  │
+│                                                                                 │
+│  DSA USED:                                                                      │
+│  • Interval Trees: Conflict detection                                           │
+│  • Priority Queue: Waitlist management                                          │
+│  • Binary Search: Finding available slots                                       │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1573,59 +1573,59 @@ public record BookingResult(Long bookingId, BookingStatus status, Long waitlistI
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│              MORE INDUSTRY-LEVEL PROJECT IDEAS                                   │
+│              MORE INDUSTRY-LEVEL PROJECT IDEAS                                  │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  6. 📝 AUDIT LOG & COMPLIANCE SYSTEM                                           │
-│     Track all changes to data, who changed what, when                          │
-│     DSA: Append-only log, Merkle trees for integrity                          │
-│     Used by: Every regulated industry (finance, healthcare)                    │
-│                                                                                  │
-│  7. 🔍 FULL-TEXT SEARCH SERVICE                                                │
-│     Build your own search with inverted index                                  │
-│     DSA: Inverted Index, TF-IDF, BM25 ranking                                 │
+│                                                                                 │
+│  6. 📝 AUDIT LOG & COMPLIANCE SYSTEM                                             │
+│     Track all changes to data, who changed what, when                           │
+│     DSA: Append-only log, Merkle trees for integrity                            │
+│     Used by: Every regulated industry (finance, healthcare)                     │
+│                                                                                 │
+│  7. 🔍 FULL-TEXT SEARCH SERVICE                                                  │
+│     Build your own search with inverted index                                   │
+│     DSA: Inverted Index, TF-IDF, BM25 ranking                                   │
 │     Similar to: Mini Elasticsearch                                              │
-│                                                                                  │
-│  8. 📦 INVENTORY MANAGEMENT SYSTEM                                             │
-│     Track stock, predict shortages, manage warehouses                          │
-│     DSA: Queue (FIFO for perishables), Min Heap (low stock alerts)            │
-│     Used by: Amazon, Walmart, every retailer                                   │
-│                                                                                  │
-│  9. 🎫 TICKETING/HELPDESK SYSTEM                                               │
-│     Like JIRA/Zendesk - create, assign, track tickets                         │
-│     DSA: State Machine, Priority Queue, SLA Timer                             │
-│     Used by: IT support, customer service                                      │
-│                                                                                  │
-│  10. 📊 REPORT GENERATION ENGINE                                               │
-│      Define templates, schedule reports, export PDF/Excel                     │
-│      DSA: Template parsing, Queue for scheduled jobs                          │
-│      Used by: All enterprises for business intelligence                       │
-│                                                                                  │
-│  11. 🔐 SECRETS/CONFIG MANAGEMENT                                              │
-│      Like HashiCorp Vault - store and manage secrets                          │
-│      DSA: Encryption algorithms, Access control lists                         │
-│      Used by: DevOps, Security teams                                          │
-│                                                                                  │
-│  12. 📡 API GATEWAY                                                             │
-│      Route requests, rate limit, authentication                               │
-│      DSA: Trie (URL matching), Token Bucket (rate limit)                      │
-│      Similar to: Kong, AWS API Gateway                                         │
-│                                                                                  │
-│  13. 🗺️ GEOSPATIAL SERVICE                                                     │
-│      Store locations, find nearby, geofencing                                 │
-│      DSA: QuadTree, R-Tree, Haversine distance                               │
-│      Used by: Uber, DoorDash, any location-based app                         │
-│                                                                                  │
-│  14. 💬 REAL-TIME CHAT/MESSAGING                                               │
-│      Private/group messages, online status, typing indicators                 │
-│      DSA: Queue, Pub/Sub, WebSockets                                          │
-│      Similar to: Slack, Teams backend                                          │
-│                                                                                  │
-│  15. 🎯 RECOMMENDATION ENGINE                                                   │
-│      "Users who liked X also liked Y"                                         │
-│      DSA: Collaborative filtering, Graph algorithms                           │
-│      Used by: Netflix, Amazon, Spotify                                        │
-│                                                                                  │
+│                                                                                 │
+│  8. 📦 INVENTORY MANAGEMENT SYSTEM                                               │
+│     Track stock, predict shortages, manage warehouses                           │
+│     DSA: Queue (FIFO for perishables), Min Heap (low stock alerts)              │
+│     Used by: Amazon, Walmart, every retailer                                    │
+│                                                                                 │
+│  9. 🎫 TICKETING/HELPDESK SYSTEM                                                 │
+│     Like JIRA/Zendesk - create, assign, track tickets                           │
+│     DSA: State Machine, Priority Queue, SLA Timer                               │
+│     Used by: IT support, customer service                                       │
+│                                                                                 │
+│  10. 📊 REPORT GENERATION ENGINE                                                 │
+│      Define templates, schedule reports, export PDF/Excel                       │
+│      DSA: Template parsing, Queue for scheduled jobs                            │
+│      Used by: All enterprises for business intelligence                         │
+│                                                                                 │
+│  11. 🔐 SECRETS/CONFIG MANAGEMENT                                                │
+│      Like HashiCorp Vault - store and manage secrets                            │
+│      DSA: Encryption algorithms, Access control lists                           │
+│      Used by: DevOps, Security teams                                            │
+│                                                                                 │
+│  12. 📡 API GATEWAY                                                              │
+│      Route requests, rate limit, authentication                                 │
+│      DSA: Trie (URL matching), Token Bucket (rate limit)                        │
+│      Similar to: Kong, AWS API Gateway                                          │
+│                                                                                 │
+│  13. 🗺️ GEOSPATIAL SERVICE                                                      │
+│      Store locations, find nearby, geofencing                                   │
+│      DSA: QuadTree, R-Tree, Haversine distance                                  │
+│      Used by: Uber, DoorDash, any location-based app                            │
+│                                                                                 │
+│  14. 💬 REAL-TIME CHAT/MESSAGING                                                 │
+│      Private/group messages, online status, typing indicators                   │
+│      DSA: Queue, Pub/Sub, WebSockets                                            │
+│      Similar to: Slack, Teams backend                                           │
+│                                                                                 │
+│  15. 🎯 RECOMMENDATION ENGINE                                                    │
+│      "Users who liked X also liked Y"                                           │
+│      DSA: Collaborative filtering, Graph algorithms                             │
+│      Used by: Netflix, Amazon, Spotify                                          │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1635,46 +1635,46 @@ public record BookingResult(Long bookingId, BookingStatus status, Long waitlistI
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│              PORTFOLIO STRATEGY FOR JOB INTERVIEWS                               │
+│              PORTFOLIO STRATEGY FOR JOB INTERVIEWS                              │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  BUILD 2-3 OF THESE PROJECTS TO STAND OUT:                                      │
-│                                                                                  │
+│                                                                                 │
 │  BEGINNER LEVEL (Start Here):                                                   │
 │  ────────────────────────────                                                   │
-│  • Notification Engine - Shows you understand queues, async processing         │
-│  • Feature Flag System - Shows architectural thinking                          │
-│                                                                                  │
-│  INTERMEDIATE LEVEL:                                                             │
+│  • Notification Engine - Shows you understand queues, async processing          │
+│  • Feature Flag System - Shows architectural thinking                           │
+│                                                                                 │
+│  INTERMEDIATE LEVEL:                                                            │
 │  ──────────────────                                                             │
-│  • Analytics Dashboard - Shows DSA knowledge (sliding window, aggregations)    │
-│  • Booking System - Shows conflict handling, business logic                    │
-│                                                                                  │
-│  ADVANCED LEVEL:                                                                 │
+│  • Analytics Dashboard - Shows DSA knowledge (sliding window, aggregations)     │
+│  • Booking System - Shows conflict handling, business logic                     │
+│                                                                                 │
+│  ADVANCED LEVEL:                                                                │
 │  ───────────────                                                                │
-│  • Workflow Engine - Shows state machines, graph traversal                     │
-│  • Search Service - Shows inverted index, ranking algorithms                   │
-│                                                                                  │
+│  • Workflow Engine - Shows state machines, graph traversal                      │
+│  • Search Service - Shows inverted index, ranking algorithms                    │
+│                                                                                 │
 │  HOW THESE HELP IN INTERVIEWS:                                                  │
 │  ─────────────────────────────                                                  │
-│                                                                                  │
+│                                                                                 │
 │  "Tell me about a challenging project"                                          │
-│  → Explain your notification engine's retry logic with exponential backoff     │
-│                                                                                  │
+│  → Explain your notification engine's retry logic with exponential backoff      │
+│                                                                                 │
 │  "How would you design a rate limiter?"                                         │
-│  → "I actually built one! Here's how I implemented sliding window..."          │
-│                                                                                  │
+│  → "I actually built one! Here's how I implemented sliding window..."           │
+│                                                                                 │
 │  "Have you worked with message queues?"                                         │
-│  → "Yes, in my workflow engine I used priority queues for task scheduling..."  │
-│                                                                                  │
-│  DEPLOYMENT (Free Options):                                                      │
+│  → "Yes, in my workflow engine I used priority queues for task scheduling..."   │
+│                                                                                 │
+│  DEPLOYMENT (Free Options):                                                     │
 │  ──────────────────────────                                                     │
-│  • Railway.app - Free tier for Spring Boot apps                                │
+│  • Railway.app - Free tier for Spring Boot apps                                 │
 │  • Render.com - Free tier                                                       │
 │  • Fly.io - Free tier                                                           │
-│  • Heroku - Free tier (limited)                                                │
-│  • GitHub Actions - Free CI/CD                                                 │
-│                                                                                  │
+│  • Heroku - Free tier (limited)                                                 │
+│  • GitHub Actions - Free CI/CD                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 

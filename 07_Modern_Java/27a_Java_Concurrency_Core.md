@@ -13,22 +13,22 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════════╗
-║  REALITY CHECK                                                                  ║
+║  REALITY CHECK                                                                   ║
 ║                                                                                  ║
-║  Your REST API gets 1000 requests/second. Each request = 1 thread.              ║
+║  Your REST API gets 1000 requests/second. Each request = 1 thread.               ║
 ║  If each thread takes 200ms, you need 200 threads running simultaneously.        ║
 ║                                                                                  ║
 ║  Without understanding concurrency:                                              ║
-║  ❌ Race conditions corrupt data                                                 ║
-║  ❌ Deadlocks freeze your server                                                 ║
-║  ❌ Thread leaks crash your JVM                                                  ║
-║  ❌ You can't debug "works locally, fails in prod" issues                        ║
+║  ❌ Race conditions corrupt data                                                  ║
+║  ❌ Deadlocks freeze your server                                                  ║
+║  ❌ Thread leaks crash your JVM                                                   ║
+║  ❌ You can't debug "works locally, fails in prod" issues                         ║
 ║                                                                                  ║
 ║  With mastery:                                                                   ║
-║  ✅ You write thread-safe code by default                                        ║
-║  ✅ You choose the right concurrency tool for each problem                       ║
-║  ✅ You debug production issues others can't                                     ║
-║  ✅ You design systems that scale                                                ║
+║  ✅ You write thread-safe code by default                                         ║
+║  ✅ You choose the right concurrency tool for each problem                        ║
+║  ✅ You debug production issues others can't                                      ║
+║  ✅ You design systems that scale                                                 ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -41,35 +41,35 @@
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  PROCESS vs THREAD — The Apartment Analogy                                      │
-│                                                                                  │
-│  PROCESS = An apartment                                                          │
-│    - Has its own address space (its own rooms, kitchen, bathroom)                │
-│    - Isolated from other apartments                                              │
-│    - Expensive to create (need to allocate entire apartment)                     │
-│                                                                                  │
-│  THREAD = A person living in the apartment                                       │
-│    - Shares the apartment's space (heap memory)                                  │
-│    - Has own bed/desk (stack, program counter, registers)                        │
+│                                                                                 │
+│  PROCESS = An apartment                                                         │
+│    - Has its own address space (its own rooms, kitchen, bathroom)               │
+│    - Isolated from other apartments                                             │
+│    - Expensive to create (need to allocate entire apartment)                    │
+│                                                                                 │
+│  THREAD = A person living in the apartment                                      │
+│    - Shares the apartment's space (heap memory)                                 │
+│    - Has own bed/desk (stack, program counter, registers)                       │
 │    - Cheap to create (just add a person, don't build new apartment)             │
 │    - BUT: sharing kitchen → conflicts! (race conditions)                        │
-│                                                                                  │
-│  ┌──────────── Process (JVM) ─────────────┐                                    │
+│                                                                                 │
+│  ┌──────────── Process (JVM) ─────────────┐                                     │
 │  │  HEAP (shared by all threads)           │                                    │
-│  │  ┌───────┐  ┌───────┐  ┌───────┐      │                                    │
-│  │  │Thread1│  │Thread2│  │Thread3│      │                                    │
-│  │  │ Stack │  │ Stack │  │ Stack │      │                                    │
-│  │  │  PC   │  │  PC   │  │  PC   │      │                                    │
-│  │  └───────┘  └───────┘  └───────┘      │                                    │
+│  │  ┌───────┐  ┌───────┐  ┌───────┐      │                                      │
+│  │  │Thread1│  │Thread2│  │Thread3│      │                                      │
+│  │  │ Stack │  │ Stack │  │ Stack │      │                                      │
+│  │  │  PC   │  │  PC   │  │  PC   │      │                                      │
+│  │  └───────┘  └───────┘  └───────┘      │                                      │
 │  └─────────────────────────────────────────┘                                    │
-│                                                                                  │
-│  Each thread has:                                                                │
-│    - Own stack (local variables, method calls) — typically 512KB-1MB             │
-│    - Own program counter (which instruction it's executing)                      │
-│    - Own register state                                                          │
-│  All threads share:                                                              │
-│    - Heap (objects, arrays)                                                      │
+│                                                                                 │
+│  Each thread has:                                                               │
+│    - Own stack (local variables, method calls) — typically 512KB-1MB            │
+│    - Own program counter (which instruction it's executing)                     │
+│    - Own register state                                                         │
+│  All threads share:                                                             │
+│    - Heap (objects, arrays)                                                     │
 │    - Method area (class metadata)                                               │
-│    - File handles, sockets                                                       │
+│    - File handles, sockets                                                      │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -106,14 +106,14 @@ t.start();
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  CRITICAL MISTAKE — start() vs run()                                            │
-│                                                                                  │
-│  t.start()  →  Creates NEW thread, runs run() in that thread  ✅               │
-│  t.run()    →  Runs run() in CURRENT thread (no new thread!)   ❌               │
-│                                                                                  │
-│  This is an interview classic. The JVM:                                          │
+│                                                                                 │
+│  t.start()  →  Creates NEW thread, runs run() in that thread  ✅                 │
+│  t.run()    →  Runs run() in CURRENT thread (no new thread!)   ❌                │
+│                                                                                 │
+│  This is an interview classic. The JVM:                                         │
 │  1. Allocates new stack for the thread                                          │
 │  2. Registers thread with OS scheduler                                          │
-│  3. OS gives it CPU time                                                         │
+│  3. OS gives it CPU time                                                        │
 │  4. Thread's run() method executes                                              │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -122,33 +122,33 @@ t.start();
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                      THREAD LIFECYCLE STATE MACHINE                              │
-│                                                                                  │
+│                      THREAD LIFECYCLE STATE MACHINE                             │
+│                                                                                 │
 │    ┌────────┐    start()    ┌──────────┐                                        │
 │    │  NEW   │──────────────→│ RUNNABLE │←──────────────┐                        │
 │    └────────┘               └────┬─────┘               │                        │
-│                                  │                      │                        │
+│                                  │                      │                       │
 │                    ┌─────────────┼──────────────┐      │                        │
 │                    │             │              │      │                        │
 │             synchronized    sleep()/     I/O wait   notify()/                   │
 │             (can't get      wait()                  sleep done/                 │
 │              the lock)        │              │      I/O done                    │
-│                    │          │              │      │                        │
-│                    ▼          ▼              ▼      │                        │
-│              ┌──────────┐ ┌──────────┐ ┌──────────┐│                        │
-│              │ BLOCKED  │ │ WAITING  │ │ TIMED_   ││                        │
-│              │          │ │          │ │ WAITING  ││                        │
-│              └────┬─────┘ └────┬─────┘ └────┬─────┘│                        │
-│                   │            │             │      │                        │
-│                   └────────────┴─────────────┴──────┘                        │
-│                                                                                  │
-│                    run() completes or exception                                  │
-│                              │                                                   │
-│                              ▼                                                   │
+│                    │          │              │      │                           │
+│                    ▼          ▼              ▼      │                           │
+│              ┌──────────┐ ┌──────────┐ ┌──────────┐│                            │
+│              │ BLOCKED  │ │ WAITING  │ │ TIMED_   ││                            │
+│              │          │ │          │ │ WAITING  ││                            │
+│              └────┬─────┘ └────┬─────┘ └────┬─────┘│                            │
+│                   │            │             │      │                           │
+│                   └────────────┴─────────────┴──────┘                           │
+│                                                                                 │
+│                    run() completes or exception                                 │
+│                              │                                                  │
+│                              ▼                                                  │
 │                       ┌────────────┐                                            │
 │                       │ TERMINATED │                                            │
 │                       └────────────┘                                            │
-│                                                                                  │
+│                                                                                 │
 │  States you can check: Thread.State enum                                        │
 │  Thread.currentThread().getState()                                              │
 └─────────────────────────────────────────────────────────────────────────────────┘
@@ -199,25 +199,25 @@ daemon.start();
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  THE VISIBILITY PROBLEM — Why volatile Exists                                   │
-│                                                                                  │
+│                                                                                 │
 │  Modern CPUs have caches. Each core caches variables locally.                   │
-│                                                                                  │
-│  Core 1 (Thread A)          Core 2 (Thread B)                                  │
-│  ┌─────────────┐            ┌─────────────┐                                    │
-│  │ L1 Cache    │            │ L1 Cache    │                                    │
-│  │ flag = true │            │ flag = false│  ← STALE!                          │
-│  └─────────────┘            └─────────────┘                                    │
+│                                                                                 │
+│  Core 1 (Thread A)          Core 2 (Thread B)                                   │
+│  ┌─────────────┐            ┌─────────────┐                                     │
+│  │ L1 Cache    │            │ L1 Cache    │                                     │
+│  │ flag = true │            │ flag = false│  ← STALE!                           │
+│  └─────────────┘            └─────────────┘                                     │
 │         │                          │                                            │
 │         └──────────┬───────────────┘                                            │
-│                    │                                                             │
+│                    │                                                            │
 │             ┌──────────────┐                                                    │
 │             │ Main Memory  │                                                    │
 │             │ flag = true  │                                                    │
 │             └──────────────┘                                                    │
-│                                                                                  │
+│                                                                                 │
 │  Thread A sets flag = true, but Thread B still sees false                       │
 │  because it reads from its own CPU cache, NOT main memory!                      │
-│                                                                                  │
+│                                                                                 │
 │  FIX: volatile boolean flag = true;                                             │
 │  volatile forces reads/writes to go through main memory                         │
 └─────────────────────────────────────────────────────────────────────────────────┘
@@ -253,15 +253,15 @@ class CorrectStopFlag {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│  volatile GUARANTEES:                                                            │
+│  volatile GUARANTEES:                                                           │
 │  ✅ Visibility — writes visible to all threads immediately                       │
 │  ✅ Ordering — prevents instruction reordering around volatile                   │
-│                                                                                  │
-│  volatile DOES NOT GUARANTEE:                                                    │
+│                                                                                 │
+│  volatile DOES NOT GUARANTEE:                                                   │
 │  ❌ Atomicity — count++ is STILL broken even with volatile                       │
 │     (count++ = read + increment + write = 3 operations!)                        │
-│                                                                                  │
-│  WHEN TO USE volatile:                                                           │
+│                                                                                 │
+│  WHEN TO USE volatile:                                                          │
 │  ✅ Boolean flags (stop, done, initialized)                                      │
 │  ✅ Status fields read by many threads, written by one                           │
 │  ❌ Counters, accumulators (use AtomicInteger instead)                           │
@@ -295,17 +295,17 @@ class BankAccount {
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  RACE CONDITION = Two threads access shared data, at least one writes,          │
-│                   and there's no synchronization.                                │
-│                                                                                  │
+│                   and there's no synchronization.                               │
+│                                                                                 │
 │  Time    Thread A              Thread B           balance                       │
 │  ─────  ──────────────────    ──────────────────  ────────                      │
-│  t1     read balance (1000)                        1000                          │
-│  t2                           read balance (1000)  1000                          │
-│  t3     check: 1000>=800 ✓                         1000                          │
-│  t4                           check: 1000>=500 ✓   1000                          │
-│  t5     balance = 1000-800                         200                           │
+│  t1     read balance (1000)                        1000                         │
+│  t2                           read balance (1000)  1000                         │
+│  t3     check: 1000>=800 ✓                         1000                         │
+│  t4                           check: 1000>=500 ✓   1000                         │
+│  t5     balance = 1000-800                         200                          │
 │  t6                           balance = 200-500    -300  ← CORRUPTED!           │
-│                                                                                  │
+│                                                                                 │
 │  This is called a CHECK-THEN-ACT race condition.                                │
 │  The check and the act must be ATOMIC (indivisible).                            │
 └─────────────────────────────────────────────────────────────────────────────────┘
@@ -342,28 +342,28 @@ class SafeBankAccount {
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  HOW synchronized WORKS INTERNALLY                                              │
-│                                                                                  │
+│                                                                                 │
 │  Every Java object has a MONITOR (also called intrinsic lock).                  │
-│                                                                                  │
+│                                                                                 │
 │  Thread A enters synchronized:                                                  │
 │  1. Try to acquire the object's monitor                                         │
 │  2. If free → acquire it, enter critical section                                │
-│  3. If taken → Thread A goes to BLOCKED state, waits in entry set              │
-│  4. When Thread A exits → releases monitor, one waiting thread gets it         │
-│                                                                                  │
-│  ┌──── Object Monitor ────┐                                                    │
-│  │  Owner: Thread A       │                                                    │
-│  │  Entry Set: [B, C]     │  ← Threads waiting to acquire                     │
-│  │  Wait Set:  [D]        │  ← Threads that called wait()                     │
-│  └────────────────────────┘                                                    │
-│                                                                                  │
-│  synchronized GUARANTEES:                                                        │
+│  3. If taken → Thread A goes to BLOCKED state, waits in entry set               │
+│  4. When Thread A exits → releases monitor, one waiting thread gets it          │
+│                                                                                 │
+│  ┌──── Object Monitor ────┐                                                     │
+│  │  Owner: Thread A       │                                                     │
+│  │  Entry Set: [B, C]     │  ← Threads waiting to acquire                       │
+│  │  Wait Set:  [D]        │  ← Threads that called wait()                       │
+│  └────────────────────────┘                                                     │
+│                                                                                 │
+│  synchronized GUARANTEES:                                                       │
 │  ✅ Mutual exclusion (only one thread in critical section)                       │
 │  ✅ Visibility (changes visible to next thread that acquires lock)               │
 │  ✅ Ordering (happens-before relationship)                                       │
-│                                                                                  │
-│  RULES:                                                                          │
-│  • Lock on the SAME object to protect SAME data                                │
+│                                                                                 │
+│  RULES:                                                                         │
+│  • Lock on the SAME object to protect SAME data                                 │
 │  • Keep synchronized blocks SHORT                                               │
 │  • Never call unknown/external code inside synchronized                         │
 │  • Prefer private final lock objects over locking on 'this'                     │
@@ -402,16 +402,16 @@ class BoundedBuffer<T> {
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  wait() vs notify() vs notifyAll()                                              │
-│                                                                                  │
+│                                                                                 │
 │  wait()      — Release lock, go to WAITING state, added to wait set             │
-│  notify()    — Wake ONE random thread from wait set                              │
+│  notify()    — Wake ONE random thread from wait set                             │
 │  notifyAll() — Wake ALL threads from wait set (they compete for lock)           │
-│                                                                                  │
-│  RULES:                                                                          │
+│                                                                                 │
+│  RULES:                                                                         │
 │  • Must be called inside synchronized block (on same object)                    │
 │  • ALWAYS use while loop, not if, to check condition (spurious wakeups)         │
 │  • Prefer notifyAll() over notify() (safer, avoids missed signals)              │
-│                                                                                  │
+│                                                                                 │
 │  The wait() + notify() Pattern:                                                 │
 │  synchronized(lock) {                                                           │
 │      while (!condition) {   // ALWAYS while, not if                             │
@@ -429,22 +429,22 @@ class BoundedBuffer<T> {
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  DEADLOCK — Two threads each holding a lock the other needs                     │
-│                                                                                  │
+│                                                                                 │
 │  Thread A:               Thread B:                                              │
 │  lock(account1)          lock(account2)                                         │
-│  lock(account2) ← WAIT  lock(account1) ← WAIT                                 │
+│  lock(account2) ← WAIT  lock(account1) ← WAIT                                   │
 │  ... forever ...         ... forever ...                                        │
-│                                                                                  │
+│                                                                                 │
 │  Thread A holds account1, waits for account2                                    │
 │  Thread B holds account2, waits for account1                                    │
 │  → DEADLOCK! Neither can proceed.                                               │
-│                                                                                  │
+│                                                                                 │
 │  4 CONDITIONS (ALL must be true for deadlock):                                  │
 │  1. Mutual Exclusion — locks are exclusive                                      │
 │  2. Hold and Wait — holding one lock, waiting for another                       │
 │  3. No Preemption — can't force a thread to release a lock                      │
 │  4. Circular Wait — A waits for B, B waits for A                                │
-│                                                                                  │
+│                                                                                 │
 │  BREAK condition #4 to prevent deadlocks:                                       │
 │  → Always acquire locks in the SAME ORDER                                       │
 └─────────────────────────────────────────────────────────────────────────────────┘
@@ -491,16 +491,16 @@ class SafeTransfer {
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│  Atomic classes use CPU-level Compare-And-Swap (CAS) instruction               │
+│  Atomic classes use CPU-level Compare-And-Swap (CAS) instruction                │
 │  → No locks needed! Much faster than synchronized for simple operations         │
-│                                                                                  │
-│  CAS: "If value == expected, set to new. Otherwise, retry."                    │
-│                                                                                  │
+│                                                                                 │
+│  CAS: "If value == expected, set to new. Otherwise, retry."                     │
+│                                                                                 │
 │  CPU Instruction (single atomic operation):                                     │
 │  compareAndSwap(memoryLocation, expectedValue, newValue)                        │
 │  → Returns true if swapped, false if value changed                              │
-│                                                                                  │
-│  Available Atomic Types:                                                         │
+│                                                                                 │
+│  Available Atomic Types:                                                        │
 │  ┌──────────────────────────────────────────────┐                               │
 │  │ AtomicInteger   │ AtomicLong    │ AtomicBoolean│                             │
 │  │ AtomicReference │ AtomicArray   │ LongAdder    │                             │
@@ -534,8 +534,8 @@ adder.sum();         // Get final count (slightly delayed)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WHEN TO USE WHAT:                                                               │
-│                                                                                  │
+│  WHEN TO USE WHAT:                                                              │
+│                                                                                 │
 │  ┌──────────────────────────────────────────────────────────────────────┐       │
 │  │ Need                        │ Use                                    │       │
 │  ├─────────────────────────────┼────────────────────────────────────────│       │
@@ -556,20 +556,20 @@ adder.sum();         // Get final count (slightly delayed)
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  THREAD-SAFE COLLECTIONS HIERARCHY                                              │
-│                                                                                  │
-│  DON'T USE:                    USE INSTEAD:                                      │
-│  ─────────                     ────────────                                      │
-│  HashMap                 →     ConcurrentHashMap                                 │
-│  ArrayList               →     CopyOnWriteArrayList                              │
-│  TreeMap                 →     ConcurrentSkipListMap                              │
-│  LinkedList (as queue)   →     ConcurrentLinkedQueue                             │
-│  PriorityQueue           →     PriorityBlockingQueue                             │
-│  ArrayDeque              →     LinkedBlockingDeque                                │
-│                                                                                  │
+│                                                                                 │
+│  DON'T USE:                    USE INSTEAD:                                     │
+│  ─────────                     ────────────                                     │
+│  HashMap                 →     ConcurrentHashMap                                │
+│  ArrayList               →     CopyOnWriteArrayList                             │
+│  TreeMap                 →     ConcurrentSkipListMap                            │
+│  LinkedList (as queue)   →     ConcurrentLinkedQueue                            │
+│  PriorityQueue           →     PriorityBlockingQueue                            │
+│  ArrayDeque              →     LinkedBlockingDeque                              │
+│                                                                                 │
 │  Collections.synchronizedMap() is a TRAP:                                       │
-│  → Wraps every method in synchronized → single global lock → SLOW              │
-│  → ConcurrentHashMap uses segment locking (Java 7) or CAS (Java 8+)            │
-│    → Multiple threads can read/write different segments simultaneously           │
+│  → Wraps every method in synchronized → single global lock → SLOW               │
+│  → ConcurrentHashMap uses segment locking (Java 7) or CAS (Java 8+)             │
+│    → Multiple threads can read/write different segments simultaneously          │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -608,29 +608,29 @@ Task t = queue.take(); // Blocks if empty (consumer waits)
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  TOP 10 CONCURRENCY MISTAKES                                                    │
-│                                                                                  │
+│                                                                                 │
 │  1. Using count++ instead of AtomicInteger                                      │
 │  2. Using HashMap in multithreaded code (NPE, infinite loop on resize!)         │
 │  3. Forgetting volatile on shared boolean flags                                 │
 │  4. Using if instead of while with wait()                                       │
 │  5. Calling run() instead of start()                                            │
-│  6. Not restoring interrupt flag after catching InterruptedException             │
+│  6. Not restoring interrupt flag after catching InterruptedException            │
 │  7. Locking on mutable objects ("test".intern() disaster)                       │
 │  8. Holding locks while doing I/O                                               │
 │  9. Double-checked locking without volatile (broken before Java 5)              │
-│  10. Not making lock objects final                                               │
-│                                                                                  │
-│  INTERVIEW FAVORITES:                                                            │
+│  10. Not making lock objects final                                              │
+│                                                                                 │
+│  INTERVIEW FAVORITES:                                                           │
 │  Q: "Difference between synchronized and volatile?"                             │
 │  A: synchronized guarantees atomicity + visibility + ordering                   │
 │     volatile guarantees visibility + ordering only (NOT atomicity)              │
-│                                                                                  │
+│                                                                                 │
 │  Q: "Can two threads enter two different synchronized methods of same object?"  │
-│  A: NO. Both lock on 'this'. Only one thread at a time for ALL                 │
+│  A: NO. Both lock on 'this'. Only one thread at a time for ALL                  │
 │     synchronized methods of the same object instance.                           │
-│                                                                                  │
-│  Q: "What happens if you don't call start()?"                                  │
-│  A: Calling run() directly executes in current thread. No new thread created.  │
+│                                                                                 │
+│  Q: "What happens if you don't call start()?"                                   │
+│  A: Calling run() directly executes in current thread. No new thread created.   │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 

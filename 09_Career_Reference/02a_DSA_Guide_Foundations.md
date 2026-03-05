@@ -16,19 +16,19 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════════╗
-║       THE HARDWARE REALITY - WHAT EVERY DSA LEARNER MUST KNOW                   ║
+║       THE HARDWARE REALITY - WHAT EVERY DSA LEARNER MUST KNOW                    ║
 ╠══════════════════════════════════════════════════════════════════════════════════╣
-║                                                                                   ║
-║  Why this matters: Big-O notation tells you scaling behavior, but               ║
-║  HARDWARE determines actual performance. An O(n) algorithm can be               ║
-║  faster or slower than O(log n) depending on hardware factors!                  ║
-║                                                                                   ║
+║                                                                                  ║
+║  Why this matters: Big-O notation tells you scaling behavior, but                ║
+║  HARDWARE determines actual performance. An O(n) algorithm can be                ║
+║  faster or slower than O(log n) depending on hardware factors!                   ║
+║                                                                                  ║
 ║  This section covers:                                                            ║
 ║  • CPU cache hierarchy and its massive impact                                    ║
 ║  • Memory layout principles                                                      ║
 ║  • Branch prediction effects                                                     ║
-║  • Why some "slow" algorithms are fast in practice                              ║
-║                                                                                   ║
+║  • Why some "slow" algorithms are fast in practice                               ║
+║                                                                                  ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -36,48 +36,48 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    CPU MEMORY HIERARCHY                                          │
+│                    CPU MEMORY HIERARCHY                                         │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  LATENCY (approximate cycles to access):                                        │
-│                                                                                  │
-│  ┌─────────────────────────────────────────────────────────────────────────┐   │
+│                                                                                 │
+│  ┌─────────────────────────────────────────────────────────────────────────┐    │
 │  │                                                                          │   │
-│  │    CPU REGISTERS  ←──  1 cycle  (0.3 ns)                                │   │
-│  │         32-128 registers, ~1 KB                                         │   │
+│  │    CPU REGISTERS  ←──  1 cycle  (0.3 ns)                                │    │
+│  │         32-128 registers, ~1 KB                                         │    │
 │  │              │                                                           │   │
 │  │              ▼                                                           │   │
-│  │    L1 CACHE  ←────── 4 cycles  (1 ns)                                  │   │
-│  │         32-64 KB per core                                               │   │
+│  │    L1 CACHE  ←────── 4 cycles  (1 ns)                                  │     │
+│  │         32-64 KB per core                                               │    │
 │  │              │                                                           │   │
 │  │              ▼                                                           │   │
-│  │    L2 CACHE  ←──────  12 cycles  (3 ns)                                │   │
-│  │         256 KB - 1 MB per core                                          │   │
+│  │    L2 CACHE  ←──────  12 cycles  (3 ns)                                │     │
+│  │         256 KB - 1 MB per core                                          │    │
 │  │              │                                                           │   │
 │  │              ▼                                                           │   │
-│  │    L3 CACHE  ←──────  40 cycles  (12 ns)                               │   │
-│  │         8-64 MB shared                                                  │   │
+│  │    L3 CACHE  ←──────  40 cycles  (12 ns)                               │     │
+│  │         8-64 MB shared                                                  │    │
 │  │              │                                                           │   │
 │  │              ▼                                                           │   │
-│  │    MAIN RAM  ←────── 200+ cycles  (60-100 ns)                          │   │
-│  │         8-128 GB                                                        │   │
+│  │    MAIN RAM  ←────── 200+ cycles  (60-100 ns)                          │     │
+│  │         8-128 GB                                                        │    │
 │  │              │                                                           │   │
 │  │              ▼                                                           │   │
-│  │    SSD       ←────── 100,000 cycles  (100 μs)                          │   │
+│  │    SSD       ←────── 100,000 cycles  (100 μs)                          │     │
 │  │              │                                                           │   │
 │  │              ▼                                                           │   │
-│  │    HDD       ←────── 10,000,000 cycles  (10 ms)                        │   │
+│  │    HDD       ←────── 10,000,000 cycles  (10 ms)                        │     │
 │  │                                                                          │   │
-│  └─────────────────────────────────────────────────────────────────────────┘   │
-│                                                                                  │
-│                                                                                  │
-│  KEY INSIGHT:                                                                    │
+│  └─────────────────────────────────────────────────────────────────────────┘    │
+│                                                                                 │
+│                                                                                 │
+│  KEY INSIGHT:                                                                   │
 │  L1 to RAM = 50x slower!                                                        │
 │  RAM to SSD = 1000x slower!                                                     │
-│                                                                                  │
-│  An algorithm that stays in L1 cache can be 50x faster than one that           │
-│  constantly misses to RAM, even with the same Big-O complexity!                │
-│                                                                                  │
+│                                                                                 │
+│  An algorithm that stays in L1 cache can be 50x faster than one that            │
+│  constantly misses to RAM, even with the same Big-O complexity!                 │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -85,48 +85,48 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    THE CACHE LINE - 64 BYTES OF MAGIC                            │
+│                    THE CACHE LINE - 64 BYTES OF MAGIC                           │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  When CPU reads ONE byte, it fetches 64 bytes (cache line) from RAM!           │
-│                                                                                  │
+│                                                                                 │
+│  When CPU reads ONE byte, it fetches 64 bytes (cache line) from RAM!            │
+│                                                                                 │
 │  ARRAY ACCESS (cache-friendly):                                                 │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │  int[] arr = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}     ││
-│  │                                                                            ││
-│  │  Access arr[0]:                                                            ││
-│  │  ┌──────────────────────────────────────────────────────────────────────┐ ││
-│  │  │ Cache loads: arr[0] arr[1] arr[2] ... arr[15] (64 bytes = 16 ints)  │ ││
-│  │  └──────────────────────────────────────────────────────────────────────┘ ││
-│  │                                                                            ││
-│  │  Next 15 accesses arr[1]..arr[15] = CACHE HITS (1 cycle each!)           ││
-│  │  Total for 16 elements: 200 + 15 = 215 cycles                            ││
-│  │  Average: ~13 cycles per element                                          ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
-│                                                                                  │
-│  LINKED LIST ACCESS (cache-unfriendly):                                        │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │  Nodes scattered in memory:                                                ││
-│  │  Node@0x1000 → Node@0x5000 → Node@0x2000 → Node@0x9000 → ...             ││
-│  │                                                                            ││
-│  │  Access node 1: Cache miss! Load 64 bytes at 0x1000 → 200 cycles         ││
-│  │  Access node 2: Cache miss! Load 64 bytes at 0x5000 → 200 cycles         ││
-│  │  Access node 3: Cache miss! Load 64 bytes at 0x2000 → 200 cycles         ││
-│  │  ...                                                                       ││
-│  │                                                                            ││
-│  │  Total for 16 elements: 16 × 200 = 3200 cycles                           ││
-│  │  Average: 200 cycles per element                                          ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │  int[] arr = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}     │   │
+│  │                                                                            │ │
+│  │  Access arr[0]:                                                            │ │
+│  │  ┌──────────────────────────────────────────────────────────────────────┐ │  │
+│  │  │ Cache loads: arr[0] arr[1] arr[2] ... arr[15] (64 bytes = 16 ints)  │ │   │
+│  │  └──────────────────────────────────────────────────────────────────────┘ │  │
+│  │                                                                            │ │
+│  │  Next 15 accesses arr[1]..arr[15] = CACHE HITS (1 cycle each!)           │   │
+│  │  Total for 16 elements: 200 + 15 = 215 cycles                            │   │
+│  │  Average: ~13 cycles per element                                          │  │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
+│                                                                                 │
+│  LINKED LIST ACCESS (cache-unfriendly):                                         │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │  Nodes scattered in memory:                                                │ │
+│  │  Node@0x1000 → Node@0x5000 → Node@0x2000 → Node@0x9000 → ...             │   │
+│  │                                                                            │ │
+│  │  Access node 1: Cache miss! Load 64 bytes at 0x1000 → 200 cycles         │   │
+│  │  Access node 2: Cache miss! Load 64 bytes at 0x5000 → 200 cycles         │   │
+│  │  Access node 3: Cache miss! Load 64 bytes at 0x2000 → 200 cycles         │   │
+│  │  ...                                                                       │ │
+│  │                                                                            │ │
+│  │  Total for 16 elements: 16 × 200 = 3200 cycles                           │   │
+│  │  Average: 200 cycles per element                                          │  │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
+│                                                                                 │
 │  COMPARISON:                                                                    │
-│  Array iteration:  ~13 cycles/element   →  15x FASTER!                         │
+│  Array iteration:  ~13 cycles/element   →  15x FASTER!                          │
 │  List iteration:   200 cycles/element                                           │
-│                                                                                  │
-│  This is why array-based structures often outperform pointer-based ones,       │
-│  even when Big-O suggests otherwise!                                           │
-│                                                                                  │
+│                                                                                 │
+│  This is why array-based structures often outperform pointer-based ones,        │
+│  even when Big-O suggests otherwise!                                            │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -134,41 +134,41 @@
 
 ````
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    BRANCH PREDICTION - THE HIDDEN FACTOR                         │
+│                    BRANCH PREDICTION - THE HIDDEN FACTOR                        │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  CPUs predict which branch will be taken before condition is evaluated!        │
-│  If wrong, pipeline flush costs 15-20 cycles.                                  │
-│                                                                                  │
-│                                                                                  │
-│  EXAMPLE: Binary Search vs Linear Search on sorted array                       │
-│  ─────────────────────────────────────────────────────────                     │
-│                                                                                  │
+│                                                                                 │
+│  CPUs predict which branch will be taken before condition is evaluated!         │
+│  If wrong, pipeline flush costs 15-20 cycles.                                   │
+│                                                                                 │
+│                                                                                 │
+│  EXAMPLE: Binary Search vs Linear Search on sorted array                        │
+│  ─────────────────────────────────────────────────────────                      │
+│                                                                                 │
 │  Binary Search (random jumps):                                                  │
-│  - Each comparison: ~50% chance of left, 50% right                            │
-│  - Branch predictor accuracy: ~50%                                             │
-│  - Misprediction penalty: ~20 cycles per compare                              │
-│  - Effective cost: O(log n) × (compare + 10 cycles penalty)                   │
-│                                                                                  │
+│  - Each comparison: ~50% chance of left, 50% right                              │
+│  - Branch predictor accuracy: ~50%                                              │
+│  - Misprediction penalty: ~20 cycles per compare                                │
+│  - Effective cost: O(log n) × (compare + 10 cycles penalty)                     │
+│                                                                                 │
 │  Linear Search (sequential):                                                    │
-│  - Usually continues (not found), branch highly predictable                    │
-│  - Branch predictor accuracy: ~99%                                             │
-│  - Misprediction penalty: only on final "found" branch                        │
-│  - Plus: prefetching pulls next elements into cache                           │
-│                                                                                  │
-│                                                                                  │
-│  BENCHMARK (search in sorted array of 64 elements):                            │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │ Algorithm      │ Big-O    │ Actual Time │ Notes                           ││
-│  ├────────────────┼──────────┼─────────────┼─────────────────────────────────┤│
-│  │ Binary Search  │ O(log n) │ 45 ns       │ 6 comparisons, unpredictable   ││
-│  │ Linear Search  │ O(n)     │ 35 ns       │ 32 avg comparisons, predicted! ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
-│  For small n (< 100), linear search can be FASTER than binary search!         │
-│  The crossover point depends on CPU and cache characteristics.                 │
-│                                                                                  │
-│                                                                                  │
+│  - Usually continues (not found), branch highly predictable                     │
+│  - Branch predictor accuracy: ~99%                                              │
+│  - Misprediction penalty: only on final "found" branch                          │
+│  - Plus: prefetching pulls next elements into cache                             │
+│                                                                                 │
+│                                                                                 │
+│  BENCHMARK (search in sorted array of 64 elements):                             │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │ Algorithm      │ Big-O    │ Actual Time │ Notes                           │  │
+│  ├────────────────┼──────────┼─────────────┼─────────────────────────────────┤  │
+│  │ Binary Search  │ O(log n) │ 45 ns       │ 6 comparisons, unpredictable   │   │
+│  │ Linear Search  │ O(n)     │ 35 ns       │ 32 avg comparisons, predicted! │   │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
+│  For small n (< 100), linear search can be FASTER than binary search!           │
+│  The crossover point depends on CPU and cache characteristics.                  │
+│                                                                                 │
+│                                                                                 │
 │  BRANCH-FREE CODE:                                                              │
 │  ─────────────────                                                              │
 ```java
@@ -192,59 +192,59 @@ int max = Math.max(a, b);  // Modern JIT uses cmov instruction
 ```
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│ JAVA OBJECT MEMORY LAYOUT │
+│ JAVA OBJECT MEMORY LAYOUT                                                       │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│ │
-│ OBJECT HEADER (12-16 bytes on 64-bit JVM): │
-│ ┌──────────────────────────────────────────────────────────────────────────┐ │
-│ │ Mark Word (8 bytes) │ Class Pointer (4-8 bytes) │ [Array Length (4)] │ │
-│ │ - Hash code │ - Points to class │ - Only for arrays │ │
-│ │ - GC age │ metadata │ │ │
-│ │ - Lock state │ │ │ │
-│ │ - Biased lock info │ │ │ │
-│ └──────────────────────────────────────────────────────────────────────────┘ │
-│ │
-│ │
-│ PRIMITIVE ARRAY: int[] arr = new int[10] │
-│ ┌──────────────────────────────────────────────────────────────────────────┐ │
-│ │ Header (16 bytes) + Length (4 bytes) │ int × 10 (40 bytes) │ │
-│ │ Total: 16 + 4 + 40 = 60 bytes (padded to 64 bytes for alignment) │ │
-│ └──────────────────────────────────────────────────────────────────────────┘ │
-│ │
-│ │
-│ ARRAYLIST<Integer> with 10 elements: │
-│ ┌──────────────────────────────────────────────────────────────────────────┐ │
-│ │ ArrayList Object: │ │
-│ │ ├── Header (16 bytes) │ │
-│ │ ├── Object[] elementData (8 byte reference) │ │
-│ │ ├── int size (4 bytes) │ │
-│ │ └── padding (4 bytes) │ │
-│ │ = 32 bytes │ │
-│ │ │ │
-│ │ Object[]: │ │
-│ │ ├── Header (16 bytes) │ │
-│ │ └── 10 × 8 byte references = 80 bytes │ │
-│ │ = 96 bytes │ │
-│ │ │ │
-│ │ 10 × Integer objects: │ │
-│ │ ├── Each Integer: 16 byte header + 4 byte int = 20 → 24 bytes (aligned) │ │
-│ │ └── 10 × 24 = 240 bytes │ │
-│ │ │ │
-│ │ TOTAL: 32 + 96 + 240 = 368 bytes │ │
-│ └──────────────────────────────────────────────────────────────────────────┘ │
-│ │
-│ │
-│ COMPARISON: │
-│ ┌────────────────────────────────────────────────────────────────────────────┐│
-│ │ Structure │ Memory for 10 ints │ Memory per element ││
-│ ├────────────────────────┼────────────────────┼─────────────────────────────┤│
-│ │ int[] (primitive) │ 64 bytes (padded) │ 4 bytes (+ 2.4 overhead) ││
-│ │ ArrayList<Integer> │ 368 bytes │ 24 bytes (6x more!) ││
-│ │ LinkedList<Integer> │ 480+ bytes │ 48 bytes (12x more!) ││
-│ └────────────────────────────────────────────────────────────────────────────┘│
-│ │
-│ LESSON: Use primitive arrays when possible! │
-│ │
+│                                                                                 │
+│ OBJECT HEADER (12-16 bytes on 64-bit JVM):                                      │
+│ ┌──────────────────────────────────────────────────────────────────────────┐    │
+│ │ Mark Word (8 bytes) │ Class Pointer (4-8 bytes) │ [Array Length (4)] │        │
+│ │ - Hash code │ - Points to class │ - Only for arrays │                         │
+│ │ - GC age │ metadata │ │                                                       │
+│ │ - Lock state │ │ │                                                            │
+│ │ - Biased lock info │ │ │                                                      │
+│ └──────────────────────────────────────────────────────────────────────────┘    │
+│                                                                                 │
+│                                                                                 │
+│ PRIMITIVE ARRAY: int[] arr = new int[10]                                        │
+│ ┌──────────────────────────────────────────────────────────────────────────┐    │
+│ │ Header (16 bytes) + Length (4 bytes) │ int × 10 (40 bytes) │                  │
+│ │ Total: 16 + 4 + 40 = 60 bytes (padded to 64 bytes for alignment) │            │
+│ └──────────────────────────────────────────────────────────────────────────┘    │
+│                                                                                 │
+│                                                                                 │
+│ ARRAYLIST<Integer> with 10 elements:                                            │
+│ ┌──────────────────────────────────────────────────────────────────────────┐    │
+│ │ ArrayList Object: │                                                           │
+│ │ ├── Header (16 bytes) │                                                       │
+│ │ ├── Object[] elementData (8 byte reference) │                                 │
+│ │ ├── int size (4 bytes) │                                                      │
+│ │ └── padding (4 bytes) │                                                       │
+│ │ = 32 bytes │                                                                  │
+│ │ │                                                                             │
+│ │ Object[]: │                                                                   │
+│ │ ├── Header (16 bytes) │                                                       │
+│ │ └── 10 × 8 byte references = 80 bytes │                                       │
+│ │ = 96 bytes │                                                                  │
+│ │ │                                                                             │
+│ │ 10 × Integer objects: │                                                       │
+│ │ ├── Each Integer: 16 byte header + 4 byte int = 20 → 24 bytes (aligned) │     │
+│ │ └── 10 × 24 = 240 bytes │                                                     │
+│ │ │                                                                             │
+│ │ TOTAL: 32 + 96 + 240 = 368 bytes │                                            │
+│ └──────────────────────────────────────────────────────────────────────────┘    │
+│                                                                                 │
+│                                                                                 │
+│ COMPARISON:                                                                     │
+│ ┌────────────────────────────────────────────────────────────────────────────┐  │
+│ │ Structure │ Memory for 10 ints │ Memory per element │                         │
+│ ├────────────────────────┼────────────────────┼─────────────────────────────┤   │
+│ │ int[] (primitive) │ 64 bytes (padded) │ 4 bytes (+ 2.4 overhead) │            │
+│ │ ArrayList<Integer> │ 368 bytes │ 24 bytes (6x more!) │                        │
+│ │ LinkedList<Integer> │ 480+ bytes │ 48 bytes (12x more!) │                     │
+│ └────────────────────────────────────────────────────────────────────────────┘  │
+│                                                                                 │
+│ LESSON: Use primitive arrays when possible!                                     │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ```
@@ -254,62 +254,62 @@ int max = Math.max(a, b);  // Modern JIT uses cmov instruction
 ```
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│ CPU OPERATION COSTS (APPROXIMATE) │
+│ CPU OPERATION COSTS (APPROXIMATE)                                               │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│ │
-│ ARITHMETIC OPERATIONS (ALU): │
-│ ┌──────────────────────────────────────────────────────────────────────────┐ │
-│ │ Operation │ Cycles │ Notes │ │
-│ ├─────────────────────┼────────┼──────────────────────────────────────────┤ │
-│ │ Integer add/sub │ 1 │ Can do 4+ per cycle (superscalar) │ │
-│ │ Integer multiply │ 3-4 │ Pipelined │ │
-│ │ Integer divide │ 20-80 │ Very slow! Use shifts for powers of 2 │ │
-│ │ Bit operations │ 1 │ AND, OR, XOR, shift │ │
-│ │ Comparison │ 1 │ But may cause branch misprediction │ │
-│ │ Float add/sub │ 3-4 │ │ │
-│ │ Float multiply │ 4-5 │ │ │
-│ │ Float divide │ 15-25 │ Much slower than multiply │ │
-│ │ Square root │ 15-30 │ │ │
-│ │ Integer % (modulo) │ 20-80 │ Same as divide │ │
-│ └──────────────────────────────────────────────────────────────────────────┘ │
-│ │
-│ MEMORY OPERATIONS: │
-│ ┌──────────────────────────────────────────────────────────────────────────┐ │
-│ │ Operation │ Cycles │ Notes │ │
-│ ├───────────────────────┼──────────┼──────────────────────────────────────┤ │
-│ │ L1 cache hit │ 4 │ Best case for memory access │ │
-│ │ L2 cache hit │ 12 │ │ │
-│ │ L3 cache hit │ 40 │ │ │
-│ │ RAM access │ 200+ │ Highly variable │ │
-│ │ TLB miss (page walk) │ 50-1000 │ Large working set problem │ │
-│ │ Page fault (to disk) │ millions │ Avoid at all costs in hot paths │ │
-│ └──────────────────────────────────────────────────────────────────────────┘ │
-│ │
-│ FUNCTION CALL OVERHEAD: │
-│ ┌──────────────────────────────────────────────────────────────────────────┐ │
-│ │ Operation │ Cycles │ Notes │ │
-│ ├────────────────────────┼─────────┼──────────────────────────────────────┤ │
-│ │ Static method call │ 5-10 │ Direct jump │ │
-│ │ Instance method call │ 10-15 │ Vtable lookup │ │
-│ │ Interface method call │ 15-25 │ Itable lookup │ │
-│ │ JIT-inlined method │ 0 │ No overhead if inlined! │ │
-│ │ Reflection call │ 100+ │ Avoid in hot paths │ │
-│ └──────────────────────────────────────────────────────────────────────────┘ │
-│ │
-│ │
-│ JAVA-SPECIFIC OPERATIONS: │
-│ ┌──────────────────────────────────────────────────────────────────────────┐ │
-│ │ Operation │ Cycles │ Notes │ │
-│ ├───────────────────────┼──────────┼──────────────────────────────────────┤ │
-│ │ Object allocation │ 10-20 │ Bump pointer if in TLAB │ │
-│ │ Array allocation │ 20-100 │ Depends on size, may zero-fill │ │
-│ │ new String() │ 50-100 │ Object + char array │ │
-│ │ HashMap.get() │ 30-100 │ Hash + possible collision │ │
-│ │ ArrayList.add() │ 5-500 │ 5 if space, 500 if resize needed │ │
-│ │ Autoboxing (int→Int) │ 10-50 │ May allocate new object │ │
-│ │ String concatenation │ 50-1000 │ Creates intermediate objects │ │
-│ └──────────────────────────────────────────────────────────────────────────┘ │
-│ │
+│                                                                                 │
+│ ARITHMETIC OPERATIONS (ALU):                                                    │
+│ ┌──────────────────────────────────────────────────────────────────────────┐    │
+│ │ Operation │ Cycles │ Notes │                                                  │
+│ ├─────────────────────┼────────┼──────────────────────────────────────────┤     │
+│ │ Integer add/sub │ 1 │ Can do 4+ per cycle (superscalar) │                     │
+│ │ Integer multiply │ 3-4 │ Pipelined │                                          │
+│ │ Integer divide │ 20-80 │ Very slow! Use shifts for powers of 2 │              │
+│ │ Bit operations │ 1 │ AND, OR, XOR, shift │                                    │
+│ │ Comparison │ 1 │ But may cause branch misprediction │                         │
+│ │ Float add/sub │ 3-4 │ │                                                       │
+│ │ Float multiply │ 4-5 │ │                                                      │
+│ │ Float divide │ 15-25 │ Much slower than multiply │                            │
+│ │ Square root │ 15-30 │ │                                                       │
+│ │ Integer % (modulo) │ 20-80 │ Same as divide │                                 │
+│ └──────────────────────────────────────────────────────────────────────────┘    │
+│                                                                                 │
+│ MEMORY OPERATIONS:                                                              │
+│ ┌──────────────────────────────────────────────────────────────────────────┐    │
+│ │ Operation │ Cycles │ Notes │                                                  │
+│ ├───────────────────────┼──────────┼──────────────────────────────────────┤     │
+│ │ L1 cache hit │ 4 │ Best case for memory access │                              │
+│ │ L2 cache hit │ 12 │ │                                                         │
+│ │ L3 cache hit │ 40 │ │                                                         │
+│ │ RAM access │ 200+ │ Highly variable │                                         │
+│ │ TLB miss (page walk) │ 50-1000 │ Large working set problem │                  │
+│ │ Page fault (to disk) │ millions │ Avoid at all costs in hot paths │           │
+│ └──────────────────────────────────────────────────────────────────────────┘    │
+│                                                                                 │
+│ FUNCTION CALL OVERHEAD:                                                         │
+│ ┌──────────────────────────────────────────────────────────────────────────┐    │
+│ │ Operation │ Cycles │ Notes │                                                  │
+│ ├────────────────────────┼─────────┼──────────────────────────────────────┤     │
+│ │ Static method call │ 5-10 │ Direct jump │                                     │
+│ │ Instance method call │ 10-15 │ Vtable lookup │                                │
+│ │ Interface method call │ 15-25 │ Itable lookup │                               │
+│ │ JIT-inlined method │ 0 │ No overhead if inlined! │                            │
+│ │ Reflection call │ 100+ │ Avoid in hot paths │                                 │
+│ └──────────────────────────────────────────────────────────────────────────┘    │
+│                                                                                 │
+│                                                                                 │
+│ JAVA-SPECIFIC OPERATIONS:                                                       │
+│ ┌──────────────────────────────────────────────────────────────────────────┐    │
+│ │ Operation │ Cycles │ Notes │                                                  │
+│ ├───────────────────────┼──────────┼──────────────────────────────────────┤     │
+│ │ Object allocation │ 10-20 │ Bump pointer if in TLAB │                         │
+│ │ Array allocation │ 20-100 │ Depends on size, may zero-fill │                  │
+│ │ new String() │ 50-100 │ Object + char array │                                 │
+│ │ HashMap.get() │ 30-100 │ Hash + possible collision │                          │
+│ │ ArrayList.add() │ 5-500 │ 5 if space, 500 if resize needed │                  │
+│ │ Autoboxing (int→Int) │ 10-50 │ May allocate new object │                      │
+│ │ String concatenation │ 50-1000 │ Creates intermediate objects │               │
+│ └──────────────────────────────────────────────────────────────────────────┘    │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ```
@@ -319,53 +319,53 @@ int max = Math.max(a, b);  // Modern JIT uses cmov instruction
 ```
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│ WHEN BIG-O DOESN'T TELL THE FULL STORY │
+│ WHEN BIG-O DOESN'T TELL THE FULL STORY                                          │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│ │
-│ CASE 1: O(n) can beat O(log n) for small n │
-│ ─────────────────────────────────────────── │
-│ │
-│ Binary search: O(log n) with high constant (branch misprediction) │
-│ Linear search: O(n) with low constant (sequential, predicted) │
-│ │
-│ Crossover: Around n = 100-500 elements │
-│ For n < 100: Linear search often faster! │
-│ │
-│ │
-│ CASE 2: O(n) can beat O(1) amortized │
-│ ───────────────────────────────────────── │
-│ │
-│ ArrayList.add(): O(1) amortized, but occasional O(n) resize │
-│ LinkedList.addFirst(): O(1) always, but cache-unfriendly │
-│ │
-│ For many small adds: ArrayList wins (spatial locality) │
-│ For rare adds at head: LinkedList might win │
-│ │
-│ │
-│ CASE 3: Same Big-O, vastly different performance │
-│ ───────────────────────────────────────────────── │
-│ │
-│ Both O(n) - iterating 1M elements: │
-│ ┌────────────────────────────────────────────────────────────────────────────┐│
-│ │ Structure │ Time (ms) │ Reason ││
-│ ├─────────────────────┼───────────┼─────────────────────────────────────────┤│
-│ │ int[] │ 0.5 │ Sequential memory, cache-friendly ││
-│ │ ArrayList<Integer> │ 3.0 │ Object indirection ││
-│ │ LinkedList<Integer> │ 25.0 │ Random memory access, cache misses ││
-│ │ HashSet<Integer> │ 35.0 │ Hash computation + random access ││
-│ └────────────────────────────────────────────────────────────────────────────┘│
-│ │
-│ Same O(n), but 70x difference between fastest and slowest! │
-│ │
-│ │
-│ PRACTICAL RULES: │
-│ ──────────────── │
-│ 1. For n < 100: Simple O(n) often beats clever O(log n) │
-│ 2. Prefer contiguous memory (arrays) for iteration │
-│ 3. Minimize object allocations in hot paths │
-│ 4. Use primitive arrays over Collections when possible │
-│ 5. Profile before optimizing - intuition is often wrong! │
-│ │
+│                                                                                 │
+│ CASE 1: O(n) can beat O(log n) for small n                                      │
+│ ───────────────────────────────────────────                                     │
+│                                                                                 │
+│ Binary search: O(log n) with high constant (branch misprediction)               │
+│ Linear search: O(n) with low constant (sequential, predicted)                   │
+│                                                                                 │
+│ Crossover: Around n = 100-500 elements                                          │
+│ For n < 100: Linear search often faster!                                        │
+│                                                                                 │
+│                                                                                 │
+│ CASE 2: O(n) can beat O(1) amortized                                            │
+│ ─────────────────────────────────────────                                       │
+│                                                                                 │
+│ ArrayList.add(): O(1) amortized, but occasional O(n) resize                     │
+│ LinkedList.addFirst(): O(1) always, but cache-unfriendly                        │
+│                                                                                 │
+│ For many small adds: ArrayList wins (spatial locality)                          │
+│ For rare adds at head: LinkedList might win                                     │
+│                                                                                 │
+│                                                                                 │
+│ CASE 3: Same Big-O, vastly different performance                                │
+│ ─────────────────────────────────────────────────                               │
+│                                                                                 │
+│ Both O(n) - iterating 1M elements:                                              │
+│ ┌────────────────────────────────────────────────────────────────────────────┐  │
+│ │ Structure │ Time (ms) │ Reason │                                              │
+│ ├─────────────────────┼───────────┼─────────────────────────────────────────┤   │
+│ │ int[] │ 0.5 │ Sequential memory, cache-friendly │                             │
+│ │ ArrayList<Integer> │ 3.0 │ Object indirection │                               │
+│ │ LinkedList<Integer> │ 25.0 │ Random memory access, cache misses │             │
+│ │ HashSet<Integer> │ 35.0 │ Hash computation + random access │                  │
+│ └────────────────────────────────────────────────────────────────────────────┘  │
+│                                                                                 │
+│ Same O(n), but 70x difference between fastest and slowest!                      │
+│                                                                                 │
+│                                                                                 │
+│ PRACTICAL RULES:                                                                │
+│ ────────────────                                                                │
+│ 1. For n < 100: Simple O(n) often beats clever O(log n)                         │
+│ 2. Prefer contiguous memory (arrays) for iteration                              │
+│ 3. Minimize object allocations in hot paths                                     │
+│ 4. Use primitive arrays over Collections when possible                          │
+│ 5. Profile before optimizing - intuition is often wrong!                        │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ```
@@ -396,32 +396,32 @@ int max = Math.max(a, b);  // Modern JIT uses cmov instruction
 ```
 
 ┌─────────────────────────────────────────────────────────────┐
-│ LEARNING FRAMEWORK │
+│ LEARNING FRAMEWORK                                          │
 ├─────────────────────────────────────────────────────────────┤
-│ │
-│ WHY does this exist? │
-│ └── What problem does it solve? │
-│ └── What limitations of other structures does it address? │
-│ │
-│ HOW does it work internally? │
-│ └── Memory layout │
-│ └── Operations implementation │
-│ └── Time/Space complexity derivation │
-│ │
-│ WHAT are the operations? │
-│ └── Core operations (CRUD) │
-│ └── Special operations │
-│ └── Edge cases │
-│ │
-│ WHEN to use it? │
-│ └── Use cases and patterns │
-│ └── Trade-offs with alternatives │
-│ └── Anti-patterns (when NOT to use) │
-│ │
-│ WHERE is it used in real systems? │
-│ └── Production systems │
-│ └── Modern tech stack applications │
-│ │
+│                                                             │
+│ WHY does this exist?                                        │
+│ └── What problem does it solve?                             │
+│ └── What limitations of other structures does it address?   │
+│                                                             │
+│ HOW does it work internally?                                │
+│ └── Memory layout                                           │
+│ └── Operations implementation                               │
+│ └── Time/Space complexity derivation                        │
+│                                                             │
+│ WHAT are the operations?                                    │
+│ └── Core operations (CRUD)                                  │
+│ └── Special operations                                      │
+│ └── Edge cases                                              │
+│                                                             │
+│ WHEN to use it?                                             │
+│ └── Use cases and patterns                                  │
+│ └── Trade-offs with alternatives                            │
+│ └── Anti-patterns (when NOT to use)                         │
+│                                                             │
+│ WHERE is it used in real systems?                           │
+│ └── Production systems                                      │
+│ └── Modern tech stack applications                          │
+│                                                             │
 └─────────────────────────────────────────────────────────────┘
 
 ```
@@ -504,15 +504,15 @@ list.add(10);  // Grows automatically
 // Internal Working:
 ┌─────────────────────────────────────────────────────────────┐
 │ Initial: capacity=10, size=0                                │
-│                                                              │
+│                                                             │
 │ After 10 adds: capacity=10, size=10                         │
-│                                                              │
-│ On 11th add:                                                 │
+│                                                             │
+│ On 11th add:                                                │
 │ 1. Create new array with capacity = 10 × 1.5 = 15           │
 │ 2. Copy all 10 elements to new array                        │
-│ 3. Add 11th element                                          │
-│ 4. Discard old array                                         │
-│                                                              │
+│ 3. Add 11th element                                         │
+│ 4. Discard old array                                        │
+│                                                             │
 │ Amortized O(1) for add operation                            │
 └─────────────────────────────────────────────────────────────┘
 
@@ -532,9 +532,9 @@ int[][] matrix = new int[3][4];  // 3 rows, 4 columns
 
 Memory Layout (Row-Major Order):
 ┌─────────────────────────────────────┐
-│ Row 0: [0][0] [0][1] [0][2] [0][3] │
-│ Row 1: [1][0] [1][1] [1][2] [1][3] │
-│ Row 2: [2][0] [2][1] [2][2] [2][3] │
+│ Row 0: [0][0] [0][1] [0][2] [0][3]  │
+│ Row 1: [1][0] [1][1] [1][2] [1][3]  │
+│ Row 2: [2][0] [2][1] [2][2] [2][3]  │
 └─────────────────────────────────────┘
 
 In Memory: [0][0], [0][1], [0][2], [0][3], [1][0], [1][1]...
@@ -755,14 +755,14 @@ class Node {
 Operations:
 ┌────────────────────────────────────────────────────────────┐
 │ Insert at Head: O(1)                                       │
-│ ┌───┐    ┌───┐    ┌───┐                                   │
-│ │NEW│───►│ A │───►│ B │                                   │
-│ └───┘    └───┘    └───┘                                   │
+│ ┌───┐    ┌───┐    ┌───┐                                    │
+│ │NEW│───►│ A │───►│ B │                                    │
+│ └───┘    └───┘    └───┘                                    │
 │   ↑                                                        │
 │  head                                                      │
 │                                                            │
-│ Insert at Tail: O(n) without tail pointer, O(1) with     │
-│ Delete: O(n) to find, O(1) to unlink                      │
+│ Insert at Tail: O(n) without tail pointer, O(1) with       │
+│ Delete: O(n) to find, O(1) to unlink                       │
 │ Search: O(n)                                               │
 └────────────────────────────────────────────────────────────┘
 
@@ -1658,23 +1658,23 @@ Hash Function converts key to index:
 "apple" → hash("apple") → 42 → store at index 42
 
 ┌────────────────────────────────────────────────────────────┐
-│                    HASH TABLE INTERNALS                     │
+│                    HASH TABLE INTERNALS                    │
 ├────────────────────────────────────────────────────────────┤
-│                                                             │
-│  Key: "apple"                                               │
-│         │                                                   │
-│         ▼                                                   │
+│                                                            │
+│  Key: "apple"                                              │
+│         │                                                  │
+│         ▼                                                  │
 │  ┌─────────────┐                                           │
 │  │ Hash        │ h("apple") = 97 × 31^4 + ... = 93029210   │
 │  │ Function    │                                           │
 │  └─────────────┘                                           │
-│         │                                                   │
-│         ▼                                                   │
+│         │                                                  │
+│         ▼                                                  │
 │  93029210 % 16 = 10  (Index in array of size 16)           │
-│         │                                                   │
-│         ▼                                                   │
+│         │                                                  │
+│         ▼                                                  │
 │  Array[10] ← Store ("apple", value)                        │
-│                                                             │
+│                                                            │
 └────────────────────────────────────────────────────────────┘
 ```
 

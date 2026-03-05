@@ -15,15 +15,15 @@
 ║                    THE OPTIMIZATION PIPELINE                                 ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
 ║                                                                              ║
-║  Stage 1: BRUTE FORCE         "Just make it work"                           ║
+║  Stage 1: BRUTE FORCE         "Just make it work"                            ║
 ║      ↓                                                                       ║
-║  Stage 2: IDENTIFY REDUNDANCY "What am I recalculating?"                    ║
+║  Stage 2: IDENTIFY REDUNDANCY "What am I recalculating?"                     ║
 ║      ↓                                                                       ║
-║  Stage 3: CHOOSE TECHNIQUE    "Which tool removes the waste?"               ║
+║  Stage 3: CHOOSE TECHNIQUE    "Which tool removes the waste?"                ║
 ║      ↓                                                                       ║
-║  Stage 4: IMPLEMENT OPTIMAL   "Apply the technique"                         ║
+║  Stage 4: IMPLEMENT OPTIMAL   "Apply the technique"                          ║
 ║      ↓                                                                       ║
-║  Stage 5: VERIFY & REFINE     "Is it correct? Can we do better?"            ║
+║  Stage 5: VERIFY & REFINE     "Is it correct? Can we do better?"             ║
 ║                                                                              ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
@@ -51,12 +51,12 @@
 │ ┌──────────────────────────┬────────────────────────┬─────────────────────┐ │
 │ │ Problem Type             │ Brute Force            │ Complexity          │ │
 │ ├──────────────────────────┼────────────────────────┼─────────────────────┤ │
-│ │ Find pair with property  │ Check all pairs        │ O(n²)              │ │
-│ │ Find subarray property   │ Check all subarrays    │ O(n²) or O(n³)     │ │
-│ │ Find subset property     │ Generate all subsets   │ O(2ⁿ)              │ │
-│ │ Find permutation         │ Generate all perms     │ O(n!)              │ │
-│ │ Find path in graph       │ Try all paths (DFS)    │ O(V!)              │ │
-│ │ String matching          │ Check every position   │ O(n·m)             │ │
+│ │ Find pair with property  │ Check all pairs        │ O(n²)              │  │
+│ │ Find subarray property   │ Check all subarrays    │ O(n²) or O(n³)     │  │
+│ │ Find subset property     │ Generate all subsets   │ O(2ⁿ)              │  │
+│ │ Find permutation         │ Generate all perms     │ O(n!)              │  │
+│ │ Find path in graph       │ Try all paths (DFS)    │ O(V!)              │  │
+│ │ String matching          │ Check every position   │ O(n·m)             │  │
 │ └──────────────────────────┴────────────────────────┴─────────────────────┘ │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
@@ -76,32 +76,32 @@
 │ 1. REPEATED COMPUTATION                                                     │
 │    "I keep recalculating the same subproblem"                               │
 │    Signal: Same recursive calls with same arguments                         │
-│    Fix → MEMOIZATION / DP                                                    │
+│    Fix → MEMOIZATION / DP                                                   │
 │                                                                             │
 │ 2. REPEATED SCANNING                                                        │
 │    "I scan the whole array to find something I could look up"               │
-│    Signal: Inner loop searching for a value                                  │
-│    Fix → HASH MAP (O(1) lookup)                                              │
+│    Signal: Inner loop searching for a value                                 │
+│    Fix → HASH MAP (O(1) lookup)                                             │
 │                                                                             │
 │ 3. REPEATED COMPARISON                                                      │
 │    "I compare elements that are already in order"                           │
-│    Signal: Unsorted data causing extra comparisons                           │
-│    Fix → SORT FIRST, then two pointers / binary search                       │
+│    Signal: Unsorted data causing extra comparisons                          │
+│    Fix → SORT FIRST, then two pointers / binary search                      │
 │                                                                             │
 │ 4. OVERLAPPING WINDOW                                                       │
 │    "When I slide by 1, I throw away work and redo it"                       │
-│    Signal: Sum/count of contiguous subarray/substring                        │
-│    Fix → SLIDING WINDOW                                                      │
+│    Signal: Sum/count of contiguous subarray/substring                       │
+│    Fix → SLIDING WINDOW                                                     │
 │                                                                             │
 │ 5. REDUNDANT STATE EXPLORATION                                              │
 │    "I explore paths that can't possibly lead to a better answer"            │
-│    Signal: Backtracking with no pruning                                      │
+│    Signal: Backtracking with no pruning                                     │
 │    Fix → PRUNING / BRANCH AND BOUND / GREEDY                                │
 │                                                                             │
 │ 6. UNNECESSARY GRANULARITY                                                  │
 │    "I check every value when I could binary search"                         │
-│    Signal: Monotonic property in search space                                │
-│    Fix → BINARY SEARCH ON ANSWER                                             │
+│    Signal: Monotonic property in search space                               │
+│    Fix → BINARY SEARCH ON ANSWER                                            │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -116,29 +116,29 @@
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │  "I'm checking all pairs"                                                   │
-│     ├─ Need complement/match? → HASH MAP           O(n²) → O(n)            │
-│     ├─ Array is sorted?       → TWO POINTERS       O(n²) → O(n)            │
-│     └─ Can sort first?        → SORT + TWO PTR     O(n²) → O(n log n)      │
+│     ├─ Need complement/match? → HASH MAP           O(n²) → O(n)             │
+│     ├─ Array is sorted?       → TWO POINTERS       O(n²) → O(n)             │
+│     └─ Can sort first?        → SORT + TWO PTR     O(n²) → O(n log n)       │
 │                                                                             │
 │  "I'm checking all subarrays"                                               │
-│     ├─ Fixed-size window?     → SLIDING WINDOW      O(n·k) → O(n)          │
-│     ├─ Variable window?       → EXPAND/SHRINK       O(n²) → O(n)           │
-│     └─ Need prefix sums?      → PREFIX SUM          O(n²) → O(n)           │
+│     ├─ Fixed-size window?     → SLIDING WINDOW      O(n·k) → O(n)           │
+│     ├─ Variable window?       → EXPAND/SHRINK       O(n²) → O(n)            │
+│     └─ Need prefix sums?      → PREFIX SUM          O(n²) → O(n)            │
 │                                                                             │
 │  "I'm checking all subsets"                                                 │
-│     ├─ Overlapping subprobs?  → DP                  O(2ⁿ) → O(n·W)         │
-│     ├─ Greedy choice works?   → GREEDY              O(2ⁿ) → O(n log n)     │
-│     └─ Need all subsets?      → BACKTRACK + PRUNE   O(2ⁿ) → O(2ⁿ) pruned  │
+│     ├─ Overlapping subprobs?  → DP                  O(2ⁿ) → O(n·W)          │
+│     ├─ Greedy choice works?   → GREEDY              O(2ⁿ) → O(n log n)      │
+│     └─ Need all subsets?      → BACKTRACK + PRUNE   O(2ⁿ) → O(2ⁿ) pruned    │
 │                                                                             │
 │  "I'm searching linearly"                                                   │
-│     ├─ Sorted data?           → BINARY SEARCH       O(n) → O(log n)        │
-│     ├─ Monotonic property?    → BS ON ANSWER         O(n) → O(log n)       │
-│     └─ Need range queries?    → SEGMENT TREE         O(n) → O(log n)       │
+│     ├─ Sorted data?           → BINARY SEARCH       O(n) → O(log n)         │
+│     ├─ Monotonic property?    → BS ON ANSWER         O(n) → O(log n)        │
+│     └─ Need range queries?    → SEGMENT TREE         O(n) → O(log n)        │
 │                                                                             │
 │  "I'm doing repeated DFS/BFS"                                               │
-│     ├─ Shortest path?         → BFS / DIJKSTRA      varies                 │
-│     ├─ Connected components?  → UNION-FIND           O(V·E) → O(E·α(V))   │
-│     └─ Topological order?     → TOPOLOGICAL SORT     O(V²) → O(V+E)       │
+│     ├─ Shortest path?         → BFS / DIJKSTRA      varies                  │
+│     ├─ Connected components?  → UNION-FIND           O(V·E) → O(E·α(V))     │
+│     └─ Topological order?     → TOPOLOGICAL SORT     O(V²) → O(V+E)         │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -149,7 +149,7 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│ IMPLEMENTATION CHECKLIST                                                     │
+│ IMPLEMENTATION CHECKLIST                                                    │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │ □ Does the optimized solution handle ALL edge cases from brute force?       │
@@ -159,14 +159,14 @@
 │                                                                             │
 │ VERIFY:                                                                     │
 │ • Run both solutions on same inputs — outputs must match                    │
-│ • Check edge cases: empty, single element, all same, sorted, reverse       │
-│ • Check constraints: does it fit in time limit for n=10⁵?                  │
+│ • Check edge cases: empty, single element, all same, sorted, reverse        │
+│ • Check constraints: does it fit in time limit for n=10⁵?                   │
 │                                                                             │
 │ COMPLEXITY QUICK CHECK:                                                     │
-│ • n = 10⁵ → O(n²) = 10¹⁰ → TOO SLOW (need O(n log n) or better)          │
-│ • n = 10³ → O(n²) = 10⁶ → OK                                               │
-│ • n = 20  → O(2ⁿ) = 10⁶ → OK for backtracking                              │
-│ • n = 10  → O(n!) = 3.6×10⁶ → OK for permutations                          │
+│ • n = 10⁵ → O(n²) = 10¹⁰ → TOO SLOW (need O(n log n) or better)             │
+│ • n = 10³ → O(n²) = 10⁶ → OK                                                │
+│ • n = 20  → O(2ⁿ) = 10⁶ → OK for backtracking                               │
+│ • n = 10  → O(n!) = 3.6×10⁶ → OK for permutations                           │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -182,7 +182,7 @@
 ║  PROBLEM: Find two numbers that add up to target                             ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
 ║                                                                              ║
-║  STAGE 1 — BRUTE FORCE:                                                     ║
+║  STAGE 1 — BRUTE FORCE:                                                      ║
 ║  Check all pairs → O(n²)                                                     ║
 ║                                                                              ║
 ║  for (int i = 0; i < n; i++)                                                 ║
@@ -190,13 +190,13 @@
 ║          if (nums[i] + nums[j] == target) return {i, j};                     ║
 ║                                                                              ║
 ║  STAGE 2 — REDUNDANCY:                                                       ║
-║  Inner loop scans array to find complement (target - nums[i])               ║
-║  → Type 2: REPEATED SCANNING                                                ║
+║  Inner loop scans array to find complement (target - nums[i])                ║
+║  → Type 2: REPEATED SCANNING                                                 ║
 ║                                                                              ║
 ║  STAGE 3 — TECHNIQUE:                                                        ║
-║  "Need complement/match?" → HASH MAP                                        ║
+║  "Need complement/match?" → HASH MAP                                         ║
 ║                                                                              ║
-║  STAGE 4 — OPTIMAL:   O(n)                                                  ║
+║  STAGE 4 — OPTIMAL:   O(n)                                                   ║
 ║  Map<Integer, Integer> map = new HashMap<>();                                ║
 ║  for (int i = 0; i < n; i++) {                                               ║
 ║      int complement = target - nums[i];                                      ║
@@ -205,7 +205,7 @@
 ║  }                                                                           ║
 ║                                                                              ║
 ║  STAGE 5 — VERIFY:                                                           ║
-║  O(n²) → O(n) time,  O(1) → O(n) space                                     ║
+║  O(n²) → O(n) time,  O(1) → O(n) space                                       ║
 ║  ✓ Correct trade: space for time                                             ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
@@ -217,8 +217,8 @@
 ║  PROBLEM: Find contiguous subarray with largest sum                          ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
 ║                                                                              ║
-║  STAGE 1 — BRUTE FORCE:                                                     ║
-║  Check all subarrays → O(n²)                                                ║
+║  STAGE 1 — BRUTE FORCE:                                                      ║
+║  Check all subarrays → O(n²)                                                 ║
 ║                                                                              ║
 ║  int maxSum = Integer.MIN_VALUE;                                             ║
 ║  for (int i = 0; i < n; i++) {                                               ║
@@ -231,13 +231,13 @@
 ║                                                                              ║
 ║  STAGE 2 — REDUNDANCY:                                                       ║
 ║  We're extending subarrays one element at a time.                            ║
-║  Key insight: if current sum becomes negative, starting fresh is better.    ║
+║  Key insight: if current sum becomes negative, starting fresh is better.     ║
 ║  → Type 5: REDUNDANT STATE EXPLORATION                                       ║
 ║                                                                              ║
 ║  STAGE 3 — TECHNIQUE:                                                        ║
-║  Greedy: only keep running sum if positive → KADANE'S ALGORITHM             ║
+║  Greedy: only keep running sum if positive → KADANE'S ALGORITHM              ║
 ║                                                                              ║
-║  STAGE 4 — OPTIMAL:   O(n)                                                  ║
+║  STAGE 4 — OPTIMAL:   O(n)                                                   ║
 ║  int maxSum = nums[0], curSum = nums[0];                                     ║
 ║  for (int i = 1; i < n; i++) {                                               ║
 ║      curSum = Math.max(nums[i], curSum + nums[i]);                           ║
@@ -245,7 +245,7 @@
 ║  }                                                                           ║
 ║                                                                              ║
 ║  STAGE 5 — VERIFY:                                                           ║
-║  O(n²) → O(n) time,  O(1) → O(1) space  ← FREE optimization!              ║
+║  O(n²) → O(n) time,  O(1) → O(1) space  ← FREE optimization!                 ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -256,24 +256,24 @@
 ║  PROBLEM: Find length of longest substring with all unique characters        ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
 ║                                                                              ║
-║  STAGE 1 — BRUTE FORCE:                                                     ║
+║  STAGE 1 — BRUTE FORCE:                                                      ║
 ║  Check all substrings, verify uniqueness → O(n³)                             ║
 ║                                                                              ║
 ║  for (int i = 0; i < n; i++)                                                 ║
 ║      for (int j = i; j < n; j++)                                             ║
-║          if (allUnique(s, i, j))   // O(n) check                            ║
+║          if (allUnique(s, i, j))   // O(n) check                             ║
 ║              maxLen = Math.max(maxLen, j - i + 1);                           ║
 ║                                                                              ║
 ║  STAGE 2 — REDUNDANCY:                                                       ║
-║  When we extend substring by 1 char, we re-check ALL chars for uniqueness.  ║
+║  When we extend substring by 1 char, we re-check ALL chars for uniqueness.   ║
 ║  → Type 4: OVERLAPPING WINDOW                                                ║
 ║  Also rechecking chars we already know are unique.                           ║
-║  → Type 2: REPEATED SCANNING                                                ║
+║  → Type 2: REPEATED SCANNING                                                 ║
 ║                                                                              ║
 ║  STAGE 3 — TECHNIQUE:                                                        ║
-║  Variable-size sliding window + HashSet for O(1) uniqueness check           ║
+║  Variable-size sliding window + HashSet for O(1) uniqueness check            ║
 ║                                                                              ║
-║  STAGE 4 — OPTIMAL:   O(n)                                                  ║
+║  STAGE 4 — OPTIMAL:   O(n)                                                   ║
 ║  Set<Character> set = new HashSet<>();                                       ║
 ║  int left = 0, maxLen = 0;                                                   ║
 ║  for (int right = 0; right < n; right++) {                                   ║
@@ -284,7 +284,7 @@
 ║  }                                                                           ║
 ║                                                                              ║
 ║  STAGE 5 — VERIFY:                                                           ║
-║  O(n³) → O(n) time,  O(1) → O(min(n,26)) space                             ║
+║  O(n³) → O(n) time,  O(1) → O(min(n,26)) space                               ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -295,8 +295,8 @@
 ║  PROBLEM: Min coins to make amount                                           ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
 ║                                                                              ║
-║  STAGE 1 — BRUTE FORCE:                                                     ║
-║  Try all combinations recursively → O(S^n) where S = amount                 ║
+║  STAGE 1 — BRUTE FORCE:                                                      ║
+║  Try all combinations recursively → O(S^n) where S = amount                  ║
 ║                                                                              ║
 ║  int coinChange(int[] coins, int amount) {                                   ║
 ║      if (amount == 0) return 0;                                              ║
@@ -316,17 +316,17 @@
 ║  STAGE 3 — TECHNIQUE:                                                        ║
 ║  DP — bottom-up tabulation                                                   ║
 ║                                                                              ║
-║  STAGE 4 — OPTIMAL:   O(amount × coins.length)                              ║
+║  STAGE 4 — OPTIMAL:   O(amount × coins.length)                               ║
 ║  int[] dp = new int[amount + 1];                                             ║
 ║  Arrays.fill(dp, amount + 1);                                                ║
 ║  dp[0] = 0;                                                                  ║
 ║  for (int i = 1; i <= amount; i++)                                           ║
 ║      for (int coin : coins)                                                  ║
-║          if (coin <= i) dp[i] = Math.min(dp[i], dp[i - coin] + 1);          ║
-║  return dp[amount] > amount ? -1 : dp[amount];                              ║
+║          if (coin <= i) dp[i] = Math.min(dp[i], dp[i - coin] + 1);           ║
+║  return dp[amount] > amount ? -1 : dp[amount];                               ║
 ║                                                                              ║
 ║  STAGE 5 — VERIFY:                                                           ║
-║  O(S^n) → O(S×n) time,  O(1) → O(S) space                                  ║
+║  O(S^n) → O(S×n) time,  O(1) → O(S) space                                    ║
 ║  Exponential → Polynomial!                                                   ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
@@ -338,20 +338,20 @@
 ║  PROBLEM: Find kth smallest element in row/col sorted n×n matrix             ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
 ║                                                                              ║
-║  STAGE 1 — BRUTE FORCE:                                                     ║
-║  Flatten matrix, sort, return k-th → O(n² log n²)                           ║
+║  STAGE 1 — BRUTE FORCE:                                                      ║
+║  Flatten matrix, sort, return k-th → O(n² log n²)                            ║
 ║                                                                              ║
 ║  STAGE 2 — REDUNDANCY:                                                       ║
-║  Sorting ignores the fact that rows/cols are ALREADY sorted.                ║
+║  Sorting ignores the fact that rows/cols are ALREADY sorted.                 ║
 ║  → Type 6: UNNECESSARY GRANULARITY                                           ║
 ║  The answer lies in range [matrix[0][0], matrix[n-1][n-1]].                  ║
-║  For any value mid, we can COUNT how many elements <= mid in O(n).          ║
-║  Monotonic property: more elements <= a bigger mid.                         ║
+║  For any value mid, we can COUNT how many elements <= mid in O(n).           ║
+║  Monotonic property: more elements <= a bigger mid.                          ║
 ║                                                                              ║
 ║  STAGE 3 — TECHNIQUE:                                                        ║
 ║  Binary Search on Answer                                                     ║
 ║                                                                              ║
-║  STAGE 4 — OPTIMAL:   O(n × log(max-min))                                   ║
+║  STAGE 4 — OPTIMAL:   O(n × log(max-min))                                    ║
 ║  int lo = matrix[0][0], hi = matrix[n-1][n-1];                               ║
 ║  while (lo < hi) {                                                           ║
 ║      int mid = lo + (hi - lo) / 2;                                           ║
@@ -361,7 +361,7 @@
 ║  return lo;                                                                  ║
 ║                                                                              ║
 ║  STAGE 5 — VERIFY:                                                           ║
-║  O(n² log n) → O(n log(max-min))                                            ║
+║  O(n² log n) → O(n log(max-min))                                             ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -371,7 +371,7 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    OPTIMIZATION CHEAT SHEET                                  │
+│                    OPTIMIZATION CHEAT SHEET                                 │
 ├──────────────────────┬──────────────────────┬───────────────────────────────┤
 │ Brute Force          │ Optimization         │ Technique                     │
 ├──────────────────────┼──────────────────────┼───────────────────────────────┤
@@ -380,11 +380,11 @@
 │ O(n²) subarrays      │ O(n)                 │ Sliding Window                │
 │ O(n²) subarrays      │ O(n)                 │ Prefix Sum + HashMap          │
 │ O(n³) substrings     │ O(n)                 │ Sliding Window + HashSet      │
-│ O(2ⁿ) subsets        │ O(n·W)              │ Dynamic Programming           │
-│ O(n!) permutations   │ O(n·2ⁿ) or better  │ Bitmask DP                    │
+│ O(2ⁿ) subsets        │ O(n·W)              │ Dynamic Programming            │
+│ O(n!) permutations   │ O(n·2ⁿ) or better  │ Bitmask DP                      │
 │ O(n) linear search   │ O(log n)             │ Binary Search                 │
 │ O(n·m) string match  │ O(n+m)               │ KMP / Rabin-Karp              │
-│ O(V·E) components    │ O(E·α(V))          │ Union-Find                    │
+│ O(V·E) components    │ O(E·α(V))          │ Union-Find                      │
 └──────────────────────┴──────────────────────┴───────────────────────────────┘
 ```
 
@@ -394,15 +394,15 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│ MISTAKE                             │ FIX                                    │
-├─────────────────────────────────────┼────────────────────────────────────────┤
-│ Jump to optimal without brute force │ Always state brute force first         │
-│ Can't identify redundancy type      │ Use the 6-type checklist above         │
-│ Wrong technique for redundancy      │ Use the decision map                   │
-│ Optimize before verifying correct   │ Test brute force, then optimize        │
-│ Over-optimize (premature)           │ Check if brute force meets constraints │
-│ Forget to analyze new complexity    │ Always state old → new Big-O           │
-└─────────────────────────────────────┴────────────────────────────────────────┘
+│ MISTAKE                             │ FIX                                   │
+├─────────────────────────────────────┼───────────────────────────────────────┤
+│ Jump to optimal without brute force │ Always state brute force first        │
+│ Can't identify redundancy type      │ Use the 6-type checklist above        │
+│ Wrong technique for redundancy      │ Use the decision map                  │
+│ Optimize before verifying correct   │ Test brute force, then optimize       │
+│ Over-optimize (premature)           │ Check if brute force meets constraints│
+│ Forget to analyze new complexity    │ Always state old → new Big-O          │
+└─────────────────────────────────────┴───────────────────────────────────────┘
 ```
 
 ---
