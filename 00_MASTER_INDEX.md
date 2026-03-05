@@ -1,6 +1,6 @@
 # MASTER INDEX — Complete DSA, SQL, Spring Boot & Career Preparation
 
-**Last Updated: March 2026 | 216 files | 13 folders**
+**Last Updated: March 2026 | 245+ files | 15 folders**
 
 ---
 
@@ -16,7 +16,10 @@
 | SQL from Zero (21 chapters) | [08_SQL/](#sql-21-chapters) |
 | Spring Boot (35+ chapters + 50-Day Plan) | [07_Modern_Java/](#modern-java--spring-boot) |
 | Developer Essentials (10 guides) | [13_Developer_Essentials/](#developer-essentials-new) |
-| **Mental Models — HOW TO THINK (14 guides)** | [14_Mental_Models/](#mental-models--how-to-think-new) |
+| **Mental Models — HOW TO THINK (18 guides)** | [14_Mental_Models/](#mental-models--how-to-think-new) |
+| **React Frontend (8 files)** | [15_React_Frontend/](#react-frontend-new) |
+| Java Concurrency + Modern Java | [07_Modern_Java/](#modern-java--spring-boot) |
+| Behavioral Interview | [09_Career_Reference/07_Behavioral_Interview.md](09_Career_Reference/07_Behavioral_Interview.md) |
 | Quick Reference Sheet | [09_Career_Reference/03_Quick_Reference.md](09_Career_Reference/03_Quick_Reference.md) |
 
 ---
@@ -121,13 +124,17 @@ Daily-Prep/
 │   ├── 03_Common_Mistakes.md            → Common mistakes to avoid
 │   └── 04_Problem_Origins.md            → Real-world problem origins
 │
-├── 06_OOP_Design/                       (4 files)
+├── 06_OOP_Design/                       (8 files)
 │   ├── 01_OOPS_Principles.md            → OOP concepts + SOLID
 │   ├── 02_Design_Patterns.md            → GoF Design Patterns
 │   ├── 03_System_Design.md              → System design basics
-│   └── 04_User_System_Flows.md          → User flows & sequence diagrams
+│   ├── 04_User_System_Flows.md          → User flows & sequence diagrams
+│   ├── 05_SD_Interview_Problems.md      → 🆕 8 system design problems (URL Shortener, Twitter, Chat...)
+│   ├── 06_Distributed_Systems_Fundamentals.md → 🆕 CAP, consistency, replication, Raft
+│   ├── 07_LLD_Solved_Problems.md        → 🆕 5 LLD problems with full Java code
+│   └── 08_Design_Patterns_Java.md       → 🆕 GoF patterns with Java + Spring Boot mapping
 │
-├── 07_Modern_Java/                      (36 chapter files)
+├── 07_Modern_Java/                      (41 chapter files)
 │   ├── 00_SPRING_BOOT_ROADMAP.md        → Spring Boot learning path
 │   ├── 01_Functional_Programming.md     → Streams, Lambdas, Optionals
 │   ├── 02a_AlgoEng_Core.md             → Algorithm engineering fundamentals
@@ -165,7 +172,11 @@ Daily-Prep/
 │   ├── 24a_SB_Annotations_Core.md       → Essential Spring annotations
 │   ├── 24b_SB_Annotations_Advanced.md   → Custom annotations, meta-annotations
 │   ├── 25_Spring_Boot_Part23_Missing_Essential_Topics.md → WebSocket, GraphQL, gRPC, Batch
-│   └── 26_Spring_Boot_Curriculum_50Day.md → 50-Day Spring Boot Study Plan
+│   ├── 26_Spring_Boot_Curriculum_50Day.md → 50-Day Spring Boot Study Plan
+│   ├── 27a_Java_Concurrency_Core.md     → 🆕 Threads, synchronized, volatile, atomics
+│   ├── 27b_Java_Concurrency_Advanced.md → 🆕 Executors, CompletableFuture, Virtual Threads
+│   ├── 28_Modern_Java_Features.md       → 🆕 Java 9-21 (var, records, sealed, pattern matching)
+│   └── 29_Message_Queues_Kafka.md       → 🆕 Kafka architecture, Spring Boot+Kafka, event-driven
 │
 ├── 08_SQL/                              (21 chapter files — zero to expert)
 │   ├── 01_Foundations_Database_Basics.md → What is a database, RDBMS, SQL
@@ -190,7 +201,12 @@ Daily-Prep/
 │   ├── 19_Interview_Top50.md            → Top 50 interview questions
 │   └── 20_CheatSheet_QuickRef.md        → Syntax quick reference
 │
-├── 09_Career_Reference/                 (14 chapter files)
+├── 08_SQL_Database/                     (3 files — advanced SQL/DB topics)
+│   ├── 19_Interview_Top50.md            → 🆕 50 SQL interview problems by pattern
+│   ├── 21_Database_Internals.md         → 🆕 B-Tree, WAL, MVCC, buffer pool, query plans
+│   └── 22_NoSQL_MongoDB.md             → 🆕 NoSQL categories, MongoDB, Redis
+│
+├── 09_Career_Reference/                 (15 chapter files)
 │   ├── 01_Career_TechnoFunctional.md    → Framework, skills, domains
 │   ├── 01b_Career_Guide_Part1A.md       → Career roadmap & skills matrix
 │   ├── 01b2_Career_Guide_Part1B.md      → Interview prep & salary guide
@@ -204,7 +220,8 @@ Daily-Prep/
 │   ├── 03_Quick_Reference.md            → Quick revision sheet
 │   ├── 04_Brain_Psychology.md           → Learning psychology & memory
 │   ├── 05_Daily_Habits_Tracking.md      → Habit tracking system
-│   └── 06_Resources_Links.md            → External resources & links
+│   ├── 06_Resources_Links.md            → External resources & links
+│   └── 07_Behavioral_Interview.md       → 🆕 STAR method, 8 question categories, Amazon LPs
 │
 ├── 10_Enterprise_Systems/               (8 chapter files)
 │   ├── 01a_ERP_Fundamentals.md          → ERP concepts, modules, architecture
@@ -223,7 +240,7 @@ Daily-Prep/
 │   ├── Week_03/ (Days 015–021)          → Mar 17–23: Trees, BST, Heap, DFS/BFS
 │   └── Week_04/ (Days 022–028)          → Mar 24–30: Graphs, DP, Advanced SQL
 │
-├── 13_Developer_Essentials/             (11 files — NEW!)
+├── 13_Developer_Essentials/             (17 files)
 │   ├── 00_INDEX.md                      → Reading order & career phase mapping
 │   ├── 01_Git_Version_Control.md        → 3 areas, branching, merge conflicts, Git Flow
 │   ├── 02_Linux_CLI_Shell.md            → Navigation, grep/awk/sed, scripting
@@ -234,9 +251,15 @@ Daily-Prep/
 │   ├── 07_API_Design_REST.md            → REST principles, HTTP, pagination, errors
 │   ├── 08_Security_Fundamentals.md      → OWASP, JWT, BCrypt, XSS, SQL injection
 │   ├── 09_System_Design.md              → Load balancing, caching, queues, CAP
-│   └── 10_Dev_Tools_Productivity.md     → IDE shortcuts, debugging, Postman, Maven
+│   ├── 10_Dev_Tools_Productivity.md     → IDE shortcuts, debugging, Postman, Maven
+│   ├── 11_Production_Code_Practices.md  → 🆕 12-Factor App, structured logging, retry, circuit breaker
+│   ├── 12_Monitoring_Observability.md   → 🆕 Three pillars, Prometheus+Grafana, ELK, alerting
+│   ├── 13_Agile_Scrum.md               → 🆕 Scrum ceremonies, user stories, story points
+│   ├── 14_Code_Review_Practices.md      → 🆕 Review checklist, PR best practices, code smells
+│   ├── 15_Cloud_Services_Guide.md       → 🆕 AWS/Azure/GCP service mapping, EC2, Lambda, S3
+│   └── 16_IaC_Terraform.md             → 🆕 Infrastructure as Code, Terraform HCL, modules, CI/CD
 │
-├── 14_Mental_Models/                    (15 files — HOW TO THINK guides!)
+├── 14_Mental_Models/                    (19 files — HOW TO THINK guides!)
 │   ├── 00_INDEX.md                      → Reading order & usage guide
 │   ├── 01_Recursion_Tree_Thinking.md    → Draw recursion trees, leap of faith, memo→tab
 │   ├── 02_DP_State_Thinking.md          → State identification, transitions, optimization
@@ -250,8 +273,22 @@ Daily-Prep/
 │   ├── 10_Interview_Thinking.md         → Think out loud, recovery strategies, pressure
 │   ├── 11_Greedy_vs_DP_Decision.md      → 🆕 3-question checklist, proof techniques
 │   ├── 12_Space_Time_Tradeoffs.md       → 🆕 When to trade memory for speed
-│   └── 13_Pattern_Composition.md        → 🆕 Combining 2+ patterns for Hard problems
-│   └── 14_Optimization_Pipeline.md      → 🆕 Systematic brute force → optimal pipeline
+│   ├── 13_Pattern_Composition.md        → 🆕 Combining 2+ patterns for Hard problems
+│   ├── 14_Optimization_Pipeline.md      → 🆕 Systematic brute force → optimal pipeline
+│   ├── 15_System_Design_Thinking.md     → 🆕 Napkin math, scale stages, trade-off triangle
+│   ├── 16_Distributed_Systems_Thinking.md → 🆕 8 Fallacies, CAP spectrum, split-brain
+│   ├── 17_Frontend_Architecture_Thinking.md → 🆕 State location, render cascade, composition
+│   └── 18_Production_Debugging_Thinking.md → 🆕 Incident timeline, 5 Whys, postmortem
+│
+├── 15_React_Frontend/                   (8 files — full React curriculum NEW!)
+│   ├── 01_React_Fundamentals.md         → 🆕 JSX, components, props, state, events
+│   ├── 02_Component_Patterns.md         → 🆕 Composition, render props, HOC, compound
+│   ├── 03_Hooks_Deep_Dive.md            → 🆕 useEffect, useRef, useMemo, custom hooks
+│   ├── 04_State_Management.md           → 🆕 Context, Redux Toolkit, Zustand, state machines
+│   ├── 05_React_TypeScript.md           → 🆕 Typing props, events, hooks, generics
+│   ├── 06_React_Router.md               → 🆕 React Router v6+, data fetching, React Query
+│   ├── 07_React_Testing.md              → 🆕 React Testing Library, MSW, component testing
+│   └── 08_React_Performance.md          → 🆕 React.memo, virtualization, bundle splitting
 │
 ├── JavaSolutions/                       → Your Java code solutions
 ├── practice/                            → Practice scratch files
@@ -303,11 +340,13 @@ Daily-Prep/
 - [Sorting](05_Problem_Solving/20_Problems_Sorting.md) | [Design](05_Problem_Solving/21_Problems_Design.md) | [Recursion & Subsets](05_Problem_Solving/22_Problems_Recursion_Subsets.md)
 - [Edge Cases](05_Problem_Solving/02_Edge_Cases.md) | [Common Mistakes](05_Problem_Solving/03_Common_Mistakes.md) | [Problem Origins](05_Problem_Solving/04_Problem_Origins.md)
 
-### OOP & Design (4 files)
+### OOP & Design (8 files)
 - [OOP Principles + SOLID](06_OOP_Design/01_OOPS_Principles.md) | [Design Patterns](06_OOP_Design/02_Design_Patterns.md)
 - [System Design](06_OOP_Design/03_System_Design.md) | [User/System Flows](06_OOP_Design/04_User_System_Flows.md)
+- **🆕** [SD Interview Problems](06_OOP_Design/05_SD_Interview_Problems.md) | [Distributed Systems](06_OOP_Design/06_Distributed_Systems_Fundamentals.md)
+- **🆕** [LLD Solved Problems](06_OOP_Design/07_LLD_Solved_Problems.md) | [Design Patterns Java](06_OOP_Design/08_Design_Patterns_Java.md)
 
-### Modern Java & Spring Boot (36 chapters)
+### Modern Java & Spring Boot (41 chapters)
 - **Roadmap**: [Spring Boot Roadmap](07_Modern_Java/00_SPRING_BOOT_ROADMAP.md) | [50-Day Curriculum](07_Modern_Java/26_Spring_Boot_Curriculum_50Day.md)
 - **Java Core**: [Functional Programming](07_Modern_Java/01_Functional_Programming.md) | [Algo Engineering](07_Modern_Java/02a_AlgoEng_Core.md) | [Algo Eng Advanced](07_Modern_Java/02e_AlgoEng_Advanced.md)
 - **Pre-Spring**: [Hidden Foundations Part 1](07_Modern_Java/02c_SB_HiddenFoundations_Part1.md) | [Part 2](07_Modern_Java/02d_SB_HiddenFoundations_Part2.md)
@@ -326,6 +365,7 @@ Daily-Prep/
 - **Cloud**: [Core](07_Modern_Java/23a_SB_Cloud_Core.md) | [Advanced (K8s)](07_Modern_Java/23b_SB_Cloud_Advanced.md)
 - **Annotations**: [Core](07_Modern_Java/24a_SB_Annotations_Core.md) | [Advanced](07_Modern_Java/24b_SB_Annotations_Advanced.md)
 - **Extras**: [WebSocket, GraphQL, gRPC, Batch](07_Modern_Java/25_Spring_Boot_Part23_Missing_Essential_Topics.md)
+- **🆕 Java Deep Dive**: [Concurrency Core](07_Modern_Java/27a_Java_Concurrency_Core.md) | [Concurrency Advanced](07_Modern_Java/27b_Java_Concurrency_Advanced.md) | [Modern Java 9-21](07_Modern_Java/28_Modern_Java_Features.md) | [Kafka & Message Queues](07_Modern_Java/29_Message_Queues_Kafka.md)
 
 ### SQL (21 chapters)
 - [01 Foundations](08_SQL/01_Foundations_Database_Basics.md) | [02 Data Types](08_SQL/02_DataTypes_Constraints.md) | [03 DDL](08_SQL/03_DDL_Creating_Structure.md) | [04 DML](08_SQL/04_DML_Manipulating_Data.md)
@@ -335,11 +375,17 @@ Daily-Prep/
 - [17 100 Problems](08_SQL/17_Practice_100_Problems.md) | [18a Beginner Projects](08_SQL/18a_SQL_Projects_Beginner.md) | [18b Advanced Projects](08_SQL/18b_SQL_Projects_Advanced.md)
 - [19 Interview Top 50](08_SQL/19_Interview_Top50.md) | [20 Cheat Sheet](08_SQL/20_CheatSheet_QuickRef.md)
 
+### SQL & Database — Advanced (3 files)
+- **🆕** [SQL Interview Top 50 (expanded)](08_SQL_Database/19_Interview_Top50.md) — 50 problems organized by pattern
+- **🆕** [Database Internals](08_SQL_Database/21_Database_Internals.md) — B-Tree, WAL, MVCC, buffer pool, query plans
+- **🆕** [NoSQL & MongoDB](08_SQL_Database/22_NoSQL_MongoDB.md) — NoSQL categories, MongoDB CRUD, Redis
+
 ### Career & Reference (14 files)
 - [Career Framework](09_Career_Reference/01_Career_TechnoFunctional.md)
 - Project Guide: [Part 1A](09_Career_Reference/01b_Career_Guide_Part1A.md) | [Part 1B](09_Career_Reference/01b2_Career_Guide_Part1B.md) | [Projects 1](09_Career_Reference/01c_Career_Projects_Part1.md) | [Projects 2](09_Career_Reference/01d_Career_Projects_Part2.md) | [Projects 3](09_Career_Reference/01e_Career_Projects_Part3.md)
 - DSA Reference: [Foundations](09_Career_Reference/02a_DSA_Guide_Foundations.md) | [Advanced](09_Career_Reference/02b_DSA_Guide_Advanced.md) | [Advanced Patterns](09_Career_Reference/02b_Ultimate_DSA_Advanced.md) | [JVM Internals](09_Career_Reference/02c_Ultimate_DSA_JVM.md)
 - [Quick Reference](09_Career_Reference/03_Quick_Reference.md) | [Brain & Psychology](09_Career_Reference/04_Brain_Psychology.md) | [Daily Habits](09_Career_Reference/05_Daily_Habits_Tracking.md) | [Resources](09_Career_Reference/06_Resources_Links.md)
+- **🆕** [Behavioral Interview](09_Career_Reference/07_Behavioral_Interview.md) — STAR method, 8 categories, Amazon LPs, story bank
 
 ### Enterprise & Real-World (8 files)
 - ERP: [Fundamentals](10_Enterprise_Systems/01a_ERP_Fundamentals.md) | [Advanced](10_Enterprise_Systems/01b_ERP_Advanced.md || [Finance Core](10_Enterprise_Systems/02a_ERP_Finance_Core.md) | [Finance Real-World](10_Enterprise_Systems/02b_ERP_Finance_RealWorld.md)
@@ -353,15 +399,18 @@ Daily-Prep/
 - [Week 03: Mar 17–23](12_Daily_Practice/Week_03/) — Trees, BST, Heap, DFS/BFS, Recursion, Backtracking, SQL Window Functions
 - [Week 04: Mar 24–30](12_Daily_Practice/Week_04/) — Graphs (all algorithms), DP, Advanced SQL, Spring Boot JPA
 
-### Developer Essentials (NEW!)
+### Developer Essentials (17 files)
 - [Index & Reading Order](13_Developer_Essentials/00_INDEX.md)
 - [Git & Version Control](13_Developer_Essentials/01_Git_Version_Control.md) | [Linux & CLI](13_Developer_Essentials/02_Linux_CLI_Shell.md)
 - [Docker & Containers](13_Developer_Essentials/03_Docker_Containers.md) | [CI/CD Pipelines](13_Developer_Essentials/04_CICD_Pipelines.md)
 - [Clean Code & SOLID](13_Developer_Essentials/05_Clean_Code.md) | [Testing (TDD, Mockito)](13_Developer_Essentials/06_Testing_Fundamentals.md)
 - [API Design & REST](13_Developer_Essentials/07_API_Design_REST.md) | [Security (OWASP, JWT)](13_Developer_Essentials/08_Security_Fundamentals.md)
 - [System Design](13_Developer_Essentials/09_System_Design.md) | [Dev Tools & Productivity](13_Developer_Essentials/10_Dev_Tools_Productivity.md)
+- **🆕** [Production Code Practices](13_Developer_Essentials/11_Production_Code_Practices.md) | [Monitoring & Observability](13_Developer_Essentials/12_Monitoring_Observability.md)
+- **🆕** [Agile & Scrum](13_Developer_Essentials/13_Agile_Scrum.md) | [Code Review Practices](13_Developer_Essentials/14_Code_Review_Practices.md)
+- **🆕** [Cloud Services Guide](13_Developer_Essentials/15_Cloud_Services_Guide.md) | [IaC & Terraform](13_Developer_Essentials/16_IaC_Terraform.md)
 
-### Mental Models — HOW TO THINK (NEW!)
+### Mental Models — HOW TO THINK (18 files)
 - [Index & Reading Order](14_Mental_Models/00_INDEX.md)
 - [Recursion Tree Thinking](14_Mental_Models/01_Recursion_Tree_Thinking.md) | [DP State Thinking](14_Mental_Models/02_DP_State_Thinking.md)
 - [Graph & Tree Thinking](14_Mental_Models/03_Graph_Tree_Thinking.md) | [Array & String Thinking](14_Mental_Models/04_Array_String_Thinking.md)
@@ -370,6 +419,13 @@ Daily-Prep/
 - [Complexity Intuition](14_Mental_Models/09_Complexity_Intuition.md) | [Interview Thinking](14_Mental_Models/10_Interview_Thinking.md)
 - [Greedy vs DP Decision](14_Mental_Models/11_Greedy_vs_DP_Decision.md) | [Space-Time Tradeoffs](14_Mental_Models/12_Space_Time_Tradeoffs.md) | [Pattern Composition](14_Mental_Models/13_Pattern_Composition.md)
 - [Optimization Pipeline](14_Mental_Models/14_Optimization_Pipeline.md)
+- **🆕** [System Design Thinking](14_Mental_Models/15_System_Design_Thinking.md) | [Distributed Systems Thinking](14_Mental_Models/16_Distributed_Systems_Thinking.md)
+- **🆕** [Frontend Architecture Thinking](14_Mental_Models/17_Frontend_Architecture_Thinking.md) | [Production Debugging Thinking](14_Mental_Models/18_Production_Debugging_Thinking.md)
+
+### React Frontend (8 files — NEW!)
+- [Fundamentals](15_React_Frontend/01_React_Fundamentals.md) | [Component Patterns](15_React_Frontend/02_Component_Patterns.md) | [Hooks Deep Dive](15_React_Frontend/03_Hooks_Deep_Dive.md)
+- [State Management](15_React_Frontend/04_State_Management.md) | [React + TypeScript](15_React_Frontend/05_React_TypeScript.md)
+- [Router & Data Fetching](15_React_Frontend/06_React_Router.md) | [Testing](15_React_Frontend/07_React_Testing.md) | [Performance](15_React_Frontend/08_React_Performance.md)
 
 ---
 
@@ -409,16 +465,18 @@ Open [07_Modern_Java/26_Spring_Boot_Curriculum_50Day.md](07_Modern_Java/26_Sprin
 | 03_Algorithms | 29 | Sorting → Recursion → DP → Trees → Graphs → Advanced → Number Theory → Specialized |
 | 04_Patterns_Templates | 20 | 7 original + 13 combined DS+Algo patterns with Excel problems |
 | 05_Problem_Solving | 23 | 20 topic chapters + Edge/Mistakes/Origins |
-| 06_OOP_Design | 4 | OOP, Design Patterns, System Design |
-| 07_Modern_Java | 38 | Functional, Algo Eng, 30+ Spring Boot chapters |
+| 06_OOP_Design | 8 | OOP, Design Patterns, System Design, LLD, Distributed Systems |
+| 07_Modern_Java | 41 | Functional, Algo Eng, 30+ Spring Boot, Concurrency, Kafka |
 | 08_SQL | 21 | Zero to expert in 21 chapters |
-| 09_Career_Reference | 14 | Career path, DSA ref, JVM, Psychology, Habits |
+| 08_SQL_Database | 3 | Database Internals, NoSQL, Interview Top 50 |
+| 09_Career_Reference | 15 | Career path, DSA ref, JVM, Psychology, Behavioral Interview |
 | 10_Enterprise_Systems | 8 | ERP, Finance, Real-world problems |
 | 12_Daily_Practice | 29 | Index + 28 days (4 weeks) with cross-reference links |
-| 13_Developer_Essentials | 11 | Git, Linux, Docker, CI/CD, Clean Code, Testing, REST, Security, System Design, Tools |
-| 14_Mental_Models | 11 | Index + 10 HOW-TO-THINK guides: Recursion Trees, DP States, Graph/Tree, Array/String, Universal Framework, Implementation, SQL Pipeline, Debugging, Complexity, Interview |
-| **TOTAL** | **216** | |
+| 13_Developer_Essentials | 17 | Git, Linux, Docker, CI/CD, Clean Code, Testing, REST, Security, Cloud, Terraform, Agile |
+| 14_Mental_Models | 19 | Index + 18 HOW-TO-THINK guides: DSA, System Design, Distributed, Frontend, Debugging |
+| 15_React_Frontend | 8 | Full React curriculum: Fundamentals to Performance |
+| **TOTAL** | **~245** | |
 
 ---
 
-_Last restructured: March 2026 — 14_Mental_Models added (10 theory/thinking guides), combined DS+Algo patterns, 216 total files_
+_Last restructured: March 2026 — Phase 20: +29 files across 7 folders (Java Concurrency, Modern Java, Kafka, SD/LLD, DB Internals, NoSQL, React Frontend, Cloud, Terraform, Mental Models, Behavioral Interview), 245+ total files_
