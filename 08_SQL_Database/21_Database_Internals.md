@@ -12,32 +12,30 @@
 ## Part 1: Storage Engines — The Heart of a Database
 
 ```
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║  TWO MAIN APPROACHES                                                             ║
-║                                                                                  ║
-║  B-TREE (MySQL InnoDB, PostgreSQL, SQL Server)                                   ║
-║  → Optimized for READS and point lookups                                         ║
-║  → Data stored in sorted pages (typically 4KB-16KB)                              ║
-║  → In-place updates: find page, modify, write back                               ║
-║  → Good for: OLTP, random reads, transactions                                    ║
-║                                                                                  ║
-║  LSM-TREE (RocksDB, Cassandra, LevelDB, HBase)                                   ║
-║  → Optimized for WRITES                                                          ║
-║  → All writes go to in-memory buffer (memtable) first                            ║
-║  → When full → flush to disk as sorted file (SSTable)                            ║
-║  → Background compaction merges SSTables                                         ║
-║  → Good for: Write-heavy workloads, time-series, logging                         ║
-║                                                                                  ║
-║  COMPARISON:                                                                     ║
-║  ┌─────────────┬───────────┬───────────┐                                         ║
-║  │             │  B-Tree   │  LSM-Tree │                                         ║
-║  ├─────────────┼───────────┼───────────┤                                         ║
-║  │ Read speed  │   Fast    │   Slower  │ (may check multiple SSTables)           ║
-║  │ Write speed │   Slower  │   Fast    │ (sequential writes, no random I/O)      ║
-║  │ Space amp.  │   Lower   │   Higher  │ (old versions in SSTables)              ║
-║  │ Write amp.  │   Lower   │   Higher  │ (compaction rewrites data)              ║
-║  └─────────────┴───────────┴───────────┘                                         ║
-╚══════════════════════════════════════════════════════════════════════════════════╝
+TWO MAIN APPROACHES
+
+B-TREE (MySQL InnoDB, PostgreSQL, SQL Server)
+→ Optimized for READS and point lookups
+→ Data stored in sorted pages (typically 4KB-16KB)
+→ In-place updates: find page, modify, write back
+→ Good for: OLTP, random reads, transactions
+
+LSM-TREE (RocksDB, Cassandra, LevelDB, HBase)
+→ Optimized for WRITES
+→ All writes go to in-memory buffer (memtable) first
+→ When full → flush to disk as sorted file (SSTable)
+→ Background compaction merges SSTables
+→ Good for: Write-heavy workloads, time-series, logging
+
+COMPARISON:
+┌─────────────┬───────────┬───────────┐
+│             │  B-Tree   │  LSM-Tree │
+├─────────────┼───────────┼───────────┤
+│ Read speed  │   Fast    │   Slower  │ (may check multiple SSTables)
+│ Write speed │   Slower  │   Fast    │ (sequential writes, no random I/O)
+│ Space amp.  │   Lower   │   Higher  │ (old versions in SSTables)
+│ Write amp.  │   Lower   │   Higher  │ (compaction rewrites data)
+└─────────────┴───────────┴───────────┘
 ```
 
 ---
@@ -55,7 +53,7 @@
 
   LOOKUP "55":
   Root: 55 > 30, 55 < 70 → go middle child
-  Internal: 55 > 50, 55 < 60 → go third child  
+  Internal: 55 > 50, 55 < 60 → go third child
   Leaf: Found 55! → return row data
 
   TIME: O(log N) — tree height is typically 3-4 for millions of rows
@@ -127,39 +125,37 @@
 ## Part 4: MVCC (Multi-Version Concurrency Control)
 
 ```
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║  THE PROBLEM: Reader blocks writer, writer blocks reader → terrible throughput   ║
-║                                                                                  ║
-║  THE SOLUTION: Keep multiple versions of each row                                ║
-║  → Readers see a SNAPSHOT (consistent point in time)                             ║
-║  → Writers create NEW version without blocking readers                           ║
-║  → Readers NEVER block writers, writers NEVER block readers!                     ║
-║                                                                                  ║
-║  EXAMPLE:                                                                        ║
-║  Row "Alice" balance:                                                            ║
-║  ┌──────────┬─────────┬───────────┬───────────┐                                  ║
-║  │ Version  │ Balance │ Created   │ Expired   │                                  ║
-║  ├──────────┼─────────┼───────────┼───────────┤                                  ║
-║  │ v1       │ $100    │ txn 10    │ txn 20    │                                  ║
-║  │ v2       │ $150    │ txn 20    │ txn 35    │                                  ║
-║  │ v3       │ $200    │ txn 35    │ —         │ ← current                        ║
-║  └──────────┴─────────┴───────────┴───────────┘                                  ║
-║                                                                                  ║
-║  Transaction 25 started at snapshot txn 22:                                      ║
-║  → Sees v2 ($150) because v2 was created before txn 22                           ║
-║  → Does NOT see v3 ($200) because v3 created at txn 35 (after snapshot)          ║
-║                                                                                  ║
-║  ISOLATION LEVELS (MVCC perspective):                                            ║
-║  ┌────────────────────┬──────────────────────────────────────────────────┐       ║
-║  │ Read Committed     │ New snapshot per STATEMENT                       │       ║
-║  │ Repeatable Read    │ One snapshot for entire TRANSACTION              │       ║
-║  │ Serializable       │ Snapshot + conflict detection (SSI in Postgres) │        ║
-║  └────────────────────┴──────────────────────────────────────────────────┘       ║
-║                                                                                  ║
-║  GARBAGE COLLECTION (VACUUM in PostgreSQL):                                      ║
-║  Old versions no longer visible to any active transaction → delete them          ║
-║  If you don't vacuum → table bloat! (PostgreSQL auto-vacuum does this)           ║
-╚══════════════════════════════════════════════════════════════════════════════════╝
+THE PROBLEM: Reader blocks writer, writer blocks reader → terrible throughput
+
+THE SOLUTION: Keep multiple versions of each row
+→ Readers see a SNAPSHOT (consistent point in time)
+→ Writers create NEW version without blocking readers
+→ Readers NEVER block writers, writers NEVER block readers!
+
+EXAMPLE:
+Row "Alice" balance:
+┌──────────┬─────────┬───────────┬───────────┐
+│ Version  │ Balance │ Created   │ Expired   │
+├──────────┼─────────┼───────────┼───────────┤
+│ v1       │ $100    │ txn 10    │ txn 20    │
+│ v2       │ $150    │ txn 20    │ txn 35    │
+│ v3       │ $200    │ txn 35    │ —         │ ← current
+└──────────┴─────────┴───────────┴───────────┘
+
+Transaction 25 started at snapshot txn 22:
+→ Sees v2 ($150) because v2 was created before txn 22
+→ Does NOT see v3 ($200) because v3 created at txn 35 (after snapshot)
+
+ISOLATION LEVELS (MVCC perspective):
+┌────────────────────┬──────────────────────────────────────────────────┐
+│ Read Committed     │ New snapshot per STATEMENT                       │
+│ Repeatable Read    │ One snapshot for entire TRANSACTION              │
+│ Serializable       │ Snapshot + conflict detection (SSI in Postgres)  │
+└────────────────────┴──────────────────────────────────────────────────┘
+
+GARBAGE COLLECTION (VACUUM in PostgreSQL):
+Old versions no longer visible to any active transaction → delete them
+If you don't vacuum → table bloat! (PostgreSQL auto-vacuum does this)
 ```
 
 ---
@@ -199,37 +195,35 @@
 ## Part 6: Query Execution — How SELECT Actually Works
 
 ```
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║  SQL Query → Parser → Optimizer → Executor → Results                             ║
-║                                                                                  ║
-║  SELECT name FROM users WHERE age > 25 ORDER BY name LIMIT 10;                   ║
-║                                                                                  ║
-║  Step 1: PARSE → Abstract Syntax Tree (AST)                                      ║
-║  Step 2: OPTIMIZE → Choose best execution plan                                   ║
-║    Query optimizer considers:                                                    ║
-║    → Which indexes to use (or full table scan?)                                  ║
-║    → Join order (which table first?)                                             ║
-║    → Join algorithm (Nested Loop, Hash Join, Merge Join)                         ║
-║    → Based on table statistics (row count, value distribution)                   ║
-║  Step 3: EXECUTE the chosen plan                                                 ║
-║                                                                                  ║
-║  EXPLAIN ANALYZE SELECT ... (see the plan!)                                      ║
-║                                                                                  ║
-║  JOIN ALGORITHMS:                                                                ║
-║  ┌──────────────────┬─────────────┬───────────────────────────────────────┐      ║
-║  │ Algorithm        │ Complexity  │ When Used                             │      ║
-║  ├──────────────────┼─────────────┼───────────────────────────────────────┤      ║
-║  │ Nested Loop      │ O(N × M)   │ Small tables, or inner has index      │       ║
-║  │ Hash Join        │ O(N + M)   │ Large tables, no useful index         │       ║
-║  │ Merge Join       │ O(N + M)   │ Both inputs already sorted            │       ║
-║  └──────────────────┴─────────────┴───────────────────────────────────────┘      ║
-║                                                                                  ║
-║  SCAN TYPES:                                                                     ║
-║  → Sequential Scan: Read every row (full table scan). Used when no index.        ║
-║  → Index Scan: Use B-Tree index to find rows. Fast for selective queries.        ║
-║  → Index-Only Scan: Answer from index alone. Fastest!                            ║
-║  → Bitmap Scan: Multiple index conditions combined with bitmap AND/OR.           ║
-╚══════════════════════════════════════════════════════════════════════════════════╝
+SQL Query → Parser → Optimizer → Executor → Results
+
+SELECT name FROM users WHERE age > 25 ORDER BY name LIMIT 10;
+
+Step 1: PARSE → Abstract Syntax Tree (AST)
+Step 2: OPTIMIZE → Choose best execution plan
+  Query optimizer considers:
+  → Which indexes to use (or full table scan?)
+  → Join order (which table first?)
+  → Join algorithm (Nested Loop, Hash Join, Merge Join)
+  → Based on table statistics (row count, value distribution)
+Step 3: EXECUTE the chosen plan
+
+EXPLAIN ANALYZE SELECT ... (see the plan!)
+
+JOIN ALGORITHMS:
+┌──────────────────┬─────────────┬───────────────────────────────────────┐
+│ Algorithm        │ Complexity  │ When Used                             │
+├──────────────────┼─────────────┼───────────────────────────────────────┤
+│ Nested Loop      │ O(N × M)   │ Small tables, or inner has index       │
+│ Hash Join        │ O(N + M)   │ Large tables, no useful index          │
+│ Merge Join       │ O(N + M)   │ Both inputs already sorted             │
+└──────────────────┴─────────────┴───────────────────────────────────────┘
+
+SCAN TYPES:
+→ Sequential Scan: Read every row (full table scan). Used when no index.
+→ Index Scan: Use B-Tree index to find rows. Fast for selective queries.
+→ Index-Only Scan: Answer from index alone. Fastest!
+→ Bitmap Scan: Multiple index conditions combined with bitmap AND/OR.
 ```
 
 ---

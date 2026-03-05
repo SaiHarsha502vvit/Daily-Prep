@@ -22,166 +22,160 @@
 ### Two Sum (Two Pointers on Sorted Array)
 
 ```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║                    TWO SUM - TWO POINTERS                                 ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Sorted Array: [1, 2, 3, 5, 7, 10, 11]    Target: 9                       ║
-║                                                                           ║
-║  Step 1:                                                                  ║
-║  ┌───┬───┬───┬───┬───┬────┬────┐                                          ║
-║  │ 1 │ 2 │ 3 │ 5 │ 7 │ 10 │ 11 │                                          ║
-║  └───┴───┴───┴───┴───┴────┴────┘                                          ║
-║    ↑                        ↑                                             ║
-║   left                    right                                           ║
-║                                                                           ║
-║  sum = 1 + 11 = 12 > 9  → Move right LEFT                                 ║
-║                                                                           ║
-║  Step 2:                                                                  ║
-║  ┌───┬───┬───┬───┬───┬────┬────┐                                          ║
-║  │ 1 │ 2 │ 3 │ 5 │ 7 │ 10 │ 11 │                                          ║
-║  └───┴───┴───┴───┴───┴────┴────┘                                          ║
-║    ↑                  ↑                                                   ║
-║   left              right                                                 ║
-║                                                                           ║
-║  sum = 1 + 10 = 11 > 9  → Move right LEFT                                 ║
-║                                                                           ║
-║  Step 3:                                                                  ║
-║  ┌───┬───┬───┬───┬───┬────┬────┐                                          ║
-║  │ 1 │ 2 │ 3 │ 5 │ 7 │ 10 │ 11 │                                          ║
-║  └───┴───┴───┴───┴───┴────┴────┘                                          ║
-║    ↑              ↑                                                       ║
-║   left          right                                                     ║
-║                                                                           ║
-║  sum = 1 + 7 = 8 < 9  → Move left RIGHT                                   ║
-║                                                                           ║
-║  Step 4:                                                                  ║
-║  ┌───┬───┬───┬───┬───┬────┬────┐                                          ║
-║  │ 1 │ 2 │ 3 │ 5 │ 7 │ 10 │ 11 │                                          ║
-║  └───┴───┴───┴───┴───┴────┴────┘                                          ║
-║        ↑          ↑                                                       ║
-║       left      right                                                     ║
-║                                                                           ║
-║  sum = 2 + 7 = 9 == 9  ✓ FOUND!                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+                  TWO SUM - TWO POINTERS
+──────────────────────────────────────────────────
+
+Sorted Array: [1, 2, 3, 5, 7, 10, 11]    Target: 9
+
+Step 1:
+┌───┬───┬───┬───┬───┬────┬────┐
+│ 1 │ 2 │ 3 │ 5 │ 7 │ 10 │ 11 │
+└───┴───┴───┴───┴───┴────┴────┘
+  ↑                        ↑
+ left                    right
+
+sum = 1 + 11 = 12 > 9  → Move right LEFT
+
+Step 2:
+┌───┬───┬───┬───┬───┬────┬────┐
+│ 1 │ 2 │ 3 │ 5 │ 7 │ 10 │ 11 │
+└───┴───┴───┴───┴───┴────┴────┘
+  ↑                  ↑
+ left              right
+
+sum = 1 + 10 = 11 > 9  → Move right LEFT
+
+Step 3:
+┌───┬───┬───┬───┬───┬────┬────┐
+│ 1 │ 2 │ 3 │ 5 │ 7 │ 10 │ 11 │
+└───┴───┴───┴───┴───┴────┴────┘
+  ↑              ↑
+ left          right
+
+sum = 1 + 7 = 8 < 9  → Move left RIGHT
+
+Step 4:
+┌───┬───┬───┬───┬───┬────┬────┐
+│ 1 │ 2 │ 3 │ 5 │ 7 │ 10 │ 11 │
+└───┴───┴───┴───┴───┴────┴────┘
+      ↑          ↑
+     left      right
+
+sum = 2 + 7 = 9 == 9  ✓ FOUND!
 ```
 
 ### Kadane's Algorithm (Maximum Subarray Sum)
 
 ```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║                    KADANE'S ALGORITHM                                     ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Array: [-2, 1, -3, 4, -1, 2, 1, -5, 4]                                   ║
-║                                                                           ║
-║  KEY IDEA: At each position, decide:                                      ║
-║  "Should I start fresh here, or extend previous subarray?"                ║
-║                                                                           ║
-║  Index 0: arr[0] = -2                                                     ║
-║           current = max(-2, 0 + (-2)) = max(-2, -2) = -2                  ║
-║           maxSum = -2                                                     ║
-║           ├───┤                                                           ║
-║           [-2]                                                            ║
-║                                                                           ║
-║  Index 1: arr[1] = 1                                                      ║
-║           current = max(1, -2 + 1) = max(1, -1) = 1  ← Start fresh!       ║
-║           maxSum = 1                                                      ║
-║               ├───┤                                                       ║
-║               [1]                                                         ║
-║                                                                           ║
-║  Index 2: arr[2] = -3                                                     ║
-║           current = max(-3, 1 + (-3)) = max(-3, -2) = -2  ← Extend        ║
-║           maxSum = 1                                                      ║
-║               ├───────┤                                                   ║
-║               [1, -3]                                                     ║
-║                                                                           ║
-║  Index 3: arr[3] = 4                                                      ║
-║           current = max(4, -2 + 4) = max(4, 2) = 4  ← Start fresh!        ║
-║           maxSum = 4                                                      ║
-║                       ├───┤                                               ║
-║                       [4]                                                 ║
-║                                                                           ║
-║  Index 4: arr[4] = -1                                                     ║
-║           current = max(-1, 4 + (-1)) = max(-1, 3) = 3  ← Extend          ║
-║           maxSum = 4                                                      ║
-║                       ├───────┤                                           ║
-║                       [4, -1]                                             ║
-║                                                                           ║
-║  Index 5: arr[5] = 2                                                      ║
-║           current = max(2, 3 + 2) = max(2, 5) = 5  ← Extend               ║
-║           maxSum = 5                                                      ║
-║                       ├───────────┤                                       ║
-║                       [4, -1, 2]                                          ║
-║                                                                           ║
-║  Index 6: arr[6] = 1                                                      ║
-║           current = max(1, 5 + 1) = max(1, 6) = 6  ← Extend               ║
-║           maxSum = 6 ⭐                                                    ║
-║                       ├───────────────┤                                   ║
-║                       [4, -1, 2, 1]    ← MAXIMUM SUBARRAY                 ║
-║                                                                           ║
-║  Continue... Final Answer: 6 (subarray [4, -1, 2, 1])                     ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+                  KADANE'S ALGORITHM
+──────────────────────────────────────────────────
+
+Array: [-2, 1, -3, 4, -1, 2, 1, -5, 4]
+
+KEY IDEA: At each position, decide:
+"Should I start fresh here, or extend previous subarray?"
+
+Index 0: arr[0] = -2
+         current = max(-2, 0 + (-2)) = max(-2, -2) = -2
+         maxSum = -2
+         ├───┤
+         [-2]
+
+Index 1: arr[1] = 1
+         current = max(1, -2 + 1) = max(1, -1) = 1  ← Start fresh!
+         maxSum = 1
+             ├───┤
+             [1]
+
+Index 2: arr[2] = -3
+         current = max(-3, 1 + (-3)) = max(-3, -2) = -2  ← Extend
+         maxSum = 1
+             ├───────┤
+             [1, -3]
+
+Index 3: arr[3] = 4
+         current = max(4, -2 + 4) = max(4, 2) = 4  ← Start fresh!
+         maxSum = 4
+                     ├───┤
+                     [4]
+
+Index 4: arr[4] = -1
+         current = max(-1, 4 + (-1)) = max(-1, 3) = 3  ← Extend
+         maxSum = 4
+                     ├───────┤
+                     [4, -1]
+
+Index 5: arr[5] = 2
+         current = max(2, 3 + 2) = max(2, 5) = 5  ← Extend
+         maxSum = 5
+                     ├───────────┤
+                     [4, -1, 2]
+
+Index 6: arr[6] = 1
+         current = max(1, 5 + 1) = max(1, 6) = 6  ← Extend
+         maxSum = 6 ⭐
+                     ├───────────────┤
+                     [4, -1, 2, 1]    ← MAXIMUM SUBARRAY
+
+Continue... Final Answer: 6 (subarray [4, -1, 2, 1])
 ```
 
 ### Dutch National Flag (Sort 0s, 1s, 2s)
 
 ```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║                    DUTCH NATIONAL FLAG                                    ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Array: [2, 0, 2, 1, 1, 0]                                                ║
-║                                                                           ║
-║  Three pointers: low (0s boundary), mid (scanning), high (2s boundary)    ║
-║                                                                           ║
-║  Initial:                                                                 ║
-║  ┌───┬───┬───┬───┬───┬───┐                                                ║
-║  │ 2 │ 0 │ 2 │ 1 │ 1 │ 0 │                                                ║
-║  └───┴───┴───┴───┴───┴───┘                                                ║
-║    ↑                   ↑                                                  ║
-║  low,mid              high                                                ║
-║                                                                           ║
-║  arr[mid]=2: Swap with high, high--                                       ║
-║  ┌───┬───┬───┬───┬───┬───┐                                                ║
-║  │ 0 │ 0 │ 2 │ 1 │ 1 │ 2 │                                                ║
-║  └───┴───┴───┴───┴───┴───┘                                                ║
-║    ↑               ↑   ↑                                                  ║
-║  low,mid          high (2s zone)                                          ║
-║                                                                           ║
-║  arr[mid]=0: Swap with low, low++, mid++                                  ║
-║  ┌───┬───┬───┬───┬───┬───┐                                                ║
-║  │ 0 │ 0 │ 2 │ 1 │ 1 │ 2 │                                                ║
-║  └───┴───┴───┴───┴───┴───┘                                                ║
-║    ↑   ↑           ↑   ↑                                                  ║
-║   (0s) low,mid    high (2s)                                               ║
-║                                                                           ║
-║  arr[mid]=0: Swap with low, low++, mid++                                  ║
-║  ┌───┬───┬───┬───┬───┬───┐                                                ║
-║  │ 0 │ 0 │ 2 │ 1 │ 1 │ 2 │                                                ║
-║  └───┴───┴───┴───┴───┴───┘                                                ║
-║   (0s)  ↑   ↑      ↑   ↑                                                  ║
-║        low mid    high (2s)                                               ║
-║                                                                           ║
-║  arr[mid]=2: Swap with high, high--                                       ║
-║  ┌───┬───┬───┬───┬───┬───┐                                                ║
-║  │ 0 │ 0 │ 1 │ 1 │ 2 │ 2 │                                                ║
-║  └───┴───┴───┴───┴───┴───┘                                                ║
-║   (0s)  ↑   ↑   ↑  (2s zone)                                              ║
-║        low mid high                                                       ║
-║                                                                           ║
-║  arr[mid]=1: Just mid++                                                   ║
-║  ┌───┬───┬───┬───┬───┬───┐                                                ║
-║  │ 0 │ 0 │ 1 │ 1 │ 2 │ 2 │                                                ║
-║  └───┴───┴───┴───┴───┴───┘                                                ║
-║   (0s)  ↑      ↑↑  (2s zone)                                              ║
-║        low   mid,high                                                     ║
-║                                                                           ║
-║  arr[mid]=1: mid++                                                        ║
-║  mid > high → DONE! ✓                                                     ║
-║                                                                           ║
-║  Result: [0, 0, 1, 1, 2, 2]                                               ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+                  DUTCH NATIONAL FLAG
+──────────────────────────────────────────────────
+
+Array: [2, 0, 2, 1, 1, 0]
+
+Three pointers: low (0s boundary), mid (scanning), high (2s boundary)
+
+Initial:
+┌───┬───┬───┬───┬───┬───┐
+│ 2 │ 0 │ 2 │ 1 │ 1 │ 0 │
+└───┴───┴───┴───┴───┴───┘
+  ↑                   ↑
+low,mid              high
+
+arr[mid]=2: Swap with high, high--
+┌───┬───┬───┬───┬───┬───┐
+│ 0 │ 0 │ 2 │ 1 │ 1 │ 2 │
+└───┴───┴───┴───┴───┴───┘
+  ↑               ↑   ↑
+low,mid          high (2s zone)
+
+arr[mid]=0: Swap with low, low++, mid++
+┌───┬───┬───┬───┬───┬───┐
+│ 0 │ 0 │ 2 │ 1 │ 1 │ 2 │
+└───┴───┴───┴───┴───┴───┘
+  ↑   ↑           ↑   ↑
+ (0s) low,mid    high (2s)
+
+arr[mid]=0: Swap with low, low++, mid++
+┌───┬───┬───┬───┬───┬───┐
+│ 0 │ 0 │ 2 │ 1 │ 1 │ 2 │
+└───┴───┴───┴───┴───┴───┘
+ (0s)  ↑   ↑      ↑   ↑
+      low mid    high (2s)
+
+arr[mid]=2: Swap with high, high--
+┌───┬───┬───┬───┬───┬───┐
+│ 0 │ 0 │ 1 │ 1 │ 2 │ 2 │
+└───┴───┴───┴───┴───┴───┘
+ (0s)  ↑   ↑   ↑  (2s zone)
+      low mid high
+
+arr[mid]=1: Just mid++
+┌───┬───┬───┬───┬───┬───┐
+│ 0 │ 0 │ 1 │ 1 │ 2 │ 2 │
+└───┴───┴───┴───┴───┴───┘
+ (0s)  ↑      ↑↑  (2s zone)
+      low   mid,high
+
+arr[mid]=1: mid++
+mid > high → DONE! ✓
+
+Result: [0, 0, 1, 1, 2, 2]
 ```
 
 ---
@@ -191,43 +185,41 @@
 ### Anagram Check
 
 ```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║                    ANAGRAM CHECK VISUALIZATION                            ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  String 1: "listen"        String 2: "silent"                             ║
-║                                                                           ║
-║  METHOD 1: Frequency Count                                                ║
-║                                                                           ║
-║  Count for "listen":       Count for "silent":                            ║
-║  ┌───┬───┐                 ┌───┬───┐                                      ║
-║  │ l │ 1 │                 │ s │ 1 │                                      ║
-║  │ i │ 1 │                 │ i │ 1 │                                      ║
-║  │ s │ 1 │                 │ l │ 1 │                                      ║
-║  │ t │ 1 │                 │ e │ 1 │                                      ║
-║  │ e │ 1 │                 │ n │ 1 │                                      ║
-║  │ n │ 1 │                 │ t │ 1 │                                      ║
-║  └───┴───┘                 └───┴───┘                                      ║
-║                                                                           ║
-║  Both have same characters with same frequencies → ANAGRAM ✓              ║
-║                                                                           ║
-║  METHOD 2: Single Frequency Array                                         ║
-║                                                                           ║
-║  Start: freq[26] = all zeros                                              ║
-║                                                                           ║
-║  Process "listen": +1 for each char                                       ║
-║  ┌─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┐                    ║
-║  │0│0│0│0│1│0│0│0│1│0│0│1│0│1│0│0│0│0│1│1│0│0│0│0│0│0│                    ║
-║  └─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┘                    ║
-║   a b c d e f g h i j k l m n o p q r s t u v w x y z                     ║
-║                                                                           ║
-║  Process "silent": -1 for each char                                       ║
-║  ┌─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┐                    ║
-║  │0│0│0│0│0│0│0│0│0│0│0│0│0│0│0│0│0│0│0│0│0│0│0│0│0│0│                    ║
-║  └─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┘                    ║
-║                                                                           ║
-║  All zeros → ANAGRAM ✓                                                    ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+                  ANAGRAM CHECK VISUALIZATION
+──────────────────────────────────────────────────
+
+String 1: "listen"        String 2: "silent"
+
+METHOD 1: Frequency Count
+
+Count for "listen":       Count for "silent":
+┌───┬───┐                 ┌───┬───┐
+│ l │ 1 │                 │ s │ 1 │
+│ i │ 1 │                 │ i │ 1 │
+│ s │ 1 │                 │ l │ 1 │
+│ t │ 1 │                 │ e │ 1 │
+│ e │ 1 │                 │ n │ 1 │
+│ n │ 1 │                 │ t │ 1 │
+└───┴───┘                 └───┴───┘
+
+Both have same characters with same frequencies → ANAGRAM ✓
+
+METHOD 2: Single Frequency Array
+
+Start: freq[26] = all zeros
+
+Process "listen": +1 for each char
+┌─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┐
+│0│0│0│0│1│0│0│0│1│0│0│1│0│1│0│0│0│0│1│1│0│0│0│0│0│0│
+└─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┘
+ a b c d e f g h i j k l m n o p q r s t u v w x y z
+
+Process "silent": -1 for each char
+┌─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┐
+│0│0│0│0│0│0│0│0│0│0│0│0│0│0│0│0│0│0│0│0│0│0│0│0│0│0│
+└─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┘
+
+All zeros → ANAGRAM ✓
 ```
 
 ### KMP String Matching (Pattern Search)
@@ -323,45 +315,43 @@
 ### Counting Sort Visualization
 
 ```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║                    COUNTING SORT VISUALIZATION                            ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Array: [4, 2, 2, 8, 3, 3, 1]    (values range 0-9)                       ║
-║                                                                           ║
-║  STEP 1: Count occurrences                                                ║
-║                                                                           ║
-║  Count array (index = value):                                             ║
-║  ┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┐                                ║
-║  │ 0 │ 1 │ 2 │ 1 │ 1 │ 0 │ 0 │ 0 │ 1 │ 0 │                                ║
-║  └───┴───┴───┴───┴───┴───┴───┴───┴───┴───┘                                ║
-║    0   1   2   3   4   5   6   7   8   9                                  ║
-║        ↑   ↑   ↑   ↑               ↑                                      ║
-║       one two two one             one                                     ║
-║        1   2s  3s  4               8                                      ║
-║                                                                           ║
-║  STEP 2: Cumulative sum (for stable sort)                                 ║
-║                                                                           ║
-║  ┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┐                                ║
-║  │ 0 │ 1 │ 3 │ 4 │ 5 │ 5 │ 5 │ 5 │ 6 │ 6 │                                ║
-║  └───┴───┴───┴───┴───┴───┴───┴───┴───┴───┘                                ║
-║    0   1   2   3   4   5   6   7   8   9                                  ║
-║                                                                           ║
-║  Meaning: count[i] = number of elements ≤ i                               ║
-║                                                                           ║
-║  STEP 3: Build output (right to left for stability)                       ║
-║                                                                           ║
-║  Input:  [4, 2, 2, 8, 3, 3, 1]                                            ║
-║                            ↑ Process 1 first (from right)                 ║
-║                                                                           ║
-║  1 goes to position count[1]-1 = 0                                        ║
-║  Output: [1, _, _, _, _, _, _]                                            ║
-║                                                                           ║
-║  Continue... Final: [1, 2, 2, 3, 3, 4, 8]                                 ║
-║                                                                           ║
-║  Time: O(N + K) where K = range of values                                 ║
-║  Best when: K is small (like sorting ages 0-100)                          ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+                  COUNTING SORT VISUALIZATION
+──────────────────────────────────────────────────
+
+Array: [4, 2, 2, 8, 3, 3, 1]    (values range 0-9)
+
+STEP 1: Count occurrences
+
+Count array (index = value):
+┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┐
+│ 0 │ 1 │ 2 │ 1 │ 1 │ 0 │ 0 │ 0 │ 1 │ 0 │
+└───┴───┴───┴───┴───┴───┴───┴───┴───┴───┘
+  0   1   2   3   4   5   6   7   8   9
+      ↑   ↑   ↑   ↑               ↑
+     one two two one             one
+      1   2s  3s  4               8
+
+STEP 2: Cumulative sum (for stable sort)
+
+┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┐
+│ 0 │ 1 │ 3 │ 4 │ 5 │ 5 │ 5 │ 5 │ 6 │ 6 │
+└───┴───┴───┴───┴───┴───┴───┴───┴───┴───┘
+  0   1   2   3   4   5   6   7   8   9
+
+Meaning: count[i] = number of elements ≤ i
+
+STEP 3: Build output (right to left for stability)
+
+Input:  [4, 2, 2, 8, 3, 3, 1]
+                          ↑ Process 1 first (from right)
+
+1 goes to position count[1]-1 = 0
+Output: [1, _, _, _, _, _, _]
+
+Continue... Final: [1, 2, 2, 3, 3, 4, 8]
+
+Time: O(N + K) where K = range of values
+Best when: K is small (like sorting ages 0-100)
 ```
 
 ---
@@ -371,68 +361,66 @@
 ### Binary Search Variants
 
 ```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║                    BINARY SEARCH VARIANTS                                 ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Array: [1, 2, 2, 2, 2, 3, 5, 7]    Find: 2                               ║
-║  Index:  0  1  2  3  4  5  6  7                                           ║
-║                                                                           ║
-║  ═══════════════════════════════════════════════════════════════════════  ║
-║                                                                           ║
-║  VARIANT 1: Find ANY occurrence                                           ║
-║  ┌───┬───┬───┬───┬───┬───┬───┬───┐                                        ║
-║  │ 1 │ 2 │ 2 │ 2 │ 2 │ 3 │ 5 │ 7 │                                        ║
-║  └───┴───┴───┴───┴───┴───┴───┴───┘                                        ║
-║              ↑                                                            ║
-║           returns 2 or 3 (any match)                                      ║
-║                                                                           ║
-║  ═══════════════════════════════════════════════════════════════════════  ║
-║                                                                           ║
-║  VARIANT 2: Find FIRST occurrence                                         ║
-║  ┌───┬───┬───┬───┬───┬───┬───┬───┐                                        ║
-║  │ 1 │ 2 │ 2 │ 2 │ 2 │ 3 │ 5 │ 7 │                                        ║
-║  └───┴───┴───┴───┴───┴───┴───┴───┘                                        ║
-║        ↑                                                                  ║
-║     returns 1 (leftmost 2)                                                ║
-║                                                                           ║
-║  Logic: When found, don't return! Save and go LEFT                        ║
-║         if (arr[mid] == target) { result = mid; high = mid - 1; }         ║
-║                                                                           ║
-║  ═══════════════════════════════════════════════════════════════════════  ║
-║                                                                           ║
-║  VARIANT 3: Find LAST occurrence                                          ║
-║  ┌───┬───┬───┬───┬───┬───┬───┬───┐                                        ║
-║  │ 1 │ 2 │ 2 │ 2 │ 2 │ 3 │ 5 │ 7 │                                        ║
-║  └───┴───┴───┴───┴───┴───┴───┴───┘                                        ║
-║                  ↑                                                        ║
-║              returns 4 (rightmost 2)                                      ║
-║                                                                           ║
-║  Logic: When found, don't return! Save and go RIGHT                       ║
-║         if (arr[mid] == target) { result = mid; low = mid + 1; }          ║
-║                                                                           ║
-║  ═══════════════════════════════════════════════════════════════════════  ║
-║                                                                           ║
-║  VARIANT 4: Lower Bound (first >= target)                                 ║
-║  Target: 2                                                                ║
-║  ┌───┬───┬───┬───┬───┬───┬───┬───┐                                        ║
-║  │ 1 │ 2 │ 2 │ 2 │ 2 │ 3 │ 5 │ 7 │                                        ║
-║  └───┴───┴───┴───┴───┴───┴───┴───┘                                        ║
-║        ↑                                                                  ║
-║     returns 1 (first element ≥ 2)                                         ║
-║                                                                           ║
-║  ═══════════════════════════════════════════════════════════════════════  ║
-║                                                                           ║
-║  VARIANT 5: Upper Bound (first > target)                                  ║
-║  Target: 2                                                                ║
-║  ┌───┬───┬───┬───┬───┬───┬───┬───┐                                        ║
-║  │ 1 │ 2 │ 2 │ 2 │ 2 │ 3 │ 5 │ 7 │                                        ║
-║  └───┴───┴───┴───┴───┴───┴───┴───┘                                        ║
-║                      ↑                                                    ║
-║                  returns 5 (first element > 2)                            ║
-║                                                                           ║
-║  Count of 2s = Upper Bound - Lower Bound = 5 - 1 = 4                      ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+                  BINARY SEARCH VARIANTS
+──────────────────────────────────────────────────
+
+Array: [1, 2, 2, 2, 2, 3, 5, 7]    Find: 2
+Index:  0  1  2  3  4  5  6  7
+
+═══════════════════════════════════════════════════════════════════════
+
+VARIANT 1: Find ANY occurrence
+┌───┬───┬───┬───┬───┬───┬───┬───┐
+│ 1 │ 2 │ 2 │ 2 │ 2 │ 3 │ 5 │ 7 │
+└───┴───┴───┴───┴───┴───┴───┴───┘
+            ↑
+         returns 2 or 3 (any match)
+
+═══════════════════════════════════════════════════════════════════════
+
+VARIANT 2: Find FIRST occurrence
+┌───┬───┬───┬───┬───┬───┬───┬───┐
+│ 1 │ 2 │ 2 │ 2 │ 2 │ 3 │ 5 │ 7 │
+└───┴───┴───┴───┴───┴───┴───┴───┘
+      ↑
+   returns 1 (leftmost 2)
+
+Logic: When found, don't return! Save and go LEFT
+       if (arr[mid] == target) { result = mid; high = mid - 1; }
+
+═══════════════════════════════════════════════════════════════════════
+
+VARIANT 3: Find LAST occurrence
+┌───┬───┬───┬───┬───┬───┬───┬───┐
+│ 1 │ 2 │ 2 │ 2 │ 2 │ 3 │ 5 │ 7 │
+└───┴───┴───┴───┴───┴───┴───┴───┘
+                ↑
+            returns 4 (rightmost 2)
+
+Logic: When found, don't return! Save and go RIGHT
+       if (arr[mid] == target) { result = mid; low = mid + 1; }
+
+═══════════════════════════════════════════════════════════════════════
+
+VARIANT 4: Lower Bound (first >= target)
+Target: 2
+┌───┬───┬───┬───┬───┬───┬───┬───┐
+│ 1 │ 2 │ 2 │ 2 │ 2 │ 3 │ 5 │ 7 │
+└───┴───┴───┴───┴───┴───┴───┴───┘
+      ↑
+   returns 1 (first element ≥ 2)
+
+═══════════════════════════════════════════════════════════════════════
+
+VARIANT 5: Upper Bound (first > target)
+Target: 2
+┌───┬───┬───┬───┬───┬───┬───┬───┐
+│ 1 │ 2 │ 2 │ 2 │ 2 │ 3 │ 5 │ 7 │
+└───┴───┴───┴───┴───┴───┴───┴───┘
+                    ↑
+                returns 5 (first element > 2)
+
+Count of 2s = Upper Bound - Lower Bound = 5 - 1 = 4
 ```
 
 ---
@@ -442,97 +430,93 @@
 ### HashMap Internal Working
 
 ```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║                    HASHMAP INTERNAL STRUCTURE                             ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  HashMap<String, Integer>                                                 ║
-║                                                                           ║
-║  Put("apple", 5):  hash("apple") % 8 = 2                                  ║
-║  Put("banana", 3): hash("banana") % 8 = 5                                 ║
-║  Put("cherry", 7): hash("cherry") % 8 = 2  ← Collision!                   ║
-║                                                                           ║
-║  Internal Array (Buckets):                                                ║
-║  ┌─────────┬─────────────────────────────────────────┐                    ║
-║  │ Bucket  │ Contents                                │                    ║
-║  ├─────────┼─────────────────────────────────────────┤                    ║
-║  │    0    │ NULL                                    │                    ║
-║  │    1    │ NULL                                    │                    ║
-║  │    2    │ [apple:5] → [cherry:7] → NULL          │  ← Chained!         ║
-║  │    3    │ NULL                                    │                    ║
-║  │    4    │ NULL                                    │                    ║
-║  │    5    │ [banana:3] → NULL                       │                    ║
-║  │    6    │ NULL                                    │                    ║
-║  │    7    │ NULL                                    │                    ║
-║  └─────────┴─────────────────────────────────────────┘                    ║
-║                                                                           ║
-║  Get("cherry"):                                                           ║
-║  1. hash("cherry") % 8 = 2                                                ║
-║  2. Go to bucket 2                                                        ║
-║  3. Check "apple" → Not match                                             ║
-║  4. Check "cherry" → Match! Return 7                                      ║
-║                                                                           ║
-║  Time Complexity:                                                         ║
-║  • Best/Average: O(1) - direct bucket access                              ║
-║  • Worst: O(N) - all items in one bucket (rare)                           ║
-║                                                                           ║
-║  Load Factor = items / buckets                                            ║
-║  When load factor > 0.75 → resize (double buckets, rehash all)            ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+                  HASHMAP INTERNAL STRUCTURE
+──────────────────────────────────────────────────
+
+HashMap<String, Integer>
+
+Put("apple", 5):  hash("apple") % 8 = 2
+Put("banana", 3): hash("banana") % 8 = 5
+Put("cherry", 7): hash("cherry") % 8 = 2  ← Collision!
+
+Internal Array (Buckets):
+┌─────────┬─────────────────────────────────────────┐
+│ Bucket  │ Contents                                │
+├─────────┼─────────────────────────────────────────┤
+│    0    │ NULL                                    │
+│    1    │ NULL                                    │
+│    2    │ [apple:5] → [cherry:7] → NULL          │  ← Chained!
+│    3    │ NULL                                    │
+│    4    │ NULL                                    │
+│    5    │ [banana:3] → NULL                       │
+│    6    │ NULL                                    │
+│    7    │ NULL                                    │
+└─────────┴─────────────────────────────────────────┘
+
+Get("cherry"):
+1. hash("cherry") % 8 = 2
+2. Go to bucket 2
+3. Check "apple" → Not match
+4. Check "cherry" → Match! Return 7
+
+Time Complexity:
+• Best/Average: O(1) - direct bucket access
+• Worst: O(N) - all items in one bucket (rare)
+
+Load Factor = items / buckets
+When load factor > 0.75 → resize (double buckets, rehash all)
 ```
 
 ### Stack vs Queue
 
 ```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║                    STACK vs QUEUE                                         ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  STACK (LIFO - Last In First Out)                                         ║
-║  ─────────────────────────────────                                        ║
-║  Think: Stack of plates                                                   ║
-║                                                                           ║
-║  Push 1, Push 2, Push 3:          Pop:                                    ║
-║  ┌─────┐                          ┌─────┐                                 ║
-║  │  3  │ ← top                    │  3  │ ← comes out first               ║
-║  ├─────┤                          └─────┘                                 ║
-║  │  2  │                          Then:                                   ║
-║  ├─────┤                          ┌─────┐                                 ║
-║  │  1  │                          │  2  │ ← next out                      ║
-║  └─────┘                          └─────┘                                 ║
-║                                                                           ║
-║  Use cases: Undo, Recursion, Balanced brackets                            ║
-║                                                                           ║
-║  ═══════════════════════════════════════════════════════════════════════  ║
-║                                                                           ║
-║  QUEUE (FIFO - First In First Out)                                        ║
-║  ─────────────────────────────────                                        ║
-║  Think: Line at store                                                     ║
-║                                                                           ║
-║  Enqueue 1, 2, 3:                 Dequeue:                                ║
-║  ┌───┬───┬───┐                    ┌───┬───┬───┐                           ║
-║  │ 1 │ 2 │ 3 │                    │ 1 │ 2 │ 3 │                           ║
-║  └───┴───┴───┘                    └───┴───┴───┘                           ║
-║    ↑       ↑                        ↑                                     ║
-║  front    rear                    comes out first                         ║
-║                                                                           ║
-║  Use cases: BFS, Level-order traversal, Task scheduling                   ║
-║                                                                           ║
-║  ═══════════════════════════════════════════════════════════════════════  ║
-║                                                                           ║
-║  DEQUE (Double-Ended Queue)                                               ║
-║  ─────────────────────────────                                            ║
-║  Can add/remove from BOTH ends!                                           ║
-║                                                                           ║
-║  ┌───┬───┬───┬───┬───┐                                                    ║
-║  │ A │ B │ C │ D │ E │                                                    ║
-║  └───┴───┴───┴───┴───┘                                                    ║
-║    ↑               ↑                                                      ║
-║  addFirst/      addLast/                                                  ║
-║  removeFirst    removeLast                                                ║
-║                                                                           ║
-║  Use cases: Sliding window max, BFS variations                            ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+                  STACK vs QUEUE
+──────────────────────────────────────────────────
+
+STACK (LIFO - Last In First Out)
+─────────────────────────────────
+Think: Stack of plates
+
+Push 1, Push 2, Push 3:          Pop:
+┌─────┐                          ┌─────┐
+│  3  │ ← top                    │  3  │ ← comes out first
+├─────┤                          └─────┘
+│  2  │                          Then:
+├─────┤                          ┌─────┐
+│  1  │                          │  2  │ ← next out
+└─────┘                          └─────┘
+
+Use cases: Undo, Recursion, Balanced brackets
+
+═══════════════════════════════════════════════════════════════════════
+
+QUEUE (FIFO - First In First Out)
+─────────────────────────────────
+Think: Line at store
+
+Enqueue 1, 2, 3:                 Dequeue:
+┌───┬───┬───┐                    ┌───┬───┬───┐
+│ 1 │ 2 │ 3 │                    │ 1 │ 2 │ 3 │
+└───┴───┴───┘                    └───┴───┴───┘
+  ↑       ↑                        ↑
+front    rear                    comes out first
+
+Use cases: BFS, Level-order traversal, Task scheduling
+
+═══════════════════════════════════════════════════════════════════════
+
+DEQUE (Double-Ended Queue)
+─────────────────────────────
+Can add/remove from BOTH ends!
+
+┌───┬───┬───┬───┬───┐
+│ A │ B │ C │ D │ E │
+└───┴───┴───┴───┴───┘
+  ↑               ↑
+addFirst/      addLast/
+removeFirst    removeLast
+
+Use cases: Sliding window max, BFS variations
 ```
 
 ---
@@ -642,96 +626,92 @@
 ### Fibonacci with Memoization
 
 ```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║                    FIBONACCI - DP VISUALIZATION                           ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  WITHOUT MEMOIZATION (Exponential time):                                  ║
-║                                                                           ║
-║                          fib(5)                                           ║
-║                         /      \                                          ║
-║                    fib(4)      fib(3)                                     ║
-║                    /    \      /    \                                     ║
-║               fib(3) fib(2) fib(2) fib(1)                                 ║
-║               /    \                                                      ║
-║          fib(2) fib(1)                                                    ║
-║                                                                           ║
-║  Notice: fib(3) calculated twice, fib(2) calculated 3 times!              ║
-║  Time: O(2^N) 😱                                                           ║
-║                                                                           ║
-║  ═══════════════════════════════════════════════════════════════════════  ║
-║                                                                           ║
-║  WITH MEMOIZATION (Linear time):                                          ║
-║                                                                           ║
-║  memo[] array:                                                            ║
-║  ┌───┬───┬───┬───┬───┬───┐                                                ║
-║  │ 0 │ 1 │ 1 │ 2 │ 3 │ 5 │                                                ║
-║  └───┴───┴───┴───┴───┴───┘                                                ║
-║    0   1   2   3   4   5                                                  ║
-║                                                                           ║
-║  fib(5) = fib(4) + fib(3)                                                 ║
-║         = memo[4] + memo[3]  ← Look up, don't recalculate!                ║
-║         = 3 + 2                                                           ║
-║         = 5                                                               ║
-║                                                                           ║
-║  Time: O(N) 😊                                                             ║
-║  Space: O(N) for memo array                                               ║
-║                                                                           ║
-║  ═══════════════════════════════════════════════════════════════════════  ║
-║                                                                           ║
-║  BOTTOM-UP (Tabulation - even better):                                    ║
-║                                                                           ║
-║  Only need last 2 values:                                                 ║
-║  ┌───┐ ┌───┐                                                              ║
-║  │ a │ │ b │                                                              ║
-║  └───┘ └───┘                                                              ║
-║                                                                           ║
-║  a=0, b=1                                                                 ║
-║  i=2: a=1, b=0+1=1 → (1, 1)                                               ║
-║  i=3: a=1, b=1+1=2 → (1, 2)                                               ║
-║  i=4: a=2, b=1+2=3 → (2, 3)                                               ║
-║  i=5: a=3, b=2+3=5 → (3, 5)                                               ║
-║                                                                           ║
-║  Answer: 5                                                                ║
-║  Time: O(N), Space: O(1) 🎉                                                ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+                  FIBONACCI - DP VISUALIZATION
+──────────────────────────────────────────────────
+
+WITHOUT MEMOIZATION (Exponential time):
+
+                        fib(5)
+                       /      \
+                  fib(4)      fib(3)
+                  /    \      /    \
+             fib(3) fib(2) fib(2) fib(1)
+             /    \
+        fib(2) fib(1)
+
+Notice: fib(3) calculated twice, fib(2) calculated 3 times!
+Time: O(2^N) 😱
+
+═══════════════════════════════════════════════════════════════════════
+
+WITH MEMOIZATION (Linear time):
+
+memo[] array:
+┌───┬───┬───┬───┬───┬───┐
+│ 0 │ 1 │ 1 │ 2 │ 3 │ 5 │
+└───┴───┴───┴───┴───┴───┘
+  0   1   2   3   4   5
+
+fib(5) = fib(4) + fib(3)
+       = memo[4] + memo[3]  ← Look up, don't recalculate!
+       = 3 + 2
+       = 5
+
+Time: O(N) 😊
+Space: O(N) for memo array
+
+═══════════════════════════════════════════════════════════════════════
+
+BOTTOM-UP (Tabulation - even better):
+
+Only need last 2 values:
+┌───┐ ┌───┐
+│ a │ │ b │
+└───┘ └───┘
+
+a=0, b=1
+i=2: a=1, b=0+1=1 → (1, 1)
+i=3: a=1, b=1+1=2 → (1, 2)
+i=4: a=2, b=1+2=3 → (2, 3)
+i=5: a=3, b=2+3=5 → (3, 5)
+
+Answer: 5
+Time: O(N), Space: O(1) 🎉
 ```
 
 ### Longest Common Subsequence (LCS)
 
 ```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║                    LONGEST COMMON SUBSEQUENCE                             ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  String X = "ABCDGH"                                                      ║
-║  String Y = "AEDFHR"                                                      ║
-║                                                                           ║
-║  DP Table: dp[i][j] = LCS length of X[0..i-1] and Y[0..j-1]               ║
-║                                                                           ║
-║      │ "" │ A │ E │ D │ F │ H │ R │                                       ║
-║  ────┼────┼───┼───┼───┼───┼───┼───┤                                       ║
-║   "" │  0 │ 0 │ 0 │ 0 │ 0 │ 0 │ 0 │                                       ║
-║    A │  0 │ 1 │ 1 │ 1 │ 1 │ 1 │ 1 │                                       ║
-║    B │  0 │ 1 │ 1 │ 1 │ 1 │ 1 │ 1 │                                       ║
-║    C │  0 │ 1 │ 1 │ 1 │ 1 │ 1 │ 1 │                                       ║
-║    D │  0 │ 1 │ 1 │ 2 │ 2 │ 2 │ 2 │  ← D matches!                         ║
-║    G │  0 │ 1 │ 1 │ 2 │ 2 │ 2 │ 2 │                                       ║
-║    H │  0 │ 1 │ 1 │ 2 │ 2 │ 3 │ 3 │  ← H matches!                         ║
-║                                                                           ║
-║  Recurrence:                                                              ║
-║  ┌────────────────────────────────────────────────────────────────────┐   ║
-║  │ If X[i-1] == Y[j-1]:                                               │   ║
-║  │     dp[i][j] = dp[i-1][j-1] + 1    (match, add 1)                  │   ║
-║  │ Else:                                                              │   ║
-║  │     dp[i][j] = max(dp[i-1][j], dp[i][j-1])  (take best from left/up)│  ║
-║  └────────────────────────────────────────────────────────────────────┘   ║
-║                                                                           ║
-║  LCS = "ADH" (length 3)                                                   ║
-║                                                                           ║
-║  Backtrack to find actual subsequence:                                    ║
-║  Start at dp[6][6]=3, trace back through matches                          ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+                  LONGEST COMMON SUBSEQUENCE
+──────────────────────────────────────────────────
+
+String X = "ABCDGH"
+String Y = "AEDFHR"
+
+DP Table: dp[i][j] = LCS length of X[0..i-1] and Y[0..j-1]
+
+    │ "" │ A │ E │ D │ F │ H │ R │
+────┼────┼───┼───┼───┼───┼───┼───┤
+ "" │  0 │ 0 │ 0 │ 0 │ 0 │ 0 │ 0 │
+  A │  0 │ 1 │ 1 │ 1 │ 1 │ 1 │ 1 │
+  B │  0 │ 1 │ 1 │ 1 │ 1 │ 1 │ 1 │
+  C │  0 │ 1 │ 1 │ 1 │ 1 │ 1 │ 1 │
+  D │  0 │ 1 │ 1 │ 2 │ 2 │ 2 │ 2 │  ← D matches!
+  G │  0 │ 1 │ 1 │ 2 │ 2 │ 2 │ 2 │
+  H │  0 │ 1 │ 1 │ 2 │ 2 │ 3 │ 3 │  ← H matches!
+
+Recurrence:
+┌─────────────────────────────────────────────────────────────────────┐
+│ If X[i-1] == Y[j-1]:                                                │
+│     dp[i][j] = dp[i-1][j-1] + 1    (match, add 1)                   │
+│ Else:                                                               │
+│     dp[i][j] = max(dp[i-1][j], dp[i][j-1])  (take best from left/up)│
+└─────────────────────────────────────────────────────────────────────┘
+
+LCS = "ADH" (length 3)
+
+Backtrack to find actual subsequence:
+Start at dp[6][6]=3, trace back through matches
 ```
 
 ---
@@ -807,51 +787,49 @@
 ### GCD Euclidean Algorithm
 
 ```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║                    GCD - EUCLIDEAN ALGORITHM                              ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Find GCD(48, 18):                                                        ║
-║                                                                           ║
-║  Step 1: 48 = 18 × 2 + 12                                                 ║
-║          a    b        remainder                                          ║
-║                                                                           ║
-║          48 ÷ 18 = 2 remainder 12                                         ║
-║          Now: GCD(48, 18) = GCD(18, 12)                                   ║
-║                                                                           ║
-║  Step 2: 18 = 12 × 1 + 6                                                  ║
-║          18 ÷ 12 = 1 remainder 6                                          ║
-║          Now: GCD(18, 12) = GCD(12, 6)                                    ║
-║                                                                           ║
-║  Step 3: 12 = 6 × 2 + 0                                                   ║
-║          12 ÷ 6 = 2 remainder 0                                           ║
-║          Remainder is 0 → GCD = 6 ✓                                       ║
-║                                                                           ║
-║  Visual:                                                                  ║
-║  ┌──────────────────────────────────────────────────────────────────────┐ ║
-║  │ GCD(48, 18)                                                          │ ║
-║  │    ↓                                                                 │ ║
-║  │ GCD(18, 48 % 18) = GCD(18, 12)                                       │ ║
-║  │    ↓                                                                 │ ║
-║  │ GCD(12, 18 % 12) = GCD(12, 6)                                        │ ║
-║  │    ↓                                                                 │ ║
-║  │ GCD(6, 12 % 6) = GCD(6, 0)                                           │ ║
-║  │    ↓                                                                 │ ║
-║  │ return 6  ← When b becomes 0, a is the GCD                           │ ║
-║  └──────────────────────────────────────────────────────────────────────┘ ║
-║                                                                           ║
-║  Code:                                                                    ║
-║  int gcd(int a, int b) {                                                  ║
-║      while (b != 0) {                                                     ║
-║          int temp = b;                                                    ║
-║          b = a % b;                                                       ║
-║          a = temp;                                                        ║
-║      }                                                                    ║
-║      return a;                                                            ║
-║  }                                                                        ║
-║                                                                           ║
-║  Time Complexity: O(log(min(a, b)))                                       ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+                  GCD - EUCLIDEAN ALGORITHM
+──────────────────────────────────────────────────
+
+Find GCD(48, 18):
+
+Step 1: 48 = 18 × 2 + 12
+        a    b        remainder
+
+        48 ÷ 18 = 2 remainder 12
+        Now: GCD(48, 18) = GCD(18, 12)
+
+Step 2: 18 = 12 × 1 + 6
+        18 ÷ 12 = 1 remainder 6
+        Now: GCD(18, 12) = GCD(12, 6)
+
+Step 3: 12 = 6 × 2 + 0
+        12 ÷ 6 = 2 remainder 0
+        Remainder is 0 → GCD = 6 ✓
+
+Visual:
+┌──────────────────────────────────────────────────────────────────────┐
+│ GCD(48, 18)                                                          │
+│    ↓                                                                 │
+│ GCD(18, 48 % 18) = GCD(18, 12)                                       │
+│    ↓                                                                 │
+│ GCD(12, 18 % 12) = GCD(12, 6)                                        │
+│    ↓                                                                 │
+│ GCD(6, 12 % 6) = GCD(6, 0)                                           │
+│    ↓                                                                 │
+│ return 6  ← When b becomes 0, a is the GCD                           │
+└──────────────────────────────────────────────────────────────────────┘
+
+Code:
+int gcd(int a, int b) {
+    while (b != 0) {
+        int temp = b;
+        b = a % b;
+        a = temp;
+    }
+    return a;
+}
+
+Time Complexity: O(log(min(a, b)))
 ```
 
 ---
@@ -859,45 +837,43 @@
 ## 🎯 QUICK REFERENCE TABLE
 
 ```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║                    ALGORITHM QUICK REFERENCE                              ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  SORTING                                                                  ║
-║  ┌──────────────────┬─────────┬─────────┬─────────┬────────────────────┐  ║
-║  │ Algorithm        │ Best    │ Average │ Worst   │ When to Use        │  ║
-║  ├──────────────────┼─────────┼─────────┼─────────┼────────────────────┤  ║
-║  │ Quick Sort       │ O(NlogN)│ O(NlogN)│ O(N²)   │ General purpose    │  ║
-║  │ Merge Sort       │ O(NlogN)│ O(NlogN)│ O(NlogN)│ Stable needed      │  ║
-║  │ Heap Sort        │ O(NlogN)│ O(NlogN)│ O(NlogN)│ Memory constrained │  ║
-║  │ Counting Sort    │ O(N+K)  │ O(N+K)  │ O(N+K)  │ Small range values │  ║
-║  │ Insertion Sort   │ O(N)    │ O(N²)   │ O(N²)   │ Nearly sorted      │  ║
-║  └──────────────────┴─────────┴─────────┴─────────┴────────────────────┘  ║
-║                                                                           ║
-║  SEARCHING                                                                ║
-║  ┌──────────────────┬─────────┬──────────────────────────────────────────┐║
-║  │ Algorithm        │ Time    │ When to Use                              │║
-║  ├──────────────────┼─────────┼──────────────────────────────────────────┤║
-║  │ Linear Search    │ O(N)    │ Unsorted data                            │║
-║  │ Binary Search    │ O(logN) │ Sorted array                             │║
-║  │ Hash Lookup      │ O(1)    │ When O(1) lookup needed                  │║
-║  │ BFS              │ O(V+E)  │ Shortest path (unweighted)               │║
-║  │ DFS              │ O(V+E)  │ Path exists, cycle detection             │║
-║  └──────────────────┴─────────┴──────────────────────────────────────────┘║
-║                                                                           ║
-║  DATA STRUCTURES                                                          ║
-║  ┌──────────────────┬─────────┬─────────┬─────────┬────────────────────┐  ║
-║  │ Structure        │ Access  │ Search  │ Insert  │ Delete             │  ║
-║  ├──────────────────┼─────────┼─────────┼─────────┼────────────────────┤  ║
-║  │ Array            │ O(1)    │ O(N)    │ O(N)    │ O(N)               │  ║
-║  │ Linked List      │ O(N)    │ O(N)    │ O(1)    │ O(1)               │  ║
-║  │ HashMap          │ -       │ O(1)    │ O(1)    │ O(1)               │  ║
-║  │ Stack            │ O(N)    │ O(N)    │ O(1)    │ O(1)               │  ║
-║  │ Queue            │ O(N)    │ O(N)    │ O(1)    │ O(1)               │  ║
-║  │ Heap             │ -       │ O(N)    │ O(logN) │ O(logN)            │  ║
-║  │ BST (balanced)   │ O(logN) │ O(logN) │ O(logN) │ O(logN)            │  ║
-║  └──────────────────┴─────────┴─────────┴─────────┴────────────────────┘  ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+                  ALGORITHM QUICK REFERENCE
+──────────────────────────────────────────────────
+
+SORTING
+┌──────────────────┬─────────┬─────────┬─────────┬────────────────────┐
+│ Algorithm        │ Best    │ Average │ Worst   │ When to Use        │
+├──────────────────┼─────────┼─────────┼─────────┼────────────────────┤
+│ Quick Sort       │ O(NlogN)│ O(NlogN)│ O(N²)   │ General purpose    │
+│ Merge Sort       │ O(NlogN)│ O(NlogN)│ O(NlogN)│ Stable needed      │
+│ Heap Sort        │ O(NlogN)│ O(NlogN)│ O(NlogN)│ Memory constrained │
+│ Counting Sort    │ O(N+K)  │ O(N+K)  │ O(N+K)  │ Small range values │
+│ Insertion Sort   │ O(N)    │ O(N²)   │ O(N²)   │ Nearly sorted      │
+└──────────────────┴─────────┴─────────┴─────────┴────────────────────┘
+
+SEARCHING
+┌──────────────────┬─────────┬──────────────────────────────────────────┐
+│ Algorithm        │ Time    │ When to Use                              │
+├──────────────────┼─────────┼──────────────────────────────────────────┤
+│ Linear Search    │ O(N)    │ Unsorted data                            │
+│ Binary Search    │ O(logN) │ Sorted array                             │
+│ Hash Lookup      │ O(1)    │ When O(1) lookup needed                  │
+│ BFS              │ O(V+E)  │ Shortest path (unweighted)               │
+│ DFS              │ O(V+E)  │ Path exists, cycle detection             │
+└──────────────────┴─────────┴──────────────────────────────────────────┘
+
+DATA STRUCTURES
+┌──────────────────┬─────────┬─────────┬─────────┬────────────────────┐
+│ Structure        │ Access  │ Search  │ Insert  │ Delete             │
+├──────────────────┼─────────┼─────────┼─────────┼────────────────────┤
+│ Array            │ O(1)    │ O(N)    │ O(N)    │ O(N)               │
+│ Linked List      │ O(N)    │ O(N)    │ O(1)    │ O(1)               │
+│ HashMap          │ -       │ O(1)    │ O(1)    │ O(1)               │
+│ Stack            │ O(N)    │ O(N)    │ O(1)    │ O(1)               │
+│ Queue            │ O(N)    │ O(N)    │ O(1)    │ O(1)               │
+│ Heap             │ -       │ O(N)    │ O(logN) │ O(logN)            │
+│ BST (balanced)   │ O(logN) │ O(logN) │ O(logN) │ O(logN)            │
+└──────────────────┴─────────┴─────────┴─────────┴────────────────────┘
 ```
 
 ---

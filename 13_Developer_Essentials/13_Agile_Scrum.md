@@ -86,59 +86,55 @@
 ### The Scrum Team
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  SCRUM TEAM (Typically 5-9 People)                                   ║
-║                                                                      ║
-║  ┌─────────────────────────────────────────────────┐                 ║
-║  │  PRODUCT OWNER (1 person)                       │                 ║
-║  │  • Owns the Product Backlog                     │                 ║
-║  │  • Prioritizes features by business value       │                 ║
-║  │  • Writes user stories                          │                 ║
-║  │  • Says YES/NO to "what to build"               │                 ║
-║  │  • Available for questions during sprint         │                ║
-║  └─────────────────────────────────────────────────┘                 ║
-║                                                                      ║
-║  ┌─────────────────────────────────────────────────┐                 ║
-║  │  SCRUM MASTER (1 person, servant-leader)        │                 ║
-║  │  • Facilitates ceremonies                       │                 ║
-║  │  • Removes blockers                             │                 ║
-║  │  • Protects team from distractions              │                 ║
-║  │  • Coaches on Scrum practices                   │                 ║
-║  │  • NOT a project manager / NOT a boss           │                 ║
-║  └─────────────────────────────────────────────────┘                 ║
-║                                                                      ║
-║  ┌─────────────────────────────────────────────────┐                 ║
-║  │  DEVELOPMENT TEAM (3-7 people)                  │                 ║
-║  │  • Cross-functional (frontend, backend, QA)     │                 ║
-║  │  • Self-organizing (they decide HOW to build)   │                 ║
-║  │  • Collectively own the sprint deliverables      │                ║
-║  │  • No sub-teams or hierarchies within           │                 ║
-║  └─────────────────────────────────────────────────┘                 ║
-╚══════════════════════════════════════════════════════════════════════╝
+SCRUM TEAM (Typically 5-9 People)
+
+┌──────────────────────────────────────────────────┐
+│  PRODUCT OWNER (1 person)                        │
+│  • Owns the Product Backlog                      │
+│  • Prioritizes features by business value        │
+│  • Writes user stories                           │
+│  • Says YES/NO to "what to build"                │
+│  • Available for questions during sprint         │
+└──────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────┐
+│  SCRUM MASTER (1 person, servant-leader)        │
+│  • Facilitates ceremonies                       │
+│  • Removes blockers                             │
+│  • Protects team from distractions              │
+│  • Coaches on Scrum practices                   │
+│  • NOT a project manager / NOT a boss           │
+└─────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────┐
+│  DEVELOPMENT TEAM (3-7 people)                   │
+│  • Cross-functional (frontend, backend, QA)      │
+│  • Self-organizing (they decide HOW to build)    │
+│  • Collectively own the sprint deliverables      │
+│  • No sub-teams or hierarchies within            │
+└──────────────────────────────────────────────────┘
 ```
 
 ### The Sprint — 2-Week Cycle
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  SPRINT TIMELINE (2 Weeks = 10 Working Days)                         ║
-║                                                                      ║
-║  Day 1           Day 2-9              Day 10                         ║
-║  ┌─────────┐    ┌──────────────────┐  ┌────────────────────┐         ║
-║  │ Sprint  │    │   Development    │  │  Sprint Review     │         ║
-║  │ Planning│───→│                  │──→│  (Demo to PO)     │         ║
-║  │ (4 hrs) │    │  Daily Standups  │  │  (2 hrs)           │         ║
-║  └─────────┘    │  (15 min each)   │  └────────┬───────────┘         ║
-║                 └──────────────────┘           │                     ║
-║                                       ┌────────▼───────────┐         ║
-║                                       │  Retrospective     │         ║
-║                                       │  (What to improve) │         ║
-║                                       │  (1.5 hrs)         │         ║
-║                                       └────────────────────┘         ║
-║                                                                      ║
-║  KEY RULE: Sprint scope is FIXED once planning is done.              ║
-║  No adding work mid-sprint (unless truly urgent).                    ║
-╚══════════════════════════════════════════════════════════════════════╝
+SPRINT TIMELINE (2 Weeks = 10 Working Days)
+
+Day 1           Day 2-9              Day 10
+┌─────────┐    ┌──────────────────┐  ┌────────────────────┐
+│ Sprint  │    │   Development    │  │  Sprint Review     │
+│ Planning│───→│                  │──→│  (Demo to PO)     │
+│ (4 hrs) │    │  Daily Standups  │  │  (2 hrs)           │
+└─────────┘    │  (15 min each)   │  └────────┬───────────┘
+               └──────────────────┘           │
+                                     ┌────────▼───────────┐
+                                     │  Retrospective     │
+                                     │  (What to improve) │
+                                     │  (1.5 hrs)         │
+                                     └────────────────────┘
+
+KEY RULE: Sprint scope is FIXED once planning is done.
+No adding work mid-sprint (unless truly urgent).
 ```
 
 ---
@@ -219,30 +215,28 @@ TIP: As a developer, volunteer to demo YOUR work.
 ### 4. Sprint Retrospective
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  RETROSPECTIVE — The Most Important Ceremony                         ║
-║  (1.5 hours for 2-week sprint, team only)                            ║
-║                                                                      ║
-║  FORMAT: "Start, Stop, Continue"                                     ║
-║                                                                      ║
-║  ┌──────────────────┬──────────────────┬────────────────────┐        ║
-║  │  START doing     │  STOP doing      │  CONTINUE doing    │        ║
-║  ├──────────────────┼──────────────────┼────────────────────┤        ║
-║  │ Pair programming │ Skipping tests   │ Code reviews       │        ║
-║  │ on complex tasks │ for "quick fixes"│ before merge       │        ║
-║  │                  │                  │                    │        ║
-║  │ Writing ADRs for │ Long meetings    │ Daily standups     │        ║
-║  │ arch decisions   │ without agenda   │ at 10am            │        ║
-║  └──────────────────┴──────────────────┴────────────────────┘        ║
-║                                                                      ║
-║  OUTPUT: 1-2 concrete action items for NEXT sprint                   ║
-║  (More than 2 = nothing gets done)                                   ║
-║                                                                      ║
-║  OTHER FORMATS:                                                      ║
-║  • Mad/Sad/Glad                                                      ║
-║  • 4Ls: Liked, Learned, Lacked, Longed-for                           ║
-║  • Sailboat: Wind (helps), Anchor (slows), Rocks (risks)             ║
-╚══════════════════════════════════════════════════════════════════════╝
+RETROSPECTIVE — The Most Important Ceremony
+(1.5 hours for 2-week sprint, team only)
+
+FORMAT: "Start, Stop, Continue"
+
+┌──────────────────┬──────────────────┬────────────────────┐
+│  START doing     │  STOP doing      │  CONTINUE doing    │
+├──────────────────┼──────────────────┼────────────────────┤
+│ Pair programming │ Skipping tests   │ Code reviews       │
+│ on complex tasks │ for "quick fixes"│ before merge       │
+│                  │                  │                    │
+│ Writing ADRs for │ Long meetings    │ Daily standups     │
+│ arch decisions   │ without agenda   │ at 10am            │
+└──────────────────┴──────────────────┴────────────────────┘
+
+OUTPUT: 1-2 concrete action items for NEXT sprint
+(More than 2 = nothing gets done)
+
+OTHER FORMATS:
+• Mad/Sad/Glad
+• 4Ls: Liked, Learned, Lacked, Longed-for
+• Sailboat: Wind (helps), Anchor (slows), Rocks (risks)
 ```
 
 ### 5. Backlog Refinement (Grooming)

@@ -70,7 +70,7 @@ PROCESS A                    PROCESS B
 │ └──────┘ └────┘ │         │ └──────┘          │
 └──────────────────┘         └──────────────────┘
 ↑ Separate address spaces    ↑ Separate address space
-  Threads share heap            
+  Threads share heap
 
 WITHIN A THREAD:
 ┌─────────────────────────────────────────┐
@@ -93,29 +93,27 @@ WITHIN A THREAD:
 ### Deep Reasoning
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  A coroutine is a FUNCTION that can SUSPEND and RESUME.              ║
-║                                                                      ║
-║  Normal function:                                                    ║
-║  ┌────────┐                                                          ║
-║  │ start  │ → runs to completion → returns                           ║
-║  └────────┘                                                          ║
-║  Can only: CALL other functions and RETURN                           ║
-║                                                                      ║
-║  Coroutine:                                                          ║
-║  ┌────────┐        ┌──────────┐        ┌──────────┐                  ║
-║  │ start  │ → runs → SUSPEND  │ → ... → RESUME   │ → runs → end      ║
-║  └────────┘        └──────────┘        └──────────┘                  ║
-║  Can: CALL, RETURN, and also SUSPEND (yield control)                 ║
-║  When suspended, state is saved. When resumed, continues exactly.    ║
-║                                                                      ║
-║  KEY DISTINCTION from threads:                                       ║
-║  Thread: OS PREEMPTS it (involuntary switch — OS decides)            ║
-║  Coroutine: CODE SUSPENDS itself (voluntary — programmer decides)    ║
-║                                                                      ║
-║  This is called COOPERATIVE multitasking (coroutines cooperate)      ║
-║  vs PREEMPTIVE multitasking (OS preempts threads).                   ║
-╚══════════════════════════════════════════════════════════════════════╝
+A coroutine is a FUNCTION that can SUSPEND and RESUME.
+
+Normal function:
+┌────────┐
+│ start  │ → runs to completion → returns
+└────────┘
+Can only: CALL other functions and RETURN
+
+Coroutine:
+┌────────┐        ┌──────────┐        ┌──────────┐
+│ start  │ → runs → SUSPEND  │ → ... → RESUME   │ → runs → end
+└────────┘        └──────────┘        └──────────┘
+Can: CALL, RETURN, and also SUSPEND (yield control)
+When suspended, state is saved. When resumed, continues exactly.
+
+KEY DISTINCTION from threads:
+Thread: OS PREEMPTS it (involuntary switch — OS decides)
+Coroutine: CODE SUSPENDS itself (voluntary — programmer decides)
+
+This is called COOPERATIVE multitasking (coroutines cooperate)
+vs PREEMPTIVE multitasking (OS preempts threads).
 ```
 
 ```kotlin
@@ -381,34 +379,32 @@ executor.submit(() -> {
 ### Deep Explanation
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  THE SINGLE-THREADED EVENT LOOP                                      ║
-║  (Covered in JS Deep Reasoning — expanded here for concurrency       ║
-║   model comparison)                                                  ║
-║                                                                      ║
-║  JavaScript = ONE chef, ONE kitchen, BUT with timers and helpers.    ║
-║                                                                      ║
-║  ┌──────────────────────────────────────────────────────────┐        ║
-║  │  Call Stack (single thread — runs JS code)               │        ║
-║  │  ┌────────────────────────────────────┐                  │        ║
-║  │  │ Currently executing function       │                  │        ║
-║  │  └────────────────────────────────────┘                  │        ║
-║  │              ↓ when stack is empty ↓                      │       ║
-║  │  ┌────────────────────────────────────┐                  │        ║
-║  │  │ Microtask Queue (Promises, queueM) │ ← checked FIRST │         ║
-║  │  └────────────────────────────────────┘                  │        ║
-║  │  ┌────────────────────────────────────┐                  │        ║
-║  │  │ Macrotask Queue (setTimeout, IO)   │ ← checked AFTER │         ║
-║  │  └────────────────────────────────────┘                  │        ║
-║  └──────────────────────────────────────────────────────────┘        ║
-║                                                                      ║
-║  IO operations (file read, HTTP) are delegated to the OS/libuv       ║
-║  thread pool. When complete, callbacks are queued.                   ║
-║  The event loop picks them up when the call stack is empty.          ║
-║                                                                      ║
-║  LIMITATION: CPU-heavy work BLOCKS the single thread.                ║
-║  Solution: Worker Threads, or offload to microservices.              ║
-╚══════════════════════════════════════════════════════════════════════╝
+THE SINGLE-THREADED EVENT LOOP
+(Covered in JS Deep Reasoning — expanded here for concurrency
+ model comparison)
+
+JavaScript = ONE chef, ONE kitchen, BUT with timers and helpers.
+
+┌───────────────────────────────────────────────────────────┐
+│  Call Stack (single thread — runs JS code)                │
+│  ┌────────────────────────────────────┐                   │
+│  │ Currently executing function       │                   │
+│  └────────────────────────────────────┘                   │
+│              ↓ when stack is empty ↓                      │
+│  ┌────────────────────────────────────┐                   │
+│  │ Microtask Queue (Promises, queueM) │ ← checked FIRST   │
+│  └────────────────────────────────────┘                   │
+│  ┌────────────────────────────────────┐                   │
+│  │ Macrotask Queue (setTimeout, IO)   │ ← checked AFTER   │
+│  └────────────────────────────────────┘                   │
+└───────────────────────────────────────────────────────────┘
+
+IO operations (file read, HTTP) are delegated to the OS/libuv
+thread pool. When complete, callbacks are queued.
+The event loop picks them up when the call stack is empty.
+
+LIMITATION: CPU-heavy work BLOCKS the single thread.
+Solution: Worker Threads, or offload to microservices.
 ```
 
 ---

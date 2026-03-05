@@ -180,7 +180,7 @@ minHeap.contains(obj);   // O(n)
 class KthLargest {
     private PriorityQueue<Integer> minHeap;
     private int k;
-    
+
     public KthLargest(int k, int[] nums) {
         this.k = k;
         this.minHeap = new PriorityQueue<>();
@@ -188,7 +188,7 @@ class KthLargest {
             add(num);
         }
     }
-    
+
     public int add(int val) {
         minHeap.offer(val);
         if (minHeap.size() > k) {
@@ -223,7 +223,7 @@ class Solution {
     public int lastStoneWeight(int[] stones) {
         PriorityQueue<Integer> maxHeap = new PriorityQueue<>(Comparator.reverseOrder());
         for (int s : stones) maxHeap.offer(s);
-        
+
         while (maxHeap.size() > 1) {
             int first = maxHeap.poll();   // Heaviest
             int second = maxHeap.poll();  // Second heaviest
@@ -260,17 +260,17 @@ class Solution {
     public int[] frequencySort(int[] nums) {
         Map<Integer, Integer> freq = new HashMap<>();
         for (int n : nums) freq.merge(n, 1, Integer::sum);
-        
+
         // Min-heap by freq; if tie, max value first
         PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> {
             if (a[1] != b[1]) return a[1] - b[1]; // Lower freq first
             return b[0] - a[0];                     // Higher value first
         });
-        
+
         for (var entry : freq.entrySet()) {
             pq.offer(new int[]{entry.getKey(), entry.getValue()});
         }
-        
+
         int[] result = new int[nums.length];
         int idx = 0;
         while (!pq.isEmpty()) {
@@ -311,7 +311,7 @@ class Solution {
         for (int i = 0; i < n; i++) {
             maxHeap.offer(new int[]{score[i], i});
         }
-        
+
         String[] result = new String[n];
         int rank = 1;
         while (!maxHeap.isEmpty()) {
@@ -355,7 +355,7 @@ class Solution {
     public int connectSticks(int[] sticks) {
         PriorityQueue<Integer> minHeap = new PriorityQueue<>();
         for (int s : sticks) minHeap.offer(s);
-        
+
         int totalCost = 0;
         while (minHeap.size() > 1) {
             int first = minHeap.poll();
@@ -411,13 +411,13 @@ class Solution {
         }
         return minHeap.peek();
     }
-    
+
     // Approach 2: Quickselect — O(n) average, O(n²) worst
     public int findKthLargestQuickSelect(int[] nums, int k) {
         int target = nums.length - k; // kth largest = (n-k)th smallest
         return quickSelect(nums, 0, nums.length - 1, target);
     }
-    
+
     private int quickSelect(int[] nums, int lo, int hi, int target) {
         int pivot = nums[hi];
         int i = lo;
@@ -428,12 +428,12 @@ class Solution {
             }
         }
         swap(nums, i, hi);
-        
+
         if (i == target) return nums[i];
         else if (i < target) return quickSelect(nums, i + 1, hi, target);
         else return quickSelect(nums, lo, i - 1, target);
     }
-    
+
     private void swap(int[] nums, int a, int b) {
         int tmp = nums[a]; nums[a] = nums[b]; nums[b] = tmp;
     }
@@ -466,28 +466,28 @@ class Solution {
     public int[] topKFrequent(int[] nums, int k) {
         Map<Integer, Integer> freq = new HashMap<>();
         for (int n : nums) freq.merge(n, 1, Integer::sum);
-        
+
         // Min-heap by frequency
-        PriorityQueue<Map.Entry<Integer, Integer>> pq = 
+        PriorityQueue<Map.Entry<Integer, Integer>> pq =
             new PriorityQueue<>((a, b) -> a.getValue() - b.getValue());
-        
+
         for (var entry : freq.entrySet()) {
             pq.offer(entry);
             if (pq.size() > k) pq.poll();
         }
-        
+
         int[] result = new int[k];
         for (int i = 0; i < k; i++) {
             result[i] = pq.poll().getKey();
         }
         return result;
     }
-    
+
     // Approach 2: Bucket sort — O(n) time
     public int[] topKFrequentBucket(int[] nums, int k) {
         Map<Integer, Integer> freq = new HashMap<>();
         for (int n : nums) freq.merge(n, 1, Integer::sum);
-        
+
         @SuppressWarnings("unchecked")
         List<Integer>[] buckets = new ArrayList[nums.length + 1];
         for (var entry : freq.entrySet()) {
@@ -495,7 +495,7 @@ class Solution {
             if (buckets[f] == null) buckets[f] = new ArrayList<>();
             buckets[f].add(entry.getKey());
         }
-        
+
         int[] result = new int[k];
         int idx = 0;
         for (int i = buckets.length - 1; i >= 0 && idx < k; i--) {
@@ -537,14 +537,14 @@ class Solution {
         PriorityQueue<int[]> maxHeap = new PriorityQueue<>(
             (a, b) -> (b[0]*b[0] + b[1]*b[1]) - (a[0]*a[0] + a[1]*a[1])
         );
-        
+
         for (int[] p : points) {
             maxHeap.offer(p);
             if (maxHeap.size() > k) {
                 maxHeap.poll(); // Remove the farthest point
             }
         }
-        
+
         int[][] result = new int[k][2];
         for (int i = 0; i < k; i++) {
             result[i] = maxHeap.poll();
@@ -578,12 +578,12 @@ class Solution {
 class MedianFinder {
     private PriorityQueue<Integer> maxHeap; // Lower half (max at top)
     private PriorityQueue<Integer> minHeap; // Upper half (min at top)
-    
+
     public MedianFinder() {
         maxHeap = new PriorityQueue<>(Comparator.reverseOrder());
         minHeap = new PriorityQueue<>();
     }
-    
+
     public void addNum(int num) {
         maxHeap.offer(num);
         // Ensure maxHeap's max <= minHeap's min
@@ -593,7 +593,7 @@ class MedianFinder {
             maxHeap.offer(minHeap.poll());
         }
     }
-    
+
     public double findMedian() {
         if (maxHeap.size() > minHeap.size()) {
             return maxHeap.peek();
@@ -629,7 +629,7 @@ class Solution {
     public String reorganizeString(String s) {
         int[] freq = new int[26];
         for (char c : s.toCharArray()) freq[c - 'a']++;
-        
+
         // Max-heap: [frequency, character]
         PriorityQueue<int[]> maxHeap = new PriorityQueue<>((a, b) -> b[0] - a[0]);
         for (int i = 0; i < 26; i++) {
@@ -637,10 +637,10 @@ class Solution {
                 maxHeap.offer(new int[]{freq[i], i});
             }
         }
-        
+
         StringBuilder sb = new StringBuilder();
         int[] prev = null; // Previously placed char (cooling down)
-        
+
         while (!maxHeap.isEmpty()) {
             int[] curr = maxHeap.poll();
             // Push back the previous char if it still has remaining count
@@ -651,7 +651,7 @@ class Solution {
             curr[0]--;
             prev = curr;
         }
-        
+
         return sb.length() == s.length() ? sb.toString() : "";
     }
 }
@@ -683,42 +683,42 @@ class Solution {
     public int leastInterval(char[] tasks, int n) {
         int[] freq = new int[26];
         for (char t : tasks) freq[t - 'A']++;
-        
+
         PriorityQueue<Integer> maxHeap = new PriorityQueue<>(Comparator.reverseOrder());
         for (int f : freq) {
             if (f > 0) maxHeap.offer(f);
         }
-        
+
         int time = 0;
         while (!maxHeap.isEmpty()) {
             List<Integer> temp = new ArrayList<>();
             int cycle = n + 1; // Each cycle is n+1 slots
-            
+
             for (int i = 0; i < cycle && !maxHeap.isEmpty(); i++) {
                 int count = maxHeap.poll();
                 if (count > 1) temp.add(count - 1);
             }
-            
+
             for (int t : temp) maxHeap.offer(t);
-            
+
             // If heap is empty, this was the last cycle — only count actual tasks
             time += maxHeap.isEmpty() ? (cycle - (cycle - temp.size() - (n + 1 - cycle + temp.size()))) : cycle;
         }
         return time;
     }
-    
+
     // Cleaner math approach:
     public int leastIntervalMath(char[] tasks, int n) {
         int[] freq = new int[26];
         for (char t : tasks) freq[t - 'A']++;
         Arrays.sort(freq);
-        
+
         int maxFreq = freq[25];
         int maxCount = 0; // How many tasks have the max frequency
         for (int f : freq) {
             if (f == maxFreq) maxCount++;
         }
-        
+
         // (maxFreq - 1) full rounds of (n + 1) slots, plus final partial round
         int result = (maxFreq - 1) * (n + 1) + maxCount;
         return Math.max(result, tasks.length); // At minimum, we need tasks.length time
@@ -752,15 +752,15 @@ class Solution {
         PriorityQueue<ListNode> minHeap = new PriorityQueue<>(
             (a, b) -> a.val - b.val
         );
-        
+
         // Initialize: add all non-null heads
         for (ListNode head : lists) {
             if (head != null) minHeap.offer(head);
         }
-        
+
         ListNode dummy = new ListNode(0);
         ListNode curr = dummy;
-        
+
         while (!minHeap.isEmpty()) {
             ListNode smallest = minHeap.poll();
             curr.next = smallest;
@@ -769,7 +769,7 @@ class Solution {
                 minHeap.offer(smallest.next);
             }
         }
-        
+
         return dummy.next;
     }
 }
@@ -799,11 +799,11 @@ class Solution {
     public String frequencySort(String s) {
         Map<Character, Integer> freq = new HashMap<>();
         for (char c : s.toCharArray()) freq.merge(c, 1, Integer::sum);
-        
-        PriorityQueue<Map.Entry<Character, Integer>> maxHeap = 
+
+        PriorityQueue<Map.Entry<Character, Integer>> maxHeap =
             new PriorityQueue<>((a, b) -> b.getValue() - a.getValue());
         maxHeap.addAll(freq.entrySet());
-        
+
         StringBuilder sb = new StringBuilder();
         while (!maxHeap.isEmpty()) {
             var entry = maxHeap.poll();
@@ -841,12 +841,12 @@ class Solution {
         int n = matrix.length;
         // [value, row, col]
         PriorityQueue<int[]> minHeap = new PriorityQueue<>((a, b) -> a[0] - b[0]);
-        
+
         // Initialize with first column of each row
         for (int r = 0; r < Math.min(n, k); r++) {
             minHeap.offer(new int[]{matrix[r][0], r, 0});
         }
-        
+
         int result = 0;
         for (int i = 0; i < k; i++) {
             int[] top = minHeap.poll();
@@ -886,13 +886,13 @@ class Solution {
 class Solution {
     public int furthestBuilding(int[] heights, int bricks, int ladders) {
         PriorityQueue<Integer> minHeap = new PriorityQueue<>(); // Tracks ladder-worthy climbs
-        
+
         for (int i = 0; i < heights.length - 1; i++) {
             int diff = heights[i + 1] - heights[i];
             if (diff <= 0) continue; // Descending or flat — no cost
-            
+
             minHeap.offer(diff); // Optimistically assign a ladder
-            
+
             if (minHeap.size() > ladders) {
                 // Too many ladders used — convert smallest climb to bricks
                 bricks -= minHeap.poll();
@@ -940,7 +940,7 @@ class Solution {
         int n = nums.length;
         int[] result = new int[n - k + 1];
         Deque<Integer> deque = new ArrayDeque<>(); // Stores indices
-        
+
         for (int i = 0; i < n; i++) {
             // Remove elements outside window
             while (!deque.isEmpty() && deque.peekFirst() < i - k + 1) {
@@ -951,21 +951,21 @@ class Solution {
                 deque.pollLast();
             }
             deque.offerLast(i);
-            
+
             if (i >= k - 1) {
                 result[i - k + 1] = nums[deque.peekFirst()];
             }
         }
         return result;
     }
-    
+
     // Approach 2: Max-Heap with lazy deletion — O(n log n)
     public int[] maxSlidingWindowHeap(int[] nums, int k) {
         int n = nums.length;
         int[] result = new int[n - k + 1];
         // [value, index]
         PriorityQueue<int[]> maxHeap = new PriorityQueue<>((a, b) -> b[0] - a[0]);
-        
+
         for (int i = 0; i < n; i++) {
             maxHeap.offer(new int[]{nums[i], i});
             // Lazy deletion: remove elements outside window
@@ -1012,10 +1012,10 @@ class Solution {
         for (int i = 0; i < n; i++) {
             capHeap.offer(new int[]{capital[i], profits[i]});
         }
-        
+
         // Max-heap sorted by profit (for affordable projects)
         PriorityQueue<Integer> profitHeap = new PriorityQueue<>(Comparator.reverseOrder());
-        
+
         for (int i = 0; i < k; i++) {
             // Unlock all affordable projects
             while (!capHeap.isEmpty() && capHeap.peek()[0] <= w) {
@@ -1055,11 +1055,11 @@ class Solution {
     public int trapRainWater(int[][] heightMap) {
         int m = heightMap.length, n = heightMap[0].length;
         if (m < 3 || n < 3) return 0;
-        
+
         boolean[][] visited = new boolean[m][n];
         // Min-heap: [height, row, col]
         PriorityQueue<int[]> minHeap = new PriorityQueue<>((a, b) -> a[0] - b[0]);
-        
+
         // Add all border cells
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
@@ -1069,14 +1069,14 @@ class Solution {
                 }
             }
         }
-        
+
         int[][] dirs = {{0,1},{0,-1},{1,0},{-1,0}};
         int water = 0;
-        
+
         while (!minHeap.isEmpty()) {
             int[] cell = minHeap.poll();
             int h = cell[0], r = cell[1], c = cell[2];
-            
+
             for (int[] d : dirs) {
                 int nr = r + d[0], nc = c + d[1];
                 if (nr >= 0 && nr < m && nc >= 0 && nc < n && !visited[nr][nc]) {
@@ -1125,24 +1125,24 @@ class Solution {
         for (int i = 0; i < n; i++) {
             workers[i] = new double[]{(double) wage[i] / quality[i], quality[i]};
         }
-        
+
         // Sort by ratio (wage/quality)
         Arrays.sort(workers, (a, b) -> Double.compare(a[0], b[0]));
-        
+
         // Max-heap to track k smallest qualities
         PriorityQueue<Double> maxHeap = new PriorityQueue<>(Comparator.reverseOrder());
         double qualitySum = 0;
         double minCost = Double.MAX_VALUE;
-        
+
         for (double[] w : workers) {
             double ratio = w[0], qual = w[1];
             maxHeap.offer(qual);
             qualitySum += qual;
-            
+
             if (maxHeap.size() > k) {
                 qualitySum -= maxHeap.poll(); // Remove highest quality to minimize sum
             }
-            
+
             if (maxHeap.size() == k) {
                 minCost = Math.min(minCost, ratio * qualitySum);
             }
@@ -1179,9 +1179,9 @@ class Solution {
         PriorityQueue<Long> maxHeap = new PriorityQueue<>(Comparator.reverseOrder());
         PriorityQueue<Long> minHeap = new PriorityQueue<>();
         Map<Long, Integer> pendingRemoval = new HashMap<>();
-        
+
         double[] result = new double[nums.length - k + 1];
-        
+
         // Initialize first window
         long[] sorted = new long[k];
         for (int i = 0; i < k; i++) sorted[i] = nums[i];
@@ -1191,19 +1191,19 @@ class Solution {
             else minHeap.offer(sorted[i]);
         }
         result[0] = k % 2 == 1 ? maxHeap.peek() : (maxHeap.peek() + minHeap.peek()) / 2.0;
-        
+
         for (int i = k; i < nums.length; i++) {
             long outgoing = nums[i - k];
             long incoming = nums[i];
-            
+
             // Schedule removal of outgoing
             pendingRemoval.merge(outgoing, 1, Integer::sum);
-            
+
             // Determine which heap it was in: if outgoing <= maxHeap.peek() → in maxHeap
             int balance = 0; // +1 means maxHeap lost one, -1 means minHeap lost one
             if (outgoing <= maxHeap.peek()) balance++;
             else balance--;
-            
+
             // Insert incoming
             if (!maxHeap.isEmpty() && incoming <= maxHeap.peek()) {
                 maxHeap.offer(incoming);
@@ -1212,14 +1212,14 @@ class Solution {
                 minHeap.offer(incoming);
                 balance++;
             }
-            
+
             // Rebalance
             if (balance > 0) { // minHeap has extra → move to maxHeap
                 maxHeap.offer(minHeap.poll());
             } else if (balance < 0) { // maxHeap has extra → move to minHeap
                 minHeap.offer(maxHeap.poll());
             }
-            
+
             // Lazy clean tops
             while (!maxHeap.isEmpty() && pendingRemoval.getOrDefault(maxHeap.peek(), 0) > 0) {
                 pendingRemoval.merge(maxHeap.poll(), -1, Integer::sum);
@@ -1227,7 +1227,7 @@ class Solution {
             while (!minHeap.isEmpty() && pendingRemoval.getOrDefault(minHeap.peek(), 0) > 0) {
                 pendingRemoval.merge(minHeap.poll(), -1, Integer::sum);
             }
-            
+
             result[i - k + 1] = k % 2 == 1 ? maxHeap.peek() : (maxHeap.peek() + minHeap.peek()) / 2.0;
         }
         return result;
@@ -1243,66 +1243,62 @@ class Solution {
 ## PART 4: COMPLEXITY CHEAT SHEET & DECISION FLOWCHART
 
 ```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                    HEAP COMPLEXITY CHEAT SHEET                               ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║  Operation            │ Binary Heap  │ Java PriorityQueue  │ Notes           ║
-║  ─────────────────────┼──────────────┼─────────────────────┼─────────────    ║
-║  insert / offer       │ O(log n)     │ O(log n)            │ Sift-up         ║
-║  extractMin / poll    │ O(log n)     │ O(log n)            │ Sift-down       ║
-║  peek                 │ O(1)         │ O(1)                │ Root access     ║
-║  remove(object)       │ O(n)         │ O(n)                │ Linear search!  ║
-║  contains             │ O(n)         │ O(n)                │ Linear search!  ║
-║  heapify (build)      │ O(n)         │ O(n) via constructor│ Bottom-up       ║
-║  size                 │ O(1)         │ O(1)                │                 ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║                                                                              ║
-║  Pattern                        │ Time           │ Space                     ║
-║  ───────────────────────────────┼────────────────┼───────────────────────    ║
-║  Top K (min-heap size k)        │ O(n log k)     │ O(k)                      ║
-║  K-way merge (heap size k)      │ O(N log k)     │ O(k)                      ║
-║  Two heaps (median)             │ O(n log n)     │ O(n)                      ║
-║  Greedy + heap                  │ O(n log n)     │ O(n)                      ║
-║  Sort via heap (heapsort)       │ O(n log n)     │ O(1) in-place             ║
-║                                                                              ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+                  HEAP COMPLEXITY CHEAT SHEET
+──────────────────────────────────────────────────
+Operation            │ Binary Heap  │ Java PriorityQueue  │ Notes
+─────────────────────┼──────────────┼─────────────────────┼─────────────
+insert / offer       │ O(log n)     │ O(log n)            │ Sift-up
+extractMin / poll    │ O(log n)     │ O(log n)            │ Sift-down
+peek                 │ O(1)         │ O(1)                │ Root access
+remove(object)       │ O(n)         │ O(n)                │ Linear search!
+contains             │ O(n)         │ O(n)                │ Linear search!
+heapify (build)      │ O(n)         │ O(n) via constructor│ Bottom-up
+size                 │ O(1)         │ O(1)                │
+──────────────────────────────────────────────────
+
+Pattern                        │ Time           │ Space
+───────────────────────────────┼────────────────┼───────────────────────
+Top K (min-heap size k)        │ O(n log k)     │ O(k)
+K-way merge (heap size k)      │ O(N log k)     │ O(k)
+Two heaps (median)             │ O(n log n)     │ O(n)
+Greedy + heap                  │ O(n log n)     │ O(n)
+Sort via heap (heapsort)       │ O(n log n)     │ O(1) in-place
+
 ```
 
 ### WHEN TO USE HEAP — Decision Flowchart
 
 ```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║              WHEN TO USE A HEAP — DECISION FLOWCHART                         ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║                                                                              ║
-║  Need to repeatedly find min/max of a dynamic collection?                    ║
-║    │                                                                         ║
-║    ├── YES ─→ Use a Heap (PriorityQueue)                                     ║
-║    │    │                                                                    ║
-║    │    ├── Need BOTH min and max? ─→ Two heaps or TreeMap                   ║
-║    │    ├── Need fast delete(obj)?  ─→ TreeMap (not heap — O(n) remove!)     ║
-║    │    └── Need median?           ─→ Two heaps pattern                      ║
-║    │                                                                         ║
-║    └── NO                                                                    ║
-║         │                                                                    ║
-║         ├── Need top K elements? ─────────────────────────────────────       ║
-║         │    ├── K is small, N is large? ─→ Min-heap of size K: O(n log k)   ║
-║         │    ├── K ≈ N?                  ─→ Just sort: O(n log n)            ║
-║         │    └── Online/streaming?       ─→ Heap (can't sort unseen data)    ║
-║         │                                                                    ║
-║         ├── Merging K sorted sequences?  ─→ Min-heap of K heads              ║
-║         │                                                                    ║
-║         ├── Greedy: always pick best available?                              ║
-║         │    ├── Fixed priority? ─→ Sort once                                ║
-║         │    └── Dynamic priority / reinsertions? ─→ Heap                    ║
-║         │                                                                    ║
-║         ├── Sliding window min/max?                                          ║
-║         │    ├── O(n) needed?   ─→ Monotonic Deque (not heap!)               ║
-║         │    └── O(n log n) OK? ─→ Heap with lazy deletion                   ║
-║         │                                                                    ║
-║         └── Dijkstra / Prim?    ─→ Min-heap for edge relaxation              ║
-║                                                                              ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+            WHEN TO USE A HEAP — DECISION FLOWCHART
+──────────────────────────────────────────────────
+
+Need to repeatedly find min/max of a dynamic collection?
+  │
+  ├── YES ─→ Use a Heap (PriorityQueue)
+  │    │
+  │    ├── Need BOTH min and max? ─→ Two heaps or TreeMap
+  │    ├── Need fast delete(obj)?  ─→ TreeMap (not heap — O(n) remove!)
+  │    └── Need median?           ─→ Two heaps pattern
+  │
+  └── NO
+       │
+       ├── Need top K elements? ─────────────────────────────────────
+       │    ├── K is small, N is large? ─→ Min-heap of size K: O(n log k)
+       │    ├── K ≈ N?                  ─→ Just sort: O(n log n)
+       │    └── Online/streaming?       ─→ Heap (can't sort unseen data)
+       │
+       ├── Merging K sorted sequences?  ─→ Min-heap of K heads
+       │
+       ├── Greedy: always pick best available?
+       │    ├── Fixed priority? ─→ Sort once
+       │    └── Dynamic priority / reinsertions? ─→ Heap
+       │
+       ├── Sliding window min/max?
+       │    ├── O(n) needed?   ─→ Monotonic Deque (not heap!)
+       │    └── O(n log n) OK? ─→ Heap with lazy deletion
+       │
+       └── Dijkstra / Prim?    ─→ Min-heap for edge relaxation
+
 ```
 
 ### Problem Pattern Quick Reference

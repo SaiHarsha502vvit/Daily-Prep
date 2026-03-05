@@ -61,27 +61,25 @@ img[alt] { border: 2px solid green; } /* has attribute */
 ### Combinators — Relationships Between Elements
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  COMBINATOR VISUALIZATION:                                           ║
-║                                                                      ║
-║  HTML Structure:                                                     ║
-║  <div class="parent">                                                ║
-║    ├── <p>Direct child</p>          ← child (>)                      ║
-║    ├── <section>                                                     ║
-║    │     └── <p>Nested</p>          ← descendant (space)             ║
-║    ├── <p>Another child</p>         ← child (>)                      ║
-║    └── <p>Yet another</p>           ← child (>)                      ║
-║  </div>                                                              ║
-║  <p>Sibling after div</p>           ← adjacent sibling (+)           ║
-║  <p>Another sibling</p>             ← general sibling (~)            ║
-║                                                                      ║
-║  SELECTOR              │ WHAT IT TARGETS                             ║
-║  ──────────────────────┼──────────────────────────────────────       ║
-║  .parent p             │ ALL <p> inside .parent (any depth)          ║
-║  .parent > p           │ ONLY direct <p> children of .parent         ║
-║  .parent + p           │ First <p> immediately after .parent         ║
-║  .parent ~ p           │ ALL <p> siblings after .parent              ║
-╚══════════════════════════════════════════════════════════════════════╝
+COMBINATOR VISUALIZATION:
+
+HTML Structure:
+<div class="parent">
+  ├── <p>Direct child</p>          ← child (>)
+  ├── <section>
+  │     └── <p>Nested</p>          ← descendant (space)
+  ├── <p>Another child</p>         ← child (>)
+  └── <p>Yet another</p>           ← child (>)
+</div>
+<p>Sibling after div</p>           ← adjacent sibling (+)
+<p>Another sibling</p>             ← general sibling (~)
+
+SELECTOR              │ WHAT IT TARGETS
+──────────────────────┼──────────────────────────────────────
+.parent p             │ ALL <p> inside .parent (any depth)
+.parent > p           │ ONLY direct <p> children of .parent
+.parent + p           │ First <p> immediately after .parent
+.parent ~ p           │ ALL <p> siblings after .parent
 ```
 
 ```css
@@ -136,22 +134,20 @@ li::marker { color: #3b82f6; }  /* Bullet/number color */
 ## 2. The Cascade — How CSS Resolves Conflicts
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHEN MULTIPLE RULES TARGET THE SAME ELEMENT, WHO WINS?              ║
-║                                                                      ║
-║  The CASCADE resolves in this ORDER (highest to lowest priority):    ║
-║                                                                      ║
-║  ┌─────────────────────────────────────────────────────────┐         ║
-║  │ 1. !important declarations         (AVOID!)            │          ║
-║  │ 2. Inline styles (style="...")      (RARE)              │         ║
-║  │ 3. ID selectors (#id)              (HIGHEST specificity)│         ║
-║  │ 4. Class/attribute/pseudo-class    (.class, [attr])     │         ║
-║  │ 5. Element/pseudo-element          (p, ::before)        │         ║
-║  │ 6. Universal (*)                   (LOWEST specificity) │         ║
-║  └─────────────────────────────────────────────────────────┘         ║
-║                                                                      ║
-║  If SPECIFICITY is EQUAL → LAST rule in source order wins.           ║
-╚══════════════════════════════════════════════════════════════════════╝
+WHEN MULTIPLE RULES TARGET THE SAME ELEMENT, WHO WINS?
+
+The CASCADE resolves in this ORDER (highest to lowest priority):
+
+┌─────────────────────────────────────────────────────────┐
+│ 1. !important declarations         (AVOID!)             │
+│ 2. Inline styles (style="...")      (RARE)              │
+│ 3. ID selectors (#id)              (HIGHEST specificity)│
+│ 4. Class/attribute/pseudo-class    (.class, [attr])     │
+│ 5. Element/pseudo-element          (p, ::before)        │
+│ 6. Universal (*)                   (LOWEST specificity) │
+└─────────────────────────────────────────────────────────┘
+
+If SPECIFICITY is EQUAL → LAST rule in source order wins.
 ```
 
 ### Specificity Calculator
@@ -206,37 +202,35 @@ li::marker { color: #3b82f6; }  /* Bullet/number color */
 ## 3. The Box Model — Foundation of All Layout
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║                                                                      ║
-║  THE CSS BOX MODEL (Every element is a box):                         ║
-║                                                                      ║
-║  ┌─────────────────────────────────────────────────────────┐         ║
-║  │                    MARGIN                               │         ║
-║  │   ┌───────────────────────────────────────────────┐     │         ║
-║  │   │               BORDER                          │     │         ║
-║  │   │   ┌───────────────────────────────────────┐   │     │         ║
-║  │   │   │           PADDING                     │   │     │         ║
-║  │   │   │   ┌───────────────────────────────┐   │   │     │         ║
-║  │   │   │   │                               │   │   │     │         ║
-║  │   │   │   │        CONTENT                │   │   │     │         ║
-║  │   │   │   │     (width × height)          │   │   │     │         ║
-║  │   │   │   │                               │   │   │     │         ║
-║  │   │   │   └───────────────────────────────┘   │   │     │         ║
-║  │   │   │                                       │   │     │         ║
-║  │   │   └───────────────────────────────────────┘   │     │         ║
-║  │   │                                               │     │         ║
-║  │   └───────────────────────────────────────────────┘     │         ║
-║  │                                                         │         ║
-║  └─────────────────────────────────────────────────────────┘         ║
-║                                                                      ║
-║  CONTENT-BOX (default):                                              ║
-║    width: 300px = content is 300px                                   ║
-║    Total = 300 + padding + border (BIGGER than you set!)             ║
-║                                                                      ║
-║  BORDER-BOX (what you want):                                         ║
-║    width: 300px = content + padding + border = 300px total           ║
-║    Content shrinks to fit. WHAT YOU SET IS WHAT YOU GET.             ║
-╚══════════════════════════════════════════════════════════════════════╝
+
+THE CSS BOX MODEL (Every element is a box):
+
+┌─────────────────────────────────────────────────────────┐
+│                    MARGIN                               │
+│   ┌───────────────────────────────────────────────┐     │
+│   │               BORDER                          │     │
+│   │   ┌───────────────────────────────────────┐   │     │
+│   │   │           PADDING                     │   │     │
+│   │   │   ┌───────────────────────────────┐   │   │     │
+│   │   │   │                               │   │   │     │
+│   │   │   │        CONTENT                │   │   │     │
+│   │   │   │     (width × height)          │   │   │     │
+│   │   │   │                               │   │   │     │
+│   │   │   └───────────────────────────────┘   │   │     │
+│   │   │                                       │   │     │
+│   │   └───────────────────────────────────────┘   │     │
+│   │                                               │     │
+│   └───────────────────────────────────────────────┘     │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+
+CONTENT-BOX (default):
+  width: 300px = content is 300px
+  Total = 300 + padding + border (BIGGER than you set!)
+
+BORDER-BOX (what you want):
+  width: 300px = content + padding + border = 300px total
+  Content shrinks to fit. WHAT YOU SET IS WHAT YOU GET.
 ```
 
 ```css
@@ -277,37 +271,35 @@ li::marker { color: #3b82f6; }  /* Bullet/number color */
 ### Margin Collapse — The Most Confusing CSS Behavior
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  MARGIN COLLAPSE: When vertical margins of adjacent elements         ║
-║  OVERLAP instead of adding up.                                       ║
-║                                                                      ║
-║  BEFORE understanding collapse:                                      ║
-║  You expect: margin-bottom(20px) + margin-top(30px) = 50px gap       ║
-║  Reality:    They COLLAPSE to max(20px, 30px) = 30px gap             ║
-║                                                                      ║
-║  ┌────────────────┐                                                  ║
-║  │    Element A    │                                                 ║
-║  │  margin-bottom: │                                                 ║
-║  │     20px        │                                                 ║
-║  └────────────────┘                                                  ║
-║        ↕ 30px (NOT 50px) ← margins COLLAPSE to larger                ║
-║  ┌────────────────┐                                                  ║
-║  │    Element B    │                                                 ║
-║  │  margin-top:    │                                                 ║
-║  │     30px        │                                                 ║
-║  └────────────────┘                                                  ║
-║                                                                      ║
-║  RULES:                                                              ║
-║  • Only VERTICAL margins collapse (not horizontal)                   ║
-║  • Only ADJACENT siblings or parent-child (no border/padding)        ║
-║  • NOT in flexbox, grid, float, or absolute position contexts        ║
-║  • Negative margins: -20 + 30 = 10px (they add)                      ║
-║                                                                      ║
-║  FIX/PREVENT:                                                        ║
-║  • Use flexbox (gap never collapses)                                 ║
-║  • Add border or padding to parent                                   ║
-║  • Use overflow: hidden on parent                                    ║
-╚══════════════════════════════════════════════════════════════════════╝
+MARGIN COLLAPSE: When vertical margins of adjacent elements
+OVERLAP instead of adding up.
+
+BEFORE understanding collapse:
+You expect: margin-bottom(20px) + margin-top(30px) = 50px gap
+Reality:    They COLLAPSE to max(20px, 30px) = 30px gap
+
+┌─────────────────┐
+│    Element A    │
+│  margin-bottom: │
+│     20px        │
+└─────────────────┘
+      ↕ 30px (NOT 50px) ← margins COLLAPSE to larger
+┌─────────────────┐
+│    Element B    │
+│  margin-top:    │
+│     30px        │
+└─────────────────┘
+
+RULES:
+• Only VERTICAL margins collapse (not horizontal)
+• Only ADJACENT siblings or parent-child (no border/padding)
+• NOT in flexbox, grid, float, or absolute position contexts
+• Negative margins: -20 + 30 = 10px (they add)
+
+FIX/PREVENT:
+• Use flexbox (gap never collapses)
+• Add border or padding to parent
+• Use overflow: hidden on parent
 ```
 
 ---
@@ -315,30 +307,28 @@ li::marker { color: #3b82f6; }  /* Bullet/number color */
 ## 4. Display Property — How Elements Behave
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  display VALUE  │ BEHAVIOR                                           ║
-║  ───────────────┼─────────────────────────────────────────────       ║
-║  block          │ Takes full width. New line before/after.           ║
-║                 │ Can set width/height. <div>, <p>, <h1>             ║
-║  ───────────────┼─────────────────────────────────────────────       ║
-║  inline         │ Only as wide as content. NO width/height.          ║
-║                 │ Same line as neighbors. <span>, <a>, <strong>      ║
-║  ───────────────┼─────────────────────────────────────────────       ║
-║  inline-block   │ Inline flow BUT allows width/height.               ║
-║                 │ Best of both worlds. <img>, <button>               ║
-║  ───────────────┼─────────────────────────────────────────────       ║
-║  none           │ Element GONE from layout (not just invisible).     ║
-║                 │ vs visibility: hidden (invisible but takes space)  ║
-║  ───────────────┼─────────────────────────────────────────────       ║
-║  flex           │ Element becomes FLEX CONTAINER.                    ║
-║                 │ Children become flex items. (Chapter 2)            ║
-║  ───────────────┼─────────────────────────────────────────────       ║
-║  grid           │ Element becomes GRID CONTAINER.                    ║
-║                 │ Children placed in grid cells. (Chapter 2)         ║
-║  ───────────────┼─────────────────────────────────────────────       ║
-║  contents       │ Element box disappears, children act as if         ║
-║                 │ they're direct children of grandparent.            ║
-╚══════════════════════════════════════════════════════════════════════╝
+display VALUE  │ BEHAVIOR
+───────────────┼─────────────────────────────────────────────
+block          │ Takes full width. New line before/after.
+               │ Can set width/height. <div>, <p>, <h1>
+───────────────┼─────────────────────────────────────────────
+inline         │ Only as wide as content. NO width/height.
+               │ Same line as neighbors. <span>, <a>, <strong>
+───────────────┼─────────────────────────────────────────────
+inline-block   │ Inline flow BUT allows width/height.
+               │ Best of both worlds. <img>, <button>
+───────────────┼─────────────────────────────────────────────
+none           │ Element GONE from layout (not just invisible).
+               │ vs visibility: hidden (invisible but takes space)
+───────────────┼─────────────────────────────────────────────
+flex           │ Element becomes FLEX CONTAINER.
+               │ Children become flex items. (Chapter 2)
+───────────────┼─────────────────────────────────────────────
+grid           │ Element becomes GRID CONTAINER.
+               │ Children placed in grid cells. (Chapter 2)
+───────────────┼─────────────────────────────────────────────
+contents       │ Element box disappears, children act as if
+               │ they're direct children of grandparent.
 ```
 
 ```css
@@ -430,7 +420,7 @@ li::marker { color: #3b82f6; }  /* Bullet/number color */
 ```css
 .text {
     /* FONT FAMILY (with fallback stack): */
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
                  Roboto, 'Helvetica Neue', Arial, sans-serif;
 
     /* FONT SIZE (use rem!): */
@@ -492,9 +482,9 @@ li::marker { color: #3b82f6; }  /* Bullet/number color */
     /* GRADIENT: */
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     background: radial-gradient(circle, #fff 0%, #ddd 100%);
-    
+
     /* MULTIPLE BACKGROUNDS: */
-    background: 
+    background:
         linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
         url('/hero.jpg') center/cover;
 
@@ -508,9 +498,9 @@ li::marker { color: #3b82f6; }  /* Bullet/number color */
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);          /* Subtle */
     box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);     /* Medium */
     box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);   /* Large (floating) */
-    
+
     /* MULTIPLE SHADOWS (layered = realistic): */
-    box-shadow: 
+    box-shadow:
         0 1px 2px rgba(0,0,0,0.06),
         0 4px 8px rgba(0,0,0,0.08),
         0 12px 24px rgba(0,0,0,0.06);
@@ -585,27 +575,25 @@ body {
 ### Z-Index — Layering
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  Z-INDEX GUIDE:                                                      ║
-║                                                                      ║
-║  z-index only works on POSITIONED elements (not static).             ║
-║                                                                      ║
-║  LAYER SYSTEM (use consistent values):                               ║
-║  ┌────────────────────────────────────┐                              ║
-║  │ z-index: 9999   MODAL OVERLAY     │ ← On top of everything        ║
-║  │ z-index: 1000   NAVIGATION        │                               ║
-║  │ z-index: 100    DROPDOWN/POPUP    │                               ║
-║  │ z-index: 50     STICKY ELEMENTS   │                               ║
-║  │ z-index: 10     FLOATING UI       │                               ║
-║  │ z-index: 1      JUST ABOVE NORMAL │                               ║
-║  │ z-index: 0      NORMAL LAYER      │                               ║
-║  │ z-index: -1     BEHIND CONTENT    │ ← Background decorations      ║
-║  └────────────────────────────────────┘                              ║
-║                                                                      ║
-║  STACKING CONTEXT: z-index creates a new context.                    ║
-║  Children of z-index:5 can NEVER be above a sibling with z:10.       ║
-║  This is why z-index "doesn't work" sometimes!                       ║
-╚══════════════════════════════════════════════════════════════════════╝
+Z-INDEX GUIDE:
+
+z-index only works on POSITIONED elements (not static).
+
+LAYER SYSTEM (use consistent values):
+┌────────────────────────────────────┐
+│ z-index: 9999   MODAL OVERLAY     │ ← On top of everything
+│ z-index: 1000   NAVIGATION        │
+│ z-index: 100    DROPDOWN/POPUP    │
+│ z-index: 50     STICKY ELEMENTS   │
+│ z-index: 10     FLOATING UI       │
+│ z-index: 1      JUST ABOVE NORMAL │
+│ z-index: 0      NORMAL LAYER      │
+│ z-index: -1     BEHIND CONTENT    │ ← Background decorations
+└────────────────────────────────────┘
+
+STACKING CONTEXT: z-index creates a new context.
+Children of z-index:5 can NEVER be above a sibling with z:10.
+This is why z-index "doesn't work" sometimes!
 ```
 
 ---

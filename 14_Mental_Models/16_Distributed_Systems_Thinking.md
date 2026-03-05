@@ -45,34 +45,32 @@
 ## Mental Model 2: The Three Possible Outcomes
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  When Service A calls Service B, there are ONLY 3 outcomes:          ║
-║                                                                      ║
-║  1. SUCCESS — B processed the request and responded                  ║
-║                                                                      ║
-║  2. FAILURE — B responded with an error                              ║
-║     (At least you KNOW it failed)                                    ║
-║                                                                      ║
-║  3. TIMEOUT — No response at all ⚠️                                  ║
-║     This is the WORST case. You DON'T KNOW:                          ║
-║     - Did B receive the request?                                     ║
-║     - Did B process it but the response got lost?                    ║
-║     - Is B still processing?                                         ║
-║     - Is B dead?                                                     ║
-║                                                                      ║
-║  ┌──────────────────────────────────────────────┐                    ║
-║  │  A ──[request]──→ B                          │                    ║
-║  │  A ←──[???]──── B  ← What happened?         │                     ║
-║  └──────────────────────────────────────────────┘                    ║
-║                                                                      ║
-║  DESIGN RULE: Make operations IDEMPOTENT so retrying is safe.        ║
-║  If the same request is processed twice, the result is the same.     ║
-║                                                                      ║
-║  Idempotent: GET /user/123         (safe to retry)                   ║
-║  Idempotent: PUT /user/123 {name}  (safe to retry)                   ║
-║  NOT Idem:   POST /payments         (might charge twice!)            ║
-║  FIX:        POST /payments + idempotency_key=abc123                 ║
-╚══════════════════════════════════════════════════════════════════════╝
+When Service A calls Service B, there are ONLY 3 outcomes:
+
+1. SUCCESS — B processed the request and responded
+
+2. FAILURE — B responded with an error
+   (At least you KNOW it failed)
+
+3. TIMEOUT — No response at all ⚠️
+   This is the WORST case. You DON'T KNOW:
+   - Did B receive the request?
+   - Did B process it but the response got lost?
+   - Is B still processing?
+   - Is B dead?
+
+┌──────────────────────────────────────────────┐
+│  A ──[request]──→ B                          │
+│  A ←──[???]──── B  ← What happened?          │
+└──────────────────────────────────────────────┘
+
+DESIGN RULE: Make operations IDEMPOTENT so retrying is safe.
+If the same request is processed twice, the result is the same.
+
+Idempotent: GET /user/123         (safe to retry)
+Idempotent: PUT /user/123 {name}  (safe to retry)
+NOT Idem:   POST /payments         (might charge twice!)
+FIX:        POST /payments + idempotency_key=abc123
 ```
 
 ---
@@ -80,38 +78,36 @@
 ## Mental Model 3: Consistency Is a Spectrum
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  CONSISTENCY SLIDER — Not Just "Consistent" or "Inconsistent"        ║
-║                                                                      ║
-║  STRICT                                                              ║
-║  ├─── Strong (Linearizable)                                          ║
-║  │    "Everyone always sees the latest write"                        ║
-║  │    Cost: SLOW (wait for all replicas)                             ║
-║  │    Example: Bank balance                                          ║
-║  │                                                                   ║
-║  ├─── Sequential                                                     ║
-║  │    "Operations from each client are in order"                     ║
-║  │                                                                   ║
-║  ├─── Causal                                                         ║
-║  │    "If A caused B, everyone sees A before B"                      ║
-║  │    Example: Reply appears after the original comment              ║
-║  │                                                                   ║
-║  ├─── Read-Your-Writes                                               ║
-║  │    "You see your own updates immediately"                         ║
-║  │    Others might see a stale version temporarily                   ║
-║  │    Example: Edit your profile, you see it updated                 ║
-║  │                                                                   ║
-║  ├─── Eventual                                                       ║
-║  │    "All replicas converge... eventually"                          ║
-║  │    Cost: FAST (respond from any replica)                          ║
-║  │    Example: Social media like counts                              ║
-║  RELAXED                                                             ║
-║                                                                      ║
-║  KEY INSIGHT: Pick the weakest consistency that's ACCEPTABLE         ║
-║  for each feature. Not everything needs strong consistency.          ║
-║  Post likes? Eventual is fine.                                       ║
-║  Money transfer? Strong consistency is mandatory.                    ║
-╚══════════════════════════════════════════════════════════════════════╝
+CONSISTENCY SLIDER — Not Just "Consistent" or "Inconsistent"
+
+STRICT
+├─── Strong (Linearizable)
+│    "Everyone always sees the latest write"
+│    Cost: SLOW (wait for all replicas)
+│    Example: Bank balance
+│
+├─── Sequential
+│    "Operations from each client are in order"
+│
+├─── Causal
+│    "If A caused B, everyone sees A before B"
+│    Example: Reply appears after the original comment
+│
+├─── Read-Your-Writes
+│    "You see your own updates immediately"
+│    Others might see a stale version temporarily
+│    Example: Edit your profile, you see it updated
+│
+├─── Eventual
+│    "All replicas converge... eventually"
+│    Cost: FAST (respond from any replica)
+│    Example: Social media like counts
+RELAXED
+
+KEY INSIGHT: Pick the weakest consistency that's ACCEPTABLE
+for each feature. Not everything needs strong consistency.
+Post likes? Eventual is fine.
+Money transfer? Strong consistency is mandatory.
 ```
 
 ---
@@ -224,30 +220,28 @@
 ## Mental Model 7: Think in Data Flow, Not API Calls
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  Synchronous (request/response) thinking:                            ║
-║  A calls B calls C calls D → if any fails, everything fails          ║
-║                                                                      ║
-║  ┌───┐    ┌───┐    ┌───┐    ┌───┐                                    ║
-║  │ A │ →  │ B │ →  │ C │ →  │ D │    If C is slow, A is slow.        ║
-║  └───┘    └───┘    └───┘    └───┘    If D dies, A gets an error.     ║
-║                                                                      ║
-║  ─────────────────────────────────────────────────                   ║
-║                                                                      ║
-║  Data flow (event-driven) thinking:                                  ║
-║  Each service processes events independently                         ║
-║                                                                      ║
-║  ┌───┐    ┌────────┐    ┌───┐                                        ║
-║  │ A │ →  │ Event  │ →  │ B │                                        ║
-║  └───┘    │ Queue  │ →  │ C │    If C is slow, A doesn't care.       ║
-║           └────────┘ →  │ D │    If D dies, events wait.             ║
-║                         └───┘    Each processes at own pace.         ║
-║                                                                      ║
-║  WHEN TO USE WHICH:                                                  ║
-║  Sync: User needs immediate response (login, payment)                ║
-║  Async: User doesn't need immediate response (email, analytics)      ║
-║  Hybrid: Acknowledge immediately, process in background              ║
-╚══════════════════════════════════════════════════════════════════════╝
+Synchronous (request/response) thinking:
+A calls B calls C calls D → if any fails, everything fails
+
+┌───┐    ┌───┐    ┌───┐    ┌───┐
+│ A │ →  │ B │ →  │ C │ →  │ D │    If C is slow, A is slow.
+└───┘    └───┘    └───┘    └───┘    If D dies, A gets an error.
+
+─────────────────────────────────────────────────
+
+Data flow (event-driven) thinking:
+Each service processes events independently
+
+┌───┐    ┌────────┐    ┌───┐
+│ A │ →  │ Event  │ →  │ B │
+└───┘    │ Queue  │ →  │ C │    If C is slow, A doesn't care.
+         └────────┘ →  │ D │    If D dies, events wait.
+                       └───┘    Each processes at own pace.
+
+WHEN TO USE WHICH:
+Sync: User needs immediate response (login, payment)
+Async: User doesn't need immediate response (email, analytics)
+Hybrid: Acknowledge immediately, process in background
 ```
 
 ---
@@ -255,31 +249,29 @@
 ## Mental Model 8: The Blast Radius
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  BLAST RADIUS: How much of the system is affected when               ║
-║  one component fails?                                                ║
-║                                                                      ║
-║  LARGE BLAST RADIUS (BAD):                                           ║
-║  ┌────────────────────────────────┐                                  ║
-║  │  Monolith: if payment module  │                                   ║
-║  │  has a memory leak, the ENTIRE │                                  ║
-║  │  application crashes           │                                  ║
-║  └────────────────────────────────┘                                  ║
-║                                                                      ║
-║  SMALL BLAST RADIUS (GOOD):                                          ║
-║  ┌────────────┐  ┌────────────┐  ┌────────────┐                      ║
-║  │  User Svc  │  │ Payment Svc│  │ Notify Svc │                      ║
-║  │     ✓      │  │     ✗      │  │     ✓      │                      ║
-║  └────────────┘  └────────────┘  └────────────┘                      ║
-║  Payment is down but users can still browse and get notifications    ║
-║                                                                      ║
-║  TECHNIQUES TO REDUCE BLAST RADIUS:                                  ║
-║  • Bulkhead: Separate thread pools per dependency                    ║
-║  • Circuit Breaker: Stop calling a failing service                   ║
-║  • Feature Flags: Disable features without deploying                 ║
-║  • Canary Deploys: Roll out to 5% of traffic first                   ║
-║  • Cell Architecture: Independent copies serving different users     ║
-╚══════════════════════════════════════════════════════════════════════╝
+BLAST RADIUS: How much of the system is affected when
+one component fails?
+
+LARGE BLAST RADIUS (BAD):
+┌────────────────────────────────┐
+│  Monolith: if payment module   │
+│  has a memory leak, the ENTIRE │
+│  application crashes           │
+└────────────────────────────────┘
+
+SMALL BLAST RADIUS (GOOD):
+┌────────────┐  ┌────────────┐  ┌────────────┐
+│  User Svc  │  │ Payment Svc│  │ Notify Svc │
+│     ✓      │  │     ✗      │  │     ✓      │
+└────────────┘  └────────────┘  └────────────┘
+Payment is down but users can still browse and get notifications
+
+TECHNIQUES TO REDUCE BLAST RADIUS:
+• Bulkhead: Separate thread pools per dependency
+• Circuit Breaker: Stop calling a failing service
+• Feature Flags: Disable features without deploying
+• Canary Deploys: Roll out to 5% of traffic first
+• Cell Architecture: Independent copies serving different users
 ```
 
 ---

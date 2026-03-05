@@ -115,7 +115,7 @@ import java.util.concurrent.Semaphore;
 public class ConnectionPool {
     private final Semaphore semaphore;
     private final Queue<Connection> pool;
-    
+
     public ConnectionPool(int maxConnections) {
         this.semaphore = new Semaphore(maxConnections, true); // fair = true
         this.pool = new ConcurrentLinkedQueue<>();
@@ -123,17 +123,17 @@ public class ConnectionPool {
             pool.add(createConnection());
         }
     }
-    
+
     public Connection acquire() throws InterruptedException {
         semaphore.acquire();    // Blocks if no permits left (parking lot full)
         return pool.poll();      // Safe: we have a permit, so pool isn't empty
     }
-    
+
     public void release(Connection conn) {
         pool.offer(conn);        // Return connection to pool
         semaphore.release();     // Open a parking spot
     }
-    
+
     // Usage:
     // Connection conn = pool.acquire();  // Blocks if pool exhausted
     // try {
@@ -212,11 +212,11 @@ public class ConnectionPool {
 import java.util.concurrent.CountDownLatch;
 
 public class ApplicationStartup {
-    
+
     public static void main(String[] args) throws InterruptedException {
         int serviceCount = 3;
         CountDownLatch latch = new CountDownLatch(serviceCount);
-        
+
         // Services start in parallel
         new Thread(() -> {
             System.out.println("Database connecting...");
@@ -224,26 +224,26 @@ public class ApplicationStartup {
             System.out.println("Database READY");
             latch.countDown();  // 3 → 2
         }).start();
-        
+
         new Thread(() -> {
             System.out.println("Cache warming...");
             sleep(1500);
             System.out.println("Cache READY");
             latch.countDown();  // 2 → 1
         }).start();
-        
+
         new Thread(() -> {
             System.out.println("Config loading...");
             sleep(1000);
             System.out.println("Config READY");
             latch.countDown();  // 1 → 0
         }).start();
-        
+
         // Main thread waits for ALL services
         System.out.println("Waiting for all services...");
         latch.await();  // Blocks until count reaches 0
         System.out.println("All services ready! Starting server...");
-        
+
         // Output:
         // Waiting for all services...
         // Database connecting...
@@ -286,34 +286,32 @@ startGun.countDown();      // BANG! All 10 threads released at once
 ### Deep Reasoning
 
 ```
-╔══════════════════════════════════════════════════════════════════╗
-║  THE HIKING GROUP ANALOGY                                        ║
-║                                                                  ║
-║  5 hikers agree: "Nobody moves on until everyone reaches the     ║
-║  checkpoint."                                                    ║
-║                                                                  ║
-║  Checkpoint 1 (valley):                                          ║
-║  Alice arrives → waits... (1/5)                                  ║
-║  Bob arrives → waits... (2/5)                                    ║
-║  Charlie arrives → waits... (3/5)                                ║
-║  Dave arrives → waits... (4/5)                                   ║
-║  Eve arrives → ALL HERE! (5/5)                                   ║
-║  → Everyone moves to next section                                ║
-║                                                                  ║
-║  Checkpoint 2 (mountain):                                        ║
-║  Same thing — barrier RESETS automatically!                      ║
-║                                                                  ║
-║  KEY DIFFERENCES from CountDownLatch:                            ║
-║  ┌────────────────────┬─────────────────┬──────────────────┐     ║
-║  │                    │ CountDownLatch   │ CyclicBarrier    │    ║
-║  ├────────────────────┼─────────────────┼──────────────────┤     ║
-║  │ Reusable?          │ ❌ One-shot     │ ✅ Auto-resets   │       ║
-║  │ Who counts?        │ Any thread      │ Waiting threads  │     ║
-║  │ Barrier action?    │ ❌ None         │ ✅ Runnable      │       ║
-║  │ Threads wait?      │ Only awaiting   │ ALL participants │     ║
-║  │ Can reset?         │ ❌              │ ✅ .reset()      │       ║
-║  └────────────────────┴─────────────────┴──────────────────┘     ║
-╚══════════════════════════════════════════════════════════════════╝
+THE HIKING GROUP ANALOGY
+
+5 hikers agree: "Nobody moves on until everyone reaches the
+checkpoint."
+
+Checkpoint 1 (valley):
+Alice arrives → waits... (1/5)
+Bob arrives → waits... (2/5)
+Charlie arrives → waits... (3/5)
+Dave arrives → waits... (4/5)
+Eve arrives → ALL HERE! (5/5)
+→ Everyone moves to next section
+
+Checkpoint 2 (mountain):
+Same thing — barrier RESETS automatically!
+
+KEY DIFFERENCES from CountDownLatch:
+┌────────────────────┬─────────────────┬───────────────────┐
+│                    │ CountDownLatch   │ CyclicBarrier    │
+├────────────────────┼─────────────────┼───────────────────┤
+│ Reusable?          │ ❌ One-shot     │ ✅ Auto-resets      │
+│ Who counts?        │ Any thread      │ Waiting threads   │
+│ Barrier action?    │ ❌ None         │ ✅ Runnable         │
+│ Threads wait?      │ Only awaiting   │ ALL participants  │
+│ Can reset?         │ ❌              │ ✅ .reset()         │
+└────────────────────┴─────────────────┴───────────────────┘
 ```
 
 ### Code — Parallel Matrix Computation
@@ -324,13 +322,13 @@ import java.util.concurrent.CyclicBarrier;
 public class ParallelSimulation {
     static final int THREADS = 4;
     static final int PHASES = 3;
-    
+
     public static void main(String[] args) {
         // Barrier with action: runs when ALL threads arrive
         CyclicBarrier barrier = new CyclicBarrier(THREADS, () -> {
             System.out.println("=== Phase complete! Merging results... ===");
         });
-        
+
         for (int t = 0; t < THREADS; t++) {
             int threadId = t;
             new Thread(() -> {
@@ -339,7 +337,7 @@ public class ParallelSimulation {
                         // Each thread does its portion of work
                         System.out.println("Thread " + threadId + " computing phase " + phase);
                         Thread.sleep((long)(Math.random() * 1000));
-                        
+
                         // Wait for ALL threads to finish this phase
                         barrier.await();  // Blocks until all 4 arrive
                         // Barrier auto-resets for next phase!
@@ -347,7 +345,7 @@ public class ParallelSimulation {
                 } catch (Exception e) { e.printStackTrace(); }
             }).start();
         }
-        
+
         // Output:
         // Thread 0 computing phase 0
         // Thread 2 computing phase 0
@@ -422,11 +420,11 @@ public class ParallelSimulation {
 import java.util.concurrent.Phaser;
 
 public class DynamicPhasedWork {
-    
+
     public static void main(String[] args) {
         // Start with 1 participant (main thread)
         Phaser phaser = new Phaser(1);
-        
+
         // Phase 0: 3 workers do initialization
         for (int i = 0; i < 3; i++) {
             phaser.register();  // Dynamic registration! (now 4 parties)
@@ -434,32 +432,32 @@ public class DynamicPhasedWork {
             new Thread(() -> {
                 System.out.println("Worker " + id + " initializing...");
                 phaser.arriveAndAwaitAdvance();  // Wait for phase 0 to end
-                
+
                 System.out.println("Worker " + id + " processing phase 1...");
                 phaser.arriveAndAwaitAdvance();  // Wait for phase 1 to end
-                
+
                 // Worker 0 drops out after phase 1
                 if (id == 0) {
                     System.out.println("Worker 0 done, leaving.");
                     phaser.arriveAndDeregister();  // Remove self (3 parties left)
                     return;
                 }
-                
+
                 System.out.println("Worker " + id + " processing phase 2...");
                 phaser.arriveAndDeregister();  // Done, deregister
             }).start();
         }
-        
+
         // Main thread coordinates phases
         phaser.arriveAndAwaitAdvance();  // Wait for phase 0
         System.out.println("--- Phase 0 complete (all initialized) ---");
-        
+
         phaser.arriveAndAwaitAdvance();  // Wait for phase 1
         System.out.println("--- Phase 1 complete ---");
-        
+
         phaser.arriveAndAwaitAdvance();  // Wait for phase 2 (only 2 workers now!)
         System.out.println("--- Phase 2 complete ---");
-        
+
         phaser.arriveAndDeregister();    // Main thread done
     }
 }
@@ -576,7 +574,7 @@ void transfer(Account from, Account to, int amount) {
     // synchronized(from) { synchronized(to) { ... } }
     // Thread 1: transfer(A, B) → locks A, wants B
     // Thread 2: transfer(B, A) → locks B, wants A → DEADLOCK!
-    
+
     // ✅ Fixed — always lock lower ID first:
     Account first = from.getId() < to.getId() ? from : to;
     Account second = from.getId() < to.getId() ? to : from;
@@ -726,7 +724,7 @@ private double x, y;
 public double distanceFromOrigin() {
     long stamp = stampedLock.tryOptimisticRead();  // No lock acquired!
     double currentX = x, currentY = y;             // Read values
-    
+
     if (!stampedLock.validate(stamp)) {             // Was there a write?
         // A writer modified data — fall back to read lock
         stamp = stampedLock.readLock();              // Now properly lock
@@ -769,11 +767,11 @@ public void move(double deltaX, double deltaY) {
 public class RateLimiter {
     private final Semaphore semaphore;
     private final ScheduledExecutorService scheduler;
-    
+
     public RateLimiter(int permitsPerSecond) {
         this.semaphore = new Semaphore(0);  // Start with 0!
         this.scheduler = Executors.newScheduledThreadPool(1);
-        
+
         // Replenish permits every second
         scheduler.scheduleAtFixedRate(
             () -> {
@@ -785,11 +783,11 @@ public class RateLimiter {
             0, 1, TimeUnit.SECONDS
         );
     }
-    
+
     public void acquire() throws InterruptedException {
         semaphore.acquire();
     }
-    
+
     // Usage: max 100 API calls/second
     // RateLimiter limiter = new RateLimiter(100);
     // limiter.acquire();  // Blocks if rate exceeded
@@ -827,13 +825,13 @@ for (int i = 0; i < WORKERS; i++) {
 public class GracefulShutdown {
     private final CountDownLatch shutdownLatch;
     private final List<Worker> workers;
-    
+
     public void shutdown(long timeout, TimeUnit unit) throws InterruptedException {
         shutdownLatch = new CountDownLatch(workers.size());
-        
+
         // Signal all workers to stop
         workers.forEach(Worker::signalStop);
-        
+
         // Wait for all to finish (with timeout!)
         if (!shutdownLatch.await(timeout, unit)) {
             // Timeout! Some workers didn't finish
@@ -843,7 +841,7 @@ public class GracefulShutdown {
                 .forEach(Worker::forceStop);
         }
     }
-    
+
     // Each worker calls when done:
     // shutdownLatch.countDown();
 }

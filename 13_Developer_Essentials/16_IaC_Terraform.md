@@ -106,14 +106,14 @@
 # main.tf — Configure the AWS provider
 terraform {
   required_version = ">= 1.0"
-  
+
   required_providers {
     aws = {
       source  = "hashicorp/aws"
       version = "~> 5.0"
     }
   }
-  
+
   # Remote state storage (team collaboration)
   backend "s3" {
     bucket         = "my-terraform-state"
@@ -136,7 +136,7 @@ provider "aws" {
 resource "aws_vpc" "main" {
   cidr_block           = "10.0.0.0/16"
   enable_dns_hostnames = true
-  
+
   tags = {
     Name        = "main-vpc"
     Environment = var.environment
@@ -149,7 +149,7 @@ resource "aws_subnet" "public" {
   cidr_block              = "10.0.1.0/24"
   availability_zone       = "us-east-1a"
   map_public_ip_on_launch = true
-  
+
   tags = {
     Name = "public-subnet"
   }
@@ -160,7 +160,7 @@ resource "aws_instance" "web" {
   ami           = "ami-0c55b159cbfafe1f0"  # Amazon Linux 2
   instance_type = var.instance_type
   subnet_id     = aws_subnet.public.id
-  
+
   tags = {
     Name = "web-server"
   }
@@ -181,7 +181,7 @@ variable "instance_type" {
   description = "EC2 instance type"
   type        = string
   default     = "t3.micro"
-  
+
   validation {
     condition     = contains(["t3.micro", "t3.small", "t3.medium"], var.instance_type)
     error_message = "Instance type must be t3.micro, t3.small, or t3.medium."
@@ -212,7 +212,7 @@ output "vpc_id" {
 data "aws_ami" "amazon_linux" {
   most_recent = true
   owners      = ["amazon"]
-  
+
   filter {
     name   = "name"
     values = ["amzn2-ami-hvm-*-x86_64-gp2"]
@@ -232,31 +232,29 @@ resource "aws_instance" "web" {
 ### Modules — Reusable Components
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  Project Structure:                                                  ║
-║                                                                      ║
-║  infrastructure/                                                     ║
-║  ├── modules/                                                        ║
-║  │   ├── vpc/                                                        ║
-║  │   │   ├── main.tf                                                 ║
-║  │   │   ├── variables.tf                                            ║
-║  │   │   └── outputs.tf                                              ║
-║  │   ├── ec2/                                                        ║
-║  │   │   ├── main.tf                                                 ║
-║  │   │   ├── variables.tf                                            ║
-║  │   │   └── outputs.tf                                              ║
-║  │   └── rds/                                                        ║
-║  │       ├── main.tf                                                 ║
-║  │       ├── variables.tf                                            ║
-║  │       └── outputs.tf                                              ║
-║  ├── environments/                                                   ║
-║  │   ├── dev/                                                        ║
-║  │   │   ├── main.tf          ← uses modules                         ║
-║  │   │   └── terraform.tfvars                                        ║
-║  │   ├── staging/                                                    ║
-║  │   └── prod/                                                       ║
-║  └── terraform.tfvars                                                ║
-╚══════════════════════════════════════════════════════════════════════╝
+Project Structure:
+
+infrastructure/
+├── modules/
+│   ├── vpc/
+│   │   ├── main.tf
+│   │   ├── variables.tf
+│   │   └── outputs.tf
+│   ├── ec2/
+│   │   ├── main.tf
+│   │   ├── variables.tf
+│   │   └── outputs.tf
+│   └── rds/
+│       ├── main.tf
+│       ├── variables.tf
+│       └── outputs.tf
+├── environments/
+│   ├── dev/
+│   │   ├── main.tf          ← uses modules
+│   │   └── terraform.tfvars
+│   ├── staging/
+│   └── prod/
+└── terraform.tfvars
 ```
 
 ```hcl
@@ -307,7 +305,7 @@ resource "aws_instance" "web" {
   count         = var.instance_count
   ami           = data.aws_ami.amazon_linux.id
   instance_type = var.instance_type
-  
+
   tags = { Name = "web-${count.index + 1}" }
 }
 
@@ -324,7 +322,7 @@ resource "aws_instance" "app" {
   for_each      = var.instances
   ami           = data.aws_ami.amazon_linux.id
   instance_type = each.value
-  
+
   tags = { Name = each.key }
 }
 # Creates: aws_instance.app["web"], aws_instance.app["api"], aws_instance.app["worker"]
@@ -343,7 +341,7 @@ resource "aws_instance" "bastion" {
 resource "aws_instance" "web" {
   ami           = data.aws_ami.amazon_linux.id
   instance_type = var.instance_type
-  
+
   lifecycle {
     create_before_destroy = true    # Blue-green: new first, then delete old
     prevent_destroy       = true    # Safety net: can't destroy accidentally
@@ -388,14 +386,14 @@ resource "aws_subnet" "private_a" {
 # --- Security Groups ---
 resource "aws_security_group" "alb" {
   vpc_id = aws_vpc.main.id
-  
+
   ingress {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
-  
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -406,7 +404,7 @@ resource "aws_security_group" "alb" {
 
 resource "aws_security_group" "app" {
   vpc_id = aws_vpc.main.id
-  
+
   ingress {
     from_port       = 8080
     to_port         = 8080
@@ -417,7 +415,7 @@ resource "aws_security_group" "app" {
 
 resource "aws_security_group" "db" {
   vpc_id = aws_vpc.main.id
-  
+
   ingress {
     from_port       = 5432
     to_port         = 5432
@@ -442,14 +440,14 @@ resource "aws_db_instance" "main" {
   engine_version    = "15"
   instance_class    = "db.t3.medium"
   allocated_storage = 20
-  
+
   db_name  = "appdb"
   username = var.db_username
   password = var.db_password  # Use secrets manager in real life!
-  
+
   vpc_security_group_ids = [aws_security_group.db.id]
   db_subnet_group_name   = aws_db_subnet_group.main.name
-  
+
   backup_retention_period = 7
   multi_az               = var.environment == "prod" ? true : false
   skip_final_snapshot    = var.environment != "prod"
@@ -490,23 +488,21 @@ resource "aws_db_instance" "main" {
 ## CI/CD for Infrastructure
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  GitOps Workflow for Terraform:                                      ║
-║                                                                      ║
-║  Developer             Git               CI/CD             Cloud     ║
-║  ┌────────┐   push    ┌────────┐  trigger  ┌────────┐    ┌──────┐    ║
-║  │ Write  │──────────▶│ Branch │──────────▶│Pipeline│───▶│ AWS  │    ║
-║  │ .tf    │           │ + PR   │           │        │    │      │    ║
-║  └────────┘           └────────┘           └────────┘    └──────┘    ║
-║                                                                      ║
-║  Pipeline Steps:                                                     ║
-║  1. terraform fmt -check     (formatting)                            ║
-║  2. terraform validate       (syntax check)                          ║
-║  3. terraform plan           (preview) → comment on PR               ║
-║  4. (PR approved) terraform apply -auto-approve                      ║
-║                                                                      ║
-║  RULE: Only CI/CD applies. Humans don't run apply.                   ║
-╚══════════════════════════════════════════════════════════════════════╝
+GitOps Workflow for Terraform:
+
+Developer             Git               CI/CD             Cloud
+┌────────┐   push    ┌────────┐  trigger  ┌────────┐    ┌──────┐
+│ Write  │──────────▶│ Branch │──────────▶│Pipeline│───▶│ AWS  │
+│ .tf    │           │ + PR   │           │        │    │      │
+└────────┘           └────────┘           └────────┘    └──────┘
+
+Pipeline Steps:
+1. terraform fmt -check     (formatting)
+2. terraform validate       (syntax check)
+3. terraform plan           (preview) → comment on PR
+4. (PR approved) terraform apply -auto-approve
+
+RULE: Only CI/CD applies. Humans don't run apply.
 ```
 
 ### GitHub Actions Example
@@ -529,26 +525,26 @@ jobs:
     defaults:
       run:
         working-directory: infrastructure/
-    
+
     steps:
       - uses: actions/checkout@v4
       - uses: hashicorp/setup-terraform@v3
-      
+
       - name: Terraform Init
         run: terraform init
-        
+
       - name: Terraform Format Check
         run: terraform fmt -check
-        
+
       - name: Terraform Validate
         run: terraform validate
-        
+
       - name: Terraform Plan
         run: terraform plan -out=tfplan
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        
+
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform apply -auto-approve tfplan

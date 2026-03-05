@@ -28,61 +28,59 @@
 ## 1. The Component Decomposition Mental Model
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  GIVEN: "Build an e-commerce product page"                           ║
-║                                                                      ║
-║  STEP 1 — SQUINT TEST (look at the design blurry-eyed):              ║
-║  ┌─────────────────────────────────────────────────────────┐         ║
-║  │ [HEADER / NAV]                                          │         ║
-║  │                                                         │         ║
-║  │  ┌──────────────┐  ┌───────────────────────────────┐   │          ║
-║  │  │              │  │ Product Title                  │   │         ║
-║  │  │    IMAGE     │  │ ★★★★☆ (42 reviews)           │   │           ║
-║  │  │   GALLERY    │  │ $129.99  ~$159.99~            │   │          ║
-║  │  │              │  │                                │   │         ║
-║  │  │  ○ ○ ● ○    │  │ Color: [Red] [Blue] [Black]   │   │           ║
-║  │  └──────────────┘  │ Size:  [S] [M] [L] [XL]      │   │           ║
-║  │                     │                                │   │        ║
-║  │                     │ [Add to Cart]  [♥ Wishlist]   │   │         ║
-║  │                     └───────────────────────────────┘   │         ║
-║  │                                                         │         ║
-║  │  [Description] [Reviews] [Shipping]  ← TABS            │          ║
-║  │  ┌─────────────────────────────────────────────────┐   │          ║
-║  │  │ Tab content here...                              │   │         ║
-║  │  └─────────────────────────────────────────────────┘   │          ║
-║  │                                                         │         ║
-║  │  RELATED PRODUCTS:                                      │         ║
-║  │  [Card] [Card] [Card] [Card]                           │          ║
-║  │                                                         │         ║
-║  │ [FOOTER]                                                │         ║
-║  └─────────────────────────────────────────────────────────┘         ║
-║                                                                      ║
-║  STEP 2 — DRAW BOXES (each box = a component):                       ║
-║                                                                      ║
-║  ProductPage                                                         ║
-║  ├── Header (shared layout)                                          ║
-║  ├── ImageGallery                                                    ║
-║  │   ├── MainImage                                                   ║
-║  │   └── ThumbnailRow                                                ║
-║  ├── ProductInfo                                                     ║
-║  │   ├── StarRating                                                  ║
-║  │   ├── PriceDisplay                                                ║
-║  │   ├── ColorSelector                                               ║
-║  │   ├── SizeSelector                                                ║
-║  │   └── ActionButtons (AddToCart + Wishlist)                        ║
-║  ├── TabSection                                                      ║
-║  │   ├── TabList                                                     ║
-║  │   └── TabPanel (Description | Reviews | Shipping)                 ║
-║  ├── RelatedProducts                                                 ║
-║  │   └── ProductCard (reused from listings page!)                    ║
-║  └── Footer (shared layout)                                          ║
-║                                                                      ║
-║  STEP 3 — IDENTIFY DATA FLOW:                                        ║
-║  • Product data comes from API → ProductPage fetches                 ║
-║  • selectedColor, selectedSize → local state in ProductPage          ║
-║  • Cart actions → global state (context or Zustand)                  ║
-║  • Reviews → separate API call, lazy loaded in tab                   ║
-╚══════════════════════════════════════════════════════════════════════╝
+GIVEN: "Build an e-commerce product page"
+
+STEP 1 — SQUINT TEST (look at the design blurry-eyed):
+┌──────────────────────────────────────────────────────────┐
+│ [HEADER / NAV]                                           │
+│                                                          │
+│  ┌──────────────┐  ┌───────────────────────────────┐     │
+│  │              │  │ Product Title                  │    │
+│  │    IMAGE     │  │ ★★★★☆ (42 reviews)           │      │
+│  │   GALLERY    │  │ $129.99  ~$159.99~            │     │
+│  │              │  │                                │    │
+│  │  ○ ○ ● ○    │  │ Color: [Red] [Blue] [Black]   │      │
+│  └──────────────┘  │ Size:  [S] [M] [L] [XL]      │      │
+│                     │                                │   │
+│                     │ [Add to Cart]  [♥ Wishlist]   │    │
+│                     └───────────────────────────────┘    │
+│                                                          │
+│  [Description] [Reviews] [Shipping]  ← TABS              │
+│  ┌─────────────────────────────────────────────────┐     │
+│  │ Tab content here...                              │    │
+│  └─────────────────────────────────────────────────┘     │
+│                                                          │
+│  RELATED PRODUCTS:                                       │
+│  [Card] [Card] [Card] [Card]                             │
+│                                                          │
+│ [FOOTER]                                                 │
+└──────────────────────────────────────────────────────────┘
+
+STEP 2 — DRAW BOXES (each box = a component):
+
+ProductPage
+├── Header (shared layout)
+├── ImageGallery
+│   ├── MainImage
+│   └── ThumbnailRow
+├── ProductInfo
+│   ├── StarRating
+│   ├── PriceDisplay
+│   ├── ColorSelector
+│   ├── SizeSelector
+│   └── ActionButtons (AddToCart + Wishlist)
+├── TabSection
+│   ├── TabList
+│   └── TabPanel (Description | Reviews | Shipping)
+├── RelatedProducts
+│   └── ProductCard (reused from listings page!)
+└── Footer (shared layout)
+
+STEP 3 — IDENTIFY DATA FLOW:
+• Product data comes from API → ProductPage fetches
+• selectedColor, selectedSize → local state in ProductPage
+• Cart actions → global state (context or Zustand)
+• Reviews → separate API call, lazy loaded in tab
 ```
 
 ---
@@ -90,32 +88,30 @@
 ## 2. The Data-First Approach
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  BEFORE WRITING ANY JSX, ANSWER:                                     ║
-║                                                                      ║
-║  1. What DATA does this component need?                              ║
-║     → Define the types/interfaces FIRST                              ║
-║                                                                      ║
-║  2. Where does the data COME FROM?                                   ║
-║     ├── Props (parent passes it down)                                ║
-║     ├── API call (this component fetches)                            ║
-║     ├── URL params (useParams/useSearchParams)                       ║
-║     ├── Local state (useState in this component)                     ║
-║     └── Global state (context/store)                                 ║
-║                                                                      ║
-║  3. What can CHANGE? (= state)                                       ║
-║     ├── selectedColor → changes on click → useState                  ║
-║     ├── cartItems → changes across pages → Zustand/context           ║
-║     └── productData → fetched once → TanStack Query cache            ║
-║                                                                      ║
-║  4. What EVENTS happen?                                              ║
-║     ├── Click "Add to Cart" → update cart state                      ║
-║     ├── Click thumbnail → change main image                          ║
-║     ├── Click tab → switch visible panel                             ║
-║     └── Submit review → POST to API → refetch reviews                ║
-║                                                                      ║
-║  THEN: Write JSX structure → Style with CSS → Add interactions       ║
-╚══════════════════════════════════════════════════════════════════════╝
+BEFORE WRITING ANY JSX, ANSWER:
+
+1. What DATA does this component need?
+   → Define the types/interfaces FIRST
+
+2. Where does the data COME FROM?
+   ├── Props (parent passes it down)
+   ├── API call (this component fetches)
+   ├── URL params (useParams/useSearchParams)
+   ├── Local state (useState in this component)
+   └── Global state (context/store)
+
+3. What can CHANGE? (= state)
+   ├── selectedColor → changes on click → useState
+   ├── cartItems → changes across pages → Zustand/context
+   └── productData → fetched once → TanStack Query cache
+
+4. What EVENTS happen?
+   ├── Click "Add to Cart" → update cart state
+   ├── Click thumbnail → change main image
+   ├── Click tab → switch visible panel
+   └── Submit review → POST to API → refetch reviews
+
+THEN: Write JSX structure → Style with CSS → Add interactions
 ```
 
 ---
@@ -123,29 +119,27 @@
 ## 3. State Ownership Rule
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  "WHERE SHOULD STATE LIVE?" — The #1 React Architecture Question     ║
-║                                                                      ║
-║  RULE: State lives in the LOWEST COMMON ANCESTOR of all              ║
-║        components that need it.                                      ║
-║                                                                      ║
-║  EXAMPLE: Color selector updates both the image and "add to cart"    ║
-║                                                                      ║
-║  ProductPage  ← selectedColor STATE lives here                       ║
-║  ├── ImageGallery  ← needs selectedColor to show right image         ║
-║  ├── ProductInfo                                                     ║
-║  │   ├── ColorSelector ← needs selectedColor + setSelectedColor      ║
-║  │   └── AddToCart     ← needs selectedColor for cart item           ║
-║                                                                      ║
-║  ProductPage is the lowest ancestor that covers all three.           ║
-║  So: const [selectedColor, setSelectedColor] = useState("red")       ║
-║  Then pass down as props.                                            ║
-║                                                                      ║
-║  IF PROP DRILLING > 3 LEVELS DEEP → Consider:                        ║
-║  ├── Context (for stable data like theme, auth, locale)              ║
-║  ├── Zustand (for frequently changing shared state)                  ║
-║  └── Composition pattern (pass components as children)               ║
-╚══════════════════════════════════════════════════════════════════════╝
+"WHERE SHOULD STATE LIVE?" — The #1 React Architecture Question
+
+RULE: State lives in the LOWEST COMMON ANCESTOR of all
+      components that need it.
+
+EXAMPLE: Color selector updates both the image and "add to cart"
+
+ProductPage  ← selectedColor STATE lives here
+├── ImageGallery  ← needs selectedColor to show right image
+├── ProductInfo
+│   ├── ColorSelector ← needs selectedColor + setSelectedColor
+│   └── AddToCart     ← needs selectedColor for cart item
+
+ProductPage is the lowest ancestor that covers all three.
+So: const [selectedColor, setSelectedColor] = useState("red")
+Then pass down as props.
+
+IF PROP DRILLING > 3 LEVELS DEEP → Consider:
+├── Context (for stable data like theme, auth, locale)
+├── Zustand (for frequently changing shared state)
+└── Composition pattern (pass components as children)
 ```
 
 ---
@@ -153,33 +147,31 @@
 ## 4. Layout Strategy Decision Tree
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  GIVEN A DESIGN, WHICH CSS LAYOUT TO USE:                            ║
-║                                                                      ║
-║  Is it the OVERALL PAGE structure?                                   ║
-║  ├── YES → CSS Grid (header, sidebar, main, footer)                  ║
-║  └── NO → Is it a ROW of items?                                      ║
-║           ├── YES → Flexbox                                          ║
-║           │   ├── Items should wrap? → flex-wrap: wrap               ║
-║           │   ├── Space between? → justify-content: space-between    ║
-║           │   └── Center vertically? → align-items: center           ║
-║           └── NO → Is it a GRID of cards/items?                      ║
-║                   ├── YES → CSS Grid with auto-fit                   ║
-║                   │   grid-template-columns:                         ║
-║                   │     repeat(auto-fit, minmax(280px, 1fr))         ║
-║                   └── NO → Is it text/document flow?                 ║
-║                           ├── YES → Normal flow (no special CSS)     ║
-║                           └── Is it overlapping/floating?            ║
-║                                   └── YES → position: absolute       ║
-║                                             within relative parent   ║
-║                                                                      ║
-║  GOLDEN RULES:                                                       ║
-║  1. Flex for 1D (row OR column)                                      ║
-║  2. Grid for 2D (rows AND columns)                                   ║
-║  3. Both can be responsive WITHOUT media queries                     ║
-║  4. Don't use float for layout (flex/grid replace it)                ║
-║  5. Position absolute ONLY for overlays/tooltips/badges              ║
-╚══════════════════════════════════════════════════════════════════════╝
+GIVEN A DESIGN, WHICH CSS LAYOUT TO USE:
+
+Is it the OVERALL PAGE structure?
+├── YES → CSS Grid (header, sidebar, main, footer)
+└── NO → Is it a ROW of items?
+         ├── YES → Flexbox
+         │   ├── Items should wrap? → flex-wrap: wrap
+         │   ├── Space between? → justify-content: space-between
+         │   └── Center vertically? → align-items: center
+         └── NO → Is it a GRID of cards/items?
+                 ├── YES → CSS Grid with auto-fit
+                 │   grid-template-columns:
+                 │     repeat(auto-fit, minmax(280px, 1fr))
+                 └── NO → Is it text/document flow?
+                         ├── YES → Normal flow (no special CSS)
+                         └── Is it overlapping/floating?
+                                 └── YES → position: absolute
+                                           within relative parent
+
+GOLDEN RULES:
+1. Flex for 1D (row OR column)
+2. Grid for 2D (rows AND columns)
+3. Both can be responsive WITHOUT media queries
+4. Don't use float for layout (flex/grid replace it)
+5. Position absolute ONLY for overlays/tooltips/badges
 ```
 
 ---

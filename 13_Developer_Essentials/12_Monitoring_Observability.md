@@ -59,13 +59,13 @@ Spring Boot + Micrometer (auto-exposes Prometheus metrics):
   // application.yml:
   //   management.endpoints.web.exposure.include: health,prometheus
   //   management.metrics.tags.application: my-service
-  
+
   // Custom metrics:
   @Component
   public class OrderMetrics {
       private final Counter ordersCreated;
       private final Timer orderProcessingTime;
-      
+
       public OrderMetrics(MeterRegistry registry) {
           ordersCreated = Counter.builder("orders.created.total")
               .description("Total orders created")
@@ -75,7 +75,7 @@ Spring Boot + Micrometer (auto-exposes Prometheus metrics):
               .description("Order processing time")
               .register(registry);
       }
-      
+
       public void recordOrder() { ordersCreated.increment(); }
       public Timer.Sample startTimer() { return Timer.start(); }
       public void stopTimer(Timer.Sample sample) { sample.stop(orderProcessingTime); }
@@ -108,26 +108,24 @@ Modern alternative: Grafana Loki (lighter, labels-based, pairs with Grafana)
 ## Distributed Tracing
 
 ```
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║  Request from browser → API Gateway → Order Service → Payment Service            ║
-║                                                                                  ║
-║  Trace ID: abc-123 (same across ALL services for this request)                   ║
-║                                                                                  ║
-║  ┌─── API Gateway (Span 1) ─────────────────────────────────────────┐            ║
-║  │  ┌─── Order Service (Span 2) ──────────────────────────┐        │             ║
-║  │  │  ┌─── DB Query (Span 3) ──────┐                     │        │             ║
-║  │  │  └─────────── 15ms ───────────┘                     │        │             ║
-║  │  │  ┌─── Payment Service (Span 4) ────────────────┐    │        │             ║
-║  │  │  │  ┌─── Stripe API (Span 5) ──────────┐      │    │        │              ║
-║  │  │  │  └──────────── 200ms ───────────────┘      │    │        │              ║
-║  │  │  └──────────────── 250ms ──────────────────────┘    │        │             ║
-║  │  └───────────────────── 280ms ─────────────────────────┘        │             ║
-║  └────────────────────────── 300ms ────────────────────────────────┘             ║
-║                                                                                  ║
-║  → Immediately see: Payment Service (Stripe API call) is the bottleneck!         ║
-║                                                                                  ║
-║  OpenTelemetry (standard): auto-instruments Spring Boot, propagates trace IDs    ║
-╚══════════════════════════════════════════════════════════════════════════════════╝
+Request from browser → API Gateway → Order Service → Payment Service
+
+Trace ID: abc-123 (same across ALL services for this request)
+
+┌─── API Gateway (Span 1) ─────────────────────────────────────────┐
+│  ┌─── Order Service (Span 2) ──────────────────────────┐         │
+│  │  ┌─── DB Query (Span 3) ──────┐                     │         │
+│  │  └─────────── 15ms ───────────┘                     │         │
+│  │  ┌─── Payment Service (Span 4) ────────────────┐    │         │
+│  │  │  ┌─── Stripe API (Span 5) ──────────┐      │    │          │
+│  │  │  └──────────── 200ms ───────────────┘      │    │          │
+│  │  └──────────────── 250ms ──────────────────────┘    │         │
+│  └───────────────────── 280ms ─────────────────────────┘         │
+└────────────────────────── 300ms ─────────────────────────────────┘
+
+→ Immediately see: Payment Service (Stripe API call) is the bottleneck!
+
+OpenTelemetry (standard): auto-instruments Spring Boot, propagates trace IDs
 ```
 
 ---

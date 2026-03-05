@@ -161,29 +161,27 @@ function infiniteLoop(): never {
 ```
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  TYPE HIERARCHY:                                                     ║
-║                                                                      ║
-║  unknown  ← TOP type (anything assignable TO it)                     ║
-║    │                                                                 ║
-║    ├── string                                                        ║
-║    ├── number                                                        ║
-║    ├── boolean                                                       ║
-║    ├── object                                                        ║
-║    │     ├── Array                                                   ║
-║    │     ├── Function                                                ║
-║    │     └── {...}                                                   ║
-║    ├── null                                                          ║
-║    ├── undefined                                                     ║
-║    ├── void                                                          ║
-║    └── any ← SPECIAL (opts out of type checking entirely)            ║
-║                                                                      ║
-║  never  ← BOTTOM type (nothing assignable TO it)                     ║
-║                                                                      ║
-║  REASONING: unknown = "I don't know yet, so check before using"      ║
-║  any = "I don't care, let me do whatever" (dangerous)                ║
-║  never = "This can never happen" (exhaustive checks)                 ║
-╚══════════════════════════════════════════════════════════════════════╝
+TYPE HIERARCHY:
+
+unknown  ← TOP type (anything assignable TO it)
+  │
+  ├── string
+  ├── number
+  ├── boolean
+  ├── object
+  │     ├── Array
+  │     ├── Function
+  │     └── {...}
+  ├── null
+  ├── undefined
+  ├── void
+  └── any ← SPECIAL (opts out of type checking entirely)
+
+never  ← BOTTOM type (nothing assignable TO it)
+
+REASONING: unknown = "I don't know yet, so check before using"
+any = "I don't care, let me do whatever" (dangerous)
+never = "This can never happen" (exhaustive checks)
 ```
 
 ---
@@ -342,7 +340,7 @@ function format(value: string | number): string {
 }
 
 // DISCRIMINATED UNION (the MOST IMPORTANT pattern):
-type Shape = 
+type Shape =
     | { kind: "circle"; radius: number }
     | { kind: "rectangle"; width: number; height: number }
     | { kind: "triangle"; base: number; height: number };
@@ -509,25 +507,23 @@ const palette = {
 ## 9. TypeScript vs JavaScript — When Each is Better
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  USE TYPESCRIPT WHEN:                       USE JS WHEN:             ║
-║  ┌──────────────────────────────┐  ┌───────────────────────────┐     ║
-║  │ Team project (2+ devs)      │  │ Quick prototype / script  │      ║
-║  │ Large codebase (>1000 LOC)  │  │ Simple automation tasks   │      ║
-║  │ API contracts matter        │  │ Learning JS fundamentals  │      ║
-║  │ Refactoring is frequent     │  │ Config files (vite, etc.) │      ║
-║  │ Code is long-lived          │  │ Tiny utility scripts      │      ║
-║  │ Complex state management    │  │ Browser console debugging │      ║
-║  │ Library/package authoring   │  │                           │      ║
-║  └──────────────────────────────┘  └───────────────────────────┘     ║
-║                                                                      ║
-║  FACT: TypeScript has ZERO runtime cost. It compiles completely      ║
-║  away. The only cost is compilation time (usually <1s with Vite).    ║
-║                                                                      ║
-║  ANALOGY: TS is like spellcheck in a Word document.                  ║
-║  It doesn't change what you write — it helps you write correctly.    ║
-║  The final document (JS) is the same, but with fewer mistakes.       ║
-╚══════════════════════════════════════════════════════════════════════╝
+USE TYPESCRIPT WHEN:                       USE JS WHEN:
+┌──────────────────────────────┐  ┌───────────────────────────┐
+│ Team project (2+ devs)      │  │ Quick prototype / script   │
+│ Large codebase (>1000 LOC)  │  │ Simple automation tasks    │
+│ API contracts matter        │  │ Learning JS fundamentals   │
+│ Refactoring is frequent     │  │ Config files (vite, etc.)  │
+│ Code is long-lived          │  │ Tiny utility scripts       │
+│ Complex state management    │  │ Browser console debugging  │
+│ Library/package authoring   │  │                            │
+└──────────────────────────────┘  └───────────────────────────┘
+
+FACT: TypeScript has ZERO runtime cost. It compiles completely
+away. The only cost is compilation time (usually <1s with Vite).
+
+ANALOGY: TS is like spellcheck in a Word document.
+It doesn't change what you write — it helps you write correctly.
+The final document (JS) is the same, but with fewer mistakes.
 ```
 
 ---

@@ -189,27 +189,25 @@ ORDER BY cohort_month;
 ### Deep Reasoning
 
 ```
-╔══════════════════════════════════════════════════════════════════╗
-║  WHAT IS A FUNNEL?                                               ║
-║                                                                  ║
-║  Users flow through a sequence of steps:                         ║
-║                                                                  ║
-║  ┌────────────────────────────────┐                              ║
-║  │    Visit Homepage (10,000)     │  100%                        ║
-║  │  ┌──────────────────────────┐  │                              ║
-║  │  │  View Product (6,000)    │  │  60% (40% dropped off!)      ║
-║  │  │  ┌────────────────────┐  │  │                              ║
-║  │  │  │ Add to Cart (2,000)│  │  │  33% of viewers              ║
-║  │  │  │  ┌──────────────┐  │  │  │                              ║
-║  │  │  │  │ Purchase(800)│  │  │  │  40% of add-to-cart          ║
-║  │  │  │  └──────────────┘  │  │  │  8% overall conversion!      ║
-║  │  │  └────────────────────┘  │  │                              ║
-║  │  └──────────────────────────┘  │                              ║
-║  └────────────────────────────────┘                              ║
-║                                                                  ║
-║  The biggest drop happens Homepage→Product (40% lost).           ║
-║  Fix THAT step for maximum impact!                               ║
-╚══════════════════════════════════════════════════════════════════╝
+WHAT IS A FUNNEL?
+
+Users flow through a sequence of steps:
+
+┌────────────────────────────────┐
+│    Visit Homepage (10,000)     │  100%
+│  ┌──────────────────────────┐  │
+│  │  View Product (6,000)    │  │  60% (40% dropped off!)
+│  │  ┌────────────────────┐  │  │
+│  │  │ Add to Cart (2,000)│  │  │  33% of viewers
+│  │  │  ┌──────────────┐  │  │  │
+│  │  │  │ Purchase(800)│  │  │  │  40% of add-to-cart
+│  │  │  └──────────────┘  │  │  │  8% overall conversion!
+│  │  └────────────────────┘  │  │
+│  └──────────────────────────┘  │
+└────────────────────────────────┘
+
+The biggest drop happens Homepage→Product (40% lost).
+Fix THAT step for maximum impact!
 ```
 
 ### The SQL
@@ -261,7 +259,7 @@ SELECT
     COUNT(step1_time)                                                 AS reached_step1,
     COUNT(CASE WHEN step2_time > step1_time THEN 1 END)              AS reached_step2,
     COUNT(CASE WHEN step3_time > step2_time AND step2_time > step1_time THEN 1 END) AS reached_step3,
-    COUNT(CASE WHEN step4_time > step3_time AND step3_time > step2_time 
+    COUNT(CASE WHEN step4_time > step3_time AND step3_time > step2_time
                AND step2_time > step1_time THEN 1 END)              AS reached_step4
 FROM user_steps;
 ```
@@ -275,7 +273,7 @@ FROM user_steps;
 ```sql
 -- "What % of users who signed up on day X are active on day X+1, X+7, X+30?"
 WITH user_first_day AS (
-    SELECT 
+    SELECT
         user_id,
         DATE(signup_date) AS signup_day
     FROM users
@@ -318,7 +316,7 @@ ORDER BY u.signup_day;
 SELECT
     c.cohort_month,
     cs.cohort_size,
-    COUNT(DISTINCT CASE WHEN ua.activity_month >= c.cohort_month + INTERVAL '1 month' 
+    COUNT(DISTINCT CASE WHEN ua.activity_month >= c.cohort_month + INTERVAL '1 month'
                         THEN c.user_id END) AS retained_after_month1,
     ROUND(100.0 * COUNT(DISTINCT CASE WHEN ua.activity_month >= c.cohort_month + INTERVAL '1 month'
                         THEN c.user_id END) / cs.cohort_size, 1) AS rolling_retention_pct
@@ -404,14 +402,14 @@ SELECT
     ROUND(100.0 * COUNT(DISTINCT o.user_id) / COUNT(DISTINCT e.user_id), 2) AS conv_rate
 FROM experiments e
 JOIN users u ON e.user_id = u.user_id
-LEFT JOIN orders o ON e.user_id = o.user_id 
+LEFT JOIN orders o ON e.user_id = o.user_id
     AND o.order_date >= e.assigned_date
     AND o.status = 'completed'
 WHERE e.experiment_id = 'green_button_test'
 GROUP BY e.variant, u.plan_type
 ORDER BY u.plan_type, e.variant;
 
--- Might reveal: treatment helps free users (+30%) 
+-- Might reveal: treatment helps free users (+30%)
 -- but HURTS premium users (-5%)
 -- → Decision: roll out only for free users
 ```
@@ -523,7 +521,7 @@ with_growth AS (
         -- Net revenue
         gross_revenue - refunds AS net_revenue,
         -- Month-over-month growth
-        ROUND(100.0 * (gross_revenue - LAG(gross_revenue) OVER (ORDER BY month)) 
+        ROUND(100.0 * (gross_revenue - LAG(gross_revenue) OVER (ORDER BY month))
               / NULLIF(LAG(gross_revenue) OVER (ORDER BY month), 0), 1) AS revenue_growth_pct,
         -- New vs returning customers
         LAG(active_customers) OVER (ORDER BY month) AS prev_customers
@@ -547,7 +545,7 @@ ORDER BY month;
 -- DAU/MAU Ratio = "stickiness" (how often monthly users come back daily)
 -- Good: >20% (social apps), >50% (messaging apps)
 WITH dau AS (
-    SELECT 
+    SELECT
         DATE(event_date) AS day,
         COUNT(DISTINCT user_id) AS daily_active
     FROM events
@@ -612,7 +610,7 @@ WITH monthly_revenue AS (
         SUM(amount) AS revenue
     FROM orders
     WHERE status = 'completed'
-    GROUP BY DATE_TRUNC('month', order_date), 
+    GROUP BY DATE_TRUNC('month', order_date),
              EXTRACT(YEAR FROM order_date),
              EXTRACT(MONTH FROM order_date)
 )
@@ -735,7 +733,7 @@ WITH events_with_gap AS (
         event_type,
         event_date,
         -- Time since previous event for this user
-        EXTRACT(EPOCH FROM (event_date - 
+        EXTRACT(EPOCH FROM (event_date -
             LAG(event_date) OVER (PARTITION BY user_id ORDER BY event_date)
         )) / 60.0 AS minutes_since_prev
     FROM events
@@ -752,7 +750,7 @@ sessions AS (
     SELECT
         *,
         SUM(is_new_session) OVER (
-            PARTITION BY user_id 
+            PARTITION BY user_id
             ORDER BY event_date
         ) AS session_id
     FROM session_boundaries
@@ -804,7 +802,7 @@ SELECT user_id FROM orders WHERE DATE_TRUNC('month', order_date) = '2024-02-01';
 -- Or with LEFT JOIN (shows WHY they didn't purchase):
 SELECT DISTINCT j.user_id
 FROM orders j
-LEFT JOIN orders f ON j.user_id = f.user_id 
+LEFT JOIN orders f ON j.user_id = f.user_id
     AND DATE_TRUNC('month', f.order_date) = '2024-02-01'
 WHERE DATE_TRUNC('month', j.order_date) = '2024-01-01'
 AND f.user_id IS NULL;

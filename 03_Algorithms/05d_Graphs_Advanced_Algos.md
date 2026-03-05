@@ -1061,19 +1061,17 @@ private boolean dfs(int u, List<List<Integer>> adj,
 ### 5. STRONGLY CONNECTED COMPONENTS (SCC)
 
 ```
-╔══════════════════════════════════════════════════════════════╗
-║  SCC: Maximal set of vertices where EVERY vertex is          ║
-║  reachable from EVERY other vertex in the set                ║
-║                                                              ║
-║     ┌──→ 1 ──→ 2 ──┐        SCCs: {0}, {1, 2, 3, 4}          ║
-║     │    ↑    ↓    │                                         ║
-║     0    │    3    │        WHY IT MATTERS:                  ║
-║          │    ↓    │        - 2-SAT satisfiability           ║
-║          └─── 4 ←──┘        - Dead code elimination          ║
-║                              - Social network clusters       ║
-║                              - Condensing digraph to DAG     ║
-║  TIME: O(V + E)   SPACE: O(V)                                ║
-╚══════════════════════════════════════════════════════════════╝
+SCC: Maximal set of vertices where EVERY vertex is
+reachable from EVERY other vertex in the set
+
+   ┌──→ 1 ──→ 2 ──┐        SCCs: {0}, {1, 2, 3, 4}
+   │    ↑    ↓    │
+   0    │    3    │        WHY IT MATTERS:
+        │    ↓    │        - 2-SAT satisfiability
+        └─── 4 ←──┘        - Dead code elimination
+                            - Social network clusters
+                            - Condensing digraph to DAG
+TIME: O(V + E)   SPACE: O(V)
 ```
 
 #### Kosaraju's Algorithm (Two-Pass DFS)

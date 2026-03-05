@@ -57,7 +57,7 @@
 SELECT * FROM users WHERE age = NULL;     -- Returns NOTHING (NULL = NULL → NULL)
 SELECT * FROM users WHERE age IS NULL;    -- ✅ Correct way
 
-SELECT * FROM users WHERE age <> 25;      
+SELECT * FROM users WHERE age <> 25;
 -- ⚠️ Does NOT return rows where age IS NULL!
 -- NULL <> 25 → NULL → row excluded. You need:
 SELECT * FROM users WHERE age <> 25 OR age IS NULL;
@@ -106,13 +106,13 @@ SELECT COALESCE(phone, email, 'No contact') AS contact FROM users;
 
 ```sql
 -- ❌ WRONG: WHERE can't use aggregate
-SELECT department, COUNT(*) 
+SELECT department, COUNT(*)
 FROM employees
 WHERE COUNT(*) > 5  -- Error! COUNT doesn't exist yet at step 2
 GROUP BY department;
 
--- ✅ CORRECT: HAVING filters after grouping  
-SELECT department, COUNT(*) 
+-- ✅ CORRECT: HAVING filters after grouping
+SELECT department, COUNT(*)
 FROM employees
 GROUP BY department
 HAVING COUNT(*) > 5;  -- ✅ Groups exist at step 4
@@ -220,41 +220,39 @@ LEFT JOIN customers c ON o.customer_id = c.id AND c.country = 'US';
 > "What's the difference between Read Committed and Repeatable Read?"
 
 ```
-╔══════════════════════════════════════════════════════════════════╗
-║  THE EXAM ROOM ANALOGY                                           ║
-║                                                                  ║
-║  READ UNCOMMITTED (no isolation):                                ║
-║  You can read someone's answer sheet WHILE they're writing.      ║
-║  They might erase it → you copied a wrong answer (dirty read).   ║
-║                                                                  ║
-║  READ COMMITTED (most common — Postgres default):                ║
-║  You can only read SUBMITTED answer sheets.                      ║
-║  ✅ No dirty reads                                                ║
-║  ❌ Non-repeatable read: You read Bob's score=80. Read again      ║
-║     → score=90 (Bob submitted a correction between reads).       ║
-║                                                                  ║
-║  REPEATABLE READ (MySQL InnoDB default):                         ║
-║  Once you read Bob's score, it's FROZEN for your transaction.    ║
-║  ✅ No dirty reads, no non-repeatable reads                       ║
-║  ❌ Phantom read: You count "students with score > 80" = 10.      ║
-║     Count again → 11! (New student appeared — a phantom.)        ║
-║                                                                  ║
-║  SERIALIZABLE (strictest):                                       ║
-║  Everyone takes the exam ONE AT A TIME.                          ║
-║  ✅ No problems at all                                            ║
-║  ❌ Extremely slow — transactions queue up                        ║
-║                                                                  ║
-║  ┌─────────────────┬───────┬──────────────┬─────────┐            ║
-║  │ Level           │ Dirty │ Non-Repeat   │ Phantom │            ║
-║  │                 │ Read  │ Read         │ Read    │            ║
-║  ├─────────────────┼───────┼──────────────┼─────────┤            ║
-║  │ Read Uncommitted│ YES   │ YES          │ YES     │            ║
-║  │ Read Committed  │ NO    │ YES          │ YES     │            ║
-║  │ Repeatable Read │ NO    │ NO           │ YES*    │            ║
-║  │ Serializable    │ NO    │ NO           │ NO      │            ║
-║  └─────────────────┴───────┴──────────────┴─────────┘            ║
-║  *MySQL InnoDB prevents phantoms at Repeatable Read (gap locks)  ║
-╚══════════════════════════════════════════════════════════════════╝
+THE EXAM ROOM ANALOGY
+
+READ UNCOMMITTED (no isolation):
+You can read someone's answer sheet WHILE they're writing.
+They might erase it → you copied a wrong answer (dirty read).
+
+READ COMMITTED (most common — Postgres default):
+You can only read SUBMITTED answer sheets.
+✅ No dirty reads
+❌ Non-repeatable read: You read Bob's score=80. Read again
+   → score=90 (Bob submitted a correction between reads).
+
+REPEATABLE READ (MySQL InnoDB default):
+Once you read Bob's score, it's FROZEN for your transaction.
+✅ No dirty reads, no non-repeatable reads
+❌ Phantom read: You count "students with score > 80" = 10.
+   Count again → 11! (New student appeared — a phantom.)
+
+SERIALIZABLE (strictest):
+Everyone takes the exam ONE AT A TIME.
+✅ No problems at all
+❌ Extremely slow — transactions queue up
+
+┌─────────────────┬───────┬──────────────┬─────────┐
+│ Level           │ Dirty │ Non-Repeat   │ Phantom │
+│                 │ Read  │ Read         │ Read    │
+├─────────────────┼───────┼──────────────┼─────────┤
+│ Read Uncommitted│ YES   │ YES          │ YES     │
+│ Read Committed  │ NO    │ YES          │ YES     │
+│ Repeatable Read │ NO    │ NO           │ YES*    │
+│ Serializable    │ NO    │ NO           │ NO      │
+└─────────────────┴───────┴──────────────┴─────────┘
+*MySQL InnoDB prevents phantoms at Repeatable Read (gap locks)
 ```
 
 ---
@@ -319,7 +317,7 @@ LEFT JOIN customers c ON o.customer_id = c.id AND c.country = 'US';
 -- Total: 101 queries!
 
 -- FIX 1: JOIN (1 query)
-SELECT d.*, e.* FROM departments d 
+SELECT d.*, e.* FROM departments d
 JOIN employees e ON e.dept_id = d.id;
 
 -- FIX 2: Eager loading (JPA)

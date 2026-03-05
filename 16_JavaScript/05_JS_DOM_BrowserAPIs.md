@@ -30,28 +30,26 @@
 ## 1. What IS the DOM?
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  HTML FILE:                      DOM TREE (in memory):               ║
-║                                                                      ║
-║  <html>                          document                            ║
-║    <head>                            │                               ║
-║      <title>Page</title>         ┌───┴───┐                           ║
-║    </head>                      html     (doctype)                   ║
-║    <body>                       ┌┴┐                                  ║
-║      <h1>Hello</h1>           head body                              ║
-║      <p>World</p>              │  ┌─┴─┐                              ║
-║    </body>                   title h1  p                             ║
-║  </html>                      │    │    │                            ║
-║                              "Page" "Hello" "World"                  ║
-║                              (text) (text)  (text)                   ║
-║                                                                      ║
-║  REASONING: The browser reads HTML text → builds a TREE of NODE      ║
-║  objects. Each HTML tag becomes an Element node. Text becomes a      ║
-║  Text node. This tree IS the DOM. JS can read and modify it.         ║
-║                                                                      ║
-║  KEY INSIGHT: The DOM is NOT your HTML file. It's a LIVE object      ║
-║  tree in memory. When JS modifies it, the page updates visually.     ║
-╚══════════════════════════════════════════════════════════════════════╝
+HTML FILE:                      DOM TREE (in memory):
+
+<html>                          document
+  <head>                            │
+    <title>Page</title>         ┌───┴───┐
+  </head>                      html     (doctype)
+  <body>                       ┌┴┐
+    <h1>Hello</h1>           head body
+    <p>World</p>              │  ┌─┴─┐
+  </body>                   title h1  p
+</html>                      │    │    │
+                            "Page" "Hello" "World"
+                            (text) (text)  (text)
+
+REASONING: The browser reads HTML text → builds a TREE of NODE
+objects. Each HTML tag becomes an Element node. Text becomes a
+Text node. This tree IS the DOM. JS can read and modify it.
+
+KEY INSIGHT: The DOM is NOT your HTML file. It's a LIVE object
+tree in memory. When JS modifies it, the page updates visually.
 ```
 
 ### Node Types
@@ -256,24 +254,22 @@ list.appendChild(fragment); // ONE DOM update!
 ```
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  EVENT PROPAGATION VISUAL:                                           ║
-║                                                                      ║
-║  ┌─── document ──────────────────────────────────────────┐           ║
-║  │  ① Capture ↓                          ③ Bubble ↑     │            ║
-║  │  ┌─── body ──────────────────────────────────────┐    │           ║
-║  │  │  ① ↓                                  ③ ↑    │    │            ║
-║  │  │  ┌─── div.container ──────────────────────┐   │    │           ║
-║  │  │  │  ① ↓                          ③ ↑     │   │    │            ║
-║  │  │  │  ┌─── button ─────────────────────┐    │   │    │           ║
-║  │  │  │  │                                │    │   │    │           ║
-║  │  │  │  │  ② TARGET — event fires here  │    │   │    │            ║
-║  │  │  │  │                                │    │   │    │           ║
-║  │  │  │  └────────────────────────────────┘    │   │    │           ║
-║  │  │  └────────────────────────────────────────┘   │    │           ║
-║  │  └───────────────────────────────────────────────┘    │           ║
-║  └───────────────────────────────────────────────────────┘           ║
-╚══════════════════════════════════════════════════════════════════════╝
+EVENT PROPAGATION VISUAL:
+
+┌─── document ──────────────────────────────────────────┐
+│  ① Capture ↓                          ③ Bubble ↑      │
+│  ┌─── body ──────────────────────────────────────┐    │
+│  │  ① ↓                                  ③ ↑    │     │
+│  │  ┌─── div.container ──────────────────────┐   │    │
+│  │  │  ① ↓                          ③ ↑     │   │     │
+│  │  │  ┌─── button ─────────────────────┐    │   │    │
+│  │  │  │                                │    │   │    │
+│  │  │  │  ② TARGET — event fires here  │    │   │     │
+│  │  │  │                                │    │   │    │
+│  │  │  └────────────────────────────────┘    │   │    │
+│  │  └────────────────────────────────────────┘   │    │
+│  └───────────────────────────────────────────────┘    │
+└───────────────────────────────────────────────────────┘
 ```
 
 ```javascript
@@ -284,10 +280,10 @@ button.addEventListener("click", function(event) {
     console.log(event.target);       // The element that was clicked
     console.log(event.currentTarget); // The element with the listener
     console.log(event.type);         // "click"
-    
+
     // Stop bubbling:
     event.stopPropagation();
-    
+
     // Prevent default browser behavior:
     event.preventDefault(); // e.g., stop form submission, link navigation
 });
@@ -364,18 +360,18 @@ const form = document.querySelector("#signup-form");
 
 form.addEventListener("submit", (e) => {
     e.preventDefault(); // Prevent page reload!
-    
+
     // Get form data (modern way):
     const formData = new FormData(form);
     const data = Object.fromEntries(formData);
     // { email: "user@test.com", password: "123", name: "Harsha" }
-    
+
     // Validate:
     if (!data.email.includes("@")) {
         showError("Invalid email");
         return;
     }
-    
+
     // Send to API:
     fetch("/api/signup", {
         method: "POST",
@@ -405,25 +401,23 @@ email.setCustomValidity("Custom error");   // Custom validation message
 ## 7. Browser Storage APIs
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  ┌───────────────┬────────────┬──────────┬──────────┬───────────┐    ║
-║  │ Feature       │ localStorage│ session  │ Cookies  │ IndexedDB │   ║
-║  ├───────────────┼────────────┼──────────┼──────────┼───────────┤    ║
-║  │ Capacity      │ ~5-10 MB   │ ~5 MB    │ ~4 KB    │ Large     │    ║
-║  │ Persistence   │ Forever    │ Tab close│ Expires  │ Forever   │    ║
-║  │ Sent to server│ No         │ No       │ Yes (!)  │ No        │    ║
-║  │ Scope         │ Origin     │ Tab+origin│ Domain  │ Origin    │    ║
-║  │ API           │ Simple     │ Simple   │ Complex  │ Complex   │    ║
-║  │ Data type     │ String only│ String   │ String   │ Any       │    ║
-║  │ Sync/Async    │ Sync       │ Sync     │ Sync     │ Async     │    ║
-║  └───────────────┴────────────┴──────────┴──────────┴───────────┘    ║
-║                                                                      ║
-║  USE CASES:                                                          ║
-║  • localStorage: dark mode pref, cart items, form drafts             ║
-║  • sessionStorage: one-time banners, wizard progress                 ║
-║  • Cookies: authentication (httpOnly cookies), tracking              ║
-║  • IndexedDB: offline apps, large data, file caching                 ║
-╚══════════════════════════════════════════════════════════════════════╝
+┌───────────────┬────────────┬──────────┬──────────┬────────────┐
+│ Feature       │ localStorage│ session  │ Cookies  │ IndexedDB │
+├───────────────┼────────────┼──────────┼──────────┼────────────┤
+│ Capacity      │ ~5-10 MB   │ ~5 MB    │ ~4 KB    │ Large      │
+│ Persistence   │ Forever    │ Tab close│ Expires  │ Forever    │
+│ Sent to server│ No         │ No       │ Yes (!)  │ No         │
+│ Scope         │ Origin     │ Tab+origin│ Domain  │ Origin     │
+│ API           │ Simple     │ Simple   │ Complex  │ Complex    │
+│ Data type     │ String only│ String   │ String   │ Any        │
+│ Sync/Async    │ Sync       │ Sync     │ Sync     │ Async      │
+└───────────────┴────────────┴──────────┴──────────┴────────────┘
+
+USE CASES:
+• localStorage: dark mode pref, cart items, form drafts
+• sessionStorage: one-time banners, wizard progress
+• Cookies: authentication (httpOnly cookies), tracking
+• IndexedDB: offline apps, large data, file caching
 ```
 
 ```javascript

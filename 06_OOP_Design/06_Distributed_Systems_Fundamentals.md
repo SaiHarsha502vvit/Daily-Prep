@@ -133,40 +133,38 @@
 ## Part 4: Replication Strategies
 
 ```
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║  1. SINGLE LEADER (Master-Slave)                                                 ║
-║                                                                                  ║
-║     ┌────────┐  writes   ┌────────┐                                              ║
-║     │ Client  │──────────→│ Leader  │───replicate──→ Follower 1                  ║
-║     └────────┘           └────────┘───replicate──→ Follower 2                    ║
-║     reads from any       (one writer)                                            ║
-║                                                                                  ║
-║     ✅ Simple, strong consistency possible                                        ║
-║     ❌ Leader is bottleneck, failover complexity                                  ║
-║     Examples: PostgreSQL streaming replication, MySQL                            ║
-║                                                                                  ║
-║  2. MULTI-LEADER                                                                 ║
-║                                                                                  ║
-║     Leader A ◄────sync────► Leader B                                             ║
-║       ↓                       ↓                                                  ║
-║     Followers              Followers                                             ║
-║                                                                                  ║
-║     ✅ Write to nearest datacenter (low latency)                                  ║
-║     ❌ Conflict resolution is HARD (last-writer-wins, merge, custom logic)        ║
-║     Examples: CouchDB, multi-region DynamoDB                                     ║
-║                                                                                  ║
-║  3. LEADERLESS (Quorum-based)                                                    ║
-║                                                                                  ║
-║     Client writes to N replicas simultaneously                                   ║
-║     Read from R replicas, take most recent                                       ║
-║     Rule: W + R > N guarantees overlap → strong consistency POSSIBLE             ║
-║                                                                                  ║
-║     N=3, W=2, R=2: Every read overlaps with at least one write replica           ║
-║                                                                                  ║
-║     ✅ No single point of failure                                                 ║
-║     ❌ Complex conflict resolution, repair mechanisms                             ║
-║     Examples: Cassandra, DynamoDB, Riak                                          ║
-╚══════════════════════════════════════════════════════════════════════════════════╝
+1. SINGLE LEADER (Master-Slave)
+
+   ┌────────┐  writes   ┌────────┐
+   │ Client  │──────────→│ Leader  │───replicate──→ Follower 1
+   └────────┘           └────────┘───replicate──→ Follower 2
+   reads from any       (one writer)
+
+   ✅ Simple, strong consistency possible
+   ❌ Leader is bottleneck, failover complexity
+   Examples: PostgreSQL streaming replication, MySQL
+
+2. MULTI-LEADER
+
+   Leader A ◄────sync────► Leader B
+     ↓                       ↓
+   Followers              Followers
+
+   ✅ Write to nearest datacenter (low latency)
+   ❌ Conflict resolution is HARD (last-writer-wins, merge, custom logic)
+   Examples: CouchDB, multi-region DynamoDB
+
+3. LEADERLESS (Quorum-based)
+
+   Client writes to N replicas simultaneously
+   Read from R replicas, take most recent
+   Rule: W + R > N guarantees overlap → strong consistency POSSIBLE
+
+   N=3, W=2, R=2: Every read overlaps with at least one write replica
+
+   ✅ No single point of failure
+   ❌ Complex conflict resolution, repair mechanisms
+   Examples: Cassandra, DynamoDB, Riak
 ```
 
 ---

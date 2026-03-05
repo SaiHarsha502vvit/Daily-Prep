@@ -30,40 +30,38 @@
 ## 1. The Big Picture
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  YOUR CODE                          BROWSER GETS                     ║
-║                                                                      ║
-║  TypeScript (.tsx)  ─┐                                               ║
-║  JSX (<App />)      ─┼──→ BUILD TOOL ──→  bundle.js  (1 file)        ║
-║  CSS Modules (.css)  ─┤    CHAIN           styles.css (1 file)       ║
-║  ES2024+ syntax     ─┤                    index.html                 ║
-║  npm packages       ─┘                    assets/                    ║
-║                                                                      ║
-║  The BUILD TOOL CHAIN:                                               ║
-║                                                                      ║
-║  Source Code                                                         ║
-║      │                                                               ║
-║      ▼                                                               ║
-║  ┌─────────────┐    Converts TypeScript → JavaScript                 ║
-║  │  TypeScript  │    Converts JSX → React.createElement()            ║
-║  │  Compiler    │    Type-checks your code                           ║
-║  └──────┬──────┘                                                     ║
-║         ▼                                                            ║
-║  ┌─────────────┐    Converts ES2024+ → ES5/ES6                       ║
-║  │   Babel /    │    Converts optional chaining → if checks          ║
-║  │   SWC        │    Adds polyfills for old browsers                 ║
-║  └──────┬──────┘                                                     ║
-║         ▼                                                            ║
-║  ┌─────────────┐    Resolves import/export                           ║
-║  │  Webpack /   │    Combines 1000 files → few bundles               ║
-║  │  Vite        │    Optimizes: tree-shake, minify, split            ║
-║  └──────┬──────┘    Processes CSS, images, fonts                     ║
-║         ▼                                                            ║
-║  ┌─────────────┐                                                     ║
-║  │  Output:     │    Ready for browser / CDN / server                ║
-║  │  dist/       │                                                    ║
-║  └─────────────┘                                                     ║
-╚══════════════════════════════════════════════════════════════════════╝
+YOUR CODE                          BROWSER GETS
+
+TypeScript (.tsx)  ─┐
+JSX (<App />)      ─┼──→ BUILD TOOL ──→  bundle.js  (1 file)
+CSS Modules (.css)  ─┤    CHAIN           styles.css (1 file)
+ES2024+ syntax     ─┤                    index.html
+npm packages       ─┘                    assets/
+
+The BUILD TOOL CHAIN:
+
+Source Code
+    │
+    ▼
+┌─────────────┐    Converts TypeScript → JavaScript
+│  TypeScript  │    Converts JSX → React.createElement()
+│  Compiler    │    Type-checks your code
+└──────┬──────┘
+       ▼
+┌─────────────┐    Converts ES2024+ → ES5/ES6
+│   Babel /    │    Converts optional chaining → if checks
+│   SWC        │    Adds polyfills for old browsers
+└──────┬──────┘
+       ▼
+┌─────────────┐    Resolves import/export
+│  Webpack /   │    Combines 1000 files → few bundles
+│  Vite        │    Optimizes: tree-shake, minify, split
+└──────┬──────┘    Processes CSS, images, fonts
+       ▼
+┌─────────────┐
+│  Output:     │    Ready for browser / CDN / server
+│  dist/       │
+└─────────────┘
 ```
 
 ---
@@ -123,32 +121,30 @@
 ```
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  dependencies vs devDependencies:                                    ║
-║                                                                      ║
-║  dependencies:                                                       ║
-║  ├── Code that runs IN YOUR APP (in the browser)                     ║
-║  ├── React, Router, Query — shipped to users                         ║
-║  └── Included in the final bundle                                    ║
-║                                                                      ║
-║  devDependencies:                                                    ║
-║  ├── Tools that help you BUILD the app                               ║
-║  ├── TypeScript, Vite, ESLint — developer tools                      ║
-║  └── NOT included in the final bundle                                ║
-║                                                                      ║
-║  VERSIONING:                                                         ║
-║  "^18.3.1" → caret: allows 18.x.x updates (minor + patch)            ║
-║  "~18.3.1" → tilde: allows 18.3.x updates (patch only)               ║
-║  "18.3.1"  → exact: only this version                                ║
-║                                                                      ║
-║  COMMANDS:                                                           ║
-║  npm install          → Install all dependencies from lock file      ║
-║  npm install react    → Add to dependencies                          ║
-║  npm install -D vite  → Add to devDependencies                       ║
-║  npm update           → Update within version ranges                 ║
-║  npm run dev          → Execute the "dev" script                     ║
-║  npx create-vite      → Run a package without installing             ║
-╚══════════════════════════════════════════════════════════════════════╝
+dependencies vs devDependencies:
+
+dependencies:
+├── Code that runs IN YOUR APP (in the browser)
+├── React, Router, Query — shipped to users
+└── Included in the final bundle
+
+devDependencies:
+├── Tools that help you BUILD the app
+├── TypeScript, Vite, ESLint — developer tools
+└── NOT included in the final bundle
+
+VERSIONING:
+"^18.3.1" → caret: allows 18.x.x updates (minor + patch)
+"~18.3.1" → tilde: allows 18.3.x updates (patch only)
+"18.3.1"  → exact: only this version
+
+COMMANDS:
+npm install          → Install all dependencies from lock file
+npm install react    → Add to dependencies
+npm install -D vite  → Add to devDependencies
+npm update           → Update within version ranges
+npm run dev          → Execute the "dev" script
+npx create-vite      → Run a package without installing
 ```
 
 ---
@@ -211,97 +207,91 @@
 ### The Problem Bundlers Solve
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  YOUR PROJECT:                                                       ║
-║  src/                                                                ║
-║  ├── App.tsx              (imports Header, Router, Context)          ║
-║  ├── components/                                                     ║
-║  │   ├── Header.tsx       (imports Button, Logo, useAuth)            ║
-║  │   ├── Button.tsx       (imports styles)                           ║
-║  │   └── UserCard.tsx     (imports Badge, Avatar, date-fns)          ║
-║  ├── hooks/                                                          ║
-║  │   └── useAuth.ts       (imports API client)                       ║
-║  └── styles/                                                         ║
-║      └── global.css                                                  ║
-║                                                                      ║
-║  + node_modules/           (1000+ packages, 50,000+ files)           ║
-║                                                                      ║
-║  PROBLEM: Browser can't efficiently load 50,000 files.               ║
-║  HTTP/2 helps, but still — dependency resolution, CSS,               ║
-║  TypeScript, JSX... browsers don't understand any of these.          ║
-║                                                                      ║
-║  SOLUTION: Bundle everything into optimized output:                  ║
-║  dist/                                                               ║
-║  ├── index.html                                                      ║
-║  ├── assets/                                                         ║
-║  │   ├── index-abc123.js    (all JS, minified, tree-shaken)          ║
-║  │   ├── vendor-def456.js   (3rd party libs, cached separately)      ║
-║  │   └── style-ghi789.css   (all CSS, combined, minified)            ║
-║  └── images/ (optimized)                                             ║
-╚══════════════════════════════════════════════════════════════════════╝
+YOUR PROJECT:
+src/
+├── App.tsx              (imports Header, Router, Context)
+├── components/
+│   ├── Header.tsx       (imports Button, Logo, useAuth)
+│   ├── Button.tsx       (imports styles)
+│   └── UserCard.tsx     (imports Badge, Avatar, date-fns)
+├── hooks/
+│   └── useAuth.ts       (imports API client)
+└── styles/
+    └── global.css
+
++ node_modules/           (1000+ packages, 50,000+ files)
+
+PROBLEM: Browser can't efficiently load 50,000 files.
+HTTP/2 helps, but still — dependency resolution, CSS,
+TypeScript, JSX... browsers don't understand any of these.
+
+SOLUTION: Bundle everything into optimized output:
+dist/
+├── index.html
+├── assets/
+│   ├── index-abc123.js    (all JS, minified, tree-shaken)
+│   ├── vendor-def456.js   (3rd party libs, cached separately)
+│   └── style-ghi789.css   (all CSS, combined, minified)
+└── images/ (optimized)
 ```
 
 ### Webpack — The Veteran
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WEBPACK (2012 — still dominant in large enterprises):               ║
-║                                                                      ║
-║  HOW IT WORKS:                                                       ║
-║  1. Start from entry point (src/index.tsx)                           ║
-║  2. Follow every import/require → build dependency graph             ║
-║  3. Apply LOADERS to transform files:                                ║
-║     ├── babel-loader: .tsx/.jsx → JavaScript                         ║
-║     ├── css-loader: resolve @import, url() in CSS                    ║
-║     ├── style-loader: inject CSS into DOM                            ║
-║     └── file-loader: copy images, fonts                              ║
-║  4. Apply PLUGINS for optimization:                                  ║
-║     ├── HtmlWebpackPlugin: generate index.html                       ║
-║     ├── MiniCssExtractPlugin: extract CSS to files                   ║
-║     └── TerserPlugin: minify JavaScript                              ║
-║  5. Output to dist/                                                  ║
-║                                                                      ║
-║  PROS:                         CONS:                                 ║
-║  ├── Extremely configurable   ├── Config is complex                  ║
-║  ├── Huge ecosystem           ├── Slow dev startup (bundles ALL)     ║
-║  ├── Battle-tested            ├── Slow HMR on large projects         ║
-║  └── Works with anything      └── Steep learning curve               ║
-╚══════════════════════════════════════════════════════════════════════╝
+WEBPACK (2012 — still dominant in large enterprises):
+
+HOW IT WORKS:
+1. Start from entry point (src/index.tsx)
+2. Follow every import/require → build dependency graph
+3. Apply LOADERS to transform files:
+   ├── babel-loader: .tsx/.jsx → JavaScript
+   ├── css-loader: resolve @import, url() in CSS
+   ├── style-loader: inject CSS into DOM
+   └── file-loader: copy images, fonts
+4. Apply PLUGINS for optimization:
+   ├── HtmlWebpackPlugin: generate index.html
+   ├── MiniCssExtractPlugin: extract CSS to files
+   └── TerserPlugin: minify JavaScript
+5. Output to dist/
+
+PROS:                         CONS:
+├── Extremely configurable   ├── Config is complex
+├── Huge ecosystem           ├── Slow dev startup (bundles ALL)
+├── Battle-tested            ├── Slow HMR on large projects
+└── Works with anything      └── Steep learning curve
 ```
 
 ### Vite — The Modern Standard
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  VITE (2020 — by Evan You, creator of Vue):                          ║
-║                                                                      ║
-║  WHY VITE IS FAST:                                                   ║
-║                                                                      ║
-║  ┌── Webpack DEV ──────────────────────────────────────────┐         ║
-║  │  Source → Bundle ALL files → Serve → You see page      │          ║
-║  │           ^^^^^^^^^^^^^^^^                               │        ║
-║  │           SLOW (must process everything first)           │        ║
-║  └──────────────────────────────────────────────────────────┘        ║
-║                                                                      ║
-║  ┌── Vite DEV ─────────────────────────────────────────────┐         ║
-║  │  Source → Start server immediately → Transform          │         ║
-║  │          on request (only what browser asks for)         │        ║
-║  │          Uses native ESM imports in browser              │        ║
-║  └──────────────────────────────────────────────────────────┘        ║
-║                                                                      ║
-║  Vite DEV: files are served as individual ES modules.                ║
-║  Browser sees: import Button from '/src/Button.tsx'                  ║
-║  Vite intercepts, transforms TSX→JS on the fly, serves it.           ║
-║                                                                      ║
-║  Vite BUILD: Uses Rollup under the hood for production.              ║
-║  Output is identical quality to Webpack — optimized bundles.         ║
-║                                                                      ║
-║  RESULT:                                                             ║
-║  ├── Dev server starts in <500ms (vs 10-30s for Webpack)             ║
-║  ├── HMR updates in <50ms (vs seconds)                               ║
-║  ├── Zero config for React + TS projects                             ║
-║  └── Production builds are fully optimized                           ║
-╚══════════════════════════════════════════════════════════════════════╝
+VITE (2020 — by Evan You, creator of Vue):
+
+WHY VITE IS FAST:
+
+┌── Webpack DEV ───────────────────────────────────────────┐
+│  Source → Bundle ALL files → Serve → You see page        │
+│           ^^^^^^^^^^^^^^^^                               │
+│           SLOW (must process everything first)           │
+└──────────────────────────────────────────────────────────┘
+
+┌── Vite DEV ──────────────────────────────────────────────┐
+│  Source → Start server immediately → Transform           │
+│          on request (only what browser asks for)         │
+│          Uses native ESM imports in browser              │
+└──────────────────────────────────────────────────────────┘
+
+Vite DEV: files are served as individual ES modules.
+Browser sees: import Button from '/src/Button.tsx'
+Vite intercepts, transforms TSX→JS on the fly, serves it.
+
+Vite BUILD: Uses Rollup under the hood for production.
+Output is identical quality to Webpack — optimized bundles.
+
+RESULT:
+├── Dev server starts in <500ms (vs 10-30s for Webpack)
+├── HMR updates in <50ms (vs seconds)
+├── Zero config for React + TS projects
+└── Production builds are fully optimized
 ```
 
 ### Comparison Table

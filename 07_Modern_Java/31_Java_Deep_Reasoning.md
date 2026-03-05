@@ -329,7 +329,7 @@ Dog dog = create(Dog.class); // Works!
 // Reverse is NOT required: same hashCode doesn't mean equals
 
 // Internal structure (simplified):
-// table = [null, null, Entry(Bob,30), null, null, null, null, 
+// table = [null, null, Entry(Bob,30), null, null, null, null,
 //          Entry(Alice,25) → Entry(Celia,28), null, ...]
 //                            ↑ linked list (or tree if > 8)
 
@@ -376,30 +376,28 @@ Map<String, Integer> map = new HashMap<>(100); // avoids resizing
 > "What's the difference? Why does Java have both?"
 
 ```
-╔══════════════════════════════════════════════════════════════════╗
-║  CHECKED (compile-time) = "Expected problems you SHOULD handle"  ║
-║    IOException, SQLException, FileNotFoundException              ║
-║    → Compiler FORCES try-catch or throws declaration             ║
-║    → "The file might not exist. What's your Plan B?"             ║
-║    → Like weather: you KNOW it might rain. Bring an umbrella.    ║
-║                                                                  ║
-║  UNCHECKED (runtime) = "Programming bugs that shouldn't happen"  ║
-║    NullPointerException, ArrayIndexOutOfBoundsException          ║
-║    → Compiler does NOT force handling                            ║
-║    → "Your code has a bug. Fix it, don't catch it."              ║
-║    → Like tripping: fix the hazard, don't just put a cushion.    ║
-║                                                                  ║
-║  THE HIERARCHY:                                                  ║
-║     Throwable                                                    ║
-║     ├── Error (unchecked — JVM problems: OutOfMemoryError)       ║
-║     └── Exception                                                ║
-║         ├── RuntimeException (unchecked — bugs)                  ║
-║         └── Everything else (checked — expected failures)        ║
-║                                                                  ║
-║  CONTROVERSY: Many modern developers (and languages like Kotlin) ║
-║  argue checked exceptions are too verbose. Spring uses unchecked ║
-║  exceptions extensively. The debate continues.                   ║
-╚══════════════════════════════════════════════════════════════════╝
+CHECKED (compile-time) = "Expected problems you SHOULD handle"
+  IOException, SQLException, FileNotFoundException
+  → Compiler FORCES try-catch or throws declaration
+  → "The file might not exist. What's your Plan B?"
+  → Like weather: you KNOW it might rain. Bring an umbrella.
+
+UNCHECKED (runtime) = "Programming bugs that shouldn't happen"
+  NullPointerException, ArrayIndexOutOfBoundsException
+  → Compiler does NOT force handling
+  → "Your code has a bug. Fix it, don't catch it."
+  → Like tripping: fix the hazard, don't just put a cushion.
+
+THE HIERARCHY:
+   Throwable
+   ├── Error (unchecked — JVM problems: OutOfMemoryError)
+   └── Exception
+       ├── RuntimeException (unchecked — bugs)
+       └── Everything else (checked — expected failures)
+
+CONTROVERSY: Many modern developers (and languages like Kotlin)
+argue checked exceptions are too verbose. Spring uses unchecked
+exceptions extensively. The debate continues.
 ```
 
 ---
@@ -480,7 +478,7 @@ while (it.hasNext()) {
 }
 
 // 2. Use removeIf (Java 8+) — cleanest
-list.removeIf(s -> s.equals("B")); // ✅ 
+list.removeIf(s -> s.equals("B")); // ✅
 
 // 3. Use CopyOnWriteArrayList — for concurrent access
 CopyOnWriteArrayList<String> list = new CopyOnWriteArrayList<>(...);

@@ -18,29 +18,27 @@
 ## Mental Model 1: Start With the User, Not the Database
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  THE TOP-DOWN APPROACH                                               ║
-║                                                                      ║
-║  Most beginners: "Let me design the database schema first"           ║
-║  Experienced:    "Let me understand what the USER does first"        ║
-║                                                                      ║
-║  STEP 1: Who are the users? What do they DO?                         ║
-║          → List the core actions (verbs)                             ║
-║          "Users post tweets, follow people, see a feed"              ║
-║                                                                      ║
-║  STEP 2: What does the system SHOW them?                             ║
-║          → List the core views (pages/screens)                       ║
-║          "Home feed, profile page, search results"                   ║
-║                                                                      ║
-║  STEP 3: What data do those views NEED?                              ║
-║          → This tells you what to store and how to query             ║
-║                                                                      ║
-║  STEP 4: NOW design the storage to support those queries.            ║
-║                                                                      ║
-║  ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐        ║
-║  │  Users   │ →  │  Actions │ →  │  Views   │ →  │  Storage │        ║
-║  └──────────┘    └──────────┘    └──────────┘    └──────────┘        ║
-╚══════════════════════════════════════════════════════════════════════╝
+THE TOP-DOWN APPROACH
+
+Most beginners: "Let me design the database schema first"
+Experienced:    "Let me understand what the USER does first"
+
+STEP 1: Who are the users? What do they DO?
+        → List the core actions (verbs)
+        "Users post tweets, follow people, see a feed"
+
+STEP 2: What does the system SHOW them?
+        → List the core views (pages/screens)
+        "Home feed, profile page, search results"
+
+STEP 3: What data do those views NEED?
+        → This tells you what to store and how to query
+
+STEP 4: NOW design the storage to support those queries.
+
+┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐
+│  Users   │ →  │  Actions │ →  │  Views   │ →  │  Storage │
+└──────────┘    └──────────┘    └──────────┘    └──────────┘
 ```
 
 ---
@@ -48,34 +46,32 @@
 ## Mental Model 2: The Napkin Math Framework
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  BACK-OF-THE-ENVELOPE ESTIMATION                                     ║
-║                                                                      ║
-║  Before designing, ESTIMATE the scale:                               ║
-║                                                                      ║
-║  NUMBERS TO MEMORIZE:                                                ║
-║  ┌──────────────────────────────────────────────┐                    ║
-║  │  1 day     = 86,400 seconds ≈ 100K seconds  │                     ║
-║  │  1 month   = 2.5 million seconds             │                    ║
-║  │  1 year    = 30 million seconds              │                    ║
-║  │  1 char    = 1 byte (ASCII) / 2 bytes (UTF)  │                    ║
-║  │  1 tweet   ≈ 300 bytes                      │                     ║
-║  │  1 image   ≈ 300 KB                         │                     ║
-║  │  1 video   ≈ 5 MB/min (compressed)          │                     ║
-║  │  1 GB      = 1 billion bytes                 │                    ║
-║  │  1 TB      = 1,000 GB                        │                    ║
-║  └──────────────────────────────────────────────┘                    ║
-║                                                                      ║
-║  EXAMPLE: Twitter-like system, 100M daily active users               ║
-║                                                                      ║
-║  Tweets/day:    100M × 0.1 (10% tweet) = 10M tweets/day              ║
-║  Tweets/second: 10M / 86,400 ≈ 115 TPS (write)                       ║
-║  Reads/second:  100M × 10 reads / 86,400 ≈ 11,500 TPS (read)         ║
-║  Storage/day:   10M × 300B = 3 GB/day                                ║
-║  Storage/year:  3 GB × 365 ≈ 1 TB                                    ║
-║                                                                      ║
-║  Insight: Read-heavy (100:1 ratio) → need caching + CDN              ║
-╚══════════════════════════════════════════════════════════════════════╝
+BACK-OF-THE-ENVELOPE ESTIMATION
+
+Before designing, ESTIMATE the scale:
+
+NUMBERS TO MEMORIZE:
+┌──────────────────────────────────────────────┐
+│  1 day     = 86,400 seconds ≈ 100K seconds   │
+│  1 month   = 2.5 million seconds             │
+│  1 year    = 30 million seconds              │
+│  1 char    = 1 byte (ASCII) / 2 bytes (UTF)  │
+│  1 tweet   ≈ 300 bytes                       │
+│  1 image   ≈ 300 KB                          │
+│  1 video   ≈ 5 MB/min (compressed)           │
+│  1 GB      = 1 billion bytes                 │
+│  1 TB      = 1,000 GB                        │
+└──────────────────────────────────────────────┘
+
+EXAMPLE: Twitter-like system, 100M daily active users
+
+Tweets/day:    100M × 0.1 (10% tweet) = 10M tweets/day
+Tweets/second: 10M / 86,400 ≈ 115 TPS (write)
+Reads/second:  100M × 10 reads / 86,400 ≈ 11,500 TPS (read)
+Storage/day:   10M × 300B = 3 GB/day
+Storage/year:  3 GB × 365 ≈ 1 TB
+
+Insight: Read-heavy (100:1 ratio) → need caching + CDN
 ```
 
 ---
@@ -83,38 +79,36 @@
 ## Mental Model 3: The Trade-Off Triangle
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  EVERY DESIGN DECISION IS A TRADE-OFF                                ║
-║                                                                      ║
-║  You can rarely optimize for everything simultaneously.              ║
-║  The skill is knowing WHICH trade-off to make for THIS context.      ║
-║                                                                      ║
-║           Consistency                                                ║
-║              /\                                                      ║
-║             /  \                                                     ║
-║            /    \         ← You're always choosing                   ║
-║           / PICK \           where on this triangle                  ║
-║          /  TWO   \          to position your system                 ║
-║         /          \                                                 ║
-║        /____________\                                                ║
-║  Availability    Performance                                         ║
-║                                                                      ║
-║  COMMON TRADE-OFFS:                                                  ║
-║  ┌───────────────────────┬───────────────────────────────┐           ║
-║  │  CHOICE               │  TRADE-OFF                    │           ║
-║  ├───────────────────────┼───────────────────────────────┤           ║
-║  │  SQL vs NoSQL         │  Consistency vs Flexibility   │           ║
-║  │  Cache vs No Cache    │  Speed vs Freshness           │           ║
-║  │  Monolith vs Micro    │  Simplicity vs Scalability    │           ║
-║  │  Sync vs Async        │  Simplicity vs Throughput     │           ║
-║  │  Normalize vs Denorm  │  Write speed vs Read speed    │           ║
-║  │  Push vs Pull         │  Latency vs Resource usage    │           ║
-║  └───────────────────────┴───────────────────────────────┘           ║
-║                                                                      ║
-║  In interviews, ALWAYS state your trade-off explicitly:              ║
-║  "I'm choosing eventual consistency here because availability        ║
-║   is more critical for a social feed than strict consistency."       ║
-╚══════════════════════════════════════════════════════════════════════╝
+EVERY DESIGN DECISION IS A TRADE-OFF
+
+You can rarely optimize for everything simultaneously.
+The skill is knowing WHICH trade-off to make for THIS context.
+
+         Consistency
+            /\
+           /  \
+          /    \         ← You're always choosing
+         / PICK \           where on this triangle
+        /  TWO   \          to position your system
+       /          \
+      /____________\
+Availability    Performance
+
+COMMON TRADE-OFFS:
+┌───────────────────────┬───────────────────────────────┐
+│  CHOICE               │  TRADE-OFF                    │
+├───────────────────────┼───────────────────────────────┤
+│  SQL vs NoSQL         │  Consistency vs Flexibility   │
+│  Cache vs No Cache    │  Speed vs Freshness           │
+│  Monolith vs Micro    │  Simplicity vs Scalability    │
+│  Sync vs Async        │  Simplicity vs Throughput     │
+│  Normalize vs Denorm  │  Write speed vs Read speed    │
+│  Push vs Pull         │  Latency vs Resource usage    │
+└───────────────────────┴───────────────────────────────┘
+
+In interviews, ALWAYS state your trade-off explicitly:
+"I'm choosing eventual consistency here because availability
+ is more critical for a social feed than strict consistency."
 ```
 
 ---
@@ -122,43 +116,41 @@
 ## Mental Model 4: Scale in Stages
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  DON'T JUMP TO DISTRIBUTED SYSTEMS — SCALE PROGRESSIVELY             ║
-║                                                                      ║
-║  Stage 1: Single Server (0 → 1K users)                               ║
-║  ┌──────────────────────────────────────┐                            ║
-║  │  App Server + Database on ONE box    │                            ║
-║  └──────────────────────────────────────┘                            ║
-║                                                                      ║
-║  Stage 2: Separate DB (1K → 10K users)                               ║
-║  ┌───────────┐    ┌───────────────┐                                  ║
-║  │  App      │ →  │  Database     │                                  ║
-║  │  Server   │    │  (separate)   │                                  ║
-║  └───────────┘    └───────────────┘                                  ║
-║                                                                      ║
-║  Stage 3: Add Cache + CDN (10K → 100K users)                         ║
-║  ┌───────────┐    ┌───────┐    ┌────────┐                            ║
-║  │  App      │ →  │ Cache │ →  │  DB    │                            ║
-║  │  Server   │    │(Redis)│    │        │                            ║
-║  └───────────┘    └───────┘    └────────┘                            ║
-║       + CDN for static assets                                        ║
-║                                                                      ║
-║  Stage 4: Load Balancer + Replicas (100K → 1M users)                 ║
-║            ┌────────┐    ┌────────┐                                  ║
-║  [LB] →   │ App 1  │    │  DB    │ ← writes                          ║
-║       →   │ App 2  │    │ Primary│                                   ║
-║       →   │ App 3  │    └────┬───┘                                   ║
-║            └────────┘    ┌───▼────┐                                  ║
-║                          │  DB    │ ← reads                          ║
-║                          │ Replica│                                  ║
-║                          └────────┘                                  ║
-║                                                                      ║
-║  Stage 5: Microservices + Sharding (1M+ users)                       ║
-║  Only NOW consider breaking into services + horizontal sharding      ║
-║                                                                      ║
-║  KEY INSIGHT: Over-engineering at Stage 1 is worse than              ║
-║  under-engineering. Build for 10x your current scale, not 1000x.     ║
-╚══════════════════════════════════════════════════════════════════════╝
+DON'T JUMP TO DISTRIBUTED SYSTEMS — SCALE PROGRESSIVELY
+
+Stage 1: Single Server (0 → 1K users)
+┌──────────────────────────────────────┐
+│  App Server + Database on ONE box    │
+└──────────────────────────────────────┘
+
+Stage 2: Separate DB (1K → 10K users)
+┌───────────┐    ┌───────────────┐
+│  App      │ →  │  Database     │
+│  Server   │    │  (separate)   │
+└───────────┘    └───────────────┘
+
+Stage 3: Add Cache + CDN (10K → 100K users)
+┌───────────┐    ┌───────┐    ┌────────┐
+│  App      │ →  │ Cache │ →  │  DB    │
+│  Server   │    │(Redis)│    │        │
+└───────────┘    └───────┘    └────────┘
+     + CDN for static assets
+
+Stage 4: Load Balancer + Replicas (100K → 1M users)
+          ┌────────┐    ┌────────┐
+[LB] →   │ App 1  │    │  DB    │ ← writes
+     →   │ App 2  │    │ Primary│
+     →   │ App 3  │    └────┬───┘
+          └────────┘    ┌───▼────┐
+                        │  DB    │ ← reads
+                        │ Replica│
+                        └────────┘
+
+Stage 5: Microservices + Sharding (1M+ users)
+Only NOW consider breaking into services + horizontal sharding
+
+KEY INSIGHT: Over-engineering at Stage 1 is worse than
+under-engineering. Build for 10x your current scale, not 1000x.
 ```
 
 ---
@@ -194,28 +186,26 @@
 ## Mental Model 6: Failure Will Happen — Design For It
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  THE FAILURE-FIRST MINDSET                                           ║
-║                                                                      ║
-║  Ask for EVERY component: "What happens if this fails?"              ║
-║                                                                      ║
-║  ┌────────────────────────┬──────────────────────────────┐           ║
-║  │  IF THIS FAILS...      │  WE SHOULD...                │           ║
-║  ├────────────────────────┼──────────────────────────────┤           ║
-║  │  Database goes down    │  Failover to replica         │           ║
-║  │  Cache goes down       │  Fall through to DB          │           ║
-║  │  Service times out     │  Circuit breaker + fallback  │           ║
-║  │  Queue is full         │  Backpressure + dead letter  │           ║
-║  │  Region goes down      │  Multi-region failover       │           ║
-║  │  Deployment is buggy   │  Canary + quick rollback     │           ║
-║  │  Data is corrupted     │  Backup + point-in-time      │           ║
-║  │  Traffic spikes 10x    │  Auto-scaling + rate limit   │           ║
-║  └────────────────────────┴──────────────────────────────┘           ║
-║                                                                      ║
-║  The Netflix approach:                                               ║
-║  "We design systems assuming EVERYTHING will fail,                   ║
-║   and then test it by ACTUALLY breaking things" (Chaos Monkey)       ║
-╚══════════════════════════════════════════════════════════════════════╝
+THE FAILURE-FIRST MINDSET
+
+Ask for EVERY component: "What happens if this fails?"
+
+┌────────────────────────┬──────────────────────────────┐
+│  IF THIS FAILS...      │  WE SHOULD...                │
+├────────────────────────┼──────────────────────────────┤
+│  Database goes down    │  Failover to replica         │
+│  Cache goes down       │  Fall through to DB          │
+│  Service times out     │  Circuit breaker + fallback  │
+│  Queue is full         │  Backpressure + dead letter  │
+│  Region goes down      │  Multi-region failover       │
+│  Deployment is buggy   │  Canary + quick rollback     │
+│  Data is corrupted     │  Backup + point-in-time      │
+│  Traffic spikes 10x    │  Auto-scaling + rate limit   │
+└────────────────────────┴──────────────────────────────┘
+
+The Netflix approach:
+"We design systems assuming EVERYTHING will fail,
+ and then test it by ACTUALLY breaking things" (Chaos Monkey)
 ```
 
 ---

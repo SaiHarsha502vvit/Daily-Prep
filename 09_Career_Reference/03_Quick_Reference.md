@@ -7,45 +7,43 @@
 **When you understand on paper but freeze in editor:**
 
 ```
-╔═══════════════════════════════════════════════════════════════════╗
-║              5-STEP PAPER TO CODE METHOD                          ║
-╠═══════════════════════════════════════════════════════════════════╣
-║                                                                   ║
-║  STEP 1: NAME THE PATTERN                                         ║
-║  ┌───────────────────────────────────────────────────────────┐    ║
-║  │  "This is _______ pattern"                                │    ║
-║  │  (Sliding Window / Two Pointers / Frequency Count...)     │    ║
-║  └───────────────────────────────────────────────────────────┘    ║
-║                           ↓                                       ║
-║  STEP 2: WRITE SKELETON                                           ║
-║  ┌───────────────────────────────────────────────────────────┐    ║
-║  │  public static void solve(int[] arr) {                    │    ║
-║  │      for (int j = 0; j < arr.length; j++) {               │    ║
-║  │          // LOGIC GOES HERE                               │    ║
-║  │      }                                                    │    ║
-║  │  }                                                        │    ║
-║  └───────────────────────────────────────────────────────────┘    ║
-║                           ↓                                       ║
-║  STEP 3: ADD INVARIANT (The rule that's always true)              ║
-║  ┌───────────────────────────────────────────────────────────┐    ║
-║  │  // window size = j - i + 1                               │    ║
-║  │  // OR: sum of window = current_sum                       │    ║
-║  │  // OR: left pointer < right pointer                      │    ║
-║  └───────────────────────────────────────────────────────────┘    ║
-║                           ↓                                       ║
-║  STEP 4: LAYER LOGIC (One line at a time)                         ║
-║  ┌───────────────────────────────────────────────────────────┐    ║
-║  │  First: Add the core operation                            │    ║
-║  │  Then: Add the condition check                            │    ║
-║  │  Then: Add the result update                              │    ║
-║  └───────────────────────────────────────────────────────────┘    ║
-║                           ↓                                       ║
-║  STEP 5: EDGE CASES (At the very end)                             ║
-║  ┌───────────────────────────────────────────────────────────┐    ║
-║  │  if (arr == null || arr.length == 0) return;              │    ║
-║  │  if (n < 0) System.out.println("Invalid Input");          │    ║
-║  └───────────────────────────────────────────────────────────┘    ║
-╚═══════════════════════════════════════════════════════════════════╝
+            5-STEP PAPER TO CODE METHOD
+──────────────────────────────────────────────────
+
+STEP 1: NAME THE PATTERN
+┌───────────────────────────────────────────────────────────┐
+│  "This is _______ pattern"                                │
+│  (Sliding Window / Two Pointers / Frequency Count...)     │
+└───────────────────────────────────────────────────────────┘
+                         ↓
+STEP 2: WRITE SKELETON
+┌───────────────────────────────────────────────────────────┐
+│  public static void solve(int[] arr) {                    │
+│      for (int j = 0; j < arr.length; j++) {               │
+│          // LOGIC GOES HERE                               │
+│      }                                                    │
+│  }                                                        │
+└───────────────────────────────────────────────────────────┘
+                         ↓
+STEP 3: ADD INVARIANT (The rule that's always true)
+┌───────────────────────────────────────────────────────────┐
+│  // window size = j - i + 1                               │
+│  // OR: sum of window = current_sum                       │
+│  // OR: left pointer < right pointer                      │
+└───────────────────────────────────────────────────────────┘
+                         ↓
+STEP 4: LAYER LOGIC (One line at a time)
+┌───────────────────────────────────────────────────────────┐
+│  First: Add the core operation                            │
+│  Then: Add the condition check                            │
+│  Then: Add the result update                              │
+└───────────────────────────────────────────────────────────┘
+                         ↓
+STEP 5: EDGE CASES (At the very end)
+┌───────────────────────────────────────────────────────────┐
+│  if (arr == null || arr.length == 0) return;              │
+│  if (n < 0) System.out.println("Invalid Input");          │
+└───────────────────────────────────────────────────────────┘
 ```
 
 **See:** [PaperToCode_TranslationGuide.md](PaperToCode_TranslationGuide.md) for details
@@ -55,34 +53,32 @@
 ## 🎨 VISUAL PATTERN RECOGNITION GUIDE
 
 ```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║             WHICH PATTERN DO I USE? (Decision Tree)                       ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  ┌─── Does problem involve ARRAY/STRING? ───┐                             ║
-║  │                                          │                             ║
-║  ▼ YES                                      ▼ NO                          ║
-║  │                                          │                             ║
-║  ├─ "window of size K"? ───→ SLIDING WINDOW │                             ║
-║  │                                          ├─ "tree structure"?          ║
-║  ├─ "two elements sum"? ───→ TWO POINTERS   │        → BFS/DFS            ║
-║  │                                          │                             ║
-║  ├─ "count frequency"? ────→ HASHMAP        ├─ "graph/nodes"?             ║
-║  │                                          │        → BFS/DFS            ║
-║  ├─ "sorted array"? ───────→ BINARY SEARCH  │                             ║
-║  │                                          ├─ "generate all"?            ║
-║  ├─ "maximum subarray"? ───→ KADANE'S       │        → BACKTRACKING       ║
-║  │                                          │                             ║
-║  ├─ "palindrome"? ─────────→ TWO POINTERS   └─ "optimize/minimize"?       ║
-║  │                                                   → DP / GREEDY        ║
-║  ├─ "range sum"? ──────────→ PREFIX SUM                                   ║
-║  │                                                                        ║
-║  ├─ "balanced brackets"? ──→ STACK                                        ║
-║  │                                                                        ║
-║  ├─ "rotate/spiral"? ──────→ MATRIX PATTERN                               ║
-║  │                                                                        ║
-║  └─ "GCD/prime/bits"? ─────→ MATH / BIT MANIPULATION                      ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+           WHICH PATTERN DO I USE? (Decision Tree)
+──────────────────────────────────────────────────
+
+┌─── Does problem involve ARRAY/STRING? ───┐
+│                                          │
+▼ YES                                      ▼ NO
+│                                          │
+├─ "window of size K"? ───→ SLIDING WINDOW │
+│                                          ├─ "tree structure"?
+├─ "two elements sum"? ───→ TWO POINTERS   │        → BFS/DFS
+│                                          │
+├─ "count frequency"? ────→ HASHMAP        ├─ "graph/nodes"?
+│                                          │        → BFS/DFS
+├─ "sorted array"? ───────→ BINARY SEARCH  │
+│                                          ├─ "generate all"?
+├─ "maximum subarray"? ───→ KADANE'S       │        → BACKTRACKING
+│                                          │
+├─ "palindrome"? ─────────→ TWO POINTERS   └─ "optimize/minimize"?
+│                                                   → DP / GREEDY
+├─ "range sum"? ──────────→ PREFIX SUM
+│
+├─ "balanced brackets"? ──→ STACK
+│
+├─ "rotate/spiral"? ──────→ MATRIX PATTERN
+│
+└─ "GCD/prime/bits"? ─────→ MATH / BIT MANIPULATION
 ```
 
 ---
@@ -92,26 +88,24 @@
 ### 🎨 Template 1: Input Validation
 
 ```
-╔═══════════════════════════════════════════════════════════════════╗
-║                  INPUT VALIDATION VISUAL                          ║
-╠═══════════════════════════════════════════════════════════════════╣
-║                                                                   ║
-║  User Input: n = ?                                                ║
-║              │                                                    ║
-║              ▼                                                    ║
-║         ┌────────────┐                                            ║
-║         │  n == 0 ?  │──YES──→ print("ZERO") and return           ║
-║         └────────────┘                                            ║
-║              │ NO                                                 ║
-║              ▼                                                    ║
-║         ┌────────────┐                                            ║
-║         │  n < 0 ?   │──YES──→ print("Invalid Input") and return  ║
-║         └────────────┘                                            ║
-║              │ NO                                                 ║
-║              ▼                                                    ║
-║         Continue with main logic...                               ║
-║                                                                   ║
-╚═══════════════════════════════════════════════════════════════════╝
+                INPUT VALIDATION VISUAL
+──────────────────────────────────────────────────
+
+User Input: n = ?
+            │
+            ▼
+       ┌────────────┐
+       │  n == 0 ?  │──YES──→ print("ZERO") and return
+       └────────────┘
+            │ NO
+            ▼
+       ┌────────────┐
+       │  n < 0 ?   │──YES──→ print("Invalid Input") and return
+       └────────────┘
+            │ NO
+            ▼
+       Continue with main logic...
+
 ```
 
 ```java
@@ -131,34 +125,32 @@ if (n < 0) {
 ### 🎨 Template 2: Sliding Window (Fixed Size K)
 
 ```
-╔═══════════════════════════════════════════════════════════════════╗
-║              SLIDING WINDOW (SIZE K) VISUALIZATION                ║
-╠═══════════════════════════════════════════════════════════════════╣
-║                                                                   ║
-║  Array: [1, 3, 5, 2, 8, 1, 9]    k = 3                            ║
-║                                                                   ║
-║  Step 1: j=0                     Step 2: j=1                      ║
-║  ┌───┬───┬───┬───┬───┬───┬───┐   ┌───┬───┬───┬───┬───┬───┬───┐    ║
-║  │ 1 │ 3 │ 5 │ 2 │ 8 │ 1 │ 9 │   │ 1 │ 3 │ 5 │ 2 │ 8 │ 1 │ 9 │    ║
-║  └───┴───┴───┴───┴───┴───┴───┘   └───┴───┴───┴───┴───┴───┴───┘    ║
-║    ↑                               ↑   ↑                          ║
-║    i,j                             i   j                          ║
-║  count: j-i+1 = 1                count: j-i+1 = 2                 ║
-║  (not k yet)                     (not k yet)                      ║
-║                                                                   ║
-║  Step 3: j=2  ← WINDOW READY!    Step 4: j=3  ← SLIDE!            ║
-║  ┌───┬───┬───┬───┬───┬───┬───┐   ┌───┬───┬───┬───┬───┬───┬───┐    ║
-║  │ 1 │ 3 │ 5 │ 2 │ 8 │ 1 │ 9 │   │ 1 │ 3 │ 5 │ 2 │ 8 │ 1 │ 9 │    ║
-║  └───┴───┴───┴───┴───┴───┴───┘   └───┴───┴───┴───┴───┴───┴───┘    ║
-║    ↑       ↑                           ↑       ↑                  ║
-║    i       j                           i       j                  ║
-║  ├─────────┤                       ├─────────┤                    ║
-║  window [1,3,5]                    window [3,5,2]                 ║
-║  count: 2-0+1 = 3 = k ✓           After slide: i++                ║
-║  PROCESS NOW!                                                     ║
-║                                                                   ║
-║  KEY INSIGHT: j - i + 1 == k means "window has k elements"        ║
-╚═══════════════════════════════════════════════════════════════════╝
+            SLIDING WINDOW (SIZE K) VISUALIZATION
+──────────────────────────────────────────────────
+
+Array: [1, 3, 5, 2, 8, 1, 9]    k = 3
+
+Step 1: j=0                     Step 2: j=1
+┌───┬───┬───┬───┬───┬───┬───┐   ┌───┬───┬───┬───┬───┬───┬───┐
+│ 1 │ 3 │ 5 │ 2 │ 8 │ 1 │ 9 │   │ 1 │ 3 │ 5 │ 2 │ 8 │ 1 │ 9 │
+└───┴───┴───┴───┴───┴───┴───┘   └───┴───┴───┴───┴───┴───┴───┘
+  ↑                               ↑   ↑
+  i,j                             i   j
+count: j-i+1 = 1                count: j-i+1 = 2
+(not k yet)                     (not k yet)
+
+Step 3: j=2  ← WINDOW READY!    Step 4: j=3  ← SLIDE!
+┌───┬───┬───┬───┬───┬───┬───┐   ┌───┬───┬───┬───┬───┬───┬───┐
+│ 1 │ 3 │ 5 │ 2 │ 8 │ 1 │ 9 │   │ 1 │ 3 │ 5 │ 2 │ 8 │ 1 │ 9 │
+└───┴───┴───┴───┴───┴───┴───┘   └───┴───┴───┴───┴───┴───┴───┘
+  ↑       ↑                           ↑       ↑
+  i       j                           i       j
+├─────────┤                       ├─────────┤
+window [1,3,5]                    window [3,5,2]
+count: 2-0+1 = 3 = k ✓           After slide: i++
+PROCESS NOW!
+
+KEY INSIGHT: j - i + 1 == k means "window has k elements"
 ```
 
 ```java
@@ -182,30 +174,28 @@ for (int j = 0; j < n; j++) {  // j expands window
 ### 🎨 Template 3: Two Pointers
 
 ```
-╔═══════════════════════════════════════════════════════════════════╗
-║              TWO POINTERS VISUALIZATION                           ║
-╠═══════════════════════════════════════════════════════════════════╣
-║                                                                   ║
-║  OPPOSITE DIRECTION (Palindrome check, Two Sum in sorted):        ║
-║                                                                   ║
-║  ┌───┬───┬───┬───┬───┬───┬───┐                                    ║
-║  │ r │ a │ c │ e │ c │ a │ r │                                    ║
-║  └───┴───┴───┴───┴───┴───┴───┘                                    ║
-║    ↑                       ↑                                      ║
-║   left                   right                                    ║
-║    │                       │                                      ║
-║    └───── move inward ─────┘                                      ║
-║                                                                   ║
-║  SAME DIRECTION (Remove duplicates, Fast-slow):                   ║
-║                                                                   ║
-║  ┌───┬───┬───┬───┬───┬───┬───┐                                    ║
-║  │ 1 │ 1 │ 2 │ 2 │ 2 │ 3 │ 4 │                                    ║
-║  └───┴───┴───┴───┴───┴───┴───┘                                    ║
-║    ↑   ↑                                                          ║
-║  slow fast                                                        ║
-║    │   └───── moves every step                                    ║
-║    └───────── moves only when condition met                       ║
-╚═══════════════════════════════════════════════════════════════════╝
+            TWO POINTERS VISUALIZATION
+──────────────────────────────────────────────────
+
+OPPOSITE DIRECTION (Palindrome check, Two Sum in sorted):
+
+┌───┬───┬───┬───┬───┬───┬───┐
+│ r │ a │ c │ e │ c │ a │ r │
+└───┴───┴───┴───┴───┴───┴───┘
+  ↑                       ↑
+ left                   right
+  │                       │
+  └───── move inward ─────┘
+
+SAME DIRECTION (Remove duplicates, Fast-slow):
+
+┌───┬───┬───┬───┬───┬───┬───┐
+│ 1 │ 1 │ 2 │ 2 │ 2 │ 3 │ 4 │
+└───┴───┴───┴───┴───┴───┴───┘
+  ↑   ↑
+slow fast
+  │   └───── moves every step
+  └───────── moves only when condition met
 ```
 
 ```java
@@ -233,24 +223,22 @@ for (int fast = 1; fast < arr.length; fast++) {
 ### 🎨 Template 4: Binary Search
 
 ```
-╔═══════════════════════════════════════════════════════════════════╗
-║              BINARY SEARCH VISUALIZATION                          ║
-╠═══════════════════════════════════════════════════════════════════╣
-║                                                                   ║
-║  Array: [1, 3, 5, 7, 9, 11, 13, 15]    Target: 7                  ║
-║                                                                   ║
-║  Iteration 1:                                                     ║
-║  ┌───┬───┬───┬───┬───┬───┬───┬───┐                                ║
-║  │ 1 │ 3 │ 5 │ 7 │ 9 │ 11│ 13│ 15│                                ║
-║  └───┴───┴───┴───┴───┴───┴───┴───┘                                ║
-║    ↑               ↑               ↑                              ║
-║   lo             mid              hi                              ║
-║                                                                   ║
-║  arr[mid]=7 == target → FOUND!                                    ║
-║                                                                   ║
-║  If arr[mid] < target:  lo = mid + 1  (search right)              ║
-║  If arr[mid] > target:  hi = mid - 1  (search left)               ║
-╚═══════════════════════════════════════════════════════════════════╝
+            BINARY SEARCH VISUALIZATION
+──────────────────────────────────────────────────
+
+Array: [1, 3, 5, 7, 9, 11, 13, 15]    Target: 7
+
+Iteration 1:
+┌───┬───┬───┬───┬───┬───┬───┬───┐
+│ 1 │ 3 │ 5 │ 7 │ 9 │ 11│ 13│ 15│
+└───┴───┴───┴───┴───┴───┴───┴───┘
+  ↑               ↑               ↑
+ lo             mid              hi
+
+arr[mid]=7 == target → FOUND!
+
+If arr[mid] < target:  lo = mid + 1  (search right)
+If arr[mid] > target:  hi = mid - 1  (search left)
 ```
 
 ```java
@@ -267,35 +255,33 @@ return -1;  // Not found
 ### 🎨 Template 5: Stack (Balanced Brackets)
 
 ```
-╔═══════════════════════════════════════════════════════════════════╗
-║              STACK VISUALIZATION (Balanced Brackets)              ║
-╠═══════════════════════════════════════════════════════════════════╣
-║                                                                   ║
-║  Input: "([{}])"                                                  ║
-║                                                                   ║
-║  Step 1: '(' → push       Step 2: '[' → push                      ║
-║  ┌───┐                    ┌───┐                                   ║
-║  │ ( │                    │ [ │                                   ║
-║  └───┘                    ├───┤                                   ║
-║                           │ ( │                                   ║
-║                           └───┘                                   ║
-║                                                                   ║
-║  Step 3: '{' → push       Step 4: '}' → pop, check match          ║
-║  ┌───┐                    ┌───┐                                   ║
-║  │ { │                    │ [ │   '{' matches '}' ✓               ║
-║  ├───┤                    ├───┤                                   ║
-║  │ [ │                    │ ( │                                   ║
-║  ├───┤                    └───┘                                   ║
-║  │ ( │                                                            ║
-║  └───┘                                                            ║
-║                                                                   ║
-║  Step 5: ']' → pop        Step 6: ')' → pop                       ║
-║  ┌───┐                    Empty stack!                            ║
-║  │ ( │   '[' matches ']' ✓         '(' matches ')' ✓              ║
-║  └───┘                                                            ║
-║                                                                   ║
-║  Final: Stack empty → BALANCED ✓                                  ║
-╚═══════════════════════════════════════════════════════════════════╝
+            STACK VISUALIZATION (Balanced Brackets)
+──────────────────────────────────────────────────
+
+Input: "([{}])"
+
+Step 1: '(' → push       Step 2: '[' → push
+┌───┐                    ┌───┐
+│ ( │                    │ [ │
+└───┘                    ├───┤
+                         │ ( │
+                         └───┘
+
+Step 3: '{' → push       Step 4: '}' → pop, check match
+┌───┐                    ┌───┐
+│ { │                    │ [ │   '{' matches '}' ✓
+├───┤                    ├───┤
+│ [ │                    │ ( │
+├───┤                    └───┘
+│ ( │
+└───┘
+
+Step 5: ']' → pop        Step 6: ')' → pop
+┌───┐                    Empty stack!
+│ ( │   '[' matches ']' ✓         '(' matches ')' ✓
+└───┘
+
+Final: Stack empty → BALANCED ✓
 ```
 
 ```java

@@ -18,63 +18,61 @@
 ## The Big Three — Service Mapping
 
 ```
-╔═══════════════════════════════════════════════════════════════════╗
-║  CATEGORY          │  AWS             │  AZURE            │  GCP  ║
-╠════════════════════╪══════════════════╪═══════════════════╪═══════╣
-║  COMPUTE           │                  │                   │       ║
-║  Virtual Machines  │  EC2             │  Virtual Machines │  GCE  ║
-║  Containers        │  ECS / EKS       │  AKS              │  GKE  ║
-║  Serverless        │  Lambda          │  Azure Functions  │  Cloud║
-║                    │                  │                   │  Func ║
-║  App Platform      │  Elastic Beanstk │  App Service      │  App  ║
-║                    │                  │                   │  Eng  ║
-║────────────────────┼──────────────────┼───────────────────┼───────║
-║  STORAGE           │                  │                   │       ║
-║  Object Storage    │  S3              │  Blob Storage     │  GCS  ║
-║  Block Storage     │  EBS             │  Managed Disks    │  PD   ║
-║  File Storage      │  EFS             │  Azure Files      │  FS   ║
-║────────────────────┼──────────────────┼───────────────────┼───────║
-║  DATABASE          │                  │                   │       ║
-║  Relational        │  RDS / Aurora    │  Azure SQL        │  Cloud║
-║                    │                  │                   │  SQL  ║
-║  NoSQL Document    │  DynamoDB        │  Cosmos DB        │  Fire-║
-║                    │                  │                   │  store║
-║  In-Memory Cache   │  ElastiCache     │  Azure Cache      │  Mem- ║
-║                    │                  │  for Redis        │  store║
-║────────────────────┼──────────────────┼───────────────────┼───────║
-║  MESSAGING         │                  │                   │       ║
-║  Message Queue     │  SQS             │  Service Bus      │  Pub/ ║
-║                    │                  │                   │  Sub  ║
-║  Event Streaming   │  Kinesis / MSK   │  Event Hubs       │  Data-║
-║                    │                  │                   │  flow ║
-║  Notifications     │  SNS             │  Notification Hub │  FCM  ║
-║────────────────────┼──────────────────┼───────────────────┼───────║
-║  NETWORKING        │                  │                   │       ║
-║  CDN               │  CloudFront      │  Azure CDN / FD   │  Cloud║
-║                    │                  │                   │  CDN  ║
-║  DNS               │  Route 53        │  Azure DNS        │  Cloud║
-║                    │                  │                   │  DNS  ║
-║  Load Balancer     │  ELB / ALB       │  Azure LB / AG    │  Cloud║
-║                    │                  │                   │  LB   ║
-║  API Gateway       │  API Gateway     │  APIM             │  API  ║
-║                    │                  │                   │  GW   ║
-║────────────────────┼──────────────────┼───────────────────┼───────║
-║  IDENTITY          │                  │                   │       ║
-║  Auth/Identity     │  IAM / Cognito   │  Azure AD / B2C   │  IAM  ║
-║  Secrets           │  Secrets Manager │  Key Vault        │  Sec- ║
-║                    │                  │                   │  ret  ║
-║────────────────────┼──────────────────┼───────────────────┼───────║
-║  MONITORING        │                  │                   │       ║
-║  Monitoring        │  CloudWatch      │  Azure Monitor    │  Cloud║
-║                    │                  │                   │  Mon  ║
-║  Logging           │  CloudWatch Logs │  Log Analytics    │  Cloud║
-║                    │                  │                   │  Log  ║
-║────────────────────┼──────────────────┼───────────────────┼───────║
-║  CI/CD             │                  │                   │       ║
-║  Build/Deploy      │  CodePipeline    │  Azure DevOps     │  Cloud║
-║                    │  CodeBuild       │  Pipelines        │  Build║
-║  Container Reg.    │  ECR             │  ACR              │  GCR  ║
-╚═══════════════════════════════════════════════════════════════════╝
+CATEGORY          │  AWS             │  AZURE            │  GCP
+──────────────────────────────────────────────────
+COMPUTE           │                  │                   │
+Virtual Machines  │  EC2             │  Virtual Machines │  GCE
+Containers        │  ECS / EKS       │  AKS              │  GKE
+Serverless        │  Lambda          │  Azure Functions  │  Cloud
+                  │                  │                   │  Func
+App Platform      │  Elastic Beanstk │  App Service      │  App
+                  │                  │                   │  Eng
+────────────────────┼──────────────────┼───────────────────┼───────
+STORAGE           │                  │                   │
+Object Storage    │  S3              │  Blob Storage     │  GCS
+Block Storage     │  EBS             │  Managed Disks    │  PD
+File Storage      │  EFS             │  Azure Files      │  FS
+────────────────────┼──────────────────┼───────────────────┼───────
+DATABASE          │                  │                   │
+Relational        │  RDS / Aurora    │  Azure SQL        │  Cloud
+                  │                  │                   │  SQL
+NoSQL Document    │  DynamoDB        │  Cosmos DB        │  Fire-
+                  │                  │                   │  store
+In-Memory Cache   │  ElastiCache     │  Azure Cache      │  Mem-
+                  │                  │  for Redis        │  store
+────────────────────┼──────────────────┼───────────────────┼───────
+MESSAGING         │                  │                   │
+Message Queue     │  SQS             │  Service Bus      │  Pub/
+                  │                  │                   │  Sub
+Event Streaming   │  Kinesis / MSK   │  Event Hubs       │  Data-
+                  │                  │                   │  flow
+Notifications     │  SNS             │  Notification Hub │  FCM
+────────────────────┼──────────────────┼───────────────────┼───────
+NETWORKING        │                  │                   │
+CDN               │  CloudFront      │  Azure CDN / FD   │  Cloud
+                  │                  │                   │  CDN
+DNS               │  Route 53        │  Azure DNS        │  Cloud
+                  │                  │                   │  DNS
+Load Balancer     │  ELB / ALB       │  Azure LB / AG    │  Cloud
+                  │                  │                   │  LB
+API Gateway       │  API Gateway     │  APIM             │  API
+                  │                  │                   │  GW
+────────────────────┼──────────────────┼───────────────────┼───────
+IDENTITY          │                  │                   │
+Auth/Identity     │  IAM / Cognito   │  Azure AD / B2C   │  IAM
+Secrets           │  Secrets Manager │  Key Vault        │  Sec-
+                  │                  │                   │  ret
+────────────────────┼──────────────────┼───────────────────┼───────
+MONITORING        │                  │                   │
+Monitoring        │  CloudWatch      │  Azure Monitor    │  Cloud
+                  │                  │                   │  Mon
+Logging           │  CloudWatch Logs │  Log Analytics    │  Cloud
+                  │                  │                   │  Log
+────────────────────┼──────────────────┼───────────────────┼───────
+CI/CD             │                  │                   │
+Build/Deploy      │  CodePipeline    │  Azure DevOps     │  Cloud
+                  │  CodeBuild       │  Pipelines        │  Build
+Container Reg.    │  ECR             │  ACR              │  GCR
 ```
 
 ---
@@ -84,84 +82,78 @@
 ### 1. Regions & Availability Zones
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  REGION = Geographic location (e.g., us-east-1, ap-south-1)          ║
-║                                                                      ║
-║                    ┌─── Region: us-east-1 ───┐                       ║
-║                    │                          │                      ║
-║                    │  ┌─── AZ: us-east-1a ─┐ │                       ║
-║                    │  │  Data Center 1      │ │                      ║
-║                    │  │  Data Center 2      │ │                      ║
-║                    │  └────────────────────┘ │                       ║
-║                    │                          │                      ║
-║                    │  ┌─── AZ: us-east-1b ─┐ │                       ║
-║                    │  │  Data Center 3      │ │                      ║
-║                    │  │  Data Center 4      │ │                      ║
-║                    │  └────────────────────┘ │                       ║
-║                    │                          │                      ║
-║                    │  ┌─── AZ: us-east-1c ─┐ │                       ║
-║                    │  │  Data Center 5      │ │                      ║
-║                    │  └────────────────────┘ │                       ║
-║                    └──────────────────────────┘                      ║
-║                                                                      ║
-║  Rule: Deploy across 2+ AZs for high availability.                   ║
-║  AZs in the same region have low-latency links between them.         ║
-╚══════════════════════════════════════════════════════════════════════╝
+REGION = Geographic location (e.g., us-east-1, ap-south-1)
+
+                  ┌─── Region: us-east-1 ───┐
+                  │                          │
+                  │  ┌─── AZ: us-east-1a ─┐ │
+                  │  │  Data Center 1      │ │
+                  │  │  Data Center 2      │ │
+                  │  └────────────────────┘ │
+                  │                          │
+                  │  ┌─── AZ: us-east-1b ─┐ │
+                  │  │  Data Center 3      │ │
+                  │  │  Data Center 4      │ │
+                  │  └────────────────────┘ │
+                  │                          │
+                  │  ┌─── AZ: us-east-1c ─┐ │
+                  │  │  Data Center 5      │ │
+                  │  └────────────────────┘ │
+                  └──────────────────────────┘
+
+Rule: Deploy across 2+ AZs for high availability.
+AZs in the same region have low-latency links between them.
 ```
 
 ### 2. The Shared Responsibility Model
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHO IS RESPONSIBLE FOR WHAT?                                        ║
-║                                                                      ║
-║                     IaaS        PaaS        SaaS                     ║
-║                    (EC2)    (App Service)  (Gmail)                   ║
-║  ┌──────────────┐                                                    ║
-║  │ Your Data     │  YOU         YOU         YOU                      ║
-║  │ Your Code     │  YOU         YOU         N/A                      ║
-║  │ Runtime       │  YOU        CLOUD        N/A                      ║
-║  │ OS            │  YOU        CLOUD       CLOUD                     ║
-║  │ Virtualization│ CLOUD       CLOUD       CLOUD                     ║
-║  │ Hardware      │ CLOUD       CLOUD       CLOUD                     ║
-║  │ Network       │ CLOUD       CLOUD       CLOUD                     ║
-║  │ Physical      │ CLOUD       CLOUD       CLOUD                     ║
-║  └──────────────┘                                                    ║
-║                                                                      ║
-║  As a developer, you manage MORE in IaaS, LESS in PaaS.              ║
-║  Most modern apps → PaaS or Containers (good balance).               ║
-╚══════════════════════════════════════════════════════════════════════╝
+WHO IS RESPONSIBLE FOR WHAT?
+
+                   IaaS        PaaS        SaaS
+                  (EC2)    (App Service)  (Gmail)
+┌──────────────┐
+│ Your Data     │  YOU         YOU         YOU
+│ Your Code     │  YOU         YOU         N/A
+│ Runtime       │  YOU        CLOUD        N/A
+│ OS            │  YOU        CLOUD       CLOUD
+│ Virtualization│ CLOUD       CLOUD       CLOUD
+│ Hardware      │ CLOUD       CLOUD       CLOUD
+│ Network       │ CLOUD       CLOUD       CLOUD
+│ Physical      │ CLOUD       CLOUD       CLOUD
+└──────────────┘
+
+As a developer, you manage MORE in IaaS, LESS in PaaS.
+Most modern apps → PaaS or Containers (good balance).
 ```
 
 ### 3. IAM — Identity & Access Management
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  IAM — The Security Gatekeeper                                       ║
-║                                                                      ║
-║  PRINCIPLE OF LEAST PRIVILEGE:                                       ║
-║  Give the minimum permissions needed, nothing more.                  ║
-║                                                                      ║
-║  KEY CONCEPTS:                                                       ║
-║  ┌───────────┐  ┌──────────┐  ┌──────────────┐                       ║
-║  │  User     │  │  Role    │  │  Policy      │                       ║
-║  │  (Person) │  │  (Assume)│  │  (Permission)│                       ║
-║  └─────┬─────┘  └────┬─────┘  └──────┬───────┘                       ║
-║        │              │               │                              ║
-║        └──────────────┴───────────────┘                              ║
-║                       │                                              ║
-║               Attached to each other                                 ║
-║                                                                      ║
-║  EXAMPLE AWS IAM POLICY (JSON):                                      ║
-║  {                                                                   ║
-║    "Effect": "Allow",                                                ║
-║    "Action": "s3:GetObject",        // Only read                     ║
-║    "Resource": "arn:aws:s3:::my-bucket/*"  // Only this bucket       ║
-║  }                                                                   ║
-║                                                                      ║
-║  COMMON MISTAKE: Using root account for daily work                   ║
-║  FIX: Create individual IAM users with specific roles                ║
-╚══════════════════════════════════════════════════════════════════════╝
+IAM — The Security Gatekeeper
+
+PRINCIPLE OF LEAST PRIVILEGE:
+Give the minimum permissions needed, nothing more.
+
+KEY CONCEPTS:
+┌───────────┐  ┌──────────┐  ┌──────────────┐
+│  User     │  │  Role    │  │  Policy      │
+│  (Person) │  │  (Assume)│  │  (Permission)│
+└─────┬─────┘  └────┬─────┘  └──────┬───────┘
+      │              │               │
+      └──────────────┴───────────────┘
+                     │
+             Attached to each other
+
+EXAMPLE AWS IAM POLICY (JSON):
+{
+  "Effect": "Allow",
+  "Action": "s3:GetObject",        // Only read
+  "Resource": "arn:aws:s3:::my-bucket/*"  // Only this bucket
+}
+
+COMMON MISTAKE: Using root account for daily work
+FIX: Create individual IAM users with specific roles
 ```
 
 ---
@@ -171,56 +163,52 @@
 ### Compute: EC2 / VMs
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  EC2 (Elastic Compute Cloud) — Virtual Servers                       ║
-║                                                                      ║
-║  INSTANCE TYPES:                                                     ║
-║  ┌──────────┬────────────────────────────┬────────────────┐          ║
-║  │ Category │ Use Case                   │ Example        │          ║
-║  ├──────────┼────────────────────────────┼────────────────┤          ║
-║  │ t3/t4g   │ General purpose (burstable)│ Web servers    │          ║
-║  │ m6i      │ General purpose (steady)   │ App servers    │          ║
-║  │ c6i      │ Compute-intensive          │ Batch jobs     │          ║
-║  │ r6i      │ Memory-intensive           │ In-memory DB   │          ║
-║  │ g5       │ GPU                        │ ML Training    │          ║
-║  └──────────┴────────────────────────────┴────────────────┘          ║
-║                                                                      ║
-║  PRICING MODELS:                                                     ║
-║  On-Demand: Pay per hour/second (most expensive, most flexible)      ║
-║  Reserved:  1-3 year commit → up to 72% savings                      ║
-║  Spot:      Bid for unused capacity → up to 90% savings              ║
-║             (can be interrupted with 2-min warning)                  ║
-║  Savings:   Commit to $/hour → flexible across instance types        ║
-╚══════════════════════════════════════════════════════════════════════╝
+EC2 (Elastic Compute Cloud) — Virtual Servers
+
+INSTANCE TYPES:
+┌──────────┬────────────────────────────┬────────────────┐
+│ Category │ Use Case                   │ Example        │
+├──────────┼────────────────────────────┼────────────────┤
+│ t3/t4g   │ General purpose (burstable)│ Web servers    │
+│ m6i      │ General purpose (steady)   │ App servers    │
+│ c6i      │ Compute-intensive          │ Batch jobs     │
+│ r6i      │ Memory-intensive           │ In-memory DB   │
+│ g5       │ GPU                        │ ML Training    │
+└──────────┴────────────────────────────┴────────────────┘
+
+PRICING MODELS:
+On-Demand: Pay per hour/second (most expensive, most flexible)
+Reserved:  1-3 year commit → up to 72% savings
+Spot:      Bid for unused capacity → up to 90% savings
+           (can be interrupted with 2-min warning)
+Savings:   Commit to $/hour → flexible across instance types
 ```
 
 ### Containers: ECS / EKS / AKS / GKE
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  CONTAINER DEPLOYMENT OPTIONS                                        ║
-║                                                                      ║
-║  ┌──────────────────────────────────────────────────┐                ║
-║  │ Managed Kubernetes (EKS / AKS / GKE)            │                 ║
-║  │ • Full Kubernetes API                            │                ║
-║  │ • Max flexibility, steeper learning curve        │                ║
-║  │ • Good for: large teams, complex microservices   │                ║
-║  └──────────────────────────────────────────────────┘                ║
-║                                                                      ║
-║  ┌──────────────────────────────────────────────────┐                ║
-║  │ Managed Container Service (ECS / Azure Container)│                ║
-║  │ • Simpler than K8s                               │                ║
-║  │ • Provider-specific (not portable)               │                ║
-║  │ • Good for: small teams, simpler architectures   │                ║
-║  └──────────────────────────────────────────────────┘                ║
-║                                                                      ║
-║  ┌──────────────────────────────────────────────────┐                ║
-║  │ Serverless Containers (Fargate / Container Apps) │                ║
-║  │ • No server management at all                    │                ║
-║  │ • Pay per vCPU-second                            │                ║
-║  │ • Good for: event-driven, variable load          │                ║
-║  └──────────────────────────────────────────────────┘                ║
-╚══════════════════════════════════════════════════════════════════════╝
+CONTAINER DEPLOYMENT OPTIONS
+
+┌──────────────────────────────────────────────────┐
+│ Managed Kubernetes (EKS / AKS / GKE)             │
+│ • Full Kubernetes API                            │
+│ • Max flexibility, steeper learning curve        │
+│ • Good for: large teams, complex microservices   │
+└──────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────┐
+│ Managed Container Service (ECS / Azure Container)│
+│ • Simpler than K8s                               │
+│ • Provider-specific (not portable)               │
+│ • Good for: small teams, simpler architectures   │
+└──────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────┐
+│ Serverless Containers (Fargate / Container Apps) │
+│ • No server management at all                    │
+│ • Pay per vCPU-second                            │
+│ • Good for: event-driven, variable load          │
+└──────────────────────────────────────────────────┘
 ```
 
 ### Serverless: Lambda / Azure Functions
@@ -261,65 +249,61 @@
 ### Storage: S3 / Blob Storage
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  OBJECT STORAGE — The Universal Storage Solution                     ║
-║                                                                      ║
-║  S3 STORAGE CLASSES:                                                 ║
-║  ┌─────────────────┬──────────────────────┬───────────┐              ║
-║  │ Class           │ Use Case             │ Cost      │              ║
-║  ├─────────────────┼──────────────────────┼───────────┤              ║
-║  │ Standard        │ Frequent access      │ $$$       │              ║
-║  │ Intelligent     │ Unknown access       │ $$ + fee  │              ║
-║  │ Standard-IA     │ Infrequent access    │ $$        │              ║
-║  │ Glacier Instant │ Archive, instant     │ $         │              ║
-║  │ Glacier         │ Archive, 3-5 hrs     │ ¢         │              ║
-║  │ Deep Archive    │ Archive, 12 hrs      │ ¢¢        │              ║
-║  └─────────────────┴──────────────────────┴───────────┘              ║
-║                                                                      ║
-║  COMMON DEVELOPER USES:                                              ║
-║  • Static website hosting (S3 + CloudFront)                          ║
-║  • User file uploads (presigned URLs)                                ║
-║  • Application logs archive                                          ║
-║  • Database backups                                                  ║
-║  • ML model storage                                                  ║
-║  • CI/CD artifact storage                                            ║
-║                                                                      ║
-║  PRESIGNED URL PATTERN (secure uploads without exposing creds):      ║
-║  1. Client requests upload URL from your API                         ║
-║  2. Your API generates presigned URL (valid 15 min)                  ║
-║  3. Client uploads directly to S3 (bypasses your server)             ║
-║  4. S3 notifies your API via event (Lambda trigger)                  ║
-╚══════════════════════════════════════════════════════════════════════╝
+OBJECT STORAGE — The Universal Storage Solution
+
+S3 STORAGE CLASSES:
+┌─────────────────┬──────────────────────┬───────────┐
+│ Class           │ Use Case             │ Cost      │
+├─────────────────┼──────────────────────┼───────────┤
+│ Standard        │ Frequent access      │ $$$       │
+│ Intelligent     │ Unknown access       │ $$ + fee  │
+│ Standard-IA     │ Infrequent access    │ $$        │
+│ Glacier Instant │ Archive, instant     │ $         │
+│ Glacier         │ Archive, 3-5 hrs     │ ¢         │
+│ Deep Archive    │ Archive, 12 hrs      │ ¢¢        │
+└─────────────────┴──────────────────────┴───────────┘
+
+COMMON DEVELOPER USES:
+• Static website hosting (S3 + CloudFront)
+• User file uploads (presigned URLs)
+• Application logs archive
+• Database backups
+• ML model storage
+• CI/CD artifact storage
+
+PRESIGNED URL PATTERN (secure uploads without exposing creds):
+1. Client requests upload URL from your API
+2. Your API generates presigned URL (valid 15 min)
+3. Client uploads directly to S3 (bypasses your server)
+4. S3 notifies your API via event (Lambda trigger)
 ```
 
 ### Database Services
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  DATABASE DECISION TREE                                              ║
-║                                                                      ║
-║  Need ACID + complex queries?                                        ║
-║  ├── YES → RDS (PostgreSQL/MySQL) or Aurora                          ║
-║  │         (Aurora = 3-5x faster than RDS, costs more)               ║
-║  │                                                                   ║
-║  └── NO → What's the access pattern?                                 ║
-║           │                                                          ║
-║           ├── Key-value lookups → DynamoDB / Cosmos DB               ║
-║           │   (Single-digit ms at any scale)                         ║
-║           │                                                          ║
-║           ├── Document store → MongoDB Atlas / DocumentDB            ║
-║           │                                                          ║
-║           ├── In-memory cache → ElastiCache (Redis/Memcached)        ║
-║           │                                                          ║
-║           ├── Search → Elasticsearch / OpenSearch                    ║
-║           │                                                          ║
-║           ├── Graph → Neptune / Cosmos (Gremlin)                     ║
-║           │                                                          ║
-║           └── Time-series → Timestream / InfluxDB                    ║
-║                                                                      ║
-║  RDS READ SCALING: Read Replicas (up to 15 in Aurora)                ║
-║  RDS WRITE SCALING: Vertical (bigger instance) or sharding           ║
-╚══════════════════════════════════════════════════════════════════════╝
+DATABASE DECISION TREE
+
+Need ACID + complex queries?
+├── YES → RDS (PostgreSQL/MySQL) or Aurora
+│         (Aurora = 3-5x faster than RDS, costs more)
+│
+└── NO → What's the access pattern?
+         │
+         ├── Key-value lookups → DynamoDB / Cosmos DB
+         │   (Single-digit ms at any scale)
+         │
+         ├── Document store → MongoDB Atlas / DocumentDB
+         │
+         ├── In-memory cache → ElastiCache (Redis/Memcached)
+         │
+         ├── Search → Elasticsearch / OpenSearch
+         │
+         ├── Graph → Neptune / Cosmos (Gremlin)
+         │
+         └── Time-series → Timestream / InfluxDB
+
+RDS READ SCALING: Read Replicas (up to 15 in Aurora)
+RDS WRITE SCALING: Vertical (bigger instance) or sharding
 ```
 
 ---
@@ -327,42 +311,40 @@
 ## Typical Cloud Architecture
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  THREE-TIER WEB APPLICATION ON AWS                                   ║
-║                                                                      ║
-║  Users                                                               ║
-║    │                                                                 ║
-║    ▼                                                                 ║
-║  [Route 53 — DNS]                                                    ║
-║    │                                                                 ║
-║    ▼                                                                 ║
-║  [CloudFront — CDN]  ←── [S3 — Static Assets]                        ║
-║    │                                                                 ║
-║    ▼                                                                 ║
-║  [ALB — Load Balancer]                                               ║
-║    │                                                                 ║
-║    ├──────────────────────────┐                                      ║
-║    ▼                          ▼                                      ║
-║  [EC2 / ECS]            [EC2 / ECS]    ← Auto Scaling Group          ║
-║  (App Server 1)         (App Server 2)                               ║
-║    │                          │                                      ║
-║    └──────────┬───────────────┘                                      ║
-║               │                                                      ║
-║    ┌──────────┼──────────────────────┐                               ║
-║    ▼          ▼                      ▼                               ║
-║  [RDS     [ElastiCache       [SQS — Message                          ║
-║   Primary] (Redis)]           Queue]                                 ║
-║    │                                 │                               ║
-║    ▼                                 ▼                               ║
-║  [RDS                        [Lambda — Worker]                       ║
-║   Read Replica]                      │                               ║
-║                                      ▼                               ║
-║                              [S3 — Processed Files]                  ║
-║                                                                      ║
-║  + CloudWatch monitoring everywhere                                  ║
-║  + IAM roles for service-to-service auth                             ║
-║  + VPC with public/private subnets                                   ║
-╚══════════════════════════════════════════════════════════════════════╝
+THREE-TIER WEB APPLICATION ON AWS
+
+Users
+  │
+  ▼
+[Route 53 — DNS]
+  │
+  ▼
+[CloudFront — CDN]  ←── [S3 — Static Assets]
+  │
+  ▼
+[ALB — Load Balancer]
+  │
+  ├──────────────────────────┐
+  ▼                          ▼
+[EC2 / ECS]            [EC2 / ECS]    ← Auto Scaling Group
+(App Server 1)         (App Server 2)
+  │                          │
+  └──────────┬───────────────┘
+             │
+  ┌──────────┼──────────────────────┐
+  ▼          ▼                      ▼
+[RDS     [ElastiCache       [SQS — Message
+ Primary] (Redis)]           Queue]
+  │                                 │
+  ▼                                 ▼
+[RDS                        [Lambda — Worker]
+ Read Replica]                      │
+                                    ▼
+                            [S3 — Processed Files]
+
++ CloudWatch monitoring everywhere
++ IAM roles for service-to-service auth
++ VPC with public/private subnets
 ```
 
 ---

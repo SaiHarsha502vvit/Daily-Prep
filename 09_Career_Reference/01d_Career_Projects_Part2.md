@@ -1517,17 +1517,17 @@ Step-by-step what happens in the OS:
 │ Network Interface Card (NIC) receives electrical signals     │
 │                         │                                    │
 │                         ▼                                    │
-│ NIC decodes to ethernet frame                               │
+│ NIC decodes to ethernet frame                                │
 │                         │                                    │
 │                         ▼                                    │
-│ NIC raises HARDWARE INTERRUPT (IRQ)                         │
+│ NIC raises HARDWARE INTERRUPT (IRQ)                          │
 │                         │                                    │
 │                         ▼                                    │
-│ CPU pauses current work, runs interrupt handler             │
+│ CPU pauses current work, runs interrupt handler              │
 │                         │                                    │
 │                         ▼                                    │
-│ Interrupt handler copies frame to kernel buffer             │
-│ (ring buffer / DMA transfer)                                │
+│ Interrupt handler copies frame to kernel buffer              │
+│ (ring buffer / DMA transfer)                                 │
 └──────────────────────────────────────────────────────────────┘
 
 2. KERNEL PROCESSES PACKET:
@@ -1536,29 +1536,29 @@ Step-by-step what happens in the OS:
 ┌──────────────────────────────────────────────────────────────┐
 │ Network Stack Processing (softirq context):                  │
 │                                                              │
-│ Layer 2 (Data Link):                                        │
-│   - Verify ethernet checksum                                │
-│   - Extract destination MAC                                 │
-│   - If not for us, drop (or forward if router)             │
+│ Layer 2 (Data Link):                                         │
+│   - Verify ethernet checksum                                 │
+│   - Extract destination MAC                                  │
+│   - If not for us, drop (or forward if router)               │
 │                         │                                    │
 │                         ▼                                    │
-│ Layer 3 (Network):                                          │
-│   - Parse IP header                                         │
-│   - Verify IP checksum                                      │
-│   - Check if destination IP is ours                         │
-│   - Firewall rules (iptables/nftables)                     │
+│ Layer 3 (Network):                                           │
+│   - Parse IP header                                          │
+│   - Verify IP checksum                                       │
+│   - Check if destination IP is ours                          │
+│   - Firewall rules (iptables/nftables)                       │
 │                         │                                    │
 │                         ▼                                    │
-│ Layer 4 (Transport):                                        │
-│   - Parse TCP header                                        │
-│   - Find matching socket (by src/dst IP:port)              │
-│   - Verify TCP checksum                                     │
-│   - Handle TCP state machine (SYN/ACK/FIN etc)             │
+│ Layer 4 (Transport):                                         │
+│   - Parse TCP header                                         │
+│   - Find matching socket (by src/dst IP:port)                │
+│   - Verify TCP checksum                                      │
+│   - Handle TCP state machine (SYN/ACK/FIN etc)               │
 │                         │                                    │
 │                         ▼                                    │
-│ Socket Receive Queue:                                       │
-│   - Data added to socket's receive buffer                  │
-│   - Process waiting on recv() is woken up                  │
+│ Socket Receive Queue:                                        │
+│   - Data added to socket's receive buffer                    │
+│   - Process waiting on recv() is woken up                    │
 └──────────────────────────────────────────────────────────────┘
 
 3. APPLICATION RECEIVES DATA:
@@ -1567,43 +1567,43 @@ Step-by-step what happens in the OS:
 ┌──────────────────────────────────────────────────────────────┐
 │ Nginx Process:                                               │
 │                                                              │
-│ epoll_wait() returns → "Socket 42 has data"                 │
+│ epoll_wait() returns → "Socket 42 has data"                  │
 │                         │                                    │
 │                         ▼                                    │
-│ read(socket_fd, buffer, size)                               │
-│   - Copies data from kernel buffer to user buffer          │
-│   - Context switch: user mode → kernel mode → user mode    │
+│ read(socket_fd, buffer, size)                                │
+│   - Copies data from kernel buffer to user buffer            │
+│   - Context switch: user mode → kernel mode → user mode      │
 │                         │                                    │
 │                         ▼                                    │
-│ Parse HTTP request                                          │
-│   - Method: GET                                             │
-│   - Path: /api/users                                        │
-│   - Headers: Host, Accept, Cookie...                        │
+│ Parse HTTP request                                           │
+│   - Method: GET                                              │
+│   - Path: /api/users                                         │
+│   - Headers: Host, Accept, Cookie...                         │
 │                         │                                    │
 │                         ▼                                    │
-│ Determine action (based on nginx.conf)                      │
-│   - Static file? → Read from disk, send                    │
-│   - Proxy pass? → Forward to backend                       │
+│ Determine action (based on nginx.conf)                       │
+│   - Static file? → Read from disk, send                      │
+│   - Proxy pass? → Forward to backend                         │
 └──────────────────────────────────────────────────────────────┘
 
 4. PROXY TO BACKEND (localhost:3000):
 ────────────────────────────────────
 
 ┌──────────────────────────────────────────────────────────────┐
-│ Nginx creates NEW connection to localhost:3000              │
+│ Nginx creates NEW connection to localhost:3000               │
 │                                                              │
-│ connect(backend_socket, "127.0.0.1:3000")                   │
-│   - TCP handshake (all in kernel, super fast on localhost) │
+│ connect(backend_socket, "127.0.0.1:3000")                    │
+│   - TCP handshake (all in kernel, super fast on localhost)   │
 │                         │                                    │
 │                         ▼                                    │
-│ write(backend_socket, http_request)                         │
-│   - Send HTTP request to backend                            │
+│ write(backend_socket, http_request)                          │
+│   - Send HTTP request to backend                             │
 │                         │                                    │
 │                         ▼                                    │
-│ Kernel: localhost traffic never leaves machine             │
-│   - No NIC involved                                         │
-│   - Data goes through loopback interface (lo)              │
-│   - Super fast                                              │
+│ Kernel: localhost traffic never leaves machine               │
+│   - No NIC involved                                          │
+│   - Data goes through loopback interface (lo)                │
+│   - Super fast                                               │
 └──────────────────────────────────────────────────────────────┘
 
 5. YOUR APPLICATION CODE RUNS:
@@ -1612,20 +1612,20 @@ Step-by-step what happens in the OS:
 ┌──────────────────────────────────────────────────────────────┐
 │ Node.js / Spring Boot:                                       │
 │                                                              │
-│ Event loop / Thread pool thread picks up request            │
+│ Event loop / Thread pool thread picks up request             │
 │                         │                                    │
 │                         ▼                                    │
-│ Parse request, route to handler                             │
+│ Parse request, route to handler                              │
 │                         │                                    │
 │                         ▼                                    │
-│ Handler executes:                                           │
-│   - Validate input                                          │
-│   - Query database (await/blocking)                         │
-│   - Process business logic                                  │
-│   - Format response                                         │
+│ Handler executes:                                            │
+│   - Validate input                                           │
+│   - Query database (await/blocking)                          │
+│   - Process business logic                                   │
+│   - Format response                                          │
 │                         │                                    │
 │                         ▼                                    │
-│ Write response to socket                                    │
+│ Write response to socket                                     │
 └──────────────────────────────────────────────────────────────┘
 
 6. RESPONSE TRAVELS BACK:
@@ -1639,15 +1639,15 @@ TOTAL TIME BREAKDOWN (typical):
 ──────────────────────────────
 
 ┌─────────────────────────────────────────────────────────────┐
-│ DNS Resolution:           0-50ms (cached) / 50-200ms (not) │
-│ TCP Handshake:           15-50ms                           │
-│ TLS Handshake:           50-150ms                          │
-│ Request to Server:       10-50ms (network latency)         │
-│ Server Processing:       10-500ms (depends on work)        │
-│ Response to Client:      10-50ms (network latency)         │
-│ Browser Render:          50-500ms                          │
-│ ────────────────────────────────────────────────────────── │
-│ TOTAL:                   145ms - 1500ms                    │
+│ DNS Resolution:           0-50ms (cached) / 50-200ms (not)  │
+│ TCP Handshake:           15-50ms                            │
+│ TLS Handshake:           50-150ms                           │
+│ Request to Server:       10-50ms (network latency)          │
+│ Server Processing:       10-500ms (depends on work)         │
+│ Response to Client:      10-50ms (network latency)          │
+│ Browser Render:          50-500ms                           │
+│ ──────────────────────────────────────────────────────────  │
+│ TOTAL:                   145ms - 1500ms                     │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -1746,10 +1746,10 @@ PERFORMANCE IMPACT:
 │ Action             │ Triggers                                 │
 ├────────────────────┼──────────────────────────────────────────┤
 │ Change color       │ Paint only (fast)                        │
-│ Change font-size   │ Layout + Paint + Composite (slow)       │
+│ Change font-size   │ Layout + Paint + Composite (slow)        │
 │ Change transform   │ Composite only (fastest)                 │
-│ Add DOM element    │ Layout + Paint + Composite (slow)       │
-│ Scroll             │ Composite (fast with layers)            │
+│ Add DOM element    │ Layout + Paint + Composite (slow)        │
+│ Scroll             │ Composite (fast with layers)             │
 └────────────────────┴──────────────────────────────────────────┘
 
 OPTIMIZATION TIPS:
@@ -2026,7 +2026,7 @@ Namespaces make container think it has its own:
 ┌──────────────────┬────────────────────────────────────────────────┐
 │ Namespace        │ What it isolates                               │
 ├──────────────────┼────────────────────────────────────────────────┤
-│ PID              │ Process IDs (Container sees PID 1 as init)    │
+│ PID              │ Process IDs (Container sees PID 1 as init)     │
 │                  │ Can't see host processes                       │
 ├──────────────────┼────────────────────────────────────────────────┤
 │ NET              │ Network interfaces, ports, routing             │
@@ -2042,7 +2042,7 @@ Namespaces make container think it has its own:
 │                  │ Shared memory, message queues                  │
 ├──────────────────┼────────────────────────────────────────────────┤
 │ USER             │ User and group IDs                             │
-│                  │ Root in container ≠ root on host              │
+│                  │ Root in container ≠ root on host               │
 └──────────────────┴────────────────────────────────────────────────┘
 
 
@@ -2081,7 +2081,7 @@ Dockerfile:
 │ WORKDIR /app                                                   │
 │ COPY target/*.jar app.jar                                      │
 │ EXPOSE 8080                                                    │
-│ CMD ["java", "-jar", "app.jar"]                               │
+│ CMD ["java", "-jar", "app.jar"]                                │
 └────────────────────────────────────────────────────────────────┘
 
 Creates layered image:

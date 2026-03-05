@@ -12,22 +12,20 @@
 ## Part 1: NoSQL Categories
 
 ```
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║  TYPE              │ EXAMPLES          │ DATA MODEL     │ BEST FOR               ║
-║────────────────────┼───────────────────┼────────────────┼────────────────────    ║
-║  Document Store    │ MongoDB, CouchDB  │ JSON documents │ Flexible schema,       ║
-║                    │ Firestore         │ (nested)       │ content mgmt, catalogs ║
-║────────────────────┼───────────────────┼────────────────┼────────────────────    ║
-║  Key-Value Store   │ Redis, DynamoDB   │ key → blob     │ Caching, sessions,     ║
-║                    │ Memcached         │                │ real-time counters     ║
-║────────────────────┼───────────────────┼────────────────┼────────────────────    ║
-║  Column-Family     │ Cassandra, HBase  │ Wide columns,  │ Time-series, IoT,      ║
-║                    │ ScyllaDB          │ row key        │ write-heavy workloads  ║
-║────────────────────┼───────────────────┼────────────────┼────────────────────    ║
-║  Graph Database    │ Neo4j, Amazon     │ Nodes + edges  │ Social networks,       ║
-║                    │ Neptune           │ + properties   │ recommendations,       ║
-║                    │                   │                │ fraud detection        ║
-╚══════════════════════════════════════════════════════════════════════════════════╝
+TYPE              │ EXAMPLES          │ DATA MODEL     │ BEST FOR
+────────────────────┼───────────────────┼────────────────┼────────────────────
+Document Store    │ MongoDB, CouchDB  │ JSON documents │ Flexible schema,
+                  │ Firestore         │ (nested)       │ content mgmt, catalogs
+────────────────────┼───────────────────┼────────────────┼────────────────────
+Key-Value Store   │ Redis, DynamoDB   │ key → blob     │ Caching, sessions,
+                  │ Memcached         │                │ real-time counters
+────────────────────┼───────────────────┼────────────────┼────────────────────
+Column-Family     │ Cassandra, HBase  │ Wide columns,  │ Time-series, IoT,
+                  │ ScyllaDB          │ row key        │ write-heavy workloads
+────────────────────┼───────────────────┼────────────────┼────────────────────
+Graph Database    │ Neo4j, Amazon     │ Nodes + edges  │ Social networks,
+                  │ Neptune           │ + properties   │ recommendations,
+                  │                   │                │ fraud detection
 ```
 
 ---

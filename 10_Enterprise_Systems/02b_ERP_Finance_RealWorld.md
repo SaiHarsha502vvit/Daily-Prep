@@ -851,23 +851,23 @@ ABSOLUTELY YES. Here's the detailed path:
 
 WEEK 1: MASTER BASIC FUNCTIONS
 ┌────────────────────────────────────────────────────────────────────────────┐
-│ Day 1: Write calculateGST(amount, rate, sellerState, buyerState)          │
-│ Day 2: Write validatePAN(panNumber) and validateAadhaar(aadhaar)          │
-│ Day 3: Write findDuplicates(list) and removeDuplicates(list)              │
-│ Day 4: Write calculateAge(dateOfBirth) and isAdult(dateOfBirth)           │
-│ Day 5: Write generateOrderNumber(prefix, date, sequence)                  │
-│ Day 6: Write isDateRangeOverlapping(start1, end1, start2, end2)           │
+│ Day 1: Write calculateGST(amount, rate, sellerState, buyerState)           │
+│ Day 2: Write validatePAN(panNumber) and validateAadhaar(aadhaar)           │
+│ Day 3: Write findDuplicates(list) and removeDuplicates(list)               │
+│ Day 4: Write calculateAge(dateOfBirth) and isAdult(dateOfBirth)            │
+│ Day 5: Write generateOrderNumber(prefix, date, sequence)                   │
+│ Day 6: Write isDateRangeOverlapping(start1, end1, start2, end2)            │
 │ Day 7: Review and refactor all functions                                   │
 └────────────────────────────────────────────────────────────────────────────┘
 
 WEEK 2: CONNECT FUNCTIONS TO BUSINESS
 ┌────────────────────────────────────────────────────────────────────────────┐
-│ Day 8: Write calculateInvoiceTotal(items) with tax                        │
-│ Day 9: Write applyDiscount(amount, discountType, discountValue)           │
-│ Day 10: Write calculateEMI(principal, rate, months)                       │
-│ Day 11: Write calculateSimpleInterest, calculateCompoundInterest          │
-│ Day 12: Write calculatePayroll(baseSalary, allowances, deductions)        │
-│ Day 13: Write calculateLeaveBalance(entitlement, taken, carryForward)     │
+│ Day 8: Write calculateInvoiceTotal(items) with tax                         │
+│ Day 9: Write applyDiscount(amount, discountType, discountValue)            │
+│ Day 10: Write calculateEMI(principal, rate, months)                        │
+│ Day 11: Write calculateSimpleInterest, calculateCompoundInterest           │
+│ Day 12: Write calculatePayroll(baseSalary, allowances, deductions)         │
+│ Day 13: Write calculateLeaveBalance(entitlement, taken, carryForward)      │
 │ Day 14: Review and add unit tests                                          │
 └────────────────────────────────────────────────────────────────────────────┘
 
@@ -875,7 +875,7 @@ WEEK 3: DATA STRUCTURES IN BUSINESS CONTEXT
 ┌────────────────────────────────────────────────────────────────────────────┐
 │ Day 15: Use HashMap for inventory lookup                                   │
 │ Day 16: Use ArrayList for order line items                                 │
-│ Day 17: Use sorting for order by date, amount                             │
+│ Day 17: Use sorting for order by date, amount                              │
 │ Day 18: Use binary search for price slabs                                  │
 │ Day 19: Use two pointers for reconciliation                                │
 │ Day 20: Use sliding window for moving averages                             │
@@ -887,15 +887,15 @@ WEEK 4: BUILD MINI-MODULE
 │ Day 22-28: Build a simple Invoice Management System                        │
 │                                                                            │
 │ Features:                                                                  │
-│ - Create invoice with line items                                          │
-│ - Calculate subtotal, tax, total                                          │
-│ - Apply discounts                                                         │
-│ - Generate invoice number                                                 │
-│ - Mark as paid/unpaid                                                     │
-│ - List overdue invoices                                                   │
-│ - Calculate total outstanding                                             │
+│ - Create invoice with line items                                           │
+│ - Calculate subtotal, tax, total                                           │
+│ - Apply discounts                                                          │
+│ - Generate invoice number                                                  │
+│ - Mark as paid/unpaid                                                      │
+│ - List overdue invoices                                                    │
+│ - Calculate total outstanding                                              │
 │                                                                            │
-│ This is a COMPLETE small project using everything you learned!            │
+│ This is a COMPLETE small project using everything you learned!             │
 └────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -916,108 +916,108 @@ WEEK 4: BUILD MINI-MODULE
 │ TECHNIQUE 1: ACTIVE RECALL                                                   │
 │ ────────────────────────────                                                 │
 │                                                                              │
-│ DON'T: Read about calculateGST() 5 times                                    │
+│ DON'T: Read about calculateGST() 5 times                                     │
 │                                                                              │
-│ DO:   Read once → Close notes → Try to write from memory →                  │
-│       Check what you missed → Fill gaps                                     │
+│ DO:   Read once → Close notes → Try to write from memory →                   │
+│       Check what you missed → Fill gaps                                      │
 │                                                                              │
-│ "Reading FEELS productive. Recalling BUILDS mastery."                       │
+│ "Reading FEELS productive. Recalling BUILDS mastery."                        │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ TECHNIQUE 2: 45-15 FOCUS BLOCKS                                              │
 │ ────────────────────────────────                                             │
 │                                                                              │
-│ Your brain needs rhythm:                                                    │
-│ • 45 minutes: DEEP FOCUS (phone in another room!)                          │
-│ • 15 minutes: REAL BREAK (walk, water, stretch - NO SCROLLING!)            │
-│ • Repeat 3-4 times                                                          │
+│ Your brain needs rhythm:                                                     │
+│ • 45 minutes: DEEP FOCUS (phone in another room!)                            │
+│ • 15 minutes: REAL BREAK (walk, water, stretch - NO SCROLLING!)              │
+│ • Repeat 3-4 times                                                           │
 │                                                                              │
-│ "Your brain LOVES clear start-stop cycles."                                 │
+│ "Your brain LOVES clear start-stop cycles."                                  │
 │                                                                              │
-│ WHY NO PHONE DURING BREAK?                                                  │
-│ Phone uses SAME brain areas as coding → No real rest                        │
-│ Walking uses DIFFERENT brain areas → Actual recovery                        │
+│ WHY NO PHONE DURING BREAK?                                                   │
+│ Phone uses SAME brain areas as coding → No real rest                         │
+│ Walking uses DIFFERENT brain areas → Actual recovery                         │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ TECHNIQUE 3: BLURTING                                                        │
 │ ──────────────────────                                                       │
 │                                                                              │
-│ After learning "GST Calculation":                                           │
+│ After learning "GST Calculation":                                            │
 │                                                                              │
-│ 1. Close all notes and documentation                                        │
+│ 1. Close all notes and documentation                                         │
 │ 2. Take blank paper                                                          │
-│ 3. Write EVERYTHING you remember about GST calculation                      │
-│    (CGST, SGST, IGST, rates, inter-state rules, code...)                   │
-│ 4. Open notes - fill what you missed in RED ink                             │
+│ 3. Write EVERYTHING you remember about GST calculation                       │
+│    (CGST, SGST, IGST, rates, inter-state rules, code...)                     │
+│ 4. Open notes - fill what you missed in RED ink                              │
 │                                                                              │
-│ The RED parts = what you need to study more!                                │
-│ You can't hide from what you don't know.                                    │
+│ The RED parts = what you need to study more!                                 │
+│ You can't hide from what you don't know.                                     │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ TECHNIQUE 4: 2-3-7 REVISION RULE                                             │
 │ ────────────────────────────────                                             │
 │                                                                              │
-│ Day 1: Learn "Invoice Generation"                                           │
-│ Day 2: Quick review (10 min) - test yourself                               │
-│ Day 3: Quick review (10 min) - test yourself                               │
-│ Day 7: Weekly review - test yourself                                        │
+│ Day 1: Learn "Invoice Generation"                                            │
+│ Day 2: Quick review (10 min) - test yourself                                 │
+│ Day 3: Quick review (10 min) - test yourself                                 │
+│ Day 7: Weekly review - test yourself                                         │
 │                                                                              │
-│ After Day 7: It's in long-term memory!                                      │
+│ After Day 7: It's in long-term memory!                                       │
 │                                                                              │
-│ "Spaced repetition BEATS last-minute cramming."                             │
+│ "Spaced repetition BEATS last-minute cramming."                              │
 │                                                                              │
-│ For your 30-day plan:                                                       │
-│ ┌──────────────┬───────┬───────┬───────┬───────┐                           │
-│ │ Topic        │ Day 1 │ Day 2 │ Day 3 │ Day 7 │                           │
-│ ├──────────────┼───────┼───────┼───────┼───────┤                           │
-│ │ GST Calc     │ Mon   │ Tue   │ Wed   │ Sun   │                           │
-│ │ Invoice      │ Tue   │ Wed   │ Thu   │ Mon   │                           │
-│ │ EMI Calc     │ Wed   │ Thu   │ Fri   │ Tue   │                           │
-│ └──────────────┴───────┴───────┴───────┴───────┘                           │
+│ For your 30-day plan:                                                        │
+│ ┌──────────────┬───────┬───────┬───────┬───────┐                             │
+│ │ Topic        │ Day 1 │ Day 2 │ Day 3 │ Day 7 │                             │
+│ ├──────────────┼───────┼───────┼───────┼───────┤                             │
+│ │ GST Calc     │ Mon   │ Tue   │ Wed   │ Sun   │                             │
+│ │ Invoice      │ Tue   │ Wed   │ Thu   │ Mon   │                             │
+│ │ EMI Calc     │ Wed   │ Thu   │ Fri   │ Tue   │                             │
+│ └──────────────┴───────┴───────┴───────┴───────┘                             │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ TECHNIQUE 5: FEYNMAN TECHNIQUE                                               │
 │ ────────────────────────────────                                             │
 │                                                                              │
-│ Can you explain "Accounts Receivable" to your 10-year-old cousin?          │
+│ Can you explain "Accounts Receivable" to your 10-year-old cousin?            │
 │                                                                              │
-│ BAD: "AR is an accounting term for money owed to a company by             │
-│       customers for goods/services delivered on credit terms."             │
+│ BAD: "AR is an accounting term for money owed to a company by                │
+│       customers for goods/services delivered on credit terms."               │
 │                                                                              │
-│ GOOD: "Imagine you gave your friend 10 chocolates today.                   │
-│        He promised to pay you ₹50 tomorrow.                                │
-│        That ₹50 he owes you = Accounts Receivable.                         │
-│        It's YOUR money, but you don't have it yet!"                        │
+│ GOOD: "Imagine you gave your friend 10 chocolates today.                     │
+│        He promised to pay you ₹50 tomorrow.                                  │
+│        That ₹50 he owes you = Accounts Receivable.                           │
+│        It's YOUR money, but you don't have it yet!"                          │
 │                                                                              │
-│ "If you can't SIMPLIFY it, you don't UNDERSTAND it yet."                   │
+│ "If you can't SIMPLIFY it, you don't UNDERSTAND it yet."                     │
 │                                                                              │
-│ TEST: Record yourself explaining for 2 minutes.                             │
-│       If you stumble = you need to study that part more.                   │
+│ TEST: Record yourself explaining for 2 minutes.                              │
+│       If you stumble = you need to study that part more.                     │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ TECHNIQUE 6: QUESTION FIRST APPROACH                                         │
 │ ──────────────────────────────────────                                       │
 │                                                                              │
-│ DON'T: Read all about "Order Management" → Then try problems               │
-│        (You don't know WHAT matters, so you learn vaguely)                  │
+│ DON'T: Read all about "Order Management" → Then try problems                 │
+│        (You don't know WHAT matters, so you learn vaguely)                   │
 │                                                                              │
-│ DO:   Look at Order Management code/problems FIRST →                        │
-│       Notice: "I don't understand how inventory locking works" →            │
-│       NOW read about inventory locking with PURPOSE →                       │
-│       Return to code with understanding                                     │
+│ DO:   Look at Order Management code/problems FIRST →                         │
+│       Notice: "I don't understand how inventory locking works" →             │
+│       NOW read about inventory locking with PURPOSE →                        │
+│       Return to code with understanding                                      │
 │                                                                              │
-│ "It trains your brain to study with PURPOSE."                               │
+│ "It trains your brain to study with PURPOSE."                                │
 │                                                                              │
-│ For this guide:                                                             │
-│ 1. Look at the code examples FIRST                                          │
-│ 2. Try to understand what they do                                           │
-│ 3. Note what confuses you                                                   │
-│ 4. THEN read the explanations                                               │
+│ For this guide:                                                              │
+│ 1. Look at the code examples FIRST                                           │
+│ 2. Try to understand what they do                                            │
+│ 3. Note what confuses you                                                    │
+│ 4. THEN read the explanations                                                │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 APPLY TO YOUR 30-DAY PLAN:
@@ -1063,31 +1063,31 @@ THIS IS SOLVABLE. Here's the truth:
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │                                                                              │
-│ Theory is READING. Application is DOING.                                    │
+│ Theory is READING. Application is DOING.                                     │
 │                                                                              │
-│ You can't learn to ride a bicycle by reading about it.                      │
-│ You can't learn to cook by watching YouTube.                                │
-│ You can't learn to code by only understanding concepts.                     │
+│ You can't learn to ride a bicycle by reading about it.                       │
+│ You can't learn to cook by watching YouTube.                                 │
+│ You can't learn to code by only understanding concepts.                      │
 │                                                                              │
-│ The ONLY way to bridge the gap:                                             │
+│ The ONLY way to bridge the gap:                                              │
 │                                                                              │
-│   WRITE → FAIL → UNDERSTAND WHY → FIX → REPEAT                              │
+│   WRITE → FAIL → UNDERSTAND WHY → FIX → REPEAT                               │
 │                                                                              │
-│ Every function you write, even if wrong, teaches you something.             │
-│ Every bug you fix adds to your mental library.                              │
-│ Every "aha!" moment builds your intuition.                                  │
+│ Every function you write, even if wrong, teaches you something.              │
+│ Every bug you fix adds to your mental library.                               │
+│ Every "aha!" moment builds your intuition.                                   │
 │                                                                              │
 │ START WITH:                                                                  │
-│ "I will write ONE function today that does ONE small thing correctly."      │
+│ "I will write ONE function today that does ONE small thing correctly."       │
 │                                                                              │
-│ After 100 functions, you'll be a different person.                          │
-│ After 1000 functions, you'll be a good developer.                           │
-│ After 10000 functions, you'll be a senior developer.                        │
+│ After 100 functions, you'll be a different person.                           │
+│ After 1000 functions, you'll be a good developer.                            │
+│ After 10000 functions, you'll be a senior developer.                         │
 │                                                                              │
-│ Your anna gave you VISION (ERP, enterprise systems).                        │
-│ Now you need PRACTICE (write, fail, learn, repeat).                         │
+│ Your anna gave you VISION (ERP, enterprise systems).                         │
+│ Now you need PRACTICE (write, fail, learn, repeat).                          │
 │                                                                              │
-│ YOU WILL GET THERE. The path is clear. Just start walking.                  │
+│ YOU WILL GET THERE. The path is clear. Just start walking.                   │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 

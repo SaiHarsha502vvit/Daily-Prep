@@ -488,36 +488,34 @@ declare namespace NodeJS {
 ## 7. Migration Strategy — JS to TS
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  MIGRATING JS → TS (Step by Step):                                   ║
-║                                                                      ║
-║  Phase 1: SETUP                                                      ║
-║  ┌─────────────────────────────────────────────────────────────┐     ║
-║  │ 1. npm install -D typescript                                │     ║
-║  │ 2. npx tsc --init                                           │     ║
-║  │ 3. Set allowJs: true, strict: false initially              │      ║
-║  │ 4. Rename .js → .ts one file at a time                     │      ║
-║  └─────────────────────────────────────────────────────────────┘     ║
-║                                                                      ║
-║  Phase 2: GRADUAL TYPING                                             ║
-║  ┌─────────────────────────────────────────────────────────────┐     ║
-║  │ 1. Start with leaf files (utils, helpers — no dependencies) │     ║
-║  │ 2. Add types to function signatures                         │     ║
-║  │ 3. Replace `any` with proper types one by one              │      ║
-║  │ 4. Move toward core files (API, state, components)         │      ║
-║  └─────────────────────────────────────────────────────────────┘     ║
-║                                                                      ║
-║  Phase 3: STRICT MODE                                                ║
-║  ┌─────────────────────────────────────────────────────────────┐     ║
-║  │ 1. Enable strict flags ONE AT A TIME:                       │     ║
-║  │    noImplicitAny → strictNullChecks → strictFunctionTypes  │      ║
-║  │ 2. Fix errors from each flag before enabling next          │      ║
-║  │ 3. Eventually set strict: true                              │     ║
-║  └─────────────────────────────────────────────────────────────┘     ║
-║                                                                      ║
-║  RULE: Never stop at Phase 1. Phase 1 TS is worse than JS            ║
-║  because it gives FALSE confidence. Reach Phase 3.                   ║
-╚══════════════════════════════════════════════════════════════════════╝
+MIGRATING JS → TS (Step by Step):
+
+Phase 1: SETUP
+┌─────────────────────────────────────────────────────────────┐
+│ 1. npm install -D typescript                                │
+│ 2. npx tsc --init                                           │
+│ 3. Set allowJs: true, strict: false initially               │
+│ 4. Rename .js → .ts one file at a time                      │
+└─────────────────────────────────────────────────────────────┘
+
+Phase 2: GRADUAL TYPING
+┌─────────────────────────────────────────────────────────────┐
+│ 1. Start with leaf files (utils, helpers — no dependencies) │
+│ 2. Add types to function signatures                         │
+│ 3. Replace `any` with proper types one by one               │
+│ 4. Move toward core files (API, state, components)          │
+└─────────────────────────────────────────────────────────────┘
+
+Phase 3: STRICT MODE
+┌─────────────────────────────────────────────────────────────┐
+│ 1. Enable strict flags ONE AT A TIME:                       │
+│    noImplicitAny → strictNullChecks → strictFunctionTypes   │
+│ 2. Fix errors from each flag before enabling next           │
+│ 3. Eventually set strict: true                              │
+└─────────────────────────────────────────────────────────────┘
+
+RULE: Never stop at Phase 1. Phase 1 TS is worse than JS
+because it gives FALSE confidence. Reach Phase 3.
 ```
 
 ---
@@ -555,30 +553,28 @@ const enum Direction { Up, Down } // Inlined as 0, 1
 ## 9. Essential TypeScript Configuration by Project Type
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  PROJECT TYPE → KEY TSCONFIG OPTIONS:                                ║
-║                                                                      ║
-║  React + Vite:                                                       ║
-║  ├── target: "ES2020"                                                ║
-║  ├── jsx: "react-jsx"                                                ║
-║  ├── module: "ESNext"                                                ║
-║  ├── moduleResolution: "bundler"                                     ║
-║  └── strict: true                                                    ║
-║                                                                      ║
-║  Node.js API:                                                        ║
-║  ├── target: "ES2022"                                                ║
-║  ├── module: "NodeNext"                                              ║
-║  ├── moduleResolution: "NodeNext"                                    ║
-║  ├── outDir: "./dist"                                                ║
-║  └── strict: true                                                    ║
-║                                                                      ║
-║  Library/Package:                                                    ║
-║  ├── target: "ES2020"                                                ║
-║  ├── declaration: true       ← Generate .d.ts                        ║
-║  ├── declarationMap: true    ← Source maps for types                 ║
-║  ├── composite: true         ← For project references                ║
-║  └── strict: true                                                    ║
-╚══════════════════════════════════════════════════════════════════════╝
+PROJECT TYPE → KEY TSCONFIG OPTIONS:
+
+React + Vite:
+├── target: "ES2020"
+├── jsx: "react-jsx"
+├── module: "ESNext"
+├── moduleResolution: "bundler"
+└── strict: true
+
+Node.js API:
+├── target: "ES2022"
+├── module: "NodeNext"
+├── moduleResolution: "NodeNext"
+├── outDir: "./dist"
+└── strict: true
+
+Library/Package:
+├── target: "ES2020"
+├── declaration: true       ← Generate .d.ts
+├── declarationMap: true    ← Source maps for types
+├── composite: true         ← For project references
+└── strict: true
 ```
 
 ---

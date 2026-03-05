@@ -249,21 +249,19 @@ h1 {
 ```
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHY TRANSFORM IS SPECIAL:                                           ║
-║                                                                      ║
-║  Transforms are GPU-accelerated. They don't trigger layout           ║
-║  recalculation (reflow). This makes them FAST for animations.        ║
-║                                                                      ║
-║  SLOW (triggers reflow):        FAST (GPU, no reflow):               ║
-║  ├── left, top, right, bottom   ├── transform: translate()           ║
-║  ├── width, height              ├── transform: scale()               ║
-║  ├── margin, padding            ├── transform: rotate()              ║
-║  └── font-size                  ├── opacity                          ║
-║                                  └── filter                          ║
-║                                                                      ║
-║  RULE: Animate ONLY transform and opacity for 60fps.                 ║
-╚══════════════════════════════════════════════════════════════════════╝
+WHY TRANSFORM IS SPECIAL:
+
+Transforms are GPU-accelerated. They don't trigger layout
+recalculation (reflow). This makes them FAST for animations.
+
+SLOW (triggers reflow):        FAST (GPU, no reflow):
+├── left, top, right, bottom   ├── transform: translate()
+├── width, height              ├── transform: scale()
+├── margin, padding            ├── transform: rotate()
+└── font-size                  ├── opacity
+                                └── filter
+
+RULE: Animate ONLY transform and opacity for 60fps.
 ```
 
 ---
@@ -278,12 +276,12 @@ h1 {
     color: white;
     padding: 0.75rem 1.5rem;
     border-radius: 8px;
-    
+
     /* TRANSITION: property | duration | timing | delay */
     transition: all 0.2s ease;
-    
+
     /* OR be specific (recommended for performance): */
-    transition: 
+    transition:
         background-color 0.2s ease,
         transform 0.2s ease,
         box-shadow 0.2s ease;
@@ -536,7 +534,7 @@ h1 {
 }
 .gradient-border {
     border: 2px solid transparent;
-    background: 
+    background:
         linear-gradient(white, white) padding-box,
         conic-gradient(from var(--angle), #f06, #9f6, #06f, #f06) border-box;
     animation: gradient-rotate 3s linear infinite;
@@ -555,7 +553,7 @@ h1 {
     overflow: hidden;
     white-space: nowrap;
     border-right: 3px solid #333;
-    animation: 
+    animation:
         typing 3s steps(30) 1s forwards,
         blink-cursor 0.75s step-end infinite;
 }

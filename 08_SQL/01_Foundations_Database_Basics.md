@@ -159,32 +159,30 @@
 # 🎯 LEARNING PHILOSOPHY
 
 ```
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║                    THE WHY-HOW FRAMEWORK FOR SQL                                 ║
-╠══════════════════════════════════════════════════════════════════════════════════╣
-║                                                                                  ║
-║  For every SQL concept, we answer:                                               ║
-║                                                                                  ║
-║  🔵 WHY does this exist?                                                          ║
-║     └── What real-world problem does it solve?                                   ║
-║     └── What would happen without it?                                            ║
-║     └── Which companies use this? When?                                          ║
-║                                                                                  ║
-║  🟢 HOW does it work?                                                             ║
-║     └── Core syntax and mechanics                                                ║
-║     └── Step-by-step execution                                                   ║
-║     └── Visual representation                                                    ║
-║                                                                                  ║
-║  🟡 WHEN to use it?                                                               ║
-║     └── Best practice scenarios                                                  ║
-║     └── Anti-patterns to avoid                                                   ║
-║     └── Performance implications                                                 ║
-║                                                                                  ║
-║  🔴 REAL-WORLD Story                                                              ║
-║     └── Production incident or use case                                          ║
-║     └── How it was solved using this concept                                     ║
-║                                                                                  ║
-╚══════════════════════════════════════════════════════════════════════════════════╝
+                  THE WHY-HOW FRAMEWORK FOR SQL
+──────────────────────────────────────────────────
+
+For every SQL concept, we answer:
+
+🔵 WHY does this exist?
+   └── What real-world problem does it solve?
+   └── What would happen without it?
+   └── Which companies use this? When?
+
+🟢 HOW does it work?
+   └── Core syntax and mechanics
+   └── Step-by-step execution
+   └── Visual representation
+
+🟡 WHEN to use it?
+   └── Best practice scenarios
+   └── Anti-patterns to avoid
+   └── Performance implications
+
+🔴 REAL-WORLD Story
+   └── Production incident or use case
+   └── How it was solved using this concept
+
 ```
 
 ---
@@ -333,46 +331,46 @@ CREATE TABLE customers (
     -- INT: 2.1 billion max - sufficient for most companies
     -- BIGINT: 9.2 quintillion - use for app with billions of records (like Facebook)
     customer_id     INT PRIMARY KEY AUTO_INCREMENT,
-    
+
     -- WHY VARCHAR(100) for email?
     -- RFC 5321 allows 254 chars, but 99.9% emails < 100 chars
     -- Shorter = faster index, less storage
     -- WHY UNIQUE? One account per email
     email           VARCHAR(100) NOT NULL UNIQUE,
-    
+
     -- WHY separate first_name and last_name?
     -- Sorting by last name
     -- Addressing in emails: "Dear John"
     -- Search flexibility
     first_name      VARCHAR(50) NOT NULL,
     last_name       VARCHAR(50) NOT NULL,
-    
+
     -- WHY CHAR(60) for password hash?
     -- bcrypt always produces 60 character hash
     -- CHAR is faster than VARCHAR for fixed-length data
     password_hash   CHAR(60) NOT NULL,
-    
+
     -- WHY VARCHAR(15) for phone?
     -- International format: +1-234-567-8901 = 14 chars
     -- Leave 1 char buffer
     phone           VARCHAR(15),
-    
+
     -- WHY TIMESTAMP vs DATETIME?
     -- TIMESTAMP: Auto timezone conversion, 4 bytes, range 1970-2038
     -- DATETIME: No timezone, 8 bytes, range 1000-9999
     -- Use TIMESTAMP for audit fields (created_at, updated_at)
     created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    
+
     -- WHY BOOLEAN with DEFAULT?
     -- New accounts should be active by default
     -- Soft delete: Set is_active = FALSE instead of DELETE
     is_active       BOOLEAN DEFAULT TRUE,
-    
+
     -- WHY INDEX on created_at?
     -- "Show me users who signed up in last 7 days" - common query
     INDEX idx_created_at (created_at),
-    
+
     -- WHY composite INDEX on (last_name, first_name)?
     -- "Find users named 'Smith, John'" - searches both fields
     -- Index on (A, B) can be used for queries on A alone, but not B alone
@@ -385,14 +383,14 @@ CREATE TABLE customers (
 
 CREATE TABLE orders (
     order_id        BIGINT PRIMARY KEY AUTO_INCREMENT,
-    
+
     -- WHY CHAR(20) for order_number?
     -- Business-readable ID: "ORD-2024-00123456"
     -- Internal ID (order_id) for joins, external (order_number) for customers
     order_number    CHAR(20) UNIQUE NOT NULL,
-    
+
     customer_id     INT NOT NULL,
-    
+
     -- WHY DECIMAL(12,2) for amounts?
     -- 12,2 means max 9,999,999,999.99 (10 billion)
     -- NEVER use FLOAT for money! 0.1 + 0.2 = 0.30000000000000004 in FLOAT
@@ -400,14 +398,14 @@ CREATE TABLE orders (
     tax             DECIMAL(12, 2) DEFAULT 0.00,
     shipping        DECIMAL(12, 2) DEFAULT 0.00,
     total           DECIMAL(12, 2) NOT NULL,
-    
+
     -- WHY ENUM for status?
     -- Limited valid values
     -- Storage: 1-2 bytes (vs VARCHAR which uses more)
     -- Database enforces valid status values
-    status          ENUM('pending', 'confirmed', 'processing', 'shipped', 
+    status          ENUM('pending', 'confirmed', 'processing', 'shipped',
                         'delivered', 'cancelled', 'refunded') DEFAULT 'pending',
-    
+
     -- WHY separate ordered_at from created_at?
     -- ordered_at: When customer placed order
     -- created_at: When record was inserted (might differ in batch imports)
@@ -415,22 +413,22 @@ CREATE TABLE orders (
     shipped_at      TIMESTAMP NULL,
     delivered_at    TIMESTAMP NULL,
     created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    
+
     -- FOREIGN KEY with CASCADE
     -- WHY CASCADE on UPDATE but RESTRICT on DELETE?
     -- If customer_id changes (rare), update order automatically
     -- If customer tries to delete, PREVENT if they have orders
     -- This protects business data - orders are financial records
-    CONSTRAINT fk_customer 
+    CONSTRAINT fk_customer
         FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
         ON UPDATE CASCADE
         ON DELETE RESTRICT,
-    
+
     -- WHY compound INDEX on (customer_id, ordered_at)?
     -- Most common query: "Show me orders for customer X in date range"
     -- This single index handles: customer orders, recent orders, date filtering
     INDEX idx_customer_orders (customer_id, ordered_at DESC),
-    
+
     -- WHY INDEX on status?
     -- "Show all pending orders" - operations team query
     -- Low cardinality but frequently filtered
@@ -448,21 +446,21 @@ CREATE TABLE order_items (
     item_id         BIGINT PRIMARY KEY AUTO_INCREMENT,
     order_id        BIGINT NOT NULL,
     product_id      INT NOT NULL,
-    
+
     -- WHY store price here? Product price can change!
     -- Historical accuracy: Order shows price AT TIME OF PURCHASE
     -- Business requirement: Invoice must match what customer paid
     unit_price      DECIMAL(10, 2) NOT NULL,
     quantity        INT NOT NULL CHECK (quantity > 0),
-    
+
     -- WHY store computed total?
     -- Performance: Don't calculate on every read
     -- Flexibility: Can apply line-item discounts
     line_total      DECIMAL(12, 2) GENERATED ALWAYS AS (unit_price * quantity) STORED,
-    
+
     FOREIGN KEY (order_id) REFERENCES orders(order_id) ON DELETE CASCADE,
     FOREIGN KEY (product_id) REFERENCES products(product_id) ON DELETE RESTRICT,
-    
+
     -- WHY UNIQUE on (order_id, product_id)?
     -- One line item per product per order
     -- Customer wants 2 units? Update quantity, don't add new row
@@ -588,15 +586,15 @@ CREATE TABLE order_items (
 -- ═══════════════════════════════════════════════════════════════════════════════
 
 -- Add single column
-ALTER TABLE customers 
+ALTER TABLE customers
 ADD COLUMN loyalty_points INT DEFAULT 0;
 
 -- Add column at specific position (MySQL)
-ALTER TABLE customers 
+ALTER TABLE customers
 ADD COLUMN middle_name VARCHAR(50) AFTER first_name;
 
 -- Add multiple columns
-ALTER TABLE customers 
+ALTER TABLE customers
 ADD COLUMN date_of_birth DATE,
 ADD COLUMN gender ENUM('M', 'F', 'Other', 'Prefer not to say'),
 ADD COLUMN referral_code VARCHAR(20);
@@ -610,16 +608,16 @@ ADD COLUMN referral_code VARCHAR(20);
 -- Risky: VARCHAR(100) → VARCHAR(50) (truncation)
 -- Risky: VARCHAR → INT (conversion errors)
 
-ALTER TABLE customers 
+ALTER TABLE customers
 MODIFY COLUMN phone VARCHAR(20);  -- Expand phone field
 
 -- Rename column (MySQL 8.0+)
-ALTER TABLE customers 
+ALTER TABLE customers
 RENAME COLUMN phone TO phone_number;
 
 -- Change column WITH data conversion
 -- Always test on staging first!
-ALTER TABLE orders 
+ALTER TABLE orders
 MODIFY COLUMN total DECIMAL(15, 2);  -- Increase precision
 
 -- ═══════════════════════════════════════════════════════════════════════════════
@@ -627,11 +625,11 @@ MODIFY COLUMN total DECIMAL(15, 2);  -- Increase precision
 -- ═══════════════════════════════════════════════════════════════════════════════
 
 -- ⚠️ IRREVERSIBLE! Always backup first!
-ALTER TABLE customers 
+ALTER TABLE customers
 DROP COLUMN middle_name;
 
 -- Drop multiple columns
-ALTER TABLE customers 
+ALTER TABLE customers
 DROP COLUMN temp_field1,
 DROP COLUMN temp_field2;
 
@@ -640,20 +638,20 @@ DROP COLUMN temp_field2;
 -- ═══════════════════════════════════════════════════════════════════════════════
 
 -- Add UNIQUE constraint
-ALTER TABLE products 
+ALTER TABLE products
 ADD CONSTRAINT uk_sku UNIQUE (sku);
 
 -- Add CHECK constraint
-ALTER TABLE products 
+ALTER TABLE products
 ADD CONSTRAINT chk_price CHECK (price >= 0);
 
 -- Add FOREIGN KEY
-ALTER TABLE orders 
-ADD CONSTRAINT fk_shipping_address 
+ALTER TABLE orders
+ADD CONSTRAINT fk_shipping_address
 FOREIGN KEY (shipping_address_id) REFERENCES addresses(address_id);
 
 -- Drop constraint
-ALTER TABLE products 
+ALTER TABLE products
 DROP CONSTRAINT chk_price;
 
 -- ═══════════════════════════════════════════════════════════════════════════════
@@ -661,15 +659,15 @@ DROP CONSTRAINT chk_price;
 -- ═══════════════════════════════════════════════════════════════════════════════
 
 -- Add index (can be done while table is in use, but slows down)
-ALTER TABLE customers 
+ALTER TABLE customers
 ADD INDEX idx_email (email);
 
 -- Add composite index
-ALTER TABLE orders 
+ALTER TABLE orders
 ADD INDEX idx_customer_date (customer_id, ordered_at DESC);
 
 -- Drop index
-ALTER TABLE customers 
+ALTER TABLE customers
 DROP INDEX idx_email;
 
 -- ═══════════════════════════════════════════════════════════════════════════════
@@ -822,7 +820,7 @@ VALUES ('jane@example.com', 'Jane', 'Smith', '$2a$10$xyz789hash');
 -- Performance: 10-100x faster!
 
 INSERT INTO customers (email, first_name, last_name, password_hash)
-VALUES 
+VALUES
     ('user1@example.com', 'User', 'One', '$hash1'),
     ('user2@example.com', 'User', 'Two', '$hash2'),
     ('user3@example.com', 'User', 'Three', '$hash3'),
@@ -841,7 +839,7 @@ WHERE created_at < '2023-01-01';
 
 -- Create summary table
 INSERT INTO monthly_sales_summary (month, total_sales, order_count)
-SELECT 
+SELECT
     DATE_FORMAT(ordered_at, '%Y-%m') AS month,
     SUM(total) AS total_sales,
     COUNT(*) AS order_count
@@ -857,7 +855,7 @@ GROUP BY DATE_FORMAT(ordered_at, '%Y-%m');
 -- WHY: Avoid checking if record exists, then deciding INSERT or UPDATE
 INSERT INTO product_inventory (product_id, quantity, last_updated)
 VALUES (101, 50, NOW())
-ON DUPLICATE KEY UPDATE 
+ON DUPLICATE KEY UPDATE
     quantity = quantity + VALUES(quantity),
     last_updated = NOW();
 
@@ -875,7 +873,7 @@ ON CONFLICT (product_id) DO UPDATE SET
 -- WHY: Bulk import where some records may already exist
 -- Instead of failing on duplicate, silently skip
 INSERT IGNORE INTO customers (email, first_name, last_name, password_hash)
-VALUES 
+VALUES
     ('existing@email.com', 'Will', 'Skip', '$hash'),    -- Skipped if exists
     ('new@email.com', 'Will', 'Insert', '$hash');       -- Inserted
 ```
@@ -892,13 +890,13 @@ VALUES
 -- ═══════════════════════════════════════════════════════════════════════════════
 
 -- Single record update
-UPDATE customers 
+UPDATE customers
 SET email = 'newemail@example.com'
 WHERE customer_id = 12345;
 
 -- Multiple columns
-UPDATE customers 
-SET 
+UPDATE customers
+SET
     first_name = 'Jonathan',
     phone = '+1-555-123-4567',
     updated_at = NOW()
@@ -909,7 +907,7 @@ WHERE customer_id = 12345;
 -- ═══════════════════════════════════════════════════════════════════════════════
 
 -- Update multiple records with different values based on condition
-UPDATE products 
+UPDATE products
 SET price = CASE
     WHEN category = 'Electronics' THEN price * 0.90  -- 10% off electronics
     WHEN category = 'Clothing' THEN price * 0.80     -- 20% off clothing
@@ -925,9 +923,9 @@ WHERE is_on_sale = TRUE;
 -- Example: Mark orders as "VIP" if customer has spent > $10000
 UPDATE orders o
 JOIN (
-    SELECT customer_id 
-    FROM orders 
-    GROUP BY customer_id 
+    SELECT customer_id
+    FROM orders
+    GROUP BY customer_id
     HAVING SUM(total) > 10000
 ) vip ON o.customer_id = vip.customer_id
 SET o.priority = 'VIP';
@@ -954,9 +952,9 @@ WHERE email LIKE '%@olddomain.com';
 -- ═══════════════════════════════════════════════════════════════════════════════
 
 -- Process in batches to avoid long locks
-UPDATE orders 
+UPDATE orders
 SET status = 'archived'
-WHERE status = 'delivered' 
+WHERE status = 'delivered'
   AND delivered_at < '2023-01-01'
 LIMIT 1000;  -- Only update 1000 at a time
 ```
@@ -999,8 +997,8 @@ WHERE c.is_active = FALSE;
 
 -- Instead of: DELETE FROM customers WHERE customer_id = 12345;
 -- Do this:
-UPDATE customers 
-SET 
+UPDATE customers
+SET
     is_active = FALSE,
     deleted_at = NOW(),
     deleted_by = 'admin_user'
@@ -1368,23 +1366,23 @@ BEGIN
     DECLARE v_price DECIMAL(10,2);
     DECLARE v_stock INT;
     DECLARE v_total DECIMAL(12,2);
-    
+
     -- Declare handler for errors
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
         ROLLBACK;
         SET p_status = 'ERROR: Transaction rolled back';
     END;
-    
+
     START TRANSACTION;
-    
+
     -- 1. Check stock and get price (with lock to prevent concurrent reads)
-    SELECT price, stock_quantity 
+    SELECT price, stock_quantity
     INTO v_price, v_stock
-    FROM products 
+    FROM products
     WHERE product_id = p_product_id
     FOR UPDATE;  -- Lock this row!
-    
+
     -- 2. Validate stock
     IF v_stock < p_quantity THEN
         ROLLBACK;
@@ -1392,22 +1390,22 @@ BEGIN
     ELSE
         -- 3. Calculate total
         SET v_total = v_price * p_quantity;
-        
+
         -- 4. Create order
         INSERT INTO orders (customer_id, total, status, ordered_at)
         VALUES (p_customer_id, v_total, 'pending', NOW());
-        
+
         SET p_order_id = LAST_INSERT_ID();
-        
+
         -- 5. Create order item
         INSERT INTO order_items (order_id, product_id, quantity, unit_price)
         VALUES (p_order_id, p_product_id, p_quantity, v_price);
-        
+
         -- 6. Reduce stock
-        UPDATE products 
+        UPDATE products
         SET stock_quantity = stock_quantity - p_quantity
         WHERE product_id = p_product_id;
-        
+
         -- 7. All successful - commit!
         COMMIT;
         SET p_status = 'SUCCESS';

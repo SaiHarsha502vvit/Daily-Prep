@@ -36,7 +36,7 @@
     --color-success: #22c55e;
     --color-warning: #f59e0b;
     --color-danger: #ef4444;
-    
+
     --color-bg: #ffffff;
     --color-bg-secondary: #f8fafc;
     --color-text: #1e293b;
@@ -137,33 +137,31 @@
 ### BEM (Block Element Modifier)
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  BEM: Block__Element--Modifier                                       ║
-║                                                                      ║
-║  Block: Independent component              .card                     ║
-║  Element: Part of a block                  .card__title              ║
-║  Modifier: Variation/state                 .card--featured           ║
-║                                                                      ║
-║  VISUAL:                                                             ║
-║  ┌──────────────────────────────┐                                    ║
-║  │ .card                        │ ← Block                            ║
-║  │  ┌────────────────────────┐  │                                    ║
-║  │  │ .card__image           │  │ ← Element                          ║
-║  │  └────────────────────────┘  │                                    ║
-║  │  .card__title                │ ← Element                          ║
-║  │  .card__description          │ ← Element                          ║
-║  │  ┌────────────────────────┐  │                                    ║
-║  │  │ .card__button          │  │ ← Element                          ║
-║  │  │ .card__button--primary │  │ ← Element + Modifier               ║
-║  │  └────────────────────────┘  │                                    ║
-║  └──────────────────────────────┘                                    ║
-║                                                                      ║
-║  .card--featured = modifier on the block                             ║
-║  .card__button--disabled = modifier on the element                   ║
-║                                                                      ║
-║  WHY BEM: Flat specificity (all single class), self-documenting,     ║
-║  no nesting conflicts, easy to understand relationship.              ║
-╚══════════════════════════════════════════════════════════════════════╝
+BEM: Block__Element--Modifier
+
+Block: Independent component              .card
+Element: Part of a block                  .card__title
+Modifier: Variation/state                 .card--featured
+
+VISUAL:
+┌──────────────────────────────┐
+│ .card                        │ ← Block
+│  ┌────────────────────────┐  │
+│  │ .card__image           │  │ ← Element
+│  └────────────────────────┘  │
+│  .card__title                │ ← Element
+│  .card__description          │ ← Element
+│  ┌────────────────────────┐  │
+│  │ .card__button          │  │ ← Element
+│  │ .card__button--primary │  │ ← Element + Modifier
+│  └────────────────────────┘  │
+└──────────────────────────────┘
+
+.card--featured = modifier on the block
+.card__button--disabled = modifier on the element
+
+WHY BEM: Flat specificity (all single class), self-documenting,
+no nesting conflicts, easy to understand relationship.
 ```
 
 ```css
@@ -266,19 +264,19 @@ form:has(:invalid) {
 /* Nesting (native CSS!): */
 .card {
     background: white;
-    
+
     & .title {
         font-size: 1.25rem;
     }
-    
+
     &:hover {
         transform: translateY(-2px);
     }
-    
+
     &.featured {
         border-color: blue;
     }
-    
+
     @media (width >= 768px) {
         display: flex;
     }
@@ -324,13 +322,13 @@ form:has(:invalid) {
     border-radius: 20px;
     padding: 2rem;
     /* Light shadow (top-left) + Dark shadow (bottom-right) */
-    box-shadow: 
+    box-shadow:
         8px 8px 16px #b8bec7,
         -8px -8px 16px #ffffff;
 }
 .neumorph-inset {
     /* "Pressed in" look: */
-    box-shadow: 
+    box-shadow:
         inset 4px 4px 8px #b8bec7,
         inset -4px -4px 8px #ffffff;
 }
@@ -426,7 +424,7 @@ form:has(:invalid) {
     font-family: inherit;
     background: var(--color-bg);
     color: var(--color-text);
-    transition: 
+    transition:
         border-color var(--transition-fast),
         box-shadow var(--transition-fast);
     outline: none;
@@ -532,7 +530,7 @@ form:has(:invalid) {
     --color-border:     var(--gray-200);
     --color-primary:    var(--primary-500);
     --color-primary-fg: #ffffff;
-    
+
     /* === ELEVATION (shadows as "height"): === */
     --elevation-1: 0 1px 2px 0 rgba(0,0,0,0.05);
     --elevation-2: 0 1px 3px 0 rgba(0,0,0,0.1), 0 1px 2px -1px rgba(0,0,0,0.1);
@@ -559,7 +557,7 @@ form:has(:invalid) {
     --color-text-muted: var(--gray-400);
     --color-border:     var(--gray-700);
     --color-primary:    var(--primary-400);
-    
+
     --elevation-1: 0 1px 2px rgba(0,0,0,0.3);
     --elevation-2: 0 1px 3px rgba(0,0,0,0.4);
     --elevation-3: 0 4px 6px rgba(0,0,0,0.3);

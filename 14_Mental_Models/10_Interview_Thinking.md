@@ -236,7 +236,7 @@ private int findMostFrequent(Map<Integer, Integer> freq) { ... }
    For read-heavy → ReadWriteLock. For write-heavy → ConcurrentHashMap."
 
 "How would you test this?"
-→ "Normal cases, edge cases (empty, single, duplicates), 
+→ "Normal cases, edge cases (empty, single, duplicates),
    boundary values, performance test with large input."
 ```
 
@@ -323,60 +323,58 @@ After coding:
 ## Part 9: Interview Question Types — What to Expect at Each Stage
 
 ```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                    INTERVIEW QUESTION TYPE MAP                               ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║                                                                              ║
-║  PHONE SCREEN FAVORITES (30-45 min, 1 problem):                              ║
-║  ┌──────────────────────────────────────────────────────────────────────┐    ║
-║  │ • Two Sum variants          (HashMap)                                │    ║
-║  │ • Valid Parentheses          (Stack)                                  │   ║
-║  │ • Merge Two Sorted Lists     (LinkedList)                            │    ║
-║  │ • Binary Search variants     (Arrays)                                │    ║
-║  │ • BFS/DFS on trees           (Recursion)                             │    ║
-║  │ • Sliding Window basics       (Strings/Arrays)                       │    ║
-║  │                                                                      │    ║
-║  │ WHY: Quick to state, clear correct answer, tests fundamentals       │     ║
-║  └──────────────────────────────────────────────────────────────────────┘    ║
-║                                                                              ║
-║  ONSITE ROUND 1 — DATA STRUCTURES (45-60 min, 1-2 problems):                 ║
-║  ┌──────────────────────────────────────────────────────────────────────┐    ║
-║  │ • Design LRU Cache            (HashMap + DLL)                        │    ║
-║  │ • Serialize/Deserialize Tree  (BFS/DFS)                              │    ║
-║  │ • Trie problems               (Implementation + DFS)                │     ║
-║  │ • Graph traversal variants    (BFS/DFS + visited)                    │    ║
-║  │ • Interval merge/insert       (Sorting + Greedy)                     │    ║
-║  │                                                                      │    ║
-║  │ WHY: Tests implementation skill + data structure knowledge           │    ║
-║  └──────────────────────────────────────────────────────────────────────┘    ║
-║                                                                              ║
-║  ONSITE ROUND 2 — ALGORITHMS (45-60 min, 1-2 problems):                      ║
-║  ┌──────────────────────────────────────────────────────────────────────┐    ║
-║  │ • DP problems (Coin Change, LCS, Knapsack variants)                  │    ║
-║  │ • Binary Search on Answer     (Minimize max / Maximize min)          │    ║
-║  │ • Backtracking (N-Queens, Word Search, Subsets)                      │    ║
-║  │ • Shortest path (Dijkstra, BFS with state)                           │    ║
-║  │ • Topological Sort             (Course Schedule variants)            │    ║
-║  │                                                                      │    ║
-║  │ WHY: Tests problem-solving depth and optimization thinking           │    ║
-║  └──────────────────────────────────────────────────────────────────────┘    ║
-║                                                                              ║
-║  COMPANY FAVORITES:                                                          ║
-║  ┌──────────────────────────────────────────────────────────────────────┐    ║
-║  │ Amazon:  Arrays, Hash Maps, Trees, BFS/DFS, Design                   │    ║
-║  │ Google:  DP, Graph algorithms, Binary Search, Math                    │   ║
-║  │ Meta:    Arrays, Strings, Trees, Graphs, Backtracking                │    ║
-║  │ Microsoft: Arrays, Trees, LinkedList, Sorting, Design                │    ║
-║  │ Apple:   Arrays, Trees, Sorting, String manipulation                  │   ║
-║  │ Startups: Practical design, API design, System thinking               │   ║
-║  └──────────────────────────────────────────────────────────────────────┘    ║
-║                                                                              ║
-║  DIFFICULTY DISTRIBUTION (typical onsite):                                   ║
-║  • 1 Easy warm-up (5-10 min) → 1 Medium core (20-30 min) = most common       ║
-║  • 1 Medium (15 min) → 1 Medium-Hard (25 min) = senior roles                 ║
-║  • 1 Hard (full session) = rare, usually at Google/Meta L5+                  ║
-║                                                                              ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+                  INTERVIEW QUESTION TYPE MAP
+──────────────────────────────────────────────────
+
+PHONE SCREEN FAVORITES (30-45 min, 1 problem):
+┌───────────────────────────────────────────────────────────────────────┐
+│ • Two Sum variants          (HashMap)                                 │
+│ • Valid Parentheses          (Stack)                                  │
+│ • Merge Two Sorted Lists     (LinkedList)                             │
+│ • Binary Search variants     (Arrays)                                 │
+│ • BFS/DFS on trees           (Recursion)                              │
+│ • Sliding Window basics       (Strings/Arrays)                        │
+│                                                                       │
+│ WHY: Quick to state, clear correct answer, tests fundamentals         │
+└───────────────────────────────────────────────────────────────────────┘
+
+ONSITE ROUND 1 — DATA STRUCTURES (45-60 min, 1-2 problems):
+┌──────────────────────────────────────────────────────────────────────┐
+│ • Design LRU Cache            (HashMap + DLL)                        │
+│ • Serialize/Deserialize Tree  (BFS/DFS)                              │
+│ • Trie problems               (Implementation + DFS)                 │
+│ • Graph traversal variants    (BFS/DFS + visited)                    │
+│ • Interval merge/insert       (Sorting + Greedy)                     │
+│                                                                      │
+│ WHY: Tests implementation skill + data structure knowledge           │
+└──────────────────────────────────────────────────────────────────────┘
+
+ONSITE ROUND 2 — ALGORITHMS (45-60 min, 1-2 problems):
+┌──────────────────────────────────────────────────────────────────────┐
+│ • DP problems (Coin Change, LCS, Knapsack variants)                  │
+│ • Binary Search on Answer     (Minimize max / Maximize min)          │
+│ • Backtracking (N-Queens, Word Search, Subsets)                      │
+│ • Shortest path (Dijkstra, BFS with state)                           │
+│ • Topological Sort             (Course Schedule variants)            │
+│                                                                      │
+│ WHY: Tests problem-solving depth and optimization thinking           │
+└──────────────────────────────────────────────────────────────────────┘
+
+COMPANY FAVORITES:
+┌───────────────────────────────────────────────────────────────────────┐
+│ Amazon:  Arrays, Hash Maps, Trees, BFS/DFS, Design                    │
+│ Google:  DP, Graph algorithms, Binary Search, Math                    │
+│ Meta:    Arrays, Strings, Trees, Graphs, Backtracking                 │
+│ Microsoft: Arrays, Trees, LinkedList, Sorting, Design                 │
+│ Apple:   Arrays, Trees, Sorting, String manipulation                  │
+│ Startups: Practical design, API design, System thinking               │
+└───────────────────────────────────────────────────────────────────────┘
+
+DIFFICULTY DISTRIBUTION (typical onsite):
+• 1 Easy warm-up (5-10 min) → 1 Medium core (20-30 min) = most common
+• 1 Medium (15 min) → 1 Medium-Hard (25 min) = senior roles
+• 1 Hard (full session) = rare, usually at Google/Meta L5+
+
 ```
 
 ### Post-Interview Debrief Checklist

@@ -27,24 +27,22 @@
 ### Deep Reasoning
 
 ```
-╔══════════════════════════════════════════════════════════════════╗
-║  THE APARTMENT BUILDING ANALOGY                                  ║
-║                                                                  ║
-║  Each stacking context = a separate apartment building.          ║
-║  z-index = floor number WITHIN that building.                    ║
-║                                                                  ║
-║  Building A (z-index: 1)    Building B (z-index: 2)              ║
-║  ┌─────────────┐            ┌─────────────┐                      ║
-║  │ Floor 9999  │            │ Floor 1     │                      ║
-║  │ (your element)│          │             │                      ║
-║  └─────────────┘            └─────────────┘                      ║
-║                                                                  ║
-║  Floor 9999 of Building A is STILL below Floor 1 of              ║
-║  Building B — because Building A itself is below Building B.     ║
-║                                                                  ║
-║  z-index only competes WITHIN the same stacking context          ║
-║  (same building). You can't jump between buildings.              ║
-╚══════════════════════════════════════════════════════════════════╝
+THE APARTMENT BUILDING ANALOGY
+
+Each stacking context = a separate apartment building.
+z-index = floor number WITHIN that building.
+
+Building A (z-index: 1)    Building B (z-index: 2)
+┌─────────────┐            ┌─────────────┐
+│ Floor 9999  │            │ Floor 1     │
+│ (your element)│          │             │
+└─────────────┘            └─────────────┘
+
+Floor 9999 of Building A is STILL below Floor 1 of
+Building B — because Building A itself is below Building B.
+
+z-index only competes WITHIN the same stacking context
+(same building). You can't jump between buildings.
 ```
 
 ```css
@@ -147,25 +145,23 @@
 > "If I set `width: 200px; padding: 20px; border: 5px solid`, how wide is the element?"
 
 ```
-╔══════════════════════════════════════════════════════════════════╗
-║  content-box (default, but counterintuitive):                    ║
-║  ┌─ margin ──────────────────────────────────┐                   ║
-║  │ ┌─ border ──────────────────────────────┐ │                   ║
-║  │ │ ┌─ padding ────────────────────────┐  │ │                   ║
-║  │ │ │ ┌─ content (200px) ──────────┐   │  │ │                   ║
-║  │ │ │ │                            │   │  │ │                   ║
-║  │ │ │ └────────────────────────────┘   │  │ │                   ║
-║  │ │ └──────────────────────────────────┘  │ │                   ║
-║  │ └──────────────────────────────────────┘  │                   ║
-║  └───────────────────────────────────────────┘                   ║
-║  Total width = 200 + 20+20 + 5+5 = 250px                         ║
-║  You said 200px... but the box is 250px. Confusing!              ║
-║                                                                  ║
-║  border-box (what everyone uses):                                ║
-║  width: 200px means the WHOLE box is 200px.                      ║
-║  Content shrinks to fit: 200 - 20 - 20 - 5 - 5 = 150px           ║
-║  "200px means 200px" — what you'd expect.                        ║
-╚══════════════════════════════════════════════════════════════════╝
+content-box (default, but counterintuitive):
+┌─ margin ──────────────────────────────────┐
+│ ┌─ border ──────────────────────────────┐ │
+│ │ ┌─ padding ────────────────────────┐  │ │
+│ │ │ ┌─ content (200px) ──────────┐   │  │ │
+│ │ │ │                            │   │  │ │
+│ │ │ └────────────────────────────┘   │  │ │
+│ │ └──────────────────────────────────┘  │ │
+│ └──────────────────────────────────────┘  │
+└───────────────────────────────────────────┘
+Total width = 200 + 20+20 + 5+5 = 250px
+You said 200px... but the box is 250px. Confusing!
+
+border-box (what everyone uses):
+width: 200px means the WHOLE box is 200px.
+Content shrinks to fit: 200 - 20 - 20 - 5 - 5 = 150px
+"200px means 200px" — what you'd expect.
 ```
 
 ```css
@@ -223,34 +219,32 @@
 > "I gave two elements `margin: 20px` each. Why isn't there 40px between them?"
 
 ```
-╔══════════════════════════════════════════════════════════════════╗
-║  MARGIN COLLAPSE — The Personal Space Analogy                    ║
-║                                                                  ║
-║  Two people each want 20cm of personal space.                    ║
-║  They don't need 40cm between them — 20cm satisfies BOTH.        ║
-║                                                                  ║
-║  Adjacent vertical margins COLLAPSE to the larger one:           ║
-║  ┌──────────┐                                                    ║
-║  │  Box A   │ margin-bottom: 30px                                ║
-║  └──────────┘                                                    ║
-║       ↕ 30px (not 30+20=50px!)                                   ║
-║  ┌──────────┐                                                    ║
-║  │  Box B   │ margin-top: 20px                                   ║
-║  └──────────┘                                                    ║
-║                                                                  ║
-║  WHEN IT HAPPENS:                                                ║
-║  ✅ Vertical margins (top/bottom) of block elements               ║
-║  ✅ Adjacent siblings                                             ║
-║  ✅ Parent-child (if no padding/border between them)              ║
-║  ✅ Empty blocks (own top and bottom margins collapse)            ║
-║                                                                  ║
-║  WHEN IT DOESN'T:                                                ║
-║  ❌ Horizontal margins (left/right) — NEVER collapse              ║
-║  ❌ Flex/Grid items — margins don't collapse                      ║
-║  ❌ Elements with BFC boundary between them                       ║
-║  ❌ Floated or absolutely positioned elements                     ║
-║  ❌ Inline-block elements                                         ║
-╚══════════════════════════════════════════════════════════════════╝
+MARGIN COLLAPSE — The Personal Space Analogy
+
+Two people each want 20cm of personal space.
+They don't need 40cm between them — 20cm satisfies BOTH.
+
+Adjacent vertical margins COLLAPSE to the larger one:
+┌──────────┐
+│  Box A   │ margin-bottom: 30px
+└──────────┘
+     ↕ 30px (not 30+20=50px!)
+┌──────────┐
+│  Box B   │ margin-top: 20px
+└──────────┘
+
+WHEN IT HAPPENS:
+✅ Vertical margins (top/bottom) of block elements
+✅ Adjacent siblings
+✅ Parent-child (if no padding/border between them)
+✅ Empty blocks (own top and bottom margins collapse)
+
+WHEN IT DOESN'T:
+❌ Horizontal margins (left/right) — NEVER collapse
+❌ Flex/Grid items — margins don't collapse
+❌ Elements with BFC boundary between them
+❌ Floated or absolutely positioned elements
+❌ Inline-block elements
 ```
 
 ---

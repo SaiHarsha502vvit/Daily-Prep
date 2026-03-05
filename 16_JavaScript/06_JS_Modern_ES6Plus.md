@@ -165,25 +165,23 @@ export { default as Card } from "./Card.js";
 ```
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  ESM vs CommonJS:                                                    ║
-║  ┌──────────────────┬──────────────────┬──────────────────┐          ║
-║  │ Feature          │ ESM              │ CommonJS         │          ║
-║  ├──────────────────┼──────────────────┼──────────────────┤          ║
-║  │ Syntax           │ import/export    │ require/module.  │          ║
-║  │                  │                  │ exports          │          ║
-║  │ Loading          │ Async (parallel) │ Sync (blocking)  │          ║
-║  │ Tree-shaking     │ Yes (static)     │ No (dynamic)     │          ║
-║  │ Top-level await  │ Yes              │ No               │          ║
-║  │ Browser support  │ Yes              │ No (needs bundler)│         ║
-║  │ File extension   │ .mjs / .js       │ .cjs / .js       │          ║
-║  │ Future           │ Standard         │ Legacy           │          ║
-║  └──────────────────┴──────────────────┴──────────────────┘          ║
-║                                                                      ║
-║  TREE-SHAKING: ESM imports are STATIC (analyzed at compile time).    ║
-║  Bundlers (Webpack/Vite) can remove unused exports (dead code).      ║
-║  CommonJS is dynamic — bundler can't know what's used.               ║
-╚══════════════════════════════════════════════════════════════════════╝
+ESM vs CommonJS:
+┌──────────────────┬──────────────────┬───────────────────┐
+│ Feature          │ ESM              │ CommonJS          │
+├──────────────────┼──────────────────┼───────────────────┤
+│ Syntax           │ import/export    │ require/module.   │
+│                  │                  │ exports           │
+│ Loading          │ Async (parallel) │ Sync (blocking)   │
+│ Tree-shaking     │ Yes (static)     │ No (dynamic)      │
+│ Top-level await  │ Yes              │ No                │
+│ Browser support  │ Yes              │ No (needs bundler)│
+│ File extension   │ .mjs / .js       │ .cjs / .js        │
+│ Future           │ Standard         │ Legacy            │
+└──────────────────┴──────────────────┴───────────────────┘
+
+TREE-SHAKING: ESM imports are STATIC (analyzed at compile time).
+Bundlers (Webpack/Vite) can remove unused exports (dead code).
+CommonJS is dynamic — bundler can't know what's used.
 ```
 
 ---
@@ -340,16 +338,16 @@ const hex = 0xFF_FF_FF;
 class User {
     name;                    // Public field
     #password;               // Private field
-    
+
     constructor(name, pass) {
         this.name = name;
         this.#password = pass;
     }
-    
+
     #hash(str) {             // Private method
         return str.split("").reverse().join("");
     }
-    
+
     static #count = 0;       // Private static
     static getCount() { return User.#count; }
 }
@@ -407,12 +405,12 @@ const { promise, resolve, reject } = Promise.withResolvers();
 // Make any object iterable:
 class Fibonacci {
     constructor(limit) { this.limit = limit; }
-    
+
     [Symbol.iterator]() {
         let [prev, curr] = [0, 1];
         let count = 0;
         const limit = this.limit;
-        
+
         return {
             next() {
                 if (count >= limit) return { done: true };
@@ -464,39 +462,37 @@ take(naturalNumbers(), 5); // [1, 2, 3, 4, 5]
 ## 8. Feature Timeline — Quick Reference
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  YEAR  │ KEY FEATURES                                                ║
-║  ──────┼──────────────────────────────────────────────────────       ║
-║  ES6   │ let/const, arrow fn, class, template lit, destructure,      ║
-║  2015  │ modules, Promise, Map/Set, Symbol, generators, for..of      ║
-║  ──────┼──────────────────────────────────────────────────────       ║
-║  ES7   │ Array.includes(), ** (exponent)                             ║
-║  2016  │                                                             ║
-║  ──────┼──────────────────────────────────────────────────────       ║
-║  ES8   │ async/await, Object.entries/values, string padding          ║
-║  2017  │                                                             ║
-║  ──────┼──────────────────────────────────────────────────────       ║
-║  ES9   │ rest/spread for objects, for await...of, finally            ║
-║  2018  │                                                             ║
-║  ──────┼──────────────────────────────────────────────────────       ║
-║  ES10  │ flat/flatMap, Object.fromEntries, trimStart/End             ║
-║  2019  │ optional catch, Array.sort stability                        ║
-║  ──────┼──────────────────────────────────────────────────────       ║
-║  ES11  │ ?., ??, BigInt, Promise.allSettled, globalThis,             ║
-║  2020  │ matchAll, dynamic import                                    ║
-║  ──────┼──────────────────────────────────────────────────────       ║
-║  ES12  │ ||=, &&=, ??=, replaceAll, numeric separators,              ║
-║  2021  │ Promise.any, WeakRef, FinalizationRegistry                  ║
-║  ──────┼──────────────────────────────────────────────────────       ║
-║  ES13  │ class fields, #private, .at(), Object.hasOwn,               ║
-║  2022  │ top-level await, Error.cause, structuredClone               ║
-║  ──────┼──────────────────────────────────────────────────────       ║
-║  ES14  │ findLast, toSorted/toReversed/toSpliced/with,               ║
-║  2023  │ #! hashbang, WeakMap symbol keys                            ║
-║  ──────┼──────────────────────────────────────────────────────       ║
-║  ES15  │ Map.groupBy, Promise.withResolvers, well-formed             ║
-║  2024  │ Unicode strings, Atomics.waitAsync, RegExp v flag           ║
-╚══════════════════════════════════════════════════════════════════════╝
+YEAR  │ KEY FEATURES
+──────┼──────────────────────────────────────────────────────
+ES6   │ let/const, arrow fn, class, template lit, destructure,
+2015  │ modules, Promise, Map/Set, Symbol, generators, for..of
+──────┼──────────────────────────────────────────────────────
+ES7   │ Array.includes(), ** (exponent)
+2016  │
+──────┼──────────────────────────────────────────────────────
+ES8   │ async/await, Object.entries/values, string padding
+2017  │
+──────┼──────────────────────────────────────────────────────
+ES9   │ rest/spread for objects, for await...of, finally
+2018  │
+──────┼──────────────────────────────────────────────────────
+ES10  │ flat/flatMap, Object.fromEntries, trimStart/End
+2019  │ optional catch, Array.sort stability
+──────┼──────────────────────────────────────────────────────
+ES11  │ ?., ??, BigInt, Promise.allSettled, globalThis,
+2020  │ matchAll, dynamic import
+──────┼──────────────────────────────────────────────────────
+ES12  │ ||=, &&=, ??=, replaceAll, numeric separators,
+2021  │ Promise.any, WeakRef, FinalizationRegistry
+──────┼──────────────────────────────────────────────────────
+ES13  │ class fields, #private, .at(), Object.hasOwn,
+2022  │ top-level await, Error.cause, structuredClone
+──────┼──────────────────────────────────────────────────────
+ES14  │ findLast, toSorted/toReversed/toSpliced/with,
+2023  │ #! hashbang, WeakMap symbol keys
+──────┼──────────────────────────────────────────────────────
+ES15  │ Map.groupBy, Promise.withResolvers, well-formed
+2024  │ Unicode strings, Atomics.waitAsync, RegExp v flag
 ```
 
 ---

@@ -53,20 +53,18 @@ const factorial = function fact(n) {
 ```
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHEN TO USE WHICH:                                                  ║
-║  ┌──────────────────┬───────────────────────────────────────┐        ║
-║  │ Type             │ Best For                              │        ║
-║  ├──────────────────┼───────────────────────────────────────┤        ║
-║  │ Declaration      │ Main functions, utility functions     │        ║
-║  │ Arrow (const)    │ Callbacks, array methods, short fns   │        ║
-║  │ Expression       │ Conditional function assignment       │        ║
-║  └──────────────────┴───────────────────────────────────────┘        ║
-║                                                                      ║
-║  REASONING: Arrow functions are shorter but can't be used as         ║
-║  constructors and don't have their own `this`. Declarations are      ║
-║  hoisted, which some teams consider cleaner for readability.         ║
-╚══════════════════════════════════════════════════════════════════════╝
+WHEN TO USE WHICH:
+┌──────────────────┬───────────────────────────────────────┐
+│ Type             │ Best For                              │
+├──────────────────┼───────────────────────────────────────┤
+│ Declaration      │ Main functions, utility functions     │
+│ Arrow (const)    │ Callbacks, array methods, short fns   │
+│ Expression       │ Conditional function assignment       │
+└──────────────────┴───────────────────────────────────────┘
+
+REASONING: Arrow functions are shorter but can't be used as
+constructors and don't have their own `this`. Declarations are
+hoisted, which some teams consider cleaner for readability.
 ```
 
 ---
@@ -97,7 +95,7 @@ function createComponent({ tag = "div", className = "", children = [] }) {
 createComponent({ tag: "h1", className: "title", children: ["Hello"] });
 // <h1 class="title">Hello</h1>
 
-// WHY destructured params? 
+// WHY destructured params?
 // 1. Named parameters → order doesn't matter
 // 2. Self-documenting → you see what the function expects
 // 3. Defaults built in → clean fallback behavior
@@ -179,27 +177,25 @@ const obj2 = {
 ```
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  `this` DETERMINATION FLOWCHART:                                     ║
-║                                                                      ║
-║  Is it an ARROW function?                                            ║
-║  ├── YES → `this` = enclosing lexical scope's `this`                 ║
-║  └── NO ↓                                                            ║
-║                                                                      ║
-║  Called with NEW keyword?                                            ║
-║  ├── YES → `this` = newly created object                             ║
-║  └── NO ↓                                                            ║
-║                                                                      ║
-║  Called with call/apply/bind?                                        ║
-║  ├── YES → `this` = specified object                                 ║
-║  └── NO ↓                                                            ║
-║                                                                      ║
-║  Called as object.method()?                                          ║
-║  ├── YES → `this` = object before the dot                            ║
-║  └── NO ↓                                                            ║
-║                                                                      ║
-║  Default: `this` = window (or undefined in strict mode)              ║
-╚══════════════════════════════════════════════════════════════════════╝
+`this` DETERMINATION FLOWCHART:
+
+Is it an ARROW function?
+├── YES → `this` = enclosing lexical scope's `this`
+└── NO ↓
+
+Called with NEW keyword?
+├── YES → `this` = newly created object
+└── NO ↓
+
+Called with call/apply/bind?
+├── YES → `this` = specified object
+└── NO ↓
+
+Called as object.method()?
+├── YES → `this` = object before the dot
+└── NO ↓
+
+Default: `this` = window (or undefined in strict mode)
 ```
 
 ---
@@ -232,12 +228,12 @@ const obj2 = {
 // SIMPLEST CLOSURE EXAMPLE:
 function outer() {
     let count = 0;           // Variable in outer scope
-    
+
     function inner() {
         count++;             // inner "closes over" count
         console.log(count);
     }
-    
+
     return inner;            // Return the function (not its result)
 }
 
@@ -253,22 +249,20 @@ counter(); // 3
 ```
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  CLOSURE MEMORY VISUALIZATION:                                       ║
-║                                                                      ║
-║  After outer() returns:                                              ║
-║                                                                      ║
-║  ┌─ counter variable ─────────────────────────────────────┐          ║
-║  │  Points to inner function                              │          ║
-║  │  inner function carries a "backpack":                  │          ║
-║  │  ┌─── Closure Scope ──────────────────┐               │           ║
-║  │  │  count: 0 → 1 → 2 → 3 (persists!) │               │            ║
-║  │  └────────────────────────────────────┘               │           ║
-║  └────────────────────────────────────────────────────────┘          ║
-║                                                                      ║
-║  outer()'s execution context is gone, but the closure keeps          ║
-║  count alive because inner still references it.                      ║
-╚══════════════════════════════════════════════════════════════════════╝
+CLOSURE MEMORY VISUALIZATION:
+
+After outer() returns:
+
+┌─ counter variable ─────────────────────────────────────┐
+│  Points to inner function                              │
+│  inner function carries a "backpack":                  │
+│  ┌─── Closure Scope ──────────────────┐                │
+│  │  count: 0 → 1 → 2 → 3 (persists!) │                 │
+│  └────────────────────────────────────┘                │
+└────────────────────────────────────────────────────────┘
+
+outer()'s execution context is gone, but the closure keeps
+count alive because inner still references it.
 ```
 
 ### Closure Use Cases
@@ -277,7 +271,7 @@ counter(); // 3
 // USE CASE 1: DATA PRIVACY (Module Pattern)
 function createBankAccount(initialBalance) {
     let balance = initialBalance; // PRIVATE — no outside access
-    
+
     return {
         deposit(amount) {
             balance += amount;
@@ -301,7 +295,7 @@ account.getBalance();    // 1300
 // account.balance → undefined! It's private.
 
 // REASONING: balance is in the closure scope.
-// Only the returned methods can access it. 
+// Only the returned methods can access it.
 // This is ENCAPSULATION without classes!
 
 
@@ -322,7 +316,7 @@ triple(5); // 15
 // USE CASE 3: MEMOIZATION (Caching)
 function memoize(fn) {
     const cache = {}; // Closure stores the cache
-    
+
     return function(...args) {
         const key = JSON.stringify(args);
         if (cache[key] !== undefined) {
@@ -346,16 +340,16 @@ expensiveAdd(1, 2); // "Cache hit!" → 3 (no recomputation)
 // USE CASE 4: REACT'S useState (simplified)
 function useState(initialValue) {
     let state = initialValue; // Closure!
-    
+
     function getState() {
         return state;
     }
-    
+
     function setState(newValue) {
         state = newValue;
         // In real React: triggers re-render
     }
-    
+
     return [getState, setState];
 }
 
@@ -468,7 +462,7 @@ const result = numbers
 // REVEALING MODULE PATTERN (pre-ES6 modules)
 const Calculator = (function() {
     let result = 0; // Private via closure
-    
+
     return {
         add(n)    { result += n; return this; },
         subtract(n) { result -= n; return this; },

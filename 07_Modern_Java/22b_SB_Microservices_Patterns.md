@@ -111,18 +111,18 @@ spring:
 Problem with Distributed Transactions:
 ┌─────────────────────────────────────────────────────────────────┐
 │  Order Service → Payment Service → Inventory Service            │
-│  ❌ 2PC (Two-Phase Commit) doesn't work across services         │
-│  ❌ Long-running transactions lock resources                    │
-│  ❌ Single service failure blocks entire transaction            │
+│  ❌ 2PC (Two-Phase Commit) doesn't work across services          │
+│  ❌ Long-running transactions lock resources                     │
+│  ❌ Single service failure blocks entire transaction             │
 └─────────────────────────────────────────────────────────────────┘
 
 Saga Solution:
 ┌─────────────────────────────────────────────────────────────────┐
 │  Local transactions with compensating actions                   │
 │  Each step can be rolled back independently                     │
-│  ✅ Eventually consistent                                       │
-│  ✅ No distributed locks                                        │
-│  ✅ Better scalability                                          │
+│  ✅ Eventually consistent                                        │
+│  ✅ No distributed locks                                         │
+│  ✅ Better scalability                                           │
 └─────────────────────────────────────────────────────────────────┘
 ```
 

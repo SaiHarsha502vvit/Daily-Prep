@@ -29,34 +29,32 @@
 ## 1. The Component Architecture Mental Model
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  EVERY COMPONENT = DATA + STRUCTURE + STYLE + BEHAVIOR               ║
-║                                                                      ║
-║  ┌─────────────────────────────────────────────────────────┐         ║
-║  │                    UserCard Component                    │        ║
-║  │                                                         │         ║
-║  │  DATA (Props + State):                                  │         ║
-║  │  ├── user: { name, avatar, role, isOnline }            │          ║
-║  │  └── isExpanded: boolean (local state)                  │         ║
-║  │                                                         │         ║
-║  │  STRUCTURE (JSX):                                       │         ║
-║  │  ├── <div className="card">                             │         ║
-║  │  │   ├── <img> (avatar)                                 │         ║
-║  │  │   ├── <h3> (name)                                    │         ║
-║  │  │   ├── <span> (role badge)                            │         ║
-║  │  │   └── <div> (expanded details — conditional)         │         ║
-║  │  └── </div>                                             │         ║
-║  │                                                         │         ║
-║  │  STYLE (CSS Module):                                    │         ║
-║  │  ├── .card { display: flex; gap; padding; shadow }     │          ║
-║  │  ├── .card.online::before { green dot }                │          ║
-║  │  └── .details { animation: slideDown }                  │         ║
-║  │                                                         │         ║
-║  │  BEHAVIOR (Event Handlers):                             │         ║
-║  │  ├── onClick → toggle isExpanded                        │         ║
-║  │  └── onMouseEnter → show tooltip                        │         ║
-║  └─────────────────────────────────────────────────────────┘         ║
-╚══════════════════════════════════════════════════════════════════════╝
+EVERY COMPONENT = DATA + STRUCTURE + STYLE + BEHAVIOR
+
+┌──────────────────────────────────────────────────────────┐
+│                    UserCard Component                    │
+│                                                          │
+│  DATA (Props + State):                                   │
+│  ├── user: { name, avatar, role, isOnline }              │
+│  └── isExpanded: boolean (local state)                   │
+│                                                          │
+│  STRUCTURE (JSX):                                        │
+│  ├── <div className="card">                              │
+│  │   ├── <img> (avatar)                                  │
+│  │   ├── <h3> (name)                                     │
+│  │   ├── <span> (role badge)                             │
+│  │   └── <div> (expanded details — conditional)          │
+│  └── </div>                                              │
+│                                                          │
+│  STYLE (CSS Module):                                     │
+│  ├── .card { display: flex; gap; padding; shadow }       │
+│  ├── .card.online::before { green dot }                  │
+│  └── .details { animation: slideDown }                   │
+│                                                          │
+│  BEHAVIOR (Event Handlers):                              │
+│  ├── onClick → toggle isExpanded                         │
+│  └── onMouseEnter → show tooltip                         │
+└──────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -551,38 +549,36 @@ function Dashboard() {
 ## 3. State Management Patterns
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHEN TO USE WHAT:                                                   ║
-║                                                                      ║
-║  useState:                                                           ║
-║  ├── Simple values (toggle, counter, input)                          ║
-║  ├── State used by ONE component only                                ║
-║  └── Beginner-friendly                                               ║
-║                                                                      ║
-║  useReducer:                                                         ║
-║  ├── Complex state logic (multiple related updates)                  ║
-║  ├── State transitions depend on previous state                      ║
-║  └── Like a mini Redux inside a component                            ║
-║                                                                      ║
-║  Context + useReducer:                                               ║
-║  ├── State shared by 3-10 components                                 ║
-║  ├── Auth, theme, language, cart                                     ║
-║  └── Not for frequently changing state (perf!)                       ║
-║                                                                      ║
-║  Zustand / Redux Toolkit:                                            ║
-║  ├── Global state for large apps                                     ║
-║  ├── Many components reading same state                              ║
-║  └── Complex async workflows                                         ║
-║                                                                      ║
-║  TanStack Query / SWR:                                               ║
-║  ├── SERVER STATE (API data)                                         ║
-║  ├── Caching, refetching, loading/error states                       ║
-║  └── THE standard for data fetching in 2024                          ║
-║                                                                      ║
-║  RULE: If it comes from an API, use TanStack Query.                  ║
-║  If it's UI state (open/closed, selected item), use useState.        ║
-║  If it's complex UI state, use useReducer.                           ║
-╚══════════════════════════════════════════════════════════════════════╝
+WHEN TO USE WHAT:
+
+useState:
+├── Simple values (toggle, counter, input)
+├── State used by ONE component only
+└── Beginner-friendly
+
+useReducer:
+├── Complex state logic (multiple related updates)
+├── State transitions depend on previous state
+└── Like a mini Redux inside a component
+
+Context + useReducer:
+├── State shared by 3-10 components
+├── Auth, theme, language, cart
+└── Not for frequently changing state (perf!)
+
+Zustand / Redux Toolkit:
+├── Global state for large apps
+├── Many components reading same state
+└── Complex async workflows
+
+TanStack Query / SWR:
+├── SERVER STATE (API data)
+├── Caching, refetching, loading/error states
+└── THE standard for data fetching in 2024
+
+RULE: If it comes from an API, use TanStack Query.
+If it's UI state (open/closed, selected item), use useState.
+If it's complex UI state, use useReducer.
 ```
 
 ---

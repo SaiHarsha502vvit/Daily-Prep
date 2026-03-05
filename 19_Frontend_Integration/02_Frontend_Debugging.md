@@ -89,67 +89,63 @@ console.log(
 ### 2.2 Sources Tab — Breakpoints
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  BREAKPOINT TYPES (most people only know line breakpoints):          ║
-║                                                                      ║
-║  Line Breakpoint:                                                    ║
-║  ├── Click line number in Sources tab                                ║
-║  └── Code pauses at that line                                        ║
-║                                                                      ║
-║  Conditional Breakpoint:                                             ║
-║  ├── Right-click line → "Add conditional breakpoint"                 ║
-║  └── Only pauses if condition is true! e.g. user.id === "123"        ║
-║                                                                      ║
-║  Logpoint:                                                           ║
-║  ├── Right-click line → "Add logpoint"                               ║
-║  ├── Logs a message WITHOUT stopping execution                       ║
-║  └── Like console.log without modifying code!                        ║
-║                                                                      ║
-║  DOM Breakpoint:                                                     ║
-║  ├── Right-click an element in Elements tab                          ║
-║  ├── "Break on" → subtree modifications / attribute changes          ║
-║  └── Finds what code is changing the DOM!                            ║
-║                                                                      ║
-║  Event Listener Breakpoint:                                          ║
-║  ├── Sources tab → Event Listener Breakpoints panel                  ║
-║  ├── Check "Mouse" → "click" to pause on ANY click handler           ║
-║  └── Useful when you don't know which code handles an event          ║
-║                                                                      ║
-║  XHR/Fetch Breakpoint:                                               ║
-║  ├── Pause when a URL containing "users" is fetched                  ║
-║  └── Sources → XHR/fetch Breakpoints → add URL filter                ║
-║                                                                      ║
-║  Exception Breakpoint:                                               ║
-║  ├── ⏸ button → check "Pause on exceptions"                          ║
-║  └── Code pauses the moment an error is thrown                       ║
-╚══════════════════════════════════════════════════════════════════════╝
+BREAKPOINT TYPES (most people only know line breakpoints):
+
+Line Breakpoint:
+├── Click line number in Sources tab
+└── Code pauses at that line
+
+Conditional Breakpoint:
+├── Right-click line → "Add conditional breakpoint"
+└── Only pauses if condition is true! e.g. user.id === "123"
+
+Logpoint:
+├── Right-click line → "Add logpoint"
+├── Logs a message WITHOUT stopping execution
+└── Like console.log without modifying code!
+
+DOM Breakpoint:
+├── Right-click an element in Elements tab
+├── "Break on" → subtree modifications / attribute changes
+└── Finds what code is changing the DOM!
+
+Event Listener Breakpoint:
+├── Sources tab → Event Listener Breakpoints panel
+├── Check "Mouse" → "click" to pause on ANY click handler
+└── Useful when you don't know which code handles an event
+
+XHR/Fetch Breakpoint:
+├── Pause when a URL containing "users" is fetched
+└── Sources → XHR/fetch Breakpoints → add URL filter
+
+Exception Breakpoint:
+├── ⏸ button → check "Pause on exceptions"
+└── Code pauses the moment an error is thrown
 ```
 
 ### 2.3 Network Tab
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  NETWORK TAB — Debug API Calls, Loading Issues, CORS                 ║
-║                                                                      ║
-║  ┌──────────────────────────────────────────────────────────┐        ║
-║  │ Filter: [All] [Fetch/XHR] [JS] [CSS] [Img] [Media]     │          ║
-║  │                                                          │        ║
-║  │ Name        Status  Type      Size    Time   Waterfall  │         ║
-║  │ /api/users  200     fetch     2.4kB   140ms  ████       │         ║
-║  │ /api/stats  500     fetch     0.1kB   250ms  █████████  │         ║
-║  │ bundle.js   200     script    450kB   1.2s   ██████     │         ║
-║  │ style.css   200     stylesheet 22kB   85ms   ██         │         ║
-║  └──────────────────────────────────────────────────────────┘        ║
-║                                                                      ║
-║  KEY THINGS TO CHECK:                                                ║
-║  • Status code (200 ok, 400 bad request, 401 auth, 500 server)       ║
-║  • Request headers (Authorization, Content-Type)                     ║
-║  • Response body (actual error message from server)                  ║
-║  • Timing (DNS, connection, waiting, download)                       ║
-║  • "Preserve log" checkbox (keeps requests across navigation)        ║
-║  • Throttling: simulate slow network (3G, offline)                   ║
-║  • CORS errors: look for preflight OPTIONS request failing           ║
-╚══════════════════════════════════════════════════════════════════════╝
+NETWORK TAB — Debug API Calls, Loading Issues, CORS
+
+┌──────────────────────────────────────────────────────────┐
+│ Filter: [All] [Fetch/XHR] [JS] [CSS] [Img] [Media]       │
+│                                                          │
+│ Name        Status  Type      Size    Time   Waterfall   │
+│ /api/users  200     fetch     2.4kB   140ms  ████        │
+│ /api/stats  500     fetch     0.1kB   250ms  █████████   │
+│ bundle.js   200     script    450kB   1.2s   ██████      │
+│ style.css   200     stylesheet 22kB   85ms   ██          │
+└──────────────────────────────────────────────────────────┘
+
+KEY THINGS TO CHECK:
+• Status code (200 ok, 400 bad request, 401 auth, 500 server)
+• Request headers (Authorization, Content-Type)
+• Response body (actual error message from server)
+• Timing (DNS, connection, waiting, download)
+• "Preserve log" checkbox (keeps requests across navigation)
+• Throttling: simulate slow network (3G, offline)
+• CORS errors: look for preflight OPTIONS request failing
 ```
 
 ---
@@ -157,40 +153,38 @@ console.log(
 ## 3. React DevTools
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  REACT DEVTOOLS (Browser Extension — Components + Profiler Tab)      ║
-║                                                                      ║
-║  ┌── Components Tab ──────────────────────────────────────────┐      ║
-║  │                                                             │     ║
-║  │  WHAT YOU CAN SEE:                                          │     ║
-║  │  ├── Component tree (parent → child hierarchy)             │      ║
-║  │  ├── Props passed to each component                         │     ║
-║  │  ├── State values (useState, useReducer)                    │     ║
-║  │  ├── Context values consumed                                │     ║
-║  │  ├── Hooks list (with current values!)                      │     ║
-║  │  └── Source file location                                   │     ║
-║  │                                                             │     ║
-║  │  WHAT YOU CAN DO:                                           │     ║
-║  │  ├── Click component → see live props/state                │      ║
-║  │  ├── Edit state directly (double-click value)              │      ║
-║  │  ├── Search for component by name                           │     ║
-║  │  ├── Highlight renders (Settings → Highlight updates)      │      ║
-║  │  └── "Rendered by" → trace who created this component      │      ║
-║  └─────────────────────────────────────────────────────────────┘     ║
-║                                                                      ║
-║  ┌── Profiler Tab ────────────────────────────────────────────┐      ║
-║  │                                                             │     ║
-║  │  Record → interact → Stop → see EVERY render:             │       ║
-║  │  ├── Which components re-rendered and WHY                  │      ║
-║  │  ├── Render duration (ms)                                   │     ║
-║  │  ├── "Why did this render?" button                          │     ║
-║  │  │   └── Props changed / State changed / Parent rendered   │      ║
-║  │  └── Flame chart: visual timeline of renders               │      ║
-║  │                                                             │     ║
-║  │  USE THIS WHEN: app feels slow, too many re-renders,       │      ║
-║  │  or you need to optimize performance                        │     ║
-║  └─────────────────────────────────────────────────────────────┘     ║
-╚══════════════════════════════════════════════════════════════════════╝
+REACT DEVTOOLS (Browser Extension — Components + Profiler Tab)
+
+┌── Components Tab ───────────────────────────────────────────┐
+│                                                             │
+│  WHAT YOU CAN SEE:                                          │
+│  ├── Component tree (parent → child hierarchy)              │
+│  ├── Props passed to each component                         │
+│  ├── State values (useState, useReducer)                    │
+│  ├── Context values consumed                                │
+│  ├── Hooks list (with current values!)                      │
+│  └── Source file location                                   │
+│                                                             │
+│  WHAT YOU CAN DO:                                           │
+│  ├── Click component → see live props/state                 │
+│  ├── Edit state directly (double-click value)               │
+│  ├── Search for component by name                           │
+│  ├── Highlight renders (Settings → Highlight updates)       │
+│  └── "Rendered by" → trace who created this component       │
+└─────────────────────────────────────────────────────────────┘
+
+┌── Profiler Tab ─────────────────────────────────────────────┐
+│                                                             │
+│  Record → interact → Stop → see EVERY render:               │
+│  ├── Which components re-rendered and WHY                   │
+│  ├── Render duration (ms)                                   │
+│  ├── "Why did this render?" button                          │
+│  │   └── Props changed / State changed / Parent rendered    │
+│  └── Flame chart: visual timeline of renders                │
+│                                                             │
+│  USE THIS WHEN: app feels slow, too many re-renders,        │
+│  or you need to optimize performance                        │
+└─────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -275,70 +269,66 @@ const handleChildClick = (e: React.MouseEvent) => {
 ### 4.3 CSS Debugging
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  CSS DEBUGGING IN DEVTOOLS (Elements Tab):                           ║
-║                                                                      ║
-║  1. SELECT ELEMENT:                                                  ║
-║     ├── Right-click → Inspect                                        ║
-║     └── Ctrl+Shift+C → hover to select                               ║
-║                                                                      ║
-║  2. CHECK COMPUTED STYLES:                                           ║
-║     ├── See FINAL applied value after cascade resolves               ║
-║     └── Shows which rule "won" for each property                     ║
-║                                                                      ║
-║  3. CHECK BOX MODEL:                                                 ║
-║     ├── Computed tab → visual box model diagram                      ║
-║     └── Hover to see margins, padding, border on page                ║
-║                                                                      ║
-║  4. FIND OVERRIDDEN STYLES:                                          ║
-║     ├── Styles panel → strikethrough = overridden                    ║
-║     └── Click the file:line to jump to CSS source                    ║
-║                                                                      ║
-║  5. TEST CHANGES LIVE:                                               ║
-║     ├── Click any value to edit in place                             ║
-║     ├── Toggle properties on/off with checkbox                       ║
-║     └── Add new properties inline to experiment                      ║
-║                                                                      ║
-║  COMMON CSS BUGS:                                                    ║
-║  • "Why doesn't this center?" → Check display/position/parent        ║
-║  • "Why is text cut off?"    → Check overflow, line-height           ║
-║  • "Z-index not working"     → Parent needs position:relative        ║
-║  • "Flex item won't shrink"  → Add min-width:0 or overflow           ║
-║  • "Grid gap not showing"    → Check if container has display:grid   ║
-╚══════════════════════════════════════════════════════════════════════╝
+CSS DEBUGGING IN DEVTOOLS (Elements Tab):
+
+1. SELECT ELEMENT:
+   ├── Right-click → Inspect
+   └── Ctrl+Shift+C → hover to select
+
+2. CHECK COMPUTED STYLES:
+   ├── See FINAL applied value after cascade resolves
+   └── Shows which rule "won" for each property
+
+3. CHECK BOX MODEL:
+   ├── Computed tab → visual box model diagram
+   └── Hover to see margins, padding, border on page
+
+4. FIND OVERRIDDEN STYLES:
+   ├── Styles panel → strikethrough = overridden
+   └── Click the file:line to jump to CSS source
+
+5. TEST CHANGES LIVE:
+   ├── Click any value to edit in place
+   ├── Toggle properties on/off with checkbox
+   └── Add new properties inline to experiment
+
+COMMON CSS BUGS:
+• "Why doesn't this center?" → Check display/position/parent
+• "Why is text cut off?"    → Check overflow, line-height
+• "Z-index not working"     → Parent needs position:relative
+• "Flex item won't shrink"  → Add min-width:0 or overflow
+• "Grid gap not showing"    → Check if container has display:grid
 ```
 
 ### 4.4 Performance Debugging
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  PERFORMANCE TAB — When Page Feels Slow:                             ║
-║                                                                      ║
-║  1. Open Performance tab → Record → interact → Stop                  ║
-║                                                                      ║
-║  2. Look for:                                                        ║
-║     ├── Long Tasks (red bars > 50ms) = main thread blocked           ║
-║     ├── Layout Thrashing = many forced reflows                       ║
-║     ├── Excessive Paints = too many visual updates                   ║
-║     └── Large JS execution time = heavy computation                  ║
-║                                                                      ║
-║  REACT-SPECIFIC PERFORMANCE ISSUES:                                  ║
-║                                                                      ║
-║  Problem: Too many re-renders                                        ║
-║  ├── Tool: React Profiler → "Why did this render?"                   ║
-║  ├── Fix: React.memo() for pure components                           ║
-║  ├── Fix: useMemo() for expensive computations                       ║
-║  └── Fix: useCallback() for handler functions in props               ║
-║                                                                      ║
-║  Problem: Large list renders slowly                                  ║
-║  ├── Fix: Virtualization (react-window or react-virtuoso)            ║
-║  └── Only render visible items, not all 10,000 rows                  ║
-║                                                                      ║
-║  Problem: Bundle too large (slow initial load)                       ║
-║  ├── Fix: Code splitting with React.lazy() + Suspense                ║
-║  ├── Fix: Dynamic imports for heavy libraries                        ║
-║  └── Tool: Webpack Bundle Analyzer to see what's big                 ║
-╚══════════════════════════════════════════════════════════════════════╝
+PERFORMANCE TAB — When Page Feels Slow:
+
+1. Open Performance tab → Record → interact → Stop
+
+2. Look for:
+   ├── Long Tasks (red bars > 50ms) = main thread blocked
+   ├── Layout Thrashing = many forced reflows
+   ├── Excessive Paints = too many visual updates
+   └── Large JS execution time = heavy computation
+
+REACT-SPECIFIC PERFORMANCE ISSUES:
+
+Problem: Too many re-renders
+├── Tool: React Profiler → "Why did this render?"
+├── Fix: React.memo() for pure components
+├── Fix: useMemo() for expensive computations
+└── Fix: useCallback() for handler functions in props
+
+Problem: Large list renders slowly
+├── Fix: Virtualization (react-window or react-virtuoso)
+└── Only render visible items, not all 10,000 rows
+
+Problem: Bundle too large (slow initial load)
+├── Fix: Code splitting with React.lazy() + Suspense
+├── Fix: Dynamic imports for heavy libraries
+└── Tool: Webpack Bundle Analyzer to see what's big
 ```
 
 ---

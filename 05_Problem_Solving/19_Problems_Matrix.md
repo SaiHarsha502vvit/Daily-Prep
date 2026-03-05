@@ -172,28 +172,26 @@ Terminate when top > bottom or left > right.
 ### Matrix Rotation: Transpose + Reverse = 90° Rotation
 
 ```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║  VISUAL PROOF: 90° Clockwise Rotation = Transpose + Reverse Each Row         ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║                                                                              ║
-║  Original:        Transpose:          Reverse rows:                          ║
-║  ┌───┬───┬───┐   ┌───┬───┬───┐      ┌───┬───┬───┐                            ║
-║  │ 1 │ 2 │ 3 │   │ 1 │ 4 │ 7 │      │ 7 │ 4 │ 1 │                            ║
-║  ├───┼───┼───┤   ├───┼───┼───┤      ├───┼───┼───┤                            ║
-║  │ 4 │ 5 │ 6 │ → │ 2 │ 5 │ 8 │  →  │ 8 │ 5 │ 2 │  ← 90° clockwise!           ║
-║  ├───┼───┼───┤   ├───┼───┼───┤      ├───┼───┼───┤                            ║
-║  │ 7 │ 8 │ 9 │   │ 3 │ 6 │ 9 │      │ 9 │ 6 │ 3 │                            ║
-║  └───┴───┴───┘   └───┴───┴───┘      └───┴───┴───┘                            ║
-║                                                                              ║
-║  WHY: Transpose swaps (i,j) → (j,i). Then reversing each row mirrors         ║
-║  horizontally. The composition maps (i,j) → (j, n-1-i), which is the         ║
-║  definition of 90° clockwise rotation.                                       ║
-║                                                                              ║
-║  VARIANTS:                                                                   ║
-║  • 90° CW:  transpose + reverse each row                                     ║
-║  • 90° CCW: transpose + reverse each column (or reverse rows + transpose)    ║
-║  • 180°:    reverse each row + reverse each column                           ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+VISUAL PROOF: 90° Clockwise Rotation = Transpose + Reverse Each Row
+──────────────────────────────────────────────────
+
+Original:        Transpose:          Reverse rows:
+┌───┬───┬───┐   ┌───┬───┬───┐      ┌───┬───┬───┐
+│ 1 │ 2 │ 3 │   │ 1 │ 4 │ 7 │      │ 7 │ 4 │ 1 │
+├───┼───┼───┤   ├───┼───┼───┤      ├───┼───┼───┤
+│ 4 │ 5 │ 6 │ → │ 2 │ 5 │ 8 │  →  │ 8 │ 5 │ 2 │  ← 90° clockwise!
+├───┼───┼───┤   ├───┼───┼───┤      ├───┼───┼───┤
+│ 7 │ 8 │ 9 │   │ 3 │ 6 │ 9 │      │ 9 │ 6 │ 3 │
+└───┴───┴───┘   └───┴───┴───┘      └───┴───┴───┘
+
+WHY: Transpose swaps (i,j) → (j,i). Then reversing each row mirrors
+horizontally. The composition maps (i,j) → (j, n-1-i), which is the
+definition of 90° clockwise rotation.
+
+VARIANTS:
+• 90° CW:  transpose + reverse each row
+• 90° CCW: transpose + reverse each column (or reverse rows + transpose)
+• 180°:    reverse each row + reverse each column
 ```
 
 ### Common Mistakes (Top 7)
@@ -284,11 +282,11 @@ class Solution {
         dfs(image, sr, sc, originalColor, color);
         return image;
     }
-    
+
     private void dfs(int[][] image, int r, int c, int orig, int newColor) {
         if (r < 0 || r >= image.length || c < 0 || c >= image[0].length) return;
         if (image[r][c] != orig) return;
-        
+
         image[r][c] = newColor; // Color change acts as "visited" marker
         dfs(image, r - 1, c, orig, newColor);
         dfs(image, r + 1, c, orig, newColor);
@@ -337,7 +335,7 @@ class Solution {
     public int islandPerimeter(int[][] grid) {
         int islands = 0, neighbors = 0;
         int m = grid.length, n = grid[0].length;
-        
+
         for (int r = 0; r < m; r++) {
             for (int c = 0; c < n; c++) {
                 if (grid[r][c] == 1) {
@@ -390,7 +388,7 @@ class Solution {
     public int[][] matrixReshape(int[][] mat, int r, int c) {
         int m = mat.length, n = mat[0].length;
         if (m * n != r * c) return mat;
-        
+
         int[][] result = new int[r][c];
         for (int i = 0; i < m * n; i++) {
             result[i / c][i % c] = mat[i / n][i % n];
@@ -420,7 +418,7 @@ Original (2×3):        Transposed (3×2):
 └───┴───┴───┘          ├───┼───┤
                         │ 3 │ 6 │
                         └───┴───┘
-                        
+
 (i,j) in original → (j,i) in transpose
 ```
 
@@ -436,7 +434,7 @@ class Solution {
     public int[][] transpose(int[][] matrix) {
         int m = matrix.length, n = matrix[0].length;
         int[][] result = new int[n][m];
-        
+
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 result[j][i] = matrix[i][j];
@@ -494,7 +492,7 @@ class Solution {
     public int numIslands(char[][] grid) {
         int count = 0;
         int m = grid.length, n = grid[0].length;
-        
+
         for (int r = 0; r < m; r++) {
             for (int c = 0; c < n; c++) {
                 if (grid[r][c] == '1') {
@@ -505,11 +503,11 @@ class Solution {
         }
         return count;
     }
-    
+
     private void sink(char[][] grid, int r, int c) {
         if (r < 0 || r >= grid.length || c < 0 || c >= grid[0].length) return;
         if (grid[r][c] != '1') return;
-        
+
         grid[r][c] = '0'; // Sink this cell
         sink(grid, r - 1, c);
         sink(grid, r + 1, c);
@@ -558,7 +556,7 @@ class Solution {
         int m = grid.length, n = grid[0].length;
         Queue<int[]> queue = new LinkedList<>();
         int fresh = 0;
-        
+
         // Step 1: Find all rotten oranges and count fresh ones
         for (int r = 0; r < m; r++) {
             for (int c = 0; c < n; c++) {
@@ -566,13 +564,13 @@ class Solution {
                 else if (grid[r][c] == 1) fresh++;
             }
         }
-        
+
         if (fresh == 0) return 0; // No fresh oranges — already done
-        
+
         int[] dr = {-1, 1, 0, 0};
         int[] dc = {0, 0, -1, 1};
         int minutes = 0;
-        
+
         // Step 2: Multi-source BFS
         while (!queue.isEmpty() && fresh > 0) {
             int size = queue.size();
@@ -590,7 +588,7 @@ class Solution {
                 }
             }
         }
-        
+
         return fresh == 0 ? minutes : -1;
     }
 }
@@ -633,7 +631,7 @@ class Solution {
         int m = mat.length, n = mat[0].length;
         int[][] dist = new int[m][n];
         Queue<int[]> queue = new LinkedList<>();
-        
+
         // Initialize: 0-cells have distance 0, others MAX
         for (int r = 0; r < m; r++) {
             for (int c = 0; c < n; c++) {
@@ -644,16 +642,16 @@ class Solution {
                 }
             }
         }
-        
+
         int[] dr = {-1, 1, 0, 0};
         int[] dc = {0, 0, -1, 1};
-        
+
         while (!queue.isEmpty()) {
             int[] cell = queue.poll();
             for (int d = 0; d < 4; d++) {
                 int nr = cell[0] + dr[d];
                 int nc = cell[1] + dc[d];
-                if (nr >= 0 && nr < m && nc >= 0 && nc < n 
+                if (nr >= 0 && nr < m && nc >= 0 && nc < n
                     && dist[nr][nc] > dist[cell[0]][cell[1]] + 1) {
                     dist[nr][nc] = dist[cell[0]][cell[1]] + 1;
                     queue.offer(new int[]{nr, nc});
@@ -703,28 +701,28 @@ class Solution {
     public List<Integer> spiralOrder(int[][] matrix) {
         List<Integer> result = new ArrayList<>();
         if (matrix.length == 0) return result;
-        
+
         int top = 0, bottom = matrix.length - 1;
         int left = 0, right = matrix[0].length - 1;
-        
+
         while (top <= bottom && left <= right) {
             // Traverse right along top row
             for (int c = left; c <= right; c++)
                 result.add(matrix[top][c]);
             top++;
-            
+
             // Traverse down along right column
             for (int r = top; r <= bottom; r++)
                 result.add(matrix[r][right]);
             right--;
-            
+
             // Traverse left along bottom row (if rows remain)
             if (top <= bottom) {
                 for (int c = right; c >= left; c--)
                     result.add(matrix[bottom][c]);
                 bottom--;
             }
-            
+
             // Traverse up along left column (if cols remain)
             if (left <= right) {
                 for (int r = bottom; r >= top; r--)
@@ -772,7 +770,7 @@ Original:        Step 1 - Transpose:   Step 2 - Reverse rows:
 class Solution {
     public void rotate(int[][] matrix) {
         int n = matrix.length;
-        
+
         // Step 1: Transpose — swap across main diagonal
         for (int i = 0; i < n; i++) {
             for (int j = i + 1; j < n; j++) { // j starts at i+1 (upper triangle only)
@@ -781,7 +779,7 @@ class Solution {
                 matrix[j][i] = temp;
             }
         }
-        
+
         // Step 2: Reverse each row
         for (int i = 0; i < n; i++) {
             int lo = 0, hi = n - 1;
@@ -834,13 +832,13 @@ class Solution {
     public void setZeroes(int[][] matrix) {
         int m = matrix.length, n = matrix[0].length;
         boolean firstRowZero = false, firstColZero = false;
-        
+
         // Step 1: Check if first row/col have zeros
         for (int c = 0; c < n; c++)
             if (matrix[0][c] == 0) firstRowZero = true;
         for (int r = 0; r < m; r++)
             if (matrix[r][0] == 0) firstColZero = true;
-        
+
         // Step 2: Use first row/col as markers for inner matrix
         for (int r = 1; r < m; r++) {
             for (int c = 1; c < n; c++) {
@@ -850,7 +848,7 @@ class Solution {
                 }
             }
         }
-        
+
         // Step 3: Zero inner cells based on markers
         for (int r = 1; r < m; r++) {
             for (int c = 1; c < n; c++) {
@@ -859,7 +857,7 @@ class Solution {
                 }
             }
         }
-        
+
         // Step 4: Zero first row and column if needed
         if (firstRowZero)
             for (int c = 0; c < n; c++) matrix[0][c] = 0;
@@ -906,7 +904,7 @@ Board:                  word = "ABCCED" → true
 class Solution {
     public boolean exist(char[][] board, String word) {
         int m = board.length, n = board[0].length;
-        
+
         for (int r = 0; r < m; r++) {
             for (int c = 0; c < n; c++) {
                 if (dfs(board, word, r, c, 0)) return true;
@@ -914,20 +912,20 @@ class Solution {
         }
         return false;
     }
-    
+
     private boolean dfs(char[][] board, String word, int r, int c, int idx) {
         if (idx == word.length()) return true; // All characters matched
         if (r < 0 || r >= board.length || c < 0 || c >= board[0].length) return false;
         if (board[r][c] != word.charAt(idx)) return false;
-        
+
         char saved = board[r][c];
         board[r][c] = '#'; // Mark visited
-        
+
         boolean found = dfs(board, word, r - 1, c, idx + 1)
                       || dfs(board, word, r + 1, c, idx + 1)
                       || dfs(board, word, r, c - 1, idx + 1)
                       || dfs(board, word, r, c + 1, idx + 1);
-        
+
         board[r][c] = saved; // Backtrack: unmark
         return found;
     }
@@ -972,7 +970,7 @@ Input:                   Output:
 class Solution {
     public void solve(char[][] board) {
         int m = board.length, n = board[0].length;
-        
+
         // Step 1: Mark border-connected O's as safe ('S')
         for (int r = 0; r < m; r++) {
             if (board[r][0] == 'O') markSafe(board, r, 0);
@@ -982,7 +980,7 @@ class Solution {
             if (board[0][c] == 'O') markSafe(board, 0, c);
             if (board[m - 1][c] == 'O') markSafe(board, m - 1, c);
         }
-        
+
         // Step 2: Capture surrounded O's, restore safe ones
         for (int r = 0; r < m; r++) {
             for (int c = 0; c < n; c++) {
@@ -991,11 +989,11 @@ class Solution {
             }
         }
     }
-    
+
     private void markSafe(char[][] board, int r, int c) {
         if (r < 0 || r >= board.length || c < 0 || c >= board[0].length) return;
         if (board[r][c] != 'O') return;
-        
+
         board[r][c] = 'S'; // Mark safe
         markSafe(board, r - 1, c);
         markSafe(board, r + 1, c);
@@ -1043,21 +1041,21 @@ class Solution {
     private int m, n;
     private int[] dr = {-1, 1, 0, 0};
     private int[] dc = {0, 0, -1, 1};
-    
+
     public List<List<Integer>> pacificAtlantic(int[][] heights) {
         m = heights.length;
         n = heights[0].length;
         boolean[][] pacific = new boolean[m][n];
         boolean[][] atlantic = new boolean[m][n];
-        
+
         // DFS from Pacific borders (top row, left col)
         for (int c = 0; c < n; c++) dfs(heights, pacific, 0, c);
         for (int r = 0; r < m; r++) dfs(heights, pacific, r, 0);
-        
+
         // DFS from Atlantic borders (bottom row, right col)
         for (int c = 0; c < n; c++) dfs(heights, atlantic, m - 1, c);
         for (int r = 0; r < m; r++) dfs(heights, atlantic, r, n - 1);
-        
+
         // Intersection
         List<List<Integer>> result = new ArrayList<>();
         for (int r = 0; r < m; r++) {
@@ -1069,7 +1067,7 @@ class Solution {
         }
         return result;
     }
-    
+
     private void dfs(int[][] heights, boolean[][] reachable, int r, int c) {
         reachable[r][c] = true;
         for (int d = 0; d < 4; d++) {
@@ -1135,7 +1133,7 @@ class Solution {
         int m = board.length, n = board[0].length;
         int[] dr = {-1, -1, -1, 0, 0, 1, 1, 1};
         int[] dc = {-1, 0, 1, -1, 1, -1, 0, 1};
-        
+
         // First pass: encode transitions
         for (int r = 0; r < m; r++) {
             for (int c = 0; c < n; c++) {
@@ -1149,7 +1147,7 @@ class Solution {
                         }
                     }
                 }
-                
+
                 // Apply rules
                 if (board[r][c] == 1) { // Currently alive
                     if (liveNeighbors < 2 || liveNeighbors > 3) {
@@ -1164,7 +1162,7 @@ class Solution {
                 }
             }
         }
-        
+
         // Second pass: finalize states
         for (int r = 0; r < m; r++) {
             for (int c = 0; c < n; c++) {
@@ -1221,31 +1219,31 @@ class Solution {
         int n = grid.length;
         if (grid[0][0] != 0 || grid[n - 1][n - 1] != 0) return -1;
         if (n == 1) return 1; // Single cell
-        
+
         int[] dr = {-1, -1, -1, 0, 0, 1, 1, 1};
         int[] dc = {-1, 0, 1, -1, 1, -1, 0, 1};
-        
+
         Queue<int[]> queue = new LinkedList<>();
         queue.offer(new int[]{0, 0});
         grid[0][0] = 1; // Mark visited (use grid itself: 1 = visited/blocked)
         int pathLen = 1;
-        
+
         while (!queue.isEmpty()) {
             int size = queue.size();
             pathLen++;
-            
+
             for (int i = 0; i < size; i++) {
                 int[] cell = queue.poll();
-                
+
                 for (int d = 0; d < 8; d++) {
                     int nr = cell[0] + dr[d];
                     int nc = cell[1] + dc[d];
-                    
+
                     if (nr < 0 || nr >= n || nc < 0 || nc >= n) continue;
                     if (grid[nr][nc] != 0) continue;
-                    
+
                     if (nr == n - 1 && nc == n - 1) return pathLen;
-                    
+
                     grid[nr][nc] = 1; // Mark visited BEFORE enqueueing
                     queue.offer(new int[]{nr, nc});
                 }
@@ -1272,7 +1270,7 @@ class Solution {
 │ 1 │ 0 │ 1 │   Islands: top-left (size 1, id=2), top-right (size 1, id=3),
 ├───┼───┼───┤             bottom (size 3, id=4)
 │ 0 │ 0 │ 1 │
-├───┼───┼───┤   Flip (0,1) to 1: connects id=2 (size 1) + id=3 (size 1) 
+├───┼───┼───┤   Flip (0,1) to 1: connects id=2 (size 1) + id=3 (size 1)
 │ 1 │ 1 │ 1 │              + 1 (the flipped cell) = 3
 └───┴───┴───┘   Flip (1,0) to 1: connects id=2 (1) + id=4 (3) + 1 = 5 ← answer
 ```
@@ -1292,12 +1290,12 @@ class Solution {
 class Solution {
     private int[] dr = {-1, 1, 0, 0};
     private int[] dc = {0, 0, -1, 1};
-    
+
     public int largestIsland(int[][] grid) {
         int n = grid.length;
         Map<Integer, Integer> islandSize = new HashMap<>();
         int islandId = 2; // Start from 2 (0 and 1 are used)
-        
+
         // Step 1: Label each island with unique ID and record size
         for (int r = 0; r < n; r++) {
             for (int c = 0; c < n; c++) {
@@ -1308,18 +1306,18 @@ class Solution {
                 }
             }
         }
-        
+
         // Step 2: Try flipping each 0, merge adjacent distinct islands
         int maxSize = islandSize.values().stream()
                         .mapToInt(Integer::intValue).max().orElse(0);
-        
+
         for (int r = 0; r < n; r++) {
             for (int c = 0; c < n; c++) {
                 if (grid[r][c] == 0) {
                     Set<Integer> neighborIslands = new HashSet<>();
                     for (int d = 0; d < 4; d++) {
                         int nr = r + dr[d], nc = c + dc[d];
-                        if (nr >= 0 && nr < n && nc >= 0 && nc < n 
+                        if (nr >= 0 && nr < n && nc >= 0 && nc < n
                             && grid[nr][nc] > 1) {
                             neighborIslands.add(grid[nr][nc]);
                         }
@@ -1334,7 +1332,7 @@ class Solution {
         }
         return maxSize;
     }
-    
+
     private int dfs(int[][] grid, int r, int c, int id, int n) {
         if (r < 0 || r >= n || c < 0 || c >= n || grid[r][c] != 1) return 0;
         grid[r][c] = id;
@@ -1386,19 +1384,19 @@ class Solution {
         // {cost, row, col}, min-heap by cost
         PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[0] - b[0]);
         boolean[][] visited = new boolean[n][n];
-        
+
         pq.offer(new int[]{grid[0][0], 0, 0});
         visited[0][0] = true;
-        
+
         int[] dr = {-1, 1, 0, 0};
         int[] dc = {0, 0, -1, 1};
-        
+
         while (!pq.isEmpty()) {
             int[] curr = pq.poll();
             int cost = curr[0], r = curr[1], c = curr[2];
-            
+
             if (r == n - 1 && c == n - 1) return cost;
-            
+
             for (int d = 0; d < 4; d++) {
                 int nr = r + dr[d], nc = c + dc[d];
                 if (nr >= 0 && nr < n && nc >= 0 && nc < n && !visited[nr][nc]) {
@@ -1419,7 +1417,7 @@ class Solution {
     public int swimInWater(int[][] grid) {
         int n = grid.length;
         int lo = grid[0][0], hi = n * n - 1;
-        
+
         while (lo < hi) {
             int mid = lo + (hi - lo) / 2;
             if (canReach(grid, mid, n)) {
@@ -1430,7 +1428,7 @@ class Solution {
         }
         return lo;
     }
-    
+
     private boolean canReach(int[][] grid, int t, int n) {
         if (grid[0][0] > t) return false;
         boolean[][] visited = new boolean[n][n];
@@ -1439,13 +1437,13 @@ class Solution {
         visited[0][0] = true;
         int[] dr = {-1, 1, 0, 0};
         int[] dc = {0, 0, -1, 1};
-        
+
         while (!queue.isEmpty()) {
             int[] cell = queue.poll();
             if (cell[0] == n - 1 && cell[1] == n - 1) return true;
             for (int d = 0; d < 4; d++) {
                 int nr = cell[0] + dr[d], nc = cell[1] + dc[d];
-                if (nr >= 0 && nr < n && nc >= 0 && nc < n 
+                if (nr >= 0 && nr < n && nc >= 0 && nc < n
                     && !visited[nr][nc] && grid[nr][nc] <= t) {
                     visited[nr][nc] = true;
                     queue.offer(new int[]{nr, nc});
@@ -1499,11 +1497,11 @@ class Solution {
     public int trapRainWater(int[][] heightMap) {
         int m = heightMap.length, n = heightMap[0].length;
         if (m < 3 || n < 3) return 0; // Can't trap water in tiny grid
-        
+
         // Min-heap: {height, row, col}
         PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[0] - b[0]);
         boolean[][] visited = new boolean[m][n];
-        
+
         // Step 1: Add all border cells to heap
         for (int r = 0; r < m; r++) {
             pq.offer(new int[]{heightMap[r][0], r, 0});
@@ -1517,24 +1515,24 @@ class Solution {
             visited[0][c] = true;
             visited[m - 1][c] = true;
         }
-        
+
         int[] dr = {-1, 1, 0, 0};
         int[] dc = {0, 0, -1, 1};
         int water = 0;
-        
+
         // Step 2: Process from lowest border inward
         while (!pq.isEmpty()) {
             int[] curr = pq.poll();
             int wallHeight = curr[0], r = curr[1], c = curr[2];
-            
+
             for (int d = 0; d < 4; d++) {
                 int nr = r + dr[d], nc = c + dc[d];
                 if (nr >= 0 && nr < m && nc >= 0 && nc < n && !visited[nr][nc]) {
                     visited[nr][nc] = true;
-                    
+
                     // Water trapped = difference between wall and ground (if wall is higher)
                     water += Math.max(0, wallHeight - heightMap[nr][nc]);
-                    
+
                     // New wall height = max of current wall and neighbor's ground
                     pq.offer(new int[]{Math.max(wallHeight, heightMap[nr][nc]), nr, nc});
                 }

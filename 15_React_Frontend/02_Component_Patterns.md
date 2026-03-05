@@ -89,13 +89,13 @@ Tabs.Panel = ({ id, children }) => {
 // RENDER PROPS: Pass a function as children/prop that renders UI
 function MouseTracker({ render }) {
   const [position, setPosition] = useState({ x: 0, y: 0 });
-  
+
   useEffect(() => {
     const handler = (e) => setPosition({ x: e.clientX, y: e.clientY });
     window.addEventListener('mousemove', handler);
     return () => window.removeEventListener('mousemove', handler);
   }, []);
-  
+
   return render(position); // delegate rendering to caller
 }
 
@@ -121,21 +121,19 @@ const ProtectedDashboard = withAuth(Dashboard);
 ## Pattern 4: Styling Approaches
 
 ```
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║  APPROACH          │ PROS                     │ CONS                             ║
-║────────────────────┼──────────────────────────┼───────────────────────────────   ║
-║  CSS Modules       │ Scoped, no conflicts     │ Still CSS files                  ║
-║  (.module.css)     │ Works with any tooling   │ Dynamic styles = awkward         ║
-║────────────────────┼──────────────────────────┼───────────────────────────────   ║
-║  Tailwind CSS      │ Utility-first, fast      │ Long class strings               ║
-║                    │ No naming, consistent    │ Learning curve                   ║
-║────────────────────┼──────────────────────────┼───────────────────────────────   ║
-║  styled-components │ CSS-in-JS, dynamic props │ Runtime overhead                 ║
-║                    │ Full JS power             │ Bundle size                     ║
-║────────────────────┼──────────────────────────┼───────────────────────────────   ║
-║  Inline styles     │ Simple, dynamic          │ No pseudo-classes, media query   ║
-║  (style={{}})      │ No tooling               │ Not recommended for production   ║
-╚══════════════════════════════════════════════════════════════════════════════════╝
+APPROACH          │ PROS                     │ CONS
+────────────────────┼──────────────────────────┼───────────────────────────────
+CSS Modules       │ Scoped, no conflicts     │ Still CSS files
+(.module.css)     │ Works with any tooling   │ Dynamic styles = awkward
+────────────────────┼──────────────────────────┼───────────────────────────────
+Tailwind CSS      │ Utility-first, fast      │ Long class strings
+                  │ No naming, consistent    │ Learning curve
+────────────────────┼──────────────────────────┼───────────────────────────────
+styled-components │ CSS-in-JS, dynamic props │ Runtime overhead
+                  │ Full JS power             │ Bundle size
+────────────────────┼──────────────────────────┼───────────────────────────────
+Inline styles     │ Simple, dynamic          │ No pseudo-classes, media query
+(style={{}})      │ No tooling               │ Not recommended for production
 ```
 
 ```jsx
@@ -174,15 +172,15 @@ const StyledButton = styled.button`
 // Class component (only way to do error boundaries in React)
 class ErrorBoundary extends React.Component {
   state = { hasError: false, error: null };
-  
+
   static getDerivedStateFromError(error) {
     return { hasError: true, error };
   }
-  
+
   componentDidCatch(error, errorInfo) {
     logErrorToService(error, errorInfo); // send to Sentry/DataDog
   }
-  
+
   render() {
     if (this.state.hasError) {
       return (

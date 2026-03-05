@@ -3,23 +3,21 @@
 ## Why Code Reviews Matter
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  CODE REVIEWS: The Most Underrated Engineering Practice              ║
-║                                                                      ║
-║  ┌───────────────────────────────────────────────────┐               ║
-║  │  Bug found in Code Review     → Costs: 15 minutes │               ║
-║  │  Bug found in QA              → Costs: 2 hours    │               ║
-║  │  Bug found in Production      → Costs: 2 days     │               ║
-║  │  Bug found by customer        → Costs: reputation │               ║
-║  └───────────────────────────────────────────────────┘               ║
-║                                                                      ║
-║  Code reviews also:                                                  ║
-║  • Spread knowledge across team (bus factor ↑)                       ║
-║  • Maintain consistent code style                                    ║
-║  • Catch design problems early                                       ║
-║  • Mentor junior developers                                          ║
-║  • Build shared ownership of codebase                                ║
-╚══════════════════════════════════════════════════════════════════════╝
+CODE REVIEWS: The Most Underrated Engineering Practice
+
+┌───────────────────────────────────────────────────┐
+│  Bug found in Code Review     → Costs: 15 minutes │
+│  Bug found in QA              → Costs: 2 hours    │
+│  Bug found in Production      → Costs: 2 days     │
+│  Bug found by customer        → Costs: reputation │
+└───────────────────────────────────────────────────┘
+
+Code reviews also:
+• Spread knowledge across team (bus factor ↑)
+• Maintain consistent code style
+• Catch design problems early
+• Mentor junior developers
+• Build shared ownership of codebase
 ```
 
 ---
@@ -277,7 +275,7 @@ Brief description of what this PR does.
 ## Why
 Link to ticket/story. Context on why this change is needed.
 
-## How  
+## How
 Technical approach. Key design decisions and trade-offs.
 
 ## Testing
@@ -405,28 +403,26 @@ RULE: Automate what can be automated.
 ## Mental Model: Code Review as Teaching
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  Think of code review as a TEACHING OPPORTUNITY, not gate-keeping    ║
-║                                                                      ║
-║  Every review comment should make the author BETTER, not just        ║
-║  make the code better.                                               ║
-║                                                                      ║
-║  ┌─────────────────────────────────────┐                             ║
-║  │  Bad Reviewer: "Fix this."          │                             ║
-║  │                                     │                             ║
-║  │  Good Reviewer: "This could cause   │                             ║
-║  │  issues because [reason]. Here's    │                             ║
-║  │  a pattern that handles it:         │                             ║
-║  │  [example]. This is important       │                             ║
-║  │  because [context]."                │                             ║
-║  └─────────────────────────────────────┘                             ║
-║                                                                      ║
-║  The author learns:                                                  ║
-║  1. What's wrong                                                     ║
-║  2. Why it's wrong                                                   ║
-║  3. How to fix it                                                    ║
-║  4. The principle behind it (to apply elsewhere)                     ║
-╚══════════════════════════════════════════════════════════════════════╝
+Think of code review as a TEACHING OPPORTUNITY, not gate-keeping
+
+Every review comment should make the author BETTER, not just
+make the code better.
+
+┌─────────────────────────────────────┐
+│  Bad Reviewer: "Fix this."          │
+│                                     │
+│  Good Reviewer: "This could cause   │
+│  issues because [reason]. Here's    │
+│  a pattern that handles it:         │
+│  [example]. This is important       │
+│  because [context]."                │
+└─────────────────────────────────────┘
+
+The author learns:
+1. What's wrong
+2. Why it's wrong
+3. How to fix it
+4. The principle behind it (to apply elsewhere)
 ```
 
 ---

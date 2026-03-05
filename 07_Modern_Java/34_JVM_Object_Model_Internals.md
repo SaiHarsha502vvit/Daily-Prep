@@ -27,35 +27,33 @@
 ### Deep Reasoning
 
 ```
-╔══════════════════════════════════════════════════════════════════╗
-║  THE PASSPORT ANALOGY                                            ║
-║                                                                  ║
-║  Every Java object is like a passport:                           ║
-║                                                                  ║
-║  ┌─────────────────────────────────────────────┐                 ║
-║  │ OBJECT HEADER (passport cover + stamps)     │                 ║
-║  │  ┌───────────────────────────────────────┐  │                 ║
-║  │  │ Mark Word (8 bytes / 64-bit JVM)      │  │                 ║
-║  │  │ → Identity: hashCode                  │  │                 ║
-║  │  │ → Age stamp: GC generation age        │  │                 ║
-║  │  │ → Lock state: biased/thin/fat         │  │                 ║
-║  │  └───────────────────────────────────────┘  │                 ║
-║  │  ┌───────────────────────────────────────┐  │                 ║
-║  │  │ Klass Pointer (4 bytes compressed)    │  │                 ║
-║  │  │ → "What type am I?" → points to       │  │                 ║
-║  │  │   class metadata in Metaspace          │  │                ║
-║  │  └───────────────────────────────────────┘  │                 ║
-║  ├─────────────────────────────────────────────┤                 ║
-║  │ INSTANCE DATA (passport pages)              │                 ║
-║  │  → Your fields: int age, String name, etc. │                  ║
-║  ├─────────────────────────────────────────────┤                 ║
-║  │ PADDING (empty pages for alignment)         │                 ║
-║  │  → Pad to multiple of 8 bytes              │                  ║
-║  └─────────────────────────────────────────────┘                 ║
-║                                                                  ║
-║  EVERY object has this structure. Even `new Object()`:           ║
-║  Header (12 bytes) + Padding (4 bytes) = 16 bytes minimum        ║
-╚══════════════════════════════════════════════════════════════════╝
+THE PASSPORT ANALOGY
+
+Every Java object is like a passport:
+
+┌──────────────────────────────────────────────┐
+│ OBJECT HEADER (passport cover + stamps)      │
+│  ┌───────────────────────────────────────┐   │
+│  │ Mark Word (8 bytes / 64-bit JVM)      │   │
+│  │ → Identity: hashCode                  │   │
+│  │ → Age stamp: GC generation age        │   │
+│  │ → Lock state: biased/thin/fat         │   │
+│  └───────────────────────────────────────┘   │
+│  ┌───────────────────────────────────────┐   │
+│  │ Klass Pointer (4 bytes compressed)    │   │
+│  │ → "What type am I?" → points to       │   │
+│  │   class metadata in Metaspace          │  │
+│  └───────────────────────────────────────┘   │
+├──────────────────────────────────────────────┤
+│ INSTANCE DATA (passport pages)               │
+│  → Your fields: int age, String name, etc.   │
+├──────────────────────────────────────────────┤
+│ PADDING (empty pages for alignment)          │
+│  → Pad to multiple of 8 bytes                │
+└──────────────────────────────────────────────┘
+
+EVERY object has this structure. Even `new Object()`:
+Header (12 bytes) + Padding (4 bytes) = 16 bytes minimum
 ```
 
 ### Visual Memory Layout
@@ -94,43 +92,41 @@
 ### Deep Reasoning
 
 ```
-╔══════════════════════════════════════════════════════════════════╗
-║  THE MOOD RING ANALOGY                                           ║
-║                                                                  ║
-║  The Mark Word is like a mood ring on every object:              ║
-║                                                                  ║
-║  The SAME 64 bits mean DIFFERENT things depending on state:      ║
-║                                                                  ║
-║  State: NORMAL (no lock)                                         ║
-║  ┌──────────────────┬────────┬────────┬────────┐                 ║
-║  │ identity hashCode│ unused │ GC age │ state  │                 ║
-║  │ (31 bits)        │ (1 bit)│ (4 bits)│ (3 bits)│               ║
-║  └──────────────────┴────────┴────────┴────────┘                 ║
-║                                                                  ║
-║  State: BIASED LOCK                                              ║
-║  ┌──────────────────┬────────┬────────┬────────┐                 ║
-║  │ thread ID        │ epoch  │ GC age │ state  │                 ║
-║  │ (54 bits)        │ (2 bits)│ (4 bits)│(3 bits)│               ║
-║  └──────────────────┴────────┴────────┴────────┘                 ║
-║                                                                  ║
-║  State: THIN LOCK (lightweight)                                  ║
-║  ┌──────────────────────────────────────┬────────┐               ║
-║  │ pointer to lock record on stack      │ state  │               ║
-║  │ (62 bits)                            │ (2 bits)│              ║
-║  └──────────────────────────────────────┴────────┘               ║
-║                                                                  ║
-║  State: FAT LOCK (heavyweight / monitor)                         ║
-║  ┌──────────────────────────────────────┬────────┐               ║
-║  │ pointer to ObjectMonitor (OS mutex)  │ state  │               ║
-║  │ (62 bits)                            │ (2 bits)│              ║
-║  └──────────────────────────────────────┴────────┘               ║
-║                                                                  ║
-║  State: GC (marked for garbage collection)                       ║
-║  ┌──────────────────────────────────────┬────────┐               ║
-║  │ forwarding pointer                   │ state  │               ║
-║  │ (62 bits)                            │ (2 bits)│              ║
-║  └──────────────────────────────────────┴────────┘               ║
-╚══════════════════════════════════════════════════════════════════╝
+THE MOOD RING ANALOGY
+
+The Mark Word is like a mood ring on every object:
+
+The SAME 64 bits mean DIFFERENT things depending on state:
+
+State: NORMAL (no lock)
+┌──────────────────┬────────┬────────┬──────────┐
+│ identity hashCode│ unused │ GC age │ state    │
+│ (31 bits)        │ (1 bit)│ (4 bits)│ (3 bits)│
+└──────────────────┴────────┴────────┴──────────┘
+
+State: BIASED LOCK
+┌──────────────────┬────────┬────────┬──────────┐
+│ thread ID        │ epoch  │ GC age │ state    │
+│ (54 bits)        │ (2 bits)│ (4 bits)│(3 bits)│
+└──────────────────┴────────┴────────┴──────────┘
+
+State: THIN LOCK (lightweight)
+┌──────────────────────────────────────┬─────────┐
+│ pointer to lock record on stack      │ state   │
+│ (62 bits)                            │ (2 bits)│
+└──────────────────────────────────────┴─────────┘
+
+State: FAT LOCK (heavyweight / monitor)
+┌──────────────────────────────────────┬─────────┐
+│ pointer to ObjectMonitor (OS mutex)  │ state   │
+│ (62 bits)                            │ (2 bits)│
+└──────────────────────────────────────┴─────────┘
+
+State: GC (marked for garbage collection)
+┌──────────────────────────────────────┬─────────┐
+│ forwarding pointer                   │ state   │
+│ (62 bits)                            │ (2 bits)│
+└──────────────────────────────────────┴─────────┘
 ```
 
 ### State Bits Decoding
@@ -515,12 +511,12 @@ public class Test {
 
         obj.hello();   // "Child instance"  ← OVERRIDING works (runtime type)
         obj.greet();   // "Parent static"   ← HIDING! (compile-time type wins)
-        
+
         // WHY "Parent static"?
         // obj.greet() compiles to → Parent.greet()
         // Because obj's DECLARED type is Parent.
         // Static methods don't go through vtable — no polymorphism!
-        
+
         // If we change the reference type:
         Child child = new Child();
         child.greet();  // "Child static" ← now Child is the declared type
@@ -597,21 +593,21 @@ System.out.println(((Child) obj).x);  // 20 (Child's x — need cast!)
 public final class Money {
     private final BigDecimal amount;
     private final Currency currency;
-    
+
     public Money(BigDecimal amount, Currency currency) {
         this.amount = Objects.requireNonNull(amount);
         this.currency = Objects.requireNonNull(currency);
     }
-    
+
     public BigDecimal amount()   { return amount; }
     public Currency currency()   { return currency; }
-    
+
     public Money add(Money other) {
         if (!this.currency.equals(other.currency))
             throw new IllegalArgumentException("Currency mismatch");
         return new Money(this.amount.add(other.amount), this.currency);
     }
-    
+
     // equals, hashCode, toString...
 }
 
@@ -621,7 +617,7 @@ public record Money(BigDecimal amount, Currency currency) {
         Objects.requireNonNull(amount);
         Objects.requireNonNull(currency);
     }
-    
+
     public Money add(Money other) {
         if (!this.currency.equals(other.currency))
             throw new IllegalArgumentException("Currency mismatch");
@@ -675,7 +671,7 @@ class Stack<E> extends ArrayList<E> {
 // ✅ Composition:
 class Stack<E> {
     private final List<E> elements = new ArrayList<>();  // HAS-A, not IS-A
-    
+
     public void push(E item) { elements.add(item); }
     public E pop() {
         if (elements.isEmpty()) throw new EmptyStackException();

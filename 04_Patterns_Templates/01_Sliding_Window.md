@@ -204,71 +204,69 @@
 ## 🎨 VISUAL PROOF (The Moment It Clicks)
 
 ```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║              SLIDING WINDOW - THE COMPLETE VISUAL GUIDE                   ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Array: [2, 1, 5, 1, 3, 2]    Window Size K = 3                           ║
-║  Index:  0  1  2  3  4  5                                                 ║
-║                                                                           ║
-║  ═══════════════════════════════════════════════════════════════════════  ║
-║                                                                           ║
-║  WINDOW 1: i=0, j=2                                                       ║
-║  ┌───┬───┬───┬───┬───┬───┐                                                ║
-║  │ 2 │ 1 │ 5 │ 1 │ 3 │ 2 │                                                ║
-║  └───┴───┴───┴───┴───┴───┘                                                ║
-║    ↑       ↑                                                              ║
-║    i       j                                                              ║
-║  ├─────────┤                                                              ║
-║   window [2,1,5]                                                          ║
-║                                                                           ║
-║  Count = j - i + 1 = 2 - 0 + 1 = 3 ✅ (equals k, process window!)          ║
-║                                                                           ║
-║  ═══════════════════════════════════════════════════════════════════════  ║
-║                                                                           ║
-║  WINDOW 2: i=1, j=3 (after sliding)                                       ║
-║  ┌───┬───┬───┬───┬───┬───┐                                                ║
-║  │ 2 │ 1 │ 5 │ 1 │ 3 │ 2 │                                                ║
-║  └───┴───┴───┴───┴───┴───┘                                                ║
-║        ↑       ↑                                                          ║
-║        i       j                                                          ║
-║      ├─────────┤                                                          ║
-║       window [1,5,1]                                                      ║
-║                                                                           ║
-║  Count = j - i + 1 = 3 - 1 + 1 = 3 ✅                                      ║
-║                                                                           ║
-║  ═══════════════════════════════════════════════════════════════════════  ║
-║                                                                           ║
-║  WINDOW 3: i=2, j=4                                                       ║
-║  ┌───┬───┬───┬───┬───┬───┐                                                ║
-║  │ 2 │ 1 │ 5 │ 1 │ 3 │ 2 │                                                ║
-║  └───┴───┴───┴───┴───┴───┘                                                ║
-║            ↑       ↑                                                      ║
-║            i       j                                                      ║
-║          ├─────────┤                                                      ║
-║           window [5,1,3]                                                  ║
-║                                                                           ║
-║  Count = j - i + 1 = 4 - 2 + 1 = 3 ✅                                      ║
-║                                                                           ║
-║  ═══════════════════════════════════════════════════════════════════════  ║
-║                                                                           ║
-║  WINDOW 4: i=3, j=5 (FINAL)                                               ║
-║  ┌───┬───┬───┬───┬───┬───┐                                                ║
-║  │ 2 │ 1 │ 5 │ 1 │ 3 │ 2 │                                                ║
-║  └───┴───┴───┴───┴───┴───┘                                                ║
-║                ↑       ↑                                                  ║
-║                i       j                                                  ║
-║              ├─────────┤                                                  ║
-║               window [1,3,2]                                              ║
-║                                                                           ║
-║  Count = j - i + 1 = 5 - 3 + 1 = 3 ✅                                      ║
-║                                                                           ║
-║  ═══════════════════════════════════════════════════════════════════════  ║
-║                                                                           ║
-║  KEY INSIGHT: We NEVER thought about i+k or i+k-1!                        ║
-║  Just: "Does my window have k elements? Check j-i+1 == k"                 ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+            SLIDING WINDOW - THE COMPLETE VISUAL GUIDE
+──────────────────────────────────────────────────
+
+Array: [2, 1, 5, 1, 3, 2]    Window Size K = 3
+Index:  0  1  2  3  4  5
+
+═══════════════════════════════════════════════════════════════════════
+
+WINDOW 1: i=0, j=2
+┌───┬───┬───┬───┬───┬───┐
+│ 2 │ 1 │ 5 │ 1 │ 3 │ 2 │
+└───┴───┴───┴───┴───┴───┘
+  ↑       ↑
+  i       j
+├─────────┤
+ window [2,1,5]
+
+Count = j - i + 1 = 2 - 0 + 1 = 3 ✅ (equals k, process window!)
+
+═══════════════════════════════════════════════════════════════════════
+
+WINDOW 2: i=1, j=3 (after sliding)
+┌───┬───┬───┬───┬───┬───┐
+│ 2 │ 1 │ 5 │ 1 │ 3 │ 2 │
+└───┴───┴───┴───┴───┴───┘
+      ↑       ↑
+      i       j
+    ├─────────┤
+     window [1,5,1]
+
+Count = j - i + 1 = 3 - 1 + 1 = 3 ✅
+
+═══════════════════════════════════════════════════════════════════════
+
+WINDOW 3: i=2, j=4
+┌───┬───┬───┬───┬───┬───┐
+│ 2 │ 1 │ 5 │ 1 │ 3 │ 2 │
+└───┴───┴───┴───┴───┴───┘
+          ↑       ↑
+          i       j
+        ├─────────┤
+         window [5,1,3]
+
+Count = j - i + 1 = 4 - 2 + 1 = 3 ✅
+
+═══════════════════════════════════════════════════════════════════════
+
+WINDOW 4: i=3, j=5 (FINAL)
+┌───┬───┬───┬───┬───┬───┐
+│ 2 │ 1 │ 5 │ 1 │ 3 │ 2 │
+└───┴───┴───┴───┴───┴───┘
+              ↑       ↑
+              i       j
+            ├─────────┤
+             window [1,3,2]
+
+Count = j - i + 1 = 5 - 3 + 1 = 3 ✅
+
+═══════════════════════════════════════════════════════════════════════
+
+KEY INSIGHT: We NEVER thought about i+k or i+k-1!
+Just: "Does my window have k elements? Check j-i+1 == k"
+
 ```
 
 ### Setup:
@@ -312,43 +310,41 @@ Count = j - i + 1 = 4 - 2 + 1 = 3 ✅
 ## 🔗 THE EQUIVALENCE CHAIN (Memorize This)
 
 ```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║              THE EQUIVALENCE CHAIN - WHY j-i+1=k WORKS                    ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  These THREE expressions are MATHEMATICALLY EQUIVALENT:                   ║
-║                                                                           ║
-║  ┌─────────────────────────────────────────────────────────────────────┐  ║
-║  │                                                                     │  ║
-║  │     j - i + 1 = k       ← "Window has K elements" ⭐ BEST!          │   ║
-║  │           ↕                                                         │  ║
-║  │     j = i + k - 1       ← "j is at last valid position"             │  ║
-║  │           ↕                                                         │  ║
-║  │     j < i + k           ← "j hasn't crossed boundary"               │  ║
-║  │                                                                     │  ║
-║  └─────────────────────────────────────────────────────────────────────┘  ║
-║                                                                           ║
-║  Mathematical Proof:                                                      ║
-║  ──────────────────                                                       ║
-║                                                                           ║
-║  Start with:      j - i + 1 = k                                           ║
-║                                                                           ║
-║  Rearrange:       j - i = k - 1                                           ║
-║                   j = i + k - 1          (second form)                    ║
-║                                                                           ║
-║  For loop condition, we want j to go from i to i+k-1:                     ║
-║  That means:      j < i + k              (third form)                     ║
-║                                                                           ║
-║  WHY THE FIRST IS BEST:                                                   ║
-║  ─────────────────────                                                    ║
-║                                                                           ║
-║  ❌ "j < i + k" → You think: "Wait, is it < or <=?"                        ║
-║  ❌ "j = i + k - 1" → You think: "Should I subtract 1?"                    ║
-║  ✅ "j - i + 1 = k" → You think: "Do I have k elements? Simple!"           ║
-║                                                                           ║
-║  The first form is a QUESTION, not a FORMULA.                             ║
-║  Questions are easier to remember than formulas!                          ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+            THE EQUIVALENCE CHAIN - WHY j-i+1=k WORKS
+──────────────────────────────────────────────────
+
+These THREE expressions are MATHEMATICALLY EQUIVALENT:
+
+┌─────────────────────────────────────────────────────────────────────┐
+│                                                                     │
+│     j - i + 1 = k       ← "Window has K elements" ⭐ BEST!           │
+│           ↕                                                         │
+│     j = i + k - 1       ← "j is at last valid position"             │
+│           ↕                                                         │
+│     j < i + k           ← "j hasn't crossed boundary"               │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+
+Mathematical Proof:
+──────────────────
+
+Start with:      j - i + 1 = k
+
+Rearrange:       j - i = k - 1
+                 j = i + k - 1          (second form)
+
+For loop condition, we want j to go from i to i+k-1:
+That means:      j < i + k              (third form)
+
+WHY THE FIRST IS BEST:
+─────────────────────
+
+❌ "j < i + k" → You think: "Wait, is it < or <=?"
+❌ "j = i + k - 1" → You think: "Should I subtract 1?"
+✅ "j - i + 1 = k" → You think: "Do I have k elements? Simple!"
+
+The first form is a QUESTION, not a FORMULA.
+Questions are easier to remember than formulas!
 ```
 
 These three expressions mean **exactly** the same thing:
@@ -368,43 +364,41 @@ j < i + k              ← "j hasn't crossed boundary"
 ## 🧪 WHY THE OTHER FORMS CONFUSE YOU
 
 ```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║              WHY OTHER FORMS ARE CONFUSING                                ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Test Case: i = 0, k = 3                                                  ║
-║  We want elements at indices: 0, 1, 2 (3 elements)                        ║
-║                                                                           ║
-║  ┌──────────────────────────────────────────────────────────────────────┐ ║
-║  │ USING j < i + k:                                                     │ ║
-║  │                                                                      │ ║
-║  │   j < 0 + 3                                                          │ ║
-║  │   j < 3                                                              │ ║
-║  │                                                                      │ ║
-║  │   Valid j: 0, 1, 2  ✅ (3 elements — CORRECT!)                       │  ║
-║  └──────────────────────────────────────────────────────────────────────┘ ║
-║                                                                           ║
-║  ┌──────────────────────────────────────────────────────────────────────┐ ║
-║  │ USING j <= i + k:  ❌ WRONG                                          │  ║
-║  │                                                                      │ ║
-║  │   j <= 0 + 3                                                         │ ║
-║  │   j <= 3                                                             │ ║
-║  │                                                                      │ ║
-║  │   Valid j: 0, 1, 2, 3  ❌ (4 elements — TOO MANY!)                    │ ║
-║  └──────────────────────────────────────────────────────────────────────┘ ║
-║                                                                           ║
-║  ┌──────────────────────────────────────────────────────────────────────┐ ║
-║  │ USING j < k:  ❌ WRONG (after first window)                          │  ║
-║  │                                                                      │ ║
-║  │   After i moves to 1:                                                │ ║
-║  │   j < 3                                                              │ ║
-║  │                                                                      │ ║
-║  │   Valid j: 0, 1, 2  ❌ (We need 1, 2, 3 now!)                         │ ║
-║  └──────────────────────────────────────────────────────────────────────┘ ║
-║                                                                           ║
-║  CONCLUSION: Only "j < i + k" works, but it's HARD to remember!           ║
-║  SOLUTION: Use "j - i + 1 == k" and NEVER think about it again!           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+            WHY OTHER FORMS ARE CONFUSING
+──────────────────────────────────────────────────
+
+Test Case: i = 0, k = 3
+We want elements at indices: 0, 1, 2 (3 elements)
+
+┌──────────────────────────────────────────────────────────────────────┐
+│ USING j < i + k:                                                     │
+│                                                                      │
+│   j < 0 + 3                                                          │
+│   j < 3                                                              │
+│                                                                      │
+│   Valid j: 0, 1, 2  ✅ (3 elements — CORRECT!)                        │
+└──────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────┐
+│ USING j <= i + k:  ❌ WRONG                                           │
+│                                                                      │
+│   j <= 0 + 3                                                         │
+│   j <= 3                                                             │
+│                                                                      │
+│   Valid j: 0, 1, 2, 3  ❌ (4 elements — TOO MANY!)                    │
+└──────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────┐
+│ USING j < k:  ❌ WRONG (after first window)                           │
+│                                                                      │
+│   After i moves to 1:                                                │
+│   j < 3                                                              │
+│                                                                      │
+│   Valid j: 0, 1, 2  ❌ (We need 1, 2, 3 now!)                         │
+└──────────────────────────────────────────────────────────────────────┘
+
+CONCLUSION: Only "j < i + k" works, but it's HARD to remember!
+SOLUTION: Use "j - i + 1 == k" and NEVER think about it again!
 ```
 
 ### Test Case: i = 0, k = 3

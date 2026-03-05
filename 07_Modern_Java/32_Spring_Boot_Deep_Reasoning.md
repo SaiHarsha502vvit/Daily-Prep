@@ -31,40 +31,38 @@
 ### Deep Reasoning
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  THE OFFICE BUILDING ANALOGY                                         ║
-║                                                                      ║
-║  HTTP Request arrives at your Spring Boot application:               ║
-║                                                                      ║
-║  ┌──────────────── SERVLET CONTAINER (Tomcat) ──────────────────┐    ║
-║  │                                                               │   ║
-║  │  [Request] → FILTER 1 → FILTER 2 → FILTER 3 →               │     ║
-║  │                                                               │   ║
-║  │              ┌── DISPATCHER SERVLET ──────────────────┐       │   ║
-║  │              │                                        │       │   ║
-║  │              │  HandlerMapping → "Which controller?"  │       │   ║
-║  │              │  HandlerAdapter → "Call the method"     │       │  ║
-║  │              │  ViewResolver → "Render the response"  │       │   ║
-║  │              │                                        │       │   ║
-║  │              │  @Controller methods live HERE          │       │  ║
-║  │              └────────────────────────────────────────┘       │   ║
-║  │                                                               │   ║
-║  │  ← FILTER 3 ← FILTER 2 ← FILTER 1 ← [Response]             │      ║
-║  └──────────────────────────────────────────────────────────────┘    ║
-║                                                                      ║
-║  FILTER = Security guard at the building entrance                    ║
-║  → Runs BEFORE and AFTER the request reaches Spring                  ║
-║  → Part of the Servlet spec (javax.servlet.Filter)                   ║
-║  → NOT part of Spring — works at the web container level             ║
-║  → Can modify request/response, reject requests, log, compress       ║
-║  → Spring Security IS a filter chain!                                ║
-║                                                                      ║
-║  DISPATCHER SERVLET = The receptionist inside the building           ║
-║  → A special Servlet that routes requests to the right Controller    ║
-║  → IS the entry point to Spring MVC                                  ║
-║  → Only ONE DispatcherServlet (front controller pattern)             ║
-║  → Handles: URL mapping, argument binding, exception handling        ║
-╚══════════════════════════════════════════════════════════════════════╝
+THE OFFICE BUILDING ANALOGY
+
+HTTP Request arrives at your Spring Boot application:
+
+┌──────────────── SERVLET CONTAINER (Tomcat) ────────────────────┐
+│                                                                │
+│  [Request] → FILTER 1 → FILTER 2 → FILTER 3 →                  │
+│                                                                │
+│              ┌── DISPATCHER SERVLET ──────────────────┐        │
+│              │                                        │        │
+│              │  HandlerMapping → "Which controller?"  │        │
+│              │  HandlerAdapter → "Call the method"     │       │
+│              │  ViewResolver → "Render the response"  │        │
+│              │                                        │        │
+│              │  @Controller methods live HERE          │       │
+│              └────────────────────────────────────────┘        │
+│                                                                │
+│  ← FILTER 3 ← FILTER 2 ← FILTER 1 ← [Response]                 │
+└────────────────────────────────────────────────────────────────┘
+
+FILTER = Security guard at the building entrance
+→ Runs BEFORE and AFTER the request reaches Spring
+→ Part of the Servlet spec (javax.servlet.Filter)
+→ NOT part of Spring — works at the web container level
+→ Can modify request/response, reject requests, log, compress
+→ Spring Security IS a filter chain!
+
+DISPATCHER SERVLET = The receptionist inside the building
+→ A special Servlet that routes requests to the right Controller
+→ IS the entry point to Spring MVC
+→ Only ONE DispatcherServlet (front controller pattern)
+→ Handles: URL mapping, argument binding, exception handling
 ```
 
 ```java
@@ -72,15 +70,15 @@
 @Component
 public class LoggingFilter implements Filter {
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, 
+    public void doFilter(ServletRequest request, ServletResponse response,
                          FilterChain chain) throws IOException, ServletException {
         long start = System.currentTimeMillis();
-        
+
         // BEFORE DispatcherServlet
         System.out.println("Request started: " + ((HttpServletRequest) request).getRequestURI());
-        
+
         chain.doFilter(request, response); // Continue to next filter or DispatcherServlet
-        
+
         // AFTER DispatcherServlet (response is ready)
         long duration = System.currentTimeMillis() - start;
         System.out.println("Request took: " + duration + "ms");
@@ -90,7 +88,7 @@ public class LoggingFilter implements Filter {
 // DISPATCHER SERVLET: Routes to controllers (you don't usually touch this)
 // It does this internally:
 // 1. HandlerMapping: "/api/users" → UserController.getUsers()
-// 2. HandlerAdapter: Converts HTTP params → Java method args  
+// 2. HandlerAdapter: Converts HTTP params → Java method args
 // 3. Calls your @Controller method
 // 4. ViewResolver: Converts return value → HTTP response
 
@@ -98,7 +96,7 @@ public class LoggingFilter implements Filter {
 @Component
 public class AuthInterceptor implements HandlerInterceptor {
     @Override
-    public boolean preHandle(HttpServletRequest request, 
+    public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler) {
         // Runs AFTER filters, BEFORE controller
         // Has access to Spring context (unlike filters)
@@ -110,7 +108,7 @@ public class AuthInterceptor implements HandlerInterceptor {
 ### Complete Request Flow:
 ```
 Client → Tomcat → Filter1 → Filter2 → Filter3
-  → DispatcherServlet 
+  → DispatcherServlet
     → Interceptor.preHandle()
       → @Controller method
     → Interceptor.postHandle()
@@ -223,7 +221,7 @@ public class MyApp { ... }
 @ConditionalOnClass(DataSource.class)           // H2/MySQL on classpath?
 @ConditionalOnMissingBean(DataSource.class)     // User hasn't defined one?
 public class DataSourceAutoConfiguration {
-    
+
     @Bean
     @ConditionalOnProperty("spring.datasource.url") // URL configured?
     public DataSource dataSource(DataSourceProperties props) {
@@ -280,14 +278,14 @@ public class MyConfig {
 ```java
 @Service
 public class OrderService {
-    
+
     @Transactional
     public void processOrder(Order order) {
         // ✅ This WORKS — called FROM OUTSIDE through proxy
         saveOrder(order);
         sendNotification(order);
     }
-    
+
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void sendNotification(Order order) {
         // ❌ DOES NOT get its own transaction when called from processOrder!
@@ -300,7 +298,7 @@ public class OrderService {
 public class OrderService {
     @Autowired
     private OrderService self; // Spring injects the PROXY, not `this`
-    
+
     @Transactional
     public void processOrder(Order order) {
         saveOrder(order);
@@ -354,14 +352,14 @@ public class NotificationService {
 @Service
 public class CacheService {
     private final Map<String, Object> cache = new HashMap<>();
-    
+
     @PostConstruct // Runs AFTER all dependencies are injected
     public void init() {
         // Load initial data, warm up cache
         // Dependencies are available here
         cache.put("config", loadConfig());
     }
-    
+
     @PreDestroy // Runs BEFORE bean is destroyed (app shutdown)
     public void cleanup() {
         // Close connections, flush cache, release resources
@@ -419,7 +417,7 @@ public class OrderService {
 public class OrderService {
     private final PaymentProcessor processor; // Interface!
     private final EmailService email;         // Interface!
-    
+
     public OrderService(PaymentProcessor processor, EmailService email) {
         this.processor = processor; // Spring injects the right implementation
         this.email = email;
@@ -651,13 +649,13 @@ spring:
 // Profile-specific beans:
 @Configuration
 public class StorageConfig {
-    
+
     @Bean
     @Profile("dev")
     public StorageService localStorage() {
         return new LocalFileStorage(); // Use local filesystem in dev
     }
-    
+
     @Bean
     @Profile("prod")
     public StorageService cloudStorage() {

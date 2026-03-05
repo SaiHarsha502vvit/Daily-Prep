@@ -159,24 +159,22 @@ public List<List<Integer>> threeSum(int[] nums) {
 ### Problem 3: Longest Substring Without Repeating Characters
 
 ```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  PROBLEM: Longest Substring Without Repeating Characters                  ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Input: "abcabcbb"                                                        ║
-║  Output: 3 ("abc")                                                        ║
-║                                                                           ║
-║  Visual:                                                                  ║
-║  a b c a b c b b                                                          ║
-║  ↑─────↑                                                                  ║
-║  └─────┘ "abc" length 3                                                   ║
-║                                                                           ║
-║    ↑───────↑                                                              ║
-║    └───────┘ "bca" length 3                                               ║
-║                                                                           ║
-║  When we see repeat, shrink window from left                              ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+PROBLEM: Longest Substring Without Repeating Characters
+──────────────────────────────────────────────────
+
+Input: "abcabcbb"
+Output: 3 ("abc")
+
+Visual:
+a b c a b c b b
+↑─────↑
+└─────┘ "abc" length 3
+
+  ↑───────↑
+  └───────┘ "bca" length 3
+
+When we see repeat, shrink window from left
+
 ```
 
 **Try it yourself first!**
@@ -217,27 +215,25 @@ public int lengthOfLongestSubstring(String s) {
 ### Problem 4: Maximum Sum of Subarray of Size K
 
 ```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  PROBLEM: Maximum Sum Subarray of Size K                                  ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Input: arr = [2, 1, 5, 1, 3, 2], k = 3                                   ║
-║  Output: 9 (subarray [5, 1, 3])                                           ║
-║                                                                           ║
-║  Visual:                                                                  ║
-║  ┌─────────┐                                                              ║
-║  2  1  5  1  3  2     sum = 8                                             ║
-║  └─────────┘                                                              ║
-║                                                                           ║
-║     ┌─────────┐                                                           ║
-║  2  1  5  1  3  2     sum = 7                                             ║
-║     └─────────┘                                                           ║
-║                                                                           ║
-║        ┌─────────┐                                                        ║
-║  2  1  5  1  3  2     sum = 9 ⭐ MAX                                       ║
-║        └─────────┘                                                        ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+PROBLEM: Maximum Sum Subarray of Size K
+──────────────────────────────────────────────────
+
+Input: arr = [2, 1, 5, 1, 3, 2], k = 3
+Output: 9 (subarray [5, 1, 3])
+
+Visual:
+┌─────────┐
+2  1  5  1  3  2     sum = 8
+└─────────┘
+
+   ┌─────────┐
+2  1  5  1  3  2     sum = 7
+   └─────────┘
+
+      ┌─────────┐
+2  1  5  1  3  2     sum = 9 ⭐ MAX
+      └─────────┘
+
 ```
 
 **Try it yourself first!**

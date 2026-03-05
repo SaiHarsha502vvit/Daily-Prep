@@ -75,22 +75,20 @@ const user5 = createPerson("Harsha", 24);
 ```
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHICH TO USE:                                                       ║
-║  ┌───────────────────┬────────────────────────────────────┐          ║
-║  │ Approach          │ When to Use                        │          ║
-║  ├───────────────────┼────────────────────────────────────┤          ║
-║  │ Object literal    │ One-off objects, configs, data     │          ║
-║  │ Class             │ Multiple instances, inheritance    │          ║
-║  │ Factory function  │ Privacy, no `this` confusion       │          ║
-║  │ Object.create     │ When you need specific prototype   │          ║
-║  │ Constructor fn    │ Legacy code only (use class)       │          ║
-║  └───────────────────┴────────────────────────────────────┘          ║
-║                                                                      ║
-║  REASONING: In React, you'll mostly use object literals (props,      ║
-║  state) and classes (old class components). Factory functions        ║
-║  avoid `this` problems entirely — good for utility modules.          ║
-╚══════════════════════════════════════════════════════════════════════╝
+WHICH TO USE:
+┌───────────────────┬────────────────────────────────────┐
+│ Approach          │ When to Use                        │
+├───────────────────┼────────────────────────────────────┤
+│ Object literal    │ One-off objects, configs, data     │
+│ Class             │ Multiple instances, inheritance    │
+│ Factory function  │ Privacy, no `this` confusion       │
+│ Object.create     │ When you need specific prototype   │
+│ Constructor fn    │ Legacy code only (use class)       │
+└───────────────────┴────────────────────────────────────┘
+
+REASONING: In React, you'll mostly use object literals (props,
+state) and classes (old class components). Factory functions
+avoid `this` problems entirely — good for utility modules.
 ```
 
 ---
@@ -123,7 +121,7 @@ console.log(obj.id); // 42
 const person = {
     firstName: "Sai",
     lastName: "Harsha",
-    
+
     get fullName() {
         return `${this.firstName} ${this.lastName}`;
     },
@@ -257,17 +255,17 @@ class Animal {
     constructor(name) {
         this.name = name;  // Instance property
     }
-    
+
     // INSTANCE METHOD: Added to Animal.prototype
     speak() {
         return `${this.name} makes a sound`;
     }
-    
+
     // STATIC METHOD: On the class itself, NOT on instances
     static kingdom() {
         return "Animalia";
     }
-    
+
     // GETTER/SETTER
     get info() {
         return `Animal: ${this.name}`;
@@ -276,26 +274,26 @@ class Animal {
 
 class Dog extends Animal {
     #tricks = [];  // PRIVATE FIELD (ES2022) — truly private!
-    
+
     constructor(name, breed) {
         super(name);        // MUST call super() before using `this`
         this.breed = breed;
     }
-    
+
     bark() {
         return `${this.name} barks!`;
     }
-    
+
     // OVERRIDE parent method
     speak() {
         return `${this.name} woofs!`;
     }
-    
+
     // Access private field
     addTrick(trick) {
         this.#tricks.push(trick);
     }
-    
+
     showTricks() {
         return this.#tricks.join(", ");
     }
@@ -434,7 +432,7 @@ class Range {
         this.start = start;
         this.end = end;
     }
-    
+
     // Make Range iterable with for...of
     [Symbol.iterator]() {
         let current = this.start;
@@ -459,26 +457,24 @@ for (const n of range) console.log(n); // 1, 2, 3, 4, 5
 ## 9. Comparison: JS vs Java Objects
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  ┌──────────────────┬──────────────────┬──────────────────┐          ║
-║  │ Feature          │ JavaScript       │ Java             │          ║
-║  ├──────────────────┼──────────────────┼──────────────────┤          ║
-║  │ Typing           │ Dynamic          │ Static           │          ║
-║  │ Inheritance      │ Prototype-based  │ Class-based      │          ║
-║  │ Class keyword    │ Sugar over proto │ Real class       │          ║
-║  │ Private fields   │ # prefix (new)   │ private keyword  │          ║
-║  │ Interfaces       │ None (use TS)    │ interface keyword│          ║
-║  │ Multiple inherit │ Mixins/compose   │ Interfaces only  │          ║
-║  │ Object creation  │ Literal {}, new  │ new only         │          ║
-║  │ Property access  │ Dynamic (obj[x]) │ Fixed at compile │          ║
-║  │ this keyword     │ Changes by call  │ Always instance  │          ║
-║  │ Null safety      │ ?. operator      │ Optional (Java17)│          ║
-║  └──────────────────┴──────────────────┴──────────────────┘          ║
-║                                                                      ║
-║  KEY INSIGHT: In Java, the class defines the shape forever.          ║
-║  In JS, objects are "bags of properties" — you can add/remove        ║
-║  properties at any time. More flexible, but less safe.               ║
-╚══════════════════════════════════════════════════════════════════════╝
+┌──────────────────┬──────────────────┬──────────────────┐
+│ Feature          │ JavaScript       │ Java             │
+├──────────────────┼──────────────────┼──────────────────┤
+│ Typing           │ Dynamic          │ Static           │
+│ Inheritance      │ Prototype-based  │ Class-based      │
+│ Class keyword    │ Sugar over proto │ Real class       │
+│ Private fields   │ # prefix (new)   │ private keyword  │
+│ Interfaces       │ None (use TS)    │ interface keyword│
+│ Multiple inherit │ Mixins/compose   │ Interfaces only  │
+│ Object creation  │ Literal {}, new  │ new only         │
+│ Property access  │ Dynamic (obj[x]) │ Fixed at compile │
+│ this keyword     │ Changes by call  │ Always instance  │
+│ Null safety      │ ?. operator      │ Optional (Java17)│
+└──────────────────┴──────────────────┴──────────────────┘
+
+KEY INSIGHT: In Java, the class defines the shape forever.
+In JS, objects are "bags of properties" — you can add/remove
+properties at any time. More flexible, but less safe.
 ```
 
 ---

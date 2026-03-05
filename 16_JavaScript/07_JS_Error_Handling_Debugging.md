@@ -29,27 +29,25 @@
 ## 1. Error Types in JavaScript
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  BUILT-IN ERROR TYPES:                                               ║
-║  ┌───────────────────┬─────────────────────────────────────────┐     ║
-║  │ Type              │ When It Occurs                          │     ║
-║  ├───────────────────┼─────────────────────────────────────────┤     ║
-║  │ SyntaxError       │ Invalid code: if ( { → parsing fails   │      ║
-║  │ ReferenceError    │ Accessing undefined variable            │     ║
-║  │ TypeError         │ Wrong type operation: null.map()       │      ║
-║  │ RangeError        │ Number out of range: new Array(-1)     │      ║
-║  │ URIError          │ Bad URI: decodeURI("%")                │      ║
-║  │ EvalError         │ Old eval() error (rarely seen)         │      ║
-║  │ AggregateError    │ Promise.any() all reject               │      ║
-║  │ InternalError     │ Engine error: too much recursion (FF)  │      ║
-║  └───────────────────┴─────────────────────────────────────────┘     ║
-║                                                                      ║
-║  ALL inherit from Error → has: message, name, stack (trace)          ║
-║                                                                      ║
-║  MOST COMMON in practice:                                            ║
-║  TypeError (cannot read property of undefined) — #1 JS error         ║
-║  ReferenceError (variable is not defined)                            ║
-╚══════════════════════════════════════════════════════════════════════╝
+BUILT-IN ERROR TYPES:
+┌───────────────────┬─────────────────────────────────────────┐
+│ Type              │ When It Occurs                          │
+├───────────────────┼─────────────────────────────────────────┤
+│ SyntaxError       │ Invalid code: if ( { → parsing fails    │
+│ ReferenceError    │ Accessing undefined variable            │
+│ TypeError         │ Wrong type operation: null.map()        │
+│ RangeError        │ Number out of range: new Array(-1)      │
+│ URIError          │ Bad URI: decodeURI("%")                 │
+│ EvalError         │ Old eval() error (rarely seen)          │
+│ AggregateError    │ Promise.any() all reject                │
+│ InternalError     │ Engine error: too much recursion (FF)   │
+└───────────────────┴─────────────────────────────────────────┘
+
+ALL inherit from Error → has: message, name, stack (trace)
+
+MOST COMMON in practice:
+TypeError (cannot read property of undefined) — #1 JS error
+ReferenceError (variable is not defined)
 ```
 
 ```javascript
@@ -227,7 +225,7 @@ class Result {
     static fail(error)  { return new Result(null, error); }
     isOk()   { return this.error === null; }
     isFail() { return this.error !== null; }
-    
+
     map(fn) {
         if (this.isOk()) return Result.ok(fn(this.value));
         return this;
@@ -279,7 +277,7 @@ function createUser(data) {
     if (typeof data.age !== "number" || data.age < 0 || data.age > 150) {
         throw new ValidationError("age", "Age must be 0-150");
     }
-    
+
     // If we get here, data is valid
     return {
         name: data.name.trim(),
@@ -310,26 +308,24 @@ const result = UserSchema.safeParse(rawInput); // { success, data/error }
 ## 6. Debugging with Chrome DevTools
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  OPENING DEVTOOLS: F12 or Ctrl+Shift+I (Cmd+Opt+I on Mac)            ║
-║                                                                      ║
-║  ┌─────────────────────────────────────────────────────────┐         ║
-║  │  CONSOLE | SOURCES | NETWORK | PERFORMANCE | MEMORY     │         ║
-║  └─────────────────────────────────────────────────────────┘         ║
-║                                                                      ║
-║  CONSOLE TAB:                                                        ║
-║  • console.log()    — general output                                 ║
-║  • console.error()  — red, with stack trace                          ║
-║  • console.warn()   — yellow warning                                 ║
-║  • console.table()  — display arrays/objects as TABLE                ║
-║  • console.group()  — group related logs                             ║
-║  • console.time()   — start timer                                    ║
-║  • console.timeEnd()— end timer, show elapsed                        ║
-║  • console.trace()  — print stack trace from this point              ║
-║  • console.assert() — log only if condition is FALSE                 ║
-║  • console.count()  — count how many times this line runs            ║
-║  • console.dir()    — show object as expandable tree                 ║
-╚══════════════════════════════════════════════════════════════════════╝
+OPENING DEVTOOLS: F12 or Ctrl+Shift+I (Cmd+Opt+I on Mac)
+
+┌─────────────────────────────────────────────────────────┐
+│  CONSOLE | SOURCES | NETWORK | PERFORMANCE | MEMORY     │
+└─────────────────────────────────────────────────────────┘
+
+CONSOLE TAB:
+• console.log()    — general output
+• console.error()  — red, with stack trace
+• console.warn()   — yellow warning
+• console.table()  — display arrays/objects as TABLE
+• console.group()  — group related logs
+• console.time()   — start timer
+• console.timeEnd()— end timer, show elapsed
+• console.trace()  — print stack trace from this point
+• console.assert() — log only if condition is FALSE
+• console.count()  — count how many times this line runs
+• console.dir()    — show object as expandable tree
 ```
 
 ```javascript
@@ -372,29 +368,27 @@ console.log(
 ### Breakpoint Debugging
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  SOURCES TAB — Step through code line by line:                       ║
-║                                                                      ║
-║  BREAKPOINT TYPES:                                                   ║
-║  1. Click line number in Sources tab → line breakpoint               ║
-║  2. debugger; statement in code → programmatic breakpoint            ║
-║  3. Conditional breakpoint (right-click line → add condition)        ║
-║  4. DOM breakpoint (right-click element → break on modification)     ║
-║  5. XHR/fetch breakpoint (break when URL matches)                    ║
-║  6. Event listener breakpoint (break on specific events)             ║
-║                                                                      ║
-║  STEPPING CONTROLS:                                                  ║
-║  ┌──────────────────────────────────────────────┐                    ║
-║  │  ▶ Resume      — continue until next breakpoint                   ║
-║  │  ⤵ Step Over   — execute line, don't enter functions              ║
-║  │  ⤓ Step Into   — enter the function on this line                  ║
-║  │  ⤴ Step Out    — finish current function, return to caller        ║
-║  └──────────────────────────────────────────────┘                    ║
-║                                                                      ║
-║  SCOPE PANEL: See all variables in current scope.                    ║
-║  WATCH PANEL: Add expressions to monitor.                            ║
-║  CALL STACK: See the chain of function calls.                        ║
-╚══════════════════════════════════════════════════════════════════════╝
+SOURCES TAB — Step through code line by line:
+
+BREAKPOINT TYPES:
+1. Click line number in Sources tab → line breakpoint
+2. debugger; statement in code → programmatic breakpoint
+3. Conditional breakpoint (right-click line → add condition)
+4. DOM breakpoint (right-click element → break on modification)
+5. XHR/fetch breakpoint (break when URL matches)
+6. Event listener breakpoint (break on specific events)
+
+STEPPING CONTROLS:
+┌──────────────────────────────────────────────┐
+│  ▶ Resume      — continue until next breakpoint
+│  ⤵ Step Over   — execute line, don't enter functions
+│  ⤓ Step Into   — enter the function on this line
+│  ⤴ Step Out    — finish current function, return to caller
+└──────────────────────────────────────────────┘
+
+SCOPE PANEL: See all variables in current scope.
+WATCH PANEL: Add expressions to monitor.
+CALL STACK: See the chain of function calls.
 ```
 
 ```javascript
@@ -462,7 +456,7 @@ class ErrorReporter {
             userAgent: navigator.userAgent,
             ...context
         };
-        
+
         // Send to error tracking service:
         // Sentry, Datadog, LogRocket, Bugsnag
         fetch("/api/errors", {
@@ -491,18 +485,18 @@ window.onunhandledrejection = (event) => {
 // REACT ERROR BOUNDARY (class component — the only way):
 class ErrorBoundary extends React.Component {
     state = { hasError: false, error: null };
-    
+
     static getDerivedStateFromError(error) {
         return { hasError: true, error };
     }
-    
+
     componentDidCatch(error, errorInfo) {
         ErrorReporter.report(error, { componentStack: errorInfo.componentStack });
     }
-    
+
     render() {
         if (this.state.hasError) {
-            return <div>Something went wrong. <button onClick={() => 
+            return <div>Something went wrong. <button onClick={() =>
                 this.setState({ hasError: false })}>Try Again</button></div>;
         }
         return this.props.children;

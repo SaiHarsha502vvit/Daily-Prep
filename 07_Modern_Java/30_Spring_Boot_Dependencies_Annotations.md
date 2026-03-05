@@ -30,87 +30,85 @@
 ## 1. The Master Map
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  DEPENDENCY                    │ WHAT IT UNLOCKS                     ║
-║  ──────────────────────────────┼──────────────────────────────────   ║
-║                                │                                     ║
-║  spring-boot-starter           │ @SpringBootApplication              ║
-║  (core, always included)       │ @Component, @Service, @Repository   ║
-║                                │ @Bean, @Configuration               ║
-║                                │ @Autowired, @Value                  ║
-║                                │ @Qualifier, @Primary                ║
-║                                │ @Profile, @Conditional*             ║
-║                                │ @PostConstruct, @PreDestroy         ║
-║                                │                                     ║
-║  spring-boot-starter-web       │ @RestController, @Controller        ║
-║  (REST APIs, MVC)              │ @RequestMapping, @GetMapping        ║
-║                                │ @PostMapping, @PutMapping           ║
-║                                │ @DeleteMapping, @PatchMapping       ║
-║                                │ @PathVariable, @RequestParam        ║
-║                                │ @RequestBody, @ResponseBody         ║
-║                                │ @ResponseStatus                     ║
-║                                │ @ExceptionHandler                   ║
-║                                │ @ControllerAdvice                   ║
-║                                │ @CrossOrigin                        ║
-║                                │                                     ║
-║  spring-boot-starter-data-jpa  │ @Entity, @Table, @Id                ║
-║  (database ORM)                │ @GeneratedValue                     ║
-║                                │ @Column, @Transient                 ║
-║                                │ @OneToMany, @ManyToOne              ║
-║                                │ @ManyToMany, @OneToOne              ║
-║                                │ @JoinColumn, @JoinTable             ║
-║                                │ @Query (Spring Data)                ║
-║                                │ @Transactional                      ║
-║                                │ @Modifying                          ║
-║                                │ @EnableJpaRepositories              ║
-║                                │                                     ║
-║  spring-boot-starter-          │ @Valid, @NotNull, @NotBlank         ║
-║  validation                    │ @Size, @Min, @Max                   ║
-║  (input validation)            │ @Email, @Pattern                    ║
-║                                │ @Past, @Future                      ║
-║                                │ @Positive, @Negative                ║
-║                                │ @Validated (class-level)            ║
-║                                │                                     ║
-║  spring-boot-starter-security  │ @EnableWebSecurity                  ║
-║  (authentication + authz)      │ @PreAuthorize, @PostAuthorize       ║
-║                                │ @Secured, @RolesAllowed             ║
-║                                │ @EnableMethodSecurity               ║
-║                                │ @AuthenticationPrincipal            ║
-║                                │ @WithMockUser (test)                ║
-║                                │                                     ║
-║  spring-boot-starter-test      │ @SpringBootTest                     ║
-║  (testing)                     │ @DataJpaTest, @WebMvcTest           ║
-║                                │ @MockBean, @SpyBean                 ║
-║                                │ @Test (JUnit 5)                     ║
-║                                │ @BeforeEach, @AfterEach             ║
-║                                │ @DisplayName, @Nested               ║
-║                                │ @ParameterizedTest                  ║
-║                                │                                     ║
-║  spring-boot-starter-actuator  │ Exposes /actuator/* endpoints       ║
-║  (monitoring)                  │ @Endpoint, @ReadOperation           ║
-║                                │ @WriteOperation                     ║
-║                                │ (mostly config, few annotations)    ║
-║                                │                                     ║
-║  ──── NON-SPRING LIBRARIES ────┼──────────────────────────────────   ║
-║                                │                                     ║
-║  lombok                        │ @Data (= @Getter + @Setter +        ║
-║  (NOT Spring! Code generation) │   @ToString + @EqualsAndHashCode    ║
-║                                │   + @RequiredArgsConstructor)       ║
-║                                │ @Getter, @Setter                    ║
-║                                │ @Builder                            ║
-║                                │ @NoArgsConstructor                  ║
-║                                │ @AllArgsConstructor                 ║
-║                                │ @RequiredArgsConstructor            ║
-║                                │ @Slf4j (logging)                    ║
-║                                │ @ToString, @EqualsAndHashCode       ║
-║                                │                                     ║
-║  mapstruct                     │ @Mapper, @Mapping                   ║
-║  (object mapping)              │ @MappingTarget                      ║
-║                                │                                     ║
-║  springdoc-openapi             │ @Tag, @Operation                    ║
-║  (API documentation)           │ @ApiResponse, @Parameter            ║
-║                                │ @Schema                             ║
-╚══════════════════════════════════════════════════════════════════════╝
+DEPENDENCY                    │ WHAT IT UNLOCKS
+──────────────────────────────┼──────────────────────────────────
+                              │
+spring-boot-starter           │ @SpringBootApplication
+(core, always included)       │ @Component, @Service, @Repository
+                              │ @Bean, @Configuration
+                              │ @Autowired, @Value
+                              │ @Qualifier, @Primary
+                              │ @Profile, @Conditional*
+                              │ @PostConstruct, @PreDestroy
+                              │
+spring-boot-starter-web       │ @RestController, @Controller
+(REST APIs, MVC)              │ @RequestMapping, @GetMapping
+                              │ @PostMapping, @PutMapping
+                              │ @DeleteMapping, @PatchMapping
+                              │ @PathVariable, @RequestParam
+                              │ @RequestBody, @ResponseBody
+                              │ @ResponseStatus
+                              │ @ExceptionHandler
+                              │ @ControllerAdvice
+                              │ @CrossOrigin
+                              │
+spring-boot-starter-data-jpa  │ @Entity, @Table, @Id
+(database ORM)                │ @GeneratedValue
+                              │ @Column, @Transient
+                              │ @OneToMany, @ManyToOne
+                              │ @ManyToMany, @OneToOne
+                              │ @JoinColumn, @JoinTable
+                              │ @Query (Spring Data)
+                              │ @Transactional
+                              │ @Modifying
+                              │ @EnableJpaRepositories
+                              │
+spring-boot-starter-          │ @Valid, @NotNull, @NotBlank
+validation                    │ @Size, @Min, @Max
+(input validation)            │ @Email, @Pattern
+                              │ @Past, @Future
+                              │ @Positive, @Negative
+                              │ @Validated (class-level)
+                              │
+spring-boot-starter-security  │ @EnableWebSecurity
+(authentication + authz)      │ @PreAuthorize, @PostAuthorize
+                              │ @Secured, @RolesAllowed
+                              │ @EnableMethodSecurity
+                              │ @AuthenticationPrincipal
+                              │ @WithMockUser (test)
+                              │
+spring-boot-starter-test      │ @SpringBootTest
+(testing)                     │ @DataJpaTest, @WebMvcTest
+                              │ @MockBean, @SpyBean
+                              │ @Test (JUnit 5)
+                              │ @BeforeEach, @AfterEach
+                              │ @DisplayName, @Nested
+                              │ @ParameterizedTest
+                              │
+spring-boot-starter-actuator  │ Exposes /actuator/* endpoints
+(monitoring)                  │ @Endpoint, @ReadOperation
+                              │ @WriteOperation
+                              │ (mostly config, few annotations)
+                              │
+──── NON-SPRING LIBRARIES ────┼──────────────────────────────────
+                              │
+lombok                        │ @Data (= @Getter + @Setter +
+(NOT Spring! Code generation) │   @ToString + @EqualsAndHashCode
+                              │   + @RequiredArgsConstructor)
+                              │ @Getter, @Setter
+                              │ @Builder
+                              │ @NoArgsConstructor
+                              │ @AllArgsConstructor
+                              │ @RequiredArgsConstructor
+                              │ @Slf4j (logging)
+                              │ @ToString, @EqualsAndHashCode
+                              │
+mapstruct                     │ @Mapper, @Mapping
+(object mapping)              │ @MappingTarget
+                              │
+springdoc-openapi             │ @Tag, @Operation
+(API documentation)           │ @ApiResponse, @Parameter
+                              │ @Schema
 ```
 
 ---

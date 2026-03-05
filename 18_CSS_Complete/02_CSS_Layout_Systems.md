@@ -31,34 +31,32 @@
 ### The Two Axes
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║                                                                      ║
-║  flex-direction: row (DEFAULT):                                      ║
-║                                                                      ║
-║  MAIN AXIS →→→→→→→→→→→→→→→→→→→→→→→→→→→                               ║
-║  ┌────────┐  ┌────────┐  ┌────────┐                                  ║
-║  │ Item 1 │  │ Item 2 │  │ Item 3 │                                  ║
-║  └────────┘  └────────┘  └────────┘  ↑                               ║
-║  ↕                                    │ CROSS AXIS                   ║
-║  ↕ CROSS AXIS                         ↓                              ║
-║                                                                      ║
-║  flex-direction: column:                                             ║
-║                                                                      ║
-║  MAIN AXIS ↓↓↓                                                       ║
-║  ┌────────────────┐                                                  ║
-║  │    Item 1      │                                                  ║
-║  └────────────────┘                                                  ║
-║  ┌────────────────┐   CROSS AXIS →→→                                 ║
-║  │    Item 2      │                                                  ║
-║  └────────────────┘                                                  ║
-║  ┌────────────────┐                                                  ║
-║  │    Item 3      │                                                  ║
-║  └────────────────┘                                                  ║
-║                                                                      ║
-║  KEY INSIGHT: justify-content works on MAIN axis.                    ║
-║               align-items works on CROSS axis.                       ║
-║  When you change direction, their effects SWAP!                      ║
-╚══════════════════════════════════════════════════════════════════════╝
+
+flex-direction: row (DEFAULT):
+
+MAIN AXIS →→→→→→→→→→→→→→→→→→→→→→→→→→→
+┌────────┐  ┌────────┐  ┌────────┐
+│ Item 1 │  │ Item 2 │  │ Item 3 │
+└────────┘  └────────┘  └────────┘  ↑
+↕                                    │ CROSS AXIS
+↕ CROSS AXIS                         ↓
+
+flex-direction: column:
+
+MAIN AXIS ↓↓↓
+┌────────────────┐
+│    Item 1      │
+└────────────────┘
+┌────────────────┐   CROSS AXIS →→→
+│    Item 2      │
+└────────────────┘
+┌────────────────┐
+│    Item 3      │
+└────────────────┘
+
+KEY INSIGHT: justify-content works on MAIN axis.
+             align-items works on CROSS axis.
+When you change direction, their effects SWAP!
 ```
 
 ### Container Properties (Parent)
@@ -231,29 +229,27 @@
 ### Grid Terminology
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║                                                                      ║
-║  GRID ANATOMY:                                                       ║
-║                                                                      ║
-║         Column 1    Column 2    Column 3                             ║
-║        ←───────→  ←───────→  ←───────→                               ║
-║  ┌───────────┬───────────┬───────────┐                               ║
-║  │           │           │           │ ← Row 1                       ║
-║  │ Cell(1,1) │ Cell(1,2) │ Cell(1,3) │                               ║
-║  │           │           │           │                               ║
-║  ├───────────┼───────────┼───────────┤ ← Grid Line                   ║
-║  │           │           │           │ ← Row 2                       ║
-║  │ Cell(2,1) │ Cell(2,2) │ Cell(2,3) │                               ║
-║  │           │           │           │                               ║
-║  └───────────┴───────────┴───────────┘                               ║
-║  ↑           ↑           ↑           ↑                               ║
-║  Line 1      Line 2      Line 3      Line 4                          ║
-║                                                                      ║
-║  TRACK: A column or row (the space between two lines)                ║
-║  CELL: Intersection of a row and column                              ║
-║  AREA: Rectangle spanning one or more cells                          ║
-║  GAP: Space between tracks                                           ║
-╚══════════════════════════════════════════════════════════════════════╝
+
+GRID ANATOMY:
+
+       Column 1    Column 2    Column 3
+      ←───────→  ←───────→  ←───────→
+┌───────────┬───────────┬───────────┐
+│           │           │           │ ← Row 1
+│ Cell(1,1) │ Cell(1,2) │ Cell(1,3) │
+│           │           │           │
+├───────────┼───────────┼───────────┤ ← Grid Line
+│           │           │           │ ← Row 2
+│ Cell(2,1) │ Cell(2,2) │ Cell(2,3) │
+│           │           │           │
+└───────────┴───────────┴───────────┘
+↑           ↑           ↑           ↑
+Line 1      Line 2      Line 3      Line 4
+
+TRACK: A column or row (the space between two lines)
+CELL: Intersection of a row and column
+AREA: Rectangle spanning one or more cells
+GAP: Space between tracks
 ```
 
 ### Container Properties
@@ -294,24 +290,22 @@
 ### auto-fill vs auto-fit
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  Container: 1200px wide | Items: minmax(300px, 1fr)                  ║
-║                                                                      ║
-║  auto-fill: Creates as many tracks as fit, even if empty             ║
-║  ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐                                 ║
-║  │ Item │ │ Item │ │      │ │      │  ← Empty tracks exist           ║
-║  └──────┘ └──────┘ └──────┘ └──────┘                                 ║
-║   300px    300px    300px    300px                                   ║
-║                                                                      ║
-║  auto-fit: Same, but COLLAPSES empty tracks → items expand           ║
-║  ┌────────────┐ ┌────────────┐                                       ║
-║  │   Item     │ │    Item    │  ← Items stretch to fill              ║
-║  └────────────┘ └────────────┘                                       ║
-║    600px           600px                                             ║
-║                                                                      ║
-║  USE: auto-fit for most cases (items expand to fill space).          ║
-║  Use auto-fill when you want consistent column widths.               ║
-╚══════════════════════════════════════════════════════════════════════╝
+Container: 1200px wide | Items: minmax(300px, 1fr)
+
+auto-fill: Creates as many tracks as fit, even if empty
+┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐
+│ Item │ │ Item │ │      │ │      │  ← Empty tracks exist
+└──────┘ └──────┘ └──────┘ └──────┘
+ 300px    300px    300px    300px
+
+auto-fit: Same, but COLLAPSES empty tracks → items expand
+┌────────────┐ ┌────────────┐
+│   Item     │ │    Item    │  ← Items stretch to fill
+└────────────┘ └────────────┘
+  600px           600px
+
+USE: auto-fit for most cases (items expand to fill space).
+Use auto-fill when you want consistent column widths.
 ```
 
 ### Item Placement
@@ -430,7 +424,7 @@
 /* PATTERN 4: Holy Grail Layout */
 .holy-grail {
     display: grid;
-    grid-template: 
+    grid-template:
         "header header header" auto
         "nav    main   aside"  1fr
         "footer footer footer" auto
@@ -455,30 +449,28 @@
 ## 3. Flex vs Grid — Decision Guide
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║                                                                      ║
-║  WHEN TO USE FLEXBOX:              WHEN TO USE GRID:                 ║
-║  ┌───────────────────────┐  ┌────────────────────────────────┐       ║
-║  │ Navigation bars       │  │ Page-level layouts             │       ║
-║  │ Centering content     │  │ Card grids (responsive)        │       ║
-║  │ Single row/column     │  │ Dashboard widgets              │       ║
-║  │ Equal-height cards    │  │ Magazine layouts               │       ║
-║  │ Space distribution    │  │ Form layouts                   │       ║
-║  │ Input + button combos │  │ Any 2D placement               │       ║
-║  │ Vertical centering    │  │ Overlapping elements           │       ║
-║  └───────────────────────┘  └────────────────────────────────┘       ║
-║                                                                      ║
-║  THE MENTAL MODEL:                                                   ║
-║  • Flex: "I have items, arrange them in a LINE."                     ║
-║  • Grid: "I have a LAYOUT, place items into it."                     ║
-║                                                                      ║
-║  COMMON COMBO: Grid for page layout, Flex inside components.         ║
-║                                                                      ║
-║  .page { display: grid; ... }   ← Page structure                     ║
-║    .navbar { display: flex; }   ← Navbar is flex internally          ║
-║    .card { display: flex; }     ← Card content is flex               ║
-║    .footer { display: flex; }   ← Footer links are flex              ║
-╚══════════════════════════════════════════════════════════════════════╝
+
+WHEN TO USE FLEXBOX:              WHEN TO USE GRID:
+┌───────────────────────┐  ┌────────────────────────────────┐
+│ Navigation bars       │  │ Page-level layouts             │
+│ Centering content     │  │ Card grids (responsive)        │
+│ Single row/column     │  │ Dashboard widgets              │
+│ Equal-height cards    │  │ Magazine layouts               │
+│ Space distribution    │  │ Form layouts                   │
+│ Input + button combos │  │ Any 2D placement               │
+│ Vertical centering    │  │ Overlapping elements           │
+└───────────────────────┘  └────────────────────────────────┘
+
+THE MENTAL MODEL:
+• Flex: "I have items, arrange them in a LINE."
+• Grid: "I have a LAYOUT, place items into it."
+
+COMMON COMBO: Grid for page layout, Flex inside components.
+
+.page { display: grid; ... }   ← Page structure
+  .navbar { display: flex; }   ← Navbar is flex internally
+  .card { display: flex; }     ← Card content is flex
+  .footer { display: flex; }   ← Footer links are flex
 ```
 
 ---

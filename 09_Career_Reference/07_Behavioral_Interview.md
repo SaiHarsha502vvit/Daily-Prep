@@ -3,18 +3,16 @@
 ## Why Behavioral Interviews Matter
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  INTERVIEW BREAKDOWN (Most Tech Companies)                           ║
-║                                                                      ║
-║  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐                ║
-║  │   Coding     │  │   System     │  │  Behavioral  │                ║
-║  │   2-3 rounds │  │   Design     │  │   1-2 rounds │                ║
-║  │   40%        │  │   1-2 rounds │  │   20-30%     │                ║
-║  └──────────────┘  │   20-30%     │  └──────────────┘                ║
-║                    └──────────────┘                                  ║
-║                                                                      ║
-║  Behavioral = The HIRE/NO-HIRE tiebreaker when coding is equal       ║
-╚══════════════════════════════════════════════════════════════════════╝
+INTERVIEW BREAKDOWN (Most Tech Companies)
+
+┌──────────────┐  ┌──────────────┐  ┌──────────────┐
+│   Coding     │  │   System     │  │  Behavioral  │
+│   2-3 rounds │  │   Design     │  │   1-2 rounds │
+│   40%        │  │   1-2 rounds │  │   20-30%     │
+└──────────────┘  │   20-30%     │  └──────────────┘
+                  └──────────────┘
+
+Behavioral = The HIRE/NO-HIRE tiebreaker when coding is equal
 ```
 
 > **Mental Model:** Behavioral interviews test PAST behavior as a PREDICTOR of future behavior.
@@ -25,30 +23,28 @@
 ## The STAR Method — Your Answer Framework
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  S.T.A.R. FRAMEWORK                                                  ║
-║                                                                      ║
-║  ┌─────────────┐                                                     ║
-║  │ S ituation  │ → Set the scene (team, project, timeline)           ║
-║  │   (15%)     │   "In my last project, we had a billing system      ║
-║  └──────┬──────┘    serving 50K users..."                            ║
-║         │                                                            ║
-║  ┌──────▼──────┐                                                     ║
-║  │ T ask       │ → YOUR specific responsibility                      ║
-║  │   (15%)     │   "I was responsible for migrating the payment      ║
-║  └──────┬──────┘    processing module..."                            ║
-║         │                                                            ║
-║  ┌──────▼──────┐                                                     ║
-║  │ A ction     │ → What YOU did (detailed, technical)                ║
-║  │   (50%)     │   "I designed a dual-write strategy, set up         ║
-║  └──────┬──────┘    canary deployments, wrote integration tests..."  ║
-║         │                                                            ║
-║  ┌──────▼──────┐                                                     ║
-║  │ R esult     │ → Quantifiable outcome + learning                   ║
-║  │   (20%)     │   "Reduced processing time 40%, zero downtime       ║
-║  └─────────────┘    during migration, saved $15K/month"              ║
-║                                                                      ║
-╚══════════════════════════════════════════════════════════════════════╝
+S.T.A.R. FRAMEWORK
+
+┌─────────────┐
+│ S ituation  │ → Set the scene (team, project, timeline)
+│   (15%)     │   "In my last project, we had a billing system
+└──────┬──────┘    serving 50K users..."
+       │
+┌──────▼──────┐
+│ T ask       │ → YOUR specific responsibility
+│   (15%)     │   "I was responsible for migrating the payment
+└──────┬──────┘    processing module..."
+       │
+┌──────▼──────┐
+│ A ction     │ → What YOU did (detailed, technical)
+│   (50%)     │   "I designed a dual-write strategy, set up
+└──────┬──────┘    canary deployments, wrote integration tests..."
+       │
+┌──────▼──────┐
+│ R esult     │ → Quantifiable outcome + learning
+│   (20%)     │   "Reduced processing time 40%, zero downtime
+└─────────────┘    during migration, saved $15K/month"
+
 ```
 
 ### STAR Anti-Patterns
@@ -139,30 +135,28 @@ Saw a gap → Proposed a solution → Rallied support → Executed → Measurabl
 **Story Framework:**
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  THE FAILURE ANSWER FORMULA                                          ║
-║                                                                      ║
-║  ┌──────────────────┐                                                ║
-║  │ Real failure      │  Don't minimize — own it                      ║
-║  │ (not humble brag) │  "I deployed without enough testing..."       ║
-║  └────────┬─────────┘                                                ║
-║           │                                                          ║
-║  ┌────────▼─────────┐                                                ║
-║  │ Impact           │  Acknowledge the consequences                  ║
-║  │                  │  "This caused 2 hours of downtime..."          ║
-║  └────────┬─────────┘                                                ║
-║           │                                                          ║
-║  ┌────────▼─────────┐                                                ║
-║  │ Root cause       │  Show analytical thinking                      ║
-║  │                  │  "I traced it to missing edge cases in..."     ║
-║  └────────┬─────────┘                                                ║
-║           │                                                          ║
-║  ┌────────▼─────────┐                                                ║
-║  │ Fix + Prevention │  Show growth mindset                           ║
-║  │                  │  "I set up automated testing and wrote         ║
-║  │                  │   a deploy checklist the team still uses"      ║
-║  └──────────────────┘                                                ║
-╚══════════════════════════════════════════════════════════════════════╝
+THE FAILURE ANSWER FORMULA
+
+┌──────────────────┐
+│ Real failure      │  Don't minimize — own it
+│ (not humble brag) │  "I deployed without enough testing..."
+└────────┬─────────┘
+         │
+┌────────▼─────────┐
+│ Impact           │  Acknowledge the consequences
+│                  │  "This caused 2 hours of downtime..."
+└────────┬─────────┘
+         │
+┌────────▼─────────┐
+│ Root cause       │  Show analytical thinking
+│                  │  "I traced it to missing edge cases in..."
+└────────┬─────────┘
+         │
+┌────────▼─────────┐
+│ Fix + Prevention │  Show growth mindset
+│                  │  "I set up automated testing and wrote
+│                  │   a deploy checklist the team still uses"
+└──────────────────┘
 ```
 
 ### Category 4: Teamwork & Collaboration
@@ -188,7 +182,7 @@ Saw a gap → Proposed a solution → Rallied support → Executed → Measurabl
 **Sample Answer Skeleton:**
 
 ```
-SITUATION: Three critical tasks with same deadline — 
+SITUATION: Three critical tasks with same deadline —
   bug fix (production), feature (committed to client), code review (blocking colleague)
 
 TASK: Needed to prioritize without dropping any ball
@@ -235,7 +229,7 @@ RESULT: Production stable within 1 hour, feature delivered next day,
 
 **Story Pattern:**
 ```
-Ambiguity → Clarified what you could → Made reasonable assumptions → 
+Ambiguity → Clarified what you could → Made reasonable assumptions →
 Documented decisions → Iterated as more info came → Successfully delivered
 ```
 
@@ -322,22 +316,20 @@ Documented decisions → Iterated as more info came → Successfully delivered
 ### How to Map Stories to Questions
 
 ```
-╔════════════════════════════════════════════════════════════════════╗
-║  STORY → QUESTION MAPPING MATRIX                                   ║
+STORY → QUESTION MAPPING MATRIX
 ╠══════════════════════════════════════════════════════════════════╗ ║
-║                    │ Conflict │ Leader │ Fail │ Team │ Priority ║  ║
-║  ──────────────────┼──────────┼────────┼──────┼──────┼────────  ║  ║
-║  Production Bug    │          │   ✓    │  ✓   │  ✓   │    ✓    ║   ║
-║  The Disagreement  │    ✓     │        │      │  ✓   │         ║   ║
-║  Took Initiative   │          │   ✓    │      │  ✓   │    ✓    ║   ║
-║  Tight Deadline    │          │        │  ✓   │      │    ✓    ║   ║
-║  Helped Teammate   │    ✓     │   ✓    │      │  ✓   │         ║   ║
-║  Tech Decision     │    ✓     │   ✓    │      │      │    ✓    ║   ║
-║  ──────────────────┼──────────┼────────┼──────┼──────┼────────  ║  ║
-║                                                                  ║ ║
-║  EVERY category should have 2+ stories that fit                  ║ ║
+                  │ Conflict │ Leader │ Fail │ Team │ Priority ║
+──────────────────┼──────────┼────────┼──────┼──────┼────────  ║
+Production Bug    │          │   ✓    │  ✓   │  ✓   │    ✓    ║
+The Disagreement  │    ✓     │        │      │  ✓   │         ║
+Took Initiative   │          │   ✓    │      │  ✓   │    ✓    ║
+Tight Deadline    │          │        │  ✓   │      │    ✓    ║
+Helped Teammate   │    ✓     │   ✓    │      │  ✓   │         ║
+Tech Decision     │    ✓     │   ✓    │      │      │    ✓    ║
+──────────────────┼──────────┼────────┼──────┼──────┼────────  ║
+                                                                ║
+EVERY category should have 2+ stories that fit                  ║
 ╚══════════════════════════════════════════════════════════════════╝ ║
-╚════════════════════════════════════════════════════════════════════╝
 ```
 
 ---
@@ -550,27 +542,25 @@ Before every behavioral interview, research:
 ## Mental Model: The Interview Mindset
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  Think of the interview as a CONVERSATION, not an EXAM               ║
-║                                                                      ║
-║  You're evaluating THEM as much as they're evaluating YOU.           ║
-║                                                                      ║
-║  The interviewer WANTS you to succeed. They have an open role        ║
-║  they need to fill. They're rooting for you to be great.             ║
-║                                                                      ║
-║  ┌─────────────────────────────────────────────────────┐             ║
-║  │  MINDSET SHIFT:                                     │             ║
-║  │                                                     │             ║
-║  │  From: "Please hire me, I'll do anything"           │             ║
-║  │  To:   "Let's see if we're a good fit for          │              ║
-║  │         each other"                                 │             ║
-║  │                                                     │             ║
-║  │  This confidence (not arrogance) comes through      │             ║
-║  │  in your answers and body language.                  │            ║
-║  └─────────────────────────────────────────────────────┘             ║
-║                                                                      ║
-║  PREPARATION = CONFIDENCE = PERFORMANCE                              ║
-╚══════════════════════════════════════════════════════════════════════╝
+Think of the interview as a CONVERSATION, not an EXAM
+
+You're evaluating THEM as much as they're evaluating YOU.
+
+The interviewer WANTS you to succeed. They have an open role
+they need to fill. They're rooting for you to be great.
+
+┌──────────────────────────────────────────────────────┐
+│  MINDSET SHIFT:                                      │
+│                                                      │
+│  From: "Please hire me, I'll do anything"            │
+│  To:   "Let's see if we're a good fit for            │
+│         each other"                                  │
+│                                                      │
+│  This confidence (not arrogance) comes through       │
+│  in your answers and body language.                  │
+└──────────────────────────────────────────────────────┘
+
+PREPARATION = CONFIDENCE = PERFORMANCE
 ```
 
 ---

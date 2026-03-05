@@ -13,25 +13,23 @@
 **Difficulty:** Easy | **Category:** Sliding Window
 
 ```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  MAXIMUM SUM SUBARRAY OF SIZE K                                           ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Given array and integer k, find maximum sum of any contiguous subarray   ║
-║  of size k.                                                               ║
-║                                                                           ║
-║  Input: arr = [2, 1, 5, 1, 3, 2], k = 3                                   ║
-║  Output: 9                                                                ║
-║  Explanation: Subarray [5, 1, 3] has maximum sum = 9                      ║
-║                                                                           ║
-║  Visual:                                                                  ║
-║  [2, 1, 5, 1, 3, 2]                                                       ║
-║   └──┘  sum=8                                                             ║
-║      └──┘  sum=7                                                          ║
-║         └──┘  sum=9 ← MAX                                                 ║
-║            └──┘  sum=6                                                    ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+MAXIMUM SUM SUBARRAY OF SIZE K
+──────────────────────────────────────────────────
+
+Given array and integer k, find maximum sum of any contiguous subarray
+of size k.
+
+Input: arr = [2, 1, 5, 1, 3, 2], k = 3
+Output: 9
+Explanation: Subarray [5, 1, 3] has maximum sum = 9
+
+Visual:
+[2, 1, 5, 1, 3, 2]
+ └──┘  sum=8
+    └──┘  sum=7
+       └──┘  sum=9 ← MAX
+          └──┘  sum=6
+
 ```
 
 ```java
@@ -204,24 +202,22 @@ public long maximumSubarraySum(int[] nums, int k) {
 🔗 [https://leetcode.com/problems/minimum-size-subarray-sum/](https://leetcode.com/problems/minimum-size-subarray-sum/)
 
 ```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  MINIMUM SIZE SUBARRAY SUM                                                ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Find minimal length of contiguous subarray with sum >= target.           ║
-║                                                                           ║
-║  Input: target = 7, nums = [2,3,1,2,4,3]                                  ║
-║  Output: 2                                                                ║
-║  Explanation: [4,3] has sum=7 with length 2                               ║
-║                                                                           ║
-║  Visual:                                                                  ║
-║  [2,3,1,2,4,3]                                                            ║
-║   └────────┘ sum=12, len=5                                                ║
-║     └──────┘ sum=10, len=4                                                ║
-║       └────┘ sum=7, len=3                                                 ║
-║           └─┘ sum=7, len=2 ← MIN                                          ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+MINIMUM SIZE SUBARRAY SUM
+──────────────────────────────────────────────────
+
+Find minimal length of contiguous subarray with sum >= target.
+
+Input: target = 7, nums = [2,3,1,2,4,3]
+Output: 2
+Explanation: [4,3] has sum=7 with length 2
+
+Visual:
+[2,3,1,2,4,3]
+ └────────┘ sum=12, len=5
+   └──────┘ sum=10, len=4
+     └────┘ sum=7, len=3
+         └─┘ sum=7, len=2 ← MIN
+
 ```
 
 ```java

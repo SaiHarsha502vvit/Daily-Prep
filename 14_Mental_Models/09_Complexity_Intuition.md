@@ -108,7 +108,7 @@ Example: Merge Sort
            /      \          /      \
       ms(n/4)  ms(n/4)  ms(n/4)  ms(n/4)       → merge work: 4 × n/4 = n
       ...                                       → each level does O(n) total work
-      
+
 Depth of tree: log₂(n)
 Work per level: O(n)
 TOTAL: O(n) × log₂(n) = O(n log n)  ✅
@@ -145,7 +145,7 @@ For divide-and-conquer: T(n) = a · T(n/b) + O(nᶜ)
 
 Intuitive rules:
 - If splitting work is cheap → O(n^(log_b(a)))       [leaves dominate]
-- If splitting work matches → O(nᶜ · log n)          [balanced]  
+- If splitting work matches → O(nᶜ · log n)          [balanced]
 - If splitting work is expensive → O(nᶜ)              [root dominates]
 
 Examples:
@@ -258,29 +258,27 @@ Total cost for n inserts:
 
 #### Method 2: Accounting (The Coin Method)
 ```
-╔═══════════════════════════════════════════════════════════════╗
-║  ACCOUNTING: Charge EXTRA on cheap ops, save for expensive    ║
-╠═══════════════════════════════════════════════════════════════╣
-║                                                               ║
-║  Rule: Credit balance must NEVER go negative                  ║
-║                                                               ║
-║  Dynamic Array — Charge 3 per insert:                         ║
-║    $1 → pays for the insert itself                            ║
-║    $2 → saved as credit (stored on the element)               ║
-║                                                               ║
-║  When resize happens (double from m to 2m):                   ║
-║    Need to copy m elements                                    ║
-║    Each of the m/2 NEW elements since last resize saved $2    ║
-║    Total credit = m/2 × $2 = $m → exactly pays for copy!      ║
-║                                                               ║
-║  We charged $3 per operation → amortized cost = O(3) = O(1)   ║
-║                                                               ║
-║  ┌─────────────────────────────────────┐                      ║
-║  │  $1   $1   $1   $1   $1   $1  $1   │                       ║
-║  │  [a]  [b]  [c]  [d]  [e]  [f] [g]  │ ← each has $2         ║
-║  │  $2   $2   $2   $2   $2   $2  $2   │    credit attached    ║
-║  └─────────────────────────────────────┘                      ║
-╚═══════════════════════════════════════════════════════════════╝
+ACCOUNTING: Charge EXTRA on cheap ops, save for expensive
+──────────────────────────────────────────────────
+
+Rule: Credit balance must NEVER go negative
+
+Dynamic Array — Charge 3 per insert:
+  $1 → pays for the insert itself
+  $2 → saved as credit (stored on the element)
+
+When resize happens (double from m to 2m):
+  Need to copy m elements
+  Each of the m/2 NEW elements since last resize saved $2
+  Total credit = m/2 × $2 = $m → exactly pays for copy!
+
+We charged $3 per operation → amortized cost = O(3) = O(1)
+
+┌─────────────────────────────────────┐
+│  $1   $1   $1   $1   $1   $1  $1   │
+│  [a]  [b]  [c]  [d]  [e]  [f] [g]  │ ← each has $2
+│  $2   $2   $2   $2   $2   $2  $2   │    credit attached
+└─────────────────────────────────────┘
 ```
 
 #### Method 3: Potential (The Physics Method)
@@ -347,7 +345,7 @@ Total cost for n inserts:
 Example:
   QuickSort average = O(n log n) → bad luck gives O(n²)
   ArrayList.add() amortized O(1) → ALWAYS O(1) per op over n ops
-  
+
   Amortized is STRONGER than average — no randomness needed!
 ```
 

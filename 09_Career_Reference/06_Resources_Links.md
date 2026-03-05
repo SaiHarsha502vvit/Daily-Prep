@@ -1143,32 +1143,30 @@ NeetCode: https://neetcode.io/
 # 💡 THE ELITE LEARNING PATH
 
 ```
-╔═══════════════════════════════════════════════════════════════════════╗
-║                    THE 4-STAGE MASTERY PATH                           ║
-╠═══════════════════════════════════════════════════════════════════════╣
-║                                                                       ║
-║  STAGE 1: FOUNDATIONS (Month 1-2)                                     ║
-║  ├── Berkeley CS61B (Data Structures)                                 ║
-║  ├── MIT 6.006 (Algorithms)                                           ║
-║  └── 100 LeetCode problems                                            ║
-║                                                                       ║
-║  STAGE 2: DEPTH (Month 3-4)                                           ║
-║  ├── Stanford CS161 (Algorithm Design)                                ║
-║  ├── Berkeley CS186 or CMU 15-445 (Databases)                         ║
-║  └── 150 LeetCode problems + System Design Primer                     ║
-║                                                                       ║
-║  STAGE 3: SYSTEMS (Month 5-6)                                         ║
-║  ├── MIT 6.824 (Distributed Systems)                                  ║
-║  ├── Berkeley CS162 (Operating Systems)                               ║
-║  └── Read engineering blogs + design systems                          ║
-║                                                                       ║
-║  STAGE 4: MASTERY (Ongoing)                                           ║
-║  ├── Read research papers                                             ║
-║  ├── Build production systems                                         ║
-║  ├── Contribute to open source                                        ║
-║  └── Never stop learning                                              ║
-║                                                                       ║
-╚═══════════════════════════════════════════════════════════════════════╝
+                  THE 4-STAGE MASTERY PATH
+──────────────────────────────────────────────────
+
+STAGE 1: FOUNDATIONS (Month 1-2)
+├── Berkeley CS61B (Data Structures)
+├── MIT 6.006 (Algorithms)
+└── 100 LeetCode problems
+
+STAGE 2: DEPTH (Month 3-4)
+├── Stanford CS161 (Algorithm Design)
+├── Berkeley CS186 or CMU 15-445 (Databases)
+└── 150 LeetCode problems + System Design Primer
+
+STAGE 3: SYSTEMS (Month 5-6)
+├── MIT 6.824 (Distributed Systems)
+├── Berkeley CS162 (Operating Systems)
+└── Read engineering blogs + design systems
+
+STAGE 4: MASTERY (Ongoing)
+├── Read research papers
+├── Build production systems
+├── Contribute to open source
+└── Never stop learning
+
 ```
 
 ---
