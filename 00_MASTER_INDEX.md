@@ -1,6 +1,6 @@
 # MASTER INDEX — Complete DSA, SQL, Spring Boot & Career Preparation
 
-**Last Updated: March 2026 | 266+ files | 19 folders**
+**Last Updated: March 2026 | 275+ files | 19 folders**
 
 ---
 
@@ -22,6 +22,8 @@
 | **TypeScript (3 chapters)** | [17_TypeScript/](#typescript-3-chapters) |
 | **CSS Complete (4 chapters)** | [18_CSS_Complete/](#css-complete-4-chapters) |
 | **Frontend Integration (4 chapters)** | [19_Frontend_Integration/](#frontend-integration-4-chapters) |
+| **⚡ Deep Reasoning — Stop Freezing!** | [All 8 Deep Reasoning files](#deep-reasoning--senior-engineer-thinking-new) |
+| **Concurrency & Coroutines** | [13_Developer_Essentials/19_Concurrency_Models_Coroutines.md](13_Developer_Essentials/19_Concurrency_Models_Coroutines.md) |
 | Java Concurrency + Modern Java | [07_Modern_Java/](#modern-java--spring-boot) |
 | Spring Boot Deps → Annotations Map | [07_Modern_Java/30_Spring_Boot_Dependencies_Annotations.md](07_Modern_Java/30_Spring_Boot_Dependencies_Annotations.md) |
 | Servers, Ports & Networking | [13_Developer_Essentials/17_Servers_Ports_Networking.md](13_Developer_Essentials/17_Servers_Ports_Networking.md) |
@@ -84,7 +86,8 @@ Daily-Prep/
 │   ├── 12_Greedy_Algorithms_Complete.md → Activity selection, Huffman, jump game
 │   ├── 13_String_Algorithms_Complete.md → Pattern matching, anagram, palindrome
 │   ├── 14_Union_Find_DSU_Complete.md    → Disjoint Set Union, path compression, rank
-│   └── 15_Monotonic_Stack_Queue_Complete.md → NGE, histogram, trapping rain water
+│   ├── 15_Monotonic_Stack_Queue_Complete.md → NGE, histogram, trapping rain water
+│   └── 16_DSA_Deep_Reasoning.md         → 🆕 10 DSA "freeze moments" with deep reasoning & analogies
 │
 ├── 04_Patterns_Templates/              (23 files)
 │   ├── 01_Sliding_Window.md             → Fixed & variable window techniques
@@ -183,7 +186,9 @@ Daily-Prep/
 │   ├── 27b_Java_Concurrency_Advanced.md → 🆕 Executors, CompletableFuture, Virtual Threads
 │   ├── 28_Modern_Java_Features.md       → 🆕 Java 9-21 (var, records, sealed, pattern matching)
 │   ├── 29_Message_Queues_Kafka.md       → 🆕 Kafka architecture, Spring Boot+Kafka, event-driven
-│   └── 30_Spring_Boot_Dependencies_Annotations.md → 🆕 Which dependency → which annotations map
+│   ├── 30_Spring_Boot_Dependencies_Annotations.md → 🆕 Which dependency → which annotations map
+│   ├── 31_Java_Deep_Reasoning.md        → 🆕 13 Java "freeze moments" — pass-by-value, String pool, HashMap internals
+│   └── 32_Spring_Boot_Deep_Reasoning.md → 🆕 12 Spring Boot "freeze moments" — DispatcherServlet vs Filter, proxy pattern
 │
 ├── 08_SQL/                              (21 chapter files — zero to expert)
 │   ├── 01_Foundations_Database_Basics.md → What is a database, RDBMS, SQL
@@ -208,10 +213,11 @@ Daily-Prep/
 │   ├── 19_Interview_Top50.md            → Top 50 interview questions
 │   └── 20_CheatSheet_QuickRef.md        → Syntax quick reference
 │
-├── 08_SQL_Database/                     (3 files — advanced SQL/DB topics)
+├── 08_SQL_Database/                     (4 files — advanced SQL/DB topics)
 │   ├── 19_Interview_Top50.md            → 🆕 50 SQL interview problems by pattern
 │   ├── 21_Database_Internals.md         → 🆕 B-Tree, WAL, MVCC, buffer pool, query plans
-│   └── 22_NoSQL_MongoDB.md             → 🆕 NoSQL categories, MongoDB, Redis
+│   ├── 22_NoSQL_MongoDB.md             → 🆕 NoSQL categories, MongoDB, Redis
+│   └── 23_SQL_Deep_Reasoning.md         → 🆕 10 SQL "freeze moments" — NULL logic, JOIN execution, isolation levels
 │
 ├── 09_Career_Reference/                 (15 chapter files)
 │   ├── 01_Career_TechnoFunctional.md    → Framework, skills, domains
@@ -247,7 +253,7 @@ Daily-Prep/
 │   ├── Week_03/ (Days 015–021)          → Mar 17–23: Trees, BST, Heap, DFS/BFS
 │   └── Week_04/ (Days 022–028)          → Mar 24–30: Graphs, DP, Advanced SQL
 │
-├── 13_Developer_Essentials/             (19 files)
+├── 13_Developer_Essentials/             (20 files)
 │   ├── 00_INDEX.md                      → Reading order & career phase mapping
 │   ├── 01_Git_Version_Control.md        → 3 areas, branching, merge conflicts, Git Flow
 │   ├── 02_Linux_CLI_Shell.md            → Navigation, grep/awk/sed, scripting
@@ -266,7 +272,8 @@ Daily-Prep/
 │   ├── 15_Cloud_Services_Guide.md       → 🆕 AWS/Azure/GCP service mapping, EC2, Lambda, S3
 │   ├── 16_IaC_Terraform.md             → 🆕 Infrastructure as Code, Terraform HCL, modules, CI/CD
 │   ├── 17_Servers_Ports_Networking.md   → 🆕 Server theory, ports, DNS, firewalls, load balancers
-│   └── 18_Backend_Cloud_Integration.md  → 🆕 Cloud deployment, CI/CD, monitoring, Spring Boot on AWS
+│   ├── 18_Backend_Cloud_Integration.md  → 🆕 Cloud deployment, CI/CD, monitoring, Spring Boot on AWS
+│   └── 19_Concurrency_Models_Coroutines.md → 🆕 Coroutines vs Continuations, Virtual Threads, Event Loop, Go goroutines
 │
 ├── 14_Mental_Models/                    (19 files — HOW TO THINK guides!)
 │   ├── 00_INDEX.md                      → Reading order & usage guide
@@ -289,7 +296,7 @@ Daily-Prep/
 │   ├── 17_Frontend_Architecture_Thinking.md → 🆕 State location, render cascade, composition
 │   └── 18_Production_Debugging_Thinking.md → 🆕 Incident timeline, 5 Whys, postmortem
 │
-├── 15_React_Frontend/                   (8 files — full React curriculum NEW!)
+├── 15_React_Frontend/                   (9 files — full React curriculum NEW!)
 │   ├── 01_React_Fundamentals.md         → 🆕 JSX, components, props, state, events
 │   ├── 02_Component_Patterns.md         → 🆕 Composition, render props, HOC, compound
 │   ├── 03_Hooks_Deep_Dive.md            → 🆕 useEffect, useRef, useMemo, custom hooks
@@ -297,27 +304,31 @@ Daily-Prep/
 │   ├── 05_React_TypeScript.md           → 🆕 Typing props, events, hooks, generics
 │   ├── 06_React_Router.md               → 🆕 React Router v6+, data fetching, React Query
 │   ├── 07_React_Testing.md              → 🆕 React Testing Library, MSW, component testing
-│   └── 08_React_Performance.md          → 🆕 React.memo, virtualization, bundle splitting
+│   ├── 08_React_Performance.md          → 🆕 React.memo, virtualization, bundle splitting
+│   └── 09_React_Deep_Reasoning.md       → 🆕 13 React "freeze moments" — useState batching, re-renders, Fiber
 │
-├── 16_JavaScript/                       (7 chapter files — complete JS coverage NEW!)
+├── 16_JavaScript/                       (8 chapter files — complete JS coverage NEW!)
 │   ├── 01_JS_Foundations.md             → 🆕 V8 engine, types, coercion, scope, hoisting, TDZ
 │   ├── 02_JS_Functions_Closures.md      → 🆕 this binding, closures, IIFE, currying, composition
 │   ├── 03_JS_Objects_Prototypes.md      → 🆕 Prototype chain, ES6 classes, destructuring, iterators
 │   ├── 04_JS_Async_Promises.md          → 🆕 Event loop, Promises, async/await, microtask queue
 │   ├── 05_JS_DOM_BrowserAPIs.md         → 🆕 DOM traversal, events, delegation, storage, fetch
 │   ├── 06_JS_Modern_ES6Plus.md          → 🆕 Modules, Map/Set, Proxy/Reflect, ES2020-2024
-│   └── 07_JS_Error_Handling_Debugging.md → 🆕 Error types, DevTools, production monitoring
+│   ├── 07_JS_Error_Handling_Debugging.md → 🆕 Error types, DevTools, production monitoring
+│   └── 08_JS_Deep_Reasoning.md          → 🆕 15 JS "freeze moments" — event loop, closures, this, == algorithm
 │
-├── 17_TypeScript/                       (3 chapter files — TS standalone NEW!)
+├── 17_TypeScript/                       (4 chapter files — TS standalone NEW!)
 │   ├── 01_TS_Foundations.md             → 🆕 tsconfig, strict mode, basic types, interfaces, narrowing
 │   ├── 02_TS_Advanced_Types.md          → 🆕 Generics, utility types, mapped, conditional, template literals
-│   └── 03_TS_Patterns_BestPractices.md  → 🆕 React+TS, branded types, migration, anti-patterns
+│   ├── 03_TS_Patterns_BestPractices.md  → 🆕 React+TS, branded types, migration, anti-patterns
+│   └── 04_TS_Deep_Reasoning.md          → 🆕 10 TS "freeze moments" — type erasure, generics, structural typing
 │
-├── 18_CSS_Complete/                     (4 chapter files — visual CSS mastery NEW!)
+├── 18_CSS_Complete/                     (5 chapter files — visual CSS mastery NEW!)
 │   ├── 01_CSS_Foundations.md            → 🆕 Selectors, cascade, specificity, box model, positioning
 │   ├── 02_CSS_Layout_Systems.md         → 🆕 Flexbox, Grid, subgrid, container queries
 │   ├── 03_CSS_Responsive_Animations.md  → 🆕 Media queries, clamp(), keyframes, 7 stunning animations
-│   └── 04_CSS_Modern_Architecture.md    → 🆕 Custom properties, dark mode, BEM, glassmorphism, design tokens
+│   ├── 04_CSS_Modern_Architecture.md    → 🆕 Custom properties, dark mode, BEM, glassmorphism, design tokens
+│   └── 05_CSS_Deep_Reasoning.md         → 🆕 10 CSS "freeze moments" — z-index, BFC, margin collapse, reflow
 │
 ├── 19_Frontend_Integration/             (4 chapter files — full-stack UI building NEW!)
 │   ├── 01_React_JS_CSS_Combined.md      → 🆕 Component architecture, dashboard build, state patterns
@@ -351,6 +362,7 @@ Daily-Prep/
 - **Advanced DS**: [Core (Trie, Segment Tree)](03_Algorithms/07a_Advanced_DS_Core.md) | [Patterns](03_Algorithms/07b_Advanced_DS_Patterns.md)
 - **Number Theory**: [Core (GCD, Primes)](03_Algorithms/08a_NumberTheory_Core.md) | [Advanced (Modular, CRT)](03_Algorithms/08b_NumberTheory_Advanced.md)
 - **Specialized**: [Pattern Programs](03_Algorithms/09_Pattern_Programs_Complete.md) | [Bit Manipulation](03_Algorithms/10_Bit_Manipulation_Complete.md) | [Backtracking](03_Algorithms/11_Backtracking_Complete.md) | [Greedy](03_Algorithms/12_Greedy_Algorithms_Complete.md) | [String Algos](03_Algorithms/13_String_Algorithms_Complete.md) | [Union-Find](03_Algorithms/14_Union_Find_DSU_Complete.md) | [Monotonic Stack](03_Algorithms/15_Monotonic_Stack_Queue_Complete.md)
+- **⚡ Deep Reasoning**: [DSA Deep Reasoning](03_Algorithms/16_DSA_Deep_Reasoning.md) — 10 interview "freeze moments" with senior-level reasoning
 
 ### Coding Patterns (20 files — 7 original + 13 combined DS+Algo)
 - [Sliding Window](04_Patterns_Templates/01_Sliding_Window.md) | [Code Templates](04_Patterns_Templates/02_Code_Templates.md) | [Visual Diagrams](04_Patterns_Templates/03_Visual_Diagrams.md)
@@ -381,7 +393,7 @@ Daily-Prep/
 - **🆕** [SD Interview Problems](06_OOP_Design/05_SD_Interview_Problems.md) | [Distributed Systems](06_OOP_Design/06_Distributed_Systems_Fundamentals.md)
 - **🆕** [LLD Solved Problems](06_OOP_Design/07_LLD_Solved_Problems.md) | [Design Patterns Java](06_OOP_Design/08_Design_Patterns_Java.md)
 
-### Modern Java & Spring Boot (41 chapters)
+### Modern Java & Spring Boot (44 chapters)
 - **Roadmap**: [Spring Boot Roadmap](07_Modern_Java/00_SPRING_BOOT_ROADMAP.md) | [50-Day Curriculum](07_Modern_Java/26_Spring_Boot_Curriculum_50Day.md)
 - **Java Core**: [Functional Programming](07_Modern_Java/01_Functional_Programming.md) | [Algo Engineering](07_Modern_Java/02a_AlgoEng_Core.md) | [Algo Eng Advanced](07_Modern_Java/02e_AlgoEng_Advanced.md)
 - **Pre-Spring**: [Hidden Foundations Part 1](07_Modern_Java/02c_SB_HiddenFoundations_Part1.md) | [Part 2](07_Modern_Java/02d_SB_HiddenFoundations_Part2.md)
@@ -402,6 +414,7 @@ Daily-Prep/
 - **Extras**: [WebSocket, GraphQL, gRPC, Batch](07_Modern_Java/25_Spring_Boot_Part23_Missing_Essential_Topics.md)
 - **🆕 Java Deep Dive**: [Concurrency Core](07_Modern_Java/27a_Java_Concurrency_Core.md) | [Concurrency Advanced](07_Modern_Java/27b_Java_Concurrency_Advanced.md) | [Modern Java 9-21](07_Modern_Java/28_Modern_Java_Features.md) | [Kafka & Message Queues](07_Modern_Java/29_Message_Queues_Kafka.md)
 - **🆕 Dependency Map**: [Spring Boot Dependencies → Annotations](07_Modern_Java/30_Spring_Boot_Dependencies_Annotations.md) — Which dependency gives which annotations
+- **⚡ Deep Reasoning**: [Java Deep Reasoning](07_Modern_Java/31_Java_Deep_Reasoning.md) — 13 Java "freeze moments" (pass-by-value, String pool, HashMap) | [Spring Boot Deep Reasoning](07_Modern_Java/32_Spring_Boot_Deep_Reasoning.md) — 12 Spring Boot "freeze moments" (DispatcherServlet vs Filter, proxy pattern)
 
 ### SQL (21 chapters)
 - [01 Foundations](08_SQL/01_Foundations_Database_Basics.md) | [02 Data Types](08_SQL/02_DataTypes_Constraints.md) | [03 DDL](08_SQL/03_DDL_Creating_Structure.md) | [04 DML](08_SQL/04_DML_Manipulating_Data.md)
@@ -411,10 +424,11 @@ Daily-Prep/
 - [17 100 Problems](08_SQL/17_Practice_100_Problems.md) | [18a Beginner Projects](08_SQL/18a_SQL_Projects_Beginner.md) | [18b Advanced Projects](08_SQL/18b_SQL_Projects_Advanced.md)
 - [19 Interview Top 50](08_SQL/19_Interview_Top50.md) | [20 Cheat Sheet](08_SQL/20_CheatSheet_QuickRef.md)
 
-### SQL & Database — Advanced (3 files)
+### SQL & Database — Advanced (4 files)
 - **🆕** [SQL Interview Top 50 (expanded)](08_SQL_Database/19_Interview_Top50.md) — 50 problems organized by pattern
 - **🆕** [Database Internals](08_SQL_Database/21_Database_Internals.md) — B-Tree, WAL, MVCC, buffer pool, query plans
 - **🆕** [NoSQL & MongoDB](08_SQL_Database/22_NoSQL_MongoDB.md) — NoSQL categories, MongoDB CRUD, Redis
+- **⚡** [SQL Deep Reasoning](08_SQL_Database/23_SQL_Deep_Reasoning.md) — 10 SQL "freeze moments" (NULL logic, JOIN execution, isolation levels)
 
 ### Career & Reference (14 files)
 - [Career Framework](09_Career_Reference/01_Career_TechnoFunctional.md)
@@ -435,7 +449,7 @@ Daily-Prep/
 - [Week 03: Mar 17–23](12_Daily_Practice/Week_03/) — Trees, BST, Heap, DFS/BFS, Recursion, Backtracking, SQL Window Functions
 - [Week 04: Mar 24–30](12_Daily_Practice/Week_04/) — Graphs (all algorithms), DP, Advanced SQL, Spring Boot JPA
 
-### Developer Essentials (17 files)
+### Developer Essentials (18 files + Concurrency guide)
 - [Index & Reading Order](13_Developer_Essentials/00_INDEX.md)
 - [Git & Version Control](13_Developer_Essentials/01_Git_Version_Control.md) | [Linux & CLI](13_Developer_Essentials/02_Linux_CLI_Shell.md)
 - [Docker & Containers](13_Developer_Essentials/03_Docker_Containers.md) | [CI/CD Pipelines](13_Developer_Essentials/04_CICD_Pipelines.md)
@@ -446,6 +460,7 @@ Daily-Prep/
 - **🆕** [Agile & Scrum](13_Developer_Essentials/13_Agile_Scrum.md) | [Code Review Practices](13_Developer_Essentials/14_Code_Review_Practices.md)
 - **🆕** [Cloud Services Guide](13_Developer_Essentials/15_Cloud_Services_Guide.md) | [IaC & Terraform](13_Developer_Essentials/16_IaC_Terraform.md)
 - **🆕** [Servers, Ports & Networking](13_Developer_Essentials/17_Servers_Ports_Networking.md) | [Backend Cloud Integration](13_Developer_Essentials/18_Backend_Cloud_Integration.md)
+- **⚡** [Concurrency Models & Coroutines](13_Developer_Essentials/19_Concurrency_Models_Coroutines.md) — Coroutines vs Continuations, Virtual Threads, Event Loop, Go goroutines
 
 ### Mental Models — HOW TO THINK (18 files)
 - [Index & Reading Order](14_Mental_Models/00_INDEX.md)
@@ -459,25 +474,45 @@ Daily-Prep/
 - **🆕** [System Design Thinking](14_Mental_Models/15_System_Design_Thinking.md) | [Distributed Systems Thinking](14_Mental_Models/16_Distributed_Systems_Thinking.md)
 - **🆕** [Frontend Architecture Thinking](14_Mental_Models/17_Frontend_Architecture_Thinking.md) | [Production Debugging Thinking](14_Mental_Models/18_Production_Debugging_Thinking.md)
 
-### React Frontend (8 files — NEW!)
+### React Frontend (9 files — NEW!)
 - [Fundamentals](15_React_Frontend/01_React_Fundamentals.md) | [Component Patterns](15_React_Frontend/02_Component_Patterns.md) | [Hooks Deep Dive](15_React_Frontend/03_Hooks_Deep_Dive.md)
 - [State Management](15_React_Frontend/04_State_Management.md) | [React + TypeScript](15_React_Frontend/05_React_TypeScript.md)
 - [Router & Data Fetching](15_React_Frontend/06_React_Router.md) | [Testing](15_React_Frontend/07_React_Testing.md) | [Performance](15_React_Frontend/08_React_Performance.md)
+- **⚡** [React Deep Reasoning](15_React_Frontend/09_React_Deep_Reasoning.md) — 13 React "freeze moments" (useState batching, re-renders, Fiber)
 
-### JavaScript Complete (7 chapters)
+### JavaScript Complete (8 chapters)
 - [JS Foundations](16_JavaScript/01_JS_Foundations.md) → [Functions & Closures](16_JavaScript/02_JS_Functions_Closures.md) → [Objects & Prototypes](16_JavaScript/03_JS_Objects_Prototypes.md)
 - [Async & Promises](16_JavaScript/04_JS_Async_Promises.md) → [DOM & Browser APIs](16_JavaScript/05_JS_DOM_BrowserAPIs.md)
 - [Modern ES6+](16_JavaScript/06_JS_Modern_ES6Plus.md) → [Error Handling & Debugging](16_JavaScript/07_JS_Error_Handling_Debugging.md)
+- **⚡** [JS Deep Reasoning](16_JavaScript/08_JS_Deep_Reasoning.md) — 15 JS "freeze moments" (event loop, closures, this, == algorithm)
 
-### TypeScript (3 chapters)
+### TypeScript (4 chapters)
 - [TS Foundations](17_TypeScript/01_TS_Foundations.md) → [Advanced Types](17_TypeScript/02_TS_Advanced_Types.md) → [Patterns & Best Practices](17_TypeScript/03_TS_Patterns_BestPractices.md)
+- **⚡** [TS Deep Reasoning](17_TypeScript/04_TS_Deep_Reasoning.md) — 10 TS "freeze moments" (type erasure, structural typing, generics)
 
-### CSS Complete (4 chapters)
+### CSS Complete (5 chapters)
 - [CSS Foundations](18_CSS_Complete/01_CSS_Foundations.md) → [Layout Systems (Flex & Grid)](18_CSS_Complete/02_CSS_Layout_Systems.md) → [Responsive & Animations](18_CSS_Complete/03_CSS_Responsive_Animations.md) → [Modern Architecture & Design Tokens](18_CSS_Complete/04_CSS_Modern_Architecture.md)
+- **⚡** [CSS Deep Reasoning](18_CSS_Complete/05_CSS_Deep_Reasoning.md) — 10 CSS "freeze moments" (z-index stacking, BFC, margin collapse, reflow)
 
 ### Frontend Integration (4 chapters)
 - [React + JS + CSS Combined](19_Frontend_Integration/01_React_JS_CSS_Combined.md) | [Frontend Debugging](19_Frontend_Integration/02_Frontend_Debugging.md)
 - [Build Tools (npm, Babel, Webpack, Vite)](19_Frontend_Integration/03_Build_Tools_Ecosystem.md) | [Frontend Mental Models](19_Frontend_Integration/04_Frontend_Mental_Models_UI.md)
+
+### Deep Reasoning — Senior Engineer Thinking (NEW!)
+
+> **These are the MOST IMPORTANT files for interview confidence.** Each covers the questions where juniors freeze and seniors shine. Format: Surface → Deep reasoning with analogy → Code proof → Follow-up traps.
+
+| Domain | File | Freeze Moments Covered |
+|--------|------|------------------------|
+| JavaScript | [JS Deep Reasoning](16_JavaScript/08_JS_Deep_Reasoning.md) | 15 — Event loop, closures, `this`, `==`, hoisting, prototype |
+| React | [React Deep Reasoning](15_React_Frontend/09_React_Deep_Reasoning.md) | 13 — useState batching, re-renders, virtual DOM, Fiber, keys |
+| TypeScript | [TS Deep Reasoning](17_TypeScript/04_TS_Deep_Reasoning.md) | 10 — Type erasure, structural typing, generics, enums |
+| CSS | [CSS Deep Reasoning](18_CSS_Complete/05_CSS_Deep_Reasoning.md) | 10 — z-index stacking, BFC, margin collapse, reflow vs repaint |
+| Java | [Java Deep Reasoning](07_Modern_Java/31_Java_Deep_Reasoning.md) | 13 — Pass-by-value, String pool, HashMap internals, generics erasure |
+| Spring Boot | [Spring Boot Deep Reasoning](07_Modern_Java/32_Spring_Boot_Deep_Reasoning.md) | 12 — DispatcherServlet vs Filter, proxy/self-call, bean lifecycle |
+| DSA | [DSA Deep Reasoning](03_Algorithms/16_DSA_Deep_Reasoning.md) | 10 — Big O misconceptions, HashMap O(1), quicksort vs mergesort |
+| SQL | [SQL Deep Reasoning](08_SQL_Database/23_SQL_Deep_Reasoning.md) | 10 — NULL logic, JOIN execution, isolation levels, N+1 problem |
+| **Concurrency** | [Coroutines & Concurrency](13_Developer_Essentials/19_Concurrency_Models_Coroutines.md) | 12 — Coroutines vs Continuations, Virtual Threads, goroutines |
 
 ---
 
@@ -514,25 +549,25 @@ Open [07_Modern_Java/26_Spring_Boot_Curriculum_50Day.md](07_Modern_Java/26_Sprin
 | Root (indexes) | 2 | Master index + Textbook preface |
 | 01_Getting_Started | 1 | Study plan calendar |
 | 02_Data_Structures | 11 | Memory → Arrays → LinkedList → Stack/Queue → Hash → Trees → Internals → Variants |
-| 03_Algorithms | 29 | Sorting → Recursion → DP → Trees → Graphs → Advanced → Number Theory → Specialized |
+| 03_Algorithms | 30 | Sorting → Recursion → DP → Trees → Graphs → Advanced → Number Theory → Specialized → Deep Reasoning |
 | 04_Patterns_Templates | 20 | 7 original + 13 combined DS+Algo patterns with Excel problems |
 | 05_Problem_Solving | 23 | 20 topic chapters + Edge/Mistakes/Origins |
 | 06_OOP_Design | 8 | OOP, Design Patterns, System Design, LLD, Distributed Systems |
-| 07_Modern_Java | 42 | Functional, Algo Eng, 30+ Spring Boot, Concurrency, Kafka, Deps Map |
+| 07_Modern_Java | 44 | Functional, Algo Eng, 30+ Spring Boot, Concurrency, Kafka, Deps Map, Java + Spring Boot Deep Reasoning |
 | 08_SQL | 21 | Zero to expert in 21 chapters |
-| 08_SQL_Database | 3 | Database Internals, NoSQL, Interview Top 50 |
+| 08_SQL_Database | 4 | Database Internals, NoSQL, Interview Top 50, SQL Deep Reasoning |
 | 09_Career_Reference | 15 | Career path, DSA ref, JVM, Psychology, Behavioral Interview |
 | 10_Enterprise_Systems | 8 | ERP, Finance, Real-world problems |
 | 12_Daily_Practice | 29 | Index + 28 days (4 weeks) with cross-reference links |
-| 13_Developer_Essentials | 19 | Git, Linux, Docker, CI/CD, Clean Code, Testing, REST, Security, Cloud, Terraform, Agile, Servers, Networking |
+| 13_Developer_Essentials | 20 | Git, Linux, Docker, CI/CD, Clean Code, Testing, REST, Security, Cloud, Terraform, Agile, Servers, Networking, Concurrency Models |
 | 14_Mental_Models | 19 | Index + 18 HOW-TO-THINK guides: DSA, System Design, Distributed, Frontend, Debugging |
-| 15_React_Frontend | 8 | Full React curriculum: Fundamentals to Performance |
-| 16_JavaScript | 7 | Complete JS: Foundations, Closures, Async, DOM, ES6+, Debugging |
-| 17_TypeScript | 3 | TS standalone: Foundations, Advanced Types, Patterns |
-| 18_CSS_Complete | 4 | Visual CSS: Foundations, Layout, Animations, Architecture |
+| 15_React_Frontend | 9 | Full React curriculum: Fundamentals to Performance + Deep Reasoning |
+| 16_JavaScript | 8 | Complete JS: Foundations, Closures, Async, DOM, ES6+, Debugging, Deep Reasoning |
+| 17_TypeScript | 4 | TS standalone: Foundations, Advanced Types, Patterns, Deep Reasoning |
+| 18_CSS_Complete | 5 | Visual CSS: Foundations, Layout, Animations, Architecture, Deep Reasoning |
 | 19_Frontend_Integration | 4 | React+JS+CSS combined, Debugging, Build Tools, Mental Models |
-| **TOTAL** | **~266** | |
+| **TOTAL** | **~275** | |
 
 ---
 
-_Last restructured: March 2026 — Phase 21: +21 files across 6 folders (JavaScript 7ch, TypeScript 3ch, CSS 4ch, Frontend Integration 4ch, Servers/Networking, Backend Cloud, Spring Boot Deps Map), 266+ total files_
+_Last restructured: March 2026 — Phase 22: +9 Deep Reasoning files + Coroutines & Concurrency Models. 8 domains covered with senior-engineer-level "freeze moment" guides (JS, React, TS, CSS, Java, Spring Boot, DSA, SQL) + comprehensive Coroutines vs Continuations. 275+ total files across 19 folders._

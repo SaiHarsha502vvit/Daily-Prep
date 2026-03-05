@@ -1,11 +1,11 @@
 # THE COMPLETE SOFTWARE ENGINEER — Preface & Reading Guide
 
-> *A self-contained textbook covering Data Structures, Algorithms, SQL, Spring Boot, System Design, and Career Development.*
+> *A self-contained textbook covering Data Structures, Algorithms, SQL, Spring Boot, JavaScript, React, TypeScript, CSS, System Design, and Career Development.*
 > 
 > **For:** Self-taught engineers building from fundamentals to production-ready skills.
 > **Style:** MIT/KTH academic — WHY before WHAT, theory before code, diagrams before proofs.
-> **Estimated Total Study Time:** ~300 hours across 11 weeks.
-> **Files:** 192 markdown chapters across 12 folders.
+> **Estimated Total Study Time:** ~400 hours across 14 weeks.
+> **Files:** 275+ markdown chapters across 19 folders.
 
 ---
 
@@ -168,6 +168,63 @@ This repository is organized as a **progressive textbook** — each folder is a 
   └─────────────────────────────────────────────────────────┘
 ```
 
+### Phase 5: Frontend & Deep Reasoning (Weeks 12-14)
+
+```
+  ┌─────────────────────────────────────────────────────────┐
+  │ PART 17: JavaScript & TypeScript                        │
+  │ [16_JavaScript/01_JS_Foundations.md]                    │
+  │ Through: [07_JS_Error_Handling_Debugging.md]            │
+  │ [17_TypeScript/01_TS_Foundations.md]                    │
+  │ Through: [03_TS_Patterns_BestPractices.md]             │
+  │ V8 internals, closures, async/await, type system.       │
+  └──────────────────────────┬──────────────────────────────┘
+                             │
+  ┌──────────────────────────▼──────────────────────────────┐
+  │ PART 18: React & CSS                                    │
+  │ [15_React_Frontend/01_React_Fundamentals.md]           │
+  │ Through: [08_React_Performance.md]                     │
+  │ [18_CSS_Complete/01_CSS_Foundations.md]                 │
+  │ Through: [04_CSS_Modern_Architecture.md]               │
+  │ Components, hooks, state management, layout, animation. │
+  └──────────────────────────┬──────────────────────────────┘
+                             │
+  ┌──────────────────────────▼──────────────────────────────┐
+  │ PART 19: Frontend Integration                           │
+  │ [19_Frontend_Integration/01_React_JS_CSS_Combined.md]  │
+  │ Through: [04_Frontend_Mental_Models_UI.md]             │
+  │ Full-stack UI building, debugging, build tools.         │
+  └──────────────────────────┬──────────────────────────────┘
+                             │
+  ┌──────────────────────────▼──────────────────────────────┐
+  │ PART 20: Deep Reasoning — Senior Engineer Thinking      │
+  │ THE MOST IMPORTANT FILES FOR INTERVIEW CONFIDENCE       │
+  │                                                         │
+  │ These files cover the "freeze moments" — when you know  │
+  │ the surface answer but freeze on the follow-up.         │
+  │                                                         │
+  │ [16_JavaScript/08_JS_Deep_Reasoning.md]                │
+  │ [15_React_Frontend/09_React_Deep_Reasoning.md]         │
+  │ [17_TypeScript/04_TS_Deep_Reasoning.md]                │
+  │ [18_CSS_Complete/05_CSS_Deep_Reasoning.md]             │
+  │ [07_Modern_Java/31_Java_Deep_Reasoning.md]             │
+  │ [07_Modern_Java/32_Spring_Boot_Deep_Reasoning.md]      │
+  │ [03_Algorithms/16_DSA_Deep_Reasoning.md]               │
+  │ [08_SQL_Database/23_SQL_Deep_Reasoning.md]             │
+  │                                                         │
+  │ Each file: Surface → Deep reasoning with analogy →      │
+  │ Code proof → Follow-up traps → Quick-fire table         │
+  └──────────────────────────┬──────────────────────────────┘
+                             │
+  ┌──────────────────────────▼──────────────────────────────┐
+  │ PART 21: Concurrency & Async Models                     │
+  │ [13_Developer_Essentials/19_Concurrency_Models_Coroutines.md]
+  │ Coroutines vs Continuations, Virtual Threads, Event     │
+  │ Loop, Go goroutines, async/await across 5 languages.    │
+  │ Process vs Thread vs Coroutine — the complete picture.  │
+  └─────────────────────────────────────────────────────────┘
+```
+
 ---
 
 ## Prerequisites Map
@@ -198,6 +255,16 @@ SQL Track (parallel):
 
 Spring Boot Track (parallel, weekends):
   Java Basics → IoC/DI → REST → JPA → Security → Testing → Microservices
+
+Frontend Track (parallel):
+  JS Foundations → Closures/Async → DOM → TypeScript → React → CSS → Integration
+
+Deep Reasoning Track (READ AFTER each domain):
+  Each domain has a "Deep Reasoning" file — read AFTER the main chapters.
+  These cover the freeze moments that separate juniors from seniors.
+
+Concurrency Track:
+  Java Threads → Virtual Threads → Coroutines → Event Loop → Goroutines
 ```
 
 ---
@@ -257,20 +324,40 @@ Spring Boot Track (parallel, weekends):
 | Quick reference before interview | [09_Career_Reference/03_Quick_Reference.md](09_Career_Reference/03_Quick_Reference.md) |
 | Understand JVM internals | [09_Career_Reference/02c_Ultimate_DSA_JVM.md](09_Career_Reference/02c_Ultimate_DSA_JVM.md) |
 | See how DSA is used in production | [10_Enterprise_Systems/](10_Enterprise_Systems/) |
+| Learn JavaScript from scratch | [16_JavaScript/01_JS_Foundations.md](16_JavaScript/01_JS_Foundations.md) |
+| Learn React | [15_React_Frontend/01_React_Fundamentals.md](15_React_Frontend/01_React_Fundamentals.md) |
+| Learn TypeScript | [17_TypeScript/01_TS_Foundations.md](17_TypeScript/01_TS_Foundations.md) |
+| Learn CSS properly | [18_CSS_Complete/01_CSS_Foundations.md](18_CSS_Complete/01_CSS_Foundations.md) |
+| **Stop freezing in JS interviews** | [16_JavaScript/08_JS_Deep_Reasoning.md](16_JavaScript/08_JS_Deep_Reasoning.md) |
+| **Stop freezing in React interviews** | [15_React_Frontend/09_React_Deep_Reasoning.md](15_React_Frontend/09_React_Deep_Reasoning.md) |
+| **Stop freezing in Java interviews** | [07_Modern_Java/31_Java_Deep_Reasoning.md](07_Modern_Java/31_Java_Deep_Reasoning.md) |
+| **Stop freezing in Spring Boot interviews** | [07_Modern_Java/32_Spring_Boot_Deep_Reasoning.md](07_Modern_Java/32_Spring_Boot_Deep_Reasoning.md) |
+| **Stop freezing in DSA interviews** | [03_Algorithms/16_DSA_Deep_Reasoning.md](03_Algorithms/16_DSA_Deep_Reasoning.md) |
+| **Stop freezing in SQL interviews** | [08_SQL_Database/23_SQL_Deep_Reasoning.md](08_SQL_Database/23_SQL_Deep_Reasoning.md) |
+| **Understand Coroutines & Concurrency** | [13_Developer_Essentials/19_Concurrency_Models_Coroutines.md](13_Developer_Essentials/19_Concurrency_Models_Coroutines.md) |
 
 ---
 
 ## Statistics
 
-- **Total Files:** 192 across 12 folders
+- **Total Files:** 275+ across 19 folders
 - **Data Structure Chapters:** 11 (Memory → Arrays → LinkedList → Stack/Queue → Hash → Trees → Internals → Variants)
-- **Algorithm Chapters:** 26 (Sorting → Recursion → DP → Trees → Graphs → Advanced → Specialized)
-- **Problem Chapters:** 14 topic-based collections + 3 methodology guides
-- **SQL Chapters:** 21 (beginner → expert)
-- **Spring Boot Parts:** 36 (foundations → microservices → cloud)
-- **Developer Essentials:** 10 MIT/KTH-style guides (Git, Linux, Docker, CI/CD, Clean Code, Testing, REST, Security, System Design, Tools)
+- **Algorithm Chapters:** 27 (Sorting → Recursion → DP → Trees → Graphs → Advanced → Specialized → Deep Reasoning)
+- **Problem Chapters:** 23 topic-based collections + methodology guides
+- **SQL Chapters:** 21 + 4 advanced (Database Internals, NoSQL, Interview, Deep Reasoning)
+- **Spring Boot Parts:** 36 (foundations → microservices → cloud) + Deep Reasoning
+- **Java Chapters:** 44 (Functional, Algo Eng, Concurrency, Modern Java 9-21, Kafka, Deep Reasoning)
+- **Developer Essentials:** 20 guides (Git, Linux, Docker, CI/CD, Clean Code, Testing, REST, Security, Cloud, Terraform, Agile, Servers, Concurrency Models)
+- **Mental Models:** 18 HOW-TO-THINK guides
+- **React Frontend:** 9 chapters (Fundamentals → Performance → Deep Reasoning)
+- **JavaScript:** 8 chapters (Foundations → Debugging → Deep Reasoning)
+- **TypeScript:** 4 chapters (Foundations → Patterns → Deep Reasoning)
+- **CSS:** 5 chapters (Foundations → Architecture → Deep Reasoning)
+- **Frontend Integration:** 4 chapters (Combined, Debugging, Build Tools, Mental Models)
+- **Deep Reasoning Files:** 8 across all domains (senior-engineer-level interview prep)
+- **Concurrency & Coroutines:** 1 comprehensive guide (Coroutines, Continuations, Virtual Threads)
 - **Daily Practice Days:** 28 (4 weeks, each with cross-reference links)
-- **Estimated Problems Covered:** 600+ across all files
+- **Estimated Problems Covered:** 800+ across all files
 
 ---
 
