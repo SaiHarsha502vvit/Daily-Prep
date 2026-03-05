@@ -41,138 +41,105 @@
 
 ## PART 0: WHY Recursion & Subsets — The Heart of Combinatorial Thinking
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║     RECURSION & SUBSETS — COMPLETE UNDERSTANDING & GROWTH MINDSET            ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+## The Real-World Origin
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ THE REAL-WORLD ORIGIN                                                        │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ 📖 SUBSETS IN NATURE: The power set of DNA base pairs determines all          │
-│    possible gene combinations. With 20,000 genes, your body expresses        │
-│    different subsets in different cells — that's why skin ≠ brain.           │
-│                                                                              │
-│ 📖 FEATURE FLAGS: Netflix has ~150 feature flags. Each flag is on/off.        │
-│    That's 2^150 possible configurations — more than atoms in the universe.   │
-│    They test SUBSETS of flags for A/B testing.                               │
-│                                                                              │
-│ 📖 PORTFOLIO OPTIMIZATION: Given n stocks, find the subset that               │
-│    maximizes return for a given risk budget. This IS the Subset Sum          │
-│    problem in finance.                                                       │
-│                                                                              │
-│ 📖 KNAPSACK PROBLEM: Amazon's warehouse packing = Knapsack.                   │
-│    "Which subset of items fits in this box with maximum value?"              │
-│                                                                              │
-│ FUNDAMENTAL INSIGHT:                                                         │
-│ Subset problems are fundamentally about CHOICES.                             │
-│ At each element, you make a binary choice: INCLUDE or EXCLUDE.               │
-│ This creates a recursion tree of depth n with 2^n leaves.                    │
-│                                                                              │
-│ THE RECURSION TREE for {1, 2, 3}:                                            │
-│                      {}                                                      │
-│                 /         \                                                  │
-│             {1}            {}                  ← include/exclude 1           │
-│            /    \        /    \                                              │
-│         {1,2}  {1}    {2}    {}                ← include/exclude 2           │
-│         / \   / \    / \    / \                                              │
-│     {1,2,3}{1,2}{1,3}{1}{2,3}{2}{3}{}         ← include/exclude 3            │
-│                                                                              │
-│ Leaves = all 2^3 = 8 subsets of {1,2,3}                                      │
-│                                                                              │
-└──────────────────────────────────────────────────────────────────────────────┘
+📖 SUBSETS IN NATURE: The power set of DNA base pairs determines all
+possible gene combinations. With 20,000 genes, your body expresses
+different subsets in different cells — that's why skin ≠ brain.
+📖 FEATURE FLAGS: Netflix has ~150 feature flags. Each flag is on/off.
+That's 2^150 possible configurations — more than atoms in the universe.
+They test SUBSETS of flags for A/B testing.
+📖 PORTFOLIO OPTIMIZATION: Given n stocks, find the subset that
+maximizes return for a given risk budget. This IS the Subset Sum
+problem in finance.
+📖 KNAPSACK PROBLEM: Amazon's warehouse packing = Knapsack.
+"Which subset of items fits in this box with maximum value?"
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ THE MENTAL MODEL: "Include or Exclude — That's All Recursion Is"             │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  TEMPLATE FOR ALL SUBSET PROBLEMS:                                           │
-│                                                                              │
-│  void solve(int index, int[] nums, <state>) {                                │
-│      if (index == nums.length) {                                             │
-│          // BASE: process current subset                                     │
-│          return;                                                             │
-│      }                                                                       │
-│      // CHOICE 1: Include nums[index]                                        │
-│      <add nums[index] to state>                                              │
-│      solve(index + 1, nums, <state>);                                        │
-│      <remove nums[index] from state>    // BACKTRACK                         │
-│                                                                              │
-│      // CHOICE 2: Exclude nums[index]                                        │
-│      solve(index + 1, nums, <state>);                                        │
-│  }                                                                           │
-│                                                                              │
-│  WHEN TO USE EACH VARIANT:                                                   │
-│  • Generate all subsets → Backtracking template above                        │
-│  • Count subsets with property → Recursion + Memoization → DP                │
-│  • Optimize over subsets → DP (Knapsack family)                              │
-│  • Enumerate with constraints → Backtracking + Pruning                       │
-│                                                                              │
-└──────────────────────────────────────────────────────────────────────────────┘
+**Fundamental Insight**:
+Subset problems are fundamentally about CHOICES.
+At each element, you make a binary choice: INCLUDE or EXCLUDE.
+This creates a recursion tree of depth n with 2^n leaves.
+THE RECURSION TREE for {1, 2, 3}:
+{}
+/         \
+{1}            {}                  ← include/exclude 1
+/    \        /    \
+{1,2}  {1}    {2}    {}                ← include/exclude 2
+/ \   / \    / \    / \
+{1,2,3}{1,2}{1,3}{1}{2,3}{2}{3}{}         ← include/exclude 3
+Leaves = all 2^3 = 8 subsets of {1,2,3}
+## The Mental Model: "Include Or Exclude — That'S All Recursion Is"
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ THE RECURSION → DP PIPELINE (MIT 6.006 Framework)                            │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  STEP 1: PURE RECURSION (Brute Force)                                        │
-│  int count(int[] nums, int i, int target) {                                  │
-│      if (i == nums.length) return target == 0 ? 1 : 0;                       │
-│      return count(nums, i+1, target - nums[i])   // include                  │
-│           + count(nums, i+1, target);              // exclude                │
-│  }                                                                           │
-│  Time: O(2^n) — explores every subset                                        │
-│                                                                              │
-│  STEP 2: IDENTIFY OVERLAPPING SUBPROBLEMS                                    │
-│  State = (index, remaining target)                                           │
-│  Same (i, target) can be reached via different paths!                        │
-│  Example: {1,2,3}, target=3                                                  │
-│    Path 1: include 1, exclude 2 → (i=2, target=2)                            │
-│    Path 2: exclude 1, include 2 → (i=2, target=1) ← different!               │
-│    But with larger arrays, overlaps multiply.                                │
-│                                                                              │
-│  STEP 3: ADD MEMOIZATION (Top-Down DP)                                       │
-│  Map<String, Integer> memo = new HashMap<>();                                │
-│  int count(int[] nums, int i, int target) {                                  │
-│      if (i == nums.length) return target == 0 ? 1 : 0;                       │
-│      String key = i + "," + target;                                          │
-│      if (memo.containsKey(key)) return memo.get(key);                        │
-│      int result = count(nums, i+1, target-nums[i])                           │
-│                 + count(nums, i+1, target);                                  │
-│      memo.put(key, result);                                                  │
-│      return result;                                                          │
-│  }                                                                           │
-│  Time: O(n × target)                                                         │
-│                                                                              │
-│  STEP 4: BOTTOM-UP DP                                                        │
-│  dp[i][t] = number of subsets from first i elements summing to t             │
-│  dp[0][0] = 1                                                                │
-│  dp[i][t] = dp[i-1][t] + dp[i-1][t - nums[i-1]]                              │
-│  Time: O(n × target), Space: O(n × target)                                   │
-│                                                                              │
-│  STEP 5: SPACE OPTIMIZATION (1D DP)                                          │
-│  Process target RIGHT TO LEFT (so we don't overwrite needed values)          │
-│  for each num: for t = target to num: dp[t] += dp[t - num]                   │
-│  Time: O(n × target), Space: O(target)                                       │
-│                                                                              │
-└──────────────────────────────────────────────────────────────────────────────┘
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ COMMON MISTAKES                                                              │
-├──────────────────────────────────────────────────────────────────────────────┤
-│ 1. Forgetting to BACKTRACK: after recursing with include, remove the element │
-│ 2. Not handling DUPLICATES: [1,2,2] generates duplicate subsets if naive.    │
-│    Fix: sort + skip nums[i] == nums[i-1] at same recursion level.            │
-│ 3. Confusing SUBSETS vs SUBSEQUENCES vs SUBARRAYS:                           │
-│    Subset: any elements, order doesn't matter → {1,3} from {1,2,3}           │
-│    Subsequence: maintain relative order → {1,3} from {1,2,3}                 │
-│    Subarray: contiguous → {1,2} from {1,2,3}, NOT {1,3}                      │
-│ 4. Integer overflow in counting: use long or modular arithmetic.             │
-│ 5. Off-by-one in DP: dp[i] means "using first i items" not "item at i".      │
-│ 6. In 1D DP for 0/1 knapsack, iterating target LEFT-TO-RIGHT instead of      │
-│    RIGHT-TO-LEFT (causes items to be used multiple times = unbounded!)       │
-└──────────────────────────────────────────────────────────────────────────────┘
-```
+**Template For All Subset Problems**:
+void solve(int index, int[] nums, <state>) {
+if (index == nums.length) {
+// BASE: process current subset
+return;
+}
+// CHOICE 1: Include nums[index]
+<add nums[index] to state>
+solve(index + 1, nums, <state>);
+<remove nums[index] from state>    // BACKTRACK
+// CHOICE 2: Exclude nums[index]
+solve(index + 1, nums, <state>);
+}
+
+**When To Use Each Variant**:
+- Generate all subsets → Backtracking template above
+- Count subsets with property → Recursion + Memoization → DP
+- Optimize over subsets → DP (Knapsack family)
+- Enumerate with constraints → Backtracking + Pruning
+## The Recursion → Dp Pipeline (Mit 6.006 Framework)
+
+STEP 1: PURE RECURSION (Brute Force)
+int count(int[] nums, int i, int target) {
+if (i == nums.length) return target == 0 ? 1 : 0;
+return count(nums, i+1, target - nums[i])   // include
++ count(nums, i+1, target);              // exclude
+}
+Time: O(2^n) — explores every subset
+STEP 2: IDENTIFY OVERLAPPING SUBPROBLEMS
+State = (index, remaining target)
+Same (i, target) can be reached via different paths!
+Example: {1,2,3}, target=3
+Path 1: include 1, exclude 2 → (i=2, target=2)
+Path 2: exclude 1, include 2 → (i=2, target=1) ← different!
+But with larger arrays, overlaps multiply.
+STEP 3: ADD MEMOIZATION (Top-Down DP)
+Map<String, Integer> memo = new HashMap<>();
+int count(int[] nums, int i, int target) {
+if (i == nums.length) return target == 0 ? 1 : 0;
+String key = i + "," + target;
+if (memo.containsKey(key)) return memo.get(key);
+int result = count(nums, i+1, target-nums[i])
++ count(nums, i+1, target);
+memo.put(key, result);
+return result;
+}
+Time: O(n × target)
+STEP 4: BOTTOM-UP DP
+dp[i][t] = number of subsets from first i elements summing to t
+dp[0][0] = 1
+dp[i][t] = dp[i-1][t] + dp[i-1][t - nums[i-1]]
+Time: O(n × target), Space: O(n × target)
+STEP 5: SPACE OPTIMIZATION (1D DP)
+Process target RIGHT TO LEFT (so we don't overwrite needed values)
+for each num: for t = target to num: dp[t] += dp[t - num]
+Time: O(n × target), Space: O(target)
+## Difficulties & Common Mistakes
+
+1. Forgetting to BACKTRACK: after recursing with include, remove the element
+2. Not handling DUPLICATES: [1,2,2] generates duplicate subsets if naive.
+Fix: sort + skip nums[i] == nums[i-1] at same recursion level.
+3. Confusing SUBSETS vs SUBSEQUENCES vs SUBARRAYS:
+Subset: any elements, order doesn't matter → {1,3} from {1,2,3}
+Subsequence: maintain relative order → {1,3} from {1,2,3}
+Subarray: contiguous → {1,2} from {1,2,3}, NOT {1,3}
+4. Integer overflow in counting: use long or modular arithmetic.
+5. Off-by-one in DP: dp[i] means "using first i items" not "item at i".
+6. In 1D DP for 0/1 knapsack, iterating target LEFT-TO-RIGHT instead of
+RIGHT-TO-LEFT (causes items to be used multiple times = unbounded!)
 
 ---
 

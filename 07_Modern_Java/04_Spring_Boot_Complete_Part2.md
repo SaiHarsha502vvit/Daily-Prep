@@ -59,57 +59,44 @@
 
 ### 🔵 WHY: The Problem IoC Solves
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    THE PROBLEM: TIGHT COUPLING                                  │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  WITHOUT IoC (Traditional approach):                                            │
-│                                                                                 │
-│  public class OrderService {                                                    │
-│      // OrderService CREATES its dependencies                                   │
-│      private UserRepository userRepo = new MySQLUserRepository();               │
-│      private EmailService email = new SMTPEmailService("smtp.gmail.com");       │
-│      private PaymentGateway payment = new StripePaymentGateway("sk_xxx");       │
-│                                                                                 │
-│      public void processOrder(Order order) {                                    │
-│          // Business logic using hardcoded implementations                      │
-│      }                                                                          │
-│  }                                                                              │
-│                                                                                 │
-│  PROBLEMS:                                                                      │
-│  ❌ Can't unit test (stuck with real database, real email)                       │
-│  ❌ Can't switch implementations (MySQL → PostgreSQL = rewrite!)                 │
-│  ❌ Configuration scattered everywhere (API keys in code!)                       │
-│  ❌ Every class manages its own dependencies (circular dependencies!)            │
-│                                                                                 │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  WITH IoC (Spring approach):                                                    │
-│                                                                                 │
-│  public class OrderService {                                                    │
-│      // Dependencies are INJECTED (someone else provides them)                  │
-│      private final UserRepository userRepo;                                     │
-│      private final EmailService email;                                          │
-│      private final PaymentGateway payment;                                      │
-│                                                                                 │
-│      public OrderService(UserRepository userRepo,                               │
-│                          EmailService email,                                    │
-│                          PaymentGateway payment) {                              │
-│          this.userRepo = userRepo;                                              │
-│          this.email = email;                                                    │
-│          this.payment = payment;                                                │
-│      }                                                                          │
-│  }                                                                              │
-│                                                                                 │
-│  BENEFITS:                                                                      │
-│  ✅ Easy unit testing (inject mocks!)                                            │
-│  ✅ Switch implementations without changing code                                 │
-│  ✅ Centralized configuration (application.yml)                                  │
-│  ✅ IoC Container manages object lifecycle                                       │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+## The Problem: Tight Coupling
+
+WITHOUT IoC (Traditional approach):
+public class OrderService {
+// OrderService CREATES its dependencies
+private UserRepository userRepo = new MySQLUserRepository();
+private EmailService email = new SMTPEmailService("smtp.gmail.com");
+private PaymentGateway payment = new StripePaymentGateway("sk_xxx");
+public void processOrder(Order order) {
+// Business logic using hardcoded implementations
+}
+}
+
+**Problems**:
+- ❌ Can't unit test (stuck with real database, real email)
+- ❌ Can't switch implementations (MySQL → PostgreSQL = rewrite!)
+- ❌ Configuration scattered everywhere (API keys in code!)
+- ❌ Every class manages its own dependencies (circular dependencies!)
+WITH IoC (Spring approach):
+public class OrderService {
+// Dependencies are INJECTED (someone else provides them)
+private final UserRepository userRepo;
+private final EmailService email;
+private final PaymentGateway payment;
+public OrderService(UserRepository userRepo,
+EmailService email,
+PaymentGateway payment) {
+this.userRepo = userRepo;
+this.email = email;
+this.payment = payment;
+}
+}
+
+**Benefits**:
+- ✅ Easy unit testing (inject mocks!)
+- ✅ Switch implementations without changing code
+- ✅ Centralized configuration (application.yml)
+- ✅ IoC Container manages object lifecycle
 
 ### The Hollywood Principle
 
@@ -227,29 +214,23 @@
 
 ### 🔵 WHAT: What is a Spring Bean?
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    SPRING BEAN DEFINITION                                       │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  A Spring Bean is simply an object that is:                                     │
-│  1. Created by the Spring IoC Container                                         │
-│  2. Configured by Spring (dependencies injected)                                │
-│  3. Managed by Spring (lifecycle, scope)                                        │
-│                                                                                 │
-│  PLAIN JAVA OBJECT:                                                             │
-│  User user = new User();  // You create it, you manage it                       │
-│                                                                                 │
-│  SPRING BEAN:                                                                   │
-│  @Component                                                                     │
-│  public class UserService { ... }  // Spring creates and manages it             │
-│                                                                                 │
-│  KEY INSIGHT:                                                                   │
-│  Spring Beans are the objects that live in Spring's ApplicationContext          │
-│  The container is a big Map<BeanName, Object> (simplified)                      │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+## Spring Bean Definition
+
+A Spring Bean is simply an object that is:
+1. Created by the Spring IoC Container
+2. Configured by Spring (dependencies injected)
+3. Managed by Spring (lifecycle, scope)
+
+**Plain Java Object**:
+User user = new User();  // You create it, you manage it
+
+**Spring Bean**:
+@Component
+public class UserService { ... }  // Spring creates and manages it
+
+> 💡 **KEY INSIGHT:**
+Spring Beans are the objects that live in Spring's ApplicationContext
+The container is a big Map<BeanName, Object> (simplified)
 
 ### Ways to Define Beans
 

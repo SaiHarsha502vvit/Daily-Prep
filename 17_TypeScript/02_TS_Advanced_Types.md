@@ -6,28 +6,26 @@
 
 ## 5W1H — Why This Chapter?
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: Advanced type system features that make TS extremely          ║
-║        powerful — generics, mapped types, conditional types,         ║
-║        utility types, template literal types.                        ║
-║                                                                      ║
-║  WHY:  Real codebases need FLEXIBLE yet SAFE types:                  ║
-║        • A function that works with any array type                   ║
-║        • An API response wrapper generic over the data shape         ║
-║        • Making some fields optional while keeping others required   ║
-║        • Creating new types from existing ones automatically         ║
-║                                                                      ║
-║  WHO:  Intermediate-to-advanced TS developers, library authors,      ║
-║        anyone working with complex API types or state management.    ║
-║                                                                      ║
-║  WHEN: After mastering basic types, interfaces, and unions.          ║
-║                                                                      ║
-║  HOW:  Generics provide the "type variables." Utility types,         ║
-║        mapped types, and conditional types build on that for         ║
-║        sophisticated type transformations.                           ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> WHAT: Advanced type system features that make TS extremely
+> powerful — generics, mapped types, conditional types,
+> utility types, template literal types.
+>
+> WHY:  Real codebases need FLEXIBLE yet SAFE types:
+> - A function that works with any array type
+> - An API response wrapper generic over the data shape
+> - Making some fields optional while keeping others required
+> - Creating new types from existing ones automatically
+>
+> WHO:  Intermediate-to-advanced TS developers, library authors,
+> anyone working with complex API types or state management.
+>
+> WHEN: After mastering basic types, interfaces, and unions.
+>
+> HOW:  Generics provide the "type variables." Utility types,
+> mapped types, and conditional types build on that for
+> sophisticated type transformations.
+
 
 ---
 
@@ -35,20 +33,18 @@
 
 ### The Core Idea
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  ANALOGY: Generics are FUNCTION PARAMETERS, but for TYPES.           ║
-║                                                                      ║
-║  Regular function:  function add(a: number, b: number) → number      ║
-║  Generic function:  function first<T>(arr: T[]) → T                  ║
-║                                                                      ║
-║  `a` and `b` are VALUE parameters (filled with values at call).      ║
-║  `T` is a TYPE parameter (filled with types at call).                ║
-║                                                                      ║
-║  first<number>([1, 2, 3]) → T becomes number → returns number        ║
-║  first<string>(["a", "b"]) → T becomes string → returns string       ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> ANALOGY: Generics are FUNCTION PARAMETERS, but for TYPES.
+>
+> Regular function:  function add(a: number, b: number) → number
+> Generic function:  function first<T>(arr: T[]) → T
+>
+> `a` and `b` are VALUE parameters (filled with values at call).
+> `T` is a TYPE parameter (filled with types at call).
+>
+> first<number>([1, 2, 3]) → T becomes number → returns number
+> first<string>(["a", "b"]) → T becomes string → returns string
+
 
 ```typescript
 // GENERIC FUNCTION:

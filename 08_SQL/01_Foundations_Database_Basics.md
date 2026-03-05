@@ -193,78 +193,53 @@ For every SQL concept, we answer:
 
 ### 🔵 WHY: The World Before Databases
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    LIFE WITHOUT DATABASES                                       │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  SCENARIO: E-commerce Company with 1 Million Users                              │
-│                                                                                 │
-│  WITHOUT DATABASE (Using Files):                                                │
-│  ┌────────────────────────────────────────────────────────────────────────────┐ │
-│  │                                                                            │ │
-│  │  users.txt                     orders.txt                                  │ │
-│  │  ─────────                     ──────────                                  │ │
-│  │  1,John,john@email.com         1001,1,2024-01-15,500.00                    │ │
-│  │  2,Jane,jane@email.com         1002,2,2024-01-15,250.00                    │ │
-│  │  3,Bob,bob@email.com           1003,1,2024-01-16,750.00                    │ │
-│  │  ...1 million more lines        ...5 million more lines                    │ │
-│  │                                                                            │ │
-│  └────────────────────────────────────────────────────────────────────────────┘ │
-│                                                                                 │
-│  PROBLEMS:                                                                      │
-│  ┌────────────────────────────────────────────────────────────────────────────┐ │
-│  │                                                                            │ │
-│  │  1. SPEED: Find all orders for user 567,823?                               │ │
-│  │     → Must read entire 5 million line file! Takes minutes.                 │ │
-│  │                                                                            │ │
-│  │  2. CONSISTENCY: Two systems update same user simultaneously?              │ │
-│  │     → Data corruption! Which version is correct?                           │ │
-│  │                                                                            │ │
-│  │  3. INTEGRITY: Delete user but orders still reference them?                │ │
-│  │     → Orphan data! Orders point to non-existent user.                      │ │
-│  │                                                                            │ │
-│  │  4. CONCURRENT ACCESS: 10,000 users reading/writing files?                 │ │
-│  │     → File locks! System crashes! Data loss!                              │  │
-│  │                                                                            │ │
-│  │  5. RECOVERY: Power outage during file write?                              │ │
-│  │     → Partial data! Corrupted files! Business disaster!                    │ │
-│  │                                                                            │ │
-│  └────────────────────────────────────────────────────────────────────────────┘ │
-│                                                                                 │
-│  🔴 REAL INCIDENT: In 2003, a major airline lost $50M in revenue                 │
-│     when their flat-file booking system crashed during peak season.             │
-│     Recovery took 3 days. They migrated to Oracle within 6 months.              │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+## Life Without Databases
+
+
+**Scenario**: E-commerce Company with 1 Million Users
+WITHOUT DATABASE (Using Files):
+users.txt                     orders.txt
+─────────                     ──────────
+1,John,john@email.com         1001,1,2024-01-15,500.00
+2,Jane,jane@email.com         1002,2,2024-01-15,250.00
+3,Bob,bob@email.com           1003,1,2024-01-16,750.00
+...1 million more lines        ...5 million more lines
+
+**Problems**:
+1. SPEED: Find all orders for user 567,823?
+→ Must read entire 5 million line file! Takes minutes.
+2. CONSISTENCY: Two systems update same user simultaneously?
+→ Data corruption! Which version is correct?
+3. INTEGRITY: Delete user but orders still reference them?
+→ Orphan data! Orders point to non-existent user.
+4. CONCURRENT ACCESS: 10,000 users reading/writing files?
+→ File locks! System crashes! Data loss!
+5. RECOVERY: Power outage during file write?
+→ Partial data! Corrupted files! Business disaster!
+🔴 REAL INCIDENT: In 2003, a major airline lost $50M in revenue
+when their flat-file booking system crashed during peak season.
+Recovery took 3 days. They migrated to Oracle within 6 months.
 
 ### How Databases Solve These Problems
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    DATABASE SOLUTIONS                                           │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  Problem               │ Database Solution          │ How It Works              │
-│  ──────────────────────┼────────────────────────────┼───────────────────────────│
-│  Slow Search           │ INDEXES                    │ B-Tree structure: O(log n)│
-│                        │                            │ 1M rows → ~20 lookups     │
-│  ──────────────────────┼────────────────────────────┼───────────────────────────│
-│  Data Corruption       │ TRANSACTIONS + ACID        │ All-or-nothing updates    │
-│                        │                            │ Locks during writes       │
-│  ──────────────────────┼────────────────────────────┼───────────────────────────│
-│  Orphan Data           │ FOREIGN KEYS               │ Can't delete parent if    │
-│                        │                            │ children exist (CASCADE)  │
-│  ──────────────────────┼────────────────────────────┼───────────────────────────│
-│  Concurrent Access     │ LOCK MANAGER               │ Row/Table level locks     │
-│                        │ MVCC (PostgreSQL)          │ Version control for data  │
-│  ──────────────────────┼────────────────────────────┼───────────────────────────│
-│  Data Loss             │ TRANSACTION LOGS (WAL)     │ Replay logs after crash   │
-│                        │ Checkpoints                │ Regular state snapshots   │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+## Database Solutions
+
+| Problem               | Database Solution          | How It Works |
+┼────────────────────────────┼
+| Slow Search           | INDEXES                    | B-Tree structure: O(log n) |
+│ 1M rows → ~20 lookups
+┼────────────────────────────┼
+| Data Corruption       | TRANSACTIONS + ACID        | All-or-nothing updates |
+│ Locks during writes
+┼────────────────────────────┼
+| Orphan Data           | FOREIGN KEYS               | Can't delete parent if |
+│ children exist (CASCADE)
+┼────────────────────────────┼
+| Concurrent Access     | LOCK MANAGER               | Row/Table level locks |
+MVCC (PostgreSQL)          │ Version control for data
+┼────────────────────────────┼
+| Data Loss             | TRANSACTION LOGS (WAL)     | Replay logs after crash |
+Checkpoints                │ Regular state snapshots
 
 ---
 
@@ -276,40 +251,29 @@ For every SQL concept, we answer:
 
 ### 🔵 WHY: Why Do We Need DDL?
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    WHY DDL EXISTS                                               │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  ANALOGY: Building a House                                                      │
-│  ┌────────────────────────────────────────────────────────────────────────────┐ │
-│  │                                                                            │ │
-│  │  Before putting furniture (DATA), you need:                                │ │
-│  │                                                                            │ │
-│  │  1. BLUEPRINT (Schema)     → CREATE DATABASE                               │ │
-│  │  2. ROOMS (Structure)      → CREATE TABLE                                  │ │
-│  │  3. ROOM TYPES (Rules)     → Data Types + Constraints                      │ │
-│  │  4. RENOVATIONS            → ALTER TABLE                                   │ │
-│  │  5. DEMOLITION             → DROP TABLE                                    │ │
-│  │                                                                            │ │
-│  └────────────────────────────────────────────────────────────────────────────┘ │
-│                                                                                 │
-│  🔴 REAL INCIDENT: Flipkart's Big Billion Day 2015                               │
-│                                                                                 │
-│  WHAT HAPPENED:                                                                 │
-│  - Expected 10M orders, got 15M in first hour                                   │
-│  - Original schema: Single 'orders' table with all columns                      │
-│  - Result: Table locks, 30-minute delays, customer rage                         │
-│                                                                                 │
-│  WHAT THEY LEARNED:                                                             │
-│  - Normalize tables: orders, order_items, order_status (separate tables)        │
-│  - Add proper indexes on order_id, customer_id, created_at                      │
-│  - Partition tables by date for faster queries                                  │
-│                                                                                 │
-│  OUTCOME: 2016 sale handled 8x the traffic with no issues                       │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+## Why Ddl Exists
+
+
+> 💡 **ANALOGY: Building a House**
+Before putting furniture (DATA), you need:
+1. BLUEPRINT (Schema)     → CREATE DATABASE
+2. ROOMS (Structure)      → CREATE TABLE
+3. ROOM TYPES (Rules)     → Data Types + Constraints
+4. RENOVATIONS            → ALTER TABLE
+5. DEMOLITION             → DROP TABLE
+🔴 REAL INCIDENT: Flipkart's Big Billion Day 2015
+
+**What Happened**:
+- Expected 10M orders, got 15M in first hour
+- Original schema: Single 'orders' table with all columns
+- Result: Table locks, 30-minute delays, customer rage
+
+**What They Learned**:
+- Normalize tables: orders, order_items, order_status (separate tables)
+- Add proper indexes on order_id, customer_id, created_at
+- Partition tables by date for faster queries
+
+**Outcome**: 2016 sale handled 8x the traffic with no issues
 
 ### 🟢 HOW: CREATE TABLE - Deep Dive
 

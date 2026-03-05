@@ -4,24 +4,22 @@
 
 ## 5W1H — Why This Chapter?
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: Objects are JS's universal data structure. Prototypes are     ║
-║        JS's inheritance mechanism. Classes (ES6) are sugar on top.   ║
-║                                                                      ║
-║  WHY:  Everything in JS is (or behaves like) an object.              ║
-║        Understanding prototypes explains: why [].map works,          ║
-║        how inheritance works, what `class` really does.              ║
-║                                                                      ║
-║  WHO:  Anyone doing JS — React props are objects, APIs return        ║
-║        objects, DOM elements are objects.                            ║
-║                                                                      ║
-║  WHEN: After understanding functions and closures (Ch 2).            ║
-║                                                                      ║
-║  HOW:  Every object has an internal [[Prototype]] link to another    ║
-║        object. When you access a property, JS walks this chain.      ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> WHAT: Objects are JS's universal data structure. Prototypes are
+> JS's inheritance mechanism. Classes (ES6) are sugar on top.
+>
+> WHY:  Everything in JS is (or behaves like) an object.
+> Understanding prototypes explains: why [].map works,
+> how inheritance works, what `class` really does.
+>
+> WHO:  Anyone doing JS — React props are objects, APIs return
+> objects, DOM elements are objects.
+>
+> WHEN: After understanding functions and closures (Ch 2).
+>
+> HOW:  Every object has an internal [[Prototype]] link to another
+> object. When you access a property, JS walks this chain.
+
 
 ---
 

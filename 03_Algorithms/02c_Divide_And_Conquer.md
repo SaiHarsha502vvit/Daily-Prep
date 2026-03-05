@@ -28,41 +28,19 @@ PROPERTIES:
 
 ### Asymptotic Notations
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    ASYMPTOTIC NOTATIONS                         │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  Big-O (O):     UPPER BOUND (Worst Case)                        │
-│                 f(n) = O(g(n)) means f(n) ≤ c·g(n)              │
-│                 "At most this much"                             │
-│                                                                 │
-│  Big-Omega (Ω): LOWER BOUND (Best Case)                         │
-│                 f(n) = Ω(g(n)) means f(n) ≥ c·g(n)              │
-│                 "At least this much"                            │
-│                                                                 │
-│  Big-Theta (Θ): TIGHT BOUND (Average Case)                      │
-│                 f(n) = Θ(g(n)) means c₁·g(n) ≤ f(n) ≤ c₂·g(n)   │
-│                 "Exactly this much"                             │
-│                                                                 │
-│  Little-o (o): Strictly less than (not tight)                   │
-│  Little-ω (ω): Strictly greater than (not tight)                │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+## Asymptotic Notations
 
-COMMON COMPLEXITIES (Slowest to Fastest):
-O(n!) > O(2ⁿ) > O(n³) > O(n²) > O(n log n) > O(n) > O(√n) > O(log n) > O(1)
-
-VISUAL GROWTH:
-n=10:
-O(1)      = 1
-O(log n)  = 3.3
-O(n)      = 10
-O(n log n)= 33
-O(n²)     = 100
-O(2ⁿ)     = 1024
-O(n!)     = 3,628,800
-```
+Big-O (O):     UPPER BOUND (Worst Case)
+f(n) = O(g(n)) means f(n) ≤ c·g(n)
+"At most this much"
+Big-Omega (Ω): LOWER BOUND (Best Case)
+f(n) = Ω(g(n)) means f(n) ≥ c·g(n)
+"At least this much"
+Big-Theta (Θ): TIGHT BOUND (Average Case)
+f(n) = Θ(g(n)) means c₁·g(n) ≤ f(n) ≤ c₂·g(n)
+"Exactly this much"
+Little-o (o): Strictly less than (not tight)
+Little-ω (ω): Strictly greater than (not tight)
 
 ### Performance Measurement
 

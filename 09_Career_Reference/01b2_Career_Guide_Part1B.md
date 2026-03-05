@@ -163,52 +163,33 @@ Each request:
 
 
 WITH CONNECTION POOLING (e.g., HikariCP):
-```
-────────────────────────────────────────
+## Connection Pool
 
-┌──────────────────────────────────────────────────────────────────┐
-│                      CONNECTION POOL                             │
-├──────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  At startup, pool creates N connections:                         │
-│                                                                  │
-│  ┌─────────────────────────────────────────────────────────┐     │
-│  │                    POOL (20 connections)                 │    │
-│  │                                                          │    │
-│  │  ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐       ┌──────┐    │      │
-│  │  │Conn 1│ │Conn 2│ │Conn 3│ │Conn 4│ ..... │Conn20│    │      │
-│  │  │ IDLE │ │ BUSY │ │ IDLE │ │ BUSY │       │ IDLE │    │      │
-│  │  └──────┘ └──────┘ └──────┘ └──────┘       └──────┘    │      │
-│  └─────────────────────────────────────────────────────────┘     │
-│                                                                  │
-│  Request flow:                                                   │
-│  1. Request arrives                                              │
-│  2. Pool.getConnection() → Returns Conn 1 (IDLE → BUSY)          │
-│  3. Execute query (10ms)                                         │
-│  4. Connection.close() → Actually returns to pool (BUSY→IDLE)    │
-│                                                                  │
-│  OVERHEAD: ~0ms (connection already established!)                │
-│                                                                  │
-│                                                                  │
-│  HikariCP Configuration:                                         │
-│  ───────────────────────                                         │
-│  spring.datasource.hikari.minimum-idle=10                        │
-│  spring.datasource.hikari.maximum-pool-size=20                   │
-│  spring.datasource.hikari.idle-timeout=600000                    │
-│  spring.datasource.hikari.max-lifetime=1800000                   │
-│  spring.datasource.hikari.connection-timeout=30000               │
-│                                                                  │
-│                                                                  │
-│  Pool exhaustion:                                                │
-│  ───────────────                                                 │
-│  If all 20 connections busy:                                     │
-│  • New requests wait in queue                                    │
-│  • If wait > connectionTimeout (30s) → Exception                 │
-│  • Monitor this! Could indicate need for more connections        │
-│    or slow queries                                               │
-│                                                                  │
-└──────────────────────────────────────────────────────────────────┘
-```
+At startup, pool creates N connections:
+POOL (20 connections)
+┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐       ┌──────┐
+| |Conn 1| |Conn 2| |Conn 3| |Conn 4| ..... |Conn20| |
+| | IDLE | | BUSY | | IDLE | | BUSY |       | IDLE | |
+└──────┘ └──────┘ └──────┘ └──────┘       └──────┘
+Request flow:
+1. Request arrives
+2. Pool.getConnection() → Returns Conn 1 (IDLE → BUSY)
+3. Execute query (10ms)
+4. Connection.close() → Actually returns to pool (BUSY→IDLE)
+
+**Overhead**: ~0ms (connection already established!)
+HikariCP Configuration:
+spring.datasource.hikari.minimum-idle=10
+spring.datasource.hikari.maximum-pool-size=20
+spring.datasource.hikari.idle-timeout=600000
+spring.datasource.hikari.max-lifetime=1800000
+spring.datasource.hikari.connection-timeout=30000
+Pool exhaustion:
+If all 20 connections busy:
+- New requests wait in queue
+- If wait > connectionTimeout (30s) → Exception
+- Monitor this! Could indicate need for more connections
+or slow queries
 
 ```
 
@@ -289,48 +270,35 @@ CLOUD BENEFITS:
 
 ### AWS Services - Complete Map
 
-```
-┌──────────────────────────────────────────────────────────────────┐
-│                    AWS SERVICES ARCHITECTURE                     │
-├──────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  COMPUTE                    STORAGE                              │
-│  ───────                    ───────                              │
-│  EC2 - Virtual Servers      S3 - Object Storage (files)          │
-│  Lambda - Serverless        EBS - Block Storage (disk)           │
-│  ECS/EKS - Containers       EFS - File System (shared)           │
-│  Fargate - Serverless Cont. Glacier - Archive Storage            │
-│  Lightsail - Simple VPS     Storage Gateway - Hybrid             │
-│                                                                  │
-│  DATABASE                   NETWORKING                           │
-│  ────────                   ──────────                           │
-│  RDS - Relational (MySQL,   VPC - Virtual Network                │
-│        PostgreSQL, etc.)    Route 53 - DNS                       │
-│  DynamoDB - NoSQL           CloudFront - CDN                     │
-│  Aurora - High-perf SQL     API Gateway - REST/WebSocket         │
-│  ElastiCache - Redis/Memc.  ELB - Load Balancer                  │
-│  DocumentDB - MongoDB       Direct Connect - Dedicated line      │
-│  Neptune - Graph DB                                              │
-│                                                                  │
-│  SECURITY                   MONITORING                           │
-│  ────────                   ──────────                           │
-│  IAM - Identity & Access    CloudWatch - Metrics/Logs            │
-│  KMS - Key Management       CloudTrail - API Audit               │
-│  WAF - Web App Firewall     X-Ray - Distributed Tracing          │
-│  Shield - DDoS Protection   Config - Resource Tracking           │
-│  Secrets Manager - Secrets                                       │
-│  Cognito - User Auth                                             │
-│                                                                  │
-│  MESSAGING                  AI/ML                                │
-│  ─────────                  ─────                                │
-│  SQS - Message Queue        SageMaker - ML Platform              │
-│  SNS - Pub/Sub              Rekognition - Image Analysis         │
-│  EventBridge - Event Bus    Comprehend - NLP                     │
-│  Kinesis - Streaming        Polly - Text to Speech               │
-│  MQ - ActiveMQ/RabbitMQ     Transcribe - Speech to Text          │
-│                                                                  │
-└──────────────────────────────────────────────────────────────────┘
-```
+## Aws Services Architecture
+
+COMPUTE                    STORAGE
+EC2 - Virtual Servers      S3 - Object Storage (files)
+Lambda - Serverless        EBS - Block Storage (disk)
+ECS/EKS - Containers       EFS - File System (shared)
+Fargate - Serverless Cont. Glacier - Archive Storage
+Lightsail - Simple VPS     Storage Gateway - Hybrid
+DATABASE                   NETWORKING
+RDS - Relational (MySQL,   VPC - Virtual Network
+PostgreSQL, etc.)    Route 53 - DNS
+DynamoDB - NoSQL           CloudFront - CDN
+Aurora - High-perf SQL     API Gateway - REST/WebSocket
+ElastiCache - Redis/Memc.  ELB - Load Balancer
+DocumentDB - MongoDB       Direct Connect - Dedicated line
+Neptune - Graph DB
+SECURITY                   MONITORING
+IAM - Identity & Access    CloudWatch - Metrics/Logs
+KMS - Key Management       CloudTrail - API Audit
+WAF - Web App Firewall     X-Ray - Distributed Tracing
+Shield - DDoS Protection   Config - Resource Tracking
+Secrets Manager - Secrets
+Cognito - User Auth
+MESSAGING                  AI/ML
+SQS - Message Queue        SageMaker - ML Platform
+SNS - Pub/Sub              Rekognition - Image Analysis
+EventBridge - Event Bus    Comprehend - NLP
+Kinesis - Streaming        Polly - Text to Speech
+MQ - ActiveMQ/RabbitMQ     Transcribe - Speech to Text
 
 ```
 

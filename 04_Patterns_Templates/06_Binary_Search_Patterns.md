@@ -24,18 +24,15 @@
 
 ### The Core Idea
 
-```
-╔═══════════════════════════════════════════════════════════════╗
-║              BINARY SEARCH IN ONE SENTENCE                    ║
-╠═══════════════════════════════════════════════════════════════╣
-║                                                               ║
-║  "If the search space is MONOTONIC (sorted/ordered),          ║
-║   eliminate HALF of it each step."                            ║
-║                                                               ║
-║  Time: O(log n)  —  From 1 billion → 30 comparisons           ║
-║                                                               ║
-╚═══════════════════════════════════════════════════════════════╝
-```
+
+> BINARY SEARCH IN ONE SENTENCE
+>
+> "If the search space is MONOTONIC (sorted/ordered),
+> eliminate HALF of it each step."
+>
+> Time: O(log n)  —  From 1 billion → 30 comparisons
+>
+
 
 ### Visual: Why Binary Search is Fast
 

@@ -21,21 +21,18 @@
 
 ### The Core Concept
 
-```
-╔═══════════════════════════════════════════════════════════════╗
-║              TWO POINTERS IN ONE SENTENCE                     ║
-╠═══════════════════════════════════════════════════════════════╣
-║                                                               ║
-║  "Use two references to traverse data structure               ║
-║   efficiently, reducing O(n²) to O(n)."                       ║
-║                                                               ║
-║  Why it works:                                                ║
-║  • Avoids nested loops by moving pointers intelligently       ║
-║  • Makes decisions based on current state                     ║
-║  • Exploits sorted/structured properties of data              ║
-║                                                               ║
-╚═══════════════════════════════════════════════════════════════╝
-```
+
+> TWO POINTERS IN ONE SENTENCE
+>
+> "Use two references to traverse data structure
+> efficiently, reducing O(n²) to O(n)."
+>
+> Why it works:
+> - Avoids nested loops by moving pointers intelligently
+> - Makes decisions based on current state
+> - Exploits sorted/structured properties of data
+>
+
 
 ### Visual: The Power of Two Pointers
 
@@ -63,33 +60,24 @@ Two Pointers: At most 6 moves
 
 ### The Four Main Types
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│              TWO POINTER PATTERNS                               │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  1. OPPOSITE DIRECTION (Collision)                              │
-│     left →          ← right                                     │
-│     [....converging....]                                        │
-│     Use: Pair sum, palindrome, partition                        │
-│                                                                 │
-│  2. SAME DIRECTION (Fast/Slow or Reader/Writer)                 │
-│     slow →                                                      │
-│        fast →                                                   │
-│     Use: Remove duplicates, cycle detection, partition          │
-│                                                                 │
-│  3. SLIDING WINDOW (Special Same Direction)                     │
-│     [left ... right]                                            │
-│     →         →                                                 │
-│     Use: Subarray/substring problems                            │
-│                                                                 │
-│  4. MULTI-ARRAY (Merge Pattern)                                 │
-│     Array A: p1 →                                               │
-│     Array B: p2 →                                               │
-│     Use: Merge, intersection, comparison                        │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
+## Two Pointer Patterns
+
+1. OPPOSITE DIRECTION (Collision)
+left →          ← right
+[....converging....]
+Use: Pair sum, palindrome, partition
+2. SAME DIRECTION (Fast/Slow or Reader/Writer)
+slow →
+fast →
+Use: Remove duplicates, cycle detection, partition
+3. SLIDING WINDOW (Special Same Direction)
+[left ... right]
+→         →
+Use: Subarray/substring problems
+4. MULTI-ARRAY (Merge Pattern)
+Array A: p1 →
+Array B: p2 →
+Use: Merge, intersection, comparison
 
 ---
 

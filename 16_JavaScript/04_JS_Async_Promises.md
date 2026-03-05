@@ -4,27 +4,25 @@
 
 ## 5W1H — Why This Chapter?
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: How JS handles asynchronous operations despite being          ║
-║        SINGLE-THREADED. Event loop, callbacks, promises, async.      ║
-║                                                                      ║
-║  WHY:  Every web app does async: API calls, file reads, timers,      ║
-║        user events, animations. Without understanding async, you     ║
-║        WILL have bugs — race conditions, callback hell, unhandled    ║
-║        promise rejections, stale closures in React.                  ║
-║                                                                      ║
-║  WHO:  Every developer. Frontend (fetch, events), Backend (DB,       ║
-║        file I/O, HTTP), React (useEffect, data fetching).            ║
-║                                                                      ║
-║  WHEN: After understanding closures and scope (they're essential     ║
-║        for understanding how async callbacks capture variables).     ║
-║                                                                      ║
-║  HOW:  JS delegates async work to browser/Node APIs. When done,      ║
-║        the result goes to a QUEUE. The EVENT LOOP moves it to        ║
-║        the call stack when the stack is empty.                       ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> WHAT: How JS handles asynchronous operations despite being
+> SINGLE-THREADED. Event loop, callbacks, promises, async.
+>
+> WHY:  Every web app does async: API calls, file reads, timers,
+> user events, animations. Without understanding async, you
+> WILL have bugs — race conditions, callback hell, unhandled
+> promise rejections, stale closures in React.
+>
+> WHO:  Every developer. Frontend (fetch, events), Backend (DB,
+> file I/O, HTTP), React (useEffect, data fetching).
+>
+> WHEN: After understanding closures and scope (they're essential
+> for understanding how async callbacks capture variables).
+>
+> HOW:  JS delegates async work to browser/Node APIs. When done,
+> the result goes to a QUEUE. The EVENT LOOP moves it to
+> the call stack when the stack is empty.
+
 
 ---
 
@@ -32,17 +30,15 @@
 
 ### 5W1H: WHY is JS Single-Threaded?
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHY single-threaded?                                                ║
-║  JS was designed for the DOM. If two threads modified the same       ║
-║  DOM element simultaneously → race condition → crash/corruption.     ║
-║  One thread = no data races on the DOM. Simpler mental model.        ║
-║                                                                      ║
-║  BUT HOW does it handle async then?                                  ║
-║  The EVENT LOOP — JS's secret weapon.                                ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> WHY single-threaded?
+> JS was designed for the DOM. If two threads modified the same
+> DOM element simultaneously → race condition → crash/corruption.
+> One thread = no data races on the DOM. Simpler mental model.
+>
+> BUT HOW does it handle async then?
+> The EVENT LOOP — JS's secret weapon.
+
 
 ```
 THE EVENT LOOP ARCHITECTURE:

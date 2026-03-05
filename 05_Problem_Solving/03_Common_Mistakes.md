@@ -23,58 +23,55 @@
 
 ## 📌 1. Off — By — One Errors
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║                    OFF-BY-ONE ERRORS                                      ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  MISTAKE 1: Wrong loop bound                                              ║
-║  ─────────────────────────────                                            ║
-║                                                                           ║
-║  ✗ WRONG:                                                                 ║
-║  for (int i = 0; i <= arr.length; i++)  // Goes ONE past end!             ║
-║      System.out.println(arr[i]);         // CRASH at last iteration       ║
-║                                                                           ║
-║  Array: [1, 2, 3, 4, 5]                                                   ║
-║  Index:  0  1  2  3  4  5 ← Does not exist!                               ║
-║                         ↑                                                 ║
-║                       Crash here                                          ║
-║                                                                           ║
-║  ✓ CORRECT:                                                               ║
-║  for (int i = 0; i < arr.length; i++)   // Stops at last valid index      ║
-║      System.out.println(arr[i]);                                          ║
-║                                                                           ║
-║  ═══════════════════════════════════════════════════════════════════════  ║
-║                                                                           ║
-║  MISTAKE 2: Substring wrong end index                                     ║
-║  ────────────────────────────────────                                     ║
-║                                                                           ║
-║  String s = "hello";  // indices 0-4, length 5                            ║
-║                                                                           ║
-║  ✗ WRONG (to get "ell"):                                                  ║
-║  s.substring(1, 3)  // Returns "el" (end is exclusive!)                   ║
-║                                                                           ║
-║  ✓ CORRECT:                                                               ║
-║  s.substring(1, 4)  // Returns "ell" (end is exclusive, so 1,2,3)         ║
-║                                                                           ║
-║  Visual:                                                                  ║
-║  String: h e l l o                                                        ║
-║  Index:  0 1 2 3 4                                                        ║
-║          [start, end)  ← end is EXCLUSIVE                                 ║
-║                                                                           ║
-║  ═══════════════════════════════════════════════════════════════════════  ║
-║                                                                           ║
-║  MISTAKE 3: Wrong mid calculation                                         ║
-║  ─────────────────────────────────                                        ║
-║                                                                           ║
-║  ✗ WRONG (can overflow for large arrays):                                 ║
-║  int mid = (low + high) / 2;  // If low + high > Integer.MAX_VALUE        ║
-║                                                                           ║
-║  ✓ CORRECT:                                                               ║
-║  int mid = low + (high - low) / 2;  // Never overflows                    ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
-```
+
+> OFF-BY-ONE ERRORS
+>
+> MISTAKE 1: Wrong loop bound
+> ─────────────────────────────
+>
+> ✗ WRONG:
+> for (int i = 0; i <= arr.length; i++)  // Goes ONE past end!
+> System.out.println(arr[i]);         // CRASH at last iteration
+>
+> Array: [1, 2, 3, 4, 5]
+> Index:  0  1  2  3  4  5 ← Does not exist!
+> ↑
+> Crash here
+>
+> ✓ CORRECT:
+> for (int i = 0; i < arr.length; i++)   // Stops at last valid index
+> System.out.println(arr[i]);
+>
+> ═══════════════════════════════════════════════════════════════════════
+>
+> MISTAKE 2: Substring wrong end index
+> ────────────────────────────────────
+>
+> String s = "hello";  // indices 0-4, length 5
+>
+> ✗ WRONG (to get "ell"):
+> s.substring(1, 3)  // Returns "el" (end is exclusive!)
+>
+> ✓ CORRECT:
+> s.substring(1, 4)  // Returns "ell" (end is exclusive, so 1,2,3)
+>
+> Visual:
+> String: h e l l o
+> Index:  0 1 2 3 4
+> [start, end)  ← end is EXCLUSIVE
+>
+> ═══════════════════════════════════════════════════════════════════════
+>
+> MISTAKE 3: Wrong mid calculation
+> ─────────────────────────────────
+>
+> ✗ WRONG (can overflow for large arrays):
+> int mid = (low + high) / 2;  // If low + high > Integer.MAX_VALUE
+>
+> ✓ CORRECT:
+> int mid = low + (high - low) / 2;  // Never overflows
+>
+
 
 ### Quick Reference: < vs <=
 

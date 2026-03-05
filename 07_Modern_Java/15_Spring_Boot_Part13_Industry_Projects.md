@@ -56,63 +56,44 @@
 
 ## Chapter 1: Spring Boot at Scale
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│              SPRING BOOT IN ENTERPRISE - REAL EXAMPLES                          │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  🔶 AMAZON (AWS)                                                                 │
-│  ────────────────                                                               │
-│  • Internal developer portals                                                   │
-│  • Microservices for order processing                                           │
-│  • Inventory management systems                                                 │
-│  • Configuration management services                                            │
-│  • API Gateway implementations                                                  │
-│                                                                                 │
-│  🔷 MICROSOFT                                                                    │
-│  ────────────────                                                               │
-│  • Azure Spring Cloud (managed Spring Boot)                                     │
-│  • LinkedIn backend services                                                    │
-│  • Internal tooling and automation                                              │
-│  • Enterprise integration services                                              │
-│                                                                                 │
-│  🟠 ORACLE                                                                       │
-│  ────────────────                                                               │
-│  • Cloud infrastructure services                                                │
-│  • Database management portals                                                  │
-│  • Billing and subscription systems                                             │
-│  • Internal employee systems                                                    │
-│                                                                                 │
-│  🟢 NETFLIX                                                                      │
-│  ────────────────                                                               │
-│  • Contributed Spring Cloud Netflix (Eureka, Zuul)                              │
-│  • Content delivery services                                                    │
-│  • Recommendation engine APIs                                                   │
-│  • A/B testing platforms                                                        │
-│                                                                                 │
-│  🔴 VERIZON                                                                      │
-│  ────────────────                                                               │
-│  • Network monitoring systems                                                   │
-│  • Customer portal backends                                                     │
-│  • Billing integration services                                                 │
-│  • IoT device management                                                        │
-│                                                                                 │
-│  🟣 SALESFORCE                                                                   │
-│  ────────────────                                                               │
-│  • Integration middleware                                                       │
-│  • Event processing pipelines                                                   │
-│  • Analytics services                                                           │
-│  • Multi-tenant SaaS backends                                                   │
-│                                                                                 │
-│  💼 EUROFINS                                                                     │
-│  ────────────────                                                               │
-│  • Laboratory Information Management Systems (LIMS)                             │
-│  • Sample tracking and workflow                                                 │
-│  • Report generation services                                                   │
-│  • Compliance and audit systems                                                 │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+## Spring Boot In Enterprise - Real Examples
+
+🔶 AMAZON (AWS)
+- Internal developer portals
+- Microservices for order processing
+- Inventory management systems
+- Configuration management services
+- API Gateway implementations
+🔷 MICROSOFT
+- Azure Spring Cloud (managed Spring Boot)
+- LinkedIn backend services
+- Internal tooling and automation
+- Enterprise integration services
+🟠 ORACLE
+- Cloud infrastructure services
+- Database management portals
+- Billing and subscription systems
+- Internal employee systems
+🟢 NETFLIX
+- Contributed Spring Cloud Netflix (Eureka, Zuul)
+- Content delivery services
+- Recommendation engine APIs
+- A/B testing platforms
+🔴 VERIZON
+- Network monitoring systems
+- Customer portal backends
+- Billing integration services
+- IoT device management
+🟣 SALESFORCE
+- Integration middleware
+- Event processing pipelines
+- Analytics services
+- Multi-tenant SaaS backends
+💼 EUROFINS
+- Laboratory Information Management Systems (LIMS)
+- Sample tracking and workflow
+- Report generation services
+- Compliance and audit systems
 
 ---
 

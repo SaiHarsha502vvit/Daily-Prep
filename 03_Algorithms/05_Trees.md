@@ -9,20 +9,17 @@
 
 # 🔬 PART 0: DEEP INTERNALS - HOW TREES & GRAPHS WORK AT CPU/MEMORY LEVEL
 
-```
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║       TREES & GRAPHS AT THE HARDWARE LEVEL - WHAT REALLY HAPPENS                 ║
-╠══════════════════════════════════════════════════════════════════════════════════╣
-║                                                                                  ║
-║  Understanding the PHYSICAL reality of trees and graphs:                         ║
-║  • How nodes are stored in memory                                                ║
-║  • What happens during tree traversal at CPU level                               ║
-║  • Recursion stack deep dive                                                     ║
-║  • Why tree operations are often cache-unfriendly                                ║
-║  • Graph representation memory comparison                                        ║
-║                                                                                  ║
-╚══════════════════════════════════════════════════════════════════════════════════╝
-```
+
+> TREES & GRAPHS AT THE HARDWARE LEVEL - WHAT REALLY HAPPENS
+>
+> Understanding the PHYSICAL reality of trees and graphs:
+> - How nodes are stored in memory
+> - What happens during tree traversal at CPU level
+> - Recursion stack deep dive
+> - Why tree operations are often cache-unfriendly
+> - Graph representation memory comparison
+>
+
 
 ## 🧠 Tree Node Memory Layout
 
@@ -185,57 +182,45 @@
 
 ## 📚 Iterative Traversal — Explicit Stack
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    ITERATIVE VS RECURSIVE - MEMORY COMPARISON                   │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  RECURSIVE INORDER:                                                             │
-│  void inorder(TreeNode root) {                                                  │
-│      if (root == null) return;                                                  │
-│      inorder(root.left);                                                        │
-│      visit(root);                                                               │
-│      inorder(root.right);                                                       │
-│  }                                                                              │
-│                                                                                 │
-│  Uses CALL STACK: ~48 bytes per frame (includes return address, saved regs)     │
-│                                                                                 │
-│                                                                                 │
-│  ITERATIVE INORDER:                                                             │
-│  void inorderIterative(TreeNode root) {                                         │
-│      Stack<TreeNode> stack = new Stack<>();                                     │
-│      TreeNode curr = root;                                                      │
-│                                                                                 │
-│      while (curr != null || !stack.isEmpty()) {                                 │
-│          while (curr != null) {                                                 │
-│              stack.push(curr);                                                  │
-│              curr = curr.left;                                                  │
-│          }                                                                      │
-│          curr = stack.pop();                                                    │
-│          visit(curr);                                                           │
-│          curr = curr.right;                                                     │
-│      }                                                                          │
-│  }                                                                              │
-│                                                                                 │
-│  Uses HEAP STACK: ~8 bytes per node reference                                   │
-│                                                                                 │
-│                                                                                 │
-│  MEMORY COMPARISON (tree height h = 20):                                        │
-│  ┌────────────────────┬───────────────────┬─────────────────────────────────┐   │
-│  │ Method             │ Memory Used       │ Notes                           │   │
-│  ├────────────────────┼───────────────────┼─────────────────────────────────┤   │
-│  │ Recursive          │ 20 × 48 = 960 B   │ Uses call stack (limited!)     │    │
-│  │ Iterative          │ 20 × 8 = 160 B    │ Uses heap (flexible)           │    │
-│  └────────────────────┴───────────────────┴─────────────────────────────────┘   │
-│                                                                                 │
-│  For SKEWED tree (h = 100,000):                                                 │
-│  • Recursive: 100,000 × 48 = 4.8 MB → STACK OVERFLOW on 1MB stack               │
-│  • Iterative: 100,000 × 8 = 800 KB → Works fine on heap                         │
-│                                                                                 │
-│  RECOMMENDATION: Use iterative for production code with unknown tree shapes     │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+## Iterative Vs Recursive - Memory Comparison
+
+
+**Recursive Inorder**:
+void inorder(TreeNode root) {
+if (root == null) return;
+inorder(root.left);
+visit(root);
+inorder(root.right);
+}
+Uses CALL STACK: ~48 bytes per frame (includes return address, saved regs)
+
+**Iterative Inorder**:
+void inorderIterative(TreeNode root) {
+Stack<TreeNode> stack = new Stack<>();
+TreeNode curr = root;
+while (curr != null || !stack.isEmpty()) {
+while (curr != null) {
+stack.push(curr);
+curr = curr.left;
+}
+curr = stack.pop();
+visit(curr);
+curr = curr.right;
+}
+}
+Uses HEAP STACK: ~8 bytes per node reference
+MEMORY COMPARISON (tree height h = 20):
+┬───────────────────┬
+| Method             | Memory Used       | Notes |
+┼───────────────────┼
+| Recursive          | 20 × 48 = 960 B   | Uses call stack (limited!) |
+| Iterative          | 20 × 8 = 160 B    | Uses heap (flexible) |
+┴───────────────────┴
+For SKEWED tree (h = 100,000):
+- Recursive: 100,000 × 48 = 4.8 MB → STACK OVERFLOW on 1MB stack
+- Iterative: 100,000 × 8 = 800 KB → Works fine on heap
+
+**Recommendation**: Use iterative for production code with unknown tree shapes
 
 ## 🌳 Cache Behavior in Tree Traversal
 

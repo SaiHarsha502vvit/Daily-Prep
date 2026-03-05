@@ -2,33 +2,27 @@
 
 # 19. Matrix / Grid — Complete Problem Guide
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                     MATRIX / GRID MASTERY GUIDE                              ║
-║          From Theory to Hard Problems — MIT/KTH Academic Style               ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║  Part 0: Theory & Grid Fundamentals  │  Part 1: Easy (4 problems)            ║
-║  Part 2: Medium (10 problems)        │  Part 3: Hard (4 problems)            ║
-║  Part 4: Cheat Sheet & Pattern Ref   │                                       ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-```
+
+> MATRIX / GRID MASTERY GUIDE
+> From Theory to Hard Problems — MIT/KTH Academic Style
+> Part 0: Theory & Grid Fundamentals  │  Part 1: Easy (4 problems)
+> Part 2: Medium (10 problems)        │  Part 3: Hard (4 problems)
+> Part 4: Cheat Sheet & Pattern Ref   │
+
 
 ---
 
 ## PART 0: THEORY — Grid Fundamentals (MIT/KTH Style)
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                     WHY MATRICES DOMINATE INTERVIEWS                         ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║  A 2D grid is the simplest spatial data structure. It models real-world      ║
-║  maps, images, game boards, spreadsheets, and adjacency matrices. Nearly     ║
-║  every graph algorithm can be asked as a grid problem — BFS, DFS,            ║
-║  Dijkstra, Union-Find — but with the added complexity of boundary            ║
-║  management and direction handling. Mastering grids = mastering spatial      ║
-║  reasoning under constraint.                                                 ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-```
+
+> WHY MATRICES DOMINATE INTERVIEWS
+> A 2D grid is the simplest spatial data structure. It models real-world
+> maps, images, game boards, spreadsheets, and adjacency matrices. Nearly
+> every graph algorithm can be asked as a grid problem — BFS, DFS,
+> Dijkstra, Union-Find — but with the added complexity of boundary
+> management and direction handling. Mastering grids = mastering spatial
+> reasoning under constraint.
+
 
 ### Matrix as a 2D Array: Row-Major vs Column-Major
 
@@ -51,12 +45,10 @@ Column-major (Fortran, MATLAB, Julia):
 
 **WHY this matters**: Iterating row-by-row (`for row... for col...`) is cache-friendly in Java. Iterating column-by-column causes cache misses. For large matrices, this can be a 10x performance difference.
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║  RULE: In Java, always iterate [row][col] in the inner loop unless the       ║
-║  algorithm specifically requires column-first traversal.                     ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-```
+
+> RULE: In Java, always iterate [row][col] in the inner loop unless the
+> algorithm specifically requires column-first traversal.
+
 
 ### 4-Directional vs 8-Directional Movement
 
@@ -83,25 +75,22 @@ int[][] dirs = {{-1,0},{1,0},{0,-1},{0,1}};
 
 ### BFS vs DFS on Grids: When to Use Each
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║  DECISION FRAMEWORK: BFS vs DFS on Grids                                     ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║                                                                              ║
-║  USE BFS WHEN:                          USE DFS WHEN:                        ║
-║  ─────────────                          ────────────                         ║
-║  • Shortest path (unweighted)           • Connectivity / flood fill          ║
-║  • Level-by-level processing            • Path exists? (yes/no)              ║
-║  • Multi-source spread (rotting         • Backtracking needed (word          ║
-║    oranges, fire spreading)               search, unique paths)              ║
-║  • Minimum distance queries             • Counting connected components      ║
-║  • Guaranteed to find shortest path     • Simpler code, less memory          ║
-║    in unweighted grid                     for deep paths                     ║
-║                                                                              ║
-║  BFS: Queue-based, O(V+E) time/space   DFS: Stack/recursion, O(V+E) time     ║
-║  Grid V = m*n, E = 4*m*n               Stack space O(m*n) worst case         ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-```
+
+> DECISION FRAMEWORK: BFS vs DFS on Grids
+>
+> USE BFS WHEN:                          USE DFS WHEN:
+> ─────────────                          ────────────
+> - Shortest path (unweighted)           • Connectivity / flood fill
+> - Level-by-level processing            • Path exists? (yes/no)
+> - Multi-source spread (rotting         • Backtracking needed (word
+> oranges, fire spreading)               search, unique paths)
+> - Minimum distance queries             • Counting connected components
+> - Guaranteed to find shortest path     • Simpler code, less memory
+> in unweighted grid                     for deep paths
+>
+> BFS: Queue-based, O(V+E) time/space   DFS: Stack/recursion, O(V+E) time
+> Grid V = m*n, E = 4*m*n               Stack space O(m*n) worst case
+
 
 ### Boundary Checking Patterns
 

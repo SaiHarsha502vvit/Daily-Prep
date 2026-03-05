@@ -7,108 +7,51 @@
 
 ## 📚 NP — Completeness — the Complete Understanding
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    P VS NP - THE MILLENNIUM PRIZE PROBLEM                       │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  COMPLEXITY CLASSES:                                                            │
-│  ────────────────────                                                           │
-│                                                                                 │
-│  P (Polynomial Time):                                                           │
-│  • Problems solvable in O(n^k) for some constant k                              │
-│  • Examples: Sorting, Shortest Path, MST, Matrix Multiplication                 │
-│  • These are "tractable" - efficient algorithms exist                           │
-│                                                                                 │
-│  NP (Nondeterministic Polynomial Time):                                         │
-│  • Problems where solutions can be VERIFIED in polynomial time                  │
-│  • NOT "Non-Polynomial"!                                                        │
-│  • Examples: SAT, Traveling Salesman, Vertex Cover                              │
-│                                                                                 │
-│  NP-Complete:                                                                   │
-│  • Hardest problems in NP                                                       │
-│  • If any NP-Complete problem has a polynomial solution → P = NP                │
-│  • 21 original NP-Complete problems (Karp's 21)                                 │
-│                                                                                 │
-│  NP-Hard:                                                                       │
-│  • At least as hard as NP-Complete                                              │
-│  • May not even be in NP (solution might not be verifiable in poly time)        │
-│  • Example: Halting Problem (undecidable!)                                      │
-│                                                                                 │
-│                                                                                 │
-│  VISUAL RELATIONSHIP (if P ≠ NP):                                               │
-│  ┌──────────────────────────────────────────────────────────────────────────┐   │
-│  │                                                                          │   │
-│  │                        NP-Hard                                           │   │
-│  │                  ┌─────────────────────────────────┐                    │    │
-│  │                  │                                 │                    │    │
-│  │                  │     NP-Complete                 │                    │    │
-│  │    ┌─────────────┼─────────────────────────────────┤                    │    │
-│  │    │             │                                 │                    │    │
-│  │    │      NP     │    • SAT                        │                    │    │
-│  │    │             │    • 3-SAT                      │                    │    │
-│  │    │  ┌──────┐   │    • Vertex Cover               │                    │    │
-│  │    │  │  P   │   │    • Hamiltonian Path           │                    │    │
-│  │    │  │      │   │    • Traveling Salesman         │                    │    │
-│  │    │  └──────┘   │    • Graph Coloring             │                    │    │
-│  │    │             │    • Subset Sum                 │                    │    │
-│  │    └─────────────┴─────────────────────────────────┘                    │    │
-│  │                                                                          │   │
-│  └──────────────────────────────────────────────────────────────────────────┘   │
-│                                                                                 │
-│                                                                                 │
-│  PROVING NP-COMPLETENESS:                                                       │
-│  ─────────────────────────                                                      │
-│  To show problem X is NP-Complete:                                              │
-│  1. Show X is in NP (solution verifiable in poly time)                          │
-│  2. Show X is NP-Hard (reduce known NP-Complete problem to X in poly time)      │
-│                                                                                 │
-│  Reduction: If A reduces to B in polynomial time, written A ≤_p B:              │
-│  • We can transform any instance of A to an instance of B                       │
-│  • Transformation takes polynomial time                                         │
-│  • Solution to transformed B gives solution to original A                       │
-│                                                                                 │
-│  If B has polynomial solution and A ≤_p B → A has polynomial solution           │
-│  Contrapositive: If A has no poly solution and A ≤_p B → B has no poly sol      │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+## P Vs Np - The Millennium Prize Problem
 
-## APPROXIMATION ALGORITHMS
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    APPROXIMATION ALGORITHMS FOR NP-HARD PROBLEMS                │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  Since NP-Hard problems likely have no efficient exact solution,                │
-│  we settle for APPROXIMATE solutions with GUARANTEED bounds.                    │
-│                                                                                 │
-│  APPROXIMATION RATIO:                                                           │
-│  ─────────────────────                                                          │
-│  For minimization: ALG/OPT ≤ α                                                  │
-│  For maximization: OPT/ALG ≤ α                                                  │
-│                                                                                 │
-│  α = 1: Optimal solution                                                        │
-│  α = 2: At most 2x worse than optimal                                           │
-│                                                                                 │
-│                                                                                 │
-│  EXAMPLE 1: VERTEX COVER (2-Approximation)                                      │
-│  ──────────────────────────────────────────                                     │
-│  Problem: Find minimum set of vertices that covers all edges                    │
-│                                                                                 │
-│  Greedy Algorithm:                                                              │
-│  1. While uncovered edges exist:                                                │
-│     a. Pick any uncovered edge (u, v)                                           │
-│     b. Add BOTH u and v to cover                                                │
-│     c. Remove all edges incident to u or v                                      │
-│                                                                                 │
-│  Why 2-approximation?                                                           │
-│  • Each iteration picks an edge (u,v) and adds 2 vertices                       │
-│  • Optimal solution MUST include at least one of u, v                           │
-│  • So OPT ≥ (edges picked)                                                      │
-│  • Our ALG = 2 × (edges picked)                                                 │
-│  • Therefore ALG/OPT ≤ 2                                                        │
-│                                                                                 │
-```
+**Complexity Classes**:
+P (Polynomial Time):
+- Problems solvable in O(n^k) for some constant k
+- Examples: Sorting, Shortest Path, MST, Matrix Multiplication
+- These are "tractable" - efficient algorithms exist
+NP (Nondeterministic Polynomial Time):
+- Problems where solutions can be VERIFIED in polynomial time
+- NOT "Non-Polynomial"!
+- Examples: SAT, Traveling Salesman, Vertex Cover
+NP-Complete:
+- Hardest problems in NP
+- If any NP-Complete problem has a polynomial solution → P = NP
+- 21 original NP-Complete problems (Karp's 21)
+NP-Hard:
+- At least as hard as NP-Complete
+- May not even be in NP (solution might not be verifiable in poly time)
+- Example: Halting Problem (undecidable!)
+VISUAL RELATIONSHIP (if P ≠ NP):
+NP-Hard
+┌─────────────────────────────────┐
+| |                                 | |
+| |     NP-Complete                 | |
+┌─────────────┼─────────────────────────────────┤
+| |             |                                 | |
+| |      NP     |    • SAT                        | |
+| |             |    • 3-SAT                      | |
+| |  ┌──────┐   |    • Vertex Cover               | |
+| |  |  P   |   |    • Hamiltonian Path           | |
+| |  |      |   |    • Traveling Salesman         | |
+| |  └──────┘   |    • Graph Coloring             | |
+| |             |    • Subset Sum                 | |
+└─────────────┴─────────────────────────────────┘
+PROVING NP-COMPLETENESS:
+To show problem X is NP-Complete:
+1. Show X is in NP (solution verifiable in poly time)
+2. Show X is NP-Hard (reduce known NP-Complete problem to X in poly time)
+Reduction: If A reduces to B in polynomial time, written A ≤_p B:
+- We can transform any instance of A to an instance of B
+- Transformation takes polynomial time
+- Solution to transformed B gives solution to original A
+If B has polynomial solution and A ≤_p B → A has polynomial solution
+Contrapositive: If A has no poly solution and A ≤_p B → B has no poly sol
 
 ```java
 public Set<Integer> vertexCover2Approx(int n, int[][] edges) {

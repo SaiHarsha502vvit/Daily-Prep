@@ -226,40 +226,37 @@ All zeros → ANAGRAM ✓
 
 ### KMP String Matching (Pattern Search)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║                    KMP STRING MATCHING                                    ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Text:    "ABABDABACDABABCABAB"                                           ║
-║  Pattern: "ABABCABAB"                                                     ║
-║                                                                           ║
-║  Step 1: Build LPS (Longest Proper Prefix which is also Suffix)           ║
-║                                                                           ║
-║  Pattern: A B A B C A B A B                                               ║
-║  Index:   0 1 2 3 4 5 6 7 8                                               ║
-║  LPS:    [0,0,1,2,0,1,2,3,4]                                              ║
-║                                                                           ║
-║  LPS meaning:                                                             ║
-║  • At index 3 (ABAB), LPS=2 means "AB" is both prefix and suffix          ║
-║  • At index 8 (ABABCABAB), LPS=4 means "ABAB" is prefix and suffix        ║
-║                                                                           ║
-║  Step 2: Search using LPS                                                 ║
-║                                                                           ║
-║  Text:    A B A B D A B A C D A B A B C A B A B                           ║
-║  Pattern: A B A B C                                                       ║
-║                   ↑ mismatch at index 4                                   ║
-║                                                                           ║
-║  LPS[3] = 2, so pattern can shift to reuse matched "AB":                  ║
-║                                                                           ║
-║  Text:    A B A B D A B A C D A B A B C A B A B                           ║
-║  Pattern:     A B A B C                                                   ║
-║               ↑ continue from here (saved 2 comparisons!)                 ║
-║                                                                           ║
-║  Without KMP: Would start from beginning each time → O(N×M)               ║
-║  With KMP:    Reuse matched portion → O(N+M)                              ║
-╚═══════════════════════════════════════════════════════════════════════════╝
-```
+
+> KMP STRING MATCHING
+>
+> Text:    "ABABDABACDABABCABAB"
+> Pattern: "ABABCABAB"
+>
+> Step 1: Build LPS (Longest Proper Prefix which is also Suffix)
+>
+> Pattern: A B A B C A B A B
+> Index:   0 1 2 3 4 5 6 7 8
+> LPS:    [0,0,1,2,0,1,2,3,4]
+>
+> LPS meaning:
+> - At index 3 (ABAB), LPS=2 means "AB" is both prefix and suffix
+> - At index 8 (ABABCABAB), LPS=4 means "ABAB" is prefix and suffix
+>
+> Step 2: Search using LPS
+>
+> Text:    A B A B D A B A C D A B A B C A B A B
+> Pattern: A B A B C
+> ↑ mismatch at index 4
+>
+> LPS[3] = 2, so pattern can shift to reuse matched "AB":
+>
+> Text:    A B A B D A B A C D A B A B C A B A B
+> Pattern:     A B A B C
+> ↑ continue from here (saved 2 comparisons!)
+>
+> Without KMP: Would start from beginning each time → O(N×M)
+> With KMP:    Reuse matched portion → O(N+M)
+
 
 ---
 
@@ -267,52 +264,49 @@ All zeros → ANAGRAM ✓
 
 ### Heap Sort Visualization
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║                    HEAP SORT VISUALIZATION                                ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Array: [4, 10, 3, 5, 1]                                                  ║
-║                                                                           ║
-║  PHASE 1: Build Max Heap (heapify from bottom-up)                         ║
-║                                                                           ║
-║  Initial tree:              After heapify:                                ║
-║        4                          10                                      ║
-║       / \                        /  \                                     ║
-║      10  3          →           5    3                                    ║
-║     / \                        / \                                        ║
-║    5   1                      4   1                                       ║
-║                                                                           ║
-║  Max Heap Property: Parent ≥ Children                                     ║
-║                                                                           ║
-║  PHASE 2: Extract max repeatedly                                          ║
-║                                                                           ║
-║  Step 1: Swap root(10) with last(1), remove 10                            ║
-║        1                                                                  ║
-║       / \                 Heapify →        5                              ║
-║      5   3                                / \                             ║
-║     /                                    4   3                            ║
-║    4                                    /                                 ║
-║                                        1                                  ║
-║  Sorted: [..., 10]                                                        ║
-║                                                                           ║
-║  Step 2: Swap root(5) with last(1), remove 5                              ║
-║        1                                                                  ║
-║       / \                 Heapify →        4                              ║
-║      4   3                                / \                             ║
-║                                          1   3                            ║
-║  Sorted: [..., 5, 10]                                                     ║
-║                                                                           ║
-║  Step 3: Swap root(4) with last(3), remove 4                              ║
-║        3                                                                  ║
-║       /                   Heapify →        3                              ║
-║      1                                    /                               ║
-║                                          1                                ║
-║  Sorted: [..., 4, 5, 10]                                                  ║
-║                                                                           ║
-║  Continue... Final: [1, 3, 4, 5, 10]                                      ║
-╚═══════════════════════════════════════════════════════════════════════════╝
-```
+
+> HEAP SORT VISUALIZATION
+>
+> Array: [4, 10, 3, 5, 1]
+>
+> PHASE 1: Build Max Heap (heapify from bottom-up)
+>
+> Initial tree:              After heapify:
+> 4                          10
+> / \                        /  \
+> 10  3          →           5    3
+> / \                        / \
+> 5   1                      4   1
+>
+> Max Heap Property: Parent ≥ Children
+>
+> PHASE 2: Extract max repeatedly
+>
+> Step 1: Swap root(10) with last(1), remove 10
+> 1
+> / \                 Heapify →        5
+> 5   3                                / \
+> /                                    4   3
+> 4                                    /
+> 1
+> Sorted: [..., 10]
+>
+> Step 2: Swap root(5) with last(1), remove 5
+> 1
+> / \                 Heapify →        4
+> 4   3                                / \
+> 1   3
+> Sorted: [..., 5, 10]
+>
+> Step 3: Swap root(4) with last(3), remove 4
+> 3
+> /                   Heapify →        3
+> 1                                    /
+> 1
+> Sorted: [..., 4, 5, 10]
+>
+> Continue... Final: [1, 3, 4, 5, 10]
+
 
 ### Counting Sort Visualization
 
@@ -431,43 +425,16 @@ Count of 2s = Upper Bound - Lower Bound = 5 - 1 = 4
 
 ### HashMap Internal Working
 
-```
-                  HASHMAP INTERNAL STRUCTURE
-──────────────────────────────────────────────────
+## Bucket  │ Contents
 
-HashMap<String, Integer>
-
-Put("apple", 5):  hash("apple") % 8 = 2
-Put("banana", 3): hash("banana") % 8 = 5
-Put("cherry", 7): hash("cherry") % 8 = 2  ← Collision!
-
-Internal Array (Buckets):
-┌─────────┬─────────────────────────────────────────┐
-│ Bucket  │ Contents                                │
-├─────────┼─────────────────────────────────────────┤
-│    0    │ NULL                                    │
-│    1    │ NULL                                    │
-│    2    │ [apple:5] → [cherry:7] → NULL          │  ← Chained!
-│    3    │ NULL                                    │
-│    4    │ NULL                                    │
-│    5    │ [banana:3] → NULL                       │
-│    6    │ NULL                                    │
-│    7    │ NULL                                    │
-└─────────┴─────────────────────────────────────────┘
-
-Get("cherry"):
-1. hash("cherry") % 8 = 2
-2. Go to bucket 2
-3. Check "apple" → Not match
-4. Check "cherry" → Match! Return 7
-
-Time Complexity:
-• Best/Average: O(1) - direct bucket access
-• Worst: O(N) - all items in one bucket (rare)
-
-Load Factor = items / buckets
-When load factor > 0.75 → resize (double buckets, rehash all)
-```
+0    │ NULL
+1    │ NULL
+| 2    | [apple:5] → [cherry:7] → NULL          |  ← Chained! |
+3    │ NULL
+4    │ NULL
+5    │ [banana:3] → NULL
+6    │ NULL
+7    │ NULL
 
 ### Stack vs Queue
 
@@ -527,99 +494,93 @@ Use cases: Sliding window max, BFS variations
 
 ### BFS Shortest Path
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║                    BFS SHORTEST PATH                                      ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Graph (unweighted):                                                      ║
-║                                                                           ║
-║       A ─────── B                                                         ║
-║       │ \       │                                                         ║
-║       │  \      │                                                         ║
-║       │   \     │                                                         ║
-║       C ─── D ─ E                                                         ║
-║                                                                           ║
-║  Find shortest path from A to E                                           ║
-║                                                                           ║
-║  BFS Process:                                                             ║
-║                                                                           ║
-║  Level 0: Start at A                                                      ║
-║  Queue: [A]    Visited: {A}    Distance: {A:0}                            ║
-║                                                                           ║
-║  Level 1: Process A's neighbors                                           ║
-║  Queue: [B, C, D]    Visited: {A,B,C,D}    Distance: {A:0, B:1, C:1, D:1} ║
-║                                                                           ║
-║       A(0) ──── B(1)                                                      ║
-║       │ \       │                                                         ║
-║       │  \      │                                                         ║
-║       │   \     │                                                         ║
-║      C(1)─D(1)─ E                                                         ║
-║                                                                           ║
-║  Level 2: Process B's neighbors (C,D already visited)                     ║
-║  Queue: [E]    Visited: {A,B,C,D,E}    Distance: {..., E:2}               ║
-║                                                                           ║
-║       A(0) ──── B(1)                                                      ║
-║       │ \       │                                                         ║
-║       │  \      │                                                         ║
-║       │   \     │                                                         ║
-║      C(1)─D(1)─E(2)                                                       ║
-║                                                                           ║
-║  Shortest path A→E: 2 edges                                               ║
-║  Possible paths: A→B→E or A→D→E                                           ║
-║                                                                           ║
-║  KEY: BFS finds shortest path in UNWEIGHTED graphs                        ║
-║  For weighted graphs, use Dijkstra's algorithm                            ║
-╚═══════════════════════════════════════════════════════════════════════════╝
-```
+
+> BFS SHORTEST PATH
+>
+> Graph (unweighted):
+>
+> A ─────── B
+> │ \       │
+> │  \      │
+> │   \     │
+> C ─── D ─ E
+>
+> Find shortest path from A to E
+>
+> BFS Process:
+>
+> Level 0: Start at A
+> Queue: [A]    Visited: {A}    Distance: {A:0}
+>
+> Level 1: Process A's neighbors
+> Queue: [B, C, D]    Visited: {A,B,C,D}    Distance: {A:0, B:1, C:1, D:1}
+>
+> A(0) ──── B(1)
+> │ \       │
+> │  \      │
+> │   \     │
+> C(1)─D(1)─ E
+>
+> Level 2: Process B's neighbors (C,D already visited)
+> Queue: [E]    Visited: {A,B,C,D,E}    Distance: {..., E:2}
+>
+> A(0) ──── B(1)
+> │ \       │
+> │  \      │
+> │   \     │
+> C(1)─D(1)─E(2)
+>
+> Shortest path A→E: 2 edges
+> Possible paths: A→B→E or A→D→E
+>
+> KEY: BFS finds shortest path in UNWEIGHTED graphs
+> For weighted graphs, use Dijkstra's algorithm
+
 
 ### DFS - Detecting Cycle
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║                    DFS CYCLE DETECTION                                    ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Directed Graph:                                                          ║
-║                                                                           ║
-║       A ──→ B                                                             ║
-║       ↑     │                                                             ║
-║       │     ↓                                                             ║
-║       D ←── C                                                             ║
-║             │                                                             ║
-║             ↓                                                             ║
-║             E                                                             ║
-║                                                                           ║
-║  Cycle exists: A → B → C → D → A                                          ║
-║                                                                           ║
-║  DFS with 3 states:                                                       ║
-║  • WHITE (0): Not visited                                                 ║
-║  • GRAY (1): Currently in DFS stack (being processed)                     ║
-║  • BLACK (2): Completely processed                                        ║
-║                                                                           ║
-║  DFS from A:                                                              ║
-║                                                                           ║
-║  Step 1: Visit A (GRAY)                                                   ║
-║          A(G) ──→ B                                                       ║
-║                                                                           ║
-║  Step 2: Visit B (GRAY)                                                   ║
-║          A(G) ──→ B(G)                                                    ║
-║                   │                                                       ║
-║                   ↓                                                       ║
-║                   C                                                       ║
-║                                                                           ║
-║  Step 3: Visit C (GRAY)                                                   ║
-║          A(G) ──→ B(G)                                                    ║
-║                   │                                                       ║
-║                   ↓                                                       ║
-║                   C(G)                                                    ║
-║                                                                           ║
-║  Step 4: Visit D (GRAY), D points to A                                    ║
-║          A is GRAY (in current DFS path) → CYCLE DETECTED!                ║
-║                                                                           ║
-║  Rule: Back edge to GRAY node = CYCLE                                     ║
-╚═══════════════════════════════════════════════════════════════════════════╝
-```
+
+> DFS CYCLE DETECTION
+>
+> Directed Graph:
+>
+> A ──→ B
+> ↑     │
+> │     ↓
+> D ←── C
+> │
+> ↓
+> E
+>
+> Cycle exists: A → B → C → D → A
+>
+> DFS with 3 states:
+> - WHITE (0): Not visited
+> - GRAY (1): Currently in DFS stack (being processed)
+> - BLACK (2): Completely processed
+>
+> DFS from A:
+>
+> Step 1: Visit A (GRAY)
+> A(G) ──→ B
+>
+> Step 2: Visit B (GRAY)
+> A(G) ──→ B(G)
+> │
+> ↓
+> C
+>
+> Step 3: Visit C (GRAY)
+> A(G) ──→ B(G)
+> │
+> ↓
+> C(G)
+>
+> Step 4: Visit D (GRAY), D points to A
+> A is GRAY (in current DFS path) → CYCLE DETECTED!
+>
+> Rule: Back edge to GRAY node = CYCLE
+
 
 ---
 
@@ -722,69 +683,66 @@ Start at dp[6][6]=3, trace back through matches
 
 ### Bit Operations Visual
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║                    BIT MANIPULATION VISUAL                                ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  CHECKING IF POWER OF 2:                                                  ║
-║  ────────────────────────                                                 ║
-║                                                                           ║
-║  n = 8:    1000  (binary)                                                 ║
-║  n-1 = 7:  0111  (binary)                                                 ║
-║            ────                                                           ║
-║  n & (n-1): 0000  ← All zeros! Power of 2 ✓                               ║
-║                                                                           ║
-║  n = 6:    0110  (binary)                                                 ║
-║  n-1 = 5:  0101  (binary)                                                 ║
-║            ────                                                           ║
-║  n & (n-1): 0100  ← Not zero! Not power of 2 ✗                            ║
-║                                                                           ║
-║  Rule: Power of 2 has exactly ONE bit set                                 ║
-║        n & (n-1) removes rightmost set bit                                ║
-║        If result is 0, it was power of 2                                  ║
-║                                                                           ║
-║  ═══════════════════════════════════════════════════════════════════════  ║
-║                                                                           ║
-║  COUNTING SET BITS:                                                       ║
-║  ──────────────────                                                       ║
-║                                                                           ║
-║  n = 13:   1101  (binary)  → 3 set bits                                   ║
-║                                                                           ║
-║  Iteration 1:                                                             ║
-║  n = 1101                                                                 ║
-║  n-1 = 1100                                                               ║
-║  n & (n-1) = 1100  → count = 1 (removed rightmost 1)                      ║
-║                                                                           ║
-║  Iteration 2:                                                             ║
-║  n = 1100                                                                 ║
-║  n-1 = 1011                                                               ║
-║  n & (n-1) = 1000  → count = 2                                            ║
-║                                                                           ║
-║  Iteration 3:                                                             ║
-║  n = 1000                                                                 ║
-║  n-1 = 0111                                                               ║
-║  n & (n-1) = 0000  → count = 3                                            ║
-║                                                                           ║
-║  n = 0, stop. Answer: 3 set bits ✓                                        ║
-║                                                                           ║
-║  ═══════════════════════════════════════════════════════════════════════  ║
-║                                                                           ║
-║  XOR PROPERTIES:                                                          ║
-║  ───────────────                                                          ║
-║                                                                           ║
-║  a ^ a = 0        (same numbers cancel)                                   ║
-║  a ^ 0 = a        (XOR with 0 gives same number)                          ║
-║  a ^ b ^ a = b    (a cancels out)                                         ║
-║                                                                           ║
-║  Example: Find single number in [4, 1, 2, 1, 2]                           ║
-║                                                                           ║
-║  4 ^ 1 ^ 2 ^ 1 ^ 2                                                        ║
-║  = 4 ^ (1 ^ 1) ^ (2 ^ 2)                                                  ║
-║  = 4 ^ 0 ^ 0                                                              ║
-║  = 4  ← The single number!                                                ║
-╚═══════════════════════════════════════════════════════════════════════════╝
-```
+
+> BIT MANIPULATION VISUAL
+>
+> CHECKING IF POWER OF 2:
+> ────────────────────────
+>
+> n = 8:    1000  (binary)
+> n-1 = 7:  0111  (binary)
+> ────
+> n & (n-1): 0000  ← All zeros! Power of 2 ✓
+>
+> n = 6:    0110  (binary)
+> n-1 = 5:  0101  (binary)
+> ────
+> n & (n-1): 0100  ← Not zero! Not power of 2 ✗
+>
+> Rule: Power of 2 has exactly ONE bit set
+> n & (n-1) removes rightmost set bit
+> If result is 0, it was power of 2
+>
+> ═══════════════════════════════════════════════════════════════════════
+>
+> COUNTING SET BITS:
+> ──────────────────
+>
+> n = 13:   1101  (binary)  → 3 set bits
+>
+> Iteration 1:
+> n = 1101
+> n-1 = 1100
+> n & (n-1) = 1100  → count = 1 (removed rightmost 1)
+>
+> Iteration 2:
+> n = 1100
+> n-1 = 1011
+> n & (n-1) = 1000  → count = 2
+>
+> Iteration 3:
+> n = 1000
+> n-1 = 0111
+> n & (n-1) = 0000  → count = 3
+>
+> n = 0, stop. Answer: 3 set bits ✓
+>
+> ═══════════════════════════════════════════════════════════════════════
+>
+> XOR PROPERTIES:
+> ───────────────
+>
+> a ^ a = 0        (same numbers cancel)
+> a ^ 0 = a        (XOR with 0 gives same number)
+> a ^ b ^ a = b    (a cancels out)
+>
+> Example: Find single number in [4, 1, 2, 1, 2]
+>
+> 4 ^ 1 ^ 2 ^ 1 ^ 2
+> = 4 ^ (1 ^ 1) ^ (2 ^ 2)
+> = 4 ^ 0 ^ 0
+> = 4  ← The single number!
+
 
 ### GCD Euclidean Algorithm
 

@@ -8,38 +8,28 @@
 
 ::: pattern
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                      MIN STACK - COMPLETE GUIDE                              ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+## What Is It?
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ WHAT IS IT?                                                                 │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ A stack that supports:                                                      │
-│ • push(x)   - O(1)                                                          │
-│ • pop()     - O(1)                                                          │
-│ • top()     - O(1)                                                          │
-│ • getMin()  - O(1)  ← THE SPECIAL OPERATION!                                │
-│                                                                             │
-│ CHALLENGE: How to get minimum in O(1)?                                      │
-│                                                                             │
-│ NAIVE: Search entire stack → O(n)                                           │
-│ SMART: Track minimum at EACH state of the stack!                            │
-│                                                                             │
-│ APPROACH 1 - TWO STACKS:                                                    │
-│   Main Stack:  [3, 5, 2, 7, 1]  top→                                        │
-│   Min Stack:   [3, 3, 2, 2, 1]  top→                                        │
-│                                                                             │
-│   Min stack stores the minimum at each point!                               │
-│   When we pop, both stacks pop.                                             │
-│   getMin() = minStack.top()                                                 │
-│                                                                             │
-│ APPROACH 2 - SINGLE STACK WITH PAIRS:                                       │
-│   Stack: [(3,3), (5,3), (2,2), (7,2), (1,1)]                                │
-│          (value, min_at_this_point)                                         │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+A stack that supports:
+- push(x)   - O(1)
+- pop()     - O(1)
+- top()     - O(1)
+- getMin()  - O(1)  ← THE SPECIAL OPERATION!
+
+**Challenge**: How to get minimum in O(1)?
+
+**Naive**: Search entire stack → O(n)
+
+**Smart**: Track minimum at EACH state of the stack!
+APPROACH 1 - TWO STACKS:
+Main Stack:  [3, 5, 2, 7, 1]  top→
+Min Stack:   [3, 3, 2, 2, 1]  top→
+Min stack stores the minimum at each point!
+When we pop, both stacks pop.
+getMin() = minStack.top()
+APPROACH 2 - SINGLE STACK WITH PAIRS:
+Stack: [(3,3), (5,3), (2,2), (7,2), (1,1)]
+(value, min_at_this_point)
 
 :::
 

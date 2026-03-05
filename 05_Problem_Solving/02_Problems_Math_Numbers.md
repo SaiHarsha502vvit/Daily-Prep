@@ -14,30 +14,27 @@
 
 **Difficulty:** Easy | **Category:** Basic Math
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  CHECK IF A NUMBER IS PRIME                                               ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  A prime number is a natural number greater than 1 that has no positive   ║
-║  divisors other than 1 and itself.                                        ║
-║                                                                           ║
-║  Examples:                                                                ║
-║  - 2, 3, 5, 7, 11, 13, 17, 19, 23, 29... are prime                        ║
-║  - 4 (2×2), 6 (2×3), 8, 9, 10... are NOT prime                            ║
-║                                                                           ║
-║  Input: n = 17                                                            ║
-║  Output: true                                                             ║
-║                                                                           ║
-║  Input: n = 15                                                            ║
-║  Output: false (15 = 3 × 5)                                               ║
-║                                                                           ║
-║  Optimization: Only check till √n                                         ║
-║  Why? If n = a × b and a ≤ √n, then b ≥ √n                                ║
-║  So if no divisor exists till √n, none exists after                       ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
-```
+
+> CHECK IF A NUMBER IS PRIME
+>
+> A prime number is a natural number greater than 1 that has no positive
+> divisors other than 1 and itself.
+>
+> Examples:
+> - 2, 3, 5, 7, 11, 13, 17, 19, 23, 29... are prime
+> - 4 (2×2), 6 (2×3), 8, 9, 10... are NOT prime
+>
+> Input: n = 17
+> Output: true
+>
+> Input: n = 15
+> Output: false (15 = 3 × 5)
+>
+> Optimization: Only check till √n
+> Why? If n = a × b and a ≤ √n, then b ≥ √n
+> So if no divisor exists till √n, none exists after
+>
+
 
 ```java
 // SOLUTION - OPTIMAL O(√n)

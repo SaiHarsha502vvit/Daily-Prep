@@ -6,22 +6,20 @@
 
 ## 5W1H — Why This Chapter?
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: Modern CSS techniques for building scalable, maintainable     ║
-║        design systems: Custom Properties, methodologies, modern      ║
-║        selectors, and production-quality UI patterns.                ║
-║                                                                      ║
-║  WHY:  Real projects have 1000+ CSS rules. Without organization,     ║
-║        CSS becomes unmaintainable spaghetti. Modern tools solve      ║
-║        specificity wars, naming conflicts, and design consistency.   ║
-║                                                                      ║
-║  WHO:  Any developer working on projects beyond a single page.       ║
-║                                                                      ║
-║  HOW:  CSS Custom Properties for design tokens. BEM or CSS           ║
-║        Modules for scoping. Building a design system.                ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> WHAT: Modern CSS techniques for building scalable, maintainable
+> design systems: Custom Properties, methodologies, modern
+> selectors, and production-quality UI patterns.
+>
+> WHY:  Real projects have 1000+ CSS rules. Without organization,
+> CSS becomes unmaintainable spaghetti. Modern tools solve
+> specificity wars, naming conflicts, and design consistency.
+>
+> WHO:  Any developer working on projects beyond a single page.
+>
+> HOW:  CSS Custom Properties for design tokens. BEM or CSS
+> Modules for scoping. Building a design system.
+
 
 ---
 

@@ -1629,39 +1629,18 @@ long dominoTiling(int n, int m) {
  DP PATTERNS QUICK REFERENCE
 ```
 ──────────────────────────────────────────────────
-```
+## Pattern │ Signal │ Time │ Space
 
-
- ┌─────────────────────────────────────────────────────────────────────────────┐
- │ Pattern │ Signal │ Time │ Space │
- ├───────────────────┼─────────────────────────┼───────────┼───────────────────┤
- │ Linear DP │ One sequence │ O(n) │ O(1) to O(n) │
- │ Two-sequence DP │ Compare two strings │ O(nm) │ O(m) with rolling│
- │ Interval DP │ Range [i,j] optimal │ O(n³) │ O(n²) │
- │ Tree DP │ Tree structure │ O(n) │ O(n) │
- │ Bitmask DP │ n ≤ 20, subsets │ O(2ⁿ × n) │ O(2ⁿ) │
- │ Digit DP │ Count in range [L,R] │ O(d × s) │ O(d × s) │
- │ Broken Profile │ Grid, width ≤ 20 │ O(nm × 2ᵐ)│ O(2ᵐ) │
- │ D&C Optimization │ Monotonic opt split │ O(nm log n)│ O(nm) │
- │ Convex Hull Trick│ Linear transition │ O(n) │ O(n) │
- │ Knuth Optimization│Quadratic → near-linear │ O(n²) │ O(n²) │
- └─────────────────────────────────────────────────────────────────────────────┘
-
- RECURRENCE PATTERNS:
- • dp[i] = f(dp[i-1], dp[i-2], ...) → Linear/Fibonacci type
- • dp[i][j] = f(dp[i-1][j-1], dp[i-1][j], dp[i][j-1]) → Grid DP
- • dp[i][j] = min/max(dp[i][k] + dp[k][j] + c) → Interval DP
- • dp[mask] = f(dp[mask ^ (1<<k)]) → Bitmask DP
- • dp[v] = g(dp[children]) → Tree DP
-
- SPACE OPTIMIZATION CHECKLIST:
- □ Can I use rolling array? (only need prev row/rows)
- □ Can I use single array with careful iteration order?
- □ Can I compress coordinates?
- □ Can I use bitmask instead of array?
-
-
-```
+| Linear DP | One sequence | O(n) | O(1) to O(n) |
+| Two-sequence DP | Compare two strings | O(nm) | O(m) with rolling |
+| Interval DP | Range [i,j] optimal | O(n³) | O(n²) |
+| Tree DP | Tree structure | O(n) | O(n) |
+| Bitmask DP | n ≤ 20, subsets | O(2ⁿ × n) | O(2ⁿ) |
+| Digit DP | Count in range [L,R] | O(d × s) | O(d × s) |
+| Broken Profile | Grid, width ≤ 20 | O(nm × 2ᵐ)| O(2ᵐ) |
+| D&C Optimization | Monotonic opt split | O(nm log n)| O(nm) |
+| Convex Hull Trick| Linear transition | O(n) | O(n) |
+| Knuth Optimization|Quadratic → near-linear | O(n²) | O(n²) |
 
 ---
 

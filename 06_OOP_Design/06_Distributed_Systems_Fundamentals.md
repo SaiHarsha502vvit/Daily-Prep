@@ -11,25 +11,23 @@
 
 ## Part 1: Why Distributed Systems?
 
-```
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║  THE FUNDAMENTAL PROBLEM                                                         ║
-║                                                                                  ║
-║  Single machine:  Simple, consistent, but limited                                ║
-║  → CPU/Memory/Disk have hard ceilings                                            ║
-║  → Single point of failure (SPOF)                                                ║
-║                                                                                  ║
-║  Distributed system: Multiple machines working together                          ║
-║  → Scale beyond single machine limits                                            ║
-║  → Survive individual machine failures                                           ║
-║  → BUT: introduces network as unreliable component                               ║
-║                                                                                  ║
-║  REAL-WORLD ANALOGY: One chef vs a restaurant kitchen                            ║
-║  One chef: Perfect coordination, limited throughput                              ║
-║  Kitchen team: High throughput, but needs communication protocols                ║
-║  → Miscommunication = wrong orders, duplicate dishes, lost tickets               ║
-╚══════════════════════════════════════════════════════════════════════════════════╝
-```
+
+> THE FUNDAMENTAL PROBLEM
+>
+> Single machine:  Simple, consistent, but limited
+> → CPU/Memory/Disk have hard ceilings
+> → Single point of failure (SPOF)
+>
+> Distributed system: Multiple machines working together
+> → Scale beyond single machine limits
+> → Survive individual machine failures
+> → BUT: introduces network as unreliable component
+>
+> REAL-WORLD ANALOGY: One chef vs a restaurant kitchen
+> One chef: Perfect coordination, limited throughput
+> Kitchen team: High throughput, but needs communication protocols
+> → Miscommunication = wrong orders, duplicate dishes, lost tickets
+
 
 ---
 
@@ -69,25 +67,23 @@
 ```
 
 ### CAP in Plain English
-```
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║  SCENARIO: You run 2 database replicas (Node A, Node B)                          ║
-║  A network partition splits them — they can't talk to each other                 ║
-║                                                                                  ║
-║  [Node A]  ✂️ network partition ✂️  [Node B]                                     ║
-║                                                                                  ║
-║  A write comes to Node A: "Set balance = $100"                                   ║
-║  A read comes to Node B: "What's the balance?"                                   ║
-║                                                                                  ║
-║  CHOICE 1 (CP): Node B says "Sorry, I can't answer — I might be stale"           ║
-║  → Consistent ✅  Available ❌                                                     ║
-║                                                                                  ║
-║  CHOICE 2 (AP): Node B returns old value "$80"                                   ║
-║  → Available ✅  Consistent ❌                                                     ║
-║                                                                                  ║
-║  You CANNOT have both during a partition. Period.                                ║
-╚══════════════════════════════════════════════════════════════════════════════════╝
-```
+
+> SCENARIO: You run 2 database replicas (Node A, Node B)
+> A network partition splits them — they can't talk to each other
+>
+> [Node A]  ✂️ network partition ✂️  [Node B]
+>
+> A write comes to Node A: "Set balance = $100"
+> A read comes to Node B: "What's the balance?"
+>
+> CHOICE 1 (CP): Node B says "Sorry, I can't answer — I might be stale"
+> → Consistent ✅  Available ❌
+>
+> CHOICE 2 (AP): Node B returns old value "$80"
+> → Available ✅  Consistent ❌
+>
+> You CANNOT have both during a partition. Period.
+
 
 ---
 
@@ -215,35 +211,33 @@
 
 ## Part 6: Consensus Algorithms
 
-```
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║  PROBLEM: Multiple nodes must agree on a value (leader, transaction, order)      ║
-║                                                                                  ║
-║  RAFT (Understandable Consensus)                                                 ║
-║  ────────────────────────────────                                                ║
-║  3 roles: Leader, Follower, Candidate                                            ║
-║                                                                                  ║
-║  1. Leader Election:                                                             ║
-║     → Followers wait for heartbeat from leader                                   ║
-║     → No heartbeat → timeout → become Candidate                                  ║
-║     → Candidate requests votes from all nodes                                    ║
-║     → Majority votes → become Leader                                             ║
-║                                                                                  ║
-║  2. Log Replication:                                                             ║
-║     → Client sends write to Leader                                               ║
-║     → Leader appends to log, sends to Followers                                  ║
-║     → Majority acknowledge → Leader commits                                      ║
-║     → Leader tells Followers to commit                                           ║
-║                                                                                  ║
-║  WHY MAJORITY (Quorum)?                                                          ║
-║  → 5 nodes: need 3 to agree                                                      ║
-║  → Can tolerate 2 failures                                                       ║
-║  → Any two majorities overlap by at least 1 node                                 ║
-║     → Guarantees the committed value is never lost                               ║
-║                                                                                  ║
-║  USED BY: etcd (Kubernetes), CockroachDB, TiKV, Consul                           ║
-╚══════════════════════════════════════════════════════════════════════════════════╝
-```
+
+> PROBLEM: Multiple nodes must agree on a value (leader, transaction, order)
+>
+> RAFT (Understandable Consensus)
+> ────────────────────────────────
+> 3 roles: Leader, Follower, Candidate
+>
+> 1. Leader Election:
+> → Followers wait for heartbeat from leader
+> → No heartbeat → timeout → become Candidate
+> → Candidate requests votes from all nodes
+> → Majority votes → become Leader
+>
+> 2. Log Replication:
+> → Client sends write to Leader
+> → Leader appends to log, sends to Followers
+> → Majority acknowledge → Leader commits
+> → Leader tells Followers to commit
+>
+> WHY MAJORITY (Quorum)?
+> → 5 nodes: need 3 to agree
+> → Can tolerate 2 failures
+> → Any two majorities overlap by at least 1 node
+> → Guarantees the committed value is never lost
+>
+> USED BY: etcd (Kubernetes), CockroachDB, TiKV, Consul
+
 
 ---
 

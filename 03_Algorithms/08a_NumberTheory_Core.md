@@ -8,21 +8,19 @@
 
 ---
 
-```
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║  WHY THIS FILE EXISTS                                                            ║
-║                                                                                  ║
-║  GCD, LCM, Primes, Modular Arithmetic → appear in:                               ║
-║  • 40% of coding interviews (number theory questions)                            ║
-║  • Encryption systems (RSA uses GCD, primes, modular exponentiation)             ║
-║  • Database sharding (hash % shard_count needs coprime understanding)            ║
-║  • Load balancing algorithms                                                     ║
-║  • Game development (timing, frequencies)                                        ║
-║  • Pattern programs → builds loop thinking essential for ALL DSA                 ║
-║                                                                                  ║
-║  START DATE: February 10, 2026                                                   ║
-╚══════════════════════════════════════════════════════════════════════════════════╝
-```
+
+> WHY THIS FILE EXISTS
+>
+> GCD, LCM, Primes, Modular Arithmetic → appear in:
+> - 40% of coding interviews (number theory questions)
+> - Encryption systems (RSA uses GCD, primes, modular exponentiation)
+> - Database sharding (hash % shard_count needs coprime understanding)
+> - Load balancing algorithms
+> - Game development (timing, frequencies)
+> - Pattern programs → builds loop thinking essential for ALL DSA
+>
+> START DATE: February 10, 2026
+
 
 ---
 

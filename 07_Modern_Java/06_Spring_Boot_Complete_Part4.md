@@ -59,45 +59,34 @@
 
 ### 🔵 WHY: The Problem with Raw JDBC
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    JDBC vs JPA COMPARISON                                       │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  RAW JDBC (Boilerplate hell):                                                   │
-│                                                                                 │
-│  public User findById(Long id) {                                                │
-│      String sql = "SELECT * FROM users WHERE id = ?";                           │
-│      try (Connection conn = dataSource.getConnection();                         │
-│           PreparedStatement ps = conn.prepareStatement(sql)) {                  │
-│          ps.setLong(1, id);                                                     │
-│          ResultSet rs = ps.executeQuery();                                      │
-│          if (rs.next()) {                                                       │
-│              User user = new User();                                            │
-│              user.setId(rs.getLong("id"));                                      │
-│              user.setName(rs.getString("name"));                                │
-│              user.setEmail(rs.getString("email"));                              │
-│              // ... 20 more fields                                              │
-│              return user;                                                       │
-│          }                                                                      │
-│          return null;                                                           │
-│      }                                                                          │
-│  }                                                                              │
-│                                                                                 │
-│  JPA (Clean and simple):                                                        │
-│                                                                                 │
-│  public User findById(Long id) {                                                │
-│      return entityManager.find(User.class, id);  // One line!                   │
-│  }                                                                              │
-│                                                                                 │
-│  OR with Spring Data JPA:                                                       │
-│                                                                                 │
-│  public interface UserRepository extends JpaRepository<User, Long> {            │
-│      // findById() is automatic! No implementation needed!                      │
-│  }                                                                              │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+## Jdbc Vs Jpa Comparison
+
+RAW JDBC (Boilerplate hell):
+public User findById(Long id) {
+String sql = "SELECT * FROM users WHERE id = ?";
+try (Connection conn = dataSource.getConnection();
+PreparedStatement ps = conn.prepareStatement(sql)) {
+ps.setLong(1, id);
+ResultSet rs = ps.executeQuery();
+if (rs.next()) {
+User user = new User();
+user.setId(rs.getLong("id"));
+user.setName(rs.getString("name"));
+user.setEmail(rs.getString("email"));
+// ... 20 more fields
+return user;
+}
+return null;
+}
+}
+JPA (Clean and simple):
+public User findById(Long id) {
+return entityManager.find(User.class, id);  // One line!
+}
+OR with Spring Data JPA:
+public interface UserRepository extends JpaRepository<User, Long> {
+// findById() is automatic! No implementation needed!
+}
 
 ### JPA Architecture Stack
 

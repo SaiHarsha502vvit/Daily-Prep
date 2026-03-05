@@ -6,23 +6,21 @@
 
 ## 5W1H — Why This Chapter?
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: How backend applications are deployed, scaled, and            ║
-║        operated in cloud environments (AWS, Azure, GCP).             ║
-║                                                                      ║
-║  WHY:  Writing code is 30% of the job. The other 70% is:             ║
-║        deploying, monitoring, scaling, securing, and                 ║
-║        troubleshooting it in production.                             ║
-║                                                                      ║
-║  ANALOGY: Building a car (coding) vs driving it on highways          ║
-║  (cloud deployment). You need both skills.                           ║
-║                                                                      ║
-║  WHO:  Backend and full-stack developers in 2024+.                   ║
-║                                                                      ║
-║  HOW:  Local → Container → Cloud Service → Production                ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> WHAT: How backend applications are deployed, scaled, and
+> operated in cloud environments (AWS, Azure, GCP).
+>
+> WHY:  Writing code is 30% of the job. The other 70% is:
+> deploying, monitoring, scaling, securing, and
+> troubleshooting it in production.
+>
+> ANALOGY: Building a car (coding) vs driving it on highways
+> (cloud deployment). You need both skills.
+>
+> WHO:  Backend and full-stack developers in 2024+.
+>
+> HOW:  Local → Container → Cloud Service → Production
+
 
 ---
 

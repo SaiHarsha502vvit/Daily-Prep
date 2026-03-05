@@ -2,34 +2,28 @@
 
 # 16. Heap / Priority Queue — Complete Problem Guide
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                  HEAP / PRIORITY QUEUE MASTERY GUIDE                         ║
-║          From Theory to Hard Problems — MIT/KTH Academic Style               ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║  Part 0: Theory & Internals          │  Part 1: Easy (5 problems)            ║
-║  Part 2: Medium (10 problems)        │  Part 3: Hard (5 problems)            ║
-║  Part 4: Cheat Sheet & Decision Tree │                                       ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-```
+
+> HEAP / PRIORITY QUEUE MASTERY GUIDE
+> From Theory to Hard Problems — MIT/KTH Academic Style
+> Part 0: Theory & Internals          │  Part 1: Easy (5 problems)
+> Part 2: Medium (10 problems)        │  Part 3: Hard (5 problems)
+> Part 4: Cheat Sheet & Decision Tree │
+
 
 ---
 
 ## PART 0: THEORY — Heap Internals (MIT/KTH Style)
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                         WHY HEAPS EXIST                                      ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║  Fundamental question: How do we efficiently track the min or max of a       ║
-║  dynamic collection where elements are inserted and removed?                 ║
-║                                                                              ║
-║  Sorted array?  Insert is O(n).                                              ║
-║  Unsorted array? Extract-min is O(n).                                        ║
-║  BST?           O(log n) but can degrade to O(n).                            ║
-║  Heap?          O(log n) insert, O(log n) extract, O(1) peek. WINNER.        ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-```
+
+> WHY HEAPS EXIST
+> Fundamental question: How do we efficiently track the min or max of a
+> dynamic collection where elements are inserted and removed?
+>
+> Sorted array?  Insert is O(n).
+> Unsorted array? Extract-min is O(n).
+> BST?           O(log n) but can degrade to O(n).
+> Heap?          O(log n) insert, O(log n) extract, O(1) peek. WINNER.
+
 
 ### Why a Complete Binary Tree Stored in an Array?
 

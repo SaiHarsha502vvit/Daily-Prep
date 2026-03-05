@@ -8,15 +8,13 @@
 
 ## Part 1: Why TypeScript with React?
 
-```
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║  ✅ Catch bugs at COMPILE time, not runtime                                       ║
-║  ✅ Autocompletion in IDE (know exact props, return types)                        ║
-║  ✅ Self-documenting: types ARE documentation                                     ║
-║  ✅ Refactoring confidence: rename a prop, find all usages instantly              ║
-║  ✅ Industry standard for production React apps                                   ║
-╚══════════════════════════════════════════════════════════════════════════════════╝
-```
+
+> ✅ Catch bugs at COMPILE time, not runtime
+> ✅ Autocompletion in IDE (know exact props, return types)
+> ✅ Self-documenting: types ARE documentation
+> ✅ Refactoring confidence: rename a prop, find all usages instantly
+> ✅ Industry standard for production React apps
+
 
 ---
 

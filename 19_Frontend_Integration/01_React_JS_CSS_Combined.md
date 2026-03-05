@@ -6,25 +6,23 @@
 
 ## 5W1H — Why This Chapter?
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: Combining React (structure + logic) + JavaScript (behavior)   ║
-║        + CSS (visual design) to build production-quality UIs.        ║
-║                                                                      ║
-║  WHY:  Knowing React, JS, and CSS separately isn't enough.           ║
-║        Real UIs need all three working together:                     ║
-║        • State changes  → triggers re-render → updates visuals       ║
-║        • User events    → JS handlers → CSS transitions feedback     ║
-║        • Data flows     → component hierarchy → styled correctly     ║
-║                                                                      ║
-║  WHO:  Frontend developers building real applications.               ║
-║                                                                      ║
-║  WHEN: After understanding each technology independently.            ║
-║                                                                      ║
-║  HOW:  Component-by-component. Start with data → structure →         ║
-║        styling → interaction → polish.                               ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> WHAT: Combining React (structure + logic) + JavaScript (behavior)
+> + CSS (visual design) to build production-quality UIs.
+>
+> WHY:  Knowing React, JS, and CSS separately isn't enough.
+> Real UIs need all three working together:
+> - State changes  → triggers re-render → updates visuals
+> - User events    → JS handlers → CSS transitions feedback
+> - Data flows     → component hierarchy → styled correctly
+>
+> WHO:  Frontend developers building real applications.
+>
+> WHEN: After understanding each technology independently.
+>
+> HOW:  Component-by-component. Start with data → structure →
+> styling → interaction → polish.
+
 
 ---
 

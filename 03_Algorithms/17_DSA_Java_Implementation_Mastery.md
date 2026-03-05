@@ -26,29 +26,27 @@
 
 ### Deep Reasoning
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  THE TOOLBOX ANALOGY                                             ║
-║                                                                  ║
-║  You wouldn't use a hammer to screw in a bolt.                   ║
-║  Similarly, don't use ArrayList when you need O(1) lookup.       ║
-║                                                                  ║
-║  Your DSA toolbox in Java:                                       ║
-║                                                                  ║
-║  Need O(1) lookup by key?        → HashMap                       ║
-║  Need O(1) lookup + insertion order? → LinkedHashMap             ║
-║  Need sorted keys + range queries?   → TreeMap                   ║
-║  Need O(1) add/remove + uniqueness?  → HashSet                   ║
-║  Need min/max quickly?               → PriorityQueue             ║
-║  Need LIFO (stack)?                  → ArrayDeque (NOT Stack!)   ║
-║  Need FIFO (queue)?                  → ArrayDeque or LinkedList  ║
-║  Need both ends (deque)?             → ArrayDeque                ║
-║  Need fast random access + growth?   → ArrayList                 ║
-║  Need fast insert/delete at ends?    → LinkedList (rare!)        ║
-║                                                                  ║
-║  90% of DSA problems need: HashMap + ArrayList + ArrayDeque      ║
-╚══════════════════════════════════════════════════════════════════╝
-```
+
+> THE TOOLBOX ANALOGY
+>
+> You wouldn't use a hammer to screw in a bolt.
+> Similarly, don't use ArrayList when you need O(1) lookup.
+>
+> Your DSA toolbox in Java:
+>
+> Need O(1) lookup by key?        → HashMap
+> Need O(1) lookup + insertion order? → LinkedHashMap
+> Need sorted keys + range queries?   → TreeMap
+> Need O(1) add/remove + uniqueness?  → HashSet
+> Need min/max quickly?               → PriorityQueue
+> Need LIFO (stack)?                  → ArrayDeque (NOT Stack!)
+> Need FIFO (queue)?                  → ArrayDeque or LinkedList
+> Need both ends (deque)?             → ArrayDeque
+> Need fast random access + growth?   → ArrayList
+> Need fast insert/delete at ends?    → LinkedList (rare!)
+>
+> 90% of DSA problems need: HashMap + ArrayList + ArrayDeque
+
 
 ### Decision Matrix
 
@@ -83,32 +81,30 @@
 
 ### Deep Reasoning
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  PriorityQueue = MIN-HEAP by default (smallest first)            ║
-║                                                                  ║
-║  GOTCHA #1: Natural order is MIN, not MAX!                       ║
-║  PriorityQueue<Integer> pq = new PriorityQueue<>();              ║
-║  pq.addAll(List.of(5, 1, 3));                                    ║
-║  pq.poll(); // Returns 1 (smallest!), not 5                      ║
-║                                                                  ║
-║  For MAX-HEAP:                                                   ║
-║  PriorityQueue<Integer> maxPQ = new PriorityQueue<>(             ║
-║      Comparator.reverseOrder()   // or (a, b) -> b - a           ║
-║  );                                                              ║
-║  ⚠️ NEVER use (a, b) -> b - a for large numbers (overflow!)      ║
-║  ✅ Use Comparator.reverseOrder() or Integer::compare reversed    ║
-║                                                                  ║
-║  GOTCHA #2: peek()/poll() = O(log n), but remove(Object) = O(n)  ║
-║  pq.remove(3);  // Must scan ALL elements to find 3 → O(n)       ║
-║  This kills performance in sliding window problems!              ║
-║  FIX: Use lazy deletion (mark deleted, skip on poll)             ║
-║                                                                  ║
-║  GOTCHA #3: Iteration order is NOT sorted!                       ║
-║  for (int x : pq) { ... }  // RANDOM heap order, NOT sorted!     ║
-║  To get sorted: while (!pq.isEmpty()) { pq.poll(); }             ║
-╚══════════════════════════════════════════════════════════════════╝
-```
+
+> PriorityQueue = MIN-HEAP by default (smallest first)
+>
+> GOTCHA #1: Natural order is MIN, not MAX!
+> PriorityQueue<Integer> pq = new PriorityQueue<>();
+> pq.addAll(List.of(5, 1, 3));
+> pq.poll(); // Returns 1 (smallest!), not 5
+>
+> For MAX-HEAP:
+> PriorityQueue<Integer> maxPQ = new PriorityQueue<>(
+> Comparator.reverseOrder()   // or (a, b) -> b - a
+> );
+> ⚠️ NEVER use (a, b) -> b - a for large numbers (overflow!)
+> ✅ Use Comparator.reverseOrder() or Integer::compare reversed
+>
+> GOTCHA #2: peek()/poll() = O(log n), but remove(Object) = O(n)
+> pq.remove(3);  // Must scan ALL elements to find 3 → O(n)
+> This kills performance in sliding window problems!
+> FIX: Use lazy deletion (mark deleted, skip on poll)
+>
+> GOTCHA #3: Iteration order is NOT sorted!
+> for (int x : pq) { ... }  // RANDOM heap order, NOT sorted!
+> To get sorted: while (!pq.isEmpty()) { pq.poll(); }
+
 
 ### Code — Top-K Pattern (The Right Way)
 

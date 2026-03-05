@@ -6,24 +6,22 @@
 
 ## 5W1H — Why This Chapter?
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: The thinking frameworks expert frontend developers use        ║
-║        to build complex, aesthetic, maintainable UIs.                ║
-║                                                                      ║
-║  WHY:  Beginners know syntax but freeze when faced with:             ║
-║        "Build a dashboard with filters, tabs, modal, charts."        ║
-║        Mental models turn a vague requirement into a clear plan.     ║
-║                                                                      ║
-║  ANALOGY: An architect doesn't start by laying bricks.               ║
-║  They:  1. Understand the purpose (office? hospital?)                ║
-║         2. Draw a blueprint (rooms, hallways, exits)                 ║
-║         3. Identify materials (concrete, glass, steel)               ║
-║         4. Then build, room by room.                                 ║
-║                                                                      ║
-║  Frontend is the same: Purpose → Blueprint → Components → Build      ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> WHAT: The thinking frameworks expert frontend developers use
+> to build complex, aesthetic, maintainable UIs.
+>
+> WHY:  Beginners know syntax but freeze when faced with:
+> "Build a dashboard with filters, tabs, modal, charts."
+> Mental models turn a vague requirement into a clear plan.
+>
+> ANALOGY: An architect doesn't start by laying bricks.
+> They:  1. Understand the purpose (office? hospital?)
+> 2. Draw a blueprint (rooms, hallways, exits)
+> 3. Identify materials (concrete, glass, steel)
+> 4. Then build, room by room.
+>
+> Frontend is the same: Purpose → Blueprint → Components → Build
+
 
 ---
 
@@ -182,21 +180,19 @@ GOLDEN RULES:
 
 ### Pattern 1: Modal / Dialog
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  MODAL — The most common complex UI pattern                          ║
-║                                                                      ║
-║  REQUIREMENTS:                                                       ║
-║  ✓ Overlay dims the background                                       ║
-║  ✓ Content centered on screen                                        ║
-║  ✓ Close on overlay click                                            ║
-║  ✓ Close on Escape key                                               ║
-║  ✓ Trap focus inside modal (accessibility)                           ║
-║  ✓ Prevent body scroll                                               ║
-║  ✓ Animate open/close                                                ║
-║  ✓ Render in portal (avoid z-index issues)                           ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> MODAL — The most common complex UI pattern
+>
+> REQUIREMENTS:
+> ✓ Overlay dims the background
+> ✓ Content centered on screen
+> ✓ Close on overlay click
+> ✓ Close on Escape key
+> ✓ Trap focus inside modal (accessibility)
+> ✓ Prevent body scroll
+> ✓ Animate open/close
+> ✓ Render in portal (avoid z-index issues)
+
 
 ```tsx
 // Modal.tsx — Complete accessible modal

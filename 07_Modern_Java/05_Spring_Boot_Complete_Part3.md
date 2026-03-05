@@ -59,80 +59,64 @@
 
 ### 🔵 WHY: Cross-Cutting Concerns
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    THE CROSS-CUTTING PROBLEM                                    │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  WITHOUT AOP (Logging everywhere):                                              │
-│                                                                                 │
-│  @Service                                                                       │
-│  public class UserService {                                                     │
-│      public User findById(Long id) {                                            │
-│          log.info("Entering findById with id={}", id);        // REPEATED!      │
-│          long start = System.currentTimeMillis();              // REPEATED!     │
-│          try {                                                  // REPEATED!    │
-│              User user = userRepo.findById(id);                                 │
-│              log.info("Exiting findById, took {}ms",                            │
-│                       System.currentTimeMillis() - start);     // REPEATED!     │
-│              return user;                                                       │
-│          } catch (Exception e) {                               // REPEATED!     │
-│              log.error("Error in findById", e);                // REPEATED!     │
-│              throw e;                                                           │
-│          }                                                                      │
-│      }                                                                          │
-│                                                                                 │
-│      public void createUser(User user) {                                        │
-│          log.info("Entering createUser");                      // REPEATED!     │
-│          long start = System.currentTimeMillis();              // REPEATED!     │
-│          // Same boilerplate... in EVERY method!                                │
-│      }                                                                          │
-│  }                                                                              │
-│                                                                                 │
-│  PROBLEMS:                                                                      │
-│  ❌ Code duplication everywhere                                                  │
-│  ❌ Business logic buried under infrastructure code                              │
-│  ❌ Adding new concern (security?) = modify every method                         │
-│  ❌ Hard to maintain, easy to forget                                             │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+## The Cross-Cutting Problem
+
+WITHOUT AOP (Logging everywhere):
+@Service
+public class UserService {
+public User findById(Long id) {
+log.info("Entering findById with id={}", id);        // REPEATED!
+long start = System.currentTimeMillis();              // REPEATED!
+try {                                                  // REPEATED!
+User user = userRepo.findById(id);
+log.info("Exiting findById, took {}ms",
+System.currentTimeMillis() - start);     // REPEATED!
+return user;
+} catch (Exception e) {                               // REPEATED!
+log.error("Error in findById", e);                // REPEATED!
+throw e;
+}
+}
+public void createUser(User user) {
+log.info("Entering createUser");                      // REPEATED!
+long start = System.currentTimeMillis();              // REPEATED!
+// Same boilerplate... in EVERY method!
+}
+}
+
+**Problems**:
+- ❌ Code duplication everywhere
+- ❌ Business logic buried under infrastructure code
+- ❌ Adding new concern (security?) = modify every method
+- ❌ Hard to maintain, easy to forget
 
 ### The AOP Solution
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    WITH AOP (Separation of Concerns)                            │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  @Service                                                                       │
-│  public class UserService {                                                     │
-│      public User findById(Long id) {                                            │
-│          return userRepo.findById(id);  // Pure business logic!                 │
-│      }                                                                          │
-│                                                                                 │
-│      public void createUser(User user) {                                        │
-│          userRepo.save(user);           // Clean!                               │
-│      }                                                                          │
-│  }                                                                              │
-│                                                                                 │
-│  @Aspect                                                                        │
-│  @Component                                                                     │
-│  public class LoggingAspect {                                                   │
-│      @Around("execution(* com.example.service.*.*(..))")                        │
-│      public Object logMethod(ProceedingJoinPoint pjp) {                         │
-│          // Logging logic defined ONCE, applied everywhere!                     │
-│      }                                                                          │
-│  }                                                                              │
-│                                                                                 │
-│  BENEFITS:                                                                      │
-│  ✅ Business logic is clean and focused                                          │
-│  ✅ Cross-cutting logic defined once                                             │
-│  ✅ Easy to add/remove/modify concerns                                           │
-│  ✅ Single Responsibility Principle maintained                                   │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+## With Aop (Separation Of Concerns)
+
+@Service
+public class UserService {
+public User findById(Long id) {
+return userRepo.findById(id);  // Pure business logic!
+}
+public void createUser(User user) {
+userRepo.save(user);           // Clean!
+}
+}
+@Aspect
+@Component
+public class LoggingAspect {
+@Around("execution(* com.example.service.*.*(..))")
+public Object logMethod(ProceedingJoinPoint pjp) {
+// Logging logic defined ONCE, applied everywhere!
+}
+}
+
+**Benefits**:
+- ✅ Business logic is clean and focused
+- ✅ Cross-cutting logic defined once
+- ✅ Easy to add/remove/modify concerns
+- ✅ Single Responsibility Principle maintained
 
 ---
 

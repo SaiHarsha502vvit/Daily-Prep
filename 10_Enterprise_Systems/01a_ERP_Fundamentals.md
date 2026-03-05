@@ -153,35 +153,33 @@ AFTER ERP (Connected):
 
 ## 🧠 The Developer's Mindset
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║            THE 5-STEP DOMAIN TO CODE TRANSLATION                             ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+
+> THE 5-STEP DOMAIN TO CODE TRANSLATION
+
 
 Step 1: UNDERSTAND THE BUSINESS PROCESS
-        ↓
-        "What happens in real life?"
-        ↓
+↓
+"What happens in real life?"
+↓
 Step 2: IDENTIFY THE ENTITIES (NOUNS)
-        ↓
-        "What are the THINGS involved?"
-        → These become CLASSES and DATABASE TABLES
-        ↓
+↓
+"What are the THINGS involved?"
+→ These become CLASSES and DATABASE TABLES
+↓
 Step 3: IDENTIFY THE ACTIONS (VERBS)
-        ↓
-        "What OPERATIONS happen?"
-        → These become METHODS and API ENDPOINTS
-        ↓
+↓
+"What OPERATIONS happen?"
+→ These become METHODS and API ENDPOINTS
+↓
 Step 4: IDENTIFY THE RULES (CONSTRAINTS)
-        ↓
-        "What rules MUST be followed?"
-        → These become VALIDATIONS and BUSINESS LOGIC
-        ↓
+↓
+"What rules MUST be followed?"
+→ These become VALIDATIONS and BUSINESS LOGIC
+↓
 Step 5: IDENTIFY THE RELATIONSHIPS
-        ↓
-        "How do things CONNECT?"
-        → These become FOREIGN KEYS and ASSOCIATIONS
-```
+↓
+"How do things CONNECT?"
+→ These become FOREIGN KEYS and ASSOCIATIONS
 
 ## 📝 Example: Converting "Employee Hierarchy" to Code
 

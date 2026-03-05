@@ -15,20 +15,17 @@
 **LeetCode 1** | **Difficulty:** Easy
 🔗 [https://leetcode.com/problems/two-sum/](https://leetcode.com/problems/two-sum/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  TWO SUM                                                                  ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Given array of integers and target, return indices of two numbers that   ║
-║  add up to target. Each input has exactly one solution.                   ║
-║                                                                           ║
-║  Input: nums = [2, 7, 11, 15], target = 9                                 ║
-║  Output: [0, 1]                                                           ║
-║  Explanation: nums[0] + nums[1] = 2 + 7 = 9                               ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
-```
+
+> TWO SUM
+>
+> Given array of integers and target, return indices of two numbers that
+> add up to target. Each input has exactly one solution.
+>
+> Input: nums = [2, 7, 11, 15], target = 9
+> Output: [0, 1]
+> Explanation: nums[0] + nums[1] = 2 + 7 = 9
+>
+
 
 ```java
 public int[] twoSum(int[] nums, int target) {

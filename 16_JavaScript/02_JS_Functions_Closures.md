@@ -4,25 +4,23 @@
 
 ## 5W1H — Why This Chapter?
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: Functions are FIRST-CLASS citizens in JS. They can be         ║
-║        stored in variables, passed as arguments, returned from       ║
-║        other functions. Closures emerge from this + lexical scope.   ║
-║                                                                      ║
-║  WHY:  Closures power React hooks, event handlers, callbacks,        ║
-║        module patterns, currying, memoization — everything.          ║
-║        "If you understand closures, you understand JS."              ║
-║                                                                      ║
-║  WHO:  Every JS developer. Every React developer (useState IS        ║
-║        a closure). Every Node developer (callbacks are closures).    ║
-║                                                                      ║
-║  WHEN: After understanding scope (Chapter 1).                        ║
-║                                                                      ║
-║  HOW:  Functions create scope → inner functions remember outer       ║
-║        scope → that's a closure. It's that simple (and profound).    ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> WHAT: Functions are FIRST-CLASS citizens in JS. They can be
+> stored in variables, passed as arguments, returned from
+> other functions. Closures emerge from this + lexical scope.
+>
+> WHY:  Closures power React hooks, event handlers, callbacks,
+> module patterns, currying, memoization — everything.
+> "If you understand closures, you understand JS."
+>
+> WHO:  Every JS developer. Every React developer (useState IS
+> a closure). Every Node developer (callbacks are closures).
+>
+> WHEN: After understanding scope (Chapter 1).
+>
+> HOW:  Functions create scope → inner functions remember outer
+> scope → that's a closure. It's that simple (and profound).
+
 
 ---
 

@@ -440,41 +440,38 @@ Valid j: 0, 1, 2  ❌ (We need 1, 2, 3!)
 
 ## ✅ THE EXAM-SAFE PATTERN
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║              EXAM-SAFE SLIDING WINDOW TEMPLATE                            ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  int i = 0;  // Window start (left pointer)                               ║
-║                                                                           ║
-║  for (int j = 0; j < n; j++) {  // j expands window (right pointer)       ║
-║                                                                           ║
-║      // STEP 1: EXPAND - Include arr[j] in window                         ║
-║      // (add to sum, add to hashmap, etc.)                                ║
-║                                                                           ║
-║      if (j - i + 1 == k) {  // STEP 2: CHECK - "Do I have K elements?"    ║
-║                                                                           ║
-║          // STEP 3: PROCESS - Window is ready, do something               ║
-║          // (compare max, print result, etc.)                             ║
-║                                                                           ║
-║          // STEP 4: SHRINK - Remove arr[i] from window                    ║
-║          // (subtract from sum, remove from hashmap, etc.)                ║
-║                                                                           ║
-║          i++;  // STEP 5: SLIDE - Move window forward                     ║
-║      }                                                                    ║
-║  }                                                                        ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────    ║
-║                                                                           ║
-║  WHY THIS IS PERFECT:                                                     ║
-║                                                                           ║
-║  ✅ You count elements (j - i + 1), not indices                            ║
-║  ✅ No confusion about < vs <=                                             ║
-║  ✅ Clear 5-step process: EXPAND → CHECK → PROCESS → SHRINK → SLIDE        ║
-║  ✅ Works for ANY window problem with small modifications                  ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
-```
+
+> EXAM-SAFE SLIDING WINDOW TEMPLATE
+>
+> int i = 0;  // Window start (left pointer)
+>
+> for (int j = 0; j < n; j++) {  // j expands window (right pointer)
+>
+> // STEP 1: EXPAND - Include arr[j] in window
+> // (add to sum, add to hashmap, etc.)
+>
+> if (j - i + 1 == k) {  // STEP 2: CHECK - "Do I have K elements?"
+>
+> // STEP 3: PROCESS - Window is ready, do something
+> // (compare max, print result, etc.)
+>
+> // STEP 4: SHRINK - Remove arr[i] from window
+> // (subtract from sum, remove from hashmap, etc.)
+>
+> i++;  // STEP 5: SLIDE - Move window forward
+> }
+> }
+>
+> ─────────────────────────────────────────────────────────────────────
+>
+> WHY THIS IS PERFECT:
+>
+> ✅ You count elements (j - i + 1), not indices
+> ✅ No confusion about < vs <=
+> ✅ Clear 5-step process: EXPAND → CHECK → PROCESS → SHRINK → SLIDE
+> ✅ Works for ANY window problem with small modifications
+>
+
 
 ### Pattern 1: Count-Based (Recommended)
 

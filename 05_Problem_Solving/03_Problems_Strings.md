@@ -15,34 +15,31 @@
 **LeetCode 205** | **Difficulty:** Easy
 🔗 [https://leetcode.com/problems/isomorphic-strings/](https://leetcode.com/problems/isomorphic-strings/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  ISOMORPHIC STRINGS                                                       ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Two strings are isomorphic if characters in s can be replaced to get t.  ║
-║  Mapping must be one-to-one (each char maps to exactly one char).         ║
-║  Order of characters must be preserved.                                   ║
-║                                                                           ║
-║  Input: s = "egg", t = "add"                                              ║
-║  Output: true                                                             ║
-║  Explanation: e → a, g → d                                                ║
-║               egg → add ✓                                                 ║
-║                                                                           ║
-║  Input: s = "foo", t = "bar"                                              ║
-║  Output: false                                                            ║
-║  Explanation: o maps to both 'a' and 'r' - not allowed                    ║
-║                                                                           ║
-║  Input: s = "paper", t = "title"                                          ║
-║  Output: true                                                             ║
-║  Explanation: p→t, a→i, e→l, r→e                                          ║
-║                                                                           ║
-║  Input: s = "badc", t = "baba"                                            ║
-║  Output: false                                                            ║
-║  Explanation: d and c both map to 'a' - not allowed                       ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
-```
+
+> ISOMORPHIC STRINGS
+>
+> Two strings are isomorphic if characters in s can be replaced to get t.
+> Mapping must be one-to-one (each char maps to exactly one char).
+> Order of characters must be preserved.
+>
+> Input: s = "egg", t = "add"
+> Output: true
+> Explanation: e → a, g → d
+> egg → add ✓
+>
+> Input: s = "foo", t = "bar"
+> Output: false
+> Explanation: o maps to both 'a' and 'r' - not allowed
+>
+> Input: s = "paper", t = "title"
+> Output: true
+> Explanation: p→t, a→i, e→l, r→e
+>
+> Input: s = "badc", t = "baba"
+> Output: false
+> Explanation: d and c both map to 'a' - not allowed
+>
+
 
 ```java
 public boolean isIsomorphic(String s, String t) {

@@ -8,220 +8,161 @@
 
 # 🏗️ Part 0: Complete Understanding of System Design
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║         SYSTEM DESIGN & FEATURE CREATION - COMPLETE UNDERSTANDING            ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+## What Is System Design?
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHAT IS SYSTEM DESIGN?                                                       │
-├──────────────────────────────────────────────────────────────────────────────┤
-│ System Design is the process of defining the ARCHITECTURE, COMPONENTS,       │
-│ MODULES, INTERFACES, and DATA for a system to satisfy specified              │
-│ requirements.                                                                │
-│                                                                              │
-│ KEY INSIGHT: It's about making DECISIONS that balance trade-offs!            │
-│ • Performance vs Cost                                                        │
-│ • Consistency vs Availability                                                │
-│ • Simplicity vs Flexibility                                                  │
-│ • Speed of development vs Scalability                                        │
-│                                                                              │
-│ ANALOGY:                                                                     │
-│ • Architect designing a building:                                            │
-│   - Understands user needs (families, offices, shops)                        │
-│   - Plans structure (foundation, floors, rooms)                              │
-│   - Chooses materials (concrete, steel, glass)                               │
-│   - Considers constraints (budget, land, regulations)                        │
-│                                                                              │
-│ • Software System Designer:                                                  │
-│   - Understands user needs (features, performance)                           │
-│   - Plans structure (services, databases, APIs)                              │
-│   - Chooses technologies (languages, frameworks, cloud)                      │
-│   - Considers constraints (budget, team size, deadlines)                     │
-│                                                                              │
-│ HISTORICAL EVOLUTION:                                                        │
-│ • 1960s: Monolithic systems - everything in one place                        │
-│ • 1970s: Modular programming - break into modules                            │
-│ • 1980s: Client-Server - separate presentation from logic                    │
-│ • 1990s: 3-Tier Architecture - presentation, logic, data                     │
-│ • 2000s: SOA (Service-Oriented Architecture)                                 │
-│ • 2010s: Microservices - small, independent services                         │
-│ • 2020s: Serverless, Edge Computing, AI-integrated systems                   │
-└──────────────────────────────────────────────────────────────────────────────┘
+System Design is the process of defining the ARCHITECTURE, COMPONENTS,
+MODULES, INTERFACES, and DATA for a system to satisfy specified
+requirements.
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHAT PROBLEM DOES SYSTEM DESIGN SOLVE?                                       │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ PROBLEM 1: COMPLEXITY                                                        │
-│ • Modern apps have millions of lines of code                                 │
-│ • Without structure, it becomes unmaintainable                               │
-│ • System design breaks complexity into manageable pieces                     │
-│                                                                              │
-│ PROBLEM 2: SCALE                                                             │
-│ • What works for 100 users fails for 1 million                               │
-│ • System design plans for growth                                             │
-│                                                                              │
-│ PROBLEM 3: RELIABILITY                                                       │
-│ • Systems must work 24/7                                                     │
-│ • Single points of failure cause outages                                     │
-│ • System design builds redundancy                                            │
-│                                                                              │
-│ PROBLEM 4: TEAM COORDINATION                                                 │
-│ • Multiple teams work on same product                                        │
-│ • Need clear boundaries and interfaces                                       │
-│ • System design enables parallel development                                 │
-│                                                                              │
-│ REAL-WORLD FAILURES WITHOUT GOOD DESIGN:                                     │
-│ • 2017: Amazon S3 outage took down half the internet                         │
-│ • 2019: Facebook outage - 14 hours, $90 million lost                         │
-│ • 2021: Fastly CDN outage - major sites down globally                        │
-└──────────────────────────────────────────────────────────────────────────────┘
+> 💡 **KEY INSIGHT: It's about making DECISIONS that balance trade-offs!**
+- Performance vs Cost
+- Consistency vs Availability
+- Simplicity vs Flexibility
+- Speed of development vs Scalability
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHY LEARN SYSTEM DESIGN?                                                     │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ 1. CAREER GROWTH:                                                            │
-│    • Junior: Write code given specifications                                 │
-│    • Mid-level: Design features                                              │
-│    • Senior: Design systems                                                  │
-│    • Architect: Design organizations of systems                              │
-│                                                                              │
-│ 2. INTERVIEW ESSENTIAL:                                                      │
-│    • Every senior interview has system design round                          │
-│    • Tests thinking ability, not memorization                                │
-│                                                                              │
-│ 3. BETTER CODE:                                                              │
-│    • Understanding the big picture improves your components                  │
-│    • Know how your code fits in the system                                   │
-│                                                                              │
-│ 4. BUSINESS IMPACT:                                                          │
-│    • Good design saves millions in infrastructure                            │
-│    • Bad design costs companies everything (see failures above)              │
-│                                                                              │
-│ 5. PROBLEM-SOLVING:                                                          │
-│    • System design is ultimate problem-solving                               │
-│    • Balancing constraints with creative solutions                           │
-└──────────────────────────────────────────────────────────────────────────────┘
+> 💡 **ANALOGY:**
+- Architect designing a building:
+- Understands user needs (families, offices, shops)
+- Plans structure (foundation, floors, rooms)
+- Chooses materials (concrete, steel, glass)
+- Considers constraints (budget, land, regulations)
+- Software System Designer:
+- Understands user needs (features, performance)
+- Plans structure (services, databases, APIs)
+- Chooses technologies (languages, frameworks, cloud)
+- Considers constraints (budget, team size, deadlines)
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHEN TO APPLY SYSTEM DESIGN THINKING?                                        │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ ALWAYS! Even for small projects, think about:                                │
-│                                                                              │
-│ • What components do I need?                                                 │
-│ • How do they communicate?                                                   │
-│ • What happens when something fails?                                         │
-│ • How will this scale?                                                       │
-│                                                                              │
-│ SPECIFIC SCENARIOS:                                                          │
-│                                                                              │
-│ 1. STARTING A NEW PROJECT:                                                   │
-│    → Define architecture before coding                                       │
-│                                                                              │
-│ 2. ADDING A MAJOR FEATURE:                                                   │
-│    → Plan how it fits in existing system                                     │
-│                                                                              │
-│ 3. PERFORMANCE PROBLEMS:                                                     │
-│    → Analyze system bottlenecks                                              │
-│                                                                              │
-│ 4. SCALING NEEDS:                                                            │
-│    → Redesign for higher load                                                │
-│                                                                              │
-│ 5. INTEGRATION:                                                              │
-│    → Connect with external systems                                           │
-└──────────────────────────────────────────────────────────────────────────────┘
+**Historical Evolution**:
+- 1960s: Monolithic systems - everything in one place
+- 1970s: Modular programming - break into modules
+- 1980s: Client-Server - separate presentation from logic
+- 1990s: 3-Tier Architecture - presentation, logic, data
+- 2000s: SOA (Service-Oriented Architecture)
+- 2010s: Microservices - small, independent services
+- 2020s: Serverless, Edge Computing, AI-integrated systems
+## What Problem Does System Design Solve
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ HOW TO APPROACH SYSTEM DESIGN (Step-by-Step)                                 │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ STEP 1: UNDERSTAND REQUIREMENTS (5-10 min)                                   │
-│ ─────────────────────────────────────────                                    │
-│ Functional Requirements:                                                     │
-│ • What should the system DO?                                                 │
-│ • What are the core features?                                                │
-│ • Who are the users?                                                         │
-│                                                                              │
-│ Non-Functional Requirements:                                                 │
-│ • How many users? (Scale)                                                    │
-│ • How fast? (Latency)                                                        │
-│ • How reliable? (Availability)                                               │
-│ • How consistent? (Data integrity)                                           │
-│                                                                              │
-│ STEP 2: ESTIMATE SCALE (5 min)                                               │
-│ ───────────────────────────────                                              │
-│ • Daily Active Users (DAU)                                                   │
-│ • Requests per second (RPS)                                                  │
-│ • Data storage needs                                                         │
-│ • Read vs Write ratio                                                        │
-│                                                                              │
-│ STEP 3: HIGH-LEVEL DESIGN (10-15 min)                                        │
-│ ─────────────────────────────────────                                        │
-│ • Draw main components                                                       │
-│ • Show data flow                                                             │
-│ • Identify databases needed                                                  │
-│ • Plan API structure                                                         │
-│                                                                              │
-│ STEP 4: DEEP DIVE (15-20 min)                                                │
-│ ─────────────────────────────                                                │
-│ • Design specific components                                                 │
-│ • Database schema                                                            │
-│ • API endpoints                                                              │
-│ • Caching strategy                                                           │
-│ • Handle edge cases                                                          │
-│                                                                              │
-│ STEP 5: IDENTIFY BOTTLENECKS (5 min)                                         │
-│ ────────────────────────────────────                                         │
-│ • What could fail?                                                           │
-│ • What could be slow?                                                        │
-│ • How to add redundancy?                                                     │
-│ • How to scale each component?                                               │
-└──────────────────────────────────────────────────────────────────────────────┘
+PROBLEM 1: COMPLEXITY
+- Modern apps have millions of lines of code
+- Without structure, it becomes unmaintainable
+- System design breaks complexity into manageable pieces
+PROBLEM 2: SCALE
+- What works for 100 users fails for 1 million
+- System design plans for growth
+PROBLEM 3: RELIABILITY
+- Systems must work 24/7
+- Single points of failure cause outages
+- System design builds redundancy
+PROBLEM 4: TEAM COORDINATION
+- Multiple teams work on same product
+- Need clear boundaries and interfaces
+- System design enables parallel development
+REAL-WORLD FAILURES WITHOUT GOOD DESIGN:
+- 2017: Amazon S3 outage took down half the internet
+- 2019: Facebook outage - 14 hours, $90 million lost
+- 2021: Fastly CDN outage - major sites down globally
+## Why Learn System Design
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ DIFFICULTIES IN SYSTEM DESIGN                                                │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ 1. "WHERE DO I START?":                                                      │
-│    Solution: Always start with REQUIREMENTS                                  │
-│    Ask clarifying questions before designing                                 │
-│                                                                              │
-│ 2. "TOO MANY OPTIONS":                                                       │
-│    Solution: There's no perfect answer! Explain trade-offs                   │
-│    Pick one approach and justify it                                          │
-│                                                                              │
-│ 3. "DON'T KNOW ALL TECHNOLOGIES":                                            │
-│    Solution: Focus on CONCEPTS, not specific tools                           │
-│    "We need a cache" is better than "We need Redis"                          │
-│                                                                              │
-│ 4. "CAN'T ESTIMATE SCALE":                                                   │
-│    Solution: Use approximations with reasoning                               │
-│    "If 1 million users, and each makes 10 requests/day..."                   │
-│                                                                              │
-│ 5. "GOING TOO DEEP TOO EARLY":                                               │
-│    Solution: Start broad, then drill down                                    │
-│    Don't design database schema before knowing components                    │
-└──────────────────────────────────────────────────────────────────────────────┘
+1. CAREER GROWTH:
+- Junior: Write code given specifications
+- Mid-level: Design features
+- Senior: Design systems
+- Architect: Design organizations of systems
+2. INTERVIEW ESSENTIAL:
+- Every senior interview has system design round
+- Tests thinking ability, not memorization
+3. BETTER CODE:
+- Understanding the big picture improves your components
+- Know how your code fits in the system
+4. BUSINESS IMPACT:
+- Good design saves millions in infrastructure
+- Bad design costs companies everything (see failures above)
+5. PROBLEM-SOLVING:
+- System design is ultimate problem-solving
+- Balancing constraints with creative solutions
+## When To Apply System Design Thinking
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ EXPECTED OUTPUTS OF MASTERING SYSTEM DESIGN                                  │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ ✅ STRUCTURED THINKING: Break any problem into components                     │
-│ ✅ TRADE-OFF ANALYSIS: Understand costs of decisions                          │
-│ ✅ SCALABILITY MINDSET: Design for growth from the start                      │
-│ ✅ INTERVIEW SUCCESS: Ace system design rounds                                │
-│ ✅ CAREER ADVANCEMENT: Move to senior/architect roles                         │
-│ ✅ BETTER COMMUNICATION: Explain technical decisions clearly                  │
-│                                                                              │
-│ THE TRANSFORMATION:                                                          │
-│ FROM: "I can write code for features"                                        │
-│   TO: "I can design systems that teams build"                                │
-└──────────────────────────────────────────────────────────────────────────────┘
-```
+ALWAYS! Even for small projects, think about:
+- What components do I need?
+- How do they communicate?
+- What happens when something fails?
+- How will this scale?
+
+**Specific Scenarios**:
+1. STARTING A NEW PROJECT:
+→ Define architecture before coding
+2. ADDING A MAJOR FEATURE:
+→ Plan how it fits in existing system
+3. PERFORMANCE PROBLEMS:
+→ Analyze system bottlenecks
+4. SCALING NEEDS:
+→ Redesign for higher load
+5. INTEGRATION:
+→ Connect with external systems
+## How To Approach System Design (Step-By-Step)
+
+STEP 1: UNDERSTAND REQUIREMENTS (5-10 min)
+Functional Requirements:
+- What should the system DO?
+- What are the core features?
+- Who are the users?
+Non-Functional Requirements:
+- How many users? (Scale)
+- How fast? (Latency)
+- How reliable? (Availability)
+- How consistent? (Data integrity)
+STEP 2: ESTIMATE SCALE (5 min)
+- Daily Active Users (DAU)
+- Requests per second (RPS)
+- Data storage needs
+- Read vs Write ratio
+STEP 3: HIGH-LEVEL DESIGN (10-15 min)
+- Draw main components
+- Show data flow
+- Identify databases needed
+- Plan API structure
+STEP 4: DEEP DIVE (15-20 min)
+- Design specific components
+- Database schema
+- API endpoints
+- Caching strategy
+- Handle edge cases
+STEP 5: IDENTIFY BOTTLENECKS (5 min)
+- What could fail?
+- What could be slow?
+- How to add redundancy?
+- How to scale each component?
+## Difficulties & Common Mistakes
+
+1. "WHERE DO I START?":
+Solution: Always start with REQUIREMENTS
+Ask clarifying questions before designing
+2. "TOO MANY OPTIONS":
+Solution: There's no perfect answer! Explain trade-offs
+Pick one approach and justify it
+3. "DON'T KNOW ALL TECHNOLOGIES":
+Solution: Focus on CONCEPTS, not specific tools
+"We need a cache" is better than "We need Redis"
+4. "CAN'T ESTIMATE SCALE":
+Solution: Use approximations with reasoning
+"If 1 million users, and each makes 10 requests/day..."
+5. "GOING TOO DEEP TOO EARLY":
+Solution: Start broad, then drill down
+Don't design database schema before knowing components
+## Expected Outcomes
+
+- ✅ STRUCTURED THINKING: Break any problem into components
+- ✅ TRADE-OFF ANALYSIS: Understand costs of decisions
+- ✅ SCALABILITY MINDSET: Design for growth from the start
+- ✅ INTERVIEW SUCCESS: Ace system design rounds
+- ✅ CAREER ADVANCEMENT: Move to senior/architect roles
+- ✅ BETTER COMMUNICATION: Explain technical decisions clearly
+
+**The Transformation**:
+
+**From**: "I can write code for features"
+
+**To**: "I can design systems that teams build"
 
 ---
 
@@ -373,152 +314,49 @@ USER FLOW SYMBOLS:
 
 # 📌 Part 2: Feature Creation Framework
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║              FEATURE CREATION - FROM IDEA TO IMPLEMENTATION                  ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+## What Is Feature Creation?
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHAT IS FEATURE CREATION?                                                    │
-├──────────────────────────────────────────────────────────────────────────────┤
-│ The complete process of taking a user need or business requirement and       │
-│ turning it into working software.                                            │
-│                                                                              │
-│ STAGES:                                                                      │
-│ 1. IDEATION: "Users need X"                                                  │
-│ 2. SPECIFICATION: "X means exactly this behavior"                            │
-│ 3. DESIGN: "X will be built using these components"                          │
-│ 4. IMPLEMENTATION: "Here's the code for X"                                   │
-│ 5. TESTING: "X works as expected"                                            │
-│ 6. DEPLOYMENT: "X is live for users"                                         │
-│ 7. MONITORING: "X is performing well"                                        │
-└──────────────────────────────────────────────────────────────────────────────┘
+The complete process of taking a user need or business requirement and
+turning it into working software.
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ THE FEATURE CREATION CHECKLIST                                               │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ □ UNDERSTANDING PHASE:                                                       │
-│   □ What problem does this feature solve?                                    │
-│   □ Who are the users?                                                       │
-│   □ What's the success metric?                                               │
-│   □ What are the constraints (time, tech, resources)?                        │
-│                                                                              │
-│ □ DESIGN PHASE:                                                              │
-│   □ User flow mapped?                                                        │
-│   □ UI/UX designs ready?                                                     │
-│   □ API contracts defined?                                                   │
-│   □ Database schema designed?                                                │
-│   □ Edge cases identified?                                                   │
-│                                                                              │
-│ □ IMPLEMENTATION PHASE:                                                      │
-│   □ Code follows design patterns?                                            │
-│   □ Unit tests written?                                                      │
-│   □ Integration tests written?                                               │
-│   □ Error handling complete?                                                 │
-│   □ Logging added?                                                           │
-│                                                                              │
-│ □ DEPLOYMENT PHASE:                                                          │
-│   □ Feature flag ready?                                                      │
-│   □ Rollback plan exists?                                                    │
-│   □ Monitoring dashboards set up?                                            │
-│   □ Alerts configured?                                                       │
-└──────────────────────────────────────────────────────────────────────────────┘
-```
+**Stages**:
+1. IDEATION: "Users need X"
+2. SPECIFICATION: "X means exactly this behavior"
+3. DESIGN: "X will be built using these components"
+4. IMPLEMENTATION: "Here's the code for X"
+5. TESTING: "X works as expected"
+6. DEPLOYMENT: "X is live for users"
+7. MONITORING: "X is performing well"
+## The Feature Creation Checklist
+
+□ UNDERSTANDING PHASE:
+□ What problem does this feature solve?
+□ Who are the users?
+□ What's the success metric?
+□ What are the constraints (time, tech, resources)?
+□ DESIGN PHASE:
+□ User flow mapped?
+□ UI/UX designs ready?
+□ API contracts defined?
+□ Database schema designed?
+□ Edge cases identified?
+□ IMPLEMENTATION PHASE:
+□ Code follows design patterns?
+□ Unit tests written?
+□ Integration tests written?
+□ Error handling complete?
+□ Logging added?
+□ DEPLOYMENT PHASE:
+□ Feature flag ready?
+□ Rollback plan exists?
+□ Monitoring dashboards set up?
+□ Alerts configured?
 
 ## Example: Creating a "Like" Feature
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║           EXAMPLE: CREATING A "LIKE" FEATURE (Like on Instagram)             ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+## Like_Id  │ User_Id  │  Post_Id  │ Created_At
 
-1. UNDERSTANDING:
-   ─────────────
-   Problem: Users want to express appreciation for content
-   Users: All authenticated users
-   Success: Increase engagement metrics
-   Constraints: Must handle millions of likes/second
-
-2. USER FLOW:
-   ──────────
-   ┌─────────┐     ┌─────────┐     ┌─────────┐
-   │View Post│────▶│ Tap ❤️  │────▶│ Liked!  │
-   └─────────┘     └─────────┘     └─────────┘
-        │                               │
-        │         ┌─────────┐           │
-        └────────▶│ Tap ❤️  │◀──────────┘
-                  │ (Unlike)│
-                  └─────────┘
-
-3. API DESIGN:
-   ───────────
-   POST /api/posts/{postId}/like
-   DELETE /api/posts/{postId}/like
-   GET /api/posts/{postId}/likes/count
-
-4. DATA MODEL:
-   ───────────
-   Table: likes
-   ┌──────────┬──────────┬───────────┬────────────┐
-   │ like_id  │ user_id  │  post_id  │ created_at │
-   ├──────────┼──────────┼───────────┼────────────┤
-   │ PK       │ FK→users │ FK→posts  │ timestamp  │
-   └──────────┴──────────┴───────────┴────────────┘
-   UNIQUE constraint on (user_id, post_id)
-
-5. IMPLEMENTATION (OOP Style):
-   ─────────────────────────────
-
-   // Entity
-   public class Like {
-       private Long id;
-       private User user;
-       private Post post;
-       private LocalDateTime createdAt;
-   }
-
-   // Service
-   public class LikeService {
-       public void likePost(Long userId, Long postId) {
-           if (likeRepository.exists(userId, postId)) {
-               throw new AlreadyLikedException();
-           }
-           Like like = new Like(userId, postId);
-           likeRepository.save(like);
-           eventPublisher.publish(new PostLikedEvent(postId));
-       }
-
-       public void unlikePost(Long userId, Long postId) {
-           likeRepository.delete(userId, postId);
-           eventPublisher.publish(new PostUnlikedEvent(postId));
-       }
-   }
-
-   // Controller
-   @RestController
-   public class LikeController {
-       @PostMapping("/posts/{postId}/like")
-       public ResponseEntity<?> likePost(@PathVariable Long postId) {
-           likeService.likePost(currentUser.getId(), postId);
-           return ResponseEntity.ok().build();
-       }
-   }
-
-6. SCALING CONSIDERATIONS:
-   ────────────────────────
-   • Cache like counts (Redis)
-   • Async like count updates (message queue)
-   • Shard likes table by post_id
-   • Rate limiting to prevent spam
-
-7. MONITORING:
-   ───────────
-   • Likes per second
-   • Like latency (p50, p95, p99)
-   • Error rate
-   • Cache hit rate
-```
+| PK       | FK→users | FK→posts  | timestamp |
 
 ---
 
@@ -620,133 +458,102 @@ USER FLOW SYMBOLS:
 
 # PART 4: OOP vs FUNCTIONAL DESIGN
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║              DESIGNING SYSTEMS: OOP vs FUNCTIONAL STYLE                      ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+## When To Use Oop Design
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHEN TO USE OOP DESIGN                                                       │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ BEST FOR:                                                                    │
-│ • Systems with many ENTITIES (User, Order, Product)                          │
-│ • Complex BEHAVIOR associated with data                                      │
-│ • Need for INHERITANCE and polymorphism                                      │
-│ • Long-lived STATEFUL objects                                                │
-│                                                                              │
-│ EXAMPLE - E-commerce Order System (OOP):                                     │
-│                                                                              │
-│ ┌─────────────────────────────────────────────────────────────────────────┐  │
-│ │                           Order                                         │  │
-│ │ ─────────────────────────────────────────────────────────────────────── │  │
-│ │ - orderId: Long                                                         │  │
-│ │ - items: List<OrderItem>                                                │  │
-│ │ - status: OrderStatus                                                   │  │
-│ │ - customer: Customer                                                    │  │
-│ │ ─────────────────────────────────────────────────────────────────────── │  │
-│ │ + addItem(item): void                                                   │  │
-│ │ + removeItem(itemId): void                                              │  │
-│ │ + calculateTotal(): Money                                               │  │
-│ │ + submit(): void                                                        │  │
-│ │ + cancel(): void                                                        │  │
-│ └─────────────────────────────────────────────────────────────────────────┘  │
-│                                                                              │
-│ // OOP - Behavior lives with data                                            │
-│ public class Order {                                                         │
-│     private List<OrderItem> items;                                           │
-│     private OrderStatus status;                                              │
-│                                                                              │
-│     public Money calculateTotal() {                                          │
-│         return items.stream()                                                │
-│             .map(OrderItem::getSubtotal)                                     │
-│             .reduce(Money.ZERO, Money::add);                                 │
-│     }                                                                        │
-│                                                                              │
-│     public void submit() {                                                   │
-│         validateItems();                                                     │
-│         validatePayment();                                                   │
-│         this.status = OrderStatus.SUBMITTED;                                 │
-│     }                                                                        │
-│ }                                                                            │
-└──────────────────────────────────────────────────────────────────────────────┘
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHEN TO USE FUNCTIONAL DESIGN                                                │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ BEST FOR:                                                                    │
-│ • Data TRANSFORMATIONS (ETL, pipelines)                                      │
-│ • STATELESS operations                                                       │
-│ • CONCURRENT processing                                                      │
-│ • Mathematical/logical computations                                          │
-│                                                                              │
-│ EXAMPLE - Data Processing Pipeline (Functional):                             │
-│                                                                              │
-│ // Functional - Data flows through transformations                           │
-│ public class OrderProcessor {                                                │
-│                                                                              │
-│     // Pure function - no side effects                                       │
-│     public static Money calculateTotal(List<OrderItem> items) {              │
-│         return items.stream()                                                │
-│             .map(item -> item.price().multiply(item.quantity()))             │
-│             .reduce(Money.ZERO, Money::add);                                 │
-│     }                                                                        │
-│                                                                              │
-│     // Pipeline of transformations                                           │
-│     public static OrderSummary processOrder(OrderRequest request) {          │
-│         return validateRequest(request)                                      │
-│             .map(OrderProcessor::enrichWithInventory)                        │
-│             .map(OrderProcessor::calculatePricing)                           │
-│             .map(OrderProcessor::applyDiscounts)                             │
-│             .map(OrderProcessor::createSummary)                              │
-│             .orElseThrow(InvalidOrderException::new);                        │
-│     }                                                                        │
-│ }                                                                            │
-│                                                                              │
-│ BENEFITS:                                                                    │
-│ • Easy to test (pure functions)                                              │
-│ • Easy to parallelize                                                        │
-│ • Easy to reason about (no hidden state)                                     │
-└──────────────────────────────────────────────────────────────────────────────┘
+**Best For**:
+- Systems with many ENTITIES (User, Order, Product)
+- Complex BEHAVIOR associated with data
+- Need for INHERITANCE and polymorphism
+- Long-lived STATEFUL objects
+EXAMPLE - E-commerce Order System (OOP):
+Order
+───────────────────────────────────────────────────────────────────────
+- orderId: Long
+- items: List<OrderItem>
+- status: OrderStatus
+- customer: Customer
+───────────────────────────────────────────────────────────────────────
++ addItem(item): void
++ removeItem(itemId): void
++ calculateTotal(): Money
++ submit(): void
++ cancel(): void
+// OOP - Behavior lives with data
+public class Order {
+private List<OrderItem> items;
+private OrderStatus status;
+public Money calculateTotal() {
+return items.stream()
+.map(OrderItem::getSubtotal)
+.reduce(Money.ZERO, Money::add);
+}
+public void submit() {
+validateItems();
+validatePayment();
+this.status = OrderStatus.SUBMITTED;
+}
+}
+## When To Use Functional Design
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ HYBRID APPROACH (Most Real Systems)                                          │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ REAL SYSTEMS USE BOTH!                                                       │
-│                                                                              │
-│ • OOP for DOMAIN ENTITIES:                                                   │
-│   User, Order, Product, Payment                                              │
-│                                                                              │
-│ • Functional for DATA PROCESSING:                                            │
-│   Validation, Transformation, Calculation                                    │
-│                                                                              │
-│ EXAMPLE:                                                                     │
-│                                                                              │
-│ // Domain entity (OOP)                                                       │
-│ public class Order {                                                         │
-│     private List<OrderItem> items;                                           │
-│                                                                              │
-│     // Uses functional internally!                                           │
-│     public Money getTotal() {                                                │
-│         return items.stream()                                                │
-│             .map(OrderItem::getSubtotal)                                     │
-│             .reduce(Money.ZERO, Money::add);                                 │
-│     }                                                                        │
-│ }                                                                            │
-│                                                                              │
-│ // Service (Functional processing with OOP entities)                         │
-│ public class OrderService {                                                  │
-│     public List<Order> getHighValueOrders(List<Order> orders) {              │
-│         return orders.stream()                                               │
-│             .filter(o -> o.getTotal().isGreaterThan(Money.of(1000)))         │
-│             .sorted(comparing(Order::getTotal).reversed())                   │
-│             .collect(toList());                                              │
-│     }                                                                        │
-│ }                                                                            │
-└──────────────────────────────────────────────────────────────────────────────┘
-```
+
+**Best For**:
+- Data TRANSFORMATIONS (ETL, pipelines)
+- STATELESS operations
+- CONCURRENT processing
+- Mathematical/logical computations
+EXAMPLE - Data Processing Pipeline (Functional):
+// Functional - Data flows through transformations
+public class OrderProcessor {
+// Pure function - no side effects
+public static Money calculateTotal(List<OrderItem> items) {
+return items.stream()
+.map(item -> item.price().multiply(item.quantity()))
+.reduce(Money.ZERO, Money::add);
+}
+// Pipeline of transformations
+public static OrderSummary processOrder(OrderRequest request) {
+return validateRequest(request)
+.map(OrderProcessor::enrichWithInventory)
+.map(OrderProcessor::calculatePricing)
+.map(OrderProcessor::applyDiscounts)
+.map(OrderProcessor::createSummary)
+.orElseThrow(InvalidOrderException::new);
+}
+}
+
+**Benefits**:
+- Easy to test (pure functions)
+- Easy to parallelize
+- Easy to reason about (no hidden state)
+## Hybrid Approach (Most Real Systems)
+
+REAL SYSTEMS USE BOTH!
+- OOP for DOMAIN ENTITIES:
+User, Order, Product, Payment
+- Functional for DATA PROCESSING:
+Validation, Transformation, Calculation
+
+**Example**:
+// Domain entity (OOP)
+public class Order {
+private List<OrderItem> items;
+// Uses functional internally!
+public Money getTotal() {
+return items.stream()
+.map(OrderItem::getSubtotal)
+.reduce(Money.ZERO, Money::add);
+}
+}
+// Service (Functional processing with OOP entities)
+public class OrderService {
+public List<Order> getHighValueOrders(List<Order> orders) {
+return orders.stream()
+.filter(o -> o.getTotal().isGreaterThan(Money.of(1000)))
+.sorted(comparing(Order::getTotal).reversed())
+.collect(toList());
+}
+}
 
 ---
 
@@ -956,10 +763,9 @@ MESSAGE FLOW:
 
 # 💪 Part 7: Practice Exercises
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║              SYSTEM DESIGN PRACTICE PROBLEMS                                 ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+
+> SYSTEM DESIGN PRACTICE PROBLEMS
+
 
 BEGINNER LEVEL:
 1. Design a Parking Lot System
@@ -988,7 +794,6 @@ FOR EACH PROBLEM:
 3. Draw high-level design (10 min)
 4. Deep dive into components (15 min)
 5. Discuss trade-offs (5 min)
-```
 
 
 ---

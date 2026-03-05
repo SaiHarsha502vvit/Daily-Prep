@@ -4,26 +4,24 @@
 
 ## 5W1H — Why This Chapter?
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: The DOM (Document Object Model) is the browser's in-memory    ║
-║        representation of your HTML. Browser APIs are the tools       ║
-║        the browser gives JS to interact with the page and more.      ║
-║                                                                      ║
-║  WHY:  React abstracts the DOM — but you MUST understand what's      ║
-║        underneath. Debugging, performance, third-party libraries,    ║
-║        vanilla JS projects, and interview questions require it.      ║
-║                                                                      ║
-║  WHO:  Every frontend developer. Even React devs need DOM            ║
-║        knowledge for refs, portals, and performance tuning.          ║
-║                                                                      ║
-║  WHEN: After understanding JS fundamentals + async.                  ║
-║                                                                      ║
-║  WHERE: Only in browsers (not Node.js). Node has no DOM.             ║
-║                                                                      ║
-║  HOW:  HTML → Parser → DOM Tree. JS accesses via `document` API.     ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> WHAT: The DOM (Document Object Model) is the browser's in-memory
+> representation of your HTML. Browser APIs are the tools
+> the browser gives JS to interact with the page and more.
+>
+> WHY:  React abstracts the DOM — but you MUST understand what's
+> underneath. Debugging, performance, third-party libraries,
+> vanilla JS projects, and interview questions require it.
+>
+> WHO:  Every frontend developer. Even React devs need DOM
+> knowledge for refs, portals, and performance tuning.
+>
+> WHEN: After understanding JS fundamentals + async.
+>
+> WHERE: Only in browsers (not Node.js). Node has no DOM.
+>
+> HOW:  HTML → Parser → DOM Tree. JS accesses via `document` API.
+
 
 ---
 

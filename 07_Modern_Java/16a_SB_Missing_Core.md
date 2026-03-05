@@ -84,32 +84,27 @@
 
 ## Chapter 1: Spring Cache Abstraction
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│              WHY CACHING MATTERS                                                │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  WITHOUT CACHING:                                                               │
-│  • Same expensive database query runs 1000x/minute                              │
-│  • External API calls hit rate limits                                           │
-│  • CPU-intensive calculations repeat unnecessarily                              │
-│  • Response time: 500ms                                                         │
-│                                                                                 │
-│  WITH CACHING:                                                                  │
-│  • Database query runs once, cached for 5 minutes                               │
-│  • API response cached, within rate limits                                      │
-│  • Calculation done once, result reused                                         │
-│  • Response time: 5ms                                                           │
-│                                                                                 │
-│  CACHE PROVIDERS:                                                               │
-│  • Simple (ConcurrentHashMap) - Built-in, single instance                       │
-│  • Caffeine - High-performance local cache                                      │
-│  • Redis - Distributed cache (multiple instances)                               │
-│  • Ehcache - Feature-rich local cache                                           │
-│  • Hazelcast - Distributed + in-memory grid                                     │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+## Why Caching Matters
+
+
+**Without Caching**:
+- Same expensive database query runs 1000x/minute
+- External API calls hit rate limits
+- CPU-intensive calculations repeat unnecessarily
+- Response time: 500ms
+
+**With Caching**:
+- Database query runs once, cached for 5 minutes
+- API response cached, within rate limits
+- Calculation done once, result reused
+- Response time: 5ms
+
+**Cache Providers**:
+- Simple (ConcurrentHashMap) - Built-in, single instance
+- Caffeine - High-performance local cache
+- Redis - Distributed cache (multiple instances)
+- Ehcache - Feature-rich local cache
+- Hazelcast - Distributed + in-memory grid
 
 ### Enable Caching
 

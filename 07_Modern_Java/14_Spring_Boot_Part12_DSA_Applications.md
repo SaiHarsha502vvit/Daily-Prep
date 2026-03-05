@@ -57,79 +57,72 @@
 
 ## Chapter 1: DSA in Enterprise Applications
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│              DSA USAGE IN SPRING BOOT APPLICATIONS                              │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  ┌─────────────────────┬────────────────────────────────────────────────────┐   │
-│  │ DATA STRUCTURE      │ WHERE IT'S USED                                    │   │
-│  ├─────────────────────┼────────────────────────────────────────────────────┤   │
-│  │                     │                                                    │   │
-│  │ HashMap             │ • Caching (in-memory cache)                       │    │
-│  │                     │ • Session management                              │    │
-│  │                     │ • Request parameter mapping                       │    │
-│  │                     │ • API response building                           │    │
-│  │                     │                                                    │   │
-│  │ ArrayList/LinkedList│ • Pagination results                              │    │
-│  │                     │ • Batch processing queues                         │    │
-│  │                     │ • Order history                                   │    │
-│  │                     │                                                    │   │
-│  │ TreeMap/TreeSet     │ • Sorted leaderboards                             │    │
-│  │                     │ • Scheduled tasks (by time)                       │    │
-│  │                     │ • Range queries                                   │    │
-│  │                     │                                                    │   │
-│  │ PriorityQueue       │ • Task scheduling (priority-based)                │    │
-│  │                     │ • Event processing                                │    │
-│  │                     │ • Rate limiting                                   │    │
-│  │                     │                                                    │   │
-│  │ Graph               │ • Social networks (friends, followers)            │    │
-│  │                     │ • Route optimization                              │    │
-│  │                     │ • Dependency resolution                           │    │
-│  │                     │ • Recommendation systems                          │    │
-│  │                     │                                                    │   │
-│  │ Trie                │ • Auto-complete / Search suggestions              │    │
-│  │                     │ • Spell checking                                  │    │
-│  │                     │ • IP routing tables                               │    │
-│  │                     │                                                    │   │
-│  │ Bloom Filter        │ • Duplicate detection                             │    │
-│  │                     │ • Cache optimization                              │    │
-│  │                     │ • Spam filtering                                  │    │
-│  │                     │                                                    │   │
-│  └─────────────────────┴────────────────────────────────────────────────────┘   │
-│                                                                                 │
-│  ┌─────────────────────┬────────────────────────────────────────────────────┐   │
-│  │ ALGORITHM           │ WHERE IT'S USED                                    │   │
-│  ├─────────────────────┼────────────────────────────────────────────────────┤   │
-│  │                     │                                                    │   │
-│  │ Binary Search       │ • Finding items in sorted data                    │    │
-│  │                     │ • Rate limit threshold checking                   │    │
-│  │                     │ • Log file searching                              │    │
-│  │                     │                                                    │   │
-│  │ Sorting             │ • Search results ranking                          │    │
-│  │                     │ • Leaderboards                                    │    │
-│  │                     │ • Report generation                               │    │
-│  │                     │                                                    │   │
-│  │ BFS/DFS             │ • Category tree traversal                         │    │
-│  │                     │ • Organization hierarchy                          │    │
-│  │                     │ • Dependency resolution                           │    │
-│  │                     │                                                    │   │
-│  │ Dijkstra/A*         │ • Route planning                                  │    │
-│  │                     │ • Network path optimization                       │    │
-│  │                     │ • Game pathfinding                                │    │
-│  │                     │                                                    │   │
-│  │ Dynamic Programming │ • Price optimization                              │    │
-│  │                     │ • Resource allocation                             │    │
-│  │                     │ • String matching                                 │    │
-│  │                     │                                                    │   │
-│  │ Sliding Window      │ • Rate limiting                                   │    │
-│  │                     │ • Analytics (rolling averages)                    │    │
-│  │                     │ • Stream processing                               │    │
-│  │                     │                                                    │   │
-│  └─────────────────────┴────────────────────────────────────────────────────┘   │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+## Dsa Usage In Spring Boot Applications
+
+┬
+DATA STRUCTURE      │ WHERE IT'S USED
+┼
+│
+HashMap             │ • Caching (in-memory cache)
+│ • Session management
+│ • Request parameter mapping
+│ • API response building
+│
+ArrayList/LinkedList│ • Pagination results
+│ • Batch processing queues
+│ • Order history
+│
+TreeMap/TreeSet     │ • Sorted leaderboards
+│ • Scheduled tasks (by time)
+│ • Range queries
+│
+PriorityQueue       │ • Task scheduling (priority-based)
+│ • Event processing
+│ • Rate limiting
+│
+Graph               │ • Social networks (friends, followers)
+│ • Route optimization
+│ • Dependency resolution
+│ • Recommendation systems
+│
+Trie                │ • Auto-complete / Search suggestions
+│ • Spell checking
+│ • IP routing tables
+│
+Bloom Filter        │ • Duplicate detection
+│ • Cache optimization
+│ • Spam filtering
+│
+┴
+┬
+ALGORITHM           │ WHERE IT'S USED
+┼
+│
+Binary Search       │ • Finding items in sorted data
+│ • Rate limit threshold checking
+│ • Log file searching
+│
+Sorting             │ • Search results ranking
+│ • Leaderboards
+│ • Report generation
+│
+BFS/DFS             │ • Category tree traversal
+│ • Organization hierarchy
+│ • Dependency resolution
+│
+Dijkstra/A*         │ • Route planning
+│ • Network path optimization
+│ • Game pathfinding
+│
+Dynamic Programming │ • Price optimization
+│ • Resource allocation
+│ • String matching
+│
+Sliding Window      │ • Rate limiting
+│ • Analytics (rolling averages)
+│ • Stream processing
+│
+┴
 
 ---
 

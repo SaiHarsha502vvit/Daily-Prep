@@ -10,12 +10,11 @@
 
 ## Problem 13: Video Watch History - Recently Watched (LRU Cache)
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║ COMPANY: Netflix / Hotstar / YouTube                                         ║
-║ SYSTEM: User Experience                                                      ║
-║ FEATURE: "Continue Watching" shows last 20 videos you watched                ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+
+> COMPANY: Netflix / Hotstar / YouTube
+> SYSTEM: User Experience
+> FEATURE: "Continue Watching" shows last 20 videos you watched
+
 
 THE REQUIREMENT:
 ────────────────
@@ -25,7 +24,6 @@ THE REQUIREMENT:
 - Limited memory (can't store unlimited)
 
 THIS IS EXACTLY: LRU (Least Recently Used) Cache!
-```
 
 ```java
 /**

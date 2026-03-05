@@ -4,16 +4,14 @@
 
 ## Why Cloud Knowledge is Essential
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  95% of companies use at least one cloud provider.                   ║
-║  Even if you're not DevOps, understanding cloud services             ║
-║  makes you a 10x more effective developer.                           ║
-║                                                                      ║
-║  You don't need to be a cloud architect —                            ║
-║  but you MUST know what's available and when to use it.              ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> 95% of companies use at least one cloud provider.
+> Even if you're not DevOps, understanding cloud services
+> makes you a 10x more effective developer.
+>
+> You don't need to be a cloud architect —
+> but you MUST know what's available and when to use it.
+
 
 ---
 
@@ -215,70 +213,47 @@ CONTAINER DEPLOYMENT OPTIONS
 
 ### Serverless: Lambda / Azure Functions
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  SERVERLESS — No Server to Manage                                    ║
-║                                                                      ║
-║  HOW IT WORKS:                                                       ║
-║  Event → Function Executes → Returns → Scales to Zero                ║
-║                                                                      ║
-║  // AWS Lambda Example (Java)                                        ║
-║  public class Handler implements RequestHandler<APIGatewayProxy,     ║
-║                                                 APIGatewayProxy> {   ║
-║      public APIGatewayProxyResponseEvent handleRequest(              ║
-║              APIGatewayProxyRequestEvent input, Context context) {   ║
-║          String body = input.getBody();                              ║
-║          // process...                                               ║
-║          return new APIGatewayProxyResponseEvent()                   ║
-║                  .withStatusCode(200)                                ║
-║                  .withBody("{\"message\": \"success\"}");            ║
-║      }                                                               ║
-║  }                                                                   ║
-║                                                                      ║
-║  GOOD FOR:                          BAD FOR:                         ║
-║  • API endpoints                   • Long-running tasks (>15 min)    ║
-║  • Event processing                • WebSockets                      ║
-║  • Scheduled jobs (cron)           • Stateful applications           ║
-║  • File processing triggers        • High-throughput streaming       ║
-║  • Low/variable traffic            • Cold-start-sensitive apps       ║
-║                                                                      ║
-║  COLD START: First invocation is slow (JVM = 3-10s)                  ║
-║  SOLUTION: SnapStart (AWS), Provisioned Concurrency,                 ║
-║            or use Node.js/Python for latency-sensitive functions     ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> SERVERLESS — No Server to Manage
+>
+> HOW IT WORKS:
+> Event → Function Executes → Returns → Scales to Zero
+>
+> // AWS Lambda Example (Java)
+> public class Handler implements RequestHandler<APIGatewayProxy,
+> APIGatewayProxy> {
+> public APIGatewayProxyResponseEvent handleRequest(
+> APIGatewayProxyRequestEvent input, Context context) {
+> String body = input.getBody();
+> // process...
+> return new APIGatewayProxyResponseEvent()
+> .withStatusCode(200)
+> .withBody("{\"message\": \"success\"}");
+> }
+> }
+>
+> GOOD FOR:                          BAD FOR:
+> - API endpoints                   • Long-running tasks (>15 min)
+> - Event processing                • WebSockets
+> - Scheduled jobs (cron)           • Stateful applications
+> - File processing triggers        • High-throughput streaming
+> - Low/variable traffic            • Cold-start-sensitive apps
+>
+> COLD START: First invocation is slow (JVM = 3-10s)
+> SOLUTION: SnapStart (AWS), Provisioned Concurrency,
+> or use Node.js/Python for latency-sensitive functions
+
 
 ### Storage: S3 / Blob Storage
 
-```
-OBJECT STORAGE — The Universal Storage Solution
+## Class           │ Use Case             │ Cost
 
-S3 STORAGE CLASSES:
-┌─────────────────┬──────────────────────┬───────────┐
-│ Class           │ Use Case             │ Cost      │
-├─────────────────┼──────────────────────┼───────────┤
-│ Standard        │ Frequent access      │ $$$       │
-│ Intelligent     │ Unknown access       │ $$ + fee  │
-│ Standard-IA     │ Infrequent access    │ $$        │
-│ Glacier Instant │ Archive, instant     │ $         │
-│ Glacier         │ Archive, 3-5 hrs     │ ¢         │
-│ Deep Archive    │ Archive, 12 hrs      │ ¢¢        │
-└─────────────────┴──────────────────────┴───────────┘
-
-COMMON DEVELOPER USES:
-• Static website hosting (S3 + CloudFront)
-• User file uploads (presigned URLs)
-• Application logs archive
-• Database backups
-• ML model storage
-• CI/CD artifact storage
-
-PRESIGNED URL PATTERN (secure uploads without exposing creds):
-1. Client requests upload URL from your API
-2. Your API generates presigned URL (valid 15 min)
-3. Client uploads directly to S3 (bypasses your server)
-4. S3 notifies your API via event (Lambda trigger)
-```
+| Standard        | Frequent access      | $$$ |
+| Intelligent     | Unknown access       | $$ + fee |
+| Standard-IA     | Infrequent access    | $$ |
+| Glacier Instant | Archive, instant     | $ |
+| Glacier         | Archive, 3-5 hrs     | ¢ |
+| Deep Archive    | Archive, 12 hrs      | ¢¢ |
 
 ### Database Services
 
@@ -353,61 +328,57 @@ Users
 
 ## Cost Optimization Tips
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  COST MISTAKES DEVELOPERS MAKE                                       ║
-║                                                                      ║
-║  1. Leaving resources running                                        ║
-║     → Use auto-shutdown for dev/test environments                    ║
-║     → Tag everything: Environment=dev, Owner=your-name               ║
-║                                                                      ║
-║  2. Over-provisioning                                                ║
-║     → Start small (t3.small), scale up when needed                   ║
-║     → Use auto-scaling (scale OUT not UP)                            ║
-║                                                                      ║
-║  3. Not using the right storage tier                                 ║
-║     → Old logs in S3 Standard? Move to Glacier                       ║
-║     → Use lifecycle policies for automatic transitions               ║
-║                                                                      ║
-║  4. Data transfer costs                                              ║
-║     → Data INTO cloud = free, data OUT = expensive                   ║
-║     → Keep processing close to data (same region)                    ║
-║     → Use VPC endpoints for AWS service calls                        ║
-║                                                                      ║
-║  5. Not using Reserved/Savings Plans                                 ║
-║     → If you know you'll run 24/7 for a year → Reserve it            ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> COST MISTAKES DEVELOPERS MAKE
+>
+> 1. Leaving resources running
+> → Use auto-shutdown for dev/test environments
+> → Tag everything: Environment=dev, Owner=your-name
+>
+> 2. Over-provisioning
+> → Start small (t3.small), scale up when needed
+> → Use auto-scaling (scale OUT not UP)
+>
+> 3. Not using the right storage tier
+> → Old logs in S3 Standard? Move to Glacier
+> → Use lifecycle policies for automatic transitions
+>
+> 4. Data transfer costs
+> → Data INTO cloud = free, data OUT = expensive
+> → Keep processing close to data (same region)
+> → Use VPC endpoints for AWS service calls
+>
+> 5. Not using Reserved/Savings Plans
+> → If you know you'll run 24/7 for a year → Reserve it
+
 
 ---
 
 ## Cloud for Spring Boot Developers
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  SPRING BOOT → CLOUD MAPPING                                         ║
-║                                                                      ║
-║  LOCAL                      │  CLOUD EQUIVALENT                      ║
-║  ──────────────────────────┼──────────────────────────────           ║
-║  application.properties     │  AWS Parameter Store / K8s ConfigMap   ║
-║  Secrets in .env            │  AWS Secrets Manager / Key Vault       ║
-║  Local file uploads         │  S3 / Blob Storage                     ║
-║  In-memory H2 database      │  RDS PostgreSQL / Azure SQL            ║
-║  @Cacheable (in-memory)     │  ElastiCache Redis                     ║
-║  @Async with ThreadPool     │  SQS + Lambda workers                  ║
-║  @Scheduled cron jobs       │  EventBridge / CloudWatch Events       ║
-║  Logback console output     │  CloudWatch Logs / ELK                 ║
-║  Actuator /health           │  ALB health checks                     ║
-║  localhost:8080             │  Route 53 → ALB → ECS/EC2              ║
-║                                                                      ║
-║  SPRING CLOUD AWS:                                                   ║
-║  <dependency>                                                        ║
-║    <groupId>io.awspring.cloud</groupId>                              ║
-║    <artifactId>spring-cloud-aws-starter</artifactId>                 ║
-║  </dependency>                                                       ║
-║  → Auto-configures S3, SQS, SNS, Parameter Store, etc.               ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> SPRING BOOT → CLOUD MAPPING
+>
+> LOCAL                      │  CLOUD EQUIVALENT
+> ──────────────────────────┼──────────────────────────────
+> application.properties     │  AWS Parameter Store / K8s ConfigMap
+> Secrets in .env            │  AWS Secrets Manager / Key Vault
+> Local file uploads         │  S3 / Blob Storage
+> In-memory H2 database      │  RDS PostgreSQL / Azure SQL
+> @Cacheable (in-memory)     │  ElastiCache Redis
+> @Async with ThreadPool     │  SQS + Lambda workers
+> @Scheduled cron jobs       │  EventBridge / CloudWatch Events
+> Logback console output     │  CloudWatch Logs / ELK
+> Actuator /health           │  ALB health checks
+> localhost:8080             │  Route 53 → ALB → ECS/EC2
+>
+> SPRING CLOUD AWS:
+> <dependency>
+> <groupId>io.awspring.cloud</groupId>
+> <artifactId>spring-cloud-aws-starter</artifactId>
+> </dependency>
+> → Auto-configures S3, SQS, SNS, Parameter Store, etc.
+
 
 ---
 
@@ -443,31 +414,29 @@ A: Vertical = bigger machine (limited, downtime to change)
 
 ## Mental Model: Cloud as Building Blocks
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  Think of cloud services like LEGO blocks:                           ║
-║                                                                      ║
-║  You don't build a database from scratch.                            ║
-║  You pick the RIGHT block (RDS, DynamoDB, Redis)                     ║
-║  and snap it into your architecture.                                 ║
-║                                                                      ║
-║  Your job as a developer:                                            ║
-║  1. Know what blocks exist                                           ║
-║  2. Know when to use each one                                        ║
-║  3. Know how to connect them                                         ║
-║  4. Know the trade-offs (cost, latency, complexity)                  ║
-║                                                                      ║
-║  You DON'T need to:                                                  ║
-║  • Memorize every service (there are 200+ on AWS alone)              ║
-║  • Know the exact CLI commands                                       ║
-║  • Be a networking expert                                            ║
-║                                                                      ║
-║  You DO need to:                                                     ║
-║  • Design solutions using the right services                         ║
-║  • Understand pricing implications of your choices                   ║
-║  • Write code that works with cloud services (SDKs)                  ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> Think of cloud services like LEGO blocks:
+>
+> You don't build a database from scratch.
+> You pick the RIGHT block (RDS, DynamoDB, Redis)
+> and snap it into your architecture.
+>
+> Your job as a developer:
+> 1. Know what blocks exist
+> 2. Know when to use each one
+> 3. Know how to connect them
+> 4. Know the trade-offs (cost, latency, complexity)
+>
+> You DON'T need to:
+> - Memorize every service (there are 200+ on AWS alone)
+> - Know the exact CLI commands
+> - Be a networking expert
+>
+> You DO need to:
+> - Design solutions using the right services
+> - Understand pricing implications of your choices
+> - Write code that works with cloud services (SDKs)
+
 
 ---
 

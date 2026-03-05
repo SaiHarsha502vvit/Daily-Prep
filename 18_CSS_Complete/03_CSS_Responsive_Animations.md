@@ -6,24 +6,22 @@
 
 ## 5W1H — Why This Chapter?
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: Making websites work on ALL screen sizes + adding motion      ║
-║        and visual delight through CSS animations.                    ║
-║                                                                      ║
-║  WHY:  60%+ of web traffic is mobile. A non-responsive site =        ║
-║        losing majority of users. Animations provide feedback,        ║
-║        guide attention, and make UIs feel polished/professional.     ║
-║                                                                      ║
-║  WHO:  Every frontend developer. Responsive is not optional.         ║
-║                                                                      ║
-║  WHEN: Responsive: from project START (mobile-first approach).       ║
-║        Animations: after layout works. Enhance, don't distract.      ║
-║                                                                      ║
-║  HOW:  Media queries, fluid units (%, vw, clamp), CSS                ║
-║        transforms, transitions, @keyframes animations.               ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> WHAT: Making websites work on ALL screen sizes + adding motion
+> and visual delight through CSS animations.
+>
+> WHY:  60%+ of web traffic is mobile. A non-responsive site =
+> losing majority of users. Animations provide feedback,
+> guide attention, and make UIs feel polished/professional.
+>
+> WHO:  Every frontend developer. Responsive is not optional.
+>
+> WHEN: Responsive: from project START (mobile-first approach).
+> Animations: after layout works. Enhance, don't distract.
+>
+> HOW:  Media queries, fluid units (%, vw, clamp), CSS
+> transforms, transitions, @keyframes animations.
+
 
 ---
 

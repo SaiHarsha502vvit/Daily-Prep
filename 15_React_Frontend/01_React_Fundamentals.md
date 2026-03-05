@@ -11,22 +11,20 @@
 
 ## Part 1: What is React and Why?
 
-```
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║  React is a LIBRARY for building user interfaces (not a framework!)              ║
-║                                                                                  ║
-║  KEY IDEAS:                                                                      ║
-║  1. Component-Based: UI = tree of reusable components                            ║
-║  2. Declarative: Describe WHAT to render, React handles HOW                      ║
-║  3. Virtual DOM: React diffs changes, updates only what changed                  ║
-║  4. One-Way Data Flow: Data flows Parent → Child via props                       ║
-║                                                                                  ║
-║  MENTAL MODEL:                                                                   ║
-║  Traditional: Manually update DOM when data changes (imperative)                 ║
-║  React: UI = f(state) — UI is a FUNCTION of state (declarative)                  ║
-║  When state changes → React re-renders → diffs → updates DOM                     ║
-╚══════════════════════════════════════════════════════════════════════════════════╝
-```
+
+> React is a LIBRARY for building user interfaces (not a framework!)
+>
+> KEY IDEAS:
+> 1. Component-Based: UI = tree of reusable components
+> 2. Declarative: Describe WHAT to render, React handles HOW
+> 3. Virtual DOM: React diffs changes, updates only what changed
+> 4. One-Way Data Flow: Data flows Parent → Child via props
+>
+> MENTAL MODEL:
+> Traditional: Manually update DOM when data changes (imperative)
+> React: UI = f(state) — UI is a FUNCTION of state (declarative)
+> When state changes → React re-renders → diffs → updates DOM
+
 
 ---
 

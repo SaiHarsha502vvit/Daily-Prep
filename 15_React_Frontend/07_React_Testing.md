@@ -8,22 +8,20 @@
 
 ## Testing Pyramid for React
 
-```
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║                    /\                                                            ║
-║                   /  \       E2E (Cypress/Playwright)                            ║
-║                  / E2E\      → Test full user flows (login → checkout)           ║
-║                 /──────\     → Slow, expensive, few tests                        ║
-║                /        \                                                        ║
-║               / Integr.  \   Integration (React Testing Library)                 ║
-║              /────────────\  → Test components with user interactions            ║
-║             /              \ → Most value per test                               ║
-║            /     Unit       \  Unit (Vitest/Jest)                                ║
-║           /──────────────────\ → Test pure functions, hooks, utils               ║
-║          /                    \ → Fast, many tests                               ║
-║         /______________________\                                                 ║
-╚══════════════════════════════════════════════════════════════════════════════════╝
-```
+
+> /\
+> /  \       E2E (Cypress/Playwright)
+> / E2E\      → Test full user flows (login → checkout)
+> /──────\     → Slow, expensive, few tests
+> /        \
+> / Integr.  \   Integration (React Testing Library)
+> /────────────\  → Test components with user interactions
+> /              \ → Most value per test
+> /     Unit       \  Unit (Vitest/Jest)
+> /──────────────────\ → Test pure functions, hooks, utils
+> /                    \ → Fast, many tests
+> /______________________\
+
 
 ---
 

@@ -8,21 +8,19 @@
 
 ## Part 1: Performance — Avoid Unnecessary Re-renders
 
-```
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║  WHEN DOES A COMPONENT RE-RENDER?                                                ║
-║                                                                                  ║
-║  1. Its state changes (useState setter called)                                   ║
-║  2. Its parent re-renders (props may have changed)                               ║
-║  3. Context value it consumes changes                                            ║
-║                                                                                  ║
-║  REACT RE-RENDER ≠ DOM UPDATE                                                    ║
-║  Re-render: React calls your component function → creates virtual DOM            ║
-║  DOM update: React diffs old vs new virtual DOM → updates only changed nodes     ║
-║                                                                                  ║
-║  Most re-renders are fine! Only optimize when you MEASURE a problem.             ║
-╚══════════════════════════════════════════════════════════════════════════════════╝
-```
+
+> WHEN DOES A COMPONENT RE-RENDER?
+>
+> 1. Its state changes (useState setter called)
+> 2. Its parent re-renders (props may have changed)
+> 3. Context value it consumes changes
+>
+> REACT RE-RENDER ≠ DOM UPDATE
+> Re-render: React calls your component function → creates virtual DOM
+> DOM update: React diffs old vs new virtual DOM → updates only changed nodes
+>
+> Most re-renders are fine! Only optimize when you MEASURE a problem.
+
 
 ### Key Optimization Techniques
 

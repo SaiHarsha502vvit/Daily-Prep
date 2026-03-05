@@ -11,26 +11,24 @@
 
 ## ❓ Why This Matters
 
-```
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║  REALITY CHECK                                                                   ║
-║                                                                                  ║
-║  Your REST API gets 1000 requests/second. Each request = 1 thread.               ║
-║  If each thread takes 200ms, you need 200 threads running simultaneously.        ║
-║                                                                                  ║
-║  Without understanding concurrency:                                              ║
-║  ❌ Race conditions corrupt data                                                  ║
-║  ❌ Deadlocks freeze your server                                                  ║
-║  ❌ Thread leaks crash your JVM                                                   ║
-║  ❌ You can't debug "works locally, fails in prod" issues                         ║
-║                                                                                  ║
-║  With mastery:                                                                   ║
-║  ✅ You write thread-safe code by default                                         ║
-║  ✅ You choose the right concurrency tool for each problem                        ║
-║  ✅ You debug production issues others can't                                      ║
-║  ✅ You design systems that scale                                                 ║
-╚══════════════════════════════════════════════════════════════════════════════════╝
-```
+
+> REALITY CHECK
+>
+> Your REST API gets 1000 requests/second. Each request = 1 thread.
+> If each thread takes 200ms, you need 200 threads running simultaneously.
+>
+> Without understanding concurrency:
+> ❌ Race conditions corrupt data
+> ❌ Deadlocks freeze your server
+> ❌ Thread leaks crash your JVM
+> ❌ You can't debug "works locally, fails in prod" issues
+>
+> With mastery:
+> ✅ You write thread-safe code by default
+> ✅ You choose the right concurrency tool for each problem
+> ✅ You debug production issues others can't
+> ✅ You design systems that scale
+
 
 ---
 

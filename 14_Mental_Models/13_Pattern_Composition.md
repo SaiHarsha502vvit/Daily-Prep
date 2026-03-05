@@ -6,89 +6,66 @@
 
 # 🧠 PATTERN COMPOSITION — COMBINING MULTIPLE PATTERNS
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║      PATTERN COMPOSITION — WHEN ONE PATTERN ISN'T ENOUGH                     ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+## Why This Matters
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHY THIS MATTERS                                                             │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  Easy problems = 1 pattern. Medium = 1-2 patterns. Hard = 2-3 patterns.      │
-│                                                                              │
-│  At LC Hard level, the challenge isn't knowing patterns —                    │
-│  it's COMPOSING them. You need to recognize that a problem                   │
-│  requires Binary Search INSIDE DP, or BFS WITH Bit Masking,                  │
-│  or Trie PLUS Backtracking.                                                  │
-│                                                                              │
-│  This guide maps the most common COMPOSITION PAIRS and teaches               │
-│  you to recognize when a problem needs multiple patterns.                    │
-│                                                                              │
-└──────────────────────────────────────────────────────────────────────────────┘
+Easy problems = 1 pattern. Medium = 1-2 patterns. Hard = 2-3 patterns.
+At LC Hard level, the challenge isn't knowing patterns —
+it's COMPOSING them. You need to recognize that a problem
+requires Binary Search INSIDE DP, or BFS WITH Bit Masking,
+or Trie PLUS Backtracking.
+This guide maps the most common COMPOSITION PAIRS and teaches
+you to recognize when a problem needs multiple patterns.
+## The Top 15 Pattern Compositions
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ THE TOP 15 PATTERN COMPOSITIONS                                              │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  #  COMPOSITION              EXAMPLE PROBLEM              LC#                │
-│  ══ ═══════════════════════  ═══════════════════════════  ═══                │
-│  1  Binary Search + Greedy   Split Array Largest Sum      410                │
-│  2  BFS + Bitmask DP         Shortest Path Visit All      847                │
-│  3  Trie + Backtracking      Word Search II               212                │
-│  4  Sorting + Two Pointers   3Sum                         15                 │
-│  5  Binary Search + Sliding  Min Size Subarray Sum        209                │
-│  6  Graph + DP               Cheapest Flight K Stops      787                │
-│  7  Heap + Greedy            Task Scheduler               621                │
-│  8  Union-Find + Sort        Accounts Merge               721                │
-│  9  Monotonic Stack + DP     Largest Rectangle Histogram  84                 │
-│  10 Prefix Sum + HashMap     Subarray Sum Equals K        560                │
-│  11 Binary Search + Matrix   Search 2D Matrix II          240                │
-│  12 DFS + Memoization        Longest Inc Path in Matrix   329                │
-│  13 Topological Sort + DP    Course Schedule + min time   —                  │
-│  14 Segment Tree + Sweep     Count Smaller After Self     315                │
-│  15 Trie + DP                Word Break                   139                │
-│                                                                              │
-└──────────────────────────────────────────────────────────────────────────────┘
-```
+#  COMPOSITION              EXAMPLE PROBLEM              LC#
+══ ═══════════════════════  ═══════════════════════════  ═══
+1  Binary Search + Greedy   Split Array Largest Sum      410
+2  BFS + Bitmask DP         Shortest Path Visit All      847
+3  Trie + Backtracking      Word Search II               212
+4  Sorting + Two Pointers   3Sum                         15
+5  Binary Search + Sliding  Min Size Subarray Sum        209
+6  Graph + DP               Cheapest Flight K Stops      787
+7  Heap + Greedy            Task Scheduler               621
+8  Union-Find + Sort        Accounts Merge               721
+9  Monotonic Stack + DP     Largest Rectangle Histogram  84
+10 Prefix Sum + HashMap     Subarray Sum Equals K        560
+11 Binary Search + Matrix   Search 2D Matrix II          240
+12 DFS + Memoization        Longest Inc Path in Matrix   329
+13 Topological Sort + DP    Course Schedule + min time   —
+14 Segment Tree + Sweep     Count Smaller After Self     315
+15 Trie + DP                Word Break                   139
 
 ---
 
 ## COMPOSITION 1: Binary Search + Greedy
 
-```
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ PATTERN: "Binary Search on the Answer"                                       │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  TRIGGER: "Minimize the maximum" or "Maximize the minimum"                   │
-│                                                                              │
-│  HOW IT WORKS:                                                               │
-│  1. Binary search on the ANSWER space (lo=min possible, hi=max possible)     │
-│  2. For each candidate answer, GREEDILY check: "is this feasible?"           │
-│  3. Narrow the search based on feasibility                                   │
-│                                                                              │
-│  VISUAL:                                                                     │
-│  Answer space: [lo ─────────── mid ─────────── hi]                           │
-│                                 │                                            │
-│                          feasible(mid)?                                      │
-│                          YES → search lower (minimize max)                   │
-│                          NO  → search higher                                 │
-│                                                                              │
-│  EXAMPLE: Split Array Largest Sum (LC 410)                                   │
-│  "Split array into m subarrays to minimize the largest subarray sum"         │
-│  • Binary search: lo=max(nums), hi=sum(nums)                                 │
-│  • Greedy check: Can we split into ≤ m parts, each ≤ mid?                    │
-│    Iterate array, greedy: start new partition when sum exceeds mid.          │
-│  • If partitions ≤ m → feasible → try smaller                                │
-│                                                                              │
-│  OTHER PROBLEMS:                                                             │
-│  • Koko Eating Bananas (LC 875): BS on speed, greedy check hours             │
-│  • Ship Packages in D Days (LC 1011): BS on capacity, greedy check days      │
-│  • Magnetic Force (LC 1552): BS on min distance, greedy check placement      │
-│                                                                              │
-└──────────────────────────────────────────────────────────────────────────────┘
-```
+## Pattern: "Binary Search On The Answer"
+
+
+**Trigger**: "Minimize the maximum" or "Maximize the minimum"
+
+**How It Works**:
+1. Binary search on the ANSWER space (lo=min possible, hi=max possible)
+2. For each candidate answer, GREEDILY check: "is this feasible?"
+3. Narrow the search based on feasibility
+
+**Visual**:
+Answer space: [lo ─────────── mid ─────────── hi]
+feasible(mid)?
+YES → search lower (minimize max)
+NO  → search higher
+
+**Example**: Split Array Largest Sum (LC 410)
+"Split array into m subarrays to minimize the largest subarray sum"
+- Binary search: lo=max(nums), hi=sum(nums)
+- Greedy check: Can we split into ≤ m parts, each ≤ mid?
+Iterate array, greedy: start new partition when sum exceeds mid.
+- If partitions ≤ m → feasible → try smaller
+
+**Other Problems**:
+- Koko Eating Bananas (LC 875): BS on speed, greedy check hours
+- Ship Packages in D Days (LC 1011): BS on capacity, greedy check days
+- Magnetic Force (LC 1552): BS on min distance, greedy check placement
 
 ```java
 // Template: Binary Search on Answer + Greedy Feasibility

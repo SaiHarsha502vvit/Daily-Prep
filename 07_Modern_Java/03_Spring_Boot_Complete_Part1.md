@@ -92,29 +92,23 @@
 
 ### 🔵 WHY: Understanding Memory is Understanding Performance
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    WHY JVM MEMORY MODEL MATTERS                                 │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  WITHOUT THIS KNOWLEDGE:                                                        │
-│  • OutOfMemoryError: Metaspace (and you don't know why)                         │
-│  • Memory leaks in production                                                   │
-│  • GC pauses causing 500ms response times                                       │
-│  • "It works on my machine" but crashes in production                           │
-│                                                                                 │
-│  WITH THIS KNOWLEDGE:                                                           │
-│  • Optimize JVM settings for your workload                                      │
-│  • Understand why Spring creates proxies in heap                                │
-│  • Debug memory issues confidently                                              │
-│  • Pass advanced Java interview questions                                       │
-│                                                                                 │
-│  🔴 REAL INCIDENT: A startup's Spring Boot app crashed every 2 hours             │
-│     with OutOfMemoryError: Metaspace. Root cause: Dynamically generated         │
-│     classes from reflection never got garbage collected.                        │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+## Why Jvm Memory Model Matters
+
+
+**Without This Knowledge**:
+- OutOfMemoryError: Metaspace (and you don't know why)
+- Memory leaks in production
+- GC pauses causing 500ms response times
+- "It works on my machine" but crashes in production
+
+**With This Knowledge**:
+- Optimize JVM settings for your workload
+- Understand why Spring creates proxies in heap
+- Debug memory issues confidently
+- Pass advanced Java interview questions
+🔴 REAL INCIDENT: A startup's Spring Boot app crashed every 2 hours
+with OutOfMemoryError: Metaspace. Root cause: Dynamically generated
+classes from reflection never got garbage collected.
 
 ### 🟢 HOW: JVM Memory Architecture
 

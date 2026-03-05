@@ -6,22 +6,20 @@
 
 ---
 
-```
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║  WHY PATTERN PROGRAMS?                                                           ║
-║                                                                                  ║
-║  1. INTERVIEW REALITY: Asked in 90% of fresher interviews                        ║
-║  2. BUILDS LOOP THINKING: Foundation for ALL DSA                                 ║
-║  3. TEACHES OBSERVATION: Any pattern = rows + columns + relationship             ║
-║  4. REAL APPLICATIONS:                                                           ║
-║     • UI grids (game boards, spreadsheets)                                       ║
-║     • Image processing (pixel manipulation)                                      ║
-║     • Matrix transformations                                                     ║
-║     • Report formatting                                                          ║
-║                                                                                  ║
-║  START DATE: February 10, 2026                                                   ║
-╚══════════════════════════════════════════════════════════════════════════════════╝
-```
+
+> WHY PATTERN PROGRAMS?
+>
+> 1. INTERVIEW REALITY: Asked in 90% of fresher interviews
+> 2. BUILDS LOOP THINKING: Foundation for ALL DSA
+> 3. TEACHES OBSERVATION: Any pattern = rows + columns + relationship
+> 4. REAL APPLICATIONS:
+> - UI grids (game boards, spreadsheets)
+> - Image processing (pixel manipulation)
+> - Matrix transformations
+> - Report formatting
+>
+> START DATE: February 10, 2026
+
 
 ---
 

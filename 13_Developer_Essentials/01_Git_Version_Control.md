@@ -8,51 +8,36 @@
 
 ## The Problem Before Git
 
-```
-Story: It's 2004. A team of 5 developers is building software.
-       They share code via... email. Or a shared folder.
+It's 2004. A team of 5 developers is building software. They share code via email... or a shared folder.
 
-Developer A: "I'll work on login.java"
-Developer B: "Me too, I need to fix a bug there"
+> *Developer A*: "I'll work on login.java"
+> *Developer B*: "Me too, I need to fix a bug there"
+>
+> **Result**: Developer B copies their version over A's work. 3 days of A's work = **gone forever**.
 
-Result: Developer B copies their version over A's work.
-        3 days of A's work = GONE FOREVER.
-
-This happened EVERY DAY in the 1990s-2000s at every company.
-```
+This happened *every day* in the 1990s–2000s at every company.
 
 ### The Three Fundamental Problems
 
-```
-Problem 1: COLLABORATION
-  Multiple people editing same files → overwrites
-  
-Problem 2: HISTORY
-  "The app worked yesterday, what changed?" → nobody knows
-  
-Problem 3: EXPERIMENTATION
-  "I want to try a new approach without breaking main code" → make a copy?
-  
-Git solves ALL THREE simultaneously.
-```
+| # | Problem | Description |
+|---|---------|-------------|
+| 1 | **Collaboration** | Multiple people editing same files → overwrites |
+| 2 | **History** | "The app worked yesterday, what changed?" → nobody knows |
+| 3 | **Experimentation** | "I want to try a new approach without breaking main code" → make a copy? |
+
+> ✅ **Git solves all three simultaneously.**
 
 ## WHO: The Origin Story
 
-```
-2005: Linux kernel development used BitKeeper (proprietary VCS)
-      BitKeeper revoked free license
-      
-Linus Torvalds → "I'll build my own in 2 weeks"
-      
-Design goals:
-  1. FAST (handle Linux kernel: 25M+ lines)
-  2. DISTRIBUTED (no central server required)
-  3. SAFE (cryptographic integrity: SHA-1 hashes)
-  4. BRANCHING (cheap, instant branch creation)
-  
-Result: Git — named after British slang for "unpleasant person"
-        (Linus: "I name all my projects after myself")
-```
+**2005**: Linux kernel development used BitKeeper (proprietary VCS). When BitKeeper revoked its free license, Linus Torvalds said *"I'll build my own in 2 weeks."*
+
+**Design goals**:
+1. **Fast** — handle the Linux kernel (25M+ lines)
+2. **Distributed** — no central server required
+3. **Safe** — cryptographic integrity with SHA-1 hashes
+4. **Branching** — cheap, instant branch creation
+
+> The name "Git" comes from British slang for "unpleasant person." Linus: *"I name all my projects after myself."*
 
 ---
 
@@ -60,18 +45,11 @@ Result: Git — named after British slang for "unpleasant person"
 
 ## Mental Model 1: Git is a SNAPSHOT Timeline
 
-```
-Most VCS: Store DIFFERENCES (deltas) between versions
-  v1 → [+5 lines] → v2 → [-2 lines, +8 lines] → v3
+**Most VCS**: Store *differences* (deltas) between versions — `v1 → [+5 lines] → v2 → [-2 lines, +8 lines] → v3`
 
-Git: Store SNAPSHOTS of entire project state
-  v1 = [complete state of every file]
-  v2 = [complete state of every file]  (unchanged files → pointer to v1's copy)
-  v3 = [complete state of every file]
+**Git**: Store **snapshots** of the entire project state. Each version is a complete picture of every file. Unchanged files just point to the previous copy.
 
-WHY snapshots? → Any version can be reconstructed instantly
-                  No need to replay 500 deltas
-```
+> 💡 **Why snapshots?** Any version can be reconstructed instantly — no need to replay 500 deltas.
 
 ## Mental Model 2: Three Areas
 
@@ -288,13 +266,10 @@ Recommendation for YOU:
 
 ### WHY Conflicts Happen
 
-```
-You:    Edit line 10 of app.java → "Hello World"  
-Friend: Edit line 10 of app.java → "Hello Universe"
-
-Git: "Two different changes to the SAME line. I can't decide.
-      Human, you must choose."
-```
+> **You**: Edit line 10 of `app.java` → `"Hello World"`
+> **Friend**: Edit line 10 of `app.java` → `"Hello Universe"`
+>
+> **Git**: *"Two different changes to the SAME line. I can't decide. Human, you must choose."*
 
 ### HOW to Resolve
 
@@ -319,12 +294,10 @@ git commit               # Complete the merge
 
 ### Conflict Prevention Strategy
 
-```
-1. PULL FREQUENTLY — git pull every morning
-2. SMALL COMMITS — commit every 30 minutes of work
-3. COMMUNICATE — "I'm working on X file today"
-4. SHORT BRANCHES — merge within 1-3 days, not weeks
-```
+1. **Pull frequently** — `git pull` every morning
+2. **Small commits** — commit every 30 minutes of work
+3. **Communicate** — "I'm working on X file today"
+4. **Short branches** — merge within 1–3 days, not weeks
 
 ## Level 4: Advanced Git (Month 3+)
 
@@ -391,10 +364,10 @@ git bisect reset
 
 ### Reset vs Revert
 
-```
-git reset:  REWRITE history (dangerous on shared branches)
-git revert: CREATE NEW commit that undoes a previous one (safe)
+`git reset`: **Rewrite** history (⚠️ dangerous on shared branches)
+`git revert`: **Create new** commit that undoes a previous one (safe)
 
+```bash
 # Undo last commit but keep changes staged
 git reset --soft HEAD~1
 
@@ -477,37 +450,27 @@ node_modules/
 
 # WHEN: Decision Guide
 
-```
-Q: When to commit?
-A: Every logical unit of work (30-60 min intervals)
-
-Q: When to branch?
-A: Every new feature, bug fix, or experiment
-
-Q: When to merge vs rebase?
-A: merge for shared branches, rebase for personal cleanup
-
-Q: When to force push?
-A: ONLY on your personal branch AFTER rebase
-   NEVER on main/develop
-
-Q: When to use stash?
-A: Switching tasks mid-work (not for long-term storage)
-```
+| Question | Answer |
+|----------|--------|
+| When to commit? | Every logical unit of work (30–60 min intervals) |
+| When to branch? | Every new feature, bug fix, or experiment |
+| When to merge vs rebase? | `merge` for shared branches, `rebase` for personal cleanup |
+| When to force push? | **Only** on your personal branch after rebase. **Never** on main/develop |
+| When to use stash? | Switching tasks mid-work (not for long-term storage) |
 
 ---
 
 # 🧭 Git Command Cheat Sheet
 
-```
-SETUP:     init | clone | config
-DAILY:     status | add | commit | push | pull
-BRANCH:    branch | checkout | switch | merge
-INSPECT:   log | diff | show | blame
-UNDO:      reset | revert | restore | stash
-ADVANCED:  rebase | cherry-pick | bisect | reflog
-REMOTE:    remote | fetch | push | pull
-```
+| Category | Commands |
+|----------|----------|
+| **Setup** | `init`, `clone`, `config` |
+| **Daily** | `status`, `add`, `commit`, `push`, `pull` |
+| **Branch** | `branch`, `checkout`, `switch`, `merge` |
+| **Inspect** | `log`, `diff`, `show`, `blame` |
+| **Undo** | `reset`, `revert`, `restore`, `stash` |
+| **Advanced** | `rebase`, `cherry-pick`, `bisect`, `reflog` |
+| **Remote** | `remote`, `fetch`, `push`, `pull` |
 
 ---
 

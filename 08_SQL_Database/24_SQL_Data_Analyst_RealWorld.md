@@ -25,28 +25,26 @@
 
 ## 1. The Data Analyst SQL Mindset
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  DEVELOPER SQL vs ANALYST SQL                                    ║
-║                                                                  ║
-║  Developer: "Get me user #42's orders"                           ║
-║  Analyst:   "Show me Week-1 retention for users who signed       ║
-║              up in January vs February, segmented by plan type"  ║
-║                                                                  ║
-║  Developer: SELECT → WHERE → JOIN → done                         ║
-║  Analyst:   WITH → WINDOW → CASE → GROUP BY → HAVING → layers    ║
-║                                                                  ║
-║  Developer thinks in ROWS (fetch this record)                    ║
-║  Analyst thinks in GROUPS and TRENDS (what's the pattern?)       ║
-║                                                                  ║
-║  KEY TOOLS FOR ANALYSTS:                                         ║
-║  → CTEs (WITH clause) — readable multi-step queries              ║
-║  → Window functions — calculations across related rows           ║
-║  → CASE WHEN — pivoting and conditional aggregation              ║
-║  → Date functions — time-based grouping and comparison           ║
-║  → Self-joins — comparing current vs historical data             ║
-╚══════════════════════════════════════════════════════════════════╝
-```
+
+> DEVELOPER SQL vs ANALYST SQL
+>
+> Developer: "Get me user #42's orders"
+> Analyst:   "Show me Week-1 retention for users who signed
+> up in January vs February, segmented by plan type"
+>
+> Developer: SELECT → WHERE → JOIN → done
+> Analyst:   WITH → WINDOW → CASE → GROUP BY → HAVING → layers
+>
+> Developer thinks in ROWS (fetch this record)
+> Analyst thinks in GROUPS and TRENDS (what's the pattern?)
+>
+> KEY TOOLS FOR ANALYSTS:
+> → CTEs (WITH clause) — readable multi-step queries
+> → Window functions — calculations across related rows
+> → CASE WHEN — pivoting and conditional aggregation
+> → Date functions — time-based grouping and comparison
+> → Self-joins — comparing current vs historical data
+
 
 ### Sample Schema (used throughout this chapter)
 

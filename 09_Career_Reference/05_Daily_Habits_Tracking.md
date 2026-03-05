@@ -13,28 +13,27 @@
 
 ## 🧠 THE 6 POWER TECHNIQUES - APPLY DAILY!
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║               CHECKLIST: Did you use these today?                            ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+
+> CHECKLIST: Did you use these today?
+
 
 ⬜ ACTIVE RECALL - Did you test yourself from memory?
-   • Close notes, write what you remember, then check
+• Close notes, write what you remember, then check
 
 ⬜ 45-15 BLOCKS - Did you use focused study blocks?
-   • 45 min deep work → 15 min break (NO PHONE!) → repeat
+• 45 min deep work → 15 min break (NO PHONE!) → repeat
 
 ⬜ BLURTING - Did you dump knowledge on paper after learning?
-   • Write everything you remember, fill gaps in different color
+• Write everything you remember, fill gaps in different color
 
 ⬜ 2-3-7 REVISION - Did you review previous days' topics?
-   • Day 2 review, Day 3 review, Day 7 review
+• Day 2 review, Day 3 review, Day 7 review
 
 ⬜ FEYNMAN - Can you explain today's topic to a 10-year-old?
-   • If you can't simplify it, you don't understand it yet
+• If you can't simplify it, you don't understand it yet
 
 ⬜ QUESTION FIRST - Did you look at problems before theory?
-   • Trains your brain to study with PURPOSE
+• Trains your brain to study with PURPOSE
 
 DAILY WORKFLOW:
 ───────────────
@@ -42,7 +41,6 @@ Morning:  Look at problems FIRST → Study theory → Solve
 Lunch:    Blurt session - dump everything on paper
 Evening:  Revise today + previous days (2-3-7)
 Night:    Can you explain it simply? (Feynman test)
-```
 
 ---
 

@@ -6,25 +6,23 @@
 
 ## 5W1H — Why This Chapter?
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: Flexbox = 1-dimensional layout (row OR column).               ║
-║        Grid = 2-dimensional layout (rows AND columns together).      ║
-║                                                                      ║
-║  WHY:  Before flex/grid, layout was done with floats and hacks.      ║
-║        Centering a div was a meme. Now it's 3 lines of CSS.          ║
-║        Flexbox and Grid solve 99% of all layout problems.            ║
-║                                                                      ║
-║  WHO:  Every developer who builds UIs. No exceptions.                ║
-║                                                                      ║
-║  WHEN: Flex: Navigation bars, card rows, alignments.                 ║
-║        Grid: Page layouts, dashboards, complex 2D layouts.           ║
-║        BOTH: Use together! Grid for page, flex for components.       ║
-║                                                                      ║
-║  HOW:  display: flex or display: grid on the PARENT container.       ║
-║        Children become flex/grid items automatically.                ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> WHAT: Flexbox = 1-dimensional layout (row OR column).
+> Grid = 2-dimensional layout (rows AND columns together).
+>
+> WHY:  Before flex/grid, layout was done with floats and hacks.
+> Centering a div was a meme. Now it's 3 lines of CSS.
+> Flexbox and Grid solve 99% of all layout problems.
+>
+> WHO:  Every developer who builds UIs. No exceptions.
+>
+> WHEN: Flex: Navigation bars, card rows, alignments.
+> Grid: Page layouts, dashboards, complex 2D layouts.
+> BOTH: Use together! Grid for page, flex for components.
+>
+> HOW:  display: flex or display: grid on the PARENT container.
+> Children become flex/grid items automatically.
+
 
 ---
 

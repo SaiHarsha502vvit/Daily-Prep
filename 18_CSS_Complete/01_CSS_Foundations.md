@@ -6,30 +6,28 @@
 
 ## 5W1H — Why This Chapter?
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: CSS (Cascading Style Sheets) controls HOW HTML looks.         ║
-║        Layout, colors, typography, spacing, animations.              ║
-║                                                                      ║
-║  WHY:  HTML alone = newspaper from 1995. CSS = modern web.           ║
-║        Without CSS skills, you CAN'T build professional UIs.         ║
-║        React components need CSS. Debugging layout issues needs      ║
-║        deep CSS understanding.                                       ║
-║                                                                      ║
-║  WHO:  Every frontend developer. Even "backend-focused" devs         ║
-║        need CSS basics for full-stack work.                          ║
-║                                                                      ║
-║  WHEN: After HTML basics. Before learning any CSS framework.         ║
-║        CSS fundamentals are FOREVER — Tailwind/Bootstrap change.     ║
-║                                                                      ║
-║  WHERE: Browsers render CSS. Every website, web app, email           ║
-║         template, mobile webview uses CSS.                           ║
-║                                                                      ║
-║  HOW:  CSS rules = selector { property: value; }                     ║
-║        Selector targets HTML. Properties change appearance.          ║
-║        The CASCADE determines which rule wins when conflicts.        ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> WHAT: CSS (Cascading Style Sheets) controls HOW HTML looks.
+> Layout, colors, typography, spacing, animations.
+>
+> WHY:  HTML alone = newspaper from 1995. CSS = modern web.
+> Without CSS skills, you CAN'T build professional UIs.
+> React components need CSS. Debugging layout issues needs
+> deep CSS understanding.
+>
+> WHO:  Every frontend developer. Even "backend-focused" devs
+> need CSS basics for full-stack work.
+>
+> WHEN: After HTML basics. Before learning any CSS framework.
+> CSS fundamentals are FOREVER — Tailwind/Bootstrap change.
+>
+> WHERE: Browsers render CSS. Every website, web app, email
+> template, mobile webview uses CSS.
+>
+> HOW:  CSS rules = selector { property: value; }
+> Selector targets HTML. Properties change appearance.
+> The CASCADE determines which rule wins when conflicts.
+
 
 ---
 

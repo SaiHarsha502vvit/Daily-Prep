@@ -11,24 +11,22 @@
 
 ## The Three Pillars
 
-```
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║  PILLAR 1: METRICS (What is happening?)                                          ║
-║  → Numerical time-series data: CPU 85%, latency 120ms, errors 5/min              ║
-║  → Tools: Prometheus, Datadog, CloudWatch                                        ║
-║  → Dashboards: Grafana                                                           ║
-║                                                                                  ║
-║  PILLAR 2: LOGS (Why did it happen?)                                             ║
-║  → Detailed event records with context                                           ║
-║  → Tools: ELK Stack (Elasticsearch + Logstash + Kibana), Loki, Splunk            ║
-║  → Structured JSON logs with correlation IDs                                     ║
-║                                                                                  ║
-║  PILLAR 3: TRACES (Where did it happen?)                                         ║
-║  → Follow a request across multiple services                                     ║
-║  → Tools: Jaeger, Zipkin, AWS X-Ray, OpenTelemetry                               ║
-║  → Trace ID propagated through headers                                           ║
-╚══════════════════════════════════════════════════════════════════════════════════╝
-```
+
+> PILLAR 1: METRICS (What is happening?)
+> → Numerical time-series data: CPU 85%, latency 120ms, errors 5/min
+> → Tools: Prometheus, Datadog, CloudWatch
+> → Dashboards: Grafana
+>
+> PILLAR 2: LOGS (Why did it happen?)
+> → Detailed event records with context
+> → Tools: ELK Stack (Elasticsearch + Logstash + Kibana), Loki, Splunk
+> → Structured JSON logs with correlation IDs
+>
+> PILLAR 3: TRACES (Where did it happen?)
+> → Follow a request across multiple services
+> → Tools: Jaeger, Zipkin, AWS X-Ray, OpenTelemetry
+> → Trace ID propagated through headers
+
 
 ---
 

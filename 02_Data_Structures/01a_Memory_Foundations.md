@@ -10,22 +10,20 @@
 
 # 🔬 PART 0A: HOW COMPUTER MEMORY ACTUALLY WORKS (The Foundation)
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║     BEFORE YOU LEARN DATA STRUCTURES - UNDERSTAND THE MACHINE                ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+
+> BEFORE YOU LEARN DATA STRUCTURES - UNDERSTAND THE MACHINE
+
 
 Why does this matter?
 ─────────────────────
 Every data structure exists in MEMORY. If you don't understand memory,
 you'll never truly understand why:
-  • Arrays are fast for random access
-  • LinkedLists are slow for random access
-  • HashMaps are O(1) but use more memory
-  • Cache-friendly code runs 100x faster
+• Arrays are fast for random access
+• LinkedLists are slow for random access
+• HashMaps are O(1) but use more memory
+• Cache-friendly code runs 100x faster
 
 Let's go DEEP into how computers actually work!
-```
 
 ## THE MEMORY HIERARCHY - Why Some Operations Are Faster
 
@@ -273,49 +271,29 @@ Let's go DEEP into how computers actually work!
 
 ## WHY ARRAYS ARE FAST - Memory Layout Explained
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                  ARRAY MEMORY LAYOUT - THE SPEED SECRET                         │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  int[] arr = {10, 20, 30, 40, 50};                                              │
-│                                                                                 │
-│  MEMORY (CONTIGUOUS - all elements side by side):                               │
-│  ┌───────────────────────────────────────────────────────────────────────────┐  │
-│  │ Address │ 0x1000 │ 0x1004 │ 0x1008 │ 0x100C │ 0x1010 │                    │  │
-│  │ Index   │   [0]  │   [1]  │   [2]  │   [3]  │   [4]  │                    │  │
-│  │ Value   │   10   │   20   │   30   │   40   │   50   │                    │  │
-│  └───────────────────────────────────────────────────────────────────────────┘  │
-│                                                                                 │
-│  ADDRESS CALCULATION (O(1)):                                                    │
-│  ────────────────────────────                                                   │
-│  address(arr[i]) = baseAddress + (i × elementSize)                              │
-│                                                                                 │
-│  arr[3] = 0x1000 + (3 × 4) = 0x1000 + 12 = 0x100C                               │
-│                                                                                 │
-│  This is just ONE arithmetic operation! CPU does this in 1 cycle!               │
-│                                                                                 │
-│                                                                                 │
-│  CACHE FRIENDLINESS:                                                            │
-│  ──────────────────                                                             │
-│  When you access arr[0], the CPU loads a "cache line" (typically 64 bytes)      │
-│                                                                                 │
-│  Cache Line Loaded:                                                             │
-│  ┌───────────────────────────────────────────────────────────────────────────┐  │
-│  │ arr[0] │ arr[1] │ arr[2] │ arr[3] │ arr[4] │ arr[5] │ ... │ arr[15] │    │   │
-│  │  10    │  20    │  30    │  40    │  50    │  ...   │ ... │  ...    │    │   │
-│  └───────────────────────────────────────────────────────────────────────────┘  │
-│                                                                                 │
-│  Now arr[1], arr[2], etc. are already in L1 cache!                              │
-│  Access time: ~1 nanosecond instead of ~100 nanoseconds                         │
-│                                                                                 │
-│  This is why iterating an array is SO FAST:                                     │
-│  for (int i = 0; i < arr.length; i++) {                                         │
-│      sum += arr[i];  // Most accesses are cache hits!                           │
-│  }                                                                              │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+## Array Memory Layout - The Speed Secret
+
+int[] arr = {10, 20, 30, 40, 50};
+MEMORY (CONTIGUOUS - all elements side by side):
+| Address | 0x1000 | 0x1004 | 0x1008 | 0x100C | 0x1010 | |
+| Index   |   [0]  |   [1]  |   [2]  |   [3]  |   [4]  | |
+| Value   |   10   |   20   |   30   |   40   |   50   | |
+ADDRESS CALCULATION (O(1)):
+address(arr[i]) = baseAddress + (i × elementSize)
+arr[3] = 0x1000 + (3 × 4) = 0x1000 + 12 = 0x100C
+This is just ONE arithmetic operation! CPU does this in 1 cycle!
+
+**Cache Friendliness**:
+When you access arr[0], the CPU loads a "cache line" (typically 64 bytes)
+Cache Line Loaded:
+| arr[0] | arr[1] | arr[2] | arr[3] | arr[4] | arr[5] | ... | arr[15] | |
+| 10    |  20    |  30    |  40    |  50    |  ...   | ... |  ...    | |
+Now arr[1], arr[2], etc. are already in L1 cache!
+Access time: ~1 nanosecond instead of ~100 nanoseconds
+This is why iterating an array is SO FAST:
+for (int i = 0; i < arr.length; i++) {
+sum += arr[i];  // Most accesses are cache hits!
+}
 
 ## WHY LINKED LISTS ARE SLOW - Memory Layout Explained
 
@@ -383,211 +361,147 @@ Let's go DEEP into how computers actually work!
 
 ## CPU OPERATIONS - What Actually Happens
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    CPU INSTRUCTION CYCLE - THE BASICS                           │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  Every operation in your code becomes CPU instructions                          │
-│                                                                                 │
-│  Java Code:        int sum = a + b;                                             │
-│                                                                                 │
-│  Bytecode:         iload_1        // Load 'a' onto stack                        │
-│                    iload_2        // Load 'b' onto stack                        │
-│                    iadd           // Add top two values                         │
-│                    istore_3       // Store result in 'sum'                      │
-│                                                                                 │
-│  Machine Code:     MOV eax, [a]   // Load a into register                       │
-│  (x86)             ADD eax, [b]   // Add b to register                          │
-│                    MOV [sum], eax // Store result                               │
-│                                                                                 │
-│                                                                                 │
-│  CPU CLOCK CYCLES FOR COMMON OPERATIONS:                                        │
-│  ───────────────────────────────────────                                        │
-│  ┌─────────────────────────────────────────────────────────────────────────┐    │
-│  │ Operation                │ Cycles │ Notes                              │     │
-│  ├──────────────────────────┼────────┼────────────────────────────────────┤     │
-│  │ Integer ADD/SUB          │ 1      │ Fastest operations                 │     │
-│  │ Integer MUL              │ 3      │ Multiplication is costlier         │     │
-│  │ Integer DIV              │ 20-80  │ Division is VERY expensive!        │     │
-│  │ Floating-point ADD       │ 3-5    │ Separate FPU unit                  │     │
-│  │ Floating-point MUL       │ 4-5    │                                    │     │
-│  │ Floating-point DIV       │ 10-40  │                                    │     │
-│  │ Comparison (==, <, >)    │ 1      │ Simple comparison                  │     │
-│  │ Branch (if/else)         │ 1-20   │ Depends on prediction              │     │
-│  │ Memory Read (L1 cache)   │ 4      │ Cache hit                          │     │
-│  │ Memory Read (L2 cache)   │ 12     │                                    │     │
-│  │ Memory Read (L3 cache)   │ 40     │                                    │     │
-│  │ Memory Read (RAM)        │ 200    │ Cache miss - EXPENSIVE!           │      │
-│  │ Function Call            │ 15-30  │ Stack frame setup                  │     │
-│  │ Virtual Method Call      │ 25-50  │ Vtable lookup + call               │     │
-│  └──────────────────────────┴────────┴────────────────────────────────────┘     │
-│                                                                                 │
-│                                                                                 │
-│  WHY THIS MATTERS FOR DSA:                                                      │
-│  ─────────────────────────                                                      │
-│  • Division is 20-80x slower than addition!                                     │
-│    Use bit shifts: n / 2  →  n >> 1                                             │
-│    Use bit masks:  n % 8  →  n & 7                                              │
-│                                                                                 │
-│  • Memory access is 200x slower than arithmetic!                                │
-│    Cache-friendly code beats clever algorithms                                  │
-│                                                                                 │
-│  • Branch misprediction costs ~15 cycles!                                       │
-│    Predictable patterns are faster than random                                  │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+## Cpu Instruction Cycle - The Basics
+
+Every operation in your code becomes CPU instructions
+Java Code:        int sum = a + b;
+Bytecode:         iload_1        // Load 'a' onto stack
+iload_2        // Load 'b' onto stack
+iadd           // Add top two values
+istore_3       // Store result in 'sum'
+Machine Code:     MOV eax, [a]   // Load a into register
+(x86)             ADD eax, [b]   // Add b to register
+MOV [sum], eax // Store result
+
+**Cpu Clock Cycles For Common Operations**:
+| Operation                | Cycles | Notes |
+┼────────┼
+| Integer ADD/SUB          | 1      | Fastest operations |
+| Integer MUL              | 3      | Multiplication is costlier |
+| Integer DIV              | 20-80  | Division is VERY expensive! |
+| Floating-point ADD       | 3-5    | Separate FPU unit |
+| Floating-point MUL       | 4-5    | |
+| Floating-point DIV       | 10-40  | |
+| Comparison (==, <, >)    | 1      | Simple comparison |
+| Branch (if/else)         | 1-20   | Depends on prediction |
+| Memory Read (L1 cache)   | 4      | Cache hit |
+| Memory Read (L2 cache)   | 12     | |
+| Memory Read (L3 cache)   | 40     | |
+| Memory Read (RAM)        | 200    | Cache miss - EXPENSIVE! |
+| Function Call            | 15-30  | Stack frame setup |
+| Virtual Method Call      | 25-50  | Vtable lookup + call |
+┴────────┴
+
+**Why This Matters For Dsa**:
+- Division is 20-80x slower than addition!
+Use bit shifts: n / 2  →  n >> 1
+Use bit masks:  n % 8  →  n & 7
+- Memory access is 200x slower than arithmetic!
+Cache-friendly code beats clever algorithms
+- Branch misprediction costs ~15 cycles!
+Predictable patterns are faster than random
 
 ## BIT MANIPULATION - The Fastest Operations
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    BIT-LEVEL OPERATIONS - COMPLETE GUIDE                        │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  BINARY REPRESENTATION:                                                         │
-│  ─────────────────────                                                          │
-│  int x = 42;                                                                    │
-│                                                                                 │
-│  42 in binary: 00000000 00000000 00000000 00101010                              │
-│                                                   │││││                         │
-│                    Position: 5 4 3 2 1 0         │││││                          │
-│                    Value:    32+0+8+0+2+0 = 42   │││││                          │
-│                                                   │││││                         │
-│                                              32 ──┘││││                         │
-│                                               8 ───┘│││                         │
-│                                               2 ────┘││                         │
-│                                                      ││                         │
-│                                                                                 │
-│  BIT OPERATIONS:                                                                │
-│  ───────────────                                                                │
-│                                                                                 │
-│  AND (&) - Both bits must be 1                                                  │
-│  ─────────────────────────────────                                              │
-│    42 & 15 = ?                                                                  │
-│    42: 00101010                                                                 │
-│    15: 00001111                                                                 │
-│    ─────────────                                                                │
-│        00001010 = 10                                                            │
-│                                                                                 │
-│  USE: Masking bits, checking if bit is set                                      │
-│  • Check if even:    (n & 1) == 0                                               │
-│  • Get last k bits:  n & ((1 << k) - 1)                                         │
-│                                                                                 │
-│                                                                                 │
-│  OR (|) - Either bit can be 1                                                   │
-│  ───────────────────────────────                                                │
-│    42 | 15 = ?                                                                  │
-│    42: 00101010                                                                 │
-│    15: 00001111                                                                 │
-│    ─────────────                                                                │
-│        00101111 = 47                                                            │
-│                                                                                 │
-│  USE: Setting bits                                                              │
-│  • Set bit i:  n | (1 << i)                                                     │
-│                                                                                 │
-│                                                                                 │
-│  XOR (^) - Bits must be different                                               │
-│  ───────────────────────────────────                                            │
-│    42 ^ 15 = ?                                                                  │
-│    42: 00101010                                                                 │
-│    15: 00001111                                                                 │
-│    ─────────────                                                                │
-│        00100101 = 37                                                            │
-│                                                                                 │
-│  USE: Toggle bits, find single number, swap                                     │
-│  • Toggle bit i:  n ^ (1 << i)                                                  │
-│  • Swap without temp:  a ^= b; b ^= a; a ^= b;                                  │
-│  • a ^ a = 0 (cancel out)                                                       │
-│  • a ^ 0 = a (identity)                                                         │
-│                                                                                 │
-│                                                                                 │
-│  NOT (~) - Flip all bits                                                        │
-│  ─────────────────────────                                                      │
-│    ~42 = ?                                                                      │
-│    42:  00000000 00000000 00000000 00101010                                     │
-│    ~42: 11111111 11111111 11111111 11010101 = -43                               │
-│                                                                                 │
-│  (Two's complement: -43 = ~42)                                                  │
-│                                                                                 │
-│                                                                                 │
-│  LEFT SHIFT (<<) - Multiply by 2^n                                              │
-│  ───────────────────────────────────                                            │
-│    42 << 2 = ?                                                                  │
-│    42:     00101010                                                             │
-│    42<<2:  10101000 = 168                                                       │
-│                                                                                 │
-│  42 × 4 = 168  (same as 42 × 2²)                                                │
-│                                                                                 │
-│  USE: Fast multiplication                                                       │
-│  • n * 2:   n << 1                                                              │
-│  • n * 8:   n << 3                                                              │
-│  • n * 2^k: n << k                                                              │
-│                                                                                 │
-│                                                                                 │
-│  RIGHT SHIFT (>>) - Divide by 2^n                                               │
-│  ────────────────────────────────                                               │
-│    42 >> 2 = ?                                                                  │
-│    42:     00101010                                                             │
-│    42>>2:  00001010 = 10                                                        │
-│                                                                                 │
-│  42 / 4 = 10 (integer division)                                                 │
-│                                                                                 │
-│  USE: Fast division                                                             │
-│  • n / 2:   n >> 1                                                              │
-│  • n / 8:   n >> 3                                                              │
-│                                                                                 │
-│                                                                                 │
-│  COMMON BIT TRICKS:                                                             │
-│  ─────────────────                                                              │
-│                                                                                 │
-│  1. Check if power of 2:                                                        │
-│     (n & (n-1)) == 0                                                            │
-│                                                                                 │
-│     8:     1000                                                                 │
-│     7:     0111                                                                 │
-│     8 & 7: 0000 ✓ (power of 2)                                                  │
-│                                                                                 │
-│     6:     0110                                                                 │
-│     5:     0101                                                                 │
-│     6 & 5: 0100 ✗ (not power of 2)                                              │
-│                                                                                 │
-│  2. Get lowest set bit:                                                         │
-│     n & (-n)                                                                    │
-│                                                                                 │
-│     12:     1100                                                                │
-│    -12:     0100 (two's complement)                                             │
-│     12&-12: 0100 = 4 (lowest set bit)                                           │
-│                                                                                 │
-│  3. Clear lowest set bit:                                                       │
-│     n & (n-1)                                                                   │
-│                                                                                 │
-│     12:     1100                                                                │
-│     11:     1011                                                                │
-│     12&11:  1000 = 8 (cleared bit at position 2)                                │
-│                                                                                 │
-│  4. Count set bits (Brian Kernighan's):                                         │
-│     int count = 0;                                                              │
-│     while (n != 0) {                                                            │
-│         n = n & (n - 1);  // Clear lowest bit                                   │
-│         count++;                                                                │
-│     }                                                                           │
-│                                                                                 │
-│  5. Check if bit i is set:                                                      │
-│     (n & (1 << i)) != 0                                                         │
-│                                                                                 │
-│  6. Set bit i:                                                                  │
-│     n | (1 << i)                                                                │
-│                                                                                 │
-│  7. Clear bit i:                                                                │
-│     n & ~(1 << i)                                                               │
-│                                                                                 │
-│  8. Toggle bit i:                                                               │
-│     n ^ (1 << i)                                                                │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+## Bit-Level Operations - Complete Guide
+
+
+**Binary Representation**:
+int x = 42;
+42 in binary: 00000000 00000000 00000000 00101010
+Position: 5 4 3 2 1 0
+Value:    32+0+8+0+2+0 = 42
+32
+8
+2
+
+**Bit Operations**:
+AND (&) - Both bits must be 1
+42 & 15 = ?
+42: 00101010
+15: 00001111
+00001010 = 10
+
+**Use**: Masking bits, checking if bit is set
+- Check if even:    (n & 1) == 0
+- Get last k bits:  n & ((1 << k) - 1)
+OR (|) - Either bit can be 1
+42 | 15 = ?
+42: 00101010
+15: 00001111
+00101111 = 47
+
+**Use**: Setting bits
+- Set bit i:  n | (1 << i)
+XOR (^) - Bits must be different
+42 ^ 15 = ?
+42: 00101010
+15: 00001111
+00100101 = 37
+
+**Use**: Toggle bits, find single number, swap
+- Toggle bit i:  n ^ (1 << i)
+- Swap without temp:  a ^= b; b ^= a; a ^= b;
+- a ^ a = 0 (cancel out)
+- a ^ 0 = a (identity)
+NOT (~) - Flip all bits
+~42 = ?
+42:  00000000 00000000 00000000 00101010
+~42: 11111111 11111111 11111111 11010101 = -43
+(Two's complement: -43 = ~42)
+LEFT SHIFT (<<) - Multiply by 2^n
+42 << 2 = ?
+42:     00101010
+42<<2:  10101000 = 168
+42 × 4 = 168  (same as 42 × 2²)
+
+**Use**: Fast multiplication
+- n * 2:   n << 1
+- n * 8:   n << 3
+- n * 2^k: n << k
+RIGHT SHIFT (>>) - Divide by 2^n
+42 >> 2 = ?
+42:     00101010
+42>>2:  00001010 = 10
+42 / 4 = 10 (integer division)
+
+**Use**: Fast division
+- n / 2:   n >> 1
+- n / 8:   n >> 3
+
+**Common Bit Tricks**:
+1. Check if power of 2:
+(n & (n-1)) == 0
+8:     1000
+7:     0111
+8 & 7: 0000 ✓ (power of 2)
+6:     0110
+5:     0101
+6 & 5: 0100 ✗ (not power of 2)
+2. Get lowest set bit:
+n & (-n)
+12:     1100
+-12:     0100 (two's complement)
+12&-12: 0100 = 4 (lowest set bit)
+3. Clear lowest set bit:
+n & (n-1)
+12:     1100
+11:     1011
+12&11:  1000 = 8 (cleared bit at position 2)
+4. Count set bits (Brian Kernighan's):
+int count = 0;
+while (n != 0) {
+n = n & (n - 1);  // Clear lowest bit
+count++;
+}
+5. Check if bit i is set:
+(n & (1 << i)) != 0
+6. Set bit i:
+n | (1 << i)
+7. Clear bit i:
+n & ~(1 << i)
+8. Toggle bit i:
+n ^ (1 << i)
 
 ---
 

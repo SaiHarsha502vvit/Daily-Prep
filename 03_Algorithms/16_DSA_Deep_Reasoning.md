@@ -28,34 +28,32 @@
 
 ### Deep Reasoning
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  Big O measures GROWTH RATE, not speed.                          ║
-║                                                                  ║
-║  THE RESTAURANT ANALOGY:                                         ║
-║  O(1): Microwave — same time whether 1 item or party of 100.     ║
-║        But that "constant" time could be 5 minutes!              ║
-║  O(n): Grill — time grows linearly with order count.             ║
-║  O(n²): Handshake — each person shakes hands with everyone.      ║
-║  O(log n): Phone book — eliminate half each step.                ║
-║  O(n log n): Sort each order, then serve in order.               ║
-║                                                                  ║
-║  KEY INSIGHTS people miss:                                       ║
-║  1. O(1) can be SLOWER than O(n) for small n.                    ║
-║     HashMap O(1) with 10 items: compute hash, check bucket...    ║
-║     Array scan O(n) with 10 items: just check 10 elements.       ║
-║     Array scan wins! Overhead of hashing > scanning 10 items.    ║
-║                                                                  ║
-║  2. Constants matter in practice:                                ║
-║     O(n) with constant 1000 → 1000n                              ║
-║     O(n²) with constant 0.001 → 0.001n²                          ║
-║     Below n=1,000,000, the "slower" algorithm is faster!         ║
-║                                                                  ║
-║  3. Big O describes WORST CASE (usually). Average case exists:   ║
-║     Quicksort: O(n²) worst, O(n log n) average                   ║
-║     HashMap: O(n) worst, O(1) average                            ║
-╚══════════════════════════════════════════════════════════════════╝
-```
+
+> Big O measures GROWTH RATE, not speed.
+>
+> THE RESTAURANT ANALOGY:
+> O(1): Microwave — same time whether 1 item or party of 100.
+> But that "constant" time could be 5 minutes!
+> O(n): Grill — time grows linearly with order count.
+> O(n²): Handshake — each person shakes hands with everyone.
+> O(log n): Phone book — eliminate half each step.
+> O(n log n): Sort each order, then serve in order.
+>
+> KEY INSIGHTS people miss:
+> 1. O(1) can be SLOWER than O(n) for small n.
+> HashMap O(1) with 10 items: compute hash, check bucket...
+> Array scan O(n) with 10 items: just check 10 elements.
+> Array scan wins! Overhead of hashing > scanning 10 items.
+>
+> 2. Constants matter in practice:
+> O(n) with constant 1000 → 1000n
+> O(n²) with constant 0.001 → 0.001n²
+> Below n=1,000,000, the "slower" algorithm is faster!
+>
+> 3. Big O describes WORST CASE (usually). Average case exists:
+> Quicksort: O(n²) worst, O(n log n) average
+> HashMap: O(n) worst, O(1) average
+
 
 ---
 
@@ -64,33 +62,31 @@
 ### The Freeze Question
 > "HashMap is O(1) for get and put, right?"
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  THE FILING CABINET (from Java chapter, deeper here):            ║
-║                                                                  ║
-║  BEST CASE O(1): Each key goes to a unique bucket.               ║
-║  hash("Alice") → bucket 3, hash("Bob") → bucket 7                ║
-║  Direct access. No searching.                                    ║
-║                                                                  ║
-║  WORST CASE O(n): All keys hash to SAME bucket.                  ║
-║  hash("Alice") → bucket 3, hash("Bob") → bucket 3,               ║
-║  hash("Charlie") → bucket 3...                                   ║
-║  Now bucket 3 is a linked list → must scan all entries.          ║
-║  (Java 8: converts to tree at 8 entries → O(log n) worst case)   ║
-║                                                                  ║
-║  WHEN THIS HAPPENS IN REAL LIFE:                                 ║
-║  1. Bad hashCode that returns same value for many keys           ║
-║  2. Hash collision attack (adversarial input)                    ║
-║  3. Resizing threshold — when load factor > 0.75, all            ║
-║     entries rehashed → O(n) for that one operation               ║
-║                                                                  ║
-║  AMORTIZED O(1): Most operations are O(1). Occasionally O(n)     ║
-║  for resize. Spread across all operations → amortized O(1).      ║
-║                                                                  ║
-║  Like rent: You pay $12,000/year in one lump (O(n) resize).      ║
-║  Amortized: $1,000/month (O(1) per operation).                   ║
-╚══════════════════════════════════════════════════════════════════╝
-```
+
+> THE FILING CABINET (from Java chapter, deeper here):
+>
+> BEST CASE O(1): Each key goes to a unique bucket.
+> hash("Alice") → bucket 3, hash("Bob") → bucket 7
+> Direct access. No searching.
+>
+> WORST CASE O(n): All keys hash to SAME bucket.
+> hash("Alice") → bucket 3, hash("Bob") → bucket 3,
+> hash("Charlie") → bucket 3...
+> Now bucket 3 is a linked list → must scan all entries.
+> (Java 8: converts to tree at 8 entries → O(log n) worst case)
+>
+> WHEN THIS HAPPENS IN REAL LIFE:
+> 1. Bad hashCode that returns same value for many keys
+> 2. Hash collision attack (adversarial input)
+> 3. Resizing threshold — when load factor > 0.75, all
+> entries rehashed → O(n) for that one operation
+>
+> AMORTIZED O(1): Most operations are O(1). Occasionally O(n)
+> for resize. Spread across all operations → amortized O(1).
+>
+> Like rent: You pay $12,000/year in one lump (O(n) resize).
+> Amortized: $1,000/month (O(1) per operation).
+
 
 ---
 
@@ -99,35 +95,33 @@
 ### The Freeze Question
 > "Mergesort is O(n log n) guaranteed. Quicksort is O(n²) worst case. Why do we use Quicksort?"
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  THE MOVING HOUSE ANALOGY                                        ║
-║                                                                  ║
-║  Mergesort: Hire a moving company with warehouses.               ║
-║  → Always O(n log n) ✅                                           ║
-║  → Needs O(n) extra space (the warehouse!) ❌                     ║
-║  → Lots of copying between warehouse and house                   ║
-║  → Cache-unfriendly (data jumps between locations)               ║
-║                                                                  ║
-║  Quicksort: Sort everything IN your house.                       ║
-║  → O(n log n) average, O(n²) worst ⚠️                            ║
-║  → O(log n) extra space (just the recursion stack) ✅             ║
-║  → IN-PLACE — data stays where it is                             ║
-║  → CACHE-FRIENDLY — sequential access patterns                   ║
-║  → Smaller constant factor (fewer swaps, less overhead)          ║
-║                                                                  ║
-║  WHY CACHE MATTERS:                                              ║
-║  CPU cache loads adjacent memory. Quicksort accesses elements    ║
-║  near each other → cache hits. Mergesort copies between          ║
-║  arrays → cache misses. This is 2-3x difference in practice!     ║
-║                                                                  ║
-║  REAL-WORLD:                                                     ║
-║  Java Arrays.sort(primitives) → Dual-Pivot Quicksort             ║
-║  Java Arrays.sort(objects) → TimSort (merge-based, stable)       ║
-║  Why? Objects are references → cache doesn't matter as much.     ║
-║  Stability matters for objects. Quicksort is unstable.           ║
-╚══════════════════════════════════════════════════════════════════╝
-```
+
+> THE MOVING HOUSE ANALOGY
+>
+> Mergesort: Hire a moving company with warehouses.
+> → Always O(n log n) ✅
+> → Needs O(n) extra space (the warehouse!) ❌
+> → Lots of copying between warehouse and house
+> → Cache-unfriendly (data jumps between locations)
+>
+> Quicksort: Sort everything IN your house.
+> → O(n log n) average, O(n²) worst ⚠️
+> → O(log n) extra space (just the recursion stack) ✅
+> → IN-PLACE — data stays where it is
+> → CACHE-FRIENDLY — sequential access patterns
+> → Smaller constant factor (fewer swaps, less overhead)
+>
+> WHY CACHE MATTERS:
+> CPU cache loads adjacent memory. Quicksort accesses elements
+> near each other → cache hits. Mergesort copies between
+> arrays → cache misses. This is 2-3x difference in practice!
+>
+> REAL-WORLD:
+> Java Arrays.sort(primitives) → Dual-Pivot Quicksort
+> Java Arrays.sort(objects) → TimSort (merge-based, stable)
+> Why? Objects are references → cache doesn't matter as much.
+> Stability matters for objects. Quicksort is unstable.
+
 
 ---
 
@@ -136,35 +130,33 @@
 ### The Freeze Question
 > "When do you use BFS vs DFS?"
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  THE BUILDING SEARCH ANALOGY                                     ║
-║                                                                  ║
-║  BFS (Breadth-First) = Floor by floor                            ║
-║  → Check ALL rooms on floor 1, then ALL on floor 2, then 3...    ║
-║  → Uses a QUEUE (FIFO)                                           ║
-║  → Memory: O(width of widest level)                              ║
-║                                                                  ║
-║  DFS (Depth-First) = Follow one corridor to the end              ║
-║  → Go down one hallway to the end, backtrack, try next           ║
-║  → Uses a STACK (or recursion)                                   ║
-║  → Memory: O(depth of deepest path)                              ║
-║                                                                  ║
-║  DECISION FRAMEWORK:                                             ║
-║                                                                  ║
-║  "Is the answer CLOSE to the start?" → BFS                       ║
-║  (Shortest path, level-order, minimum steps)                     ║
-║                                                                  ║
-║  "Is the answer at the END/LEAF?" → DFS                          ║
-║  (Path exists?, all paths, backtracking, has cycle?)             ║
-║                                                                  ║
-║  "Need SHORTEST path?" → BFS (always)                            ║
-║  "Need ALL possible paths?" → DFS (backtracking)                 ║
-║  "Tree is very DEEP?" → BFS (DFS might stack overflow)           ║
-║  "Tree is very WIDE?" → DFS (BFS uses too much memory)           ║
-║  "Need LEVEL-BY-LEVEL?" → BFS (naturally gives levels)           ║
-╚══════════════════════════════════════════════════════════════════╝
-```
+
+> THE BUILDING SEARCH ANALOGY
+>
+> BFS (Breadth-First) = Floor by floor
+> → Check ALL rooms on floor 1, then ALL on floor 2, then 3...
+> → Uses a QUEUE (FIFO)
+> → Memory: O(width of widest level)
+>
+> DFS (Depth-First) = Follow one corridor to the end
+> → Go down one hallway to the end, backtrack, try next
+> → Uses a STACK (or recursion)
+> → Memory: O(depth of deepest path)
+>
+> DECISION FRAMEWORK:
+>
+> "Is the answer CLOSE to the start?" → BFS
+> (Shortest path, level-order, minimum steps)
+>
+> "Is the answer at the END/LEAF?" → DFS
+> (Path exists?, all paths, backtracking, has cycle?)
+>
+> "Need SHORTEST path?" → BFS (always)
+> "Need ALL possible paths?" → DFS (backtracking)
+> "Tree is very DEEP?" → BFS (DFS might stack overflow)
+> "Tree is very WIDE?" → DFS (BFS uses too much memory)
+> "Need LEVEL-BY-LEVEL?" → BFS (naturally gives levels)
+
 
 ```
 USE CASE → ALGORITHM MAP:
@@ -187,37 +179,35 @@ Word ladder (min transforms)  → BFS ✅
 ### The Freeze Question
 > "When do I use DP vs greedy?"
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  THE ROAD TRIP ANALOGY                                           ║
-║                                                                  ║
-║  Greedy = GPS with "always take the fastest road NOW"            ║
-║  → Makes the locally optimal choice at each step                 ║
-║  → NEVER reconsiders past decisions                              ║
-║  → Fast: usually O(n log n) or O(n)                              ║
-║  → Works ONLY when local optimum → global optimum                ║
-║                                                                  ║
-║  DP = Exploring ALL routes and picking the overall best          ║
-║  → Considers all options, remembers results (memoization)        ║
-║  → CAN reconstruct the optimal path                              ║
-║  → Slower: usually O(n²) or O(n × m)                             ║
-║  → Works for OVERLAPPING subproblems + optimal substructure      ║
-║                                                                  ║
-║  HOW TO TELL:                                                    ║
-║  1. Can a greedy counterexample be found?                        ║
-║     Coin change: coins [1, 3, 4], target 6                       ║
-║     Greedy: 4+1+1 = 3 coins                                      ║
-║     Optimal: 3+3 = 2 coins → Greedy FAILS → Use DP               ║
-║                                                                  ║
-║  2. Does the problem have optimal substructure?                  ║
-║     "Can I build the answer from answers to smaller problems?"   ║
-║     YES + overlapping subproblems → DP                           ║
-║     YES + greedy choice property → Greedy                        ║
-║                                                                  ║
-║  GREEDY WORKS: Activity selection, Huffman, Kruskal, Dijkstra    ║
-║  DP NEEDED: Knapsack, LCS, Edit distance, Matrix chain           ║
-╚══════════════════════════════════════════════════════════════════╝
-```
+
+> THE ROAD TRIP ANALOGY
+>
+> Greedy = GPS with "always take the fastest road NOW"
+> → Makes the locally optimal choice at each step
+> → NEVER reconsiders past decisions
+> → Fast: usually O(n log n) or O(n)
+> → Works ONLY when local optimum → global optimum
+>
+> DP = Exploring ALL routes and picking the overall best
+> → Considers all options, remembers results (memoization)
+> → CAN reconstruct the optimal path
+> → Slower: usually O(n²) or O(n × m)
+> → Works for OVERLAPPING subproblems + optimal substructure
+>
+> HOW TO TELL:
+> 1. Can a greedy counterexample be found?
+> Coin change: coins [1, 3, 4], target 6
+> Greedy: 4+1+1 = 3 coins
+> Optimal: 3+3 = 2 coins → Greedy FAILS → Use DP
+>
+> 2. Does the problem have optimal substructure?
+> "Can I build the answer from answers to smaller problems?"
+> YES + overlapping subproblems → DP
+> YES + greedy choice property → Greedy
+>
+> GREEDY WORKS: Activity selection, Huffman, Kruskal, Dijkstra
+> DP NEEDED: Knapsack, LCS, Edit distance, Matrix chain
+
 
 ---
 
@@ -226,24 +216,22 @@ Word ladder (min transforms)  → BFS ✅
 ### The Freeze Question
 > "Why does my recursive solution get StackOverflowError?"
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  THE STACK OF PLATES ANALOGY                                     ║
-║                                                                  ║
-║  Each recursive call = a new plate on the stack                  ║
-║  Each plate holds: local variables, return address               ║
-║  Stack has limited height (usually ~10,000 frames in Java)       ║
-║                                                                  ║
-║  factorial(100000) → 100,000 plates → stack overflow!            ║
-║                                                                  ║
-║  SOLUTIONS:                                                      ║
-║  1. Convert to iteration (use explicit stack/loop)               ║
-║  2. Tail recursion (only works in languages that optimize it     ║
-║     — Java does NOT optimize tail calls, Kotlin/Scala do)        ║
-║  3. Increase stack size (-Xss2m) — band-aid, not a fix           ║
-║  4. Use DP (memoization) to reduce redundant calls               ║
-╚══════════════════════════════════════════════════════════════════╝
-```
+
+> THE STACK OF PLATES ANALOGY
+>
+> Each recursive call = a new plate on the stack
+> Each plate holds: local variables, return address
+> Stack has limited height (usually ~10,000 frames in Java)
+>
+> factorial(100000) → 100,000 plates → stack overflow!
+>
+> SOLUTIONS:
+> 1. Convert to iteration (use explicit stack/loop)
+> 2. Tail recursion (only works in languages that optimize it
+> — Java does NOT optimize tail calls, Kotlin/Scala do)
+> 3. Increase stack size (-Xss2m) — band-aid, not a fix
+> 4. Use DP (memoization) to reduce redundant calls
+
 
 ```java
 // Fibonacci: The classic "why recursion is slow" example

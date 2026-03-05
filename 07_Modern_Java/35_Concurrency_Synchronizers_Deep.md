@@ -25,33 +25,31 @@
 
 ### Deep Reasoning
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  THE CONCERT VENUE ANALOGY                                       ║
-║                                                                  ║
-║  You're organizing a large concert. Different coordination needs:║
-║                                                                  ║
-║  Semaphore     = Parking lot gate                                ║
-║    "Only 50 cars at a time. Car leaves → next car enters."       ║
-║    → Controls concurrent access to N resources                   ║
-║                                                                  ║
-║  CountDownLatch = Pre-show checklist                             ║
-║    "Sound ✓, Lights ✓, Security ✓ → Open the doors!"             ║
-║    → Wait until N tasks complete, then proceed. ONE-TIME use.    ║
-║                                                                  ║
-║  CyclicBarrier = Band performing in rounds                       ║
-║    "All 4 musicians ready? → Play verse. All ready? → Chorus."   ║
-║    → N threads sync at a point, REUSABLE for multiple rounds.    ║
-║                                                                  ║
-║  Phaser        = Flexible stage management                       ║
-║    "Phase 1: 5 crew set up. Phase 2: 3 crew handle sound."       ║
-║    → Dynamic: participants can join/leave between phases.        ║
-║                                                                  ║
-║  Exchanger     = Backstage pass swap                             ║
-║    "I give you my VIP pass, you give me your backstage pass."    ║
-║    → Two threads each give and receive one item.                 ║
-╚══════════════════════════════════════════════════════════════════╝
-```
+
+> THE CONCERT VENUE ANALOGY
+>
+> You're organizing a large concert. Different coordination needs:
+>
+> Semaphore     = Parking lot gate
+> "Only 50 cars at a time. Car leaves → next car enters."
+> → Controls concurrent access to N resources
+>
+> CountDownLatch = Pre-show checklist
+> "Sound ✓, Lights ✓, Security ✓ → Open the doors!"
+> → Wait until N tasks complete, then proceed. ONE-TIME use.
+>
+> CyclicBarrier = Band performing in rounds
+> "All 4 musicians ready? → Play verse. All ready? → Chorus."
+> → N threads sync at a point, REUSABLE for multiple rounds.
+>
+> Phaser        = Flexible stage management
+> "Phase 1: 5 crew set up. Phase 2: 3 crew handle sound."
+> → Dynamic: participants can join/leave between phases.
+>
+> Exchanger     = Backstage pass swap
+> "I give you my VIP pass, you give me your backstage pass."
+> → Two threads each give and receive one item.
+
 
 ### Decision Matrix: Which Synchronizer to Use
 
@@ -86,28 +84,26 @@
 
 ### Deep Reasoning
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  THE PARKING LOT ANALOGY                                         ║
-║                                                                  ║
-║  Lock = single-car garage                                        ║
-║  → ONE thread enters at a time                                   ║
-║  → The thread that locked MUST unlock (owner-based)              ║
-║                                                                  ║
-║  Semaphore = parking lot with N spots                            ║
-║  → N threads can enter simultaneously                            ║
-║  → ANY thread can release a permit (not owner-based!)            ║
-║  → When full, next thread waits until a spot opens               ║
-║                                                                  ║
-║  KEY DIFFERENCE:                                                 ║
-║  Lock:      1 thread, owner releases                             ║
-║  Semaphore: N threads, anyone can release                        ║
-║                                                                  ║
-║  Semaphore(1) ≈ Lock, but WITHOUT ownership enforcement          ║
-║  → Thread A acquires, Thread B can release → INTENTIONAL!        ║
-║  → Useful for signaling between threads                          ║
-╚══════════════════════════════════════════════════════════════════╝
-```
+
+> THE PARKING LOT ANALOGY
+>
+> Lock = single-car garage
+> → ONE thread enters at a time
+> → The thread that locked MUST unlock (owner-based)
+>
+> Semaphore = parking lot with N spots
+> → N threads can enter simultaneously
+> → ANY thread can release a permit (not owner-based!)
+> → When full, next thread waits until a spot opens
+>
+> KEY DIFFERENCE:
+> Lock:      1 thread, owner releases
+> Semaphore: N threads, anyone can release
+>
+> Semaphore(1) ≈ Lock, but WITHOUT ownership enforcement
+> → Thread A acquires, Thread B can release → INTENTIONAL!
+> → Useful for signaling between threads
+
 
 ### Code — Connection Pool Limiter
 

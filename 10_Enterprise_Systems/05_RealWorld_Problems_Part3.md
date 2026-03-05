@@ -10,12 +10,11 @@
 
 ## Problem 23: Split Bill Among Friends (Simplify Debts)
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║ COMPANY: Splitwise / PhonePe                                                 ║
-║ SYSTEM: Bill Splitting                                                       ║
-║ CHALLENGE: Minimize number of transactions to settle debts                   ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+
+> COMPANY: Splitwise / PhonePe
+> SYSTEM: Bill Splitting
+> CHALLENGE: Minimize number of transactions to settle debts
+
 
 EXAMPLE:
 ────────
@@ -34,7 +33,6 @@ Balance:
 
 Naive: Bob pays Alice ₹200, Charlie pays Alice ₹1100 = 2 transactions
 Optimal: Same in this case, but can be optimized for larger groups!
-```
 
 ```java
 /**

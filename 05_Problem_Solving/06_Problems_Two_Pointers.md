@@ -15,28 +15,25 @@
 **LeetCode 167** | **Difficulty:** Medium
 🔗 [https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/](https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  TWO SUM II - SORTED ARRAY                                                ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Array is SORTED. Find two numbers that add to target.                    ║
-║  Return 1-indexed positions.                                              ║
-║                                                                           ║
-║  Input: numbers = [2, 7, 11, 15], target = 9                              ║
-║  Output: [1, 2]                                                           ║
-║                                                                           ║
-║  Visual:                                                                  ║
-║  [2,  7,  11,  15]                                                        ║
-║   ↑            ↑                                                          ║
-║   L            R   sum=17 > 9, move R left                                ║
-║   ↑        ↑                                                              ║
-║   L        R       sum=13 > 9, move R left                                ║
-║   ↑    ↑                                                                  ║
-║   L    R           sum=9 = target ✓                                       ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
-```
+
+> TWO SUM II - SORTED ARRAY
+>
+> Array is SORTED. Find two numbers that add to target.
+> Return 1-indexed positions.
+>
+> Input: numbers = [2, 7, 11, 15], target = 9
+> Output: [1, 2]
+>
+> Visual:
+> [2,  7,  11,  15]
+> ↑            ↑
+> L            R   sum=17 > 9, move R left
+> ↑        ↑
+> L        R       sum=13 > 9, move R left
+> ↑    ↑
+> L    R           sum=9 = target ✓
+>
+
 
 ```java
 public int[] twoSum(int[] numbers, int target) {

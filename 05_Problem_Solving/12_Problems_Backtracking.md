@@ -6,99 +6,78 @@
 
 # 📚 SECTION 11: BACKTRACKING PROBLEMS
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    BACKTRACKING TEMPLATE                        │
-├─────────────────────────────────────────────────────────────────┤
-│  def backtrack(path, choices):                                  │
-│      if goal_reached:                                           │
-│          result.add(path.copy())                                │
-│          return                                                 │
-│                                                                 │
-│      for choice in choices:                                     │
-│          if is_valid(choice):                                   │
-│              path.add(choice)         # Make choice             │
-│              backtrack(path, choices) # Explore                 │
-│              path.remove(choice)      # Undo choice             │
-│                                                                 │
-│  KEY PATTERNS:                                                  │
-│  1. Subsets: Include or exclude each element                    │
-│  2. Permutations: Arrange elements in different orders          │
-│  3. Combinations: Select k elements from n                      │
-│  4. Partition: Divide into groups                               │
-│  5. Constraint satisfaction: N-Queens, Sudoku                   │
-└─────────────────────────────────────────────────────────────────┘
-```
+## Backtracking Template
+
+def backtrack(path, choices):
+if goal_reached:
+result.add(path.copy())
+return
+for choice in choices:
+if is_valid(choice):
+path.add(choice)         # Make choice
+backtrack(path, choices) # Explore
+path.remove(choice)      # Undo choice
+
+**Key Patterns**:
+1. Subsets: Include or exclude each element
+2. Permutations: Arrange elements in different orders
+3. Combinations: Select k elements from n
+4. Partition: Divide into groups
+5. Constraint satisfaction: N-Queens, Sudoku
 
 ---
 
 ## PART 0: WHY Backtracking — The Algorithm for "Generate ALL Valid Answers"
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║        BACKTRACKING PROBLEMS — COMPLETE UNDERSTANDING & GROWTH MINDSET       ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+## When Is Backtracking The Answer
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHEN IS BACKTRACKING THE ANSWER?                                             │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ SIGNAL: "Generate ALL valid combinations/permutations/subsets"               │
-│                                                                              │
-│ If the problem says "find ALL", "list ALL", "generate ALL" → Backtracking.   │
-│ DP finds the COUNT or BEST. Backtracking finds the ACTUAL solutions.         │
-│                                                                              │
-│ ┌───────────────────────┬─────────────────┬─────────────────────────┐        │
-│ │ Find...               │ Use             │ Why                     │        │
-│ │───────────────────────┼─────────────────┼─────────────────────────│        │
-│ │ Count of valid combos │ DP              │ Don't need actual combos│        │
-│ │ Best/min/max value    │ DP or Greedy    │ One answer needed       │        │
-│ │ ALL valid combos      │ BACKTRACKING    │ Must enumerate          │        │
-│ │ ANY one valid answer  │ Backtracking    │ Stop at first found     │        │
-│ │ Is a valid answer     │ Constraint prop │ Sudoku, N-Queens        │        │
-│ │ possible?             │ + Backtracking  │                         │        │
-│ └───────────────────────┴─────────────────┴─────────────────────────┘        │
-│                                                                              │
-│ REAL-WORLD BACKTRACKING:                                                     │
-│ • Sudoku solvers: Try a number, check constraints, undo if stuck             │
-│ • Chess engines: Explore moves, evaluate, undo (minimax + pruning)           │
-│ • Compiler regex: Match patterns by trying alternatives                      │
-│ • Combinatorial testing: Generate all test case combinations                 │
-│ • Circuit design: SAT solvers use backtracking with clause learning          │
-└──────────────────────────────────────────────────────────────────────────────┘
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ THE MENTAL MODEL: Decision Tree Exploration                                  │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ EVERY backtracking problem = exploring a DECISION TREE:                      │
-│                                                                              │
-│   At each node: make a CHOICE (include/exclude, pick a number, place queen)  │
-│   Leaf nodes:   VALID solution → add to result  OR  DEAD END → backtrack     │
-│                                                                              │
-│   Example: Subsets of [1,2,3]                                                │
-│                            []                                                │
-│                      ╱           ╲                                           │
-│                   +1               skip 1                                    │
-│                  [1]                  []                                     │
-│                ╱     ╲            ╱      ╲                                   │
-│             +2      skip 2     +2       skip 2                               │
-│           [1,2]     [1]       [2]        []                                  │
-│          ╱    ╲    ╱   ╲     ╱   ╲     ╱   ╲                                 │
-│      [1,2,3][1,2][1,3] [1] [2,3] [2] [3]  []                                 │
-│                                                                              │
-│   Result: [[], [1], [2], [3], [1,2], [1,3], [2,3], [1,2,3]]                  │
-│                                                                              │
-│   KEY INSIGHT: Backtracking = DFS on this decision tree.                     │
-│   PRUNING = skip branches that CANNOT lead to valid solutions.               │
-│                                                                              │
-│   THE CHOOSE-EXPLORE-UNCHOOSE FRAMEWORK:                                     │
-│   for each option in choices:                                                │
-│       CHOOSE:   add option to current path                                   │
-│       EXPLORE:  recurse to next decision                                     │
-│       UNCHOOSE: remove option from current path (BACKTRACK!)                 │
-└──────────────────────────────────────────────────────────────────────────────┘
-```
+**Signal**: "Generate ALL valid combinations/permutations/subsets"
+If the problem says "find ALL", "list ALL", "generate ALL" → Backtracking.
+DP finds the COUNT or BEST. Backtracking finds the ACTUAL solutions.
+┬─────────────────┬
+| Find...               | Use             | Why |
+┼─────────────────┼
+| Count of valid combos | DP              | Don't need actual combos |
+| Best/min/max value    | DP or Greedy    | One answer needed |
+| ALL valid combos      | BACKTRACKING    | Must enumerate |
+| ANY one valid answer  | Backtracking    | Stop at first found |
+| Is a valid answer     | Constraint prop | Sudoku, N-Queens |
+| possible?             | + Backtracking  | |
+┴─────────────────┴
+REAL-WORLD BACKTRACKING:
+- Sudoku solvers: Try a number, check constraints, undo if stuck
+- Chess engines: Explore moves, evaluate, undo (minimax + pruning)
+- Compiler regex: Match patterns by trying alternatives
+- Combinatorial testing: Generate all test case combinations
+- Circuit design: SAT solvers use backtracking with clause learning
+## The Mental Model: Decision Tree Exploration
+
+EVERY backtracking problem = exploring a DECISION TREE:
+At each node: make a CHOICE (include/exclude, pick a number, place queen)
+Leaf nodes:   VALID solution → add to result  OR  DEAD END → backtrack
+Example: Subsets of [1,2,3]
+[]
+╱           ╲
++1               skip 1
+[1]                  []
+╱     ╲            ╱      ╲
++2      skip 2     +2       skip 2
+[1,2]     [1]       [2]        []
+╱    ╲    ╱   ╲     ╱   ╲     ╱   ╲
+[1,2,3][1,2][1,3] [1] [2,3] [2] [3]  []
+Result: [[], [1], [2], [3], [1,2], [1,3], [2,3], [1,2,3]]
+
+> 💡 **KEY INSIGHT: Backtracking = DFS on this decision tree.**
+PRUNING = skip branches that CANNOT lead to valid solutions.
+THE CHOOSE-EXPLORE-UNCHOOSE FRAMEWORK:
+for each option in choices:
+
+**Choose**: add option to current path
+
+**Explore**: recurse to next decision
+
+**Unchoose**: remove option from current path (BACKTRACK!)
 
 ```java
 // UNIVERSAL BACKTRACKING TEMPLATE

@@ -154,150 +154,104 @@
 
 ## Chapter 2: HTTP Request Structure
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    ANATOMY OF AN HTTP REQUEST                                   │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  ┌─────────────── REQUEST LINE ───────────────┐                                 │
-│  │                                            │                                 │
-│  │  POST /api/v1/users/123/orders HTTP/1.1    │                                 │
-│  │  ───┬── ─────────┬───────────── ────┬───   │                                 │
-│  │     │            │                  │      │                                 │
-│  │   METHOD        URL               VERSION  │                                 │
-│  │                                            │                                 │
-│  └────────────────────────────────────────────┘                                 │
-│                                                                                 │
-│  ┌─────────────── HEADERS ────────────────────┐                                 │
-│  │                                            │                                 │
-│  │  Host: api.myapp.com                       │ ← Required in HTTP/1.1          │
-│  │  Content-Type: application/json            │ ← What format body is in        │
-│  │  Content-Length: 89                        │ ← Body size in bytes            │
-│  │  Accept: application/json                  │ ← What format you want back     │
-│  │  Authorization: Bearer eyJhbGc...          │ ← Authentication token          │
-│  │  User-Agent: PostmanRuntime/7.29.0         │ ← Client info                   │
-│  │  Cache-Control: no-cache                   │ ← Caching behavior              │
-│  │  X-Request-ID: abc-123-def                 │ ← Custom header                 │
-│  │                                            │                                 │
-│  └────────────────────────────────────────────┘                                 │
-│                                                                                 │
-│  ┌─────────────── BLANK LINE ─────────────────┐                                 │
-│  │  (separates headers from body)             │                                 │
-│  └────────────────────────────────────────────┘                                 │
-│                                                                                 │
-│  ┌─────────────── BODY (optional) ────────────┐                                 │
-│  │                                            │                                 │
-│  │  {                                         │                                 │
-│  │    "productId": 456,                       │                                 │
-│  │    "quantity": 2                           │                                 │
-│  │  }                                         │                                 │
-│  │                                            │                                 │
-│  └────────────────────────────────────────────┘                                 │
-│                                                                                 │
-│  ═══════════════════════════════════════════════════════════════════════════    │
-│                                                                                 │
-│  HEADERS DETAILED:                                                              │
-│  ─────────────────                                                              │
-│                                                                                 │
-│  GENERAL HEADERS:                                                               │
-│  │ Cache-Control    │ no-cache, no-store, max-age=3600                          │
-│  │ Connection       │ keep-alive, close                                         │
-│  │ Date             │ Wed, 12 Feb 2026 10:30:00 GMT                             │
-│  │                                                                              │
-│  REQUEST HEADERS:                                                               │
-│  │ Accept           │ application/json, text/html, */*                          │
-│  │ Accept-Encoding  │ gzip, deflate, br                                         │
-│  │ Accept-Language  │ en-US,en;q=0.9                                            │
-│  │ Authorization    │ Bearer token, Basic base64creds                           │
-│  │ Host             │ api.myapp.com (required!)                                 │
-│  │ User-Agent       │ Browser/App identifier                                    │
-│  │ Cookie           │ session=abc123                                            │
-│  │ Referer          │ Previous page URL                                         │
-│  │                                                                              │
-│  ENTITY HEADERS (about the body):                                               │
-│  │ Content-Type     │ application/json, multipart/form-data                     │
-│  │ Content-Length   │ Size in bytes                                             │
-│  │ Content-Encoding │ gzip                                                      │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+## Anatomy Of An Http Request
+
+REQUEST LINE
+POST /api/v1/users/123/orders HTTP/1.1
+───┬── ─────────┬───────────── ────┬───
+| |            |                  | |
+METHOD        URL               VERSION
+HEADERS
+Host: api.myapp.com                       │ ← Required in HTTP/1.1
+Content-Type: application/json            │ ← What format body is in
+Content-Length: 89                        │ ← Body size in bytes
+Accept: application/json                  │ ← What format you want back
+Authorization: Bearer eyJhbGc...          │ ← Authentication token
+User-Agent: PostmanRuntime/7.29.0         │ ← Client info
+Cache-Control: no-cache                   │ ← Caching behavior
+X-Request-ID: abc-123-def                 │ ← Custom header
+BLANK LINE
+(separates headers from body)
+BODY (optional)
+{
+"productId": 456,
+"quantity": 2
+}
+═══════════════════════════════════════════════════════════════════════════
+
+**Headers Detailed**:
+
+**General Headers**:
+Cache-Control    │ no-cache, no-store, max-age=3600
+Connection       │ keep-alive, close
+Date             │ Wed, 12 Feb 2026 10:30:00 GMT
+
+**Request Headers**:
+Accept           │ application/json, text/html, */*
+Accept-Encoding  │ gzip, deflate, br
+Accept-Language  │ en-US,en;q=0.9
+Authorization    │ Bearer token, Basic base64creds
+Host             │ api.myapp.com (required!)
+User-Agent       │ Browser/App identifier
+Cookie           │ session=abc123
+Referer          │ Previous page URL
+ENTITY HEADERS (about the body):
+Content-Type     │ application/json, multipart/form-data
+Content-Length   │ Size in bytes
+Content-Encoding │ gzip
 
 ---
 
 ## Chapter 3: HTTP Response Structure
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    ANATOMY OF AN HTTP RESPONSE                                  │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  ┌─────────────── STATUS LINE ────────────────┐                                 │
-│  │                                            │                                 │
-│  │  HTTP/1.1 201 Created                      │                                 │
-│  │  ────┬─── ─┬─ ───┬───                      │                                 │
-│  │      │     │     │                         │                                 │
-│  │   VERSION CODE  PHRASE                     │                                 │
-│  │                                            │                                 │
-│  └────────────────────────────────────────────┘                                 │
-│                                                                                 │
-│  ┌─────────────── RESPONSE HEADERS ───────────┐                                 │
-│  │                                            │                                 │
-│  │  Content-Type: application/json            │                                 │
-│  │  Content-Length: 89                        │                                 │
-│  │  Location: /api/v1/orders/789              │ ← For 201, where created        │
-│  │  Cache-Control: max-age=3600               │                                 │
-│  │  X-RateLimit-Remaining: 99                 │ ← Custom response header        │
-│  │  Set-Cookie: session=xyz; HttpOnly         │                                 │
-│  │                                            │                                 │
-│  └────────────────────────────────────────────┘                                 │
-│                                                                                 │
-│  ┌─────────────── RESPONSE BODY ──────────────┐                                 │
-│  │                                            │                                 │
-│  │  {                                         │                                 │
-│  │    "id": 789,                              │                                 │
-│  │    "status": "pending"                     │                                 │
-│  │  }                                         │                                 │
-│  │                                            │                                 │
-│  └────────────────────────────────────────────┘                                 │
-│                                                                                 │
-│  ═══════════════════════════════════════════════════════════════════════════    │
-│                                                                                 │
-│  STATUS CODES REFERENCE:                                                        │
-│  ───────────────────────                                                        │
-│                                                                                 │
-│  1xx INFORMATIONAL:                                                             │
-│  │ 100 Continue        │ Keep sending the request                               │
-│  │ 101 Switching       │ Changing protocols (WebSocket upgrade)                 │
-│                                                                                 │
-│  2xx SUCCESS:                                                                   │
-│  │ 200 OK              │ Standard success                                       │
-│  │ 201 Created         │ Resource created (POST)                                │
-│  │ 202 Accepted        │ Request accepted, processing async                     │
-│  │ 204 No Content      │ Success but no body (DELETE)                           │
-│                                                                                 │
-│  3xx REDIRECTION:                                                               │
-│  │ 301 Moved Permanent │ URL changed permanently                                │
-│  │ 302 Found           │ Temporary redirect                                     │
-│  │ 304 Not Modified    │ Cached version is still valid                          │
-│                                                                                 │
-│  4xx CLIENT ERROR:                                                              │
-│  │ 400 Bad Request     │ Invalid syntax/data                                    │
-│  │ 401 Unauthorized    │ Not authenticated                                      │
-│  │ 403 Forbidden       │ Authenticated but not authorized                       │
-│  │ 404 Not Found       │ Resource doesn't exist                                 │
-│  │ 405 Method Not      │ Wrong HTTP method                                      │
-│  │ 409 Conflict        │ State conflict (duplicate, etc.)                       │
-│  │ 422 Unprocessable   │ Valid syntax, invalid semantics                        │
-│  │ 429 Too Many Reqs   │ Rate limit exceeded                                    │
-│                                                                                 │
-│  5xx SERVER ERROR:                                                              │
-│  │ 500 Internal Error  │ Generic server error                                   │
-│  │ 502 Bad Gateway     │ Upstream server error                                  │
-│  │ 503 Service Unavail │ Server temporarily unavailable                         │
-│  │ 504 Gateway Timeout │ Upstream server timeout                                │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+## Anatomy Of An Http Response
+
+STATUS LINE
+HTTP/1.1 201 Created
+────┬─── ─┬─ ───┬───
+| |     |     | |
+VERSION CODE  PHRASE
+RESPONSE HEADERS
+Content-Type: application/json
+Content-Length: 89
+Location: /api/v1/orders/789              │ ← For 201, where created
+Cache-Control: max-age=3600
+X-RateLimit-Remaining: 99                 │ ← Custom response header
+Set-Cookie: session=xyz; HttpOnly
+RESPONSE BODY
+{
+"id": 789,
+"status": "pending"
+}
+═══════════════════════════════════════════════════════════════════════════
+
+**Status Codes Reference**:
+1xx INFORMATIONAL:
+100 Continue        │ Keep sending the request
+101 Switching       │ Changing protocols (WebSocket upgrade)
+2xx SUCCESS:
+200 OK              │ Standard success
+201 Created         │ Resource created (POST)
+202 Accepted        │ Request accepted, processing async
+204 No Content      │ Success but no body (DELETE)
+3xx REDIRECTION:
+301 Moved Permanent │ URL changed permanently
+302 Found           │ Temporary redirect
+304 Not Modified    │ Cached version is still valid
+4xx CLIENT ERROR:
+400 Bad Request     │ Invalid syntax/data
+401 Unauthorized    │ Not authenticated
+403 Forbidden       │ Authenticated but not authorized
+404 Not Found       │ Resource doesn't exist
+405 Method Not      │ Wrong HTTP method
+409 Conflict        │ State conflict (duplicate, etc.)
+422 Unprocessable   │ Valid syntax, invalid semantics
+429 Too Many Reqs   │ Rate limit exceeded
+5xx SERVER ERROR:
+500 Internal Error  │ Generic server error
+502 Bad Gateway     │ Upstream server error
+503 Service Unavail │ Server temporarily unavailable
+504 Gateway Timeout │ Upstream server timeout
 
 ---
 

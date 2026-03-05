@@ -4,25 +4,23 @@
 
 ## 5W1H — Why This Chapter?
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: How to catch, handle, and debug errors in JavaScript.         ║
-║        Covers try/catch, custom errors, debugging tools, and         ║
-║        patterns for production-ready error handling.                 ║
-║                                                                      ║
-║  WHY:  Every app has errors. The difference between a junior and     ║
-║        senior developer is how they HANDLE errors. Unhandled         ║
-║        errors crash apps, lose data, and frustrate users.            ║
-║                                                                      ║
-║  WHO:  Everyone — frontend (API failures, user input), backend       ║
-║        (DB errors, network issues), React (error boundaries).        ║
-║                                                                      ║
-║  WHEN: From day one. Error handling isn't an afterthought.           ║
-║                                                                      ║
-║  HOW:  try/catch for sync, .catch for promises, Error Boundaries     ║
-║        for React, global handlers as safety nets.                    ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> WHAT: How to catch, handle, and debug errors in JavaScript.
+> Covers try/catch, custom errors, debugging tools, and
+> patterns for production-ready error handling.
+>
+> WHY:  Every app has errors. The difference between a junior and
+> senior developer is how they HANDLE errors. Unhandled
+> errors crash apps, lose data, and frustrate users.
+>
+> WHO:  Everyone — frontend (API failures, user input), backend
+> (DB errors, network issues), React (error boundaries).
+>
+> WHEN: From day one. Error handling isn't an afterthought.
+>
+> HOW:  try/catch for sync, .catch for promises, Error Boundaries
+> for React, global handlers as safety nets.
+
 
 ---
 

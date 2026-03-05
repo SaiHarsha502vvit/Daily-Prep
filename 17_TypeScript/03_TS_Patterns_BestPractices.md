@@ -6,41 +6,37 @@
 
 ## 5W1H — Why This Chapter?
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: Real-world TypeScript patterns, best practices, and           ║
-║        production techniques used in professional codebases.         ║
-║                                                                      ║
-║  WHY:  Knowing types isn't enough — you need to know HOW to          ║
-║        organize, structure, and apply them in real projects.         ║
-║        Bad TS is worse than no TS (false confidence).                ║
-║                                                                      ║
-║  WHO:  Developers writing production TypeScript — React apps,        ║
-║        Node APIs, libraries, internal tools.                         ║
-║                                                                      ║
-║  WHEN: After understanding generics and utility types.               ║
-║                                                                      ║
-║  HOW:  Design patterns + anti-patterns + real codebase examples.     ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> WHAT: Real-world TypeScript patterns, best practices, and
+> production techniques used in professional codebases.
+>
+> WHY:  Knowing types isn't enough — you need to know HOW to
+> organize, structure, and apply them in real projects.
+> Bad TS is worse than no TS (false confidence).
+>
+> WHO:  Developers writing production TypeScript — React apps,
+> Node APIs, libraries, internal tools.
+>
+> WHEN: After understanding generics and utility types.
+>
+> HOW:  Design patterns + anti-patterns + real codebase examples.
+
 
 ---
 
 ## 1. The "Think in Types First" Approach
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  BEFORE writing logic, define your data shapes.                      ║
-║                                                                      ║
-║  Step 1: What data exist?  → Define interfaces/types                 ║
-║  Step 2: What operations?  → Define function signatures              ║
-║  Step 3: What can go wrong? → Union types for error states           ║
-║  Step 4: Implement logic                                             ║
-║                                                                      ║
-║  This is TYPE-DRIVEN DEVELOPMENT.                                    ║
-║  The types become your specification — code fills in the blanks.     ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> BEFORE writing logic, define your data shapes.
+>
+> Step 1: What data exist?  → Define interfaces/types
+> Step 2: What operations?  → Define function signatures
+> Step 3: What can go wrong? → Union types for error states
+> Step 4: Implement logic
+>
+> This is TYPE-DRIVEN DEVELOPMENT.
+> The types become your specification — code fills in the blanks.
+
 
 ```typescript
 // EXAMPLE: E-commerce Cart — Types First

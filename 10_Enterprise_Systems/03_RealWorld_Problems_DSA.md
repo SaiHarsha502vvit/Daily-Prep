@@ -10,12 +10,11 @@
 
 ## Problem 1: Find Duplicate Orders (HashMap)
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║ COMPANY: Flipkart / Amazon                                                   ║
-║ SYSTEM: Order Management                                                     ║
-║ INCIDENT: Customer clicked "Place Order" twice due to slow network           ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+
+> COMPANY: Flipkart / Amazon
+> SYSTEM: Order Management
+> INCIDENT: Customer clicked "Place Order" twice due to slow network
+
 
 THE REAL PROBLEM:
 ─────────────────
@@ -30,7 +29,6 @@ BUSINESS IMPACT:
 
 YOUR TASK:
 Given a list of orders, find duplicates (same customer, same items, within 5 min)
-```
 
 ```java
 /**

@@ -4,51 +4,47 @@
 
 ## What is Infrastructure as Code (IaC)?
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  BEFORE IaC:                                                         ║
-║  "Hey admin, can you create a server? 2 CPU, 8 GB RAM, Ubuntu"       ║
-║  → Email/ticket → wait 3 days → manual setup → no consistency        ║
-║  → "But it works on MY server!" (configuration drift)                ║
-║                                                                      ║
-║  AFTER IaC:                                                          ║
-║  Write code → commit to Git → CI/CD creates infrastructure           ║
-║  → reproducible, versioned, reviewable, testable                     ║
-║  → identical environments every time                                 ║
-║                                                                      ║
-║  IaC = Treat infrastructure the same way you treat application       ║
-║  code: version it, test it, review it, automate it.                  ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> BEFORE IaC:
+> "Hey admin, can you create a server? 2 CPU, 8 GB RAM, Ubuntu"
+> → Email/ticket → wait 3 days → manual setup → no consistency
+> → "But it works on MY server!" (configuration drift)
+>
+> AFTER IaC:
+> Write code → commit to Git → CI/CD creates infrastructure
+> → reproducible, versioned, reviewable, testable
+> → identical environments every time
+>
+> IaC = Treat infrastructure the same way you treat application
+> code: version it, test it, review it, automate it.
+
 
 ---
 
 ## IaC Tool Landscape
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  PROVISIONING (create infrastructure):                               ║
-║  • Terraform — multi-cloud, declarative, HCL language                ║
-║  • Pulumi — multi-cloud, use real languages (Java/Python/TS)         ║
-║  • AWS CloudFormation — AWS only, JSON/YAML                          ║
-║  • Azure ARM/Bicep — Azure only                                      ║
-║  • Google Cloud Deployment Manager — GCP only                        ║
-║                                                                      ║
-║  CONFIGURATION MANAGEMENT (configure existing servers):              ║
-║  • Ansible — agentless, YAML playbooks, push-based                   ║
-║  • Chef — Ruby DSL, pull-based, agent on servers                     ║
-║  • Puppet — declarative, pull-based, agent on servers                ║
-║                                                                      ║
-║  CONTAINERS & ORCHESTRATION:                                         ║
-║  • Docker / Dockerfile — build container images                      ║
-║  • Docker Compose — multi-container local development                ║
-║  • Kubernetes manifests — container orchestration                    ║
-║  • Helm — Kubernetes package manager (templated manifests)           ║
-║                                                                      ║
-║  Most common combo: Terraform + Ansible + Docker + Kubernetes        ║
-║  For interviews: Know Terraform basics + Docker + K8s concepts       ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> PROVISIONING (create infrastructure):
+> - Terraform — multi-cloud, declarative, HCL language
+> - Pulumi — multi-cloud, use real languages (Java/Python/TS)
+> - AWS CloudFormation — AWS only, JSON/YAML
+> - Azure ARM/Bicep — Azure only
+> - Google Cloud Deployment Manager — GCP only
+>
+> CONFIGURATION MANAGEMENT (configure existing servers):
+> - Ansible — agentless, YAML playbooks, push-based
+> - Chef — Ruby DSL, pull-based, agent on servers
+> - Puppet — declarative, pull-based, agent on servers
+>
+> CONTAINERS & ORCHESTRATION:
+> - Docker / Dockerfile — build container images
+> - Docker Compose — multi-container local development
+> - Kubernetes manifests — container orchestration
+> - Helm — Kubernetes package manager (templated manifests)
+>
+> Most common combo: Terraform + Ansible + Docker + Kubernetes
+> For interviews: Know Terraform basics + Docker + K8s concepts
+
 
 ---
 
@@ -56,47 +52,43 @@
 
 ### Declarative vs Imperative
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  IMPERATIVE (scripting):                                             ║
-║  "Create a VPC, then create a subnet, then create an EC2..."         ║
-║  → You describe the STEPS                                            ║
-║  → Bash scripts, AWS CLI commands                                    ║
-║                                                                      ║
-║  DECLARATIVE (Terraform):                                            ║
-║  "I want 3 EC2 instances, a VPC, and an RDS database"                ║
-║  → You describe the DESIRED STATE                                    ║
-║  → Terraform figures out the steps to get there                      ║
-║                                                                      ║
-║  KEY BENEFIT: Terraform knows current state vs desired state.        ║
-║  It only changes what's DIFFERENT (idempotent).                      ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> IMPERATIVE (scripting):
+> "Create a VPC, then create a subnet, then create an EC2..."
+> → You describe the STEPS
+> → Bash scripts, AWS CLI commands
+>
+> DECLARATIVE (Terraform):
+> "I want 3 EC2 instances, a VPC, and an RDS database"
+> → You describe the DESIRED STATE
+> → Terraform figures out the steps to get there
+>
+> KEY BENEFIT: Terraform knows current state vs desired state.
+> It only changes what's DIFFERENT (idempotent).
+
 
 ### The Terraform Workflow
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║                                                                      ║
-║   Write (.tf files)                                                  ║
-║       │                                                              ║
-║       ▼                                                              ║
-║   terraform init        ← Download providers (AWS, Azure, etc.)      ║
-║       │                                                              ║
-║       ▼                                                              ║
-║   terraform plan        ← Preview changes (diff: + add, - remove)    ║
-║       │                    NEVER skip this step!                     ║
-║       ▼                                                              ║
-║   terraform apply       ← Execute changes (creates/updates)          ║
-║       │                                                              ║
-║       ▼                                                              ║
-║   terraform destroy     ← Tear down everything (cleanup)             ║
-║                                                                      ║
-║   State file (terraform.tfstate) tracks what exists.                 ║
-║   NEVER edit this file manually. NEVER commit it to Git.             ║
-║   Store it remotely (S3 + DynamoDB lock, Terraform Cloud).           ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+>
+> Write (.tf files)
+> │
+> ▼
+> terraform init        ← Download providers (AWS, Azure, etc.)
+> │
+> ▼
+> terraform plan        ← Preview changes (diff: + add, - remove)
+> │                    NEVER skip this step!
+> ▼
+> terraform apply       ← Execute changes (creates/updates)
+> │
+> ▼
+> terraform destroy     ← Tear down everything (cleanup)
+>
+> State file (terraform.tfstate) tracks what exists.
+> NEVER edit this file manually. NEVER commit it to Git.
+> Store it remotely (S3 + DynamoDB lock, Terraform Cloud).
+
 
 ---
 

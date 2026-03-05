@@ -6,49 +6,45 @@
 
 ## 5W1H — Why This Chapter?
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: Systematic techniques to find and fix frontend bugs.          ║
-║                                                                      ║
-║  WHY:  The average developer spends 50% of time debugging.           ║
-║        Moving past console.log to DevTools mastery saves HOURS.      ║
-║        Knowing WHERE to look is more valuable than knowing HOW.      ║
-║                                                                      ║
-║  WHO:  Every frontend developer. Debugging IS the job.               ║
-║                                                                      ║
-║  WHEN: Every day. Bugs are not exceptions, they're the norm.         ║
-║                                                                      ║
-║  HOW:  Chrome DevTools → React DevTools → Network Tab →              ║
-║        Performance Profiler → systematic elimination.                ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> WHAT: Systematic techniques to find and fix frontend bugs.
+>
+> WHY:  The average developer spends 50% of time debugging.
+> Moving past console.log to DevTools mastery saves HOURS.
+> Knowing WHERE to look is more valuable than knowing HOW.
+>
+> WHO:  Every frontend developer. Debugging IS the job.
+>
+> WHEN: Every day. Bugs are not exceptions, they're the norm.
+>
+> HOW:  Chrome DevTools → React DevTools → Network Tab →
+> Performance Profiler → systematic elimination.
+
 
 ---
 
 ## 1. The Debugging Mindset
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  THE 5-STEP DEBUGGING FRAMEWORK:                                     ║
-║                                                                      ║
-║  1. REPRODUCE  → Can you trigger the bug consistently?               ║
-║                   Write down EXACT steps to reproduce.               ║
-║                                                                      ║
-║  2. ISOLATE    → Where is the problem?                               ║
-║                   Network? State? Rendering? CSS? Event?             ║
-║                                                                      ║
-║  3. INSPECT    → Use the RIGHT tool for the category.                ║
-║                   Don't guess — measure.                             ║
-║                                                                      ║
-║  4. HYPOTHESIZE → "I think the bug is because X"                     ║
-║                    Now TEST that hypothesis.                         ║
-║                                                                      ║
-║  5. FIX + VERIFY → Fix the root cause, not the symptom.              ║
-║                     Add a test so it can't regress.                  ║
-║                                                                      ║
-║  GOLDEN RULE: If you can't reproduce it, you can't fix it.           ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> THE 5-STEP DEBUGGING FRAMEWORK:
+>
+> 1. REPRODUCE  → Can you trigger the bug consistently?
+> Write down EXACT steps to reproduce.
+>
+> 2. ISOLATE    → Where is the problem?
+> Network? State? Rendering? CSS? Event?
+>
+> 3. INSPECT    → Use the RIGHT tool for the category.
+> Don't guess — measure.
+>
+> 4. HYPOTHESIZE → "I think the bug is because X"
+> Now TEST that hypothesis.
+>
+> 5. FIX + VERIFY → Fix the root cause, not the symptom.
+> Add a test so it can't regress.
+>
+> GOLDEN RULE: If you can't reproduce it, you can't fix it.
+
 
 ---
 

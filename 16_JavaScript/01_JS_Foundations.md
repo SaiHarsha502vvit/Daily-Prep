@@ -6,58 +6,54 @@
 
 ## 5W1H — Why This Chapter?
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: The absolute foundations of JavaScript — types, variables,    ║
-║        scope, coercion, hoisting — things that trip up everyone.     ║
-║                                                                      ║
-║  WHY:  Every JS bug traces back to misunderstanding these basics.    ║
-║        Closures won't make sense without scope. Async won't make     ║
-║        sense without the event loop. This chapter is the bedrock.    ║
-║                                                                      ║
-║  WHO:  Anyone writing JS — frontend, backend (Node), full-stack.     ║
-║                                                                      ║
-║  WHEN: Before learning React, Node, or any framework.                ║
-║                                                                      ║
-║  WHERE: Browsers (Chrome V8), Node.js (V8), Deno, Bun.               ║
-║                                                                      ║
-║  HOW:  Read each concept → understand the reasoning → run the        ║
-║        examples in browser console (F12) → predict before you run.   ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> WHAT: The absolute foundations of JavaScript — types, variables,
+> scope, coercion, hoisting — things that trip up everyone.
+>
+> WHY:  Every JS bug traces back to misunderstanding these basics.
+> Closures won't make sense without scope. Async won't make
+> sense without the event loop. This chapter is the bedrock.
+>
+> WHO:  Anyone writing JS — frontend, backend (Node), full-stack.
+>
+> WHEN: Before learning React, Node, or any framework.
+>
+> WHERE: Browsers (Chrome V8), Node.js (V8), Deno, Bun.
+>
+> HOW:  Read each concept → understand the reasoning → run the
+> examples in browser console (F12) → predict before you run.
+
 
 ---
 
 ## 1. What IS JavaScript? (The Reasoning)
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  JavaScript is a DYNAMIC, WEAKLY-TYPED, SINGLE-THREADED language     ║
-║  with FIRST-CLASS FUNCTIONS and PROTOTYPE-BASED inheritance.         ║
-║                                                                      ║
-║  Let's break each word down:                                         ║
-║                                                                      ║
-║  DYNAMIC: Types are determined at RUNTIME, not compile-time.         ║
-║           → let x = 5; x = "hello"; // perfectly legal               ║
-║           WHY this matters: flexibility, but also bugs.              ║
-║                                                                      ║
-║  WEAKLY-TYPED: JS will COERCE types to make operations work.         ║
-║           → "5" + 3 = "53" (string wins), "5" - 3 = 2 (math wins)    ║
-║           WHY this matters: unexpected behavior if you don't know.   ║
-║                                                                      ║
-║  SINGLE-THREADED: Only ONE call stack. One thing at a time.          ║
-║           → But HOW does async work then? → The EVENT LOOP.          ║
-║           WHY this matters: no race conditions, but blocking is bad  ║
-║                                                                      ║
-║  FIRST-CLASS FUNCTIONS: Functions are values — pass them around.     ║
-║           → const greet = function() {}; // function in a variable   ║
-║           WHY this matters: enables callbacks, closures, FP style.   ║
-║                                                                      ║
-║  PROTOTYPE-BASED: No classical classes (until ES6 sugar).            ║
-║           → Objects inherit from other objects via prototype chain.  ║
-║           WHY this matters: understanding `this`, inheritance.       ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> JavaScript is a DYNAMIC, WEAKLY-TYPED, SINGLE-THREADED language
+> with FIRST-CLASS FUNCTIONS and PROTOTYPE-BASED inheritance.
+>
+> Let's break each word down:
+>
+> DYNAMIC: Types are determined at RUNTIME, not compile-time.
+> → let x = 5; x = "hello"; // perfectly legal
+> WHY this matters: flexibility, but also bugs.
+>
+> WEAKLY-TYPED: JS will COERCE types to make operations work.
+> → "5" + 3 = "53" (string wins), "5" - 3 = 2 (math wins)
+> WHY this matters: unexpected behavior if you don't know.
+>
+> SINGLE-THREADED: Only ONE call stack. One thing at a time.
+> → But HOW does async work then? → The EVENT LOOP.
+> WHY this matters: no race conditions, but blocking is bad
+>
+> FIRST-CLASS FUNCTIONS: Functions are values — pass them around.
+> → const greet = function() {}; // function in a variable
+> WHY this matters: enables callbacks, closures, FP style.
+>
+> PROTOTYPE-BASED: No classical classes (until ES6 sugar).
+> → Objects inherit from other objects via prototype chain.
+> WHY this matters: understanding `this`, inheritance.
+
 
 ### JS Engine — How Code Actually Runs
 

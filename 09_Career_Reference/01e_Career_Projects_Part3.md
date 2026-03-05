@@ -81,91 +81,55 @@ WHAT HAPPENS WHEN YOU CREATE A DEPLOYMENT:
 
 kubectl apply -f deployment.yaml
 
-```
-┌──────────────────────────────────────────────────────────────────┐
-│              POD SCHEDULING FLOW                                 │
-├──────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  STEP 1: User submits deployment                                 │
-│  ───────────────────────────────                                 │
-│                                                                  │
-│  kubectl → API Server → Validate → Store in etcd                 │
-│                                                                  │
-│  etcd now has:                                                   │
-│  {                                                               │
-│    "kind": "Deployment",                                         │
-│    "spec": { "replicas": 3, ... }                                │
-│  }                                                               │
-│                                                                  │
-│                                                                  │
-│  STEP 2: Deployment Controller creates ReplicaSet                │
-│  ─────────────────────────────────────────────────               │
-│                                                                  │
-│  Controller Manager watches for Deployment changes               │
-│  → Sees new Deployment                                           │
-│  → Creates ReplicaSet with same spec                             │
-│                                                                  │
-│                                                                  │
-│  STEP 3: ReplicaSet Controller creates Pods                      │
-│  ─────────────────────────────────────────────                   │
-│                                                                  │
-│  ReplicaSet controller watches for ReplicaSet changes            │
-│  → Sees ReplicaSet needs 3 replicas                              │
-│  → Current pods: 0                                               │
-│  → Creates 3 Pod objects in etcd                                 │
-│                                                                  │
-│  Pods in etcd:                                                   │
-│  { "name": "myapp-abc12", "node": null, "status": "Pending" }    │
-│  { "name": "myapp-def34", "node": null, "status": "Pending" }    │
-│  { "name": "myapp-ghi56", "node": null, "status": "Pending" }    │
-│                                                                  │
-│                                                                  │
-│  STEP 4: Scheduler assigns Pods to Nodes                         │
-│  ──────────────────────────────────────                          │
-│                                                                  │
-│  Scheduler watches for Pods with node = null                     │
-│  → Finds 3 unscheduled pods                                      │
-│                                                                  │
-│  For each pod, Scheduler:                                        │
-│                                                                  │
-│  a) FILTERING: Which nodes CAN run this pod?                     │
-│     ┌─────────────────────────────────────────────────────┐      │
-│     │ Node 1: Has 4GB free RAM, pod needs 2GB → ✓ PASS    │      │
-│     │ Node 2: Has 1GB free RAM, pod needs 2GB → ✗ FAIL    │      │
-│     │ Node 3: Has taint "gpu=true", pod has no tolerance  │      │
-│     │         → ✗ FAIL                                     │     │
-│     │ Node 4: Has 8GB free RAM → ✓ PASS                   │      │
-│     └─────────────────────────────────────────────────────┘      │
-│                                                                  │
-│  b) SCORING: Which passing node is BEST?                         │
-│     ┌─────────────────────────────────────────────────────┐      │
-│     │ Node 1: Score = 60 (balanced resources)             │      │
-│     │ Node 4: Score = 80 (more resources, same zone)      │      │
-│     │                                                      │     │
-│     │ Winner: Node 4                                       │     │
-│     └─────────────────────────────────────────────────────┘      │
-│                                                                  │
-│  c) BINDING: Update pod in etcd with node assignment             │
-│     { "name": "myapp-abc12", "node": "node-4" }                  │
-│                                                                  │
-│                                                                  │
-│  STEP 5: Kubelet creates the container                           │
-│  ────────────────────────────────────                            │
-│                                                                  │
-│  Kubelet on Node 4 watches for pods assigned to it               │
-│  → Sees myapp-abc12 assigned                                     │
-│  → Pulls image (if not cached)                                   │
-│  → Creates container via containerd                              │
-│  → Sets up networking (CNI)                                      │
-│  → Mounts volumes                                                │
-│  → Starts container                                              │
-│  → Reports status: "Running"                                     │
-│                                                                  │
-│                                                                  │
-│  TOTAL TIME: 2-30 seconds (depending on image pull)              │
-│                                                                  │
-└──────────────────────────────────────────────────────────────────┘
-```
+## Pod Scheduling Flow
+
+STEP 1: User submits deployment
+kubectl → API Server → Validate → Store in etcd
+etcd now has:
+{
+"kind": "Deployment",
+"spec": { "replicas": 3, ... }
+}
+STEP 2: Deployment Controller creates ReplicaSet
+Controller Manager watches for Deployment changes
+→ Sees new Deployment
+→ Creates ReplicaSet with same spec
+STEP 3: ReplicaSet Controller creates Pods
+ReplicaSet controller watches for ReplicaSet changes
+→ Sees ReplicaSet needs 3 replicas
+→ Current pods: 0
+→ Creates 3 Pod objects in etcd
+Pods in etcd:
+{ "name": "myapp-abc12", "node": null, "status": "Pending" }
+{ "name": "myapp-def34", "node": null, "status": "Pending" }
+{ "name": "myapp-ghi56", "node": null, "status": "Pending" }
+STEP 4: Scheduler assigns Pods to Nodes
+Scheduler watches for Pods with node = null
+→ Finds 3 unscheduled pods
+For each pod, Scheduler:
+a) FILTERING: Which nodes CAN run this pod?
+Node 1: Has 4GB free RAM, pod needs 2GB → ✓ PASS
+Node 2: Has 1GB free RAM, pod needs 2GB → ✗ FAIL
+Node 3: Has taint "gpu=true", pod has no tolerance
+→ ✗ FAIL
+Node 4: Has 8GB free RAM → ✓ PASS
+b) SCORING: Which passing node is BEST?
+Node 1: Score = 60 (balanced resources)
+Node 4: Score = 80 (more resources, same zone)
+Winner: Node 4
+c) BINDING: Update pod in etcd with node assignment
+{ "name": "myapp-abc12", "node": "node-4" }
+STEP 5: Kubelet creates the container
+Kubelet on Node 4 watches for pods assigned to it
+→ Sees myapp-abc12 assigned
+→ Pulls image (if not cached)
+→ Creates container via containerd
+→ Sets up networking (CNI)
+→ Mounts volumes
+→ Starts container
+→ Reports status: "Running"
+
+**Total Time**: 2-30 seconds (depending on image pull)
 
 
 ### Kubernetes Service Networking
@@ -179,79 +143,48 @@ HOW SERVICES ROUTE TRAFFIC:
 Service: myapp-service (ClusterIP: 10.96.45.123, Port: 80)
 Pods: myapp-abc (10.244.1.5:8080), myapp-def (10.244.2.8:8080)
 
-```
-┌──────────────────────────────────────────────────────────────────┐
-│              SERVICE NETWORKING                                  │
-├──────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  Client Pod sends request:                                       │
-│  curl http://myapp-service:80/api/users                          │
-│                                                                  │
-│  STEP 1: DNS RESOLUTION                                          │
-│  ─────────────────────────                                       │
-│                                                                  │
-│  CoreDNS (cluster DNS):                                          │
-│  myapp-service.default.svc.cluster.local → 10.96.45.123          │
-│                                                                  │
-│                                                                  │
-│  STEP 2: IPTABLES/IPVS RULES (kube-proxy)                        │
-│  ─────────────────────────────────────────                       │
-│                                                                  │
-│  ┌─────────────────────────────────────────────────────────┐     │
-│  │                 IPTABLES RULES                           │    │
-│  │                 (on every node)                          │    │
-│  │                                                          │    │
-│  │  RULE: If destination = 10.96.45.123:80                 │     │
-│  │        → DNAT to one of:                                 │    │
-│  │           - 10.244.1.5:8080 (50% probability)           │     │
-│  │           - 10.244.2.8:8080 (50% probability)           │     │
-│  │                                                          │    │
-│  │  This is random load balancing!                         │     │
-│  │                                                          │    │
-│  └─────────────────────────────────────────────────────────┘     │
-│                                                                  │
-│                                                                  │
-│  STEP 3: PACKET ROUTING                                          │
-│  ───────────────────────                                         │
-│                                                                  │
-│  ┌─────────────────────────────────────────────────────────┐     │
-│  │                                                          │    │
-│  │  Client Pod ──► 10.96.45.123:80 (Service IP)            │     │
-│  │       │                                                  │    │
-│  │       │ iptables DNAT                                   │     │
-│  │       ▼                                                  │    │
-│  │  10.244.2.8:8080 (Pod IP - selected randomly)           │     │
-│  │       │                                                  │    │
-│  │       │ If pod on same node: direct delivery            │     │
-│  │       │ If pod on different node: route via overlay     │     │
-│  │       ▼                                                  │    │
-│  │  myapp-def Pod receives request                         │     │
-│  │                                                          │    │
-│  └─────────────────────────────────────────────────────────┘     │
-│                                                                  │
-│                                                                  │
-│  SERVICE TYPES:                                                  │
-│  ─────────────                                                   │
-│                                                                  │
-│  ClusterIP (default):                                            │
-│  • Internal cluster IP only                                      │
-│  • Not accessible from outside                                   │
-│                                                                  │
-│  NodePort:                                                       │
-│  • Exposes on each node's IP at static port (30000-32767)        │
-│  • curl http://node-ip:30123                                     │
-│                                                                  │
-│  LoadBalancer:                                                   │
-│  • Creates cloud load balancer (AWS ELB, GCP LB)                 │
-│  • Gets external IP                                              │
-│                                                                  │
-│  Ingress:                                                        │
-│  • HTTP/HTTPS routing                                            │
-│  • Path-based routing (/api → service1, /web → service2)         │
-│  • TLS termination                                               │
-│                                                                  │
-└──────────────────────────────────────────────────────────────────┘
-```
+## Service Networking
+
+Client Pod sends request:
+curl http://myapp-service:80/api/users
+STEP 1: DNS RESOLUTION
+CoreDNS (cluster DNS):
+myapp-service.default.svc.cluster.local → 10.96.45.123
+STEP 2: IPTABLES/IPVS RULES (kube-proxy)
+IPTABLES RULES
+(on every node)
+
+**Rule**: If destination = 10.96.45.123:80
+→ DNAT to one of:
+- 10.244.1.5:8080 (50% probability)
+- 10.244.2.8:8080 (50% probability)
+This is random load balancing!
+STEP 3: PACKET ROUTING
+Client Pod ──► 10.96.45.123:80 (Service IP)
+│
+│ iptables DNAT
+▼
+10.244.2.8:8080 (Pod IP - selected randomly)
+│
+│ If pod on same node: direct delivery
+│ If pod on different node: route via overlay
+▼
+myapp-def Pod receives request
+
+**Service Types**:
+ClusterIP (default):
+- Internal cluster IP only
+- Not accessible from outside
+NodePort:
+- Exposes on each node's IP at static port (30000-32767)
+- curl http://node-ip:30123
+LoadBalancer:
+- Creates cloud load balancer (AWS ELB, GCP LB)
+- Gets external IP
+Ingress:
+- HTTP/HTTPS routing
+- Path-based routing (/api → service1, /web → service2)
+- TLS termination
 
 ```
 

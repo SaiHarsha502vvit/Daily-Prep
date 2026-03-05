@@ -266,35 +266,29 @@
 
 ### Problem #286: [Single Number](https://leetcode.com/problems/single-number/) (LC 136)
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│  SINGLE NUMBER — Every element appears twice except one        │
-├────────────────────────────────────────────────────────────────┤
-│                                                                │
-│  Input:  [4, 1, 2, 1, 2]                                       │
-│  Output: 4                                                     │
-│                                                                │
-│  APPROACH: XOR all elements together.                          │
-│                                                                │
-│  WHY: XOR properties guarantee:                                │
-│    • a ^ a = 0  (pairs cancel)                                 │
-│    • a ^ 0 = a  (identity)                                     │
-│    • Commutative + associative → order doesn't matter          │
-│                                                                │
-│  TRACE:                                                        │
-│    4 ^ 1 ^ 2 ^ 1 ^ 2                                           │
-│  = 4 ^ (1 ^ 1) ^ (2 ^ 2)     ← rearrange (commutative)         │
-│  = 4 ^ 0 ^ 0                                                   │
-│  = 4                           ← answer!                       │
-│                                                                │
-│  PROOF OF CORRECTNESS:                                         │
-│  Let S = {a₁, a₁, a₂, a₂, ..., aₖ, aₖ, x} where x is unique    │
-│  XOR(S) = a₁⊕a₁ ⊕ a₂⊕a₂ ⊕ ... ⊕ aₖ⊕aₖ ⊕ x                      │
-│         = 0 ⊕ 0 ⊕ ... ⊕ 0 ⊕ x = x  ∎                           │
-│                                                                │
-│  Time: O(n)   Space: O(1)                                      │
-└────────────────────────────────────────────────────────────────┘
-```
+## Single Number — Every Element Appears Twice Except One
+
+Input:  [4, 1, 2, 1, 2]
+Output: 4
+
+**Approach**: XOR all elements together.
+
+**Why**: XOR properties guarantee:
+- a ^ a = 0  (pairs cancel)
+- a ^ 0 = a  (identity)
+- Commutative + associative → order doesn't matter
+
+**Trace**:
+4 ^ 1 ^ 2 ^ 1 ^ 2
+= 4 ^ (1 ^ 1) ^ (2 ^ 2)     ← rearrange (commutative)
+= 4 ^ 0 ^ 0
+= 4                           ← answer!
+
+**Proof Of Correctness**:
+Let S = {a₁, a₁, a₂, a₂, ..., aₖ, aₖ, x} where x is unique
+XOR(S) = a₁⊕a₁ ⊕ a₂⊕a₂ ⊕ ... ⊕ aₖ⊕aₖ ⊕ x
+= 0 ⊕ 0 ⊕ ... ⊕ 0 ⊕ x = x  ∎
+Time: O(n)   Space: O(1)
 
 **Full Solution:**
 

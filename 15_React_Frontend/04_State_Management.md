@@ -8,23 +8,21 @@
 
 ## When Do You Need State Management?
 
-```
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║  LOCAL STATE (useState): Form inputs, toggles, component-specific data           ║
-║  → Default choice. Keep state close to where it's used.                          ║
-║                                                                                  ║
-║  LIFTED STATE: Shared between siblings → lift to nearest common parent           ║
-║                                                                                  ║
-║  CONTEXT: Theme, auth, locale — read by many, updated rarely                     ║
-║  → NOT for frequently changing data (causes re-renders to all consumers)         ║
-║                                                                                  ║
-║  EXTERNAL STORE (Redux/Zustand): Complex app-wide state with frequent updates    ║
-║  → Shopping cart, dashboard filters, real-time data                              ║
-║                                                                                  ║
-║  SERVER STATE (React Query/SWR): Data from API that needs caching/syncing        ║
-║  → MOST "global state" is actually server state!                                 ║
-╚══════════════════════════════════════════════════════════════════════════════════╝
-```
+
+> LOCAL STATE (useState): Form inputs, toggles, component-specific data
+> → Default choice. Keep state close to where it's used.
+>
+> LIFTED STATE: Shared between siblings → lift to nearest common parent
+>
+> CONTEXT: Theme, auth, locale — read by many, updated rarely
+> → NOT for frequently changing data (causes re-renders to all consumers)
+>
+> EXTERNAL STORE (Redux/Zustand): Complex app-wide state with frequent updates
+> → Shopping cart, dashboard filters, real-time data
+>
+> SERVER STATE (React Query/SWR): Data from API that needs caching/syncing
+> → MOST "global state" is actually server state!
+
 
 ---
 

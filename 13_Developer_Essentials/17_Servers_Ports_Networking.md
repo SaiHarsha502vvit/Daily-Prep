@@ -6,26 +6,24 @@
 
 ## 5W1H — Why This Chapter?
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: How computers communicate over networks — servers,            ║
-║        ports, protocols, DNS, firewalls, security groups.            ║
-║                                                                      ║
-║  WHY:  Every application you build runs ON a server,                 ║
-║        communicates THROUGH ports, uses PROTOCOLS to talk.           ║
-║        If you don't understand this, you can't:                      ║
-║        • Debug "connection refused" errors                           ║
-║        • Configure deployment correctly                              ║
-║        • Understand CORS, firewalls, load balancers                  ║
-║        • Pass any infrastructure interview question                  ║
-║                                                                      ║
-║  WHO:  Backend and full-stack developers.                            ║
-║                                                                      ║
-║  WHEN: Before deploying anything. Before interviews.                 ║
-║                                                                      ║
-║  HOW:  Through real-world analogies that make it stick.              ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> WHAT: How computers communicate over networks — servers,
+> ports, protocols, DNS, firewalls, security groups.
+>
+> WHY:  Every application you build runs ON a server,
+> communicates THROUGH ports, uses PROTOCOLS to talk.
+> If you don't understand this, you can't:
+> - Debug "connection refused" errors
+> - Configure deployment correctly
+> - Understand CORS, firewalls, load balancers
+> - Pass any infrastructure interview question
+>
+> WHO:  Backend and full-stack developers.
+>
+> WHEN: Before deploying anything. Before interviews.
+>
+> HOW:  Through real-world analogies that make it stick.
+
 
 ---
 
@@ -405,35 +403,33 @@ Total time: 100-500ms for a typical API call.
 
 ## 10. Common Networking Errors (What They Mean)
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  Error                          │ Cause → Fix                        ║
-║  ───────────────────────────────┼────────────────────────────────    ║
-║  Connection refused             │ Nothing running on that port.      ║
-║                                 │ Start the server! Check port.      ║
-║                                 │                                    ║
-║  Connection timed out           │ Firewall blocking, wrong IP,       ║
-║                                 │ server unreachable. Check SG.      ║
-║                                 │                                    ║
-║  Port already in use            │ Another process has the port.      ║
-║                                 │ Kill it or use different port.     ║
-║                                 │                                    ║
-║  ECONNRESET                     │ Other side closed connection.      ║
-║                                 │ Server crashed mid-request.        ║
-║                                 │                                    ║
-║  DNS resolution failed          │ Domain doesn't exist or DNS        ║
-║                                 │ server down. Check domain name.    ║
-║                                 │                                    ║
-║  CORS error (browser only)      │ Server doesn't allow your          ║
-║                                 │ origin. Add CORS headers.          ║
-║                                 │                                    ║
-║  SSL handshake failed           │ Certificate expired or invalid.    ║
-║                                 │ Renew cert. Check date/domain.     ║
-║                                 │                                    ║
-║  502 Bad Gateway                │ Load balancer can't reach          ║
-║                                 │ backend. Backend is down.          ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> Error                          │ Cause → Fix
+> ───────────────────────────────┼────────────────────────────────
+> Connection refused             │ Nothing running on that port.
+> │ Start the server! Check port.
+> │
+> Connection timed out           │ Firewall blocking, wrong IP,
+> │ server unreachable. Check SG.
+> │
+> Port already in use            │ Another process has the port.
+> │ Kill it or use different port.
+> │
+> ECONNRESET                     │ Other side closed connection.
+> │ Server crashed mid-request.
+> │
+> DNS resolution failed          │ Domain doesn't exist or DNS
+> │ server down. Check domain name.
+> │
+> CORS error (browser only)      │ Server doesn't allow your
+> │ origin. Add CORS headers.
+> │
+> SSL handshake failed           │ Certificate expired or invalid.
+> │ Renew cert. Check date/domain.
+> │
+> 502 Bad Gateway                │ Load balancer can't reach
+> │ backend. Backend is down.
+
 
 ---
 

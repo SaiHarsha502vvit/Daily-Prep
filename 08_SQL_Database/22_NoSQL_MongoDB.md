@@ -104,27 +104,25 @@ db.events.createIndex({ createdAt: 1 }, { expireAfterSeconds: 86400 }) // TTL in
 
 ### Data Modeling: Embed vs Reference
 
-```
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║  EMBED (Denormalize):                      REFERENCE (Normalize):                ║
-║  Store related data in same document       Store ID, look up separately          ║
-║                                                                                  ║
-║  // Embedded                               // Referenced                         ║
-║  { name: "John",                           { name: "John",                       ║
-║    address: { city: "NYC" } }                addressId: ObjectId("...") }        ║
-║                                                                                  ║
-║  ✅ Single read (fast)                     ✅ Data not duplicated                  ║
-║  ✅ Atomic updates                         ✅ Many-to-many relationships           ║
-║  ❌ Document size limit (16MB)             ❌ Requires $lookup (JOIN)              ║
-║  ❌ Data duplication                       ❌ Multiple reads                       ║
-║                                                                                  ║
-║  RULE OF THUMB:                                                                  ║
-║  → 1:1 or 1:Few → EMBED (address in user)                                        ║
-║  → 1:Many (bounded) → EMBED (orders in user, if < 100)                           ║
-║  → 1:Many (unbounded) → REFERENCE (comments on a viral post)                     ║
-║  → Many:Many → REFERENCE (students ↔ courses)                                    ║
-╚══════════════════════════════════════════════════════════════════════════════════╝
-```
+
+> EMBED (Denormalize):                      REFERENCE (Normalize):
+> Store related data in same document       Store ID, look up separately
+>
+> // Embedded                               // Referenced
+> { name: "John",                           { name: "John",
+> address: { city: "NYC" } }                addressId: ObjectId("...") }
+>
+> ✅ Single read (fast)                     ✅ Data not duplicated
+> ✅ Atomic updates                         ✅ Many-to-many relationships
+> ❌ Document size limit (16MB)             ❌ Requires $lookup (JOIN)
+> ❌ Data duplication                       ❌ Multiple reads
+>
+> RULE OF THUMB:
+> → 1:1 or 1:Few → EMBED (address in user)
+> → 1:Many (bounded) → EMBED (orders in user, if < 100)
+> → 1:Many (unbounded) → REFERENCE (comments on a viral post)
+> → Many:Many → REFERENCE (students ↔ courses)
+
 
 ---
 

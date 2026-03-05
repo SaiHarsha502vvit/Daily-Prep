@@ -8,24 +8,22 @@
 
 ## Why This Chapter Exists
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  THE FREEZE PATTERN                                              ║
-║                                                                  ║
-║  Junior:   "I know closures capture variables"                   ║
-║  Interviewer: "But WHY does this print 5,5,5,5,5 instead of      ║
-║               0,1,2,3,4?"                                        ║
-║  Junior:   *freezes*                                             ║
-║                                                                  ║
-║  Senior:   "Because var is function-scoped, so the loop shares   ║
-║            ONE binding. The closure captures the variable, not   ║
-║            its value at that moment. Each iteration doesn't      ║
-║            create a new scope — it mutates the same variable.    ║
-║            Using let creates block scope, so each iteration      ║
-║            gets its own binding — like giving each callback      ║
-║            its own copy of the letter, not a shared whiteboard." ║
-╚══════════════════════════════════════════════════════════════════╝
-```
+
+> THE FREEZE PATTERN
+>
+> Junior:   "I know closures capture variables"
+> Interviewer: "But WHY does this print 5,5,5,5,5 instead of
+> 0,1,2,3,4?"
+> Junior:   *freezes*
+>
+> Senior:   "Because var is function-scoped, so the loop shares
+> ONE binding. The closure captures the variable, not
+> its value at that moment. Each iteration doesn't
+> create a new scope — it mutates the same variable.
+> Using let creates block scope, so each iteration
+> gets its own binding — like giving each callback
+> its own copy of the letter, not a shared whiteboard."
+
 
 This chapter covers **30+ freeze moments** — places where surface knowledge fails and deep reasoning saves you.
 

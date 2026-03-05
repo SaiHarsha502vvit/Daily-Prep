@@ -4,23 +4,21 @@
 
 ## 5W1H — Why This Chapter?
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: ES6 (2015) was the biggest upgrade in JS history. Since       ║
-║        then, yearly releases add new features. This chapter          ║
-║        covers everything from ES6 through ES2024.                    ║
-║                                                                      ║
-║  WHY:  Modern JS is a DIFFERENT language from pre-2015 JS.           ║
-║        React, Node, and all modern frameworks assume ES6+.           ║
-║        Interview questions heavily test ES6+ understanding.          ║
-║                                                                      ║
-║  WHO:  Every JS developer writing code after 2015.                   ║
-║                                                                      ║
-║  HOW:  We cover: template literals, destructuring (recap),           ║
-║        modules, Map/Set, WeakRef, Proxy, iterators/generators,       ║
-║        optional chaining, and newer additions through 2024.          ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> WHAT: ES6 (2015) was the biggest upgrade in JS history. Since
+> then, yearly releases add new features. This chapter
+> covers everything from ES6 through ES2024.
+>
+> WHY:  Modern JS is a DIFFERENT language from pre-2015 JS.
+> React, Node, and all modern frameworks assume ES6+.
+> Interview questions heavily test ES6+ understanding.
+>
+> WHO:  Every JS developer writing code after 2015.
+>
+> HOW:  We cover: template literals, destructuring (recap),
+> modules, Map/Set, WeakRef, Proxy, iterators/generators,
+> optional chaining, and newer additions through 2024.
+
 
 ---
 

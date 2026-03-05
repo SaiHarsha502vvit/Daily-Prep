@@ -57,55 +57,44 @@
 
 ## Chapter 1: Understanding the Difference
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│              AUTHENTICATION vs AUTHORIZATION                                    │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  ┌──────────────────────────────────┬──────────────────────────────────────┐    │
-│  │      AUTHENTICATION (AuthN)      │      AUTHORIZATION (AuthZ)           │    │
-│  ├──────────────────────────────────┼──────────────────────────────────────┤    │
-│  │                                  │                                      │    │
-│  │  "WHO are you?"                  │  "WHAT can you do?"                  │    │
-│  │                                  │                                      │    │
-│  │  Verifies IDENTITY               │  Verifies PERMISSIONS                │    │
-│  │                                  │                                      │    │
-│  │  Happens FIRST                   │  Happens AFTER authentication       │     │
-│  │                                  │                                      │    │
-│  │  Examples:                       │  Examples:                           │    │
-│  │  • Username + Password           │  • User can view their own data     │     │
-│  │  • Fingerprint                   │  • Admin can delete any user        │     │
-│  │  • Face ID                       │  • Manager can approve requests     │     │
-│  │  • JWT Token                     │  • Guest can only read              │     │
-│  │                                  │                                      │    │
-│  │  HTTP Status: 401 Unauthorized   │  HTTP Status: 403 Forbidden         │     │
-│  │                                  │                                      │    │
-│  └──────────────────────────────────┴──────────────────────────────────────┘    │
-│                                                                                 │
-│  REAL-WORLD ANALOGY:                                                            │
-│  ═══════════════════                                                            │
-│                                                                                 │
-│  AIRPORT SECURITY:                                                              │
-│                                                                                 │
-│  1. AUTHENTICATION: Show your ID/Passport at checkpoint                         │
-│     "Are you really John Smith?" ✓                                              │
-│                                                                                 │
-│  2. AUTHORIZATION: Check your boarding pass                                     │
-│     "Can you enter the First Class lounge?" ✗                                   │
-│     "Can you board Flight AA123?" ✓                                             │
-│                                                                                 │
-│  ═══════════════════════════════════════════════════════════════════════════    │
-│                                                                                 │
-│  IN CODE:                                                                       │
-│                                                                                 │
-│  User logs in with email/password → AUTHENTICATION                              │
-│  System returns JWT token                                                       │
-│                                                                                 │
-│  User tries to access /admin/users → AUTHORIZATION                              │
-│  System checks: Does this user have ADMIN role? No → 403 Forbidden              │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+## Authentication Vs Authorization
+
+┬
+AUTHENTICATION (AuthN)      │      AUTHORIZATION (AuthZ)
+┼
+│
+"WHO are you?"                  │  "WHAT can you do?"
+│
+Verifies IDENTITY               │  Verifies PERMISSIONS
+│
+Happens FIRST                   │  Happens AFTER authentication
+│
+Examples:                       │  Examples:
+- Username + Password           │  • User can view their own data
+- Fingerprint                   │  • Admin can delete any user
+- Face ID                       │  • Manager can approve requests
+- JWT Token                     │  • Guest can only read
+│
+HTTP Status: 401 Unauthorized   │  HTTP Status: 403 Forbidden
+│
+┴
+
+> 💡 **REAL-WORLD ANALOGY:**
+═══════════════════
+
+**Airport Security**:
+1. AUTHENTICATION: Show your ID/Passport at checkpoint
+"Are you really John Smith?" ✓
+2. AUTHORIZATION: Check your boarding pass
+"Can you enter the First Class lounge?" ✗
+"Can you board Flight AA123?" ✓
+═══════════════════════════════════════════════════════════════════════════
+
+**In Code**:
+User logs in with email/password → AUTHENTICATION
+System returns JWT token
+User tries to access /admin/users → AUTHORIZATION
+System checks: Does this user have ADMIN role? No → 403 Forbidden
 
 ---
 
@@ -179,64 +168,50 @@
 
 ## Chapter 3: JWT (JSON Web Token) Explained
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                         JWT STRUCTURE                                           │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.                                          │
-│  eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4iLCJpYXQiOjE1MTYyMzkwMjJ9.          │
-│  SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c                                    │
-│                                                                                 │
-│  ─────────────────┬─────────────────────────────────────────┬──────────────     │
-│       HEADER      │              PAYLOAD                    │   SIGNATURE       │
-│     (Base64)      │            (Base64)                     │   (Base64)        │
-│                                                                                 │
-│  ═══════════════════════════════════════════════════════════════════════════    │
-│                                                                                 │
-│  HEADER (Algorithm + Type):                                                     │
-│  ══════════════════════════                                                     │
-│  {                                                                              │
-│    "alg": "HS256",    ← Algorithm used to sign                                  │
-│    "typ": "JWT"       ← Token type                                              │
-│  }                                                                              │
-│                                                                                 │
-│  PAYLOAD (Claims - the actual data):                                            │
-│  ════════════════════════════════════                                           │
-│  {                                                                              │
-│    "sub": "1234567890",     ← Subject (user ID)                                 │
-│    "name": "John Doe",      ← Custom claim                                      │
-│    "email": "john@test.com",                                                    │
-│    "roles": ["USER", "ADMIN"],                                                  │
-│    "iat": 1516239022,       ← Issued At (Unix timestamp)                        │
-│    "exp": 1516242622        ← Expiration (Unix timestamp)                       │
-│  }                                                                              │
-│                                                                                 │
-│  SIGNATURE:                                                                     │
-│  ══════════                                                                     │
-│  HMACSHA256(                                                                    │
-│    base64UrlEncode(header) + "." + base64UrlEncode(payload),                    │
-│    secret_key                                                                   │
-│  )                                                                              │
-│                                                                                 │
-│  ═══════════════════════════════════════════════════════════════════════════    │
-│                                                                                 │
-│  WHY JWT?                                                                       │
-│  ════════                                                                       │
-│                                                                                 │
-│  ✅ STATELESS: Server doesn't need to store sessions                             │
-│  ✅ SCALABLE: Works across multiple servers (no session sharing)                 │
-│  ✅ MOBILE-FRIENDLY: Easy to send in header                                      │
-│  ✅ SELF-CONTAINED: Contains all user info needed                                │
-│  ✅ CROSS-DOMAIN: Works for APIs consumed by different clients                   │
-│                                                                                 │
-│  ⚠️ CAUTION:                                                                    │
-│  • Cannot invalidate individual tokens (use short expiry + refresh tokens)      │
-│  • Payload is only Base64 encoded, NOT encrypted (don't put secrets)            │
-│  • Token size can grow large with many claims                                   │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+## Jwt Structure
+
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4iLCJpYXQiOjE1MTYyMzkwMjJ9.
+SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+┬─────────────────────────────────────────┬
+| HEADER      |              PAYLOAD                    |   SIGNATURE |
+| (Base64)      |            (Base64)                     |   (Base64) |
+═══════════════════════════════════════════════════════════════════════════
+HEADER (Algorithm + Type):
+══════════════════════════
+{
+"alg": "HS256",    ← Algorithm used to sign
+"typ": "JWT"       ← Token type
+}
+PAYLOAD (Claims - the actual data):
+════════════════════════════════════
+{
+"sub": "1234567890",     ← Subject (user ID)
+"name": "John Doe",      ← Custom claim
+"email": "john@test.com",
+"roles": ["USER", "ADMIN"],
+"iat": 1516239022,       ← Issued At (Unix timestamp)
+"exp": 1516242622        ← Expiration (Unix timestamp)
+}
+
+**Signature**:
+══════════
+HMACSHA256(
+base64UrlEncode(header) + "." + base64UrlEncode(payload),
+secret_key
+)
+═══════════════════════════════════════════════════════════════════════════
+WHY JWT?
+════════
+- ✅ STATELESS: Server doesn't need to store sessions
+- ✅ SCALABLE: Works across multiple servers (no session sharing)
+- ✅ MOBILE-FRIENDLY: Easy to send in header
+- ✅ SELF-CONTAINED: Contains all user info needed
+- ✅ CROSS-DOMAIN: Works for APIs consumed by different clients
+⚠️ CAUTION:
+- Cannot invalidate individual tokens (use short expiry + refresh tokens)
+- Payload is only Base64 encoded, NOT encrypted (don't put secrets)
+- Token size can grow large with many claims
 
 ---
 

@@ -4,16 +4,14 @@
 
 ## How to Think About Frontend Architecture
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  Frontend isn't "just UI" — it's a distributed system where          ║
-║  state lives in multiple places, the network is unreliable,          ║
-║  and every user has a different browser, screen, and connection.     ║
-║                                                                      ║
-║  These mental models help you REASON about frontend problems         ║
-║  instead of just memorizing React patterns.                          ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> Frontend isn't "just UI" — it's a distributed system where
+> state lives in multiple places, the network is unreliable,
+> and every user has a different browser, screen, and connection.
+>
+> These mental models help you REASON about frontend problems
+> instead of just memorizing React patterns.
+
 
 ---
 
@@ -111,102 +109,79 @@ Premature optimization = the root of all evil (Knuth)
 
 ## Mental Model 3: Composition Over Configuration
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  THE REACT WAY: Build small pieces, compose them together            ║
-║                                                                      ║
-║  ❌ BAD: One mega-component with tons of props                        ║
-║                                                                      ║
-║  <DataTable                                                          ║
-║    data={data}                                                       ║
-║    sortable={true}                                                   ║
-║    filterable={true}                                                 ║
-║    paginated={true}                                                  ║
-║    searchable={true}                                                 ║
-║    exportable={true}                                                 ║
-║    selectable={true}                                                 ║
-║    expandable={true}                                                 ║
-║    ...30 more props                                                  ║
-║  />   ← Impossible to maintain, impossible to customize              ║
-║                                                                      ║
-║  ✅ GOOD: Composable components                                       ║
-║                                                                      ║
-║  <DataTable data={data}>                                             ║
-║    <Table.Search />                                                  ║
-║    <Table.Header sortable>                                           ║
-║      <Table.Column field="name" />                                   ║
-║      <Table.Column field="email" />                                  ║
-║    </Table.Header>                                                   ║
-║    <Table.Body expandable />                                         ║
-║    <Table.Pagination perPage={20} />                                 ║
-║  </DataTable>                                                        ║
-║  ← Each piece is independent, reusable, replaceable                  ║
-║                                                                      ║
-║  PRINCIPLE: If a component has > 10 props, it's probably doing       ║
-║  too much. Break it into composed sub-components.                    ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> THE REACT WAY: Build small pieces, compose them together
+>
+> ❌ BAD: One mega-component with tons of props
+>
+> <DataTable
+> data={data}
+> sortable={true}
+> filterable={true}
+> paginated={true}
+> searchable={true}
+> exportable={true}
+> selectable={true}
+> expandable={true}
+> ...30 more props
+> />   ← Impossible to maintain, impossible to customize
+>
+> ✅ GOOD: Composable components
+>
+> <DataTable data={data}>
+> <Table.Search />
+> <Table.Header sortable>
+> <Table.Column field="name" />
+> <Table.Column field="email" />
+> </Table.Header>
+> <Table.Body expandable />
+> <Table.Pagination perPage={20} />
+> </DataTable>
+> ← Each piece is independent, reusable, replaceable
+>
+> PRINCIPLE: If a component has > 10 props, it's probably doing
+> too much. Break it into composed sub-components.
+
 
 ---
 
 ## Mental Model 4: UI = f(State)
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  THE DECLARATIVE PARADIGM                                            ║
-║                                                                      ║
-║  IMPERATIVE (jQuery era):       DECLARATIVE (React era):             ║
-║  "HOW to update the DOM"        "WHAT the DOM should look like"      ║
-║                                                                      ║
-║  // Show/hide loading           // The UI is a function of state     ║
-║  if (loading) {                 function App({ loading, data }) {    ║
-║    el.show();                     if (loading) return <Spinner />;   ║
-║    spinner.addClass('active');    return <DataList items={data} />;  ║
-║  } else {                       }                                    ║
-║    el.hide();                                                        ║
-║    renderList(data);            // React handles the DOM updates     ║
-║  }                              // You just describe the END STATE   ║
-║                                                                      ║
-║  MENTAL SHIFT:                                                       ║
-║  Stop thinking "when X happens, change Y"                            ║
-║  Start thinking "given this state, what should the screen show?"     ║
-║                                                                      ║
-║  State → Render → DOM → User Event → State Change → Re-render        ║
-║    ↑                                                     │           ║
-║    └─────────────────────────────────────────────────────┘           ║
-║                    (unidirectional data flow)                        ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> THE DECLARATIVE PARADIGM
+>
+> IMPERATIVE (jQuery era):       DECLARATIVE (React era):
+> "HOW to update the DOM"        "WHAT the DOM should look like"
+>
+> // Show/hide loading           // The UI is a function of state
+> if (loading) {                 function App({ loading, data }) {
+> el.show();                     if (loading) return <Spinner />;
+> spinner.addClass('active');    return <DataList items={data} />;
+> } else {                       }
+> el.hide();
+> renderList(data);            // React handles the DOM updates
+> }                              // You just describe the END STATE
+>
+> MENTAL SHIFT:
+> Stop thinking "when X happens, change Y"
+> Start thinking "given this state, what should the screen show?"
+>
+> State → Render → DOM → User Event → State Change → Re-render
+> ↑                                                     │
+> └─────────────────────────────────────────────────────┘
+> (unidirectional data flow)
+
 
 ---
 
 ## Mental Model 5: Optimistic vs Pessimistic Updates
 
-```
-WHEN TO USE EACH
+## Question            │  Optimistic  │  Pessimistic
 
-PESSIMISTIC (Wait for server):
-User clicks → Loading spinner → Server responds → Update UI
-┌—————→ 500ms delay ← feels slow
-Use for: Payments, deleting data, irreversible actions
-
-OPTIMISTIC (Update immediately, rollback if fails):
-User clicks → Update UI immediately → Send to server
-                                      → Success? Done!
-                                      → Failed? Rollback UI
-┌—————→ 0ms delay ← feels instant
-Use for: Likes, follows, cart updates, toggling settings
-
-THE DECISION:
-┌──────────────────────┬──────────────┬──────────────────┐
-│  Question            │  Optimistic  │  Pessimistic     │
-├──────────────────────┼──────────────┼──────────────────┤
-│  Can user undo?      │  ✓           │  ✗               │
-│  Is it reversible?   │  ✓           │  ✗               │
-│  Failure common?     │  Rarely      │  Sometimes       │
-│  Impact of failure?  │  Low         │  High            │
-└──────────────────────┴──────────────┴──────────────────┘
-```
+| Can user undo?      |  ✓           |  ✗ |
+| Is it reversible?   |  ✓           |  ✗ |
+| Failure common?     |  Rarely      |  Sometimes |
+| Impact of failure?  |  Low         |  High |
 
 ---
 
@@ -241,105 +216,99 @@ SKELETON SCREENS (perceived performance):
 
 ## Mental Model 7: The Boundary Pattern
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  SEPARATE "HOW DATA IS FETCHED" FROM "HOW DATA IS DISPLAYED"         ║
-║                                                                      ║
-║  ❌ Tightly coupled:                                                  ║
-║  function UserProfile() {                                            ║
-║    const [user, setUser] = useState(null);                           ║
-║    useEffect(() => {                                                 ║
-║      fetch('/api/user/1').then(r => r.json()).then(setUser);         ║
-║    }, []);                                                           ║
-║    return <div>{user?.name}</div>;                                   ║
-║  }                                                                   ║
-║  → Can't reuse UserProfile display with different data source        ║
-║  → Can't test display without mocking fetch                          ║
-║                                                                      ║
-║  ✅ Boundary pattern:                                                 ║
-║  // Container (data boundary)                                        ║
-║  function UserProfileContainer() {                                   ║
-║    const { data: user } = useQuery('user', fetchUser);               ║
-║    return <UserProfileView user={user} />;                           ║
-║  }                                                                   ║
-║                                                                      ║
-║  // Pure display (no data fetching)                                  ║
-║  function UserProfileView({ user }) {                                ║
-║    return <div>{user.name}</div>;                                    ║
-║  }                                                                   ║
-║  → Display is testable, reusable, and pure                           ║
-║  → Data source can change without touching the display               ║
-║                                                                      ║
-║  BOUNDARIES also apply to:                                           ║
-║  • Error boundaries (catch rendering errors)                         ║
-║  • Suspense boundaries (loading states)                              ║
-║  • Layout boundaries (different page structures)                     ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> SEPARATE "HOW DATA IS FETCHED" FROM "HOW DATA IS DISPLAYED"
+>
+> ❌ Tightly coupled:
+> function UserProfile() {
+> const [user, setUser] = useState(null);
+> useEffect(() => {
+> fetch('/api/user/1').then(r => r.json()).then(setUser);
+> }, []);
+> return <div>{user?.name}</div>;
+> }
+> → Can't reuse UserProfile display with different data source
+> → Can't test display without mocking fetch
+>
+> ✅ Boundary pattern:
+> // Container (data boundary)
+> function UserProfileContainer() {
+> const { data: user } = useQuery('user', fetchUser);
+> return <UserProfileView user={user} />;
+> }
+>
+> // Pure display (no data fetching)
+> function UserProfileView({ user }) {
+> return <div>{user.name}</div>;
+> }
+> → Display is testable, reusable, and pure
+> → Data source can change without touching the display
+>
+> BOUNDARIES also apply to:
+> - Error boundaries (catch rendering errors)
+> - Suspense boundaries (loading states)
+> - Layout boundaries (different page structures)
+
 
 ---
 
 ## Mental Model 8: Accessibility Is Architecture
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  ACCESSIBILITY (a11y) ISN'T A FEATURE — IT'S A QUALITY ATTRIBUTE     ║
-║                                                                      ║
-║  Like security: bolting it on later is expensive and incomplete.     ║
-║  Build it into your component architecture from Day 1.               ║
-║                                                                      ║
-║  THE KEYBOARD TEST:                                                  ║
-║  Can a user complete every task using ONLY a keyboard?               ║
-║  Tab → focus moves logically                                         ║
-║  Enter/Space → activates buttons/links                               ║
-║  Escape → closes modals/dropdowns                                    ║
-║  Arrow keys → navigate within lists/menus                            ║
-║                                                                      ║
-║  THE SEMANTIC HTML TEST:                                             ║
-║  ❌ <div onClick={}>Click me</div>                                    ║
-║  ✅ <button onClick={}>Click me</button>                              ║
-║                                                                      ║
-║  ❌ <div class="header">Title</div>                                   ║
-║  ✅ <h1>Title</h1>                                                    ║
-║                                                                      ║
-║  THE SCREEN READER TEST:                                             ║
-║  Does every image have alt text?                                     ║
-║  Do form inputs have labels?                                         ║
-║  Are dynamic updates announced (aria-live)?                          ║
-║                                                                      ║
-║  BUSINESS REASON: 15% of the world's population has a disability.    ║
-║  Legal and ethical obligation + larger user base.                    ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> ACCESSIBILITY (a11y) ISN'T A FEATURE — IT'S A QUALITY ATTRIBUTE
+>
+> Like security: bolting it on later is expensive and incomplete.
+> Build it into your component architecture from Day 1.
+>
+> THE KEYBOARD TEST:
+> Can a user complete every task using ONLY a keyboard?
+> Tab → focus moves logically
+> Enter/Space → activates buttons/links
+> Escape → closes modals/dropdowns
+> Arrow keys → navigate within lists/menus
+>
+> THE SEMANTIC HTML TEST:
+> ❌ <div onClick={}>Click me</div>
+> ✅ <button onClick={}>Click me</button>
+>
+> ❌ <div class="header">Title</div>
+> ✅ <h1>Title</h1>
+>
+> THE SCREEN READER TEST:
+> Does every image have alt text?
+> Do form inputs have labels?
+> Are dynamic updates announced (aria-live)?
+>
+> BUSINESS REASON: 15% of the world's population has a disability.
+> Legal and ethical obligation + larger user base.
+
 
 ---
 
 ## The Frontend Architecture Decision Framework
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHEN STARTING A NEW FEATURE, ASK:                                   ║
-║                                                                      ║
-║  1. Where does the STATE live?                                       ║
-║     Server / Global / Local / URL                                    ║
-║                                                                      ║
-║  2. How does DATA FLOW?                                              ║
-║     Props down, events up? Context? Global store?                    ║
-║                                                                      ║
-║  3. What are the LOADING/ERROR states?                               ║
-║     Skeleton, spinner, error boundary, retry?                        ║
-║                                                                      ║
-║  4. How will this SCALE?                                             ║
-║     10 items vs 10,000 items (virtualization?)                       ║
-║     1 form field vs 50 fields (form library?)                        ║
-║                                                                      ║
-║  5. Can I COMPOSE smaller components?                                ║
-║     Instead of building one monolithic component                     ║
-║                                                                      ║
-║  6. Is it ACCESSIBLE?                                                ║
-║     Keyboard navigable? Screen reader friendly?                      ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> WHEN STARTING A NEW FEATURE, ASK:
+>
+> 1. Where does the STATE live?
+> Server / Global / Local / URL
+>
+> 2. How does DATA FLOW?
+> Props down, events up? Context? Global store?
+>
+> 3. What are the LOADING/ERROR states?
+> Skeleton, spinner, error boundary, retry?
+>
+> 4. How will this SCALE?
+> 10 items vs 10,000 items (virtualization?)
+> 1 form field vs 50 fields (form library?)
+>
+> 5. Can I COMPOSE smaller components?
+> Instead of building one monolithic component
+>
+> 6. Is it ACCESSIBLE?
+> Keyboard navigable? Screen reader friendly?
+
 
 ---
 

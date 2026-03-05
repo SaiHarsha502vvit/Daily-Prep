@@ -6,106 +6,80 @@
 
 # 📚 SECTION 12: GREEDY ALGORITHMS
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    GREEDY FUNDAMENTALS                          │
-├─────────────────────────────────────────────────────────────────┤
-│  KEY INSIGHT:                                                   │
-│  Make locally optimal choice at each step → Global optimum      │
-│                                                                 │
-│  WHEN TO USE GREEDY:                                            │
-│  1. Optimal substructure: Optimal solution contains optimal     │
-│     solutions to subproblems                                    │
-│  2. Greedy choice property: Local optimal leads to global       │
-│                                                                 │
-│  COMMON PATTERNS:                                               │
-│  - Interval scheduling (meetings, activities)                   │
-│  - Huffman coding                                               │
-│  - Minimum spanning tree (Kruskal's, Prim's)                    │
-│  - Dijkstra's shortest path                                     │
-│  - Fractional knapsack                                          │
-│                                                                 │
-│  ⚠️ GREEDY DOESN'T ALWAYS WORK:                                 │
-│  - 0/1 Knapsack → Need DP                                       │
-│  - Longest path → Need DP/Backtracking                          │
-└─────────────────────────────────────────────────────────────────┘
-```
+## Greedy Fundamentals
+
+
+> 💡 **KEY INSIGHT:**
+Make locally optimal choice at each step → Global optimum
+
+**When To Use Greedy**:
+1. Optimal substructure: Optimal solution contains optimal
+solutions to subproblems
+2. Greedy choice property: Local optimal leads to global
+
+**Common Patterns**:
+- Interval scheduling (meetings, activities)
+- Huffman coding
+- Minimum spanning tree (Kruskal's, Prim's)
+- Dijkstra's shortest path
+- Fractional knapsack
+⚠️ GREEDY DOESN'T ALWAYS WORK:
+- 0/1 Knapsack → Need DP
+- Longest path → Need DP/Backtracking
 
 ---
 
 ## PART 0: WHY Greedy — The Algorithm That Feels Like Cheating (But Isn't)
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║        GREEDY PROBLEMS — COMPLETE UNDERSTANDING & GROWTH MINDSET             ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+## Why Greedy Problems Are Tricky (And Important)
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHY GREEDY PROBLEMS ARE TRICKY (AND IMPORTANT)                               │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ Greedy algorithms feel simple: "just pick the best choice."                  │
-│ The HARD PART: proving the greedy choice is CORRECT.                         │
-│                                                                              │
-│ Greedy appears in ~15% of interviews. The trap:                              │
-│   - You often RECOGNIZE the greedy answer intuitively                        │
-│   - But you can't PROVE it → interviewer asks "why does this work?"          │
-│   - Or worse: you assume greedy works when it DOESN'T → wrong answer         │
-│                                                                              │
-│ TWO PROPERTIES REQUIRED (must have BOTH):                                    │
-│ 1. GREEDY CHOICE PROPERTY: The locally best choice leads to global best      │
-│ 2. OPTIMAL SUBSTRUCTURE: After making a choice, the remaining problem        │
-│    is a smaller version of the same problem                                  │
-│                                                                              │
-│ WORKS vs DOESN'T WORK:                                                       │
-│ ┌────────────────────────┬────────────────────────────────────┐              │
-│ │ ✅ Greedy WORKS        │ ❌ Greedy FAILS (need DP)          │                │
-│ ├────────────────────────┼────────────────────────────────────┤              │
-│ │ Activity Selection     │ 0/1 Knapsack                      │               │
-│ │ Fractional Knapsack    │ Longest Increasing Subsequence     │              │
-│ │ Huffman Coding         │ Coin Change (arbitrary coins)      │              │
-│ │ Dijkstra's Algorithm   │ Edit Distance                     │               │
-│ │ Kruskal's MST          │ Matrix Chain Multiplication       │               │
-│ │ Jump Game I            │ Palindrome Partitioning min cuts  │               │
-│ └────────────────────────┴────────────────────────────────────┘              │
-└──────────────────────────────────────────────────────────────────────────────┘
+Greedy algorithms feel simple: "just pick the best choice."
+The HARD PART: proving the greedy choice is CORRECT.
+Greedy appears in ~15% of interviews. The trap:
+- You often RECOGNIZE the greedy answer intuitively
+- But you can't PROVE it → interviewer asks "why does this work?"
+- Or worse: you assume greedy works when it DOESN'T → wrong answer
+TWO PROPERTIES REQUIRED (must have BOTH):
+1. GREEDY CHOICE PROPERTY: The locally best choice leads to global best
+2. OPTIMAL SUBSTRUCTURE: After making a choice, the remaining problem
+is a smaller version of the same problem
+WORKS vs DOESN'T WORK:
+┬
+- ✅ Greedy WORKS        │ ❌ Greedy FAILS (need DP)
+┼
+Activity Selection     │ 0/1 Knapsack
+Fractional Knapsack    │ Longest Increasing Subsequence
+Huffman Coding         │ Coin Change (arbitrary coins)
+Dijkstra's Algorithm   │ Edit Distance
+Kruskal's MST          │ Matrix Chain Multiplication
+Jump Game I            │ Palindrome Partitioning min cuts
+┴
+## The Mental Model: "Sort + Scan + Never Look Back"
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ THE MENTAL MODEL: "Sort + Scan + Never Look Back"                            │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ Almost EVERY greedy problem follows this 3-step recipe:                      │
-│                                                                              │
-│   STEP 1: SORT the input by some criterion                                   │
-│   STEP 2: SCAN left to right, making the best choice at each step            │
-│   STEP 3: NEVER reconsider a past choice                                     │
-│                                                                              │
-│ The KEY is knowing HOW to sort:                                              │
-│   Intervals:    Sort by END TIME → finish earliest, maximize room            │
-│   Jump Game:    Don't sort! Scan L→R, track farthest reachable               │
-│   Gas Station:  Scan L→R, track surplus (gas - cost). Reset at deficit.      │
-│   Task Scheduler: Sort by frequency → schedule most frequent first           │
-│   Assign Cookies: Sort both arrays → match smallest cookie to child          │
-│                                                                              │
-│ HOW TO VERIFY (Exchange Argument — the proof technique):                     │
-│   "If I swap my greedy choice with any other choice, the solution            │
-│    gets WORSE or stays the SAME → greedy is optimal."                        │
-│                                                                              │
-│ WORKED EXAMPLE — Activity Selection:                                         │
-│   Activities: [(1,3), (2,5), (4,7), (6,8), (5,9)]                            │
-│   Sort by end: [(1,3), (2,5), (4,7), (6,8), (5,9)]                           │
-│                                                                              │
-│   Pick (1,3) ✓ — ends earliest                                               │
-│   Skip (2,5)   — starts before 3? No, 2 < 3 ❌ — WAIT, 2 < 3 so skip          │
-│   Pick (4,7) ✓ — starts at 4 ≥ 3                                             │
-│   Pick (6,8)   — starts at 6 < 7? YES → skip                                 │
-│   Skip (5,9)   — starts at 5 < 7 → skip                                      │
-│   Result: [(1,3), (4,7)] = 2 activities                                      │
-│                                                                              │
-│   Proof: If we replaced (1,3) with (2,5), we'd free LESS room for            │
-│   future activities. Swapping always makes it worse → greedy is correct.     │
-└──────────────────────────────────────────────────────────────────────────────┘
-```
+Almost EVERY greedy problem follows this 3-step recipe:
+STEP 1: SORT the input by some criterion
+STEP 2: SCAN left to right, making the best choice at each step
+STEP 3: NEVER reconsider a past choice
+The KEY is knowing HOW to sort:
+Intervals:    Sort by END TIME → finish earliest, maximize room
+Jump Game:    Don't sort! Scan L→R, track farthest reachable
+Gas Station:  Scan L→R, track surplus (gas - cost). Reset at deficit.
+Task Scheduler: Sort by frequency → schedule most frequent first
+Assign Cookies: Sort both arrays → match smallest cookie to child
+HOW TO VERIFY (Exchange Argument — the proof technique):
+"If I swap my greedy choice with any other choice, the solution
+gets WORSE or stays the SAME → greedy is optimal."
+WORKED EXAMPLE — Activity Selection:
+Activities: [(1,3), (2,5), (4,7), (6,8), (5,9)]
+Sort by end: [(1,3), (2,5), (4,7), (6,8), (5,9)]
+Pick (1,3) ✓ — ends earliest
+Skip (2,5)   — starts before 3? No, 2 < 3 ❌ — WAIT, 2 < 3 so skip
+Pick (4,7) ✓ — starts at 4 ≥ 3
+Pick (6,8)   — starts at 6 < 7? YES → skip
+Skip (5,9)   — starts at 5 < 7 → skip
+Result: [(1,3), (4,7)] = 2 activities
+Proof: If we replaced (1,3) with (2,5), we'd free LESS room for
+future activities. Swapping always makes it worse → greedy is correct.
 
 ```java
 // GREEDY INTERVAL TEMPLATE — covers 5+ problems

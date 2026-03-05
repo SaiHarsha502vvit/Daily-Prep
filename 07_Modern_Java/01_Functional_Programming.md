@@ -8,203 +8,144 @@
 
 # 🎯 WHY-HOW-WHEN-WHICH FRAMEWORK
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WHY: Why Learn Functional Programming in Java?                                 │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Spring Boot uses lambdas everywhere - WebFlux, callbacks, configs            │
-│  • Stream API: 10 lines of loops → 1 elegant line                               │
-│  • Parallelism: .parallelStream() for instant multi-core processing             │
-│  • Interview favorite: "Write this with streams" - a common interview task      │
-│  • Modern Java: Java 8+ features are expected knowledge                         │
-└─────────────────────────────────────────────────────────────────────────────────┘
+### Why Learn Functional Programming in Java?
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  HOW: How Does Functional Programming Work?                                     │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  • Lambdas: Anonymous functions - (x) -> x * 2                                  │
-│  • Functional Interfaces: One abstract method - Predicate, Function, Consumer   │
-│  • Stream Pipeline: source → intermediate ops → terminal op                     │
-│  • Method References: Class::method shorthand for lambdas                       │
-│  • Optional: No more NullPointerException - explicit null handling              │
-└─────────────────────────────────────────────────────────────────────────────────┘
+- Spring Boot uses lambdas everywhere — WebFlux, callbacks, configs
+- **Stream API**: 10 lines of loops → 1 elegant line
+- **Parallelism**: `.parallelStream()` for instant multi-core processing
+- **Interview favorite**: "Write this with streams" — a common interview task
+- Modern Java (8+) features are expected knowledge
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WHEN: When to Use Functional vs Imperative?                                    │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  USE FUNCTIONAL:                                                                │
-│  • Collection processing (filter, map, reduce)                                  │
-│  • Parallel processing needed                                                   │
-│  • Callbacks, event handlers                                                    │
-│                                                                                 │
-│  USE IMPERATIVE:                                                                │
-│  • Complex control flow with break/continue                                     │
-│  • Performance-critical with primitive arrays                                   │
-│  • Stateful operations needing external mutation                                │
-└─────────────────────────────────────────────────────────────────────────────────┘
+### How Does Functional Programming Work?
 
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WHICH: Which Functional Concepts to Master?                                    │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  ESSENTIAL:     Lambda syntax, Stream API (filter/map/collect), Optional        │
-│  IMPORTANT:     Method references, Collectors, flatMap, reduce                  │
-│  ADVANCED:      Custom collectors, parallel streams, CompletableFuture          │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+- **Lambdas** — anonymous functions: `(x) -> x * 2`
+- **Functional Interfaces** — one abstract method: `Predicate`, `Function`, `Consumer`
+- **Stream Pipeline** — `source → intermediate ops → terminal op`
+- **Method References** — `Class::method` shorthand for lambdas
+- **Optional** — no more `NullPointerException`, explicit null handling
+
+### When to Use Functional vs Imperative?
+
+**Use Functional** when:
+- Collection processing (filter, map, reduce)
+- Parallel processing is needed
+- Working with callbacks and event handlers
+
+**Use Imperative** when:
+- Complex control flow with `break`/`continue`
+- Performance-critical with primitive arrays
+- Stateful operations needing external mutation
+
+### Which Functional Concepts to Master?
+
+| Priority | Concepts |
+|----------|----------|
+| **Essential** | Lambda syntax, Stream API (filter/map/collect), Optional |
+| **Important** | Method references, Collectors, flatMap, reduce |
+| **Advanced** | Custom collectors, parallel streams, CompletableFuture |
 
 ---
 
 # 📚 Part 0: Complete Understanding of Functional Programming
 
+
+Functional programming is a paradigm where you build software by composing **pure functions** that avoid changing state and mutating data.
+
+> 💡 **Key Insight**: Instead of telling the computer *how* to do something step-by-step, you describe *what* result you want.
+
+**Analogy**:
+- **Imperative (OOP)**: A recipe — *"Heat pan, add oil, wait 2 min, add onions, stir for 5 min..."*
+- **Functional**: A transformation — *"Take raw ingredients → Apply cooking transformation → Get dish"*
+
+### Historical Evolution
+
+| Era | Milestone | Significance |
+|-----|-----------|-------------|
+| 1930s | Lambda calculus (Alonzo Church) | Mathematical foundation |
+| 1958 | LISP | First functional programming language |
+| 1973 | ML language | Type inference |
+| 1990 | Haskell | Pure functional programming |
+| 2014 | **Java 8** | Lambdas and streams brought FP to Java |
+| Today | JS, Python, Scala | FP concepts in all major languages |
+
+---
+
+## What Problem Does Functional Programming Solve?
+
+**Problem 1: Bugs from shared mutable state**
+
+Imperative — risky (another thread could modify `total`):
+```java
+int total = 0;
+for (Order o : orders) {
+    total += o.getAmount();
+}
 ```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║        FUNCTIONAL PROGRAMMING - COMPLETE UNDERSTANDING                       ║
-╚══════════════════════════════════════════════════════════════════════════════╝
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHAT IS FUNCTIONAL PROGRAMMING?                                              │
-├──────────────────────────────────────────────────────────────────────────────┤
-│ A programming PARADIGM where you build software by composing PURE FUNCTIONS  │
-│ that avoid changing state and mutating data.                                 │
-│                                                                              │
-│ KEY INSIGHT: Instead of telling the computer HOW to do something             │
-│ step-by-step, you describe WHAT result you want.                             │
-│                                                                              │
-│ ANALOGY:                                                                     │
-│ • IMPERATIVE (OOP): Recipe with step-by-step instructions                    │
-│   "Heat pan, add oil, wait 2 min, add onions, stir for 5 min..."             │
-│                                                                              │
-│ • FUNCTIONAL: Describing the transformation                                  │
-│   "Take raw ingredients → Apply cooking transformation → Get dish"           │
-│                                                                              │
-│ HISTORICAL EVOLUTION:                                                        │
-│ • 1930s: Lambda calculus (Alonzo Church) - mathematical foundation           │
-│ • 1958: LISP - first functional programming language                         │
-│ • 1973: ML language - type inference                                         │
-│ • 1990: Haskell - pure functional programming                                │
-│ • 2014: Java 8 - lambdas and streams brought FP to Java                      │
-│ • Today: FP concepts in all major languages (even JavaScript!)               │
-└──────────────────────────────────────────────────────────────────────────────┘
-
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHAT PROBLEM DOES FUNCTIONAL PROGRAMMING SOLVE?                              │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ PROBLEM 1: BUGS FROM SHARED MUTABLE STATE                                    │
-│                                                                              │
-│ Imperative code:                                                             │
-│   int total = 0;                                                             │
-│   for (Order o : orders) {                                                   │
-│       total += o.getAmount();  // What if another thread modifies total?     │
-│   }                                                                          │
-│                                                                              │
-│ Functional code:                                                             │
-│   int total = orders.stream()                                                │
-│                      .mapToInt(Order::getAmount)                             │
-│                      .sum();  // No mutable state!                           │
-│                                                                              │
-│ PROBLEM 2: HARD TO PARALLELIZE                                               │
-│ • Imperative: Careful synchronization needed                                 │
-│ • Functional: Pure functions can run in parallel safely!                     │
-│                                                                              │
-│ PROBLEM 3: CODE HARD TO TEST                                                 │
-│ • Imperative: Need to set up state, mock dependencies                        │
-│ • Functional: Pure function - just test input → output                       │
-│                                                                              │
-│ PROBLEM 4: CODE HARD TO REASON ABOUT                                         │
-│ • Imperative: "What's the value of x HERE vs THERE?"                         │
-│ • Functional: Same input ALWAYS gives same output                            │
-└──────────────────────────────────────────────────────────────────────────────┘
-
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHY LEARN FUNCTIONAL PROGRAMMING?                                            │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ 1. CLEANER CODE:                                                             │
-│    10 lines of loop → 1 line of stream                                       │
-│    More readable, less error-prone                                           │
-│                                                                              │
-│ 2. PARALLEL PROCESSING:                                                      │
-│    list.parallelStream() instantly parallelizes!                             │
-│    Critical for big data, multi-core CPUs                                    │
-│                                                                              │
-│ 3. INDUSTRY DEMAND:                                                          │
-│    React (JavaScript) is functional                                          │
-│    Spark (Big Data) is functional                                            │
-│    Modern Java uses streams extensively                                      │
-│                                                                              │
-│ 4. BETTER ABSTRACTIONS:                                                      │
-│    map, filter, reduce work on ANY collection                                │
-│    Write once, use everywhere                                                │
-│                                                                              │
-│ 5. INTERVIEW ADVANTAGE:                                                      │
-│    "Can you solve this with streams?"                                        │
-│    Concise solutions impress interviewers                                    │
-└──────────────────────────────────────────────────────────────────────────────┘
-
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHEN TO USE FUNCTIONAL vs IMPERATIVE                                         │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ USE FUNCTIONAL WHEN:                                                         │
-│ • Processing collections (filter, transform, aggregate)                      │
-│ • Need parallel processing                                                   │
-│ • Data transformations (pipelines)                                           │
-│ • Avoiding side effects is important                                         │
-│                                                                              │
-│ USE IMPERATIVE WHEN:                                                         │
-│ • Need early termination with complex conditions                             │
-│ • Modifying multiple variables in complex ways                               │
-│ • Performance-critical loops (sometimes)                                     │
-│ • Index-based operations are clearer                                         │
-│                                                                              │
-│ BEST PRACTICE: Use BOTH! Java supports multi-paradigm                        │
-│ • Use streams for data processing                                            │
-│ • Use loops when they're clearer                                             │
-│ • Don't force functional style where it doesn't fit                          │
-└──────────────────────────────────────────────────────────────────────────────┘
-
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ DIFFICULTIES IN LEARNING FUNCTIONAL PROGRAMMING                              │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ 1. "I THINK IN LOOPS":                                                       │
-│    Solution: Start by converting existing loops to streams                   │
-│    for → forEach, filter → if inside loop, map → transformation              │
-│                                                                              │
-│ 2. "LAMBDAS ARE CONFUSING":                                                  │
-│    Solution: Think of them as "mini-functions without a name"                │
-│    (x) -> x * 2 is just a function that doubles                              │
-│                                                                              │
-│ 3. "DEBUGGING IS HARD":                                                      │
-│    Solution: Break long streams into smaller pieces                          │
-│    Add peek() to see intermediate values                                     │
-│                                                                              │
-│ 4. "DON'T KNOW WHICH METHOD TO USE":                                         │
-│    Solution: Master the 6 core operations first:                             │
-│    filter, map, flatMap, reduce, collect, forEach                            │
-│                                                                              │
-│ 5. "WHEN IS IT OVERKILL?":                                                   │
-│    Solution: If a simple loop is clearer, use the loop!                      │
-│    FP is a tool, not a religion                                              │
-└──────────────────────────────────────────────────────────────────────────────┘
-
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ EXPECTED OUTPUTS OF MASTERING FUNCTIONAL PROGRAMMING                         │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ ✅ CONCISE CODE: Replace 10-line loops with 1-line streams                    │
-│ ✅ SAFER CODE: No shared mutable state bugs                                   │
-│ ✅ PARALLEL READY: Easy parallelization when needed                           │
-│ ✅ MODERN JAVA: Use Java 8+ features professionally                           │
-│ ✅ INTERVIEW READY: Solve problems elegantly with streams                     │
-│ ✅ CROSS-LANGUAGE: Same concepts in JavaScript, Python, Scala                 │
-│                                                                              │
-│ THE TRANSFORMATION:                                                          │
-│ FROM: "How do I iterate through this collection?"                            │
-│   TO: "What transformation do I need to apply?"                              │
-└──────────────────────────────────────────────────────────────────────────────┘
+Functional — safe (no mutable state):
+```java
+int total = orders.stream()
+                   .mapToInt(Order::getAmount)
+                   .sum();
 ```
+
+**Problem 2**: Imperative code is **hard to parallelize** (needs careful synchronization). Pure functions can run in parallel safely.
+
+**Problem 3**: Imperative code is **hard to test** (must set up state, mock dependencies). Pure functions just test input → output.
+
+**Problem 4**: Imperative code is **hard to reason about** ("What's the value of x HERE vs THERE?"). Same input **always** gives same output in FP.
+
+---
+
+## Why Learn Functional Programming?
+
+1. **Cleaner Code** — 10 lines of loop → 1 line of stream. More readable, less error-prone.
+2. **Parallel Processing** — `list.parallelStream()` instantly parallelizes! Critical for big data, multi-core CPUs.
+3. **Industry Demand** — React (JS) is functional, Spark (Big Data) is functional, modern Java uses streams extensively.
+4. **Better Abstractions** — `map`, `filter`, `reduce` work on ANY collection. Write once, use everywhere.
+5. **Interview Advantage** — *"Can you solve this with streams?"* Concise solutions impress interviewers.
+
+---
+
+## When to Use Functional vs Imperative
+
+**Use Functional when**:
+- Processing collections (filter, transform, aggregate)
+- Need parallel processing
+- Data transformations (pipelines)
+- Avoiding side effects is important
+
+**Use Imperative when**:
+- Need early termination with complex conditions
+- Modifying multiple variables in complex ways
+- Performance-critical loops (sometimes)
+- Index-based operations are clearer
+
+> ✅ **Best Practice**: Use **both**! Java supports multi-paradigm. Use streams for data processing, loops when they're clearer. Don't force functional style where it doesn't fit.
+
+---
+
+## Difficulties in Learning FP
+
+1. **"I think in loops"** — Start by converting existing loops to streams: `for` → `forEach`, `if` → `filter`, transformation → `map`
+2. **"Lambdas are confusing"** — Think of them as "mini-functions without a name": `(x) -> x * 2` just doubles
+3. **"Debugging is hard"** — Break long streams into smaller pieces. Add `peek()` to see intermediate values.
+4. **"Don't know which method to use"** — Master the 6 core operations first: `filter`, `map`, `flatMap`, `reduce`, `collect`, `forEach`
+5. **"When is it overkill?"** — If a simple loop is clearer, use the loop! FP is a tool, not a religion.
+
+---
+
+## Expected Outcomes
+
+- ✅ **Concise Code**: Replace 10-line loops with 1-line streams
+- ✅ **Safer Code**: No shared mutable state bugs
+- ✅ **Parallel Ready**: Easy parallelization when needed
+- ✅ **Modern Java**: Use Java 8+ features professionally
+- ✅ **Interview Ready**: Solve problems elegantly with streams
+- ✅ **Cross-Language**: Same concepts in JavaScript, Python, Scala
+
+> 🧠 **The Transformation**: FROM *"How do I iterate through this collection?"* → TO *"What transformation do I need to apply?"*
+
 
 ---
 
@@ -212,22 +153,24 @@
 
 ## The Mental Shift
 
-```
-IMPERATIVE (How to do it):
-"Go to the store. Pick up milk. Go to checkout. Pay. Come back."
+**Imperative** (how to do it): *"Go to the store. Pick up milk. Go to checkout. Pay. Come back."*
 
-FUNCTIONAL (What to do):
-"Get milk from store."
+**Functional** (what to do): *"Get milk from store."*
 
-IMPERATIVE CODE:
+Imperative code:
+
+```java
 List<Integer> result = new ArrayList<>();
 for (int num : numbers) {
     if (num % 2 == 0) {
         result.add(num * 2);
     }
 }
+```
 
-FUNCTIONAL CODE:
+Functional code:
+
+```java
 List<Integer> result = numbers.stream()
     .filter(n -> n % 2 == 0)
     .map(n -> n * 2)
@@ -420,19 +363,17 @@ isNotPositive.test(-5);  // true
 
 ## What is a Stream?
 
+A Stream is a sequence of elements that supports declarative, functional-style operations.
+
 ```
-A Stream is a sequence of elements that supports
-declarative, functional-style operations.
-
-          Source → Stream → Intermediate Ops → Terminal Op → Result
-
-          List   →  stream()  →  filter, map  →  collect   →  List
-
-IMPORTANT:
-- Streams are NOT data structures (they don't store data)
-- Streams are LAZY (operations only run when terminal op is called)
-- Streams can only be consumed ONCE
+Source → Stream → Intermediate Ops → Terminal Op → Result
+List   → stream() → filter, map   → collect     → List
 ```
+
+> ⚠️ **Important**:
+> - Streams are **NOT** data structures (they don't store data)
+> - Streams are **lazy** (operations only run when terminal op is called)
+> - Streams can only be consumed **once**
 
 ## Creating Streams
 
@@ -821,24 +762,21 @@ List<Integer> flat = Arrays.stream(matrix)
 
 # 📌 Part 9: When to Use Functional Style
 
-```
-USE FUNCTIONAL WHEN:
-✓ Processing collections (filter, map, transform)
-✓ Parallel processing needed (parallelStream)
-✓ Code is about WHAT, not HOW
-✓ Chaining multiple operations
-✓ Working with Optional values
+**Use Functional when**:
+- ✓ Processing collections (filter, map, transform)
+- ✓ Parallel processing needed (`parallelStream`)
+- ✓ Code is about *what*, not *how*
+- ✓ Chaining multiple operations
+- ✓ Working with `Optional` values
 
-USE IMPERATIVE WHEN:
-✓ Performance is critical (streams have overhead)
-✓ Need to break/continue in loops
-✓ Modifying elements in place
-✓ Complex state management
-✓ Index-based operations needed
+**Use Imperative when**:
+- ✓ Performance is critical (streams have overhead)
+- ✓ Need to `break`/`continue` in loops
+- ✓ Modifying elements in place
+- ✓ Complex state management
+- ✓ Index-based operations needed
 
-HYBRID IS FINE:
-Mixing styles is normal and often best!
-```
+> 💡 **Hybrid is fine** — mixing styles is normal and often best!
 
 ---
 
@@ -846,23 +784,18 @@ Mixing styles is normal and often best!
 
 ## A. LOCAL VARIABLE TYPE INFERENCE (var) - Java 10
 
+`var` lets the compiler **infer** the type from the right-hand side.
+
+**Before** (verbose):
+```java
+Map<String, List<Employee>> departments = new HashMap<>();
+HttpServletRequest request = (HttpServletRequest) servletRequest;
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                         LOCAL VARIABLE TYPE INFERENCE                           │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  WHAT IS var?                                                                   │
-│  The compiler INFERS the type from the right-hand side                          │
-│                                                                                 │
-│  BEFORE (verbose):                                                              │
-│    Map<String, List<Employee>> departments = new HashMap<>();                   │
-│    HttpServletRequest request = (HttpServletRequest) servletRequest;            │
-│                                                                                 │
-│  AFTER (concise):                                                               │
-│    var departments = new HashMap<String, List<Employee>>();                     │
-│    var request = (HttpServletRequest) servletRequest;                           │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+
+**After** (concise):
+```java
+var departments = new HashMap<String, List<Employee>>();
+var request = (HttpServletRequest) servletRequest;
 ```
 
 ```java
@@ -902,51 +835,25 @@ String[] arr = {1, 2, 3};                    // Explicit type
 Function<Integer, Integer> lambda = x -> x * 2;  // Explicit type
 ```
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  var RULES                                                                      │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  ✓ Only for LOCAL variables (not fields, parameters, or return types)           │
-│  ✓ Must have initializer on same line                                           │
-│  ✓ Type is determined at COMPILE time (not runtime)                             │
-│  ✓ var is NOT a keyword - can still use as variable name (not recommended)      │
-│                                                                                 │
-│  INTERVIEW TIP: "var improves readability when type is obvious from context,    │
-│  but explicit types are better when they document intent"                       │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+**`var` Rules**:
+- ✓ Only for **local variables** (not fields, parameters, or return types)
+- ✓ Must have initializer on the same line
+- ✓ Type is determined at **compile time** (not runtime)
+- ✓ `var` is NOT a keyword — can still use as a variable name (not recommended)
+
+> 🎯 **Interview Tip**: *"var improves readability when type is obvious from context, but explicit types are better when they document intent."*
 
 ---
 
 ## B. JAVA RECORDS (Java 16+)
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                         JAVA RECORDS - IMMUTABLE DATA CARRIERS                  │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  WHAT IS A RECORD?                                                              │
-│  A concise way to declare classes that are "data carriers" - classes whose main │
-│  purpose is to hold data, not behavior.                                         │
-│                                                                                 │
-│  PROBLEM: Traditional "POJO" classes require lots of boilerplate:               │
-│                                                                                 │
-│  // 50+ lines for a simple data class!                                          │
-│  public class User {                                                            │
-│      private final String name;                                                 │
-│      private final int age;                                                     │
-│      // Constructor                                                             │
-│      // Getters                                                                 │
-│      // equals()                                                                │
-│      // hashCode()                                                              │
-│      // toString()                                                              │
-│  }                                                                              │
-│                                                                                 │
-│  SOLUTION WITH RECORDS:                                                         │
-│                                                                                 │
-│  public record User(String name, int age) { }  // 1 line! That's it!            │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+A **record** is a concise way to declare classes that are "data carriers" — classes whose main purpose is to hold data, not behavior.
+
+**Problem**: Traditional "POJO" classes require lots of boilerplate — 50+ lines for a simple data class (constructor, getters, `equals()`, `hashCode()`, `toString()`).
+
+**Solution with Records**:
+```java
+public record User(String name, int age) { }  // 1 line! That's it!
 ```
 
 ```java
@@ -1041,39 +948,30 @@ public class UserController {
 }
 ```
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  RECORDS vs CLASS vs LOMBOK                                                     │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  ┌────────────────┬──────────────────────────────────────────────────────────┐  │
-│  │ Feature        │ class           │ record          │ @Data (Lombok)       │  │
-│  ├────────────────┼──────────────────────────────────────────────────────────┤  │
-│  │ Immutable      │ Manual          │ Always          │ @Value for immutable │  │
-│  │ Inheritance    │ Yes             │ No (final)      │ Yes                  │  │
-│  │ Mutable fields │ Yes             │ No              │ Yes                  │  │
-│  │ Boilerplate    │ High            │ None            │ None                 │  │
-│  │ External dep   │ None            │ None            │ Lombok               │  │
-│  │ Serialization  │ Works           │ Works           │ Works                │  │
-│  │ JPA Entities   │ Yes             │ No (immutable)  │ Yes                  │  │
-│  └────────────────┴──────────────────────────────────────────────────────────┘  │
-│                                                                                 │
-│  WHEN TO USE RECORDS:                                                           │
-│  ✓ DTOs (Request/Response objects)                                              │
-│  ✓ Value objects (Money, Address, Coordinates)                                  │
-│  ✓ Compound map keys                                                            │
-│  ✓ Return multiple values from a method                                         │
-│                                                                                 │
-│  WHEN NOT TO USE RECORDS:                                                       │
-│  ✗ JPA Entities (need mutable setters, default constructor)                     │
-│  ✗ Classes with behavior more important than data                               │
-│  ✗ Classes that need inheritance                                                │
-│                                                                                 │
-│  INTERVIEW TIP: "Records are perfect for DTOs because they're immutable,        │
-│  concise, and automatically implement equals/hashCode correctly"                │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+### Records vs Class vs Lombok
+
+| Feature | `class` | `record` | `@Data` (Lombok) |
+|---------|---------|----------|-------------------|
+| Immutable | Manual | Always | `@Value` for immutable |
+| Inheritance | Yes | No (final) | Yes |
+| Mutable fields | Yes | No | Yes |
+| Boilerplate | High | None | None |
+| External dependency | None | None | Lombok |
+| Serialization | Works | Works | Works |
+| JPA Entities | Yes | No (immutable) | Yes |
+
+**When to use records**:
+- ✓ DTOs (Request/Response objects)
+- ✓ Value objects (Money, Address, Coordinates)
+- ✓ Compound map keys
+- ✓ Return multiple values from a method
+
+**When NOT to use records**:
+- ✗ JPA Entities (need mutable setters, default constructor)
+- ✗ Classes with behavior more important than data
+- ✗ Classes that need inheritance
+
+> 🎯 **Interview Tip**: *"Records are perfect for DTOs because they're immutable, concise, and automatically implement equals/hashCode correctly."*
 
 ---
 

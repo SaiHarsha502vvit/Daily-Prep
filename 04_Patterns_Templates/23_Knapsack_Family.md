@@ -6,28 +6,22 @@
 
 # 📚 KNAPSACK FAMILY — THE UNIFICATION GUIDE
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│              THE KNAPSACK FAMILY TREE                           │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│                     KNAPSACK                                    │
-│                    /    |     \                                 │
-│                 0/1  Unbounded  Bounded                         │
-│                / | \     |         |                            │
-│       Subset  Target Partition  Coin    Rod                     │
-│        Sum     Sum    Equal    Change   Cut                     │
-│       (LC416) (LC494)(LC416)  (LC322) (GFG)                     │
-│                                  |                              │
-│                              Coin Ways                          │
-│                              (LC518)                            │
-│                                                                 │
-│  INSIGHT: ALL these problems share ONE core recurrence:         │
-│   dp[i][w] = max/min/count of (take item, skip item)            │
-│  The ONLY difference: 0/1 vs unbounded vs bounded.              │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
+## The Knapsack Family Tree
+
+KNAPSACK
+/    |     \
+0/1  Unbounded  Bounded
+/ | \     |         |
+Subset  Target Partition  Coin    Rod
+Sum     Sum    Equal    Change   Cut
+(LC416) (LC494)(LC416)  (LC322) (GFG)
+|
+Coin Ways
+(LC518)
+
+**Insight**: ALL these problems share ONE core recurrence:
+dp[i][w] = max/min/count of (take item, skip item)
+The ONLY difference: 0/1 vs unbounded vs bounded.
 
 ---
 

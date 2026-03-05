@@ -4,16 +4,14 @@
 
 ## How to THINK About System Design
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  System design isn't about memorizing architectures.                 ║
-║  It's about developing THINKING FRAMEWORKS that help you             ║
-║  navigate ANY design problem you've never seen before.               ║
-║                                                                      ║
-║  This guide gives you the MENTAL TOOLBOX — not the answers,          ║
-║  but the way to ARRIVE at answers.                                   ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> System design isn't about memorizing architectures.
+> It's about developing THINKING FRAMEWORKS that help you
+> navigate ANY design problem you've never seen before.
+>
+> This guide gives you the MENTAL TOOLBOX — not the answers,
+> but the way to ARRIVE at answers.
+
 
 ---
 
@@ -80,38 +78,14 @@ Insight: Read-heavy (100:1 ratio) → need caching + CDN
 
 ## Mental Model 3: The Trade-Off Triangle
 
-```
-EVERY DESIGN DECISION IS A TRADE-OFF
+## Choice               │  Trade-Off
 
-You can rarely optimize for everything simultaneously.
-The skill is knowing WHICH trade-off to make for THIS context.
-
-         Consistency
-            /\
-           /  \
-          /    \         ← You're always choosing
-         / PICK \           where on this triangle
-        /  TWO   \          to position your system
-       /          \
-      /____________\
-Availability    Performance
-
-COMMON TRADE-OFFS:
-┌───────────────────────┬───────────────────────────────┐
-│  CHOICE               │  TRADE-OFF                    │
-├───────────────────────┼───────────────────────────────┤
-│  SQL vs NoSQL         │  Consistency vs Flexibility   │
-│  Cache vs No Cache    │  Speed vs Freshness           │
-│  Monolith vs Micro    │  Simplicity vs Scalability    │
-│  Sync vs Async        │  Simplicity vs Throughput     │
-│  Normalize vs Denorm  │  Write speed vs Read speed    │
-│  Push vs Pull         │  Latency vs Resource usage    │
-└───────────────────────┴───────────────────────────────┘
-
-In interviews, ALWAYS state your trade-off explicitly:
-"I'm choosing eventual consistency here because availability
- is more critical for a social feed than strict consistency."
-```
+SQL vs NoSQL         │  Consistency vs Flexibility
+Cache vs No Cache    │  Speed vs Freshness
+Monolith vs Micro    │  Simplicity vs Scalability
+Sync vs Async        │  Simplicity vs Throughput
+Normalize vs Denorm  │  Write speed vs Read speed
+Push vs Pull         │  Latency vs Resource usage
 
 ---
 
@@ -159,149 +133,129 @@ under-engineering. Build for 10x your current scale, not 1000x.
 
 ## Mental Model 5: The Read/Write Split
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  FIRST QUESTION FOR ANY SYSTEM: Is it READ-heavy or WRITE-heavy?     ║
-║                                                                      ║
-║  READ-HEAVY (100:1)              WRITE-HEAVY (1:1 or more)           ║
-║  ─────────────────              ──────────────────────               ║
-║  Social media feeds              Chat messages                       ║
-║  E-commerce product pages        IoT sensor data                     ║
-║  News/blog sites                 Financial transactions              ║
-║  Search results                  Logging/analytics                   ║
-║                                                                      ║
-║  READ-HEAVY OPTIMIZATIONS:       WRITE-HEAVY OPTIMIZATIONS:          ║
-║  • Caching (Redis, CDN)         • Write-ahead log                    ║
-║  • Read replicas                • Async processing (queues)          ║
-║  • Denormalization              • Batch writes                       ║
-║  • Materialized views           • LSM-Tree stores (Cassandra)        ║
-║  • Pre-computed feeds           • Partitioning/sharding              ║
-║                                                                      ║
-║  MIXED? Use CQRS:                                                    ║
-║  Command (write) → one model                                         ║
-║  Query (read)    → different, optimized model                        ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> FIRST QUESTION FOR ANY SYSTEM: Is it READ-heavy or WRITE-heavy?
+>
+> READ-HEAVY (100:1)              WRITE-HEAVY (1:1 or more)
+> ─────────────────              ──────────────────────
+> Social media feeds              Chat messages
+> E-commerce product pages        IoT sensor data
+> News/blog sites                 Financial transactions
+> Search results                  Logging/analytics
+>
+> READ-HEAVY OPTIMIZATIONS:       WRITE-HEAVY OPTIMIZATIONS:
+> - Caching (Redis, CDN)         • Write-ahead log
+> - Read replicas                • Async processing (queues)
+> - Denormalization              • Batch writes
+> - Materialized views           • LSM-Tree stores (Cassandra)
+> - Pre-computed feeds           • Partitioning/sharding
+>
+> MIXED? Use CQRS:
+> Command (write) → one model
+> Query (read)    → different, optimized model
+
 
 ---
 
 ## Mental Model 6: Failure Will Happen — Design For It
 
-```
-THE FAILURE-FIRST MINDSET
+## If This Fails...      │  We Should...
 
-Ask for EVERY component: "What happens if this fails?"
-
-┌────────────────────────┬──────────────────────────────┐
-│  IF THIS FAILS...      │  WE SHOULD...                │
-├────────────────────────┼──────────────────────────────┤
-│  Database goes down    │  Failover to replica         │
-│  Cache goes down       │  Fall through to DB          │
-│  Service times out     │  Circuit breaker + fallback  │
-│  Queue is full         │  Backpressure + dead letter  │
-│  Region goes down      │  Multi-region failover       │
-│  Deployment is buggy   │  Canary + quick rollback     │
-│  Data is corrupted     │  Backup + point-in-time      │
-│  Traffic spikes 10x    │  Auto-scaling + rate limit   │
-└────────────────────────┴──────────────────────────────┘
-
-The Netflix approach:
-"We design systems assuming EVERYTHING will fail,
- and then test it by ACTUALLY breaking things" (Chaos Monkey)
-```
+Database goes down    │  Failover to replica
+Cache goes down       │  Fall through to DB
+Service times out     │  Circuit breaker + fallback
+Queue is full         │  Backpressure + dead letter
+Region goes down      │  Multi-region failover
+Deployment is buggy   │  Canary + quick rollback
+Data is corrupted     │  Backup + point-in-time
+Traffic spikes 10x    │  Auto-scaling + rate limit
 
 ---
 
 ## Mental Model 7: The Funnel Pattern
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WEB REQUEST FLOW — Think of It as a Funnel                          ║
-║                                                                      ║
-║  Each layer FILTERS and OPTIMIZES before hitting the next:           ║
-║                                                                      ║
-║  DNS (Route 53)         → Resolve to IP                              ║
-║       │                                                              ║
-║  CDN (CloudFront)       → Serve cached static content (90% done)     ║
-║       │                                                              ║
-║  Load Balancer          → Distribute remaining requests              ║
-║       │                                                              ║
-║  Rate Limiter           → Block abusive traffic                      ║
-║       │                                                              ║
-║  API Gateway            → Auth, throttle, route                      ║
-║       │                                                              ║
-║  Application Cache      → Return cached API responses                ║
-║       │                                                              ║
-║  Application Server     → Business logic (only ~5% of original)      ║
-║       │                                                              ║
-║  Database               → Only queries that MUST hit storage         ║
-║                                                                      ║
-║  INSIGHT: 95% of requests should NEVER reach your database.          ║
-║  Each layer is a chance to serve the response earlier.               ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> WEB REQUEST FLOW — Think of It as a Funnel
+>
+> Each layer FILTERS and OPTIMIZES before hitting the next:
+>
+> DNS (Route 53)         → Resolve to IP
+> │
+> CDN (CloudFront)       → Serve cached static content (90% done)
+> │
+> Load Balancer          → Distribute remaining requests
+> │
+> Rate Limiter           → Block abusive traffic
+> │
+> API Gateway            → Auth, throttle, route
+> │
+> Application Cache      → Return cached API responses
+> │
+> Application Server     → Business logic (only ~5% of original)
+> │
+> Database               → Only queries that MUST hit storage
+>
+> INSIGHT: 95% of requests should NEVER reach your database.
+> Each layer is a chance to serve the response earlier.
+
 
 ---
 
 ## Mental Model 8: The Interview Navigation Map
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  45-MINUTE SYSTEM DESIGN INTERVIEW — TIME ALLOCATION                 ║
-║                                                                      ║
-║  [0-5 min]   CLARIFY                                                 ║
-║  • Ask about scale (users, data, requests/second)                    ║
-║  • Ask about constraints (latency, availability, consistency)        ║
-║  • Ask about features (MVP vs full-featured)                         ║
-║  → "Are we designing for 1K users or 100M?"                          ║
-║                                                                      ║
-║  [5-10 min]  HIGH-LEVEL DESIGN                                       ║
-║  • Draw the main components (client, server, database, cache)        ║
-║  • Define the API (2-3 core endpoints)                               ║
-║  • Identify the data model (key entities + relationships)            ║
-║                                                                      ║
-║  [10-30 min] DEEP DIVE                                               ║
-║  • Most complex component in detail                                  ║
-║  • Data flow for core use case                                       ║
-║  • Handle scale: sharding, caching, replication                      ║
-║  → This is where you show DEPTH. Pick the hard part.                 ║
-║                                                                      ║
-║  [30-40 min] TRADE-OFFS & EDGE CASES                                 ║
-║  • What happens during failures?                                     ║
-║  • Alternative approaches you considered                             ║
-║  • Bottlenecks and how to address them                               ║
-║                                                                      ║
-║  [40-45 min] WRAP UP                                                 ║
-║  • Summarize key decisions                                           ║
-║  • Mention what you'd add with more time                             ║
-║  • Open for interviewer questions                                    ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> 45-MINUTE SYSTEM DESIGN INTERVIEW — TIME ALLOCATION
+>
+> [0-5 min]   CLARIFY
+> - Ask about scale (users, data, requests/second)
+> - Ask about constraints (latency, availability, consistency)
+> - Ask about features (MVP vs full-featured)
+> → "Are we designing for 1K users or 100M?"
+>
+> [5-10 min]  HIGH-LEVEL DESIGN
+> - Draw the main components (client, server, database, cache)
+> - Define the API (2-3 core endpoints)
+> - Identify the data model (key entities + relationships)
+>
+> [10-30 min] DEEP DIVE
+> - Most complex component in detail
+> - Data flow for core use case
+> - Handle scale: sharding, caching, replication
+> → This is where you show DEPTH. Pick the hard part.
+>
+> [30-40 min] TRADE-OFFS & EDGE CASES
+> - What happens during failures?
+> - Alternative approaches you considered
+> - Bottlenecks and how to address them
+>
+> [40-45 min] WRAP UP
+> - Summarize key decisions
+> - Mention what you'd add with more time
+> - Open for interviewer questions
+
 
 ---
 
 ## Quick Decision Framework
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHEN STUCK, ASK THESE 5 QUESTIONS:                                  ║
-║                                                                      ║
-║  1. What's the READ:WRITE ratio?                                     ║
-║     → Drives caching and replication strategy                        ║
-║                                                                      ║
-║  2. What's the CONSISTENCY requirement?                              ║
-║     → Drives database choice and replication mode                    ║
-║                                                                      ║
-║  3. What's the LATENCY requirement?                                  ║
-║     → Drives where to put caches and how to pre-compute              ║
-║                                                                      ║
-║  4. What's the DATA SIZE and GROWTH rate?                            ║
-║     → Drives partitioning and storage tier decisions                 ║
-║                                                                      ║
-║  5. What FAILS gracefully and what CAN'T fail?                       ║
-║     → Drives redundancy, replication, and backup strategy            ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> WHEN STUCK, ASK THESE 5 QUESTIONS:
+>
+> 1. What's the READ:WRITE ratio?
+> → Drives caching and replication strategy
+>
+> 2. What's the CONSISTENCY requirement?
+> → Drives database choice and replication mode
+>
+> 3. What's the LATENCY requirement?
+> → Drives where to put caches and how to pre-compute
+>
+> 4. What's the DATA SIZE and GROWTH rate?
+> → Drives partitioning and storage tier decisions
+>
+> 5. What FAILS gracefully and what CAN'T fail?
+> → Drives redundancy, replication, and backup strategy
+
 
 ---
 

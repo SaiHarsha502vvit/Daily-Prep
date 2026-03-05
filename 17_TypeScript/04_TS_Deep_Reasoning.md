@@ -28,22 +28,20 @@
 
 ### Deep Reasoning
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  TYPES ARE LIKE BLUEPRINTS — The Building Analogy                ║
-║                                                                  ║
-║  TypeScript types = Architectural blueprints                     ║
-║  Compiled JavaScript = The finished building                     ║
-║                                                                  ║
-║  The blueprints guide construction (development).                ║
-║  Once the building is built (compiled), the blueprints are       ║
-║  stored in a drawer — they're NOT embedded in the walls.         ║
-║                                                                  ║
-║  You can't walk into a building and ask "show me the blueprint   ║
-║  for this room." The blueprint (type) was used during            ║
-║  construction (compilation) and then ERASED.                     ║
-╚══════════════════════════════════════════════════════════════════╝
-```
+
+> TYPES ARE LIKE BLUEPRINTS — The Building Analogy
+>
+> TypeScript types = Architectural blueprints
+> Compiled JavaScript = The finished building
+>
+> The blueprints guide construction (development).
+> Once the building is built (compiled), the blueprints are
+> stored in a drawer — they're NOT embedded in the walls.
+>
+> You can't walk into a building and ask "show me the blueprint
+> for this room." The blueprint (type) was used during
+> construction (compilation) and then ERASED.
+
 
 ```typescript
 // TypeScript (what you write):

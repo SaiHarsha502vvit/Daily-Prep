@@ -49,98 +49,61 @@
 
 ## PART 0: THE MENTAL MODEL — "Sort, Scan, Decide"
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║               INTERVALS — COMPLETE THEORY & PATTERNS                         ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+## The Real-World Origin
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ THE REAL-WORLD ORIGIN                                                        │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ 📖 CALENDAR APPS: Google Calendar must detect overlapping events.             │
-│    When you schedule 2-3pm and 2:30-4pm, it highlights the conflict.         │
-│    This is literally the Overlapping Intervals check.                        │
-│                                                                              │
-│ 📖 MEETING ROOMS: Amazon's meeting room allocator uses a min-heap             │
-│    of end times. When a new meeting starts, check if any room is free        │
-│    (earliest end time ≤ new start). If not, allocate a new room.             │
-│                                                                              │
-│ 📖 NETWORK BANDWIDTH: Merging bandwidth reservation intervals to              │
-│    find total allocated vs available capacity.                               │
-│                                                                              │
-│ 📖 GENOMICS: Gene expression intervals on chromosomes — merging               │
-│    overlapping regions to find functional units.                             │
-│                                                                              │
-│ 📖 OPERATING SYSTEMS: Memory allocation = interval management.                │
-│    malloc/free creates and merges free memory intervals.                     │
-│                                                                              │
-└──────────────────────────────────────────────────────────────────────────────┘
+📖 CALENDAR APPS: Google Calendar must detect overlapping events.
+When you schedule 2-3pm and 2:30-4pm, it highlights the conflict.
+This is literally the Overlapping Intervals check.
+📖 MEETING ROOMS: Amazon's meeting room allocator uses a min-heap
+of end times. When a new meeting starts, check if any room is free
+(earliest end time ≤ new start). If not, allocate a new room.
+📖 NETWORK BANDWIDTH: Merging bandwidth reservation intervals to
+find total allocated vs available capacity.
+📖 GENOMICS: Gene expression intervals on chromosomes — merging
+overlapping regions to find functional units.
+📖 OPERATING SYSTEMS: Memory allocation = interval management.
+malloc/free creates and merges free memory intervals.
+## The Two Core Techniques
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ THE TWO CORE TECHNIQUES                                                      │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  TECHNIQUE 1: SORT + LINEAR SCAN                                             │
-│  ─────────────────────────────────                                           │
-│  Sort all intervals by start time.                                           │
-│  Iterate once, maintaining some running state (last end, merged list, etc.)  │
-│  Works for: Merge, Insert, Non-overlapping, Intersections                    │
-│  Time: O(n log n) for sort + O(n) scan = O(n log n)                          │
-│                                                                              │
-│  TECHNIQUE 2: SWEEP LINE (Event-based)                                       │
-│  ─────────────────────────────────────                                       │
-│  Convert intervals to events: +1 at start, -1 at end.                        │
-│  Sort all events by time. Sweep left to right, tracking count.               │
-│  Works for: Meeting Rooms II, Max Overlap, Minimum Platforms                 │
-│  Time: O(n log n)                                                            │
-│                                                                              │
-│  TECHNIQUE 2b: SORT + MIN-HEAP (variant of sweep)                            │
-│  ───────────────────────────────────────────────                             │
-│  Sort by start. Min-heap of end times tracks active intervals.               │
-│  When new interval starts: pop expired (end ≤ start), push new end.          │
-│  Heap size = current overlap count.                                          │
-│  Works for: Meeting Rooms II, Min Platforms                                  │
-│                                                                              │
-│  WHICH TECHNIQUE TO USE:                                                     │
-│  • "Merge/modify intervals" → Sort + Scan                                    │
-│  • "Count/max simultaneous" → Sweep Line or Min-Heap                         │
-│                                                                              │
-└──────────────────────────────────────────────────────────────────────────────┘
+TECHNIQUE 1: SORT + LINEAR SCAN
+Sort all intervals by start time.
+Iterate once, maintaining some running state (last end, merged list, etc.)
+Works for: Merge, Insert, Non-overlapping, Intersections
+Time: O(n log n) for sort + O(n) scan = O(n log n)
+TECHNIQUE 2: SWEEP LINE (Event-based)
+Convert intervals to events: +1 at start, -1 at end.
+Sort all events by time. Sweep left to right, tracking count.
+Works for: Meeting Rooms II, Max Overlap, Minimum Platforms
+Time: O(n log n)
+TECHNIQUE 2b: SORT + MIN-HEAP (variant of sweep)
+Sort by start. Min-heap of end times tracks active intervals.
+When new interval starts: pop expired (end ≤ start), push new end.
+Heap size = current overlap count.
+Works for: Meeting Rooms II, Min Platforms
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ THE OVERLAP CHECK — MEMORIZE THIS                                            │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  Two intervals [a,b] and [c,d] OVERLAP if and only if:                       │
-│                                                                              │
-│       a ≤ d  AND  c ≤ b                                                      │
-│                                                                              │
-│  Equivalently, they DON'T overlap if:  b < c  OR  d < a                      │
-│                                                                              │
-│  After sorting by start (a ≤ c), overlap simplifies to:                      │
-│                                                                              │
-│       c ≤ b   (next start ≤ current end)                                     │
-│                                                                              │
-│  This ONE check drives 80% of interval problems.                             │
-│                                                                              │
-└──────────────────────────────────────────────────────────────────────────────┘
+**Which Technique To Use**:
+- "Merge/modify intervals" → Sort + Scan
+- "Count/max simultaneous" → Sweep Line or Min-Heap
+## The Overlap Check — Memorize This
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ COMMON MISTAKES                                                              │
-├──────────────────────────────────────────────────────────────────────────────┤
-│ 1. Not sorting first — intervals aren't guaranteed sorted in input           │
-│ 2. Sorting by end when you should sort by start (or vice versa)              │
-│    • Merge/Insert → sort by START                                            │
-│    • Non-overlapping removal → sort by END (greedy)                          │
-│    • Meeting Rooms II → sort by START                                        │
-│ 3. Off-by-one: [1,5] and [5,8] — do they overlap?                            │
-│    Problem-dependent! Read carefully. Usually YES for intervals.             │
-│ 4. Forgetting Integer.compare() for comparator (a[0]-b[0] overflows)         │
-│ 5. Not extending existing interval's end with Math.max during merge          │
-│ 6. Using == instead of <= for overlap check                                  │
-└──────────────────────────────────────────────────────────────────────────────┘
-```
+Two intervals [a,b] and [c,d] OVERLAP if and only if:
+a ≤ d  AND  c ≤ b
+Equivalently, they DON'T overlap if:  b < c  OR  d < a
+After sorting by start (a ≤ c), overlap simplifies to:
+c ≤ b   (next start ≤ current end)
+This ONE check drives 80% of interval problems.
+## Difficulties & Common Mistakes
+
+1. Not sorting first — intervals aren't guaranteed sorted in input
+2. Sorting by end when you should sort by start (or vice versa)
+- Merge/Insert → sort by START
+- Non-overlapping removal → sort by END (greedy)
+- Meeting Rooms II → sort by START
+3. Off-by-one: [1,5] and [5,8] — do they overlap?
+Problem-dependent! Read carefully. Usually YES for intervals.
+4. Forgetting Integer.compare() for comparator (a[0]-b[0] overflows)
+5. Not extending existing interval's end with Math.max during merge
+6. Using == instead of <= for overlap check
 
 ---
 

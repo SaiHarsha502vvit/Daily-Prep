@@ -11,24 +11,22 @@
 
 ## Part 1: The 12-Factor App
 
-```
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║  12 principles for building cloud-native, production-ready applications          ║
-║                                                                                  ║
-║   1. Codebase     │ One codebase in version control, many deploys                ║
-║   2. Dependencies │ Explicitly declare and isolate (pom.xml, package.json)       ║
-║   3. Config       │ Store in environment variables, NOT in code                  ║
-║   4. Backing Svcs │ Treat DB, cache, queue as attached resources (swap easily)   ║
-║   5. Build/Release│ Strict separation: build → release → run                     ║
-║   6. Processes     │ Stateless. Store shared state in DB/cache, not memory       ║
-║   7. Port Binding │ App is self-contained, exports HTTP via port binding         ║
-║   8. Concurrency  │ Scale out via process model (more instances, not threads)    ║
-║   9. Disposability│ Fast startup, graceful shutdown (handle SIGTERM)             ║
-║  10. Dev/Prod Par.│ Keep dev, staging, prod as similar as possible               ║
-║  11. Logs         │ Treat logs as event streams (stdout, not files)              ║
-║  12. Admin Procs. │ Run admin tasks as one-off processes (migrations, scripts)   ║
-╚══════════════════════════════════════════════════════════════════════════════════╝
-```
+
+> 12 principles for building cloud-native, production-ready applications
+>
+> 1. Codebase     │ One codebase in version control, many deploys
+> 2. Dependencies │ Explicitly declare and isolate (pom.xml, package.json)
+> 3. Config       │ Store in environment variables, NOT in code
+> 4. Backing Svcs │ Treat DB, cache, queue as attached resources (swap easily)
+> 5. Build/Release│ Strict separation: build → release → run
+> 6. Processes     │ Stateless. Store shared state in DB/cache, not memory
+> 7. Port Binding │ App is self-contained, exports HTTP via port binding
+> 8. Concurrency  │ Scale out via process model (more instances, not threads)
+> 9. Disposability│ Fast startup, graceful shutdown (handle SIGTERM)
+> 10. Dev/Prod Par.│ Keep dev, staging, prod as similar as possible
+> 11. Logs         │ Treat logs as event streams (stdout, not files)
+> 12. Admin Procs. │ Run admin tasks as one-off processes (migrations, scripts)
+
 
 ---
 

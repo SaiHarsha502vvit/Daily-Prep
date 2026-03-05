@@ -20,148 +20,107 @@
 
 ## PART 0: COMPLETE UNDERSTANDING — The WHY Before the WHAT <a name="part-0"></a>
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║      MONOTONIC STACK/QUEUE — COMPLETE UNDERSTANDING & GROWTH MINDSET         ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+## What Problem Does Monotonic Stack Solve
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHAT PROBLEM DOES MONOTONIC STACK SOLVE?                                     │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ CORE PROBLEM: For each element in an array, find the NEXT (or PREVIOUS)      │
-│ element that is GREATER (or SMALLER). This appears EVERYWHERE.               │
-│                                                                              │
-│ ┌─────────────────────────────────────────────────────────────────────────┐  │
-│ │ BRUTE FORCE vs MONOTONIC STACK                                          │  │
-│ │                                                                         │  │
-│ │ Array: [73, 74, 75, 71, 69, 72, 76, 73]                               │    │
-│ │ Question: "How many days until a warmer temperature?"                   │  │
-│ │                                                                         │  │
-│ │ BRUTE FORCE: For each day, scan forward until warmer found.           │    │
-│ │   Day 0 (73): check 74 → warmer! → 1 day                             │     │
-│ │   Day 1 (74): check 75 → warmer! → 1 day                             │     │
-│ │   Day 2 (75): check 71,69,72,76 → 76 warmer! → 4 days                │     │
-│ │   Day 3 (71): check 69,72 → 72 warmer! → 2 days                      │     │
-│ │   ...                                                                  │   │
-│ │   For each element, scan up to n elements: O(n²)                      │    │
-│ │   n=100K → 10 BILLION operations → ~10 seconds ❌                     │     │
-│ │                                                                         │  │
-│ │ MONOTONIC STACK: Process each element ONCE. When an element arrives,   │   │
-│ │   pop all smaller elements (they found their answer = current element).│   │
-│ │   Each element pushed once, popped once: TOTAL = O(n)                 │    │
-│ │   n=100K → 200K operations → <1 millisecond ✅                        │     │
-│ └─────────────────────────────────────────────────────────────────────────┘  │
-│                                                                              │
-│ WHY O(n)? THE KEY INSIGHT:                                                   │
-│   Each element enters the stack exactly ONCE.                                │
-│   Each element leaves the stack at most ONCE.                                │
-│   Total push + pop operations = 2n = O(n).                                   │
-│   Despite the while loop INSIDE the for loop, it's NOT O(n²)!                │
-│   (Amortized analysis: each element pays for its own push and pop.)          │
-└──────────────────────────────────────────────────────────────────────────────┘
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ REAL-WORLD ORIGIN STORY                                                      │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ 1984 — LARGEST RECTANGLE IN HISTOGRAM:                                       │
-│   Computational geometry researchers needed to find the largest axis-aligned │
-│   rectangle in a histogram (bar chart). Brute force was O(n²).               │
-│   Someone realized: "Keep a stack of increasing heights. When a shorter      │
-│   bar arrives, pop and calculate rectangle with the popped height."          │
-│   Result: O(n) algorithm! This became THE classic monotonic stack problem.   │
-│                                                                              │
-│ 2000s — COMPETITIVE PROGRAMMING EXPLOSION:                                   │
-│   Monotonic stack became a core technique in contests (IOI, ACM-ICPC).       │
-│   Dozens of seemingly different problems share this core pattern:            │
-│   • Stock Price Span (finance: days since price was this low)                │
-│   • Trapping Rain Water (civil engineering: water accumulation)              │
-│   • Buildings With Sunset View (architecture: visibility)                    │
-│                                                                              │
-│ TODAY — INDUSTRY USES:                                                       │
-│   • Real-time dashboards: Sliding window max over streaming data             │
-│   • Financial analysis: Stock span, volatility tracking                      │
-│   • Computer vision: Local maxima/minima detection in signal processing      │
-│   • Web rendering: CSS stacking context resolution                           │
-│   • Game engines: Visibility calculation (which buildings can you see?)      │
-└──────────────────────────────────────────────────────────────────────────────┘
+**Core Problem**: For each element in an array, find the NEXT (or PREVIOUS)
+element that is GREATER (or SMALLER). This appears EVERYWHERE.
+BRUTE FORCE vs MONOTONIC STACK
+Array: [73, 74, 75, 71, 69, 72, 76, 73]
+Question: "How many days until a warmer temperature?"
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ THE MENTAL MODEL: The Bouncer at a Nightclub                                 │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ MONOTONIC DECREASING STACK (for Next Greater Element):                       │
-│                                                                              │
-│ Imagine a bouncer maintaining a LINE of people sorted by HEIGHT.             │
-│ When a NEW person arrives:                                                   │
-│   1. Anyone in line SHORTER than new person gets kicked out.                 │
-│      (They just found their "next greater" = the new person!)                │
-│   2. The new person joins the end of the line.                               │
-│                                                                              │
-│ FULL WALKTHROUGH: arr = [2, 1, 4, 3, 5]                                      │
-│                                                                              │
-│ Step 1: Process 2    Stack: [2]           Line: just 2 standing              │
-│   No one to kick out. 2 enters line.                                         │
-│                                                                              │
-│ Step 2: Process 1    Stack: [2, 1]        Line: 2 then 1                     │
-│   1 < 2, so 1 stands behind 2. No one kicked out.                            │
-│                                                                              │
-│ Step 3: Process 4    Stack: [4]           Kicks: 1→NGE=4, 2→NGE=4            │
-│   4 arrives. 1 < 4 → kicked! (NGE of 1 = 4)                                  │
-│                 2 < 4 → kicked! (NGE of 2 = 4)                               │
-│   4 enters empty line.                                                       │
-│                                                                              │
-│ Step 4: Process 3    Stack: [4, 3]        3 stands behind 4                  │
-│   3 < 4, no one kicked. 3 enters.                                            │
-│                                                                              │
-│ Step 5: Process 5    Stack: [5]           Kicks: 3→NGE=5, 4→NGE=5            │
-│   5 kicks out 3 (NGE=5) and 4 (NGE=5). 5 enters.                             │
-│                                                                              │
-│ Final: 5 has no NGE → -1                                                     │
-│ Result: NGE = [4, 4, 5, 5, -1]                                               │
-│                                                                              │
-│ TOTAL: 5 pushes + 5 pops = 10 operations = O(2n) = O(n) ✅                    │
-└──────────────────────────────────────────────────────────────────────────────┘
+**Brute Force**: For each day, scan forward until warmer found.
+Day 0 (73): check 74 → warmer! → 1 day
+Day 1 (74): check 75 → warmer! → 1 day
+Day 2 (75): check 71,69,72,76 → 76 warmer! → 4 days
+Day 3 (71): check 69,72 → 72 warmer! → 2 days
+...
+For each element, scan up to n elements: O(n²)
+n=100K → 10 BILLION operations → ~10 seconds ❌
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ THE COMPLETE VARIANT TABLE                                                   │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ ┌──────────────────────┬─────────────────────────────────────────────┐       │
-│ │ You Need             │ Use This                                    │       │
-│ ├──────────────────────┼─────────────────────────────────────────────┤       │
-│ │ Next Greater Element │ Monotonic DECREASING stack, scan L→R       │        │
-│ │ Next Smaller Element │ Monotonic INCREASING stack, scan L→R       │        │
-│ │ Prev Greater Element │ Monotonic DECREASING stack, scan L→R      │         │
-│ │ Prev Smaller Element │ Monotonic INCREASING stack, scan L→R      │         │
-│ │ Sliding Window Max   │ Monotonic DECREASING deque                 │        │
-│ │ Sliding Window Min   │ Monotonic INCREASING deque                 │        │
-│ │ Largest Rectangle    │ Monotonic INCREASING stack (heights)       │        │
-│ │ Trapping Rain Water  │ Monotonic DECREASING stack (heights)       │        │
-│ └──────────────────────┴─────────────────────────────────────────────┘       │
-│                                                                              │
-│ MEMORY TRICK for Increasing vs Decreasing:                                   │
-│   Want GREATER? Keep SMALLER ones waiting → DECREASING stack                 │
-│   Want SMALLER? Keep GREATER ones waiting → INCREASING stack                 │
-│   Think: "What I'm KEEPING is OPPOSITE of what I'm LOOKING FOR."             │
-│                                                                              │
-│ PREVIOUS vs NEXT:                                                            │
-│   For NEXT: answer is found when element is POPPED (something bigger came)   │
-│   For PREV: answer is the element ON TOP after pushing current               │
-│   Direction can also change by scanning R→L instead of L→R.                  │
-│                                                                              │
-│ SIGNAL WORDS in interviews:                                                  │
-│   "next greater/smaller", "span", "visible buildings/people",                │
-│   "sliding window max/min", "histogram", "trapping water/rain",              │
-│   "stock price span", "days until warmer", "sum of subarray minimums"        │
-└──────────────────────────────────────────────────────────────────────────────┘
+**Monotonic Stack**: Process each element ONCE. When an element arrives,
+pop all smaller elements (they found their answer = current element).
+Each element pushed once, popped once: TOTAL = O(n)
+n=100K → 200K operations → <1 millisecond ✅
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ CODE TEMPLATE — NEXT GREATER ELEMENT                                         │
-├──────────────────────────────────────────────────────────────────────────────┤
-└──────────────────────────────────────────────────────────────────────────────┘
-```
+> 💡 **WHY O(n)? THE KEY INSIGHT:**
+Each element enters the stack exactly ONCE.
+Each element leaves the stack at most ONCE.
+Total push + pop operations = 2n = O(n).
+Despite the while loop INSIDE the for loop, it's NOT O(n²)!
+(Amortized analysis: each element pays for its own push and pop.)
+## Real-World Origin Story
+
+1984 — LARGEST RECTANGLE IN HISTOGRAM:
+Computational geometry researchers needed to find the largest axis-aligned
+rectangle in a histogram (bar chart). Brute force was O(n²).
+Someone realized: "Keep a stack of increasing heights. When a shorter
+bar arrives, pop and calculate rectangle with the popped height."
+Result: O(n) algorithm! This became THE classic monotonic stack problem.
+2000s — COMPETITIVE PROGRAMMING EXPLOSION:
+Monotonic stack became a core technique in contests (IOI, ACM-ICPC).
+Dozens of seemingly different problems share this core pattern:
+- Stock Price Span (finance: days since price was this low)
+- Trapping Rain Water (civil engineering: water accumulation)
+- Buildings With Sunset View (architecture: visibility)
+TODAY — INDUSTRY USES:
+- Real-time dashboards: Sliding window max over streaming data
+- Financial analysis: Stock span, volatility tracking
+- Computer vision: Local maxima/minima detection in signal processing
+- Web rendering: CSS stacking context resolution
+- Game engines: Visibility calculation (which buildings can you see?)
+## The Mental Model: The Bouncer At A Nightclub
+
+MONOTONIC DECREASING STACK (for Next Greater Element):
+Imagine a bouncer maintaining a LINE of people sorted by HEIGHT.
+When a NEW person arrives:
+1. Anyone in line SHORTER than new person gets kicked out.
+(They just found their "next greater" = the new person!)
+2. The new person joins the end of the line.
+
+**Full Walkthrough**: arr = [2, 1, 4, 3, 5]
+Step 1: Process 2    Stack: [2]           Line: just 2 standing
+No one to kick out. 2 enters line.
+Step 2: Process 1    Stack: [2, 1]        Line: 2 then 1
+1 < 2, so 1 stands behind 2. No one kicked out.
+Step 3: Process 4    Stack: [4]           Kicks: 1→NGE=4, 2→NGE=4
+4 arrives. 1 < 4 → kicked! (NGE of 1 = 4)
+2 < 4 → kicked! (NGE of 2 = 4)
+4 enters empty line.
+Step 4: Process 3    Stack: [4, 3]        3 stands behind 4
+3 < 4, no one kicked. 3 enters.
+Step 5: Process 5    Stack: [5]           Kicks: 3→NGE=5, 4→NGE=5
+5 kicks out 3 (NGE=5) and 4 (NGE=5). 5 enters.
+Final: 5 has no NGE → -1
+Result: NGE = [4, 4, 5, 5, -1]
+
+**Total**: 5 pushes + 5 pops = 10 operations = O(2n) = O(n) ✅
+## The Complete Variant Table
+
+┬
+You Need             │ Use This
+┼
+Next Greater Element │ Monotonic DECREASING stack, scan L→R
+Next Smaller Element │ Monotonic INCREASING stack, scan L→R
+Prev Greater Element │ Monotonic DECREASING stack, scan L→R
+Prev Smaller Element │ Monotonic INCREASING stack, scan L→R
+Sliding Window Max   │ Monotonic DECREASING deque
+Sliding Window Min   │ Monotonic INCREASING deque
+Largest Rectangle    │ Monotonic INCREASING stack (heights)
+Trapping Rain Water  │ Monotonic DECREASING stack (heights)
+┴
+MEMORY TRICK for Increasing vs Decreasing:
+Want GREATER? Keep SMALLER ones waiting → DECREASING stack
+Want SMALLER? Keep GREATER ones waiting → INCREASING stack
+Think: "What I'm KEEPING is OPPOSITE of what I'm LOOKING FOR."
+PREVIOUS vs NEXT:
+For NEXT: answer is found when element is POPPED (something bigger came)
+For PREV: answer is the element ON TOP after pushing current
+Direction can also change by scanning R→L instead of L→R.
+SIGNAL WORDS in interviews:
+"next greater/smaller", "span", "visible buildings/people",
+"sliding window max/min", "histogram", "trapping water/rain",
+"stock price span", "days until warmer", "sum of subarray minimums"
 
 ```java
 // NEXT GREATER ELEMENT — Universal Template

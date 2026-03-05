@@ -11,15 +11,13 @@
 
 ## ❓ Why This Matters
 
-```
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║  Interviewers ask: "What Java version do you use? What features?"                ║
-║  Senior devs MUST know: Records, Sealed classes, Pattern matching, Var,          ║
-║  Text blocks, Switch expressions, Virtual threads, Structured concurrency        ║
-║                                                                                  ║
-║  If you write Java 8-style code in 2026, you look outdated.                      ║
-╚══════════════════════════════════════════════════════════════════════════════════╝
-```
+
+> Interviewers ask: "What Java version do you use? What features?"
+> Senior devs MUST know: Records, Sealed classes, Pattern matching, Var,
+> Text blocks, Switch expressions, Virtual threads, Structured concurrency
+>
+> If you write Java 8-style code in 2026, you look outdated.
+
 
 ---
 

@@ -6,21 +6,19 @@
 
 ---
 
-```
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║  WHY THIS FILE EXISTS                                                            ║
-║                                                                                  ║
-║  Every production disaster teaches fundamental DSA/System lessons:               ║
-║  • Wrong data structure choice → System crash                                    ║
-║  • Wrong algorithm complexity → Millions of dollars lost                         ║
-║  • Missing edge cases → Data corruption                                          ║
-║  • Poor concurrency handling → Race conditions                                   ║
-║                                                                                  ║
-║  This file: Real incidents → Root cause → DSA lesson → Your takeaway             ║
-║                                                                                  ║
-║  START DATE: February 10, 2026                                                   ║
-╚══════════════════════════════════════════════════════════════════════════════════╝
-```
+
+> WHY THIS FILE EXISTS
+>
+> Every production disaster teaches fundamental DSA/System lessons:
+> - Wrong data structure choice → System crash
+> - Wrong algorithm complexity → Millions of dollars lost
+> - Missing edge cases → Data corruption
+> - Poor concurrency handling → Race conditions
+>
+> This file: Real incidents → Root cause → DSA lesson → Your takeaway
+>
+> START DATE: February 10, 2026
+
 
 ---
 

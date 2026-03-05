@@ -6,30 +6,28 @@
 
 ## 5W1H — Why This Chapter?
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: TypeScript is JavaScript + STATIC TYPE CHECKING.              ║
-║        It compiles to plain JS. Every valid JS is valid TS.          ║
-║                                                                      ║
-║  WHY:  JS bugs often come from type mismatches:                      ║
-║        • Passing string where number expected                        ║
-║        • Accessing property on undefined object                      ║
-║        • Calling function with wrong arguments                       ║
-║        TS catches these at COMPILE TIME — before users see them.     ║
-║                                                                      ║
-║  WHO:  Every professional JS developer. React, Angular, Vue,         ║
-║        Node — all major ecosystems have TS support. Most job         ║
-║        listings now require TypeScript.                              ║
-║                                                                      ║
-║  WHEN: Immediately after learning JS fundamentals.                   ║
-║                                                                      ║
-║  WHERE: Everywhere JS runs. TS compiles away — the browser/Node      ║
-║         never sees TypeScript, only the resulting JavaScript.        ║
-║                                                                      ║
-║  HOW:  Install → write .ts files → compiler (tsc) or bundler         ║
-║        (Vite) transpiles to .js → runs as usual.                     ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> WHAT: TypeScript is JavaScript + STATIC TYPE CHECKING.
+> It compiles to plain JS. Every valid JS is valid TS.
+>
+> WHY:  JS bugs often come from type mismatches:
+> - Passing string where number expected
+> - Accessing property on undefined object
+> - Calling function with wrong arguments
+> TS catches these at COMPILE TIME — before users see them.
+>
+> WHO:  Every professional JS developer. React, Angular, Vue,
+> Node — all major ecosystems have TS support. Most job
+> listings now require TypeScript.
+>
+> WHEN: Immediately after learning JS fundamentals.
+>
+> WHERE: Everywhere JS runs. TS compiles away — the browser/Node
+> never sees TypeScript, only the resulting JavaScript.
+>
+> HOW:  Install → write .ts files → compiler (tsc) or bundler
+> (Vite) transpiles to .js → runs as usual.
+
 
 ---
 

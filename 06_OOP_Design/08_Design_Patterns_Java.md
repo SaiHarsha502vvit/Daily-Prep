@@ -4,44 +4,40 @@
 
 ## Why Learn Design Patterns?
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  Design patterns are PROVEN SOLUTIONS to RECURRING PROBLEMS.         ║
-║                                                                      ║
-║  Without patterns:  "I'll figure out a way to do this..."            ║
-║  With patterns:     "This is a Strategy problem — I know exactly     ║
-║                      how to structure this."                         ║
-║                                                                      ║
-║  Interview Reality: "Can you give me an example of [Pattern]?"       ║
-║  → Expected for mid-level and above                                  ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> Design patterns are PROVEN SOLUTIONS to RECURRING PROBLEMS.
+>
+> Without patterns:  "I'll figure out a way to do this..."
+> With patterns:     "This is a Strategy problem — I know exactly
+> how to structure this."
+>
+> Interview Reality: "Can you give me an example of [Pattern]?"
+> → Expected for mid-level and above
+
 
 ---
 
 ## Pattern Categories Overview
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  CREATIONAL (5)         STRUCTURAL (7)        BEHAVIORAL (11)        ║
-║  How objects are        How objects are        How objects           ║
-║  CREATED                COMPOSED              COMMUNICATE            ║
-║  ─────────────         ─────────────         ─────────────           ║
-║  Singleton ★           Adapter ★             Strategy ★              ║
-║  Factory Method ★      Decorator ★           Observer ★              ║
-║  Abstract Factory      Facade ★              Template Method ★       ║
-║  Builder ★             Proxy ★               Iterator                ║
-║  Prototype             Composite             Command                 ║
-║                        Bridge                Chain of Resp ★         ║
-║                        Flyweight             State                   ║
-║                                              Mediator                ║
-║                                              Memento                 ║
-║                                              Visitor                 ║
-║                                              Interpreter             ║
-║                                                                      ║
-║  ★ = Most commonly asked in interviews / used in practice            ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> CREATIONAL (5)         STRUCTURAL (7)        BEHAVIORAL (11)
+> How objects are        How objects are        How objects
+> CREATED                COMPOSED              COMMUNICATE
+> ─────────────         ─────────────         ─────────────
+> Singleton ★           Adapter ★             Strategy ★
+> Factory Method ★      Decorator ★           Observer ★
+> Abstract Factory      Facade ★              Template Method ★
+> Builder ★             Proxy ★               Iterator
+> Prototype             Composite             Command
+> Bridge                Chain of Resp ★
+> Flyweight             State
+> Mediator
+> Memento
+> Visitor
+> Interpreter
+>
+> ★ = Most commonly asked in interviews / used in practice
+
 
 ---
 
@@ -49,13 +45,11 @@
 
 ### 1. Singleton — One Instance Only
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  PROBLEM: Need exactly ONE instance of a class globally.             ║
-║  ANALOGY: There's only ONE President of a country at a time.         ║
-║  USE: Database connection pool, Logger, Configuration, Cache         ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> PROBLEM: Need exactly ONE instance of a class globally.
+> ANALOGY: There's only ONE President of a country at a time.
+> USE: Database connection pool, Logger, Configuration, Cache
+
 
 ```java
 // Thread-safe Singleton using enum (Joshua Bloch's recommended approach)

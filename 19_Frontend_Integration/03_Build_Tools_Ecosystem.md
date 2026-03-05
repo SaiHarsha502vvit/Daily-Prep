@@ -6,26 +6,24 @@
 
 ## 5W1H — Why This Chapter?
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: The invisible tools that transform your code into what        ║
-║        the browser actually runs.                                    ║
-║                                                                      ║
-║  WHY:  You write JSX, TypeScript, CSS Modules, ES2024+.              ║
-║        Browsers understand HTML, JS (ES5+), plain CSS.               ║
-║        Something must TRANSLATE your code → browser code.            ║
-║        That "something" is the build tool chain.                     ║
-║                                                                      ║
-║  ANALOGY: You write a letter in English → translator converts        ║
-║           to French → post office delivers optimized package.        ║
-║           Babel = translator, Webpack/Vite = post office.            ║
-║                                                                      ║
-║  WHO:  All frontend developers — even if you "just use Vite",        ║
-║        understanding the chain helps debug build issues.             ║
-║                                                                      ║
-║  WHEN: At build time (before deployment) and dev time.               ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> WHAT: The invisible tools that transform your code into what
+> the browser actually runs.
+>
+> WHY:  You write JSX, TypeScript, CSS Modules, ES2024+.
+> Browsers understand HTML, JS (ES5+), plain CSS.
+> Something must TRANSLATE your code → browser code.
+> That "something" is the build tool chain.
+>
+> ANALOGY: You write a letter in English → translator converts
+> to French → post office delivers optimized package.
+> Babel = translator, Webpack/Vite = post office.
+>
+> WHO:  All frontend developers — even if you "just use Vite",
+> understanding the chain helps debug build issues.
+>
+> WHEN: At build time (before deployment) and dev time.
+
 
 ---
 
@@ -72,22 +70,20 @@ Source Code
 
 ### What Is It?
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  npm = Node Package Manager                                          ║
-║                                                                      ║
-║  ANALOGY: npm is like an App Store for JavaScript code.              ║
-║  • Want a date library? → npm install date-fns                       ║
-║  • Want React? → npm install react react-dom                         ║
-║  • 2 million+ packages available                                     ║
-║                                                                      ║
-║  KEY FILES:                                                          ║
-║                                                                      ║
-║  package.json         → The "menu" (what packages you ordered)       ║
-║  package-lock.json    → The "receipt" (exact versions installed)     ║
-║  node_modules/        → The "kitchen" (actual code, 100s of MB)      ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> npm = Node Package Manager
+>
+> ANALOGY: npm is like an App Store for JavaScript code.
+> - Want a date library? → npm install date-fns
+> - Want React? → npm install react react-dom
+> - 2 million+ packages available
+>
+> KEY FILES:
+>
+> package.json         → The "menu" (what packages you ordered)
+> package-lock.json    → The "receipt" (exact versions installed)
+> node_modules/        → The "kitchen" (actual code, 100s of MB)
+
 
 ### package.json Anatomy
 

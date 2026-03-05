@@ -11,37 +11,35 @@
 
 ## THE FRAMEWORK (Use for EVERY Problem)
 
-```
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║  SYSTEM DESIGN INTERVIEW FRAMEWORK (45 minutes)                                  ║
-║                                                                                  ║
-║  STEP 1: Requirements (5 min)                                                    ║
-║    → Functional: What can users do?                                              ║
-║    → Non-functional: Scale? Latency? Consistency?                                ║
-║    → Constraints: Users? QPS? Storage?                                           ║
-║                                                                                  ║
-║  STEP 2: High-Level Design (10 min)                                              ║
-║    → Draw API endpoints                                                          ║
-║    → Core components (services, databases, caches)                               ║
-║    → Data flow diagram                                                           ║
-║                                                                                  ║
-║  STEP 3: Detailed Design (15 min)                                                ║
-║    → Database schema & choice (SQL vs NoSQL)                                     ║
-║    → API design (endpoints, payloads)                                            ║
-║    → Key algorithms (hashing, ranking, etc.)                                     ║
-║                                                                                  ║
-║  STEP 4: Scale & Bottlenecks (10 min)                                            ║
-║    → Identify bottlenecks                                                        ║
-║    → Caching strategy                                                            ║
-║    → Database sharding/replication                                               ║
-║    → Load balancing                                                              ║
-║                                                                                  ║
-║  STEP 5: Trade-offs & Edge Cases (5 min)                                         ║
-║    → What would break at 100x scale?                                             ║
-║    → CAP theorem trade-offs                                                      ║
-║    → Failure scenarios & recovery                                                ║
-╚══════════════════════════════════════════════════════════════════════════════════╝
-```
+
+> SYSTEM DESIGN INTERVIEW FRAMEWORK (45 minutes)
+>
+> STEP 1: Requirements (5 min)
+> → Functional: What can users do?
+> → Non-functional: Scale? Latency? Consistency?
+> → Constraints: Users? QPS? Storage?
+>
+> STEP 2: High-Level Design (10 min)
+> → Draw API endpoints
+> → Core components (services, databases, caches)
+> → Data flow diagram
+>
+> STEP 3: Detailed Design (15 min)
+> → Database schema & choice (SQL vs NoSQL)
+> → API design (endpoints, payloads)
+> → Key algorithms (hashing, ranking, etc.)
+>
+> STEP 4: Scale & Bottlenecks (10 min)
+> → Identify bottlenecks
+> → Caching strategy
+> → Database sharding/replication
+> → Load balancing
+>
+> STEP 5: Trade-offs & Edge Cases (5 min)
+> → What would break at 100x scale?
+> → CAP theorem trade-offs
+> → Failure scenarios & recovery
+
 
 ---
 

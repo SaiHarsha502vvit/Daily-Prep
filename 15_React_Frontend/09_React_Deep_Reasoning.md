@@ -8,25 +8,23 @@
 
 ## Why This Chapter Exists
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  THE FREEZE PATTERN IN REACT INTERVIEWS                          ║
-║                                                                  ║
-║  Junior:   "useState manages component state"                    ║
-║  Interviewer: "Can a component have more than one state?"        ║
-║  Junior:   "...yes?"                                             ║
-║  Interviewer: "What happens when you call setState 3 times?"     ║
-║  Junior:   *freezes*                                             ║
-║                                                                  ║
-║  Senior:   "Yes, a component can have unlimited states — each    ║
-║            useState call manages an independent piece. When you  ║
-║            call setState 3 times IN an event handler, React      ║
-║            BATCHES them — one re-render, not three. But OUTSIDE  ║
-║            an event handler (before React 18), each setState     ║
-║            caused a separate re-render. React 18's automatic     ║
-║            batching fixed this for ALL cases."                   ║
-╚══════════════════════════════════════════════════════════════════╝
-```
+
+> THE FREEZE PATTERN IN REACT INTERVIEWS
+>
+> Junior:   "useState manages component state"
+> Interviewer: "Can a component have more than one state?"
+> Junior:   "...yes?"
+> Interviewer: "What happens when you call setState 3 times?"
+> Junior:   *freezes*
+>
+> Senior:   "Yes, a component can have unlimited states — each
+> useState call manages an independent piece. When you
+> call setState 3 times IN an event handler, React
+> BATCHES them — one re-render, not three. But OUTSIDE
+> an event handler (before React 18), each setState
+> caused a separate re-render. React 18's automatic
+> batching fixed this for ALL cases."
+
 
 ---
 

@@ -4,23 +4,21 @@
 
 ## How to Use This Guide
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║  This is your SQL interview ready-reckoner.                          ║
-║                                                                      ║
-║  50 problems organized by pattern, not by difficulty.                ║
-║  Each problem has: Schema, Question, Solution, Explanation.          ║
-║  Focus on PATTERNS — once you learn the pattern, you can             ║
-║  solve any variation.                                                ║
-║                                                                      ║
-║  COMMON INTERVIEW DATASETS (used throughout):                        ║
-║  • Employees (id, name, dept_id, salary, hire_date, mgr_id)          ║
-║  • Departments (id, name, location)                                  ║
-║  • Orders (id, customer_id, amount, order_date, status)              ║
-║  • Products (id, name, category, price, stock)                       ║
-║  • Students (id, name, score, class)                                 ║
-╚══════════════════════════════════════════════════════════════════════╝
-```
+
+> This is your SQL interview ready-reckoner.
+>
+> 50 problems organized by pattern, not by difficulty.
+> Each problem has: Schema, Question, Solution, Explanation.
+> Focus on PATTERNS — once you learn the pattern, you can
+> solve any variation.
+>
+> COMMON INTERVIEW DATASETS (used throughout):
+> - Employees (id, name, dept_id, salary, hire_date, mgr_id)
+> - Departments (id, name, location)
+> - Orders (id, customer_id, amount, order_date, status)
+> - Products (id, name, category, price, stock)
+> - Students (id, name, score, class)
+
 
 ---
 

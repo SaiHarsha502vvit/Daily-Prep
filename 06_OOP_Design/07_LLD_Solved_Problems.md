@@ -11,16 +11,14 @@
 
 ## 🎤 The Lld Interview Framework
 
-```
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║  1. CLARIFY requirements (2 min): What entities? What operations?                ║
-║  2. IDENTIFY objects & relationships (5 min): Nouns → classes, Verbs → methods   ║
-║  3. DEFINE interfaces first (3 min): Program to interfaces                       ║
-║  4. APPLY patterns (5 min): Strategy, Observer, Factory, etc.                    ║
-║  5. CODE key classes (15 min): Focus on core logic, not boilerplate              ║
-║  6. DISCUSS extensibility (5 min): "What if we add X?"                           ║
-╚══════════════════════════════════════════════════════════════════════════════════╝
-```
+
+> 1. CLARIFY requirements (2 min): What entities? What operations?
+> 2. IDENTIFY objects & relationships (5 min): Nouns → classes, Verbs → methods
+> 3. DEFINE interfaces first (3 min): Program to interfaces
+> 4. APPLY patterns (5 min): Strategy, Observer, Factory, etc.
+> 5. CODE key classes (15 min): Focus on core logic, not boilerplate
+> 6. DISCUSS extensibility (5 min): "What if we add X?"
+
 
 ---
 

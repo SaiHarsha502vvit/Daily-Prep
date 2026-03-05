@@ -25,27 +25,24 @@
 
 ### Problem 1: Container With Most Water
 
-```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║  PROBLEM: Container With Most Water                                       ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Given array of heights, find two lines that form container with          ║
-║  maximum water.                                                           ║
-║                                                                           ║
-║  Visual:                                                                  ║
-║            |                                                              ║
-║      |     |     |                                                        ║
-║      |  |  |  |  |  |                                                     ║
-║   |  |  |  |  |  |  |  |                                                  ║
-║   ─────────────────────                                                   ║
-║   1  8  6  2  5  4  8  3  7                                               ║
-║   ↑                       ↑                                               ║
-║   These two lines form max area                                           ║
-║   Area = min(8, 7) × distance = 7 × 7 = 49                                ║
-║                                                                           ║
-╚═══════════════════════════════════════════════════════════════════════════╝
-```
+
+> PROBLEM: Container With Most Water
+>
+> Given array of heights, find two lines that form container with
+> maximum water.
+>
+> Visual:
+> |
+> |     |     |
+> |  |  |  |  |  |
+> |  |  |  |  |  |  |  |
+> ─────────────────────
+> 1  8  6  2  5  4  8  3  7
+> ↑                       ↑
+> These two lines form max area
+> Area = min(8, 7) × distance = 7 × 7 = 49
+>
+
 
 **Try it yourself first!**
 
