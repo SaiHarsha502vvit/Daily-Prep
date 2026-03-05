@@ -1,6 +1,6 @@
 # MASTER INDEX — Complete DSA, SQL, Spring Boot & Career Preparation
 
-**Last Updated: March 2026 | 245+ files | 15 folders**
+**Last Updated: March 2026 | 266+ files | 19 folders**
 
 ---
 
@@ -18,7 +18,13 @@
 | Developer Essentials (10 guides) | [13_Developer_Essentials/](#developer-essentials-new) |
 | **Mental Models — HOW TO THINK (18 guides)** | [14_Mental_Models/](#mental-models--how-to-think-new) |
 | **React Frontend (8 files)** | [15_React_Frontend/](#react-frontend-new) |
+| **JavaScript Complete (7 chapters)** | [16_JavaScript/](#javascript-complete-7-chapters) |
+| **TypeScript (3 chapters)** | [17_TypeScript/](#typescript-3-chapters) |
+| **CSS Complete (4 chapters)** | [18_CSS_Complete/](#css-complete-4-chapters) |
+| **Frontend Integration (4 chapters)** | [19_Frontend_Integration/](#frontend-integration-4-chapters) |
 | Java Concurrency + Modern Java | [07_Modern_Java/](#modern-java--spring-boot) |
+| Spring Boot Deps → Annotations Map | [07_Modern_Java/30_Spring_Boot_Dependencies_Annotations.md](07_Modern_Java/30_Spring_Boot_Dependencies_Annotations.md) |
+| Servers, Ports & Networking | [13_Developer_Essentials/17_Servers_Ports_Networking.md](13_Developer_Essentials/17_Servers_Ports_Networking.md) |
 | Behavioral Interview | [09_Career_Reference/07_Behavioral_Interview.md](09_Career_Reference/07_Behavioral_Interview.md) |
 | Quick Reference Sheet | [09_Career_Reference/03_Quick_Reference.md](09_Career_Reference/03_Quick_Reference.md) |
 
@@ -134,7 +140,7 @@ Daily-Prep/
 │   ├── 07_LLD_Solved_Problems.md        → 🆕 5 LLD problems with full Java code
 │   └── 08_Design_Patterns_Java.md       → 🆕 GoF patterns with Java + Spring Boot mapping
 │
-├── 07_Modern_Java/                      (41 chapter files)
+├── 07_Modern_Java/                      (42 chapter files)
 │   ├── 00_SPRING_BOOT_ROADMAP.md        → Spring Boot learning path
 │   ├── 01_Functional_Programming.md     → Streams, Lambdas, Optionals
 │   ├── 02a_AlgoEng_Core.md             → Algorithm engineering fundamentals
@@ -176,7 +182,8 @@ Daily-Prep/
 │   ├── 27a_Java_Concurrency_Core.md     → 🆕 Threads, synchronized, volatile, atomics
 │   ├── 27b_Java_Concurrency_Advanced.md → 🆕 Executors, CompletableFuture, Virtual Threads
 │   ├── 28_Modern_Java_Features.md       → 🆕 Java 9-21 (var, records, sealed, pattern matching)
-│   └── 29_Message_Queues_Kafka.md       → 🆕 Kafka architecture, Spring Boot+Kafka, event-driven
+│   ├── 29_Message_Queues_Kafka.md       → 🆕 Kafka architecture, Spring Boot+Kafka, event-driven
+│   └── 30_Spring_Boot_Dependencies_Annotations.md → 🆕 Which dependency → which annotations map
 │
 ├── 08_SQL/                              (21 chapter files — zero to expert)
 │   ├── 01_Foundations_Database_Basics.md → What is a database, RDBMS, SQL
@@ -240,7 +247,7 @@ Daily-Prep/
 │   ├── Week_03/ (Days 015–021)          → Mar 17–23: Trees, BST, Heap, DFS/BFS
 │   └── Week_04/ (Days 022–028)          → Mar 24–30: Graphs, DP, Advanced SQL
 │
-├── 13_Developer_Essentials/             (17 files)
+├── 13_Developer_Essentials/             (19 files)
 │   ├── 00_INDEX.md                      → Reading order & career phase mapping
 │   ├── 01_Git_Version_Control.md        → 3 areas, branching, merge conflicts, Git Flow
 │   ├── 02_Linux_CLI_Shell.md            → Navigation, grep/awk/sed, scripting
@@ -257,7 +264,9 @@ Daily-Prep/
 │   ├── 13_Agile_Scrum.md               → 🆕 Scrum ceremonies, user stories, story points
 │   ├── 14_Code_Review_Practices.md      → 🆕 Review checklist, PR best practices, code smells
 │   ├── 15_Cloud_Services_Guide.md       → 🆕 AWS/Azure/GCP service mapping, EC2, Lambda, S3
-│   └── 16_IaC_Terraform.md             → 🆕 Infrastructure as Code, Terraform HCL, modules, CI/CD
+│   ├── 16_IaC_Terraform.md             → 🆕 Infrastructure as Code, Terraform HCL, modules, CI/CD
+│   ├── 17_Servers_Ports_Networking.md   → 🆕 Server theory, ports, DNS, firewalls, load balancers
+│   └── 18_Backend_Cloud_Integration.md  → 🆕 Cloud deployment, CI/CD, monitoring, Spring Boot on AWS
 │
 ├── 14_Mental_Models/                    (19 files — HOW TO THINK guides!)
 │   ├── 00_INDEX.md                      → Reading order & usage guide
@@ -289,6 +298,32 @@ Daily-Prep/
 │   ├── 06_React_Router.md               → 🆕 React Router v6+, data fetching, React Query
 │   ├── 07_React_Testing.md              → 🆕 React Testing Library, MSW, component testing
 │   └── 08_React_Performance.md          → 🆕 React.memo, virtualization, bundle splitting
+│
+├── 16_JavaScript/                       (7 chapter files — complete JS coverage NEW!)
+│   ├── 01_JS_Foundations.md             → 🆕 V8 engine, types, coercion, scope, hoisting, TDZ
+│   ├── 02_JS_Functions_Closures.md      → 🆕 this binding, closures, IIFE, currying, composition
+│   ├── 03_JS_Objects_Prototypes.md      → 🆕 Prototype chain, ES6 classes, destructuring, iterators
+│   ├── 04_JS_Async_Promises.md          → 🆕 Event loop, Promises, async/await, microtask queue
+│   ├── 05_JS_DOM_BrowserAPIs.md         → 🆕 DOM traversal, events, delegation, storage, fetch
+│   ├── 06_JS_Modern_ES6Plus.md          → 🆕 Modules, Map/Set, Proxy/Reflect, ES2020-2024
+│   └── 07_JS_Error_Handling_Debugging.md → 🆕 Error types, DevTools, production monitoring
+│
+├── 17_TypeScript/                       (3 chapter files — TS standalone NEW!)
+│   ├── 01_TS_Foundations.md             → 🆕 tsconfig, strict mode, basic types, interfaces, narrowing
+│   ├── 02_TS_Advanced_Types.md          → 🆕 Generics, utility types, mapped, conditional, template literals
+│   └── 03_TS_Patterns_BestPractices.md  → 🆕 React+TS, branded types, migration, anti-patterns
+│
+├── 18_CSS_Complete/                     (4 chapter files — visual CSS mastery NEW!)
+│   ├── 01_CSS_Foundations.md            → 🆕 Selectors, cascade, specificity, box model, positioning
+│   ├── 02_CSS_Layout_Systems.md         → 🆕 Flexbox, Grid, subgrid, container queries
+│   ├── 03_CSS_Responsive_Animations.md  → 🆕 Media queries, clamp(), keyframes, 7 stunning animations
+│   └── 04_CSS_Modern_Architecture.md    → 🆕 Custom properties, dark mode, BEM, glassmorphism, design tokens
+│
+├── 19_Frontend_Integration/             (4 chapter files — full-stack UI building NEW!)
+│   ├── 01_React_JS_CSS_Combined.md      → 🆕 Component architecture, dashboard build, state patterns
+│   ├── 02_Frontend_Debugging.md         → 🆕 Chrome DevTools, React DevTools, CORS, performance
+│   ├── 03_Build_Tools_Ecosystem.md      → 🆕 npm, Babel, Webpack vs Vite, tree shaking, code splitting
+│   └── 04_Frontend_Mental_Models_UI.md  → 🆕 Component decomposition, data-first, complex UI patterns
 │
 ├── JavaSolutions/                       → Your Java code solutions
 ├── practice/                            → Practice scratch files
@@ -366,6 +401,7 @@ Daily-Prep/
 - **Annotations**: [Core](07_Modern_Java/24a_SB_Annotations_Core.md) | [Advanced](07_Modern_Java/24b_SB_Annotations_Advanced.md)
 - **Extras**: [WebSocket, GraphQL, gRPC, Batch](07_Modern_Java/25_Spring_Boot_Part23_Missing_Essential_Topics.md)
 - **🆕 Java Deep Dive**: [Concurrency Core](07_Modern_Java/27a_Java_Concurrency_Core.md) | [Concurrency Advanced](07_Modern_Java/27b_Java_Concurrency_Advanced.md) | [Modern Java 9-21](07_Modern_Java/28_Modern_Java_Features.md) | [Kafka & Message Queues](07_Modern_Java/29_Message_Queues_Kafka.md)
+- **🆕 Dependency Map**: [Spring Boot Dependencies → Annotations](07_Modern_Java/30_Spring_Boot_Dependencies_Annotations.md) — Which dependency gives which annotations
 
 ### SQL (21 chapters)
 - [01 Foundations](08_SQL/01_Foundations_Database_Basics.md) | [02 Data Types](08_SQL/02_DataTypes_Constraints.md) | [03 DDL](08_SQL/03_DDL_Creating_Structure.md) | [04 DML](08_SQL/04_DML_Manipulating_Data.md)
@@ -409,6 +445,7 @@ Daily-Prep/
 - **🆕** [Production Code Practices](13_Developer_Essentials/11_Production_Code_Practices.md) | [Monitoring & Observability](13_Developer_Essentials/12_Monitoring_Observability.md)
 - **🆕** [Agile & Scrum](13_Developer_Essentials/13_Agile_Scrum.md) | [Code Review Practices](13_Developer_Essentials/14_Code_Review_Practices.md)
 - **🆕** [Cloud Services Guide](13_Developer_Essentials/15_Cloud_Services_Guide.md) | [IaC & Terraform](13_Developer_Essentials/16_IaC_Terraform.md)
+- **🆕** [Servers, Ports & Networking](13_Developer_Essentials/17_Servers_Ports_Networking.md) | [Backend Cloud Integration](13_Developer_Essentials/18_Backend_Cloud_Integration.md)
 
 ### Mental Models — HOW TO THINK (18 files)
 - [Index & Reading Order](14_Mental_Models/00_INDEX.md)
@@ -426,6 +463,21 @@ Daily-Prep/
 - [Fundamentals](15_React_Frontend/01_React_Fundamentals.md) | [Component Patterns](15_React_Frontend/02_Component_Patterns.md) | [Hooks Deep Dive](15_React_Frontend/03_Hooks_Deep_Dive.md)
 - [State Management](15_React_Frontend/04_State_Management.md) | [React + TypeScript](15_React_Frontend/05_React_TypeScript.md)
 - [Router & Data Fetching](15_React_Frontend/06_React_Router.md) | [Testing](15_React_Frontend/07_React_Testing.md) | [Performance](15_React_Frontend/08_React_Performance.md)
+
+### JavaScript Complete (7 chapters)
+- [JS Foundations](16_JavaScript/01_JS_Foundations.md) → [Functions & Closures](16_JavaScript/02_JS_Functions_Closures.md) → [Objects & Prototypes](16_JavaScript/03_JS_Objects_Prototypes.md)
+- [Async & Promises](16_JavaScript/04_JS_Async_Promises.md) → [DOM & Browser APIs](16_JavaScript/05_JS_DOM_BrowserAPIs.md)
+- [Modern ES6+](16_JavaScript/06_JS_Modern_ES6Plus.md) → [Error Handling & Debugging](16_JavaScript/07_JS_Error_Handling_Debugging.md)
+
+### TypeScript (3 chapters)
+- [TS Foundations](17_TypeScript/01_TS_Foundations.md) → [Advanced Types](17_TypeScript/02_TS_Advanced_Types.md) → [Patterns & Best Practices](17_TypeScript/03_TS_Patterns_BestPractices.md)
+
+### CSS Complete (4 chapters)
+- [CSS Foundations](18_CSS_Complete/01_CSS_Foundations.md) → [Layout Systems (Flex & Grid)](18_CSS_Complete/02_CSS_Layout_Systems.md) → [Responsive & Animations](18_CSS_Complete/03_CSS_Responsive_Animations.md) → [Modern Architecture & Design Tokens](18_CSS_Complete/04_CSS_Modern_Architecture.md)
+
+### Frontend Integration (4 chapters)
+- [React + JS + CSS Combined](19_Frontend_Integration/01_React_JS_CSS_Combined.md) | [Frontend Debugging](19_Frontend_Integration/02_Frontend_Debugging.md)
+- [Build Tools (npm, Babel, Webpack, Vite)](19_Frontend_Integration/03_Build_Tools_Ecosystem.md) | [Frontend Mental Models](19_Frontend_Integration/04_Frontend_Mental_Models_UI.md)
 
 ---
 
@@ -466,17 +518,21 @@ Open [07_Modern_Java/26_Spring_Boot_Curriculum_50Day.md](07_Modern_Java/26_Sprin
 | 04_Patterns_Templates | 20 | 7 original + 13 combined DS+Algo patterns with Excel problems |
 | 05_Problem_Solving | 23 | 20 topic chapters + Edge/Mistakes/Origins |
 | 06_OOP_Design | 8 | OOP, Design Patterns, System Design, LLD, Distributed Systems |
-| 07_Modern_Java | 41 | Functional, Algo Eng, 30+ Spring Boot, Concurrency, Kafka |
+| 07_Modern_Java | 42 | Functional, Algo Eng, 30+ Spring Boot, Concurrency, Kafka, Deps Map |
 | 08_SQL | 21 | Zero to expert in 21 chapters |
 | 08_SQL_Database | 3 | Database Internals, NoSQL, Interview Top 50 |
 | 09_Career_Reference | 15 | Career path, DSA ref, JVM, Psychology, Behavioral Interview |
 | 10_Enterprise_Systems | 8 | ERP, Finance, Real-world problems |
 | 12_Daily_Practice | 29 | Index + 28 days (4 weeks) with cross-reference links |
-| 13_Developer_Essentials | 17 | Git, Linux, Docker, CI/CD, Clean Code, Testing, REST, Security, Cloud, Terraform, Agile |
+| 13_Developer_Essentials | 19 | Git, Linux, Docker, CI/CD, Clean Code, Testing, REST, Security, Cloud, Terraform, Agile, Servers, Networking |
 | 14_Mental_Models | 19 | Index + 18 HOW-TO-THINK guides: DSA, System Design, Distributed, Frontend, Debugging |
 | 15_React_Frontend | 8 | Full React curriculum: Fundamentals to Performance |
-| **TOTAL** | **~245** | |
+| 16_JavaScript | 7 | Complete JS: Foundations, Closures, Async, DOM, ES6+, Debugging |
+| 17_TypeScript | 3 | TS standalone: Foundations, Advanced Types, Patterns |
+| 18_CSS_Complete | 4 | Visual CSS: Foundations, Layout, Animations, Architecture |
+| 19_Frontend_Integration | 4 | React+JS+CSS combined, Debugging, Build Tools, Mental Models |
+| **TOTAL** | **~266** | |
 
 ---
 
-_Last restructured: March 2026 — Phase 20: +29 files across 7 folders (Java Concurrency, Modern Java, Kafka, SD/LLD, DB Internals, NoSQL, React Frontend, Cloud, Terraform, Mental Models, Behavioral Interview), 245+ total files_
+_Last restructured: March 2026 — Phase 21: +21 files across 6 folders (JavaScript 7ch, TypeScript 3ch, CSS 4ch, Frontend Integration 4ch, Servers/Networking, Backend Cloud, Spring Boot Deps Map), 266+ total files_
