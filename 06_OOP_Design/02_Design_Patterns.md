@@ -70,70 +70,60 @@ software design. They are templates, not finished code.
 - ✅ You're building frameworks or libraries
 - ✅ Multiple classes need to work together
 - ✅ You want to follow SOLID principles
-DON'T USE PATTERNS WHEN:
+**Don't Use Patterns When**:
 - ❌ Simple code does the job
 - ❌ You're forcing a pattern where it doesn't fit
 - ❌ Pattern adds unnecessary complexity
 - ❌ One-time scripts or throwaway code
 
-**Golden Rule**:
-"Use patterns to SOLVE problems, not to SHOW OFF knowledge"
-Over-engineering with patterns is as bad as no patterns!
+> 💡 **Golden Rule**: *"Use patterns to SOLVE problems, not to SHOW OFF knowledge."*
+> Over-engineering with patterns is as bad as no patterns!
 ## ⭐ Growth Mindset: From Pattern User To Pattern Creator ⭐
 
-LEVEL 1 - LEARNER:
-"I know what Singleton is"
-LEVEL 2 - IMPLEMENTER:
-"I can implement Singleton correctly"
-LEVEL 3 - RECOGNIZER:
-"I can identify when to use Singleton in my code"
-LEVEL 4 - COMBINER:
-"I can combine multiple patterns to solve complex problems"
-LEVEL 5 - CREATOR:
-"I can create new patterns for recurring problems in my domain"
+| Level | Stage | Milestone |
+|-------|-------|----------|
+| 1 | **Learner** | *"I know what Singleton is"* |
+| 2 | **Implementer** | *"I can implement Singleton correctly"* |
+| 3 | **Recognizer** | *"I can identify when to use Singleton in my code"* |
+| 4 | **Combiner** | *"I can combine multiple patterns to solve complex problems"* |
+| 5 | **Creator** | *"I can create new patterns for recurring problems in my domain"* |
 
-**The Truth**:
-GoF patterns were CREATED by observing recurring solutions!
-YOU can observe patterns in your domain and document them too!
+> 💡 **The Truth**: GoF patterns were CREATED by observing recurring solutions! YOU can observe patterns in your domain and document them too!
 ## Pattern Categories
 
-1. CREATIONAL PATTERNS (Object Creation)
-"HOW do I create objects?"
-- Singleton, Factory, Abstract Factory, Builder, Prototype
-2. STRUCTURAL PATTERNS (Object Composition)
-"HOW do I structure classes and objects?"
-- Adapter, Bridge, Composite, Decorator, Facade, Proxy
-3. BEHAVIORAL PATTERNS (Object Interaction)
-"HOW do objects communicate and behave?"
-- Observer, Strategy, Command, Iterator, State, Template Method
+1. **Creational Patterns** — *Object Creation*
+   *"HOW do I create objects?"*
+   Singleton, Factory, Abstract Factory, Builder, Prototype
+
+2. **Structural Patterns** — *Object Composition*
+   *"HOW do I structure classes and objects?"*
+   Adapter, Bridge, Composite, Decorator, Facade, Proxy
+
+3. **Behavioral Patterns** — *Object Interaction*
+   *"HOW do objects communicate and behave?"*
+   Observer, Strategy, Command, Iterator, State, Template Method
 
 **Quick Selection Guide**:
-NEED                              │ PATTERN
-Only one instance                 │ Singleton
-Create objects without specifying │ Factory
-Complex object construction       │ Builder
-Convert interface                 │ Adapter
-Add behavior dynamically          │ Decorator
-Simplify complex subsystem        │ Facade
-Notify multiple objects           │ Observer
-Swap algorithms at runtime        │ Strategy
-Undo/Redo operations              │ Command
-Different behavior based on state │ State
+
+| Need | Pattern |
+|------|--------|
+| Only one instance | **Singleton** |
+| Create objects without specifying exact class | **Factory** |
+| Complex object construction | **Builder** |
+| Convert interface | **Adapter** |
+| Add behavior dynamically | **Decorator** |
+| Simplify complex subsystem | **Facade** |
+| Notify multiple objects | **Observer** |
+| Swap algorithms at runtime | **Strategy** |
+| Undo/Redo operations | **Command** |
+| Different behavior based on state | **State** |
 ## Difficulties & Common Mistakes
 
-1. "TOO ABSTRACT":
-Solution: Study with REAL examples, not just UML diagrams
-2. "DON'T KNOW WHEN TO USE":
-Solution: Learn the PROBLEM each pattern solves first
-3. "PATTERNS LOOK SIMILAR":
-Solution: Focus on INTENT, not just structure
-Factory vs Builder: Factory - which type, Builder - how to construct
-4. "OVER-ENGINEERING":
-Solution: Start simple, add patterns when complexity grows
-5. "TOO MANY PATTERNS":
-Solution: Master 10 essential patterns first
-Singleton, Factory, Builder, Adapter, Decorator, Facade,
-Observer, Strategy, Command, Template Method
+1. **"Too Abstract"** — Study with REAL examples, not just UML diagrams
+2. **"Don't Know When To Use"** — Learn the PROBLEM each pattern solves first
+3. **"Patterns Look Similar"** — Focus on INTENT, not structure. *Factory* = which type, *Builder* = how to construct
+4. **"Over-Engineering"** — Start simple, add patterns when complexity grows
+5. **"Too Many Patterns"** — Master these 10 first: Singleton, Factory, Builder, Adapter, Decorator, Facade, Observer, Strategy, Command, Template Method
 ## Expected Outcomes
 
 - ✅ PATTERN RECOGNITION: See problem → Know which pattern applies
@@ -319,29 +309,26 @@ queue requests, log operations, and support undo/redo.
 
 # 🎨 Part 4: Pattern Combinations
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║              COMBINING PATTERNS FOR COMPLEX SOLUTIONS                        ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+**Example: E-commerce Order System using Multiple Patterns**
 
-EXAMPLE: E-commerce Order System using Multiple Patterns
+| Pattern | Role |
+|---------|------|
+| **Singleton** | Configuration, Database connection |
+| **Factory** | Creating different order types |
+| **Builder** | Building complex Order objects |
+| **Observer** | Notifying systems when order status changes |
+| **Strategy** | Different payment methods |
+| **Decorator** | Adding features to orders (gift wrap, insurance) |
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ PATTERNS USED:                                                              │
-│ • Singleton: Configuration, Database connection                             │
-│ • Factory: Creating different order types                                   │
-│ • Builder: Building complex Order objects                                   │
-│ • Observer: Notifying systems when order status changes                     │
-│ • Strategy: Different payment methods                                       │
-│ • Decorator: Adding features to orders (gift wrap, insurance)               │
-└─────────────────────────────────────────────────────────────────────────────┘
-
+```java
 // 1. SINGLETON - Configuration
 public enum AppConfig {
     INSTANCE;
     public String getDatabaseUrl() { return "jdbc:mysql://..."; }
 }
+```
 
+```java
 // 2. BUILDER - Complex Order Creation
 public class Order {
     public static class Builder {
@@ -351,7 +338,9 @@ public class Order {
         // ... builder methods
     }
 }
+```
 
+```java
 // 3. FACTORY - Order Types
 public class OrderFactory {
     public static Order createOrder(String type, Order.Builder builder) {
@@ -362,7 +351,9 @@ public class OrderFactory {
         }
     }
 }
+```
 
+```java
 // 4. OBSERVER - Order Status Updates
 public class Order implements Subject {
     private List<OrderObserver> observers = new ArrayList<>();
@@ -372,7 +363,9 @@ public class Order implements Subject {
         notifyObservers(); // Notify inventory, shipping, customer
     }
 }
+```
 
+```java
 // 5. STRATEGY - Payment
 public class Order {
     private PaymentStrategy paymentStrategy;
@@ -381,7 +374,9 @@ public class Order {
         paymentStrategy.pay(getTotal());
     }
 }
+```
 
+```java
 // 6. DECORATOR - Add Features
 public interface Order {
     double getTotal();
@@ -393,8 +388,11 @@ public class GiftWrapDecorator extends OrderDecorator {
         return order.getTotal() + 5.99; // Gift wrap cost
     }
 }
+```
 
-// USAGE - All patterns working together!
+**All patterns working together:**
+
+```java
 Order order = OrderFactory.createOrder("express",
     Order.builder()
         .addItem(new OrderItem("Laptop", 999))
@@ -417,20 +415,21 @@ order.setStatus(OrderStatus.PAID); // Notifies observers
 # 📖 Part 5: Quick Reference Table
 
 
-> PATTERN      ║   USE WHEN
-> Singleton      ║ Need exactly one instance (config, logger, connection pool)
-> Factory        ║ Create objects without specifying exact class
-> Builder        ║ Complex object with many optional parameters
-> Adapter        ║ Make incompatible interfaces work together
-> Decorator      ║ Add behavior dynamically without changing original
-> Facade         ║ Simplify complex subsystem with single interface
-> Observer       ║ One-to-many notification when state changes
-> Strategy       ║ Swap algorithms at runtime
-> Command        ║ Need undo/redo, queue operations, log operations
-> State          ║ Object behavior depends on its state
-> Template       ║ Define algorithm skeleton, let subclasses fill steps
-> Composite      ║ Tree structure of objects (file system, UI components)
-> Proxy          ║ Control access, lazy loading, caching
+| Pattern | Use When |
+|---------|----------|
+| **Singleton** | Need exactly one instance (config, logger, connection pool) |
+| **Factory** | Create objects without specifying exact class |
+| **Builder** | Complex object with many optional parameters |
+| **Adapter** | Make incompatible interfaces work together |
+| **Decorator** | Add behavior dynamically without changing original |
+| **Facade** | Simplify complex subsystem with single interface |
+| **Observer** | One-to-many notification when state changes |
+| **Strategy** | Swap algorithms at runtime |
+| **Command** | Need undo/redo, queue operations, log operations |
+| **State** | Object behavior depends on its state |
+| **Template** | Define algorithm skeleton, let subclasses fill steps |
+| **Composite** | Tree structure of objects (file system, UI components) |
+| **Proxy** | Control access, lazy loading, caching |
 
 
 ---

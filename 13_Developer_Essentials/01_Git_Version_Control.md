@@ -53,55 +53,31 @@ This happened *every day* in the 1990s–2000s at every company.
 
 ## Mental Model 2: Three Areas
 
-```
-┌─────────────────────────────────────────────────────────┐
-│                    YOUR COMPUTER                        │
-│                                                         │
-│   ┌──────────────┐  git add  ┌──────────────┐           │
-│   │  WORKING     │ ───────── │   STAGING     │          │
-│   │  DIRECTORY   │           │   AREA        │          │
-│   │              │  ◄─────── │   (Index)     │          │
-│   │  (your files │  git      │              │           │
-│   │   as you     │  restore) │  (files ready │          │
-│   │   edit them) │           │   to commit)  │          │
-│   └──────────────┘           └───────┬──────┘           │
-│                                       │ git commit      │
-│                                       ▼                 │
-│                              ┌──────────────┐           │
-│                              │  LOCAL REPO   │          │
-│                              │  (.git folder)│          │
-│                              │              │           │
-│                              │  (permanent   │          │
-│                              │   history)    │          │
-│                              └───────┬──────┘           │
-│                                       │ git push        │
-└───────────────────────────────────────┼─────────────────┘
-                                        ▼
-                               ┌──────────────┐
-                               │  REMOTE REPO  │
-                               │  (GitHub)     │
-                               └──────────────┘
+```mermaid
+flowchart TD
+    subgraph local["🖥️ YOUR COMPUTER"]
+        WD["📁 WORKING DIRECTORY<br>your files as you edit them"]
+        SA["📋 STAGING AREA<br>files ready to commit"]
+        LR["🗄️ LOCAL REPO<br>permanent history in .git"]
+        WD -->|"git add"| SA
+        SA -.->|"git restore"| WD
+        SA -->|"git commit"| LR
+    end
+    LR -->|"git push"| RR["☁️ REMOTE REPO<br>GitHub"]
+    RR -.->|"git pull"| LR
 ```
 
 ## Mental Model 3: Commits are a Linked List
 
-```
-Each commit contains:
-  1. Snapshot of all files
-  2. Author + timestamp
-  3. Message (description)
-  4. Pointer to PARENT commit(s)
+Each commit contains: **(1)** snapshot of all files, **(2)** author + timestamp, **(3)** message, **(4)** pointer to parent commit(s).
 
-commit_3 ──→ commit_2 ──→ commit_1 ──→ (initial)
-   │              │              │
-   hash:abc123   hash:def456   hash:789abc
-   msg:"Add      msg:"Fix      msg:"Initial
-   login"        typo"          commit"
-   
-Hash = SHA-1 of (content + parent hash + metadata)
-       If ANY byte changes → completely different hash
-       → Tamper-proof history
+```mermaid
+flowchart RL
+    C3["commit_3<br>abc123 · Add login"] --> C2["commit_2<br>def456 · Fix typo"]
+    C2 --> C1["commit_1<br>789abc · Initial commit"]
 ```
+
+> 💡 **Hash** = SHA-1 of content + parent hash + metadata. If ANY byte changes → completely different hash → tamper-proof history.
 
 ---
 
@@ -193,24 +169,26 @@ Examples:
 
 ### WHY Branches Exist
 
-```
-Scenario: Your app is live. Users depend on it.
-          You need to add a NEW FEATURE that takes 2 weeks.
+**Scenario**: Your app is live, users depend on it. You need to add a **new feature** that takes 2 weeks.
 
-Without branches:
-  - You edit the main code
-  - For 2 weeks, the code is HALF-FINISHED
-  - If a CRITICAL BUG appears → you can't deploy a fix
-  
-With branches:
-  main ─────────────────────────► (always deployable)
-         \                    /
-          \  feature/login   /
-           ──────────────────    (your experimental work, isolated)
-           
-  Bug fix? → Branch from main → fix → merge → deploy
-  Feature ready? → Merge feature into main
+**Without branches**: You edit the main code. For 2 weeks it's HALF-FINISHED. If a CRITICAL BUG appears → you can't deploy a fix.
+
+**With branches**:
+
+```mermaid
+gitGraph
+    commit id: "v1.0 stable"
+    commit id: "v1.1 stable"
+    branch feature/login
+    commit id: "login WIP"
+    commit id: "login done"
+    checkout main
+    commit id: "hotfix"
+    merge feature/login id: "merge"
 ```
+
+> **Bug fix?** Branch from main → fix → merge → deploy.
+> **Feature ready?** Merge feature into main.
 
 ### Branch Commands
 
@@ -238,29 +216,43 @@ git merge main                  # Get latest main changes into feature
 
 ### Git Flow vs GitHub Flow
 
+**Git Flow** *(Complex, Enterprise)*:
+
+```mermaid
+gitGraph
+    commit id: "init"
+    branch develop
+    commit id: "dev-1"
+    branch feature/X
+    commit id: "feat-1"
+    commit id: "feat-2"
+    checkout develop
+    merge feature/X id: "merge-feat"
+    branch release/1.0
+    commit id: "release-prep"
+    checkout main
+    merge release/1.0 id: "v1.0" tag: "v1.0"
+    branch hotfix
+    commit id: "critical-fix"
+    checkout main
+    merge hotfix id: "hotfix" tag: "v1.0.1"
 ```
-=== GIT FLOW (Complex, Enterprise) ===
 
-main ─────────────────────────────────── (production)
-  │
-develop ──────────────────────────────── (integration)
-  │         \            /
-  │     feature/X ──────            (feature work)
-  │
-release/1.0 ─────────────────── (release prep)
-  │
-hotfix/critical ──────────────── (emergency fix)
+**GitHub Flow** *(Simple, Modern)*:
 
-=== GITHUB FLOW (Simple, Modern) ===
-
-main ──────────────────── (always deployable)
-  \        /
-   feature ──── (short-lived, merged via PR)
-
-Recommendation for YOU:
-  - Learning/personal: GitHub Flow
-  - Enterprise/team: Git Flow (Netcracker, Infosys, etc.)
+```mermaid
+gitGraph
+    commit id: "v1"
+    commit id: "v2"
+    branch feature
+    commit id: "work"
+    commit id: "done"
+    checkout main
+    merge feature id: "PR-merge"
+    commit id: "v3"
 ```
+
+> **Recommendation**: Learning/personal → **GitHub Flow**. Enterprise/team → **Git Flow**.
 
 ## Level 3: Merge Conflicts (The Hard Part)
 

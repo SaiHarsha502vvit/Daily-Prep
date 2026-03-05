@@ -66,17 +66,12 @@ Back-of-envelope:
 ```
 
 ## High-Level Design
-```
-┌──────────┐     ┌──────────────┐     ┌─────────────┐     ┌──────────┐
-│  Client   │────→│ Load Balancer│────→│ App Server  │────→│ Database│
-│ (browser) │     └──────────────┘     │  (shorten/  │     │ (URL    │
-└──────────┘                           │   redirect) │     │  mapping)│
-                                       └──────┬──────┘     └──────────┘
-                                              │
-                                       ┌──────┴──────┐
-                                       │   Cache     │
-                                       │  (Redis)    │
-                                       └─────────────┘
+```mermaid
+flowchart LR
+    Client --> LB[Load Balancer]
+    LB --> AS["App Server<br>shorten / redirect"]
+    AS --> DB[(Database<br>URL mapping)]
+    AS --> Cache[(Cache · Redis)]
 ```
 
 ## Key Design Decisions
@@ -170,21 +165,15 @@ Scale:
 ```
 
 ## Architecture
-```
-  ┌──────────┐      ┌──────────────┐      ┌────────────────┐
-  │  Client   │─────→│  API Gateway  │─────→│  Tweet Service  │──→ Tweets DB
-  └──────────┘      └──────┬───────┘      └───────┬────────┘
-                           │                       │
-                           │               ┌───────▼────────┐
-                           │               │  Fan-out Service│──→ Feed Cache
-                           │               │  (async queue)  │   (per user)
-                           │               └────────────────┘
-                           │
-                    ┌──────▼────────┐      ┌────────────────┐
-                    │  Feed Service  │─────→│  Feed Cache     │
-                    │  (read feed)   │      │  (Redis sorted  │
-                    └───────────────┘      │   sets per user)│
-                                           └────────────────┘
+```mermaid
+flowchart TD
+    C[Client] --> AG[API Gateway]
+    AG --> TS[Tweet Service]
+    TS --> TDB[(Tweets DB)]
+    TS --> FOS["Fan-out Service<br>async queue"]
+    FOS --> FC[("Feed Cache<br>Redis sorted sets")]
+    AG --> FS[Feed Service]
+    FS --> FC
 ```
 
 ---
@@ -455,20 +444,16 @@ Scale: 50M DAU, each user sends 40 msgs/day = 2B msgs/day
 
 ## QUICK REFERENCE — Which Concepts Each Problem Tests
 
-```
-┌──────────────────┬──────────────────────────────────────────────────────────────┐
-│ Problem          │ Key Concepts Tested                                          │
-├──────────────────┼──────────────────────────────────────────────────────────────┤
-│ URL Shortener    │ Hashing, base62, NoSQL, caching, HTTP redirects              │
-│ Twitter Feed     │ Fan-out, message queues, Redis sorted sets, hybrid approach  │
-│ Chat System      │ WebSocket, presence, Cassandra, message ordering             │
-│ Rate Limiter     │ Token bucket, sliding window, Redis Lua, distributed state   │
-│ Notifications    │ Message queues, worker pools, templates, retry/backpressure  │
-│ Dist. Cache      │ Consistent hashing, LRU, cache patterns, cache stampede      │
-│ E-Commerce       │ Saga pattern, inventory locking, search, microservices       │
-│ Web Crawler      │ BFS, Bloom filter, politeness, robots.txt, URL frontier      │
-└──────────────────┴──────────────────────────────────────────────────────────────┘
-```
+| Problem | Key Concepts Tested |
+|---------|--------------------|
+| **URL Shortener** | Hashing, base62, NoSQL, caching, HTTP redirects |
+| **Twitter Feed** | Fan-out, message queues, Redis sorted sets, hybrid approach |
+| **Chat System** | WebSocket, presence, Cassandra, message ordering |
+| **Rate Limiter** | Token bucket, sliding window, Redis Lua, distributed state |
+| **Notifications** | Message queues, worker pools, templates, retry/backpressure |
+| **Dist. Cache** | Consistent hashing, LRU, cache patterns, cache stampede |
+| **E-Commerce** | Saga pattern, inventory locking, search, microservices |
+| **Web Crawler** | BFS, Bloom filter, politeness, robots.txt, URL frontier |
 
 ---
 
