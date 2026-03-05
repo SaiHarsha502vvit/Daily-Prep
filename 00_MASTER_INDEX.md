@@ -1,6 +1,6 @@
 # MASTER INDEX — Complete DSA, SQL, Spring Boot & Career Preparation
 
-**Last Updated: March 2026 | 275+ files | 19 folders**
+**Last Updated: March 2026 | 280+ files | 19 folders**
 
 ---
 
@@ -22,7 +22,7 @@
 | **TypeScript (3 chapters)** | [17_TypeScript/](#typescript-3-chapters) |
 | **CSS Complete (4 chapters)** | [18_CSS_Complete/](#css-complete-4-chapters) |
 | **Frontend Integration (4 chapters)** | [19_Frontend_Integration/](#frontend-integration-4-chapters) |
-| **⚡ Deep Reasoning — Stop Freezing!** | [All 8 Deep Reasoning files](#deep-reasoning--senior-engineer-thinking-new) |
+| **⚡ Deep Reasoning — Stop Freezing!** | [All 14 Deep Reasoning files](#deep-reasoning--senior-engineer-thinking-new) |
 | **Concurrency & Coroutines** | [13_Developer_Essentials/19_Concurrency_Models_Coroutines.md](13_Developer_Essentials/19_Concurrency_Models_Coroutines.md) |
 | Java Concurrency + Modern Java | [07_Modern_Java/](#modern-java--spring-boot) |
 | Spring Boot Deps → Annotations Map | [07_Modern_Java/30_Spring_Boot_Dependencies_Annotations.md](07_Modern_Java/30_Spring_Boot_Dependencies_Annotations.md) |
@@ -87,7 +87,8 @@ Daily-Prep/
 │   ├── 13_String_Algorithms_Complete.md → Pattern matching, anagram, palindrome
 │   ├── 14_Union_Find_DSU_Complete.md    → Disjoint Set Union, path compression, rank
 │   ├── 15_Monotonic_Stack_Queue_Complete.md → NGE, histogram, trapping rain water
-│   └── 16_DSA_Deep_Reasoning.md         → 🆕 10 DSA "freeze moments" with deep reasoning & analogies
+│   ├── 16_DSA_Deep_Reasoning.md         → 🆕 10 DSA "freeze moments" with deep reasoning & analogies
+│   └── 17_DSA_Java_Implementation_Mastery.md → 🆕 Java-specific DSA: Collections, PQ gotchas, TreeMap, Comparator, sort internals
 │
 ├── 04_Patterns_Templates/              (23 files)
 │   ├── 01_Sliding_Window.md             → Fixed & variable window techniques
@@ -188,7 +189,10 @@ Daily-Prep/
 │   ├── 29_Message_Queues_Kafka.md       → 🆕 Kafka architecture, Spring Boot+Kafka, event-driven
 │   ├── 30_Spring_Boot_Dependencies_Annotations.md → 🆕 Which dependency → which annotations map
 │   ├── 31_Java_Deep_Reasoning.md        → 🆕 13 Java "freeze moments" — pass-by-value, String pool, HashMap internals
-│   └── 32_Spring_Boot_Deep_Reasoning.md → 🆕 12 Spring Boot "freeze moments" — DispatcherServlet vs Filter, proxy pattern
+│   ├── 32_Spring_Boot_Deep_Reasoning.md → 🆕 12 Spring Boot "freeze moments" — DispatcherServlet vs Filter, proxy pattern
+│   ├── 33_Streams_Deep_Reasoning.md     → 🆕 12 Streams "freeze moments" — lazy evaluation, flatMap, parallelStream traps
+│   ├── 34_JVM_Object_Model_Internals.md → 🆕 JVM object headers, mark word, lock escalation, method dispatch, vtable
+│   └── 35_Concurrency_Synchronizers_Deep.md → 🆕 Semaphore, CountDownLatch, CyclicBarrier, Phaser, livelock, starvation
 │
 ├── 08_SQL/                              (21 chapter files — zero to expert)
 │   ├── 01_Foundations_Database_Basics.md → What is a database, RDBMS, SQL
@@ -217,7 +221,8 @@ Daily-Prep/
 │   ├── 19_Interview_Top50.md            → 🆕 50 SQL interview problems by pattern
 │   ├── 21_Database_Internals.md         → 🆕 B-Tree, WAL, MVCC, buffer pool, query plans
 │   ├── 22_NoSQL_MongoDB.md             → 🆕 NoSQL categories, MongoDB, Redis
-│   └── 23_SQL_Deep_Reasoning.md         → 🆕 10 SQL "freeze moments" — NULL logic, JOIN execution, isolation levels
+│   ├── 23_SQL_Deep_Reasoning.md         → 🆕 10 SQL "freeze moments" — NULL logic, JOIN execution, isolation levels
+│   └── 24_SQL_Data_Analyst_RealWorld.md  → 🆕 Cohort, funnel, retention, A/B testing, RFM, KPI dashboards
 │
 ├── 09_Career_Reference/                 (15 chapter files)
 │   ├── 01_Career_TechnoFunctional.md    → Framework, skills, domains
@@ -363,6 +368,7 @@ Daily-Prep/
 - **Number Theory**: [Core (GCD, Primes)](03_Algorithms/08a_NumberTheory_Core.md) | [Advanced (Modular, CRT)](03_Algorithms/08b_NumberTheory_Advanced.md)
 - **Specialized**: [Pattern Programs](03_Algorithms/09_Pattern_Programs_Complete.md) | [Bit Manipulation](03_Algorithms/10_Bit_Manipulation_Complete.md) | [Backtracking](03_Algorithms/11_Backtracking_Complete.md) | [Greedy](03_Algorithms/12_Greedy_Algorithms_Complete.md) | [String Algos](03_Algorithms/13_String_Algorithms_Complete.md) | [Union-Find](03_Algorithms/14_Union_Find_DSU_Complete.md) | [Monotonic Stack](03_Algorithms/15_Monotonic_Stack_Queue_Complete.md)
 - **⚡ Deep Reasoning**: [DSA Deep Reasoning](03_Algorithms/16_DSA_Deep_Reasoning.md) — 10 interview "freeze moments" with senior-level reasoning
+- **⚡ Java DSA Mastery**: [DSA Java Implementation](03_Algorithms/17_DSA_Java_Implementation_Mastery.md) — Java Collections for DSA, PQ gotchas, TreeMap, Comparator traps, sort internals
 
 ### Coding Patterns (20 files — 7 original + 13 combined DS+Algo)
 - [Sliding Window](04_Patterns_Templates/01_Sliding_Window.md) | [Code Templates](04_Patterns_Templates/02_Code_Templates.md) | [Visual Diagrams](04_Patterns_Templates/03_Visual_Diagrams.md)
@@ -415,6 +421,9 @@ Daily-Prep/
 - **🆕 Java Deep Dive**: [Concurrency Core](07_Modern_Java/27a_Java_Concurrency_Core.md) | [Concurrency Advanced](07_Modern_Java/27b_Java_Concurrency_Advanced.md) | [Modern Java 9-21](07_Modern_Java/28_Modern_Java_Features.md) | [Kafka & Message Queues](07_Modern_Java/29_Message_Queues_Kafka.md)
 - **🆕 Dependency Map**: [Spring Boot Dependencies → Annotations](07_Modern_Java/30_Spring_Boot_Dependencies_Annotations.md) — Which dependency gives which annotations
 - **⚡ Deep Reasoning**: [Java Deep Reasoning](07_Modern_Java/31_Java_Deep_Reasoning.md) — 13 Java "freeze moments" (pass-by-value, String pool, HashMap) | [Spring Boot Deep Reasoning](07_Modern_Java/32_Spring_Boot_Deep_Reasoning.md) — 12 Spring Boot "freeze moments" (DispatcherServlet vs Filter, proxy pattern)
+- **⚡ Streams Mastery**: [Streams Deep Reasoning](07_Modern_Java/33_Streams_Deep_Reasoning.md) — 12 Streams "freeze moments" (lazy evaluation, flatMap, parallelStream traps, Collector internals)
+- **⚡ JVM Object Model**: [JVM Object Model Internals](07_Modern_Java/34_JVM_Object_Model_Internals.md) — Object headers, mark word, klass pointer, lock escalation, vtable, method hiding
+- **⚡ Concurrency Synchronizers**: [Concurrency Synchronizers Deep](07_Modern_Java/35_Concurrency_Synchronizers_Deep.md) — Semaphore, CountDownLatch, CyclicBarrier, Phaser, livelock, starvation
 
 ### SQL (21 chapters)
 - [01 Foundations](08_SQL/01_Foundations_Database_Basics.md) | [02 Data Types](08_SQL/02_DataTypes_Constraints.md) | [03 DDL](08_SQL/03_DDL_Creating_Structure.md) | [04 DML](08_SQL/04_DML_Manipulating_Data.md)
@@ -424,11 +433,12 @@ Daily-Prep/
 - [17 100 Problems](08_SQL/17_Practice_100_Problems.md) | [18a Beginner Projects](08_SQL/18a_SQL_Projects_Beginner.md) | [18b Advanced Projects](08_SQL/18b_SQL_Projects_Advanced.md)
 - [19 Interview Top 50](08_SQL/19_Interview_Top50.md) | [20 Cheat Sheet](08_SQL/20_CheatSheet_QuickRef.md)
 
-### SQL & Database — Advanced (4 files)
+### SQL & Database — Advanced (5 files)
 - **🆕** [SQL Interview Top 50 (expanded)](08_SQL_Database/19_Interview_Top50.md) — 50 problems organized by pattern
 - **🆕** [Database Internals](08_SQL_Database/21_Database_Internals.md) — B-Tree, WAL, MVCC, buffer pool, query plans
 - **🆕** [NoSQL & MongoDB](08_SQL_Database/22_NoSQL_MongoDB.md) — NoSQL categories, MongoDB CRUD, Redis
 - **⚡** [SQL Deep Reasoning](08_SQL_Database/23_SQL_Deep_Reasoning.md) — 10 SQL "freeze moments" (NULL logic, JOIN execution, isolation levels)
+- **⚡** [SQL Data Analyst Real-World](08_SQL_Database/24_SQL_Data_Analyst_RealWorld.md) — Cohort, funnel, retention, A/B testing SQL, RFM segmentation, KPI dashboards
 
 ### Career & Reference (14 files)
 - [Career Framework](09_Career_Reference/01_Career_TechnoFunctional.md)
@@ -511,7 +521,12 @@ Daily-Prep/
 | Java | [Java Deep Reasoning](07_Modern_Java/31_Java_Deep_Reasoning.md) | 13 — Pass-by-value, String pool, HashMap internals, generics erasure |
 | Spring Boot | [Spring Boot Deep Reasoning](07_Modern_Java/32_Spring_Boot_Deep_Reasoning.md) | 12 — DispatcherServlet vs Filter, proxy/self-call, bean lifecycle |
 | DSA | [DSA Deep Reasoning](03_Algorithms/16_DSA_Deep_Reasoning.md) | 10 — Big O misconceptions, HashMap O(1), quicksort vs mergesort |
+| DSA (Java) | [DSA Java Implementation](03_Algorithms/17_DSA_Java_Implementation_Mastery.md) | 11 — PriorityQueue gotchas, TreeMap, Comparator overflow, sort internals |
 | SQL | [SQL Deep Reasoning](08_SQL_Database/23_SQL_Deep_Reasoning.md) | 10 — NULL logic, JOIN execution, isolation levels, N+1 problem |
+| SQL (Analyst) | [SQL Data Analyst](08_SQL_Database/24_SQL_Data_Analyst_RealWorld.md) | 12 — Cohort, funnel, retention, A/B testing, RFM, KPI dashboards |
+| Java Streams | [Streams Deep Reasoning](07_Modern_Java/33_Streams_Deep_Reasoning.md) | 12 — Lazy evaluation, flatMap, parallelStream traps, Collector internals |
+| JVM Internals | [JVM Object Model](07_Modern_Java/34_JVM_Object_Model_Internals.md) | 10 — Object headers, mark word, lock escalation, vtable, method hiding |
+| Synchronizers | [Concurrency Synchronizers](07_Modern_Java/35_Concurrency_Synchronizers_Deep.md) | 10 — Semaphore, CountDownLatch, CyclicBarrier, Phaser, livelock, starvation |
 | **Concurrency** | [Coroutines & Concurrency](13_Developer_Essentials/19_Concurrency_Models_Coroutines.md) | 12 — Coroutines vs Continuations, Virtual Threads, goroutines |
 
 ---
@@ -549,13 +564,13 @@ Open [07_Modern_Java/26_Spring_Boot_Curriculum_50Day.md](07_Modern_Java/26_Sprin
 | Root (indexes) | 2 | Master index + Textbook preface |
 | 01_Getting_Started | 1 | Study plan calendar |
 | 02_Data_Structures | 11 | Memory → Arrays → LinkedList → Stack/Queue → Hash → Trees → Internals → Variants |
-| 03_Algorithms | 30 | Sorting → Recursion → DP → Trees → Graphs → Advanced → Number Theory → Specialized → Deep Reasoning |
+| 03_Algorithms | 31 | Sorting → Recursion → DP → Trees → Graphs → Advanced → Number Theory → Specialized → Deep Reasoning → Java DSA Mastery |
 | 04_Patterns_Templates | 20 | 7 original + 13 combined DS+Algo patterns with Excel problems |
 | 05_Problem_Solving | 23 | 20 topic chapters + Edge/Mistakes/Origins |
 | 06_OOP_Design | 8 | OOP, Design Patterns, System Design, LLD, Distributed Systems |
-| 07_Modern_Java | 44 | Functional, Algo Eng, 30+ Spring Boot, Concurrency, Kafka, Deps Map, Java + Spring Boot Deep Reasoning |
+| 07_Modern_Java | 47 | Functional, Algo Eng, 30+ Spring Boot, Concurrency, Kafka, Deps Map, Java + Spring Boot Deep Reasoning, Streams, JVM Object Model, Synchronizers |
 | 08_SQL | 21 | Zero to expert in 21 chapters |
-| 08_SQL_Database | 4 | Database Internals, NoSQL, Interview Top 50, SQL Deep Reasoning |
+| 08_SQL_Database | 5 | Database Internals, NoSQL, Interview Top 50, SQL Deep Reasoning, Data Analyst Real-World |
 | 09_Career_Reference | 15 | Career path, DSA ref, JVM, Psychology, Behavioral Interview |
 | 10_Enterprise_Systems | 8 | ERP, Finance, Real-world problems |
 | 12_Daily_Practice | 29 | Index + 28 days (4 weeks) with cross-reference links |
@@ -566,8 +581,8 @@ Open [07_Modern_Java/26_Spring_Boot_Curriculum_50Day.md](07_Modern_Java/26_Sprin
 | 17_TypeScript | 4 | TS standalone: Foundations, Advanced Types, Patterns, Deep Reasoning |
 | 18_CSS_Complete | 5 | Visual CSS: Foundations, Layout, Animations, Architecture, Deep Reasoning |
 | 19_Frontend_Integration | 4 | React+JS+CSS combined, Debugging, Build Tools, Mental Models |
-| **TOTAL** | **~275** | |
+| **TOTAL** | **~280** | |
 
 ---
 
-_Last restructured: March 2026 — Phase 22: +9 Deep Reasoning files + Coroutines & Concurrency Models. 8 domains covered with senior-engineer-level "freeze moment" guides (JS, React, TS, CSS, Java, Spring Boot, DSA, SQL) + comprehensive Coroutines vs Continuations. 275+ total files across 19 folders._
+_Last restructured: March 2026 — Phase 23: +5 Deep Mastery files (Streams, JVM Object Model, Concurrency Synchronizers, SQL Data Analyst, DSA Java Implementation). Phase 22: +9 Deep Reasoning files + Coroutines. 13 deep reasoning guides across all domains + comprehensive Coroutines/Synchronizers coverage. 280+ total files across 19 folders._
