@@ -297,6 +297,27 @@ public int[] prevSmaller(int[] arr) {
 ╚═══════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: MONOTONIC DATA STRUCTURES → MONOTONIC STACK: A stack where elements are always in | MONOTONIC STACK: A stack where elements are always in → increasing or decreasing order from bottom to top. | increasing or decreasing order from bottom to top. → MONOTONIC QUEUE: A deque where elements are always in | MONOTONIC QUEUE: A deque where elements are always in → increasing or decreasing order. | increasing or decreasing order. → WHY USE THEM? | WHY USE THEM? → • Find next/previous greater/smaller element in O(n) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["MONOTONIC DATA STRUCTURES"]
+    N2["MONOTONIC STACK: A stack where elements are always in"]
+    N3["increasing or decreasing order from bottom to top."]
+    N4["MONOTONIC QUEUE: A deque where elements are always in"]
+    N5["increasing or decreasing order."]
+    N6["WHY USE THEM?"]
+    N7["• Find next/previous greater/smaller element in O(n)"]
+    N8["• Sliding window max/min in O(n) total"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### Visual Comparison
 
 ```
@@ -321,6 +342,17 @@ Monotonic Increasing Stack:
 └─────┘   (smallest at bottom)
 ```
 
+> **Flow**: 3 / 7 / 2 / 5 → 7 / 5 / 3 | 7 / 5 / 3 → 2 / 4 / 7
+
+```mermaid
+flowchart TD
+    N1["3 / 7 / 2 / 5"]
+    N2["7 / 5 / 3"]
+    N3["2 / 4 / 7"]
+    N1 --> N2
+    N2 --> N3
+```
+
 ### The Key Insight
 
 ```
@@ -341,6 +373,27 @@ Monotonic Increasing Stack:
 │  "Pop = Found the answer for the popped element"                │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: MONOTONIC STACK KEY INSIGHT → When we POP an element, we've found its answer! | When we POP an element, we've found its answer! → For Next Greater Element: | For Next Greater Element: → - Use DECREASING stack (larger pops smaller) | - Use DECREASING stack (larger pops smaller) → - When we pop: current element IS the next greater | - When we pop: current element IS the next greater → For Next Smaller Element: | For Next Smaller Element: → - Use INCREASING stack (smaller pops larger) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["MONOTONIC STACK KEY INSIGHT"]
+    N2["When we POP an element, we've found its answer!"]
+    N3["For Next Greater Element:"]
+    N4["- Use DECREASING stack (larger pops smaller)"]
+    N5["- When we pop: current element IS the next greater"]
+    N6["For Next Smaller Element:"]
+    N7["- Use INCREASING stack (smaller pops larger)"]
+    N8["- When we pop: current element IS the next smaller"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---
@@ -421,6 +474,27 @@ i=5, num=3:
 Final: 6, 3 have no next greater → -1
 
 Result: [5, 5, 6, -1, 3, -1]
+```
+
+> **Flow**: 5 &gt; 1, pop 1 → Next greater of 1 is 5 | 5 &gt; 2, pop 2 → Next greater of 2 is 5 | 6 &gt; 5, pop 5 → Next greater of 5 is 6 | 3 &gt; 2, pop 2 → Next greater of 2 is 3 | Final: 6, 3 have no next greater → -1
+
+```mermaid
+flowchart TD
+    N1["5 &gt; 1, pop 1"]
+    N2["Next greater of 1 is 5"]
+    N3["5 &gt; 2, pop 2"]
+    N4["Next greater of 2 is 5"]
+    N5["6 &gt; 5, pop 5"]
+    N6["Next greater of 5 is 6"]
+    N7["3 &gt; 2, pop 2"]
+    N8["Next greater of 2 is 3"]
+    N9["Final: 6, 3 have no next greater"]
+    N10["-1"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+    N7 --> N8
+    N9 --> N10
 ```
 
 ---
@@ -536,6 +610,23 @@ i=5: done
 result = [2, -1, 2]
 ```
 
+> **Flow**: Array: [1, 2, 1] (circular) → Treating as: [1, 2, 1, 1, 2, 1] | Treating as: [1, 2, 1, 1, 2, 1] → ↑ ↑ (don't add to result, just for lookup) | ↑ ↑ (don't add to result, just for lookup) → i=0: push 0, stack=[0] | i=0: push 0, stack=[0] → i=5: done | i=5: done → result = [2, -1, 2]
+
+```mermaid
+flowchart TD
+    N1["Array: [1, 2, 1] (circular)"]
+    N2["Treating as: [1, 2, 1, 1, 2, 1]"]
+    N3["↑ ↑ (don't add to result, just for lookup)"]
+    N4["i=0: push 0, stack=[0]"]
+    N5["i=5: done"]
+    N6["result = [2, -1, 2]"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+```
+
 ---
 
 ## Next Smaller Element Pattern <a name="next-smaller"></a>
@@ -590,6 +681,27 @@ public int[] nextSmallerElement(int[] nums) {
 │  • Looking for SMALLER → maintain INCREASING                    │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: COMPARISON: GREATER vs SMALLER → NEXT GREATER ELEMENT: | NEXT GREATER ELEMENT: → • Use DECREASING stack | • Use DECREASING stack → • Pop when current &gt; stack.top | • Pop when current &gt; stack.top → • 'Larger element kicks out smaller ones' | • 'Larger element kicks out smaller ones' → NEXT SMALLER ELEMENT: | NEXT SMALLER ELEMENT: → • Use INCREASING stack | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["COMPARISON: GREATER vs SMALLER"]
+    N2["NEXT GREATER ELEMENT:"]
+    N3["• Use DECREASING stack"]
+    N4["• Pop when current &gt; stack.top"]
+    N5["• 'Larger element kicks out smaller ones'"]
+    N6["NEXT SMALLER ELEMENT:"]
+    N7["• Use INCREASING stack"]
+    N8["• Pop when current &lt; stack.top"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### Daily Temperatures (LeetCode 739)
@@ -718,6 +830,27 @@ public int[] previousSmallerElement(int[] nums) {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: ALL FOUR PATTERNS → NEXT GREATER (right): | NEXT GREATER (right): → • Direction: Left → Right | • Direction: Left → Right → • Stack: Decreasing | • Stack: Decreasing → • Answer: When POPPING | • Answer: When POPPING → NEXT SMALLER (right): | NEXT SMALLER (right): → • Stack: Increasing | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["ALL FOUR PATTERNS"]
+    N2["NEXT GREATER (right):"]
+    N3["• Direction: Left → Right"]
+    N4["• Stack: Decreasing"]
+    N5["• Answer: When POPPING"]
+    N6["NEXT SMALLER (right):"]
+    N7["• Stack: Increasing"]
+    N8["PREVIOUS GREATER (left):"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## Monotonic Queue <a name="monotonic-queue"></a>
@@ -739,6 +872,25 @@ public int[] previousSmallerElement(int[] nums) {
 ║  Use case: Sliding window max/min in O(n) total               ║
 ║                                                               ║
 ╚═══════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: MONOTONIC QUEUE → A queue (deque) maintaining monotonic order. | A queue (deque) maintaining monotonic order. → Key Operations: | Key Operations: → • Add from back (may pop existing elements) | • Add from back (may pop existing elements) → • Remove from front (when element leaves window) | • Remove from front (when element leaves window) → • Get max/min: Front of deque | • Get max/min: Front of deque → Use case: Sliding window max/min in O(n) total
+
+```mermaid
+flowchart TD
+    N1["MONOTONIC QUEUE"]
+    N2["A queue (deque) maintaining monotonic order."]
+    N3["Key Operations:"]
+    N4["• Add from back (may pop existing elements)"]
+    N5["• Remove from front (when element leaves window)"]
+    N6["• Get max/min: Front of deque"]
+    N7["Use case: Sliding window max/min in O(n) total"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
 ```
 
 ### Visual: Monotonic Queue for Max
@@ -967,6 +1119,25 @@ For bar at index 2 (height 5):
 Maximum rectangle has area 10 (using bars at indices 2,3)
 ```
 
+> **Flow**: heights = [2, 1, 5, 6, 2, 3] → For bar at index 2 (height 5): | For bar at index 2 (height 5): → - Can extend left until bar at index 1 (height 1 &lt; 5 | - Can extend left until bar at index 1 (height 1 &lt; 5 → - Can extend right until bar at index 4 (height 2 &lt;  | - Can extend right until bar at index 4 (height 2 &lt;  → - Width = 4 - 1 - 1 = 2 | - Width = 4 - 1 - 1 = 2 → - Area = 5 * 2 = 10 | - Area = 5 * 2 = 10 → Maximum rectangle has area 10 (using bars at indices 2,
+
+```mermaid
+flowchart TD
+    N1["heights = [2, 1, 5, 6, 2, 3]"]
+    N2["For bar at index 2 (height 5):"]
+    N3["- Can extend left until bar at index 1 (height 1 &lt; 5"]
+    N4["- Can extend right until bar at index 4 (height 2 &lt; "]
+    N5["- Width = 4 - 1 - 1 = 2"]
+    N6["- Area = 5 * 2 = 10"]
+    N7["Maximum rectangle has area 10 (using bars at indices 2,"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+```
+
 ### Maximal Rectangle (LeetCode 85)
 
 ```java
@@ -1139,6 +1310,27 @@ public boolean find132pattern(int[] nums) {
 │  • 132 Pattern                                                  │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: MONOTONIC STACK/QUEUE PROBLEMS → NEXT/PREVIOUS GREATER/SMALLER: | NEXT/PREVIOUS GREATER/SMALLER: → • Next Greater Element I/II | • Next Greater Element I/II → • Daily Temperatures | • Daily Temperatures → • Stock Span Problem | • Stock Span Problem → RECTANGLE PROBLEMS: | RECTANGLE PROBLEMS: → • Largest Rectangle in Histogram | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["MONOTONIC STACK/QUEUE PROBLEMS"]
+    N2["NEXT/PREVIOUS GREATER/SMALLER:"]
+    N3["• Next Greater Element I/II"]
+    N4["• Daily Temperatures"]
+    N5["• Stock Span Problem"]
+    N6["RECTANGLE PROBLEMS:"]
+    N7["• Largest Rectangle in Histogram"]
+    N8["• Maximal Rectangle in Matrix"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### Stock Span Problem (LeetCode 901)
@@ -1326,6 +1518,27 @@ public int sumSubarrayMins(int[] arr) {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: STACK TYPE SELECTION → DECREASING STACK (larger at bottom): | DECREASING STACK (larger at bottom): → • Next/Previous GREATER element | • Next/Previous GREATER element → • Largest rectangle (find boundaries) | • Largest rectangle (find boundaries) → • Stock span (count higher prices) | • Stock span (count higher prices) → INCREASING STACK (smaller at bottom): | INCREASING STACK (smaller at bottom): → • Next/Previous SMALLER element | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["STACK TYPE SELECTION"]
+    N2["DECREASING STACK (larger at bottom):"]
+    N3["• Next/Previous GREATER element"]
+    N4["• Largest rectangle (find boundaries)"]
+    N5["• Stock span (count higher prices)"]
+    N6["INCREASING STACK (smaller at bottom):"]
+    N7["• Next/Previous SMALLER element"]
+    N8["• Sum of subarray minimums"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### Code Templates
 
 ```java
@@ -1406,6 +1619,27 @@ public int[] maxWindow(int[] arr, int k) {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: MONOTONIC STACK/QUEUE COMPLEXITIES → Next Greater Element: O(n) time, O(n) space | Next Greater Element: O(n) time, O(n) space → Daily Temperatures: O(n) time, O(n) space | Daily Temperatures: O(n) time, O(n) space → Largest Rectangle Histogram: O(n) time, O(n) space | Largest Rectangle Histogram: O(n) time, O(n) space → Sliding Window Maximum: O(n) time, O(k) space | Sliding Window Maximum: O(n) time, O(k) space → Remove K Digits: O(n) time, O(n) space | Remove K Digits: O(n) time, O(n) space → KEY INSIGHT: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["MONOTONIC STACK/QUEUE COMPLEXITIES"]
+    N2["Next Greater Element: O(n) time, O(n) space"]
+    N3["Daily Temperatures: O(n) time, O(n) space"]
+    N4["Largest Rectangle Histogram: O(n) time, O(n) space"]
+    N5["Sliding Window Maximum: O(n) time, O(k) space"]
+    N6["Remove K Digits: O(n) time, O(n) space"]
+    N7["KEY INSIGHT:"]
+    N8["Each element is pushed and popped at most ONCE."]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## Summary
@@ -1440,6 +1674,27 @@ public int[] maxWindow(int[] arr, int k) {
 ║     • Sliding window extremes                                 ║
 ║                                                               ║
 ╚═══════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: MONOTONIC STACK/QUEUE - MASTER CHECKLIST → 1. IDENTIFY THE PATTERN | 1. IDENTIFY THE PATTERN → • 'Next greater/smaller' → Monotonic Stack | • 'Next greater/smaller' → Monotonic Stack → • 'Sliding window max/min' → Monotonic Queue | • 'Sliding window max/min' → Monotonic Queue → • 'Rectangle area' → Usually needs both boundaries | • 'Rectangle area' → Usually needs both boundaries → 2. CHOOSE STACK TYPE | 2. CHOOSE STACK TYPE → • Looking for GREATER → Decreasing stack | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["MONOTONIC STACK/QUEUE - MASTER CHECKLIST"]
+    N2["1. IDENTIFY THE PATTERN"]
+    N3["• 'Next greater/smaller' → Monotonic Stack"]
+    N4["• 'Sliding window max/min' → Monotonic Queue"]
+    N5["• 'Rectangle area' → Usually needs both boundaries"]
+    N6["2. CHOOSE STACK TYPE"]
+    N7["• Looking for GREATER → Decreasing stack"]
+    N8["• Looking for SMALLER → Increasing stack"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 **Pro Tip:** When you see "next greater/smaller", "sliding window max/min", or problems involving "how far can we extend", think monotonic stack/queue!

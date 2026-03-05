@@ -204,6 +204,27 @@ function CustomButton({ variant, isLoading, children, ...rest }: CustomButtonPro
 ╚════════════════════════════════╩══════════════════════════════════════════════╝
 ```
 
+> **Flow**: What Type → Component children React.ReactNode | Component children React.ReactNode → Single element child React.ReactElement | Single element child React.ReactElement → Style object React.CSSProperties | Style object React.CSSProperties → Ref to DOM element React.RefObject&lt;HTMLDivElement&gt | Ref to DOM element React.RefObject&lt;HTMLDivElement&gt → Set state function React.Dispatch&lt;SetStateAction&lt; | Set state function React.Dispatch&lt;SetStateAction&lt; → onChange for input React.ChangeEvent&lt;HTMLInputElemen | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["What Type"]
+    N2["Component children React.ReactNode"]
+    N3["Single element child React.ReactElement"]
+    N4["Style object React.CSSProperties"]
+    N5["Ref to DOM element React.RefObject&lt;HTMLDivElement&gt"]
+    N6["Set state function React.Dispatch&lt;SetStateAction&lt;"]
+    N7["onChange for input React.ChangeEvent&lt;HTMLInputElemen"]
+    N8["onClick for button React.MouseEvent&lt;HTMLButtonElemen"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 > **Navigation**: [< Previous](04_State_Management.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_React_Router.md)

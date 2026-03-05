@@ -44,6 +44,27 @@ KEY DIMENSIONS:
   cols = matrix[0].length
 ```
 
+> **Flow**: Visual: [1, 2, 3] In Memory (Row-Major — Java default): → [7, 8, 9] ↑row 0 ↑row 1 ↑row 2 | [7, 8, 9] ↑row 0 ↑row 1 ↑row 2 → Accessing: matrix[row][col] | Accessing: matrix[row][col] → matrix[0][0] = 1 (top-left) | matrix[0][0] = 1 (top-left) → matrix[1][2] = 6 (row 1, col 2) | matrix[1][2] = 6 (row 1, col 2) → matrix[2][1] = 8 (row 2, col 1) | matrix[2][1] = 8 (row 2, col 1) → KEY DIMENSIONS: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Visual: [1, 2, 3] In Memory (Row-Major — Java default):"]
+    N2["[7, 8, 9] ↑row 0 ↑row 1 ↑row 2"]
+    N3["Accessing: matrix[row][col]"]
+    N4["matrix[0][0] = 1 (top-left)"]
+    N5["matrix[1][2] = 6 (row 1, col 2)"]
+    N6["matrix[2][1] = 8 (row 2, col 1)"]
+    N7["KEY DIMENSIONS:"]
+    N8["rows = matrix.length"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 #### HOW: Traversal patterns
 
 ```java
@@ -81,6 +102,26 @@ Matrix:    1  2  3  4       Spiral output: 1→2→3→4→8→12→11→10
            9  10 11 12
 
 Direction: RIGHT → DOWN → LEFT → UP → repeat (shrinking boundaries)
+```
+
+> **Flow**: 12 → 11 | 11 → 10 | Direction: RIGHT → DOWN | DOWN → LEFT | LEFT → UP | UP → repeat (shrinking boundaries)
+
+```mermaid
+flowchart TD
+    N1["12"]
+    N2["11"]
+    N3["10"]
+    N4["Direction: RIGHT"]
+    N5["DOWN"]
+    N6["LEFT"]
+    N7["UP"]
+    N8["repeat (shrinking boundaries)"]
+    N1 --> N2
+    N2 --> N3
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```java
@@ -147,6 +188,31 @@ MERGE phase (combine sorted halves):
  [3, 27, 38, 43] + [9, 10, 82] → [3, 9, 10, 27, 38, 43, 82]
 ```
 
+> **Flow**: [38] [27] → [27, 38] [43] [3] | [27, 38] [43] [3] → [3, 43] | [27, 38] + [3, 43] → [3, 27, 38, 43] | [9] [82] → [9, 82] [10] | [9, 82] [10] → [10] | [9, 82] + [10] → [9, 10, 82] | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["[38] [27]"]
+    N2["[27, 38] [43] [3]"]
+    N3["[3, 43]"]
+    N4["[27, 38] + [3, 43]"]
+    N5["[3, 27, 38, 43]"]
+    N6["[9] [82]"]
+    N7["[9, 82] [10]"]
+    N8["[10]"]
+    N9["[9, 82] + [10]"]
+    N10["[9, 10, 82]"]
+    N11["[3, 27, 38, 43] + [9, 10, 82]"]
+    N12["[3, 9, 10, 27, 38, 43, 82]"]
+    N1 --> N2
+    N2 --> N3
+    N4 --> N5
+    N6 --> N7
+    N7 --> N8
+    N9 --> N10
+    N11 --> N12
+```
+
 #### Code
 
 ```java
@@ -195,6 +261,22 @@ Level 2:  [n/4][n/4][n/4][n/4]            → n work
    ...    log₂(n) levels total             → n × log₂(n) total
 ```
 
+> **Flow**: Level 0: [-------n-------] → n work | Level 1: [---n/2---][---n/2---] → n work | Level 2: [n/4][n/4][n/4][n/4] → n work | ... log₂(n) levels total → n × log₂(n) total
+
+```mermaid
+flowchart LR
+    N1["Level 0: [-------n-------]"]
+    N2["n work"]
+    N3["Level 1: [---n/2---][---n/2---]"]
+    N4["Level 2: [n/4][n/4][n/4][n/4]"]
+    N5["... log₂(n) levels total"]
+    N6["n × log₂(n) total"]
+    N1 --> N2
+    N3 --> N2
+    N4 --> N2
+    N5 --> N6
+```
+
 ---
 
 ## BLOCK 3: COMBO (20 min)
@@ -211,6 +293,18 @@ target = 3 → true
 target = 13 → false
 ```
 
+> **Flow**: target = 3 → true | target = 13 → false
+
+```mermaid
+flowchart LR
+    N1["target = 3"]
+    N2["true"]
+    N3["target = 13"]
+    N4["false"]
+    N1 --> N2
+    N3 --> N4
+```
+
 **KEY INSIGHT:** Treat the 2D matrix as a 1D sorted array.
 
 ```
@@ -222,6 +316,17 @@ Convert 1D index to 2D:
   col = index % cols
   
 Example: index 5 in 4-column matrix → row=5/4=1, col=5%4=1 → matrix[1][1]=11
+```
+
+> **Flow**: Example: index 5 in 4-column matrix → row=5/4=1, col=5%4=1 | row=5/4=1, col=5%4=1 → matrix[1][1]=11
+
+```mermaid
+flowchart LR
+    N1["Example: index 5 in 4-column matrix"]
+    N2["row=5/4=1, col=5%4=1"]
+    N3["matrix[1][1]=11"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 <details>
@@ -447,6 +552,17 @@ Step 2 — Reverse each row:
    [9,6,3]]  ← Done!
 ```
 
+> **Flow**: Step 1 — Transpose (swap matrix[i][j] with matrix[j][i] → Step 2 — Reverse each row: | Step 2 — Reverse each row: → [9,6,3]] ← Done!
+
+```mermaid
+flowchart TD
+    N1["Step 1 — Transpose (swap matrix[i][j] with matrix[j][i]"]
+    N2["Step 2 — Reverse each row:"]
+    N3["[9,6,3]] ← Done!"]
+    N1 --> N2
+    N2 --> N3
+```
+
 <details>
 <summary>Solution</summary>
 
@@ -498,6 +614,25 @@ Saddle point: 2 (min of row 0, max of col 1)
 Let's verify: row 0 min=1 → col 0 max=3 → not 1. row 0 min=1→ fail.
               row 0: min=1 at col=0. Col 0 max=3. 1≠3 → no.
               row 1: min=3 at col=0. Col 0 max=3. 3==3 → YES! Saddle=3.
+```
+
+> **Flow**: Let's verify: row 0 min=1 → col 0 max=3 | col 0 max=3 → not 1. row 0 min=1 | not 1. row 0 min=1 → fail. | row 0: min=1 at col=0. Col 0 max=3. 1≠3 → no. | row 1: min=3 at col=0. Col 0 max=3. 3==3 → YES! Saddle=3.
+
+```mermaid
+flowchart TD
+    N1["Let's verify: row 0 min=1"]
+    N2["col 0 max=3"]
+    N3["not 1. row 0 min=1"]
+    N4["fail."]
+    N5["row 0: min=1 at col=0. Col 0 max=3. 1≠3"]
+    N6["no."]
+    N7["row 1: min=3 at col=0. Col 0 max=3. 3==3"]
+    N8["YES! Saddle=3."]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N5 --> N6
+    N7 --> N8
 ```
 
 <details>

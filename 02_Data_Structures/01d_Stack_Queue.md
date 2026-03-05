@@ -31,6 +31,23 @@ PHYSICAL REALITY - Like a stack of plates:
 └────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: PHYSICAL REALITY - Like a stack of plates: → TOP → | TOP → → 5 ← Last In, First Out (LIFO) | 5 ← Last In, First Out (LIFO) → PUSH: Add to top | PUSH: Add to top → POP: Remove from top | POP: Remove from top → PEEK: Look at top without removing
+
+```mermaid
+flowchart TD
+    N1["PHYSICAL REALITY - Like a stack of plates:"]
+    N2["TOP →"]
+    N3["5 ← Last In, First Out (LIFO)"]
+    N4["PUSH: Add to top"]
+    N5["POP: Remove from top"]
+    N6["PEEK: Look at top without removing"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+```
+
 ### Stack Operations
 
 | Operation    | Time | Description                 |
@@ -62,6 +79,19 @@ PHYSICAL REALITY - Like a stack of plates:
 ├─────────────┤
 │ main() addr │
 └─────────────┘
+```
+
+> **Flow**: C() addr ← Top (current) → B() addr | B() addr → A() addr | A() addr → main() addr
+
+```mermaid
+flowchart TD
+    N1["C() addr ← Top (current)"]
+    N2["B() addr"]
+    N3["A() addr"]
+    N4["main() addr"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
 ```
 
 When `C()` returns → pop → go to `B()`. When `B()` returns → pop → go to `A()`.
@@ -193,6 +223,21 @@ NOW USED IN:
 - JSON parsers
 ```
 
+> **Flow**: - See '(' → push ')' | - See '{' → push '}' | - See ')' → pop, check if matches
+
+```mermaid
+flowchart LR
+    N1["- See '('"]
+    N2["push ')'"]
+    N3["- See '{'"]
+    N4["push '}'"]
+    N5["- See ')'"]
+    N6["pop, check if matches"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+```
+
 ---
 
 # 📬 Part 5: Queue
@@ -220,6 +265,23 @@ PHYSICAL REALITY - Like a line at a store:
 └────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: PHYSICAL REALITY - Like a line at a store: → FRONT BACK | FRONT BACK → Dequeue Enqueue | Dequeue Enqueue → (Remove) (Add) | (Remove) (Add) → FIFO = First In, First Out | FIFO = First In, First Out → 'First come, first served'
+
+```mermaid
+flowchart TD
+    N1["PHYSICAL REALITY - Like a line at a store:"]
+    N2["FRONT BACK"]
+    N3["Dequeue Enqueue"]
+    N4["(Remove) (Add)"]
+    N5["FIFO = First In, First Out"]
+    N6["'First come, first served'"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+```
+
 ### Queue Operations
 
 | Operation           | Time | Description       |
@@ -245,6 +307,19 @@ PRINT QUEUE:
 │   ↑                              ↑     │
 │ Printing                    New jobs   │
 └────────────────────────────────────────┘
+```
+
+> **Flow**: PRINT QUEUE: → Front Back | Front Back → [Job1] → [Job2] → [Job3] → [Job4] | [Job1] → [Job2] → [Job3] → [Job4] → Printing New jobs
+
+```mermaid
+flowchart TD
+    N1["PRINT QUEUE:"]
+    N2["Front Back"]
+    N3["[Job1] → [Job2] → [Job3] → [Job4]"]
+    N4["Printing New jobs"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
 ```
 
 > ✅ **Now used in:** OS task scheduling, web server request handling, message queues (Kafka, RabbitMQ), BFS algorithm

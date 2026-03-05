@@ -49,6 +49,19 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: WHY: Why AOP & Auto-Configuration? / • @Transactional m → HOW: How AOP Creates Magic? / • Proxy wrapping: Spring  | HOW: How AOP Creates Magic? / • Proxy wrapping: Spring  → WHEN: When to Use AOP? / • Logging: Log all service met | WHEN: When to Use AOP? / • Logging: Log all service met → WHICH: Which AOP Concepts to Master? / ESSENTIAL: Proxy
+
+```mermaid
+flowchart TD
+    N1["WHY: Why AOP & Auto-Configuration? / • @Transactional m"]
+    N2["HOW: How AOP Creates Magic? / • Proxy wrapping: Spring "]
+    N3["WHEN: When to Use AOP? / • Logging: Log all service met"]
+    N4["WHICH: Which AOP Concepts to Master? / ESSENTIAL: Proxy"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 ---
 
 # 📌 Tier 3: Aspect — Oriented Programming (aop)
@@ -150,6 +163,27 @@ public Object logMethod(ProceedingJoinPoint pjp) {
 │  Weaving = Installing the security system                                       │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: AOP VOCABULARY → Term Definition | Term Definition → Advice Action taken (before, after, around a method) | Advice Action taken (before, after, around a method) → Pointcut Expression selecting join points (which method | Pointcut Expression selecting join points (which method → Target Object being advised (original bean) | Target Object being advised (original bean) → Proxy Wrapper object created by Spring (contains advice | Proxy Wrapper object created by Spring (contains advice → Weaving Process of applying aspects to targets | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["AOP VOCABULARY"]
+    N2["Term Definition"]
+    N3["Advice Action taken (before, after, around a method)"]
+    N4["Pointcut Expression selecting join points (which method"]
+    N5["Target Object being advised (original bean)"]
+    N6["Proxy Wrapper object created by Spring (contains advice"]
+    N7["Weaving Process of applying aspects to targets"]
+    N8["VISUAL METAPHOR:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---
@@ -327,6 +361,23 @@ public class ComprehensiveAspect {
 │  └──────────────────────────────────────────────────────────────────────────┘   │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: ADVICE EXECUTION ORDER / METHOD CALL: userService.findB → @Before | @Before → ACTUAL METHOD EXECUTION | ACTUAL METHOD EXECUTION → @AfterReturning @AfterThrowing | @AfterReturning @AfterThrowing → @After | @After → @Around (after proceed)
+
+```mermaid
+flowchart TD
+    N1["ADVICE EXECUTION ORDER / METHOD CALL: userService.findB"]
+    N2["@Before"]
+    N3["ACTUAL METHOD EXECUTION"]
+    N4["@AfterReturning @AfterThrowing"]
+    N5["@After"]
+    N6["@Around (after proceed)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
 ```
 
 ---
@@ -507,6 +558,15 @@ public class PointcutExamplesAspect {
 │  └────────────────────────────────────────────────────────────────────┘         │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: findById(Long id) / → Execute @Before advice / → Execut → REAL BEAN / UserService
+
+```mermaid
+flowchart TD
+    N2["findById(Long id) / → Execute @Before advice / → Execut"]
+    N3["REAL BEAN / UserService"]
+    N2 --> N3
 ```
 
 ### Proxy Types: JDK Dynamic Proxy vs CGLIB
@@ -1044,6 +1104,27 @@ public class EmailService {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: PROFILE-BASED CONFIGURATION → application.yml → Default (always loaded) | application.yml → Default (always loaded) → application-dev.yml → Development (local) | application-dev.yml → Development (local) → application-test.yml → Testing (CI/CD) | application-test.yml → Testing (CI/CD) → application-staging.yml → Staging (pre-prod) | application-staging.yml → Staging (pre-prod) → application-prod.yml → Production | application-prod.yml → Production → LOADING ORDER (later overrides earlier): | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["PROFILE-BASED CONFIGURATION"]
+    N2["application.yml → Default (always loaded)"]
+    N3["application-dev.yml → Development (local)"]
+    N4["application-test.yml → Testing (CI/CD)"]
+    N5["application-staging.yml → Staging (pre-prod)"]
+    N6["application-prod.yml → Production"]
+    N7["LOADING ORDER (later overrides earlier):"]
+    N8["1. application.yml"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ```yaml
 # application.yml (defaults)
 spring:
@@ -1134,6 +1215,27 @@ CONFIGURATION:
 □ Know property source loading order
 □ Can use profiles effectively
 □ Understand externalized configuration
+```
+
+> **Flow**: AOP CONCEPTS: → □ Can explain cross-cutting concerns | □ Can explain cross-cutting concerns → □ Know all 5 advice types and when to use each | □ Know all 5 advice types and when to use each → □ Understand proxy types (JDK vs CGLIB) | □ Understand proxy types (JDK vs CGLIB) → □ Know the self-invocation problem and solutions | □ Know the self-invocation problem and solutions → SPRING BOOT: | SPRING BOOT: → □ Know what @SpringBootApplication does (3 annotations) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["AOP CONCEPTS:"]
+    N2["□ Can explain cross-cutting concerns"]
+    N3["□ Know all 5 advice types and when to use each"]
+    N4["□ Understand proxy types (JDK vs CGLIB)"]
+    N5["□ Know the self-invocation problem and solutions"]
+    N6["SPRING BOOT:"]
+    N7["□ Know what @SpringBootApplication does (3 annotations)"]
+    N8["□ Understand auto-configuration conditions"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

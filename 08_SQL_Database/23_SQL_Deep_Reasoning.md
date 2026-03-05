@@ -104,6 +104,27 @@ SELECT COALESCE(phone, email, 'No contact') AS contact FROM users;
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: SQL EXECUTION ORDER (not the order you write it!): → 1. FROM / JOIN ← Identify the tables | 1. FROM / JOIN ← Identify the tables → 2. WHERE ← Filter INDIVIDUAL rows | 2. WHERE ← Filter INDIVIDUAL rows → 3. GROUP BY ← Create groups | 3. GROUP BY ← Create groups → 4. HAVING ← Filter GROUPS (after aggregation) | 4. HAVING ← Filter GROUPS (after aggregation) → 5. SELECT ← Choose columns, compute expressions | 5. SELECT ← Choose columns, compute expressions → 6. DISTINCT ← Remove duplicates | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["SQL EXECUTION ORDER (not the order you write it!):"]
+    N2["1. FROM / JOIN ← Identify the tables"]
+    N3["2. WHERE ← Filter INDIVIDUAL rows"]
+    N4["3. GROUP BY ← Create groups"]
+    N5["4. HAVING ← Filter GROUPS (after aggregation)"]
+    N6["5. SELECT ← Choose columns, compute expressions"]
+    N7["6. DISTINCT ← Remove duplicates"]
+    N8["7. ORDER BY ← Sort results"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ```sql
 -- ❌ WRONG: WHERE can't use aggregate
 SELECT department, COUNT(*)
@@ -156,6 +177,27 @@ HAVING COUNT(*) > 5;      -- Then filter groups
 ║  CROSS JOIN: Every student × every locker (Cartesian product).   ║
 ║  3 students × 2 lockers = 6 rows. Rarely useful intentionally.   ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: THE SCHOOL DANCE ANALOGY → Students table (left) Lockers table (right) | Students table (left) Lockers table (right) → [Alice, Bob, Charlie] [Locker1→Alice, Locker2→Bob] | [Alice, Bob, Charlie] [Locker1→Alice, Locker2→Bob] → INNER JOIN: Only students WITH lockers dance. | INNER JOIN: Only students WITH lockers dance. → Result: [Alice+Locker1, Bob+Locker2] (Charlie excluded) | Result: [Alice+Locker1, Bob+Locker2] (Charlie excluded) → Result: [Alice+Locker1, Bob+Locker2, Charlie+NULL] | Result: [Alice+Locker1, Bob+Locker2, Charlie+NULL] → RIGHT JOIN: ALL lockers shown. No student? NULL. | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE SCHOOL DANCE ANALOGY"]
+    N2["Students table (left) Lockers table (right)"]
+    N3["[Alice, Bob, Charlie] [Locker1→Alice, Locker2→Bob]"]
+    N4["INNER JOIN: Only students WITH lockers dance."]
+    N5["Result: [Alice+Locker1, Bob+Locker2] (Charlie excluded)"]
+    N6["Result: [Alice+Locker1, Bob+Locker2, Charlie+NULL]"]
+    N7["RIGHT JOIN: ALL lockers shown. No student? NULL."]
+    N8["Result: [Alice+Locker1, Bob+Locker2]"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```sql
@@ -212,6 +254,27 @@ LEFT JOIN customers c ON o.customer_id = c.id AND c.country = 'US';
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: THE BOOK INDEX ANALOGY (literally!) → An index at the back of a textbook: | An index at the back of a textbook: → 'binary search' → pages 45, 67, 112 | 'binary search' → pages 45, 67, 112 → → Fast to FIND specific terms (O(log n) vs full scan) | → Fast to FIND specific terms (O(log n) vs full scan) → → But the index itself takes SPACE (extra pages) | → But the index itself takes SPACE (extra pages) → → And updating the index when content changes costs TIM | → And updating the index when content changes costs TIM → WHEN INDEXES HELP: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE BOOK INDEX ANALOGY (literally!)"]
+    N2["An index at the back of a textbook:"]
+    N3["'binary search' → pages 45, 67, 112"]
+    N4["→ Fast to FIND specific terms (O(log n) vs full scan)"]
+    N5["→ But the index itself takes SPACE (extra pages)"]
+    N6["→ And updating the index when content changes costs TIM"]
+    N7["WHEN INDEXES HELP:"]
+    N8["✅ WHERE column = value (equality lookup)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 5. Transaction Isolation Levels: The Four Levels Explained
@@ -255,6 +318,27 @@ Everyone takes the exam ONE AT A TIME.
 *MySQL InnoDB prevents phantoms at Repeatable Read (gap locks)
 ```
 
+> **Flow**: THE EXAM ROOM ANALOGY → READ UNCOMMITTED (no isolation): | READ UNCOMMITTED (no isolation): → You can read someone's answer sheet WHILE they're writi | You can read someone's answer sheet WHILE they're writi → READ COMMITTED (most common — Postgres default): | READ COMMITTED (most common — Postgres default): → You can only read SUBMITTED answer sheets. | You can only read SUBMITTED answer sheets. → ✅ No dirty reads | ✅ No dirty reads → ❌ Non-repeatable read: You read Bob's score=80. Read ag | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE EXAM ROOM ANALOGY"]
+    N2["READ UNCOMMITTED (no isolation):"]
+    N3["You can read someone's answer sheet WHILE they're writi"]
+    N4["READ COMMITTED (most common — Postgres default):"]
+    N5["You can only read SUBMITTED answer sheets."]
+    N6["✅ No dirty reads"]
+    N7["❌ Non-repeatable read: You read Bob's score=80. Read ag"]
+    N8["→ score=90 (Bob submitted a correction between reads)."]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 6. Deadlocks: Why Two Transactions Can Freeze Each Other
@@ -288,6 +372,27 @@ Everyone takes the exam ONE AT A TIME.
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: THE NARROW DOORWAY ANALOGY → Transaction A: Locks Row 1, needs Row 2. | Transaction A: Locks Row 1, needs Row 2. → Transaction B: Locks Row 2, needs Row 1. | Transaction B: Locks Row 2, needs Row 1. → A waits for B to release Row 2. | A waits for B to release Row 2. → B waits for A to release Row 1. | B waits for A to release Row 1. → Neither can proceed → DEADLOCK! | Neither can proceed → DEADLOCK! → Like two people in a narrow hallway, each waiting for t | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE NARROW DOORWAY ANALOGY"]
+    N2["Transaction A: Locks Row 1, needs Row 2."]
+    N3["Transaction B: Locks Row 2, needs Row 1."]
+    N4["A waits for B to release Row 2."]
+    N5["B waits for A to release Row 1."]
+    N6["Neither can proceed → DEADLOCK!"]
+    N7["Like two people in a narrow hallway, each waiting for t"]
+    N8["other to move. Neither can pass."]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 7. N+1 Query Problem: The Silent Performance Killer
@@ -307,6 +412,23 @@ Everyone takes the exam ONE AT A TIME.
 ║                                                                  ║
 ║  GOOD: "Give me ALL orders at once." → 1 or 2 queries total.     ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: THE RESTAURANT ORDER ANALOGY → BAD (N+1): Waiter asks kitchen once per customer. | BAD (N+1): Waiter asks kitchen once per customer. → 'What did customer 1 order?' → 1 trip | 'What did customer 1 order?' → 1 trip → 'What did customer 2 order?' → 1 trip | 'What did customer 2 order?' → 1 trip → ... repeat N times. | ... repeat N times. → GOOD: 'Give me ALL orders at once.' → 1 or 2 queries to
+
+```mermaid
+flowchart TD
+    N1["THE RESTAURANT ORDER ANALOGY"]
+    N2["BAD (N+1): Waiter asks kitchen once per customer."]
+    N3["'What did customer 1 order?' → 1 trip"]
+    N4["'What did customer 2 order?' → 1 trip"]
+    N5["... repeat N times."]
+    N6["GOOD: 'Give me ALL orders at once.' → 1 or 2 queries to"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
 ```
 
 ```sql
@@ -364,6 +486,27 @@ private Set<Employee> employees;
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: EXPLAIN shows the database's EXECUTION PLAN: → RED FLAGS to look for: | RED FLAGS to look for: → 🔴 'Seq Scan' / 'Full Table Scan' | 🔴 'Seq Scan' / 'Full Table Scan' → → Reading EVERY row. Missing index? | → Reading EVERY row. Missing index? → 🔴 'rows' is much larger than 'filtered' | 🔴 'rows' is much larger than 'filtered' → → Scanning many rows but keeping few. Index would help. | → Scanning many rows but keeping few. Index would help. → 🔴 'Using filesort' | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["EXPLAIN shows the database's EXECUTION PLAN:"]
+    N2["RED FLAGS to look for:"]
+    N3["🔴 'Seq Scan' / 'Full Table Scan'"]
+    N4["→ Reading EVERY row. Missing index?"]
+    N5["🔴 'rows' is much larger than 'filtered'"]
+    N6["→ Scanning many rows but keeping few. Index would help."]
+    N7["🔴 'Using filesort'"]
+    N8["→ Sorting in memory/disk, not using index. Add covering"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ```sql
 -- MySQL
 EXPLAIN SELECT * FROM orders WHERE customer_id = 42;
@@ -405,6 +548,27 @@ EXPLAIN ANALYZE SELECT * FROM orders WHERE customer_id = 42;
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: NORMALIZATION = Organizing data to eliminate redundancy → 'Every piece of data lives in ONE place.' | 'Every piece of data lives in ONE place.' → ✅ No update anomalies | ✅ No update anomalies → ✅ Less storage | ✅ Less storage → ❌ More JOINs needed → slower reads for complex queries | ❌ More JOINs needed → slower reads for complex queries → DENORMALIZATION = Intentionally adding redundancy | DENORMALIZATION = Intentionally adding redundancy → 'Store computed/duplicate data for faster reads.' | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["NORMALIZATION = Organizing data to eliminate redundancy"]
+    N2["'Every piece of data lives in ONE place.'"]
+    N3["✅ No update anomalies"]
+    N4["✅ Less storage"]
+    N5["❌ More JOINs needed → slower reads for complex queries"]
+    N6["DENORMALIZATION = Intentionally adding redundancy"]
+    N7["'Store computed/duplicate data for faster reads.'"]
+    N8["✅ Faster reads (fewer JOINs)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 10. Window Functions: Not Just "Fancy GROUP BY"
@@ -426,6 +590,23 @@ EXPLAIN ANALYZE SELECT * FROM orders WHERE customer_id = 42;
 ║  GROUP BY = "What's the average score per class?"                ║
 ║  Window fn = "What's each student's rank WITHIN their class?"    ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: GROUP BY: 'Summarize and COLLAPSE rows into groups.' → 100 rows → 5 groups → 5 result rows. | 100 rows → 5 groups → 5 result rows. → You LOSE individual row details. | You LOSE individual row details. → You KEEP individual row details AND get aggregate info. | You KEEP individual row details AND get aggregate info. → Analogy: CLASS RANKING | Analogy: CLASS RANKING → GROUP BY = 'What's the average score per class?'
+
+```mermaid
+flowchart TD
+    N1["GROUP BY: 'Summarize and COLLAPSE rows into groups.'"]
+    N2["100 rows → 5 groups → 5 result rows."]
+    N3["You LOSE individual row details."]
+    N4["You KEEP individual row details AND get aggregate info."]
+    N5["Analogy: CLASS RANKING"]
+    N6["GROUP BY = 'What's the average score per class?'"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
 ```
 
 ```sql

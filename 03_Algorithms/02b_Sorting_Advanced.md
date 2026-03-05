@@ -49,6 +49,15 @@ STEP 2: Extract max and heapify
         Done!            [1, 3, 4, 5, 10] ✓
 ```
 
+> **Flow**: 10 3 → 5 3
+
+```mermaid
+flowchart LR
+    N1["10 3"]
+    N2["5 3"]
+    N1 --> N2
+```
+
 ## Code
 
 ```java
@@ -981,6 +990,27 @@ _Understanding sorting algorithms teaches you how to think about efficiency!_ �
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: TIMSORT - USED BY JAVA, PYTHON, ANDROID → Created by Tim Peters for Python in 2002 | Created by Tim Peters for Python in 2002 → KEY INSIGHT: Real-world data is often partially sorted! | KEY INSIGHT: Real-world data is often partially sorted! → Examples of 'natural runs': | Examples of 'natural runs': → • Log files (sorted by timestamp, new entries appended) | • Log files (sorted by timestamp, new entries appended) → • Database results (often sorted by ID) | • Database results (often sorted by ID) → • User actions (recent activity lists) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["TIMSORT - USED BY JAVA, PYTHON, ANDROID"]
+    N2["Created by Tim Peters for Python in 2002"]
+    N3["KEY INSIGHT: Real-world data is often partially sorted!"]
+    N4["Examples of 'natural runs':"]
+    N5["• Log files (sorted by timestamp, new entries appended)"]
+    N6["• Database results (often sorted by ID)"]
+    N7["• User actions (recent activity lists)"]
+    N8["ALGORITHM OVERVIEW:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ## 🧠 External Sorting — When Data Doesn't Fit in Memory
 
 ```
@@ -1041,6 +1071,27 @@ _Understanding sorting algorithms teaches you how to think about efficiency!_ �
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: EXTERNAL MERGE SORT - SORTING 1TB OF DATA → PROBLEM: Need to sort 1 TB of data, but only have 8 GB | PROBLEM: Need to sort 1 TB of data, but only have 8 GB → SOLUTION: External Merge Sort | SOLUTION: External Merge Sort → PHASE 1: CREATE SORTED RUNS | PHASE 1: CREATE SORTED RUNS → 1. Read 8 GB chunk from disk | 1. Read 8 GB chunk from disk → 2. Sort in memory (QuickSort) | 2. Sort in memory (QuickSort) → 3. Write sorted chunk to temp file | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["EXTERNAL MERGE SORT - SORTING 1TB OF DATA"]
+    N2["PROBLEM: Need to sort 1 TB of data, but only have 8 GB"]
+    N3["SOLUTION: External Merge Sort"]
+    N4["PHASE 1: CREATE SORTED RUNS"]
+    N5["1. Read 8 GB chunk from disk"]
+    N6["2. Sort in memory (QuickSort)"]
+    N7["3. Write sorted chunk to temp file"]
+    N8["4. Repeat until all data processed"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ## 🔄 Parallel Sorting — Using Multiple CPU Cores
 
 ```
@@ -1099,6 +1150,15 @@ _Understanding sorting algorithms teaches you how to think about efficiency!_ �
 │  └───────────────────┴───────────────┴──────────────────────────────────────┘   │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: Original Array: [##############################] / Spli → Method Time Speedup / Arrays.sort() 950 ms 1x (baseline
+
+```mermaid
+flowchart TD
+    N1["Original Array: [##############################] / Spli"]
+    N2["Method Time Speedup / Arrays.sort() 950 ms 1x (baseline"]
+    N1 --> N2
 ```
 
 ## 🔄 Sorting Stability — Deep Explanation
@@ -1166,6 +1226,27 @@ _Understanding sorting algorithms teaches you how to think about efficiency!_ �
 │  Cost: O(n) extra space for indices                                             │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: STABILITY - WHY IT MATTERS IN REAL APPLICATIONS → EXAMPLE: | EXAMPLE: → Input: [(Alice, 25), (Bob, 30), (Charlie, 25)] | Input: [(Alice, 25), (Bob, 30), (Charlie, 25)] → Sort by age: | Sort by age: → STABLE: [(Alice, 25), (Charlie, 25), (Bob, 30)] | STABLE: [(Alice, 25), (Charlie, 25), (Bob, 30)] → Alice still before Charlie (original order preserved) | Alice still before Charlie (original order preserved) → UNSTABLE: [(Charlie, 25), (Alice, 25), (Bob, 30)] | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["STABILITY - WHY IT MATTERS IN REAL APPLICATIONS"]
+    N2["EXAMPLE:"]
+    N3["Input: [(Alice, 25), (Bob, 30), (Charlie, 25)]"]
+    N4["Sort by age:"]
+    N5["STABLE: [(Alice, 25), (Charlie, 25), (Bob, 30)]"]
+    N6["Alice still before Charlie (original order preserved)"]
+    N7["UNSTABLE: [(Charlie, 25), (Alice, 25), (Bob, 30)]"]
+    N8["Order of Alice and Charlie might change"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ## 🔄 Sorting in Competitive Programming
@@ -1251,6 +1332,27 @@ _Understanding sorting algorithms teaches you how to think about efficiency!_ �
 │  }                                                                              │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: COMPETITIVE PROGRAMMING SORTING TRICKS → TRICK 1: COORDINATE COMPRESSION | TRICK 1: COORDINATE COMPRESSION → Solution: Map values to 0 to n-1 | Solution: Map values to 0 to n-1 → int[] arr = {1000000000, 1, 50000}; | int[] arr = {1000000000, 1, 50000}; → int[][] sorted = new int[n][2]; | int[][] sorted = new int[n][2]; → sorted[i] = new int[]{arr[i], i}; | sorted[i] = new int[]{arr[i], i}; → Arrays.sort(sorted, (a, b) -&gt; a[0] - b[0]); | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["COMPETITIVE PROGRAMMING SORTING TRICKS"]
+    N2["TRICK 1: COORDINATE COMPRESSION"]
+    N3["Solution: Map values to 0 to n-1"]
+    N4["int[] arr = {1000000000, 1, 50000};"]
+    N5["int[][] sorted = new int[n][2];"]
+    N6["sorted[i] = new int[]{arr[i], i};"]
+    N7["Arrays.sort(sorted, (a, b) -&gt; a[0] - b[0]);"]
+    N8["int[] compressed = new int[n];"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

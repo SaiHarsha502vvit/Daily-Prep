@@ -51,6 +51,19 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: WHY: Why Learn SOLID Principles? / • Reduces bugs: Chan → HOW: How to Apply SOLID? / • S: One class = One respons | HOW: How to Apply SOLID? / • S: One class = One respons → WHEN: When to Apply Each Principle? / • SRP: Class has  | WHEN: When to Apply Each Principle? / • SRP: Class has  → WHICH: Which Principles are Most Critical in Spring? / 
+
+```mermaid
+flowchart TD
+    N1["WHY: Why Learn SOLID Principles? / • Reduces bugs: Chan"]
+    N2["HOW: How to Apply SOLID? / • S: One class = One respons"]
+    N3["WHEN: When to Apply Each Principle? / • SRP: Class has "]
+    N4["WHICH: Which Principles are Most Critical in Spring? / "]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 ---
 
 # 📌 Table of Contents
@@ -70,6 +83,27 @@
 │  8. SOLID in Microservices                                                      │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: WHAT THIS PART COVERS → 1. S - Single Responsibility Principle (SRP) | 1. S - Single Responsibility Principle (SRP) → 2. O - Open/Closed Principle (OCP) | 2. O - Open/Closed Principle (OCP) → 3. L - Liskov Substitution Principle (LSP) | 3. L - Liskov Substitution Principle (LSP) → 4. I - Interface Segregation Principle (ISP) | 4. I - Interface Segregation Principle (ISP) → 5. D - Dependency Inversion Principle (DIP) | 5. D - Dependency Inversion Principle (DIP) → 6. Complete Spring Boot Project Example | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["WHAT THIS PART COVERS"]
+    N2["1. S - Single Responsibility Principle (SRP)"]
+    N3["2. O - Open/Closed Principle (OCP)"]
+    N4["3. L - Liskov Substitution Principle (LSP)"]
+    N5["4. I - Interface Segregation Principle (ISP)"]
+    N6["5. D - Dependency Inversion Principle (DIP)"]
+    N7["6. Complete Spring Boot Project Example"]
+    N8["7. Common Violations & Refactoring"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---
@@ -98,6 +132,27 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: THE COST OF VIOLATING SOLID → WITHOUT SOLID: | WITHOUT SOLID: → • Adding features breaks existing code | • Adding features breaks existing code → • Testing requires complex setup | • Testing requires complex setup → • Changes ripple through the codebase | • Changes ripple through the codebase → • Code becomes 'fragile' - fix one bug, create three | • Code becomes 'fragile' - fix one bug, create three → • New team members struggle to understand | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE COST OF VIOLATING SOLID"]
+    N2["WITHOUT SOLID:"]
+    N3["• Adding features breaks existing code"]
+    N4["• Testing requires complex setup"]
+    N5["• Changes ripple through the codebase"]
+    N6["• Code becomes 'fragile' - fix one bug, create three"]
+    N7["• New team members struggle to understand"]
+    N8["WITH SOLID:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 # 📐 Section 1: Single Responsibility Principle (srp)
@@ -121,6 +176,23 @@
 │  Then your class has MULTIPLE responsibilities!                                 │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: SINGLE RESPONSIBILITY PRINCIPLE → If your class changes because: | If your class changes because: → • Business rules change → One responsibility | • Business rules change → One responsibility → • Database schema changes → Another responsibility | • Database schema changes → Another responsibility → • UI requirements change → Another responsibility | • UI requirements change → Another responsibility → Then your class has MULTIPLE responsibilities!
+
+```mermaid
+flowchart TD
+    N1["SINGLE RESPONSIBILITY PRINCIPLE"]
+    N2["If your class changes because:"]
+    N3["• Business rules change → One responsibility"]
+    N4["• Database schema changes → Another responsibility"]
+    N5["• UI requirements change → Another responsibility"]
+    N6["Then your class has MULTIPLE responsibilities!"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
 ```
 
 ### ❌ VIOLATING SRP
@@ -437,6 +509,27 @@ public class ReportService {
 │  • Plugin architecture                                                          │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: OPEN/CLOSED PRINCIPLE → 'Open for extension' = You can add new functionality | 'Open for extension' = You can add new functionality → 'Closed for modification' = Without changing existing c | 'Closed for modification' = Without changing existing c → ACHIEVED THROUGH: | ACHIEVED THROUGH: → • Abstraction (interfaces/abstract classes) | • Abstraction (interfaces/abstract classes) → • Composition over inheritance | • Composition over inheritance → • Strategy pattern | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["OPEN/CLOSED PRINCIPLE"]
+    N2["'Open for extension' = You can add new functionality"]
+    N3["'Closed for modification' = Without changing existing c"]
+    N4["ACHIEVED THROUGH:"]
+    N5["• Abstraction (interfaces/abstract classes)"]
+    N6["• Composition over inheritance"]
+    N7["• Strategy pattern"]
+    N8["• Plugin architecture"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### ❌ VIOLATING OCP
@@ -788,6 +881,25 @@ public class RetryableNotificationDecorator implements NotificationSender {
 │  THE CLASSIC VIOLATION: Rectangle/Square problem                                │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: LISKOV SUBSTITUTION PRINCIPLE → with objects of type S without breaking the program. | with objects of type S without breaking the program. → IN PRACTICE: | IN PRACTICE: → • Subclass methods should not throw new exceptions | • Subclass methods should not throw new exceptions → • Subclass methods should accept same or broader input | • Subclass methods should accept same or broader input → • Subclass methods should return same or narrower outpu | • Subclass methods should return same or narrower outpu → THE CLASSIC VIOLATION: Rectangle/Square problem
+
+```mermaid
+flowchart TD
+    N1["LISKOV SUBSTITUTION PRINCIPLE"]
+    N2["with objects of type S without breaking the program."]
+    N3["IN PRACTICE:"]
+    N4["• Subclass methods should not throw new exceptions"]
+    N5["• Subclass methods should accept same or broader input"]
+    N6["• Subclass methods should return same or narrower outpu"]
+    N7["THE CLASSIC VIOLATION: Rectangle/Square problem"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
 ```
 
 ### ❌ CLASSIC LSP VIOLATION

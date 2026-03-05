@@ -59,6 +59,27 @@ A **binary tree** is a tree where each node has at most **two children** (left, 
     Size   = Total nodes = 6
 ```
 
+> **Flow**: TERMINOLOGY MAP → [10] ← Root (depth 0, level 1) | [10] ← Root (depth 0, level 1) → [5] [15] ← depth 1, level 2 | [5] [15] ← depth 1, level 2 → [3] [7] [20] ← depth 2, level 3 (leaves) | [3] [7] [20] ← depth 2, level 3 (leaves) → Node = { value, left, right } | Node = { value, left, right } → Root = Node with no parent | Root = Node with no parent → Leaf = Node with no children | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["TERMINOLOGY MAP"]
+    N2["[10] ← Root (depth 0, level 1)"]
+    N3["[5] [15] ← depth 1, level 2"]
+    N4["[3] [7] [20] ← depth 2, level 3 (leaves)"]
+    N5["Node = { value, left, right }"]
+    N6["Root = Node with no parent"]
+    N7["Leaf = Node with no children"]
+    N8["Height = Longest root-to-leaf path = 2"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### Tree Properties
 
 ```
@@ -70,6 +91,15 @@ Full tree       Every node has 0 or 2 children
 Complete tree   All levels full except last (filled left→right)
 Perfect tree    All internal nodes have 2 children, all leaves same level
 Balanced tree   |height(left) - height(right)| ≤ 1 for every node
+```
+
+> **Flow**: Complete tree All levels full except last (filled → right)
+
+```mermaid
+flowchart LR
+    N1["Complete tree All levels full except last (filled"]
+    N2["right)"]
+    N1 --> N2
 ```
 
 ### HOW — Implementation
@@ -155,6 +185,27 @@ POSTORDER (Left → Right → Root):  4, 5, 2, 3, 1
   Use: Delete tree, evaluate expressions, calc directory sizes
 ```
 
+> **Flow**: PREORDER (Root → Left | Left → Right): 1, 2, 4, 5, 3 | INORDER (Left → Root | Root → Right): 4, 2, 5, 1, 3 | POSTORDER (Left → Right | Right → Root): 4, 5, 2, 3, 1
+
+```mermaid
+flowchart TD
+    N1["PREORDER (Root"]
+    N2["Left"]
+    N3["Right): 1, 2, 4, 5, 3"]
+    N4["INORDER (Left"]
+    N5["Root"]
+    N6["Right): 4, 2, 5, 1, 3"]
+    N7["POSTORDER (Left"]
+    N8["Right"]
+    N9["Root): 4, 5, 2, 3, 1"]
+    N1 --> N2
+    N2 --> N3
+    N4 --> N5
+    N5 --> N6
+    N7 --> N8
+    N8 --> N9
+```
+
 ### Memory Model — Call Stack Visualization
 
 ```
@@ -177,6 +228,15 @@ After returning from 4:
 ├──────────────┤
 │ preorder(1)  │  ← waiting for left subtree
 └──────────────┘
+```
+
+> **Flow**: preorder(4) / preorder(2) / preorder(1) → preorder(5) / preorder(2) / preorder(1)
+
+```mermaid
+flowchart TD
+    N1["preorder(4) / preorder(2) / preorder(1)"]
+    N2["preorder(5) / preorder(2) / preorder(1)"]
+    N1 --> N2
 ```
 
 ### HOW — Recursive (clean) vs Iterative (interview-ready)
@@ -277,6 +337,17 @@ employees:        contractors:      UNION result:
                                   └───────┘
 ```
 
+> **Flow**: Alice / Bob / Carol → Alice / Carol / Dave | Alice / Carol / Dave → Alice / Bob / Carol / Dave
+
+```mermaid
+flowchart TD
+    N1["Alice / Bob / Carol"]
+    N2["Alice / Carol / Dave"]
+    N3["Alice / Bob / Carol / Dave"]
+    N1 --> N2
+    N2 --> N3
+```
+
 ### CASE WHEN — SQL's if/else
 
 ```sql
@@ -299,6 +370,21 @@ HOW CASE WORKS:
   Step 3: No match → return ELSE value (NULL if no ELSE)
 
   Like a switch statement — exits after first match!
+```
+
+> **Flow**: Step 1: Evaluate WHEN conditions top → bottom | Step 2: First TRUE match → return its THEN value | Step 3: No match → return ELSE value (NULL if no ELSE)
+
+```mermaid
+flowchart LR
+    N1["Step 1: Evaluate WHEN conditions top"]
+    N2["bottom"]
+    N3["Step 2: First TRUE match"]
+    N4["return its THEN value"]
+    N5["Step 3: No match"]
+    N6["return ELSE value (NULL if no ELSE)"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
 ```
 
 ### Combining CASE with Aggregates
@@ -379,6 +465,27 @@ Step-by-step (iterative):
 Output: [1, 2, 3]
 ```
 
+> **Flow**: Pop 1 → result=[1], push right=2 | result=[1], push right=2 → Stack: [2] | Pop 2 → result=[1,2], push left=3 | result=[1,2], push left=3 → Stack: [3] | Pop 3 → result=[1,2,3], no children | result=[1,2,3], no children → Stack: []
+
+```mermaid
+flowchart TD
+    N1["Pop 1"]
+    N2["result=[1], push right=2"]
+    N3["Stack: [2]"]
+    N4["Pop 2"]
+    N5["result=[1,2], push left=3"]
+    N6["Stack: [3]"]
+    N7["Pop 3"]
+    N8["result=[1,2,3], no children"]
+    N9["Stack: []"]
+    N1 --> N2
+    N2 --> N3
+    N4 --> N5
+    N5 --> N6
+    N7 --> N8
+    N8 --> N9
+```
+
 ### Solution
 
 ```java
@@ -454,6 +561,31 @@ Call inorder(1):
 Output: [1, 3, 2]
 ```
 
+> **Flow**: Inorder = Left → Root | Root → Right | Call inorder(null) → return (no left) | Add 1 → result=[1] | Call inorder(null) → return | Add 3 → result=[1,3] | ...+3 more
+
+```mermaid
+flowchart TD
+    N1["Inorder = Left"]
+    N2["Root"]
+    N3["Right"]
+    N4["Call inorder(null)"]
+    N5["return (no left)"]
+    N6["Add 1"]
+    N7["result=[1]"]
+    N8["return"]
+    N9["Add 3"]
+    N10["result=[1,3]"]
+    N11["Add 2"]
+    N12["result=[1,3,2]"]
+    N1 --> N2
+    N2 --> N3
+    N4 --> N5
+    N6 --> N7
+    N4 --> N8
+    N9 --> N10
+    N11 --> N12
+```
+
 ### Solution — Iterative (Interview Gold)
 
 ```java
@@ -517,6 +649,26 @@ WHERE YOU'LL SEE TREES:
    /   \
   [2]  [5]
    = (2 * 5) + 3 = 13  (postorder evaluation)
+```
+
+> **Flow**: C:\ → Users | Users → Documents | Documents → file.txt | &lt;html&gt; → &lt;body&gt; | &lt;body&gt; → &lt;div&gt; | &lt;div&gt; → &lt;p&gt;
+
+```mermaid
+flowchart TD
+    N1["C:\"]
+    N2["Users"]
+    N3["Documents"]
+    N4["file.txt"]
+    N5["&lt;html&gt;"]
+    N6["&lt;body&gt;"]
+    N7["&lt;div&gt;"]
+    N8["&lt;p&gt;"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

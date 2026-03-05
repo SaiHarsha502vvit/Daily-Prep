@@ -78,6 +78,15 @@ BRUTE FORCE: Try all subarrays, compute sum
 OPTIMAL: Kadane's Algorithm → O(n)  (next block!)
 ```
 
+> **Flow**: OPTIMAL: Kadane's Algorithm → O(n) (next block!)
+
+```mermaid
+flowchart LR
+    N1["OPTIMAL: Kadane's Algorithm"]
+    N2["O(n) (next block!)"]
+    N1 --> N2
+```
+
 ---
 
 ## BLOCK 2: ALGORITHM (30 min)
@@ -102,6 +111,23 @@ KEY IDEA: At each position, decide:
   
   If currentMax + arr[i] >= arr[i]
     → Extending is beneficial (or at least not harmful)
+```
+
+> **Flow**: KEY IDEA: At each position, decide: → currentMax = max(arr[i], currentMax + arr[i]) | currentMax = max(arr[i], currentMax + arr[i]) → If currentMax + arr[i] &lt; arr[i] | If currentMax + arr[i] &lt; arr[i] → → Previous subarray has negative sum, better to start f | → Previous subarray has negative sum, better to start f → If currentMax + arr[i] &gt;= arr[i] | If currentMax + arr[i] &gt;= arr[i] → → Extending is beneficial (or at least not harmful)
+
+```mermaid
+flowchart TD
+    N1["KEY IDEA: At each position, decide:"]
+    N2["currentMax = max(arr[i], currentMax + arr[i])"]
+    N3["If currentMax + arr[i] &lt; arr[i]"]
+    N4["→ Previous subarray has negative sum, better to start f"]
+    N5["If currentMax + arr[i] &gt;= arr[i]"]
+    N6["→ Extending is beneficial (or at least not harmful)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
 ```
 
 #### Step-by-step trace
@@ -272,6 +298,18 @@ DML = Data Manipulation Language — changes DATA, not structure
   
 DDL (yesterday) → changes schema (tables, columns)
 DML (today)     → changes data within tables
+```
+
+> **Flow**: DDL (yesterday) → changes schema (tables, columns) | DML (today) → changes data within tables
+
+```mermaid
+flowchart LR
+    N1["DDL (yesterday)"]
+    N2["changes schema (tables, columns)"]
+    N3["DML (today)"]
+    N4["changes data within tables"]
+    N1 --> N2
+    N3 --> N4
 ```
 
 #### UPDATE — the command you must FEAR and RESPECT

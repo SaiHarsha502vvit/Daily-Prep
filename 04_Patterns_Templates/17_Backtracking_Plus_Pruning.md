@@ -18,6 +18,15 @@ IF the problem says:
 THEN → Backtracking + Pruning
 ```
 
+> **Flow**: THEN → Backtracking + Pruning
+
+```mermaid
+flowchart LR
+    N1["THEN"]
+    N2["Backtracking + Pruning"]
+    N1 --> N2
+```
+
 ---
 
 ## 📐 CORE TEMPLATES
@@ -107,6 +116,25 @@ With PRUNING (target sum = 4, sorted [1,2,3,5]):
       [1,2,3]←PRUNE(6>4)
 ```
 
+> **Flow**: Subsets of [1,2,3]: → Each path from root = one subset | Each path from root = one subset → Backtrack = go up one level, try next branch | Backtrack = go up one level, try next branch → With PRUNING (target sum = 4, sorted [1,2,3,5]): | With PRUNING (target sum = 4, sorted [1,2,3,5]): → [1] [2] [3] [5]←PRUNE(5&gt;4) | [1] [2] [3] [5]←PRUNE(5&gt;4) → [1,2] [1,3]←OK(=4) [2,3]←PRUNE(5&gt;4) | [1,2] [1,3]←OK(=4) [2,3]←PRUNE(5&gt;4) → [1,2,3]←PRUNE(6&gt;4)
+
+```mermaid
+flowchart TD
+    N1["Subsets of [1,2,3]:"]
+    N2["Each path from root = one subset"]
+    N3["Backtrack = go up one level, try next branch"]
+    N4["With PRUNING (target sum = 4, sorted [1,2,3,5]):"]
+    N5["[1] [2] [3] [5]←PRUNE(5&gt;4)"]
+    N6["[1,2] [1,3]←OK(=4) [2,3]←PRUNE(5&gt;4)"]
+    N7["[1,2,3]←PRUNE(6&gt;4)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+```
+
 ---
 
 ## � FULL WALKTHROUGH: Combination Sum with Pruning
@@ -140,6 +168,15 @@ Result: [[2,2,3], [7]] ✅
 Time: O(n^(t/m)) where t=target, m=min candidate | Space: O(t/m)
 ```
 
+> **Flow**: candidates are also too big → break the loop!
+
+```mermaid
+flowchart LR
+    N1["candidates are also too big"]
+    N2["break the loop!"]
+    N1 --> N2
+```
+
 ---
 
 ## 🔬 FULL WALKTHROUGH 2: Permutations II — Handling Duplicates
@@ -169,6 +206,29 @@ trying 1b at the same position → we'd generate the same subtree → skip!
 Time: O(n! × n) | Space: O(n)
 ```
 
+> **Flow**: Position 1: Try 1b ✅ → [1a,1b,2] ✅ | Try 2 ✅ → [1a,2,1b] ✅ | Position 0: Try 1b ← SKIP! 1b==1a and 1a not used → duplicate branch | Position 1: Try 1a ✅ → [2,1a,1b] ✅ | trying 1b at the same position → we'd generate the same subtree | we'd generate the same subtree → skip!
+
+```mermaid
+flowchart TD
+    N1["Position 1: Try 1b ✅"]
+    N2["[1a,1b,2] ✅"]
+    N3["Try 2 ✅"]
+    N4["[1a,2,1b] ✅"]
+    N5["Position 0: Try 1b ← SKIP! 1b==1a and 1a not used"]
+    N6["duplicate branch"]
+    N7["Position 1: Try 1a ✅"]
+    N8["[2,1a,1b] ✅"]
+    N9["trying 1b at the same position"]
+    N10["we'd generate the same subtree"]
+    N11["skip!"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+    N7 --> N8
+    N9 --> N10
+    N10 --> N11
+```
+
 ---
 
 ## 🛡️ EDGE CASES & COMMON MISTAKES
@@ -196,6 +256,27 @@ COMMON MISTAKES:
 4. N-Queens: only checking column, forgetting BOTH diagonals
    Need 3 sets: columns, diag (row-col), antiDiag (row+col)
 5. Combination Sum: forgetting to pass i (not i+1) when reuse is allowed
+```
+
+> **Flow**: EDGE CASES: → Edge Case Handling | Edge Case Handling → Empty candidates/array Return [[]] (one empty subset) o | Empty candidates/array Return [[]] (one empty subset) o → Target = 0 Return [[]] (empty combination works) | Target = 0 Return [[]] (empty combination works) → All candidates &gt; target Return [] (no valid combinat | All candidates &gt; target Return [] (no valid combinat → Single element Subsets: [[], [x]]. Perms: [[x]] | Single element Subsets: [[], [x]]. Perms: [[x]] → All duplicates [2,2,2] Subsets: [[], [2], [2,2], [2,2,2 | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["EDGE CASES:"]
+    N2["Edge Case Handling"]
+    N3["Empty candidates/array Return [[]] (one empty subset) o"]
+    N4["Target = 0 Return [[]] (empty combination works)"]
+    N5["All candidates &gt; target Return [] (no valid combinat"]
+    N6["Single element Subsets: [[], [x]]. Perms: [[x]]"]
+    N7["All duplicates [2,2,2] Subsets: [[], [2], [2,2], [2,2,2"]
+    N8["n=0 for N-Queens Return [[]] (vacuously true)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

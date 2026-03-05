@@ -47,6 +47,27 @@ STEP 4: CODE THE LOOPS
   → Inner loop(s) for columns
 ```
 
+> **Flow**: STEP 1: COUNT ROWS → → How many rows? = Outer loop count | → How many rows? = Outer loop count → STEP 2: FOR EACH ROW, IDENTIFY: | STEP 2: FOR EACH ROW, IDENTIFY: → → Spaces before content (leading spaces) | → Spaces before content (leading spaces) → → Content (stars, numbers, characters) | → Content (stars, numbers, characters) → → Spaces after content (sometimes needed) | → Spaces after content (sometimes needed) → → Relationship with row number (i) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["STEP 1: COUNT ROWS"]
+    N2["→ How many rows? = Outer loop count"]
+    N3["STEP 2: FOR EACH ROW, IDENTIFY:"]
+    N4["→ Spaces before content (leading spaces)"]
+    N5["→ Content (stars, numbers, characters)"]
+    N6["→ Spaces after content (sometimes needed)"]
+    N7["→ Relationship with row number (i)"]
+    N8["STEP 3: FIND THE FORMULA"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 # ═══════════════════════════════════════════════════════════
@@ -1902,6 +1923,27 @@ public static void rotate90(int[][] matrix) {
 │    Wrap:    if (ch > 'Z') ch = 'A' or use '*'                                   │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: PATTERN SOLVING FORMULAS → RIGHT TRIANGLE: Row i → print (i+1) items, starting col | RIGHT TRIANGLE: Row i → print (i+1) items, starting col → LEFT TRIANGLE: Row i → print (n-i) spaces, then (i+1) i | LEFT TRIANGLE: Row i → print (n-i) spaces, then (i+1) i → PYRAMID: Row i → print (n-i-1) spaces, then (2i+1) item | PYRAMID: Row i → print (n-i-1) spaces, then (2i+1) item → INVERTED: Row i → print i spaces, then (2(n-i)-1) items | INVERTED: Row i → print i spaces, then (2(n-i)-1) items → DIAMOND: Pyramid (0 to n-1) + Inverted Pyramid (n-2 to | DIAMOND: Pyramid (0 to n-1) + Inverted Pyramid (n-2 to → SANDGLASS: Inverted (0 to n-1) + Pyramid (1 to n-1) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["PATTERN SOLVING FORMULAS"]
+    N2["RIGHT TRIANGLE: Row i → print (i+1) items, starting col"]
+    N3["LEFT TRIANGLE: Row i → print (n-i) spaces, then (i+1) i"]
+    N4["PYRAMID: Row i → print (n-i-1) spaces, then (2i+1) item"]
+    N5["INVERTED: Row i → print i spaces, then (2(n-i)-1) items"]
+    N6["DIAMOND: Pyramid (0 to n-1) + Inverted Pyramid (n-2 to"]
+    N7["SANDGLASS: Inverted (0 to n-1) + Pyramid (1 to n-1)"]
+    N8["HOLLOW: Print content only when:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

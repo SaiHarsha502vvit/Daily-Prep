@@ -65,6 +65,19 @@ DECISION: Ask "Where does this data COME FROM?"
 → Should be in the URL? Use router state.
 ```
 
+> **Flow**: SERVER STATE / (lives on the server, Frontend has a COP → GLOBAL CLIENT STATE / (shared across many components) / | GLOBAL CLIENT STATE / (shared across many components) / → LOCAL COMPONENT STATE / (belongs to ONE component or a  | LOCAL COMPONENT STATE / (belongs to ONE component or a  → URL STATE / (encoded in the URL — shareable, bookmarkab
+
+```mermaid
+flowchart TD
+    N1["SERVER STATE / (lives on the server, Frontend has a COP"]
+    N2["GLOBAL CLIENT STATE / (shared across many components) /"]
+    N3["LOCAL COMPONENT STATE / (belongs to ONE component or a "]
+    N4["URL STATE / (encoded in the URL — shareable, bookmarkab"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 ---
 
 ## Mental Model 2: The Render Cascade
@@ -103,6 +116,15 @@ RULE OF THUMB: Re-renders are CHEAP unless:
 
 DON'T optimize until you MEASURE a problem.
 Premature optimization = the root of all evil (Knuth)
+```
+
+> **Flow**: Header → Content / List / Item 1 / Item 2 / Item 3
+
+```mermaid
+flowchart TD
+    N1["Header"]
+    N2["Content / List / Item 1 / Item 2 / Item 3"]
+    N1 --> N2
 ```
 
 ---
@@ -210,6 +232,17 @@ SKELETON SCREENS (perceived performance):
 │  ██████████████████           │
 │  ████████                     │
 └────────────────────────────────┘
+```
+
+> **Flow**: IDLE / (initial) → LOADING / (pending) | LOADING / (pending) → SUCCESS / (data!)
+
+```mermaid
+flowchart TD
+    N1["IDLE / (initial)"]
+    N2["LOADING / (pending)"]
+    N3["SUCCESS / (data!)"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 ---

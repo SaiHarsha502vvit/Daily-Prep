@@ -49,6 +49,19 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: WHY: Why DSA Knowledge in Spring Boot? / • Performance: → HOW: How DSA Applies in Real Applications? / • Caching: | HOW: How DSA Applies in Real Applications? / • Caching: → WHEN: When to Apply DSA in Spring Boot? / • Custom cach | WHEN: When to Apply DSA in Spring Boot? / • Custom cach → WHICH: Which DSA Topics are Most Relevant? / ESSENTIAL:
+
+```mermaid
+flowchart TD
+    N1["WHY: Why DSA Knowledge in Spring Boot? / • Performance:"]
+    N2["HOW: How DSA Applies in Real Applications? / • Caching:"]
+    N3["WHEN: When to Apply DSA in Spring Boot? / • Custom cach"]
+    N4["WHICH: Which DSA Topics are Most Relevant? / ESSENTIAL:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 ---
 
 # 🌱 Section 1: Where DSA Appears in Spring Boot
@@ -1268,6 +1281,27 @@ public class OrganizationController {
 │  Pagination              │ ArrayList         │ Array Slicing                    │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: DSA IN SPRING BOOT - QUICK REFERENCE → FEATURE DATA STRUCTURE ALGORITHM | FEATURE DATA STRUCTURE ALGORITHM → Rate Limiting Queue + HashMap Sliding Window | Rate Limiting Queue + HashMap Sliding Window → Auto-Complete Trie DFS Traversal | Auto-Complete Trie DFS Traversal → Caching LinkedHashMap LRU Eviction | Caching LinkedHashMap LRU Eviction → Route Planning Graph Dijkstra's/A* | Route Planning Graph Dijkstra's/A* → Task Scheduling PriorityQueue Heap Operations | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["DSA IN SPRING BOOT - QUICK REFERENCE"]
+    N2["FEATURE DATA STRUCTURE ALGORITHM"]
+    N3["Rate Limiting Queue + HashMap Sliding Window"]
+    N4["Auto-Complete Trie DFS Traversal"]
+    N5["Caching LinkedHashMap LRU Eviction"]
+    N6["Route Planning Graph Dijkstra's/A*"]
+    N7["Task Scheduling PriorityQueue Heap Operations"]
+    N8["Leaderboard TreeMap + HashMap Red-Black Tree Ops"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

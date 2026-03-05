@@ -57,6 +57,19 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: WHY: Why Learn Reactive Programming? / • Handle 10-100x → HOW: How Does WebFlux Work? / • Event loop model (not t | HOW: How Does WebFlux Work? / • Event loop model (not t → WHEN: When to Use WebFlux vs MVC? / USE WEBFLUX WHEN: / | WHEN: When to Use WebFlux vs MVC? / USE WEBFLUX WHEN: / → WHICH: Which Components to Master? / ESSENTIAL: Mono, F
+
+```mermaid
+flowchart TD
+    N1["WHY: Why Learn Reactive Programming? / • Handle 10-100x"]
+    N2["HOW: How Does WebFlux Work? / • Event loop model (not t"]
+    N3["WHEN: When to Use WebFlux vs MVC? / USE WEBFLUX WHEN: /"]
+    N4["WHICH: Which Components to Master? / ESSENTIAL: Mono, F"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 ---
 
 # 📌 Table of Contents
@@ -78,6 +91,27 @@
 │  10. When to Use WebFlux vs MVC                                                 │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: WHAT THIS PART COVERS → 1. Reactive Programming Fundamentals | 1. Reactive Programming Fundamentals → 2. Project Reactor: Mono & Flux | 2. Project Reactor: Mono & Flux → 3. Spring WebFlux Basics | 3. Spring WebFlux Basics → 4. Functional Endpoints (RouterFunction) | 4. Functional Endpoints (RouterFunction) → 5. Reactive Data Access (R2DBC) | 5. Reactive Data Access (R2DBC) → 6. WebClient (Reactive HTTP Client) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["WHAT THIS PART COVERS"]
+    N2["1. Reactive Programming Fundamentals"]
+    N3["2. Project Reactor: Mono & Flux"]
+    N4["3. Spring WebFlux Basics"]
+    N5["4. Functional Endpoints (RouterFunction)"]
+    N6["5. Reactive Data Access (R2DBC)"]
+    N7["6. WebClient (Reactive HTTP Client)"]
+    N8["7. Error Handling in Reactive Streams"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---
@@ -117,6 +151,15 @@
 │  Benefit: 10-100x more concurrent connections with same resources               │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: Request → Thread 1 (BLOCKED waiting for DB) → Response  → Event Loop Thread (never blocks!) / Receives request 1 
+
+```mermaid
+flowchart TD
+    N1["Request → Thread 1 (BLOCKED waiting for DB) → Response "]
+    N2["Event Loop Thread (never blocks!) / Receives request 1 "]
+    N1 --> N2
 ```
 
 ### Reactive Manifesto Principles
@@ -221,6 +264,15 @@ public interface Processor<T, R> extends Subscriber<T>, Publisher<R> {
 │  KEY INSIGHT: Nothing happens until you SUBSCRIBE!                              │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: Like Optional&lt;T&gt; but ASYNC / Mono.just('Hello') / → Like Stream&lt;T&gt; but ASYNC / Flux.just('A', 'B', 'C
+
+```mermaid
+flowchart TD
+    N1["Like Optional&lt;T&gt; but ASYNC / Mono.just('Hello') /"]
+    N2["Like Stream&lt;T&gt; but ASYNC / Flux.just('A', 'B', 'C"]
+    N1 --> N2
 ```
 
 ### Maven Dependencies
@@ -971,6 +1023,27 @@ public class UserHandler {
 │  • Manual joins required                                                        │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: R2DBC vs JDBC → JDBC (Traditional): | JDBC (Traditional): → • Blocking - Thread waits for database response | • Blocking - Thread waits for database response → • Uses thread pool (HikariCP) | • Uses thread pool (HikariCP) → • Works with JPA/Hibernate | • Works with JPA/Hibernate → R2DBC (Reactive): | R2DBC (Reactive): → • Non-blocking - Event loop handles responses | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["R2DBC vs JDBC"]
+    N2["JDBC (Traditional):"]
+    N3["• Blocking - Thread waits for database response"]
+    N4["• Uses thread pool (HikariCP)"]
+    N5["• Works with JPA/Hibernate"]
+    N6["R2DBC (Reactive):"]
+    N7["• Non-blocking - Event loop handles responses"]
+    N8["• Uses connection pool (r2dbc-pool)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### Dependencies and Configuration

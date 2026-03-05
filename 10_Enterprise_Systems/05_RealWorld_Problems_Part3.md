@@ -162,6 +162,27 @@ ALGORITHMS:
 4. Token Bucket: Most flexible
 ```
 
+> **Flow**: COMPANY: Every API-based company → SYSTEM: API Gateway | SYSTEM: API Gateway → CHALLENGE: Limit requests to 100 per minute per user | CHALLENGE: Limit requests to 100 per minute per user → WHY NEEDED: | WHY NEEDED: → - Prevent abuse | - Prevent abuse → - Fair usage | - Fair usage → - Protect servers | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["COMPANY: Every API-based company"]
+    N2["SYSTEM: API Gateway"]
+    N3["CHALLENGE: Limit requests to 100 per minute per user"]
+    N4["WHY NEEDED:"]
+    N5["- Prevent abuse"]
+    N6["- Fair usage"]
+    N7["- Protect servers"]
+    N8["ALGORITHMS:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ```java
 /**
  * PROBLEM: Implement API Rate Limiter
@@ -340,6 +361,17 @@ public class RateLimiterService {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: COMPANY: Google / Amazon Search → SYSTEM: Search Bar | SYSTEM: Search Bar → FEATURE: Show top 5 suggestions as user types
+
+```mermaid
+flowchart TD
+    N1["COMPANY: Google / Amazon Search"]
+    N2["SYSTEM: Search Bar"]
+    N3["FEATURE: Show top 5 suggestions as user types"]
+    N1 --> N2
+    N2 --> N3
+```
+
 ```java
 /**
  * PROBLEM: Search Autocomplete System
@@ -502,6 +534,15 @@ public class SearchAutocomplete {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: COMPANY: Twitter / Reddit → SYSTEM: Trending Topics
+
+```mermaid
+flowchart TD
+    N1["COMPANY: Twitter / Reddit"]
+    N2["SYSTEM: Trending Topics"]
+    N1 --> N2
+```
+
 ```java
 /**
  * PROBLEM: Real-time Top K Trending Topics
@@ -652,6 +693,17 @@ public class TrendingTopicsService {
 ║ SYSTEM: ETL Pipeline                                                         ║
 ║ CHALLENGE: Sort 100GB CSV file with only 4GB RAM                             ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: COMPANY: Any Data Company → SYSTEM: ETL Pipeline | SYSTEM: ETL Pipeline → CHALLENGE: Sort 100GB CSV file with only 4GB RAM
+
+```mermaid
+flowchart TD
+    N1["COMPANY: Any Data Company"]
+    N2["SYSTEM: ETL Pipeline"]
+    N3["CHALLENGE: Sort 100GB CSV file with only 4GB RAM"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 ```java
@@ -820,6 +872,17 @@ public class ExternalSort {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: COMPANY: Google Drive / Dropbox → SYSTEM: Storage Optimization | SYSTEM: Storage Optimization → CHALLENGE: Find and remove duplicate files to save stor
+
+```mermaid
+flowchart TD
+    N1["COMPANY: Google Drive / Dropbox"]
+    N2["SYSTEM: Storage Optimization"]
+    N3["CHALLENGE: Find and remove duplicate files to save stor"]
+    N1 --> N2
+    N2 --> N3
+```
+
 ```java
 /**
  * PROBLEM: Find Duplicate Files
@@ -984,6 +1047,15 @@ public class DuplicateFileFinder {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: COMPANY: Ludo King / PUBG → SYSTEM: Gaming Leaderboard
+
+```mermaid
+flowchart TD
+    N1["COMPANY: Ludo King / PUBG"]
+    N2["SYSTEM: Gaming Leaderboard"]
+    N1 --> N2
+```
+
 ```java
 /**
  * PROBLEM: Real-time Gaming Leaderboard
@@ -1146,6 +1218,17 @@ public class GameLeaderboard {
 ║ SYSTEM: Multiplayer Matchmaking                                              ║
 ║ CHALLENGE: Match players with similar skill for fair games                   ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: COMPANY: PUBG / Valorant / Chess.com → SYSTEM: Multiplayer Matchmaking | SYSTEM: Multiplayer Matchmaking → CHALLENGE: Match players with similar skill for fair ga
+
+```mermaid
+flowchart TD
+    N1["COMPANY: PUBG / Valorant / Chess.com"]
+    N2["SYSTEM: Multiplayer Matchmaking"]
+    N3["CHALLENGE: Match players with similar skill for fair ga"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 ```java

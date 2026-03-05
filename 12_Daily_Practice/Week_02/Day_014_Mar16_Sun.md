@@ -142,6 +142,15 @@ WHAT'S COMING:
   You'll build on everything from Week 1-2!
 ```
 
+> **Flow**: Difficulty ramp: MEDIUM → MEDIUM-HARD
+
+```mermaid
+flowchart LR
+    N1["Difficulty ramp: MEDIUM"]
+    N2["MEDIUM-HARD"]
+    N1 --> N2
+```
+
 ---
 
 ## BONUS CHALLENGES (Optional, 60 min)

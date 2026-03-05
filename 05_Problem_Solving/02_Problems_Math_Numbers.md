@@ -86,6 +86,27 @@ public boolean isPrime(int n) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: COUNT PRIMES → Count the number of prime numbers less than n. | Count the number of prime numbers less than n. → Input: n = 10 | Input: n = 10 → Output: 4 | Output: 4 → Explanation: Primes less than 10 are 2, 3, 5, 7 | Explanation: Primes less than 10 are 2, 3, 5, 7 → Input: n = 0 | Input: n = 0 → Output: 0 | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["COUNT PRIMES"]
+    N2["Count the number of prime numbers less than n."]
+    N3["Input: n = 10"]
+    N4["Output: 4"]
+    N5["Explanation: Primes less than 10 are 2, 3, 5, 7"]
+    N6["Input: n = 0"]
+    N7["Output: 0"]
+    N8["Use: SIEVE OF ERATOSTHENES"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ```java
 // SIEVE OF ERATOSTHENES - O(n log log n)
 public int countPrimes(int n) {
@@ -133,6 +154,27 @@ public int countPrimes(int n) {
 ║  Output: 541 (100th prime)                                                ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: FIND THE NTH PRIME NUMBER → Given n, find the nth prime number. | Given n, find the nth prime number. → Input: n = 1 | Input: n = 1 → Output: 2 (1st prime) | Output: 2 (1st prime) → Input: n = 5 | Input: n = 5 → Output: 11 (5th prime: 2, 3, 5, 7, 11) | Output: 11 (5th prime: 2, 3, 5, 7, 11) → Input: n = 10 | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["FIND THE NTH PRIME NUMBER"]
+    N2["Given n, find the nth prime number."]
+    N3["Input: n = 1"]
+    N4["Output: 2 (1st prime)"]
+    N5["Input: n = 5"]
+    N6["Output: 11 (5th prime: 2, 3, 5, 7, 11)"]
+    N7["Input: n = 10"]
+    N8["Output: 29 (10th prime)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```java
@@ -191,6 +233,27 @@ private boolean isPrime(int n) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: FIND PREVIOUS AND NEXT PRIME → and nearest prime greater than n (next prime). | and nearest prime greater than n (next prime). → Input: n = 10 | Input: n = 10 → Output: Previous = 7, Next = 11 | Output: Previous = 7, Next = 11 → Input: n = 14 | Input: n = 14 → Output: Previous = 13, Next = 17 | Output: Previous = 13, Next = 17 → Input: n = 7 (n is prime) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["FIND PREVIOUS AND NEXT PRIME"]
+    N2["and nearest prime greater than n (next prime)."]
+    N3["Input: n = 10"]
+    N4["Output: Previous = 7, Next = 11"]
+    N5["Input: n = 14"]
+    N6["Output: Previous = 13, Next = 17"]
+    N7["Input: n = 7 (n is prime)"]
+    N8["Output: Previous = 5, Next = 11"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ```java
 public int[] previousAndNextPrime(int n) {
     int[] result = new int[2];
@@ -246,6 +309,27 @@ private int findNextPrime(int n) {
 ║  Explanation: 315 = 3 × 3 × 5 × 7                                         ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: FIND ALL PRIME FACTORS → Given a number n, find all its prime factors. | Given a number n, find all its prime factors. → Input: n = 12 | Input: n = 12 → Output: [2, 2, 3] | Output: [2, 2, 3] → Explanation: 12 = 2 × 2 × 3 | Explanation: 12 = 2 × 2 × 3 → Input: n = 100 | Input: n = 100 → Output: [2, 2, 5, 5] | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["FIND ALL PRIME FACTORS"]
+    N2["Given a number n, find all its prime factors."]
+    N3["Input: n = 12"]
+    N4["Output: [2, 2, 3]"]
+    N5["Explanation: 12 = 2 × 2 × 3"]
+    N6["Input: n = 100"]
+    N7["Output: [2, 2, 5, 5]"]
+    N8["Explanation: 100 = 2 × 2 × 5 × 5"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```java
@@ -326,6 +410,27 @@ public List<Integer> primeFactors(int n) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: CLOSEST PRIME NUMBERS IN RANGE → (LeetCode Premium - Full Problem Description) | (LeetCode Premium - Full Problem Description) → and num2 such that: | and num2 such that: → - left &lt;= num1 &lt; num2 &lt;= right | - left &lt;= num1 &lt; num2 &lt;= right → - Both num1 and num2 are prime numbers | - Both num1 and num2 are prime numbers → - num2 - num1 is the minimum amongst all other pairs | - num2 - num1 is the minimum amongst all other pairs → such pair exists, return [-1, -1]. | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["CLOSEST PRIME NUMBERS IN RANGE"]
+    N2["(LeetCode Premium - Full Problem Description)"]
+    N3["and num2 such that:"]
+    N4["- left &lt;= num1 &lt; num2 &lt;= right"]
+    N5["- Both num1 and num2 are prime numbers"]
+    N6["- num2 - num1 is the minimum amongst all other pairs"]
+    N7["such pair exists, return [-1, -1]."]
+    N8["Example 1:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ```java
 public int[] closestPrimes(int left, int right) {
     // Generate all primes in range using Sieve
@@ -390,6 +495,27 @@ public int[] closestPrimes(int left, int right) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: NTH FIBONACCI NUMBER → Fibonacci Sequence: 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, .. | Fibonacci Sequence: 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, .. → F(n) = F(n-1) + F(n-2) for n &gt; 1 | F(n) = F(n-1) + F(n-2) for n &gt; 1 → Input: n = 4 | Input: n = 4 → Output: 3 | Output: 3 → Input: n = 10 | Input: n = 10 → Output: 55 | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["NTH FIBONACCI NUMBER"]
+    N2["Fibonacci Sequence: 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, .."]
+    N3["F(n) = F(n-1) + F(n-2) for n &gt; 1"]
+    N4["Input: n = 4"]
+    N5["Output: 3"]
+    N6["Input: n = 10"]
+    N7["Output: 55"]
+    N8["Visual:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 **LeetCode 509** | 🔗 [https://leetcode.com/problems/fibonacci-number/](https://leetcode.com/problems/fibonacci-number/)
 
 ```java
@@ -451,6 +577,27 @@ private int fibHelper(int n, int[] memo) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: SUM OF FIRST N FIBONACCI NUMBERS → Find the sum of first n Fibonacci numbers. | Find the sum of first n Fibonacci numbers. → Input: n = 5 | Input: n = 5 → Output: 7 | Output: 7 → Input: n = 10 | Input: n = 10 → Output: 88 | Output: 88 → Explanation: 0+1+1+2+3+5+8+13+21+34 = 88 | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["SUM OF FIRST N FIBONACCI NUMBERS"]
+    N2["Find the sum of first n Fibonacci numbers."]
+    N3["Input: n = 5"]
+    N4["Output: 7"]
+    N5["Input: n = 10"]
+    N6["Output: 88"]
+    N7["Explanation: 0+1+1+2+3+5+8+13+21+34 = 88"]
+    N8["FORMULA: Sum of first n Fib = F(n+2) - 1"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ```java
 // Method 1: Iterative Sum
 public int sumFibonacci(int n) {
@@ -499,6 +646,27 @@ public int sumFibonacciFormula(int n) {
 ║  (5*n² + 4) or (5*n² - 4) is a perfect square.                            ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: CHECK IF NUMBER IS A FIBONACCI NUMBER → Given a number, check if it belongs to Fibonacci sequen | Given a number, check if it belongs to Fibonacci sequen → Input: n = 8 | Input: n = 8 → Output: true (8 is F(6)) | Output: true (8 is F(6)) → Input: n = 10 | Input: n = 10 → Output: false | Output: false → PROPERTY: A number is Fibonacci if and only if one of | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["CHECK IF NUMBER IS A FIBONACCI NUMBER"]
+    N2["Given a number, check if it belongs to Fibonacci sequen"]
+    N3["Input: n = 8"]
+    N4["Output: true (8 is F(6))"]
+    N5["Input: n = 10"]
+    N6["Output: false"]
+    N7["PROPERTY: A number is Fibonacci if and only if one of"]
+    N8["(5*n² + 4) or (5*n² - 4) is a perfect square."]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```java
@@ -550,6 +718,19 @@ public boolean isFibonacciIterative(int n) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: N-TH TRIBONACCI NUMBER → Sequence: 0, 1, 1, 2, 4, 7, 13, 24, 44, 81, ... | Sequence: 0, 1, 1, 2, 4, 7, 13, 24, 44, 81, ... → Input: n = 4 | Input: n = 4 → Output: 4
+
+```mermaid
+flowchart TD
+    N1["N-TH TRIBONACCI NUMBER"]
+    N2["Sequence: 0, 1, 1, 2, 4, 7, 13, 24, 44, 81, ..."]
+    N3["Input: n = 4"]
+    N4["Output: 4"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 ```java
 public int tribonacci(int n) {
     if (n == 0) return 0;
@@ -598,6 +779,27 @@ public int tribonacci(int n) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: CLIMBING STAIRS → You can climb 1 or 2 steps at a time. | You can climb 1 or 2 steps at a time. → How many distinct ways to climb n stairs? | How many distinct ways to climb n stairs? → Input: n = 3 | Input: n = 3 → Output: 3 | Output: 3 → Ways: [1,1,1], [1,2], [2,1] | Ways: [1,1,1], [1,2], [2,1] → Input: n = 5 | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["CLIMBING STAIRS"]
+    N2["You can climb 1 or 2 steps at a time."]
+    N3["How many distinct ways to climb n stairs?"]
+    N4["Input: n = 3"]
+    N5["Output: 3"]
+    N6["Ways: [1,1,1], [1,2], [2,1]"]
+    N7["Input: n = 5"]
+    N8["Output: 8"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ```java
 public int climbStairs(int n) {
     if (n <= 2) return n;
@@ -635,6 +837,25 @@ public int climbStairs(int n) {
 ║  Output: 36                                                               ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: SUM OF DIGITS → Find the sum of all digits of a given number. | Find the sum of all digits of a given number. → Input: n = 12345 | Input: n = 12345 → Output: 15 | Output: 15 → Explanation: 1 + 2 + 3 + 4 + 5 = 15 | Explanation: 1 + 2 + 3 + 4 + 5 = 15 → Input: n = 9999 | Input: n = 9999 → Output: 36
+
+```mermaid
+flowchart TD
+    N1["SUM OF DIGITS"]
+    N2["Find the sum of all digits of a given number."]
+    N3["Input: n = 12345"]
+    N4["Output: 15"]
+    N5["Explanation: 1 + 2 + 3 + 4 + 5 = 15"]
+    N6["Input: n = 9999"]
+    N7["Output: 36"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
 ```
 
 ```java
@@ -680,6 +901,27 @@ public int sumOfDigitsRecursive(int n) {
 ║  FORMULA: Digital Root = 1 + (num - 1) % 9  (for num > 0)                 ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: ADD DIGITS (DIGITAL ROOT) → Repeatedly add digits until single digit remains. | Repeatedly add digits until single digit remains. → Input: num = 38 | Input: num = 38 → Output: 2 | Output: 2 → Explanation: 3 + 8 = 11, 1 + 1 = 2 | Explanation: 3 + 8 = 11, 1 + 1 = 2 → Input: num = 9999 | Input: num = 9999 → Output: 9 | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["ADD DIGITS (DIGITAL ROOT)"]
+    N2["Repeatedly add digits until single digit remains."]
+    N3["Input: num = 38"]
+    N4["Output: 2"]
+    N5["Explanation: 3 + 8 = 11, 1 + 1 = 2"]
+    N6["Input: num = 9999"]
+    N7["Output: 9"]
+    N8["Explanation: 36 → 9"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```java
@@ -728,6 +970,27 @@ public int addDigitsIterative(int num) {
 ║  Output: 0 (overflow when reversed)                                       ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: REVERSE INTEGER → Reverse digits of a 32-bit signed integer. | Reverse digits of a 32-bit signed integer. → Return 0 if result overflows. | Return 0 if result overflows. → Input: x = 123 | Input: x = 123 → Output: 321 | Output: 321 → Input: x = -123 | Input: x = -123 → Output: -321 | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["REVERSE INTEGER"]
+    N2["Reverse digits of a 32-bit signed integer."]
+    N3["Return 0 if result overflows."]
+    N4["Input: x = 123"]
+    N5["Output: 321"]
+    N6["Input: x = -123"]
+    N7["Output: -321"]
+    N8["Input: x = 1534236469"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```java
@@ -780,6 +1043,25 @@ public int reverse(int x) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: PALINDROME NUMBER → Input: x = 121 | Input: x = 121 → Output: true | Output: true → Input: x = -121 | Input: x = -121 → Output: false (reads as 121-) | Output: false (reads as 121-) → Input: x = 10 | Input: x = 10 → Output: false (reads as 01)
+
+```mermaid
+flowchart TD
+    N1["PALINDROME NUMBER"]
+    N2["Input: x = 121"]
+    N3["Output: true"]
+    N4["Input: x = -121"]
+    N5["Output: false (reads as 121-)"]
+    N6["Input: x = 10"]
+    N7["Output: false (reads as 01)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+```
+
 ```java
 public boolean isPalindrome(int x) {
     // Negative or ends with 0 (except 0 itself)
@@ -828,6 +1110,25 @@ public boolean isPalindrome(int x) {
 ║  Output: false (enters cycle)                                             ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: HAPPY NUMBER → endlessly in a cycle (not happy). | endlessly in a cycle (not happy). → Input: n = 19 | Input: n = 19 → Output: true | Output: true → Explanation: | Explanation: → Input: n = 2 | Input: n = 2 → Output: false (enters cycle)
+
+```mermaid
+flowchart TD
+    N1["HAPPY NUMBER"]
+    N2["endlessly in a cycle (not happy)."]
+    N3["Input: n = 19"]
+    N4["Output: true"]
+    N5["Explanation:"]
+    N6["Input: n = 2"]
+    N7["Output: false (enters cycle)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
 ```
 
 ```java
@@ -882,6 +1183,27 @@ private int sumSquareDigits(int n) {
 ║  48, 18 → 18, 12 → 12, 6 → 6, 0 → GCD = 6                                 ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: GCD - GREATEST COMMON DIVISOR → Find the largest number that divides both a and b. | Find the largest number that divides both a and b. → Input: a = 48, b = 18 | Input: a = 48, b = 18 → Output: 6 | Output: 6 → Explanation: Divisors of 48: 1,2,3,4,6,8,12,16,24,48 | Explanation: Divisors of 48: 1,2,3,4,6,8,12,16,24,48 → Divisors of 18: 1,2,3,6,9,18 | Divisors of 18: 1,2,3,6,9,18 → Common: 1,2,3,6 → GCD = 6 | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["GCD - GREATEST COMMON DIVISOR"]
+    N2["Find the largest number that divides both a and b."]
+    N3["Input: a = 48, b = 18"]
+    N4["Output: 6"]
+    N5["Explanation: Divisors of 48: 1,2,3,4,6,8,12,16,24,48"]
+    N6["Divisors of 18: 1,2,3,6,9,18"]
+    N7["Common: 1,2,3,6 → GCD = 6"]
+    N8["EUCLIDEAN ALGORITHM:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```java
@@ -955,6 +1277,27 @@ public int lcm(int a, int b) {
 ║  - 1 <= nums[i] <= 1000                                                   ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: FIND GREATEST COMMON DIVISOR OF ARRAY → (LeetCode Premium - Full Problem Description) | (LeetCode Premium - Full Problem Description) → smallest number and largest number in nums. | smallest number and largest number in nums. → divides both numbers. | divides both numbers. → Example 1: | Example 1: → Input: nums = [2, 5, 6, 9, 10] | Input: nums = [2, 5, 6, 9, 10] → Output: 2 | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["FIND GREATEST COMMON DIVISOR OF ARRAY"]
+    N2["(LeetCode Premium - Full Problem Description)"]
+    N3["smallest number and largest number in nums."]
+    N4["divides both numbers."]
+    N5["Example 1:"]
+    N6["Input: nums = [2, 5, 6, 9, 10]"]
+    N7["Output: 2"]
+    N8["Explanation:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```java

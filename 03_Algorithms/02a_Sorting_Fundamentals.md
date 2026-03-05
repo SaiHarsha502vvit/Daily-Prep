@@ -224,6 +224,23 @@ MERGE SORT - GOOD BUT USES MORE MEMORY:
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: Cache Line 1 [0-15] Cache Line 2 [16-31] → Cache Line 1 [0-15] Cache Line 2 [16-31] / ↔ ↔ | Cache Line 1 [0-15] Cache Line 2 [16-31] / ↔ ↔ → Cache Line 1 [0-15] Cache Line 2 [16-31] / ▼ ▼ ▼ ▼ ▼▼▼▼ | Cache Line 1 [0-15] Cache Line 2 [16-31] / ▼ ▼ ▼ ▼ ▼▼▼▼ → Left half | Left half → Right half | Right half → Temp array
+
+```mermaid
+flowchart TD
+    N1["Cache Line 1 [0-15] Cache Line 2 [16-31]"]
+    N2["Cache Line 1 [0-15] Cache Line 2 [16-31] / ↔ ↔"]
+    N3["Cache Line 1 [0-15] Cache Line 2 [16-31] / ▼ ▼ ▼ ▼ ▼▼▼▼"]
+    N4["Left half"]
+    N5["Right half"]
+    N6["Temp array"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+```
+
 ## 📊 Why Arrays.sort() Uses Different Algorithms
 
 ## Java'S Arrays.Sort() - Internal Implementation
@@ -361,6 +378,17 @@ COMPARISON TABLE (n=1000):
 │  This is why Arrays.sort() switches to Insertion Sort for small subarrays!      │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: Algorithm n=100 n=1,000 n=10,000 n=100,000 n=1,000,000  → Algorithm Time (n=10,000) Notes / Insertion Sort 0.3 ms | Algorithm Time (n=10,000) Notes / Insertion Sort 0.3 ms → Algorithm Time (n=20) Notes / Insertion Sort 50 ns Fast
+
+```mermaid
+flowchart TD
+    N1["Algorithm n=100 n=1,000 n=10,000 n=100,000 n=1,000,000 "]
+    N2["Algorithm Time (n=10,000) Notes / Insertion Sort 0.3 ms"]
+    N3["Algorithm Time (n=20) Notes / Insertion Sort 50 ns Fast"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 ---
@@ -548,6 +576,34 @@ PASS 4:
 [1, 2, 5, 8, 9]  SORTED! ✓
 ```
 
+> **Flow**: [5, 2, 8, 1, 9] Compare 5, 2 → Swap | [2, 5, 8, 1, 9] Compare 5, 8 → OK | [2, 5, 8, 1, 9] Compare 8, 1 → Swap | [2, 5, 1, 8, 9] Compare 8, 9 → OK | [2, 5, 1, 8, 9] Compare 2, 5 → OK | [2, 5, 1, 8, 9] Compare 5, 1 → Swap | ...+4 more
+
+```mermaid
+flowchart TD
+    N1["[5, 2, 8, 1, 9] Compare 5, 2"]
+    N2["Swap"]
+    N3["[2, 5, 8, 1, 9] Compare 5, 8"]
+    N4["OK"]
+    N5["[2, 5, 8, 1, 9] Compare 8, 1"]
+    N6["[2, 5, 1, 8, 9] Compare 8, 9"]
+    N7["[2, 5, 1, 8, 9] Compare 2, 5"]
+    N8["[2, 5, 1, 8, 9] Compare 5, 1"]
+    N9["[2, 1, 5, 8, 9] Compare 5, 8"]
+    N10["[2, 1, 5, 8, 9] Compare 2, 1"]
+    N11["[1, 2, 5, 8, 9] Compare 2, 5"]
+    N12["[1, 2, 5, 8, 9] Compare 1, 2"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N2
+    N6 --> N4
+    N7 --> N4
+    N8 --> N2
+    N9 --> N4
+    N10 --> N2
+    N11 --> N4
+    N12 --> N4
+```
+
 ## Code
 
 ```java
@@ -591,6 +647,18 @@ Find second smallest → put at position 1
 ... continue
 ```
 
+> **Flow**: Find smallest → put at position 0 | Find second smallest → put at position 1
+
+```mermaid
+flowchart LR
+    N1["Find smallest"]
+    N2["put at position 0"]
+    N3["Find second smallest"]
+    N4["put at position 1"]
+    N1 --> N2
+    N3 --> N4
+```
+
 ## Visual Trace
 
 ```
@@ -611,6 +679,24 @@ PASS 3: Find min in [8,5,9] → min is 5 at index 3
 PASS 4: Find min in [8,9] → min is 8 at index 3
         Already in position
         [1, 2, 5, 8, 9] SORTED! ✓
+```
+
+> **Flow**: PASS 1: Find min in [5,2,8,1,9] → min is 1 at index 3 | PASS 2: Find min in [2,8,5,9] → min is 2 at index 1 | PASS 3: Find min in [8,5,9] → min is 5 at index 3 | PASS 4: Find min in [8,9] → min is 8 at index 3
+
+```mermaid
+flowchart LR
+    N1["PASS 1: Find min in [5,2,8,1,9]"]
+    N2["min is 1 at index 3"]
+    N3["PASS 2: Find min in [2,8,5,9]"]
+    N4["min is 2 at index 1"]
+    N5["PASS 3: Find min in [8,5,9]"]
+    N6["min is 5 at index 3"]
+    N7["PASS 4: Find min in [8,9]"]
+    N8["min is 8 at index 3"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+    N7 --> N8
 ```
 
 ## Code
@@ -673,6 +759,27 @@ Array: [5, 2, 8, 1, 9]
 
 [1, 2, 5, 8 | 9]  Insert 9: Compare with 8, 9 > 8, stay
 [1, 2, 5, 8, 9]   SORTED! ✓
+```
+
+> **Flow**: Array: [5, 2, 8, 1, 9] → ↑ sorted part starts with just first element | ↑ sorted part starts with just first element → [5 | 2, 8, 1, 9] Insert 2: Compare with 5, shift 5 righ | [5 | 2, 8, 1, 9] Insert 2: Compare with 5, shift 5 righ → [2, 5 | 8, 1, 9] 2 inserted | [2, 5 | 8, 1, 9] 2 inserted → [2, 5 | 8, 1, 9] Insert 8: Compare with 5, 8 &gt; 5, st | [2, 5 | 8, 1, 9] Insert 8: Compare with 5, 8 &gt; 5, st → [2, 5, 8 | 1, 9] 8 in place | [2, 5, 8 | 1, 9] 8 in place → [2, 5, 8 | 1, 9] Insert 1: Compare with 8, shift 8 | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Array: [5, 2, 8, 1, 9]"]
+    N2["↑ sorted part starts with just first element"]
+    N3["[5 | 2, 8, 1, 9] Insert 2: Compare with 5, shift 5 righ"]
+    N4["[2, 5 | 8, 1, 9] 2 inserted"]
+    N5["[2, 5 | 8, 1, 9] Insert 8: Compare with 5, 8 &gt; 5, st"]
+    N6["[2, 5, 8 | 1, 9] 8 in place"]
+    N7["[2, 5, 8 | 1, 9] Insert 1: Compare with 8, shift 8"]
+    N8["Compare with 5, shift 5"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ## Code
@@ -763,6 +870,27 @@ Result: [1, 2, 5]
 
 Left exhausted, copy remaining from right
 Result: [1, 2, 5, 8] ✓
+```
+
+> **Flow**: Array: [5, 2, 8, 1] → DIVIDE: | DIVIDE: → MERGE (bottom up): | MERGE (bottom up): → [2, 5] [1, 8] ← Merge pairs in order | [2, 5] [1, 8] ← Merge pairs in order → [1, 2, 5, 8] ← Final merge | [1, 2, 5, 8] ← Final merge → DETAILED MERGE of [2,5] and [1,8]: | DETAILED MERGE of [2,5] and [1,8]: → Left: [2, 5] pointer at 2 | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Array: [5, 2, 8, 1]"]
+    N2["DIVIDE:"]
+    N3["MERGE (bottom up):"]
+    N4["[2, 5] [1, 8] ← Merge pairs in order"]
+    N5["[1, 2, 5, 8] ← Final merge"]
+    N6["DETAILED MERGE of [2,5] and [1,8]:"]
+    N7["Left: [2, 5] pointer at 2"]
+    N8["Right: [1, 8] pointer at 1"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ## Code
@@ -871,6 +999,27 @@ STEP 2: Recursively sort [2, 1] and [5, 9, 8]
                    [5, 8, 9] done!
 
 FINAL: [1, 2, 3, 5, 8, 9] ✓
+```
+
+> **Flow**: Array: [5, 2, 8, 1, 9, 3] → STEP 1: Choose pivot (last element) = 3 | STEP 1: Choose pivot (last element) = 3 → Partition around 3 | Partition around 3 → i starts at -1, j scans array | i starts at -1, j scans array → j=0: 5 &gt; 3, skip | j=0: 5 &gt; 3, skip → j=1: 2 &lt; 3, i++, swap arr[0] and arr[1] | j=1: 2 &lt; 3, i++, swap arr[0] and arr[1] → j=2: 8 &gt; 3, skip | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Array: [5, 2, 8, 1, 9, 3]"]
+    N2["STEP 1: Choose pivot (last element) = 3"]
+    N3["Partition around 3"]
+    N4["i starts at -1, j scans array"]
+    N5["j=0: 5 &gt; 3, skip"]
+    N6["j=1: 2 &lt; 3, i++, swap arr[0] and arr[1]"]
+    N7["j=2: 8 &gt; 3, skip"]
+    N8["j=3: 1 &lt; 3, i++, swap arr[1] and arr[3]"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ## Code

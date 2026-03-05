@@ -72,6 +72,27 @@
 └──────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: Problem Pattern Java Structure WHY → Two Sum (pair lookup) HashMap O(1) complement | Two Sum (pair lookup) HashMap O(1) complement → Sliding Window max ArrayDeque Monotonic deque | Sliding Window max ArrayDeque Monotonic deque → Top-K elements PriorityQueue Min-heap of K | Top-K elements PriorityQueue Min-heap of K → LRU Cache LinkedHashMap Access order + | LRU Cache LinkedHashMap Access order + → removeEldest | removeEldest → Intervals / sweep line TreeMap Sorted + floorKey | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Problem Pattern Java Structure WHY"]
+    N2["Two Sum (pair lookup) HashMap O(1) complement"]
+    N3["Sliding Window max ArrayDeque Monotonic deque"]
+    N4["Top-K elements PriorityQueue Min-heap of K"]
+    N5["LRU Cache LinkedHashMap Access order +"]
+    N6["removeEldest"]
+    N7["Intervals / sweep line TreeMap Sorted + floorKey"]
+    N8["Graph BFS ArrayDeque FIFO queue"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 2. PriorityQueue Deep Reasoning: The Gotchas That Bite
@@ -183,6 +204,27 @@ PriorityQueue<int[]> safe = new PriorityQueue<>(
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: HashMap = Unordered filing cabinet (find by name: O(1)) → TreeMap (Red-Black BST) UNIQUE abilities: | TreeMap (Red-Black BST) UNIQUE abilities: → floorKey(k) → Largest key ≤ k (or null) | floorKey(k) → Largest key ≤ k (or null) → ceilingKey(k) → Smallest key ≥ k (or null) | ceilingKey(k) → Smallest key ≥ k (or null) → lowerKey(k) → Largest key &lt; k (strict) | lowerKey(k) → Largest key &lt; k (strict) → higherKey(k) → Smallest key &gt; k (strict) | higherKey(k) → Smallest key &gt; k (strict) → firstKey() → Smallest key | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["HashMap = Unordered filing cabinet (find by name: O(1))"]
+    N2["TreeMap (Red-Black BST) UNIQUE abilities:"]
+    N3["floorKey(k) → Largest key ≤ k (or null)"]
+    N4["ceilingKey(k) → Smallest key ≥ k (or null)"]
+    N5["lowerKey(k) → Largest key &lt; k (strict)"]
+    N6["higherKey(k) → Smallest key &gt; k (strict)"]
+    N7["firstKey() → Smallest key"]
+    N8["lastKey() → Largest key"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### Code — Real DSA Problems Solved by TreeMap
 
 ```java
@@ -263,6 +305,27 @@ int closest = (target - floor <= ceiling - target) ? floor : ceiling;
 ║  READ IT AS ENGLISH:                                             ║
 ║  "Compare by first element, then by second, then reverse"        ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: SORTING RULES FOR DSA: → Comparator returns: | Comparator returns: → negative → first comes BEFORE second | negative → first comes BEFORE second → zero → equal (order doesn't matter) | zero → equal (order doesn't matter) → positive → first comes AFTER second | positive → first comes AFTER second → DANGER ZONE: | DANGER ZONE: → (a, b) -&gt; a - b ← OVERFLOW when a=MAX, b=negative! | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["SORTING RULES FOR DSA:"]
+    N2["Comparator returns:"]
+    N3["negative → first comes BEFORE second"]
+    N4["zero → equal (order doesn't matter)"]
+    N5["positive → first comes AFTER second"]
+    N6["DANGER ZONE:"]
+    N7["(a, b) -&gt; a - b ← OVERFLOW when a=MAX, b=negative!"]
+    N8["(a, b) -&gt; Integer.compare(a, b) ← SAFE always!"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### Code — Comparator Patterns for DSA
@@ -346,6 +409,27 @@ System.out.println(safe.compare(Integer.MAX_VALUE, -1));  // Positive (correct!)
 ║  → Objects have identity → stability matters for user            ║
 ║  → Quicksort is faster on primitives (better cache behavior)     ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: TWO DIFFERENT ALGORITHMS: → Arrays.sort(int[]): | Arrays.sort(int[]): → → Dual-Pivot Quicksort (by Vladimir Yaroslavskiy) | → Dual-Pivot Quicksort (by Vladimir Yaroslavskiy) → → In-place, O(1) space | → In-place, O(1) space → → Used for: int[], long[], double[], char[] etc. | → Used for: int[], long[], double[], char[] etc. → Arrays.sort(Object[]) / Collections.sort(): | Arrays.sort(Object[]) / Collections.sort(): → → TimSort (by Tim Peters, from Python) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["TWO DIFFERENT ALGORITHMS:"]
+    N2["Arrays.sort(int[]):"]
+    N3["→ Dual-Pivot Quicksort (by Vladimir Yaroslavskiy)"]
+    N4["→ In-place, O(1) space"]
+    N5["→ Used for: int[], long[], double[], char[] etc."]
+    N6["Arrays.sort(Object[]) / Collections.sort():"]
+    N7["→ TimSort (by Tim Peters, from Python)"]
+    N8["→ Stable! (equal elements keep original order)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### When This Matters in DSA
@@ -473,6 +557,27 @@ public int subarraySum(int[] nums, int k) {
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: For Stack (LIFO): ArrayDeque&lt;&gt; (push/pop/peek) → For Queue (FIFO): ArrayDeque&lt;&gt; (offer/poll/peek) | For Queue (FIFO): ArrayDeque&lt;&gt; (offer/poll/peek) → WHY ArrayDeque over LinkedList for Queue? | WHY ArrayDeque over LinkedList for Queue? → → ArrayDeque: array-backed, cache-friendly, no node obj | → ArrayDeque: array-backed, cache-friendly, no node obj → → ArrayDeque is 3-5x faster than LinkedList for queue o | → ArrayDeque is 3-5x faster than LinkedList for queue o → WHEN to use LinkedList? | WHEN to use LinkedList? → → Almost never in DSA. Only when you need: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["For Stack (LIFO): ArrayDeque&lt;&gt; (push/pop/peek)"]
+    N2["For Queue (FIFO): ArrayDeque&lt;&gt; (offer/poll/peek)"]
+    N3["WHY ArrayDeque over LinkedList for Queue?"]
+    N4["→ ArrayDeque: array-backed, cache-friendly, no node obj"]
+    N5["→ ArrayDeque is 3-5x faster than LinkedList for queue o"]
+    N6["WHEN to use LinkedList?"]
+    N7["→ Almost never in DSA. Only when you need:"]
+    N8["• Iterator.remove() in the middle (O(1) with iterator)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### Stack/Queue Method Mapping
 
 ```
@@ -490,6 +595,27 @@ public int subarraySum(int[] nums, int k) {
 │  Deque as Stack: push/pop (both operate on FIRST end)            │
 │  Deque as Queue: offer (LAST end) / poll (FIRST end)             │
 └──────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: Operation Stack (LIFO) Queue (FIFO) → Add element push(e) / addFirst offer(e) / addLast | Add element push(e) / addFirst offer(e) / addLast → Remove top pop() / removeFirst poll() / removeFirst | Remove top pop() / removeFirst poll() / removeFirst → Peek top peek() / peekFirst peek() / peekFirst | Peek top peek() / peekFirst peek() / peekFirst → Empty check isEmpty() isEmpty() | Empty check isEmpty() isEmpty() → ⚠️ Both Stack and Queue use ArrayDeque — same class! | ⚠️ Both Stack and Queue use ArrayDeque — same class! → The difference is just WHICH end you operate on. | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Operation Stack (LIFO) Queue (FIFO)"]
+    N2["Add element push(e) / addFirst offer(e) / addLast"]
+    N3["Remove top pop() / removeFirst poll() / removeFirst"]
+    N4["Peek top peek() / peekFirst peek() / peekFirst"]
+    N5["Empty check isEmpty() isEmpty()"]
+    N6["⚠️ Both Stack and Queue use ArrayDeque — same class!"]
+    N7["The difference is just WHICH end you operate on."]
+    N8["Deque as Stack: push/pop (both operate on FIRST end)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### Monotonic Stack Pattern
@@ -572,6 +698,27 @@ public int[] maxSlidingWindow(int[] nums, int k) {
 ║  For N=10,000: String concat = 50ms, StringBuilder = 0.1ms       ║
 ║  500x difference!                                                ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: WHY StringBuilder MATTERS IN DSA → String concatenation in a loop: | String concatenation in a loop: → String s = ''; | String s = ''; → s += 'a'; // Creates N new String objects! | s += 'a'; // Creates N new String objects! → Time: O(N²) — because each += copies the entire string | Time: O(N²) — because each += copies the entire string → 'a' → 'aa' → 'aaa' → 'aaaa' → ... (copy 1+2+3+...+N byt | 'a' → 'aa' → 'aaa' → 'aaaa' → ... (copy 1+2+3+...+N byt → StringBuilder: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["WHY StringBuilder MATTERS IN DSA"]
+    N2["String concatenation in a loop:"]
+    N3["String s = '';"]
+    N4["s += 'a'; // Creates N new String objects!"]
+    N5["Time: O(N²) — because each += copies the entire string"]
+    N6["'a' → 'aa' → 'aaa' → 'aaaa' → ... (copy 1+2+3+...+N byt"]
+    N7["StringBuilder:"]
+    N8["StringBuilder sb = new StringBuilder();"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### Essential String DSA Methods

@@ -57,6 +57,27 @@ EVERY COMPONENT = DATA + STRUCTURE + STYLE + BEHAVIOR
 └──────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: EVERY COMPONENT = DATA + STRUCTURE + STYLE + BEHAVIOR → UserCard Component | UserCard Component → DATA (Props + State): | DATA (Props + State): → user: { name, avatar, role, isOnline } | user: { name, avatar, role, isOnline } → isExpanded: boolean (local state) | isExpanded: boolean (local state) → STRUCTURE (JSX): | STRUCTURE (JSX): → &lt;div className='card'&gt; | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["EVERY COMPONENT = DATA + STRUCTURE + STYLE + BEHAVIOR"]
+    N2["UserCard Component"]
+    N3["DATA (Props + State):"]
+    N4["user: { name, avatar, role, isOnline }"]
+    N5["isExpanded: boolean (local state)"]
+    N6["STRUCTURE (JSX):"]
+    N7["&lt;div className='card'&gt;"]
+    N8["&lt;img&gt; (avatar)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 2. Building a Complete Dashboard — Step by Step
@@ -581,6 +602,47 @@ If it's UI state (open/closed, selected item), use useState.
 If it's complex UI state, use useReducer.
 ```
 
+> **Flow**: useState: → Simple values (toggle, counter, input) | useState: → State used by ONE component only | useState: → Beginner-friendly | useReducer: → Complex state logic (multiple related updates) | useReducer: → State transitions depend on previous state | useReducer: → Like a mini Redux inside a component | ...+9 more
+
+```mermaid
+flowchart TD
+    N1["useState:"]
+    N2["Simple values (toggle, counter, input)"]
+    N3["State used by ONE component only"]
+    N4["Beginner-friendly"]
+    N5["useReducer:"]
+    N6["Complex state logic (multiple related updates)"]
+    N7["State transitions depend on previous state"]
+    N8["Like a mini Redux inside a component"]
+    N9["Context + useReducer:"]
+    N10["State shared by 3-10 components"]
+    N11["Auth, theme, language, cart"]
+    N12["Not for frequently changing state (perf!)"]
+    N13["Zustand / Redux Toolkit:"]
+    N14["Global state for large apps"]
+    N15["Many components reading same state"]
+    N16["Complex async workflows"]
+    N17["TanStack Query / SWR:"]
+    N18["SERVER STATE (API data)"]
+    N19["Caching, refetching, loading/error states"]
+    N20["THE standard for data fetching in 2024"]
+    N1 --> N2
+    N1 --> N3
+    N1 --> N4
+    N5 --> N6
+    N5 --> N7
+    N5 --> N8
+    N9 --> N10
+    N9 --> N11
+    N9 --> N12
+    N13 --> N14
+    N13 --> N15
+    N13 --> N16
+    N17 --> N18
+    N17 --> N19
+    N17 --> N20
+```
+
 ---
 
 ## 4. Conditional Rendering + CSS Patterns
@@ -750,6 +812,19 @@ Q: Server state vs client state?
   Use TanStack Query — handles caching, loading, error, refetching.
   Client state: UI state (open/closed, selected, filters).
   Use useState/useReducer — lives only in browser.
+```
+
+> **Flow**: Types first → atomic components | atomic components → composite components | composite components → page.
+
+```mermaid
+flowchart LR
+    N1["Types first"]
+    N2["atomic components"]
+    N3["composite components"]
+    N4["page."]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
 ```
 
 ---

@@ -218,6 +218,22 @@ search(".ad") → true
 search("b..") → true
 ```
 
+> **Flow**: search('pad') → false | search('bad') → true | search('.ad') → true | search('b..') → true
+
+```mermaid
+flowchart LR
+    N1["search('pad')"]
+    N2["false"]
+    N3["search('bad')"]
+    N4["true"]
+    N5["search('.ad')"]
+    N6["search('b..')"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N4
+    N6 --> N4
+```
+
 ### Q2: Number of Provinces (LC 547) — Medium
 
 ```

@@ -67,6 +67,27 @@ DISPATCHER SERVLET = The receptionist inside the building
 → Handles: URL mapping, argument binding, exception handling
 ```
 
+> **Flow**: THE OFFICE BUILDING ANALOGY → HTTP Request arrives at your Spring Boot application: | HTTP Request arrives at your Spring Boot application: → SERVLET CONTAINER (Tomcat) | SERVLET CONTAINER (Tomcat) → [Request] → FILTER 1 → FILTER 2 → FILTER 3 → | [Request] → FILTER 1 → FILTER 2 → FILTER 3 → → DISPATCHER SERVLET | DISPATCHER SERVLET → HandlerMapping → 'Which controller?' | HandlerMapping → 'Which controller?' → HandlerAdapter → 'Call the method' | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE OFFICE BUILDING ANALOGY"]
+    N2["HTTP Request arrives at your Spring Boot application:"]
+    N3["SERVLET CONTAINER (Tomcat)"]
+    N4["[Request] → FILTER 1 → FILTER 2 → FILTER 3 →"]
+    N5["DISPATCHER SERVLET"]
+    N6["HandlerMapping → 'Which controller?'"]
+    N7["HandlerAdapter → 'Call the method'"]
+    N8["ViewResolver → 'Render the response'"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ```java
 // FILTER: Runs at Servlet container level, wraps the entire request
 @Component
@@ -119,6 +140,25 @@ Client → Tomcat → Filter1 → Filter2 → Filter3
   → Filter3 → Filter2 → Filter1 → Tomcat → Client
 ```
 
+> **Flow**: Client → Tomcat | Tomcat → Filter1 | Filter1 → Filter2 | Filter2 → Filter3 | Filter3 → Filter2 | Filter2 → Filter1 | ...+2 more
+
+```mermaid
+flowchart TD
+    N1["Client"]
+    N2["Tomcat"]
+    N3["Filter1"]
+    N4["Filter2"]
+    N5["Filter3"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N4
+    N4 --> N3
+    N3 --> N2
+    N2 --> N1
+```
+
 ### When To Use What:
 | Use Case | Use |
 |----------|-----|
@@ -159,6 +199,27 @@ Client → Tomcat → Filter1 → Filter2 → Filter3
 ║  → If main class is in com.app, it scans com.app.** only         ║
 ║  → Classes in com.other will NOT be found!                       ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: @SpringBootApplication = THREE annotations in one: → @Configuration | @Configuration → → Makes main class a source of bean definitions | → Makes main class a source of bean definitions → @EnableAutoConfiguration | @EnableAutoConfiguration → → 'Scan classpath and auto-configure beans based on wha | → 'Scan classpath and auto-configure beans based on wha → on the classpath' | on the classpath' → → Found spring-boot-starter-web? → Configure Tomcat, | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["@SpringBootApplication = THREE annotations in one:"]
+    N2["@Configuration"]
+    N3["→ Makes main class a source of bean definitions"]
+    N4["@EnableAutoConfiguration"]
+    N5["→ 'Scan classpath and auto-configure beans based on wha"]
+    N6["on the classpath'"]
+    N7["→ Found spring-boot-starter-web? → Configure Tomcat,"]
+    N8["DispatcherServlet, Jackson, error handling..."]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```java
@@ -215,6 +276,27 @@ public class MyApp { ... }
 ║  KEY INSIGHT: Auto-config BACKS OFF when you define your own.    ║
 ║  It's not magic — it's conditional bean registration.            ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: THE SMART HOME ANALOGY → 2. Smart home detects it (classpath scanning) | 2. Smart home detects it (classpath scanning) → 3. It auto-configures: connects to HVAC, sets default t | 3. It auto-configures: connects to HVAC, sets default t → 4. You CAN override: set your own temperature (properti | 4. You CAN override: set your own temperature (properti → HOW IT ACTUALLY WORKS: | HOW IT ACTUALLY WORKS: → spring-boot-autoconfigure.jar contains: | spring-boot-autoconfigure.jar contains: → META-INF/spring/org.springframework.boot.autoconfigure. | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE SMART HOME ANALOGY"]
+    N2["2. Smart home detects it (classpath scanning)"]
+    N3["3. It auto-configures: connects to HVAC, sets default t"]
+    N4["4. You CAN override: set your own temperature (properti"]
+    N5["HOW IT ACTUALLY WORKS:"]
+    N6["spring-boot-autoconfigure.jar contains:"]
+    N7["META-INF/spring/org.springframework.boot.autoconfigure."]
+    N8["AutoConfiguration.imports (list of auto-config classes)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```java
@@ -275,6 +357,27 @@ public class MyConfig {
 ║  If you're already inside the room and call yourself,            ║
 ║  you don't go through the door (proxy) again.                    ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: THE BODYGUARD ANALOGY → Spring creates a PROXY (bodyguard) around your bean. | Spring creates a PROXY (bodyguard) around your bean. → All calls from OUTSIDE go through the proxy. | All calls from OUTSIDE go through the proxy. → The proxy adds behavior (transaction, security, caching | The proxy adds behavior (transaction, security, caching → BUT! If your bean calls ITS OWN method: | BUT! If your bean calls ITS OWN method: → [Your Bean] → this.internalMethod() | [Your Bean] → this.internalMethod() → → Bypasses the proxy! No transaction started! | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE BODYGUARD ANALOGY"]
+    N2["Spring creates a PROXY (bodyguard) around your bean."]
+    N3["All calls from OUTSIDE go through the proxy."]
+    N4["The proxy adds behavior (transaction, security, caching"]
+    N5["BUT! If your bean calls ITS OWN method:"]
+    N6["[Your Bean] → this.internalMethod()"]
+    N7["→ Bypasses the proxy! No transaction started!"]
+    N8["It's like the bodyguard stands at the door."]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```java
@@ -350,6 +453,27 @@ public class NotificationService {
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: THE EMPLOYEE ONBOARDING ANALOGY → 1. INSTANTIATION: Hire the employee (new MyBean()) | 1. INSTANTIATION: Hire the employee (new MyBean()) → 3. AWARE INTERFACES: Tell them company name, their ID | 3. AWARE INTERFACES: Tell them company name, their ID → (BeanNameAware, ApplicationContextAware) | (BeanNameAware, ApplicationContextAware) → 4. @PostConstruct: Employee orientation (run custom ini | 4. @PostConstruct: Employee orientation (run custom ini → 5. InitializingBean.afterPropertiesSet(): Second init h | 5. InitializingBean.afterPropertiesSet(): Second init h → 6. Custom init-method: Third init hook | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE EMPLOYEE ONBOARDING ANALOGY"]
+    N2["1. INSTANTIATION: Hire the employee (new MyBean())"]
+    N3["3. AWARE INTERFACES: Tell them company name, their ID"]
+    N4["(BeanNameAware, ApplicationContextAware)"]
+    N5["4. @PostConstruct: Employee orientation (run custom ini"]
+    N6["5. InitializingBean.afterPropertiesSet(): Second init h"]
+    N7["6. Custom init-method: Third init hook"]
+    N8["7. BEAN IS READY — now serving requests"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ```java
 @Service
 public class CacheService {
@@ -403,6 +527,27 @@ public class CacheService {
 ║  DI: The specific mechanism — injecting through constructor,     ║
 ║      setter, or field.                                           ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: COOKING AT HOME vs RESTAURANT — The Inversion → WITHOUT IoC (cooking at home): | WITHOUT IoC (cooking at home): → YOU control everything: | YOU control everything: → → You decide what to buy | → You decide what to buy → → You buy ingredients (create dependencies) | → You buy ingredients (create dependencies) → → You cook (main logic) | → You cook (main logic) → → You clean up | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["COOKING AT HOME vs RESTAURANT — The Inversion"]
+    N2["WITHOUT IoC (cooking at home):"]
+    N3["YOU control everything:"]
+    N4["→ You decide what to buy"]
+    N5["→ You buy ingredients (create dependencies)"]
+    N6["→ You cook (main logic)"]
+    N7["→ You clean up"]
+    N8["YOU have the control."]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```java
@@ -462,6 +607,27 @@ public class OrderService {
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: THREE INJECTION STYLES: → FIELD INJECTION (the lazy way): | FIELD INJECTION (the lazy way): → @Autowired private UserRepository repo; | @Autowired private UserRepository repo; → ❌ Can't make fields final (no immutability) | ❌ Can't make fields final (no immutability) → ❌ Hidden dependencies (not visible in constructor) | ❌ Hidden dependencies (not visible in constructor) → ❌ Can't use without Spring (can't new + inject in tests | ❌ Can't use without Spring (can't new + inject in tests → ❌ Allows too many dependencies (no visible bloat signal | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THREE INJECTION STYLES:"]
+    N2["FIELD INJECTION (the lazy way):"]
+    N3["@Autowired private UserRepository repo;"]
+    N4["❌ Can't make fields final (no immutability)"]
+    N5["❌ Hidden dependencies (not visible in constructor)"]
+    N6["❌ Can't use without Spring (can't new + inject in tests"]
+    N7["❌ Allows too many dependencies (no visible bloat signal"]
+    N8["SETTER INJECTION (for optional deps):"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ```java
 // ❌ Field injection — tests need reflection or Spring context
 @Service
@@ -514,6 +680,27 @@ UserService service = new UserService(mockRepo, mockEmail, mockCache);
 ║  the "fresh cup each time" promise is broken because the         ║
 ║  holder only gets filled once (at singleton creation).           ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: THE COFFEE MACHINE ANALOGY → Singleton scope: One coffee machine in the office. Ever | Singleton scope: One coffee machine in the office. Ever → shares it. Created once at startup. | shares it. Created once at startup. → it's requested. | it's requested. → THE PROBLEM: | THE PROBLEM: → Singleton OrderService is created ONCE at startup. | Singleton OrderService is created ONCE at startup. → During creation, Spring injects Prototype ShoppingCart. | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE COFFEE MACHINE ANALOGY"]
+    N2["Singleton scope: One coffee machine in the office. Ever"]
+    N3["shares it. Created once at startup."]
+    N4["it's requested."]
+    N5["THE PROBLEM:"]
+    N6["Singleton OrderService is created ONCE at startup."]
+    N7["During creation, Spring injects Prototype ShoppingCart."]
+    N8["Result: ALL users share the SAME cart!"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```java
@@ -582,6 +769,27 @@ public class ShoppingCart { ... }
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: @Controller = View Returns (traditional MVC web apps) → → Return value is a VIEW NAME (JSP, Thymeleaf template) | → Return value is a VIEW NAME (JSP, Thymeleaf template) → → DispatcherServlet passes to ViewResolver to render HT | → DispatcherServlet passes to ViewResolver to render HT → THE DEEPER UNDERSTANDING: | THE DEEPER UNDERSTANDING: → @Controller + return 'users' → ViewResolver looks for | @Controller + return 'users' → ViewResolver looks for → templates/users.html → renders HTML | templates/users.html → renders HTML → @RestController + return userList → HttpMessageConverte | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["@Controller = View Returns (traditional MVC web apps)"]
+    N2["→ Return value is a VIEW NAME (JSP, Thymeleaf template)"]
+    N3["→ DispatcherServlet passes to ViewResolver to render HT"]
+    N4["THE DEEPER UNDERSTANDING:"]
+    N5["@Controller + return 'users' → ViewResolver looks for"]
+    N6["templates/users.html → renders HTML"]
+    N7["@RestController + return userList → HttpMessageConverte"]
+    N8["(Jackson) serializes to JSON → {'users': [...]}"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 10. Spring Security Filter Chain: How Authentication Actually Works
@@ -619,6 +827,27 @@ public class ShoppingCart { ... }
 ║  KEY: Spring Security is NOT inside Spring MVC.                  ║
 ║  It runs BEFORE DispatcherServlet even sees the request.         ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: Spring Security = A CHAIN of Servlet Filters → Request → SecurityFilterChain: | Request → SecurityFilterChain: → 1. SecurityContextPersistenceFilter | 1. SecurityContextPersistenceFilter → → Load existing security context (from session/token) | → Load existing security context (from session/token) → 2. UsernamePasswordAuthenticationFilter | 2. UsernamePasswordAuthenticationFilter → → If login request: extract credentials, authenticate | → If login request: extract credentials, authenticate → → Delegates to AuthenticationManager | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Spring Security = A CHAIN of Servlet Filters"]
+    N2["Request → SecurityFilterChain:"]
+    N3["1. SecurityContextPersistenceFilter"]
+    N4["→ Load existing security context (from session/token)"]
+    N5["2. UsernamePasswordAuthenticationFilter"]
+    N6["→ If login request: extract credentials, authenticate"]
+    N7["→ Delegates to AuthenticationManager"]
+    N8["→ Which uses AuthenticationProvider"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---
@@ -691,6 +920,27 @@ public class StorageConfig {
 ║  4. Default thread pool is SimpleAsyncTaskExecutor (no pool!)    ║
 ║     → ALWAYS configure a proper ThreadPoolTaskExecutor           ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: Same proxy problem as @Transactional (Section 4): → @Async tells Spring: 'Run this in a different thread.' | @Async tells Spring: 'Run this in a different thread.' → But Spring needs to create a PROXY to intercept the cal | But Spring needs to create a PROXY to intercept the cal → and redirect it to a thread pool. | and redirect it to a thread pool. → @EnableAsync tells Spring: 'Create those proxies.' | @EnableAsync tells Spring: 'Create those proxies.' → Without it, @Async is just an annotation — no behavior. | Without it, @Async is just an annotation — no behavior. → SAME GOTCHAS: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Same proxy problem as @Transactional (Section 4):"]
+    N2["@Async tells Spring: 'Run this in a different thread.'"]
+    N3["But Spring needs to create a PROXY to intercept the cal"]
+    N4["and redirect it to a thread pool."]
+    N5["@EnableAsync tells Spring: 'Create those proxies.'"]
+    N6["Without it, @Async is just an annotation — no behavior."]
+    N7["SAME GOTCHAS:"]
+    N8["1. Self-call bypasses proxy → runs synchronously"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```java

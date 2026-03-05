@@ -65,6 +65,23 @@ Delete at index i   O(n)      Must shift elements left
 ─────────────────────────────────────────────────────
 ```
 
+> **Flow**: OPERATION TIME WHY? → Access arr[i] O(1) Direct address calculation | Access arr[i] O(1) Direct address calculation → Search (unsorted) O(n) Must check every element | Search (unsorted) O(n) Must check every element → Search (sorted) O(log n) Binary search possible | Search (sorted) O(log n) Binary search possible → Insert at index i O(n) Must shift elements right | Insert at index i O(n) Must shift elements right → Delete at index i O(n) Must shift elements left
+
+```mermaid
+flowchart TD
+    N1["OPERATION TIME WHY?"]
+    N2["Access arr[i] O(1) Direct address calculation"]
+    N3["Search (unsorted) O(n) Must check every element"]
+    N4["Search (sorted) O(log n) Binary search possible"]
+    N5["Insert at index i O(n) Must shift elements right"]
+    N6["Delete at index i O(n) Must shift elements left"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+```
+
 #### WHEN to use Arrays vs alternatives?
 
 ```
@@ -79,6 +96,24 @@ DON'T USE ARRAY WHEN:
   - Need key-value lookup → HashMap
   - Need sorted dynamic data → TreeSet/BST
   - Size changes dramatically → ArrayList (dynamic array)
+```
+
+> **Flow**: - Frequent insertions/deletions in middle → LinkedList | - Need key-value lookup → HashMap | - Need sorted dynamic data → TreeSet/BST | - Size changes dramatically → ArrayList (dynamic array)
+
+```mermaid
+flowchart LR
+    N1["- Frequent insertions/deletions in middle"]
+    N2["LinkedList"]
+    N3["- Need key-value lookup"]
+    N4["HashMap"]
+    N5["- Need sorted dynamic data"]
+    N6["TreeSet/BST"]
+    N7["- Size changes dramatically"]
+    N8["ArrayList (dynamic array)"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+    N7 --> N8
 ```
 
 #### Code: Implement these by hand
@@ -226,6 +261,17 @@ Bubble Sort      O(n)     O(n^2)    O(n^2)   O(1)   Yes       Yes
 ──────────────────────────────────────────────────────────────────────────
 "Adaptive" = performs better on partially sorted data
 "Stable"   = equal elements keep their relative order
+```
+
+> **Flow**: Algorithm Best Average Worst Space Stable? Adaptive? → 'Adaptive' = performs better on partially sorted data | 'Adaptive' = performs better on partially sorted data → 'Stable' = equal elements keep their relative order
+
+```mermaid
+flowchart TD
+    N1["Algorithm Best Average Worst Space Stable? Adaptive?"]
+    N2["'Adaptive' = performs better on partially sorted data"]
+    N3["'Stable' = equal elements keep their relative order"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 > **Read more:** [03_Algorithms/02_Sorting_Algorithms.md](../../03_Algorithms/02_Sorting_Algorithms.md)
@@ -399,6 +445,33 @@ There are 4 types of SQL commands:
   TCL (Txn)     : COMMIT, ROLLBACK, SAVEPOINT → Transaction safety
 ```
 
+> **Flow**: YOU → SQL Query | SQL Query → DATABASE ENGINE | DATABASE ENGINE → DISK | DISK → Results back to YOU | DDL (Define) : CREATE, ALTER, DROP → Build the structure | DML (Data) : SELECT, INSERT, UPDATE, DELETE → Work with data | ...+2 more
+
+```mermaid
+flowchart TD
+    N1["YOU"]
+    N2["SQL Query"]
+    N3["DATABASE ENGINE"]
+    N4["DISK"]
+    N5["Results back to YOU"]
+    N6["DDL (Define) : CREATE, ALTER, DROP"]
+    N7["Build the structure"]
+    N8["DML (Data) : SELECT, INSERT, UPDATE, DELETE"]
+    N9["Work with data"]
+    N10["DCL (Control) : GRANT, REVOKE"]
+    N11["Permissions"]
+    N12["TCL (Txn) : COMMIT, ROLLBACK, SAVEPOINT"]
+    N13["Transaction safety"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N6 --> N7
+    N8 --> N9
+    N10 --> N11
+    N12 --> N13
+```
+
 #### HOW — Your First Queries
 
 ```sql
@@ -524,6 +597,20 @@ Example 2: nums = [0, 1]    → Output: 2
 Example 3: nums = [9,6,4,2,3,5,7,0,1] → Output: 8
 ```
 
+> **Flow**: Example 1: nums = [3, 0, 1] → Output: 2 | Example 2: nums = [0, 1] → Output: 2 | Example 3: nums = [9,6,4,2,3,5,7,0,1] → Output: 8
+
+```mermaid
+flowchart LR
+    N1["Example 1: nums = [3, 0, 1]"]
+    N2["Output: 2"]
+    N3["Example 2: nums = [0, 1]"]
+    N4["Example 3: nums = [9,6,4,2,3,5,7,0,1]"]
+    N5["Output: 8"]
+    N1 --> N2
+    N3 --> N2
+    N4 --> N5
+```
+
 **Think before coding:** What approaches exist?
 1. Sort + check gaps → O(n log n)
 2. HashSet + check all numbers → O(n) time, O(n) space
@@ -582,6 +669,20 @@ Example 2: [1, 1, 2]             → Output: 2
 Example 3: [7]                    → Output: 7
 ```
 
+> **Flow**: Example 1: [2, 3, 5, 4, 5, 3, 4] → Output: 2 | Example 2: [1, 1, 2] → Output: 2 | Example 3: [7] → Output: 7
+
+```mermaid
+flowchart LR
+    N1["Example 1: [2, 3, 5, 4, 5, 3, 4]"]
+    N2["Output: 2"]
+    N3["Example 2: [1, 1, 2]"]
+    N4["Example 3: [7]"]
+    N5["Output: 7"]
+    N1 --> N2
+    N3 --> N2
+    N4 --> N5
+```
+
 **The XOR pattern (memorize this — it appears in 10+ problems):**
 ```
 PROPERTY: a ^ a = 0     (any number XOR itself = 0)
@@ -592,6 +693,17 @@ So: 2 ^ 3 ^ 5 ^ 4 ^ 5 ^ 3 ^ 4
   = 2 ^ (3 ^ 3) ^ (4 ^ 4) ^ (5 ^ 5)
   = 2 ^ 0 ^ 0 ^ 0
   = 2  ← The single element!
+```
+
+> **Flow**: PROPERTY: a ^ a = 0 (any number XOR itself = 0) → PROPERTY: a ^ 0 = a (any number XOR 0 = itself) | PROPERTY: a ^ 0 = a (any number XOR 0 = itself) → = 2 ← The single element!
+
+```mermaid
+flowchart TD
+    N1["PROPERTY: a ^ a = 0 (any number XOR itself = 0)"]
+    N2["PROPERTY: a ^ 0 = a (any number XOR 0 = itself)"]
+    N3["= 2 ← The single element!"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 <details>

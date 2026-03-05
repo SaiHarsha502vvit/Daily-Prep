@@ -305,6 +305,17 @@ _, _, [5, 1, 3] | _
 Count = j - i + 1 = 4 - 2 + 1 = 3 ✅
 ```
 
+> **Flow**: Window at i=0, j=2: → Window at i=1, j=3: | Window at i=1, j=3: → Window at i=2, j=4:
+
+```mermaid
+flowchart TD
+    N1["Window at i=0, j=2:"]
+    N2["Window at i=1, j=3:"]
+    N3["Window at i=2, j=4:"]
+    N1 --> N2
+    N2 --> N3
+```
+
 **Notice:** We never had to think about `i + k` or `i + k - 1`!
 
 ---
@@ -349,6 +360,27 @@ The first form is a QUESTION, not a FORMULA.
 Questions are easier to remember than formulas!
 ```
 
+> **Flow**: THE EQUIVALENCE CHAIN - WHY j-i+1=k WORKS → These THREE expressions are MATHEMATICALLY EQUIVALENT: | These THREE expressions are MATHEMATICALLY EQUIVALENT: → j - i + 1 = k ← 'Window has K elements' ⭐ BEST! | j - i + 1 = k ← 'Window has K elements' ⭐ BEST! → j = i + k - 1 ← 'j is at last valid position' | j = i + k - 1 ← 'j is at last valid position' → j &lt; i + k ← 'j hasn't crossed boundary' | j &lt; i + k ← 'j hasn't crossed boundary' → Mathematical Proof: | Mathematical Proof: → Start with: j - i + 1 = k | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE EQUIVALENCE CHAIN - WHY j-i+1=k WORKS"]
+    N2["These THREE expressions are MATHEMATICALLY EQUIVALENT:"]
+    N3["j - i + 1 = k ← 'Window has K elements' ⭐ BEST!"]
+    N4["j = i + k - 1 ← 'j is at last valid position'"]
+    N5["j &lt; i + k ← 'j hasn't crossed boundary'"]
+    N6["Mathematical Proof:"]
+    N7["Start with: j - i + 1 = k"]
+    N8["Rearrange: j - i = k - 1"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 These three expressions mean **exactly** the same thing:
 
 ```
@@ -357,6 +389,17 @@ j - i + 1 = k          ← "Window has K elements" (BEST!)
 j = i + k - 1          ← "j is at last valid position"
      ⇕
 j < i + k              ← "j hasn't crossed boundary"
+```
+
+> **Flow**: j - i + 1 = k ← 'Window has K elements' (BEST!) → j = i + k - 1 ← 'j is at last valid position' | j = i + k - 1 ← 'j is at last valid position' → j &lt; i + k ← 'j hasn't crossed boundary'
+
+```mermaid
+flowchart TD
+    N1["j - i + 1 = k ← 'Window has K elements' (BEST!)"]
+    N2["j = i + k - 1 ← 'j is at last valid position'"]
+    N3["j &lt; i + k ← 'j hasn't crossed boundary'"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 **Why the first is best:** You're counting, not calculating indices.
@@ -401,6 +444,17 @@ We want elements at indices: 0, 1, 2 (3 elements)
 
 CONCLUSION: Only "j < i + k" works, but it's HARD to remember!
 SOLUTION: Use "j - i + 1 == k" and NEVER think about it again!
+```
+
+> **Flow**: USING j &lt; i + k: / j &lt; 0 + 3 / j &lt; 3 / Valid j → USING j &lt;= i + k: ❌ WRONG / j &lt;= 0 + 3 / j &lt;=  | USING j &lt;= i + k: ❌ WRONG / j &lt;= 0 + 3 / j &lt;=  → USING j &lt; k: ❌ WRONG (after first window) / After i 
+
+```mermaid
+flowchart TD
+    N1["USING j &lt; i + k: / j &lt; 0 + 3 / j &lt; 3 / Valid j"]
+    N2["USING j &lt;= i + k: ❌ WRONG / j &lt;= 0 + 3 / j &lt;= "]
+    N3["USING j &lt; k: ❌ WRONG (after first window) / After i "]
+    N1 --> N2
+    N2 --> N3
 ```
 
 ### Test Case: i = 0, k = 3
@@ -516,6 +570,24 @@ j=3: i=2, window=[3,-2], count=3-2+1=2 ✅ PROCESS → i becomes 3
 j=4: i=3, window=[-2,5], count=4-3+1=2 ✅ PROCESS → i becomes 4
 
 Total windows processed: 4 = n - k + 1 = 5 - 2 + 1 ✅
+```
+
+> **Flow**: j=1: i=0, window=[10,-1], count=1-0+1=2 ✅ PROCESS → i becomes 1 | j=2: i=1, window=[-1,3], count=2-1+1=2 ✅ PROCESS → i becomes 2 | j=3: i=2, window=[3,-2], count=3-2+1=2 ✅ PROCESS → i becomes 3 | j=4: i=3, window=[-2,5], count=4-3+1=2 ✅ PROCESS → i becomes 4
+
+```mermaid
+flowchart LR
+    N1["j=1: i=0, window=[10,-1], count=1-0+1=2 ✅ PROCESS"]
+    N2["i becomes 1"]
+    N3["j=2: i=1, window=[-1,3], count=2-1+1=2 ✅ PROCESS"]
+    N4["i becomes 2"]
+    N5["j=3: i=2, window=[3,-2], count=3-2+1=2 ✅ PROCESS"]
+    N6["i becomes 3"]
+    N7["j=4: i=3, window=[-2,5], count=4-3+1=2 ✅ PROCESS"]
+    N8["i becomes 4"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+    N7 --> N8
 ```
 
 ---
@@ -660,6 +732,17 @@ public static void countPositivesInWindow(int[] arr, int k) {
 "How many elements? j - i + 1
 When it equals k, I'm ready."
 → Confidence, clarity, correctness
+```
+
+> **Flow**: 'How many elements? j - i + 1 → When it equals k, I'm ready.' | When it equals k, I'm ready.' → → Confidence, clarity, correctness
+
+```mermaid
+flowchart TD
+    N1["'How many elements? j - i + 1"]
+    N2["When it equals k, I'm ready.'"]
+    N3["→ Confidence, clarity, correctness"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 ---

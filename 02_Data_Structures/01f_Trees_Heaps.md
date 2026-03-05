@@ -35,6 +35,17 @@ HIERARCHICAL STRUCTURE:
 └────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: ▼ ▼ / C / ▼ ▼ / E F → ▼ ▼ / D E | ▼ ▼ / D E → ▼ ▼ / F G
+
+```mermaid
+flowchart TD
+    N1["▼ ▼ / C / ▼ ▼ / E F"]
+    N2["▼ ▼ / D E"]
+    N3["▼ ▼ / F G"]
+    N1 --> N2
+    N2 --> N3
+```
+
 ### Binary Search Tree (BST)
 
 ```
@@ -64,6 +75,19 @@ Search for 6:
 Time: O(log n) for balanced tree
 ```
 
+> **Flow**: ▼ ▼ / 10 / ▼ / 6 14 → 10 | 10 → ▼ ▼ / 1 6 | ▼ ▼ / 1 6 → 14
+
+```mermaid
+flowchart TD
+    N1["▼ ▼ / 10 / ▼ / 6 14"]
+    N2["10"]
+    N3["▼ ▼ / 1 6"]
+    N4["14"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 ### 🔴 Real-World Origin: File Systems (1965)
 
 **Problem (UNIX, 1969):** Computers need to organize thousands of files with hierarchical structure (folders in folders) and fast file lookup.
@@ -80,6 +104,31 @@ Time: O(log n) for balanced tree
 │   ├── bin/
 │   └── lib/
 └── etc/
+```
+
+> **Flow**: Root → home/ | Root → alice/ | Root → documents/ | Root → photos/ | Root → bob/ | Root → usr/ | ...+3 more
+
+```mermaid
+flowchart TD
+    N1["Root"]
+    N2["home/"]
+    N3["alice/"]
+    N4["documents/"]
+    N5["photos/"]
+    N6["bob/"]
+    N7["usr/"]
+    N8["bin/"]
+    N9["lib/"]
+    N10["etc/"]
+    N1 --> N2
+    N1 --> N3
+    N1 --> N4
+    N1 --> N5
+    N1 --> N6
+    N1 --> N7
+    N1 --> N8
+    N1 --> N9
+    N1 --> N10
 ```
 
 **Why Tree?** Natural hierarchy (parent-child), path from root to any file, easy to navigate (`cd`, `ls` commands).
@@ -265,6 +314,27 @@ STORED AS ARRAY (Level order):
 Parent of i: (i-1)/2
 Left child of i: 2*i + 1
 Right child of i: 2*i + 2
+```
+
+> **Flow**: 100 → ▼ ▼ / 90 8 | ▼ ▼ / 90 8 → 90 | 90 → 80 | 80 → ▼ ▼ / 0 60 | ▼ ▼ / 0 60 → 70 | 70 → 60 | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["100"]
+    N2["▼ ▼ / 90 8"]
+    N3["90"]
+    N4["80"]
+    N5["▼ ▼ / 0 60"]
+    N6["70"]
+    N7["60"]
+    N8["50"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### 🔴 Real-World Origin: Emergency Room Triage (1970s)

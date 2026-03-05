@@ -48,6 +48,15 @@ WITH JPA:
   // That's it. JPA maps table → object automatically.
 ```
 
+> **Flow**: // That's it. JPA maps table → object automatically.
+
+```mermaid
+flowchart LR
+    N1["// That's it. JPA maps table"]
+    N2["object automatically."]
+    N1 --> N2
+```
+
 ### WHAT: Key Concepts
 
 ```
@@ -169,6 +178,15 @@ FIX 2: JPQL JOIN FETCH
 List<Department> findAllWithEmployees();  // 1 query
 ```
 
+> **Flow**: BAD: Load 100 departments → for EACH department, load employees (101 queries!)
+
+```mermaid
+flowchart LR
+    N1["BAD: Load 100 departments"]
+    N2["for EACH department, load employees (101 queries!)"]
+    N1 --> N2
+```
+
 ### application.properties
 
 ```properties
@@ -250,6 +268,27 @@ EXPLAIN SELECT * FROM products WHERE category = 'Electronics' AND price > 100;
 │ 2-Color BFS      │ O(V + E)         │ Bipartite check       │
 │ A*               │ O(E log V) best  │ Targeted shortest     │
 └──────────────────┴──────────────────┴───────────────────────┘
+```
+
+> **Flow**: Algorithm Time Use Case → BFS O(V + E) Shortest unweighted | BFS O(V + E) Shortest unweighted → DFS O(V + E) Connectivity, cycles | DFS O(V + E) Connectivity, cycles → Dijkstra O((V+E) log V) Shortest weighted+ | Dijkstra O((V+E) log V) Shortest weighted+ → Bellman-Ford O(V * E) Negative weights | Bellman-Ford O(V * E) Negative weights → Kahn's Topo Sort O(V + E) Dependency ordering | Kahn's Topo Sort O(V + E) Dependency ordering → Kruskal's MST O(E log E) Min cost connect all | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Algorithm Time Use Case"]
+    N2["BFS O(V + E) Shortest unweighted"]
+    N3["DFS O(V + E) Connectivity, cycles"]
+    N4["Dijkstra O((V+E) log V) Shortest weighted+"]
+    N5["Bellman-Ford O(V * E) Negative weights"]
+    N6["Kahn's Topo Sort O(V + E) Dependency ordering"]
+    N7["Kruskal's MST O(E log E) Min cost connect all"]
+    N8["Union-Find O(α(N)) per op Dynamic connectivity"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

@@ -50,6 +50,17 @@
 └──────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: FRONTEND / React Angular Vue Svelte / ▼ / State Mgmt Re → BACKEND / Node.js Java Python Go / Express Spring FastA | BACKEND / Node.js Java Python Go / Express Spring FastA → DATA LAYER / PostgreSQL MongoDB Redis Elastic
+
+```mermaid
+flowchart TD
+    N1["FRONTEND / React Angular Vue Svelte / ▼ / State Mgmt Re"]
+    N2["BACKEND / Node.js Java Python Go / Express Spring FastA"]
+    N3["DATA LAYER / PostgreSQL MongoDB Redis Elastic"]
+    N1 --> N2
+    N2 --> N3
+```
+
 ### Frontend Development - React Complete
 
 #### React Project Structure (Production Ready)
@@ -123,6 +134,145 @@ my-react-app/
 ├── tsconfig.json
 ├── vite.config.ts
 └── package.json
+```
+
+> **Flow**: my-react-app/ → public/ | my-react-app/ → index.html | my-react-app/ → favicon.ico | my-react-app/ → assets/ | my-react-app/ → src/ | my-react-app/ → components/ # Reusable UI components | ...+61 more
+
+```mermaid
+flowchart TD
+    N1["my-react-app/"]
+    N2["public/"]
+    N3["index.html"]
+    N4["favicon.ico"]
+    N5["assets/"]
+    N6["src/"]
+    N7["components/ # Reusable UI components"]
+    N8["common/"]
+    N9["Button/"]
+    N10["Button.tsx"]
+    N11["Button.test.tsx"]
+    N12["Button.styles.ts"]
+    N13["index.ts"]
+    N14["Input/"]
+    N15["Modal/"]
+    N16["Table/"]
+    N17["layout/"]
+    N18["Header/"]
+    N19["Footer/"]
+    N20["Sidebar/"]
+    N21["pages/ # Page components (routes)"]
+    N22["Home/"]
+    N23["Dashboard/"]
+    N24["Profile/"]
+    N25["Settings/"]
+    N26["features/ # Feature-based modules"]
+    N27["auth/"]
+    N28["components/"]
+    N29["hooks/"]
+    N30["services/"]
+    N31["store/"]
+    N32["types/"]
+    N33["users/"]
+    N34["orders/"]
+    N35["hooks/ # Custom React hooks"]
+    N36["useAuth.ts"]
+    N37["useFetch.ts"]
+    N38["useDebounce.ts"]
+    N39["useLocalStorage.ts"]
+    N40["services/ # API services"]
+    N41["api.ts # Axios instance"]
+    N42["authService.ts"]
+    N43["userService.ts"]
+    N44["store/ # Global state (Redux/Zustand)"]
+    N45["slices/"]
+    N46["middleware/"]
+    N47["utils/ # Utility functions"]
+    N48["formatters.ts"]
+    N49["validators.ts"]
+    N50["constants.ts"]
+    N51["types/ # TypeScript types"]
+    N52["api.types.ts"]
+    N53["user.types.ts"]
+    N54["common.types.ts"]
+    N55["styles/ # Global styles"]
+    N56["globals.css"]
+    N57["variables.css"]
+    N58["theme.ts"]
+    N59["App.tsx"]
+    N60["main.tsx"]
+    N61["routes.tsx"]
+    N62["tests/"]
+    N63[".env.example"]
+    N64[".eslintrc.js"]
+    N65["tsconfig.json"]
+    N66["vite.config.ts"]
+    N67["package.json"]
+    N1 --> N2
+    N1 --> N3
+    N1 --> N4
+    N1 --> N5
+    N1 --> N6
+    N1 --> N7
+    N1 --> N8
+    N1 --> N9
+    N1 --> N10
+    N1 --> N11
+    N1 --> N12
+    N1 --> N13
+    N1 --> N14
+    N1 --> N15
+    N1 --> N16
+    N1 --> N17
+    N1 --> N18
+    N1 --> N19
+    N1 --> N20
+    N1 --> N21
+    N1 --> N22
+    N1 --> N23
+    N1 --> N24
+    N1 --> N25
+    N1 --> N26
+    N1 --> N27
+    N1 --> N28
+    N1 --> N29
+    N1 --> N30
+    N1 --> N31
+    N1 --> N32
+    N1 --> N33
+    N1 --> N34
+    N1 --> N35
+    N1 --> N36
+    N1 --> N37
+    N1 --> N38
+    N1 --> N39
+    N1 --> N40
+    N1 --> N41
+    N1 --> N42
+    N1 --> N43
+    N1 --> N44
+    N1 --> N45
+    N1 --> N46
+    N1 --> N47
+    N1 --> N48
+    N1 --> N49
+    N1 --> N50
+    N1 --> N51
+    N1 --> N52
+    N1 --> N53
+    N1 --> N54
+    N1 --> N55
+    N1 --> N56
+    N1 --> N57
+    N1 --> N58
+    N1 --> N59
+    N1 --> N60
+    N1 --> N61
+    N1 --> N62
+    N1 --> N63
+    N1 --> N64
+    N1 --> N65
+    N1 --> N66
+    N1 --> N67
 ```
 
 #### React Patterns - Production Code
@@ -518,6 +668,121 @@ my-spring-app/
 │           └── repository/
 ├── pom.xml
 └── Dockerfile
+```
+
+> **Flow**: my-spring-app/ → src/ | my-spring-app/ → main/ | my-spring-app/ → java/com/example/app/ | my-spring-app/ → config/ # Configuration classes | my-spring-app/ → SecurityConfig.java | my-spring-app/ → CorsConfig.java | ...+49 more
+
+```mermaid
+flowchart TD
+    N1["my-spring-app/"]
+    N2["src/"]
+    N3["main/"]
+    N4["java/com/example/app/"]
+    N5["config/ # Configuration classes"]
+    N6["SecurityConfig.java"]
+    N7["CorsConfig.java"]
+    N8["SwaggerConfig.java"]
+    N9["controller/ # REST Controllers"]
+    N10["AuthController.java"]
+    N11["UserController.java"]
+    N12["OrderController.java"]
+    N13["service/ # Business logic"]
+    N14["AuthService.java"]
+    N15["UserService.java"]
+    N16["impl/"]
+    N17["UserServiceImpl.java"]
+    N18["repository/ # Data access"]
+    N19["UserRepository.java"]
+    N20["OrderRepository.java"]
+    N21["model/ # Entities"]
+    N22["User.java"]
+    N23["Order.java"]
+    N24["AuditEntity.java"]
+    N25["dto/ # Data Transfer Objects"]
+    N26["request/"]
+    N27["LoginRequest.java"]
+    N28["CreateUserRequest.java"]
+    N29["response/"]
+    N30["UserResponse.java"]
+    N31["ApiResponse.java"]
+    N32["exception/ # Exception handling"]
+    N33["GlobalExceptionHandler.java"]
+    N34["ResourceNotFoundException.java"]
+    N35["ValidationException.java"]
+    N36["security/ # Security components"]
+    N37["JwtTokenProvider.java"]
+    N38["JwtAuthFilter.java"]
+    N39["UserDetailsServiceImpl.java"]
+    N40["mapper/ # Entity-DTO mappers"]
+    N41["UserMapper.java"]
+    N42["Application.java"]
+    N43["resources/"]
+    N44["application.yml"]
+    N45["application-dev.yml"]
+    N46["application-prod.yml"]
+    N47["db/migration/ # Flyway migrations"]
+    N48["V1__create_users_table.sql"]
+    N49["V2__create_orders_table.sql"]
+    N50["test/"]
+    N51["controller/"]
+    N52["service/"]
+    N53["repository/"]
+    N54["pom.xml"]
+    N55["Dockerfile"]
+    N1 --> N2
+    N1 --> N3
+    N1 --> N4
+    N1 --> N5
+    N1 --> N6
+    N1 --> N7
+    N1 --> N8
+    N1 --> N9
+    N1 --> N10
+    N1 --> N11
+    N1 --> N12
+    N1 --> N13
+    N1 --> N14
+    N1 --> N15
+    N1 --> N16
+    N1 --> N17
+    N1 --> N18
+    N1 --> N19
+    N1 --> N20
+    N1 --> N21
+    N1 --> N22
+    N1 --> N23
+    N1 --> N24
+    N1 --> N25
+    N1 --> N26
+    N1 --> N27
+    N1 --> N28
+    N1 --> N29
+    N1 --> N30
+    N1 --> N31
+    N1 --> N32
+    N1 --> N33
+    N1 --> N34
+    N1 --> N35
+    N1 --> N36
+    N1 --> N37
+    N1 --> N38
+    N1 --> N39
+    N1 --> N40
+    N1 --> N41
+    N1 --> N42
+    N1 --> N43
+    N1 --> N44
+    N1 --> N45
+    N1 --> N46
+    N1 --> N47
+    N1 --> N48
+    N1 --> N49
+    N1 --> N50
+    N1 --> N51
+    N1 --> N52
+    N1 --> N53
+    N1 --> N54
+    N1 --> N55
 ```
 
 #### Spring Boot Production Code
@@ -2047,6 +2312,27 @@ _Stage 3 Complete! Ready for Stage 4: DevOps & Networking Deep Dive_
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: DEVOPS INFINITY LOOP → PLAN → CODE → BUILD → TEST | PLAN → CODE → BUILD → TEST → MONITOR RELEASE | MONITOR RELEASE → OPERATE ← DEPLOY ← RELEASE | OPERATE ← DEPLOY ← RELEASE → DEV SIDE (Left): OPS SIDE (Right): | DEV SIDE (Left): OPS SIDE (Right): → Plan Release | Plan Release → Code Deploy | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["DEVOPS INFINITY LOOP"]
+    N2["PLAN → CODE → BUILD → TEST"]
+    N3["MONITOR RELEASE"]
+    N4["OPERATE ← DEPLOY ← RELEASE"]
+    N5["DEV SIDE (Left): OPS SIDE (Right):"]
+    N6["Plan Release"]
+    N7["Code Deploy"]
+    N8["Build Operate"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### Kubernetes - Complete Guide
 
 #### Kubernetes Architecture
@@ -2091,6 +2377,15 @@ _Stage 3 Complete! Ready for Stage 4: DevOps & Networking Deep Dive_
 │  └────────────────────────────────────────────────────────┘     │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: Cloud / Controller / Manager / (Optional) → NODE 1 NODE 2 / Kubelet Kubelet / Kube-Proxy Kube-Proxy
+
+```mermaid
+flowchart TD
+    N5["Cloud / Controller / Manager / (Optional)"]
+    N6["NODE 1 NODE 2 / Kubelet Kubelet / Kube-Proxy Kube-Proxy"]
+    N5 --> N6
 ```
 
 #### Kubernetes Objects

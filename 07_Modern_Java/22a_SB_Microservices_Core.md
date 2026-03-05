@@ -54,6 +54,19 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: WHY: Why Microservices? / • Scale independently: Scale  → HOW: How Do Microservices Communicate? / • Service Disc | HOW: How Do Microservices Communicate? / • Service Disc → WHEN: When to Use Microservices? / USE MICROSERVICES: / | WHEN: When to Use Microservices? / USE MICROSERVICES: / → WHICH: Which Patterns to Master? / ESSENTIAL: API Gatew
+
+```mermaid
+flowchart TD
+    N1["WHY: Why Microservices? / • Scale independently: Scale "]
+    N2["HOW: How Do Microservices Communicate? / • Service Disc"]
+    N3["WHEN: When to Use Microservices? / USE MICROSERVICES: /"]
+    N4["WHICH: Which Patterns to Master? / ESSENTIAL: API Gatew"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 ---
 
 ## 📚 Table of Contents
@@ -114,6 +127,33 @@
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: Load Balancer / Reverse Proxy → Order / Service | Load Balancer / Reverse Proxy → Payment / Service | User / Service → User DB / (Postgres) | User / Service → Order DB / (Mongo) | Order / Service → User DB / (Postgres) | Order / Service → Order DB / (Mongo) | ...+6 more
+
+```mermaid
+flowchart TD
+    N2["Load Balancer / Reverse Proxy"]
+    N3["User / Service"]
+    N4["Order / Service"]
+    N5["Payment / Service"]
+    N6["Inventory / Service"]
+    N7["User DB / (Postgres)"]
+    N8["Order DB / (Mongo)"]
+    N9["Payment DB / (Postgres)"]
+    N10["Inventory / DB"]
+    N2 --> N4
+    N2 --> N5
+    N3 --> N7
+    N3 --> N8
+    N4 --> N7
+    N4 --> N8
+    N4 --> N9
+    N5 --> N8
+    N5 --> N9
+    N5 --> N10
+    N6 --> N9
+    N6 --> N10
+```
+
 ### Key Principles
 
 | Principle | Description | Example |
@@ -150,6 +190,29 @@
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: Service / Discovery / (Eureka) → API Gateway / (Gateway) | API Gateway / (Gateway) → Config Server / (Config) | Config Server / (Config) → Circuit / Breaker / (Resilience4j) | Circuit / Breaker / (Resilience4j) → Distributed / Tracing / (Sleuth) | Distributed / Tracing / (Sleuth) → Load / Balancing / (LoadBalancer) | Load / Balancing / (LoadBalancer) → Message / Broker / (Stream) | ...+2 more
+
+```mermaid
+flowchart TD
+    N1["Service / Discovery / (Eureka)"]
+    N2["API Gateway / (Gateway)"]
+    N3["Config Server / (Config)"]
+    N4["Circuit / Breaker / (Resilience4j)"]
+    N5["Distributed / Tracing / (Sleuth)"]
+    N6["Load / Balancing / (LoadBalancer)"]
+    N7["Message / Broker / (Stream)"]
+    N8["Security / (Security)"]
+    N9["Monitoring / (Actuator)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+    N8 --> N9
+```
+
 ---
 
 ## Service Discovery
@@ -172,6 +235,15 @@ With Service Discovery:
 │  ✅ Automatic failover to other instances                        │
 │  ✅ Dynamic scaling without config changes                       │
 └─────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: Service A needs to call Service B / ❌ Hard-coded URLs:  → Service A calls 'order-service' (logical name) / ✅ Serv
+
+```mermaid
+flowchart TD
+    N1["Service A needs to call Service B / ❌ Hard-coded URLs: "]
+    N2["Service A calls 'order-service' (logical name) / ✅ Serv"]
+    N1 --> N2
 ```
 
 ### Eureka Server Setup
@@ -462,6 +534,15 @@ With API Gateway:
 │  ✅ Centralized auth, rate limiting, logging                     │
 │  ✅ Request routing and aggregation                              │
 └─────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: Client → User Service (port 8081) / Client → Order Serv → Client → API Gateway (port 8080) / Gateway → User/Order
+
+```mermaid
+flowchart TD
+    N1["Client → User Service (port 8081) / Client → Order Serv"]
+    N2["Client → API Gateway (port 8080) / Gateway → User/Order"]
+    N1 --> N2
 ```
 
 ### Spring Cloud Gateway Setup
@@ -851,6 +932,17 @@ With Circuit Breaker:
 │    CLOSED    │   OPEN                                           │
 │              │                                                  │
 └─────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: CLOSED / (Requests / pass through) → OPEN / (Requests / fail fast) | OPEN / (Requests / fail fast) → HALF-OPEN / (Limited / requests)
+
+```mermaid
+flowchart TD
+    N3["CLOSED / (Requests / pass through)"]
+    N4["OPEN / (Requests / fail fast)"]
+    N5["HALF-OPEN / (Limited / requests)"]
+    N3 --> N4
+    N4 --> N5
 ```
 
 ### Resilience4j Setup

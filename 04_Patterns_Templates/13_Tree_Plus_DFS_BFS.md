@@ -103,6 +103,21 @@ DFS (Postorder): 4 → 5 → 2 → 6 → 7 → 3 → 1  (children first)
 BFS (Level):     1 | 2,3 | 4,5,6,7             (level by level)
 ```
 
+> **Flow**: Tree: 1 → DFS (Preorder): 1 → 2 → 4 → 5 → 3 → 6 → 7 (go deep firs | DFS (Preorder): 1 → 2 → 4 → 5 → 3 → 6 → 7 (go deep firs → DFS (Inorder): 4 → 2 → 5 → 1 → 6 → 3 → 7 (left-root-rig | DFS (Inorder): 4 → 2 → 5 → 1 → 6 → 3 → 7 (left-root-rig → DFS (Postorder): 4 → 5 → 2 → 6 → 7 → 3 → 1 (children fi | DFS (Postorder): 4 → 5 → 2 → 6 → 7 → 3 → 1 (children fi → BFS (Level): 1 | 2,3 | 4,5,6,7 (level by level)
+
+```mermaid
+flowchart TD
+    N1["Tree: 1"]
+    N2["DFS (Preorder): 1 → 2 → 4 → 5 → 3 → 6 → 7 (go deep firs"]
+    N3["DFS (Inorder): 4 → 2 → 5 → 1 → 6 → 3 → 7 (left-root-rig"]
+    N4["DFS (Postorder): 4 → 5 → 2 → 6 → 7 → 3 → 1 (children fi"]
+    N5["BFS (Level): 1 | 2,3 | 4,5,6,7 (level by level)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+```
+
 ---
 
 ## � FULL WALKTHROUGH: Validate BST (Range Propagation)
@@ -129,6 +144,15 @@ Step-by-step:
   → Return false
 
 Time: O(n) | Space: O(h)
+```
+
+> **Flow**: must be &gt; 5. But 3 &lt; 5 → INVALID.
+
+```mermaid
+flowchart LR
+    N1["must be &gt; 5. But 3 &lt; 5"]
+    N2["INVALID."]
+    N1 --> N2
 ```
 
 ---
@@ -174,6 +198,15 @@ KEY: The "level snapshot" trick = process exactly queue.size() nodes per level.
 Time: O(n) | Space: O(w) where w = max width of tree
 ```
 
+> **Flow**: queue = [] → done!
+
+```mermaid
+flowchart LR
+    N1["queue = []"]
+    N2["done!"]
+    N1 --> N2
+```
+
 ---
 
 ## 🛡️ EDGE CASES & COMMON MISTAKES
@@ -201,6 +234,27 @@ COMMON MISTAKES:
 4. Max path sum: returning path-through-node but answer needs turn
    The function returns max single-path, but updates global with turn.
 5. Using == instead of .equals() for TreeNode values (rare but tricky)
+```
+
+> **Flow**: EDGE CASES: → Edge Case Handling | Edge Case Handling → Null root Return empty list / false / 0 | Null root Return empty list / false / 0 → Single node (leaf) Height=0, depth=0, is balanced | Single node (leaf) Height=0, depth=0, is balanced → Skewed tree (like linked list) Height = n, BFS space = | Skewed tree (like linked list) Height = n, BFS space = → Complete binary tree BFS space = O(n/2) for last level | Complete binary tree BFS space = O(n/2) for last level → Duplicate values in BST Convention: left &lt; root ≤ ri | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["EDGE CASES:"]
+    N2["Edge Case Handling"]
+    N3["Null root Return empty list / false / 0"]
+    N4["Single node (leaf) Height=0, depth=0, is balanced"]
+    N5["Skewed tree (like linked list) Height = n, BFS space ="]
+    N6["Complete binary tree BFS space = O(n/2) for last level"]
+    N7["Duplicate values in BST Convention: left &lt; root ≤ ri"]
+    N8["COMMON MISTAKES:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

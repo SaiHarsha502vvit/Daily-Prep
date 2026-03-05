@@ -78,6 +78,15 @@ Microtasks ALWAYS run before macrotasks.
 After each macrotask, ALL pending microtasks run first.
 ```
 
+> **Flow**: WEB APIs (browser) or / C++ APIs (Node) / • setTimeout/ → CALLBACK QUEUES / Microtask Queue: / Promise.then() / q
+
+```mermaid
+flowchart TD
+    N2["WEB APIs (browser) or / C++ APIs (Node) / • setTimeout/"]
+    N3["CALLBACK QUEUES / Microtask Queue: / Promise.then() / q"]
+    N2 --> N3
+```
+
 ### The Event Loop in Action — Step by Step
 
 ```javascript
@@ -114,6 +123,27 @@ console.log("4");                          // Sync → call stack
 ║  ← microtasks done →                                                 ║
 ║  cb→"2"              []              []             "1","4","3","2"  ║
 ╚══════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: STEP-BY-STEP TRACE: → CALL STACK MICROTASK Q MACROTASK Q OUTPUT | CALL STACK MICROTASK Q MACROTASK Q OUTPUT → log('1') [] [] '1' | log('1') [] [] '1' → setTimeout(cb,0) [] [cb→'2'] '1' | setTimeout(cb,0) [] [cb→'2'] '1' → Promise.then(cb) [cb→'3'] [cb→'2'] '1' | Promise.then(cb) [cb→'3'] [cb→'2'] '1' → log('4') [cb→'3'] [cb→'2'] '1','4' | log('4') [cb→'3'] [cb→'2'] '1','4' → ← stack empty → | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["STEP-BY-STEP TRACE:"]
+    N2["CALL STACK MICROTASK Q MACROTASK Q OUTPUT"]
+    N3["log('1') [] [] '1'"]
+    N4["setTimeout(cb,0) [] [cb→'2'] '1'"]
+    N5["Promise.then(cb) [cb→'3'] [cb→'2'] '1'"]
+    N6["log('4') [cb→'3'] [cb→'2'] '1','4'"]
+    N7["← stack empty →"]
+    N8["← microtasks done →"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---
@@ -185,6 +215,17 @@ STATES:
 │          │───────────────→│ REJECTED   │
 └──────────┘                 └───────────┘
 Once settled (fulfilled/rejected), a promise NEVER changes state.
+```
+
+> **Flow**: PENDING --(resolve())--> FULFILLED | PENDING --(resolve())--> REJECTED
+
+```mermaid
+flowchart LR
+    N1["PENDING"]
+    N2["FULFILLED"]
+    N3["REJECTED"]
+    N1 -->|"resolve()"| N2
+    N1 -->|"resolve()"| N3
 ```
 
 ```javascript
@@ -272,6 +313,23 @@ PROMISE METHODS COMPARISON:
 └───────────────────┴────────────┴────────────┴─────────────────┘
 ```
 
+> **Flow**: PROMISE METHODS COMPARISON: → Method Resolves Rejects Use Case | Method Resolves Rejects Use Case → Promise.all ALL fulfill ANY rejects Need all results | Promise.all ALL fulfill ANY rejects Need all results → Promise.allSettled ALL settle Never Check each | Promise.allSettled ALL settle Never Check each → Promise.race First done First done Timeout/fastest | Promise.race First done First done Timeout/fastest → Promise.any First win ALL reject Multiple sources
+
+```mermaid
+flowchart TD
+    N1["PROMISE METHODS COMPARISON:"]
+    N2["Method Resolves Rejects Use Case"]
+    N3["Promise.all ALL fulfill ANY rejects Need all results"]
+    N4["Promise.allSettled ALL settle Never Check each"]
+    N5["Promise.race First done First done Timeout/fastest"]
+    N6["Promise.any First win ALL reject Multiple sources"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+```
+
 ---
 
 ## 4. Async/Await — The Clean Syntax
@@ -290,6 +348,19 @@ PROMISE METHODS COMPARISON:
 ║        `await` pauses execution until the Promise resolves.          ║
 ║        (The thread isn't blocked — other code can run!)              ║
 ╚══════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: BEHAVE like synchronous code. → HOW: `async` marks a function as returning a Promise. | HOW: `async` marks a function as returning a Promise. → `await` pauses execution until the Promise resolves. | `await` pauses execution until the Promise resolves. → (The thread isn't blocked — other code can run!)
+
+```mermaid
+flowchart TD
+    N1["BEHAVE like synchronous code."]
+    N2["HOW: `async` marks a function as returning a Promise."]
+    N3["`await` pauses execution until the Promise resolves."]
+    N4["(The thread isn't blocked — other code can run!)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
 ```
 
 ```javascript
@@ -526,6 +597,23 @@ If microtasks keep adding more microtasks, setTimeout callbacks
 and UI rendering NEVER run. The page freezes.
 ```
 
+> **Flow**: EVENT LOOP CYCLE: / 1. Execute ALL synchronous code in → 2. Drain ENTIRE microtask queue / (including microtasks | 2. Drain ENTIRE microtask queue / (including microtasks → 3. Pick ONE macrotask from macrotask queue | 3. Pick ONE macrotask from macrotask queue → 4. Drain ENTIRE microtask queue again | 4. Drain ENTIRE microtask queue again → 5. Render/paint (if needed) | 5. Render/paint (if needed) → 6. Go to step 3 (next macrotask) / IMPLICATION: Microta
+
+```mermaid
+flowchart TD
+    N1["EVENT LOOP CYCLE: / 1. Execute ALL synchronous code in"]
+    N2["2. Drain ENTIRE microtask queue / (including microtasks"]
+    N3["3. Pick ONE macrotask from macrotask queue"]
+    N4["4. Drain ENTIRE microtask queue again"]
+    N5["5. Render/paint (if needed)"]
+    N6["6. Go to step 3 (next macrotask) / IMPLICATION: Microta"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+```
+
 ---
 
 ## 7. Common Async Patterns in Real Code
@@ -625,6 +713,27 @@ Q: Can you cancel a fetch request?
 Q: How to run async operations in parallel?
 → Promise.all([promise1, promise2, promise3])
   NOT: await p1; await p2; (this runs sequentially!)
+```
+
+> **Flow**: Q: What is the event loop? → It checks if the call stack is empty, then moves tasks | It checks if the call stack is empty, then moves tasks → queues (microtask first, then macrotask) to the stack. | queues (microtask first, then macrotask) to the stack. → Q: Difference between microtask and macrotask? | Q: Difference between microtask and macrotask? → Q: Promise.all vs Promise.allSettled? | Q: Promise.all vs Promise.allSettled? → → .all: rejects immediately if ANY promise rejects. | → .all: rejects immediately if ANY promise rejects. → .allSettled: waits for ALL, returns status of each. | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Q: What is the event loop?"]
+    N2["It checks if the call stack is empty, then moves tasks"]
+    N3["queues (microtask first, then macrotask) to the stack."]
+    N4["Q: Difference between microtask and macrotask?"]
+    N5["Q: Promise.all vs Promise.allSettled?"]
+    N6["→ .all: rejects immediately if ANY promise rejects."]
+    N7[".allSettled: waits for ALL, returns status of each."]
+    N8["Q: What does async do to a function?"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

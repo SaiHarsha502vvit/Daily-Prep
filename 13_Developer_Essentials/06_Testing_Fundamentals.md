@@ -21,6 +21,27 @@ After compliance audit   │ $10,000+
 Testing = Finding bugs when they're CHEAP to fix
 ```
 
+> **Flow**: When bug is found Cost to fix → During coding $1 | During coding $1 → During code review $5 | During code review $5 → During testing $15 | During testing $15 → After deployment $100 | After deployment $100 → In production (customer) $1,000+ | In production (customer) $1,000+ → After compliance audit $10,000+ | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["When bug is found Cost to fix"]
+    N2["During coding $1"]
+    N3["During code review $5"]
+    N4["During testing $15"]
+    N5["After deployment $100"]
+    N6["In production (customer) $1,000+"]
+    N7["After compliance audit $10,000+"]
+    N8["Testing = Finding bugs when they're CHEAP to fix"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ## The Testing Pyramid
 
 ```
@@ -42,6 +63,17 @@ Testing = Finding bugs when they're CHEAP to fix
 Unit Tests:        70% of all tests (fast, isolated, test ONE method)
 Integration Tests: 20% of all tests (test components working together)
 E2E Tests:         10% of all tests (test full user workflows)
+```
+
+> **Flow**: E2E → Integ / ration | Integ / ration → UNIT / TESTS
+
+```mermaid
+flowchart TD
+    N1["E2E"]
+    N2["Integ / ration"]
+    N3["UNIT / TESTS"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 ---
@@ -263,6 +295,20 @@ WHY TDD?
   - Refactoring is SAFE (tests catch regressions)
 ```
 
+> **Flow**: Step 1 (RED): Write test → shouldCalculateAreaOfCircle(radius=5) | shouldCalculateAreaOfCircle(radius=5) → 78.54 | Step 2 (GREEN): Write method → return Math.PI * r * r;
+
+```mermaid
+flowchart LR
+    N1["Step 1 (RED): Write test"]
+    N2["shouldCalculateAreaOfCircle(radius=5)"]
+    N3["78.54"]
+    N4["Step 2 (GREEN): Write method"]
+    N5["return Math.PI * r * r;"]
+    N1 --> N2
+    N2 --> N3
+    N4 --> N5
+```
+
 ---
 
 # WHERE: Testing in Real Projects
@@ -279,6 +325,29 @@ src/
     ├── controller/      ← Integration tests (MockMvc)
     ├── service/         ← Unit tests (Mockito)
     └── repository/      ← Integration tests (H2 DB)
+```
+
+> **Flow**: src/ → main/java/com/myapp/ | src/ → controller/ | src/ → service/ | src/ → repository/ | src/ → test/java/com/myapp/ | src/ → controller/ ← Integration tests (MockMvc) | ...+2 more
+
+```mermaid
+flowchart TD
+    N1["src/"]
+    N2["main/java/com/myapp/"]
+    N3["controller/"]
+    N4["service/"]
+    N5["repository/"]
+    N6["test/java/com/myapp/"]
+    N7["controller/ ← Integration tests (MockMvc)"]
+    N8["service/ ← Unit tests (Mockito)"]
+    N9["repository/ ← Integration tests (H2 DB)"]
+    N1 --> N2
+    N1 --> N3
+    N1 --> N4
+    N1 --> N5
+    N1 --> N6
+    N1 --> N7
+    N1 --> N8
+    N1 --> N9
 ```
 
 ## What to Test (Priority)
@@ -312,6 +381,21 @@ IMPORTANT: High coverage ≠ good tests!
   Focus on testing BEHAVIOR, not just executing lines.
 ```
 
+> **Flow**: 80%+ → Good for most projects | 90%+ → Critical systems (banking, healthcare) | 100% → Diminishing returns, not practical
+
+```mermaid
+flowchart LR
+    N1["80%+"]
+    N2["Good for most projects"]
+    N3["90%+"]
+    N4["Critical systems (banking, healthcare)"]
+    N5["100%"]
+    N6["Diminishing returns, not practical"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+```
+
 ---
 
 # 🧭 Testing Cheat Sheet
@@ -324,6 +408,17 @@ E2E:           Selenium / Playwright
 PERFORMANCE:   JMeter / Gatling
 PATTERN:       Arrange → Act → Assert (AAA)
 NAMING:        should_[behavior]_when_[condition]
+```
+
+> **Flow**: PATTERN: Arrange → Act | Act → Assert (AAA)
+
+```mermaid
+flowchart LR
+    N1["PATTERN: Arrange"]
+    N2["Act"]
+    N3["Assert (AAA)"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 ---

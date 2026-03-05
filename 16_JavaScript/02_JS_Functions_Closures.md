@@ -65,6 +65,25 @@ constructors and don't have their own `this`. Declarations are
 hoisted, which some teams consider cleaner for readability.
 ```
 
+> **Flow**: WHEN TO USE WHICH: → Type Best For | Type Best For → Declaration Main functions, utility functions | Declaration Main functions, utility functions → Arrow (const) Callbacks, array methods, short fns | Arrow (const) Callbacks, array methods, short fns → Expression Conditional function assignment | Expression Conditional function assignment → REASONING: Arrow functions are shorter but can't be use | REASONING: Arrow functions are shorter but can't be use → hoisted, which some teams consider cleaner for readabil
+
+```mermaid
+flowchart TD
+    N1["WHEN TO USE WHICH:"]
+    N2["Type Best For"]
+    N3["Declaration Main functions, utility functions"]
+    N4["Arrow (const) Callbacks, array methods, short fns"]
+    N5["Expression Conditional function assignment"]
+    N6["REASONING: Arrow functions are shorter but can't be use"]
+    N7["hoisted, which some teams consider cleaner for readabil"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+```
+
 ---
 
 ## 2. Parameters — Default, Rest, Destructuring
@@ -118,6 +137,19 @@ createComponent({ tag: "h1", className: "title", children: ["Hello"] });
 ║  "I", it refers to you. When I say "I", it refers to me.             ║
 ║  The meaning depends on WHO IS SPEAKING (who called the function).   ║
 ╚══════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: function. But WHICH object depends on HOW the function → called, not where it's written. | called, not where it's written. → In JS, `this` changes based on CALL SITE — 4 rules + ar | In JS, `this` changes based on CALL SITE — 4 rules + ar → 'I', it refers to you. When I say 'I', it refers to me.
+
+```mermaid
+flowchart TD
+    N1["function. But WHICH object depends on HOW the function"]
+    N2["called, not where it's written."]
+    N3["In JS, `this` changes based on CALL SITE — 4 rules + ar"]
+    N4["'I', it refers to you. When I say 'I', it refers to me."]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
 ```
 
 ### The 5 Rules of `this` (in priority order)
@@ -196,6 +228,21 @@ Called as object.method()?
 Default: `this` = window (or undefined in strict mode)
 ```
 
+> **Flow**: YES → `this` = enclosing lexical scope's `this` | YES → `this` = newly created object | YES → `this` = specified object | YES → `this` = object before the dot
+
+```mermaid
+flowchart LR
+    N1["YES"]
+    N2["`this` = enclosing lexical scope's `this`"]
+    N3["`this` = newly created object"]
+    N4["`this` = specified object"]
+    N5["`this` = object before the dot"]
+    N1 --> N2
+    N1 --> N3
+    N1 --> N4
+    N1 --> N5
+```
+
 ---
 
 ## 4. Closures — The Most Important Concept
@@ -220,6 +267,23 @@ Default: `this` = window (or undefined in strict mode)
 ║  into its backpack. Even after leaving the outer function (the       ║
 ║  house), the inner function still carries those variables.           ║
 ╚══════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: its outer (enclosing) scope even AFTER the outer functi → has returned. | has returned. → application, memoization, and React hooks (useState). | application, memoization, and React hooks (useState). → surrounding scope (not a copy). This reference persists | surrounding scope (not a copy). This reference persists → even after the outer function finishes executing. | even after the outer function finishes executing. → house), the inner function still carries those variable
+
+```mermaid
+flowchart TD
+    N1["its outer (enclosing) scope even AFTER the outer functi"]
+    N2["has returned."]
+    N3["application, memoization, and React hooks (useState)."]
+    N4["surrounding scope (not a copy). This reference persists"]
+    N5["even after the outer function finishes executing."]
+    N6["house), the inner function still carries those variable"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
 ```
 
 ```javascript
@@ -261,6 +325,27 @@ After outer() returns:
 
 outer()'s execution context is gone, but the closure keeps
 count alive because inner still references it.
+```
+
+> **Flow**: CLOSURE MEMORY VISUALIZATION: → After outer() returns: | After outer() returns: → counter variable | counter variable → Points to inner function | Points to inner function → inner function carries a 'backpack': | inner function carries a 'backpack': → Closure Scope | Closure Scope → count: 0 → 1 → 2 → 3 (persists!) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["CLOSURE MEMORY VISUALIZATION:"]
+    N2["After outer() returns:"]
+    N3["counter variable"]
+    N4["Points to inner function"]
+    N5["inner function carries a 'backpack':"]
+    N6["Closure Scope"]
+    N7["count: 0 → 1 → 2 → 3 (persists!)"]
+    N8["outer()'s execution context is gone, but the closure ke"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### Closure Use Cases
@@ -399,6 +484,17 @@ for (var i = 0; i < 3; i++) {
 ║  WHO:  Used everywhere: Array methods, event handlers, Express       ║
 ║        middleware, React components.                                 ║
 ╚══════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: WHAT: A function that takes another function as argumen → returns a function. | returns a function. → middleware, React components.
+
+```mermaid
+flowchart TD
+    N1["WHAT: A function that takes another function as argumen"]
+    N2["returns a function."]
+    N3["middleware, React components."]
+    N1 --> N2
+    N2 --> N3
 ```
 
 ```javascript
@@ -616,6 +712,27 @@ Q: What is currying?
 Q: What is a higher-order function?
 → A function that takes a function as argument or returns one.
   Examples: map, filter, reduce, addEventListener.
+```
+
+> **Flow**: Q: What is a closure? → after the outer function has returned. | after the outer function has returned. → Q: Give a practical use of closures. | Q: Give a practical use of closures. → React hooks (useState), factory functions. | React hooks (useState), factory functions. → Q: What does `this` refer to in an arrow function? | Q: What does `this` refer to in an arrow function? → don't have their own `this`. | don't have their own `this`. → Q: What's the difference between call, apply, and bind? | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Q: What is a closure?"]
+    N2["after the outer function has returned."]
+    N3["Q: Give a practical use of closures."]
+    N4["React hooks (useState), factory functions."]
+    N5["Q: What does `this` refer to in an arrow function?"]
+    N6["don't have their own `this`."]
+    N7["Q: What's the difference between call, apply, and bind?"]
+    N8["→ call: invokes with `this` + individual args."]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

@@ -116,6 +116,27 @@ List<String> result = names.stream()
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: SHORT-CIRCUITING OPERATIONS: → Terminal: findFirst(), findAny(), anyMatch(), | Terminal: findFirst(), findAny(), anyMatch(), → allMatch(), noneMatch() | allMatch(), noneMatch() → Intermediate: limit(), takeWhile() (Java 9+) | Intermediate: limit(), takeWhile() (Java 9+) → These can STOP the entire pipeline early: | These can STOP the entire pipeline early: → users.stream() | users.stream() → .filter(u -&gt; u.getAge() &gt; 65) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["SHORT-CIRCUITING OPERATIONS:"]
+    N2["Terminal: findFirst(), findAny(), anyMatch(),"]
+    N3["allMatch(), noneMatch()"]
+    N4["Intermediate: limit(), takeWhile() (Java 9+)"]
+    N5["These can STOP the entire pipeline early:"]
+    N6["users.stream()"]
+    N7[".filter(u -&gt; u.getAge() &gt; 65)"]
+    N8[".findFirst(); // Might check only 100 users"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### Follow-Up Trap
 > "If streams are lazy, what happens if you never call a terminal operation?"
 
@@ -165,6 +186,27 @@ names.stream()
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: THE DVD vs NETFLIX ANALOGY → Collection = DVD collection on your shelf | Collection = DVD collection on your shelf → → All data IN MEMORY right now | → All data IN MEMORY right now → → You can pick any DVD (random access) | → You can pick any DVD (random access) → → You can count them (size) | → You can count them (size) → → You can add/remove DVDs (mutable) | → You can add/remove DVDs (mutable) → → Same DVDs, watch as many times as you want (reusable) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE DVD vs NETFLIX ANALOGY"]
+    N2["Collection = DVD collection on your shelf"]
+    N3["→ All data IN MEMORY right now"]
+    N4["→ You can pick any DVD (random access)"]
+    N5["→ You can count them (size)"]
+    N6["→ You can add/remove DVDs (mutable)"]
+    N7["→ Same DVDs, watch as many times as you want (reusable)"]
+    N8["Stream = Netflix"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### The "Used Once" Rule — Code Proof
 
 ```java
@@ -199,6 +241,27 @@ stream.forEach(System.out::println);
 └────────────────────┴───────────────────────┴──────────────────────┘
 ```
 
+> **Flow**: Feature Collection Stream → When computed Eagerly (all at once) Lazily (on demand) | When computed Eagerly (all at once) Lazily (on demand) → Reusable ✅ Yes ❌ Once only | Reusable ✅ Yes ❌ Once only → Mutable ✅ add/remove ❌ Immutable pipe | Mutable ✅ add/remove ❌ Immutable pipe → Size Known (.size()) May be infinite | Size Known (.size()) May be infinite → Random access ✅ list.get(i) ❌ Sequential only | Random access ✅ list.get(i) ❌ Sequential only → Can store data ✅ Primary purpose ❌ Passes through | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Feature Collection Stream"]
+    N2["When computed Eagerly (all at once) Lazily (on demand)"]
+    N3["Reusable ✅ Yes ❌ Once only"]
+    N4["Mutable ✅ add/remove ❌ Immutable pipe"]
+    N5["Size Known (.size()) May be infinite"]
+    N6["Random access ✅ list.get(i) ❌ Sequential only"]
+    N7["Can store data ✅ Primary purpose ❌ Passes through"]
+    N8["External iteration ✅ for-each ❌ Internal only"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 3. Intermediate vs Terminal: When Code Actually Runs
@@ -226,6 +289,27 @@ stream.forEach(System.out::println);
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: THE RESTAURANT ORDER ANALOGY → Intermediate Operations = Adding items to your order | Intermediate Operations = Adding items to your order → → 'I'd like the salad...' (filter) | → 'I'd like the salad...' (filter) → → '...with dressing on the side...' (map) | → '...with dressing on the side...' (map) → → '...and only the first 3...' (limit) | → '...and only the first 3...' (limit) → → Nothing is being prepared yet! | → Nothing is being prepared yet! → Terminal Operation = Saying 'That's my order' (submit) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE RESTAURANT ORDER ANALOGY"]
+    N2["Intermediate Operations = Adding items to your order"]
+    N3["→ 'I'd like the salad...' (filter)"]
+    N4["→ '...with dressing on the side...' (map)"]
+    N5["→ '...and only the first 3...' (limit)"]
+    N6["→ Nothing is being prepared yet!"]
+    N7["Terminal Operation = Saying 'That's my order' (submit)"]
+    N8["→ collect() = 'Bring it all on one plate'"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### Classification
 
 ```
@@ -248,6 +332,27 @@ stream.forEach(System.out::println);
 │    toArray(), findFirst(), findAny(),                           │
 │    anyMatch(), allMatch(), noneMatch()                          │
 └─────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: INTERMEDIATE (returns Stream — lazy, chainable): → Stateless (no memory between elements): | Stateless (no memory between elements): → Stateful (must see all/some elements first): | Stateful (must see all/some elements first): → sorted() ← must see ALL elements to sort | sorted() ← must see ALL elements to sort → distinct() ← must remember what it's seen (HashSet) | distinct() ← must remember what it's seen (HashSet) → skip(n) ← must count n elements to skip | skip(n) ← must count n elements to skip → limit(n) ← must count (but short-circuits) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["INTERMEDIATE (returns Stream — lazy, chainable):"]
+    N2["Stateless (no memory between elements):"]
+    N3["Stateful (must see all/some elements first):"]
+    N4["sorted() ← must see ALL elements to sort"]
+    N5["distinct() ← must remember what it's seen (HashSet)"]
+    N6["skip(n) ← must count n elements to skip"]
+    N7["limit(n) ← must count (but short-circuits)"]
+    N8["TERMINAL (returns result — triggers execution):"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### The sorted() Trap
@@ -294,6 +399,27 @@ list.stream().findFirst();              // No buffering needed
 ║  map():     1-to-1 transformation (same structure)               ║
 ║  flatMap(): 1-to-many + flatten (removes one nesting level)      ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: THE GIFT BOX ANALOGY → You have 3 gift boxes, each containing smaller boxes: | You have 3 gift boxes, each containing smaller boxes: → Box1 → [candy, toy] | Box1 → [candy, toy] → Box2 → [book] | Box2 → [book] → Box3 → [pen, eraser, ruler] | Box3 → [pen, eraser, ruler] → map() = 'Open each box and look inside' | map() = 'Open each box and look inside' → Result: [ [candy,toy], [book], [pen,eraser,ruler] ] | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE GIFT BOX ANALOGY"]
+    N2["You have 3 gift boxes, each containing smaller boxes:"]
+    N3["Box1 → [candy, toy]"]
+    N4["Box2 → [book]"]
+    N5["Box3 → [pen, eraser, ruler]"]
+    N6["map() = 'Open each box and look inside'"]
+    N7["Result: [ [candy,toy], [book], [pen,eraser,ruler] ]"]
+    N8["→ You get a Stream&lt;List&lt;Item&gt;&gt; — boxes with"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### Code Proof
@@ -347,6 +473,27 @@ customers.stream()
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: DECISION: → Your function returns ONE thing? → map() | Your function returns ONE thing? → map() → name → name.toUpperCase() (String → String) | name → name.toUpperCase() (String → String) → user → user.getAge() (User → Integer) | user → user.getAge() (User → Integer) → Your function returns a COLLECTION? → flatMap() | Your function returns a COLLECTION? → flatMap() → user → user.getOrders() (User → List&lt;Order&gt;) | user → user.getOrders() (User → List&lt;Order&gt;) → line → Arrays.asList(line.split(' ')) (String → List) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["DECISION:"]
+    N2["Your function returns ONE thing? → map()"]
+    N3["name → name.toUpperCase() (String → String)"]
+    N4["user → user.getAge() (User → Integer)"]
+    N5["Your function returns a COLLECTION? → flatMap()"]
+    N6["user → user.getOrders() (User → List&lt;Order&gt;)"]
+    N7["line → Arrays.asList(line.split(' ')) (String → List)"]
+    N8["optional → optional.stream() (Optional → Stream)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 5. reduce() Internals: The Accumulator Pattern
@@ -379,6 +526,27 @@ customers.stream()
 ║  reduce(identity, BinaryOperator) → T                            ║
 ║  reduce(identity, accumulator, combiner) → U (for parallel)      ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: THE SNOWBALL ROLLING DOWNHILL ANALOGY → reduce() is like rolling a snowball downhill: | reduce() is like rolling a snowball downhill: → identity (starting snowball) = 0 | identity (starting snowball) = 0 → Elements: [3, 7, 2, 5] | Elements: [3, 7, 2, 5] → Step 1: snowball=0, pick up 3 → snowball=3 | Step 1: snowball=0, pick up 3 → snowball=3 → Step 2: snowball=3, pick up 7 → snowball=10 | Step 2: snowball=3, pick up 7 → snowball=10 → Step 3: snowball=10, pick up 2 → snowball=12 | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE SNOWBALL ROLLING DOWNHILL ANALOGY"]
+    N2["reduce() is like rolling a snowball downhill:"]
+    N3["identity (starting snowball) = 0"]
+    N4["Elements: [3, 7, 2, 5]"]
+    N5["Step 1: snowball=0, pick up 3 → snowball=3"]
+    N6["Step 2: snowball=3, pick up 7 → snowball=10"]
+    N7["Step 3: snowball=10, pick up 2 → snowball=12"]
+    N8["Step 4: snowball=12, pick up 5 → snowball=17"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### The Three-Argument reduce() — WHY It Exists
@@ -433,6 +601,27 @@ int totalLength = words.stream()
 └────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: reduce() = combine all into ONE value → Sum, product, min, max, concatenation | Sum, product, min, max, concatenation → → Creates NEW object each step (immutable accumulation) | → Creates NEW object each step (immutable accumulation) → collect() = pour all into a MUTABLE CONTAINER | collect() = pour all into a MUTABLE CONTAINER → List, Map, Set, StringBuilder, custom object | List, Map, Set, StringBuilder, custom object → → MUTATES the container (mutable accumulation) | → MUTATES the container (mutable accumulation) → WHY THE DISTINCTION? | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["reduce() = combine all into ONE value"]
+    N2["Sum, product, min, max, concatenation"]
+    N3["→ Creates NEW object each step (immutable accumulation)"]
+    N4["collect() = pour all into a MUTABLE CONTAINER"]
+    N5["List, Map, Set, StringBuilder, custom object"]
+    N6["→ MUTATES the container (mutable accumulation)"]
+    N7["WHY THE DISTINCTION?"]
+    N8["→ Creates N new String objects = O(n²) for strings!"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 6. Collector Internals: What Collectors.toList() Actually Does
@@ -462,6 +651,27 @@ int totalLength = words.stream()
 ║                                                                  ║
 ║  + characteristics() → hints: CONCURRENT? UNORDERED? IDENTITY?   ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: THE ASSEMBLY LINE WORKER ANALOGY → A Collector has 4 jobs (like 4 assembly line workers): | A Collector has 4 jobs (like 4 assembly line workers): → 1. supplier() → 'Bring an empty box' | 1. supplier() → 'Bring an empty box' → () -&gt; new ArrayList&lt;&gt;() | () -&gt; new ArrayList&lt;&gt;() → 2. accumulator() → 'Put each item in the box' | 2. accumulator() → 'Put each item in the box' → (list, item) -&gt; list.add(item) | (list, item) -&gt; list.add(item) → 3. combiner() → 'Merge two boxes into one' (for paralle | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE ASSEMBLY LINE WORKER ANALOGY"]
+    N2["A Collector has 4 jobs (like 4 assembly line workers):"]
+    N3["1. supplier() → 'Bring an empty box'"]
+    N4["() -&gt; new ArrayList&lt;&gt;()"]
+    N5["2. accumulator() → 'Put each item in the box'"]
+    N6["(list, item) -&gt; list.add(item)"]
+    N7["3. combiner() → 'Merge two boxes into one' (for paralle"]
+    N8["(list1, list2) -&gt; { list1.addAll(list2); }"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### Writing a Custom Collector
@@ -556,6 +766,27 @@ Map<String, Long> countByDept = employees.stream()
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: THE COOKING ANALOGY — When More Chefs HURT → Sequential: 1 chef makes 100 dishes — predictable, orde | Sequential: 1 chef makes 100 dishes — predictable, orde → Parallel: 10 chefs share 1 kitchen — CHAOS potential! | Parallel: 10 chefs share 1 kitchen — CHAOS potential! → WHEN 10 CHEFS HELP: | WHEN 10 CHEFS HELP: → → Independent tasks (each chef has own station) | → Independent tasks (each chef has own station) → → CPU-heavy work (chopping, mixing — not waiting) | → CPU-heavy work (chopping, mixing — not waiting) → → Large dataset (100+ dishes, not 5) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE COOKING ANALOGY — When More Chefs HURT"]
+    N2["Sequential: 1 chef makes 100 dishes — predictable, orde"]
+    N3["Parallel: 10 chefs share 1 kitchen — CHAOS potential!"]
+    N4["WHEN 10 CHEFS HELP:"]
+    N5["→ Independent tasks (each chef has own station)"]
+    N6["→ CPU-heavy work (chopping, mixing — not waiting)"]
+    N7["→ Large dataset (100+ dishes, not 5)"]
+    N8["WHEN 10 CHEFS HURT:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### The 5 Traps of parallelStream()
 
 ```java
@@ -621,6 +852,27 @@ list.parallelStream()
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: USE parallelStream() WHEN ALL ARE TRUE: → ✅ Dataset &gt; 10,000 elements (overhead worth it) | ✅ Dataset &gt; 10,000 elements (overhead worth it) → ✅ CPU-intensive computation per element | ✅ CPU-intensive computation per element → ✅ Data source splits cheaply (ArrayList, array, IntStre | ✅ Data source splits cheaply (ArrayList, array, IntStre → ✅ No shared mutable state | ✅ No shared mutable state → ✅ Order doesn't matter (or you accept ordering overhead | ✅ Order doesn't matter (or you accept ordering overhead → ✅ No blocking IO | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["USE parallelStream() WHEN ALL ARE TRUE:"]
+    N2["✅ Dataset &gt; 10,000 elements (overhead worth it)"]
+    N3["✅ CPU-intensive computation per element"]
+    N4["✅ Data source splits cheaply (ArrayList, array, IntStre"]
+    N5["✅ No shared mutable state"]
+    N6["✅ Order doesn't matter (or you accept ordering overhead"]
+    N7["✅ No blocking IO"]
+    N8["NEVER USE WHEN:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 8. Stream Pipeline Fusion: How JVM Optimizes
@@ -657,6 +909,27 @@ list.parallelStream()
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: HOW THE JVM FUSES OPERATIONS → Your code: | Your code: → Naive execution (3 loops): | Naive execution (3 loops): → Loop 1: filter all → temp list | Loop 1: filter all → temp list → Loop 2: map all → temp list | Loop 2: map all → temp list → Loop 3: collect → result | Loop 3: collect → result → Actual execution (FUSED into 1 loop): | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["HOW THE JVM FUSES OPERATIONS"]
+    N2["Your code:"]
+    N3["Naive execution (3 loops):"]
+    N4["Loop 1: filter all → temp list"]
+    N5["Loop 2: map all → temp list"]
+    N6["Loop 3: collect → result"]
+    N7["Actual execution (FUSED into 1 loop):"]
+    N8["result.add(x * 2); // map + collect inline"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 9. Optional Deep Reasoning: Why It Exists And When NOT to Use It
@@ -682,6 +955,27 @@ list.parallelStream()
 ║  Optional FORCES you to handle the absence case.                 ║
 ║  null lets you FORGET.                                           ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: THE GIFT BOX vs EMPTY BOX ANALOGY → null = Someone handed you NOTHING and said 'here's a th | null = Someone handed you NOTHING and said 'here's a th → You reach for the thing → NPE (you grabbed air) | You reach for the thing → NPE (you grabbed air) → Optional = Someone hands you a box. | Optional = Someone hands you a box. → → Box might contain a value (Optional.of(value)) | → Box might contain a value (Optional.of(value)) → → Box might be empty (Optional.empty()) | → Box might be empty (Optional.empty()) → → The BOX ITSELF is never null | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE GIFT BOX vs EMPTY BOX ANALOGY"]
+    N2["null = Someone handed you NOTHING and said 'here's a th"]
+    N3["You reach for the thing → NPE (you grabbed air)"]
+    N4["Optional = Someone hands you a box."]
+    N5["→ Box might contain a value (Optional.of(value))"]
+    N6["→ Box might be empty (Optional.empty())"]
+    N7["→ The BOX ITSELF is never null"]
+    N8["→ You MUST check before reaching in"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### Good Uses vs Anti-Patterns
@@ -753,6 +1047,27 @@ return optional.map(transform).orElseThrow();
 ║     Reference:        ArrayList::new                             ║
 ║     Think:            "Create a new instance"                    ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: THE 4 TYPES — And Why Each Exists → 1. Static method: ClassName::staticMethod | 1. Static method: ClassName::staticMethod → Lambda: x -&gt; Math.abs(x) | Lambda: x -&gt; Math.abs(x) → Reference: Math::abs | Reference: Math::abs → Think: 'Call this class's static function' | Think: 'Call this class's static function' → 2. Instance method (bound): instance::method | 2. Instance method (bound): instance::method → Lambda: x -&gt; System.out.println(x) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE 4 TYPES — And Why Each Exists"]
+    N2["1. Static method: ClassName::staticMethod"]
+    N3["Lambda: x -&gt; Math.abs(x)"]
+    N4["Reference: Math::abs"]
+    N5["Think: 'Call this class's static function'"]
+    N6["2. Instance method (bound): instance::method"]
+    N7["Lambda: x -&gt; System.out.println(x)"]
+    N8["Reference: System.out::println"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### The "Unbound" Trap — Code Proof

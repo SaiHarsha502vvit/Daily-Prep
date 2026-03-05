@@ -33,6 +33,23 @@
 └─────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: WHY COMPANIES ASK BIT MANIPULATION → 1. Tests low-level understanding | 1. Tests low-level understanding → 2. O(1) space solutions where others use O(n) | 2. O(1) space solutions where others use O(n) → 3. Faster than arithmetic operations | 3. Faster than arithmetic operations → 4. Essential for systems programming | 4. Essential for systems programming → 5. Shows mathematical thinking
+
+```mermaid
+flowchart TD
+    N1["WHY COMPANIES ASK BIT MANIPULATION"]
+    N2["1. Tests low-level understanding"]
+    N3["2. O(1) space solutions where others use O(n)"]
+    N4["3. Faster than arithmetic operations"]
+    N5["4. Essential for systems programming"]
+    N6["5. Shows mathematical thinking"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+```
+
 ### Where It's Used in Real World
 - **Cryptography** - XOR operations for encryption
 - **Graphics** - Color manipulation, image processing
@@ -59,6 +76,19 @@ Decimal 13 in Binary:
 Position:  7    6    5    4    3    2    1    0  (right to left, 0-indexed)
 ```
 
+> **Flow**: Decimal 13 in Binary: → 128 64 32 16 8 4 2 1 ← Powers of 2 | 128 64 32 16 8 4 2 1 ← Powers of 2 → 0 0 0 0 1 1 0 1 ← Binary: 00001101 | 0 0 0 0 1 1 0 1 ← Binary: 00001101 → Position: 7 6 5 4 3 2 1 0 (right to left, 0-indexed)
+
+```mermaid
+flowchart TD
+    N1["Decimal 13 in Binary:"]
+    N2["128 64 32 16 8 4 2 1 ← Powers of 2"]
+    N3["0 0 0 0 1 1 0 1 ← Binary: 00001101"]
+    N4["Position: 7 6 5 4 3 2 1 0 (right to left, 0-indexed)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 ### Java Integer Representation (32-bit)
 
 ```
@@ -72,6 +102,17 @@ Position:  7    6    5    4    3    2    1    0  (right to left, 0-indexed)
          ↑
     MSB (Most Significant Bit)
     0 = positive, 1 = negative
+```
+
+> **Flow**: Sign 31 Value Bits → MSB (Most Significant Bit) | MSB (Most Significant Bit) → 0 = positive, 1 = negative
+
+```mermaid
+flowchart TD
+    N1["Sign 31 Value Bits"]
+    N2["MSB (Most Significant Bit)"]
+    N3["0 = positive, 1 = negative"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 ### Two's Complement (How Negative Numbers Work)
@@ -107,6 +148,27 @@ Integer.MAX_VALUE = 2147483647  (0x7FFFFFFF)
 Integer.MIN_VALUE = -2147483648 (0x80000000)
 ```
 
+> **Flow**: Type Range → byte -128 to 127 | byte -128 to 127 → short -32,768 to 32,767 | short -32,768 to 32,767 → int -2^31 to 2^31 - 1 | int -2^31 to 2^31 - 1 → ≈ -2.1 billion to 2.1 billion | ≈ -2.1 billion to 2.1 billion → long -2^63 to 2^63 - 1 | long -2^63 to 2^63 - 1 → Key Values: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Type Range"]
+    N2["byte -128 to 127"]
+    N3["short -32,768 to 32,767"]
+    N4["int -2^31 to 2^31 - 1"]
+    N5["≈ -2.1 billion to 2.1 billion"]
+    N6["long -2^63 to 2^63 - 1"]
+    N7["Key Values:"]
+    N8["Integer.MAX_VALUE = 2147483647 (0x7FFFFFFF)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## Bitwise Operators Deep Dive <a name="bitwise-operators"></a>
@@ -125,6 +187,27 @@ Integer.MIN_VALUE = -2147483648 (0x80000000)
 │  R-Shift │  >>    │ Shift bits right (divide by 2)          │
 │  UR-Shift│  >>>   │ Unsigned right shift (fill with 0s)     │
 └──────────┴────────┴─────────────────────────────────────────┘
+```
+
+> **Flow**: Operator Symbol Description → AND & Both bits must be 1 | AND & Both bits must be 1 → OR | At least one bit must be 1 | OR | At least one bit must be 1 → XOR ^ Exactly one bit must be 1 | XOR ^ Exactly one bit must be 1 → NOT ~ Flip all bits | NOT ~ Flip all bits → L-Shift &lt;&lt; Shift bits left (multiply by 2) | L-Shift &lt;&lt; Shift bits left (multiply by 2) → R-Shift &gt;&gt; Shift bits right (divide by 2) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Operator Symbol Description"]
+    N2["AND & Both bits must be 1"]
+    N3["OR | At least one bit must be 1"]
+    N4["XOR ^ Exactly one bit must be 1"]
+    N5["NOT ~ Flip all bits"]
+    N6["L-Shift &lt;&lt; Shift bits left (multiply by 2)"]
+    N7["R-Shift &gt;&gt; Shift bits right (divide by 2)"]
+    N8["UR-Shift &gt;&gt;&gt; Unsigned right shift (fill with 0"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### Visual Truth Tables
@@ -149,6 +232,19 @@ XOR (^) - Exactly one is 1      NOT (~) - Flip the bit
 │ 1 │ 0 │   1   │               └───┴───────┘
 │ 1 │ 1 │   0                               │
 └───┴───┴───────────────────────────────────┘
+```
+
+> **Flow**: A B A & B / 0 0 0 / 0 1 0 / 1 0 0 / 1 1 1 → A B A | B / 0 0 0 / 0 1 1 / 1 0 1 / 1 1 1 | A B A | B / 0 0 0 / 0 1 1 / 1 0 1 / 1 1 1 → A B A ^ B / 0 0 0 / 0 1 1 / 1 0 1 / 1 1 0 | A B A ^ B / 0 0 0 / 0 1 1 / 1 0 1 / 1 1 0 → A ~A / 0 1 / 1 0
+
+```mermaid
+flowchart TD
+    N1["A B A & B / 0 0 0 / 0 1 0 / 1 0 0 / 1 1 1"]
+    N2["A B A | B / 0 0 0 / 0 1 1 / 1 0 1 / 1 1 1"]
+    N3["A B A ^ B / 0 0 0 / 0 1 1 / 1 0 1 / 1 1 0"]
+    N4["A ~A / 0 1 / 1 0"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
 ```
 
 ### Practical Examples
@@ -228,6 +324,17 @@ UNSIGNED RIGHT SHIFT (>>>) - Always fills with 0s
 └─────────────────────────────────────────┘
 ```
 
+> **Flow**: 5 &lt;&lt; 1 = 10 / Before: 0 0 0 0 0 1 0 1 (5) / ↓ ↓ ↓ → 20 &gt;&gt; 2 = 5 / Before: 0 0 0 1 0 1 0 0 (20) / ↓ ↓  | 20 &gt;&gt; 2 = 5 / Before: 0 0 0 1 0 1 0 0 (20) / ↓ ↓  → Used for negative numbers / -8 &gt;&gt;&gt; 2 = 1073741
+
+```mermaid
+flowchart TD
+    N1["5 &lt;&lt; 1 = 10 / Before: 0 0 0 0 0 1 0 1 (5) / ↓ ↓ ↓"]
+    N2["20 &gt;&gt; 2 = 5 / Before: 0 0 0 1 0 1 0 0 (20) / ↓ ↓ "]
+    N3["Used for negative numbers / -8 &gt;&gt;&gt; 2 = 1073741"]
+    N1 --> N2
+    N2 --> N3
+```
+
 ---
 
 ## Essential Bit Tricks & Formulas <a name="essential-tricks"></a>
@@ -299,6 +406,19 @@ Pattern: Subtracting 1 flips bits from rightmost 1 to end
          AND then clears that entire section
 ```
 
+> **Flow**: Why does n & (n-1) clear rightmost set bit? → Another example: | Another example: → Pattern: Subtracting 1 flips bits from rightmost 1 to e | Pattern: Subtracting 1 flips bits from rightmost 1 to e → AND then clears that entire section
+
+```mermaid
+flowchart TD
+    N1["Why does n & (n-1) clear rightmost set bit?"]
+    N2["Another example:"]
+    N3["Pattern: Subtracting 1 flips bits from rightmost 1 to e"]
+    N4["AND then clears that entire section"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 #### Trick: `n & (-n)` - Isolate Rightmost Set Bit
 
 ```
@@ -312,6 +432,19 @@ n     = 12 = 00001100
 n&(-n)     = 00000100 = 4
 
 The rightmost 1 is at position 2 (value = 4)
+```
+
+> **Flow**: Why does n & (-n) isolate rightmost set bit? → Remember: -n = ~n + 1 (Two's complement) | Remember: -n = ~n + 1 (Two's complement) → -n = = 11110100 (flip + add 1) | -n = = 11110100 (flip + add 1) → The rightmost 1 is at position 2 (value = 4)
+
+```mermaid
+flowchart TD
+    N1["Why does n & (-n) isolate rightmost set bit?"]
+    N2["Remember: -n = ~n + 1 (Two's complement)"]
+    N3["-n = = 11110100 (flip + add 1)"]
+    N4["The rightmost 1 is at position 2 (value = 4)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
 ```
 
 #### Trick: Power of 2 Check
@@ -372,6 +505,21 @@ n >> k    // n / 2^k
 │  4. (a^b)^c = a^(b^c) (Associative - grouping doesn't matter)   │
 │  5. a ^ b ^ a = b   (Self-inverse - cancels out)                │
 └─────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: XOR PROPERTIES → 1. a ^ 0 = a (XOR with 0 gives same number) | 1. a ^ 0 = a (XOR with 0 gives same number) → 2. a ^ a = 0 (XOR with itself gives 0) | 2. a ^ a = 0 (XOR with itself gives 0) → 3. a ^ b = b ^ a (Commutative - order doesn't matter) | 3. a ^ b = b ^ a (Commutative - order doesn't matter) → 5. a ^ b ^ a = b (Self-inverse - cancels out)
+
+```mermaid
+flowchart TD
+    N1["XOR PROPERTIES"]
+    N2["1. a ^ 0 = a (XOR with 0 gives same number)"]
+    N3["2. a ^ a = 0 (XOR with itself gives 0)"]
+    N4["3. a ^ b = b ^ a (Commutative - order doesn't matter)"]
+    N5["5. a ^ b ^ a = b (Self-inverse - cancels out)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
 ```
 
 ### Why XOR is Magic for "Find Missing/Duplicate"
@@ -1068,6 +1216,27 @@ clearBit: n & ~(1 << i)
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: EDGE CASES TO WATCH → • Negative numbers (sign bit handling) | • Negative numbers (sign bit handling) → • Integer overflow (when shifting) | • Integer overflow (when shifting) → • Empty array (XOR of nothing = 0) | • Empty array (XOR of nothing = 0) → • n = 0 (special case for many operations) | • n = 0 (special case for many operations) → • n = Integer.MIN_VALUE (-2^31, cannot negate) | • n = Integer.MIN_VALUE (-2^31, cannot negate) → • Shift by 32 or more (undefined behavior) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["EDGE CASES TO WATCH"]
+    N2["• Negative numbers (sign bit handling)"]
+    N3["• Integer overflow (when shifting)"]
+    N4["• Empty array (XOR of nothing = 0)"]
+    N5["• n = 0 (special case for many operations)"]
+    N6["• n = Integer.MIN_VALUE (-2^31, cannot negate)"]
+    N7["• Shift by 32 or more (undefined behavior)"]
+    N8["• Java &gt;&gt; vs &gt;&gt;&gt; (signed vs unsigned shi"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### Interview Tips
 
 ```
@@ -1083,6 +1252,27 @@ clearBit: n & ~(1 << i)
 │  7. Always mention time/space complexity                        │
 │  8. Test with examples: 0, 1, negative, MAX_VALUE               │
 └─────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: INTERVIEW STRATEGIES → 1. When you see 'O(1) space' - think bits | 1. When you see 'O(1) space' - think bits → 2. When elements appear k times - think XOR or bit coun | 2. When elements appear k times - think XOR or bit coun → 3. When dealing with subsets - think bitmask | 3. When dealing with subsets - think bitmask → 4. When finding unique/missing - think XOR | 4. When finding unique/missing - think XOR → 5. When asked 'power of 2' - think n & (n-1) | 5. When asked 'power of 2' - think n & (n-1) → 6. When optimizing arithmetic - think shifts | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["INTERVIEW STRATEGIES"]
+    N2["1. When you see 'O(1) space' - think bits"]
+    N3["2. When elements appear k times - think XOR or bit coun"]
+    N4["3. When dealing with subsets - think bitmask"]
+    N5["4. When finding unique/missing - think XOR"]
+    N6["5. When asked 'power of 2' - think n & (n-1)"]
+    N7["6. When optimizing arithmetic - think shifts"]
+    N8["7. Always mention time/space complexity"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---
@@ -1107,6 +1297,27 @@ clearBit: n & ~(1 << i)
 ║     → Subset DP, permutations, combinations                   ║
 ║                                                               ║
 ╚═══════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: MASTER THESE 3 AND YOU'LL SOLVE 80% OF BIT PROBLEMS → 1. XOR PROPERTIES | 1. XOR PROPERTIES → → Find single/missing numbers | → Find single/missing numbers → 2. n & (n-1) TRICK | 2. n & (n-1) TRICK → Clears rightmost set bit | Clears rightmost set bit → → Count bits, check power of 2 | → Count bits, check power of 2 → 3. BITMASK FOR SUBSETS | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["MASTER THESE 3 AND YOU'LL SOLVE 80% OF BIT PROBLEMS"]
+    N2["1. XOR PROPERTIES"]
+    N3["→ Find single/missing numbers"]
+    N4["2. n & (n-1) TRICK"]
+    N5["Clears rightmost set bit"]
+    N6["→ Count bits, check power of 2"]
+    N7["3. BITMASK FOR SUBSETS"]
+    N8["n-bit number represents subset of n elements"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

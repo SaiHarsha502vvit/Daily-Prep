@@ -35,6 +35,27 @@
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: SORTING PROBLEMS FUNDAMENTALS → WHY SORTING MATTERS: | WHY SORTING MATTERS: → THE 4 SORTING FAMILIES: | THE 4 SORTING FAMILIES: → Comparison D&C Non-Compare Hybrid | Comparison D&C Non-Compare Hybrid → Bubble O(n²) Merge O(nlogn) Counting TimSort | Bubble O(n²) Merge O(nlogn) Counting TimSort → Selection Quick O(nlogn) Radix IntroSort | Selection Quick O(nlogn) Radix IntroSort → Insertion Heap O(nlogn) Bucket BlockSort | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["SORTING PROBLEMS FUNDAMENTALS"]
+    N2["WHY SORTING MATTERS:"]
+    N3["THE 4 SORTING FAMILIES:"]
+    N4["Comparison D&C Non-Compare Hybrid"]
+    N5["Bubble O(n²) Merge O(nlogn) Counting TimSort"]
+    N6["Selection Quick O(nlogn) Radix IntroSort"]
+    N7["Insertion Heap O(nlogn) Bucket BlockSort"]
+    N8["DECISION FRAMEWORK:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## PART 0: WHY Sorting — The Foundation Every Algorithm Stands On
@@ -173,6 +194,15 @@ WHY MERGE SORT? (MIT 6.006 Reasoning)
 SOLUTION:
 ```
 
+> **Flow**: then merge back up → entire array sorted in O(n log n).
+
+```mermaid
+flowchart LR
+    N1["then merge back up"]
+    N2["entire array sorted in O(n log n)."]
+    N1 --> N2
+```
+
 ```java
 public int[] sortArray(int[] nums) {
     if (nums.length <= 1) return nums;
@@ -240,6 +270,27 @@ ALGORITHM (Lomuto Partition):
                     < pivot    pivot  > pivot
 
 SOLUTION:
+```
+
+> **Flow**: DIFFICULTY: Medium → PATTERN: Divide and Conquer, Randomization | PATTERN: Divide and Conquer, Randomization → WHY QUICK SORT? | WHY QUICK SORT? → 1. Better cache locality (in-place, sequential access) | 1. Better cache locality (in-place, sequential access) → 2. No extra O(n) memory allocation | 2. No extra O(n) memory allocation → 3. Inner loop is simpler (fewer comparisons per element | 3. Inner loop is simpler (fewer comparisons per element → BUT: Worst case O(n²) if pivot is always min/max. | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["DIFFICULTY: Medium"]
+    N2["PATTERN: Divide and Conquer, Randomization"]
+    N3["WHY QUICK SORT?"]
+    N4["1. Better cache locality (in-place, sequential access)"]
+    N5["2. No extra O(n) memory allocation"]
+    N6["3. Inner loop is simpler (fewer comparisons per element"]
+    N7["BUT: Worst case O(n²) if pivot is always min/max."]
+    N8["FIX: Random pivot makes worst case astronomically unlik"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```java
@@ -313,6 +364,21 @@ WHY QUICKSELECT? (KTH Royal Institute Style)
 SOLUTION (QuickSelect):
 ```
 
+> **Flow**: 1. Sort → O(n log n) — works but overkill | 2. Min-Heap of size k → O(n log k) — good | 3. QuickSelect → O(n) average — OPTIMAL ✓
+
+```mermaid
+flowchart LR
+    N1["1. Sort"]
+    N2["O(n log n) — works but overkill"]
+    N3["2. Min-Heap of size k"]
+    N4["O(n log k) — good"]
+    N5["3. QuickSelect"]
+    N6["O(n) average — OPTIMAL ✓"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+```
+
 ```java
 public int findKthLargest(int[] nums, int k) {
     int target = nums.length - k;  // Convert to kth smallest
@@ -376,6 +442,31 @@ APPROACH (MIT 6.006 Style):
 SOLUTION:
 ```
 
+> **Flow**: Step 1: Sort by start → [1,3] [2,6] [8,10] [15,18] | [1,3] + [2,6] → 3 &gt;= 2 | 3 &gt;= 2 → merge | merge → [1,6] | [1,6] + [8,10] → 6 &lt; 8 | 6 &lt; 8 → no merge | ...+2 more
+
+```mermaid
+flowchart TD
+    N1["Step 1: Sort by start"]
+    N2["[1,3] [2,6] [8,10] [15,18]"]
+    N3["[1,3] + [2,6]"]
+    N4["3 &gt;= 2"]
+    N5["merge"]
+    N6["[1,6]"]
+    N7["[1,6] + [8,10]"]
+    N8["6 &lt; 8"]
+    N9["no merge"]
+    N10["[8,10] + [15,18]"]
+    N11["10 &lt; 15"]
+    N1 --> N2
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N7 --> N8
+    N8 --> N9
+    N10 --> N11
+    N11 --> N9
+```
+
 ```java
 public int[][] merge(int[][] intervals) {
     Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));
@@ -400,6 +491,18 @@ COMPLEXITY: Time O(n log n) for sort | Space O(n) for result
 EDGE CASE: Single interval → return as-is
 EDGE CASE: All overlapping → returns single interval
 VARIANT: Insert Interval (LC 57) — same idea, but insert first then merge
+```
+
+> **Flow**: EDGE CASE: Single interval → return as-is | EDGE CASE: All overlapping → returns single interval
+
+```mermaid
+flowchart LR
+    N1["EDGE CASE: Single interval"]
+    N2["return as-is"]
+    N3["EDGE CASE: All overlapping"]
+    N4["returns single interval"]
+    N1 --> N2
+    N3 --> N4
 ```
 
 ---
@@ -442,6 +545,37 @@ TRACE for [2, 0, 2, 1, 1, 0]:
   mid > hi → DONE! Result: [0,0,1,1,2,2]
 
 SOLUTION:
+```
+
+> **Flow**: lo=0 mid=0 hi=5: nums[0]=2 → swap(0,5) | swap(0,5) → [0,0,2,1,1,2] hi=4 | lo=0 mid=0 hi=4: nums[0]=0 → lo=1 mid=1 | lo=1 mid=1 hi=4: nums[1]=0 → lo=2 mid=2 | lo=2 mid=2 hi=4: nums[2]=2 → swap(2,4) | swap(2,4) → [0,0,1,1,2,2] hi=3 | ...+3 more
+
+```mermaid
+flowchart TD
+    N1["lo=0 mid=0 hi=5: nums[0]=2"]
+    N2["swap(0,5)"]
+    N3["[0,0,2,1,1,2] hi=4"]
+    N4["lo=0 mid=0 hi=4: nums[0]=0"]
+    N5["lo=1 mid=1"]
+    N6["lo=1 mid=1 hi=4: nums[1]=0"]
+    N7["lo=2 mid=2"]
+    N8["lo=2 mid=2 hi=4: nums[2]=2"]
+    N9["swap(2,4)"]
+    N10["[0,0,1,1,2,2] hi=3"]
+    N11["lo=2 mid=2 hi=3: nums[2]=1"]
+    N12["mid=3"]
+    N13["lo=2 mid=3 hi=3: nums[3]=1"]
+    N14["mid=4"]
+    N15["mid &gt; hi"]
+    N16["DONE! Result: [0,0,1,1,2,2]"]
+    N1 --> N2
+    N2 --> N3
+    N4 --> N5
+    N6 --> N7
+    N8 --> N9
+    N9 --> N10
+    N11 --> N12
+    N13 --> N14
+    N15 --> N16
 ```
 
 ```java
@@ -491,6 +625,18 @@ INSIGHT:
 SOLUTION:
 ```
 
+> **Flow**: For 3 vs 30: '330' &gt; '303' → 3 comes first | For 3 vs 34: '334' &lt; '343' → 34 comes first
+
+```mermaid
+flowchart LR
+    N1["For 3 vs 30: '330' &gt; '303'"]
+    N2["3 comes first"]
+    N3["For 3 vs 34: '334' &lt; '343'"]
+    N4["34 comes first"]
+    N1 --> N2
+    N3 --> N4
+```
+
 ```java
 public String largestNumber(int[] nums) {
     String[] strs = new String[nums.length];
@@ -513,6 +659,15 @@ PROOF OF CORRECTNESS: The comparator defines a total order.
   If a○b > b○a and b○c > c○b, then a○c > c○a (transitivity).
 ```
 
+> **Flow**: PROOF OF CORRECTNESS: The comparator defines a total or → If a○b &gt; b○a and b○c &gt; c○b, then a○c &gt; c○a (tr
+
+```mermaid
+flowchart TD
+    N1["PROOF OF CORRECTNESS: The comparator defines a total or"]
+    N2["If a○b &gt; b○a and b○c &gt; c○b, then a○c &gt; c○a (tr"]
+    N1 --> N2
+```
+
 ---
 
 ## PROBLEM 7: Sort List — Merge Sort on Linked List (LC 148)
@@ -532,6 +687,27 @@ WHY MERGE SORT FOR LINKED LISTS?
   - Merging: pointer manipulation, no extra array
 
 SOLUTION:
+```
+
+> **Flow**: DIFFICULTY: Medium → COMPANIES: Amazon, Microsoft, Adobe | COMPANIES: Amazon, Microsoft, Adobe → PATTERN: Merge Sort on Linked List | PATTERN: Merge Sort on Linked List → WHY MERGE SORT FOR LINKED LISTS? | WHY MERGE SORT FOR LINKED LISTS? → - QuickSort needs random access (bad for linked lists) | - QuickSort needs random access (bad for linked lists) → - Merge Sort only needs sequential access ✓ | - Merge Sort only needs sequential access ✓ → - Splitting: use slow/fast pointer to find middle | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["DIFFICULTY: Medium"]
+    N2["COMPANIES: Amazon, Microsoft, Adobe"]
+    N3["PATTERN: Merge Sort on Linked List"]
+    N4["WHY MERGE SORT FOR LINKED LISTS?"]
+    N5["- QuickSort needs random access (bad for linked lists)"]
+    N6["- Merge Sort only needs sequential access ✓"]
+    N7["- Splitting: use slow/fast pointer to find middle"]
+    N8["- Merging: pointer manipulation, no extra array"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```java
@@ -612,6 +788,24 @@ THREE APPROACHES:
 SOLUTION:
 ```
 
+> **Flow**: 1. HashMap + Sort → O(n log n) | 2. HashMap + MinHeap → O(n log k) | 3. HashMap + BucketSort → O(n) ✓ OPTIMAL | Walk from right: bucket[3]=[1], bucket[2]=[2] → result = [1, 2]
+
+```mermaid
+flowchart LR
+    N1["1. HashMap + Sort"]
+    N2["O(n log n)"]
+    N3["2. HashMap + MinHeap"]
+    N4["O(n log k)"]
+    N5["3. HashMap + BucketSort"]
+    N6["O(n) ✓ OPTIMAL"]
+    N7["Walk from right: bucket[3]=[1], bucket[2]=[2]"]
+    N8["result = [1, 2]"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+    N7 --> N8
+```
+
 ```java
 public int[] topKFrequent(int[] nums, int k) {
     // Count frequencies
@@ -663,6 +857,18 @@ TWO APPROACHES:
   2. Frequency count → O(n) ✓
 
 SOLUTION:
+```
+
+> **Flow**: 1. Sort both strings, compare → O(n log n) | 2. Frequency count → O(n) ✓
+
+```mermaid
+flowchart LR
+    N1["1. Sort both strings, compare"]
+    N2["O(n log n)"]
+    N3["2. Frequency count"]
+    N4["O(n) ✓"]
+    N1 --> N2
+    N3 --> N4
 ```
 
 ```java
@@ -790,6 +996,15 @@ APPROACH:
   2. 3-way partition around median with virtual indexing
 
 SOLUTION:
+```
+
+> **Flow**: 1. Find median using QuickSelect → O(n)
+
+```mermaid
+flowchart LR
+    N1["1. Find median using QuickSelect"]
+    N2["O(n)"]
+    N1 --> N2
 ```
 
 ```java

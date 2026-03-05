@@ -48,6 +48,18 @@ This is pure arithmetic — no pointers, no `node.left`/`node.right`. Cache-frie
       40  50 100  40         Children of index 1 = 2*1+1=3, 2*1+2=4 → 40, 50 ✓
 ```
 
+> **Flow**: / \ / \ Parent of index 4 = (4-1)/2 = 1 → value 15 ✓ | 40 50 100 40 Children of index 1 = 2*1+1=3, 2*1+2= → 40, 50 ✓
+
+```mermaid
+flowchart LR
+    N1["/ \ / \ Parent of index 4 = (4-1)/2 = 1"]
+    N2["value 15 ✓"]
+    N3["40 50 100 40 Children of index 1 = 2*1+1=3, 2*1+2="]
+    N4["40, 50 ✓"]
+    N1 --> N2
+    N3 --> N4
+```
+
 ### How Heapify Works (Sift-Up and Sift-Down)
 
 **Sift-Up (used in insert):**
@@ -64,6 +76,17 @@ Step 1: Place at end          Step 2: 5 < 30? Swap        Step 3: 5 < 10? Swap
 Array: [10,15,30,40,50,5]   [10,15,5,40,50,30]          [5,15,10,40,50,30]
 ```
 
+> **Flow**: 15 30 → 15 5 | 15 5 → 15 10
+
+```mermaid
+flowchart LR
+    N1["15 30"]
+    N2["15 5"]
+    N3["15 10"]
+    N1 --> N2
+    N2 --> N3
+```
+
 **Sift-Down (used in extract-min):**
 ```
 Extract min from [5, 15, 10, 40, 50, 30]:
@@ -76,6 +99,15 @@ Step 1: Replace root with last    Step 2: 30 > min(15,10)? Swap with 10
    40  50                             40  50
 
 Array: [30,15,10,40,50]            [10,15,30,40,50]    ✓ Heap restored!
+```
+
+> **Flow**: 15 10 → 15 30
+
+```mermaid
+flowchart LR
+    N1["15 10"]
+    N2["15 30"]
+    N1 --> N2
 ```
 
 ### Time Complexities
@@ -144,6 +176,27 @@ minHeap.contains(obj);   // O(n)
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: ⚠️ COMMON HEAP MISTAKES ⚠️ → 1. Java PQ is MIN-HEAP by default | 1. Java PQ is MIN-HEAP by default → 2. Forgetting custom comparator for max-heap objects | 2. Forgetting custom comparator for max-heap objects → 3. PQ.remove(obj) is O(n), not O(log n)! | 3. PQ.remove(obj) is O(n), not O(log n)! → → It does a linear scan to find the element first | → It does a linear scan to find the element first → 4. Iterator order is NOT sorted! | 4. Iterator order is NOT sorted! → → for (int x : pq) does NOT give elements in heap order | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["⚠️ COMMON HEAP MISTAKES ⚠️"]
+    N2["1. Java PQ is MIN-HEAP by default"]
+    N3["2. Forgetting custom comparator for max-heap objects"]
+    N4["3. PQ.remove(obj) is O(n), not O(log n)!"]
+    N5["→ It does a linear scan to find the element first"]
+    N6["4. Iterator order is NOT sorted!"]
+    N7["→ for (int x : pq) does NOT give elements in heap order"]
+    N8["→ You must poll() repeatedly to get sorted order"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 🧩 Part 1: Easy Problems
@@ -153,6 +206,15 @@ minHeap.contains(obj);   // O(n)
 ║                         EASY — 5 PROBLEMS                                    ║
 ║  Build intuition: direct heap usage, simple simulations                      ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: EASY — 5 PROBLEMS → Build intuition: direct heap usage, simple simulations
+
+```mermaid
+flowchart TD
+    N1["EASY — 5 PROBLEMS"]
+    N2["Build intuition: direct heap usage, simple simulations"]
+    N1 --> N2
 ```
 
 ### 1. [Kth Largest Element in a Stream](https://leetcode.com/problems/kth-largest-element-in-a-stream/) (LC 703) ⭐ Easy
@@ -375,6 +437,15 @@ class Solution {
 ║                        MEDIUM — 10 PROBLEMS                                  ║
 ║  Core patterns: Top-K, Two Heaps, Merge K, Greedy + Heap                     ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: MEDIUM — 10 PROBLEMS → Core patterns: Top-K, Two Heaps, Merge K, Greedy + Heap
+
+```mermaid
+flowchart TD
+    N1["MEDIUM — 10 PROBLEMS"]
+    N2["Core patterns: Top-K, Two Heaps, Merge K, Greedy + Heap"]
+    N1 --> N2
 ```
 
 ### 1. [Kth Largest Element in an Array](https://leetcode.com/problems/kth-largest-element-in-an-array/) (LC 215) ⭐ Medium
@@ -912,6 +983,15 @@ class Solution {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: HARD — 5 PROBLEMS → Advanced patterns: monotonic deque, two-heap greedy, 3D
+
+```mermaid
+flowchart TD
+    N1["HARD — 5 PROBLEMS"]
+    N2["Advanced patterns: monotonic deque, two-heap greedy, 3D"]
+    N1 --> N2
+```
+
 ### 1. [Sliding Window Maximum](https://leetcode.com/problems/sliding-window-maximum/) (LC 239) ⭐ Hard
 **Companies**: Amazon, Google, Facebook, Microsoft  
 **Pattern**: Monotonic Deque (preferred) vs Max-Heap
@@ -1260,6 +1340,27 @@ Sort via heap (heapsort)       │ O(n log n)     │ O(1) in-place
 
 ```
 
+> **Flow**: HEAP COMPLEXITY CHEAT SHEET → Operation Binary Heap Java PriorityQueue Notes | Operation Binary Heap Java PriorityQueue Notes → insert / offer O(log n) O(log n) Sift-up | insert / offer O(log n) O(log n) Sift-up → extractMin / poll O(log n) O(log n) Sift-down | extractMin / poll O(log n) O(log n) Sift-down → peek O(1) O(1) Root access | peek O(1) O(1) Root access → remove(object) O(n) O(n) Linear search! | remove(object) O(n) O(n) Linear search! → contains O(n) O(n) Linear search! | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["HEAP COMPLEXITY CHEAT SHEET"]
+    N2["Operation Binary Heap Java PriorityQueue Notes"]
+    N3["insert / offer O(log n) O(log n) Sift-up"]
+    N4["extractMin / poll O(log n) O(log n) Sift-down"]
+    N5["peek O(1) O(1) Root access"]
+    N6["remove(object) O(n) O(n) Linear search!"]
+    N7["contains O(n) O(n) Linear search!"]
+    N8["heapify (build) O(n) O(n) via constructor Bottom-up"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### WHEN TO USE HEAP — Decision Flowchart
 
 ```
@@ -1293,6 +1394,15 @@ Need to repeatedly find min/max of a dynamic collection?
        │
        └── Dijkstra / Prim?    ─→ Min-heap for edge relaxation
 
+```
+
+> **Flow**: YES → Use a Heap (PriorityQueue)
+
+```mermaid
+flowchart LR
+    N1["YES"]
+    N2["Use a Heap (PriorityQueue)"]
+    N1 --> N2
 ```
 
 ### Problem Pattern Quick Reference
@@ -1339,6 +1449,27 @@ Need to repeatedly find min/max of a dynamic collection?
 ║  9. TreeMap is a viable alternative when you need remove(obj) in O(log n)    ║
 ║  10. Practice drawing the heap array ↔ tree correspondence                   ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: INTERVIEW TIPS → 1. Always clarify: 'Do I need min or max?' before codin | 1. Always clarify: 'Do I need min or max?' before codin → 2. Java PQ is MIN heap — say this out loud in interview | 2. Java PQ is MIN heap — say this out loud in interview → 4. For 'median' → think TWO heaps immediately | 4. For 'median' → think TWO heaps immediately → 5. For 'merge K sorted' → think min-heap of K heads | 5. For 'merge K sorted' → think min-heap of K heads → 6. For 'greedy + dynamic choices' → think heap | 6. For 'greedy + dynamic choices' → think heap → 7. Don't use heap when sorting once suffices | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["INTERVIEW TIPS"]
+    N2["1. Always clarify: 'Do I need min or max?' before codin"]
+    N3["2. Java PQ is MIN heap — say this out loud in interview"]
+    N4["4. For 'median' → think TWO heaps immediately"]
+    N5["5. For 'merge K sorted' → think min-heap of K heads"]
+    N6["6. For 'greedy + dynamic choices' → think heap"]
+    N7["7. Don't use heap when sorting once suffices"]
+    N8["8. Integer.compare(a,b) is safer than a - b (overflow!)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

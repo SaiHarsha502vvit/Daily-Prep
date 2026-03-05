@@ -172,6 +172,39 @@ Maze solving                  → DFS + backtracking ✅
 Word ladder (min transforms)  → BFS ✅
 ```
 
+> **Flow**: USE CASE → ALGORITHM MAP: | Shortest path (unweighted) → BFS ✅ | Shortest path (weighted) → Dijkstra (modified BFS with priority queue) | Detect cycle → DFS ✅ | Topological sort → DFS ✅ (or Kahn's BFS) | Connected components → Either (DFS simpler) | ...+4 more
+
+```mermaid
+flowchart TD
+    N1["USE CASE"]
+    N2["ALGORITHM MAP:"]
+    N3["Shortest path (unweighted)"]
+    N4["BFS ✅"]
+    N5["Shortest path (weighted)"]
+    N6["Dijkstra (modified BFS with priority queue)"]
+    N7["Detect cycle"]
+    N8["DFS ✅"]
+    N9["Topological sort"]
+    N10["DFS ✅ (or Kahn's BFS)"]
+    N11["Connected components"]
+    N12["Either (DFS simpler)"]
+    N13["Level-order traversal"]
+    N14["Find if path exists"]
+    N15["Maze solving"]
+    N16["DFS + backtracking ✅"]
+    N17["Word ladder (min transforms)"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+    N7 --> N8
+    N9 --> N10
+    N11 --> N12
+    N13 --> N4
+    N14 --> N12
+    N15 --> N16
+    N17 --> N4
+```
+
 ---
 
 ## 5. Dynamic Programming vs Greedy: How To Know Which One
@@ -296,6 +329,27 @@ int fib(int n) {
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: Stable: Equal elements keep their ORIGINAL order. → Unstable: Equal elements can be rearranged. | Unstable: Equal elements can be rearranged. → THE SPREADSHEET ANALOGY: | THE SPREADSHEET ANALOGY: → You have records sorted by NAME: | You have records sorted by NAME: → [Alice-A, Alice-B, Bob-A, Charlie-A] | [Alice-A, Alice-B, Bob-A, Charlie-A] → Now sort by DEPARTMENT (all Alice entries same dept): | Now sort by DEPARTMENT (all Alice entries same dept): → Stable: [Alice-A, Alice-B, Bob-A, Charlie-A] | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Stable: Equal elements keep their ORIGINAL order."]
+    N2["Unstable: Equal elements can be rearranged."]
+    N3["THE SPREADSHEET ANALOGY:"]
+    N4["You have records sorted by NAME:"]
+    N5["[Alice-A, Alice-B, Bob-A, Charlie-A]"]
+    N6["Now sort by DEPARTMENT (all Alice entries same dept):"]
+    N7["Stable: [Alice-A, Alice-B, Bob-A, Charlie-A]"]
+    N8["↑ Original name order preserved within department"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 8. Two Pointers: Not Just "Left and Right"
@@ -328,6 +382,27 @@ int fib(int n) {
 ║  eliminating impossible pairs. Each pointer moves one direction  ║
 ║  → total work is O(n), not O(n²).                                ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: THREE PATTERNS of Two Pointers: → PATTERN 1: Opposite ends (sorted array) | PATTERN 1: Opposite ends (sorted array) → Use: Two Sum (sorted), Container With Most Water, Valid | Use: Two Sum (sorted), Container With Most Water, Valid → Palindrome, 3Sum | Palindrome, 3Sum → PATTERN 2: Same direction (fast & slow) | PATTERN 2: Same direction (fast & slow) → Move zeroes, Remove element | Move zeroes, Remove element → PATTERN 3: Two arrays / merge | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THREE PATTERNS of Two Pointers:"]
+    N2["PATTERN 1: Opposite ends (sorted array)"]
+    N3["Use: Two Sum (sorted), Container With Most Water, Valid"]
+    N4["Palindrome, 3Sum"]
+    N5["PATTERN 2: Same direction (fast & slow)"]
+    N6["Move zeroes, Remove element"]
+    N7["PATTERN 3: Two arrays / merge"]
+    N8["Use: Merge sorted arrays, Intersection, Compare strings"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---
@@ -363,6 +438,27 @@ int fib(int n) {
 ║  RULE: Need only lookup by key? → HashMap.                       ║
 ║        Need ordering, ranges, min/max? → TreeMap.                ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: HashMap: O(1) average but GIVES UP ordering. → TreeMap/BST: O(log n) but KEEPS elements sorted. | TreeMap/BST: O(log n) but KEEPS elements sorted. → Things TreeMap can do that HashMap CANNOT: | Things TreeMap can do that HashMap CANNOT: → 1. 'Give me all keys between 50 and 100' | 1. 'Give me all keys between 50 and 100' → treeMap.subMap(50, 100) → O(log n + k) | treeMap.subMap(50, 100) → O(log n + k) → HashMap: must scan ALL entries → O(n) | HashMap: must scan ALL entries → O(n) → 2. 'What's the smallest key greater than 75?' | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["HashMap: O(1) average but GIVES UP ordering."]
+    N2["TreeMap/BST: O(log n) but KEEPS elements sorted."]
+    N3["Things TreeMap can do that HashMap CANNOT:"]
+    N4["1. 'Give me all keys between 50 and 100'"]
+    N5["treeMap.subMap(50, 100) → O(log n + k)"]
+    N6["HashMap: must scan ALL entries → O(n)"]
+    N7["2. 'What's the smallest key greater than 75?'"]
+    N8["treeMap.higherKey(75) → O(log n)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---
@@ -405,6 +501,27 @@ int fib(int n) {
 ║  Java's own guidance: "Use ArrayList. Use LinkedList only if     ║
 ║  you specifically need a doubly-linked list."                    ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: TEXTBOOK vs REALITY → Textbook: | Textbook: → LinkedList insert at known position: O(1) | LinkedList insert at known position: O(1) → ArrayList insert in middle: O(n) (shift elements) | ArrayList insert in middle: O(n) (shift elements) → 'LinkedList wins for insertions!' | 'LinkedList wins for insertions!' → Reality: | Reality: → LinkedList insert: O(1) for the insert, but O(n) to FIN | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["TEXTBOOK vs REALITY"]
+    N2["Textbook:"]
+    N3["LinkedList insert at known position: O(1)"]
+    N4["ArrayList insert in middle: O(n) (shift elements)"]
+    N5["'LinkedList wins for insertions!'"]
+    N6["Reality:"]
+    N7["LinkedList insert: O(1) for the insert, but O(n) to FIN"]
+    N8["the position first! Plus pointer overhead + cache misse"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

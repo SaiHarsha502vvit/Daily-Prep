@@ -75,6 +75,27 @@
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: Your Scenario Use This → Limit concurrent connections/threads Semaphore | Limit concurrent connections/threads Semaphore → Wait for N tasks to finish, then go CountDownLatch | Wait for N tasks to finish, then go CountDownLatch → N threads meet at barrier, repeat CyclicBarrier | N threads meet at barrier, repeat CyclicBarrier → Threads arrive at phases dynamically Phaser | Threads arrive at phases dynamically Phaser → Two threads exchange data Exchanger | Two threads exchange data Exchanger → Exclusive access (mutual exclusion) ReentrantLock / syn | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Your Scenario Use This"]
+    N2["Limit concurrent connections/threads Semaphore"]
+    N3["Wait for N tasks to finish, then go CountDownLatch"]
+    N4["N threads meet at barrier, repeat CyclicBarrier"]
+    N5["Threads arrive at phases dynamically Phaser"]
+    N6["Two threads exchange data Exchanger"]
+    N7["Exclusive access (mutual exclusion) ReentrantLock / syn"]
+    N8["Many readers, few writers ReadWriteLock"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 2. Semaphore: The Parking Lot Pattern
@@ -172,6 +193,27 @@ public class ConnectionPool {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: Semaphore is built on AbstractQueuedSynchronizer (AQS): → AQS.state = number of available permits | AQS.state = number of available permits → acquire(): | acquire(): → 1. CAS: state = state - 1 | 1. CAS: state = state - 1 → 2. If state &gt;= 0 → proceed (got permit) | 2. If state &gt;= 0 → proceed (got permit) → 3. If state &lt; 0 → park thread in CLH queue (wait) | 3. If state &lt; 0 → park thread in CLH queue (wait) → release(): | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Semaphore is built on AbstractQueuedSynchronizer (AQS):"]
+    N2["AQS.state = number of available permits"]
+    N3["acquire():"]
+    N4["1. CAS: state = state - 1"]
+    N5["2. If state &gt;= 0 → proceed (got permit)"]
+    N6["3. If state &lt; 0 → park thread in CLH queue (wait)"]
+    N7["release():"]
+    N8["1. CAS: state = state + 1"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 3. CountDownLatch: The Rocket Launch Countdown
@@ -202,6 +244,27 @@ public class ConnectionPool {
 ║  Cannot reset. Cannot reuse. It's a burned bridge.               ║
 ║  Need reusable? → Use CyclicBarrier.                             ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: THE ROCKET LAUNCH ANALOGY → Mission Control: 'We launch when 5 systems report READY | Mission Control: 'We launch when 5 systems report READY → CountDownLatch(5): | CountDownLatch(5): → Navigation system: 'Ready!' → countDown() → count = 4 | Navigation system: 'Ready!' → countDown() → count = 4 → Fuel system: 'Ready!' → countDown() → count = 3 | Fuel system: 'Ready!' → countDown() → count = 3 → Guidance system: 'Ready!' → countDown() → count = 2 | Guidance system: 'Ready!' → countDown() → count = 2 → Communication: 'Ready!' → countDown() → count = 1 | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE ROCKET LAUNCH ANALOGY"]
+    N2["Mission Control: 'We launch when 5 systems report READY"]
+    N3["CountDownLatch(5):"]
+    N4["Navigation system: 'Ready!' → countDown() → count = 4"]
+    N5["Fuel system: 'Ready!' → countDown() → count = 3"]
+    N6["Guidance system: 'Ready!' → countDown() → count = 2"]
+    N7["Communication: 'Ready!' → countDown() → count = 1"]
+    N8["Life support: 'Ready!' → countDown() → count = 0"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### Code — Service Startup Orchestration
@@ -312,6 +375,27 @@ KEY DIFFERENCES from CountDownLatch:
 └────────────────────┴─────────────────┴───────────────────┘
 ```
 
+> **Flow**: THE HIKING GROUP ANALOGY → 5 hikers agree: 'Nobody moves on until everyone reaches | 5 hikers agree: 'Nobody moves on until everyone reaches → checkpoint.' | checkpoint.' → Checkpoint 1 (valley): | Checkpoint 1 (valley): → Alice arrives → waits... (1/5) | Alice arrives → waits... (1/5) → Bob arrives → waits... (2/5) | Bob arrives → waits... (2/5) → Charlie arrives → waits... (3/5) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE HIKING GROUP ANALOGY"]
+    N2["5 hikers agree: 'Nobody moves on until everyone reaches"]
+    N3["checkpoint.'"]
+    N4["Checkpoint 1 (valley):"]
+    N5["Alice arrives → waits... (1/5)"]
+    N6["Bob arrives → waits... (2/5)"]
+    N7["Charlie arrives → waits... (3/5)"]
+    N8["Dave arrives → waits... (4/5)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### Code — Parallel Matrix Computation
 
 ```java
@@ -383,6 +467,27 @@ public class ParallelSimulation {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: WHAT HAPPENS WHEN ONE THREAD FAILS AT A BARRIER? → If Thread 3 throws exception while others await: | If Thread 3 throws exception while others await: → → barrier.await() throws BrokenBarrierException for ALL | → barrier.await() throws BrokenBarrierException for ALL → → The barrier is 'broken' — all waiting threads wake up | → The barrier is 'broken' — all waiting threads wake up → → Future calls to await() also throw BrokenBarrierExcep | → Future calls to await() also throw BrokenBarrierExcep → → Must call barrier.reset() to reuse | → Must call barrier.reset() to reuse → If Thread 3 is interrupted: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["WHAT HAPPENS WHEN ONE THREAD FAILS AT A BARRIER?"]
+    N2["If Thread 3 throws exception while others await:"]
+    N3["→ barrier.await() throws BrokenBarrierException for ALL"]
+    N4["→ The barrier is 'broken' — all waiting threads wake up"]
+    N5["→ Future calls to await() also throw BrokenBarrierExcep"]
+    N6["→ Must call barrier.reset() to reuse"]
+    N7["If Thread 3 is interrupted:"]
+    N8["→ Thread 3 gets InterruptedException"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 5. Phaser: The Flexible Multi-Phase Coordinator
@@ -410,6 +515,27 @@ public class ParallelSimulation {
 ║                                                                  ║
 ║  Phaser can REPLACE both CountDownLatch and CyclicBarrier!       ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: THE RELAY RACE ANALOGY → Phaser = A relay race where: | Phaser = A relay race where: → → Runners can JOIN mid-race (register) | → Runners can JOIN mid-race (register) → → Runners can DROP OUT (arriveAndDeregister) | → Runners can DROP OUT (arriveAndDeregister) → → Number of runners changes between legs (phases) | → Number of runners changes between legs (phases) → vs CyclicBarrier: | vs CyclicBarrier: → Phaser = Dynamic. Team adapts. Phase advances normally. | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE RELAY RACE ANALOGY"]
+    N2["Phaser = A relay race where:"]
+    N3["→ Runners can JOIN mid-race (register)"]
+    N4["→ Runners can DROP OUT (arriveAndDeregister)"]
+    N5["→ Number of runners changes between legs (phases)"]
+    N6["vs CyclicBarrier:"]
+    N7["Phaser = Dynamic. Team adapts. Phase advances normally."]
+    N8["WHEN TO USE PHASER:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### Code — Dynamic Task Coordination
@@ -500,6 +626,27 @@ phaser.arriveAndAwaitAdvance();  // Waiter proceeds when all arrive
 ╚════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: THE BATON PASS ANALOGY → Two runners meet at a point. Each gives their baton to | Two runners meet at a point. Each gives their baton to → other. Both must arrive before either can leave. | other. Both must arrive before either can leave. → Thread A has: buffer1 (full data) | Thread A has: buffer1 (full data) → Thread B has: buffer2 (empty buffer) | Thread B has: buffer2 (empty buffer) → USE CASE: Double-buffered data pipeline | USE CASE: Double-buffered data pipeline → → Producer fills buffer1, consumer processes buffer2 | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE BATON PASS ANALOGY"]
+    N2["Two runners meet at a point. Each gives their baton to"]
+    N3["other. Both must arrive before either can leave."]
+    N4["Thread A has: buffer1 (full data)"]
+    N5["Thread B has: buffer2 (empty buffer)"]
+    N6["USE CASE: Double-buffered data pipeline"]
+    N7["→ Producer fills buffer1, consumer processes buffer2"]
+    N8["→ At the exchange point, they SWAP buffers"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ```java
 import java.util.concurrent.Exchanger;
 
@@ -560,6 +707,27 @@ new Thread(() -> {
 ║  → They're alive, making no progress, but OTHERS are.            ║
 ║  → Thread with low priority never gets CPU time.                 ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: THE HALLWAY ANALOGIES → DEADLOCK = Two people in a narrow hallway, face to face | DEADLOCK = Two people in a narrow hallway, face to face → → 'You go first!' 'No, YOU go first!' | → 'You go first!' 'No, YOU go first!' → → Neither moves. Both stuck forever. | → Neither moves. Both stuck forever. → → Threads: A holds lock1, wants lock2. | → Threads: A holds lock1, wants lock2. → B holds lock2, wants lock1. | B holds lock2, wants lock1. → Neither can proceed. CPU idle. | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE HALLWAY ANALOGIES"]
+    N2["DEADLOCK = Two people in a narrow hallway, face to face"]
+    N3["→ 'You go first!' 'No, YOU go first!'"]
+    N4["→ Neither moves. Both stuck forever."]
+    N5["→ Threads: A holds lock1, wants lock2."]
+    N6["B holds lock2, wants lock1."]
+    N7["Neither can proceed. CPU idle."]
+    N8["LIVELOCK = Two people in a hallway, both politely stepp"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### How to Detect and Prevent Each
@@ -638,6 +806,27 @@ Semaphore fairSemaphore = new Semaphore(5, true);  // Fair = true
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: ALL FOUR must be true simultaneously for deadlock: → 1. Mutual Exclusion — Resource held exclusively | 1. Mutual Exclusion — Resource held exclusively → (only one thread can hold the lock) | (only one thread can hold the lock) → 2. Hold and Wait — Thread holds resource while waiting | 2. Hold and Wait — Thread holds resource while waiting → (Thread A has lock1, waiting for lock2) | (Thread A has lock1, waiting for lock2) → 3. No Preemption — Cannot forcibly take a resource | 3. No Preemption — Cannot forcibly take a resource → (can't steal a lock from another thread) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["ALL FOUR must be true simultaneously for deadlock:"]
+    N2["1. Mutual Exclusion — Resource held exclusively"]
+    N3["(only one thread can hold the lock)"]
+    N4["2. Hold and Wait — Thread holds resource while waiting"]
+    N5["(Thread A has lock1, waiting for lock2)"]
+    N6["3. No Preemption — Cannot forcibly take a resource"]
+    N7["(can't steal a lock from another thread)"]
+    N8["4. Circular Wait — A→B→C→A chain of waiting"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 8. Lock Deep Reasoning: ReentrantLock, ReadWriteLock, StampedLock
@@ -667,6 +856,27 @@ Semaphore fairSemaphore = new Semaphore(5, true);  // Fair = true
 ║  RULE: Use synchronized by default. Switch to ReentrantLock      ║
 ║  only when you need tryLock, fairness, or multiple conditions.   ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: synchronized vs ReentrantLock → ReentrantLock ADDS: | ReentrantLock ADDS: → 1. tryLock() → Non-blocking attempt | 1. tryLock() → Non-blocking attempt → 2. tryLock(timeout) → Bounded waiting (avoids deadlock) | 2. tryLock(timeout) → Bounded waiting (avoids deadlock) → 3. lockInterruptibly() → Can cancel waiting thread | 3. lockInterruptibly() → Can cancel waiting thread → 4. fairness policy → FIFO ordering to prevent starvatio | 4. fairness policy → FIFO ordering to prevent starvatio → 5. Multiple Conditions → Multiple wait-sets (not just o | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["synchronized vs ReentrantLock"]
+    N2["ReentrantLock ADDS:"]
+    N3["1. tryLock() → Non-blocking attempt"]
+    N4["2. tryLock(timeout) → Bounded waiting (avoids deadlock)"]
+    N5["3. lockInterruptibly() → Can cancel waiting thread"]
+    N6["4. fairness policy → FIFO ordering to prevent starvatio"]
+    N7["5. Multiple Conditions → Multiple wait-sets (not just o"]
+    N8["6. Lock across methods → Lock in methodA, unlock in met"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### ReadWriteLock: The Library Pattern

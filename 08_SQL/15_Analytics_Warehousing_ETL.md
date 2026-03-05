@@ -343,6 +343,20 @@ ORDER BY MIN(total);
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: dim_product / (Dimension) → dim_customer / (Dimension) | dim_product / (Dimension) → dim_date / (Dimension) | dim_customer / (Dimension) → fact_sales / (Fact) | dim_date / (Dimension) → fact_sales / (Fact)
+
+```mermaid
+flowchart TD
+    N1["dim_product / (Dimension)"]
+    N2["dim_customer / (Dimension)"]
+    N3["dim_date / (Dimension)"]
+    N4["fact_sales / (Fact)"]
+    N1 --> N2
+    N1 --> N3
+    N2 --> N4
+    N3 --> N4
+```
+
 ```sql
 -- ═══════════════════════════════════════════════════════════════════════════════
 -- DIMENSIONAL MODELING - STAR SCHEMA EXAMPLE

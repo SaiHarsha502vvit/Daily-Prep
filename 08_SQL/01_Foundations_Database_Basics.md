@@ -49,6 +49,27 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: DATABASE FUNDAMENTALS → DATABASE = Organized collection of structured data | DATABASE = Organized collection of structured data → REAL-WORLD ANALOGY: | REAL-WORLD ANALOGY: → Database = Library | Database = Library → Tables = Sections (Fiction, Science, History) | Tables = Sections (Fiction, Science, History) → Rows = Individual Books | Rows = Individual Books → Columns = Book attributes (Title, Author, ISBN, Year) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["DATABASE FUNDAMENTALS"]
+    N2["DATABASE = Organized collection of structured data"]
+    N3["REAL-WORLD ANALOGY:"]
+    N4["Database = Library"]
+    N5["Tables = Sections (Fiction, Science, History)"]
+    N6["Rows = Individual Books"]
+    N7["Columns = Book attributes (Title, Author, ISBN, Year)"]
+    N8["Primary Key = Unique Book ID"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### RDBMS Architecture
 
 ```
@@ -100,6 +121,19 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: APPLICATION / (Your Java/Python / code) → DBMS ENGINE / Query Parser / Query / Optimizer / Execut | DBMS ENGINE / Query Parser / Query / Optimizer / Execut → STORAGE ENGINE / Buffer Pool / Transaction / Manager /  | STORAGE ENGINE / Buffer Pool / Transaction / Manager /  → DISK STORAGE / (Data files, / Index files, / Log files)
+
+```mermaid
+flowchart TD
+    N1["APPLICATION / (Your Java/Python / code)"]
+    N2["DBMS ENGINE / Query Parser / Query / Optimizer / Execut"]
+    N3["STORAGE ENGINE / Buffer Pool / Transaction / Manager / "]
+    N4["DISK STORAGE / (Data files, / Index files, / Log files)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 ### SQL Categories
 
 ```
@@ -139,6 +173,19 @@
 │  └────────────────────────────────────────────────────────────────────────────┘ │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: CREATE - Create database objects (tables, views, indexe → SELECT - Retrieve data / INSERT - Add new data / UPDATE | SELECT - Retrieve data / INSERT - Add new data / UPDATE → GRANT - Give permissions / REVOKE - Remove permissions | GRANT - Give permissions / REVOKE - Remove permissions → COMMIT - Save changes permanently / ROLLBACK - Undo cha
+
+```mermaid
+flowchart TD
+    N1["CREATE - Create database objects (tables, views, indexe"]
+    N2["SELECT - Retrieve data / INSERT - Add new data / UPDATE"]
+    N3["GRANT - Give permissions / REVOKE - Remove permissions"]
+    N4["COMMIT - Save changes permanently / ROLLBACK - Undo cha"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
 ```
 
 ---
@@ -181,6 +228,38 @@ For every SQL concept, we answer:
    └── Production incident or use case
    └── How it was solved using this concept
 
+```
+
+> **Flow**: 🔵 WHY does this exist? → What real-world problem does it solve? | 🔵 WHY does this exist? → What would happen without it? | 🔵 WHY does this exist? → Which companies use this? When? | 🟢 HOW does it work? → Core syntax and mechanics | 🟢 HOW does it work? → Step-by-step execution | 🟢 HOW does it work? → Visual representation | ...+5 more
+
+```mermaid
+flowchart TD
+    N1["🔵 WHY does this exist?"]
+    N2["What real-world problem does it solve?"]
+    N3["What would happen without it?"]
+    N4["Which companies use this? When?"]
+    N5["🟢 HOW does it work?"]
+    N6["Core syntax and mechanics"]
+    N7["Step-by-step execution"]
+    N8["Visual representation"]
+    N9["🟡 WHEN to use it?"]
+    N10["Best practice scenarios"]
+    N11["Anti-patterns to avoid"]
+    N12["Performance implications"]
+    N13["🔴 REAL-WORLD Story"]
+    N14["Production incident or use case"]
+    N15["How it was solved using this concept"]
+    N1 --> N2
+    N1 --> N3
+    N1 --> N4
+    N5 --> N6
+    N5 --> N7
+    N5 --> N8
+    N9 --> N10
+    N9 --> N11
+    N9 --> N12
+    N13 --> N14
+    N13 --> N15
 ```
 
 ---
@@ -484,6 +563,18 @@ CREATE TABLE order_items (
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: CUSTOMERS / PK: customer_id / email / first_name / last → ORDERS / PK: order_id / FK: customer_id / order_number  | PRODUCTS / PK: product_id / name / price / stock → ORDER_ITEMS / PK: item_id / FK: order_id / FK: product_
+
+```mermaid
+flowchart TD
+    N1["CUSTOMERS / PK: customer_id / email / first_name / last"]
+    N2["ORDERS / PK: order_id / FK: customer_id / order_number "]
+    N3["PRODUCTS / PK: product_id / name / price / stock"]
+    N4["ORDER_ITEMS / PK: item_id / FK: order_id / FK: product_"]
+    N1 --> N2
+    N3 --> N4
+```
+
 ---
 
 ## Chapter 3: ALTER TABLE - Schema Evolution
@@ -534,6 +625,27 @@ CREATE TABLE order_items (
 │  LESSON: Schema design decisions at day 1 affect scalability at day 1000        │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: WHY SCHEMAS EVOLVE → BUSINESS REASONS: | BUSINESS REASONS: → 1. NEW FEATURES | 1. NEW FEATURES → - 'We need to store user's profile photo' | - 'We need to store user's profile photo' → → ALTER TABLE users ADD COLUMN profile_url VARCHAR(500) | → ALTER TABLE users ADD COLUMN profile_url VARCHAR(500) → 2. REGULATORY COMPLIANCE | 2. REGULATORY COMPLIANCE → - 'GDPR requires consent tracking' | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["WHY SCHEMAS EVOLVE"]
+    N2["BUSINESS REASONS:"]
+    N3["1. NEW FEATURES"]
+    N4["- 'We need to store user's profile photo'"]
+    N5["→ ALTER TABLE users ADD COLUMN profile_url VARCHAR(500)"]
+    N6["2. REGULATORY COMPLIANCE"]
+    N7["- 'GDPR requires consent tracking'"]
+    N8["→ ALTER TABLE users ADD COLUMN gdpr_consent_date TIMEST"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### 🟢 HOW: ALTER TABLE Operations
@@ -693,6 +805,19 @@ ALTER TABLE products CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: • ADD COLUMN with DEFAULT (MySQL 8.0+, PostgreSQL) / •  → • ADD INDEX on large table (locks table in MySQL &lt; 8 | • ADD INDEX on large table (locks table in MySQL &lt; 8 → • DROP COLUMN (irreversible, may break app) / • Change  | • DROP COLUMN (irreversible, may break app) / • Change  → □ Test on staging with production-size data / □ Measure
+
+```mermaid
+flowchart TD
+    N1["• ADD COLUMN with DEFAULT (MySQL 8.0+, PostgreSQL) / • "]
+    N2["• ADD INDEX on large table (locks table in MySQL &lt; 8"]
+    N3["• DROP COLUMN (irreversible, may break app) / • Change "]
+    N4["□ Test on staging with production-size data / □ Measure"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 ---
 
 ## Chapter 4: DML - Data Manipulation Language
@@ -750,6 +875,15 @@ ALTER TABLE products CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
 │          Use sql_safe_updates=1 in MySQL!                                       │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: CREATE → INSERT / READ → SELECT / UPDATE → UPDATE / DEL → HTTP Method SQL Operation Example / POST INSERT Create 
+
+```mermaid
+flowchart TD
+    N1["CREATE → INSERT / READ → SELECT / UPDATE → UPDATE / DEL"]
+    N2["HTTP Method SQL Operation Example / POST INSERT Create "]
+    N1 --> N2
 ```
 
 ### 🟢 HOW: INSERT Operations
@@ -1068,6 +1202,27 @@ DELETE FROM temp_import_data WHERE import_date < '2024-01-01';
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: WHY DCL EXISTS → PRINCIPLE OF LEAST PRIVILEGE: | PRINCIPLE OF LEAST PRIVILEGE: → 'Every user should have only the minimum permissions | 'Every user should have only the minimum permissions → necessary to perform their job function' | necessary to perform their job function' → WHY THIS MATTERS: | WHY THIS MATTERS: → Developer needs: Read production logs | Developer needs: Read production logs → Developer gets: SELECT on logs table only | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["WHY DCL EXISTS"]
+    N2["PRINCIPLE OF LEAST PRIVILEGE:"]
+    N3["'Every user should have only the minimum permissions"]
+    N4["necessary to perform their job function'"]
+    N5["WHY THIS MATTERS:"]
+    N6["Developer needs: Read production logs"]
+    N7["Developer gets: SELECT on logs table only"]
+    N8["Developer should NOT get: DELETE on users table!"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### 🟢 HOW: GRANT and REVOKE
 
 ```sql
@@ -1214,6 +1369,15 @@ SHOW GRANTS;
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: Step 1: UPDATE accounts SET balance = balance - 10000 / → START TRANSACTION; / UPDATE accounts SET balance = bala
+
+```mermaid
+flowchart TD
+    N1["Step 1: UPDATE accounts SET balance = balance - 10000 /"]
+    N2["START TRANSACTION; / UPDATE accounts SET balance = bala"]
+    N1 --> N2
+```
+
 ### 🟢 HOW: ACID Properties
 
 ```
@@ -1283,6 +1447,19 @@ SHOW GRANTS;
 │  └────────────────────────────────────────────────────────────────────────────┘ │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: Like an ATOM - indivisible unit / Transaction with 5 SQ → Database rules (constraints) ALWAYS enforced / Example: | Database rules (constraints) ALWAYS enforced / Example: → Two transactions running simultaneously: / T1: Read bal | Two transactions running simultaneously: / T1: Read bal → After COMMIT, data survives: / - Power failure / - Serv
+
+```mermaid
+flowchart TD
+    N1["Like an ATOM - indivisible unit / Transaction with 5 SQ"]
+    N2["Database rules (constraints) ALWAYS enforced / Example:"]
+    N3["Two transactions running simultaneously: / T1: Read bal"]
+    N4["After COMMIT, data survives: / - Power failure / - Serv"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
 ```
 
 ### 🟢 HOW: Transaction Syntax
@@ -1506,6 +1683,27 @@ TRADE-OFF: Higher isolation = Slower performance (more locking)
 ║    ✓ Test schema changes on staging first                                        ║
 ║                                                                                  ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: SQL FOUNDATIONS - QUICK REFERENCE → DDL (Structure): | DDL (Structure): → DML (Data): | DML (Data): → INSERT, SELECT, UPDATE, DELETE, MERGE | INSERT, SELECT, UPDATE, DELETE, MERGE → DCL (Permissions): | DCL (Permissions): → GRANT, REVOKE, CREATE USER, CREATE ROLE | GRANT, REVOKE, CREATE USER, CREATE ROLE → TCL (Transactions): | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["SQL FOUNDATIONS - QUICK REFERENCE"]
+    N2["DDL (Structure):"]
+    N3["DML (Data):"]
+    N4["INSERT, SELECT, UPDATE, DELETE, MERGE"]
+    N5["DCL (Permissions):"]
+    N6["GRANT, REVOKE, CREATE USER, CREATE ROLE"]
+    N7["TCL (Transactions):"]
+    N8["START TRANSACTION, COMMIT, ROLLBACK, SAVEPOINT"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

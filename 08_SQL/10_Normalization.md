@@ -37,6 +37,27 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: DATABASE NORMALIZATION → PROBLEMS WITH UN-NORMALIZED DATA: | PROBLEMS WITH UN-NORMALIZED DATA: → orders (denormalized) | orders (denormalized) → ord_id cust_name cust_addr product product_price qty | ord_id cust_name cust_addr product product_price qty → 1 John Delhi Laptop 50000 1 | 1 John Delhi Laptop 50000 1 → 2 John Delhi Mouse 500 2 | 2 John Delhi Mouse 500 2 → 3 John Delhi Keyboard 1500 1 | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["DATABASE NORMALIZATION"]
+    N2["PROBLEMS WITH UN-NORMALIZED DATA:"]
+    N3["orders (denormalized)"]
+    N4["ord_id cust_name cust_addr product product_price qty"]
+    N5["1 John Delhi Laptop 50000 1"]
+    N6["2 John Delhi Mouse 500 2"]
+    N7["3 John Delhi Keyboard 1500 1"]
+    N8["4 Priya Mumbai Laptop 50000 1"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### Normal Forms
 
 ```
@@ -67,6 +88,21 @@
 │  Each form builds on the previous one!                                          │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: BCNF → 3NF | 3NF → 2NF | 2NF → 1NF | 1NF → Unnormalized
+
+```mermaid
+flowchart TD
+    N1["BCNF"]
+    N2["3NF"]
+    N3["2NF"]
+    N4["1NF"]
+    N5["Unnormalized"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
 ```
 
 ### First Normal Form (1NF)
@@ -101,6 +137,17 @@
 │                                   └────────┴──────────────┘                     │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: emp_id name phone_numbers / 1 Rajesh Kumar 9876543210,  → emp_id name / 1 Rajesh Kumar / 2 Priya Sharma | emp_id name / 1 Rajesh Kumar / 2 Priya Sharma → emp_id phone / 1 9876543210 / 1 9876543211 / 2 91234567
+
+```mermaid
+flowchart TD
+    N1["emp_id name phone_numbers / 1 Rajesh Kumar 9876543210, "]
+    N2["emp_id name / 1 Rajesh Kumar / 2 Priya Sharma"]
+    N3["emp_id phone / 1 9876543210 / 1 9876543211 / 2 91234567"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 ### Second Normal Form (2NF)
@@ -140,6 +187,17 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: order_id product_id product_name qty price / 1 101 Lapt → order_id product_id qty / 1 101 1 / 1 102 2 / 2 101 1 | order_id product_id qty / 1 101 1 / 1 102 2 / 2 101 1 → product_id product_name price / 101 Laptop 50000 / 102 
+
+```mermaid
+flowchart TD
+    N1["order_id product_id product_name qty price / 1 101 Lapt"]
+    N2["order_id product_id qty / 1 101 1 / 1 102 2 / 2 101 1"]
+    N3["product_id product_name price / 101 Laptop 50000 / 102 "]
+    N1 --> N2
+    N2 --> N3
+```
+
 ### Third Normal Form (3NF)
 
 ```
@@ -175,6 +233,17 @@
 │  └────────┴────────┴─────────┘                                                  │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: emp_id name dept_id dept_name dept_location / 1 Alice 1 → emp_id name dept_id / 1 Alice 10 / 2 Bob 10 / 3 Carol 2 | emp_id name dept_id / 1 Alice 10 / 2 Bob 10 / 3 Carol 2 → dept_id dept_name location / 10 Engineering Building A 
+
+```mermaid
+flowchart TD
+    N1["emp_id name dept_id dept_name dept_location / 1 Alice 1"]
+    N2["emp_id name dept_id / 1 Alice 10 / 2 Bob 10 / 3 Carol 2"]
+    N3["dept_id dept_name location / 10 Engineering Building A "]
+    N1 --> N2
+    N2 --> N3
 ```
 
 ### BCNF (Boyce-Codd Normal Form)
@@ -214,6 +283,17 @@
 │  Now teacher → subject is in its own table where teacher IS the key!            │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: student subject teacher / Alice Math Mr.X / Bob Math Mr → student teacher / Alice Mr.X / Bob Mr.X / Alice Mr.Y /  | student teacher / Alice Mr.X / Bob Mr.X / Alice Mr.Y /  → teacher subject / Mr.X Math / Mr.Y Physics / Mr.Z Math
+
+```mermaid
+flowchart TD
+    N1["student subject teacher / Alice Math Mr.X / Bob Math Mr"]
+    N2["student teacher / Alice Mr.X / Bob Mr.X / Alice Mr.Y / "]
+    N3["teacher subject / Mr.X Math / Mr.Y Physics / Mr.Z Math"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 ### Normalization Summary

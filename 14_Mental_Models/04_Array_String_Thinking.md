@@ -46,6 +46,28 @@ Q6: Limitation says O(n) and array has range [0, n-1]?
 └── NO → Brute force, then optimize
 ```
 
+> **Flow**: Read the problem → Ask these questions IN ORDER: | YES → TWO POINTERS (from both ends or same direction) | YES → SLIDING WINDOW or PREFIX SUM | YES → HASHMAP (frequency map) | YES → STACK (monotonic stack for Next Greater/Smaller) | YES → Dynamic Programming or Greedy | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Read the problem"]
+    N2["Ask these questions IN ORDER:"]
+    N3["YES"]
+    N4["TWO POINTERS (from both ends or same direction)"]
+    N5["SLIDING WINDOW or PREFIX SUM"]
+    N6["HASHMAP (frequency map)"]
+    N7["STACK (monotonic stack for Next Greater/Smaller)"]
+    N8["Dynamic Programming or Greedy"]
+    N9["IN-PLACE MARKING (use indices as hash)"]
+    N1 --> N2
+    N3 --> N4
+    N3 --> N5
+    N3 --> N6
+    N3 --> N7
+    N3 --> N8
+    N3 --> N9
+```
+
 ---
 
 ## Part 2: Two Pointers — When and How
@@ -71,6 +93,15 @@ Array1: [1, 3, 5]    p1→
 Array2: [2, 4, 6]    p2→
 Result: [1, 2, 3, 4, 5, 6]
 When: Merge two sorted arrays/lists, intersection of sorted arrays
+```
+
+> **Flow**: L→ ←R → S→ F→
+
+```mermaid
+flowchart TD
+    N1["L→ ←R"]
+    N2["S→ F→"]
+    N1 --> N2
 ```
 
 ### Template: Two Sum on Sorted Array
@@ -104,6 +135,26 @@ VARIABLE Window (find smallest/largest valid window):
 
 When: "Smallest subarray with sum ≥ target", "Longest substring without repeating"
 Template: Expand right always, shrink left while condition met
+```
+
+> **Flow**: [a b c] d e f → compute for window | a [b c d] e f → slide right, update | a b [c d e] f → slide right, update | [a b c d] e f → expand right until valid | a [b c d e] f → shrink left while still valid
+
+```mermaid
+flowchart TD
+    N1["[a b c] d e f"]
+    N2["compute for window"]
+    N3["a [b c d] e f"]
+    N4["slide right, update"]
+    N5["a b [c d e] f"]
+    N6["[a b c d] e f"]
+    N7["expand right until valid"]
+    N8["a [b c d e] f"]
+    N9["shrink left while still valid"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N4
+    N6 --> N7
+    N8 --> N9
 ```
 
 ### Variable Window Template
@@ -148,6 +199,19 @@ Sum of subarray [i..j] = prefix[j+1] - prefix[i]
 Sum of [1..3] = prefix[4] - prefix[1] = 9 - 3 = 6  ✓ (1+4+1=6)
 ```
 
+> **Flow**: Array: [3, 1, 4, 1, 5, 9] → Prefix Sum: [0, 3, 4, 8, 9, 14, 23] | Prefix Sum: [0, 3, 4, 8, 9, 14, 23] → ↑ sentinel | ↑ sentinel → Sum of subarray [i..j] = prefix[j+1] - prefix[i]
+
+```mermaid
+flowchart TD
+    N1["Array: [3, 1, 4, 1, 5, 9]"]
+    N2["Prefix Sum: [0, 3, 4, 8, 9, 14, 23]"]
+    N3["↑ sentinel"]
+    N4["Sum of subarray [i..j] = prefix[j+1] - prefix[i]"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 ### Prefix Sum + HashMap Pattern
 ```
 Problem: "How many subarrays have sum equal to k?"
@@ -156,6 +220,15 @@ Key insight: If prefix[j] - prefix[i] = k, then subarray [i+1..j] sums to k
 → Equivalent to: prefix[j] - k = prefix[i]
 → For each j, count how many previous prefix sums equal (prefix[j] - k)
 → Use HashMap to store frequency of prefix sums seen so far!
+```
+
+> **Flow**: Problem: 'How many subarrays have sum equal to k?' → → Equivalent to: prefix[j] - k = prefix[i]
+
+```mermaid
+flowchart TD
+    N1["Problem: 'How many subarrays have sum equal to k?'"]
+    N2["→ Equivalent to: prefix[j] - k = prefix[i]"]
+    N1 --> N2
 ```
 
 ```java
@@ -187,6 +260,45 @@ Problem Type:                         → Technique:
 "Longest common subsequence"          → DP (2D table)
 "String to integer / parse"           → Manual parsing with edge cases
 "Reverse words in string"             → Split → reverse array → join (or two passes)
+```
+
+> **Flow**: Problem Type: → Technique: | 'Are two strings anagrams?' → Sort both OR frequency count (int[26]) | 'Find all anagrams in string' → Sliding window + frequency match | 'Longest palindromic substring' → Expand around center (O(n²)) or Manacher | 'Pattern matching' → KMP for exact, Rabin-Karp for rolling hash | 'All permutations of string' → Backtracking with frequency tracking | ...+6 more
+
+```mermaid
+flowchart TD
+    N1["Problem Type:"]
+    N2["Technique:"]
+    N3["'Are two strings anagrams?'"]
+    N4["Sort both OR frequency count (int[26])"]
+    N5["'Find all anagrams in string'"]
+    N6["Sliding window + frequency match"]
+    N7["'Longest palindromic substring'"]
+    N8["Expand around center (O(n²)) or Manacher"]
+    N9["'Pattern matching'"]
+    N10["KMP for exact, Rabin-Karp for rolling hash"]
+    N11["'All permutations of string'"]
+    N12["Backtracking with frequency tracking"]
+    N13["'Edit distance between strings'"]
+    N14["DP (2D table)"]
+    N15["'Longest common subsequence'"]
+    N16["'String to integer / parse'"]
+    N17["Manual parsing with edge cases"]
+    N18["'Reverse words in string'"]
+    N19["Split"]
+    N20["reverse array"]
+    N21["join (or two passes)"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+    N7 --> N8
+    N9 --> N10
+    N11 --> N12
+    N13 --> N14
+    N15 --> N14
+    N16 --> N17
+    N18 --> N19
+    N19 --> N20
+    N20 --> N21
 ```
 
 ### Character Frequency Trick (int[26])
@@ -233,6 +345,21 @@ for (int num : nums) {
 }
 ```
 
+> **Flow**: 'Find missing number' → XOR all values with all indices | 'Find duplicate' → Floyd's cycle detection on index chain | 'First missing positive' → Mark presence by negating at index
+
+```mermaid
+flowchart LR
+    N1["'Find missing number'"]
+    N2["XOR all values with all indices"]
+    N3["'Find duplicate'"]
+    N4["Floyd's cycle detection on index chain"]
+    N5["'First missing positive'"]
+    N6["Mark presence by negating at index"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+```
+
 ### Partition / Dutch National Flag
 ```
 When: Separate elements into groups (0s, 1s, 2s)
@@ -243,6 +370,23 @@ Three pointers: low, mid, high
 - If arr[mid] == 0: swap with low, move both right
 - If arr[mid] == 1: just move mid right
 - If arr[mid] == 2: swap with high, move high left (don't move mid!)
+```
+
+> **Flow**: When: Separate elements into groups (0s, 1s, 2s) → Three pointers: low, mid, high | Three pointers: low, mid, high → [0s | 1s | unsorted | 2s] | [0s | 1s | unsorted | 2s] → ↑low ↑mid ↑high | ↑low ↑mid ↑high → - If arr[mid] == 0: swap with low, move both right | - If arr[mid] == 0: swap with low, move both right → - If arr[mid] == 1: just move mid right
+
+```mermaid
+flowchart TD
+    N1["When: Separate elements into groups (0s, 1s, 2s)"]
+    N2["Three pointers: low, mid, high"]
+    N3["[0s | 1s | unsorted | 2s]"]
+    N4["↑low ↑mid ↑high"]
+    N5["- If arr[mid] == 0: swap with low, move both right"]
+    N6["- If arr[mid] == 1: just move mid right"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
 ```
 
 ---
@@ -260,6 +404,25 @@ Three pointers: low, mid, high
 □ Prefix sum: Did I include the sentinel prefix[0] = 0?
 □ String immutability: Am I using StringBuilder for building?
 □ Character encoding: 'a' to 'z' = 26 letters, '0' to '9' = 10 digits
+```
+
+> **Flow**: □ Off-by-one: Is my loop bound &lt; n or &lt;= n? → □ Empty array/string: Does my code handle length 0? | □ Empty array/string: Does my code handle length 0? → □ Single element: Does it work for length 1? | □ Single element: Does it work for length 1? → □ All same elements: [5,5,5,5] — does my logic handle t | □ All same elements: [5,5,5,5] — does my logic handle t → □ Integer overflow: Am I using long for sums? | □ Integer overflow: Am I using long for sums? → □ Negative numbers: Does two-pointer still work? | □ Negative numbers: Does two-pointer still work? → □ Prefix sum: Did I include the sentinel prefix[0] = 0?
+
+```mermaid
+flowchart TD
+    N1["□ Off-by-one: Is my loop bound &lt; n or &lt;= n?"]
+    N2["□ Empty array/string: Does my code handle length 0?"]
+    N3["□ Single element: Does it work for length 1?"]
+    N4["□ All same elements: [5,5,5,5] — does my logic handle t"]
+    N5["□ Integer overflow: Am I using long for sums?"]
+    N6["□ Negative numbers: Does two-pointer still work?"]
+    N7["□ Prefix sum: Did I include the sentinel prefix[0] = 0?"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
 ```
 
 ---

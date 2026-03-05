@@ -66,6 +66,21 @@ contains(x)     O(1)      set.contains("apple")
 size()          O(1)      set.size()
 ```
 
+> **Flow**: OPERATIONS: TIME EXAMPLE → add(x) O(1) set.add('apple') | add(x) O(1) set.add('apple') → remove(x) O(1) set.remove('apple') | remove(x) O(1) set.remove('apple') → contains(x) O(1) set.contains('apple') | contains(x) O(1) set.contains('apple') → size() O(1) set.size()
+
+```mermaid
+flowchart TD
+    N1["OPERATIONS: TIME EXAMPLE"]
+    N2["add(x) O(1) set.add('apple')"]
+    N3["remove(x) O(1) set.remove('apple')"]
+    N4["contains(x) O(1) set.contains('apple')"]
+    N5["size() O(1) set.size()"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+```
+
 ```java
 // Common patterns
 Set<Integer> set = new HashSet<>();
@@ -127,6 +142,15 @@ TWO VARIANTS:
 │   fast scans ahead for next unique                       │
 │   Result: [1, 2, 3, _, _]  return slow+1 = 3             │
 └──────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: OPPOSITE DIRECTION EXAMPLE: Two Sum II (sorted array) / → SAME DIRECTION EXAMPLE: Remove Duplicates (sorted) / [1
+
+```mermaid
+flowchart TD
+    N1["OPPOSITE DIRECTION EXAMPLE: Two Sum II (sorted array) /"]
+    N2["SAME DIRECTION EXAMPLE: Remove Duplicates (sorted) / [1"]
+    N1 --> N2
 ```
 
 #### 📐 Templates
@@ -224,6 +248,18 @@ APPROACH:
 WHY HashMap + HashSet?
   O(1) per transaction → can handle millions in real-time
   LinkedHashMap can auto-evict old entries (removeEldestEntry)
+```
+
+> **Flow**: HashMap&lt;String, Long&gt;: key → last timestamp | O(1) per transaction → can handle millions in real-time
+
+```mermaid
+flowchart LR
+    N1["HashMap&lt;String, Long&gt;: key"]
+    N2["last timestamp"]
+    N3["O(1) per transaction"]
+    N4["can handle millions in real-time"]
+    N1 --> N2
+    N3 --> N4
 ```
 
 ---

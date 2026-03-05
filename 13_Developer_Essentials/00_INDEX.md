@@ -52,6 +52,30 @@ WHO   → Who invented it? Historical context
 HOW   → Step-by-step implementation with diagrams
 ```
 
+> **Flow**: WHY → Why does this exist? What problem does it solve? | WHAT → Core concepts, mental models, theory | WHERE → Where is this used in real companies? | WHEN → When to use vs not use | WHO → Who invented it? Historical context | HOW → Step-by-step implementation with diagrams
+
+```mermaid
+flowchart TD
+    N1["WHY"]
+    N2["Why does this exist? What problem does it solve?"]
+    N3["WHAT"]
+    N4["Core concepts, mental models, theory"]
+    N5["WHERE"]
+    N6["Where is this used in real companies?"]
+    N7["WHEN"]
+    N8["When to use vs not use"]
+    N9["WHO"]
+    N10["Who invented it? Historical context"]
+    N11["HOW"]
+    N12["Step-by-step implementation with diagrams"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+    N7 --> N8
+    N9 --> N10
+    N11 --> N12
+```
+
 ---
 
 > **Cross-reference**: These guides complement the DSA chapters in `02_Data_Structures/`, `03_Algorithms/`, 

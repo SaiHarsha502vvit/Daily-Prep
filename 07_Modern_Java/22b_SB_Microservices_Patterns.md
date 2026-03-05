@@ -664,6 +664,19 @@ public class OrderAggregate {
 └──────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: Command / Handler → Write DB / (PostgreSQL) / Normalized | Query / Handler → Read DB / (MongoDB) / Denormalized | Write DB / (PostgreSQL) / Normalized --(events)--> Read DB / (MongoDB) / Denormalized
+
+```mermaid
+flowchart TD
+    N2["Command / Handler"]
+    N3["Query / Handler"]
+    N4["Write DB / (PostgreSQL) / Normalized"]
+    N5["Read DB / (MongoDB) / Denormalized"]
+    N2 --> N4
+    N3 --> N5
+    N4 -->|"events"| N5
+```
+
 ### CQRS Implementation
 
 ```java
@@ -867,6 +880,17 @@ public class OrderReadModelUpdater {
 └──────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: Service A → Sidecar / Proxy | Service B → Sidecar / Proxy
+
+```mermaid
+flowchart TD
+    N1["Service A"]
+    N2["Service B"]
+    N3["Sidecar / Proxy"]
+    N1 --> N3
+    N2 --> N3
+```
+
 ### Istio Configuration Example
 
 ```yaml
@@ -952,6 +976,19 @@ spec:
 └──────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: Client → Auth / Server | Auth / Server → Gateway | Gateway → Service
+
+```mermaid
+flowchart LR
+    N1["Client"]
+    N2["Auth / Server"]
+    N3["Gateway"]
+    N4["Service"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 ### Gateway Security Configuration
 
 ```java
@@ -1033,6 +1070,17 @@ public class GatewaySecurityConfig {
 └──────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: METRICS / What? / Quantitative / measurements / Tools:  → LOGGING / What? / Event data / & context / Tools: / ELK | LOGGING / What? / Event data / & context / Tools: / ELK → TRACING / What? / Request / journey / Tools: / Jaeger /
+
+```mermaid
+flowchart TD
+    N1["METRICS / What? / Quantitative / measurements / Tools: "]
+    N2["LOGGING / What? / Event data / & context / Tools: / ELK"]
+    N3["TRACING / What? / Request / journey / Tools: / Jaeger /"]
+    N1 --> N2
+    N2 --> N3
+```
+
 ### Metrics with Micrometer
 
 ```java
@@ -1106,6 +1154,27 @@ public class OrderService {
 └──────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: BLUE-GREEN DEPLOYMENT → Before: | Before: → Load Balancer Blue (v1.0) ✅ Active | Load Balancer Blue (v1.0) ✅ Active → Green (v1.1) 🔳 Staged | Green (v1.1) 🔳 Staged → After: | After: → Load Balancer Blue (v1.0) 🔳 Standby | Load Balancer Blue (v1.0) 🔳 Standby → Green (v1.1) ✅ Active | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["BLUE-GREEN DEPLOYMENT"]
+    N2["Before:"]
+    N3["Load Balancer Blue (v1.0) ✅ Active"]
+    N4["Green (v1.1) 🔳 Staged"]
+    N5["After:"]
+    N6["Load Balancer Blue (v1.0) 🔳 Standby"]
+    N7["Green (v1.1) ✅ Active"]
+    N8["✅ Zero downtime"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### Canary Deployment
 
 ```
@@ -1136,6 +1205,17 @@ public class OrderService {
 │  ✅ Quick rollback if issues                                      │
 │                                                                  │
 └──────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: v1.0: ██████████████████████████████████████ 95% / v1.1 → v1.0: ████████████████████████████████ 75% / v1.1: ████ | v1.0: ████████████████████████████████ 75% / v1.1: ████ → v1.0: 0% / v1.1: ██████████████████████████████████████
+
+```mermaid
+flowchart TD
+    N1["v1.0: ██████████████████████████████████████ 95% / v1.1"]
+    N2["v1.0: ████████████████████████████████ 75% / v1.1: ████"]
+    N3["v1.0: 0% / v1.1: ██████████████████████████████████████"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 ---
@@ -1263,6 +1343,27 @@ Best practices:
 │  Load Balancer   │ Client-side with discovery                       │
 │  Service Mesh    │ Istio, Linkerd                                   │
 └─────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: MICROSERVICES PATTERNS CHEAT SHEET → COMMUNICATION PATTERNS | COMMUNICATION PATTERNS → Synchronous REST, gRPC, GraphQL | Synchronous REST, gRPC, GraphQL → Asynchronous Message queues (Kafka, RabbitMQ) | Asynchronous Message queues (Kafka, RabbitMQ) → Event-driven Events/Event Sourcing | Event-driven Events/Event Sourcing → RESILIENCE PATTERNS | RESILIENCE PATTERNS → Circuit Breaker Fail fast when service down | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["MICROSERVICES PATTERNS CHEAT SHEET"]
+    N2["COMMUNICATION PATTERNS"]
+    N3["Synchronous REST, gRPC, GraphQL"]
+    N4["Asynchronous Message queues (Kafka, RabbitMQ)"]
+    N5["Event-driven Events/Event Sourcing"]
+    N6["RESILIENCE PATTERNS"]
+    N7["Circuit Breaker Fail fast when service down"]
+    N8["Retry Automatic retry with backoff"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

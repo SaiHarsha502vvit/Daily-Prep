@@ -154,6 +154,17 @@ FORMALIZATION:
 - Used in every search engine
 ```
 
+> **Flow**: 2. 'W' comes after 'M' → go to second half | 4. 'W' comes after 'T' → go to second half
+
+```mermaid
+flowchart LR
+    N1["2. 'W' comes after 'M'"]
+    N2["go to second half"]
+    N3["4. 'W' comes after 'T'"]
+    N1 --> N2
+    N3 --> N2
+```
+
 ### 🖥️ LeetCode Application
 
 | Problem                                                                                         | Real-World Connection                     |
@@ -225,6 +236,21 @@ A: [1, 3, 5]    B: [2, 4, 6]    Result: [1, 2]
 ... continue
 
 Time: O(n + m) - Much better!
+```
+
+> **Flow**: 1 &lt; 2 → take 1, move i | 3 &gt; 2 → take 2, move j | 3 &lt; 4 → take 3, move i
+
+```mermaid
+flowchart LR
+    N1["1 &lt; 2"]
+    N2["take 1, move i"]
+    N3["3 &gt; 2"]
+    N4["take 2, move j"]
+    N5["3 &lt; 4"]
+    N6["take 3, move i"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
 ```
 
 ### 🖥️ LeetCode Application
@@ -299,6 +325,27 @@ IMPACT:
 - 100x faster data transfer
 - Every network uses sliding window
 - THIS IS LITERALLY HOW INTERNET WORKS
+```
+
+> **Flow**: SETTING: ARPANET (Precursor to Internet) → PROBLEM: | PROBLEM: → - Computer A sending data to Computer B | - Computer A sending data to Computer B → - Network is unreliable | - Network is unreliable → - Some packets get lost | - Some packets get lost → - Need to resend lost packets | - Need to resend lost packets → NAIVE APPROACH: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["SETTING: ARPANET (Precursor to Internet)"]
+    N2["PROBLEM:"]
+    N3["- Computer A sending data to Computer B"]
+    N4["- Network is unreliable"]
+    N5["- Some packets get lost"]
+    N6["- Need to resend lost packets"]
+    N7["NAIVE APPROACH:"]
+    N8["Send packet 1 → Wait for ACK → Send packet 2 → Wait for"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### 🖥️ LeetCode Application
@@ -381,6 +428,17 @@ WHY IT WORKS:
 - MUCH better than O(n²) bubble sort!
 ```
 
+> **Flow**: SETTING: EDVAC Computer Project / PROBLEM: / - Need to → [3, 8] [1, 5] [2, 9] [4, 7] ← Merge (sorted) | [3, 8] [1, 5] [2, 9] [4, 7] ← Merge (sorted) → WHY IT WORKS: / - Each level: n comparisons / - Number
+
+```mermaid
+flowchart TD
+    N1["SETTING: EDVAC Computer Project / PROBLEM: / - Need to"]
+    N2["[3, 8] [1, 5] [2, 9] [4, 7] ← Merge (sorted)"]
+    N3["WHY IT WORKS: / - Each level: n comparisons / - Number"]
+    N1 --> N2
+    N2 --> N3
+```
+
 ### 💡 The Real Incident
 
 ```
@@ -437,6 +495,27 @@ WHY IT'S FAST:
 WHY IT CAN BE SLOW:
 - Worst case: O(n²) if bad pivot
 - Solution: Random pivot selection
+```
+
+> **Flow**: SETTING: Machine translation project, Moscow → PROBLEM: | PROBLEM: → - Sorting Russian words for dictionary | - Sorting Russian words for dictionary → - Merge sort needs extra memory | - Merge sort needs extra memory → - Can we sort 'in place'? | - Can we sort 'in place'? → THE INSIGHT: | THE INSIGHT: → 'Pick a word. Put all words &lt; it on left, &gt; it on | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["SETTING: Machine translation project, Moscow"]
+    N2["PROBLEM:"]
+    N3["- Sorting Russian words for dictionary"]
+    N4["- Merge sort needs extra memory"]
+    N5["- Can we sort 'in place'?"]
+    N6["THE INSIGHT:"]
+    N7["'Pick a word. Put all words &lt; it on left, &gt; it on"]
+    N8["QUICK SORT CONCEPT:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### 💡 The Real Incident
@@ -505,6 +584,30 @@ Time: O(2ⁿ) → O(n) !!!
 WHY "DYNAMIC PROGRAMMING"?
 Bellman chose the name to hide his research from politicians!
 "Dynamic" sounded impressive but vague.
+```
+
+> **Flow**: fib(5) → fib(4) | fib(4) → fib(3) | fib(3) → fib(2) | fib(2) → return 1 | fib(1) → return 1 | fib(2) → CACHED! return 1 | ...+3 more
+
+```mermaid
+flowchart TD
+    N1["fib(5)"]
+    N2["fib(4)"]
+    N3["fib(3)"]
+    N4["fib(2)"]
+    N5["return 1"]
+    N6["fib(1)"]
+    N7["CACHED! return 1"]
+    N8["CACHED!"]
+    N9["Time: O(2ⁿ)"]
+    N10["O(n) !!!"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N6 --> N5
+    N4 --> N7
+    N3 --> N8
+    N9 --> N10
 ```
 
 ### 🖥️ LeetCode Application
@@ -672,6 +775,28 @@ THIS IS HOW:
 - Web scrapers work
 ```
 
+> **Flow**: Page A → follows link | follows link → Page B | Page B → follows link | follows link → Page C | Page C → no new links | no new links → backtrack | ...+2 more
+
+```mermaid
+flowchart TD
+    N1["Page A"]
+    N2["follows link"]
+    N3["Page B"]
+    N4["Page C"]
+    N5["no new links"]
+    N6["backtrack"]
+    N7["try another link"]
+    N8["Page D"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N2
+    N2 --> N4
+    N4 --> N5
+    N5 --> N6
+    N3 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## Dijkstra's Algorithm
@@ -708,6 +833,18 @@ Starting from A:
 7. ... continue
 
 Result: Shortest paths from A to all nodes
+```
+
+> **Flow**: A ---- → B ---- | C ---- → E -----
+
+```mermaid
+flowchart LR
+    N1["A ----"]
+    N2["B ----"]
+    N3["C ----"]
+    N4["E -----"]
+    N1 --> N2
+    N3 --> N4
 ```
 
 ### 💡 The Real Incident
@@ -828,6 +965,17 @@ Chaining: Simpler, uses extra memory
 Open Addressing: Cache-friendly, more complex
 ```
 
+> **Flow**: Index 5: alice → bob | bob → null
+
+```mermaid
+flowchart LR
+    N1["Index 5: alice"]
+    N2["bob"]
+    N3["null"]
+    N1 --> N2
+    N2 --> N3
+```
+
 ### 💡 The Real Incident
 
 ```
@@ -941,6 +1089,20 @@ THIS IS NOW:
 - In your browser!
 ```
 
+> **Flow**: HashMap: key → Node in LinkedList | LinkedList: Most Recent ← → ... ← | ... ← → Least Recent
+
+```mermaid
+flowchart LR
+    N1["HashMap: key"]
+    N2["Node in LinkedList"]
+    N3["LinkedList: Most Recent ←"]
+    N4["... ←"]
+    N5["Least Recent"]
+    N1 --> N2
+    N3 --> N4
+    N4 --> N5
+```
+
 ---
 
 ## Valid Parentheses - Compiler Design
@@ -977,6 +1139,18 @@ THIS IS:
 - How javac validates Java
 - How browsers validate HTML
 - How JSON parsers work
+```
+
+> **Flow**: - See '(' → expect ')' later | - See '{' → expect '}' later
+
+```mermaid
+flowchart LR
+    N1["- See '('"]
+    N2["expect ')' later"]
+    N3["- See '{'"]
+    N4["expect '}' later"]
+    N1 --> N2
+    N3 --> N4
 ```
 
 ---

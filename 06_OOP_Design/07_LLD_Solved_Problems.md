@@ -132,6 +132,24 @@ Observer Pattern  → Notify display boards when spot count changes
 Singleton Pattern → ParkingLot instance (debatable, prefer DI)
 ```
 
+> **Flow**: Strategy Pattern → PricingStrategy (hourly, flat rate, weekend rates) | Factory Pattern → Could create vehicles from license plate scan | Observer Pattern → Notify display boards when spot count changes | Singleton Pattern → ParkingLot instance (debatable, prefer DI)
+
+```mermaid
+flowchart LR
+    N1["Strategy Pattern"]
+    N2["PricingStrategy (hourly, flat rate, weekend rates)"]
+    N3["Factory Pattern"]
+    N4["Could create vehicles from license plate scan"]
+    N5["Observer Pattern"]
+    N6["Notify display boards when spot count changes"]
+    N7["Singleton Pattern"]
+    N8["ParkingLot instance (debatable, prefer DI)"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+    N7 --> N8
+```
+
 ---
 
 # PROBLEM 2: Design BookMyShow (Movie Booking)
@@ -225,6 +243,19 @@ class BookingService {
 ║  UPDATE seat_status SET status='LOCKED', version=version+1                       ║
 ║  WHERE seat_id='A1' AND status='AVAILABLE' AND version=current_version           ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: Timeline of concurrent booking: → User A pays at t=3 → confirmBooking → BOOKED | User A pays at t=3 → confirmBooking → BOOKED → OR optimistic lock with version column: | OR optimistic lock with version column: → UPDATE seat_status SET status='LOCKED', version=version
+
+```mermaid
+flowchart TD
+    N1["Timeline of concurrent booking:"]
+    N2["User A pays at t=3 → confirmBooking → BOOKED"]
+    N3["OR optimistic lock with version column:"]
+    N4["UPDATE seat_status SET status='LOCKED', version=version"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
 ```
 
 ---

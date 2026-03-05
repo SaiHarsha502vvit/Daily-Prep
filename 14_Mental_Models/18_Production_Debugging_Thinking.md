@@ -60,6 +60,21 @@ KEY RULE: MITIGATE first, DIAGNOSE second.
 Users don't care about root cause — they want the service BACK.
 ```
 
+> **Flow**: 1. DETECT (0-5 min) / Alert fires. PagerDuty/Slack noti → 2. MITIGATE (5-15 min) / STOP THE BLEEDING before findi | 2. MITIGATE (5-15 min) / STOP THE BLEEDING before findi → 3. DIAGNOSE (15 min - hours) / NOW find the root cause. | 3. DIAGNOSE (15 min - hours) / NOW find the root cause. → 4. FIX (hours - days) / Implement proper fix. Write tes | 4. FIX (hours - days) / Implement proper fix. Write tes → 5. POSTMORTEM (next day) / Blameless analysis. What hap
+
+```mermaid
+flowchart TD
+    N1["1. DETECT (0-5 min) / Alert fires. PagerDuty/Slack noti"]
+    N2["2. MITIGATE (5-15 min) / STOP THE BLEEDING before findi"]
+    N3["3. DIAGNOSE (15 min - hours) / NOW find the root cause."]
+    N4["4. FIX (hours - days) / Implement proper fix. Write tes"]
+    N5["5. POSTMORTEM (next day) / Blameless analysis. What hap"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+```
+
 ---
 
 ## Mental Model 2: What Changed?
@@ -136,6 +151,17 @@ Metrics → "Error rate is up on Order Service"
 Logs → "NullPointerException in calculateDiscount()"
 Traces → "The error happens when calling Inventory Service"
 Fix → Inventory Service returns null for new products
+```
+
+> **Flow**: METRICS — The 'Vital Signs' / → Answer: 'IS something w → LOGS — The 'Medical Records' / → Answer: 'WHAT went wro | LOGS — The 'Medical Records' / → Answer: 'WHAT went wro → TRACES — The 'CT Scan' / → Answer: 'WHERE is it slow/br
+
+```mermaid
+flowchart TD
+    N1["METRICS — The 'Vital Signs' / → Answer: 'IS something w"]
+    N2["LOGS — The 'Medical Records' / → Answer: 'WHAT went wro"]
+    N3["TRACES — The 'CT Scan' / → Answer: 'WHERE is it slow/br"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 ---
@@ -294,6 +320,27 @@ POSTMORTEM TEMPLATE:
 The goal: LEARN from incidents, don't just survive them.
 ```
 
+> **Flow**: AFTER EVERY INCIDENT — Write a Postmortem → ❌ 'John deployed without testing' | ❌ 'John deployed without testing' → ✅ 'Our deploy process doesn't require testing sign-off' | ✅ 'Our deploy process doesn't require testing sign-off' → POSTMORTEM TEMPLATE: | POSTMORTEM TEMPLATE: → Title: [Service] outage on [date] | Title: [Service] outage on [date] → Summary: What happened in 2-3 sentences. | Summary: What happened in 2-3 sentences. → Impact: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["AFTER EVERY INCIDENT — Write a Postmortem"]
+    N2["❌ 'John deployed without testing'"]
+    N3["✅ 'Our deploy process doesn't require testing sign-off'"]
+    N4["POSTMORTEM TEMPLATE:"]
+    N5["Title: [Service] outage on [date]"]
+    N6["Summary: What happened in 2-3 sentences."]
+    N7["Impact:"]
+    N8["• Duration: 2 hours 15 minutes"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## Mental Model 8: Logs Are Your Future Self's Lifeline
@@ -329,6 +376,27 @@ STRUCTURED LOGGING — search-friendly:
 → Now you can query: event=order_placed AND amount>100
 ```
 
+> **Flow**: LOGGING BEST PRACTICES FOR PRODUCTION DEBUGGING → WHAT TO LOG: | WHAT TO LOG: → ✅ Request start + end (with duration) | ✅ Request start + end (with duration) → ✅ External calls (before + after + status) | ✅ External calls (before + after + status) → ✅ Errors with FULL context (input, state, stack trace) | ✅ Errors with FULL context (input, state, stack trace) → ✅ Business events ('Order #456 placed, total: $99.50') | ✅ Business events ('Order #456 placed, total: $99.50') → WHAT NOT TO LOG: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["LOGGING BEST PRACTICES FOR PRODUCTION DEBUGGING"]
+    N2["WHAT TO LOG:"]
+    N3["✅ Request start + end (with duration)"]
+    N4["✅ External calls (before + after + status)"]
+    N5["✅ Errors with FULL context (input, state, stack trace)"]
+    N6["✅ Business events ('Order #456 placed, total: $99.50')"]
+    N7["WHAT NOT TO LOG:"]
+    N8["❌ Passwords, tokens, credit card numbers (PII/security)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## Debugging Decision Flowchart
@@ -356,6 +424,20 @@ REMEMBER:
 • Document everything as you go (timeline for postmortem)
 ```
 
+> **Flow**: ALERT FIRES → What do I do? | YES → Can we rollback? | YES → Treat as 'affecting users'
+
+```mermaid
+flowchart LR
+    N1["ALERT FIRES"]
+    N2["What do I do?"]
+    N3["YES"]
+    N4["Can we rollback?"]
+    N5["Treat as 'affecting users'"]
+    N1 --> N2
+    N3 --> N4
+    N3 --> N5
+```
+
 ---
 
 ## Interview Relevance
@@ -376,6 +458,17 @@ Q: "How do you approach debugging?"
 Q: "How would you design a system to be observable?"
 → Three pillars: metrics (Prometheus), logs (ELK), traces (Jaeger)
   Plus: correlation IDs, health checks, dashboards, alerts
+```
+
+> **Flow**: (metrics → logs | logs → traces), the root cause, and how you
+
+```mermaid
+flowchart LR
+    N1["(metrics"]
+    N2["logs"]
+    N3["traces), the root cause, and how you"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 ---

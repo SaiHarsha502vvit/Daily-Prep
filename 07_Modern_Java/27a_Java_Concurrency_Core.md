@@ -71,6 +71,27 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: PROCESS vs THREAD — The Apartment Analogy → PROCESS = An apartment | PROCESS = An apartment → - Isolated from other apartments | - Isolated from other apartments → - Expensive to create (need to allocate entire apartmen | - Expensive to create (need to allocate entire apartmen → THREAD = A person living in the apartment | THREAD = A person living in the apartment → - Shares the apartment's space (heap memory) | - Shares the apartment's space (heap memory) → - Has own bed/desk (stack, program counter, registers) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["PROCESS vs THREAD — The Apartment Analogy"]
+    N2["PROCESS = An apartment"]
+    N3["- Isolated from other apartments"]
+    N4["- Expensive to create (need to allocate entire apartmen"]
+    N5["THREAD = A person living in the apartment"]
+    N6["- Shares the apartment's space (heap memory)"]
+    N7["- Has own bed/desk (stack, program counter, registers)"]
+    N8["- BUT: sharing kitchen → conflicts! (race conditions)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ## Creating Threads — 3 Ways
 
 ```java
@@ -116,6 +137,27 @@ t.start();
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: CRITICAL MISTAKE — start() vs run() → t.start() → Creates NEW thread, runs run() in that thre | t.start() → Creates NEW thread, runs run() in that thre → t.run() → Runs run() in CURRENT thread (no new thread!) | t.run() → Runs run() in CURRENT thread (no new thread!) → This is an interview classic. The JVM: | This is an interview classic. The JVM: → 1. Allocates new stack for the thread | 1. Allocates new stack for the thread → 2. Registers thread with OS scheduler | 2. Registers thread with OS scheduler → 3. OS gives it CPU time | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["CRITICAL MISTAKE — start() vs run()"]
+    N2["t.start() → Creates NEW thread, runs run() in that thre"]
+    N3["t.run() → Runs run() in CURRENT thread (no new thread!)"]
+    N4["This is an interview classic. The JVM:"]
+    N5["1. Allocates new stack for the thread"]
+    N6["2. Registers thread with OS scheduler"]
+    N7["3. OS gives it CPU time"]
+    N8["4. Thread's run() method executes"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ## Thread Lifecycle — The State Machine
 
 ```
@@ -150,6 +192,21 @@ t.start();
 │  States you can check: Thread.State enum                                        │
 │  Thread.currentThread().getState()                                              │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: NEW --(start())--> RUNNABLE | NEW → BLOCKED | RUNNABLE → nized sleep()/ I/O wait / get wait() / ck) / ▼ ▼ ▼ / KE | BLOCKED → TERMINATED
+
+```mermaid
+flowchart TD
+    N1["NEW"]
+    N2["RUNNABLE"]
+    N3["nized sleep()/ I/O wait / get wait() / ck) / ▼ ▼ ▼ / KE"]
+    N4["BLOCKED"]
+    N6["TERMINATED"]
+    N1 -->|"start()"| N2
+    N1 --> N4
+    N2 --> N3
+    N4 --> N6
 ```
 
 ## Essential Thread Methods
@@ -221,6 +278,15 @@ daemon.start();
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: L1 Cache / flag = true → Main Memory / flag = true
+
+```mermaid
+flowchart TD
+    N1["L1 Cache / flag = true"]
+    N3["Main Memory / flag = true"]
+    N1 --> N3
+```
+
 ```java
 // WITHOUT volatile — BROKEN (may loop forever!)
 class BrokenStopFlag {
@@ -267,6 +333,27 @@ class CorrectStopFlag {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: volatile GUARANTEES: → ✅ Visibility — writes visible to all threads immediatel | ✅ Visibility — writes visible to all threads immediatel → volatile DOES NOT GUARANTEE: | volatile DOES NOT GUARANTEE: → ❌ Atomicity — count++ is STILL broken even with volatil | ❌ Atomicity — count++ is STILL broken even with volatil → (count++ = read + increment + write = 3 operations!) | (count++ = read + increment + write = 3 operations!) → WHEN TO USE volatile: | WHEN TO USE volatile: → ✅ Boolean flags (stop, done, initialized) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["volatile GUARANTEES:"]
+    N2["✅ Visibility — writes visible to all threads immediatel"]
+    N3["volatile DOES NOT GUARANTEE:"]
+    N4["❌ Atomicity — count++ is STILL broken even with volatil"]
+    N5["(count++ = read + increment + write = 3 operations!)"]
+    N6["WHEN TO USE volatile:"]
+    N7["✅ Boolean flags (stop, done, initialized)"]
+    N8["✅ Status fields read by many threads, written by one"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 # 📌 Part 3: Race Conditions & Synchronization
@@ -307,6 +394,27 @@ class BankAccount {
 │  This is called a CHECK-THEN-ACT race condition.                                │
 │  The check and the act must be ATOMIC (indivisible).                            │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: and there's no synchronization. → Time Thread A Thread B balance | Time Thread A Thread B balance → t1 read balance (1000) 1000 | t1 read balance (1000) 1000 → t2 read balance (1000) 1000 | t2 read balance (1000) 1000 → t3 check: 1000&gt;=800 ✓ 1000 | t3 check: 1000&gt;=800 ✓ 1000 → t4 check: 1000&gt;=500 ✓ 1000 | t4 check: 1000&gt;=500 ✓ 1000 → t5 balance = 1000-800 200 | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["and there's no synchronization."]
+    N2["Time Thread A Thread B balance"]
+    N3["t1 read balance (1000) 1000"]
+    N4["t2 read balance (1000) 1000"]
+    N5["t3 check: 1000&gt;=800 ✓ 1000"]
+    N6["t4 check: 1000&gt;=500 ✓ 1000"]
+    N7["t5 balance = 1000-800 200"]
+    N8["t6 balance = 200-500 -300 ← CORRUPTED!"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ## synchronized — The Basic Lock
@@ -368,6 +476,27 @@ class SafeBankAccount {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: HOW synchronized WORKS INTERNALLY → Thread A enters synchronized: | Thread A enters synchronized: → 1. Try to acquire the object's monitor | 1. Try to acquire the object's monitor → 2. If free → acquire it, enter critical section | 2. If free → acquire it, enter critical section → Object Monitor | Object Monitor → Owner: Thread A | Owner: Thread A → Entry Set: [B, C] ← Threads waiting to acquire | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["HOW synchronized WORKS INTERNALLY"]
+    N2["Thread A enters synchronized:"]
+    N3["1. Try to acquire the object's monitor"]
+    N4["2. If free → acquire it, enter critical section"]
+    N5["Object Monitor"]
+    N6["Owner: Thread A"]
+    N7["Entry Set: [B, C] ← Threads waiting to acquire"]
+    N8["Wait Set: [D] ← Threads that called wait()"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ## wait() / notify() — Thread Communication
 
 ```java
@@ -420,6 +549,25 @@ class BoundedBuffer<T> {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: wait() vs notify() vs notifyAll() → notify() — Wake ONE random thread from wait set | notify() — Wake ONE random thread from wait set → RULES: | RULES: → • Must be called inside synchronized block (on same obj | • Must be called inside synchronized block (on same obj → The wait() + notify() Pattern: | The wait() + notify() Pattern: → synchronized(lock) { | synchronized(lock) { → lock.wait(); // Release lock and wait
+
+```mermaid
+flowchart TD
+    N1["wait() vs notify() vs notifyAll()"]
+    N2["notify() — Wake ONE random thread from wait set"]
+    N3["RULES:"]
+    N4["• Must be called inside synchronized block (on same obj"]
+    N5["The wait() + notify() Pattern:"]
+    N6["synchronized(lock) {"]
+    N7["lock.wait(); // Release lock and wait"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+```
+
 ---
 
 # PART 4: DEADLOCKS — The Silent Killer
@@ -446,6 +594,27 @@ class BoundedBuffer<T> {
 │  BREAK condition #4 to prevent deadlocks:                                       │
 │  → Always acquire locks in the SAME ORDER                                       │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: DEADLOCK — Two threads each holding a lock the other ne → Thread A: Thread B: | Thread A: Thread B: → lock(account1) lock(account2) | lock(account1) lock(account2) → lock(account2) ← WAIT lock(account1) ← WAIT | lock(account2) ← WAIT lock(account1) ← WAIT → ... forever ... ... forever ... | ... forever ... ... forever ... → Thread A holds account1, waits for account2 | Thread A holds account1, waits for account2 → Thread B holds account2, waits for account1 | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["DEADLOCK — Two threads each holding a lock the other ne"]
+    N2["Thread A: Thread B:"]
+    N3["lock(account1) lock(account2)"]
+    N4["lock(account2) ← WAIT lock(account1) ← WAIT"]
+    N5["... forever ... ... forever ..."]
+    N6["Thread A holds account1, waits for account2"]
+    N7["Thread B holds account2, waits for account1"]
+    N8["→ DEADLOCK! Neither can proceed."]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```java
@@ -506,6 +675,25 @@ class SafeTransfer {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: CAS: 'If value == expected, set to new. Otherwise, retr → CPU Instruction (single atomic operation): | CPU Instruction (single atomic operation): → compareAndSwap(memoryLocation, expectedValue, newValue) | compareAndSwap(memoryLocation, expectedValue, newValue) → → Returns true if swapped, false if value changed | → Returns true if swapped, false if value changed → Available Atomic Types: | Available Atomic Types: → AtomicInteger AtomicLong AtomicBoolean | AtomicInteger AtomicLong AtomicBoolean → AtomicReference AtomicArray LongAdder
+
+```mermaid
+flowchart TD
+    N1["CAS: 'If value == expected, set to new. Otherwise, retr"]
+    N2["CPU Instruction (single atomic operation):"]
+    N3["compareAndSwap(memoryLocation, expectedValue, newValue)"]
+    N4["→ Returns true if swapped, false if value changed"]
+    N5["Available Atomic Types:"]
+    N6["AtomicInteger AtomicLong AtomicBoolean"]
+    N7["AtomicReference AtomicArray LongAdder"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+```
+
 ```java
 import java.util.concurrent.atomic.*;
 
@@ -547,6 +735,27 @@ adder.sum();         // Get final count (slightly delayed)
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: WHEN TO USE WHAT: → Need Use | Need Use → Simple counter AtomicInteger / AtomicLong | Simple counter AtomicInteger / AtomicLong → High-contention counter LongAdder | High-contention counter LongAdder → Boolean flag volatile boolean or AtomicBoolean | Boolean flag volatile boolean or AtomicBoolean → Reference swap AtomicReference | Reference swap AtomicReference → Multiple fields together synchronized or Lock | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["WHEN TO USE WHAT:"]
+    N2["Need Use"]
+    N3["Simple counter AtomicInteger / AtomicLong"]
+    N4["High-contention counter LongAdder"]
+    N5["Boolean flag volatile boolean or AtomicBoolean"]
+    N6["Reference swap AtomicReference"]
+    N7["Multiple fields together synchronized or Lock"]
+    N8["Complex invariants synchronized or Lock"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 # 📌 Part 6: Concurrent Collections
@@ -569,6 +778,27 @@ adder.sum();         // Get final count (slightly delayed)
 │  → ConcurrentHashMap uses segment locking (Java 7) or CAS (Java 8+)             │
 │    → Multiple threads can read/write different segments simultaneously          │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: THREAD-SAFE COLLECTIONS HIERARCHY → DON'T USE: USE INSTEAD: | DON'T USE: USE INSTEAD: → HashMap → ConcurrentHashMap | HashMap → ConcurrentHashMap → ArrayList → CopyOnWriteArrayList | ArrayList → CopyOnWriteArrayList → TreeMap → ConcurrentSkipListMap | TreeMap → ConcurrentSkipListMap → LinkedList (as queue) → ConcurrentLinkedQueue | LinkedList (as queue) → ConcurrentLinkedQueue → PriorityQueue → PriorityBlockingQueue | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THREAD-SAFE COLLECTIONS HIERARCHY"]
+    N2["DON'T USE: USE INSTEAD:"]
+    N3["HashMap → ConcurrentHashMap"]
+    N4["ArrayList → CopyOnWriteArrayList"]
+    N5["TreeMap → ConcurrentSkipListMap"]
+    N6["LinkedList (as queue) → ConcurrentLinkedQueue"]
+    N7["PriorityQueue → PriorityBlockingQueue"]
+    N8["ArrayDeque → LinkedBlockingDeque"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```java
@@ -630,6 +860,27 @@ Task t = queue.take(); // Blocks if empty (consumer waits)
 │  Q: "What happens if you don't call start()?"                                   │
 │  A: Calling run() directly executes in current thread. No new thread created.   │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: TOP 10 CONCURRENCY MISTAKES → 1. Using count++ instead of AtomicInteger | 1. Using count++ instead of AtomicInteger → 3. Forgetting volatile on shared boolean flags | 3. Forgetting volatile on shared boolean flags → 4. Using if instead of while with wait() | 4. Using if instead of while with wait() → 5. Calling run() instead of start() | 5. Calling run() instead of start() → 7. Locking on mutable objects ('test'.intern() disaster | 7. Locking on mutable objects ('test'.intern() disaster → 8. Holding locks while doing I/O | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["TOP 10 CONCURRENCY MISTAKES"]
+    N2["1. Using count++ instead of AtomicInteger"]
+    N3["3. Forgetting volatile on shared boolean flags"]
+    N4["4. Using if instead of while with wait()"]
+    N5["5. Calling run() instead of start()"]
+    N6["7. Locking on mutable objects ('test'.intern() disaster"]
+    N7["8. Holding locks while doing I/O"]
+    N8["10. Not making lock objects final"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

@@ -82,6 +82,27 @@ public int[] twoSum(int[] numbers, int target) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: 3SUM → Find all unique triplets that sum to zero. | Find all unique triplets that sum to zero. → Input: nums = [-1, 0, 1, 2, -1, -4] | Input: nums = [-1, 0, 1, 2, -1, -4] → Output: [[-1, -1, 2], [-1, 0, 1]] | Output: [[-1, -1, 2], [-1, 0, 1]] → Algorithm: | Algorithm: → 1. Sort the array | 1. Sort the array → 2. Fix one element, use two pointers for remaining | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["3SUM"]
+    N2["Find all unique triplets that sum to zero."]
+    N3["Input: nums = [-1, 0, 1, 2, -1, -4]"]
+    N4["Output: [[-1, -1, 2], [-1, 0, 1]]"]
+    N5["Algorithm:"]
+    N6["1. Sort the array"]
+    N7["2. Fix one element, use two pointers for remaining"]
+    N8["3. Skip duplicates to avoid duplicate triplets"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ```java
 public List<List<Integer>> threeSum(int[] nums) {
     List<List<Integer>> result = new ArrayList<>();
@@ -141,6 +162,21 @@ public List<List<Integer>> threeSum(int[] nums) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: 3SUM CLOSEST → Find three integers whose sum is closest to target. | Find three integers whose sum is closest to target. → Input: nums = [-1, 2, 1, -4], target = 1 | Input: nums = [-1, 2, 1, -4], target = 1 → Output: 2 | Output: 2 → Explanation: (-1) + 2 + 1 = 2, closest to target 1
+
+```mermaid
+flowchart TD
+    N1["3SUM CLOSEST"]
+    N2["Find three integers whose sum is closest to target."]
+    N3["Input: nums = [-1, 2, 1, -4], target = 1"]
+    N4["Output: 2"]
+    N5["Explanation: (-1) + 2 + 1 = 2, closest to target 1"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+```
+
 ```java
 public int threeSumClosest(int[] nums, int target) {
     Arrays.sort(nums);
@@ -189,6 +225,21 @@ public int threeSumClosest(int[] nums, int target) {
 ║  Pattern: Extend 3Sum with one more loop                                  ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: 4SUM → Find all unique quadruplets that sum to target. | Find all unique quadruplets that sum to target. → Input: nums = [1, 0, -1, 0, -2, 2], target = 0 | Input: nums = [1, 0, -1, 0, -2, 2], target = 0 → Output: [[-2,-1,1,2], [-2,0,0,2], [-1,0,0,1]] | Output: [[-2,-1,1,2], [-2,0,0,2], [-1,0,0,1]] → Pattern: Extend 3Sum with one more loop
+
+```mermaid
+flowchart TD
+    N1["4SUM"]
+    N2["Find all unique quadruplets that sum to target."]
+    N3["Input: nums = [1, 0, -1, 0, -2, 2], target = 0"]
+    N4["Output: [[-2,-1,1,2], [-2,0,0,2], [-1,0,0,1]]"]
+    N5["Pattern: Extend 3Sum with one more loop"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
 ```
 
 ```java
@@ -280,6 +331,27 @@ public List<List<Integer>> fourSum(int[] nums, int target) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: 3SUM SMALLER → (LeetCode 259 - Premium) | (LeetCode 259 - Premium) → Count triplets with sum LESS than target. | Count triplets with sum LESS than target. → Example 1: | Example 1: → Input: nums = [-2, 0, 1, 3], target = 2 | Input: nums = [-2, 0, 1, 3], target = 2 → Output: 2 | Output: 2 → Explanation: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["3SUM SMALLER"]
+    N2["(LeetCode 259 - Premium)"]
+    N3["Count triplets with sum LESS than target."]
+    N4["Example 1:"]
+    N5["Input: nums = [-2, 0, 1, 3], target = 2"]
+    N6["Output: 2"]
+    N7["Explanation:"]
+    N8["(-2) + 1 + 3 = 2, not &lt; 2"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ```java
 public int threeSumSmaller(int[] nums, int target) {
     Arrays.sort(nums);
@@ -327,6 +399,27 @@ public int threeSumSmaller(int[] nums, int target) {
 ║  (other conditions automatically satisfied)                               ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: VALID TRIANGLE NUMBER → Count triplets that can form a valid triangle. | Count triplets that can form a valid triangle. → Triangle rule: sum of any two sides &gt; third side | Triangle rule: sum of any two sides &gt; third side → Input: nums = [2, 2, 3, 4] | Input: nums = [2, 2, 3, 4] → Output: 3 | Output: 3 → Valid: (2,3,4), (2,3,4), (2,2,3) | Valid: (2,3,4), (2,3,4), (2,2,3) → KEY: After sorting, only need to check a + b &gt; c | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["VALID TRIANGLE NUMBER"]
+    N2["Count triplets that can form a valid triangle."]
+    N3["Triangle rule: sum of any two sides &gt; third side"]
+    N4["Input: nums = [2, 2, 3, 4]"]
+    N5["Output: 3"]
+    N6["Valid: (2,3,4), (2,3,4), (2,2,3)"]
+    N7["KEY: After sorting, only need to check a + b &gt; c"]
+    N8["(other conditions automatically satisfied)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```java
@@ -381,6 +474,27 @@ public int triangleNumber(int[] nums) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: REMOVE DUPLICATES FROM SORTED ARRAY → Remove duplicates in-place. Return new length. | Remove duplicates in-place. Return new length. → Input: nums = [1, 1, 2] | Input: nums = [1, 1, 2] → Output: 2, nums = [1, 2, _] | Output: 2, nums = [1, 2, _] → Visual: | Visual: → ↑ ↑ slow=0, fast=1, same value, skip | ↑ ↑ slow=0, fast=1, same value, skip → ↑ ↑ slow=0, fast=2, different! copy | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["REMOVE DUPLICATES FROM SORTED ARRAY"]
+    N2["Remove duplicates in-place. Return new length."]
+    N3["Input: nums = [1, 1, 2]"]
+    N4["Output: 2, nums = [1, 2, _]"]
+    N5["Visual:"]
+    N6["↑ ↑ slow=0, fast=1, same value, skip"]
+    N7["↑ ↑ slow=0, fast=2, different! copy"]
+    N8["↑ ↑ slow=1, nums[1]=2"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ```java
 public int removeDuplicates(int[] nums) {
     if (nums.length == 0) return 0;
@@ -419,6 +533,21 @@ public int removeDuplicates(int[] nums) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: REMOVE DUPLICATES II (Allow at most 2 duplicates) → Each element can appear at most TWICE. | Each element can appear at most TWICE. → Input: nums = [1, 1, 1, 2, 2, 3] | Input: nums = [1, 1, 1, 2, 2, 3] → Output: 5, nums = [1, 1, 2, 2, 3, _] | Output: 5, nums = [1, 1, 2, 2, 3, _] → KEY: Compare with nums[slow - 2] instead of nums[slow -
+
+```mermaid
+flowchart TD
+    N1["REMOVE DUPLICATES II (Allow at most 2 duplicates)"]
+    N2["Each element can appear at most TWICE."]
+    N3["Input: nums = [1, 1, 1, 2, 2, 3]"]
+    N4["Output: 5, nums = [1, 1, 2, 2, 3, _]"]
+    N5["KEY: Compare with nums[slow - 2] instead of nums[slow -"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+```
+
 ```java
 public int removeDuplicates(int[] nums) {
     if (nums.length <= 2) return nums.length;
@@ -453,6 +582,19 @@ public int removeDuplicates(int[] nums) {
 ║  Output: 2, nums = [2, 2, _, _]                                           ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: REMOVE ELEMENT → Remove all instances of val in-place. Return new length | Remove all instances of val in-place. Return new length → Input: nums = [3, 2, 2, 3], val = 3 | Input: nums = [3, 2, 2, 3], val = 3 → Output: 2, nums = [2, 2, _, _]
+
+```mermaid
+flowchart TD
+    N1["REMOVE ELEMENT"]
+    N2["Remove all instances of val in-place. Return new length"]
+    N3["Input: nums = [3, 2, 2, 3], val = 3"]
+    N4["Output: 2, nums = [2, 2, _, _]"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
 ```
 
 ```java
@@ -500,6 +642,27 @@ public int removeElement(int[] nums, int val) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: SORT COLORS (Dutch National Flag Problem) → Sort array with only 0s, 1s, and 2s in-place. | Sort array with only 0s, 1s, and 2s in-place. → One-pass algorithm with constant space. | One-pass algorithm with constant space. → Input: nums = [2, 0, 2, 1, 1, 0] | Input: nums = [2, 0, 2, 1, 1, 0] → Output: [0, 0, 1, 1, 2, 2] | Output: [0, 0, 1, 1, 2, 2] → Three Pointers: | Three Pointers: → - low: boundary for 0s (everything before low is 0) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["SORT COLORS (Dutch National Flag Problem)"]
+    N2["Sort array with only 0s, 1s, and 2s in-place."]
+    N3["One-pass algorithm with constant space."]
+    N4["Input: nums = [2, 0, 2, 1, 1, 0]"]
+    N5["Output: [0, 0, 1, 1, 2, 2]"]
+    N6["Three Pointers:"]
+    N7["- low: boundary for 0s (everything before low is 0)"]
+    N8["- mid: current element being examined"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ```java
 public void sortColors(int[] nums) {
     int low = 0, mid = 0, high = nums.length - 1;
@@ -545,6 +708,19 @@ private void swap(int[] nums, int i, int j) {
 ║  Output: [9, 5, 3, 10, 10, 12, 14]                                        ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: PARTITION ARRAY ACCORDING TO PIVOT → &gt; pivot at end. Maintain relative order. | &gt; pivot at end. Maintain relative order. → Input: nums = [9, 12, 5, 10, 14, 3, 10], pivot = 10 | Input: nums = [9, 12, 5, 10, 14, 3, 10], pivot = 10 → Output: [9, 5, 3, 10, 10, 12, 14]
+
+```mermaid
+flowchart TD
+    N1["PARTITION ARRAY ACCORDING TO PIVOT"]
+    N2["&gt; pivot at end. Maintain relative order."]
+    N3["Input: nums = [9, 12, 5, 10, 14, 3, 10], pivot = 10"]
+    N4["Output: [9, 5, 3, 10, 10, 12, 14]"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
 ```
 
 ```java
@@ -599,6 +775,25 @@ public int[] pivotArray(int[] nums, int pivot) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: LINKED LIST CYCLE → Detect if linked list has a cycle. | Detect if linked list has a cycle. → Visual (with cycle): | Visual (with cycle): → Floyd's Cycle Detection (Tortoise & Hare): | Floyd's Cycle Detection (Tortoise & Hare): → - Slow pointer moves 1 step | - Slow pointer moves 1 step → - Fast pointer moves 2 steps | - Fast pointer moves 2 steps → - If they meet, there's a cycle
+
+```mermaid
+flowchart TD
+    N1["LINKED LIST CYCLE"]
+    N2["Detect if linked list has a cycle."]
+    N3["Visual (with cycle):"]
+    N4["Floyd's Cycle Detection (Tortoise & Hare):"]
+    N5["- Slow pointer moves 1 step"]
+    N6["- Fast pointer moves 2 steps"]
+    N7["- If they meet, there's a cycle"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+```
+
 ```java
 public boolean hasCycle(ListNode head) {
     if (head == null || head.next == null) return false;
@@ -645,6 +840,27 @@ public boolean hasCycle(ListNode head) {
 ║  They'll meet at cycle start!                                             ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: LINKED LIST CYCLE II - Find Start of Cycle → MATHEMATICAL PROOF: | MATHEMATICAL PROOF: → Let: | Let: → - Distance from head to cycle start = a | - Distance from head to cycle start = a → - Distance from cycle start to meeting point = b | - Distance from cycle start to meeting point = b → - Cycle length = c | - Cycle length = c → When they meet: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["LINKED LIST CYCLE II - Find Start of Cycle"]
+    N2["MATHEMATICAL PROOF:"]
+    N3["Let:"]
+    N4["- Distance from head to cycle start = a"]
+    N5["- Distance from cycle start to meeting point = b"]
+    N6["- Cycle length = c"]
+    N7["When they meet:"]
+    N8["- Slow traveled: a + b"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```java
@@ -695,6 +911,21 @@ public ListNode detectCycle(ListNode head) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: MIDDLE OF LINKED LIST → When fast reaches end, slow is at middle. | When fast reaches end, slow is at middle. → For even length, return second middle. | For even length, return second middle. → Odd: 1 → 2 → 3 → 4 → 5 Middle = 3 | Odd: 1 → 2 → 3 → 4 → 5 Middle = 3 → Even: 1 → 2 → 3 → 4 → 5 → 6 Middle = 4 (second)
+
+```mermaid
+flowchart TD
+    N1["MIDDLE OF LINKED LIST"]
+    N2["When fast reaches end, slow is at middle."]
+    N3["For even length, return second middle."]
+    N4["Odd: 1 → 2 → 3 → 4 → 5 Middle = 3"]
+    N5["Even: 1 → 2 → 3 → 4 → 5 → 6 Middle = 4 (second)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+```
+
 ```java
 public ListNode middleNode(ListNode head) {
     ListNode slow = head, fast = head;
@@ -729,6 +960,25 @@ public ListNode middleNode(ListNode head) {
 ║  Slow will be at (n+1)th from end                                         ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: REMOVE NTH NODE FROM END → Remove the nth node from end of list. | Remove the nth node from end of list. → Input: 1 → 2 → 3 → 4 → 5, n = 2 | Input: 1 → 2 → 3 → 4 → 5, n = 2 → Output: 1 → 2 → 3 → 5 | Output: 1 → 2 → 3 → 5 → Technique: Advance fast pointer n steps first | Technique: Advance fast pointer n steps first → Then move both until fast reaches end | Then move both until fast reaches end → Slow will be at (n+1)th from end
+
+```mermaid
+flowchart TD
+    N1["REMOVE NTH NODE FROM END"]
+    N2["Remove the nth node from end of list."]
+    N3["Input: 1 → 2 → 3 → 4 → 5, n = 2"]
+    N4["Output: 1 → 2 → 3 → 5"]
+    N5["Technique: Advance fast pointer n steps first"]
+    N6["Then move both until fast reaches end"]
+    N7["Slow will be at (n+1)th from end"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
 ```
 
 ```java
@@ -802,6 +1052,27 @@ public ListNode removeNthFromEnd(ListNode head, int n) {
 ║  - Number doesn't have leading zeros except 0 itself                      ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: PLUS ONE LINKED LIST → (LeetCode 369 - Premium) | (LeetCode 369 - Premium) → Linked list represents a number. Add 1 to it. | Linked list represents a number. Add 1 to it. → Most significant digit is at head. | Most significant digit is at head. → Example 1: | Example 1: → Input: 1 → 2 → 3 | Input: 1 → 2 → 3 → Output: 1 → 2 → 4 | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["PLUS ONE LINKED LIST"]
+    N2["(LeetCode 369 - Premium)"]
+    N3["Linked list represents a number. Add 1 to it."]
+    N4["Most significant digit is at head."]
+    N5["Example 1:"]
+    N6["Input: 1 → 2 → 3"]
+    N7["Output: 1 → 2 → 4"]
+    N8["Explanation: 123 + 1 = 124"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```java

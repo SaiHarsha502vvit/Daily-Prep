@@ -51,6 +51,19 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: WHY: Why Learn Hidden Foundations? / • Spring is 90% re → HOW: How These Foundations Power Spring? / • Reflection | HOW: How These Foundations Power Spring? / • Reflection → WHEN: When to Study These Topics? / • Before Spring Boo | WHEN: When to Study These Topics? / • Before Spring Boo → WHICH: Which Foundations are Most Critical? / ESSENTIAL
+
+```mermaid
+flowchart TD
+    N1["WHY: Why Learn Hidden Foundations? / • Spring is 90% re"]
+    N2["HOW: How These Foundations Power Spring? / • Reflection"]
+    N3["WHEN: When to Study These Topics? / • Before Spring Boo"]
+    N4["WHICH: Which Foundations are Most Critical? / ESSENTIAL"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 ---
 
 # 📌 Table of Contents
@@ -95,6 +108,27 @@ SECTION M: BYTECODE & INSTRUMENTATION - ULTIMATE FOUNDATION
 │  WITH REFLECTION KNOWLEDGE = SPRING IS LOGICAL                                  │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: SPRING IS 90% REFLECTION → Spring Boot does ALL of this using Reflection: | Spring Boot does ALL of this using Reflection: → @Autowired → Reflection finds field, injects bean | @Autowired → Reflection finds field, injects bean → @Component scan → Reflection discovers classes | @Component scan → Reflection discovers classes → @RequestMapping → Reflection reads annotation metadata | @RequestMapping → Reflection reads annotation metadata → @Value('${prop}') → Reflection sets field values | @Value('${prop}') → Reflection sets field values → @Transactional → Reflection creates proxy at runtime | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["SPRING IS 90% REFLECTION"]
+    N2["Spring Boot does ALL of this using Reflection:"]
+    N3["@Autowired → Reflection finds field, injects bean"]
+    N4["@Component scan → Reflection discovers classes"]
+    N5["@RequestMapping → Reflection reads annotation metadata"]
+    N6["@Value('${prop}') → Reflection sets field values"]
+    N7["@Transactional → Reflection creates proxy at runtime"]
+    N8["Repository methods → Reflection generates implementatio"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ## A.1 What Is Reflection?
@@ -536,6 +570,23 @@ public class CachedDispatcher {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: YOU USE ANNOTATIONS DAILY BUT NEVER ASK: HOW DO THEY WO → @Override → Checked at COMPILE time (compiler magic) | @Override → Checked at COMPILE time (compiler magic) → @Deprecated → Warning at COMPILE time | @Deprecated → Warning at COMPILE time → @Autowired → Processed at RUNTIME (Spring reflection) | @Autowired → Processed at RUNTIME (Spring reflection) → @Entity → Processed at RUNTIME (Hibernate reflection) | @Entity → Processed at RUNTIME (Hibernate reflection) → THREE different mechanisms! Do you know which is which?
+
+```mermaid
+flowchart TD
+    N1["YOU USE ANNOTATIONS DAILY BUT NEVER ASK: HOW DO THEY WO"]
+    N2["@Override → Checked at COMPILE time (compiler magic)"]
+    N3["@Deprecated → Warning at COMPILE time"]
+    N4["@Autowired → Processed at RUNTIME (Spring reflection)"]
+    N5["@Entity → Processed at RUNTIME (Hibernate reflection)"]
+    N6["THREE different mechanisms! Do you know which is which?"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+```
+
 ## B.1 Creating Custom Annotations
 
 ```java
@@ -605,6 +656,21 @@ public @interface RuntimeAvailable { }
 │  SPRING REQUIRES RUNTIME - it uses reflection to read annotations!              │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: RETENTION POLICY COMPARISON → Policy In Source In .class At Runtime Example | Policy In Source In .class At Runtime Example → SOURCE ✅ ❌ ❌ @Override, @SuppressWarnings | SOURCE ✅ ❌ ❌ @Override, @SuppressWarnings → CLASS ✅ ✅ ❌ Default, bytecode tools | CLASS ✅ ✅ ❌ Default, bytecode tools → RUNTIME ✅ ✅ ✅ @Autowired, @Entity
+
+```mermaid
+flowchart TD
+    N1["RETENTION POLICY COMPARISON"]
+    N2["Policy In Source In .class At Runtime Example"]
+    N3["SOURCE ✅ ❌ ❌ @Override, @SuppressWarnings"]
+    N4["CLASS ✅ ✅ ❌ Default, bytecode tools"]
+    N5["RUNTIME ✅ ✅ ✅ @Autowired, @Entity"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
 ```
 
 ## B.2 Processing Annotations at Runtime (Spring's Way)
@@ -812,6 +878,27 @@ public class BuilderProcessor extends AbstractProcessor {
 │  When you @Autowired UserService, you get the PROXY, not your class!            │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: Your Code: What Spring Creates: → @Service @Service | @Service @Service → class UserService { class UserService$Proxy extends ... | class UserService { class UserService$Proxy extends ... → @Transactional private UserService target; | @Transactional private UserService target; → void save(User u) { | void save(User u) { → repo.save(u); void save(User u) { | repo.save(u); void save(User u) { → } beginTransaction(); | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Your Code: What Spring Creates:"]
+    N2["@Service @Service"]
+    N3["class UserService { class UserService$Proxy extends ..."]
+    N4["@Transactional private UserService target;"]
+    N5["void save(User u) {"]
+    N6["repo.save(u); void save(User u) {"]
+    N7["} beginTransaction();"]
+    N8["} try {"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ## C.1 JDK Dynamic Proxies - Interface-Based
@@ -1117,6 +1204,27 @@ RESULT: Private methods bypass the proxy entirely
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: SPRING MVC IS BUILT ON SERVLETS - YOU JUST DON'T SEE TH → When you write: Behind the scenes: | When you write: Behind the scenes: → @GetMapping('/users') HttpServletRequest request | @GetMapping('/users') HttpServletRequest request → public List&lt;User&gt; getUsers() { HttpServletRespons | public List&lt;User&gt; getUsers() { HttpServletRespons → return userService.findAll(); FilterChain chain | return userService.findAll(); FilterChain chain → } DispatcherServlet | } DispatcherServlet → RequestMapping handler | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["SPRING MVC IS BUILT ON SERVLETS - YOU JUST DON'T SEE TH"]
+    N2["When you write: Behind the scenes:"]
+    N3["@GetMapping('/users') HttpServletRequest request"]
+    N4["public List&lt;User&gt; getUsers() { HttpServletRespons"]
+    N5["return userService.findAll(); FilterChain chain"]
+    N6["} DispatcherServlet"]
+    N7["RequestMapping handler"]
+    N8["View resolution"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ## D.1 The Servlet Lifecycle
 
 ```java
@@ -1393,6 +1501,25 @@ public class DispatcherServlet extends FrameworkServlet {
 │  WHO CONVERTS JAVA ↔ JSON?  JACKSON!                                            │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: EVERY @RestController USES JACKSON - DO YOU KNOW HOW? → @GetMapping('/user') | @GetMapping('/user') → public User getUser() { | public User getUser() { → return new User('John', 25); | return new User('John', 25); → @PostMapping('/user') | @PostMapping('/user') → public void create(@RequestBody User user) { | public void create(@RequestBody User user) { → WHO CONVERTS JAVA ↔ JSON? JACKSON!
+
+```mermaid
+flowchart TD
+    N1["EVERY @RestController USES JACKSON - DO YOU KNOW HOW?"]
+    N2["@GetMapping('/user')"]
+    N3["public User getUser() {"]
+    N4["return new User('John', 25);"]
+    N5["@PostMapping('/user')"]
+    N6["public void create(@RequestBody User user) {"]
+    N7["WHO CONVERTS JAVA ↔ JSON? JACKSON!"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
 ```
 
 ## E.1 ObjectMapper - The Core Component

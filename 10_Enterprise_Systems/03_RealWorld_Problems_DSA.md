@@ -119,6 +119,24 @@ YOUR TASK:
 Write a function that calculates final price applying all applicable discounts
 ```
 
+> **Flow**: 1. If cart total &gt; ₹5000 → 10% discount | 2. If cart has 5+ items → extra 5% discount | 3. Coupon code 'SAVE200' → flat ₹200 off (if total &gt; ₹1000) | 4. First order → extra ₹100 off
+
+```mermaid
+flowchart LR
+    N1["1. If cart total &gt; ₹5000"]
+    N2["10% discount"]
+    N3["2. If cart has 5+ items"]
+    N4["extra 5% discount"]
+    N5["3. Coupon code 'SAVE200'"]
+    N6["flat ₹200 off (if total &gt; ₹1000)"]
+    N7["4. First order"]
+    N8["extra ₹100 off"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+    N7 --> N8
+```
+
 ```java
 /**
  * PROBLEM: Calculate Cart Total with Multiple Discounts
@@ -234,6 +252,15 @@ YOUR TASK:
 Build autocomplete that returns top 5 suggestions for a prefix
 ```
 
+> **Flow**: User types 'sam' → Show: 'samsung phone', 'samsung tv', 'samsonite ba
+
+```mermaid
+flowchart LR
+    N1["User types 'sam'"]
+    N2["Show: 'samsung phone', 'samsung tv', 'samsonite ba"]
+    N1 --> N2
+```
+
 ```java
 /**
  * PROBLEM: Autocomplete with Popularity Ranking
@@ -339,6 +366,19 @@ YOUR TASK:
 Given transaction stream, flag suspicious activity in real-time
 ```
 
+> **Flow**: 1. More than 3 transactions in 5 minutes → SUSPICIOUS | 2. Total amount &gt; ₹50,000 in 10 minutes → SUSPICIOUS | 3. Transactions from 2+ cities in 30 minutes → SUSPICIOUS
+
+```mermaid
+flowchart LR
+    N1["1. More than 3 transactions in 5 minutes"]
+    N2["SUSPICIOUS"]
+    N3["2. Total amount &gt; ₹50,000 in 10 minutes"]
+    N4["3. Transactions from 2+ cities in 30 minutes"]
+    N1 --> N2
+    N3 --> N2
+    N4 --> N2
+```
+
 ```java
 /**
  * PROBLEM: Detect Fraudulent Transaction Patterns
@@ -427,6 +467,23 @@ REQUIREMENTS:
 1. Calculate monthly EMI
 2. Generate month-by-month breakdown (principal, interest, balance)
 3. Handle prepayment scenarios
+```
+
+> **Flow**: COMPANY: HDFC / ICICI / Any Bank → SYSTEM: Loan Management | SYSTEM: Loan Management → FEATURE: Calculate EMI and generate amortization schedu | FEATURE: Calculate EMI and generate amortization schedu → REQUIREMENTS: | REQUIREMENTS: → 1. Calculate monthly EMI | 1. Calculate monthly EMI → 3. Handle prepayment scenarios
+
+```mermaid
+flowchart TD
+    N1["COMPANY: HDFC / ICICI / Any Bank"]
+    N2["SYSTEM: Loan Management"]
+    N3["FEATURE: Calculate EMI and generate amortization schedu"]
+    N4["REQUIREMENTS:"]
+    N5["1. Calculate monthly EMI"]
+    N6["3. Handle prepayment scenarios"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
 ```
 
 ```java
@@ -537,6 +594,17 @@ Account goes negative by ₹2,000
 
 YOUR TASK:
 Make transfer operation thread-safe
+```
+
+> **Flow**: Both read balance as ₹10,000 → Both think transfer is valid | Both think transfer is valid → ₹12,000 sent!
+
+```mermaid
+flowchart LR
+    N1["Both read balance as ₹10,000"]
+    N2["Both think transfer is valid"]
+    N3["₹12,000 sent!"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 ```java
@@ -661,6 +729,27 @@ REQUIREMENTS:
 - Find 3 nearest available delivery partners
 - Must be available (not on another delivery)
 - Calculate estimated time based on distance
+```
+
+> **Flow**: COMPANY: Swiggy / Zomato → SYSTEM: Partner Assignment | SYSTEM: Partner Assignment → FEATURE: Find 3 nearest available delivery partners | FEATURE: Find 3 nearest available delivery partners → REQUIREMENTS: | REQUIREMENTS: → - Customer places order at location (lat, lng) | - Customer places order at location (lat, lng) → - Find 3 nearest available delivery partners | - Find 3 nearest available delivery partners → - Must be available (not on another delivery) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["COMPANY: Swiggy / Zomato"]
+    N2["SYSTEM: Partner Assignment"]
+    N3["FEATURE: Find 3 nearest available delivery partners"]
+    N4["REQUIREMENTS:"]
+    N5["- Customer places order at location (lat, lng)"]
+    N6["- Find 3 nearest available delivery partners"]
+    N7["- Must be available (not on another delivery)"]
+    N8["- Calculate estimated time based on distance"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```java
@@ -789,6 +878,23 @@ REQUIREMENTS:
 - Recent reviews should matter more
 ```
 
+> **Flow**: COMPANY: Zomato / Google Maps → SYSTEM: Rating & Reviews | SYSTEM: Rating & Reviews → established restaurant with 4.8 from 500 reviews | established restaurant with 4.8 from 500 reviews → REQUIREMENTS: | REQUIREMENTS: → - Need weighted score considering number of reviews | - Need weighted score considering number of reviews → - Recent reviews should matter more
+
+```mermaid
+flowchart TD
+    N1["COMPANY: Zomato / Google Maps"]
+    N2["SYSTEM: Rating & Reviews"]
+    N3["established restaurant with 4.8 from 500 reviews"]
+    N4["REQUIREMENTS:"]
+    N5["- Need weighted score considering number of reviews"]
+    N6["- Recent reviews should matter more"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+```
+
 ```java
 /**
  * PROBLEM: Calculate Fair Restaurant Rating
@@ -891,6 +997,17 @@ public class RatingCalculator {
 ║ SYSTEM: Friend Suggestions                                                   ║
 ║ FEATURE: "You have 15 mutual friends with John"                              ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: COMPANY: Facebook / LinkedIn → SYSTEM: Friend Suggestions | SYSTEM: Friend Suggestions → FEATURE: 'You have 15 mutual friends with John'
+
+```mermaid
+flowchart TD
+    N1["COMPANY: Facebook / LinkedIn"]
+    N2["SYSTEM: Friend Suggestions"]
+    N3["FEATURE: 'You have 15 mutual friends with John'"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 ```java
@@ -996,6 +1113,15 @@ public class MutualFriendsFinder {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: COMPANY: Twitter / Instagram / Facebook → SYSTEM: Feed Generation
+
+```mermaid
+flowchart TD
+    N1["COMPANY: Twitter / Instagram / Facebook"]
+    N2["SYSTEM: Feed Generation"]
+    N1 --> N2
+```
+
 ```java
 /**
  * PROBLEM: Generate News Feed
@@ -1079,6 +1205,17 @@ public class NewsFeedGenerator {
 ║ SYSTEM: Dynamic Pricing                                                      ║
 ║ FEATURE: Increase price when demand > supply                                 ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: COMPANY: Uber / Ola → SYSTEM: Dynamic Pricing | SYSTEM: Dynamic Pricing → FEATURE: Increase price when demand &gt; supply
+
+```mermaid
+flowchart TD
+    N1["COMPANY: Uber / Ola"]
+    N2["SYSTEM: Dynamic Pricing"]
+    N3["FEATURE: Increase price when demand &gt; supply"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 ```java
@@ -1182,6 +1319,17 @@ public class SurgePricingCalculator {
 ║ SYSTEM: Dispatch                                                             ║
 ║ CHALLENGE: Match N riders with M drivers optimally                           ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: COMPANY: Uber / Ola → SYSTEM: Dispatch | SYSTEM: Dispatch → CHALLENGE: Match N riders with M drivers optimally
+
+```mermaid
+flowchart TD
+    N1["COMPANY: Uber / Ola"]
+    N2["SYSTEM: Dispatch"]
+    N3["CHALLENGE: Match N riders with M drivers optimally"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 ```java

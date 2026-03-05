@@ -18,6 +18,15 @@ IF the problem says:
 THEN → Sliding Window on Array
 ```
 
+> **Flow**: THEN → Sliding Window on Array
+
+```mermaid
+flowchart LR
+    N1["THEN"]
+    N2["Sliding Window on Array"]
+    N1 --> N2
+```
+
 ### Fixed vs Variable Window
 ```
 Fixed Window (size k):          Variable Window:
@@ -26,6 +35,15 @@ Fixed Window (size k):          Variable Window:
 └─────┘                        └──────────────┘
                                 ← shrink │
 Use when: size is given         Use when: find optimal size
+```
+
+> **Flow**: k=3 --(→ slide)--> expand →
+
+```mermaid
+flowchart LR
+    N1["k=3"]
+    N2["expand →"]
+    N1 -->|"→ slide"| N2
 ```
 
 ---
@@ -120,6 +138,35 @@ Step 9: [1, 3, 2] sum=6 ≤ 7 → len=3 ✅ tied best
 Answer: 3
 ```
 
+> **Flow**: Step 1: [2] sum=2 ≤ 7 → len=1 | Step 2: [2, 1] sum=3 ≤ 7 → len=2 | Step 3: [2, 1, 5] sum=8 &gt; 7 → SHRINK! | Step 4: [1, 5] sum=6 ≤ 7 → len=2 | Step 5: [1, 5, 1] sum=7 ≤ 7 → len=3 ✅ best so far | Step 6: [1, 5, 1, 3] sum=10 &gt; 7 → SHRINK! | ...+3 more
+
+```mermaid
+flowchart TD
+    N1["Step 1: [2] sum=2 ≤ 7"]
+    N2["len=1"]
+    N3["Step 2: [2, 1] sum=3 ≤ 7"]
+    N4["len=2"]
+    N5["Step 3: [2, 1, 5] sum=8 &gt; 7"]
+    N6["SHRINK!"]
+    N7["Step 4: [1, 5] sum=6 ≤ 7"]
+    N8["Step 5: [1, 5, 1] sum=7 ≤ 7"]
+    N9["len=3 ✅ best so far"]
+    N10["Step 6: [1, 5, 1, 3] sum=10 &gt; 7"]
+    N11["Step 7: [5, 1, 3] sum=9 &gt; 7"]
+    N12["Step 8: [1, 3] sum=4 ≤ 7"]
+    N13["Step 9: [1, 3, 2] sum=6 ≤ 7"]
+    N14["len=3 ✅ tied best"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+    N7 --> N4
+    N8 --> N9
+    N10 --> N6
+    N11 --> N6
+    N12 --> N4
+    N13 --> N14
+```
+
 ---
 
 ## 🔥 KEY TRICKS
@@ -210,6 +257,25 @@ WHY fixed window? Size is given (k=3), so just slide it.
 │                               │ Use Prefix Sum + HashMap instead     │
 │ Single element                │ Window of size 1 = that element      │
 └───────────────────────────────┴──────────────────────────────────────┘
+```
+
+> **Flow**: Edge Case Handling → Empty string / array Return 0 immediately | Empty string / array Return 0 immediately → k &gt; array length Invalid — return -1 or throw | k &gt; array length Invalid — return -1 or throw → All same characters 'aaaa' Longest unique substring = 1 | All same characters 'aaaa' Longest unique substring = 1 → All unique 'abcdef' Entire string is the answer | All unique 'abcdef' Entire string is the answer → Use Prefix Sum + HashMap instead | Use Prefix Sum + HashMap instead → Single element Window of size 1 = that element
+
+```mermaid
+flowchart TD
+    N1["Edge Case Handling"]
+    N2["Empty string / array Return 0 immediately"]
+    N3["k &gt; array length Invalid — return -1 or throw"]
+    N4["All same characters 'aaaa' Longest unique substring = 1"]
+    N5["All unique 'abcdef' Entire string is the answer"]
+    N6["Use Prefix Sum + HashMap instead"]
+    N7["Single element Window of size 1 = that element"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
 ```
 
 ---

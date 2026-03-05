@@ -195,6 +195,25 @@ Sat: Spring Boot Security (Authentication, JWT)
 Sun: Week Review
 ```
 
+> **Flow**: Mon: 1D DP (Climbing Stairs, House Robber, Coin Change) → Tue: 2D DP (Unique Paths, Longest Common Subsequence) | Tue: 2D DP (Unique Paths, Longest Common Subsequence) → Wed: Knapsack DP (0/1, Unbounded, Coin Change II) | Wed: Knapsack DP (0/1, Unbounded, Coin Change II) → Thu: Greedy Algorithms (Jump Game, Intervals) | Thu: Greedy Algorithms (Jump Game, Intervals) → Fri: DP + Greedy Combo + SQL Advanced JOINs | Fri: DP + Greedy Combo + SQL Advanced JOINs → Sat: Spring Boot Security (Authentication, JWT) | Sat: Spring Boot Security (Authentication, JWT) → Sun: Week Review
+
+```mermaid
+flowchart TD
+    N1["Mon: 1D DP (Climbing Stairs, House Robber, Coin Change)"]
+    N2["Tue: 2D DP (Unique Paths, Longest Common Subsequence)"]
+    N3["Wed: Knapsack DP (0/1, Unbounded, Coin Change II)"]
+    N4["Thu: Greedy Algorithms (Jump Game, Intervals)"]
+    N5["Fri: DP + Greedy Combo + SQL Advanced JOINs"]
+    N6["Sat: Spring Boot Security (Authentication, JWT)"]
+    N7["Sun: Week Review"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+```
+
 ---
 
 > **Navigation**: [< Previous](Day_027_Mar29_Sat.md) | [Back to Index](../00_MASTER_INDEX.md)

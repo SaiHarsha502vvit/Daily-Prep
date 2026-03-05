@@ -62,6 +62,27 @@
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: BEAN SCOPES — Controls object lifecycle → SINGLETON (default): | SINGLETON (default): → ONE instance per application context. Shared by all. | ONE instance per application context. Shared by all. → @Scope('singleton') or just @Service / @Component | @Scope('singleton') or just @Service / @Component → USE: Stateless services, repositories, controllers | USE: Stateless services, repositories, controllers → PROTOTYPE: | PROTOTYPE: → NEW instance every time it's requested. | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["BEAN SCOPES — Controls object lifecycle"]
+    N2["SINGLETON (default):"]
+    N3["ONE instance per application context. Shared by all."]
+    N4["@Scope('singleton') or just @Service / @Component"]
+    N5["USE: Stateless services, repositories, controllers"]
+    N6["PROTOTYPE:"]
+    N7["NEW instance every time it's requested."]
+    N8["@Scope('prototype')"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 #### Chapter 2: Dependency Injection — The 3 Ways
 
 ```java
@@ -208,6 +229,27 @@ public class ProductController {
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: SPRING DI RULES: → 1. Always use constructor injection | 1. Always use constructor injection → 2. Make fields final | 2. Make fields final → 3. One constructor = @Autowired optional | 3. One constructor = @Autowired optional → 4. Never use new XxxService() — let Spring manage it | 4. Never use new XxxService() — let Spring manage it → 5. @Service for business logic, @Repository for data ac | 5. @Service for business logic, @Repository for data ac → 6. @Component for generic beans | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["SPRING DI RULES:"]
+    N2["1. Always use constructor injection"]
+    N3["2. Make fields final"]
+    N4["3. One constructor = @Autowired optional"]
+    N5["4. Never use new XxxService() — let Spring manage it"]
+    N6["5. @Service for business logic, @Repository for data ac"]
+    N7["6. @Component for generic beans"]
+    N8["7. Singleton scope unless you have a reason for prototy"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## BLOCK 2: SQL PRACTICE (45 min)
@@ -288,6 +330,21 @@ PATTERNS:
   • HashMap frequency count
   • Stack for matching/validation
   • Merge logic (arrays, lists)
+```
+
+> **Flow**: Week 2: LinkedList (Singly + Doubly), Stack, Queue → You now know 7/10 essential data structures! | Week 2: Merge Sort, Quick Sort, Binary Search, Two → You now have O(n²) AND O(n log n) sorts + O(log n) sear | Week 2: WHERE, ORDER BY, LIMIT, JOINs, GROUP BY, H → You can now write 80% of real-world SQL queries!
+
+```mermaid
+flowchart TD
+    N1["Week 2: LinkedList (Singly + Doubly), Stack, Queue"]
+    N2["You now know 7/10 essential data structures!"]
+    N3["Week 2: Merge Sort, Quick Sort, Binary Search, Two"]
+    N4["You now have O(n²) AND O(n log n) sorts + O(log n) sear"]
+    N5["Week 2: WHERE, ORDER BY, LIMIT, JOINs, GROUP BY, H"]
+    N6["You can now write 80% of real-world SQL queries!"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
 ```
 
 ### Self-Test (try without looking at notes)

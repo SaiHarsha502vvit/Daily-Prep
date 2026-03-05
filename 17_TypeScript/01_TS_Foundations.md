@@ -92,6 +92,27 @@ npx tsc --watch              # Watch mode (auto-recompile)
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: WHY strict: true IS NON-NEGOTIABLE: → strict: true enables 7 flags at once: | strict: true enables 7 flags at once: → • noImplicitAny — no guessing types | • noImplicitAny — no guessing types → • strictNullChecks — null is NOT assignable to string | • strictNullChecks — null is NOT assignable to string → • strictFunctionTypes — function parameter variance che | • strictFunctionTypes — function parameter variance che → • strictBindCallApply — type-safe bind/call/apply | • strictBindCallApply — type-safe bind/call/apply → • noImplicitThis — error if `this` type is unknown | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["WHY strict: true IS NON-NEGOTIABLE:"]
+    N2["strict: true enables 7 flags at once:"]
+    N3["• noImplicitAny — no guessing types"]
+    N4["• strictNullChecks — null is NOT assignable to string"]
+    N5["• strictFunctionTypes — function parameter variance che"]
+    N6["• strictBindCallApply — type-safe bind/call/apply"]
+    N7["• noImplicitThis — error if `this` type is unknown"]
+    N8["• alwaysStrict — emit 'use strict' in every file"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 2. Basic Types
@@ -182,6 +203,35 @@ never  ← BOTTOM type (nothing assignable TO it)
 REASONING: unknown = "I don't know yet, so check before using"
 any = "I don't care, let me do whatever" (dangerous)
 never = "This can never happen" (exhaustive checks)
+```
+
+> **Flow**: unknown ← TOP type (anything assignable TO it) → string | unknown ← TOP type (anything assignable TO it) → number | unknown ← TOP type (anything assignable TO it) → boolean | unknown ← TOP type (anything assignable TO it) → object | unknown ← TOP type (anything assignable TO it) → Array | unknown ← TOP type (anything assignable TO it) → Function | ...+5 more
+
+```mermaid
+flowchart TD
+    N1["unknown ← TOP type (anything assignable TO it)"]
+    N2["string"]
+    N3["number"]
+    N4["boolean"]
+    N5["object"]
+    N6["Array"]
+    N7["Function"]
+    N8["{...}"]
+    N9["null"]
+    N10["undefined"]
+    N11["void"]
+    N12["any ← SPECIAL (opts out of type checking entirely)"]
+    N1 --> N2
+    N1 --> N3
+    N1 --> N4
+    N1 --> N5
+    N1 --> N6
+    N1 --> N7
+    N1 --> N8
+    N1 --> N9
+    N1 --> N10
+    N1 --> N11
+    N1 --> N12
 ```
 
 ---
@@ -526,6 +576,15 @@ It doesn't change what you write — it helps you write correctly.
 The final document (JS) is the same, but with fewer mistakes.
 ```
 
+> **Flow**: Team project (2+ devs) / Large codebase (&gt;1000 LOC)  → Quick prototype / script / Simple automation tasks / Le
+
+```mermaid
+flowchart TD
+    N1["Team project (2+ devs) / Large codebase (&gt;1000 LOC) "]
+    N2["Quick prototype / script / Simple automation tasks / Le"]
+    N1 --> N2
+```
+
 ---
 
 ## Interview Quick-Fire
@@ -558,6 +617,15 @@ Q: How does TS narrowing work?
 Q: What is `as const`?
 → Makes values readonly and narrows types to literal types.
   { x: "hello" } as const → { readonly x: "hello" } instead of { x: string }.
+```
+
+> **Flow**: { x: 'hello' } as const → { readonly x: 'hello' } instead of { x: string }.
+
+```mermaid
+flowchart LR
+    N1["{ x: 'hello' } as const"]
+    N2["{ readonly x: 'hello' } instead of { x: string }."]
+    N1 --> N2
 ```
 
 ---

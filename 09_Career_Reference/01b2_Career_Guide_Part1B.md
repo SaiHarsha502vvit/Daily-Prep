@@ -48,6 +48,27 @@
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: Before modifying data, write to WAL: → WAL Record: | WAL Record: → txid: 42, | txid: 42, → table: 'accounts', | table: 'accounts', → page: 15, | page: 15, → old_value: {id: 1, balance: 1000}, | old_value: {id: 1, balance: 1000}, → new_value: {id: 1, balance: 900}, | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Before modifying data, write to WAL:"]
+    N2["WAL Record:"]
+    N3["txid: 42,"]
+    N4["table: 'accounts',"]
+    N5["page: 15,"]
+    N6["old_value: {id: 1, balance: 1000},"]
+    N7["new_value: {id: 1, balance: 900},"]
+    N8["timestamp: '2024-01-15 10:30:00.123'"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 
 
 MVCC (Multi-Version Concurrency Control):
@@ -90,6 +111,27 @@ HOW MULTIPLE TRANSACTIONS SEE DIFFERENT DATA:
 └──────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: Row versions in database: → accounts row (id = 1): | accounts row (id = 1): → (created by tx 10, deleted by tx 42) | (created by tx 10, deleted by tx 42) → (created by tx 42, still current) | (created by tx 42, still current) → Transaction 50 runs: SELECT * FROM accounts WHERE id = | Transaction 50 runs: SELECT * FROM accounts WHERE id = → Visibility check: | Visibility check: → • Is tx 42 committed? YES | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Row versions in database:"]
+    N2["accounts row (id = 1):"]
+    N3["(created by tx 10, deleted by tx 42)"]
+    N4["(created by tx 42, still current)"]
+    N5["Transaction 50 runs: SELECT * FROM accounts WHERE id ="]
+    N6["Visibility check:"]
+    N7["• Is tx 42 committed? YES"]
+    N8["• 42 &lt; 50 (tx 42 committed before tx 50 started)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 
 
 DEADLOCK DETECTION:
@@ -121,6 +163,15 @@ DEADLOCK DETECTION:
 │  DETAIL: Process 1234 waits for ShareLock on transaction 567     │
 │                                                                  │
 └──────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: TX / A → TX / B
+
+```mermaid
+flowchart LR
+    N1["TX / A"]
+    N2["TX / B"]
+    N1 --> N2
 ```
 
 
@@ -158,6 +209,27 @@ Each request:
 │  • Database overwhelmed!                                         │
 │                                                                  │
 └──────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: 1. TCP connection to DB (30-100ms) → 2. SSL/TLS handshake (50-150ms) | 2. SSL/TLS handshake (50-150ms) → 3. Authentication (10-50ms) | 3. Authentication (10-50ms) → 4. Allocate connection resources (memory, process) | 4. Allocate connection resources (memory, process) → 5. Execute query (10ms) | 5. Execute query (10ms) → 6. Return results | 6. Return results → 7. Close connection (release resources) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["1. TCP connection to DB (30-100ms)"]
+    N2["2. SSL/TLS handshake (50-150ms)"]
+    N3["3. Authentication (10-50ms)"]
+    N4["4. Allocate connection resources (memory, process)"]
+    N5["5. Execute query (10ms)"]
+    N6["6. Return results"]
+    N7["7. Close connection (release resources)"]
+    N8["TOTAL OVERHEAD: 100-300ms PER REQUEST!"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 
@@ -232,6 +304,25 @@ CLOUD BENEFITS:
 └── Security (often better than DIY)
 ```
 
+> **Flow**: Root → No upfront capital expense | Root → Pay-as-you-go pricing | Root → Global availability | Root → Automatic scaling | Root → Managed services (less ops work) | Root → Security (often better than DIY)
+
+```mermaid
+flowchart TD
+    N1["Root"]
+    N2["No upfront capital expense"]
+    N3["Pay-as-you-go pricing"]
+    N4["Global availability"]
+    N5["Automatic scaling"]
+    N6["Managed services (less ops work)"]
+    N7["Security (often better than DIY)"]
+    N1 --> N2
+    N1 --> N3
+    N1 --> N4
+    N1 --> N5
+    N1 --> N6
+    N1 --> N7
+```
+
 
 ### Cloud Service Models
 
@@ -265,6 +356,21 @@ CLOUD BENEFITS:
 │                     Google GCE       Beanstalk        Salesforce │
 │                                                                  │
 └──────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: Application / Data / Runtime / Middleware / OS / Virtua → Application / Data / Runtime / Middleware / OS | Application / Data / Runtime / Middleware / OS → Application / Data | Application / Data → Runtime / Middleware / OS / Virtual / Servers / Storage | Runtime / Middleware / OS / Virtual / Servers / Storage → Virtual / Servers / Storage / Network
+
+```mermaid
+flowchart TD
+    N1["Application / Data / Runtime / Middleware / OS / Virtua"]
+    N2["Application / Data / Runtime / Middleware / OS"]
+    N3["Application / Data"]
+    N4["Runtime / Middleware / OS / Virtual / Servers / Storage"]
+    N5["Virtual / Servers / Storage / Network"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
 ```
 
 
@@ -349,6 +455,21 @@ MQ - ActiveMQ/RabbitMQ     Transcribe - Speech to Text
 └──────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: CloudFront → ALB | ALB → ▼ ▼ ▼ / C2 EC2 EC2 / p) (App) (App) | ▼ ▼ ▼ / C2 EC2 EC2 / p) (App) (App) → RDS / (Primary) | RDS / (Primary) → RDS / (Replica)
+
+```mermaid
+flowchart TD
+    N1["CloudFront"]
+    N2["ALB"]
+    N3["▼ ▼ ▼ / C2 EC2 EC2 / p) (App) (App)"]
+    N5["RDS / (Primary)"]
+    N6["RDS / (Replica)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N5
+    N5 --> N6
+```
+
 
 #### Example 2: Serverless Architecture
 
@@ -398,6 +519,27 @@ MQ - ActiveMQ/RabbitMQ     Transcribe - Speech to Text
 └──────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: CloudFront → S3 / (Files) | CloudFront → SES / (Email) | S3 / (Static Site) → DynamoDB / (Database) | S3 / (Static Site) → S3 / (Files) | API Gateway → Lambda / (Functions) | Lambda / (Functions) → SES / (Email) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["CloudFront"]
+    N2["S3 / (Static Site)"]
+    N3["API Gateway"]
+    N4["Lambda / (Functions)"]
+    N5["DynamoDB / (Database)"]
+    N6["S3 / (Files)"]
+    N7["SES / (Email)"]
+    N8["SNS / (Notify)"]
+    N1 --> N6
+    N1 --> N7
+    N2 --> N5
+    N2 --> N6
+    N3 --> N4
+    N4 --> N7
+    N4 --> N8
+```
+
 
 #### Example 3: Microservices Architecture
 
@@ -440,6 +582,22 @@ MQ - ActiveMQ/RabbitMQ     Transcribe - Speech to Text
 │  └── CodePipeline: CI/CD                                         │
 │                                                                  │
 └──────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: API Gateway / (or ALB) → ECS / Order / Service | ECS / User / Service → RDS / (Users) | ECS / Order / Service → SQS / (Messages) | SQS / (Messages) → DynamoDB / (Orders)
+
+```mermaid
+flowchart TD
+    N1["API Gateway / (or ALB)"]
+    N2["ECS / User / Service"]
+    N3["ECS / Order / Service"]
+    N5["SQS / (Messages)"]
+    N6["RDS / (Users)"]
+    N7["DynamoDB / (Orders)"]
+    N1 --> N3
+    N2 --> N6
+    N3 --> N5
+    N5 --> N7
 ```
 
 
@@ -533,6 +691,27 @@ COST OPTIMIZATION STRATEGIES:
 │  └── Logic Apps: Workflow automation                             │
 │                                                                  │
 └──────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: AZURE SERVICES MAP → AWS → AZURE | AWS → AZURE → EC2 → Virtual Machines | EC2 → Virtual Machines → Lambda → Azure Functions | Lambda → Azure Functions → ECS/EKS → AKS (Azure Kubernetes Service) | ECS/EKS → AKS (Azure Kubernetes Service) → S3 → Blob Storage | S3 → Blob Storage → RDS → Azure SQL Database | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["AZURE SERVICES MAP"]
+    N2["AWS → AZURE"]
+    N3["EC2 → Virtual Machines"]
+    N4["Lambda → Azure Functions"]
+    N5["ECS/EKS → AKS (Azure Kubernetes Service)"]
+    N6["S3 → Blob Storage"]
+    N7["RDS → Azure SQL Database"]
+    N8["DynamoDB → Cosmos DB"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 

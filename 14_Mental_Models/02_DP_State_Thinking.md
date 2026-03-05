@@ -31,6 +31,21 @@ Your job:
     E   [ 0  1  2  3 ]    ← answer: dp[4][3] = 3
 ```
 
+> **Flow**: A [ 0 1 1 1 ] dp[1][1] = they match! → dp[0][0] + 1 | B [ 0 1 1 1 ] dp[2][1] = don't match → max(left, top) | C [ 0 1 2 2 ] dp[3][2] = match! → dp[2][1] + 1
+
+```mermaid
+flowchart LR
+    N1["A [ 0 1 1 1 ] dp[1][1] = they match!"]
+    N2["dp[0][0] + 1"]
+    N3["B [ 0 1 1 1 ] dp[2][1] = don't match"]
+    N4["max(left, top)"]
+    N5["C [ 0 1 2 2 ] dp[3][2] = match!"]
+    N6["dp[2][1] + 1"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+```
+
 ---
 
 ## Part 2: The 5-Step DP Process
@@ -64,6 +79,24 @@ For each choice, the state changes:
 - Don't match → dp[i][j] depends on dp[i-1][j] or dp[i][j-1]
 ```
 
+> **Flow**: - Include item i → dp[i][w] depends on dp[i-1][w - weight[i]] | - Exclude item i → dp[i][w] depends on dp[i-1][w] | - Match chars → dp[i][j] depends on dp[i-1][j-1] | - Don't match → dp[i][j] depends on dp[i-1][j] or dp[i][j-1]
+
+```mermaid
+flowchart LR
+    N1["- Include item i"]
+    N2["dp[i][w] depends on dp[i-1][w - weight[i]]"]
+    N3["- Exclude item i"]
+    N4["dp[i][w] depends on dp[i-1][w]"]
+    N5["- Match chars"]
+    N6["dp[i][j] depends on dp[i-1][j-1]"]
+    N7["- Don't match"]
+    N8["dp[i][j] depends on dp[i-1][j] or dp[i][j-1]"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+    N7 --> N8
+```
+
 ### Step 3: Identify Base Cases (WHERE does the spreadsheet start?)
 ```
 Ask: "What states can I answer WITHOUT any computation?"
@@ -83,6 +116,17 @@ Common orders:
 - Interval: by increasing length (interval DP)
 - Grid: top-left to bottom-right
 - Tree: post-order (children before parent)
+```
+
+> **Flow**: Ask: 'Does dp[i] need dp[i-1] (fill left → right) or dp[i+1] (fill right | right) or dp[i+1] (fill right → left)?'
+
+```mermaid
+flowchart LR
+    N1["Ask: 'Does dp[i] need dp[i-1] (fill left"]
+    N2["right) or dp[i+1] (fill right"]
+    N3["left)?'"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 ### Step 5: Extract the Answer (WHERE is the final answer?)
@@ -124,6 +168,27 @@ What are you optimizing?
     └── Multiple states per position (Buy/Sell Stock with cooldown)
 ```
 
+> **Flow**: 'How many ways?' → COUNTING | 'Min/Max cost?' → OPTIMIZATION | 'Is it possible?' → FEASIBILITY | Two sequences → TWO-SEQUENCE | Single sequence → SINGLE-SEQUENCE
+
+```mermaid
+flowchart TD
+    N1["'How many ways?'"]
+    N2["COUNTING"]
+    N3["'Min/Max cost?'"]
+    N4["OPTIMIZATION"]
+    N5["'Is it possible?'"]
+    N6["FEASIBILITY"]
+    N7["Two sequences"]
+    N8["TWO-SEQUENCE"]
+    N9["Single sequence"]
+    N10["SINGLE-SEQUENCE"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+    N7 --> N8
+    N9 --> N10
+```
+
 ---
 
 ## Part 4: State Identification — Hard Examples
@@ -145,6 +210,18 @@ Transition:
 dp[e][f] = 1 + min over x of max(dp[e-1][x-1], dp[e][f-x])
 ```
 
+> **Flow**: If egg breaks → test below: dp[e-1][x-1] | If survives → test above: dp[e][f-x]
+
+```mermaid
+flowchart LR
+    N1["If egg breaks"]
+    N2["test below: dp[e-1][x-1]"]
+    N3["If survives"]
+    N4["test above: dp[e][f-x]"]
+    N1 --> N2
+    N3 --> N4
+```
+
 ### Example 2: Buy/Sell Stock with Cooldown
 ```
 "What do I need to know at day i?"
@@ -162,6 +239,25 @@ notHold[i] = max(notHold[i-1], cool[i-1])              // stay or finish cooldow
 cool[i]    = hold[i-1] + price[i]                       // sell today
 ```
 
+> **Flow**: 'What do I need to know at day i?' → - Am I holding a stock or not? | - Am I holding a stock or not? → - Am I in cooldown or not? | - Am I in cooldown or not? → → THREE states at each day: | → THREE states at each day: → hold[i] = max profit on day i if I'm holding stock | hold[i] = max profit on day i if I'm holding stock → Transitions: | Transitions: → cool[i] = hold[i-1] + price[i] // sell today
+
+```mermaid
+flowchart TD
+    N1["'What do I need to know at day i?'"]
+    N2["- Am I holding a stock or not?"]
+    N3["- Am I in cooldown or not?"]
+    N4["→ THREE states at each day:"]
+    N5["hold[i] = max profit on day i if I'm holding stock"]
+    N6["Transitions:"]
+    N7["cool[i] = hold[i-1] + price[i] // sell today"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+```
+
 ### Example 3: Knapsack — Adding a Dimension
 ```
 "I have items and a weight capacity."
@@ -177,6 +273,15 @@ If items unlimited (Unbounded):
   ↑ no need for item dimension, just process in right order
 ```
 
+> **Flow**: ↑ need to track which item we're considering → add dimension i
+
+```mermaid
+flowchart LR
+    N1["↑ need to track which item we're considering"]
+    N2["add dimension i"]
+    N1 --> N2
+```
+
 ---
 
 ## Part 5: Common DP Transition Patterns
@@ -186,6 +291,17 @@ If items unlimited (Unbounded):
 dp[i] = max(dp[i-1], dp[i-2] + value[i])
          ↑ skip i    ↑ take i (can't take i-1)
 Examples: House Robber, Sticker Collection
+```
+
+> **Flow**: dp[i] = max(dp[i-1], dp[i-2] + value[i]) → ↑ skip i ↑ take i (can't take i-1) | ↑ skip i ↑ take i (can't take i-1) → Examples: House Robber, Sticker Collection
+
+```mermaid
+flowchart TD
+    N1["dp[i] = max(dp[i-1], dp[i-2] + value[i])"]
+    N2["↑ skip i ↑ take i (can't take i-1)"]
+    N3["Examples: House Robber, Sticker Collection"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 ### Pattern 2: Best from All Previous (O(n²))
@@ -235,6 +351,25 @@ Direction matters:
    Unbounded Knapsack: process LEFT TO RIGHT (allow reuse)
 ```
 
+> **Flow**: If dp[i] only depends on dp[i-1] (previous row): → → Use two arrays: prev[] and curr[] | → Use two arrays: prev[] and curr[] → → Or single array processed in right direction | → Or single array processed in right direction → If dp[i] only depends on dp[i-1] and dp[i-2]: | If dp[i] only depends on dp[i-1] and dp[i-2]: → → Use 2-3 variables | → Use 2-3 variables → Direction matters: | Direction matters: → Unbounded Knapsack: process LEFT TO RIGHT (allow reuse)
+
+```mermaid
+flowchart TD
+    N1["If dp[i] only depends on dp[i-1] (previous row):"]
+    N2["→ Use two arrays: prev[] and curr[]"]
+    N3["→ Or single array processed in right direction"]
+    N4["If dp[i] only depends on dp[i-1] and dp[i-2]:"]
+    N5["→ Use 2-3 variables"]
+    N6["Direction matters:"]
+    N7["Unbounded Knapsack: process LEFT TO RIGHT (allow reuse)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+```
+
 ### Visual: Rolling Array
 ```
 Full table:          Optimized:
@@ -242,6 +377,15 @@ dp[0]: [...]         prev: [...]
 dp[1]: [...]    →    curr: [...]   (swap after each row)
 dp[2]: [...]
 dp[3]: [...]
+```
+
+> **Flow**: dp[1]: [...] → curr: [...] (swap after each row)
+
+```mermaid
+flowchart LR
+    N1["dp[1]: [...]"]
+    N2["curr: [...] (swap after each row)"]
+    N1 --> N2
 ```
 
 ---
@@ -256,6 +400,15 @@ dp[3]: [...]
 □ Off-by-one: dp[n] or dp[n-1]? (Check indexing)
 □ Is the answer at the right cell? (dp[n][target]? max of row?)
 □ Edge cases: empty input? single element? all same values?
+```
+
+> **Flow**: □ Off-by-one: dp[n] or dp[n-1]? (Check indexing) → □ Edge cases: empty input? single element? all same val
+
+```mermaid
+flowchart TD
+    N1["□ Off-by-one: dp[n] or dp[n-1]? (Check indexing)"]
+    N2["□ Edge cases: empty input? single element? all same val"]
+    N1 --> N2
 ```
 
 ---

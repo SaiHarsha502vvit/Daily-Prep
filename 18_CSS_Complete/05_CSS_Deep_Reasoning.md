@@ -47,6 +47,15 @@ z-index only competes WITHIN the same stacking context
 (same building). You can't jump between buildings.
 ```
 
+> **Flow**: Floor 9999 / (your element → Floor 1
+
+```mermaid
+flowchart TD
+    N1["Floor 9999 / (your element"]
+    N2["Floor 1"]
+    N1 --> N2
+```
+
 ```css
 /* What CREATES a new stacking context (a new "building"): */
 
@@ -103,6 +112,27 @@ z-index only competes WITHIN the same stacking context
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: THE CASCADE — Priority Order (highest to lowest): → 1. ORIGIN & IMPORTANCE | 1. ORIGIN & IMPORTANCE → !important in user-agent stylesheet (highest) | !important in user-agent stylesheet (highest) → !important in user stylesheet | !important in user stylesheet → !important in author stylesheet | !important in author stylesheet → Normal author stylesheet | Normal author stylesheet → Normal user stylesheet | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE CASCADE — Priority Order (highest to lowest):"]
+    N2["1. ORIGIN & IMPORTANCE"]
+    N3["!important in user-agent stylesheet (highest)"]
+    N4["!important in user stylesheet"]
+    N5["!important in author stylesheet"]
+    N6["Normal author stylesheet"]
+    N7["Normal user stylesheet"]
+    N8["Normal user-agent stylesheet (lowest)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 3. Specificity: It's NOT Just "ID > Class > Element"
@@ -139,6 +169,27 @@ z-index only competes WITHIN the same stacking context
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: SPECIFICITY = A scoring system with 3 columns: → (IDs) (Classes) (Elements) | (IDs) (Classes) (Elements) → .nav ul li a:hover | .nav ul li a:hover → Score: (0, 2, 3) | Score: (0, 2, 3) → #main a | #main a → Score: (1, 0, 1) | Score: (1, 0, 1) → (1,0,1) BEATS (0,2,3) because A column wins first. | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["SPECIFICITY = A scoring system with 3 columns:"]
+    N2["(IDs) (Classes) (Elements)"]
+    N3[".nav ul li a:hover"]
+    N4["Score: (0, 2, 3)"]
+    N5["#main a"]
+    N6["Score: (1, 0, 1)"]
+    N7["(1,0,1) BEATS (0,2,3) because A column wins first."]
+    N8["It's NOT a decimal: (0,11,0) does NOT become (1,1,0)."]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 4. Box Model: `content-box` vs `border-box` — Why Everyone Switches
@@ -164,6 +215,27 @@ border-box (what everyone uses):
 width: 200px means the WHOLE box is 200px.
 Content shrinks to fit: 200 - 20 - 20 - 5 - 5 = 150px
 "200px means 200px" — what you'd expect.
+```
+
+> **Flow**: content-box (default, but counterintuitive): → margin | margin → border | border → padding | padding → content (200px) | content (200px) → Total width = 200 + 20+20 + 5+5 = 250px | Total width = 200 + 20+20 + 5+5 = 250px → You said 200px... but the box is 250px. Confusing! | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["content-box (default, but counterintuitive):"]
+    N2["margin"]
+    N3["border"]
+    N4["padding"]
+    N5["content (200px)"]
+    N6["Total width = 200 + 20+20 + 5+5 = 250px"]
+    N7["You said 200px... but the box is 250px. Confusing!"]
+    N8["border-box (what everyone uses):"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```css
@@ -203,6 +275,27 @@ Content shrinks to fit: 200 - 20 - 20 - 5 - 5 = 150px
 ║  2. Prevents margin collapse across boundary                     ║
 ║  3. Excludes external floats                                     ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: BFC = An Invisible Boundary — The Aquarium Analogy → A BFC is like an aquarium. Everything inside floats/flo | A BFC is like an aquarium. Everything inside floats/flo → according to its own rules. The water (layout) inside | according to its own rules. The water (layout) inside → can't leak out, and water outside can't leak in. | can't leak out, and water outside can't leak in. → With BFC: Parent contains floated children properly | With BFC: Parent contains floated children properly → WHAT CREATES a BFC: | WHAT CREATES a BFC: → • overflow: hidden/auto/scroll (not visible) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["BFC = An Invisible Boundary — The Aquarium Analogy"]
+    N2["A BFC is like an aquarium. Everything inside floats/flo"]
+    N3["according to its own rules. The water (layout) inside"]
+    N4["can't leak out, and water outside can't leak in."]
+    N5["With BFC: Parent contains floated children properly"]
+    N6["WHAT CREATES a BFC:"]
+    N7["• overflow: hidden/auto/scroll (not visible)"]
+    N8["• display: flow-root (MODERN way — created for this!)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```css
@@ -249,6 +342,15 @@ WHEN IT DOESN'T:
 ❌ Inline-block elements
 ```
 
+> **Flow**: Box A → Box B
+
+```mermaid
+flowchart TD
+    N1["Box A"]
+    N2["Box B"]
+    N1 --> N2
+```
+
 ---
 
 ## 7. Flexbox vs Grid: Not "Which Is Better" — When Each Shines
@@ -277,6 +379,27 @@ WHEN IT DOESN'T:
 ║  They're NOT competing. Most real layouts use BOTH:              ║
 ║  Grid for the page layout, Flexbox for components inside cells.  ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: ONE-DIMENSIONAL vs TWO-DIMENSIONAL → Flexbox = A clothesline (1D) | Flexbox = A clothesline (1D) → Items hang in a LINE — they can wrap, but each line is | Items hang in a LINE — they can wrap, but each line is → independent. Items can grow/shrink flexibly. | independent. Items can grow/shrink flexibly. → Use for: Navbars, button groups, card rows, centering | Use for: Navbars, button groups, card rows, centering → Grid = A chess board (2D) | Grid = A chess board (2D) → You define ROWS and COLUMNS simultaneously. | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["ONE-DIMENSIONAL vs TWO-DIMENSIONAL"]
+    N2["Flexbox = A clothesline (1D)"]
+    N3["Items hang in a LINE — they can wrap, but each line is"]
+    N4["independent. Items can grow/shrink flexibly."]
+    N5["Use for: Navbars, button groups, card rows, centering"]
+    N6["Grid = A chess board (2D)"]
+    N7["You define ROWS and COLUMNS simultaneously."]
+    N8["Items snap to the grid. You control both axes at once."]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---
@@ -314,6 +437,27 @@ WHEN IT DOESN'T:
 ║     Creates new containing block — sticky now sticks             ║
 ║     relative to THAT ancestor, not the viewport.                 ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: STICKY = relative UNTIL scroll threshold, THEN fixed → The 5 reasons sticky 'fails': | The 5 reasons sticky 'fails': → 1. PARENT HAS overflow: hidden/auto/scroll | 1. PARENT HAS overflow: hidden/auto/scroll → sticky only sticks within its scroll container. | sticky only sticks within its scroll container. → If parent has overflow ≠ visible, parent IS the | If parent has overflow ≠ visible, parent IS the → scroll container — and if parent doesn't scroll, sticky | scroll container — and if parent doesn't scroll, sticky → has nowhere to stick. | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["STICKY = relative UNTIL scroll threshold, THEN fixed"]
+    N2["The 5 reasons sticky 'fails':"]
+    N3["1. PARENT HAS overflow: hidden/auto/scroll"]
+    N4["sticky only sticks within its scroll container."]
+    N5["If parent has overflow ≠ visible, parent IS the"]
+    N6["scroll container — and if parent doesn't scroll, sticky"]
+    N7["has nowhere to stick."]
+    N8["2. NO top/bottom/left/right SPECIFIED"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---
@@ -358,6 +502,27 @@ WHEN IT DOESN'T:
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: UNIT RELATIVE TO BEST FOR → px Nothing (absolute) Borders, shadows, | px Nothing (absolute) Borders, shadows, → fine-tuned spacing | fine-tuned spacing → rem Root font-size (html) Font sizes, spacing, | rem Root font-size (html) Font sizes, spacing, → Usually 16px padding, margins. | Usually 16px padding, margins. → Scales with user prefs. | Scales with user prefs. → em Parent's font-size Spacing relative to | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["UNIT RELATIVE TO BEST FOR"]
+    N2["px Nothing (absolute) Borders, shadows,"]
+    N3["fine-tuned spacing"]
+    N4["rem Root font-size (html) Font sizes, spacing,"]
+    N5["Usually 16px padding, margins."]
+    N6["Scales with user prefs."]
+    N7["em Parent's font-size Spacing relative to"]
+    N8["current text size."]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 10. Reflow vs Repaint: Why Some CSS Changes Are Expensive
@@ -394,6 +559,27 @@ WHEN IT DOESN'T:
 ║  Repaint = Repainting walls (same layout, new look)              ║
 ║  Composite = Moving a picture frame (nothing else changes)       ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: HOW THE BROWSER RENDERS (Pipeline): → Style → Layout → Paint → Composite | Style → Layout → Paint → Composite → REFLOW (Layout): | REFLOW (Layout): → → Browser must recalculate position of EVERY element | → Browser must recalculate position of EVERY element → → Then repaint → Then composite | → Then repaint → Then composite → → EXPENSIVE (triggers full pipeline) | → EXPENSIVE (triggers full pipeline) → REPAINT: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["HOW THE BROWSER RENDERS (Pipeline):"]
+    N2["Style → Layout → Paint → Composite"]
+    N3["REFLOW (Layout):"]
+    N4["→ Browser must recalculate position of EVERY element"]
+    N5["→ Then repaint → Then composite"]
+    N6["→ EXPENSIVE (triggers full pipeline)"]
+    N7["REPAINT:"]
+    N8["Changing color, background, visibility, box-shadow"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```css

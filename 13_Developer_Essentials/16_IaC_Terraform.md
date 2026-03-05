@@ -251,6 +251,39 @@ infrastructure/
 └── terraform.tfvars
 ```
 
+> **Flow**: infrastructure/ → modules/ | infrastructure/ → vpc/ | infrastructure/ → main.tf | infrastructure/ → variables.tf | infrastructure/ → outputs.tf | infrastructure/ → ec2/ | ...+14 more
+
+```mermaid
+flowchart TD
+    N1["infrastructure/"]
+    N2["modules/"]
+    N3["vpc/"]
+    N4["main.tf"]
+    N5["variables.tf"]
+    N6["outputs.tf"]
+    N7["ec2/"]
+    N8["rds/"]
+    N9["environments/"]
+    N10["dev/"]
+    N11["main.tf ← uses modules"]
+    N12["terraform.tfvars"]
+    N13["staging/"]
+    N14["prod/"]
+    N1 --> N2
+    N1 --> N3
+    N1 --> N4
+    N1 --> N5
+    N1 --> N6
+    N1 --> N7
+    N1 --> N8
+    N1 --> N9
+    N1 --> N10
+    N1 --> N11
+    N1 --> N12
+    N1 --> N13
+    N1 --> N14
+```
+
 ```hcl
 # modules/vpc/main.tf
 resource "aws_vpc" "this" {
@@ -477,6 +510,27 @@ resource "aws_db_instance" "main" {
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: STATE FILE — The Most Important Terraform Concept → .tf file says: 'I want an EC2 instance' | .tf file says: 'I want an EC2 instance' → State file says: 'That's i-0abc123 in us-east-1' | State file says: 'That's i-0abc123 in us-east-1' → RULES: | RULES: → 1. NEVER edit state manually | 1. NEVER edit state manually → 2. NEVER commit state to Git (contains secrets!) | 2. NEVER commit state to Git (contains secrets!) → 3. ALWAYS use remote state for teams: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["STATE FILE — The Most Important Terraform Concept"]
+    N2[".tf file says: 'I want an EC2 instance'"]
+    N3["State file says: 'That's i-0abc123 in us-east-1'"]
+    N4["RULES:"]
+    N5["1. NEVER edit state manually"]
+    N6["2. NEVER commit state to Git (contains secrets!)"]
+    N7["3. ALWAYS use remote state for teams:"]
+    N8["• AWS: S3 bucket + DynamoDB table (for locking)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## CI/CD for Infrastructure
@@ -497,6 +551,19 @@ Pipeline Steps:
 4. (PR approved) terraform apply -auto-approve
 
 RULE: Only CI/CD applies. Humans don't run apply.
+```
+
+> **Flow**: Write / .tf --(push)--> Branch / + PR | Branch / + PR --(trigger)--> Pipeline | Pipeline → AWS
+
+```mermaid
+flowchart LR
+    N1["Write / .tf"]
+    N2["Branch / + PR"]
+    N3["Pipeline"]
+    N4["AWS"]
+    N1 -->|"push"| N2
+    N2 -->|"trigger"| N3
+    N3 --> N4
 ```
 
 ### GitHub Actions Example
@@ -580,6 +647,27 @@ Q: What happens if you delete a resource from .tf without destroy?
   stop managing it, use terraform state rm first.
 ```
 
+> **Flow**: Q: What is Terraform and why use it? → it figures out how to get there. Benefits: version cont | it figures out how to get there. Benefits: version cont → Q: Explain terraform plan vs apply. | Q: Explain terraform plan vs apply. → → Plan shows a preview (diff) without making changes. | → Plan shows a preview (diff) without making changes. → Apply executes the changes. Always plan before apply. | Apply executes the changes. Always plan before apply. → Q: What is Terraform state? How do you manage it? | Q: What is Terraform state? How do you manage it? → Q: How do you handle secrets in Terraform? | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Q: What is Terraform and why use it?"]
+    N2["it figures out how to get there. Benefits: version cont"]
+    N3["Q: Explain terraform plan vs apply."]
+    N4["→ Plan shows a preview (diff) without making changes."]
+    N5["Apply executes the changes. Always plan before apply."]
+    N6["Q: What is Terraform state? How do you manage it?"]
+    N7["Q: How do you handle secrets in Terraform?"]
+    N8["HashiCorp Vault, or CI/CD secret injection. Mark sensit"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## IaC Best Practices Summary
@@ -599,6 +687,27 @@ Q: What happens if you delete a resource from .tf without destroy?
 ║  11. Small, focused changes — easier to review and debug             ║
 ║  12. Destroy unused resources — cost awareness                       ║
 ╚══════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: 1. Version control everything — all .tf files in Git → 2. Use modules for reusable components | 2. Use modules for reusable components → 3. Remote state with locking — never local for teams | 3. Remote state with locking — never local for teams → 4. Separate environments — don't share state | 4. Separate environments — don't share state → 5. Use variables and outputs — no hardcoded values | 5. Use variables and outputs — no hardcoded values → 6. Pin provider versions — avoid surprise upgrades | 6. Pin provider versions — avoid surprise upgrades → 7. Run plan in CI — review changes before apply | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["1. Version control everything — all .tf files in Git"]
+    N2["2. Use modules for reusable components"]
+    N3["3. Remote state with locking — never local for teams"]
+    N4["4. Separate environments — don't share state"]
+    N5["5. Use variables and outputs — no hardcoded values"]
+    N6["6. Pin provider versions — avoid surprise upgrades"]
+    N7["7. Run plan in CI — review changes before apply"]
+    N8["8. Tag all resources — cost tracking, ownership"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

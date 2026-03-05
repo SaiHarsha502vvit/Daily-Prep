@@ -98,6 +98,25 @@ int[] bellmanFord(int n, int[][] edges, int source) {
 └───────────────────┴──────────────────┴────────────────────┘
 ```
 
+> **Flow**: Property Dijkstra Bellman-Ford → Time O((V+E) log V) O(V * E) | Time O((V+E) log V) O(V * E) → Negative weights NO YES | Negative weights NO YES → Negative cycles Can't detect CAN detect | Negative cycles Can't detect CAN detect → Space O(V) O(V) | Space O(V) O(V) → Use when Non-neg weights Neg weights or K | Use when Non-neg weights Neg weights or K → stops constraint
+
+```mermaid
+flowchart TD
+    N1["Property Dijkstra Bellman-Ford"]
+    N2["Time O((V+E) log V) O(V * E)"]
+    N3["Negative weights NO YES"]
+    N4["Negative cycles Can't detect CAN detect"]
+    N5["Space O(V) O(V)"]
+    N6["Use when Non-neg weights Neg weights or K"]
+    N7["stops constraint"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+```
+
 ---
 
 ## ⚡ ALGO BLOCK: Bipartite Graph Check
@@ -116,6 +135,18 @@ Bipartite = can split nodes into 2 sets such that
         |   / |          Try: 0=Red, 1=Blue, 2=Red
         | /   |          Edge 1-2: Blue-Red ✓
         2     3          Edge 0-2: Red-Red ✗ → NOT BIPARTITE
+```
+
+> **Flow**: 3 --- 2 → BIPARTITE | 2 3 Edge 0-2: Red-Red ✗ → NOT BIPARTITE
+
+```mermaid
+flowchart LR
+    N1["3 --- 2"]
+    N2["BIPARTITE"]
+    N3["2 3 Edge 0-2: Red-Red ✗"]
+    N4["NOT BIPARTITE"]
+    N1 --> N2
+    N3 --> N4
 ```
 
 ### BFS 2-Coloring
@@ -172,6 +203,25 @@ Problems:
 • Skills in one column → can't easily query "who knows Java?" 
 ```
 
+> **Flow**: UNNORMALIZED (one table): → ID Name Dept DeptPhone Skills | ID Name Dept DeptPhone Skills → 1 Alice Eng 555-0100 Java,SQL | 1 Alice Eng 555-0100 Java,SQL → 2 Bob Eng 555-0100 Python | 2 Bob Eng 555-0100 Python → 3 Carol HR 555-0200 Java,React | 3 Carol HR 555-0200 Java,React → Problems: | Problems: → • 'Eng' phone changes → update EVERY row (Update Anomal
+
+```mermaid
+flowchart TD
+    N1["UNNORMALIZED (one table):"]
+    N2["ID Name Dept DeptPhone Skills"]
+    N3["1 Alice Eng 555-0100 Java,SQL"]
+    N4["2 Bob Eng 555-0100 Python"]
+    N5["3 Carol HR 555-0200 Java,React"]
+    N6["Problems:"]
+    N7["• 'Eng' phone changes → update EVERY row (Update Anomal"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+```
+
 ### The Normal Forms
 
 ```
@@ -189,6 +239,21 @@ Problems:
   ✓ Is in 2NF
   ✓ No transitive dependencies (non-key → non-key)
   → DeptPhone depends on Dept, not on emp_id → move to departments table
+```
+
+> **Flow**: If composite key (emp_id, skill), dept depends onl → move to separate table | ✓ No transitive dependencies (non-key → non-key) | DeptPhone depends on Dept, not on emp_id → move to departments table
+
+```mermaid
+flowchart LR
+    N1["If composite key (emp_id, skill), dept depends onl"]
+    N2["move to separate table"]
+    N3["✓ No transitive dependencies (non-key"]
+    N4["non-key)"]
+    N5["DeptPhone depends on Dept, not on emp_id"]
+    N6["move to departments table"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
 ```
 
 ### Normalized Design
@@ -234,6 +299,17 @@ Find cheapest price from src to dst with at most k stops.
 Input: n=4, flights=[[0,1,100],[1,2,100],[2,0,100],[1,3,600],[2,3,200]], 
        src=0, dst=3, k=1
 Output: 700 (0→1→3)
+```
+
+> **Flow**: n cities, flights[i] = [from, to, price]. → Find cheapest price from src to dst with at most k stop | Find cheapest price from src to dst with at most k stop → Output: 700 (0→1→3)
+
+```mermaid
+flowchart TD
+    N1["n cities, flights[i] = [from, to, price]."]
+    N2["Find cheapest price from src to dst with at most k stop"]
+    N3["Output: 700 (0→1→3)"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 **Pattern**: Bellman-Ford with K+1 iterations (or BFS with level = stops).

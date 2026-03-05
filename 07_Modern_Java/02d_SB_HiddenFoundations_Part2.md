@@ -1265,6 +1265,25 @@ public class RequestLoggingFilter implements Filter {
 └──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: Answer: TYPE ERASURE → Generics are a COMPILE-TIME feature only! | Generics are a COMPILE-TIME feature only! → At runtime, generic type information is ERASED | At runtime, generic type information is ERASED → This affects: | This affects: → - How Jackson deserializes generic types | - How Jackson deserializes generic types → - How Spring resolves generic beans | - How Spring resolves generic beans → - Why you need TypeReference&lt;T&gt;
+
+```mermaid
+flowchart TD
+    N1["Answer: TYPE ERASURE"]
+    N2["Generics are a COMPILE-TIME feature only!"]
+    N3["At runtime, generic type information is ERASED"]
+    N4["This affects:"]
+    N5["- How Jackson deserializes generic types"]
+    N6["- How Spring resolves generic beans"]
+    N7["- Why you need TypeReference&lt;T&gt;"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+```
+
 ## L.1 What Is Type Erasure?
 
 ```java
@@ -1377,6 +1396,27 @@ Class<?> entityClass = listType.resolve();  // User.class
 │  - Debuggers: Breakpoints                                                        │
 │                                                                                  │
 └──────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: ADVANCED: How Tools Modify Your Code at Runtime → These tools use bytecode manipulation: | These tools use bytecode manipulation: → - Spring Data: Generates repository implementations | - Spring Data: Generates repository implementations → - Hibernate: Adds lazy loading logic to entities | - Hibernate: Adds lazy loading logic to entities → - Mockito: Creates mock objects | - Mockito: Creates mock objects → - CGLIB: Proxies for @Transactional | - CGLIB: Proxies for @Transactional → - JaCoCo: Code coverage | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["ADVANCED: How Tools Modify Your Code at Runtime"]
+    N2["These tools use bytecode manipulation:"]
+    N3["- Spring Data: Generates repository implementations"]
+    N4["- Hibernate: Adds lazy loading logic to entities"]
+    N5["- Mockito: Creates mock objects"]
+    N6["- CGLIB: Proxies for @Transactional"]
+    N7["- JaCoCo: Code coverage"]
+    N8["- Debuggers: Breakpoints"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ## M.1 Java Bytecode Basics
@@ -1538,6 +1578,27 @@ public class MyAgent {
 │  • Can't do: new T() or instanceof List<String>                                  │
 │                                                                                  │
 └──────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: WHAT YOU SHOULD REMEMBER → REFLECTION | REFLECTION → • Spring uses reflection for EVERYTHING | • Spring uses reflection for EVERYTHING → • setAccessible(true) bypasses private | • setAccessible(true) bypasses private → • Reflection is slow but cached | • Reflection is slow but cached → ANNOTATIONS | ANNOTATIONS → • RUNTIME retention = Spring can read it | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["WHAT YOU SHOULD REMEMBER"]
+    N2["REFLECTION"]
+    N3["• Spring uses reflection for EVERYTHING"]
+    N4["• setAccessible(true) bypasses private"]
+    N5["• Reflection is slow but cached"]
+    N6["ANNOTATIONS"]
+    N7["• RUNTIME retention = Spring can read it"]
+    N8["• SOURCE retention = Compile-time only (Lombok)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

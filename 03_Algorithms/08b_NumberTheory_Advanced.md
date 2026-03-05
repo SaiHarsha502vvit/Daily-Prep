@@ -746,6 +746,27 @@ private static TreeNode deserializeHelper(Queue<String> queue) {
 | MapReduce                               | Divide and Conquer          | Parallel processing        |
 ```
 
+> **Flow**: THE TABLE EVERY DEVELOPER SHOULD MEMORIZE → | Real Incident | DSA Used | Why That DSA | | | Real Incident | DSA Used | Why That DSA | → | Database indexing | B+ Tree | Balanced search + range | | Database indexing | B+ Tree | Balanced search + range → | Redis cache eviction | LRU/LFU Cache | Space manageme | | Redis cache eviction | LRU/LFU Cache | Space manageme → | Load balancer | Consistent Hashing | Distribute evenl | | Load balancer | Consistent Hashing | Distribute evenl → | Browser back/forward | Stack | History management | | | Browser back/forward | Stack | History management | → | Connection pooling | Queue (bounded) | Reuse resource | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE TABLE EVERY DEVELOPER SHOULD MEMORIZE"]
+    N2["| Real Incident | DSA Used | Why That DSA |"]
+    N3["| Database indexing | B+ Tree | Balanced search + range"]
+    N4["| Redis cache eviction | LRU/LFU Cache | Space manageme"]
+    N5["| Load balancer | Consistent Hashing | Distribute evenl"]
+    N6["| Browser back/forward | Stack | History management |"]
+    N7["| Connection pooling | Queue (bounded) | Reuse resource"]
+    N8["| DNS resolution | Caching + Trie | Hierarchical lookup"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 *This file is Part 1. See PART 8 (Study Plan) at the end of this guide*

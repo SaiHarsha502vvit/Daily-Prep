@@ -22,6 +22,27 @@ Code reviews also:
 • Build shared ownership of codebase
 ```
 
+> **Flow**: CODE REVIEWS: The Most Underrated Engineering Practice → Bug found in Code Review → Costs: 15 minutes | Bug found in Code Review → Costs: 15 minutes → Bug found in QA → Costs: 2 hours | Bug found in QA → Costs: 2 hours → Bug found in Production → Costs: 2 days | Bug found in Production → Costs: 2 days → Bug found by customer → Costs: reputation | Bug found by customer → Costs: reputation → Code reviews also: | Code reviews also: → • Spread knowledge across team (bus factor ↑) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["CODE REVIEWS: The Most Underrated Engineering Practice"]
+    N2["Bug found in Code Review → Costs: 15 minutes"]
+    N3["Bug found in QA → Costs: 2 hours"]
+    N4["Bug found in Production → Costs: 2 days"]
+    N5["Bug found by customer → Costs: reputation"]
+    N6["Code reviews also:"]
+    N7["• Spread knowledge across team (bus factor ↑)"]
+    N8["• Maintain consistent code style"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## The Review Checklist — What to Look For
@@ -199,6 +220,27 @@ if (!isValid(input)) {
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: THE REVIEWER'S MINDSET → 1. Review the CODE, not the PERSON | 1. Review the CODE, not the PERSON → ❌ 'You did this wrong' | ❌ 'You did this wrong' → ✅ 'This line might cause issues because...' | ✅ 'This line might cause issues because...' → 2. Ask questions instead of making demands | 2. Ask questions instead of making demands → ❌ 'Change this to use a HashMap' | ❌ 'Change this to use a HashMap' → ✅ 'Have you considered using a HashMap? It would give | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE REVIEWER'S MINDSET"]
+    N2["1. Review the CODE, not the PERSON"]
+    N3["❌ 'You did this wrong'"]
+    N4["✅ 'This line might cause issues because...'"]
+    N5["2. Ask questions instead of making demands"]
+    N6["❌ 'Change this to use a HashMap'"]
+    N7["✅ 'Have you considered using a HashMap? It would give"]
+    N8["O(1) lookup vs O(n) with the current ArrayList.'"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## How to Receive Reviews (As the Author)
@@ -230,6 +272,27 @@ if (!isValid(input)) {
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: THE AUTHOR'S MINDSET → 1. Don't take it personally | 1. Don't take it personally → They're reviewing code, not judging your worth. | They're reviewing code, not judging your worth. → 2. Assume positive intent | 2. Assume positive intent → The reviewer is trying to make the code better. | The reviewer is trying to make the code better. → 3. Explain your reasoning, don't just defend | 3. Explain your reasoning, don't just defend → 'I chose ArrayList because we iterate 95% of the time | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE AUTHOR'S MINDSET"]
+    N2["1. Don't take it personally"]
+    N3["They're reviewing code, not judging your worth."]
+    N4["2. Assume positive intent"]
+    N5["The reviewer is trying to make the code better."]
+    N6["3. Explain your reasoning, don't just defend"]
+    N7["'I chose ArrayList because we iterate 95% of the time"]
+    N8["and rarely do lookups. But I see your point — let me"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## PR Best Practices (Making Reviews Easier)
@@ -252,6 +315,27 @@ if (!isValid(input)) {
 ║  → PR 2: New feature (on top of the refactor)                        ║
 ║  → PR 3: Tests for the new feature                                   ║
 ╚══════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: PR SIZE MATTERS → Lines Changed Review Quality Time to Review | Lines Changed Review Quality Time to Review → &lt; 200 Excellent ★★★ 30 min | &lt; 200 Excellent ★★★ 30 min → 200 - 400 Good ★★ 1 hour | 200 - 400 Good ★★ 1 hour → 400 - 800 Mediocre ★ 2 hours | 400 - 800 Mediocre ★ 2 hours → &gt; 800 'LGTM' ☆ Rubber stamp | &gt; 800 'LGTM' ☆ Rubber stamp → If your PR is &gt; 400 lines, consider splitting it: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["PR SIZE MATTERS"]
+    N2["Lines Changed Review Quality Time to Review"]
+    N3["&lt; 200 Excellent ★★★ 30 min"]
+    N4["200 - 400 Good ★★ 1 hour"]
+    N5["400 - 800 Mediocre ★ 2 hours"]
+    N6["&gt; 800 'LGTM' ☆ Rubber stamp"]
+    N7["If your PR is &gt; 400 lines, consider splitting it:"]
+    N8["→ PR 1: Refactoring (no behavior change)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### PR Description Template
@@ -299,6 +383,27 @@ Before and After screenshots.
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: CONVENTIONAL COMMITS → Format: type(scope): description | Format: type(scope): description → feat(auth): add password reset endpoint | feat(auth): add password reset endpoint → fix(payment): handle null discount code | fix(payment): handle null discount code → refactor(user): extract validation to separate class | refactor(user): extract validation to separate class → test(order): add edge case tests for empty cart | test(order): add edge case tests for empty cart → docs(api): update Swagger annotations | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["CONVENTIONAL COMMITS"]
+    N2["Format: type(scope): description"]
+    N3["feat(auth): add password reset endpoint"]
+    N4["fix(payment): handle null discount code"]
+    N5["refactor(user): extract validation to separate class"]
+    N6["test(order): add edge case tests for empty cart"]
+    N7["docs(api): update Swagger annotations"]
+    N8["chore(deps): update Spring Boot to 3.2.1"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## Review Workflow — Git Flow
@@ -339,6 +444,27 @@ Before and After screenshots.
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: TYPICAL PR WORKFLOW → 1. Developer creates feature branch from develop | 1. Developer creates feature branch from develop → git checkout -b feat/JIRA-123-password-reset | git checkout -b feat/JIRA-123-password-reset → 2. Developer pushes and creates PR | 2. Developer pushes and creates PR → Target: develop (or main for small teams) | Target: develop (or main for small teams) → Assigns reviewer(s) | Assigns reviewer(s) → 3. CI runs automatically | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["TYPICAL PR WORKFLOW"]
+    N2["1. Developer creates feature branch from develop"]
+    N3["git checkout -b feat/JIRA-123-password-reset"]
+    N4["2. Developer pushes and creates PR"]
+    N5["Target: develop (or main for small teams)"]
+    N6["Assigns reviewer(s)"]
+    N7["3. CI runs automatically"]
+    N8["✓ Build passes"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## Automated Code Quality Tools
@@ -364,6 +490,27 @@ RULE: Automate what can be automated.
       Machines should check STYLE, FORMAT, and KNOWN BUGS.
 ```
 
+> **Flow**: TOOL WHAT IT CHECKS LANGUAGE → SonarQube Bugs, smells, vulnerabilities Multi | SonarQube Bugs, smells, vulnerabilities Multi → Checkstyle Java code style conventions Java | Checkstyle Java code style conventions Java → SpotBugs Potential bugs in bytecode Java | SpotBugs Potential bugs in bytecode Java → ESLint JavaScript/TS code quality JS/TS | ESLint JavaScript/TS code quality JS/TS → Prettier Code formatting Multi | Prettier Code formatting Multi → PMD Common programming flaws Java | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["TOOL WHAT IT CHECKS LANGUAGE"]
+    N2["SonarQube Bugs, smells, vulnerabilities Multi"]
+    N3["Checkstyle Java code style conventions Java"]
+    N4["SpotBugs Potential bugs in bytecode Java"]
+    N5["ESLint JavaScript/TS code quality JS/TS"]
+    N6["Prettier Code formatting Multi"]
+    N7["PMD Common programming flaws Java"]
+    N8["JaCoCo Test coverage Java"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## Common Code Smells to Watch For
@@ -384,6 +531,27 @@ RULE: Automate what can be automated.
 ║  Copy-Paste Programming     │  Same 10 lines in 3 places             ║
 ║  Yo-yo Problem              │  Have to jump between many classes     ║
 ╚══════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: SMELL WHAT IT LOOKS LIKE → God Class Class &gt; 500 lines, does everything | God Class Class &gt; 500 lines, does everything → Long Method Method &gt; 30 lines | Long Method Method &gt; 30 lines → Feature Envy Method uses another class more | Feature Envy Method uses another class more → than its own | than its own → Primitive Obsession String email instead of Email type | Primitive Obsession String email instead of Email type → Boolean Parameter process(data, true, false, true) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["SMELL WHAT IT LOOKS LIKE"]
+    N2["God Class Class &gt; 500 lines, does everything"]
+    N3["Long Method Method &gt; 30 lines"]
+    N4["Feature Envy Method uses another class more"]
+    N5["than its own"]
+    N6["Primitive Obsession String email instead of Email type"]
+    N7["Boolean Parameter process(data, true, false, true)"]
+    N8["Shotgun Surgery One change requires editing 10 files"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---
@@ -411,6 +579,27 @@ The author learns:
 2. Why it's wrong
 3. How to fix it
 4. The principle behind it (to apply elsewhere)
+```
+
+> **Flow**: make the code better. → Bad Reviewer: 'Fix this.' | Bad Reviewer: 'Fix this.' → Good Reviewer: 'This could cause | Good Reviewer: 'This could cause → issues because [reason]. Here's | issues because [reason]. Here's → a pattern that handles it: | a pattern that handles it: → [example]. This is important | [example]. This is important → because [context].' | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["make the code better."]
+    N2["Bad Reviewer: 'Fix this.'"]
+    N3["Good Reviewer: 'This could cause"]
+    N4["issues because [reason]. Here's"]
+    N5["a pattern that handles it:"]
+    N6["[example]. This is important"]
+    N7["because [context].'"]
+    N8["The author learns:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

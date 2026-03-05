@@ -50,6 +50,19 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: 'All or Nothing' - Transaction either completes fully o → Database moves from one valid state to another valid st | Database moves from one valid state to another valid st → Concurrent transactions don't interfere with each other | Concurrent transactions don't interfere with each other → Once committed, changes are permanent / Data survives s
+
+```mermaid
+flowchart TD
+    N1["'All or Nothing' - Transaction either completes fully o"]
+    N2["Database moves from one valid state to another valid st"]
+    N3["Concurrent transactions don't interfere with each other"]
+    N4["Once committed, changes are permanent / Data survives s"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 ```sql
 -- ═══════════════════════════════════════════════════════════════════════════════
 -- TRANSACTIONS - EXAMPLES

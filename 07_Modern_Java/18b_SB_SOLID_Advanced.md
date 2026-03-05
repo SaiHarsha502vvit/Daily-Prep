@@ -26,6 +26,27 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: INTERFACE SEGREGATION PRINCIPLE → FAT INTERFACE PROBLEMS: | FAT INTERFACE PROBLEMS: → • Changes to unused methods affect implementers | • Changes to unused methods affect implementers → • Hard to understand what's actually needed | • Hard to understand what's actually needed → SOLUTION: Small, focused interfaces | SOLUTION: Small, focused interfaces → • Each interface represents one capability | • Each interface represents one capability → • Classes implement only what they need | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["INTERFACE SEGREGATION PRINCIPLE"]
+    N2["FAT INTERFACE PROBLEMS:"]
+    N3["• Changes to unused methods affect implementers"]
+    N4["• Hard to understand what's actually needed"]
+    N5["SOLUTION: Small, focused interfaces"]
+    N6["• Each interface represents one capability"]
+    N7["• Classes implement only what they need"]
+    N8["• Easier to test and mock"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### ❌ VIOLATING ISP - Fat Interface
 
 ```java
@@ -285,6 +306,18 @@ public interface OrderRepository extends JpaRepository<Order, Long> {}
 │                               └─────────────────┘                               │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: OrderService / (High-level) → MySQLRepository / (Low-level) | OrderService / (High-level) → Repository / (Abstraction) | Repository / (Abstraction) → MySQLRepository / (Low-level)
+
+```mermaid
+flowchart TD
+    N1["OrderService / (High-level)"]
+    N2["MySQLRepository / (Low-level)"]
+    N3["Repository / (Abstraction)"]
+    N1 --> N2
+    N1 --> N3
+    N3 --> N2
 ```
 
 ### ❌ VIOLATING DIP
@@ -1030,6 +1063,27 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
 │  • Hard-coded class names (e.g., MySQLRepository)                               │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: SOLID VIOLATION CODE SMELLS → SRP VIOLATIONS: | SRP VIOLATIONS: → • Class name contains 'And' or 'Manager' | • Class name contains 'And' or 'Manager' → • Class has &gt; 500 lines of code | • Class has &gt; 500 lines of code → • Multiple @Autowired fields (&gt; 5-7) | • Multiple @Autowired fields (&gt; 5-7) → • Methods using completely different sets of fields | • Methods using completely different sets of fields → OCP VIOLATIONS: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["SOLID VIOLATION CODE SMELLS"]
+    N2["SRP VIOLATIONS:"]
+    N3["• Class name contains 'And' or 'Manager'"]
+    N4["• Class has &gt; 500 lines of code"]
+    N5["• Multiple @Autowired fields (&gt; 5-7)"]
+    N6["• Methods using completely different sets of fields"]
+    N7["OCP VIOLATIONS:"]
+    N8["• switch/if-else chains on type/enum"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

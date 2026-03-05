@@ -80,6 +80,15 @@ Spring Boot + Micrometer (auto-exposes Prometheus metrics):
   }
 ```
 
+> **Flow**: Prometheus / (stores / time-serie → Alertmanager / (Slack/Page)
+
+```mermaid
+flowchart TD
+    N2["Prometheus / (stores / time-serie"]
+    N4["Alertmanager / (Slack/Page)"]
+    N2 --> N4
+```
+
 ---
 
 ## ELK Stack (Centralized Logging)
@@ -99,6 +108,20 @@ Spring Boot + Micrometer (auto-exposes Prometheus metrics):
                                                            └───────────┘
 
 Modern alternative: Grafana Loki (lighter, labels-based, pairs with Grafana)
+```
+
+> **Flow**: App Logs / (JSON to / stdout) → Filebeat/ / Fluentd / (ship logs) | Filebeat/ / Fluentd / (ship logs) → → Logstash / (parse, / transform, / enrich) | → Elastic / search / (index, / search) → Kibana / (search, / visualize)
+
+```mermaid
+flowchart TD
+    N1["App Logs / (JSON to / stdout)"]
+    N2["Filebeat/ / Fluentd / (ship logs)"]
+    N3["→ Logstash / (parse, / transform, / enrich)"]
+    N4["→ Elastic / search / (index, / search)"]
+    N5["Kibana / (search, / visualize)"]
+    N1 --> N2
+    N2 --> N3
+    N4 --> N5
 ```
 
 ---
@@ -126,6 +149,21 @@ Trace ID: abc-123 (same across ALL services for this request)
 OpenTelemetry (standard): auto-instruments Spring Boot, propagates trace IDs
 ```
 
+> **Flow**: API Gateway (Span 1) → Order Service (Span 2) | Order Service (Span 2) → DB Query (Span 3) | DB Query (Span 3) → Payment Service (Span 4) | Payment Service (Span 4) → Stripe API (Span 5)
+
+```mermaid
+flowchart TD
+    N1["API Gateway (Span 1)"]
+    N2["Order Service (Span 2)"]
+    N3["DB Query (Span 3)"]
+    N4["Payment Service (Span 4)"]
+    N5["Stripe API (Span 5)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+```
+
 ---
 
 ## Alerting Best Practices
@@ -150,6 +188,27 @@ OpenTelemetry (standard): auto-instruments Spring Boot, propagates trace IDs
 │  4. Dashboard link (see current state)                                          │
 │  5. Severity (P1: everything down, P2: degraded, P3: potential issue)           │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: GOOD ALERTS: → ✅ Error rate &gt; 5% for 5 minutes → Page on-call | ✅ Error rate &gt; 5% for 5 minutes → Page on-call → ✅ P99 latency &gt; 2s for 10 minutes → Warn in Slack | ✅ P99 latency &gt; 2s for 10 minutes → Warn in Slack → ✅ Disk usage &gt; 85% → Ticket | ✅ Disk usage &gt; 85% → Ticket → ✅ Zero orders in last 30 min (business hours) → Investi | ✅ Zero orders in last 30 min (business hours) → Investi → BAD ALERTS (alert fatigue): | BAD ALERTS (alert fatigue): → ❌ CPU &gt; 80% (spikes are normal, care about sustained | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["GOOD ALERTS:"]
+    N2["✅ Error rate &gt; 5% for 5 minutes → Page on-call"]
+    N3["✅ P99 latency &gt; 2s for 10 minutes → Warn in Slack"]
+    N4["✅ Disk usage &gt; 85% → Ticket"]
+    N5["✅ Zero orders in last 30 min (business hours) → Investi"]
+    N6["BAD ALERTS (alert fatigue):"]
+    N7["❌ CPU &gt; 80% (spikes are normal, care about sustained"]
+    N8["❌ Any single 500 error (noise)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

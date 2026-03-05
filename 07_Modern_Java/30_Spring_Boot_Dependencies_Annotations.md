@@ -111,6 +111,27 @@ springdoc-openapi             │ @Tag, @Operation
                               │ @Schema
 ```
 
+> **Flow**: DEPENDENCY WHAT IT UNLOCKS → spring-boot-starter @SpringBootApplication | spring-boot-starter @SpringBootApplication → (core, always included) @Component, @Service, @Reposito | (core, always included) @Component, @Service, @Reposito → @Bean, @Configuration | @Bean, @Configuration → @Autowired, @Value | @Autowired, @Value → @Qualifier, @Primary | @Qualifier, @Primary → @Profile, @Conditional* | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["DEPENDENCY WHAT IT UNLOCKS"]
+    N2["spring-boot-starter @SpringBootApplication"]
+    N3["(core, always included) @Component, @Service, @Reposito"]
+    N4["@Bean, @Configuration"]
+    N5["@Autowired, @Value"]
+    N6["@Qualifier, @Primary"]
+    N7["@Profile, @Conditional*"]
+    N8["@PostConstruct, @PreDestroy"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 2. The Lombok Confusion — Fully Explained
@@ -500,6 +521,27 @@ Q: Why is my @Autowired field null?
 → The object was created with 'new MyClass()' instead of Spring.
   Spring can only inject into beans IT manages. Solution: use
   constructor injection with @RequiredArgsConstructor (Lombok).
+```
+
+> **Flow**: Q: Where does @Data come from? → IDE plugin, and annotation processing enabled. It gener | IDE plugin, and annotation processing enabled. It gener → Q: Why doesn't @Valid work in my Spring Boot 3 project? | Q: Why doesn't @Valid work in my Spring Boot 3 project? → → Since SB 2.3+, validation is NOT included in web star | → Since SB 2.3+, validation is NOT included in web star → Add spring-boot-starter-validation separately. | Add spring-boot-starter-validation separately. → @Service = business logic, @Repository = data access (a | @Service = business logic, @Repository = data access (a → Q: Why is my @Autowired field null? | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Q: Where does @Data come from?"]
+    N2["IDE plugin, and annotation processing enabled. It gener"]
+    N3["Q: Why doesn't @Valid work in my Spring Boot 3 project?"]
+    N4["→ Since SB 2.3+, validation is NOT included in web star"]
+    N5["Add spring-boot-starter-validation separately."]
+    N6["@Service = business logic, @Repository = data access (a"]
+    N7["Q: Why is my @Autowired field null?"]
+    N8["Spring can only inject into beans IT manages. Solution:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

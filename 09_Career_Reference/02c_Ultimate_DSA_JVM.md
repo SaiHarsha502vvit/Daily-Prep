@@ -183,6 +183,15 @@
 
 ```
 
+> **Flow**: CLASS LOADING MECHANISM / THE THREE PHASES OF CLASS LOA → • Execute static initializers and static blocks / • Ass
+
+```mermaid
+flowchart TD
+    N1["CLASS LOADING MECHANISM / THE THREE PHASES OF CLASS LOA"]
+    N2["• Execute static initializers and static blocks / • Ass"]
+    N1 --> N2
+```
+
 ```java
 // How loadClass() works (simplified)
 protected Class<?> loadClass(String name, boolean resolve) {
@@ -386,6 +395,15 @@ public class HotReloadClassLoader extends ClassLoader {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: YOUNG GENERATION (-Xmn) / EDEN Survivor 0 Survivor 1 /  → OLD GENERATION (Tenured) / Long-lived objects / Major G
+
+```mermaid
+flowchart TD
+    N1["YOUNG GENERATION (-Xmn) / EDEN Survivor 0 Survivor 1 / "]
+    N2["OLD GENERATION (Tenured) / Long-lived objects / Major G"]
+    N1 --> N2
+```
+
 ---
 
 ## 📚 Stack Frame Structure
@@ -435,6 +453,15 @@ public class HotReloadClassLoader extends ClassLoader {
 │  Low Address (Stack Pointer)                                                    │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: Slot 0: this (for instance methods) / Slot 1: param1 /  → Used for: arithmetic, method params, return values / Ex
+
+```mermaid
+flowchart TD
+    N1["Slot 0: this (for instance methods) / Slot 1: param1 / "]
+    N2["Used for: arithmetic, method params, return values / Ex"]
+    N1 --> N2
 ```
 
 ```java
@@ -513,6 +540,17 @@ public int calculate(int a, int b) {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: GARBAGE COLLECTION FUNDAMENTALS / REACHABILITY ANALYSIS → A B ← REACHABLE (will NOT be collected) | A B ← REACHABLE (will NOT be collected) → C D E ← REACHABLE / X Y ← UNREACHABLE (will be collecte
+
+```mermaid
+flowchart TD
+    N1["GARBAGE COLLECTION FUNDAMENTALS / REACHABILITY ANALYSIS"]
+    N2["A B ← REACHABLE (will NOT be collected)"]
+    N3["C D E ← REACHABLE / X Y ← UNREACHABLE (will be collecte"]
+    N1 --> N2
+    N2 --> N3
+```
+
 ## ⚖️ Gc Algorithms Comparison
 
 | GC Algorithm                          | Best For                            | Pause Time       | Throughput | Memory |
@@ -577,6 +615,17 @@ public static void memoryInfo() {
 │           • Takes longer but produces fastest code                              │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: JUST-IN-TIME (JIT) COMPILATION / TIERED COMPILATION (De → Level 1-3: C1 Compiler (Client) / • Quick compilation / | Level 1-3: C1 Compiler (Client) / • Quick compilation / → Level 4: C2 Compiler (Server) / • Aggressive optimizati
+
+```mermaid
+flowchart TD
+    N1["JUST-IN-TIME (JIT) COMPILATION / TIERED COMPILATION (De"]
+    N2["Level 1-3: C1 Compiler (Client) / • Quick compilation /"]
+    N3["Level 4: C2 Compiler (Server) / • Aggressive optimizati"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 **JIT OPTIMIZATIONS:**
@@ -907,6 +956,27 @@ User user = service.getUser(123);
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: JVM TUNING QUICK REFERENCE → MEMORY SETTINGS: | MEMORY SETTINGS: → -Xms&lt;size&gt; Initial heap size -Xms2g | -Xms&lt;size&gt; Initial heap size -Xms2g → -Xmx&lt;size&gt; Maximum heap size -Xmx8g | -Xmx&lt;size&gt; Maximum heap size -Xmx8g → -Xmn&lt;size&gt; Young generation size -Xmn2g | -Xmn&lt;size&gt; Young generation size -Xmn2g → -Xss&lt;size&gt; Thread stack size -Xss512k | -Xss&lt;size&gt; Thread stack size -Xss512k → -XX:MetaspaceSize=&lt;size&gt; -XX:MetaspaceSize=256m | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["JVM TUNING QUICK REFERENCE"]
+    N2["MEMORY SETTINGS:"]
+    N3["-Xms&lt;size&gt; Initial heap size -Xms2g"]
+    N4["-Xmx&lt;size&gt; Maximum heap size -Xmx8g"]
+    N5["-Xmn&lt;size&gt; Young generation size -Xmn2g"]
+    N6["-Xss&lt;size&gt; Thread stack size -Xss512k"]
+    N7["-XX:MetaspaceSize=&lt;size&gt; -XX:MetaspaceSize=256m"]
+    N8["-XX:MaxMetaspaceSize=&lt;size&gt; -XX:MaxMetaspaceSize="]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 🔬 JVM Internals Mastery Checklist
@@ -957,6 +1027,27 @@ User user = service.getUser(123);
 ║ □ Can tune JVM for specific workloads                                            ║
 ║                                                                                  ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: JVM INTERNALS MASTERY CHECKLIST → CLASS LOADING: | CLASS LOADING: → □ Know parent delegation model and why it exists | □ Know parent delegation model and why it exists → □ Can implement custom ClassLoader for hot-reload/plugi | □ Can implement custom ClassLoader for hot-reload/plugi → □ Understand Loading → Linking → Initialization phases | □ Understand Loading → Linking → Initialization phases → MEMORY MODEL: | MEMORY MODEL: → □ Know Heap structure: Eden, Survivor, Old Generation | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["JVM INTERNALS MASTERY CHECKLIST"]
+    N2["CLASS LOADING:"]
+    N3["□ Know parent delegation model and why it exists"]
+    N4["□ Can implement custom ClassLoader for hot-reload/plugi"]
+    N5["□ Understand Loading → Linking → Initialization phases"]
+    N6["MEMORY MODEL:"]
+    N7["□ Know Heap structure: Eden, Survivor, Old Generation"]
+    N8["□ Understand Metaspace (replaced PermGen in Java 8)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

@@ -18,6 +18,15 @@ IF the problem says:
 THEN → Bit Manipulation
 ```
 
+> **Flow**: THEN → Bit Manipulation
+
+```mermaid
+flowchart LR
+    N1["THEN"]
+    N2["Bit Manipulation"]
+    N1 --> N2
+```
+
 ---
 
 ## 📐 ESSENTIAL BIT OPERATIONS
@@ -34,6 +43,27 @@ Lowest set bit         n & (-n)                1100 & 0100 = 0100 (rightmost 1)
 Clear lowest set bit   n & (n-1)               1100 & 1011 = 1000
 Is power of 2?         n > 0 && (n & (n-1)) == 0
 Count set bits         Integer.bitCount(n)     bitCount(1100) = 2
+```
+
+> **Flow**: Operation Code Example (n=12 = 1100) → Check if bit i set (n &gt;&gt; i) & 1 bit 2: (1100&gt;& | Check if bit i set (n &gt;&gt; i) & 1 bit 2: (1100&gt;& → Set bit i n | (1 &lt;&lt; i) set bit 0: 1100|0001 = 110 | Set bit i n | (1 &lt;&lt; i) set bit 0: 1100|0001 = 110 → Clear bit i n & ~(1 &lt;&lt; i) clear bit 2: 1100&1011  | Clear bit i n & ~(1 &lt;&lt; i) clear bit 2: 1100&1011  → Toggle bit i n ^ (1 &lt;&lt; i) toggle bit 3: 1100^1000 | Toggle bit i n ^ (1 &lt;&lt; i) toggle bit 3: 1100^1000 → Lowest set bit n & (-n) 1100 & 0100 = 0100 (rightmost 1 | Lowest set bit n & (-n) 1100 & 0100 = 0100 (rightmost 1 → Clear lowest set bit n & (n-1) 1100 & 1011 = 1000 | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Operation Code Example (n=12 = 1100)"]
+    N2["Check if bit i set (n &gt;&gt; i) & 1 bit 2: (1100&gt;&"]
+    N3["Set bit i n | (1 &lt;&lt; i) set bit 0: 1100|0001 = 110"]
+    N4["Clear bit i n & ~(1 &lt;&lt; i) clear bit 2: 1100&1011 "]
+    N5["Toggle bit i n ^ (1 &lt;&lt; i) toggle bit 3: 1100^1000"]
+    N6["Lowest set bit n & (-n) 1100 & 0100 = 0100 (rightmost 1"]
+    N7["Clear lowest set bit n & (n-1) 1100 & 1011 = 1000"]
+    N8["Is power of 2? n &gt; 0 && (n & (n-1)) == 0"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### Key Patterns
@@ -81,6 +111,27 @@ Time: O(n) | Space: O(1)
 Why not HashMap? HashMap works but uses O(n) space. XOR uses O(1).
 ```
 
+> **Flow**: Problem: Every element appears twice EXCEPT one. Find i → nums = [4, 1, 2, 1, 2] | nums = [4, 1, 2, 1, 2] → WHY it works: | WHY it works: → Step-by-step: | Step-by-step: → result = 0 | result = 0 → 0 ^ 4 = 4 (binary: 000 ^ 100 = 100) | 0 ^ 4 = 4 (binary: 000 ^ 100 = 100) → 4 ^ 1 = 5 (binary: 100 ^ 001 = 101) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Problem: Every element appears twice EXCEPT one. Find i"]
+    N2["nums = [4, 1, 2, 1, 2]"]
+    N3["WHY it works:"]
+    N4["Step-by-step:"]
+    N5["result = 0"]
+    N6["0 ^ 4 = 4 (binary: 000 ^ 100 = 100)"]
+    N7["4 ^ 1 = 5 (binary: 100 ^ 001 = 101)"]
+    N8["5 ^ 2 = 7 (binary: 101 ^ 010 = 111)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 🔬 FULL WALKTHROUGH 2: Subset Generation Using Bitmask
@@ -117,6 +168,36 @@ Time: O(n × 2ⁿ) | Space: O(n × 2ⁿ) for output
 WARNING: Only works for n ≤ 20-25. Beyond that, 2ⁿ explodes.
 ```
 
+> **Flow**: mask=000 (0): no bits set → [] | mask=001 (1): bit 0 set → [a] | mask=010 (2): bit 1 set → [b] | mask=011 (3): bits 0,1 set → [a, b] | mask=100 (4): bit 2 set → [c] | mask=101 (5): bits 0,2 set → [a, c] | ...+2 more
+
+```mermaid
+flowchart TD
+    N1["mask=000 (0): no bits set"]
+    N2["[]"]
+    N3["mask=001 (1): bit 0 set"]
+    N4["[a]"]
+    N5["mask=010 (2): bit 1 set"]
+    N6["[b]"]
+    N7["mask=011 (3): bits 0,1 set"]
+    N8["[a, b]"]
+    N9["mask=100 (4): bit 2 set"]
+    N10["[c]"]
+    N11["mask=101 (5): bits 0,2 set"]
+    N12["[a, c]"]
+    N13["mask=110 (6): bits 1,2 set"]
+    N14["[b, c]"]
+    N15["mask=111 (7): all bits set"]
+    N16["[a, b, c]"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+    N7 --> N8
+    N9 --> N10
+    N11 --> N12
+    N13 --> N14
+    N15 --> N16
+```
+
 ---
 
 ## 🛡️ EDGE CASES & COMMON MISTAKES
@@ -133,6 +214,18 @@ COMMON MISTAKES:
    XOR just values doesn't work — you need the "expected" set too
 5. Signed integers: -1 in binary is all 1s (two's complement)
    Be careful with right shift on negative numbers
+```
+
+> **Flow**: WRONG: if (mask & (1&lt;&lt;i) != 0) → this checks mask & (result of !=) | RIGHT: if ((mask & (1&lt;&lt;i)) != 0) → parentheses are ESSENTIAL!
+
+```mermaid
+flowchart LR
+    N1["WRONG: if (mask & (1&lt;&lt;i) != 0)"]
+    N2["this checks mask & (result of !=)"]
+    N3["RIGHT: if ((mask & (1&lt;&lt;i)) != 0)"]
+    N4["parentheses are ESSENTIAL!"]
+    N1 --> N2
+    N3 --> N4
 ```
 
 ---

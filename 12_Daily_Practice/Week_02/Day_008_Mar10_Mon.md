@@ -70,6 +70,17 @@ KEY DIFFERENCE FROM ARRAY:
   List:   10→20→30      ← scattered memory, sequential access O(n)
 ```
 
+> **Flow**: data / 10 → data / 20 | data / 20 → data null / 30
+
+```mermaid
+flowchart LR
+    N1["data / 10"]
+    N2["data / 20"]
+    N3["data null / 30"]
+    N1 --> N2
+    N2 --> N3
+```
+
 #### HOW does it work internally?
 
 ```
@@ -82,6 +93,27 @@ Insert at tail          O(1)*     *If you maintain tail pointer
 Insert at position k    O(k)      Traverse to k, then O(1) link
 Delete at head          O(1)      Just move head forward
 Delete by value         O(n)      Must find it first
+```
+
+> **Flow**: OPERATION TIME WHY? → Access by index O(n) Must traverse from head | Access by index O(n) Must traverse from head → Search O(n) Must traverse sequentially | Search O(n) Must traverse sequentially → Insert at head O(1) Just update head pointer | Insert at head O(1) Just update head pointer → Insert at tail O(1)* *If you maintain tail pointer | Insert at tail O(1)* *If you maintain tail pointer → Insert at position k O(k) Traverse to k, then O(1) link | Insert at position k O(k) Traverse to k, then O(1) link → Delete at head O(1) Just move head forward | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["OPERATION TIME WHY?"]
+    N2["Access by index O(n) Must traverse from head"]
+    N3["Search O(n) Must traverse sequentially"]
+    N4["Insert at head O(1) Just update head pointer"]
+    N5["Insert at tail O(1)* *If you maintain tail pointer"]
+    N6["Insert at position k O(k) Traverse to k, then O(1) link"]
+    N7["Delete at head O(1) Just move head forward"]
+    N8["Delete by value O(n) Must find it first"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 #### IMPLEMENT: Build a LinkedList from scratch
@@ -199,6 +231,27 @@ public class SinglyLinkedList {
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: WHY MERGE SORT MATTERS: → • GUARANTEED O(n log n) — no worst case degradation | • GUARANTEED O(n log n) — no worst case degradation → • STABLE sort (equal elements stay in original order) | • STABLE sort (equal elements stay in original order) → • Tim Sort (Java's Arrays.sort for objects) is based on | • Tim Sort (Java's Arrays.sort for objects) is based on → • Teaches the Divide & Conquer paradigm perfectly | • Teaches the Divide & Conquer paradigm perfectly → vs Quick Sort: | vs Quick Sort: → • Quick Sort: avg O(n log n), worst O(n²), in-place | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["WHY MERGE SORT MATTERS:"]
+    N2["• GUARANTEED O(n log n) — no worst case degradation"]
+    N3["• STABLE sort (equal elements stay in original order)"]
+    N4["• Tim Sort (Java's Arrays.sort for objects) is based on"]
+    N5["• Teaches the Divide & Conquer paradigm perfectly"]
+    N6["vs Quick Sort:"]
+    N7["• Quick Sort: avg O(n log n), worst O(n²), in-place"]
+    N8["• Merge Sort: always O(n log n), uses O(n) extra space"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 #### HOW it works — Visual
 
 ```
@@ -226,6 +279,32 @@ MERGE STEP DETAIL (merging [27,38] and [3,43]):
   Compare 27 vs 43 → take 27  → result: [3, 27]
   Compare 38 vs 43 → take 38  → result: [3, 27, 38]
   Right remaining   → take 43 → result: [3, 27, 38, 43] ✓
+```
+
+> **Flow**: Compare 27 vs 3 → take 3 | take 3 → result: [3] | Compare 27 vs 43 → take 27 | take 27 → result: [3, 27] | Compare 38 vs 43 → take 38 | take 38 → result: [3, 27, 38] | ...+2 more
+
+```mermaid
+flowchart TD
+    N1["Compare 27 vs 3"]
+    N2["take 3"]
+    N3["result: [3]"]
+    N4["Compare 27 vs 43"]
+    N5["take 27"]
+    N6["result: [3, 27]"]
+    N7["Compare 38 vs 43"]
+    N8["take 38"]
+    N9["result: [3, 27, 38]"]
+    N10["Right remaining"]
+    N11["take 43"]
+    N12["result: [3, 27, 38, 43] ✓"]
+    N1 --> N2
+    N2 --> N3
+    N4 --> N5
+    N5 --> N6
+    N7 --> N8
+    N8 --> N9
+    N10 --> N11
+    N11 --> N12
 ```
 
 #### IMPLEMENT: Merge Sort
@@ -308,6 +387,25 @@ VISUAL:
   Remaining: l2's 4            → result: 1→1→2→3→4→4 ✓
 ```
 
+> **Flow**: Compare 1 vs 1: take l1's 1 → result: 1 | Compare 2 vs 1: take l2's 1 → result: 1 | Compare 2 vs 3: take l1's 2 → result: 1 | Compare 4 vs 3: take l2's 3 → result: 1 | Compare 4 vs 4: take l1's 4 → result: 1 | Remaining: l2's 4 → result: 1
+
+```mermaid
+flowchart TD
+    N1["Compare 1 vs 1: take l1's 1"]
+    N2["result: 1"]
+    N3["Compare 2 vs 1: take l2's 1"]
+    N4["Compare 2 vs 3: take l1's 2"]
+    N5["Compare 4 vs 3: take l2's 3"]
+    N6["Compare 4 vs 4: take l1's 4"]
+    N7["Remaining: l2's 4"]
+    N1 --> N2
+    N3 --> N2
+    N4 --> N2
+    N5 --> N2
+    N6 --> N2
+    N7 --> N2
+```
+
 ```java
 public ListNode mergeTwoLists(ListNode list1, ListNode list2) {
     ListNode dummy = new ListNode(-1);  // Sentinel node
@@ -353,6 +451,22 @@ Order(3,"Case") → Order(5,"Cable") → Order(7,"Charger")
 
 Notice: Order(3,"Mouse") comes before Order(3,"Case") — STABILITY matters!
 If sort is unstable, Warehouse A's order might get pushed behind B's.
+```
+
+> **Flow**: Order(1,'Laptop') → Order(2,'Phone') | Order(2,'Phone') → Order(3,'Mouse') | Order(3,'Case') → Order(5,'Cable') | Order(5,'Cable') → Order(7,'Charger')
+
+```mermaid
+flowchart LR
+    N1["Order(1,'Laptop')"]
+    N2["Order(2,'Phone')"]
+    N3["Order(3,'Mouse')"]
+    N4["Order(3,'Case')"]
+    N5["Order(5,'Cable')"]
+    N6["Order(7,'Charger')"]
+    N1 --> N2
+    N2 --> N3
+    N4 --> N5
+    N5 --> N6
 ```
 
 **Think about:** Why does Java use Merge Sort (TimSort) for object sorting?
@@ -458,6 +572,18 @@ Step 4: prev=4→3→2→1, curr=5       (4 now points to 3)
 Step 5: prev=5→4→3→2→1, curr=null  (5 now points to 4) DONE!
 ```
 
+> **Flow**: Step 2: prev=2 → 1, curr=3 | 1, curr=4 → 5 (3 now points to 2)
+
+```mermaid
+flowchart LR
+    N1["Step 2: prev=2"]
+    N2["1, curr=3"]
+    N3["1, curr=4"]
+    N4["5 (3 now points to 2)"]
+    N1 --> N2
+    N3 --> N4
+```
+
 ```java
 // ITERATIVE: O(n) time, O(1) space
 public ListNode reverseList(ListNode head) {
@@ -491,6 +617,19 @@ TRICK: Two-pointer (slow + fast)
 Step 0: slow=1, fast=1
 Step 1: slow=2, fast=3
 Step 2: slow=3, fast=5  → fast.next=null → STOP → slow=3 ✓
+```
+
+> **Flow**: Step 2: slow=3, fast=5 → fast.next=null | fast.next=null → STOP | STOP → slow=3 ✓
+
+```mermaid
+flowchart LR
+    N1["Step 2: slow=3, fast=5"]
+    N2["fast.next=null"]
+    N3["STOP"]
+    N4["slow=3 ✓"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
 ```
 
 ```java

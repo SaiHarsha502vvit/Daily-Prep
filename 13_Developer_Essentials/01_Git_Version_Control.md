@@ -313,6 +313,25 @@ AFTER git rebase main (from feature branch):
 Result: Linear, clean history
 ```
 
+> **Flow**: BEFORE rebase: → main: A B C D | main: A B C D → feature: E F G | feature: E F G → AFTER git rebase main (from feature branch): | AFTER git rebase main (from feature branch): → feature: E' F' G' | feature: E' F' G' → (E', F', G' are COPIES with new parent = D) | (E', F', G' are COPIES with new parent = D) → Result: Linear, clean history
+
+```mermaid
+flowchart TD
+    N1["BEFORE rebase:"]
+    N2["main: A B C D"]
+    N3["feature: E F G"]
+    N4["AFTER git rebase main (from feature branch):"]
+    N5["feature: E' F' G'"]
+    N6["(E', F', G' are COPIES with new parent = D)"]
+    N7["Result: Linear, clean history"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+```
+
 ```bash
 git checkout feature/login
 git rebase main                 # Replay your commits on top of main
@@ -491,6 +510,15 @@ node_modules/
 2. Edit the SAME line in both
 3. Merge one into main
 4. Try to merge the second → resolve conflict
+```
+
+> **Flow**: 4. Try to merge the second → resolve conflict
+
+```mermaid
+flowchart LR
+    N1["4. Try to merge the second"]
+    N2["resolve conflict"]
+    N1 --> N2
 ```
 
 ## Exercise 4: Rebase

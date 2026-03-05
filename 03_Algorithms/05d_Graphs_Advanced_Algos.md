@@ -573,6 +573,21 @@ public int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: LCA ALGORITHMS - COMPLETE COMPARISON → Tree: 3 | Tree: 3 → LCA(5, 1) = 3 | LCA(5, 1) = 3 → LCA(5, 4) = 5 | LCA(5, 4) = 5 → LCA(6, 4) = 5
+
+```mermaid
+flowchart TD
+    N1["LCA ALGORITHMS - COMPLETE COMPARISON"]
+    N2["Tree: 3"]
+    N3["LCA(5, 1) = 3"]
+    N4["LCA(5, 4) = 5"]
+    N5["LCA(6, 4) = 5"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+```
+
 ```java
 // APPROACH 1: RECURSIVE (O(n) time, O(h) space)
 // Works for general binary tree
@@ -1069,11 +1084,34 @@ reachable from EVERY other vertex in the set
 TIME: O(V + E)   SPACE: O(V)
 ```
 
+> **Flow**: SCC: Maximal set of vertices where EVERY vertex is / re → 0 3 WHY IT MATTERS: | 0 3 WHY IT MATTERS: → 4 ← - Dead code elimination / - Social network clusters
+
+```mermaid
+flowchart TD
+    N1["SCC: Maximal set of vertices where EVERY vertex is / re"]
+    N2["0 3 WHY IT MATTERS:"]
+    N3["4 ← - Dead code elimination / - Social network clusters"]
+    N1 --> N2
+    N2 --> N3
+```
+
 #### Kosaraju's Algorithm (Two-Pass DFS)
 ```
 IDEA: If we reverse ALL edges, the SCCs remain the same.
 1. DFS on original graph → record finish order
 2. DFS on REVERSED graph in reverse finish order → each DFS tree = one SCC
+```
+
+> **Flow**: 1. DFS on original graph → record finish order | 2. DFS on REVERSED graph in reverse finish order → each DFS tree = one SCC
+
+```mermaid
+flowchart LR
+    N1["1. DFS on original graph"]
+    N2["record finish order"]
+    N3["2. DFS on REVERSED graph in reverse finish order"]
+    N4["each DFS tree = one SCC"]
+    N1 --> N2
+    N3 --> N4
 ```
 
 ```java
@@ -1181,6 +1219,19 @@ public class TarjanSCC {
 ╚══════════════╩══════════════════════════════╩═══════════════════════════════╝
 ```
 
+> **Flow**: Kosaraju Tarjan → Passes 2 DFS passes 1 DFS pass | Passes 2 DFS passes 1 DFS pass → Simpler code ✓ (two simple DFS) ✗ (low-link logic trick | Simpler code ✓ (two simple DFS) ✗ (low-link logic trick → 2-SAT Commonly used Also works
+
+```mermaid
+flowchart TD
+    N1["Kosaraju Tarjan"]
+    N2["Passes 2 DFS passes 1 DFS pass"]
+    N3["Simpler code ✓ (two simple DFS) ✗ (low-link logic trick"]
+    N4["2-SAT Commonly used Also works"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 #### 2-SAT via SCC
 ```
 CONCEPT: Determine if boolean formula (x₁ OR x₂) AND (¬x₃ OR x₄) ...
@@ -1192,6 +1243,23 @@ KEY INSIGHT:
 Build implication graph → Find SCCs
 If xᵢ and ¬xᵢ are in SAME SCC → UNSATISFIABLE
 Otherwise: xᵢ = true if SCC(xᵢ) has higher topological order than SCC(¬xᵢ)
+```
+
+> **Flow**: (a OR b) ≡ (¬a → b) AND (¬b | b) AND (¬b → a) | Build implication graph → Find SCCs | If xᵢ and ¬xᵢ are in SAME SCC → UNSATISFIABLE
+
+```mermaid
+flowchart LR
+    N1["(a OR b) ≡ (¬a"]
+    N2["b) AND (¬b"]
+    N3["a)"]
+    N4["Build implication graph"]
+    N5["Find SCCs"]
+    N6["If xᵢ and ¬xᵢ are in SAME SCC"]
+    N7["UNSATISFIABLE"]
+    N1 --> N2
+    N2 --> N3
+    N4 --> N5
+    N6 --> N7
 ```
 
 ### 🔍 6. A* Search Algorithm
@@ -1219,6 +1287,27 @@ Otherwise: xᵢ = true if SCC(xᵢ) has higher topological order than SCC(¬xᵢ
 ╚════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: A*: Best-first search with heuristic guidance → actual cost heuristic (estimated cost to goal) | actual cost heuristic (estimated cost to goal) → from start | from start → GUARANTEE: If h(n) is admissible (never overestimates) | GUARANTEE: If h(n) is admissible (never overestimates) → → A* finds the OPTIMAL path | → A* finds the OPTIMAL path → TIME: O(E) in best case, O(b^d) worst case | TIME: O(E) in best case, O(b^d) worst case → SPACE: O(V) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["A*: Best-first search with heuristic guidance"]
+    N2["actual cost heuristic (estimated cost to goal)"]
+    N3["from start"]
+    N4["GUARANTEE: If h(n) is admissible (never overestimates)"]
+    N5["→ A* finds the OPTIMAL path"]
+    N6["TIME: O(E) in best case, O(b^d) worst case"]
+    N7["SPACE: O(V)"]
+    N8["USE CASES:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 #### A* vs Dijkstra — The Key Difference
 ```
 Dijkstra explores in ALL directions (expanding circle):
@@ -1236,6 +1325,18 @@ A* uses heuristic to focus toward goal (expanding cone):
      . . . G .
 
 Same result, fewer expansions → FASTER in practice
+```
+
+> **Flow**: . . * → . A* focuses toward G | Same result, fewer expansions → FASTER in practice
+
+```mermaid
+flowchart LR
+    N1[". . *"]
+    N2[". A* focuses toward G"]
+    N3["Same result, fewer expansions"]
+    N4["FASTER in practice"]
+    N1 --> N2
+    N3 --> N4
 ```
 
 ```java
@@ -1302,6 +1403,23 @@ public class AStar {
 ╚════════════════════╩══════════════════════════════════════════╝
 ```
 
+> **Flow**: Heuristic When to Use → Manhattan distance 4-directional grid (up/down/left/rig | Manhattan distance 4-directional grid (up/down/left/rig → Euclidean distance 8-directional or free movement | Euclidean distance 8-directional or free movement → Chebyshev distance 8-directional grid (king moves) | Chebyshev distance 8-directional grid (king moves) → max(|x₁-x₂|,|y₁-y₂|) | max(|x₁-x₂|,|y₁-y₂|) → h(n) = 0 Degenerates to Dijkstra (always safe)
+
+```mermaid
+flowchart TD
+    N1["Heuristic When to Use"]
+    N2["Manhattan distance 4-directional grid (up/down/left/rig"]
+    N3["Euclidean distance 8-directional or free movement"]
+    N4["Chebyshev distance 8-directional grid (king moves)"]
+    N5["max(|x₁-x₂|,|y₁-y₂|)"]
+    N6["h(n) = 0 Degenerates to Dijkstra (always safe)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+```
+
 ### Curated Practice — Advanced Graph Algorithms
 ```
 ╔════╦══════════════════════════════════════════════════════════════╦═══════════════════════════════════════════════╗
@@ -1337,6 +1455,27 @@ public class AStar {
 ║ 10 ║ Find the City (LC 1334) — Floyd-Warshall                   ║ Medium                                          ║
 ║    ║ https://leetcode.com/problems/find-the-city-with-the-smallest-number-of-neighbors-at-a-threshold-distance/ ║ ║
 ╚════╩══════════════════════════════════════════════════════════════╩═══════════════════════════════════════════════╝
+```
+
+> **Flow**: # Problem Diff. → 1 Critical Connections (LC 1192) Hard | 1 Critical Connections (LC 1192) Hard → 2 Shortest Path in Binary Matrix (LC 1091) Medium | 2 Shortest Path in Binary Matrix (LC 1091) Medium → 3 Network Delay Time (LC 743) Medium | 3 Network Delay Time (LC 743) Medium → https://leetcode.com/problems/network-delay-time/ | https://leetcode.com/problems/network-delay-time/ → 4 Cheapest Flights Within K Stops (LC 787) Medium | 4 Cheapest Flights Within K Stops (LC 787) Medium → 5 Course Schedule II (LC 210) — Topo Sort Medium | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["# Problem Diff."]
+    N2["1 Critical Connections (LC 1192) Hard"]
+    N3["2 Shortest Path in Binary Matrix (LC 1091) Medium"]
+    N4["3 Network Delay Time (LC 743) Medium"]
+    N5["https://leetcode.com/problems/network-delay-time/"]
+    N6["4 Cheapest Flights Within K Stops (LC 787) Medium"]
+    N7["5 Course Schedule II (LC 210) — Topo Sort Medium"]
+    N8["https://leetcode.com/problems/course-schedule-ii/"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 

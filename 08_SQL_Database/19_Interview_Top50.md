@@ -273,6 +273,23 @@ FROM employees;
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: ROW_NUMBER vs RANK vs DENSE_RANK → Salary: 100, 100, 90, 80 | Salary: 100, 100, 90, 80 → ROW_NUMBER: 1, 2, 3, 4 (unique, arbitrary for ties) | ROW_NUMBER: 1, 2, 3, 4 (unique, arbitrary for ties) → RANK: 1, 1, 3, 4 (ties get same rank, gaps after) | RANK: 1, 1, 3, 4 (ties get same rank, gaps after) → DENSE_RANK: 1, 1, 2, 3 (ties get same rank, NO gaps) | DENSE_RANK: 1, 1, 2, 3 (ties get same rank, NO gaps) → Use ROW_NUMBER for pagination, DENSE_RANK for 'Nth high
+
+```mermaid
+flowchart TD
+    N1["ROW_NUMBER vs RANK vs DENSE_RANK"]
+    N2["Salary: 100, 100, 90, 80"]
+    N3["ROW_NUMBER: 1, 2, 3, 4 (unique, arbitrary for ties)"]
+    N4["RANK: 1, 1, 3, 4 (ties get same rank, gaps after)"]
+    N5["DENSE_RANK: 1, 1, 2, 3 (ties get same rank, NO gaps)"]
+    N6["Use ROW_NUMBER for pagination, DENSE_RANK for 'Nth high"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+```
+
 ---
 
 ### Q14. Running Total of Orders
@@ -654,6 +671,21 @@ COMMIT;
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: Isolation Level Dirty Read Non-Repeatable Phantom → READ UNCOMMITTED Yes Yes Yes | READ UNCOMMITTED Yes Yes Yes → READ COMMITTED No Yes Yes | READ COMMITTED No Yes Yes → REPEATABLE READ No No Yes | REPEATABLE READ No No Yes → SERIALIZABLE No No No
+
+```mermaid
+flowchart TD
+    N1["Isolation Level Dirty Read Non-Repeatable Phantom"]
+    N2["READ UNCOMMITTED Yes Yes Yes"]
+    N3["READ COMMITTED No Yes Yes"]
+    N4["REPEATABLE READ No No Yes"]
+    N5["SERIALIZABLE No No No"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+```
+
 ---
 
 ### Q36. Deadlock Example
@@ -718,6 +750,27 @@ EXPLAIN SELECT * FROM orders WHERE customer_id = 42 AND status = 'SHIPPED';
 ║  index:   Full index scan (better than ALL but still slow)           ║
 ║  ALL:     Full table scan (RED FLAG 🚩)                               ║
 ╚══════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: EXPLAIN type (best → worst): → const → eq_ref → ref → range → index → ALL | const → eq_ref → ref → range → index → ALL → const: WHERE primary_key = 42 | const: WHERE primary_key = 42 → eq_ref: JOIN on primary key (unique match) | eq_ref: JOIN on primary key (unique match) → ref: JOIN on non-unique index | ref: JOIN on non-unique index → range: WHERE price BETWEEN 10 AND 50 | range: WHERE price BETWEEN 10 AND 50 → index: Full index scan (better than ALL but still slow) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["EXPLAIN type (best → worst):"]
+    N2["const → eq_ref → ref → range → index → ALL"]
+    N3["const: WHERE primary_key = 42"]
+    N4["eq_ref: JOIN on primary key (unique match)"]
+    N5["ref: JOIN on non-unique index"]
+    N6["range: WHERE price BETWEEN 10 AND 50"]
+    N7["index: Full index scan (better than ALL but still slow)"]
+    N8["ALL: Full table scan (RED FLAG 🚩)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---
@@ -844,6 +897,27 @@ CREATE TABLE orders (
 ║  9. Is the query running during peak load? Check locks.              ║
 ║  10. Can you cache the result instead of hitting DB every time?      ║
 ╚══════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: Query is slow? Follow this checklist: → 1. Run EXPLAIN — is it ALL (full table scan)? | 1. Run EXPLAIN — is it ALL (full table scan)? → 2. Is there an index on the WHERE/JOIN columns? | 2. Is there an index on the WHERE/JOIN columns? → 3. Is a function breaking index usage? | 3. Is a function breaking index usage? → 4. Is the query returning too many rows? (add LIMIT) | 4. Is the query returning too many rows? (add LIMIT) → 5. Is SELECT * fetching unnecessary columns? | 5. Is SELECT * fetching unnecessary columns? → 6. Is there an N+1 query problem in the app code? | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Query is slow? Follow this checklist:"]
+    N2["1. Run EXPLAIN — is it ALL (full table scan)?"]
+    N3["2. Is there an index on the WHERE/JOIN columns?"]
+    N4["3. Is a function breaking index usage?"]
+    N5["4. Is the query returning too many rows? (add LIMIT)"]
+    N6["5. Is SELECT * fetching unnecessary columns?"]
+    N7["6. Is there an N+1 query problem in the app code?"]
+    N8["7. Is the table very large? Consider partitioning."]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---
@@ -997,6 +1071,27 @@ JOIN logs l3 ON l3.id = l1.id + 2 AND l3.value = l1.value;
 ║  % of total                     │  value / SUM() OVER ()               ║
 ║  Upsert                         │  ON DUPLICATE KEY / ON CONFLICT      ║
 ╚════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: PATTERN SQL TOOL → Nth highest/lowest DENSE_RANK() or LIMIT OFFSET | Nth highest/lowest DENSE_RANK() or LIMIT OFFSET → Top N per group RANK() PARTITION BY | Top N per group RANK() PARTITION BY → Running total SUM() OVER (ORDER BY ...) | Running total SUM() OVER (ORDER BY ...) → Moving average AVG() OVER (ROWS BETWEEN) | Moving average AVG() OVER (ROWS BETWEEN) → Previous/Next row LAG() / LEAD() | Previous/Next row LAG() / LEAD() → Compare with previous period LAG() with date grouping | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["PATTERN SQL TOOL"]
+    N2["Nth highest/lowest DENSE_RANK() or LIMIT OFFSET"]
+    N3["Top N per group RANK() PARTITION BY"]
+    N4["Running total SUM() OVER (ORDER BY ...)"]
+    N5["Moving average AVG() OVER (ROWS BETWEEN)"]
+    N6["Previous/Next row LAG() / LEAD()"]
+    N7["Compare with previous period LAG() with date grouping"]
+    N8["Find duplicates GROUP BY + HAVING COUNT &gt; 1"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

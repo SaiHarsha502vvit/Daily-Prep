@@ -25,6 +25,26 @@ Technical Debt:
   → Developers quit because working on it is misery
 ```
 
+> **Flow**: Bad code → slow reading | slow reading → slow changes | slow changes → bugs | bugs → more bad code | more bad code → DEATH SPIRAL | 'We'll clean it up later' → Later NEVER comes
+
+```mermaid
+flowchart TD
+    N1["Bad code"]
+    N2["slow reading"]
+    N3["slow changes"]
+    N4["bugs"]
+    N5["more bad code"]
+    N6["DEATH SPIRAL"]
+    N7["'We'll clean it up later'"]
+    N8["Later NEVER comes"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N7 --> N8
+```
+
 ## WHO
 
 ```
@@ -144,6 +164,21 @@ Rule 5: No SIDE EFFECTS
   
 Rule 6: Command/Query SEPARATION
   Either DO something OR RETURN something, not both
+```
+
+> **Flow**: If you can extract a meaningful sub-function → it does too much | If it's longer → extract sub-methods | More → create a parameter object
+
+```mermaid
+flowchart LR
+    N1["If you can extract a meaningful sub-function"]
+    N2["it does too much"]
+    N3["If it's longer"]
+    N4["extract sub-methods"]
+    N5["More"]
+    N6["create a parameter object"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
 ```
 
 ### Parameter Objects
@@ -273,6 +308,39 @@ Nested Conditionals (>2)    →  Guard clauses / early return
 Switch on type              →  Polymorphism
 
 Dead Code (unused)          →  DELETE IT (Git remembers)
+```
+
+> **Flow**: Long Method (&gt;20 lines) → Extract Method | Long Parameter List (&gt;3) → Parameter Object | Duplicate Code → Extract to shared method | God Class (too many fields) → Split into focused classes | Feature Envy (uses other → Move method to the right class | Magic Numbers → Named constants | ...+3 more
+
+```mermaid
+flowchart TD
+    N1["Long Method (&gt;20 lines)"]
+    N2["Extract Method"]
+    N3["Long Parameter List (&gt;3)"]
+    N4["Parameter Object"]
+    N5["Duplicate Code"]
+    N6["Extract to shared method"]
+    N7["God Class (too many fields)"]
+    N8["Split into focused classes"]
+    N9["Feature Envy (uses other"]
+    N10["Move method to the right class"]
+    N11["Magic Numbers"]
+    N12["Named constants"]
+    N13["Nested Conditionals (&gt;2)"]
+    N14["Guard clauses / early return"]
+    N15["Switch on type"]
+    N16["Polymorphism"]
+    N17["Dead Code (unused)"]
+    N18["DELETE IT (Git remembers)"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+    N7 --> N8
+    N9 --> N10
+    N11 --> N12
+    N13 --> N14
+    N15 --> N16
+    N17 --> N18
 ```
 
 ### Guard Clauses (Flatten Nesting)

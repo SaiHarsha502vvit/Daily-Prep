@@ -751,6 +751,27 @@ TABULATION:
 - When you want to optimize space (sliding window)
 ```
 
+> **Flow**: MEMOIZATION (Top-Down) → Approach: Recursive with caching | Approach: Recursive with caching → Direction: Start from main problem, recurse to subprobl | Direction: Start from main problem, recurse to subprobl → When used: Only computes needed subproblems | When used: Only computes needed subproblems → Space: Recursion stack + memo table | Space: Recursion stack + memo table → Pros: Natural, easy to write, lazy evaluation | Pros: Natural, easy to write, lazy evaluation → Cons: Recursion overhead, stack overflow risk | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["MEMOIZATION (Top-Down)"]
+    N2["Approach: Recursive with caching"]
+    N3["Direction: Start from main problem, recurse to subprobl"]
+    N4["When used: Only computes needed subproblems"]
+    N5["Space: Recursion stack + memo table"]
+    N6["Pros: Natural, easy to write, lazy evaluation"]
+    N7["Cons: Recursion overhead, stack overflow risk"]
+    N8["TABULATION (Bottom-Up)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 # ⚡ Part 8: Space Optimization

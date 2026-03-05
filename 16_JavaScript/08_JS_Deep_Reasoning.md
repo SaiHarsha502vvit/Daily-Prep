@@ -87,6 +87,27 @@ console.log('4');
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: THE EVENT LOOP — Like a Restaurant Kitchen → 🧑‍🍳 Chef (Call Stack) = Synchronous code | 🧑‍🍳 Chef (Call Stack) = Synchronous code → RULE: Chef finishes CURRENT dish → checks ALL VIP order | RULE: Chef finishes CURRENT dish → checks ALL VIP order → → then takes ONE regular order → repeat | → then takes ONE regular order → repeat → Step 1: console.log('1') → Stack: execute → prints '1' | Step 1: console.log('1') → Stack: execute → prints '1' → Step 2: setTimeout(fn, 0) → Web API → Macrotask Queue | Step 2: setTimeout(fn, 0) → Web API → Macrotask Queue → Step 3: Promise.then(fn) → Microtask Queue | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE EVENT LOOP — Like a Restaurant Kitchen"]
+    N2["🧑‍🍳 Chef (Call Stack) = Synchronous code"]
+    N3["RULE: Chef finishes CURRENT dish → checks ALL VIP order"]
+    N4["→ then takes ONE regular order → repeat"]
+    N5["Step 1: console.log('1') → Stack: execute → prints '1'"]
+    N6["Step 2: setTimeout(fn, 0) → Web API → Macrotask Queue"]
+    N7["Step 3: Promise.then(fn) → Microtask Queue"]
+    N8["Step 4: console.log('4') → Stack: execute → prints '4'"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 **Why `setTimeout(fn, 0)` doesn't mean "run immediately":**
 - `0ms` means "run after the current execution context AND all microtasks are done"
 - Even with 0ms delay, it goes to the macrotask queue
@@ -159,6 +180,21 @@ for (var i = 0; i < 5; i++) {
 ║                                                                  ║
 ║  1 second later: all 5 callbacks read whiteboard → all see 5     ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: WHY 5,5,5,5,5 — The Shared Whiteboard Analogy → var i = shared whiteboard in the function | var i = shared whiteboard in the function → NOT a snapshot of what was written when it was created | NOT a snapshot of what was written when it was created → Loop ends: whiteboard now says 5 | Loop ends: whiteboard now says 5 → 1 second later: all 5 callbacks read whiteboard → all s
+
+```mermaid
+flowchart TD
+    N1["WHY 5,5,5,5,5 — The Shared Whiteboard Analogy"]
+    N2["var i = shared whiteboard in the function"]
+    N3["NOT a snapshot of what was written when it was created"]
+    N4["Loop ends: whiteboard now says 5"]
+    N5["1 second later: all 5 callbacks read whiteboard → all s"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
 ```
 
 **Why `var` causes this:**
@@ -258,6 +294,27 @@ fn();               // ?
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: `this` BINDING RULES — Like 'Whose Name Tag Am I Wearin → Priority (highest → lowest): | Priority (highest → lowest): → 1. new Binding → new Person() → this = new object | 1. new Binding → new Person() → this = new object → 'Creating a new person — they get their own name tag' | 'Creating a new person — they get their own name tag' → 2. Explicit Binding → fn.call(obj) → this = obj | 2. Explicit Binding → fn.call(obj) → this = obj → 'I'm TELLING you whose name tag to wear' | 'I'm TELLING you whose name tag to wear' → Also: fn.apply(obj), fn.bind(obj) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["`this` BINDING RULES — Like 'Whose Name Tag Am I Wearin"]
+    N2["Priority (highest → lowest):"]
+    N3["1. new Binding → new Person() → this = new object"]
+    N4["'Creating a new person — they get their own name tag'"]
+    N5["2. Explicit Binding → fn.call(obj) → this = obj"]
+    N6["'I'm TELLING you whose name tag to wear'"]
+    N7["Also: fn.apply(obj), fn.bind(obj)"]
+    N8["3. Implicit Binding → obj.greet() → this = obj"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 **Answering the question:**
 
 ```javascript
@@ -312,6 +369,19 @@ class Button {
 ║  5. Object vs primitive? → Call ToPrimitive (valueOf/toString)   ║
 ║  6. Otherwise? → false                                           ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: Abstract Equality Algorithm (== ) — Step by Step → 4. Boolean vs anything? → Convert boolean to number fir | 4. Boolean vs anything? → Convert boolean to number fir → true → 1, false → 0, then re-apply algorithm | true → 1, false → 0, then re-apply algorithm → 6. Otherwise? → false
+
+```mermaid
+flowchart TD
+    N1["Abstract Equality Algorithm (== ) — Step by Step"]
+    N2["4. Boolean vs anything? → Convert boolean to number fir"]
+    N3["true → 1, false → 0, then re-apply algorithm"]
+    N4["6. Otherwise? → false"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
 ```
 
 **Walking through tricky cases:**
@@ -381,6 +451,27 @@ const c = 3;
 ║  const: hoisted + NOT initialized (Temporal Dead Zone)           ║
 ║  func:  hoisted + fully initialized with function body           ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: HOISTING IS NOT 'MOVING CODE TO THE TOP' → What ACTUALLY happens: | What ACTUALLY happens: → JavaScript has TWO phases for each scope: | JavaScript has TWO phases for each scope: → Phase 1: CREATION (scanning) | Phase 1: CREATION (scanning) → - var a → allocate memory, initialize to undefined | - var a → allocate memory, initialize to undefined → - let b → allocate memory, DO NOT initialize (TDZ) | - let b → allocate memory, DO NOT initialize (TDZ) → - const c → allocate memory, DO NOT initialize (TDZ) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["HOISTING IS NOT 'MOVING CODE TO THE TOP'"]
+    N2["What ACTUALLY happens:"]
+    N3["JavaScript has TWO phases for each scope:"]
+    N4["Phase 1: CREATION (scanning)"]
+    N5["- var a → allocate memory, initialize to undefined"]
+    N6["- let b → allocate memory, DO NOT initialize (TDZ)"]
+    N7["- const c → allocate memory, DO NOT initialize (TDZ)"]
+    N8["- function → allocate memory, STORE the entire function"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 **Analogy:** Think of `var` like a hotel reservation — when you arrive (execution), your room exists but it's empty (undefined). `let`/`const` are like a VIP reservation — the room exists on paper but you're NOT allowed in until check-in time (your declaration line). Trying to enter early gets you thrown out (ReferenceError).
@@ -463,6 +554,27 @@ console.log('E');
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: TASK QUEUE HIERARCHY → Priority (runs first → last): | Priority (runs first → last): → 1. 🔴 Call Stack (synchronous) — console.log('E') | 1. 🔴 Call Stack (synchronous) — console.log('E') → 2. 🟡 Microtask Queue — Promise.then, queueMicrotask, | 2. 🟡 Microtask Queue — Promise.then, queueMicrotask, → MutationObserver | MutationObserver → 4. 🔵 Macrotask Queue — setTimeout, setInterval, I/O | 4. 🔵 Macrotask Queue — setTimeout, setInterval, I/O → OUTPUT: E, B, C, D, A | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["TASK QUEUE HIERARCHY"]
+    N2["Priority (runs first → last):"]
+    N3["1. 🔴 Call Stack (synchronous) — console.log('E')"]
+    N4["2. 🟡 Microtask Queue — Promise.then, queueMicrotask,"]
+    N5["MutationObserver"]
+    N6["4. 🔵 Macrotask Queue — setTimeout, setInterval, I/O"]
+    N7["OUTPUT: E, B, C, D, A"]
+    N8["(sync first → all microtasks → rAF → macrotask)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 **Why Microtasks Before Macrotasks?**
 - The spec says: after EACH macrotask, drain ALL microtasks
 - This prevents starvation — if a Promise.then() schedules another Promise.then(), BOTH run before the next setTimeout
@@ -500,6 +612,25 @@ function infiniteMicro() {
 ║  → But if you write a NEW address on your paper,                 ║
 ║    my paper still has the old address (reassignment).            ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: THE MAILBOX ANALOGY → Primitives = Passing a piece of paper | Primitives = Passing a piece of paper → → You get a COPY. Changing yours doesn't affect mine. | → You get a COPY. Changing yours doesn't affect mine. → Objects = Passing a piece of paper with a MAILBOX ADDRE | Objects = Passing a piece of paper with a MAILBOX ADDRE → → You get a copy of the ADDRESS. | → You get a copy of the ADDRESS. → → But if you write a NEW address on your paper, | → But if you write a NEW address on your paper, → my paper still has the old address (reassignment).
+
+```mermaid
+flowchart TD
+    N1["THE MAILBOX ANALOGY"]
+    N2["Primitives = Passing a piece of paper"]
+    N3["→ You get a COPY. Changing yours doesn't affect mine."]
+    N4["Objects = Passing a piece of paper with a MAILBOX ADDRE"]
+    N5["→ You get a copy of the ADDRESS."]
+    N6["→ But if you write a NEW address on your paper,"]
+    N7["my paper still has the old address (reassignment)."]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
 ```
 
 ```javascript
@@ -563,6 +694,27 @@ These use COMPLETELY DIFFERENT algorithms:
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: TWO DIFFERENT CHECKS → [] == false → Uses Abstract Equality (coercion algorith | [] == false → Uses Abstract Equality (coercion algorith → Step 1: false → 0 | Step 1: false → 0 → Step 2: [].toString() → '' | Step 2: [].toString() → '' → Step 3: '' → 0 | Step 3: '' → 0 → Step 4: 0 == 0 → TRUE | Step 4: 0 == 0 → TRUE → [] ? ... → Uses ToBoolean (truthiness check) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["TWO DIFFERENT CHECKS"]
+    N2["[] == false → Uses Abstract Equality (coercion algorith"]
+    N3["Step 1: false → 0"]
+    N4["Step 2: [].toString() → ''"]
+    N5["Step 3: '' → 0"]
+    N6["Step 4: 0 == 0 → TRUE"]
+    N7["[] ? ... → Uses ToBoolean (truthiness check)"]
+    N8["Rule: ALL objects are truthy (no conversion, just check"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 **The Falsy List (MEMORIZE — only 8 values):**
 ```javascript
 false, 0, -0, 0n, "", null, undefined, NaN
@@ -606,6 +758,27 @@ It IS syntactic sugar, but saying "just syntactic sugar" dismisses crucial diffe
 ║     async function always returns a Promise, even if you         ║
 ║     return a plain value                                         ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: async/await IS sugar, BUT: → 1. ERROR HANDLING | 1. ERROR HANDLING → Promise: .catch() is easy to forget → silent failures | Promise: .catch() is easy to forget → silent failures → await: try/catch works naturally, like synchronous code | await: try/catch works naturally, like synchronous code → 2. DEBUGGING | 2. DEBUGGING → Promise chains: stack traces are meaningless | Promise chains: stack traces are meaningless → await: stack traces show the ACTUAL line that failed | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["async/await IS sugar, BUT:"]
+    N2["1. ERROR HANDLING"]
+    N3["Promise: .catch() is easy to forget → silent failures"]
+    N4["await: try/catch works naturally, like synchronous code"]
+    N5["2. DEBUGGING"]
+    N6["Promise chains: stack traces are meaningless"]
+    N7["await: stack traces show the ACTUAL line that failed"]
+    N8["3. CONDITIONAL LOGIC"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```javascript
@@ -680,6 +853,23 @@ const results = await Promise.all(promises); // all at once!
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: Map vs WeakMap — The Library Analogy → Map = Library catalog | Map = Library catalog → → Every book you register stays cataloged FOREVER | → Every book you register stays cataloged FOREVER → WeakMap = Library with automatic book retirement | WeakMap = Library with automatic book retirement → → The catalog doesn't prevent retirement (weak referenc | → The catalog doesn't prevent retirement (weak referenc → → You can't browse the catalog (not iterable) — by desi
+
+```mermaid
+flowchart TD
+    N1["Map vs WeakMap — The Library Analogy"]
+    N2["Map = Library catalog"]
+    N3["→ Every book you register stays cataloged FOREVER"]
+    N4["WeakMap = Library with automatic book retirement"]
+    N5["→ The catalog doesn't prevent retirement (weak referenc"]
+    N6["→ You can't browse the catalog (not iterable) — by desi"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+```
+
 ```javascript
 // MEMORY LEAK WITH MAP
 const cache = new Map();
@@ -733,6 +923,27 @@ function processElement(element) {
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: GENERATORS vs ASYNC/AWAIT → Generator: Pauses and resumes at yield points | Generator: Pauses and resumes at yield points → Control stays with the CALLER | Control stays with the CALLER → Can yield multiple values | Can yield multiple values → Used for: iteration, lazy sequences, state machines | Used for: iteration, lazy sequences, state machines → Async: Pauses at await points | Async: Pauses at await points → Control goes to the EVENT LOOP | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["GENERATORS vs ASYNC/AWAIT"]
+    N2["Generator: Pauses and resumes at yield points"]
+    N3["Control stays with the CALLER"]
+    N4["Can yield multiple values"]
+    N5["Used for: iteration, lazy sequences, state machines"]
+    N6["Async: Pauses at await points"]
+    N7["Control goes to the EVENT LOOP"]
+    N8["Returns ONE final value (Promise)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ```javascript
 // Generator: Infinite Fibonacci (lazy — only computes when asked)
 function* fibonacci() {
@@ -778,6 +989,27 @@ fib.next(); // { value: 2, done: false }
 ║                                                                  ║
 ║  0.1 + 0.2 = 0.30000000000000004  (not exactly 0.3)              ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: THE RULER ANALOGY → (powers of 2). Now try to measure 1/10 (0.1). | (powers of 2). Now try to measure 1/10 (0.1). → You can't land exactly on it — you get close but not ex | You can't land exactly on it — you get close but not ex → Binary representation: | Binary representation: → 0.1 = 0.0001100110011001100110011... (repeating forever | 0.1 = 0.0001100110011001100110011... (repeating forever → Stored as: 0.100000000000000005551115123125782702118158 | Stored as: 0.100000000000000005551115123125782702118158 → 0.2 = 0.001100110011001100110011... (repeating forever) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE RULER ANALOGY"]
+    N2["(powers of 2). Now try to measure 1/10 (0.1)."]
+    N3["You can't land exactly on it — you get close but not ex"]
+    N4["Binary representation:"]
+    N5["0.1 = 0.0001100110011001100110011... (repeating forever"]
+    N6["Stored as: 0.100000000000000005551115123125782702118158"]
+    N7["0.2 = 0.001100110011001100110011... (repeating forever)"]
+    N8["Stored as: 0.200000000000000011102230246251565404236316"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```javascript
@@ -828,6 +1060,27 @@ Math.abs(0.1 + 0.2 - 0.3) < Number.EPSILON  // true
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: THE TDZ IS A TIME ZONE, NOT A CODE ZONE → console.log(x); // ReferenceError: x is in TDZ | console.log(x); // ReferenceError: x is in TDZ → let x = 10; // ← TDZ ENDS here (initialization) | let x = 10; // ← TDZ ENDS here (initialization) → console.log(x); // 10 ✅ | console.log(x); // 10 ✅ → The variable EXISTS in memory (hoisted), but accessing | The variable EXISTS in memory (hoisted), but accessing → before initialization is FORBIDDEN by the spec. This is | before initialization is FORBIDDEN by the spec. This is → DESIGN — to catch bugs early. | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE TDZ IS A TIME ZONE, NOT A CODE ZONE"]
+    N2["console.log(x); // ReferenceError: x is in TDZ"]
+    N3["let x = 10; // ← TDZ ENDS here (initialization)"]
+    N4["console.log(x); // 10 ✅"]
+    N5["The variable EXISTS in memory (hoisted), but accessing"]
+    N6["before initialization is FORBIDDEN by the spec. This is"]
+    N7["DESIGN — to catch bugs early."]
+    N8["var: 'Here's undefined until you initialize' = silent b"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 **Why TDZ exists (the design reasoning):**
 - var's behavior of silently returning `undefined` caused countless bugs
 - const MUST have TDZ — you can't access a const before it has a value
@@ -858,6 +1111,27 @@ Math.abs(0.1 + 0.2 - 0.3) < Number.EPSILON  // true
 ║  → Desk checks which room the request is for (event.target)      ║
 ║  → Works for rooms that haven't been built yet! (dynamic)        ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: THE RECEPTION DESK ANALOGY → WITHOUT delegation (1000 buttons = 1000 handlers): | WITHOUT delegation (1000 buttons = 1000 handlers): → → Like hiring a personal receptionist for each room | → Like hiring a personal receptionist for each room → → Adding 1000 rooms? Hire 1000 more people. | → Adding 1000 rooms? Hire 1000 more people. → → Expensive, slow to set up, wasteful. | → Expensive, slow to set up, wasteful. → WITH delegation (1 handler on parent): | WITH delegation (1 handler on parent): → → Like having ONE receptionist at the front desk | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE RECEPTION DESK ANALOGY"]
+    N2["WITHOUT delegation (1000 buttons = 1000 handlers):"]
+    N3["→ Like hiring a personal receptionist for each room"]
+    N4["→ Adding 1000 rooms? Hire 1000 more people."]
+    N5["→ Expensive, slow to set up, wasteful."]
+    N6["WITH delegation (1 handler on parent):"]
+    N7["→ Like having ONE receptionist at the front desk"]
+    N8["→ Desk checks which room the request is for (event.targ"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```javascript

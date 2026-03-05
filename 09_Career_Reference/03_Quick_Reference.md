@@ -48,6 +48,21 @@ STEP 5: EDGE CASES (At the very end)
 └───────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: 'This is _______ pattern' / (Sliding Window / Two Point → public static void solve(int[] arr) { / for (int j = 0; | public static void solve(int[] arr) { / for (int j = 0; → // window size = j - i + 1 / // OR: sum of window = cur | // window size = j - i + 1 / // OR: sum of window = cur → First: Add the core operation / Then: Add the condition | First: Add the core operation / Then: Add the condition → if (arr == null || arr.length == 0) return; / if (n &lt
+
+```mermaid
+flowchart TD
+    N1["'This is _______ pattern' / (Sliding Window / Two Point"]
+    N2["public static void solve(int[] arr) { / for (int j = 0;"]
+    N3["// window size = j - i + 1 / // OR: sum of window = cur"]
+    N4["First: Add the core operation / Then: Add the condition"]
+    N5["if (arr == null || arr.length == 0) return; / if (n &lt"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+```
+
 **See:** [PaperToCode_TranslationGuide.md](PaperToCode_TranslationGuide.md) for details
 
 ---
@@ -83,6 +98,27 @@ STEP 5: EDGE CASES (At the very end)
 └─ "GCD/prime/bits"? ─────→ MATH / BIT MANIPULATION
 ```
 
+> **Flow**: WHICH PATTERN DO I USE? (Decision Tree) → Does problem involve ARRAY/STRING? | Does problem involve ARRAY/STRING? → ▼ YES ▼ NO | ▼ YES ▼ NO → 'window of size K'? → SLIDING WINDOW | 'window of size K'? → SLIDING WINDOW → 'tree structure'? | 'tree structure'? → 'two elements sum'? → TWO POINTERS → BFS/DFS | 'two elements sum'? → TWO POINTERS → BFS/DFS → 'count frequency'? → HASHMAP 'graph/nodes'? | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["WHICH PATTERN DO I USE? (Decision Tree)"]
+    N2["Does problem involve ARRAY/STRING?"]
+    N3["▼ YES ▼ NO"]
+    N4["'window of size K'? → SLIDING WINDOW"]
+    N5["'tree structure'?"]
+    N6["'two elements sum'? → TWO POINTERS → BFS/DFS"]
+    N7["'count frequency'? → HASHMAP 'graph/nodes'?"]
+    N8["→ BFS/DFS"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## ⚡ COPY-PASTE TEMPLATES (Memorize These!)
@@ -108,6 +144,15 @@ User Input: n = ?
             ▼
        Continue with main logic...
 
+```
+
+> **Flow**: n == 0 ? → n &lt; 0 ?
+
+```mermaid
+flowchart TD
+    N1["n == 0 ?"]
+    N2["n &lt; 0 ?"]
+    N1 --> N2
 ```
 
 ```java
@@ -200,6 +245,15 @@ slow fast
   └───────── moves only when condition met
 ```
 
+> **Flow**: r a c e c a r → 1 1 2 2 2 3 4
+
+```mermaid
+flowchart TD
+    N1["r a c e c a r"]
+    N2["1 1 2 2 2 3 4"]
+    N1 --> N2
+```
+
 ```java
 // OPPOSITE DIRECTION
 int left = 0, right = arr.length - 1;
@@ -243,6 +297,23 @@ If arr[mid] < target:  lo = mid + 1  (search right)
 If arr[mid] > target:  hi = mid - 1  (search left)
 ```
 
+> **Flow**: BINARY SEARCH VISUALIZATION → Array: [1, 3, 5, 7, 9, 11, 13, 15] Target: 7 | Array: [1, 3, 5, 7, 9, 11, 13, 15] Target: 7 → Iteration 1: | Iteration 1: → lo mid hi | lo mid hi → If arr[mid] &lt; target: lo = mid + 1 (search right) | If arr[mid] &lt; target: lo = mid + 1 (search right) → If arr[mid] &gt; target: hi = mid - 1 (search left)
+
+```mermaid
+flowchart TD
+    N1["BINARY SEARCH VISUALIZATION"]
+    N2["Array: [1, 3, 5, 7, 9, 11, 13, 15] Target: 7"]
+    N3["Iteration 1:"]
+    N4["lo mid hi"]
+    N5["If arr[mid] &lt; target: lo = mid + 1 (search right)"]
+    N6["If arr[mid] &gt; target: hi = mid - 1 (search left)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+```
+
 ```java
 int lo = 0, hi = arr.length - 1;
 while (lo <= hi) {
@@ -284,6 +355,16 @@ Step 5: ']' → pop        Step 6: ')' → pop
 └───┘
 
 Final: Stack empty → BALANCED ✓
+```
+
+> **Flow**: [ / ( → { / [ / ( | { / [ / ( → [ / (
+
+```mermaid
+flowchart TD
+    N1["[ / ("]
+    N2["{ / [ / ("]
+    N1 --> N2
+    N2 --> N1
 ```
 
 ```java
@@ -347,6 +428,27 @@ public static boolean isBalanced(String s) {
 ║  ❌ WRONG: if (s1 == s2)            ← Compares references!                 ║
 ║  ✅ RIGHT: if (s1.equals(s2))       ← Compares content ✓                   ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: COMMON MISTAKES VISUAL GUIDE → MISTAKE #1: Sliding Window Index Confusion | MISTAKE #1: Sliding Window Index Confusion → ❌ WRONG: for (j = i; j &lt; i + k) ← 'Is it &lt; or &lt | ❌ WRONG: for (j = i; j &lt; i + k) ← 'Is it &lt; or &lt → MISTAKE #2: Off-by-One in Range | MISTAKE #2: Off-by-One in Range → Range [3, 7] means: 3, 4, 5, 6, 7 (5 numbers) | Range [3, 7] means: 3, 4, 5, 6, 7 (5 numbers) → ❌ WRONG: for (i = 3; i &lt; 7) ← misses 7! | ❌ WRONG: for (i = 3; i &lt; 7) ← misses 7! → ✅ RIGHT: for (i = 3; i &lt;= 7) ← includes 7 ✓ | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["COMMON MISTAKES VISUAL GUIDE"]
+    N2["MISTAKE #1: Sliding Window Index Confusion"]
+    N3["❌ WRONG: for (j = i; j &lt; i + k) ← 'Is it &lt; or &lt"]
+    N4["MISTAKE #2: Off-by-One in Range"]
+    N5["Range [3, 7] means: 3, 4, 5, 6, 7 (5 numbers)"]
+    N6["❌ WRONG: for (i = 3; i &lt; 7) ← misses 7!"]
+    N7["✅ RIGHT: for (i = 3; i &lt;= 7) ← includes 7 ✓"]
+    N8["MISTAKE #3: Prime Number Check"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 | Mistake                        | Wrong Code                      | Correct Code                      |

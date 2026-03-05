@@ -43,6 +43,27 @@ Column-major (Fortran, MATLAB, Julia):
            ↑ col 0     ↑ col 1      ↑ col 2     ↑ col 3
 ```
 
+> **Flow**: Logical view: Memory layout (row-major): → 1 2 3 4 row 0 [1][2][3][4] [5][6][7][8] [9][10][11][12] | 1 2 3 4 row 0 [1][2][3][4] [5][6][7][8] [9][10][11][12] → ← row 0 → ← row 1 → ← row 2 → | ← row 0 → ← row 1 → ← row 2 → → 5 6 7 8 row 1 | 5 6 7 8 row 1 → Accessing grid[r][c] → memory offset = r * numCols + c | Accessing grid[r][c] → memory offset = r * numCols + c → 9 10 11 12 row 2 | 9 10 11 12 row 2 → Column-major (Fortran, MATLAB, Julia): | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Logical view: Memory layout (row-major):"]
+    N2["1 2 3 4 row 0 [1][2][3][4] [5][6][7][8] [9][10][11][12]"]
+    N3["← row 0 → ← row 1 → ← row 2 →"]
+    N4["5 6 7 8 row 1"]
+    N5["Accessing grid[r][c] → memory offset = r * numCols + c"]
+    N6["9 10 11 12 row 2"]
+    N7["Column-major (Fortran, MATLAB, Julia):"]
+    N8["Memory: [1][5][9] [2][6][10] [3][7][11] [4][8][12]"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 **WHY this matters**: Iterating row-by-row (`for row... for col...`) is cache-friendly in Java. Iterating column-by-column causes cache misses. For large matrices, this can be a 10x performance difference.
 
 
@@ -69,6 +90,15 @@ int[] dc = {0, 0, -1, 1};             int[] dc = {-1, 0, 1,-1, 1,-1, 0, 1};
 
 Alternative 4-dir (compact):
 int[][] dirs = {{-1,0},{1,0},{0,-1},{0,1}};
+```
+
+> **Flow**: (0,-1)← ● →(0,+1) (0,-1) ← --(●)--> (0,+1)
+
+```mermaid
+flowchart LR
+    N1["(0,-1)← ● →(0,+1) (0,-1) ←"]
+    N2["(0,+1)"]
+    N1 -->|"●"| N2
 ```
 
 **Convention**: `(row, col)` maps to `(y, x)` in Cartesian terms. **row** increases downward (like `y` but inverted). **col** increases rightward (like `x`). This inconsistency causes countless bugs — always be explicit.
@@ -137,6 +167,21 @@ void dfs(int[][] grid, int r, int c) {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: VISITED MARKING STRATEGIES → 1. Separate boolean[][] visited — safest, uses O(m*n) s | 1. Separate boolean[][] visited — safest, uses O(m*n) s → 2. Modify grid in-place — set grid[r][c] = '#' or -1 or | 2. Modify grid in-place — set grid[r][c] = '#' or -1 or → (destroys input, but O(1) extra space) | (destroys input, but O(1) extra space) → 3. State encoding — use unused bits (Game of Life trick
+
+```mermaid
+flowchart TD
+    N1["VISITED MARKING STRATEGIES"]
+    N2["1. Separate boolean[][] visited — safest, uses O(m*n) s"]
+    N3["2. Modify grid in-place — set grid[r][c] = '#' or -1 or"]
+    N4["(destroys input, but O(1) extra space)"]
+    N5["3. State encoding — use unused bits (Game of Life trick"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+```
+
 ### Spiral Traversal Logic
 
 Spiral traversal peels the matrix layer by layer, shrinking the bounding box after each pass:
@@ -156,6 +201,27 @@ Boundaries: top, bottom, left, right
   After left col:   left++
 
 Terminate when top > bottom or left > right.
+```
+
+> **Flow**: Layer 0 (outermost): Layer 1 (inner): → → → → → → ↓ Only process what remains | → → → → → ↓ Only process what remains → ↑ ↓ inside the shrunk boundaries | ↑ ↓ inside the shrunk boundaries → Boundaries: top, bottom, left, right | Boundaries: top, bottom, left, right → After top row: top++ | After top row: top++ → After right col: right-- | After right col: right-- → After bottom row: bottom-- | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Layer 0 (outermost): Layer 1 (inner):"]
+    N2["→ → → → → ↓ Only process what remains"]
+    N3["↑ ↓ inside the shrunk boundaries"]
+    N4["Boundaries: top, bottom, left, right"]
+    N5["After top row: top++"]
+    N6["After right col: right--"]
+    N7["After bottom row: bottom--"]
+    N8["After left col: left++"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### Matrix Rotation: Transpose + Reverse = 90° Rotation
@@ -181,6 +247,17 @@ VARIANTS:
 • 90° CW:  transpose + reverse each row
 • 90° CCW: transpose + reverse each column (or reverse rows + transpose)
 • 180°:    reverse each row + reverse each column
+```
+
+> **Flow**: 1 2 3 / 4 5 6 / 7 8 9 → 1 4 7 / 2 5 8 / 3 6 9 | 1 4 7 / 2 5 8 / 3 6 9 → 7 4 1 / 8 5 2 / 9 6 3
+
+```mermaid
+flowchart LR
+    N1["1 2 3 / 4 5 6 / 7 8 9"]
+    N2["1 4 7 / 2 5 8 / 3 6 9"]
+    N3["7 4 1 / 8 5 2 / 9 6 3"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 ### Common Mistakes (Top 7)
@@ -224,6 +301,27 @@ VARIANTS:
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: MISTAKE #1: Off-By-One in Boundaries → MISTAKE #2: Forgetting Diagonal Movement | MISTAKE #2: Forgetting Diagonal Movement → MISTAKE #3: Not Marking Visited BEFORE Enqueueing in BF | MISTAKE #3: Not Marking Visited BEFORE Enqueueing in BF → WRONG: enqueue → poll → mark visited (duplicate enqueue | WRONG: enqueue → poll → mark visited (duplicate enqueue → RIGHT: mark visited → enqueue → poll → process | RIGHT: mark visited → enqueue → poll → process → MISTAKE #4: Confusing row/col with x/y | MISTAKE #4: Confusing row/col with x/y → When problem gives (x, y), translate: row = y, col = x. | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["MISTAKE #1: Off-By-One in Boundaries"]
+    N2["MISTAKE #2: Forgetting Diagonal Movement"]
+    N3["MISTAKE #3: Not Marking Visited BEFORE Enqueueing in BF"]
+    N4["WRONG: enqueue → poll → mark visited (duplicate enqueue"]
+    N5["RIGHT: mark visited → enqueue → poll → process"]
+    N6["MISTAKE #4: Confusing row/col with x/y"]
+    N7["When problem gives (x, y), translate: row = y, col = x."]
+    N8["MISTAKE #5: Modifying Grid While Iterating Over It"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 🧩 Part 1: Easy Problems
@@ -233,6 +331,15 @@ VARIANTS:
 ║                         EASY — 4 PROBLEMS                                    ║
 ║  Build intuition: basic traversals, simple transformations                   ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: EASY — 4 PROBLEMS → Build intuition: basic traversals, simple transformatio
+
+```mermaid
+flowchart TD
+    N1["EASY — 4 PROBLEMS"]
+    N2["Build intuition: basic traversals, simple transformatio"]
+    N1 --> N2
 ```
 
 ### 1. [Flood Fill](https://leetcode.com/problems/flood-fill/) (LC 733) ⭐ Easy
@@ -308,6 +415,17 @@ class Solution {
 └───┴───┴───┴───┘
 ```
 
+> **Flow**: 0 1 0 0 Land cells: 7 → Each land cell contributes 4 edges | Each land cell contributes 4 edges → 0 1 0 0 Perimeter = 4 * landCells - 2 * internalEdges
+
+```mermaid
+flowchart TD
+    N1["0 1 0 0 Land cells: 7"]
+    N2["Each land cell contributes 4 edges"]
+    N3["0 1 0 0 Perimeter = 4 * landCells - 2 * internalEdges"]
+    N1 --> N2
+    N2 --> N3
+```
+
 **Key Insight**: No DFS/BFS needed! Every land cell starts with 4 edges. Each shared edge between two adjacent land cells removes 2 from the perimeter (one for each cell). Count land cells and right/down adjacencies.
 
 **Approach**:
@@ -364,6 +482,15 @@ Original (2×4):        Reshaped (4×2):
 Map 1D index i → 2D: (i / numCols, i % numCols)
 ```
 
+> **Flow**: 1 2 3 4 / 5 6 7 8 → 1 2 / 3 4 / 5 6 / 7 8
+
+```mermaid
+flowchart TD
+    N1["1 2 3 4 / 5 6 7 8"]
+    N2["1 2 / 3 4 / 5 6 / 7 8"]
+    N1 --> N2
+```
+
 **Key Insight**: Think of the matrix as a 1D array of `m*n` elements. Element at 1D index `i` maps to `(i / cols, i % cols)` in any reshaping. If `m*n != r*c`, reshape is impossible.
 
 **Approach**:
@@ -409,6 +536,15 @@ Original (2×3):        Transposed (3×2):
                         └───┴───┘
 
 (i,j) in original → (j,i) in transpose
+```
+
+> **Flow**: 1 2 3 / 4 5 6 → 1 4 / 2 5 / 3 6
+
+```mermaid
+flowchart LR
+    N1["1 2 3 / 4 5 6"]
+    N2["1 4 / 2 5 / 3 6"]
+    N1 --> N2
 ```
 
 **Key Insight**: The transpose of an `m × n` matrix is an `n × m` matrix. For non-square matrices, this cannot be done in-place.
@@ -465,6 +601,19 @@ Grid:                          Islands = 3
 ├───┼───┼───┼───┼───┤
 │ 0 │ 0 │ 0 │ 1 │ 1 │
 └───┴───┴───┴───┴───┘
+```
+
+> **Flow**: Grid: Islands = 3 → 1 1 0 0 0 Island 1: top-left 1,1 | 1 1 0 0 0 Island 1: top-left 1,1 → Island 2: top-right 1 | Island 2: top-right 1 → 1 1 0 0 0 Island 3: bottom-right 1
+
+```mermaid
+flowchart TD
+    N1["Grid: Islands = 3"]
+    N2["1 1 0 0 0 Island 1: top-left 1,1"]
+    N3["Island 2: top-right 1"]
+    N4["1 1 0 0 0 Island 3: bottom-right 1"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
 ```
 
 **Key Insight**: Each island is a connected component. When we find an unvisited land cell, that's a new island. DFS/BFS marks the entire component as visited, so it won't be counted again.
@@ -527,6 +676,21 @@ Minute 0:         Minute 1:         Minute 2:         Minute 3:         Minute 4
 │ 0 │ 1 │ 1 │    │ 0 │ 1 │ 1 │    │ 0 │ 1 │ 1 │    │ 0 │ 2 │ 1 │    │ 0 │ 2 │ 2 │
 └───┴───┴───┘    └───┴───┴───┘    └───┴───┴───┘    └───┴───┴───┘    └───┴───┴───┘
                                                                        Answer = 4
+```
+
+> **Flow**: 2 1 1 / 1 1 0 / 0 1 1 → 2 2 1 / 2 1 0 / 0 1 1 | 2 2 1 / 2 1 0 / 0 1 1 → 2 2 2 / 2 2 0 / 0 1 1 | 2 2 2 / 2 2 0 / 0 1 1 → 2 2 2 / 2 2 0 / 0 2 1 | 2 2 2 / 2 2 0 / 0 2 1 → 2 2 2 / 2 2 0 / 0 2 2
+
+```mermaid
+flowchart LR
+    N1["2 1 1 / 1 1 0 / 0 1 1"]
+    N2["2 2 1 / 2 1 0 / 0 1 1"]
+    N3["2 2 2 / 2 2 0 / 0 1 1"]
+    N4["2 2 2 / 2 2 0 / 0 2 1"]
+    N5["2 2 2 / 2 2 0 / 0 2 2"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
 ```
 
 **Key Insight**: This is multi-source BFS. All rotten oranges at time 0 spread simultaneously — exactly like BFS level-by-level, where each level = one minute. We start BFS from ALL rotten oranges at once.
@@ -603,6 +767,15 @@ Input:           Output:
 ├───┼───┼───┤   ├───┼───┼───┤
 │ 1 │ 1 │ 1 │   │ 1 │ 2 │ 1 │
 └───┴───┴───┘   └───┴───┴───┘
+```
+
+> **Flow**: 0 0 0 / 0 1 0 / 1 1 1 → 0 0 0 / 0 1 0 / 1 2 1
+
+```mermaid
+flowchart TD
+    N1["0 0 0 / 0 1 0 / 1 1 1"]
+    N2["0 0 0 / 0 1 0 / 1 2 1"]
+    N1 --> N2
 ```
 
 **Key Insight**: Instead of BFS from each 1 to find the nearest 0 (O(m²n²)), reverse the problem: BFS from ALL 0s simultaneously. Each BFS level marks cells at distance 1, then 2, then 3, etc.
@@ -747,6 +920,17 @@ Original:        Step 1 - Transpose:   Step 2 - Reverse rows:
                                        90° CW ✓
 ```
 
+> **Flow**: 1 2 3 / 4 5 6 / 7 8 9 → 1 4 7 / 2 5 8 / 3 6 9 | 1 4 7 / 2 5 8 / 3 6 9 → 7 4 1 / 8 5 2 / 9 6 3
+
+```mermaid
+flowchart LR
+    N1["1 2 3 / 4 5 6 / 7 8 9"]
+    N2["1 4 7 / 2 5 8 / 3 6 9"]
+    N3["7 4 1 / 8 5 2 / 9 6 3"]
+    N1 --> N2
+    N2 --> N3
+```
+
 **Key Insight**: 90° clockwise = transpose (swap `(i,j)` ↔ `(j,i)`) + reverse each row. Both operations are in-place with O(1) extra space.
 
 **Approach**:
@@ -804,6 +988,15 @@ Input:           Output:
 ├───┼───┼───┤   ├───┼───┼───┤
 │ 1 │ 1 │ 1 │   │ 1 │ 0 │ 1 │
 └───┴───┴───┘   └───┴───┴───┘
+```
+
+> **Flow**: 1 1 1 / 1 0 1 / 1 1 1 → 1 0 1 / 0 0 0 / 1 0 1
+
+```mermaid
+flowchart TD
+    N1["1 1 1 / 1 0 1 / 1 1 1"]
+    N2["1 0 1 / 0 0 0 / 1 0 1"]
+    N1 --> N2
 ```
 
 **Key Insight**: O(m+n) approach: use separate arrays to track which rows/cols to zero. O(1) approach: use the **first row and first column** of the matrix itself as markers! A special flag tracks whether the first row/col themselves need zeroing.
@@ -878,6 +1071,17 @@ Board:                  word = "ABCCED" → true
 └───┴───┴───┴───┘            (0,0)A→(0,1)B→(0,2)C→(1,2)C→(2,2)E→(2,1)D ✓
 ```
 
+> **Flow**: Board: word = 'ABCCED' → true → C ← E → D (nope, 'ABCCED'): | C ← E → D (nope, 'ABCCED'): → S F C S actually: A→B→C→C→E→D
+
+```mermaid
+flowchart TD
+    N1["Board: word = 'ABCCED' → true"]
+    N2["C ← E → D (nope, 'ABCCED'):"]
+    N3["S F C S actually: A→B→C→C→E→D"]
+    N1 --> N2
+    N2 --> N3
+```
+
 **Key Insight**: This is a constrained DFS with backtracking. For each starting cell that matches `word[0]`, attempt to extend the path. Mark cells as visited along the path, but **unmark on backtrack** (this is the backtracking part).
 
 **Approach**:
@@ -943,6 +1147,15 @@ Input:                   Output:
 ├───┼───┼───┼───┤      ├───┼───┼───┼───┤
 │ X │ O │ X │ X │      │ X │ O │ X │ X │  ← Border O survives
 └───┴───┴───┴───┘      └───┴───┴───┴───┘
+```
+
+> **Flow**: X X X X / X O O X / X X O X / X O X X → X X X X / X X X X / X X X X / X O X X
+
+```mermaid
+flowchart LR
+    N1["X X X X / X O O X / X X O X / X O X X"]
+    N2["X X X X / X X X X / X X X X / X O X X"]
+    N1 --> N2
 ```
 
 **Key Insight**: Instead of finding surrounded regions (hard), find **unsurrounded** regions (connected to border). Mark them safe. Everything else gets captured. This is the "reverse thinking" pattern.
@@ -1100,6 +1313,15 @@ Input:           Output:
 └───┴───┴───┘   └───┴───┴───┘
 ```
 
+> **Flow**: 0 1 0 / 0 0 1 / 1 1 1 / 0 0 0 → 0 0 0 / 1 0 1 / 0 1 1 / 0 1 0
+
+```mermaid
+flowchart TD
+    N1["0 1 0 / 0 0 1 / 1 1 1 / 0 0 0"]
+    N2["0 0 0 / 1 0 1 / 0 1 1 / 0 1 0"]
+    N1 --> N2
+```
+
 **Key Insight**: We need simultaneous update but want O(1) space. Solution: encode BOTH old and new state in the same cell using intermediate states:
 - `0` → dead, stays dead
 - `1` → alive (original)
@@ -1176,6 +1398,15 @@ class Solution {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: HARD — 4 PROBLEMS → Advanced BFS, Dijkstra on grid, Union-Find, 3D heap BFS
+
+```mermaid
+flowchart TD
+    N1["HARD — 4 PROBLEMS"]
+    N2["Advanced BFS, Dijkstra on grid, Union-Find, 3D heap BFS"]
+    N1 --> N2
+```
+
 ### 1. [Shortest Path in Binary Matrix](https://leetcode.com/problems/shortest-path-in-binary-matrix/) (LC 1091) ⭐⭐⭐ Hard
 **Companies**: Google, Amazon, Facebook, Microsoft  
 **Pattern**: BFS with 8-directional movement
@@ -1190,6 +1421,19 @@ class Solution {
 ├───┼───┼───┤   The diagonal shortcut through center
 │ 1 │ 1 │ 0 │   is faster than going around.
 └───┴───┴───┘
+```
+
+> **Flow**: 0 0 0 Shortest path: (0,0) → (1,1) → (2,2) → Length = 3 (count cells, not edges) | Length = 3 (count cells, not edges) → The diagonal shortcut through center | The diagonal shortcut through center → 1 1 0 is faster than going around.
+
+```mermaid
+flowchart TD
+    N1["0 0 0 Shortest path: (0,0) → (1,1) → (2,2)"]
+    N2["Length = 3 (count cells, not edges)"]
+    N3["The diagonal shortcut through center"]
+    N4["1 1 0 is faster than going around."]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
 ```
 
 **Key Insight**: Shortest path in an unweighted graph = BFS. The twist: 8 directions instead of 4. BFS guarantees the first time we reach `(n-1, n-1)` is via the shortest path.
@@ -1262,6 +1506,17 @@ class Solution {
 ├───┼───┼───┤   Flip (0,1) to 1: connects id=2 (size 1) + id=3 (size 1)
 │ 1 │ 1 │ 1 │              + 1 (the flipped cell) = 3
 └───┴───┴───┘   Flip (1,0) to 1: connects id=2 (1) + id=4 (3) + 1 = 5 ← answer
+```
+
+> **Flow**: bottom (size 3, id=4) → Flip (0,1) to 1: connects id=2 (size 1) + id=3 (size 1) | Flip (0,1) to 1: connects id=2 (size 1) + id=3 (size 1) → 1 1 1 + 1 (the flipped cell) = 3
+
+```mermaid
+flowchart TD
+    N1["bottom (size 3, id=4)"]
+    N2["Flip (0,1) to 1: connects id=2 (size 1) + id=3 (size 1)"]
+    N3["1 1 1 + 1 (the flipped cell) = 3"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 **Key Insight**: Two-pass approach:
@@ -1353,6 +1608,21 @@ class Solution {
 ├───┼───┼───┤   Answer = max elevation on the path we choose,
 │ 5 │ 6 │ 7 │   minimized over all possible paths.
 └───┴───┴───┘   = minimax path problem!
+```
+
+> **Flow**: 0 1 2 At t=0: only (0,0) accessible → 3 8 4 max elevation on path = 3+... wait | 3 8 4 max elevation on path = 3+... wait → Answer = max elevation on the path we choose, | Answer = max elevation on the path we choose, → 5 6 7 minimized over all possible paths. | 5 6 7 minimized over all possible paths. → = minimax path problem!
+
+```mermaid
+flowchart TD
+    N1["0 1 2 At t=0: only (0,0) accessible"]
+    N2["3 8 4 max elevation on path = 3+... wait"]
+    N3["Answer = max elevation on the path we choose,"]
+    N4["5 6 7 minimized over all possible paths."]
+    N5["= minimax path problem!"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
 ```
 
 **Key Insight**: We need the path from `(0,0)` to `(n-1,n-1)` that minimizes the maximum elevation along the path. This is a **minimax path problem**, solvable with a min-heap BFS (essentially Dijkstra where "distance" = max elevation so far).
@@ -1468,6 +1738,27 @@ Elevation map:               Water trapped:
                              ...
 ```
 
+> **Flow**: Elevation map: Water trapped: → The border forms a 'wall'. | The border forms a 'wall'. → 1 4 3 1 3 Water fills up to the minimum | 1 4 3 1 3 Water fills up to the minimum → border height, then overflows. | border height, then overflows. → 3 2 1 3 2 Total water = 4 | 3 2 1 3 2 Total water = 4 → 2 3 3 2 3 Cell (1,1)h=2: water to level 3, traps 1 | 2 3 3 2 3 Cell (1,1)h=2: water to level 3, traps 1 → Cell (1,2)h=1: water to level 3, traps 2 | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Elevation map: Water trapped:"]
+    N2["The border forms a 'wall'."]
+    N3["1 4 3 1 3 Water fills up to the minimum"]
+    N4["border height, then overflows."]
+    N5["3 2 1 3 2 Total water = 4"]
+    N6["2 3 3 2 3 Cell (1,1)h=2: water to level 3, traps 1"]
+    N7["Cell (1,2)h=1: water to level 3, traps 2"]
+    N8["Cell (2,1)h=3: no trapping (already at 3)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 **Key Insight**: This is the 2D generalization of "Trapping Rain Water I" (which uses two-pointer on 1D). The key principle: **water at any cell is determined by the minimum height of the "wall" surrounding it.** We process from the borders inward using a min-heap, always processing the lowest wall first. This ensures we never overestimate water level.
 
 **Approach**:
@@ -1580,6 +1871,27 @@ class Solution {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: GRID TRAVERSAL PATTERNS — CHEAT SHEET → PATTERN WHEN TO USE KEY TEMPLATE | PATTERN WHEN TO USE KEY TEMPLATE → DFS Flood Fill Connected components, Recursive DFS with | DFS Flood Fill Connected components, Recursive DFS with → island counting in-place marking | island counting in-place marking → Multi-source BFS Simultaneous spread, Enqueue ALL sourc | Multi-source BFS Simultaneous spread, Enqueue ALL sourc → shortest from any source BFS level-by-level | shortest from any source BFS level-by-level → Backtracking DFS Path finding with Mark → recurse → | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["GRID TRAVERSAL PATTERNS — CHEAT SHEET"]
+    N2["PATTERN WHEN TO USE KEY TEMPLATE"]
+    N3["DFS Flood Fill Connected components, Recursive DFS with"]
+    N4["island counting in-place marking"]
+    N5["Multi-source BFS Simultaneous spread, Enqueue ALL sourc"]
+    N6["shortest from any source BFS level-by-level"]
+    N7["Backtracking DFS Path finding with Mark → recurse →"]
+    N8["constraints (word search) unmark (restore)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
 ║                    DIRECTION ARRAYS — QUICK REFERENCE                        ║
@@ -1631,6 +1943,27 @@ class Solution {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: DIRECTION ARRAYS — QUICK REFERENCE → 4-DIRECTIONAL (Up, Down, Left, Right): | 4-DIRECTIONAL (Up, Down, Left, Right): → int[] dr = {-1, 1, 0, 0}; | int[] dr = {-1, 1, 0, 0}; → int[] dc = {0, 0, -1, 1}; | int[] dc = {0, 0, -1, 1}; → Alternative (array of pairs): | Alternative (array of pairs): → int[][] dirs = {{-1,0},{1,0},{0,-1},{0,1}}; | int[][] dirs = {{-1,0},{1,0},{0,-1},{0,1}}; → 8-DIRECTIONAL (Including diagonals): | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["DIRECTION ARRAYS — QUICK REFERENCE"]
+    N2["4-DIRECTIONAL (Up, Down, Left, Right):"]
+    N3["int[] dr = {-1, 1, 0, 0};"]
+    N4["int[] dc = {0, 0, -1, 1};"]
+    N5["Alternative (array of pairs):"]
+    N6["int[][] dirs = {{-1,0},{1,0},{0,-1},{0,1}};"]
+    N7["8-DIRECTIONAL (Including diagonals):"]
+    N8["int[] dr = {-1, -1, -1, 0, 0, 1, 1, 1};"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
 ║                    PROBLEM → PATTERN DECISION TREE                           ║
@@ -1653,6 +1986,27 @@ class Solution {
 ║  "Compute perimeter"                   → Neighbor counting (LC 463)          ║
 ║  "Color connected region"              → Flood fill DFS (LC 733)             ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: PROBLEM → PATTERN DECISION TREE → 'Count connected components' → DFS/BFS flood fill (LC 2 | 'Count connected components' → DFS/BFS flood fill (LC 2 → 'Shortest path, unweighted grid' → BFS (LC 1091, LC 542 | 'Shortest path, unweighted grid' → BFS (LC 1091, LC 542 → 'Path exists with constraint?' → Backtracking DFS (LC 7 | 'Path exists with constraint?' → Backtracking DFS (LC 7 → 'Output in spiral order' → Boundary simulation (LC 54) | 'Output in spiral order' → Boundary simulation (LC 54) → 'Rotate matrix' → Transpose + Reverse (LC 48) | 'Rotate matrix' → Transpose + Reverse (LC 48) → 'Simultaneous state update' → State encoding (LC 289) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["PROBLEM → PATTERN DECISION TREE"]
+    N2["'Count connected components' → DFS/BFS flood fill (LC 2"]
+    N3["'Shortest path, unweighted grid' → BFS (LC 1091, LC 542"]
+    N4["'Path exists with constraint?' → Backtracking DFS (LC 7"]
+    N5["'Output in spiral order' → Boundary simulation (LC 54)"]
+    N6["'Rotate matrix' → Transpose + Reverse (LC 48)"]
+    N7["'Simultaneous state update' → State encoding (LC 289)"]
+    N8["'Set row/col to zero' → First row/col markers (LC 73)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```
@@ -1694,6 +2048,27 @@ class Solution {
 ║      return steps;                                                           ║
 ║  }                                                                           ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: BFS TEMPLATE FOR GRIDS → int bfs(int[][] grid, int startR, int startC) { | int bfs(int[][] grid, int startR, int startC) { → int m = grid.length, n = grid[0].length; | int m = grid.length, n = grid[0].length; → boolean[][] visited = new boolean[m][n]; | boolean[][] visited = new boolean[m][n]; → Queue&lt;int[]&gt; queue = new LinkedList&lt;&gt;(); | Queue&lt;int[]&gt; queue = new LinkedList&lt;&gt;(); → queue.offer(new int[]{startR, startC}); | queue.offer(new int[]{startR, startC}); → visited[startR][startC] = true; // ← MARK BEFORE ENQUEU | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["BFS TEMPLATE FOR GRIDS"]
+    N2["int bfs(int[][] grid, int startR, int startC) {"]
+    N3["int m = grid.length, n = grid[0].length;"]
+    N4["boolean[][] visited = new boolean[m][n];"]
+    N5["Queue&lt;int[]&gt; queue = new LinkedList&lt;&gt;();"]
+    N6["queue.offer(new int[]{startR, startC});"]
+    N7["visited[startR][startC] = true; // ← MARK BEFORE ENQUEU"]
+    N8["int steps = 0;"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```
@@ -1740,6 +2115,27 @@ class Solution {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: DFS TEMPLATE FOR GRIDS → void dfs(int[][] grid, int r, int c) { | void dfs(int[][] grid, int r, int c) { → c &lt; 0 || c &gt;= grid[0].length) return; // Out of b | c &lt; 0 || c &gt;= grid[0].length) return; // Out of b → grid[r][c] = VISITED; // Mark (in-place) | grid[r][c] = VISITED; // Mark (in-place) → dfs(grid, r - 1, c); // Up | dfs(grid, r - 1, c); // Up → dfs(grid, r + 1, c); // Down | dfs(grid, r + 1, c); // Down → dfs(grid, r, c - 1); // Left | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["DFS TEMPLATE FOR GRIDS"]
+    N2["void dfs(int[][] grid, int r, int c) {"]
+    N3["c &lt; 0 || c &gt;= grid[0].length) return; // Out of b"]
+    N4["grid[r][c] = VISITED; // Mark (in-place)"]
+    N5["dfs(grid, r - 1, c); // Up"]
+    N6["dfs(grid, r + 1, c); // Down"]
+    N7["dfs(grid, r, c - 1); // Left"]
+    N8["dfs(grid, r, c + 1); // Right"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
 ║                COMPLEXITY SUMMARY — ALL 18 PROBLEMS                          ║
@@ -1766,6 +2162,27 @@ class Solution {
 ║  H3 │ Swim Rising Water (778)     │ O(n²·log n) │ O(n²)   │ Dijkstra         ║
 ║  H4 │ Trapping Rain II (407)      │ O(mn·log mn)│ O(m·n)  │ Heap border      ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: COMPLEXITY SUMMARY — ALL 18 PROBLEMS → # Problem Time Space Pattern | # Problem Time Space Pattern → E1 Flood Fill (733) O(m·n) O(m·n) DFS fill | E1 Flood Fill (733) O(m·n) O(m·n) DFS fill → E2 Island Perimeter (463) O(m·n) O(1) Count | E2 Island Perimeter (463) O(m·n) O(1) Count → E3 Reshape Matrix (566) O(m·n) O(m·n) Index map | E3 Reshape Matrix (566) O(m·n) O(m·n) Index map → E4 Transpose Matrix (867) O(m·n) O(m·n) Transform | E4 Transpose Matrix (867) O(m·n) O(m·n) Transform → M1 Number of Islands (200) O(m·n) O(m·n) DFS flood | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["COMPLEXITY SUMMARY — ALL 18 PROBLEMS"]
+    N2["# Problem Time Space Pattern"]
+    N3["E1 Flood Fill (733) O(m·n) O(m·n) DFS fill"]
+    N4["E2 Island Perimeter (463) O(m·n) O(1) Count"]
+    N5["E3 Reshape Matrix (566) O(m·n) O(m·n) Index map"]
+    N6["E4 Transpose Matrix (867) O(m·n) O(m·n) Transform"]
+    N7["M1 Number of Islands (200) O(m·n) O(m·n) DFS flood"]
+    N8["M2 Rotting Oranges (994) O(m·n) O(m·n) Multi-BFS"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

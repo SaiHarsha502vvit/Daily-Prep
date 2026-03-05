@@ -724,6 +724,27 @@ To move n disks from A → C:
   Total moves = 2^n - 1 = 2^3 - 1 = 7 moves
 ```
 
+> **Flow**: - Base case is obvious (1 disk → just move it) | To move n disks from A → C: | 1. Move top n-1 disks from A → B (using C as helper) | 3. Move n-1 disks from B → C (using A as helper) | Step 4: Move disk 3: A → C ← THE BIG MOVE
+
+```mermaid
+flowchart TD
+    N1["- Base case is obvious (1 disk"]
+    N2["just move it)"]
+    N3["To move n disks from A"]
+    N4["C:"]
+    N5["1. Move top n-1 disks from A"]
+    N6["B (using C as helper)"]
+    N7["3. Move n-1 disks from B"]
+    N8["C (using A as helper)"]
+    N9["Step 4: Move disk 3: A"]
+    N10["C ← THE BIG MOVE"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+    N7 --> N8
+    N9 --> N10
+```
+
 ```java
 // Tower of Hanoi — Classic Recursive Solution
 public void towerOfHanoi(int n, char source, char target, char auxiliary) {

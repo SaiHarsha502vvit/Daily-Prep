@@ -49,6 +49,19 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: WHY: Why Security is Critical? / • Data breaches cost m → HOW: How Spring Security Works? / • Filter chain: Reque | HOW: How Spring Security Works? / • Filter chain: Reque → WHEN: When to Use Each Auth Strategy? / • Session-based | WHEN: When to Use Each Auth Strategy? / • Session-based → WHICH: Which Security Concepts to Master? / ESSENTIAL: 
+
+```mermaid
+flowchart TD
+    N1["WHY: Why Security is Critical? / • Data breaches cost m"]
+    N2["HOW: How Spring Security Works? / • Filter chain: Reque"]
+    N3["WHEN: When to Use Each Auth Strategy? / • Session-based"]
+    N4["WHICH: Which Security Concepts to Master? / ESSENTIAL: "]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 ---
 
 # SECTION 1: AUTHENTICATION vs AUTHORIZATION
@@ -158,6 +171,25 @@ System checks: Does this user have ADMIN role? No → 403 Forbidden
 │  Controller (if all filters pass)                                               │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: 1. SecurityContextPersistenceFilter / → Loads SecurityC → 2. LogoutFilter / → Handles /logout URL | 2. LogoutFilter / → Handles /logout URL → 3. UsernamePasswordAuthenticationFilter / → Handles for | 3. UsernamePasswordAuthenticationFilter / → Handles for → 4. BasicAuthenticationFilter / → Handles HTTP Basic Aut | 4. BasicAuthenticationFilter / → Handles HTTP Basic Aut → 5. BearerTokenAuthenticationFilter (for JWT) / → Valida | 5. BearerTokenAuthenticationFilter (for JWT) / → Valida → 6. ExceptionTranslationFilter / → Converts security exc | 6. ExceptionTranslationFilter / → Converts security exc → 7. FilterSecurityInterceptor / AuthorizationFilter / → 
+
+```mermaid
+flowchart TD
+    N1["1. SecurityContextPersistenceFilter / → Loads SecurityC"]
+    N2["2. LogoutFilter / → Handles /logout URL"]
+    N3["3. UsernamePasswordAuthenticationFilter / → Handles for"]
+    N4["4. BasicAuthenticationFilter / → Handles HTTP Basic Aut"]
+    N5["5. BearerTokenAuthenticationFilter (for JWT) / → Valida"]
+    N6["6. ExceptionTranslationFilter / → Converts security exc"]
+    N7["7. FilterSecurityInterceptor / AuthorizationFilter / → "]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
 ```
 
 ---
@@ -290,6 +322,27 @@ WHY JWT?
 │    │                                    │                                       │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: JWT AUTHENTICATION FLOW → STEP 1: LOGIN | STEP 1: LOGIN → Client Server | Client Server → POST /api/auth/login | POST /api/auth/login → 'email': 'john@test.com', | 'email': 'john@test.com', → 'password': 'secret123' | 'password': 'secret123' → 1. Find user by email | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["JWT AUTHENTICATION FLOW"]
+    N2["STEP 1: LOGIN"]
+    N3["Client Server"]
+    N4["POST /api/auth/login"]
+    N5["'email': 'john@test.com',"]
+    N6["'password': 'secret123'"]
+    N7["1. Find user by email"]
+    N8["2. Verify password hash"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---
@@ -1197,6 +1250,27 @@ public class ProjectController {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: OAUTH2 AUTHORIZATION CODE FLOW → (Most common & most secure for web apps) | (Most common & most secure for web apps) → User Your App Auth Server Resource Server | User Your App Auth Server Resource Server → Click | Click → 'Login with | 'Login with → Google' | Google' → STEP 1: Redirect to Auth Server | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["OAUTH2 AUTHORIZATION CODE FLOW"]
+    N2["(Most common & most secure for web apps)"]
+    N3["User Your App Auth Server Resource Server"]
+    N4["Click"]
+    N5["'Login with"]
+    N6["Google'"]
+    N7["STEP 1: Redirect to Auth Server"]
+    N8["302 Redirect"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ```java
 // ═══════════════════════════════════════════════════════════════════════════════
 // OAuth2 LOGIN (Google, GitHub, Facebook, etc.)
@@ -1514,6 +1588,27 @@ public class BasicAuthSecurityConfig {
 │  □ Conduct regular security audits                                              │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: SECURITY CHECKLIST → AUTHENTICATION: | AUTHENTICATION: → □ Implement rate limiting on login endpoints | □ Implement rate limiting on login endpoints → □ Use short-lived access tokens (15-60 min) | □ Use short-lived access tokens (15-60 min) → □ Use longer-lived refresh tokens (7-30 days) | □ Use longer-lived refresh tokens (7-30 days) → □ Implement token blacklisting for logout | □ Implement token blacklisting for logout → □ Use HTTPS everywhere in production | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["SECURITY CHECKLIST"]
+    N2["AUTHENTICATION:"]
+    N3["□ Implement rate limiting on login endpoints"]
+    N4["□ Use short-lived access tokens (15-60 min)"]
+    N5["□ Use longer-lived refresh tokens (7-30 days)"]
+    N6["□ Implement token blacklisting for logout"]
+    N7["□ Use HTTPS everywhere in production"]
+    N8["AUTHORIZATION:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

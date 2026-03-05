@@ -53,6 +53,21 @@ MEMORY INSIGHT: The program call stack IS a stack.
   foo() returns → stack: [main]
 ```
 
+> **Flow**: main() calls foo() calls bar() → stack: [main, foo, bar] | bar() returns → stack: [main, foo] | foo() returns → stack: [main]
+
+```mermaid
+flowchart LR
+    N1["main() calls foo() calls bar()"]
+    N2["stack: [main, foo, bar]"]
+    N3["bar() returns"]
+    N4["stack: [main, foo]"]
+    N5["foo() returns"]
+    N6["stack: [main]"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+```
+
 #### WHAT: Operations
 
 ```
@@ -82,6 +97,17 @@ push(40):    pop():       peek():
 ├─────┤
 │  10 │
 └─────┘
+```
+
+> **Flow**: 30 / 20 / 10 → 40 / 30 / 20 / 10 | 40 / 30 / 20 / 10 → 20 / 10
+
+```mermaid
+flowchart TD
+    N1["30 / 20 / 10"]
+    N2["40 / 30 / 20 / 10"]
+    N3["20 / 10"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 #### IMPLEMENT: Stack using Array
@@ -150,6 +176,32 @@ HOW IT WORKS:
   3 steps instead of 6 (linear would need to check indices 0-5)
 ```
 
+> **Flow**: Linear search: check every element → O(n) | Array of 1 billion elements → 1 billion comparisons | Binary search: eliminate half each step → O(log n) | Array of 1 billion elements → ~30 comparisons! | Step 1: mid = arr[4] = 16. 16 &lt; 23 → search right half | Step 2: mid = arr[7] = 56. 56 &gt; 23 → search left half | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Linear search: check every element"]
+    N2["O(n)"]
+    N3["Array of 1 billion elements"]
+    N4["1 billion comparisons"]
+    N5["Binary search: eliminate half each step"]
+    N6["O(log n)"]
+    N7["~30 comparisons!"]
+    N8["Step 1: mid = arr[4] = 16. 16 &lt; 23"]
+    N9["search right half"]
+    N10["Step 2: mid = arr[7] = 56. 56 &gt; 23"]
+    N11["search left half"]
+    N12["Step 3: mid = arr[5] = 23. 23 == 23"]
+    N13["FOUND! ✓"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+    N3 --> N7
+    N8 --> N9
+    N10 --> N11
+    N12 --> N13
+```
+
 #### IMPLEMENT: Two Templates
 
 ```java
@@ -210,6 +262,20 @@ ALGORITHM:
   At end: stack must be empty
 ```
 
+> **Flow**: Input: '({[]})' → true | Input: '({[}])' → false | Input: '(((' → false
+
+```mermaid
+flowchart LR
+    N1["Input: '({[]})'"]
+    N2["true"]
+    N3["Input: '({[}])'"]
+    N4["false"]
+    N5["Input: '((('"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N4
+```
+
 ```java
 public boolean isValid(String s) {
     Deque<Character> stack = new ArrayDeque<>();
@@ -252,6 +318,32 @@ SCENARIO: Text editor undo/redo — two stacks!
   WHY clear redo on new action?
   You went back in time, then did something NEW → old future is invalid.
   (Same as git: checkout old commit + make new commit = old branch abandoned)
+```
+
+> **Flow**: Type 'Hello' → undo: [Hello] redo: [] | Type ' World' → undo: [Hello, World] redo: [] | Press Ctrl+Z → undo: [Hello] redo: [World] ← pop undo, push redo | Press Ctrl+Z → undo: [] redo: [World, Hello] | Press Ctrl+Y → undo: [Hello] redo: [World] ← pop redo, push undo | Type ' Java' → undo: [Hello, Java] redo: [] ← new action CLEARS r | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Type 'Hello'"]
+    N2["undo: [Hello] redo: []"]
+    N3["Type ' World'"]
+    N4["undo: [Hello, World] redo: []"]
+    N5["Press Ctrl+Z"]
+    N6["undo: [Hello] redo: [World] ← pop undo, push redo"]
+    N7["undo: [] redo: [World, Hello]"]
+    N8["Press Ctrl+Y"]
+    N9["undo: [Hello] redo: [World] ← pop redo, push undo"]
+    N10["Type ' Java'"]
+    N11["undo: [Hello, Java] redo: [] ← new action CLEARS r"]
+    N12["You went back in time, then did something NEW"]
+    N13["old future is invalid."]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+    N5 --> N7
+    N8 --> N9
+    N10 --> N11
+    N12 --> N13
 ```
 
 ---
@@ -330,6 +422,18 @@ Input:  [1, 3, 5, 6], target = 2  → Output: 1 (would insert at index 1)
 This is exactly the LOWER BOUND template from today!
 ```
 
+> **Flow**: Input: [1, 3, 5, 6], target = 5 → Output: 2 (found at index 2) | Input: [1, 3, 5, 6], target = 2 → Output: 1 (would insert at index 1)
+
+```mermaid
+flowchart LR
+    N1["Input: [1, 3, 5, 6], target = 5"]
+    N2["Output: 2 (found at index 2)"]
+    N3["Input: [1, 3, 5, 6], target = 2"]
+    N4["Output: 1 (would insert at index 1)"]
+    N1 --> N2
+    N3 --> N4
+```
+
 ```java
 public int searchInsert(int[] nums, int target) {
     int left = 0, right = nums.length;
@@ -354,6 +458,21 @@ push(3):  main: [5,3]     min: [5,3]      ← new min: 3
 push(7):  main: [5,3,7]   min: [5,3,3]    ← min still 3
 pop():    main: [5,3]     min: [5,3]
 getMin(): return min.peek() = 3 ✓
+```
+
+> **Flow**: push(5): main: [5] min: [5] → push(3): main: [5,3] min: [5,3] ← new min: 3 | push(3): main: [5,3] min: [5,3] ← new min: 3 → push(7): main: [5,3,7] min: [5,3,3] ← min still 3 | push(7): main: [5,3,7] min: [5,3,3] ← min still 3 → pop(): main: [5,3] min: [5,3] | pop(): main: [5,3] min: [5,3] → getMin(): return min.peek() = 3 ✓
+
+```mermaid
+flowchart TD
+    N1["push(5): main: [5] min: [5]"]
+    N2["push(3): main: [5,3] min: [5,3] ← new min: 3"]
+    N3["push(7): main: [5,3,7] min: [5,3,3] ← min still 3"]
+    N4["pop(): main: [5,3] min: [5,3]"]
+    N5["getMin(): return min.peek() = 3 ✓"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
 ```
 
 ```java

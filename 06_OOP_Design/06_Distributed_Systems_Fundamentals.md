@@ -66,6 +66,17 @@
     Use when: Social media feeds, product catalog, shopping cart
 ```
 
+> **Flow**: When partition happens → system blocks/errors rather than return stale data | When partition happens → system returns potentially stale data
+
+```mermaid
+flowchart LR
+    N1["When partition happens"]
+    N2["system blocks/errors rather than return stale data"]
+    N3["system returns potentially stale data"]
+    N1 --> N2
+    N1 --> N3
+```
+
 ### CAP in Plain English
 
 > SCENARIO: You run 2 database replicas (Node A, Node B)
@@ -124,6 +135,27 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: SPECTRUM: Strong ← → Weak → 1. STRONG CONSISTENCY (Linearizability) | 1. STRONG CONSISTENCY (Linearizability) → → Every read returns the most recent write | → Every read returns the most recent write → → As if there's only one copy of data | → As if there's only one copy of data → → Cost: High latency (must coordinate all replicas) | → Cost: High latency (must coordinate all replicas) → → Example: Single PostgreSQL instance, Google Spanner | → Example: Single PostgreSQL instance, Google Spanner → 2. SEQUENTIAL CONSISTENCY | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["SPECTRUM: Strong ← → Weak"]
+    N2["1. STRONG CONSISTENCY (Linearizability)"]
+    N3["→ Every read returns the most recent write"]
+    N4["→ As if there's only one copy of data"]
+    N5["→ Cost: High latency (must coordinate all replicas)"]
+    N6["→ Example: Single PostgreSQL instance, Google Spanner"]
+    N7["2. SEQUENTIAL CONSISTENCY"]
+    N8["→ All operations appear in SOME total order"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## Part 4: Replication Strategies
@@ -161,6 +193,15 @@
    ✅ No single point of failure
    ❌ Complex conflict resolution, repair mechanisms
    Examples: Cassandra, DynamoDB, Riak
+```
+
+> **Flow**: Client --(writes)--> → Leader
+
+```mermaid
+flowchart LR
+    N1["Client"]
+    N2["→ Leader"]
+    N1 -->|"writes"| N2
 ```
 
 ---
@@ -205,6 +246,27 @@
 │  Virtual nodes: Each physical node owns multiple positions on ring              │
 │  → Better distribution, smoother rebalancing                                    │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: STRATEGY 1: Range-Based Partitioning → Shard 1: Users A-F Shard 2: Users G-M Shard 3: Users N- | Shard 1: Users A-F Shard 2: Users G-M Shard 3: Users N- → STRATEGY 2: Hash-Based Partitioning | STRATEGY 2: Hash-Based Partitioning → shard = hash(userId) % num_shards | shard = hash(userId) % num_shards → ✅ Even distribution (no hot spots for simple partition | ✅ Even distribution (no hot spots for simple partition → ❌ Range queries require scatter-gather (hit all shards) | ❌ Range queries require scatter-gather (hit all shards) → ❌ Adding/removing shard requires massive data movement | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["STRATEGY 1: Range-Based Partitioning"]
+    N2["Shard 1: Users A-F Shard 2: Users G-M Shard 3: Users N-"]
+    N3["STRATEGY 2: Hash-Based Partitioning"]
+    N4["shard = hash(userId) % num_shards"]
+    N5["✅ Even distribution (no hot spots for simple partition"]
+    N6["❌ Range queries require scatter-gather (hit all shards)"]
+    N7["❌ Adding/removing shard requires massive data movement"]
+    N8["Nodes and keys mapped to a hash ring (0 to 2^32)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---
@@ -273,6 +335,27 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: PATTERN WHAT USED IN → to prevent cascade failures Resilience4J | to prevent cascade failures Resilience4J → Bulkhead Isolate failures to one Thread pool per servic | Bulkhead Isolate failures to one Thread pool per servic → component, protect others | component, protect others → Saga Distributed transaction as Order → Pay → Ship | Saga Distributed transaction as Order → Pay → Ship → sequence of local txns + with compensation | sequence of local txns + with compensation → compensations | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["PATTERN WHAT USED IN"]
+    N2["to prevent cascade failures Resilience4J"]
+    N3["Bulkhead Isolate failures to one Thread pool per servic"]
+    N4["component, protect others"]
+    N5["Saga Distributed transaction as Order → Pay → Ship"]
+    N6["sequence of local txns + with compensation"]
+    N7["compensations"]
+    N8["CQRS Separate read and write Event-sourced systems"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## Part 8: Interview Quick-Fire Questions
@@ -298,6 +381,18 @@ Q: "What's the difference between horizontal and vertical scaling?"
 A: Vertical: bigger machine (more CPU/RAM). Simple but has ceiling.
    Horizontal: more machines. Complex but unlimited scale.
    Horizontal needs: load balancing, data partitioning, state management.
+```
+
+> **Flow**: Banking → CP (refuse stale reads, accept downtime). | Social media → AP (serve stale data, stay available).
+
+```mermaid
+flowchart LR
+    N1["Banking"]
+    N2["CP (refuse stale reads, accept downtime)."]
+    N3["Social media"]
+    N4["AP (serve stale data, stay available)."]
+    N1 --> N2
+    N3 --> N4
 ```
 
 ---

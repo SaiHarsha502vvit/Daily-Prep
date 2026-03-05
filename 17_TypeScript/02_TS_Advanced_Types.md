@@ -206,6 +206,19 @@ class QueryBuilder<T> {
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: TS provides 15+ built-in utility types. These transform → existing types into new ones WITHOUT rewriting. | existing types into new ones WITHOUT rewriting. → WHY: Avoid duplicating type definitions. If User change | WHY: Avoid duplicating type definitions. If User change → all derived types (PartialUser, UserSummary) update too
+
+```mermaid
+flowchart TD
+    N1["TS provides 15+ built-in utility types. These transform"]
+    N2["existing types into new ones WITHOUT rewriting."]
+    N3["WHY: Avoid duplicating type definitions. If User change"]
+    N4["all derived types (PartialUser, UserSummary) update too"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 ```typescript
 interface User {
     id: number;
@@ -325,6 +338,27 @@ type CreateUserParams = Parameters<typeof createUser>;
 ║  Awaited<T>           │ Unwrap Promise<T>      │ Async return types  ║
 ║  ConstructorParams<C> │ Constructor params     │ Factory patterns    ║
 ╚══════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: Utility Type What It Does Use Case → Partial&lt;T&gt; All props optional Update/patch APIs | Partial&lt;T&gt; All props optional Update/patch APIs → Required&lt;T&gt; All props required Config defaults | Required&lt;T&gt; All props required Config defaults → Readonly&lt;T&gt; All props readonly Immutable data | Readonly&lt;T&gt; All props readonly Immutable data → Pick&lt;T, K&gt; Keep only K props API responses | Pick&lt;T, K&gt; Keep only K props API responses → Omit&lt;T, K&gt; Remove K props Create DTOs | Omit&lt;T, K&gt; Remove K props Create DTOs → Record&lt;K, V&gt; Object K→V mapping Dictionaries | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Utility Type What It Does Use Case"]
+    N2["Partial&lt;T&gt; All props optional Update/patch APIs"]
+    N3["Required&lt;T&gt; All props required Config defaults"]
+    N4["Readonly&lt;T&gt; All props readonly Immutable data"]
+    N5["Pick&lt;T, K&gt; Keep only K props API responses"]
+    N6["Omit&lt;T, K&gt; Remove K props Create DTOs"]
+    N7["Record&lt;K, V&gt; Object K→V mapping Dictionaries"]
+    N8["Extract&lt;T, U&gt; Keep matching types Filter unions"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---
@@ -628,6 +662,24 @@ Q: What is a discriminated union?
 Q: Explain conditional types distribution?
 → When T in `T extends U ? X : Y` is a union, the condition distributes
   over each member. string | number → IsString<string> | IsString<number>.
+```
+
+> **Flow**: Pick&lt;User, 'name'|'email'&gt; → {name, email} | Omit&lt;User, 'id'&gt; → everything except id. | 'sm' | 'md' + 'red' | 'blue' → 'sm-red' | 'sm-blue' | 'md-red' | 'md-blue' | over each member. string | number → IsString&lt;string&gt; | IsString&lt;number&gt;.
+
+```mermaid
+flowchart LR
+    N1["Pick&lt;User, 'name'|'email'&gt;"]
+    N2["{name, email}"]
+    N3["Omit&lt;User, 'id'&gt;"]
+    N4["everything except id."]
+    N5["'sm' | 'md' + 'red' | 'blue'"]
+    N6["'sm-red' | 'sm-blue' | 'md-red' | 'md-blue'"]
+    N7["over each member. string | number"]
+    N8["IsString&lt;string&gt; | IsString&lt;number&gt;."]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+    N7 --> N8
 ```
 
 ---

@@ -83,6 +83,17 @@ WITHIN A THREAD:
 └─────────────────────────────────────────┘
 ```
 
+> **Flow**: Code / Data/Heap / Thread Thrd / Stack Stck → Code / Data/Heap / Thread / Stack | Code / Data/Heap / Thread / Stack → Thread (OS-managed, ~1MB stack) / Coroutine1 Coroutine2
+
+```mermaid
+flowchart TD
+    N1["Code / Data/Heap / Thread Thrd / Stack Stck"]
+    N2["Code / Data/Heap / Thread / Stack"]
+    N3["Thread (OS-managed, ~1MB stack) / Coroutine1 Coroutine2"]
+    N1 --> N2
+    N2 --> N3
+```
+
 ---
 
 ## 2. Coroutines: What They Actually Are
@@ -114,6 +125,17 @@ Coroutine: CODE SUSPENDS itself (voluntary — programmer decides)
 
 This is called COOPERATIVE multitasking (coroutines cooperate)
 vs PREEMPTIVE multitasking (OS preempts threads).
+```
+
+> **Flow**: start --(→ runs →)--> → SUSPEND | → SUSPEND --(→ ... →)--> RESUME
+
+```mermaid
+flowchart TD
+    N1["start"]
+    N2["→ SUSPEND"]
+    N3["RESUME"]
+    N1 -->|"→ runs →"| N2
+    N2 -->|"→ ... →"| N3
 ```
 
 ```kotlin
@@ -169,6 +191,27 @@ suspend fun fetchUserData(): User {
 ║  → Exceptions (throw = abort current, continuation is catch block)   ║
 ║  → Callbacks (the callback IS the continuation)                      ║
 ╚══════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: A CONTINUATION = 'The rest of the computation' → THE BOOKMARK ANALOGY | THE BOOKMARK ANALOGY → You're reading a book. At page 50, you place a bookmark | You're reading a book. At page 50, you place a bookmark → what's left to read. | what's left to read. → The CONTINUATION is 'everything from the bookmark forwa | The CONTINUATION is 'everything from the bookmark forwa → In code: | In code: → int x = 5; ← Already done | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["A CONTINUATION = 'The rest of the computation'"]
+    N2["THE BOOKMARK ANALOGY"]
+    N3["You're reading a book. At page 50, you place a bookmark"]
+    N4["what's left to read."]
+    N5["The CONTINUATION is 'everything from the bookmark forwa"]
+    N6["In code:"]
+    N7["int x = 5; ← Already done"]
+    N8["int y = x + 3; ← CONTINUATION starts here"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```
@@ -240,6 +283,27 @@ add(3, 4, function(result) {
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: CONTINUATION = The concept (a snapshot of 'the rest') → COROUTINE = A mechanism that USES continuations | COROUTINE = A mechanism that USES continuations → Analogy: | Analogy: → Continuation = A saved game state | Continuation = A saved game state → Coroutine = A game that can save and load | Coroutine = A game that can save and load → When a coroutine SUSPENDS: | When a coroutine SUSPENDS: → → It captures a CONTINUATION (saves its state) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["CONTINUATION = The concept (a snapshot of 'the rest')"]
+    N2["COROUTINE = A mechanism that USES continuations"]
+    N3["Analogy:"]
+    N4["Continuation = A saved game state"]
+    N5["Coroutine = A game that can save and load"]
+    N6["When a coroutine SUSPENDS:"]
+    N7["→ It captures a CONTINUATION (saves its state)"]
+    N8["When a coroutine RESUMES:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 5. How async/await Works In Different Languages
@@ -286,6 +350,27 @@ add(3, 4, function(result) {
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: But the UNDERLYING MODEL varies dramatically: → JAVASCRIPT: | JAVASCRIPT: → → Single-threaded event loop | → Single-threaded event loop → → async function returns a Promise | → async function returns a Promise → → NO parallelism (one thread), just concurrency | → NO parallelism (one thread), just concurrency → KOTLIN: | KOTLIN: → → Compiler transforms suspend functions into state mach | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["But the UNDERLYING MODEL varies dramatically:"]
+    N2["JAVASCRIPT:"]
+    N3["→ Single-threaded event loop"]
+    N4["→ async function returns a Promise"]
+    N5["→ NO parallelism (one thread), just concurrency"]
+    N6["KOTLIN:"]
+    N7["→ Compiler transforms suspend functions into state mach"]
+    N8["→ Coroutines run on a dispatcher (thread pool)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 6. Java Virtual Threads (Project Loom): The Game Changer
@@ -316,6 +401,27 @@ add(3, 4, function(result) {
 ║  New way: Virtual thread per request, same blocking code →           ║
 ║           1,000,000 concurrent requests!                             ║
 ╚══════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: THE POSTAL SERVICE ANALOGY → Platform Thread (OS Thread) = A dedicated postal truck | Platform Thread (OS Thread) = A dedicated postal truck → → Limited (can only have so many trucks) | → Limited (can only have so many trucks) → Virtual Thread = A package (letter) | Virtual Thread = A package (letter) → → Extremely cheap (just a piece of paper = ~few KB) | → Extremely cheap (just a piece of paper = ~few KB) → → Millions possible | → Millions possible → delivers other packages. When the house opens the door, | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE POSTAL SERVICE ANALOGY"]
+    N2["Platform Thread (OS Thread) = A dedicated postal truck"]
+    N3["→ Limited (can only have so many trucks)"]
+    N4["Virtual Thread = A package (letter)"]
+    N5["→ Extremely cheap (just a piece of paper = ~few KB)"]
+    N6["→ Millions possible"]
+    N7["delivers other packages. When the house opens the door,"]
+    N8["any available truck picks up the package and continues."]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```java
@@ -372,6 +478,27 @@ executor.submit(() -> {
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: OS THREAD (Platform Thread): → → Managed by the operating system | → Managed by the operating system → → ~1MB stack, expensive context switch | → ~1MB stack, expensive context switch → → OS scheduler decides when to run (preemptive) | → OS scheduler decides when to run (preemptive) → → Used by: Java (traditional), C, C++, Rust | → Used by: Java (traditional), C, C++, Rust → GREEN THREAD: | GREEN THREAD: → → Managed by the RUNTIME/VM, not the OS | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["OS THREAD (Platform Thread):"]
+    N2["→ Managed by the operating system"]
+    N3["→ ~1MB stack, expensive context switch"]
+    N4["→ OS scheduler decides when to run (preemptive)"]
+    N5["→ Used by: Java (traditional), C, C++, Rust"]
+    N6["GREEN THREAD:"]
+    N7["→ Managed by the RUNTIME/VM, not the OS"]
+    N8["→ Scheduled in user space (OS sees one thread)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 8. The Event Loop Model: JavaScript & Node.js
@@ -407,6 +534,27 @@ LIMITATION: CPU-heavy work BLOCKS the single thread.
 Solution: Worker Threads, or offload to microservices.
 ```
 
+> **Flow**: THE SINGLE-THREADED EVENT LOOP → model comparison) | model comparison) → Call Stack (single thread — runs JS code) | Call Stack (single thread — runs JS code) → Currently executing function | Currently executing function → ↓ when stack is empty ↓ | ↓ when stack is empty ↓ → Microtask Queue (Promises, queueM) ← checked FIRST | Microtask Queue (Promises, queueM) ← checked FIRST → Macrotask Queue (setTimeout, IO) ← checked AFTER | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE SINGLE-THREADED EVENT LOOP"]
+    N2["model comparison)"]
+    N3["Call Stack (single thread — runs JS code)"]
+    N4["Currently executing function"]
+    N5["↓ when stack is empty ↓"]
+    N6["Microtask Queue (Promises, queueM) ← checked FIRST"]
+    N7["Macrotask Queue (setTimeout, IO) ← checked AFTER"]
+    N8["thread pool. When complete, callbacks are queued."]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 9. Go Goroutines: The CSP Model
@@ -439,6 +587,27 @@ Solution: Worker Threads, or offload to microservices.
 ║  → Easy to get wrong (race conditions, deadlocks)                    ║
 ║  → CSP avoids most of these problems by design                       ║
 ╚══════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: Go's approach: 'Don't communicate by sharing memory. → Share memory by communicating.' — Go proverb | Share memory by communicating.' — Go proverb → GOROUTINE = Lightweight coroutine (starts at ~2KB stack | GOROUTINE = Lightweight coroutine (starts at ~2KB stack → → M:N scheduling: M goroutines on N OS threads | → M:N scheduling: M goroutines on N OS threads → → go func() { ... } — that's it, it's running | → go func() { ... } — that's it, it's running → → Millions possible (vs thousands of OS threads) | → Millions possible (vs thousands of OS threads) → CHANNEL = Typed pipe for goroutine communication | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Go's approach: 'Don't communicate by sharing memory."]
+    N2["Share memory by communicating.' — Go proverb"]
+    N3["GOROUTINE = Lightweight coroutine (starts at ~2KB stack"]
+    N4["→ M:N scheduling: M goroutines on N OS threads"]
+    N5["→ go func() { ... } — that's it, it's running"]
+    N6["→ Millions possible (vs thousands of OS threads)"]
+    N7["CHANNEL = Typed pipe for goroutine communication"]
+    N8["→ ch := make(chan int) — create a channel"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---
@@ -478,6 +647,27 @@ Solution: Worker Threads, or offload to microservices.
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: THE JUGGLING ANALOGY (Rob Pike's definition): → CONCURRENCY = Dealing with multiple things at once. | CONCURRENCY = Dealing with multiple things at once. → → One juggler with 3 balls — only holds ONE at a time | → One juggler with 3 balls — only holds ONE at a time → → Switches rapidly between them (interleaving) | → Switches rapidly between them (interleaving) → → STRUCTURE of the program | → STRUCTURE of the program → PARALLELISM = Doing multiple things at once. | PARALLELISM = Doing multiple things at once. → → THREE jugglers, each with 1 ball — truly simultaneous | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE JUGGLING ANALOGY (Rob Pike's definition):"]
+    N2["CONCURRENCY = Dealing with multiple things at once."]
+    N3["→ One juggler with 3 balls — only holds ONE at a time"]
+    N4["→ Switches rapidly between them (interleaving)"]
+    N5["→ STRUCTURE of the program"]
+    N6["PARALLELISM = Doing multiple things at once."]
+    N7["→ THREE jugglers, each with 1 ball — truly simultaneous"]
+    N8["→ Multiple CPUs executing instructions at the same time"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 11. Deadlock, Livelock, Starvation: The Three Concurrency Diseases
@@ -501,6 +691,21 @@ Solution: Worker Threads, or offload to microservices.
 ║  → Others make progress, but ONE thread never gets resources.        ║
 ║  → Fix: Fair locks, priority aging, FIFO scheduling                  ║
 ╚══════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: other's to eat. Neither releases. Both starve forever. → → Both STOPPED. No progress. | → Both STOPPED. No progress. → → Fix: Lock ordering, timeout, lock-free algorithms | → Fix: Lock ordering, timeout, lock-free algorithms → → Both MOVING but still no progress. | → Both MOVING but still no progress. → → Fix: Fair locks, priority aging, FIFO scheduling
+
+```mermaid
+flowchart TD
+    N1["other's to eat. Neither releases. Both starve forever."]
+    N2["→ Both STOPPED. No progress."]
+    N3["→ Fix: Lock ordering, timeout, lock-free algorithms"]
+    N4["→ Both MOVING but still no progress."]
+    N5["→ Fix: Fair locks, priority aging, FIFO scheduling"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
 ```
 
 ---
@@ -535,6 +740,27 @@ Solution: Worker Threads, or offload to microservices.
 ║  IO-bound → More threads/coroutines, less CPU (async shines)         ║
 ║  CPU-bound → More cores, not more threads (parallelism shines)       ║
 ╚══════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: DECISION MATRIX → Problem Best Model | Problem Best Model → High-concurrency web Virtual threads (Java 21) or | High-concurrency web Virtual threads (Java 21) or → server (IO-bound) Go goroutines or Node.js event loop | server (IO-bound) Go goroutines or Node.js event loop → CPU-intensive computation OS threads / parallel streams | CPU-intensive computation OS threads / parallel streams → (number crunching) Rust rayon / Java ForkJoinPool | (number crunching) Rust rayon / Java ForkJoinPool → UI responsiveness Event loop (JS) / Main thread + | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["DECISION MATRIX"]
+    N2["Problem Best Model"]
+    N3["High-concurrency web Virtual threads (Java 21) or"]
+    N4["server (IO-bound) Go goroutines or Node.js event loop"]
+    N5["CPU-intensive computation OS threads / parallel streams"]
+    N6["(number crunching) Rust rayon / Java ForkJoinPool"]
+    N7["UI responsiveness Event loop (JS) / Main thread +"]
+    N8["(don't block UI) background threads (Android/iOS)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

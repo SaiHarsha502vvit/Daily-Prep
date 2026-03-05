@@ -51,6 +51,19 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: WHY: Why Learn All These Annotations? / • Annotations A → HOW: How Annotations Work? / • Metadata: Annotations ar | HOW: How Annotations Work? / • Metadata: Annotations ar → WHEN: When to Use Each Annotation Category? / • JPA Lif | WHEN: When to Use Each Annotation Category? / • JPA Lif → WHICH: Which Annotations are Most Critical? / ESSENTIAL
+
+```mermaid
+flowchart TD
+    N1["WHY: Why Learn All These Annotations? / • Annotations A"]
+    N2["HOW: How Annotations Work? / • Metadata: Annotations ar"]
+    N3["WHEN: When to Use Each Annotation Category? / • JPA Lif"]
+    N4["WHICH: Which Annotations are Most Critical? / ESSENTIAL"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 ---
 
 ## 📚 Table of Contents
@@ -120,6 +133,22 @@
 │  └───────────┘                                                  │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: @PrePersist → @PostPersist | @PostPersist → @PreUpdate | @PreUpdate → @PostUpdate | @PreRemove → @PostRemove
+
+```mermaid
+flowchart TD
+    N1["@PrePersist"]
+    N2["@PostPersist"]
+    N3["@PreUpdate"]
+    N4["@PostUpdate"]
+    N5["@PreRemove"]
+    N6["@PostRemove"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N5 --> N6
 ```
 
 ### Complete Entity Lifecycle Example

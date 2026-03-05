@@ -38,6 +38,27 @@ AFTER Spring Boot:
   → "Hello World" in 5 MINUTES
 ```
 
+> **Flow**: BEFORE Spring Boot (traditional Java web dev): → 1. Write 200+ lines of XML configuration | 1. Write 200+ lines of XML configuration → 2. Set up a Tomcat server manually | 2. Set up a Tomcat server manually → 3. Add 30+ library dependencies with exact versions | 3. Add 30+ library dependencies with exact versions → 4. Configure database connection pools | 4. Configure database connection pools → 5. Write boilerplate code for every endpoint | 5. Write boilerplate code for every endpoint → → 2-3 DAYS just to get 'Hello World' running | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["BEFORE Spring Boot (traditional Java web dev):"]
+    N2["1. Write 200+ lines of XML configuration"]
+    N3["2. Set up a Tomcat server manually"]
+    N4["3. Add 30+ library dependencies with exact versions"]
+    N5["4. Configure database connection pools"]
+    N6["5. Write boilerplate code for every endpoint"]
+    N7["→ 2-3 DAYS just to get 'Hello World' running"]
+    N8["AFTER Spring Boot:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 #### WHO uses Spring Boot?
 
 ```
@@ -81,6 +102,27 @@ WHY layers?
   - Maintainability (change database without touching controller)
 ```
 
+> **Flow**: Spring Boot Architecture: → YOUR APPLICATION | YOUR APPLICATION → Controller Service Repository | Controller Service Repository → (REST API) → (Business) → (Database) | (REST API) → (Business) → (Database) → SPRING BOOT AUTO-CONFIG | SPRING BOOT AUTO-CONFIG → (Tomcat, Jackson, DataSource, Security) | (Tomcat, Jackson, DataSource, Security) → SPRING FRAMEWORK | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Spring Boot Architecture:"]
+    N2["YOUR APPLICATION"]
+    N3["Controller Service Repository"]
+    N4["(REST API) → (Business) → (Database)"]
+    N5["SPRING BOOT AUTO-CONFIG"]
+    N6["(Tomcat, Jackson, DataSource, Security)"]
+    N7["SPRING FRAMEWORK"]
+    N8["(IoC Container, DI, AOP, MVC)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### Part 2: Core Concepts (30 min)
 
 #### IoC (Inversion of Control) and DI (Dependency Injection)
@@ -112,6 +154,15 @@ IoC CONTAINER:
     SPRING (kitchen) = creates objects, manages lifecycle
     MENU (annotations) = @Component, @Service, @Repository
     ORDER (injection) = @Autowired, constructor injection
+```
+
+> **Flow**: // Switch MySQL → PostgreSQL by changing ONE config line
+
+```mermaid
+flowchart LR
+    N1["// Switch MySQL"]
+    N2["PostgreSQL by changing ONE config line"]
+    N1 --> N2
 ```
 
 #### Annotations you must know
@@ -181,6 +232,27 @@ STEP 2: Project structure generated:
         application.properties      ← Configuration
         static/                     ← Frontend files
         templates/                  ← HTML templates
+```
+
+> **Flow**: STEP 1: Go to https://start.spring.io → - Project: Maven | - Project: Maven → - Language: Java | - Language: Java → - Spring Boot: 3.x | - Spring Boot: 3.x → - Dependencies: Spring Web, Spring Data JPA, H2 Databas | - Dependencies: Spring Web, Spring Data JPA, H2 Databas → STEP 2: Project structure generated: | STEP 2: Project structure generated: → src/ | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["STEP 1: Go to https://start.spring.io"]
+    N2["- Project: Maven"]
+    N3["- Language: Java"]
+    N4["- Spring Boot: 3.x"]
+    N5["- Dependencies: Spring Web, Spring Data JPA, H2 Databas"]
+    N6["STEP 2: Project structure generated:"]
+    N7["src/"]
+    N8["main/"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 #### Complete Hello World API
@@ -280,6 +352,27 @@ GET http://localhost:8080/api/products
 
 GET http://localhost:8080/api/products/1
   → Returns: {"id": 1, "name": "Laptop", "price": 999.99}
+```
+
+> **Flow**: START: mvn spring-boot:run → → Tomcat starts on port 8080 | → Tomcat starts on port 8080 → GET http://localhost:8080/api/products | GET http://localhost:8080/api/products → → Returns: [] | → Returns: [] → POST http://localhost:8080/api/products | POST http://localhost:8080/api/products → Body: {'name': 'Laptop', 'price': 999.99} | Body: {'name': 'Laptop', 'price': 999.99} → → Returns: {'id': 1, 'name': 'Laptop', 'price': 999.99} | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["START: mvn spring-boot:run"]
+    N2["→ Tomcat starts on port 8080"]
+    N3["GET http://localhost:8080/api/products"]
+    N4["→ Returns: []"]
+    N5["POST http://localhost:8080/api/products"]
+    N6["Body: {'name': 'Laptop', 'price': 999.99}"]
+    N7["→ Returns: {'id': 1, 'name': 'Laptop', 'price': 999.99}"]
+    N8["→ Returns: [{'id': 1, 'name': 'Laptop', 'price': 999.99"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

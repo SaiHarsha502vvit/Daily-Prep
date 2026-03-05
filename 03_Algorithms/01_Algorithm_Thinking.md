@@ -219,6 +219,17 @@ Translate logic to code
                                          HashMap
 ```
 
+> **Flow**: Is data SORTED? → Need OPTIMAL / substructure? | Need OPTIMAL / substructure? → Searching/ / Traversing?
+
+```mermaid
+flowchart TD
+    N1["Is data SORTED?"]
+    N2["Need OPTIMAL / substructure?"]
+    N3["Searching/ / Traversing?"]
+    N1 --> N2
+    N2 --> N3
+```
+
 ### Keyword → Pattern Mapping
 
 | Keywords in Problem                   | Think About            |
@@ -263,6 +274,27 @@ MENTAL MODEL:
 │                                         │
 │ Movement reduces search space!          │
 └─────────────────────────────────────────┘
+```
+
+> **Flow**: SIGNAL PHRASES: → - 'Find two elements that...' | - 'Find two elements that...' → - 'Sorted array' | - 'Sorted array' → - 'Remove duplicates' | - 'Remove duplicates' → - 'Reverse' | - 'Reverse' → - 'Palindrome' | - 'Palindrome' → MENTAL MODEL: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["SIGNAL PHRASES:"]
+    N2["- 'Find two elements that...'"]
+    N3["- 'Sorted array'"]
+    N4["- 'Remove duplicates'"]
+    N5["- 'Reverse'"]
+    N6["- 'Palindrome'"]
+    N7["MENTAL MODEL:"]
+    N8["Instead of checking ALL pairs O(n²)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### Thinking Example: Container With Most Water
@@ -328,6 +360,27 @@ MENTAL MODEL:
 │                                         │
 │ Add new element, remove old element     │
 └─────────────────────────────────────────┘
+```
+
+> **Flow**: SIGNAL PHRASES: → - 'Subarray/substring of size K' | - 'Subarray/substring of size K' → - 'Longest/shortest subarray with condition' | - 'Longest/shortest subarray with condition' → - 'Consecutive elements' | - 'Consecutive elements' → - 'Sum of K elements' | - 'Sum of K elements' → MENTAL MODEL: | MENTAL MODEL: → Instead of recalculating for each | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["SIGNAL PHRASES:"]
+    N2["- 'Subarray/substring of size K'"]
+    N3["- 'Longest/shortest subarray with condition'"]
+    N4["- 'Consecutive elements'"]
+    N5["- 'Sum of K elements'"]
+    N6["MENTAL MODEL:"]
+    N7["Instead of recalculating for each"]
+    N8["starting position..."]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### Fixed vs Variable Window
@@ -396,6 +449,17 @@ for right in range(n):
 Time: O(n) ✓
 ```
 
+> **Flow**: Window: 'abc' → add 'a' | add 'a' → repeat found!
+
+```mermaid
+flowchart LR
+    N1["Window: 'abc'"]
+    N2["add 'a'"]
+    N3["repeat found!"]
+    N1 --> N2
+    N2 --> N3
+```
+
 ---
 
 ## 3. Binary Search Thinking
@@ -426,6 +490,27 @@ MENTAL MODEL:
 └─────────────────────────────────────────┘
 ```
 
+> **Flow**: SIGNAL PHRASES: → - 'Sorted array' | - 'Sorted array' → - 'Find target' | - 'Find target' → - 'Search in O(log n)' | - 'Search in O(log n)' → - 'Find first/last occurrence' | - 'Find first/last occurrence' → - 'Find minimum/maximum that satisfies condition' | - 'Find minimum/maximum that satisfies condition' → MENTAL MODEL: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["SIGNAL PHRASES:"]
+    N2["- 'Sorted array'"]
+    N3["- 'Find target'"]
+    N4["- 'Search in O(log n)'"]
+    N5["- 'Find first/last occurrence'"]
+    N6["- 'Find minimum/maximum that satisfies condition'"]
+    N7["MENTAL MODEL:"]
+    N8["Can I eliminate HALF the search space"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### Binary Search Variants
 
 ```
@@ -444,6 +529,27 @@ VARIANT 3: Last Occurrence
 VARIANT 4: Search on Answer
 "Find minimum K such that condition(K) is true"
 → Binary search on K values, not array!
+```
+
+> **Flow**: VARIANT 1: Exact Match → 'Find element equal to target' | 'Find element equal to target' → → Standard binary search | → Standard binary search → VARIANT 2: First Occurrence | VARIANT 2: First Occurrence → 'Find first element &gt;= target' | 'Find first element &gt;= target' → → When found, DON'T STOP! Search left for earlier | → When found, DON'T STOP! Search left for earlier → VARIANT 3: Last Occurrence | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["VARIANT 1: Exact Match"]
+    N2["'Find element equal to target'"]
+    N3["→ Standard binary search"]
+    N4["VARIANT 2: First Occurrence"]
+    N5["'Find first element &gt;= target'"]
+    N6["→ When found, DON'T STOP! Search left for earlier"]
+    N7["VARIANT 3: Last Occurrence"]
+    N8["'Find last element &lt;= target'"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### Thinking Example: Find Peak Element
@@ -483,6 +589,27 @@ return left  # left == right, found peak
 Time: O(log n) ✓
 ```
 
+> **Flow**: PROBLEM: → nums = [1, 2, 3, 1] | nums = [1, 2, 3, 1] → Find any peak element (greater than neighbors). | Find any peak element (greater than neighbors). → LINEAR THINKING: | LINEAR THINKING: → 'Check each element against neighbors' | 'Check each element against neighbors' → return i | return i → Time: O(n) - but can we do better? | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["PROBLEM:"]
+    N2["nums = [1, 2, 3, 1]"]
+    N3["Find any peak element (greater than neighbors)."]
+    N4["LINEAR THINKING:"]
+    N5["'Check each element against neighbors'"]
+    N6["return i"]
+    N7["Time: O(n) - but can we do better?"]
+    N8["BINARY SEARCH THINKING:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 4. Dynamic Programming Thinking
@@ -504,6 +631,15 @@ DP DETECTION:
    (Optimal solution built from optimal sub-solutions)
 
 If BOTH yes → DP!
+```
+
+> **Flow**: If BOTH yes → DP!
+
+```mermaid
+flowchart LR
+    N1["If BOTH yes"]
+    N2["DP!"]
+    N1 --> N2
 ```
 
 ### DP Recipe
@@ -570,6 +706,15 @@ dp[3] = max(11, 7+3) = 11
 dp[4] = max(11, 11+1) = 12
 
 ANSWER: dp[4] = 12 ✓
+```
+
+> **Flow**: 2^n combinations → O(2ⁿ) ❌
+
+```mermaid
+flowchart LR
+    N1["2^n combinations"]
+    N2["O(2ⁿ) ❌"]
+    N1 --> N2
 ```
 
 ---
@@ -672,6 +817,25 @@ See problem → Start typing code
 See problem → Understand → Examples → Brute force → Optimize → Code
 
 "10 minutes of planning saves 1 hour of debugging"
+```
+
+> **Flow**: See problem → Start typing code | See problem → Understand | Understand → Examples | Examples → Brute force | Brute force → Optimize | Optimize → Code
+
+```mermaid
+flowchart TD
+    N1["See problem"]
+    N2["Start typing code"]
+    N3["Understand"]
+    N4["Examples"]
+    N5["Brute force"]
+    N6["Optimize"]
+    N7["Code"]
+    N1 --> N2
+    N1 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
 ```
 
 ## Mistake 2: Not Considering Edge Cases
@@ -817,6 +981,27 @@ Let me trace through [2, 7, 11, 15] with target 9:
 That looks correct. Time is O(n), space is O(n).
 
 Let me code this up..."
+```
+
+> **Flow**: PROBLEM: Two Sum → that would be O(n²). Not great for large inputs. | that would be O(n²). Not great for large inputs. → So my plan is: | So my plan is: → 1. Create an empty HashMap | 1. Create an empty HashMap → 3. If yes, return the indices | 3. If yes, return the indices → 4. If no, add current number to map | 4. If no, add current number to map → Let me trace through [2, 7, 11, 15] with target 9: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["PROBLEM: Two Sum"]
+    N2["that would be O(n²). Not great for large inputs."]
+    N3["So my plan is:"]
+    N4["1. Create an empty HashMap"]
+    N5["3. If yes, return the indices"]
+    N6["4. If no, add current number to map"]
+    N7["Let me trace through [2, 7, 11, 15] with target 9:"]
+    N8["- i=0: complement is 7, not in map, add 2→0"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

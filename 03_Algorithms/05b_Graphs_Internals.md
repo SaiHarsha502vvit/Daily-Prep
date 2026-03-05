@@ -93,6 +93,19 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: int[][] object (outer array): / Header (16 bytes) row[0 → Header (16 bytes) [0,0]=0 [0,1]=1 [0,2]=0 [0,3]=1 | Header (16 bytes) [0,0]=0 [0,1]=1 [0,2]=0 [0,3]=1 → ArrayList (outer): / Header Object[] elementData → [lis | ArrayList (outer): / Header Object[] elementData → [lis → Header Object[] → [Integer(1), Integer(3), null, ...]
+
+```mermaid
+flowchart TD
+    N1["int[][] object (outer array): / Header (16 bytes) row[0"]
+    N2["Header (16 bytes) [0,0]=0 [0,1]=1 [0,2]=0 [0,3]=1"]
+    N3["ArrayList (outer): / Header Object[] elementData → [lis"]
+    N4["Header Object[] → [Integer(1), Integer(3), null, ...]"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 ## 📌 Edge List Representation
 
 ```
@@ -140,6 +153,27 @@
 │  └──────────────────┴──────────────┴────────────────┴──────────────────────┘    │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: EDGE LIST - THE SIMPLEST GRAPH REPRESENTATION → int[][] edges = {{0,1,5}, {0,2,3}, {1,2,1}, {2,3,7}}; | int[][] edges = {{0,1,5}, {0,2,3}, {1,2,1}, {2,3,7}}; → GRAPH: 5 3 7 | GRAPH: 5 3 7 → MEMORY: O(E) — just the edges, nothing more | MEMORY: O(E) — just the edges, nothing more → WHEN TO USE EDGE LIST: | WHEN TO USE EDGE LIST: → ✅ Kruskal's MST (sort edges by weight, process in order | ✅ Kruskal's MST (sort edges by weight, process in order → ✅ When you just need to store/sort edges | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["EDGE LIST - THE SIMPLEST GRAPH REPRESENTATION"]
+    N2["int[][] edges = {{0,1,5}, {0,2,3}, {1,2,1}, {2,3,7}};"]
+    N3["GRAPH: 5 3 7"]
+    N4["MEMORY: O(E) — just the edges, nothing more"]
+    N5["WHEN TO USE EDGE LIST:"]
+    N6["✅ Kruskal's MST (sort edges by weight, process in order"]
+    N7["✅ When you just need to store/sort edges"]
+    N8["✅ Problems that give input as edge list directly"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```java
@@ -247,6 +281,27 @@ Arrays.sort(edges, (a, b) -> a[2] - b[2]);  // sort by weight
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: BFS VS DFS - MEMORY AND CPU BEHAVIOR → GRAPH: 0 1 2 | GRAPH: 0 1 2 → BFS USING QUEUE: | BFS USING QUEUE: → Queue&lt;Integer&gt; queue = new LinkedList&lt;&gt;(); | Queue&lt;Integer&gt; queue = new LinkedList&lt;&gt;(); → queue.offer(0); | queue.offer(0); → visited[0] = true; | visited[0] = true; → QUEUE EVOLUTION: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["BFS VS DFS - MEMORY AND CPU BEHAVIOR"]
+    N2["GRAPH: 0 1 2"]
+    N3["BFS USING QUEUE:"]
+    N4["Queue&lt;Integer&gt; queue = new LinkedList&lt;&gt;();"]
+    N5["queue.offer(0);"]
+    N6["visited[0] = true;"]
+    N7["QUEUE EVOLUTION:"]
+    N8["Step 1: queue = [0], visit 0, add neighbors"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ## 🔬 Shortest Path Algorithms — Internal Comparison
 
 ```
@@ -324,6 +379,27 @@ Arrays.sort(edges, (a, b) -> a[2] - b[2]);  // sort by weight
 │  └────────────────┴──────────────┴────────────┴────────────┴─────────────────┘  │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: DIJKSTRA VS BELLMAN-FORD VS FLOYD-WARSHALL → DIJKSTRA'S ALGORITHM (Single source, non-negative weigh | DIJKSTRA'S ALGORITHM (Single source, non-negative weigh → Time: O((V + E) log V) with binary heap | Time: O((V + E) log V) with binary heap → Space: O(V) for distance array + O(V) for priority queu | Space: O(V) for distance array + O(V) for priority queu → INTERNAL WORKING: | INTERNAL WORKING: → • pq.offer(): O(log V) - bubble up in heap | • pq.offer(): O(log V) - bubble up in heap → • pq.poll(): O(log V) - bubble down in heap | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["DIJKSTRA VS BELLMAN-FORD VS FLOYD-WARSHALL"]
+    N2["DIJKSTRA'S ALGORITHM (Single source, non-negative weigh"]
+    N3["Time: O((V + E) log V) with binary heap"]
+    N4["Space: O(V) for distance array + O(V) for priority queu"]
+    N5["INTERNAL WORKING:"]
+    N6["• pq.offer(): O(log V) - bubble up in heap"]
+    N7["• pq.poll(): O(log V) - bubble down in heap"]
+    N8["• Each edge relaxed once: E times"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

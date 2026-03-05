@@ -299,6 +299,27 @@ function useDebounce(value, delay = 300) {
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: RULE 1: Only call hooks at the TOP LEVEL → ❌ if (condition) { useState(...) } | ❌ if (condition) { useState(...) } → ❌ for (let i...) { useEffect(...) } | ❌ for (let i...) { useEffect(...) } → ✅ Always same hooks in same order every render | ✅ Always same hooks in same order every render → RULE 2: Only call hooks from React FUNCTIONS | RULE 2: Only call hooks from React FUNCTIONS → ✅ Function components | ✅ Function components → ✅ Custom hooks (useXxx) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["RULE 1: Only call hooks at the TOP LEVEL"]
+    N2["❌ if (condition) { useState(...) }"]
+    N3["❌ for (let i...) { useEffect(...) }"]
+    N4["✅ Always same hooks in same order every render"]
+    N5["RULE 2: Only call hooks from React FUNCTIONS"]
+    N6["✅ Function components"]
+    N7["✅ Custom hooks (useXxx)"]
+    N8["❌ Regular JavaScript functions"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 > **Navigation**: [< Previous](02_Component_Patterns.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_State_Management.md)

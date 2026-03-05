@@ -237,6 +237,27 @@ public int maxNonOverlapping(int[][] intervals) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: MEETING ROOMS - Can attend all meetings? → intervals = [[0,30], [5,10], [15,20]] | intervals = [[0,30], [5,10], [15,20]] → Timeline: | Timeline: → 0 30 Meeting 1 | 0 30 Meeting 1 → 5 10 Meeting 2 (overlaps!) | 5 10 Meeting 2 (overlaps!) → 15 20 Meeting 3 (overlaps!) | 15 20 Meeting 3 (overlaps!) → Output: false (meetings overlap) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["MEETING ROOMS - Can attend all meetings?"]
+    N2["intervals = [[0,30], [5,10], [15,20]]"]
+    N3["Timeline:"]
+    N4["0 30 Meeting 1"]
+    N5["5 10 Meeting 2 (overlaps!)"]
+    N6["15 20 Meeting 3 (overlaps!)"]
+    N7["Output: false (meetings overlap)"]
+    N8["Constraints:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 **Solution:**
 
 ```java
@@ -275,6 +296,25 @@ public boolean canAttendMeetings(int[][] intervals) {
 │  Approach: Track concurrent meetings using min-heap            │
 │  Heap stores end times of ongoing meetings                     │
 └────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: MEETING ROOMS II - Minimum rooms needed → intervals = [[0,30], [5,10], [15,20]] | intervals = [[0,30], [5,10], [15,20]] → Room 1: | | [0,30] | Room 1: | | [0,30] → Room 2: | | | | [5,10], [15,20] | Room 2: | | | | [5,10], [15,20] → Output: 2 rooms needed | Output: 2 rooms needed → Approach: Track concurrent meetings using min-heap | Approach: Track concurrent meetings using min-heap → Heap stores end times of ongoing meetings
+
+```mermaid
+flowchart TD
+    N1["MEETING ROOMS II - Minimum rooms needed"]
+    N2["intervals = [[0,30], [5,10], [15,20]]"]
+    N3["Room 1: | | [0,30]"]
+    N4["Room 2: | | | | [5,10], [15,20]"]
+    N5["Output: 2 rooms needed"]
+    N6["Approach: Track concurrent meetings using min-heap"]
+    N7["Heap stores end times of ongoing meetings"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
 ```
 
 **Solution:**
@@ -322,6 +362,23 @@ public int minMeetingRooms(int[][] intervals) {
 │                                                                │
 │  Greedy: Sort by end time, keep non-overlapping                │
 └────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: NON-OVERLAPPING INTERVALS - Min removals for no overlap → intervals = [[1,2], [2,3], [3,4], [1,3]] | intervals = [[1,2], [2,3], [3,4], [1,3]] → 1 3 (overlaps with both above) | 1 3 (overlaps with both above) → Remove [1,3] → No overlaps | Remove [1,3] → No overlaps → Output: 1 | Output: 1 → Greedy: Sort by end time, keep non-overlapping
+
+```mermaid
+flowchart TD
+    N1["NON-OVERLAPPING INTERVALS - Min removals for no overlap"]
+    N2["intervals = [[1,2], [2,3], [3,4], [1,3]]"]
+    N3["1 3 (overlaps with both above)"]
+    N4["Remove [1,3] → No overlaps"]
+    N5["Output: 1"]
+    N6["Greedy: Sort by end time, keep non-overlapping"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
 ```
 
 **Solution:**
@@ -372,6 +429,19 @@ public int eraseOverlapIntervals(int[][] intervals) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: MERGE INTERVALS → intervals = [[1,3], [2,6], [8,10], [15,18]] | intervals = [[1,3], [2,6], [8,10], [15,18]] → Merged: [1,6] | Merged: [1,6] → Output: [[1,6], [8,10], [15,18]]
+
+```mermaid
+flowchart TD
+    N1["MERGE INTERVALS"]
+    N2["intervals = [[1,3], [2,6], [8,10], [15,18]]"]
+    N3["Merged: [1,6]"]
+    N4["Output: [[1,6], [8,10], [15,18]]"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 **Solution:**
 
 ```java
@@ -419,6 +489,19 @@ public int[][] merge(int[][] intervals) {
 │                                                                │
 │  Output: [[1,5], [6,9]]                                        │
 └────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: INSERT INTERVAL → intervals = [[1,3], [6,9]], newInterval = [2,5] | intervals = [[1,3], [6,9]], newInterval = [2,5] → Merge [1,3] and [2,5] → [1,5] | Merge [1,3] and [2,5] → [1,5] → Output: [[1,5], [6,9]]
+
+```mermaid
+flowchart TD
+    N1["INSERT INTERVAL"]
+    N2["intervals = [[1,3], [6,9]], newInterval = [2,5]"]
+    N3["Merge [1,3] and [2,5] → [1,5]"]
+    N4["Output: [[1,5], [6,9]]"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
 ```
 
 **Solution:**
@@ -479,6 +562,27 @@ public int[][] insert(int[][] intervals, int[] newInterval) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: JUMP GAME - Can reach last index? → nums = [2, 3, 1, 1, 4] | nums = [2, 3, 1, 1, 4] → Index: 0 1 2 3 4 | Index: 0 1 2 3 4 → Value: 2 3 1 1 4 | Value: 2 3 1 1 4 → From 0, can jump to 1 or 2 | From 0, can jump to 1 or 2 → From 1, can reach 4! | From 1, can reach 4! → Output: true | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["JUMP GAME - Can reach last index?"]
+    N2["nums = [2, 3, 1, 1, 4]"]
+    N3["Index: 0 1 2 3 4"]
+    N4["Value: 2 3 1 1 4"]
+    N5["From 0, can jump to 1 or 2"]
+    N6["From 1, can reach 4!"]
+    N7["Output: true"]
+    N8["Greedy: Track max reachable index"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 **Solution:**
 
 ```java
@@ -514,6 +618,23 @@ public boolean canJump(int[] nums) {
 │                                                                │
 │  Greedy: BFS-like level traversal                              │
 └────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: JUMP GAME II - Minimum jumps to reach end → nums = [2, 3, 1, 1, 4] | nums = [2, 3, 1, 1, 4] → Jump 1: 0 → 1 (jump to index 1) | Jump 1: 0 → 1 (jump to index 1) → Jump 2: 1 → 4 (jump to index 4) | Jump 2: 1 → 4 (jump to index 4) → Output: 2 jumps | Output: 2 jumps → Greedy: BFS-like level traversal
+
+```mermaid
+flowchart TD
+    N1["JUMP GAME II - Minimum jumps to reach end"]
+    N2["nums = [2, 3, 1, 1, 4]"]
+    N3["Jump 1: 0 → 1 (jump to index 1)"]
+    N4["Jump 2: 1 → 4 (jump to index 4)"]
+    N5["Output: 2 jumps"]
+    N6["Greedy: BFS-like level traversal"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
 ```
 
 **Solution:**
@@ -564,6 +685,27 @@ public int jump(int[] nums) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: GAS STATION - Find starting station for circular trip → gas = [1, 2, 3, 4, 5] | gas = [1, 2, 3, 4, 5] → cost = [3, 4, 5, 1, 2] | cost = [3, 4, 5, 1, 2] → Station: 0 1 2 3 4 | Station: 0 1 2 3 4 → net: -2 -2 -2 +3 +3 | net: -2 -2 -2 +3 +3 → Start at station 3: | Start at station 3: → 3→4: tank = 4-1 = 3 | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["GAS STATION - Find starting station for circular trip"]
+    N2["gas = [1, 2, 3, 4, 5]"]
+    N3["cost = [3, 4, 5, 1, 2]"]
+    N4["Station: 0 1 2 3 4"]
+    N5["net: -2 -2 -2 +3 +3"]
+    N6["Start at station 3:"]
+    N7["3→4: tank = 4-1 = 3"]
+    N8["4→0: tank = 3+5-2 = 6"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 **Solution:**
 
 ```java
@@ -611,6 +753,27 @@ public int canCompleteCircuit(int[] gas, int[] cost) {
 │                                                                │
 │  Output: 5 total candies                                       │
 └────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: CANDY - Min candies for ratings → ratings = [1, 0, 2] | ratings = [1, 0, 2] → Rules: | Rules: → - Each child gets at least 1 candy | - Each child gets at least 1 candy → - Higher rating than neighbor → more candies than neigh | - Higher rating than neighbor → more candies than neigh → Candies: [2, 1, 2] | Candies: [2, 1, 2] → Child 0: rating 1 &gt; rating 0, gets 2 | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["CANDY - Min candies for ratings"]
+    N2["ratings = [1, 0, 2]"]
+    N3["Rules:"]
+    N4["- Each child gets at least 1 candy"]
+    N5["- Higher rating than neighbor → more candies than neigh"]
+    N6["Candies: [2, 1, 2]"]
+    N7["Child 0: rating 1 &gt; rating 0, gets 2"]
+    N8["Child 1: lowest rating, gets 1"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 **Solution:**
@@ -669,6 +832,21 @@ public int candy(int[] ratings) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: PARTITION LABELS - Max partitions with unique chars → s = 'ababcbacadefegdehijhklij' | s = 'ababcbacadefegdehijhklij' → 'ababcbaca' | 'defegde' | 'hijhklij' | 'ababcbaca' | 'defegde' | 'hijhklij' → Output: [9, 7, 8] | Output: [9, 7, 8] → Greedy: Track last occurrence of each char
+
+```mermaid
+flowchart TD
+    N1["PARTITION LABELS - Max partitions with unique chars"]
+    N2["s = 'ababcbacadefegdehijhklij'"]
+    N3["'ababcbaca' | 'defegde' | 'hijhklij'"]
+    N4["Output: [9, 7, 8]"]
+    N5["Greedy: Track last occurrence of each char"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+```
+
 **Solution:**
 
 ```java
@@ -717,6 +895,23 @@ public List<Integer> partitionLabels(String s) {
 │                                                                │
 │  Formula: (maxFreq - 1) * (n + 1) + countMaxFreq               │
 └────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: TASK SCHEDULER - Min time with cooldown → tasks = ['A','A','A','B','B','B'], n = 2 | tasks = ['A','A','A','B','B','B'], n = 2 → Must wait n intervals before same task again | Must wait n intervals before same task again → A → B → idle → A → B → idle → A → B | A → B → idle → A → B → idle → A → B → Output: 8 intervals | Output: 8 intervals → Formula: (maxFreq - 1) * (n + 1) + countMaxFreq
+
+```mermaid
+flowchart TD
+    N1["TASK SCHEDULER - Min time with cooldown"]
+    N2["tasks = ['A','A','A','B','B','B'], n = 2"]
+    N3["Must wait n intervals before same task again"]
+    N4["A → B → idle → A → B → idle → A → B"]
+    N5["Output: 8 intervals"]
+    N6["Formula: (maxFreq - 1) * (n + 1) + countMaxFreq"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
 ```
 
 **Solution:**
@@ -771,6 +966,25 @@ public int leastInterval(char[] tasks, int n) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: MAXIMUM SUBARRAY - Kadane's as Greedy → nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4] | nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4] → Greedy choice: At each position, decide to: | Greedy choice: At each position, decide to: → - Extend previous subarray, OR | - Extend previous subarray, OR → - Start fresh from current element | - Start fresh from current element → If previous sum is negative, start fresh! | If previous sum is negative, start fresh! → Max subarray: [4, -1, 2, 1] = 6
+
+```mermaid
+flowchart TD
+    N1["MAXIMUM SUBARRAY - Kadane's as Greedy"]
+    N2["nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4]"]
+    N3["Greedy choice: At each position, decide to:"]
+    N4["- Extend previous subarray, OR"]
+    N5["- Start fresh from current element"]
+    N6["If previous sum is negative, start fresh!"]
+    N7["Max subarray: [4, -1, 2, 1] = 6"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+```
+
 **Solution:**
 
 ```java
@@ -812,6 +1026,23 @@ public int maxSubArray(int[] nums) {
 │                                                                │
 │  Greedy: Collect ALL positive differences                      │
 └────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: STOCK II - Multiple transactions allowed → prices = [7, 1, 5, 3, 6, 4] | prices = [7, 1, 5, 3, 6, 4] → Buy at 1, sell at 5: profit = 4 | Buy at 1, sell at 5: profit = 4 → Buy at 3, sell at 6: profit = 3 | Buy at 3, sell at 6: profit = 3 → Total: 7 | Total: 7 → Greedy: Collect ALL positive differences
+
+```mermaid
+flowchart TD
+    N1["STOCK II - Multiple transactions allowed"]
+    N2["prices = [7, 1, 5, 3, 6, 4]"]
+    N3["Buy at 1, sell at 5: profit = 4"]
+    N4["Buy at 3, sell at 6: profit = 3"]
+    N5["Total: 7"]
+    N6["Greedy: Collect ALL positive differences"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
 ```
 
 **Solution:**

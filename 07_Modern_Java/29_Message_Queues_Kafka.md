@@ -19,12 +19,38 @@
                                          If slow/down, ENTIRE order fails!
 ```
 
+> **Flow**: Order Service --(HTTP)--> Payment Service | Payment Service --(HTTP)--> Email Service
+
+```mermaid
+flowchart LR
+    N1["Order Service"]
+    N2["Payment Service"]
+    N3["Email Service"]
+    N1 -->|"HTTP"| N2
+    N2 -->|"HTTP"| N3
+```
+
 **With a Queue (Asynchronous — decoupled):**
 
 ```
   Order Service ──→ [ MESSAGE QUEUE ] ──→ Payment Worker
                     [ MESSAGE QUEUE ] ──→ Email Worker
                     [ MESSAGE QUEUE ] ──→ Analytics Worker
+```
+
+> **Flow**: Order Service → [ MESSAGE QUEUE ] | [ MESSAGE QUEUE ] → Payment Worker | [ MESSAGE QUEUE ] → Email Worker | [ MESSAGE QUEUE ] → Analytics Worker
+
+```mermaid
+flowchart LR
+    N1["Order Service"]
+    N2["[ MESSAGE QUEUE ]"]
+    N3["Payment Worker"]
+    N4["Email Worker"]
+    N5["Analytics Worker"]
+    N1 --> N2
+    N2 --> N3
+    N2 --> N4
+    N2 --> N5
 ```
 
 **Why This Matters:**
@@ -54,6 +80,25 @@ PUB/SUB (Publish-Subscribe):
   Examples: Kafka topics, SNS, Redis Pub/Sub
 ```
 
+> **Flow**: Producer → [Queue] | [Queue] → Consumer A (only ONE consumer gets each message) | Publisher → [Topic] | [Topic] → Subscriber A (ALL subscribers get each message) | Use case: Event broadcasting (order placed → notify warehouse, email, analytics)
+
+```mermaid
+flowchart TD
+    N1["Producer"]
+    N2["[Queue]"]
+    N3["Consumer A (only ONE consumer gets each message)"]
+    N4["Publisher"]
+    N5["[Topic]"]
+    N6["Subscriber A (ALL subscribers get each message)"]
+    N7["Use case: Event broadcasting (order placed"]
+    N8["notify warehouse, email, analytics)"]
+    N1 --> N2
+    N2 --> N3
+    N4 --> N5
+    N5 --> N6
+    N7 --> N8
+```
+
 ---
 
 ## Part 3: Apache Kafka — Deep Dive
@@ -79,6 +124,17 @@ PUB/SUB (Publish-Subscribe):
                   Topic: "orders"
 ```
 
+> **Flow**: Producer A / (app 1) → Producer B / (app 2) | Producer B / (app 2) → KAFKA CLUSTER / (Broker Servers)
+
+```mermaid
+flowchart TD
+    N1["Producer A / (app 1)"]
+    N2["Producer B / (app 2)"]
+    N3["KAFKA CLUSTER / (Broker Servers)"]
+    N1 --> N2
+    N2 --> N3
+```
+
 > **Topic** = A named feed of messages — think of it like a **database table** you write records into.
 
 **Step 2 — Topic is split into Partitions for parallelism:**
@@ -91,6 +147,17 @@ PUB/SUB (Publish-Subscribe):
     │  [0] [1] [2]  │  │[0][1][2][3]  │  │   [0] [1]    │
     │   ← offset →  │  │  ← offset →  │  │  ← offset →  │
     └──────────────┘  └──────────────┘  └──────────────┘
+```
+
+> **Flow**: Partition 0 / [0] [1] [2] / ← offset → → Partition 1 / [0][1][2][3] / ← offset → | Partition 1 / [0][1][2][3] / ← offset → → Partition 2 / [0] [1] / ← offset →
+
+```mermaid
+flowchart TD
+    N1["Partition 0 / [0] [1] [2] / ← offset →"]
+    N2["Partition 1 / [0][1][2][3] / ← offset →"]
+    N3["Partition 2 / [0] [1] / ← offset →"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 > **Partition** = An ordered, immutable log. Messages append to the end.
@@ -109,6 +176,17 @@ PUB/SUB (Publish-Subscribe):
 
               Consumer Group: "payment"
               Each partition → exactly ONE consumer
+```
+
+> **Flow**: Consumer A → Consumer B | Consumer B → Consumer
+
+```mermaid
+flowchart TD
+    N1["Consumer A"]
+    N2["Consumer B"]
+    N3["Consumer"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 > **Consumer Group** = Consumers that share the work. Add more consumers = more parallelism!
@@ -252,6 +330,19 @@ public class PaymentEventConsumer {
   Current balance = replay events = $100 - $30 + $50 = $120
 ```
 
+> **Flow**: AccountCreated → Deposited($100) | Deposited($100) → Withdrawn($30) | Withdrawn($30) → Deposited($50)
+
+```mermaid
+flowchart LR
+    N1["AccountCreated"]
+    N2["Deposited($100)"]
+    N3["Withdrawn($30)"]
+    N4["Deposited($50)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 > → Complete **audit trail** — rebuild state at any point in time.
 > → Complex: need snapshots for performance, eventual consistency.
 
@@ -272,6 +363,25 @@ public class PaymentEventConsumer {
   │                                                         │
   │  3. Mark outbox row as published                         │
   └─────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: OUTBOX PATTERN — 3 Steps → 1. In SAME DB transaction: | 1. In SAME DB transaction: → UPDATE orders SET status = 'paid' | UPDATE orders SET status = 'paid' → INSERT INTO outbox (event_type, payload, ...) | INSERT INTO outbox (event_type, payload, ...) → 2. Separate process polls the outbox table | 2. Separate process polls the outbox table → → publishes pending events to Kafka | → publishes pending events to Kafka → 3. Mark outbox row as published
+
+```mermaid
+flowchart TD
+    N1["OUTBOX PATTERN — 3 Steps"]
+    N2["1. In SAME DB transaction:"]
+    N3["UPDATE orders SET status = 'paid'"]
+    N4["INSERT INTO outbox (event_type, payload, ...)"]
+    N5["2. Separate process polls the outbox table"]
+    N6["→ publishes pending events to Kafka"]
+    N7["3. Mark outbox row as published"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
 ```
 
 > → **Guarantee**: If the DB is updated, the event **WILL** be published (eventually).

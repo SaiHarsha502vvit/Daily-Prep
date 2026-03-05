@@ -109,6 +109,27 @@ flowchart LR
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: SHORT URL GENERATION — 3 Approaches → 1. Hash + Truncate: | 1. Hash + Truncate: → MD5(longURL) → take first 7 chars of base62 | MD5(longURL) → take first 7 chars of base62 → Problem: collisions! Need to check DB, retry with salt. | Problem: collisions! Need to check DB, retry with salt. → 2. Auto-increment ID + Base62: ← RECOMMENDED | 2. Auto-increment ID + Base62: ← RECOMMENDED → Database gives ID 12345 → convert to base62 → 'dnh' | Database gives ID 12345 → convert to base62 → 'dnh' → No collisions! But IDs are predictable (sequential). | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["SHORT URL GENERATION — 3 Approaches"]
+    N2["1. Hash + Truncate:"]
+    N3["MD5(longURL) → take first 7 chars of base62"]
+    N4["Problem: collisions! Need to check DB, retry with salt."]
+    N5["2. Auto-increment ID + Base62: ← RECOMMENDED"]
+    N6["Database gives ID 12345 → convert to base62 → 'dnh'"]
+    N7["No collisions! But IDs are predictable (sequential)."]
+    N8["3. Pre-generated Key Service:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 # PROBLEM 2: Design Twitter / News Feed
@@ -126,6 +147,18 @@ Scale:
   - Average user follows 200 people
   - Average user views feed 5x/day → 750M feed reads/day
   - 500M tweets/day → ~6000 tweets/sec
+```
+
+> **Flow**: - Average user views feed 5x/day → 750M feed reads/day | - 500M tweets/day → ~6000 tweets/sec
+
+```mermaid
+flowchart LR
+    N1["- Average user views feed 5x/day"]
+    N2["750M feed reads/day"]
+    N3["- 500M tweets/day"]
+    N4["~6000 tweets/sec"]
+    N1 --> N2
+    N3 --> N4
 ```
 
 ## The Hard Part — Feed Generation
@@ -223,6 +256,19 @@ Scale: 50M DAU, each user sends 40 msgs/day = 2B msgs/day
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: Chat Server / (stateful!) --(WebSocket)--> Client | Message Store / (Cassandra) --(Message Queue)--> Chat Server / (stateful!) | Chat Server / (stateful!) → Presence / Service / (Redis)
+
+```mermaid
+flowchart TD
+    N1["Client"]
+    N2["Chat Server / (stateful!)"]
+    N3["Message Store / (Cassandra)"]
+    N4["Presence / Service / (Redis)"]
+    N2 -->|"WebSocket"| N1
+    N3 -->|"Message Queue"| N2
+    N2 --> N4
+```
+
 ---
 
 # PROBLEM 4: Design Rate Limiter
@@ -268,6 +314,27 @@ Scale: 50M DAU, each user sends 40 msgs/day = 2B msgs/day
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: PURPOSE: Prevent abuse, protect resources, enforce SLAs → ALGORITHM 1: Token Bucket | ALGORITHM 1: Token Bucket → Bucket holds N tokens. Each request takes 1 token. | Bucket holds N tokens. Each request takes 1 token. → Bucket: [●●●●●___] capacity=8, current=5 | Bucket: [●●●●●___] capacity=8, current=5 → Request arrives → take token → [●●●●____] | Request arrives → take token → [●●●●____] → Refill (every 1/R sec) → [●●●●●___] | Refill (every 1/R sec) → [●●●●●___] → Bucket full → tokens overflow (don't exceed capacity) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["PURPOSE: Prevent abuse, protect resources, enforce SLAs"]
+    N2["ALGORITHM 1: Token Bucket"]
+    N3["Bucket holds N tokens. Each request takes 1 token."]
+    N4["Bucket: [●●●●●___] capacity=8, current=5"]
+    N5["Request arrives → take token → [●●●●____]"]
+    N6["Refill (every 1/R sec) → [●●●●●___]"]
+    N7["Bucket full → tokens overflow (don't exceed capacity)"]
+    N8["Bucket empty → REJECT (HTTP 429 Too Many Requests)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 # PROBLEM 5: Design Notification System
@@ -300,6 +367,23 @@ Scale: 50M DAU, each user sends 40 msgs/day = 2B msgs/day
 │  7. Analytics: delivered, opened, clicked                                       │
 │  8. Priority queues: password reset > marketing email                           │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: Triggers / (events) → → Notificatio / Service | → Notificatio / Service → Push / Worker | → Message Queue / (Kafka/SQS) → Push / Worker | → Message Queue / (Kafka/SQS) → Email / Worker | → Message Queue / (Kafka/SQS) → SMS / Worker
+
+```mermaid
+flowchart TD
+    N1["Triggers / (events)"]
+    N2["→ Notificatio / Service"]
+    N3["→ Message Queue / (Kafka/SQS)"]
+    N4["Push / Worker"]
+    N5["Email / Worker"]
+    N6["SMS / Worker"]
+    N1 --> N2
+    N2 --> N4
+    N3 --> N4
+    N3 --> N5
+    N3 --> N6
 ```
 
 ---
@@ -346,6 +430,27 @@ Scale: 50M DAU, each user sends 40 msgs/day = 2B msgs/day
 │     Cache avalanche: Many keys expire at same time → sudden DB load             │
 │     Fix: Add random jitter to TTL values                                        │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: WHY: Reduce DB load, sub-millisecond reads → CORE DECISIONS: | CORE DECISIONS: → 1. EVICTION POLICY: | 1. EVICTION POLICY: → LRU (Least Recently Used) — most common | LRU (Least Recently Used) — most common → LFU (Least Frequently Used) — better for skewed access | LFU (Least Frequently Used) — better for skewed access → TTL (Time To Live) — expire after fixed time | TTL (Time To Live) — expire after fixed time → 2. CACHE PATTERNS: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["WHY: Reduce DB load, sub-millisecond reads"]
+    N2["CORE DECISIONS:"]
+    N3["1. EVICTION POLICY:"]
+    N4["LRU (Least Recently Used) — most common"]
+    N5["LFU (Least Frequently Used) — better for skewed access"]
+    N6["TTL (Time To Live) — expire after fixed time"]
+    N7["2. CACHE PATTERNS:"]
+    N8["Cache-Aside (Lazy Loading):"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---
@@ -399,6 +504,26 @@ Scale: 50M DAU, each user sends 40 msgs/day = 2B msgs/day
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: Client → → API Gateway | Client → Product / Service | → API Gateway → ▼ ▼ ▼ / duct Order Paym / vice Service Serv / duct Orde | ▼ ▼ ▼ / duct Order Paym / vice Service Serv / duct Orde → Kafka/SQS | Product / Service → Product / DB | Payment / Service → Payment / DB
+
+```mermaid
+flowchart TD
+    N1["Client"]
+    N2["→ API Gateway"]
+    N3["▼ ▼ ▼ / duct Order Paym / vice Service Serv / duct Orde"]
+    N4["Product / Service"]
+    N5["Payment / Service"]
+    N6["Product / DB"]
+    N7["Payment / DB"]
+    N8["Kafka/SQS"]
+    N1 --> N2
+    N1 --> N4
+    N2 --> N3
+    N3 --> N8
+    N4 --> N6
+    N5 --> N7
+```
+
 ---
 
 # PROBLEM 8: Design Web Crawler (Google-like)
@@ -438,6 +563,20 @@ Scale: 50M DAU, each user sends 40 msgs/day = 2B msgs/day
 │  7. Consistent hashing: Distribute URLs to crawler workers                      │
 │     → Same domain always goes to same worker (politeness)                       │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: URL / Frontier / (priority / queue) → → Fetcher / (HTTP GET) | URL / Frontier / (priority / queue) → URL Filter / (visited? / robots.txt / Bloom / filter) | → Parser / (Extract / links, / content) → Content / Store / (S3/HDFS)
+
+```mermaid
+flowchart TD
+    N1["URL / Frontier / (priority / queue)"]
+    N2["→ Fetcher / (HTTP GET)"]
+    N3["→ Parser / (Extract / links, / content)"]
+    N4["URL Filter / (visited? / robots.txt / Bloom / filter)"]
+    N5["Content / Store / (S3/HDFS)"]
+    N1 --> N2
+    N1 --> N4
+    N3 --> N5
 ```
 
 ---

@@ -678,6 +678,45 @@ infrastructure/
     └── gcp/
 ```
 
+> **Flow**: infrastructure/ → modules/ | infrastructure/ → kubernetes/ | infrastructure/ → main.tf | infrastructure/ → variables.tf | infrastructure/ → outputs.tf | infrastructure/ → database/ | ...+16 more
+
+```mermaid
+flowchart TD
+    N1["infrastructure/"]
+    N2["modules/"]
+    N3["kubernetes/"]
+    N4["main.tf"]
+    N5["variables.tf"]
+    N6["outputs.tf"]
+    N7["database/"]
+    N8["storage/"]
+    N9["environments/"]
+    N10["dev/"]
+    N11["terraform.tfvars"]
+    N12["staging/"]
+    N13["production/"]
+    N14["providers/"]
+    N15["aws/"]
+    N16["azure/"]
+    N17["gcp/"]
+    N1 --> N2
+    N1 --> N3
+    N1 --> N4
+    N1 --> N5
+    N1 --> N6
+    N1 --> N7
+    N1 --> N8
+    N1 --> N9
+    N1 --> N10
+    N1 --> N11
+    N1 --> N12
+    N1 --> N13
+    N1 --> N14
+    N1 --> N15
+    N1 --> N16
+    N1 --> N17
+```
+
 ### Terraform Kubernetes Module
 
 ```hcl
@@ -915,6 +954,27 @@ management:
 └──────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: COST OPTIMIZATION STRATEGIES → COMPUTE | COMPUTE → ✅ Right-size instances based on actual usage | ✅ Right-size instances based on actual usage → ✅ Use Spot/Preemptible instances for non-critical workl | ✅ Use Spot/Preemptible instances for non-critical workl → ✅ Implement auto-scaling with proper thresholds | ✅ Implement auto-scaling with proper thresholds → ✅ Schedule non-prod environments to shut down | ✅ Schedule non-prod environments to shut down → STORAGE | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["COST OPTIMIZATION STRATEGIES"]
+    N2["COMPUTE"]
+    N3["✅ Right-size instances based on actual usage"]
+    N4["✅ Use Spot/Preemptible instances for non-critical workl"]
+    N5["✅ Implement auto-scaling with proper thresholds"]
+    N6["✅ Schedule non-prod environments to shut down"]
+    N7["STORAGE"]
+    N8["✅ Use appropriate storage tiers (hot/cold/archive)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### Kubernetes Cost Optimization
 
 ```yaml
@@ -1122,6 +1182,27 @@ Strategies:
 │  terraform apply                 │ Apply changes                    │
 │  terraform destroy               │ Destroy resources                │
 └─────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: CLOUD DEPLOYMENT CHEAT SHEET → DOCKER COMMANDS | DOCKER COMMANDS → docker build -t app . Build image | docker build -t app . Build image → docker run -p 8080:8080 app Run container | docker run -p 8080:8080 app Run container → docker push registry/app Push to registry | docker push registry/app Push to registry → docker-compose up -d Start services | docker-compose up -d Start services → KUBECTL COMMANDS | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["CLOUD DEPLOYMENT CHEAT SHEET"]
+    N2["DOCKER COMMANDS"]
+    N3["docker build -t app . Build image"]
+    N4["docker run -p 8080:8080 app Run container"]
+    N5["docker push registry/app Push to registry"]
+    N6["docker-compose up -d Start services"]
+    N7["KUBECTL COMMANDS"]
+    N8["kubectl apply -f manifest.yaml Apply configuration"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

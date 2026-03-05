@@ -791,6 +791,27 @@ MISTAKE 6: Redundant states
 │  ───────────                                                                    │
 ```
 
+> **Flow**: This section covers advanced DP patterns used in: → • Competitive programming (Codeforces, ICPC, IOI) | • Competitive programming (Codeforces, ICPC, IOI) → • Technical interviews at top companies | • Technical interviews at top companies → • Real-world optimization problems | • Real-world optimization problems → ## DIGIT DP - COUNTING NUMBERS WITH PROPERTIES | ## DIGIT DP - COUNTING NUMBERS WITH PROPERTIES → DIGIT DP - THE PATTERN | DIGIT DP - THE PATTERN → Examples: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["This section covers advanced DP patterns used in:"]
+    N2["• Competitive programming (Codeforces, ICPC, IOI)"]
+    N3["• Technical interviews at top companies"]
+    N4["• Real-world optimization problems"]
+    N5["## DIGIT DP - COUNTING NUMBERS WITH PROPERTIES"]
+    N6["DIGIT DP - THE PATTERN"]
+    N7["Examples:"]
+    N8["• Count numbers with digit sum = K"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ```java
 // Count numbers from 0 to N with digit sum = targetSum
 Long[][] memo;  // [position][sum][tight]
@@ -896,6 +917,27 @@ long solve(String N, int pos, int prev, boolean tight) {
 │                                                                                 │
 │ TRAVELING SALESMAN PROBLEM (TSP):                                               │
 │ ──────────────────────────────────                                              │
+```
+
+> **Flow**: BITMASK DP - COMPLETE GUIDE → BITMASK OPERATIONS: | BITMASK OPERATIONS: → Operation Code Example | Operation Code Example → Check if bit i is set (mask &gt;&gt; i) & 1 mask=5: bit | Check if bit i is set (mask &gt;&gt; i) & 1 mask=5: bit → Set bit i mask | (1 &lt;&lt; i) 5|2=7 (set bit 1) | Set bit i mask | (1 &lt;&lt; i) 5|2=7 (set bit 1) → Clear bit i mask & ~(1 &lt;&lt; i) 7&~2=5 (clear bit 1) | Clear bit i mask & ~(1 &lt;&lt; i) 7&~2=5 (clear bit 1) → Toggle bit i mask ^ (1 &lt;&lt; i) 5^4=1 (toggle bit 2) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["BITMASK DP - COMPLETE GUIDE"]
+    N2["BITMASK OPERATIONS:"]
+    N3["Operation Code Example"]
+    N4["Check if bit i is set (mask &gt;&gt; i) & 1 mask=5: bit"]
+    N5["Set bit i mask | (1 &lt;&lt; i) 5|2=7 (set bit 1)"]
+    N6["Clear bit i mask & ~(1 &lt;&lt; i) 7&~2=5 (clear bit 1)"]
+    N7["Toggle bit i mask ^ (1 &lt;&lt; i) 5^4=1 (toggle bit 2)"]
+    N8["Count set bits Integer.bitCount() bitCount(5)=2"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 
@@ -1016,6 +1058,27 @@ int assignmentProblem(int[][] cost) {
 │                                                                                 │
 │ TEMPLATE:                                                                       │
 │ ───────────                                                                     │
+```
+
+> **Flow**: INTERVAL DP - THE PATTERN → CLASSIC PROBLEMS: | CLASSIC PROBLEMS: → • Matrix chain multiplication | • Matrix chain multiplication → • Optimal BST | • Optimal BST → • Palindrome partitioning | • Palindrome partitioning → • Burst balloons | • Burst balloons → • Stone game | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["INTERVAL DP - THE PATTERN"]
+    N2["CLASSIC PROBLEMS:"]
+    N3["• Matrix chain multiplication"]
+    N4["• Optimal BST"]
+    N5["• Palindrome partitioning"]
+    N6["• Burst balloons"]
+    N7["• Stone game"]
+    N8["TEMPLATE:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 
@@ -1203,6 +1266,27 @@ int minCost(int n, int[] cuts) {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: INTERVAL DP DECISION GUIDE: → Signal It's Interval DP | Signal It's Interval DP → 'Merge' or 'split' Matrix chain, cut a stick | 'Merge' or 'split' Matrix chain, cut a stick → 'Remove from ends' Stone game, burst balloons | 'Remove from ends' Stone game, burst balloons → 'Optimal over range' Any [i..j] optimization | 'Optimal over range' Any [i..j] optimization → Answer for [i,j] uses O(n³) — try all split points k | Answer for [i,j] uses O(n³) — try all split points k → answers for sub-ranges | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["INTERVAL DP DECISION GUIDE:"]
+    N2["Signal It's Interval DP"]
+    N3["'Merge' or 'split' Matrix chain, cut a stick"]
+    N4["'Remove from ends' Stone game, burst balloons"]
+    N5["'Optimal over range' Any [i..j] optimization"]
+    N6["Answer for [i,j] uses O(n³) — try all split points k"]
+    N7["answers for sub-ranges"]
+    N8["Trick: 'LAST to remove' Burst Balloons thinking"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 
 
 ## 🌳 DP on Trees
@@ -1220,6 +1304,17 @@ int minCost(int n, int[] cuts) {
 │                                                                                 │
 │ BASIC TREE DP - MAXIMUM INDEPENDENT SET:                                        │
 │ ─────────────────────────────────────────                                       │
+```
+
+> **Flow**: TREE DP - THE PATTERN → WHEN TO USE: Compute optimal values on tree structures | WHEN TO USE: Compute optimal values on tree structures → BASIC TREE DP - MAXIMUM INDEPENDENT SET:
+
+```mermaid
+flowchart TD
+    N1["TREE DP - THE PATTERN"]
+    N2["WHEN TO USE: Compute optimal values on tree structures"]
+    N3["BASIC TREE DP - MAXIMUM INDEPENDENT SET:"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 
@@ -1388,6 +1483,27 @@ void dfs2(int v, int parent) {
 │ ─────────────────────────────────────────────                                   │
 ```
 
+> **Flow**: CONVEX HULL TRICK (CHT) → Reduces O(n²) to O(n) or O(n log n) | Reduces O(n²) to O(n) or O(n log n) → CONDITIONS: | CONDITIONS: → • Slopes b[j] are monotonic | • Slopes b[j] are monotonic → • Query values a[i] are monotonic | • Query values a[i] are monotonic → • Want minimum (or can convert to minimum) | • Want minimum (or can convert to minimum) → INTUITION: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["CONVEX HULL TRICK (CHT)"]
+    N2["Reduces O(n²) to O(n) or O(n log n)"]
+    N3["CONDITIONS:"]
+    N4["• Slopes b[j] are monotonic"]
+    N5["• Query values a[i] are monotonic"]
+    N6["• Want minimum (or can convert to minimum)"]
+    N7["INTUITION:"]
+    N8["Each j gives a line: y = b[j] _ x + dp[j]"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 
 ```java
 class ConvexHullTrick {
@@ -1459,6 +1575,21 @@ for (int i = 1; i < n; i++) {
 │                                                                                 │
 │ IMPLEMENTATION:                                                                 │
 │ ───────────────                                                                 │
+```
+
+> **Flow**: DIVIDE AND CONQUER DP → And: optimal k for j₁ ≤ optimal k for j₂ when j₁ &lt; j | And: optimal k for j₁ ≤ optimal k for j₂ when j₁ &lt; j → (This is the 'monotonicity of optimal splits' property) | (This is the 'monotonicity of optimal splits' property) → Reduces O(n × m × n) to O(n × m × log n) | Reduces O(n × m × n) to O(n × m × log n) → IMPLEMENTATION:
+
+```mermaid
+flowchart TD
+    N1["DIVIDE AND CONQUER DP"]
+    N2["And: optimal k for j₁ ≤ optimal k for j₂ when j₁ &lt; j"]
+    N3["(This is the 'monotonicity of optimal splits' property)"]
+    N4["Reduces O(n × m × n) to O(n × m × log n)"]
+    N5["IMPLEMENTATION:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
 ```
 
 
@@ -1562,6 +1693,15 @@ long cost(int l, int r) {
 │ ──────────────────────────────────────────────────────────────                  │
 ```
 
+> **Flow**: ✓ ✓ ✓ / ✓ ✓ ▐▌ ← → ✓ ✓ ✓ / here ✓ ✓ ?
+
+```mermaid
+flowchart TD
+    N1["✓ ✓ ✓ / ✓ ✓ ▐▌ ←"]
+    N2["✓ ✓ ✓ / here ✓ ✓ ?"]
+    N1 --> N2
+```
+
 
 ```java
 // Count ways to tile n×m grid with dominoes
@@ -1621,6 +1761,17 @@ long dominoTiling(int n, int m) {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: Time: O(m × n × 2^n) → Space: O(2^n) | Space: O(2^n) → Practical for n ≤ 15-20
+
+```mermaid
+flowchart TD
+    N1["Time: O(m × n × 2^n)"]
+    N2["Space: O(2^n)"]
+    N3["Practical for n ≤ 15-20"]
+    N1 --> N2
+    N2 --> N3
+```
+
 
 
 ## 🎨 DP Pattern Quick Reference
@@ -1645,6 +1796,15 @@ long dominoTiling(int n, int m) {
 ---
 
 _DP is not about memorizing solutions - it's about SEEING the substructure!_
+```
+
+> **Flow**: | Knuth Optimization|Quadratic → near-linear | O(n²) | O(n²) |
+
+```mermaid
+flowchart LR
+    N1["| Knuth Optimization|Quadratic"]
+    N2["near-linear | O(n²) | O(n²) |"]
+    N1 --> N2
 ```
 
 ---

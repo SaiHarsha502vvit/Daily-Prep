@@ -75,6 +75,27 @@ Build/Deploy      │  CodePipeline    │  Azure DevOps     │  Cloud
 Container Reg.    │  ECR             │  ACR              │  GCR
 ```
 
+> **Flow**: CATEGORY AWS AZURE GCP → COMPUTE | COMPUTE → Virtual Machines EC2 Virtual Machines GCE | Virtual Machines EC2 Virtual Machines GCE → Containers ECS / EKS AKS GKE | Containers ECS / EKS AKS GKE → Serverless Lambda Azure Functions Cloud | Serverless Lambda Azure Functions Cloud → Func | Func → App Platform Elastic Beanstk App Service App | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["CATEGORY AWS AZURE GCP"]
+    N2["COMPUTE"]
+    N3["Virtual Machines EC2 Virtual Machines GCE"]
+    N4["Containers ECS / EKS AKS GKE"]
+    N5["Serverless Lambda Azure Functions Cloud"]
+    N6["Func"]
+    N7["App Platform Elastic Beanstk App Service App"]
+    N8["STORAGE"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## Core Concepts Every Developer Should Know
@@ -105,6 +126,17 @@ Rule: Deploy across 2+ AZs for high availability.
 AZs in the same region have low-latency links between them.
 ```
 
+> **Flow**: Data Center 1 / Data Center 2 → Data Center 3 / Data Center 4 | Data Center 3 / Data Center 4 → Data Center 5
+
+```mermaid
+flowchart TD
+    N1["Data Center 1 / Data Center 2"]
+    N2["Data Center 3 / Data Center 4"]
+    N3["Data Center 5"]
+    N1 --> N2
+    N2 --> N3
+```
+
 ### 2. The Shared Responsibility Model
 
 ```
@@ -125,6 +157,27 @@ WHO IS RESPONSIBLE FOR WHAT?
 
 As a developer, you manage MORE in IaaS, LESS in PaaS.
 Most modern apps → PaaS or Containers (good balance).
+```
+
+> **Flow**: WHO IS RESPONSIBLE FOR WHAT? → IaaS PaaS SaaS | IaaS PaaS SaaS → (EC2) (App Service) (Gmail) | (EC2) (App Service) (Gmail) → Your Data YOU YOU YOU | Your Data YOU YOU YOU → Your Code YOU YOU N/A | Your Code YOU YOU N/A → Runtime YOU CLOUD N/A | Runtime YOU CLOUD N/A → OS YOU CLOUD CLOUD | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["WHO IS RESPONSIBLE FOR WHAT?"]
+    N2["IaaS PaaS SaaS"]
+    N3["(EC2) (App Service) (Gmail)"]
+    N4["Your Data YOU YOU YOU"]
+    N5["Your Code YOU YOU N/A"]
+    N6["Runtime YOU CLOUD N/A"]
+    N7["OS YOU CLOUD CLOUD"]
+    N8["Virtualization CLOUD CLOUD CLOUD"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### 3. IAM — Identity & Access Management
@@ -156,6 +209,17 @@ COMMON MISTAKE: Using root account for daily work
 FIX: Create individual IAM users with specific roles
 ```
 
+> **Flow**: User / (Person) → Role / (Assume) | Role / (Assume) → Policy / (Permission)
+
+```mermaid
+flowchart TD
+    N1["User / (Person)"]
+    N2["Role / (Assume)"]
+    N3["Policy / (Permission)"]
+    N1 --> N2
+    N2 --> N3
+```
+
 ---
 
 ## Deep Dive: The Services You'll Use Most
@@ -184,6 +248,27 @@ Spot:      Bid for unused capacity → up to 90% savings
 Savings:   Commit to $/hour → flexible across instance types
 ```
 
+> **Flow**: EC2 (Elastic Compute Cloud) — Virtual Servers → INSTANCE TYPES: | INSTANCE TYPES: → Category Use Case Example | Category Use Case Example → t3/t4g General purpose (burstable) Web servers | t3/t4g General purpose (burstable) Web servers → m6i General purpose (steady) App servers | m6i General purpose (steady) App servers → c6i Compute-intensive Batch jobs | c6i Compute-intensive Batch jobs → r6i Memory-intensive In-memory DB | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["EC2 (Elastic Compute Cloud) — Virtual Servers"]
+    N2["INSTANCE TYPES:"]
+    N3["Category Use Case Example"]
+    N4["t3/t4g General purpose (burstable) Web servers"]
+    N5["m6i General purpose (steady) App servers"]
+    N6["c6i Compute-intensive Batch jobs"]
+    N7["r6i Memory-intensive In-memory DB"]
+    N8["g5 GPU ML Training"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### Containers: ECS / EKS / AKS / GKE
 
 ```
@@ -209,6 +294,17 @@ CONTAINER DEPLOYMENT OPTIONS
 │ • Pay per vCPU-second                            │
 │ • Good for: event-driven, variable load          │
 └──────────────────────────────────────────────────┘
+```
+
+> **Flow**: Managed Kubernetes (EKS / AKS / GKE) / • Full Kubernete → Managed Container Service (ECS / Azure Container) / • S | Managed Container Service (ECS / Azure Container) / • S → Serverless Containers (Fargate / Container Apps) / • No
+
+```mermaid
+flowchart TD
+    N1["Managed Kubernetes (EKS / AKS / GKE) / • Full Kubernete"]
+    N2["Managed Container Service (ECS / Azure Container) / • S"]
+    N3["Serverless Containers (Fargate / Container Apps) / • No"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 ### Serverless: Lambda / Azure Functions
@@ -283,6 +379,30 @@ RDS READ SCALING: Read Replicas (up to 15 in Aurora)
 RDS WRITE SCALING: Vertical (bigger instance) or sharding
 ```
 
+> **Flow**: YES → RDS (PostgreSQL/MySQL) or Aurora | Key-value lookups → DynamoDB / Cosmos DB | Document store → MongoDB Atlas / DocumentDB | In-memory cache → ElastiCache (Redis/Memcached) | Search → Elasticsearch / OpenSearch | Graph → Neptune / Cosmos (Gremlin)
+
+```mermaid
+flowchart TD
+    N1["YES"]
+    N2["RDS (PostgreSQL/MySQL) or Aurora"]
+    N3["Key-value lookups"]
+    N4["DynamoDB / Cosmos DB"]
+    N5["Document store"]
+    N6["MongoDB Atlas / DocumentDB"]
+    N7["In-memory cache"]
+    N8["ElastiCache (Redis/Memcached)"]
+    N9["Search"]
+    N10["Elasticsearch / OpenSearch"]
+    N11["Graph"]
+    N12["Neptune / Cosmos (Gremlin)"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+    N7 --> N8
+    N9 --> N10
+    N11 --> N12
+```
+
 ---
 
 ## Typical Cloud Architecture
@@ -322,6 +442,27 @@ Users
 + CloudWatch monitoring everywhere
 + IAM roles for service-to-service auth
 + VPC with public/private subnets
+```
+
+> **Flow**: THREE-TIER WEB APPLICATION ON AWS / Users → [Route 53 — DNS] | [Route 53 — DNS] → [CloudFront — CDN] ← [S3 — Static Assets] | [CloudFront — CDN] ← [S3 — Static Assets] → [ALB — Load Balancer] | [ALB — Load Balancer] → [EC2 / ECS] [EC2 / ECS] ← Auto Scaling Group / (App Ser | [EC2 / ECS] [EC2 / ECS] ← Auto Scaling Group / (App Ser → [RDS [ElastiCache [SQS — Message / Primary] (Redis)] Qu | [RDS [ElastiCache [SQS — Message / Primary] (Redis)] Qu → [RDS [Lambda — Worker] / Read Replica] | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THREE-TIER WEB APPLICATION ON AWS / Users"]
+    N2["[Route 53 — DNS]"]
+    N3["[CloudFront — CDN] ← [S3 — Static Assets]"]
+    N4["[ALB — Load Balancer]"]
+    N5["[EC2 / ECS] [EC2 / ECS] ← Auto Scaling Group / (App Ser"]
+    N6["[RDS [ElastiCache [SQS — Message / Primary] (Redis)] Qu"]
+    N7["[RDS [Lambda — Worker] / Read Replica]"]
+    N8["[S3 — Processed Files] / + CloudWatch monitoring everyw"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---
@@ -408,6 +549,23 @@ A: Vertical = bigger machine (limited, downtime to change)
    Horizontal = more machines behind load balancer (preferred)
    Auto-scaling = automatically add/remove based on metrics
    (CPU > 70% → add instance, CPU < 30% → remove instance)
+```
+
+> **Flow**: 1. Containerize with Docker → ECS Fargate (simplest) | 2. Kubernetes → EKS/AKS (if team already uses K8s) | (CPU &gt; 70% → add instance, CPU &lt; 30% | add instance, CPU &lt; 30% → remove instance)
+
+```mermaid
+flowchart LR
+    N1["1. Containerize with Docker"]
+    N2["ECS Fargate (simplest)"]
+    N3["2. Kubernetes"]
+    N4["EKS/AKS (if team already uses K8s)"]
+    N5["(CPU &gt; 70%"]
+    N6["add instance, CPU &lt; 30%"]
+    N7["remove instance)"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+    N6 --> N7
 ```
 
 ---

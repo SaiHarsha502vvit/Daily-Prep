@@ -39,6 +39,20 @@ As software grows, complexity grows **exponentially**. Procedural programming sc
                   More functions ◄──────► Even more data
 ```
 
+> **Flow**: Data here → Functions there | Functions there → More data somewhere | More functions → Even more data
+
+```mermaid
+flowchart LR
+    N1["Data here"]
+    N2["Functions there"]
+    N3["More data somewhere"]
+    N4["More functions"]
+    N5["Even more data"]
+    N1 --> N2
+    N2 --> N3
+    N4 --> N5
+```
+
 - Anyone can modify any data from anywhere
 - Change one function, break 10 others
 - Hard to understand which functions use which data
@@ -55,6 +69,15 @@ As software grows, complexity grows **exponentially**. Procedural programming sc
      │ │ methods │ │◄─────►│ │ methods │ │
      │ └─────────┘ │       │ └─────────┘ │
      └─────────────┘       └─────────────┘
+```
+
+> **Flow**: Object B / data / methods → Object A / data / methods
+
+```mermaid
+flowchart LR
+    N1["Object A / data / methods"]
+    N2["Object B / data / methods"]
+    N2 --> N1
 ```
 
 - Data + related functions **bundled together**

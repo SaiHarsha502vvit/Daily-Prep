@@ -374,6 +374,27 @@ class UnionFind {
 ╚═══════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: UNION-FIND IN ONE SENTENCE → 'Track which elements belong to the same group, | 'Track which elements belong to the same group, → supporting UNION (merge groups) and FIND (check group). | supporting UNION (merge groups) and FIND (check group). → Time Complexity with optimizations: | Time Complexity with optimizations: → • Find: O(α(n)) ≈ O(1) amortized | • Find: O(α(n)) ≈ O(1) amortized → • Union: O(α(n)) ≈ O(1) amortized | • Union: O(α(n)) ≈ O(1) amortized → α(n) = Inverse Ackermann function, grows EXTREMELY slow | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["UNION-FIND IN ONE SENTENCE"]
+    N2["'Track which elements belong to the same group,"]
+    N3["supporting UNION (merge groups) and FIND (check group)."]
+    N4["Time Complexity with optimizations:"]
+    N5["• Find: O(α(n)) ≈ O(1) amortized"]
+    N6["• Union: O(α(n)) ≈ O(1) amortized"]
+    N7["α(n) = Inverse Ackermann function, grows EXTREMELY slow"]
+    N8["For all practical n, α(n) ≤ 4"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### Visual: How Union-Find Works
 
 ```
@@ -402,6 +423,15 @@ Now: find(1) → 0, find(3) → 0
      So 1 and 3 are in the SAME group!
 ```
 
+> **Flow**: Now: find(1) → 0, find(3)
+
+```mermaid
+flowchart LR
+    N1["Now: find(1)"]
+    N2["0, find(3)"]
+    N1 --> N2
+```
+
 ### Two Key Operations
 
 ```
@@ -421,6 +451,27 @@ Now: find(1) → 0, find(3) → 0
 │     • Returns find(x) == find(y)                                │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: THE TWO OPERATIONS → 1. FIND(x) | 1. FIND(x) → • Returns the 'representative' (root) of x's group | • Returns the 'representative' (root) of x's group → • If find(a) == find(b), then a and b are connected | • If find(a) == find(b), then a and b are connected → 2. UNION(x, y) | 2. UNION(x, y) → • Merges the groups containing x and y | • Merges the groups containing x and y → • After union, find(x) == find(y) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE TWO OPERATIONS"]
+    N2["1. FIND(x)"]
+    N3["• Returns the 'representative' (root) of x's group"]
+    N4["• If find(a) == find(b), then a and b are connected"]
+    N5["2. UNION(x, y)"]
+    N6["• Merges the groups containing x and y"]
+    N7["• After union, find(x) == find(y)"]
+    N8["Helper: CONNECTED(x, y)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---
@@ -517,6 +568,21 @@ This is why we need optimizations.
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: PATH COMPRESSION → Idea: When we find the root, make all nodes on the path | Idea: When we find the root, make all nodes on the path → point DIRECTLY to the root. | point DIRECTLY to the root. → Before find(0): After find(0): | Before find(0): After find(0): → Next find(0) is O(1)!
+
+```mermaid
+flowchart TD
+    N1["PATH COMPRESSION"]
+    N2["Idea: When we find the root, make all nodes on the path"]
+    N3["point DIRECTLY to the root."]
+    N4["Before find(0): After find(0):"]
+    N5["Next find(0) is O(1)!"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+```
+
 ### Implementation with Path Compression
 
 ```java
@@ -587,6 +653,23 @@ Tree after find(0):
      0  1  2  3
 
 Future find(0) = O(1)!
+```
+
+> **Flow**: Step 1: find(0) → find(1) | find(1) → find(2) | find(2) → find(3) | find(3) → find(4) | find(4) → return 4
+
+```mermaid
+flowchart TD
+    N1["Step 1: find(0)"]
+    N2["find(1)"]
+    N3["find(2)"]
+    N4["find(3)"]
+    N5["find(4)"]
+    N6["return 4"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
 ```
 
 ---
@@ -896,6 +979,20 @@ Step 2: union(1,3) → Success
 
 Step 3: union(2,3) → FAIL! (1,2,3 already connected)
         This is the redundant edge!
+```
+
+> **Flow**: Step 1: union(1,2) → Success | Step 2: union(1,3) → Success | Step 3: union(2,3) → FAIL! (1,2,3 already connected)
+
+```mermaid
+flowchart LR
+    N1["Step 1: union(1,2)"]
+    N2["Success"]
+    N3["Step 2: union(1,3)"]
+    N4["Step 3: union(2,3)"]
+    N5["FAIL! (1,2,3 already connected)"]
+    N1 --> N2
+    N3 --> N2
+    N4 --> N5
 ```
 
 ### 4. Graph Valid Tree (LeetCode 261)
@@ -1265,6 +1362,27 @@ class UnionFindWithUndo {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: UNION-FIND PROBLEM TYPES → CONNECTED COMPONENTS: | CONNECTED COMPONENTS: → • Number of Connected Components | • Number of Connected Components → • Number of Provinces | • Number of Provinces → • Making a Large Island | • Making a Large Island → CYCLE DETECTION: | CYCLE DETECTION: → • Redundant Connection I/II | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["UNION-FIND PROBLEM TYPES"]
+    N2["CONNECTED COMPONENTS:"]
+    N3["• Number of Connected Components"]
+    N4["• Number of Provinces"]
+    N5["• Making a Large Island"]
+    N6["CYCLE DETECTION:"]
+    N7["• Redundant Connection I/II"]
+    N8["• Graph Valid Tree"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### Longest Consecutive Sequence (LeetCode 128)
 
 ```java
@@ -1495,6 +1613,27 @@ public int largestIsland(int[][] grid) {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: UNION-FIND vs OTHER APPROACHES → USE UNION-FIND WHEN: | USE UNION-FIND WHEN: → • Need to merge groups dynamically | • Need to merge groups dynamically → • Need to query if elements are in same group | • Need to query if elements are in same group → • Process edges to build connected components | • Process edges to build connected components → • Need MST with Kruskal's algorithm | • Need MST with Kruskal's algorithm → USE DFS/BFS INSTEAD WHEN: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["UNION-FIND vs OTHER APPROACHES"]
+    N2["USE UNION-FIND WHEN:"]
+    N3["• Need to merge groups dynamically"]
+    N4["• Need to query if elements are in same group"]
+    N5["• Process edges to build connected components"]
+    N6["• Need MST with Kruskal's algorithm"]
+    N7["USE DFS/BFS INSTEAD WHEN:"]
+    N8["• Need to find actual path between nodes"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### Code Template (Copy-Paste Ready)
 
 ```java
@@ -1552,6 +1691,23 @@ class UnionFind {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: UNION-FIND COMPLEXITIES → OPERATION NAIVE PATH COMP RANK BOTH | OPERATION NAIVE PATH COMP RANK BOTH → * Amortized | * Amortized → Space: O(n) for parent and rank arrays | Space: O(n) for parent and rank arrays → α(n) = Inverse Ackermann, practically O(1): | α(n) = Inverse Ackermann, practically O(1): → α(10^80) = 4 (# of atoms in universe!)
+
+```mermaid
+flowchart TD
+    N1["UNION-FIND COMPLEXITIES"]
+    N2["OPERATION NAIVE PATH COMP RANK BOTH"]
+    N3["* Amortized"]
+    N4["Space: O(n) for parent and rank arrays"]
+    N5["α(n) = Inverse Ackermann, practically O(1):"]
+    N6["α(10^80) = 4 (# of atoms in universe!)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+```
+
 ---
 
 ## Summary
@@ -1586,6 +1742,27 @@ class UnionFind {
 ║     • Empty graph                                             ║
 ║                                                               ║
 ╚═══════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: UNION-FIND - MASTER CHECKLIST → 1. CORE OPERATIONS | 1. CORE OPERATIONS → • find(x): Get representative of x's group | • find(x): Get representative of x's group → • union(x,y): Merge groups of x and y | • union(x,y): Merge groups of x and y → • connected(x,y): Check if same group | • connected(x,y): Check if same group → 2. OPTIMIZATIONS (ALWAYS USE BOTH!) | 2. OPTIMIZATIONS (ALWAYS USE BOTH!) → • Path Compression: On find, make nodes point to root | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["UNION-FIND - MASTER CHECKLIST"]
+    N2["1. CORE OPERATIONS"]
+    N3["• find(x): Get representative of x's group"]
+    N4["• union(x,y): Merge groups of x and y"]
+    N5["• connected(x,y): Check if same group"]
+    N6["2. OPTIMIZATIONS (ALWAYS USE BOTH!)"]
+    N7["• Path Compression: On find, make nodes point to root"]
+    N8["• Union by Rank/Size: Attach smaller tree to larger"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 **Pro Tip:** When you see problems involving merging groups, checking connectivity, or building spanning trees, Union-Find should be your first thought!

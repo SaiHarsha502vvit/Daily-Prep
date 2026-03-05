@@ -183,6 +183,27 @@ WHY CONTIGUOUS MATTERS:
 - This is O(1) random access!
 ```
 
+> **Flow**: PHYSICAL REALITY: → Memory is a long tape of numbered boxes | Memory is a long tape of numbered boxes → Address: 1000 1004 1008 1012 1016 1020 | Address: 1000 1004 1008 1012 1016 1020 → arr[0] arr[1] arr[2] arr[3] arr[4] arr[5] | arr[0] arr[1] arr[2] arr[3] arr[4] arr[5] → CONTIGUOUS = Next to each other in memory | CONTIGUOUS = Next to each other in memory → WHY CONTIGUOUS MATTERS: | WHY CONTIGUOUS MATTERS: → - arr[3] = baseAddress + (3 × elementSize) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["PHYSICAL REALITY:"]
+    N2["Memory is a long tape of numbered boxes"]
+    N3["Address: 1000 1004 1008 1012 1016 1020"]
+    N4["arr[0] arr[1] arr[2] arr[3] arr[4] arr[5]"]
+    N5["CONTIGUOUS = Next to each other in memory"]
+    N6["WHY CONTIGUOUS MATTERS:"]
+    N7["- arr[3] = baseAddress + (3 × elementSize)"]
+    N8["- arr[3] = 1000 + (3 × 4) = 1012"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### Array Characteristics
 
 | Property         | Value      | Why?                       |

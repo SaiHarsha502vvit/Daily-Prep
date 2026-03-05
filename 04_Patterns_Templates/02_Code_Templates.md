@@ -63,6 +63,18 @@ Array1: [1, 3, 5, 7]     Array2: [2, 3, 6, 8]
  Compare arr1[i] vs arr2[j], move smaller pointer
 ```
 
+> **Flow**: left right → → ← | slow fast → → → → →
+
+```mermaid
+flowchart TD
+    N1["left right"]
+    N2["→ ←"]
+    N3["slow fast"]
+    N4["→ → → →"]
+    N1 --> N2
+    N3 --> N4
+```
+
 ### Template: Two Sum (Sorted Array)
 
 ```java
@@ -199,6 +211,19 @@ Step 4: Continue
 Answer: Maximum sum = 9
 ```
 
+> **Flow**: 2 1 5 1 3 2 → 1 5 1 3 | 1 5 1 3 → 5 1 3 2 | 5 1 3 2 → 1 3 2
+
+```mermaid
+flowchart TD
+    N1["2 1 5 1 3 2"]
+    N2["1 5 1 3"]
+    N3["5 1 3 2"]
+    N4["1 3 2"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 ### Template: Max Sum of Size K Subarray
 
 ```java
@@ -300,6 +325,21 @@ Step 5: SHRINK from left until valid
         └───────┘
 
 Answer: Maximum length = 3 ("ece")
+```
+
+> **Flow**: e c → e c e | e c e → e c e b | e c e b → c e b | c e b → e b
+
+```mermaid
+flowchart TD
+    N1["e c"]
+    N2["e c e"]
+    N3["e c e b"]
+    N4["c e b"]
+    N5["e b"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
 ```
 
 ### Template: Longest Substring with At Most K Distinct
@@ -451,6 +491,27 @@ public String minWindow(String s, String t) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: BINARY SEARCH VISUALIZATION → Find 7 in sorted array: | Find 7 in sorted array: → low mid high | low mid high → arr[4]=5 &lt; 7 → search right half | arr[4]=5 &lt; 7 → search right half → arr[7]=8 &gt; 7 → search left half | arr[7]=8 &gt; 7 → search left half → low,mid high | low,mid high → arr[5]=6 &lt; 7 → search right half | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["BINARY SEARCH VISUALIZATION"]
+    N2["Find 7 in sorted array:"]
+    N3["low mid high"]
+    N4["arr[4]=5 &lt; 7 → search right half"]
+    N5["arr[7]=8 &gt; 7 → search left half"]
+    N6["low,mid high"]
+    N7["arr[5]=6 &lt; 7 → search right half"]
+    N8["low,mid,high"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### Template: Standard Binary Search
 
 ```java
@@ -585,6 +646,16 @@ Example: Sum of arr[2..4] = sum(3,4,5) = 12
           sum = 3+4+5 = 12
 ```
 
+> **Flow**: 1 2 3 4 5 6 → 0 1 3 6 10 15 21 | 0 1 3 6 10 15 21 → 1 2 3 4 5 6
+
+```mermaid
+flowchart TD
+    N1["1 2 3 4 5 6"]
+    N2["0 1 3 6 10 15 21"]
+    N1 --> N2
+    N2 --> N1
+```
+
 ### Template: Build Prefix Sum
 
 ```java
@@ -697,6 +768,15 @@ for (char c : str.toCharArray()) {
 │  'l'   │    2                                                       │
 │  'o'   │    1                                                       │
 └─────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: 0 0 0 0 1 0 0 1 0 0 0 2 0 0 1 0 0 0 0 0 0 0 0 0 0 0 → Key Value / 'h' 1 / 'e' 1 / 'l' 2 / 'o' 1
+
+```mermaid
+flowchart TD
+    N1["0 0 0 0 1 0 0 1 0 0 0 2 0 0 1 0 0 0 0 0 0 0 0 0 0 0"]
+    N2["Key Value / 'h' 1 / 'e' 1 / 'l' 2 / 'o' 1"]
+    N1 --> N2
 ```
 
 ### Template: Check Anagram
@@ -819,6 +899,27 @@ public int firstUniqChar(String s) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: STACK PATTERNS → PATTERN 1: Matching/Balancing | PATTERN 1: Matching/Balancing → Input: '({[]})' | Input: '({[]})' → Process '(': Stack: [(] | Process '(': Stack: [(] → Process '{': Stack: [(, {] | Process '{': Stack: [(, {] → Process '[': Stack: [(, {, [] | Process '[': Stack: [(, {, [] → Process ']': Matches '[', Stack: [(, {] | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["STACK PATTERNS"]
+    N2["PATTERN 1: Matching/Balancing"]
+    N3["Input: '({[]})'"]
+    N4["Process '(': Stack: [(]"]
+    N5["Process '{': Stack: [(, {]"]
+    N6["Process '[': Stack: [(, {, []"]
+    N7["Process ']': Matches '[', Stack: [(, {]"]
+    N8["Process '}': Matches '{', Stack: [(]"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### Template: Valid Parentheses
 
 ```java
@@ -921,6 +1022,27 @@ WHEN TO USE WHAT:
 │ BFS: Shortest path (unweighted), Level order, Nearest neighbors    │
 │ DFS: All paths, Cycle detection, Connected components, Backtrack   │
 └────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: BFS vs DFS VISUALIZATION → Graph: 1 | Graph: 1 → BFS (Level by Level) - Use QUEUE | BFS (Level by Level) - Use QUEUE → Level 0: [1] | Level 0: [1] → Level 1: [2, 3, 4] | Level 1: [2, 3, 4] → Level 2: [5, 6, 7] | Level 2: [5, 6, 7] → Visit order: 1 → 2 → 3 → 4 → 5 → 6 → 7 | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["BFS vs DFS VISUALIZATION"]
+    N2["Graph: 1"]
+    N3["BFS (Level by Level) - Use QUEUE"]
+    N4["Level 0: [1]"]
+    N5["Level 1: [2, 3, 4]"]
+    N6["Level 2: [5, 6, 7]"]
+    N7["Visit order: 1 → 2 → 3 → 4 → 5 → 6 → 7"]
+    N8["Best for: Shortest path, Level order traversal"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### Template: BFS Level Order Traversal
@@ -1056,6 +1178,27 @@ BACKTRACKING PATTERN:
 └────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: BACKTRACKING VISUALIZATION → Problem: Generate all subsets of [1, 2, 3] | Problem: Generate all subsets of [1, 2, 3] → Decision tree (include or exclude each element): | Decision tree (include or exclude each element): → include 1 exclude 1 | include 1 exclude 1 → Leaf nodes = all 8 subsets! | Leaf nodes = all 8 subsets! → BACKTRACKING PATTERN: | BACKTRACKING PATTERN: → 1. CHOOSE: Make a choice (add element to current path) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["BACKTRACKING VISUALIZATION"]
+    N2["Problem: Generate all subsets of [1, 2, 3]"]
+    N3["Decision tree (include or exclude each element):"]
+    N4["include 1 exclude 1"]
+    N5["Leaf nodes = all 8 subsets!"]
+    N6["BACKTRACKING PATTERN:"]
+    N7["1. CHOOSE: Make a choice (add element to current path)"]
+    N8["2. EXPLORE: Recurse with this choice"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### Template: Generate All Subsets
 
 ```java
@@ -1174,6 +1317,27 @@ Base:    dp[0] = 1, dp[1] = 1
  0   1   2   3   4   5
 
 Answer: dp[5] = 8 ways to climb 5 stairs
+```
+
+> **Flow**: DYNAMIC PROGRAMMING → STEP 1: Identify if DP applies | STEP 1: Identify if DP applies → STEP 2: Define state | STEP 2: Define state → dp[i] = 'answer for first i elements' or | dp[i] = 'answer for first i elements' or → dp[i][j] = 'answer for range [i, j]' or | dp[i][j] = 'answer for range [i, j]' or → dp[i][w] = 'answer considering i items with capacity w' | dp[i][w] = 'answer considering i items with capacity w' → STEP 3: Find recurrence (transition) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["DYNAMIC PROGRAMMING"]
+    N2["STEP 1: Identify if DP applies"]
+    N3["STEP 2: Define state"]
+    N4["dp[i] = 'answer for first i elements' or"]
+    N5["dp[i][j] = 'answer for range [i, j]' or"]
+    N6["dp[i][w] = 'answer considering i items with capacity w'"]
+    N7["STEP 3: Find recurrence (transition)"]
+    N8["STEP 4: Identify base cases"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### Template: 1D DP (Climbing Stairs)

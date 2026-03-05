@@ -179,6 +179,25 @@ SIMPLE USER FLOW EXAMPLE - LOGIN:
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: Visit / Website → Login Page | Login Page → Enter / Credentials | Login Page → Invalid / Credentials | Enter / Credentials → Submit | Submit → Success! / Dashboard | Invalid / Credentials → Show Error / Try Again
+
+```mermaid
+flowchart TD
+    N1["Visit / Website"]
+    N2["Login Page"]
+    N3["Enter / Credentials"]
+    N4["Submit"]
+    N5["Invalid / Credentials"]
+    N6["Success! / Dashboard"]
+    N7["Show Error / Try Again"]
+    N1 --> N2
+    N2 --> N3
+    N2 --> N5
+    N3 --> N4
+    N4 --> N6
+    N5 --> N7
+```
+
 ## Flow Notation Symbols
 
 ```
@@ -213,6 +232,27 @@ SIMPLE USER FLOW EXAMPLE - LOGIN:
 │                           May or may not happen                             │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: STANDARD FLOW SYMBOLS → SYMBOL MEANING | SYMBOL MEANING → RECTANGLE: Screen/Page/State | RECTANGLE: Screen/Page/State → A UI screen or application state | A UI screen or application state → ◇ DIAMOND: Decision Point | ◇ DIAMOND: Decision Point → / \ User makes a choice or system checks condition | / \ User makes a choice or system checks condition → ARROW: Flow Direction | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["STANDARD FLOW SYMBOLS"]
+    N2["SYMBOL MEANING"]
+    N3["RECTANGLE: Screen/Page/State"]
+    N4["A UI screen or application state"]
+    N5["◇ DIAMOND: Decision Point"]
+    N6["/ \ User makes a choice or system checks condition"]
+    N7["ARROW: Flow Direction"]
+    N8["Shows the path of movement"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ## Complete User Flow Example: E-commerce Checkout
@@ -286,6 +326,26 @@ SIMPLE USER FLOW EXAMPLE - LOGIN:
     └─────────────┘             │
                                 │
     (End: Order Placed)    Back to Payment
+```
+
+> **Flow**: Cart Summary Page / - View items / - Update quantities  → Use saved / address | Use saved / address → Shipping Method / - Standard (5 days) / - Express (2 da | Enter shipping / address → Error Message / Retry or change / payment method | Shipping Method / - Standard (5 days) / - Express (2 da → Payment Method / - Credit Card / - PayPal / - Apple Pay | Payment Method / - Credit Card / - PayPal / - Apple Pay → Order Review / - Items summary / - Total with tax / - S | Order Review / - Items summary / - Total with tax / - S → Confirmation / Page / - Order # / - ETA / - Email sent
+
+```mermaid
+flowchart TD
+    N1["Cart Summary Page / - View items / - Update quantities "]
+    N2["Use saved / address"]
+    N3["Enter shipping / address"]
+    N4["Shipping Method / - Standard (5 days) / - Express (2 da"]
+    N5["Payment Method / - Credit Card / - PayPal / - Apple Pay"]
+    N6["Order Review / - Items summary / - Total with tax / - S"]
+    N7["Confirmation / Page / - Order # / - ETA / - Email sent"]
+    N8["Error Message / Retry or change / payment method"]
+    N1 --> N2
+    N2 --> N4
+    N3 --> N8
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
 ```
 
 ---
@@ -395,6 +455,17 @@ DATA TRANSFORMATIONS:
 └────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: FRONTEND / (Validation) → STAGE DATA FORMAT TRANSFORMATION / User Input Form fiel | BACKEND / (Process) → STAGE DATA FORMAT TRANSFORMATION / User Input Form fiel
+
+```mermaid
+flowchart TD
+    N2["FRONTEND / (Validation)"]
+    N3["BACKEND / (Process)"]
+    N5["STAGE DATA FORMAT TRANSFORMATION / User Input Form fiel"]
+    N2 --> N5
+    N3 --> N5
+```
+
 ---
 
 # PART 3: SYSTEM FLOW (Request Flow)
@@ -482,6 +553,41 @@ USER REQUEST: GET /api/products/123
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: USER / Browser → DNS | DNS → CDN | CDN → LOAD BALANCER | LOAD BALANCER → Server 2 | LOAD BALANCER → Server 3 | Server 1 → API GATEWAY / - Auth check / - Rate limit / - Logging | ...+9 more
+
+```mermaid
+flowchart TD
+    N1["USER / Browser"]
+    N2["DNS"]
+    N3["CDN"]
+    N4["LOAD BALANCER"]
+    N5["Server 1"]
+    N6["Server 2"]
+    N7["Server 3"]
+    N8["API GATEWAY / - Auth check / - Rate limit / - Logging"]
+    N9["PRODUCT / SERVICE / - Business / logic"]
+    N10["▼ ▼ / HE DATAB / is) (Postg / Cache Hit"]
+    N11["CACHE / (Redis)"]
+    N12["DATABASE / (Postgres)"]
+    N13["RESPONSE / { / id: 123, / name: ... / }"]
+    N14["USER"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N6
+    N4 --> N7
+    N5 --> N8
+    N6 --> N8
+    N8 --> N9
+    N9 --> N10
+    N9 --> N11
+    N9 --> N12
+    N10 --> N13
+    N11 --> N13
+    N12 --> N13
+    N13 --> N14
+```
+
 ---
 
 # 📌 Part 4: Creating Flows for New Features
@@ -546,6 +652,19 @@ STEP 4: IDENTIFY ERROR CASES
 └─────────────────────────────────────────────────────────────────────────────┘
 
 STEP 5: DRAW THE COMPLETE FLOW
+```
+
+> **Flow**: Ask: 'What is the user trying to achieve?' / Example: ' → Ask: 'Who/What is involved in this flow?' / Example: /  | Ask: 'Who/What is involved in this flow?' / Example: /  → Ask: 'What happens when everything works perfectly?' /  | Ask: 'What happens when everything works perfectly?' /  → Ask: 'What could go wrong?' / Example Error Cases: / • 
+
+```mermaid
+flowchart TD
+    N1["Ask: 'What is the user trying to achieve?' / Example: '"]
+    N2["Ask: 'Who/What is involved in this flow?' / Example: / "]
+    N3["Ask: 'What happens when everything works perfectly?' / "]
+    N4["Ask: 'What could go wrong?' / Example Error Cases: / • "]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
 ```
 
 ## Complete Feature Flow Example: Social Share
@@ -790,6 +909,27 @@ For each exercise:
 6. Consider edge cases
 ```
 
+> **Flow**: FLOW DESIGN EXERCISES → EXERCISE 1: Password Reset Flow | EXERCISE 1: Password Reset Flow → EXERCISE 2: File Upload Flow | EXERCISE 2: File Upload Flow → EXERCISE 3: Real-time Chat Flow | EXERCISE 3: Real-time Chat Flow → EXERCISE 4: Shopping Cart Sync Flow | EXERCISE 4: Shopping Cart Sync Flow → Include: Local storage, server sync, conflict resolutio | Include: Local storage, server sync, conflict resolutio → EXERCISE 5: Two-Factor Authentication Flow | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["FLOW DESIGN EXERCISES"]
+    N2["EXERCISE 1: Password Reset Flow"]
+    N3["EXERCISE 2: File Upload Flow"]
+    N4["EXERCISE 3: Real-time Chat Flow"]
+    N5["EXERCISE 4: Shopping Cart Sync Flow"]
+    N6["Include: Local storage, server sync, conflict resolutio"]
+    N7["EXERCISE 5: Two-Factor Authentication Flow"]
+    N8["Design the complete flow for enabling and using 2FA."]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 # 🏗️ Quick Reference: Flow Design Checklist
@@ -811,6 +951,27 @@ For each exercise:
 □ Timing/timeout handling
 □ Security checkpoints
 □ Logging/monitoring points
+```
+
+> **Flow**: FLOW DESIGN CHECKLIST → □ Clear START and END points | □ Clear START and END points → □ All decision points marked (diamonds) | □ All decision points marked (diamonds) → □ Happy path clearly visible | □ Happy path clearly visible → □ Error paths included | □ Error paths included → □ All actors/systems identified | □ All actors/systems identified → □ Data formats at each stage | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["FLOW DESIGN CHECKLIST"]
+    N2["□ Clear START and END points"]
+    N3["□ All decision points marked (diamonds)"]
+    N4["□ Happy path clearly visible"]
+    N5["□ Error paths included"]
+    N6["□ All actors/systems identified"]
+    N7["□ Data formats at each stage"]
+    N8["□ Async operations marked"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 

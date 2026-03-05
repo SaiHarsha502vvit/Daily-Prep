@@ -49,6 +49,19 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: WHY: Why REST Controllers? / • REST is the standard: We → HOW: How Controllers Handle Requests? / • @GetMapping:  | HOW: How Controllers Handle Requests? / • @GetMapping:  → WHEN: When to Use Which Parameter Type? / • @PathVariab | WHEN: When to Use Which Parameter Type? / • @PathVariab → WHICH: Which Controller Patterns to Use? / ESSENTIAL: @
+
+```mermaid
+flowchart TD
+    N1["WHY: Why REST Controllers? / • REST is the standard: We"]
+    N2["HOW: How Controllers Handle Requests? / • @GetMapping: "]
+    N3["WHEN: When to Use Which Parameter Type? / • @PathVariab"]
+    N4["WHICH: Which Controller Patterns to Use? / ESSENTIAL: @"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 ---
 
 # 📖 REST Controller Fundamentals
@@ -156,6 +169,27 @@ public class UserController {
 │  GET    /api/v1/deleteUser?id=123        → Don't use GET for deletion           │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: HTTP METHODS & SPRING MAPPINGS → HTTP Method Annotation Purpose Idempotent Safe | HTTP Method Annotation Purpose Idempotent Safe → GET @GetMapping Read resource ✅ ✅ | GET @GetMapping Read resource ✅ ✅ → POST @PostMapping Create resource ❌ ❌ | POST @PostMapping Create resource ❌ ❌ → PUT @PutMapping Replace resource ✅ ❌ | PUT @PutMapping Replace resource ✅ ❌ → PATCH @PatchMapping Partial update ❌* ❌ | PATCH @PatchMapping Partial update ❌* ❌ → DELETE @DeleteMapping Delete resource ✅ ❌ | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["HTTP METHODS & SPRING MAPPINGS"]
+    N2["HTTP Method Annotation Purpose Idempotent Safe"]
+    N3["GET @GetMapping Read resource ✅ ✅"]
+    N4["POST @PostMapping Create resource ❌ ❌"]
+    N5["PUT @PutMapping Replace resource ✅ ❌"]
+    N6["PATCH @PatchMapping Partial update ❌* ❌"]
+    N7["DELETE @DeleteMapping Delete resource ✅ ❌"]
+    N8["HEAD @RequestMapping Get headers only ✅ ✅"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---
@@ -1070,6 +1104,27 @@ public class UserController {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: CONTROLLER BEST PRACTICES → 1. THIN CONTROLLERS | 1. THIN CONTROLLERS → Controllers should: | Controllers should: → ✅ Receive request | ✅ Receive request → ✅ Validate (via @Valid) | ✅ Validate (via @Valid) → ✅ Delegate to service | ✅ Delegate to service → ✅ Return response | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["CONTROLLER BEST PRACTICES"]
+    N2["1. THIN CONTROLLERS"]
+    N3["Controllers should:"]
+    N4["✅ Receive request"]
+    N5["✅ Validate (via @Valid)"]
+    N6["✅ Delegate to service"]
+    N7["✅ Return response"]
+    N8["Controllers should NOT:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### Example: Complete CRUD Controller
 
 ```java
@@ -1245,6 +1300,27 @@ public class UserController {
 □ API documentation with OpenAPI annotations
 □ Pagination for list endpoints
 □ Thin controllers - delegate to services
+```
+
+> **Flow**: □ @RequiredArgsConstructor for DI → □ @Validated for method-level validation | □ @Validated for method-level validation → □ @Valid on @RequestBody DTOs | □ @Valid on @RequestBody DTOs → □ Appropriate HTTP methods (GET, POST, PUT, PATCH, DELE | □ Appropriate HTTP methods (GET, POST, PUT, PATCH, DELE → □ Correct status codes (200, 201, 204, 400, 404, etc.) | □ Correct status codes (200, 201, 204, 400, 404, etc.) → □ ResponseEntity for explicit control | □ ResponseEntity for explicit control → □ POST returns 201 with Location header | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["□ @RequiredArgsConstructor for DI"]
+    N2["□ @Validated for method-level validation"]
+    N3["□ @Valid on @RequestBody DTOs"]
+    N4["□ Appropriate HTTP methods (GET, POST, PUT, PATCH, DELE"]
+    N5["□ Correct status codes (200, 201, 204, 400, 404, etc.)"]
+    N6["□ ResponseEntity for explicit control"]
+    N7["□ POST returns 201 with Location header"]
+    N8["□ DELETE returns 204 No Content"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

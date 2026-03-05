@@ -180,6 +180,15 @@ VISUAL (3 items, W=4):
   Correction: dp[3][4] = max(dp[2][4], dp[2][1]+12) = max(16, 18) = 18
 ```
 
+> **Flow**: Answer: dp[3][4] = 22 (take items 2 and 3: weight= → items 1+3: 1+3=4, 6+12=18?
+
+```mermaid
+flowchart LR
+    N1["Answer: dp[3][4] = 22 (take items 2 and 3: weight="]
+    N2["items 1+3: 1+3=4, 6+12=18?"]
+    N1 --> N2
+```
+
 ```java
 // 2D solution
 public int knapsack(int[] weights, int[] values, int W) {
@@ -232,6 +241,15 @@ TRANSFORMATION:
 SOLUTION:
 ```
 
+> **Flow**: PATTERN: 0/1 Knapsack → Subset Sum with target = totalSum/2
+
+```mermaid
+flowchart LR
+    N1["PATTERN: 0/1 Knapsack"]
+    N2["Subset Sum with target = totalSum/2"]
+    N1 --> N2
+```
+
 ```java
 public boolean canPartition(int[] nums) {
     int sum = 0;
@@ -274,6 +292,15 @@ TRANSFORMATION (the clever part):
 SOLUTION:
 ```
 
+> **Flow**: PATTERN: 0/1 Knapsack → count ways
+
+```mermaid
+flowchart LR
+    N1["PATTERN: 0/1 Knapsack"]
+    N2["count ways"]
+    N1 --> N2
+```
+
 ```java
 public int findTargetSumWays(int[] nums, int target) {
     int sum = 0;
@@ -311,6 +338,18 @@ PROBLEM: Coins of given denominations, find min coins to make amount.
   Input:  coins = [1,5,11], amount = 15 → Output: 3 (5+5+5)
 
 SOLUTION:
+```
+
+> **Flow**: PATTERN: Unbounded Knapsack → minimize count | Input: coins = [1,5,11], amount = 15 → Output: 3 (5+5+5)
+
+```mermaid
+flowchart LR
+    N1["PATTERN: Unbounded Knapsack"]
+    N2["minimize count"]
+    N3["Input: coins = [1,5,11], amount = 15"]
+    N4["Output: 3 (5+5+5)"]
+    N1 --> N2
+    N3 --> N4
 ```
 
 ```java
@@ -351,6 +390,21 @@ CRITICAL DISTINCTION:
   This problem asks COMBINATIONS → coins as outer loop.
 
 SOLUTION:
+```
+
+> **Flow**: PATTERN: Unbounded Knapsack → count combinations | Input: coins = [1,2,5], amount = 5 → Output: 4 | This problem asks COMBINATIONS → coins as outer loop.
+
+```mermaid
+flowchart LR
+    N1["PATTERN: Unbounded Knapsack"]
+    N2["count combinations"]
+    N3["Input: coins = [1,2,5], amount = 5"]
+    N4["Output: 4"]
+    N5["This problem asks COMBINATIONS"]
+    N6["coins as outer loop."]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
 ```
 
 ```java
@@ -464,6 +518,17 @@ COMPLEXITY: Time O(strs × m × n) | Space O(m × n)
 │  ✅ Item reused multiple times (dp[4] used updated dp[2]=3 → 2 copies)        │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: WHY LOOP DIRECTION MATTERS → 0/1 KNAPSACK (RIGHT → LEFT): | 0/1 KNAPSACK (RIGHT → LEFT): → UNBOUNDED KNAPSACK (LEFT → RIGHT):
+
+```mermaid
+flowchart TD
+    N1["WHY LOOP DIRECTION MATTERS"]
+    N2["0/1 KNAPSACK (RIGHT → LEFT):"]
+    N3["UNBOUNDED KNAPSACK (LEFT → RIGHT):"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 ---

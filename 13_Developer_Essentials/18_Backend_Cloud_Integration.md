@@ -55,6 +55,18 @@ ERA 4: SERVERLESS / PLATFORM (2020+)
  VM > Container > Platform > Serverless
 ```
 
+> **Flow**: 'Works on my machine' → 'Works everywhere.' | More Control → Less Maintenance
+
+```mermaid
+flowchart LR
+    N1["'Works on my machine'"]
+    N2["'Works everywhere.'"]
+    N3["More Control"]
+    N4["Less Maintenance"]
+    N1 --> N2
+    N3 --> N4
+```
+
 ---
 
 ## 2. Cloud Service Models
@@ -82,6 +94,27 @@ IaaS vs PaaS vs SaaS — The Pizza Analogy:
 │ Your rack  │ Azure VM   │ AWS EBS    │ Salesforce │
 │            │ GCP CE     │ Azure App  │ GitHub     │
 └────────────┴────────────┴────────────┴────────────┘
+```
+
+> **Flow**: IaaS vs PaaS vs SaaS — The Pizza Analogy: → ON-PREMISE IaaS PaaS SaaS | ON-PREMISE IaaS PaaS SaaS → You manage You manage You manage You manage | You manage You manage You manage You manage → EVERYTHING Apps Apps Nothing | EVERYTHING Apps Apps Nothing → Hardware Data Data (just use) | Hardware Data Data (just use) → OS Runtime | OS Runtime → Middleware Middleware | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["IaaS vs PaaS vs SaaS — The Pizza Analogy:"]
+    N2["ON-PREMISE IaaS PaaS SaaS"]
+    N3["You manage You manage You manage You manage"]
+    N4["EVERYTHING Apps Apps Nothing"]
+    N5["Hardware Data Data (just use)"]
+    N6["OS Runtime"]
+    N7["Middleware Middleware"]
+    N8["Runtime"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---
@@ -139,6 +172,23 @@ MONITORING:
 └───────────────────┴────────────────────────────────────────┘
 ```
 
+> **Flow**: EC2 Virtual server. Full control. / Like renting an emp → RDS Managed SQL (MySQL, PostgreSQL). / Backups, replica | RDS Managed SQL (MySQL, PostgreSQL). / Backups, replica → S3 Object storage. Files, images, backups. / Like Googl | S3 Object storage. Files, images, backups. / Like Googl → VPC Virtual private network. Your servers / live in an  | VPC Virtual private network. Your servers / live in an  → SQS Message queue. Decouple services. / SNS Pub/sub not | SQS Message queue. Decouple services. / SNS Pub/sub not → CloudWatch Metrics, logs, alarms. 'Is it healthy?'
+
+```mermaid
+flowchart TD
+    N1["EC2 Virtual server. Full control. / Like renting an emp"]
+    N2["RDS Managed SQL (MySQL, PostgreSQL). / Backups, replica"]
+    N3["S3 Object storage. Files, images, backups. / Like Googl"]
+    N4["VPC Virtual private network. Your servers / live in an "]
+    N5["SQS Message queue. Decouple services. / SNS Pub/sub not"]
+    N6["CloudWatch Metrics, logs, alarms. 'Is it healthy?'"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+```
+
 ---
 
 ## 4. Typical Spring Boot Cloud Architecture
@@ -181,6 +231,29 @@ Also connected:
 ├── SQS: async job processing (email sending, reports)
 ├── S3: file uploads (user avatars, documents)
 └── CloudWatch: logs, metrics, alerts
+```
+
+> **Flow**: Route 53 → CloudFront | CloudFront → ALB | ALB → SB1 | ALB → SB2 | ALB → SB3 | SB1 → Database / (Primary) | ...+3 more
+
+```mermaid
+flowchart TD
+    N1["Route 53"]
+    N2["CloudFront"]
+    N3["ALB"]
+    N4["SB1"]
+    N5["SB2"]
+    N6["SB3"]
+    N7["Database / (Primary)"]
+    N8["Redis"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N3 --> N5
+    N3 --> N6
+    N4 --> N7
+    N5 --> N7
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---
@@ -228,6 +301,65 @@ NEVER in code or properties files!
 └── Spring Cloud Config Server
 ```
 
+> **Flow**: LOCAL (developer laptop): → Database: localhost:3306 / H2 in-memory | LOCAL (developer laptop): → Redis: localhost:6379 | LOCAL (developer laptop): → API URL: http://localhost:8080 | LOCAL (developer laptop): → Logs: DEBUG level | DEV (shared development server): → Database: dev-db.internal:3306 | DEV (shared development server): → Redis: dev-redis.internal:6379 | ...+18 more
+
+```mermaid
+flowchart TD
+    N1["LOCAL (developer laptop):"]
+    N2["Database: localhost:3306 / H2 in-memory"]
+    N3["Redis: localhost:6379"]
+    N4["API URL: http://localhost:8080"]
+    N5["Logs: DEBUG level"]
+    N6["DEV (shared development server):"]
+    N7["Database: dev-db.internal:3306"]
+    N8["Redis: dev-redis.internal:6379"]
+    N9["API URL: https://dev-api.myapp.com"]
+    N10["STAGING (pre-production, mirrors prod):"]
+    N11["Database: staging-db.internal:3306"]
+    N12["Redis: staging-redis.internal:6379"]
+    N13["API URL: https://staging-api.myapp.com"]
+    N14["Logs: INFO level"]
+    N15["PRODUCTION:"]
+    N16["Database: prod-db.internal:3306 (RDS, encrypted)"]
+    N17["Redis: prod-cache.internal:6379 (ElastiCache)"]
+    N18["API URL: https://api.myapp.com"]
+    N19["Logs: WARN level"]
+    N20["Spring Boot: application-{profile}.properties"]
+    N21["application-local.properties"]
+    N22["application-dev.properties"]
+    N23["application-staging.properties"]
+    N24["application-prod.properties"]
+    N25["NEVER in code or properties files!"]
+    N26["AWS Secrets Manager"]
+    N27["Azure Key Vault"]
+    N28["Environment variables (passed at deploy time)"]
+    N29["Spring Cloud Config Server"]
+    N1 --> N2
+    N1 --> N3
+    N1 --> N4
+    N1 --> N5
+    N6 --> N7
+    N6 --> N8
+    N6 --> N9
+    N6 --> N5
+    N10 --> N11
+    N10 --> N12
+    N10 --> N13
+    N10 --> N14
+    N15 --> N16
+    N15 --> N17
+    N15 --> N18
+    N15 --> N19
+    N20 --> N21
+    N20 --> N22
+    N20 --> N23
+    N20 --> N24
+    N25 --> N26
+    N25 --> N27
+    N25 --> N28
+    N25 --> N29
+```
+
 ---
 
 ## 6. CI/CD Pipeline for Spring Boot
@@ -271,6 +403,27 @@ EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
 ```
 
+> **Flow**: FULL PIPELINE: Code → Production → Developer pushes code to GitHub | Developer pushes code to GitHub → GitHub Actions / Jenkins | GitHub Actions / Jenkins → STAGE 1: BUILD | STAGE 1: BUILD → mvn clean package (compile + test) | mvn clean package (compile + test) → Run unit tests | Run unit tests → Run integration tests | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["FULL PIPELINE: Code → Production"]
+    N2["Developer pushes code to GitHub"]
+    N3["GitHub Actions / Jenkins"]
+    N4["STAGE 1: BUILD"]
+    N5["mvn clean package (compile + test)"]
+    N6["Run unit tests"]
+    N7["Run integration tests"]
+    N8["Static analysis (SonarQube)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 7. Monitoring in Production
@@ -304,6 +457,33 @@ Spring Boot Actuator endpoints for monitoring:
 /actuator/prometheus → metrics in Prometheus format
 ```
 
+> **Flow**: User → API Gateway | API Gateway → Service A | Service A → Service B | Service B → DB | /actuator/health → is the app healthy? | /actuator/metrics → JVM memory, thread count, HTTP stats | ...+2 more
+
+```mermaid
+flowchart TD
+    N1["User"]
+    N2["API Gateway"]
+    N3["Service A"]
+    N4["Service B"]
+    N5["DB"]
+    N6["/actuator/health"]
+    N7["is the app healthy?"]
+    N8["/actuator/metrics"]
+    N9["JVM memory, thread count, HTTP stats"]
+    N10["/actuator/info"]
+    N11["app version, build time"]
+    N12["/actuator/prometheus"]
+    N13["metrics in Prometheus format"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N6 --> N7
+    N8 --> N9
+    N10 --> N11
+    N12 --> N13
+```
+
 ---
 
 ## Interview Quick-Fire
@@ -334,6 +514,17 @@ Q: How do you handle database migrations in production?
 → Flyway or Liquibase. Version-controlled SQL scripts that run
   automatically on app startup. Forward-only. Never edit
   a migration that's been deployed.
+```
+
+> **Flow**: Containerize with Docker → Push to ECR | Push to ECR → Deploy on ECS Fargate
+
+```mermaid
+flowchart LR
+    N1["Containerize with Docker"]
+    N2["Push to ECR"]
+    N3["Deploy on ECS Fargate"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 ---

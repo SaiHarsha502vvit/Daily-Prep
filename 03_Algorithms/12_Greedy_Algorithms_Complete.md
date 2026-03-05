@@ -433,6 +433,23 @@ public int greedySolve(int[][] items) {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: GREEDY PHILOSOPHY → 'At each step, make the choice that looks best RIGHT NO | 'At each step, make the choice that looks best RIGHT NO → LOCAL OPTIMUM → Hopefully → GLOBAL OPTIMUM | LOCAL OPTIMUM → Hopefully → GLOBAL OPTIMUM → Key properties: | Key properties: → 1. Greedy Choice Property: Local choice leads to global | 1. Greedy Choice Property: Local choice leads to global → 2. Optimal Substructure: Optimal contains optimal sub
+
+```mermaid
+flowchart TD
+    N1["GREEDY PHILOSOPHY"]
+    N2["'At each step, make the choice that looks best RIGHT NO"]
+    N3["LOCAL OPTIMUM → Hopefully → GLOBAL OPTIMUM"]
+    N4["Key properties:"]
+    N5["1. Greedy Choice Property: Local choice leads to global"]
+    N6["2. Optimal Substructure: Optimal contains optimal sub"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+```
+
 ### Visual Example: Coin Change (When Greedy Works)
 
 ```
@@ -450,6 +467,30 @@ Step 6: Take largest ≤ 1  → 1  (remaining: 0)
 Result: 25 + 25 + 10 + 1 + 1 + 1 = 6 coins ✓
 
 This works because US coins have special property!
+```
+
+> **Flow**: Step 1: Take largest ≤ 63 → 25 (remaining: 38) | Step 2: Take largest ≤ 38 → 25 (remaining: 13) | Step 3: Take largest ≤ 13 → 10 (remaining: 3) | Step 4: Take largest ≤ 3 → 1 (remaining: 2) | Step 5: Take largest ≤ 2 → 1 (remaining: 1) | Step 6: Take largest ≤ 1 → 1 (remaining: 0)
+
+```mermaid
+flowchart TD
+    N1["Step 1: Take largest ≤ 63"]
+    N2["25 (remaining: 38)"]
+    N3["Step 2: Take largest ≤ 38"]
+    N4["25 (remaining: 13)"]
+    N5["Step 3: Take largest ≤ 13"]
+    N6["10 (remaining: 3)"]
+    N7["Step 4: Take largest ≤ 3"]
+    N8["1 (remaining: 2)"]
+    N9["Step 5: Take largest ≤ 2"]
+    N10["1 (remaining: 1)"]
+    N11["Step 6: Take largest ≤ 1"]
+    N12["1 (remaining: 0)"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+    N7 --> N8
+    N9 --> N10
+    N11 --> N12
 ```
 
 ### When Greedy FAILS
@@ -488,6 +529,27 @@ For arbitrary coins, use DP instead.
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: GREEDY WORKS WHEN BOTH ARE TRUE: → 1. GREEDY CHOICE PROPERTY | 1. GREEDY CHOICE PROPERTY → → The locally optimal choice is part of globally optima | → The locally optimal choice is part of globally optima → → 'Taking the best now won't hurt us later' | → 'Taking the best now won't hurt us later' → 2. OPTIMAL SUBSTRUCTURE | 2. OPTIMAL SUBSTRUCTURE → → After making greedy choice, remaining is smaller | → After making greedy choice, remaining is smaller → version of same problem | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["GREEDY WORKS WHEN BOTH ARE TRUE:"]
+    N2["1. GREEDY CHOICE PROPERTY"]
+    N3["→ The locally optimal choice is part of globally optima"]
+    N4["→ 'Taking the best now won't hurt us later'"]
+    N5["2. OPTIMAL SUBSTRUCTURE"]
+    N6["→ After making greedy choice, remaining is smaller"]
+    N7["version of same problem"]
+    N8["→ 'Problem breaks into similar subproblems'"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### How to Recognize Greedy Problems
 
 ```
@@ -511,6 +573,27 @@ For arbitrary coins, use DP instead.
 │  ✓ Fractional knapsack                                          │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: GREEDY PATTERN INDICATORS → Keywords in Problem: | Keywords in Problem: → ✓ 'Minimum/Maximum number of...' | ✓ 'Minimum/Maximum number of...' → ✓ 'Largest/Smallest...' | ✓ 'Largest/Smallest...' → ✓ 'Optimal arrangement/schedule' | ✓ 'Optimal arrangement/schedule' → ✓ 'Non-overlapping intervals' | ✓ 'Non-overlapping intervals' → ✓ 'Select items with constraint' | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["GREEDY PATTERN INDICATORS"]
+    N2["Keywords in Problem:"]
+    N3["✓ 'Minimum/Maximum number of...'"]
+    N4["✓ 'Largest/Smallest...'"]
+    N5["✓ 'Optimal arrangement/schedule'"]
+    N6["✓ 'Non-overlapping intervals'"]
+    N7["✓ 'Select items with constraint'"]
+    N8["Problem Patterns:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### Proof Technique: Exchange Argument
@@ -563,6 +646,23 @@ Different interval problems need different sorting:
 │  Merge overlapping intervals      │  Start time (earliest first) │
 │  Meeting rooms needed             │  Start time (process events) │
 └───────────────────────────────────┴──────────────────────────────┘
+```
+
+> **Flow**: Different interval problems need different sorting: → PROBLEM SORT BY | PROBLEM SORT BY → Max non-overlapping intervals End time (earliest first) | Max non-overlapping intervals End time (earliest first) → Min intervals to cover range Start time (earliest first | Min intervals to cover range Start time (earliest first → Merge overlapping intervals Start time (earliest first) | Merge overlapping intervals Start time (earliest first) → Meeting rooms needed Start time (process events)
+
+```mermaid
+flowchart TD
+    N1["Different interval problems need different sorting:"]
+    N2["PROBLEM SORT BY"]
+    N3["Max non-overlapping intervals End time (earliest first)"]
+    N4["Min intervals to cover range Start time (earliest first"]
+    N5["Merge overlapping intervals Start time (earliest first)"]
+    N6["Meeting rooms needed Start time (process events)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
 ```
 
 ### Pattern 3: Two-Pointer Greedy
@@ -642,6 +742,27 @@ D [5,7]  ✓  (starts after A ends)
 E [8,9]  ✓  (starts after D ends)
 
 Result: 3 activities (A, D, E)
+```
+
+> **Flow**: Activities: → Sorted by end time: A, B, C, D, E | Sorted by end time: A, B, C, D, E → Greedy picks: | Greedy picks: → A [1,4] ✓ (first ending) | A [1,4] ✓ (first ending) → B [3,5] ✗ (overlaps with A) | B [3,5] ✗ (overlaps with A) → C [0,6] ✗ (overlaps with A) | C [0,6] ✗ (overlaps with A) → D [5,7] ✓ (starts after A ends) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Activities:"]
+    N2["Sorted by end time: A, B, C, D, E"]
+    N3["Greedy picks:"]
+    N4["A [1,4] ✓ (first ending)"]
+    N5["B [3,5] ✗ (overlaps with A)"]
+    N6["C [0,6] ✗ (overlaps with A)"]
+    N7["D [5,7] ✓ (starts after A ends)"]
+    N8["E [8,9] ✓ (starts after D ends)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### Job Scheduling to Maximize Profit
@@ -1493,6 +1614,27 @@ public boolean lemonadeChange(int[] bills) {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: GREEDY vs DYNAMIC PROGRAMMING → GREEDY DYNAMIC PROGRAMMING | GREEDY DYNAMIC PROGRAMMING → Makes ONE choice at each Considers ALL choices at each | Makes ONE choice at each Considers ALL choices at each → step, never reconsiders step, picks best via recursion | step, never reconsiders step, picks best via recursion → Doesn't always work Always gives optimal (if | Doesn't always work Always gives optimal (if → correct recurrence) | correct recurrence) → Examples: Examples: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["GREEDY vs DYNAMIC PROGRAMMING"]
+    N2["GREEDY DYNAMIC PROGRAMMING"]
+    N3["Makes ONE choice at each Considers ALL choices at each"]
+    N4["step, never reconsiders step, picks best via recursion"]
+    N5["Doesn't always work Always gives optimal (if"]
+    N6["correct recurrence)"]
+    N7["Examples: Examples:"]
+    N8["- Activity Selection - 0/1 Knapsack"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### Same Problem, Different Approaches
 
 ```java
@@ -1598,6 +1740,27 @@ public int dpCoinChange(int[] coins, int amount) {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: COMMON GREEDY STRATEGIES → 1. SORT BY END TIME | 1. SORT BY END TIME → → Max non-overlapping intervals | → Max non-overlapping intervals → → Activity selection | → Activity selection → 2. SORT BY START TIME | 2. SORT BY START TIME → → Merge intervals | → Merge intervals → → Cover range with min intervals | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["COMMON GREEDY STRATEGIES"]
+    N2["1. SORT BY END TIME"]
+    N3["→ Max non-overlapping intervals"]
+    N4["→ Activity selection"]
+    N5["2. SORT BY START TIME"]
+    N6["→ Merge intervals"]
+    N7["→ Cover range with min intervals"]
+    N8["3. SORT BY RATIO (value/weight)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### Common Mistakes to Avoid
 
 ```
@@ -1617,6 +1780,27 @@ public int dpCoinChange(int[] coins, int amount) {
    → Always update end/farthest after making choice
 ```
 
+> **Flow**: ❌ Assuming greedy works without proof → → Test with counterexamples first | → Test with counterexamples first → ❌ Wrong sorting criteria | ❌ Wrong sorting criteria → → End time for selection, start time for merging | → End time for selection, start time for merging → ❌ Not handling edge cases | ❌ Not handling edge cases → → Empty input, single element, all same elements | → Empty input, single element, all same elements → ❌ Integer overflow in comparisons | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["❌ Assuming greedy works without proof"]
+    N2["→ Test with counterexamples first"]
+    N3["❌ Wrong sorting criteria"]
+    N4["→ End time for selection, start time for merging"]
+    N5["❌ Not handling edge cases"]
+    N6["→ Empty input, single element, all same elements"]
+    N7["❌ Integer overflow in comparisons"]
+    N8["→ Use Integer.compare(a, b) instead of a - b"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 **Master These 3 Greedy Patterns:**
@@ -1631,6 +1815,19 @@ public int dpCoinChange(int[] coins, int amount) {
 ║                                                               ║
 ║  3. TWO POINTER: Sort both, match greedily                    ║
 ╚═══════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: GREEDY ESSENTIALS → 1. INTERVAL SELECTION: Sort by end time, pick earliest | 1. INTERVAL SELECTION: Sort by end time, pick earliest → 2. INTERVAL MERGING: Sort by start time, extend end | 2. INTERVAL MERGING: Sort by start time, extend end → 3. TWO POINTER: Sort both, match greedily
+
+```mermaid
+flowchart TD
+    N1["GREEDY ESSENTIALS"]
+    N2["1. INTERVAL SELECTION: Sort by end time, pick earliest"]
+    N3["2. INTERVAL MERGING: Sort by start time, extend end"]
+    N4["3. TWO POINTER: Sort both, match greedily"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
 ```
 
 **Pro Tip:** If greedy doesn't work for a problem, try DP. If you can prove the greedy choice property (exchange argument), greedy is usually faster!

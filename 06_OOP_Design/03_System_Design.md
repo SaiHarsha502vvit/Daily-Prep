@@ -310,6 +310,23 @@ USER FLOW SYMBOLS:
                 └─────────┘
 ```
 
+> **Flow**: Login Page → Email + Password | Login Page → Social Login | Email + Password → Dashboard | Social Login → Dashboard | Error / Message → Forgot / Password
+
+```mermaid
+flowchart TD
+    N1["Login Page"]
+    N2["Email + Password"]
+    N3["Social Login"]
+    N4["Dashboard"]
+    N5["Error / Message"]
+    N6["Forgot / Password"]
+    N1 --> N2
+    N1 --> N3
+    N2 --> N4
+    N3 --> N4
+    N5 --> N6
+```
+
 ---
 
 # 📌 Part 2: Feature Creation Framework
@@ -705,6 +722,18 @@ KEY DECISIONS:
 4. Async analytics logging
 ```
 
+> **Flow**: URL Service / - Generate ID / - Store mapping → Database / (Cassandra) | Redirect Svc / - Lookup URL / - Log analytics → Cache / (Redis)
+
+```mermaid
+flowchart TD
+    N1["URL Service / - Generate ID / - Store mapping"]
+    N2["Database / (Cassandra)"]
+    N3["Redirect Svc / - Lookup URL / - Log analytics"]
+    N4["Cache / (Redis)"]
+    N1 --> N2
+    N3 --> N4
+```
+
 ## Example 2: Chat System (Like WhatsApp)
 
 ```
@@ -757,6 +786,31 @@ MESSAGE FLOW:
 7. If B offline: Push notification via FCM/APNs
 8. B receives and sends ACK
 9. Delivery receipt sent back to A
+```
+
+> **Flow**: Load Balancer → ocket WebSocket WebSo / ver 1 Server 2 Serv | ocket WebSocket WebSo / ver 1 Server 2 Serv → Message Broker / (Kafka) | WebSocket / Server 1 → Message / Service | WebSocket / Server N → Push / Service | Message Broker / (Kafka) → Presence / Service | Message / Service → Cassandra / (Messages) | ...+2 more
+
+```mermaid
+flowchart TD
+    N1["Load Balancer"]
+    N2["ocket WebSocket WebSo / ver 1 Server 2 Serv"]
+    N3["WebSocket / Server 1"]
+    N4["WebSocket / Server N"]
+    N5["Message Broker / (Kafka)"]
+    N6["Message / Service"]
+    N7["Presence / Service"]
+    N8["Push / Service"]
+    N9["Cassandra / (Messages)"]
+    N10["Redis / (Online)"]
+    N11["FCM / /APNs"]
+    N1 --> N2
+    N2 --> N5
+    N3 --> N6
+    N4 --> N8
+    N5 --> N7
+    N6 --> N9
+    N7 --> N10
+    N8 --> N11
 ```
 
 ---

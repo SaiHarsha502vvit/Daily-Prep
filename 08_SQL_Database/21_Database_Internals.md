@@ -48,6 +48,30 @@
      → If parent is full → split again (cascades up)
 ```
 
+> **Flow**: Root: 55 &gt; 30, 55 &lt; 70 → go middle child | Internal: 55 &gt; 50, 55 &lt; 60 → go third child | Leaf: Found 55! → return row data | 2. If page has space → insert in sorted order | 3. If page is full → SPLIT into two half-full pages | If parent is full → split again (cascades up)
+
+```mermaid
+flowchart TD
+    N1["Root: 55 &gt; 30, 55 &lt; 70"]
+    N2["go middle child"]
+    N3["Internal: 55 &gt; 50, 55 &lt; 60"]
+    N4["go third child"]
+    N5["Leaf: Found 55!"]
+    N6["return row data"]
+    N7["2. If page has space"]
+    N8["insert in sorted order"]
+    N9["3. If page is full"]
+    N10["SPLIT into two half-full pages"]
+    N11["If parent is full"]
+    N12["split again (cascades up)"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+    N7 --> N8
+    N9 --> N10
+    N11 --> N12
+```
+
 ### Clustered vs Non-Clustered Index
 
 > CLUSTERED INDEX (Primary Key):
@@ -98,6 +122,27 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: THE PROBLEM: Crash during write → data corruption → THE SOLUTION: Write-Ahead Logging | THE SOLUTION: Write-Ahead Logging → UPDATE accounts SET balance = 500 WHERE id = 1; | UPDATE accounts SET balance = 500 WHERE id = 1; → Step 2: Modify page in memory (buffer pool) | Step 2: Modify page in memory (buffer pool) → Step 3: Acknowledge to client: 'COMMIT OK' | Step 3: Acknowledge to client: 'COMMIT OK' → Step 4: Eventually flush dirty pages to disk (checkpoin | Step 4: Eventually flush dirty pages to disk (checkpoin → If crash after step 1, before step 4: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE PROBLEM: Crash during write → data corruption"]
+    N2["THE SOLUTION: Write-Ahead Logging"]
+    N3["UPDATE accounts SET balance = 500 WHERE id = 1;"]
+    N4["Step 2: Modify page in memory (buffer pool)"]
+    N5["Step 3: Acknowledge to client: 'COMMIT OK'"]
+    N6["Step 4: Eventually flush dirty pages to disk (checkpoin"]
+    N7["If crash after step 1, before step 4:"]
+    N8["→ On restart, REPLAY WAL to reconstruct lost changes"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## Part 4: MVCC (Multi-Version Concurrency Control)
@@ -140,6 +185,15 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: Page 1 Page 5 Page 12 Page 3 ... / (clean) (dirty) (cle → Data files / (tables, / indexes)
+
+```mermaid
+flowchart TD
+    N1["Page 1 Page 5 Page 12 Page 3 ... / (clean) (dirty) (cle"]
+    N2["Data files / (tables, / indexes)"]
+    N1 --> N2
+```
+
 ---
 
 ## Part 6: Query Execution — How SELECT Actually Works
@@ -177,6 +231,27 @@ A: Run EXPLAIN ANALYZE. Common causes:
    3. Outdated statistics → ANALYZE/UPDATE STATISTICS
    4. Too many rows returned → check WHERE predicates
    5. Lock contention → check for long-running transactions
+```
+
+> **Flow**: 1. Missing index → sequential scan on large table | 2. Bad join order → optimizer chose wrong plan | 3. Outdated statistics → ANALYZE/UPDATE STATISTICS | 4. Too many rows returned → check WHERE predicates | 5. Lock contention → check for long-running transactions
+
+```mermaid
+flowchart TD
+    N1["1. Missing index"]
+    N2["sequential scan on large table"]
+    N3["2. Bad join order"]
+    N4["optimizer chose wrong plan"]
+    N5["3. Outdated statistics"]
+    N6["ANALYZE/UPDATE STATISTICS"]
+    N7["4. Too many rows returned"]
+    N8["check WHERE predicates"]
+    N9["5. Lock contention"]
+    N10["check for long-running transactions"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+    N7 --> N8
+    N9 --> N10
 ```
 
 ---

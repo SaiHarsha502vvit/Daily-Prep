@@ -119,6 +119,69 @@ src/
 └── App.tsx
 ```
 
+> **Flow**: src/ → api/ # API client & domain-specific APIs | src/ → client.ts # Base HTTP client (fetch wrapper) | src/ → users.ts # User-related API calls | src/ → orders.ts | src/ → components/ # Shared/reusable UI components | src/ → ui/ # Primitives: Button, Modal, Input | ...+23 more
+
+```mermaid
+flowchart TD
+    N1["src/"]
+    N2["api/ # API client & domain-specific APIs"]
+    N3["client.ts # Base HTTP client (fetch wrapper)"]
+    N4["users.ts # User-related API calls"]
+    N5["orders.ts"]
+    N6["components/ # Shared/reusable UI components"]
+    N7["ui/ # Primitives: Button, Modal, Input"]
+    N8["forms/ # Form components with validation"]
+    N9["layout/ # Header, Sidebar, Footer"]
+    N10["features/ # Feature-based modules (vertical slices)"]
+    N11["auth/"]
+    N12["components/ # LoginForm, RegisterForm"]
+    N13["hooks/ # useAuth, useLogin"]
+    N14["store/ # Auth slice/store"]
+    N15["types.ts"]
+    N16["products/"]
+    N17["components/ # ProductList, ProductCard"]
+    N18["hooks/ # useProducts, useProductSearch"]
+    N19["cart/"]
+    N20["hooks/ # Shared custom hooks"]
+    N21["useDebounce.ts"]
+    N22["useLocalStorage.ts"]
+    N23["useMediaQuery.ts"]
+    N24["lib/ # Third-party setup (axios, dayjs)"]
+    N25["pages/ # Route-level page components"]
+    N26["store/ # Global state (Redux store config)"]
+    N27["types/ # Shared TypeScript types"]
+    N28["utils/ # Pure utility functions"]
+    N29["App.tsx"]
+    N1 --> N2
+    N1 --> N3
+    N1 --> N4
+    N1 --> N5
+    N1 --> N6
+    N1 --> N7
+    N1 --> N8
+    N1 --> N9
+    N1 --> N10
+    N1 --> N11
+    N1 --> N12
+    N1 --> N13
+    N1 --> N14
+    N1 --> N15
+    N1 --> N16
+    N1 --> N17
+    N1 --> N18
+    N1 --> N19
+    N1 --> N20
+    N1 --> N21
+    N1 --> N22
+    N1 --> N23
+    N1 --> N24
+    N1 --> N25
+    N1 --> N26
+    N1 --> N27
+    N1 --> N28
+    N1 --> N29
+```
+
 ---
 
 ## Part 3: Key Enterprise Patterns
@@ -192,6 +255,27 @@ const mutation = useMutation({
 ║  Test: Vitest (unit/integration) + Playwright (E2E)                              ║
 ║  CI: GitHub Actions → lint + type-check + test + build + deploy                  ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: ENVIRONMENT VARIABLES (Vite): → .env → VITE_API_URL=http://localhost:8080 | .env → VITE_API_URL=http://localhost:8080 → .env.production → VITE_API_URL=https://api.myapp.com | .env.production → VITE_API_URL=https://api.myapp.com → Access: import.meta.env.VITE_API_URL | Access: import.meta.env.VITE_API_URL → RULE: Only VITE_ prefixed vars are exposed to client! | RULE: Only VITE_ prefixed vars are exposed to client! → BUILD & DEPLOY PIPELINE: | BUILD & DEPLOY PIPELINE: → npm run build → dist/ folder (static HTML/CSS/JS) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["ENVIRONMENT VARIABLES (Vite):"]
+    N2[".env → VITE_API_URL=http://localhost:8080"]
+    N3[".env.production → VITE_API_URL=https://api.myapp.com"]
+    N4["Access: import.meta.env.VITE_API_URL"]
+    N5["RULE: Only VITE_ prefixed vars are exposed to client!"]
+    N6["BUILD & DEPLOY PIPELINE:"]
+    N7["npm run build → dist/ folder (static HTML/CSS/JS)"]
+    N8["Deploy dist/ to: Vercel, Netlify, S3+CloudFront, Nginx"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

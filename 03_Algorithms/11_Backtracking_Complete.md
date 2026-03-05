@@ -39,6 +39,18 @@ BRUTE FORCE would try everything → for 8 queens: 64^8 = 281 trillion positions
 BACKTRACKING prunes early → only explore VALID partial solutions
 ```
 
+> **Flow**: BRUTE FORCE would try everything → for 8 queens: 64^8 = 281 trillion positions | BACKTRACKING prunes early → only explore VALID partial solutions
+
+```mermaid
+flowchart LR
+    N1["BRUTE FORCE would try everything"]
+    N2["for 8 queens: 64^8 = 281 trillion positions"]
+    N3["BACKTRACKING prunes early"]
+    N4["only explore VALID partial solutions"]
+    N1 --> N2
+    N3 --> N4
+```
+
 ### The Mental Model: Exploring a Tree of Choices
 
 ```
@@ -60,6 +72,25 @@ BACKTRACKING = DFS through this tree, BUT:
   - If dead end → UNDO last choice (backtrack) → try next option
 ```
 
+> **Flow**: - Before going deeper → CHECK if this partial solution CAN lead to a valid | - If NO → PRUNE this branch (don't explore further) | PRUNE this branch (don't explore further) → HUGE time savings | - If dead end → UNDO last choice (backtrack) | UNDO last choice (backtrack) → try next option
+
+```mermaid
+flowchart TD
+    N1["- Before going deeper"]
+    N2["CHECK if this partial solution CAN lead to a valid"]
+    N3["- If NO"]
+    N4["PRUNE this branch (don't explore further)"]
+    N5["HUGE time savings"]
+    N6["- If dead end"]
+    N7["UNDO last choice (backtrack)"]
+    N8["try next option"]
+    N1 --> N2
+    N3 --> N4
+    N4 --> N5
+    N6 --> N7
+    N7 --> N8
+```
+
 ### The Universal 3-Step Framework: Choose → Explore → Unchoose
 
 ```
@@ -72,6 +103,19 @@ WHY "unchoose"? Because after exploring one branch, you need to
 return to the same state to try the NEXT branch. Like hiking:
 you go down a trail, hit a dead end, walk BACK to the fork,
 then try the other trail.
+```
+
+> **Flow**: 1. CHOOSE: Make a choice (add to current path) → 2. EXPLORE: Recurse to next position | 2. EXPLORE: Recurse to next position → you go down a trail, hit a dead end, walk BACK to the f | you go down a trail, hit a dead end, walk BACK to the f → then try the other trail.
+
+```mermaid
+flowchart TD
+    N1["1. CHOOSE: Make a choice (add to current path)"]
+    N2["2. EXPLORE: Recurse to next position"]
+    N3["you go down a trail, hit a dead end, walk BACK to the f"]
+    N4["then try the other trail."]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
 ```
 
 ### When to Use Backtracking vs Other Approaches
@@ -92,6 +136,18 @@ then try the other trail.
   BACKTRACKING = "I need to enumerate" 
   DP = "I need to optimize"
   GREEDY = "I can make local choices that are globally optimal"
+```
+
+> **Flow**: - You only need the COUNT (not the actual solution → Use DP instead | - You need the OPTIMAL solution → Use DP or Greedy
+
+```mermaid
+flowchart LR
+    N1["- You only need the COUNT (not the actual solution"]
+    N2["Use DP instead"]
+    N3["- You need the OPTIMAL solution"]
+    N4["Use DP or Greedy"]
+    N1 --> N2
+    N3 --> N4
 ```
 
 ### Historical Context
@@ -133,6 +189,27 @@ When you hit a dead end, GO BACK and try a different path.
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: Backtracking = DFS + Undo → Explore all possible paths. | Explore all possible paths. → When you hit a dead end, GO BACK and try a different pa | When you hit a dead end, GO BACK and try a different pa → BACKTRACKING FLOW | BACKTRACKING FLOW → 1. CHOOSE → 2. EXPLORE → 3. UNCHOOSE | 1. CHOOSE → 2. EXPLORE → 3. UNCHOOSE → Make a Recursively Undo the | Make a Recursively Undo the → decision explore with decision | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Backtracking = DFS + Undo"]
+    N2["Explore all possible paths."]
+    N3["When you hit a dead end, GO BACK and try a different pa"]
+    N4["BACKTRACKING FLOW"]
+    N5["1. CHOOSE → 2. EXPLORE → 3. UNCHOOSE"]
+    N6["Make a Recursively Undo the"]
+    N7["decision explore with decision"]
+    N8["that choice (backtrack)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### Visual: Decision Tree
 
 ```
@@ -168,6 +245,27 @@ Result: [[], [1], [2], [1,2]]
 
 Time Complexity usually: O(2^n) or O(n!) - exponential
 That's OK! Problem asks for ALL solutions.
+```
+
+> **Flow**: USE BACKTRACKING WHEN YOU SEE: → ✓ 'Generate all...' | ✓ 'Generate all...' → ✓ 'Find all possible...' | ✓ 'Find all possible...' → ✓ 'Print all combinations/permutations/subsets' | ✓ 'Print all combinations/permutations/subsets' → ✓ 'All ways to...' | ✓ 'All ways to...' → ✓ Constraint satisfaction (Sudoku, N-Queens) | ✓ Constraint satisfaction (Sudoku, N-Queens) → ✓ Path finding with constraints | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["USE BACKTRACKING WHEN YOU SEE:"]
+    N2["✓ 'Generate all...'"]
+    N3["✓ 'Find all possible...'"]
+    N4["✓ 'Print all combinations/permutations/subsets'"]
+    N5["✓ 'All ways to...'"]
+    N6["✓ Constraint satisfaction (Sudoku, N-Queens)"]
+    N7["✓ Path finding with constraints"]
+    N8["✓ Game solving (word search, crossword)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---
@@ -261,6 +359,27 @@ public class BacktrackingTemplate {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: CRITICAL IMPLEMENTATION NOTES → 1. ALWAYS COPY before adding to result: | 1. ALWAYS COPY before adding to result: → result.add(new ArrayList&lt;&gt;(current)); ✓ | result.add(new ArrayList&lt;&gt;(current)); ✓ → result.add(current); ✗ (adds reference, will be modifie | result.add(current); ✗ (adds reference, will be modifie → 2. REMOVE from END (last element): | 2. REMOVE from END (last element): → current.remove(current.size() - 1); ✓ | current.remove(current.size() - 1); ✓ → current.remove(element); ✗ (removes by value, slower) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["CRITICAL IMPLEMENTATION NOTES"]
+    N2["1. ALWAYS COPY before adding to result:"]
+    N3["result.add(new ArrayList&lt;&gt;(current)); ✓"]
+    N4["result.add(current); ✗ (adds reference, will be modifie"]
+    N5["2. REMOVE from END (last element):"]
+    N6["current.remove(current.size() - 1); ✓"]
+    N7["current.remove(element); ✗ (removes by value, slower)"]
+    N8["3. 'start' parameter controls:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## Subsets Pattern <a name="subsets-pattern"></a>
@@ -272,6 +391,15 @@ Input: [1, 2, 3]
 Output: [[], [1], [2], [3], [1,2], [1,3], [2,3], [1,2,3]]
 
 Each element: include OR exclude → 2^n subsets
+```
+
+> **Flow**: Each element: include OR exclude → 2^n subsets
+
+```mermaid
+flowchart LR
+    N1["Each element: include OR exclude"]
+    N2["2^n subsets"]
+    N1 --> N2
 ```
 
 ### Solution
@@ -334,6 +462,57 @@ backtrack(start=0, current=[])
 └── Unchoose 3
 
 Result: [[], [1], [1,2], [1,2,3], [1,3], [2], [2,3], [3]]
+```
+
+> **Flow**: backtrack(start=0, current=[]) → Add [] | backtrack(start=0, current=[]) → i=0: Choose 1 | backtrack(start=0, current=[]) → backtrack(start=1, current=[1]) | backtrack(start=0, current=[]) → Add [1] | backtrack(start=0, current=[]) → i=1: Choose 2 | backtrack(start=0, current=[]) → backtrack(start=2, current=[1,2]) | ...+25 more
+
+```mermaid
+flowchart TD
+    N1["backtrack(start=0, current=[])"]
+    N2["Add []"]
+    N3["i=0: Choose 1"]
+    N4["backtrack(start=1, current=[1])"]
+    N5["Add [1]"]
+    N6["i=1: Choose 2"]
+    N7["backtrack(start=2, current=[1,2])"]
+    N8["Add [1,2]"]
+    N9["i=2: Choose 3"]
+    N10["backtrack(start=3, current=[1,2,3])"]
+    N11["Add [1,2,3]"]
+    N12["Unchoose 3"]
+    N13["return"]
+    N14["Unchoose 2"]
+    N15["backtrack(start=3, current=[1,3])"]
+    N16["Add [1,3]"]
+    N17["Unchoose 1"]
+    N18["backtrack(start=2, current=[2])"]
+    N19["Add [2]"]
+    N20["backtrack(start=3, current=[2,3])"]
+    N21["Add [2,3]"]
+    N22["backtrack(start=3, current=[3])"]
+    N23["Add [3]"]
+    N1 --> N2
+    N1 --> N3
+    N1 --> N4
+    N1 --> N5
+    N1 --> N6
+    N1 --> N7
+    N1 --> N8
+    N1 --> N9
+    N1 --> N10
+    N1 --> N11
+    N1 --> N12
+    N1 --> N13
+    N1 --> N14
+    N1 --> N15
+    N1 --> N16
+    N1 --> N17
+    N1 --> N18
+    N1 --> N19
+    N1 --> N20
+    N1 --> N21
+    N1 --> N22
+    N1 --> N23
 ```
 
 ### Subsets II - With Duplicates (LeetCode 90)
@@ -472,6 +651,37 @@ Level 0: Fix position 0
 └── swap(0,2): [3, 2, 1]
     └── Level 1: ...
         → Add [3,2,1], [3,1,2]
+```
+
+> **Flow**: Level 0: Fix position 0 → swap(0,0): [1, 2, 3] | Level 0: Fix position 0 → Level 1: Fix position 1 | Level 0: Fix position 0 → swap(1,1): [1, 2, 3] | Level 0: Fix position 0 → Level 2: Fix position 2 | Level 0: Fix position 0 → swap(2,2): [1, 2, 3] → Add [1,2,3] | Level 0: Fix position 0 → swap(1,2): [1, 3, 2] | ...+6 more
+
+```mermaid
+flowchart TD
+    N1["Level 0: Fix position 0"]
+    N2["swap(0,0): [1, 2, 3]"]
+    N3["Level 1: Fix position 1"]
+    N4["swap(1,1): [1, 2, 3]"]
+    N5["Level 2: Fix position 2"]
+    N6["swap(2,2): [1, 2, 3] → Add [1,2,3]"]
+    N7["swap(1,2): [1, 3, 2]"]
+    N8["Level 2: [1, 3, 2] → Add [1,3,2]"]
+    N9["swap(1,2) back: [1, 2, 3]"]
+    N10["swap(0,1): [2, 1, 3]"]
+    N11["Level 1: ..."]
+    N12["→ Add [2,1,3], [2,3,1]"]
+    N13["swap(0,2): [3, 2, 1]"]
+    N1 --> N2
+    N1 --> N3
+    N1 --> N4
+    N1 --> N5
+    N1 --> N6
+    N1 --> N7
+    N1 --> N8
+    N1 --> N9
+    N1 --> N10
+    N1 --> N11
+    N12 --> N13
+    N12 --> N11
 ```
 
 ### Permutations II - With Duplicates (LeetCode 47)
@@ -750,6 +960,19 @@ Anti-diagonal (r + c is constant):
     . . . . Q   (0,4): r+c = 4
     . . . ↙ .   (1,3): r+c = 4
     . . ↙ . .   (2,2): r+c = 4
+```
+
+> **Flow**: Queen at (row, col) attacks: → Same column: col | Same column: col → Main diagonal (r - c is constant): | Main diagonal (r - c is constant): → Anti-diagonal (r + c is constant):
+
+```mermaid
+flowchart TD
+    N1["Queen at (row, col) attacks:"]
+    N2["Same column: col"]
+    N3["Main diagonal (r - c is constant):"]
+    N4["Anti-diagonal (r + c is constant):"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
 ```
 
 ### Sudoku Solver (LeetCode 37) ⭐⭐⭐
@@ -1066,6 +1289,27 @@ for (int end = 0; end < n; end++) {
 └───────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: BACKTRACKING PROBLEM TYPES → SUBSETS: PERMUTATIONS: | SUBSETS: PERMUTATIONS: → - Subsets I, II - Permutations I, II | - Subsets I, II - Permutations I, II → - Combination Sum 1-3 - Next Permutation | - Combination Sum 1-3 - Next Permutation → - Palindrome Partitioning - Permutation Sequence | - Palindrome Partitioning - Permutation Sequence → COMBINATIONS: GRID/MATRIX: | COMBINATIONS: GRID/MATRIX: → - Combinations (n,k) - N-Queens | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["BACKTRACKING PROBLEM TYPES"]
+    N2["SUBSETS: PERMUTATIONS:"]
+    N3["- Subsets I, II - Permutations I, II"]
+    N4["- Combination Sum 1-3 - Next Permutation"]
+    N5["- Palindrome Partitioning - Permutation Sequence"]
+    N6["COMBINATIONS: GRID/MATRIX:"]
+    N7["- Combinations (n,k) - N-Queens"]
+    N8["- Letter Combinations - Sudoku Solver"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### Restore IP Addresses (LeetCode 93) ⭐⭐
 
 ```java
@@ -1199,6 +1443,27 @@ private List<String> backtrack(String s, int start,
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: WHICH PATTERN TO USE? → 'Generate all subsets' → SUBSETS PATTERN | 'Generate all subsets' → SUBSETS PATTERN → start = i + 1, every state valid | start = i + 1, every state valid → 'Generate all permutations' → PERMUTATIONS PATTERN | 'Generate all permutations' → PERMUTATIONS PATTERN → Use visited[], iterate from 0 | Use visited[], iterate from 0 → 'Find k numbers that sum to n' → COMBINATIONS PATTERN | 'Find k numbers that sum to n' → COMBINATIONS PATTERN → start = i + 1, size = k is base case | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["WHICH PATTERN TO USE?"]
+    N2["'Generate all subsets' → SUBSETS PATTERN"]
+    N3["start = i + 1, every state valid"]
+    N4["'Generate all permutations' → PERMUTATIONS PATTERN"]
+    N5["Use visited[], iterate from 0"]
+    N6["'Find k numbers that sum to n' → COMBINATIONS PATTERN"]
+    N7["start = i + 1, size = k is base case"]
+    N8["'Can reuse elements' → start = i (not i + 1)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### Skip Duplicates Cheat Sheet
 
 ```java
@@ -1226,6 +1491,25 @@ Arrays.sort(nums);
 └─────────────────────────────────────────────────────────────────┘
 
 Space: O(n) for recursion stack (excluding output)
+```
+
+> **Flow**: TIME COMPLEXITIES → Subsets: O(n × 2^n) - 2^n subsets, O(n) to copy | Subsets: O(n × 2^n) - 2^n subsets, O(n) to copy → Permutations: O(n × n!) - n! permutations, O(n) copy | Permutations: O(n × n!) - n! permutations, O(n) copy → Combinations (k): O(k × C(n,k)) | Combinations (k): O(k × C(n,k)) → N-Queens: O(n!) - roughly | N-Queens: O(n!) - roughly → Sudoku: O(9^m) - m = empty cells | Sudoku: O(9^m) - m = empty cells → Space: O(n) for recursion stack (excluding output)
+
+```mermaid
+flowchart TD
+    N1["TIME COMPLEXITIES"]
+    N2["Subsets: O(n × 2^n) - 2^n subsets, O(n) to copy"]
+    N3["Permutations: O(n × n!) - n! permutations, O(n) copy"]
+    N4["Combinations (k): O(k × C(n,k))"]
+    N5["N-Queens: O(n!) - roughly"]
+    N6["Sudoku: O(9^m) - m = empty cells"]
+    N7["Space: O(n) for recursion stack (excluding output)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
 ```
 
 ### Debug Tips
@@ -1274,6 +1558,17 @@ Space: O(n) for recursion stack (excluding output)
 ╚═══════════════════════════════════════════════════════════════╝
 
 All three share: CHOOSE → EXPLORE → UNCHOOSE
+```
+
+> **Flow**: All three share: CHOOSE → EXPLORE | EXPLORE → UNCHOOSE
+
+```mermaid
+flowchart LR
+    N1["All three share: CHOOSE"]
+    N2["EXPLORE"]
+    N3["UNCHOOSE"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 **Pro Tip:** When solving a new backtracking problem, first identify which of these 3 patterns it maps to. Then adapt the template!

@@ -114,6 +114,27 @@ public Set<Integer> vertexCover2Approx(int n, int[][] edges) {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: EXAMPLE 2: SET COVER (log n - Approximation) → that cover all elements | that cover all elements → Greedy Algorithm: | Greedy Algorithm: → 1. While uncovered elements exist: | 1. While uncovered elements exist: → a. Pick set Sᵢ that covers most uncovered elements | a. Pick set Sᵢ that covers most uncovered elements → b. Add Sᵢ to solution | b. Add Sᵢ to solution → c. Mark covered elements | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["EXAMPLE 2: SET COVER (log n - Approximation)"]
+    N2["that cover all elements"]
+    N3["Greedy Algorithm:"]
+    N4["1. While uncovered elements exist:"]
+    N5["a. Pick set Sᵢ that covers most uncovered elements"]
+    N6["b. Add Sᵢ to solution"]
+    N7["c. Mark covered elements"]
+    N8["Approximation ratio: O(log n) where n = |U|"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 
 
 ## 📌 Randomized Algorithms
@@ -135,6 +156,23 @@ public Set<Integer> vertexCover2Approx(int n, int[][] edges) {
 │                                                                                 │
 │ RANDOMIZED QUICKSORT:                                                           │
 │ ─────────────────────                                                           │
+```
+
+> **Flow**: RANDOMIZED ALGORITHMS - DEEP DIVE → TWO TYPES: | TWO TYPES: → 1. Las Vegas: Always correct, expected polynomial time | 1. Las Vegas: Always correct, expected polynomial time → Example: Randomized QuickSort | Example: Randomized QuickSort → Example: Primality testing, Min-Cut | Example: Primality testing, Min-Cut → RANDOMIZED QUICKSORT:
+
+```mermaid
+flowchart TD
+    N1["RANDOMIZED ALGORITHMS - DEEP DIVE"]
+    N2["TWO TYPES:"]
+    N3["1. Las Vegas: Always correct, expected polynomial time"]
+    N4["Example: Randomized QuickSort"]
+    N5["Example: Primality testing, Min-Cut"]
+    N6["RANDOMIZED QUICKSORT:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
 ```
 
 
@@ -176,6 +214,27 @@ void randomizedQuickSort(int[] arr, int low, int high) {
 │ │
 │ MILLER-RABIN PRIMALITY TEST: │
 │ ───────────────────────────── │
+```
+
+> **Flow**: KARGER'S MIN-CUT ALGORITHM: → Find minimum cut in undirected graph | Find minimum cut in undirected graph → Algorithm: | Algorithm: → 1. While more than 2 vertices: | 1. While more than 2 vertices: → a. Pick random edge (u, v) | a. Pick random edge (u, v) → b. Contract u and v into single vertex | b. Contract u and v into single vertex → c. Remove self-loops | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["KARGER'S MIN-CUT ALGORITHM:"]
+    N2["Find minimum cut in undirected graph"]
+    N3["Algorithm:"]
+    N4["1. While more than 2 vertices:"]
+    N5["a. Pick random edge (u, v)"]
+    N6["b. Contract u and v into single vertex"]
+    N7["c. Remove self-loops"]
+    N8["2. Return number of edges between final 2 vertices"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 
@@ -252,6 +311,27 @@ private boolean millerRabinTest(long n, long d, int r, long a) {
 │                                                                                 │
 │ n = text length, m = pattern length, σ = alphabet size                          │
 │                                                                                 │
+```
+
+> **Flow**: STRING MATCHING ALGORITHMS - COMPLETE COMPARISON → ALGORITHM COMPARISON: | ALGORITHM COMPARISON: → Algorithm Preprocessing Search Time Space | Algorithm Preprocessing Search Time Space → Naive O(1) O(nm) O(1) | Naive O(1) O(nm) O(1) → KMP O(m) O(n) O(m) | KMP O(m) O(n) O(m) → Boyer-Moore O(m + σ) O(nm) worst O(m + σ) | Boyer-Moore O(m + σ) O(nm) worst O(m + σ) → O(n/m) best | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["STRING MATCHING ALGORITHMS - COMPLETE COMPARISON"]
+    N2["ALGORITHM COMPARISON:"]
+    N3["Algorithm Preprocessing Search Time Space"]
+    N4["Naive O(1) O(nm) O(1)"]
+    N5["KMP O(m) O(n) O(m)"]
+    N6["Boyer-Moore O(m + σ) O(nm) worst O(m + σ)"]
+    N7["O(n/m) best"]
+    N8["Rabin-Karp O(m) O(nm) worst O(1)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 
@@ -388,6 +468,27 @@ class AhoCorasick {
 │ │ Dinic (unit cap) │ O(E × √V) │ For unit capacity graphs │                     │
 │ └─────────────────────┴────────────────────────┴────────────────────────────┘   │
 │                                                                                 │
+```
+
+> **Flow**: MAXIMUM FLOW - COMPLETE GUIDE → with edge capacities | with edge capacities → ALGORITHM COMPARISON: | ALGORITHM COMPARISON: → Algorithm Time Complexity Notes | Algorithm Time Complexity Notes → Ford-Fulkerson O(E × maxFlow) Uses DFS, may not termina | Ford-Fulkerson O(E × maxFlow) Uses DFS, may not termina → Edmonds-Karp O(V × E²) Uses BFS for augmenting | Edmonds-Karp O(V × E²) Uses BFS for augmenting → Dinic O(V² × E) Level graph + blocking flow | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["MAXIMUM FLOW - COMPLETE GUIDE"]
+    N2["with edge capacities"]
+    N3["ALGORITHM COMPARISON:"]
+    N4["Algorithm Time Complexity Notes"]
+    N5["Ford-Fulkerson O(E × maxFlow) Uses DFS, may not termina"]
+    N6["Edmonds-Karp O(V × E²) Uses BFS for augmenting"]
+    N7["Dinic O(V² × E) Level graph + blocking flow"]
+    N8["Push-Relabel O(V² × E) Different approach"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 
@@ -621,6 +722,27 @@ boolean onSegment(int[] a, int[] b, int[] c) {
 │ └──────────────────────┴────────────────────────────────────────────────────┘   │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: WHEN TO USE WHICH PARADIGM → DIVIDE AND CONQUER: | DIVIDE AND CONQUER: → • Problem can be split into independent subproblems | • Problem can be split into independent subproblems → • Subproblems are similar to original | • Subproblems are similar to original → DYNAMIC PROGRAMMING: | DYNAMIC PROGRAMMING: → GREEDY: | GREEDY: → • Local optimal choice leads to global optimal | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["WHEN TO USE WHICH PARADIGM"]
+    N2["DIVIDE AND CONQUER:"]
+    N3["• Problem can be split into independent subproblems"]
+    N4["• Subproblems are similar to original"]
+    N5["DYNAMIC PROGRAMMING:"]
+    N6["GREEDY:"]
+    N7["• Local optimal choice leads to global optimal"]
+    N8["• No need to reconsider past choices"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 

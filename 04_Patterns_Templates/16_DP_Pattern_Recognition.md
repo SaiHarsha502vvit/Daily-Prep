@@ -27,6 +27,39 @@ Which family?
 └── String palindrome → PALINDROME DP
 ```
 
+> **Flow**: 'How many ways?' → COUNTING DP | 'Minimum/Maximum cost?' → OPTIMIZATION DP | 'Can we achieve X?' → FEASIBILITY DP | Involves two sequences → LCS / EDIT DISTANCE family | Involves one sequence → LIS / KADANE family | Items with weights/values → KNAPSACK family | ...+3 more
+
+```mermaid
+flowchart TD
+    N1["'How many ways?'"]
+    N2["COUNTING DP"]
+    N3["'Minimum/Maximum cost?'"]
+    N4["OPTIMIZATION DP"]
+    N5["'Can we achieve X?'"]
+    N6["FEASIBILITY DP"]
+    N7["Involves two sequences"]
+    N8["LCS / EDIT DISTANCE family"]
+    N9["Involves one sequence"]
+    N10["LIS / KADANE family"]
+    N11["Items with weights/values"]
+    N12["KNAPSACK family"]
+    N13["Interval operations"]
+    N14["INTERVAL DP"]
+    N15["Grid traversal"]
+    N16["GRID DP"]
+    N17["Choices at each step"]
+    N18["DECISION DP"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+    N7 --> N8
+    N9 --> N10
+    N11 --> N12
+    N13 --> N14
+    N15 --> N16
+    N17 --> N18
+```
+
 ---
 
 ## 📐 THE 8 DP PATTERN FAMILIES
@@ -140,6 +173,15 @@ Step 4: BUILD (left to right)
 Time: O(n) | Space: O(1) using two variables
 ```
 
+> **Flow**: Answer: dp[4] = 12 ✅ (rob houses 0, 2, 4 → 2+9+1=12)
+
+```mermaid
+flowchart LR
+    N1["Answer: dp[4] = 12 ✅ (rob houses 0, 2, 4"]
+    N2["2+9+1=12)"]
+    N1 --> N2
+```
+
 ---
 
 ## 🔬 FULL WALKTHROUGH 2: Longest Common Subsequence (Two-Sequence DP)
@@ -170,6 +212,30 @@ To recover the actual subsequence: backtrack from dp[m][n].
   Else → move in direction of larger dp value.
 
 Time: O(m×n) | Space: O(m×n), optimizable to O(min(m,n))
+```
+
+> **Flow**: a 0 1 1 1 ← 'a'=='a' → dp[0][0]+1=1 | b 0 1 1 1 ← 'b'≠'a','c','e' → carry forward | c 0 1 2 2 ← 'c'=='c' → dp[1][1]+1=2 | e 0 1 2 3 ← 'e'=='e' → dp[3][2]+1=3 | If chars match → include it, move diagonal. | Else → move in direction of larger dp value.
+
+```mermaid
+flowchart TD
+    N1["a 0 1 1 1 ← 'a'=='a'"]
+    N2["dp[0][0]+1=1"]
+    N3["b 0 1 1 1 ← 'b'≠'a','c','e'"]
+    N4["carry forward"]
+    N5["c 0 1 2 2 ← 'c'=='c'"]
+    N6["dp[1][1]+1=2"]
+    N7["e 0 1 2 3 ← 'e'=='e'"]
+    N8["dp[3][2]+1=3"]
+    N9["If chars match"]
+    N10["include it, move diagonal."]
+    N11["Else"]
+    N12["move in direction of larger dp value."]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+    N7 --> N8
+    N9 --> N10
+    N11 --> N12
 ```
 
 ---

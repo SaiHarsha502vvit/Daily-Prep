@@ -398,6 +398,21 @@ GITOPS WORKFLOW:
                                       └────────────┘
 ```
 
+> **Flow**: Code / Repo → Build / CI/CD | Build / CI/CD → GitOps / Repo | GitOps / Repo → ArgoCD | ArgoCD → Kubernetes / Cluster
+
+```mermaid
+flowchart TD
+    N1["Code / Repo"]
+    N2["Build / CI/CD"]
+    N3["GitOps / Repo"]
+    N4["ArgoCD"]
+    N5["Kubernetes / Cluster"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+```
+
 ---
 
 ## Phase 8: Networking Fundamentals
@@ -442,6 +457,21 @@ GITOPS WORKFLOW:
 └──────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: 7. Application / 6. Presentation / 5. Session / 4. Tran → Application | Application → Transport | Transport → Internet | Internet → Network / Access
+
+```mermaid
+flowchart TD
+    N1["7. Application / 6. Presentation / 5. Session / 4. Tran"]
+    N2["Application"]
+    N3["Transport"]
+    N4["Internet"]
+    N5["Network / Access"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+```
+
 ### TCP vs UDP
 
 ```
@@ -481,6 +511,27 @@ GITOPS WORKFLOW:
 │    │──── ACK ─────────►│                                         │
 │                                                                  │
 └──────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: TCP vs UDP → Feature TCP UDP | Feature TCP UDP → Connection Connection-oriented Connectionless | Connection Connection-oriented Connectionless → Reliability Guaranteed delivery Best effort | Reliability Guaranteed delivery Best effort → Ordering Ordered delivery No ordering | Ordering Ordered delivery No ordering → Flow Control Yes (sliding window) No | Flow Control Yes (sliding window) No → Error Checking Checksum + ACK Checksum only | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["TCP vs UDP"]
+    N2["Feature TCP UDP"]
+    N3["Connection Connection-oriented Connectionless"]
+    N4["Reliability Guaranteed delivery Best effort"]
+    N5["Ordering Ordered delivery No ordering"]
+    N6["Flow Control Yes (sliding window) No"]
+    N7["Error Checking Checksum + ACK Checksum only"]
+    N8["Speed Slower Faster"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### DNS - How It Works
@@ -536,6 +587,23 @@ GITOPS WORKFLOW:
 └──────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: Browser → OS | OS → Local DNS / Resolver | Local DNS / Resolver → Root DNS / Server | Root DNS / Server → TLD DNS Server / (.com) | TLD DNS Server / (.com) → Authoritative / DNS Server
+
+```mermaid
+flowchart TD
+    N1["Browser"]
+    N2["OS"]
+    N3["Local DNS / Resolver"]
+    N4["Root DNS / Server"]
+    N5["TLD DNS Server / (.com)"]
+    N6["Authoritative / DNS Server"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+```
+
 ### Load Balancing Algorithms
 
 ```
@@ -588,6 +656,27 @@ GITOPS WORKFLOW:
 └──────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: LOAD BALANCING ALGORITHMS → 1. ROUND ROBIN | 1. ROUND ROBIN → Request 1 → Server A | Request 1 → Server A → Request 2 → Server B | Request 2 → Server B → Request 3 → Server C | Request 3 → Server C → Request 4 → Server A (repeat) | Request 4 → Server A (repeat) → Best for: Equal server capacity, stateless apps | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["LOAD BALANCING ALGORITHMS"]
+    N2["1. ROUND ROBIN"]
+    N3["Request 1 → Server A"]
+    N4["Request 2 → Server B"]
+    N5["Request 3 → Server C"]
+    N6["Request 4 → Server A (repeat)"]
+    N7["Best for: Equal server capacity, stateless apps"]
+    N8["2. WEIGHTED ROUND ROBIN"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### HTTPS/TLS Handshake
 
 ```
@@ -628,6 +717,27 @@ GITOPS WORKFLOW:
 │  4. Verify domain name matches certificate                       │
 │                                                                  │
 └──────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: TLS 1.3 HANDSHAKE → Client Server | Client Server → ClientHello | ClientHello → + Supported Ciphers | + Supported Ciphers → + Key Share (DH) | + Key Share (DH) → ServerHello | ServerHello → + Chosen Cipher | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["TLS 1.3 HANDSHAKE"]
+    N2["Client Server"]
+    N3["ClientHello"]
+    N4["+ Supported Ciphers"]
+    N5["+ Key Share (DH)"]
+    N6["ServerHello"]
+    N7["+ Chosen Cipher"]
+    N8["+ Certificate"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---
@@ -692,6 +802,27 @@ HOW DOES THIS WORK? Let's trace EVERY step!
 │                                      └─────────────────────┘     │
 │                                                                  │
 └──────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: THE BIG PICTURE - WHAT HAPPENS WHEN USER TYPES 'myapp.c → 2. DNS Resolution / 'What's IP of myapp.com?' | 2. DNS Resolution / 'What's IP of myapp.com?' → DNS returns: 54.23.167.89 (Your server's PUBLIC IP) | DNS returns: 54.23.167.89 (Your server's PUBLIC IP) → 3. Browser connects to 54.23.167.89:443 (HTTPS = port 4 | 3. Browser connects to 54.23.167.89:443 (HTTPS = port 4 → 4. TLS Handshake (SSL certificate verification) | 4. TLS Handshake (SSL certificate verification) → 5. HTTP Request sent: / GET / HTTP/1.1 / Host: myapp.co | 5. HTTP Request sent: / GET / HTTP/1.1 / Host: myapp.co → Reverse Proxy to / localhost:3000 | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE BIG PICTURE - WHAT HAPPENS WHEN USER TYPES 'myapp.c"]
+    N2["2. DNS Resolution / 'What's IP of myapp.com?'"]
+    N3["DNS returns: 54.23.167.89 (Your server's PUBLIC IP)"]
+    N4["3. Browser connects to 54.23.167.89:443 (HTTPS = port 4"]
+    N5["4. TLS Handshake (SSL certificate verification)"]
+    N6["5. HTTP Request sent: / GET / HTTP/1.1 / Host: myapp.co"]
+    N7["Reverse Proxy to / localhost:3000"]
+    N8["Your Node.js/ / Spring Boot App / (Port 3000)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### Step-by-Step: Complete Packet Journey
@@ -1239,6 +1370,19 @@ With 100 threads:
   100 × 8MB = 800 MB just for stacks!
 
 This is why thread pools matter!
+```
+
+> **Flow**: • Code (Text) segment / • Data segment (global variable → Thread 1 / (Main) / Thread ID / Stack / Registers / Pro | Thread 1 / (Main) / Thread ID / Stack / Registers / Pro → Thread 2 / (Worker) / Thread ID / Stack / Registers / P | Thread 2 / (Worker) / Thread ID / Stack / Registers / P → Thread 3 / (Worker) / Thread ID / Stack / Registers / P
+
+```mermaid
+flowchart TD
+    N1["• Code (Text) segment / • Data segment (global variable"]
+    N2["Thread 1 / (Main) / Thread ID / Stack / Registers / Pro"]
+    N3["Thread 2 / (Worker) / Thread ID / Stack / Registers / P"]
+    N4["Thread 3 / (Worker) / Thread ID / Stack / Registers / P"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
 ```
 
 ### How Multiple Users Create Threads
@@ -1937,6 +2081,27 @@ LCP (Largest Contentful Paint): < 2.5s
 TTI (Time to Interactive): < 3.8s
 ```
 
+> **Flow**: CORE WEB VITALS (Google): → CORE WEB VITALS | CORE WEB VITALS → 1. LCP (Largest Contentful Paint) | 1. LCP (Largest Contentful Paint) → 'When did main content load?' | 'When did main content load?' → Good: ≤ 2.5s Needs Work: 2.5-4s Poor: &gt; 4s | Good: ≤ 2.5s Needs Work: 2.5-4s Poor: &gt; 4s → Measures: Largest image, video, or text block | Measures: Largest image, video, or text block → Improve: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["CORE WEB VITALS (Google):"]
+    N2["CORE WEB VITALS"]
+    N3["1. LCP (Largest Contentful Paint)"]
+    N4["'When did main content load?'"]
+    N5["Good: ≤ 2.5s Needs Work: 2.5-4s Poor: &gt; 4s"]
+    N6["Measures: Largest image, video, or text block"]
+    N7["Improve:"]
+    N8["• Optimize images (WebP, proper sizing)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 🔬 Docker & Kubernetes Deep Internals
@@ -2199,6 +2364,17 @@ KUBERNETES ARCHITECTURE - DEEP DIVE:
 │  └─────────────────────────────────────────────────────────┘    │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: API SERVER / • All communication goes through here / •  → ETCD / • Distributed / key-value store / • Stores all / | API SERVER / • All communication goes through here / •  → CONTROLLER / MANAGER / • ReplicaSet / Controller / • De
+
+```mermaid
+flowchart TD
+    N1["API SERVER / • All communication goes through here / • "]
+    N2["ETCD / • Distributed / key-value store / • Stores all /"]
+    N3["CONTROLLER / MANAGER / • ReplicaSet / Controller / • De"]
+    N1 --> N2
+    N1 --> N3
 ```
 
 

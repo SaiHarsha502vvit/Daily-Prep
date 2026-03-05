@@ -105,6 +105,27 @@ function Counter() {
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: THE SNAPSHOT PRINCIPLE → When handleClick runs, `count` is a SNAPSHOT — frozen a | When handleClick runs, `count` is a SNAPSHOT — frozen a → It's like taking a photo: the photo doesn't change when | It's like taking a photo: the photo doesn't change when → subject moves. `count` in this render is ALWAYS 0. | subject moves. `count` in this render is ALWAYS 0. → setCount(count + 2) → setCount(0 + 2) → queue: set to 2 | setCount(count + 2) → setCount(0 + 2) → queue: set to 2 → setCount(count + 3) → setCount(0 + 3) → queue: set to 3 | setCount(count + 3) → setCount(0 + 3) → queue: set to 3 → setCount(count + 4) → setCount(0 + 4) → queue: set to 4 | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE SNAPSHOT PRINCIPLE"]
+    N2["When handleClick runs, `count` is a SNAPSHOT — frozen a"]
+    N3["It's like taking a photo: the photo doesn't change when"]
+    N4["subject moves. `count` in this render is ALWAYS 0."]
+    N5["setCount(count + 2) → setCount(0 + 2) → queue: set to 2"]
+    N6["setCount(count + 3) → setCount(0 + 3) → queue: set to 3"]
+    N7["setCount(count + 4) → setCount(0 + 4) → queue: set to 4"]
+    N8["React processes queue: 2 → 3 → 4. Final: count = 4"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### The Fix: Updater Function Pattern
 
 ```jsx
@@ -133,6 +154,25 @@ function handleClick() {
 ║  setCount(prev => prev + 3)  = "Take baton, add 3, pass on"      ║
 ║  → Each runner receives what the previous runner passed.         ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: THE RELAY RACE ANALOGY → setCount(count + 2) = 'Start at the photo (0), add 2' | setCount(count + 2) = 'Start at the photo (0), add 2' → setCount(count + 3) = 'Start at the photo (0), add 3' | setCount(count + 3) = 'Start at the photo (0), add 3' → → Both look at the same photo. Last one wins. | → Both look at the same photo. Last one wins. → setCount(prev =&gt; prev + 2) = 'Take baton, add 2, pas | setCount(prev =&gt; prev + 2) = 'Take baton, add 2, pas → setCount(prev =&gt; prev + 3) = 'Take baton, add 3, pas | setCount(prev =&gt; prev + 3) = 'Take baton, add 3, pas → → Each runner receives what the previous runner passed.
+
+```mermaid
+flowchart TD
+    N1["THE RELAY RACE ANALOGY"]
+    N2["setCount(count + 2) = 'Start at the photo (0), add 2'"]
+    N3["setCount(count + 3) = 'Start at the photo (0), add 3'"]
+    N4["→ Both look at the same photo. Last one wins."]
+    N5["setCount(prev =&gt; prev + 2) = 'Take baton, add 2, pas"]
+    N6["setCount(prev =&gt; prev + 3) = 'Take baton, add 3, pas"]
+    N7["→ Each runner receives what the previous runner passed."]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
 ```
 
 ### Freeze Question #3: "Does each setState cause a re-render?"
@@ -192,6 +232,27 @@ flushSync(() => setFlag(true)); // renders immediately
 ║  water still falls, but the child checks "are my props the       ║
 ║  same?" and skips re-rendering if yes.                           ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: THE 3 RE-RENDER TRIGGERS → 1. State change → useState setter called | 1. State change → useState setter called → 2. Parent re-renders → ALL children re-render by defaul | 2. Parent re-renders → ALL children re-render by defaul → 3. Context change → All consumers re-render | 3. Context change → All consumers re-render → CRITICAL: 'Props changed' is NOT a trigger! | CRITICAL: 'Props changed' is NOT a trigger! → The parent re-rendering IS the trigger, and it re-creat | The parent re-rendering IS the trigger, and it re-creat → THE WATERFALL ANALOGY: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE 3 RE-RENDER TRIGGERS"]
+    N2["1. State change → useState setter called"]
+    N3["2. Parent re-renders → ALL children re-render by defaul"]
+    N4["3. Context change → All consumers re-render"]
+    N5["CRITICAL: 'Props changed' is NOT a trigger!"]
+    N6["The parent re-rendering IS the trigger, and it re-creat"]
+    N7["THE WATERFALL ANALOGY:"]
+    N8["Parent re-render is like a waterfall — water flows DOWN"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```jsx
@@ -271,6 +332,27 @@ function Parent({ children }) {
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: THE REAL REASON FOR VIRTUAL DOM → Raw DOM manipulation IS faster than VDOM + diff + patch | Raw DOM manipulation IS faster than VDOM + diff + patch → VDOM exists because: | VDOM exists because: → React figures out HOW to get there (diffing) | React figures out HOW to get there (diffing) → 2. BATCHING: Multiple state changes → one DOM update | 2. BATCHING: Multiple state changes → one DOM update → 3. PORTABILITY: VDOM can target DOM, Native, Canvas, et | 3. PORTABILITY: VDOM can target DOM, Native, Canvas, et → 4. PREDICTABILITY: Same state → same UI, always | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE REAL REASON FOR VIRTUAL DOM"]
+    N2["Raw DOM manipulation IS faster than VDOM + diff + patch"]
+    N3["VDOM exists because:"]
+    N4["React figures out HOW to get there (diffing)"]
+    N5["2. BATCHING: Multiple state changes → one DOM update"]
+    N6["3. PORTABILITY: VDOM can target DOM, Native, Canvas, et"]
+    N7["4. PREDICTABILITY: Same state → same UI, always"]
+    N8["Analogy: GPS vs manual directions"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 **How diffing actually works:**
 ```
 Old VDOM:           New VDOM:           DOM Operations:
@@ -282,6 +364,21 @@ Old VDOM:           New VDOM:           DOM Operations:
 
 Only ONE DOM operation instead of re-rendering entire list.
 React's diff algorithm is O(n) — it sacrifices perfect diff for speed.
+```
+
+> **Flow**: Old VDOM: New VDOM: DOM Operations: → &lt;li&gt;A&lt;/li&gt; &lt;li&gt;A&lt;/li&gt; (no chang | &lt;li&gt;A&lt;/li&gt; &lt;li&gt;A&lt;/li&gt; (no chang → &lt;li&gt;B&lt;/li&gt; &lt;li&gt;B&lt;/li&gt; (no chang | &lt;li&gt;B&lt;/li&gt; &lt;li&gt;B&lt;/li&gt; (no chang → &lt;li&gt;C&lt;/li&gt; &lt;li&gt;D&lt;/li&gt; update te | &lt;li&gt;C&lt;/li&gt; &lt;li&gt;D&lt;/li&gt; update te → Only ONE DOM operation instead of re-rendering entire l
+
+```mermaid
+flowchart TD
+    N1["Old VDOM: New VDOM: DOM Operations:"]
+    N2["&lt;li&gt;A&lt;/li&gt; &lt;li&gt;A&lt;/li&gt; (no chang"]
+    N3["&lt;li&gt;B&lt;/li&gt; &lt;li&gt;B&lt;/li&gt; (no chang"]
+    N4["&lt;li&gt;C&lt;/li&gt; &lt;li&gt;D&lt;/li&gt; update te"]
+    N5["Only ONE DOM operation instead of re-rendering entire l"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
 ```
 
 ---
@@ -312,6 +409,27 @@ React's diff algorithm is O(n) — it sacrifices perfect diff for speed.
 ║  - Cleanup: turn off old heater before starting new one          ║
 ║  - It doesn't care about "mount" or "update" — just sync.        ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: WRONG MENTAL MODEL (lifecycle-based): → useEffect(fn, []) = componentDidMount | useEffect(fn, []) = componentDidMount → useEffect(fn, [dep]) = componentDidUpdate | useEffect(fn, [dep]) = componentDidUpdate → useEffect(fn) = componentDidMount + componentDidUpdate | useEffect(fn) = componentDidMount + componentDidUpdate → RIGHT MENTAL MODEL (synchronization-based): | RIGHT MENTAL MODEL (synchronization-based): → useEffect = SYNCHRONIZE with external system | useEffect = SYNCHRONIZE with external system → 'After each render where these dependencies changed, | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["WRONG MENTAL MODEL (lifecycle-based):"]
+    N2["useEffect(fn, []) = componentDidMount"]
+    N3["useEffect(fn, [dep]) = componentDidUpdate"]
+    N4["useEffect(fn) = componentDidMount + componentDidUpdate"]
+    N5["RIGHT MENTAL MODEL (synchronization-based):"]
+    N6["useEffect = SYNCHRONIZE with external system"]
+    N7["'After each render where these dependencies changed,"]
+    N8["run this effect to sync with the outside world'"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### The Tricky Behavior Most People Get Wrong
@@ -395,6 +513,27 @@ const filteredList = useMemo(
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: KEYS = IDENTITY CARDS for React's Diffing Algorithm → Before delete 'Bob': After delete 'Bob': | Before delete 'Bob': After delete 'Bob': → index 0 → Alice index 0 → Alice (same position ✓) | index 0 → Alice index 0 → Alice (same position ✓) → index 1 → Bob index 1 → Charlie (React thinks this | index 1 → Bob index 1 → Charlie (React thinks this → index 2 → Charlie is Bob updated!) | index 2 → Charlie is Bob updated!) → React: 'Item at index 1 changed from Bob to Charlie' | React: 'Item at index 1 changed from Bob to Charlie' → Reality: We DELETED Bob and Charlie should keep its sta | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["KEYS = IDENTITY CARDS for React's Diffing Algorithm"]
+    N2["Before delete 'Bob': After delete 'Bob':"]
+    N3["index 0 → Alice index 0 → Alice (same position ✓)"]
+    N4["index 1 → Bob index 1 → Charlie (React thinks this"]
+    N5["index 2 → Charlie is Bob updated!)"]
+    N6["React: 'Item at index 1 changed from Bob to Charlie'"]
+    N7["Reality: We DELETED Bob and Charlie should keep its sta"]
+    N8["With unique keys, React matches by IDENTITY:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 **When index keys BREAK things — visual proof:**
 ```jsx
 // List: [Alice (input: "hello"), Bob (input: "world"), Charlie (input: "")]
@@ -439,6 +578,27 @@ const filteredList = useMemo(
 ║  RULE: Need UI to update?         → useState                     ║
 ║        Need to store without UI?  → useRef                       ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: useState vs useRef — The Billboard vs Notebook Analogy → useState: | useState: → → Like a BILLBOARD on the highway | → Like a BILLBOARD on the highway → → Everyone (the component) sees the current value | → Everyone (the component) sees the current value → → The re-render shows the new value to users | → The re-render shows the new value to users → useRef: | useRef: → → Like a private NOTEBOOK in your pocket | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["useState vs useRef — The Billboard vs Notebook Analogy"]
+    N2["useState:"]
+    N3["→ Like a BILLBOARD on the highway"]
+    N4["→ Everyone (the component) sees the current value"]
+    N5["→ The re-render shows the new value to users"]
+    N6["useRef:"]
+    N7["→ Like a private NOTEBOOK in your pocket"]
+    N8["→ You can read/write anytime"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```jsx
@@ -503,6 +663,27 @@ function Component() {
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: THE CACHING TAX → useMemo/useCallback are NOT free: | useMemo/useCallback are NOT free: → 1. Memory to store cached value | 1. Memory to store cached value → 2. CPU to compare dependencies on every render | 2. CPU to compare dependencies on every render → 3. Code complexity (harder to read) | 3. Code complexity (harder to read) → may cost MORE than just recomputing! | may cost MORE than just recomputing! → Analogy: Buying a safe to protect $5 | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE CACHING TAX"]
+    N2["useMemo/useCallback are NOT free:"]
+    N3["1. Memory to store cached value"]
+    N4["2. CPU to compare dependencies on every render"]
+    N5["3. Code complexity (harder to read)"]
+    N6["may cost MORE than just recomputing!"]
+    N7["Analogy: Buying a safe to protect $5"]
+    N8["The safe costs more than what you're protecting."]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ```jsx
 // ❌ UNNECESSARY: Simple computation
 const fullName = useMemo(() => `${first} ${last}`, [first, last]);
@@ -538,6 +719,26 @@ Need to memoize?
 └── None of the above? → DON'T MEMOIZE
 ```
 
+> **Flow**: Is the computation &gt; 1ms? → YES | YES → useMemo | Is the child wrapped in React.memo? → YES | YES → useCallback for functions passed as props | Is it in a dependency array of useEffect? → MAYBE | MAYBE → useCallback to stabilize reference
+
+```mermaid
+flowchart TD
+    N1["Is the computation &gt; 1ms?"]
+    N2["YES"]
+    N3["useMemo"]
+    N4["Is the child wrapped in React.memo?"]
+    N5["useCallback for functions passed as props"]
+    N6["Is it in a dependency array of useEffect?"]
+    N7["MAYBE"]
+    N8["useCallback to stabilize reference"]
+    N1 --> N2
+    N2 --> N3
+    N4 --> N2
+    N2 --> N5
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 8. Context: Why It's NOT a State Manager
@@ -565,6 +766,27 @@ Need to memoize?
 ║  Redux/Zustand: Each component SELECTS what it cares about.      ║
 ║  → Change `notifications` → only NotificationBadge re-renders    ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: THE RADIO STATION ANALOGY → Context = Radio station broadcasting one signal | Context = Radio station broadcasting one signal → Consumer = Radio tuned to that station | Consumer = Radio tuned to that station → ALL radios tuned to it activate — even if they only car | ALL radios tuned to it activate — even if they only car → about a DIFFERENT part of the signal. | about a DIFFERENT part of the signal. → Context({ user, theme, cart, notifications }) | Context({ user, theme, cart, notifications }) → → Change `notifications` → ALL consumers re-render | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE RADIO STATION ANALOGY"]
+    N2["Context = Radio station broadcasting one signal"]
+    N3["Consumer = Radio tuned to that station"]
+    N4["ALL radios tuned to it activate — even if they only car"]
+    N5["about a DIFFERENT part of the signal."]
+    N6["Context({ user, theme, cart, notifications })"]
+    N7["→ Change `notifications` → ALL consumers re-render"]
+    N8["Even the UserAvatar that only reads `user`!"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 **Context IS good for:**
@@ -610,6 +832,27 @@ const CartContext = createContext([]);
 ║  → defaultValue + ref.current.value                              ║
 ║  → Source of truth: the DOM                                      ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: THE PUPPET vs PET ANALOGY → Controlled = Puppet | Controlled = Puppet → → React holds the strings. Input shows WHAT REACT TELLS | → React holds the strings. Input shows WHAT REACT TELLS → → value={state} + onChange={setState} | → value={state} + onChange={setState} → → Single source of truth: React state | → Single source of truth: React state → Uncontrolled = Pet | Uncontrolled = Pet → → defaultValue + ref.current.value | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE PUPPET vs PET ANALOGY"]
+    N2["Controlled = Puppet"]
+    N3["→ React holds the strings. Input shows WHAT REACT TELLS"]
+    N4["→ value={state} + onChange={setState}"]
+    N5["→ Single source of truth: React state"]
+    N6["Uncontrolled = Pet"]
+    N7["→ defaultValue + ref.current.value"]
+    N8["→ Source of truth: the DOM"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```jsx
@@ -674,6 +917,27 @@ function Uncontrolled() {
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: REACT FIBER — The Restaurant Kitchen Analogy → Old React (Stack Reconciler): | Old React (Stack Reconciler): → → Chef prepares ENTIRE meal before serving (blocking) | → Chef prepares ENTIRE meal before serving (blocking) → → Customer (user) sits frozen waiting | → Customer (user) sits frozen waiting → New React (Fiber Reconciler): | New React (Fiber Reconciler): → → Chef prepares dishes in small chunks (time-slicing) | → Chef prepares dishes in small chunks (time-slicing) → → After each dish: 'Any urgent VIP orders?' (user input | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["REACT FIBER — The Restaurant Kitchen Analogy"]
+    N2["Old React (Stack Reconciler):"]
+    N3["→ Chef prepares ENTIRE meal before serving (blocking)"]
+    N4["→ Customer (user) sits frozen waiting"]
+    N5["New React (Fiber Reconciler):"]
+    N6["→ Chef prepares dishes in small chunks (time-slicing)"]
+    N7["→ After each dish: 'Any urgent VIP orders?' (user input"]
+    N8["→ Then chef resumes the big meal"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 11. Suspense & Concurrent Mode: The Future Model
@@ -698,6 +962,27 @@ function Uncontrolled() {
 ║  → Like a loading dock: packages (data) arrive when ready,       ║
 ║    a sign (fallback) is shown while waiting                      ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: SUSPENSE — The Loading Dock Analogy → Without Suspense: You manage loading states manually | Without Suspense: You manage loading states manually → → if (isLoading) return &lt;Spinner /&gt; | → if (isLoading) return &lt;Spinner /&gt; → → if (error) return &lt;Error /&gt; | → if (error) return &lt;Error /&gt; → → return &lt;Data /&gt; | → return &lt;Data /&gt; → → Every component has its own loading/error/data logic | → Every component has its own loading/error/data logic → With Suspense: React manages loading states | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["SUSPENSE — The Loading Dock Analogy"]
+    N2["Without Suspense: You manage loading states manually"]
+    N3["→ if (isLoading) return &lt;Spinner /&gt;"]
+    N4["→ if (error) return &lt;Error /&gt;"]
+    N5["→ return &lt;Data /&gt;"]
+    N6["→ Every component has its own loading/error/data logic"]
+    N7["With Suspense: React manages loading states"]
+    N8["→ Component 'suspends' (throws a Promise)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```jsx
@@ -761,6 +1046,27 @@ function SearchPage() {
 ║  3. Sensitive logic stays on server (API keys safe)              ║
 ║  4. Faster initial load (no JS parsing for static parts)         ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: THE SHIPPING ANALOGY → Client Components = Ship raw materials to customer | Client Components = Ship raw materials to customer → → Send JS bundle to browser | → Send JS bundle to browser → → Browser downloads, parses, executes, renders | → Browser downloads, parses, executes, renders → → Customer builds furniture themselves (hydration) | → Customer builds furniture themselves (hydration) → Server Components = Ship finished furniture | Server Components = Ship finished furniture → → Server renders HTML, sends result | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE SHIPPING ANALOGY"]
+    N2["Client Components = Ship raw materials to customer"]
+    N3["→ Send JS bundle to browser"]
+    N4["→ Browser downloads, parses, executes, renders"]
+    N5["→ Customer builds furniture themselves (hydration)"]
+    N6["Server Components = Ship finished furniture"]
+    N7["→ Server renders HTML, sends result"]
+    N8["→ No JS shipped for server components"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

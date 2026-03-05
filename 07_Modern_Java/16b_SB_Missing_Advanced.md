@@ -1061,6 +1061,27 @@ public class RabbitConsumer {
 └──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: PART 14 QUICK REFERENCE → CACHING: | CACHING: → @Cacheable - Read from cache | @Cacheable - Read from cache → @CacheEvict - Remove from cache | @CacheEvict - Remove from cache → @CachePut - Always update cache | @CachePut - Always update cache → ASYNC: | ASYNC: → @EnableAsync + @Async | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["PART 14 QUICK REFERENCE"]
+    N2["CACHING:"]
+    N3["@Cacheable - Read from cache"]
+    N4["@CacheEvict - Remove from cache"]
+    N5["@CachePut - Always update cache"]
+    N6["ASYNC:"]
+    N7["@EnableAsync + @Async"]
+    N8["Return CompletableFuture&lt;T&gt; for result"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 _This completes the essential missing topics in Spring Boot!_

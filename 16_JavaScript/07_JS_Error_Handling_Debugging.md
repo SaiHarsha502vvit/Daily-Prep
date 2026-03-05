@@ -48,6 +48,27 @@ TypeError (cannot read property of undefined) — #1 JS error
 ReferenceError (variable is not defined)
 ```
 
+> **Flow**: BUILT-IN ERROR TYPES: → Type When It Occurs | Type When It Occurs → SyntaxError Invalid code: if ( { → parsing fails | SyntaxError Invalid code: if ( { → parsing fails → ReferenceError Accessing undefined variable | ReferenceError Accessing undefined variable → TypeError Wrong type operation: null.map() | TypeError Wrong type operation: null.map() → RangeError Number out of range: new Array(-1) | RangeError Number out of range: new Array(-1) → URIError Bad URI: decodeURI('%') | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["BUILT-IN ERROR TYPES:"]
+    N2["Type When It Occurs"]
+    N3["SyntaxError Invalid code: if ( { → parsing fails"]
+    N4["ReferenceError Accessing undefined variable"]
+    N5["TypeError Wrong type operation: null.map()"]
+    N6["RangeError Number out of range: new Array(-1)"]
+    N7["URIError Bad URI: decodeURI('%')"]
+    N8["EvalError Old eval() error (rarely seen)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ```javascript
 // ANATOMY of an Error:
 const err = new Error("Something went wrong");
@@ -326,6 +347,27 @@ CONSOLE TAB:
 • console.dir()    — show object as expandable tree
 ```
 
+> **Flow**: OPENING DEVTOOLS: F12 or Ctrl+Shift+I (Cmd+Opt+I on Mac → CONSOLE | SOURCES | NETWORK | PERFORMANCE | MEMORY | CONSOLE | SOURCES | NETWORK | PERFORMANCE | MEMORY → CONSOLE TAB: | CONSOLE TAB: → • console.log() — general output | • console.log() — general output → • console.error() — red, with stack trace | • console.error() — red, with stack trace → • console.warn() — yellow warning | • console.warn() — yellow warning → • console.table() — display arrays/objects as TABLE | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["OPENING DEVTOOLS: F12 or Ctrl+Shift+I (Cmd+Opt+I on Mac"]
+    N2["CONSOLE | SOURCES | NETWORK | PERFORMANCE | MEMORY"]
+    N3["CONSOLE TAB:"]
+    N4["• console.log() — general output"]
+    N5["• console.error() — red, with stack trace"]
+    N6["• console.warn() — yellow warning"]
+    N7["• console.table() — display arrays/objects as TABLE"]
+    N8["• console.group() — group related logs"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ```javascript
 // ADVANCED CONSOLE TECHNIQUES:
 
@@ -389,6 +431,27 @@ WATCH PANEL: Add expressions to monitor.
 CALL STACK: See the chain of function calls.
 ```
 
+> **Flow**: SOURCES TAB — Step through code line by line: → BREAKPOINT TYPES: | BREAKPOINT TYPES: → 1. Click line number in Sources tab → line breakpoint | 1. Click line number in Sources tab → line breakpoint → 2. debugger; statement in code → programmatic breakpoin | 2. debugger; statement in code → programmatic breakpoin → 5. XHR/fetch breakpoint (break when URL matches) | 5. XHR/fetch breakpoint (break when URL matches) → 6. Event listener breakpoint (break on specific events) | 6. Event listener breakpoint (break on specific events) → STEPPING CONTROLS: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["SOURCES TAB — Step through code line by line:"]
+    N2["BREAKPOINT TYPES:"]
+    N3["1. Click line number in Sources tab → line breakpoint"]
+    N4["2. debugger; statement in code → programmatic breakpoin"]
+    N5["5. XHR/fetch breakpoint (break when URL matches)"]
+    N6["6. Event listener breakpoint (break on specific events)"]
+    N7["STEPPING CONTROLS:"]
+    N8["Resume — continue until next breakpoint"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ```javascript
 // debugger statement — breakpoint in code
 function processData(data) {
@@ -435,6 +498,27 @@ if (process.env.NODE_ENV === "development") {
 ║  • The file and line number are there. Most errors tell you          ║
 ║  • exactly what's wrong. Don't just look at the first line.          ║
 ╚══════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: STRATEGY 1: 'BINARY SEARCH' DEBUGGING → • Put a console.log halfway through the suspect code. | • Put a console.log halfway through the suspect code. → • Is the data correct at that point? | • Is the data correct at that point? → STRATEGY 2: 'RUBBER DUCK' DEBUGGING | STRATEGY 2: 'RUBBER DUCK' DEBUGGING → STRATEGY 3: 'WHAT CHANGED?' DEBUGGING | STRATEGY 3: 'WHAT CHANGED?' DEBUGGING → • It was working before. What changed? | • It was working before. What changed? → • git diff to see recent changes. | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["STRATEGY 1: 'BINARY SEARCH' DEBUGGING"]
+    N2["• Put a console.log halfway through the suspect code."]
+    N3["• Is the data correct at that point?"]
+    N4["STRATEGY 2: 'RUBBER DUCK' DEBUGGING"]
+    N5["STRATEGY 3: 'WHAT CHANGED?' DEBUGGING"]
+    N6["• It was working before. What changed?"]
+    N7["• git diff to see recent changes."]
+    N8["• Revert changes one by one until it works again."]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---
@@ -527,6 +611,27 @@ class ErrorBoundary extends React.Component {
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: ✅ ALWAYS handle promise rejections (.catch or try/catch → ✅ NEVER swallow errors silently (catch(e) { /* empty */ | ✅ NEVER swallow errors silently (catch(e) { /* empty */ → ✅ Use specific error types (ValidationError, NotFoundEr | ✅ Use specific error types (ValidationError, NotFoundEr → ✅ Validate inputs at module boundaries (API, user input | ✅ Validate inputs at module boundaries (API, user input → ✅ Add global error handlers as safety nets | ✅ Add global error handlers as safety nets → ✅ Use Error.cause to chain errors (preserve original) | ✅ Use Error.cause to chain errors (preserve original) → ✅ Have an error monitoring service in production | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["✅ ALWAYS handle promise rejections (.catch or try/catch"]
+    N2["✅ NEVER swallow errors silently (catch(e) { /* empty */"]
+    N3["✅ Use specific error types (ValidationError, NotFoundEr"]
+    N4["✅ Validate inputs at module boundaries (API, user input"]
+    N5["✅ Add global error handlers as safety nets"]
+    N6["✅ Use Error.cause to chain errors (preserve original)"]
+    N7["✅ Have an error monitoring service in production"]
+    N8["✅ Test error paths (not just happy paths)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## Interview Quick-Fire
@@ -554,6 +659,27 @@ Q: Custom Error classes — when and why?
 → When built-in Error types are too generic. Custom errors carry
   context (HTTP status, error codes, affected fields) and can be
   caught selectively with instanceof.
+```
+
+> **Flow**: Q: How do you handle errors in async/await? → Q: What is the difference between throw and return? | Q: What is the difference between throw and return? → return just exits the current function with a value. | return just exits the current function with a value. → Q: What is an Error Boundary in React? | Q: What is an Error Boundary in React? → → A class component with getDerivedStateFromError and/o | → A class component with getDerivedStateFromError and/o → componentDidCatch. Catches errors in child component tr | componentDidCatch. Catches errors in child component tr → during rendering. Can't catch: events, async, server-si | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Q: How do you handle errors in async/await?"]
+    N2["Q: What is the difference between throw and return?"]
+    N3["return just exits the current function with a value."]
+    N4["Q: What is an Error Boundary in React?"]
+    N5["→ A class component with getDerivedStateFromError and/o"]
+    N6["componentDidCatch. Catches errors in child component tr"]
+    N7["during rendering. Can't catch: events, async, server-si"]
+    N8["try to reproduce with same user data/settings."]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

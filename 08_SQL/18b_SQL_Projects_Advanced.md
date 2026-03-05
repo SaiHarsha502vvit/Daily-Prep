@@ -198,6 +198,27 @@ ORDER BY this_year.month;
 □ Can detect gaps and islands in data
 ```
 
+> **Flow**: □ Can write JOINs without looking up syntax → □ Can use GROUP BY with HAVING confidently | □ Can use GROUP BY with HAVING confidently → □ Understand when to use subquery vs JOIN vs CTE | □ Understand when to use subquery vs JOIN vs CTE → □ Can write window functions (ROW_NUMBER, LAG, SUM OVER | □ Can write window functions (ROW_NUMBER, LAG, SUM OVER → □ Can solve problems multiple ways | □ Can solve problems multiple ways → □ Can optimize slow queries (know when to check EXPLAIN | □ Can optimize slow queries (know when to check EXPLAIN → □ Can handle NULL values correctly | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["□ Can write JOINs without looking up syntax"]
+    N2["□ Can use GROUP BY with HAVING confidently"]
+    N3["□ Understand when to use subquery vs JOIN vs CTE"]
+    N4["□ Can write window functions (ROW_NUMBER, LAG, SUM OVER"]
+    N5["□ Can solve problems multiple ways"]
+    N6["□ Can optimize slow queries (know when to check EXPLAIN"]
+    N7["□ Can handle NULL values correctly"]
+    N8["□ Can pivot/unpivot data"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 _Practice consistently. Aim for 2-3 problems daily. Review solutions even for problems you solved._
@@ -232,6 +253,27 @@ _Practice consistently. Aim for 2-3 problems daily. Review solutions even for pr
 │  6. Data Quality Checks - Validate before insert                                │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: DATA ENGINEERING SQL REQUIREMENTS → Data Engineers deal with: | Data Engineers deal with: → • VOLUME: Billions of rows daily | • VOLUME: Billions of rows daily → • VELOCITY: Real-time data streams | • VELOCITY: Real-time data streams → • VARIETY: Multiple sources, formats | • VARIETY: Multiple sources, formats → • VERACITY: Data quality issues everywhere | • VERACITY: Data quality issues everywhere → Key SQL Skills Required: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["DATA ENGINEERING SQL REQUIREMENTS"]
+    N2["Data Engineers deal with:"]
+    N3["• VOLUME: Billions of rows daily"]
+    N4["• VELOCITY: Real-time data streams"]
+    N5["• VARIETY: Multiple sources, formats"]
+    N6["• VERACITY: Data quality issues everywhere"]
+    N7["Key SQL Skills Required:"]
+    N8["1. Bulk Data Operations - INSERT millions efficiently"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---
@@ -462,6 +504,25 @@ TRUNCATE TABLE large_table RESTART IDENTITY CASCADE;  -- Reset sequences, cascad
 │                                      • Validate       • dim_date                │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: ETL DATA PIPELINE → RAW DATA &gt; STAGING &gt; CLEANED &gt; DATA WAREHOUSE | RAW DATA &gt; STAGING &gt; CLEANED &gt; DATA WAREHOUSE → Source Systems: Landing Zone: Cleaning: Final Tables: | Source Systems: Landing Zone: Cleaning: Final Tables: → • CSV files • raw_sales • Handle NULLs • fact_sales | • CSV files • raw_sales • Handle NULLs • fact_sales → • APIs • raw_users • Fix types • dim_customers | • APIs • raw_users • Fix types • dim_customers → • Databases • raw_products • Deduplicate • dim_products | • Databases • raw_products • Deduplicate • dim_products → • Validate • dim_date
+
+```mermaid
+flowchart TD
+    N1["ETL DATA PIPELINE"]
+    N2["RAW DATA &gt; STAGING &gt; CLEANED &gt; DATA WAREHOUSE"]
+    N3["Source Systems: Landing Zone: Cleaning: Final Tables:"]
+    N4["• CSV files • raw_sales • Handle NULLs • fact_sales"]
+    N5["• APIs • raw_users • Fix types • dim_customers"]
+    N6["• Databases • raw_products • Deduplicate • dim_products"]
+    N7["• Validate • dim_date"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
 ```
 
 ## 2.1 Data Cleaning Transformations
@@ -1156,6 +1217,27 @@ VALUES ('fact_sales', @@ROWCOUNT, CURRENT_TIMESTAMP);
 □ Can work with time series data (gaps, islands)
 □ Understand partitioning for large tables
 □ Can write recursive CTEs for hierarchies
+```
+
+> **Flow**: □ Can write efficient bulk INSERT/UPDATE/DELETE → □ Understand COPY vs INSERT performance difference | □ Understand COPY vs INSERT performance difference → □ Can build ETL transformations in pure SQL | □ Can build ETL transformations in pure SQL → □ Know all window function types (RANK, LAG, SUM OVER) | □ Know all window function types (RANK, LAG, SUM OVER) → □ Can implement SCD Type 1 and Type 2 | □ Can implement SCD Type 1 and Type 2 → □ Understand star schema design | □ Understand star schema design → □ Can perform incremental loads | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["□ Can write efficient bulk INSERT/UPDATE/DELETE"]
+    N2["□ Understand COPY vs INSERT performance difference"]
+    N3["□ Can build ETL transformations in pure SQL"]
+    N4["□ Know all window function types (RANK, LAG, SUM OVER)"]
+    N5["□ Can implement SCD Type 1 and Type 2"]
+    N6["□ Understand star schema design"]
+    N7["□ Can perform incremental loads"]
+    N8["□ Know when to use indexes and which type"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

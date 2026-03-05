@@ -80,6 +80,19 @@ It interprets first (fast startup) then optimizes hot paths
 (fast execution). Best of both worlds.
 ```
 
+> **Flow**: Your JS code → Engine (V8 in Chrome/Node) → Machine cod → PARSER → Abstract Syntax Tree (AST) | PARSER → Abstract Syntax Tree (AST) → INTERPRETER (Ignition) → Bytecode (runs immediately) | INTERPRETER (Ignition) → Bytecode (runs immediately) → JIT COMPILER (TurboFan) → Optimized machine code / This
+
+```mermaid
+flowchart TD
+    N1["Your JS code → Engine (V8 in Chrome/Node) → Machine cod"]
+    N2["PARSER → Abstract Syntax Tree (AST)"]
+    N3["INTERPRETER (Ignition) → Bytecode (runs immediately)"]
+    N4["JIT COMPILER (TurboFan) → Optimized machine code / This"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 ---
 
 ## 2. Data Types — The 8 Types
@@ -109,6 +122,15 @@ NON-PRIMITIVE (mutable, stored by REFERENCE):
 ⚠ typeof null === "object" is a BUG from 1995. Never fixed.
 ⚠ typeof NaN === "number" — NaN is "Not a Number" but is a
    number type. Use Number.isNaN() to check.
+```
+
+> **Flow**: Type Example typeof / number 42, 3.14, NaN, Infinity 'n → object {}, [], function, Date, RegExp, Map, / Set, Weak
+
+```mermaid
+flowchart TD
+    N1["Type Example typeof / number 42, 3.14, NaN, Infinity 'n"]
+    N2["object {}, [], function, Date, RegExp, Map, / Set, Weak"]
+    N1 --> N2
 ```
 
 ### Value vs Reference — The #1 Source of Bugs
@@ -151,6 +173,15 @@ Objects can be large → stored on heap, stack holds a pointer.
 Assignment copies what's on the stack (value OR pointer).
 ```
 
+> **Flow**: a: 10 / b: 20 / obj1: 0x1A / obj2: 0x1A → { name: 'Harsha' }
+
+```mermaid
+flowchart TD
+    N1["a: 10 / b: 20 / obj1: 0x1A / obj2: 0x1A"]
+    N2["{ name: 'Harsha' }"]
+    N1 --> N2
+```
+
 ---
 
 ## 3. Type Coercion — JS's Most Confusing Feature
@@ -165,6 +196,17 @@ Assignment copies what's on the stack (value OR pointer).
 ║  WHEN: Every comparison (==), arithmetic, string concatenation.      ║
 ║  HOW:  Internal algorithms: ToPrimitive, ToNumber, ToString.         ║
 ╚══════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: WHY: Brendan Eich designed JS in 10 days for beginners. → He wanted '5' + 3 to 'just work' instead of crashing. | He wanted '5' + 3 to 'just work' instead of crashing. → HOW: Internal algorithms: ToPrimitive, ToNumber, ToStri
+
+```mermaid
+flowchart TD
+    N1["WHY: Brendan Eich designed JS in 10 days for beginners."]
+    N2["He wanted '5' + 3 to 'just work' instead of crashing."]
+    N3["HOW: Internal algorithms: ToPrimitive, ToNumber, ToStri"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 ```javascript
@@ -217,6 +259,19 @@ if ([]) console.log("truthy!");  // PRINTS! empty array is truthy
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: == (loose equality): Converts types THEN compares → REASONING: == has 22 type conversion rules in the spec. | REASONING: == has 22 type conversion rules in the spec. → Predictable code &gt; clever code. | Predictable code &gt; clever code. → The ONLY acceptable == use:
+
+```mermaid
+flowchart TD
+    N1["== (loose equality): Converts types THEN compares"]
+    N2["REASONING: == has 22 type conversion rules in the spec."]
+    N3["Predictable code &gt; clever code."]
+    N4["The ONLY acceptable == use:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 ---
 
 ## 4. Variables — var vs let vs const
@@ -234,6 +289,25 @@ if ([]) console.log("truthy!");  // PRINTS! empty array is truthy
 ║  • let: When you NEED to reassign (loops, accumulators).             ║
 ║  • var: NEVER in modern code. Legacy only.                           ║
 ╚══════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: WHAT: var (1995), let (2015/ES6), const (2015/ES6) → were added to FIX those bugs while keeping var for back | were added to FIX those bugs while keeping var for back → compatibility. | compatibility. → WHEN to use each: | WHEN to use each: → • const: DEFAULT choice. ~90% of variables. | • const: DEFAULT choice. ~90% of variables. → • let: When you NEED to reassign (loops, accumulators). | • let: When you NEED to reassign (loops, accumulators). → • var: NEVER in modern code. Legacy only.
+
+```mermaid
+flowchart TD
+    N1["WHAT: var (1995), let (2015/ES6), const (2015/ES6)"]
+    N2["were added to FIX those bugs while keeping var for back"]
+    N3["compatibility."]
+    N4["WHEN to use each:"]
+    N5["• const: DEFAULT choice. ~90% of variables."]
+    N6["• let: When you NEED to reassign (loops, accumulators)."]
+    N7["• var: NEVER in modern code. Legacy only."]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
 ```
 
 ```javascript
@@ -283,6 +357,27 @@ TDZ = Temporal Dead Zone (the time between hoisting and
 declaration where accessing the variable throws an error)
 ```
 
+> **Flow**: COMPARISON TABLE: → Feature var let const | Feature var let const → Scope function block block | Scope function block block → Hoisting yes(undef) yes(TDZ) yes(TDZ) | Hoisting yes(undef) yes(TDZ) yes(TDZ) → Reassign yes yes NO | Reassign yes yes NO → Redeclare yes no no | Redeclare yes no no → Use in never ~10% ~90% | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["COMPARISON TABLE:"]
+    N2["Feature var let const"]
+    N3["Scope function block block"]
+    N4["Hoisting yes(undef) yes(TDZ) yes(TDZ)"]
+    N5["Reassign yes yes NO"]
+    N6["Redeclare yes no no"]
+    N7["Use in never ~10% ~90%"]
+    N8["TDZ = Temporal Dead Zone (the time between hoisting and"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 5. Scope — The Visibility Rules
@@ -296,6 +391,19 @@ declaration where accessing the variable throws an error)
 ║  HOW:  JS uses LEXICAL (static) scoping — scope is determined        ║
 ║        by WHERE you WRITE the code, not where you call it.           ║
 ╚══════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: WHAT: Scope determines WHERE a variable is accessible. → WHY: Without scope, all variables would be global → cha | WHY: Without scope, all variables would be global → cha → HOW: JS uses LEXICAL (static) scoping — scope is determ | HOW: JS uses LEXICAL (static) scoping — scope is determ → by WHERE you WRITE the code, not where you call it.
+
+```mermaid
+flowchart TD
+    N1["WHAT: Scope determines WHERE a variable is accessible."]
+    N2["WHY: Without scope, all variables would be global → cha"]
+    N3["HOW: JS uses LEXICAL (static) scoping — scope is determ"]
+    N4["by WHERE you WRITE the code, not where you call it."]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
 ```
 
 ```
@@ -327,6 +435,27 @@ THREE TYPES OF SCOPE:
 RULE: Inner scopes can access outer scopes (scope chain).
 Outer scopes CANNOT access inner scopes.
 This is the foundation of CLOSURES (next chapter).
+```
+
+> **Flow**: THREE TYPES OF SCOPE: → GLOBAL SCOPE | GLOBAL SCOPE → const API_URL = 'https://api.example.com'; | const API_URL = 'https://api.example.com'; → FUNCTION SCOPE | FUNCTION SCOPE → function greet(name) { | function greet(name) { → const msg = 'Hello ' + name; | const msg = 'Hello ' + name; → BLOCK SCOPE | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THREE TYPES OF SCOPE:"]
+    N2["GLOBAL SCOPE"]
+    N3["const API_URL = 'https://api.example.com';"]
+    N4["FUNCTION SCOPE"]
+    N5["function greet(name) {"]
+    N6["const msg = 'Hello ' + name;"]
+    N7["BLOCK SCOPE"]
+    N8["const upper = name.toUpperCase();"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### The Scope Chain (Lookup Mechanism)
@@ -380,6 +509,23 @@ function outer() {
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: executing any code. (Technically, it's about creation → phase vs execution phase — nothing physically moves.) | phase vs execution phase — nothing physically moves.) → WHY: The JS engine makes TWO passes: | WHY: The JS engine makes TWO passes: → Pass 1 (Creation): Find all declarations, allocate memo | Pass 1 (Creation): Find all declarations, allocate memo → Pass 2 (Execution): Run code line by line. | Pass 2 (Execution): Run code line by line. → But BEHAVIOR differs between them.
+
+```mermaid
+flowchart TD
+    N1["executing any code. (Technically, it's about creation"]
+    N2["phase vs execution phase — nothing physically moves.)"]
+    N3["WHY: The JS engine makes TWO passes:"]
+    N4["Pass 1 (Creation): Find all declarations, allocate memo"]
+    N5["Pass 2 (Execution): Run code line by line."]
+    N6["But BEHAVIOR differs between them."]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+```
+
 ```javascript
 // WHAT JS SEES vs WHAT ACTUALLY HAPPENS:
 
@@ -430,6 +576,27 @@ HOISTING SUMMARY:
 REASONING: TDZ exists to catch bugs. If you use a variable
 before declaring it, that's almost certainly a mistake.
 let/const throw immediately instead of silently being undefined.
+```
+
+> **Flow**: HOISTING SUMMARY: → Declaration Hoisted? Value before line? | Declaration Hoisted? Value before line? → var x = 5 Yes undefined | var x = 5 Yes undefined → let x = 5 Yes (TDZ) ReferenceError | let x = 5 Yes (TDZ) ReferenceError → const x = 5 Yes (TDZ) ReferenceError | const x = 5 Yes (TDZ) ReferenceError → function f() {} Yes (full) The function itself | function f() {} Yes (full) The function itself → var f = () =&gt; {} Yes undefined | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["HOISTING SUMMARY:"]
+    N2["Declaration Hoisted? Value before line?"]
+    N3["var x = 5 Yes undefined"]
+    N4["let x = 5 Yes (TDZ) ReferenceError"]
+    N5["const x = 5 Yes (TDZ) ReferenceError"]
+    N6["function f() {} Yes (full) The function itself"]
+    N7["var f = () =&gt; {} Yes undefined"]
+    N8["class C {} Yes (TDZ) ReferenceError"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---
@@ -517,6 +684,15 @@ Functions are PUSHED when called, POPPED when they return.
 Stack Overflow = too many pushes without pops (infinite recursion)
 ```
 
+> **Flow**: EXECUTION CONTEXT contains: / 1. Variable Environment ( → inner() / outer() / Global
+
+```mermaid
+flowchart TD
+    N1["EXECUTION CONTEXT contains: / 1. Variable Environment ("]
+    N2["inner() / outer() / Global"]
+    N1 --> N2
+```
+
 ---
 
 ## 9. Strict Mode
@@ -572,6 +748,20 @@ Q: What is the Temporal Dead Zone?
 Q: "5" + 3 vs "5" - 3?
 → "53" (+ does concatenation if either is string)
   2 (- only does math, converts "5" to 5)
+```
+
+> **Flow**: var → hoisted as undefined. let/const | hoisted as undefined. let/const → hoisted but in TDZ. | function declarations → fully hoisted.
+
+```mermaid
+flowchart LR
+    N1["var"]
+    N2["hoisted as undefined. let/const"]
+    N3["hoisted but in TDZ."]
+    N4["function declarations"]
+    N5["fully hoisted."]
+    N1 --> N2
+    N2 --> N3
+    N4 --> N5
 ```
 
 ---

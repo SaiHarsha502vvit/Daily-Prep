@@ -21,6 +21,36 @@ String problem?
 └── "Justify/format" → Simulation
 ```
 
+> **Flow**: 'Parentheses' → Stack | 'Anagram/permutation' → HashMap frequency / sorted key | 'Substring with condition' → Sliding Window + HashMap | 'Palindrome' → Two Pointers (expand from center) or DP | 'Pattern matching' → KMP / Rabin-Karp / Z-algorithm | 'Transform A to B' → DP (Edit Distance) | ...+2 more
+
+```mermaid
+flowchart TD
+    N1["'Parentheses'"]
+    N2["Stack"]
+    N3["'Anagram/permutation'"]
+    N4["HashMap frequency / sorted key"]
+    N5["'Substring with condition'"]
+    N6["Sliding Window + HashMap"]
+    N7["'Palindrome'"]
+    N8["Two Pointers (expand from center) or DP"]
+    N9["'Pattern matching'"]
+    N10["KMP / Rabin-Karp / Z-algorithm"]
+    N11["'Transform A to B'"]
+    N12["DP (Edit Distance)"]
+    N13["'Word break'"]
+    N14["DP + Trie/Set"]
+    N15["'Expression evaluation'"]
+    N16["Stack (operator precedence)"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+    N7 --> N8
+    N9 --> N10
+    N11 --> N12
+    N13 --> N14
+    N15 --> N16
+```
+
 ---
 
 ## 📐 CORE TEMPLATES
@@ -93,6 +123,58 @@ Time: O(n · k log k) where k = max word length | Space: O(nk)
 Optimization: Use int[26] frequency as key instead of sorting → O(nk)
 ```
 
+> **Flow**: Approach: Sort each word → use as HashMap key | use as HashMap key → group by key. | Sorted form: 'eat' → 'aet', 'tea' | 'aet', 'tea' → 'aet', 'ate' | 'aet', 'ate' → 'aet' — all same key! | 'eat' → sort | ...+18 more
+
+```mermaid
+flowchart TD
+    N1["Approach: Sort each word"]
+    N2["use as HashMap key"]
+    N3["group by key."]
+    N4["Sorted form: 'eat'"]
+    N5["'aet', 'tea'"]
+    N6["'aet', 'ate'"]
+    N7["'aet' — all same key!"]
+    N8["'eat'"]
+    N9["sort"]
+    N10["'aet'"]
+    N11["map{'aet': ['eat']}"]
+    N12["'tea'"]
+    N13["map{'aet': ['eat','tea']}"]
+    N14["'tan'"]
+    N15["'ant'"]
+    N16["map{'aet': ['eat','tea'], 'ant': ['tan']}"]
+    N17["'ate'"]
+    N18["map{'aet': ['eat','tea','ate'], 'ant': ['tan']}"]
+    N19["'nat'"]
+    N20["map{'aet': [...], 'ant': ['tan','nat']}"]
+    N21["'bat'"]
+    N22["'abt'"]
+    N23["map{..., 'abt': ['bat']}"]
+    N24["Optimization: Use int[26] frequency as key instead"]
+    N25["O(nk)"]
+    N1 --> N2
+    N2 --> N3
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N8 --> N9
+    N9 --> N10
+    N10 --> N11
+    N12 --> N9
+    N10 --> N13
+    N14 --> N9
+    N9 --> N15
+    N15 --> N16
+    N17 --> N9
+    N10 --> N18
+    N19 --> N9
+    N15 --> N20
+    N21 --> N9
+    N9 --> N22
+    N22 --> N23
+    N24 --> N25
+```
+
 ---
 
 ## 🔬 FULL WALKTHROUGH 2: Longest Palindromic Substring (Expand Around Center)
@@ -121,6 +203,44 @@ Step-by-step (showing key centers):
 
 Time: O(n²) | Space: O(1)
 NOTE: Manacher's algorithm does this in O(n) but is rarely asked.
+```
+
+> **Flow**: Center at 'b'(0): 'b' → expand | expand → 'b' (length 1) | Center at 'a'(1): 'a' → expand | expand → s[0]='b' ≠ s[2]='b'? Wait... | Actually: s[0]='b', s[2]='b' → 'bab' (length 3) ✅ | Expand more: s[-1] out of bounds → stop. | ...+8 more
+
+```mermaid
+flowchart TD
+    N1["Center at 'b'(0): 'b'"]
+    N2["expand"]
+    N3["'b' (length 1)"]
+    N4["Center at 'a'(1): 'a'"]
+    N5["s[0]='b' ≠ s[2]='b'? Wait..."]
+    N6["Actually: s[0]='b', s[2]='b'"]
+    N7["'bab' (length 3) ✅"]
+    N8["Expand more: s[-1] out of bounds"]
+    N9["stop."]
+    N10["Center at 'b'(2): 'b'"]
+    N11["s[1]='a' ≠ s[3]='a'? Yes!"]
+    N12["'aba' (length 3). Expand: s[0]='b' ≠ s[4]='d'"]
+    N13["Center between (1,2): s[1]='a' ≠ s[2]='b'"]
+    N14["no even palindrome"]
+    N15["Center at 'a'(3): 'a'"]
+    N16["s[2]='b' ≠ s[4]='d'"]
+    N17["length 1"]
+    N18["Center at 'd'(4): 'd'"]
+    N1 --> N2
+    N2 --> N3
+    N4 --> N2
+    N2 --> N5
+    N6 --> N7
+    N8 --> N9
+    N10 --> N2
+    N2 --> N11
+    N12 --> N9
+    N13 --> N14
+    N15 --> N2
+    N2 --> N16
+    N16 --> N17
+    N18 --> N17
 ```
 
 ---

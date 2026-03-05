@@ -17,6 +17,17 @@ INTERVIEW BREAKDOWN (Most Tech Companies)
 Behavioral = The HIRE/NO-HIRE tiebreaker when coding is equal
 ```
 
+> **Flow**: Coding / 2-3 rounds / 40% → System / Design / 1-2 rounds / 20-30% | System / Design / 1-2 rounds / 20-30% → Behavioral / 1-2 rounds / 20-30%
+
+```mermaid
+flowchart TD
+    N1["Coding / 2-3 rounds / 40%"]
+    N2["System / Design / 1-2 rounds / 20-30%"]
+    N3["Behavioral / 1-2 rounds / 20-30%"]
+    N1 --> N2
+    N2 --> N3
+```
+
 > **Mental Model:** Behavioral interviews test PAST behavior as a PREDICTOR of future behavior.
 > They're not asking what you WOULD do — they want what you DID do.
 
@@ -47,6 +58,19 @@ S.T.A.R. FRAMEWORK
 │   (20%)     │   "Reduced processing time 40%, zero downtime
 └─────────────┘    during migration, saved $15K/month"
 
+```
+
+> **Flow**: S ituation / (15%) → T ask / (15%) | T ask / (15%) → A ction / (50%) | A ction / (50%) → R esult / (20%)
+
+```mermaid
+flowchart TD
+    N1["S ituation / (15%)"]
+    N2["T ask / (15%)"]
+    N3["A ction / (50%)"]
+    N4["R esult / (20%)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
 ```
 
 ### STAR Anti-Patterns
@@ -156,6 +180,19 @@ THE FAILURE ANSWER FORMULA
 └──────────────────┘
 ```
 
+> **Flow**: Real failure / (not humble brag) → Impact | Impact → Root cause | Root cause → Fix + Prevention
+
+```mermaid
+flowchart TD
+    N1["Real failure / (not humble brag)"]
+    N2["Impact"]
+    N3["Root cause"]
+    N4["Fix + Prevention"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 ### Category 4: Teamwork & Collaboration
 
 **Common Questions:**
@@ -193,6 +230,15 @@ ACTION:
 
 RESULT: Production stable within 1 hour, feature delivered next day,
   colleague unblocked. PM appreciated proactive communication.
+```
+
+> **Flow**: 1. Assessed impact: Production bug → P0, everything else waits
+
+```mermaid
+flowchart LR
+    N1["1. Assessed impact: Production bug"]
+    N2["P0, everything else waits"]
+    N1 --> N2
 ```
 
 ### Category 6: Technical Decision-Making
@@ -435,6 +481,27 @@ Before every behavioral interview, research:
 □ Open-source contributions by the company
 ```
 
+> **Flow**: Before every behavioral interview, research: → □ Company's recent news / product launches | □ Company's recent news / product launches → □ Tech blog posts (shows you care about their engineeri | □ Tech blog posts (shows you care about their engineeri → □ Glassdoor reviews (understand culture) | □ Glassdoor reviews (understand culture) → □ LinkedIn — interviewer's background | □ LinkedIn — interviewer's background → □ Company values / mission statement | □ Company values / mission statement → □ Tech stack (from job listing or StackShare) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Before every behavioral interview, research:"]
+    N2["□ Company's recent news / product launches"]
+    N3["□ Tech blog posts (shows you care about their engineeri"]
+    N4["□ Glassdoor reviews (understand culture)"]
+    N5["□ LinkedIn — interviewer's background"]
+    N6["□ Company values / mission statement"]
+    N7["□ Tech stack (from job listing or StackShare)"]
+    N8["□ Recent funding / growth trajectory"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## Interview Day Checklist
@@ -533,6 +600,27 @@ they need to fill. They're rooting for you to be great.
 └──────────────────────────────────────────────────────┘
 
 PREPARATION = CONFIDENCE = PERFORMANCE
+```
+
+> **Flow**: Think of the interview as a CONVERSATION, not an EXAM → You're evaluating THEM as much as they're evaluating YO | You're evaluating THEM as much as they're evaluating YO → they need to fill. They're rooting for you to be great. | they need to fill. They're rooting for you to be great. → MINDSET SHIFT: | MINDSET SHIFT: → From: 'Please hire me, I'll do anything' | From: 'Please hire me, I'll do anything' → To: 'Let's see if we're a good fit for | To: 'Let's see if we're a good fit for → each other' | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Think of the interview as a CONVERSATION, not an EXAM"]
+    N2["You're evaluating THEM as much as they're evaluating YO"]
+    N3["they need to fill. They're rooting for you to be great."]
+    N4["MINDSET SHIFT:"]
+    N5["From: 'Please hire me, I'll do anything'"]
+    N6["To: 'Let's see if we're a good fit for"]
+    N7["each other'"]
+    N8["This confidence (not arrogance) comes through"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

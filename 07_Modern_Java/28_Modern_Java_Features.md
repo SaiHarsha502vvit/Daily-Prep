@@ -60,6 +60,21 @@ var entry = Map.entry("key", 42);       // Map.Entry<String, Integer>
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: WHEN TO USE var: → ✅ Long generic types: var map = service.getComplexMap() | ✅ Long generic types: var map = service.getComplexMap() → WHEN NOT TO USE: | WHEN NOT TO USE: → ❌ Numeric literals: var count = 0 // int? long? byte? | ❌ Numeric literals: var count = 0 // int? long? byte? → ❌ When it hurts readability
+
+```mermaid
+flowchart TD
+    N1["WHEN TO USE var:"]
+    N2["✅ Long generic types: var map = service.getComplexMap()"]
+    N3["WHEN NOT TO USE:"]
+    N4["❌ Numeric literals: var count = 0 // int? long? byte?"]
+    N5["❌ When it hurts readability"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+```
+
 ---
 
 # PART 2: Records — Immutable Data Carriers (Java 16)
@@ -140,6 +155,21 @@ public record User(String name, int age) {
 └──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: WHEN TO USE RECORDS: → ✅ API responses record ApiResponse&lt;T&gt;(T data, int | ✅ API responses record ApiResponse&lt;T&gt;(T data, int → ✅ Compound map keys record CacheKey(String type, long i | ✅ Compound map keys record CacheKey(String type, long i → DON'T USE WHEN: | DON'T USE WHEN: → ❌ Complex inheritance needed
+
+```mermaid
+flowchart TD
+    N1["WHEN TO USE RECORDS:"]
+    N2["✅ API responses record ApiResponse&lt;T&gt;(T data, int"]
+    N3["✅ Compound map keys record CacheKey(String type, long i"]
+    N4["DON'T USE WHEN:"]
+    N5["❌ Complex inheritance needed"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+```
+
 ---
 
 # PART 3: Sealed Classes — Controlled Inheritance (Java 17)
@@ -190,6 +220,25 @@ public record Crypto(double amount, String wallet) implements Payment {}
 │  final = "nobody can extend me"                                                 │
 │  non-sealed = "anyone can extend me" (escape hatch)                             │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: WHY SEALED CLASSES? → 2. DOMAIN MODELING — exactly represents business rules | 2. DOMAIN MODELING — exactly represents business rules → 'A payment can ONLY be CreditCard, BankTransfer, or Cry | 'A payment can ONLY be CreditCard, BankTransfer, or Cry → 3. LIB DESIGN — allow extension by known types only | 3. LIB DESIGN — allow extension by known types only → sealed = 'these classes and NO others can extend me' | sealed = 'these classes and NO others can extend me' → final = 'nobody can extend me' | final = 'nobody can extend me' → non-sealed = 'anyone can extend me' (escape hatch)
+
+```mermaid
+flowchart TD
+    N1["WHY SEALED CLASSES?"]
+    N2["2. DOMAIN MODELING — exactly represents business rules"]
+    N3["'A payment can ONLY be CreditCard, BankTransfer, or Cry"]
+    N4["3. LIB DESIGN — allow extension by known types only"]
+    N5["sealed = 'these classes and NO others can extend me'"]
+    N6["final = 'nobody can extend me'"]
+    N7["non-sealed = 'anyone can extend me' (escape hatch)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
 ```
 
 ---
@@ -494,6 +543,27 @@ user.getAddress().getCity().toUpperCase();
 └──────────────┴────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: Java Version Key Features → dropWhile, Optional.or/ifPresentOrElse, private interfa | dropWhile, Optional.or/ifPresentOrElse, private interfa → methods, compact Strings internally | methods, compact Strings internally → Java 10 var (local variable type inference), List.copyO | Java 10 var (local variable type inference), List.copyO → Collectors.toUnmodifiable*, G1 GC improvements | Collectors.toUnmodifiable*, G1 GC improvements → Java 11 LTS HttpClient, String strip/isBlank/lines/repe | Java 11 LTS HttpClient, String strip/isBlank/lines/repe → Files.readString/writeString, Optional.isEmpty | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Java Version Key Features"]
+    N2["dropWhile, Optional.or/ifPresentOrElse, private interfa"]
+    N3["methods, compact Strings internally"]
+    N4["Java 10 var (local variable type inference), List.copyO"]
+    N5["Collectors.toUnmodifiable*, G1 GC improvements"]
+    N6["Java 11 LTS HttpClient, String strip/isBlank/lines/repe"]
+    N7["Files.readString/writeString, Optional.isEmpty"]
+    N8["Java 14 Switch expressions (finalized), Helpful NPEs,"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  INTERVIEW MUST-KNOWS:                                                          │
@@ -513,6 +583,25 @@ user.getAddress().getCity().toUpperCase();
 │  A: "var when type is obvious from context. Explicit when it aids readability.  │
 │      Never in public API signatures."                                           │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: INTERVIEW MUST-KNOWS: → Q: 'What Java version do you use?' | Q: 'What Java version do you use?' → Q: 'Records vs Lombok @Value?' | Q: 'Records vs Lombok @Value?' → Q: 'When would you use sealed classes?' | Q: 'When would you use sealed classes?' → state machines. Enables exhaustive switch without defau | state machines. Enables exhaustive switch without defau → Q: 'var vs explicit types — your preference?' | Q: 'var vs explicit types — your preference?' → Never in public API signatures.'
+
+```mermaid
+flowchart TD
+    N1["INTERVIEW MUST-KNOWS:"]
+    N2["Q: 'What Java version do you use?'"]
+    N3["Q: 'Records vs Lombok @Value?'"]
+    N4["Q: 'When would you use sealed classes?'"]
+    N5["state machines. Enables exhaustive switch without defau"]
+    N6["Q: 'var vs explicit types — your preference?'"]
+    N7["Never in public API signatures.'"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
 ```
 
 ---

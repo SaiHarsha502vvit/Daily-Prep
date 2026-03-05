@@ -34,6 +34,21 @@ Visual:
 
 ```
 
+> **Flow**: Root → sum=8 | Root → sum=7 | Root → sum=9 ← MAX | Root → sum=6
+
+```mermaid
+flowchart TD
+    N1["Root"]
+    N2["sum=8"]
+    N3["sum=7"]
+    N4["sum=9 ← MAX"]
+    N5["sum=6"]
+    N1 --> N2
+    N1 --> N3
+    N1 --> N4
+    N1 --> N5
+```
+
 ```java
 public int maxSumSubarray(int[] arr, int k) {
     int windowSum = 0, maxSum = 0;
@@ -71,6 +86,19 @@ public int maxSumSubarray(int[] arr, int k) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: MAXIMUM AVERAGE SUBARRAY I → Input: nums = [1,12,-5,-6,50,3], k = 4 | Input: nums = [1,12,-5,-6,50,3], k = 4 → Output: 12.75 | Output: 12.75 → Explanation: Max avg is (12-5-6+50)/4 = 51/4 = 12.75
+
+```mermaid
+flowchart TD
+    N1["MAXIMUM AVERAGE SUBARRAY I"]
+    N2["Input: nums = [1,12,-5,-6,50,3], k = 4"]
+    N3["Output: 12.75"]
+    N4["Explanation: Max avg is (12-5-6+50)/4 = 51/4 = 12.75"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 ```java
 public double findMaxAverage(int[] nums, int k) {
     double sum = 0;
@@ -104,6 +132,19 @@ public double findMaxAverage(int[] nums, int k) {
 ║  Explanation: [2,5,5], [5,5,5], [5,5,8] have avg >= 4                     ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: SUBARRAYS WITH AVG &gt;= THRESHOLD → Count subarrays of size k where average &gt;= threshold | Count subarrays of size k where average &gt;= threshold → Output: 3 | Output: 3 → Explanation: [2,5,5], [5,5,5], [5,5,8] have avg &gt;= 4
+
+```mermaid
+flowchart TD
+    N1["SUBARRAYS WITH AVG &gt;= THRESHOLD"]
+    N2["Count subarrays of size k where average &gt;= threshold"]
+    N3["Output: 3"]
+    N4["Explanation: [2,5,5], [5,5,5], [5,5,8] have avg &gt;= 4"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
 ```
 
 ```java
@@ -161,6 +202,27 @@ public int numOfSubarrays(int[] arr, int k, int threshold) {
 ║  - 1 <= nums[i] <= 10^5                                                   ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: MAX SUM OF DISTINCT SUBARRAYS WITH LENGTH K → (LeetCode Premium - Full Problem Description) | (LeetCode Premium - Full Problem Description) → are DISTINCT (no duplicates in window). | are DISTINCT (no duplicates in window). → Example 1: | Example 1: → Input: nums = [1,5,4,2,9,9,9], k = 3 | Input: nums = [1,5,4,2,9,9,9], k = 3 → Output: 15 | Output: 15 → Explanation: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["MAX SUM OF DISTINCT SUBARRAYS WITH LENGTH K"]
+    N2["(LeetCode Premium - Full Problem Description)"]
+    N3["are DISTINCT (no duplicates in window)."]
+    N4["Example 1:"]
+    N5["Input: nums = [1,5,4,2,9,9,9], k = 3"]
+    N6["Output: 15"]
+    N7["Explanation:"]
+    N8["[1,5,4] sum=10, all distinct ✓"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```java
@@ -222,6 +284,19 @@ Visual:
 
 ```
 
+> **Flow**: Root → sum=12, len=5 | Root → sum=10, len=4 | Root → sum=7, len=3
+
+```mermaid
+flowchart TD
+    N1["Root"]
+    N2["sum=12, len=5"]
+    N3["sum=10, len=4"]
+    N4["sum=7, len=3"]
+    N1 --> N2
+    N1 --> N3
+    N1 --> N4
+```
+
 ```java
 public int minSubArrayLen(int target, int[] nums) {
     int left = 0, sum = 0, minLen = Integer.MAX_VALUE;
@@ -278,6 +353,27 @@ public int minSubArrayLen(int target, int[] nums) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: LONGEST SUBSTRING WITH AT MOST K DISTINCT CHARS → (LeetCode 340 - Premium) | (LeetCode 340 - Premium) → Example 1: | Example 1: → Input: s = 'eceba', k = 2 | Input: s = 'eceba', k = 2 → Output: 3 | Output: 3 → Explanation: 'ece' has 2 distinct chars (e, c) | Explanation: 'ece' has 2 distinct chars (e, c) → Example 2: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["LONGEST SUBSTRING WITH AT MOST K DISTINCT CHARS"]
+    N2["(LeetCode 340 - Premium)"]
+    N3["Example 1:"]
+    N4["Input: s = 'eceba', k = 2"]
+    N5["Output: 3"]
+    N6["Explanation: 'ece' has 2 distinct chars (e, c)"]
+    N7["Example 2:"]
+    N8["Input: s = 'aa', k = 1"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ```java
 public int lengthOfLongestSubstringKDistinct(String s, int k) {
     if (k == 0) return 0;
@@ -327,6 +423,25 @@ public int lengthOfLongestSubstringKDistinct(String s, int k) {
 ║  Output: 4 ([2,3,2,2])                                                    ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: FRUIT INTO BASKETS → Input: fruits = [1,2,1] | Input: fruits = [1,2,1] → Output: 3 (collect all) | Output: 3 (collect all) → Input: fruits = [0,1,2,2] | Input: fruits = [0,1,2,2] → Output: 3 ([1,2,2]) | Output: 3 ([1,2,2]) → Input: fruits = [1,2,3,2,2] | Input: fruits = [1,2,3,2,2] → Output: 4 ([2,3,2,2])
+
+```mermaid
+flowchart TD
+    N1["FRUIT INTO BASKETS"]
+    N2["Input: fruits = [1,2,1]"]
+    N3["Output: 3 (collect all)"]
+    N4["Input: fruits = [0,1,2,2]"]
+    N5["Output: 3 ([1,2,2])"]
+    N6["Input: fruits = [1,2,3,2,2]"]
+    N7["Output: 4 ([2,3,2,2])"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
 ```
 
 ```java
@@ -380,6 +495,27 @@ public int totalFruit(int[] fruits) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: LONGEST REPEATING CHARACTER REPLACEMENT → same characters after at most k replacements. | same characters after at most k replacements. → Input: s = 'ABAB', k = 2 | Input: s = 'ABAB', k = 2 → Output: 4 | Output: 4 → Input: s = 'AABABBA', k = 1 | Input: s = 'AABABBA', k = 1 → Explanation: Replace middle B → 'AAAAABA' gives 'AAAA' | Explanation: Replace middle B → 'AAAAABA' gives 'AAAA' → KEY INSIGHT: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["LONGEST REPEATING CHARACTER REPLACEMENT"]
+    N2["same characters after at most k replacements."]
+    N3["Input: s = 'ABAB', k = 2"]
+    N4["Output: 4"]
+    N5["Input: s = 'AABABBA', k = 1"]
+    N6["Explanation: Replace middle B → 'AAAAABA' gives 'AAAA'"]
+    N7["KEY INSIGHT:"]
+    N8["Window is valid if: (windowLength - maxFreq) &lt;= k"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ```java
 public int characterReplacement(String s, int k) {
     int[] count = new int[26];
@@ -428,6 +564,27 @@ public int characterReplacement(String s, int k) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: MAX CONSECUTIVE ONES III → Input: nums = [1,1,1,0,0,0,1,1,1,1,0], k = 2 | Input: nums = [1,1,1,0,0,0,1,1,1,1,0], k = 2 → Output: 6 | Output: 6 → Explanation: [1,1,1,0,0,1,1,1,1,1,1] | Explanation: [1,1,1,0,0,1,1,1,1,1,1] → ↑ ↑ flipped | ↑ ↑ flipped → Visual: | Visual: → window with 2 zeros | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["MAX CONSECUTIVE ONES III"]
+    N2["Input: nums = [1,1,1,0,0,0,1,1,1,1,0], k = 2"]
+    N3["Output: 6"]
+    N4["Explanation: [1,1,1,0,0,1,1,1,1,1,1]"]
+    N5["↑ ↑ flipped"]
+    N6["Visual:"]
+    N7["window with 2 zeros"]
+    N8["flip 2 zeros = 6 ones"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ```java
 public int longestOnes(int[] nums, int k) {
     int left = 0, zeros = 0, maxLen = 0;
@@ -470,6 +627,25 @@ public int longestOnes(int[] nums, int k) {
 ║  Output: false                                                            ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: PERMUTATION IN STRING → Check if s2 contains any permutation of s1. | Check if s2 contains any permutation of s1. → Input: s1 = 'ab', s2 = 'eidbaooo' | Input: s1 = 'ab', s2 = 'eidbaooo' → Output: true | Output: true → Explanation: s2 contains 'ba' which is permutation of ' | Explanation: s2 contains 'ba' which is permutation of ' → Input: s1 = 'ab', s2 = 'eidboaoo' | Input: s1 = 'ab', s2 = 'eidboaoo' → Output: false
+
+```mermaid
+flowchart TD
+    N1["PERMUTATION IN STRING"]
+    N2["Check if s2 contains any permutation of s1."]
+    N3["Input: s1 = 'ab', s2 = 'eidbaooo'"]
+    N4["Output: true"]
+    N5["Explanation: s2 contains 'ba' which is permutation of '"]
+    N6["Input: s1 = 'ab', s2 = 'eidboaoo'"]
+    N7["Output: false"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
 ```
 
 ```java
@@ -522,6 +698,27 @@ public boolean checkInclusion(String s1, String s2) {
 ║         BANC  (has A,B,C - valid, len=4) ← MIN                            ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: MINIMUM WINDOW SUBSTRING → Find minimum window in s that contains all characters o | Find minimum window in s that contains all characters o → Input: s = 'ADOBECODEBANC', t = 'ABC' | Input: s = 'ADOBECODEBANC', t = 'ABC' → Output: 'BANC' | Output: 'BANC' → Visual: | Visual: → ADOBECODEBANC | ADOBECODEBANC → A (has A, need B,C) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["MINIMUM WINDOW SUBSTRING"]
+    N2["Find minimum window in s that contains all characters o"]
+    N3["Input: s = 'ADOBECODEBANC', t = 'ABC'"]
+    N4["Output: 'BANC'"]
+    N5["Visual:"]
+    N6["ADOBECODEBANC"]
+    N7["A (has A, need B,C)"]
+    N8["ADOBEC (has A,B,C - valid, len=6)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```java
@@ -604,6 +801,27 @@ public String minWindow(String s, String t) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: LONGEST SUBSTRING WITH AT MOST TWO DISTINCT CHARACTERS → (LeetCode 159 - Premium) | (LeetCode 159 - Premium) → Example 1: | Example 1: → Input: s = 'eceba' | Input: s = 'eceba' → Output: 3 | Output: 3 → Explanation: 'ece' has 2 distinct characters | Explanation: 'ece' has 2 distinct characters → Example 2: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["LONGEST SUBSTRING WITH AT MOST TWO DISTINCT CHARACTERS"]
+    N2["(LeetCode 159 - Premium)"]
+    N3["Example 1:"]
+    N4["Input: s = 'eceba'"]
+    N5["Output: 3"]
+    N6["Explanation: 'ece' has 2 distinct characters"]
+    N7["Example 2:"]
+    N8["Input: s = 'ccaabbb'"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ```java
 public int lengthOfLongestSubstringTwoDistinct(String s) {
     Map<Character, Integer> map = new HashMap<>();
@@ -650,6 +868,23 @@ public int lengthOfLongestSubstringTwoDistinct(String s) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: SLIDING WINDOW MAXIMUM (LeetCode 239 - Hard) → window position as the window slides from left to right | window position as the window slides from left to right → Example: | Example: → Input: nums = [1,3,-1,-3,5,3,6,7], k = 3 | Input: nums = [1,3,-1,-3,5,3,6,7], k = 3 → Output: [3,3,5,5,6,7] | Output: [3,3,5,5,6,7] → TIME: O(n) | SPACE: O(k)
+
+```mermaid
+flowchart TD
+    N1["SLIDING WINDOW MAXIMUM (LeetCode 239 - Hard)"]
+    N2["window position as the window slides from left to right"]
+    N3["Example:"]
+    N4["Input: nums = [1,3,-1,-3,5,3,6,7], k = 3"]
+    N5["Output: [3,3,5,5,6,7]"]
+    N6["TIME: O(n) | SPACE: O(k)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+```
+
 ```java
 public int[] maxSlidingWindow(int[] nums, int k) {
     int n = nums.length;
@@ -688,6 +923,23 @@ public int[] maxSlidingWindow(int[] nums, int k) {
 ║  KEY TRICK: exactly(k) = atMost(k) - atMost(k-1)                          ║
 ║  TIME: O(n) | SPACE: O(k)                                                 ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: SUBARRAYS WITH K DIFFERENT INTEGERS (LeetCode 992 - Har → Return count of subarrays with exactly k distinct integ | Return count of subarrays with exactly k distinct integ → Example: | Example: → Input: nums = [1,2,1,2,3], k = 2 → Output: 7 | Input: nums = [1,2,1,2,3], k = 2 → Output: 7 → KEY TRICK: exactly(k) = atMost(k) - atMost(k-1) | KEY TRICK: exactly(k) = atMost(k) - atMost(k-1) → TIME: O(n) | SPACE: O(k)
+
+```mermaid
+flowchart TD
+    N1["SUBARRAYS WITH K DIFFERENT INTEGERS (LeetCode 992 - Har"]
+    N2["Return count of subarrays with exactly k distinct integ"]
+    N3["Example:"]
+    N4["Input: nums = [1,2,1,2,3], k = 2 → Output: 7"]
+    N5["KEY TRICK: exactly(k) = atMost(k) - atMost(k-1)"]
+    N6["TIME: O(n) | SPACE: O(k)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
 ```
 
 ```java
@@ -735,6 +987,23 @@ private int atMost(int[] nums, int k) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: GRUMPY BOOKSTORE OWNER (LeetCode 1052 - Medium) → Owner can use technique for k minutes to not be grumpy. | Owner can use technique for k minutes to not be grumpy. → Find max satisfied customers. | Find max satisfied customers. → Example: | Example: → Output: 16 | Output: 16 → TIME: O(n) | SPACE: O(1)
+
+```mermaid
+flowchart TD
+    N1["GRUMPY BOOKSTORE OWNER (LeetCode 1052 - Medium)"]
+    N2["Owner can use technique for k minutes to not be grumpy."]
+    N3["Find max satisfied customers."]
+    N4["Example:"]
+    N5["Output: 16"]
+    N6["TIME: O(n) | SPACE: O(1)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+```
+
 ```java
 public int maxSatisfied(int[] customers, int[] grumpy, int minutes) {
     int n = customers.length, baseSatisfied = 0;
@@ -770,6 +1039,21 @@ public int maxSatisfied(int[] customers, int[] grumpy, int minutes) {
 ║  KEY: exactly(k) = atMost(k) - atMost(k-1)                                ║
 ║  TIME: O(n) | SPACE: O(1)                                                 ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: COUNT NUMBER OF NICE SUBARRAYS (LeetCode 1248 - Medium) → Nice subarray = exactly k odd numbers. Return count. | Nice subarray = exactly k odd numbers. Return count. → Example: nums = [1,1,2,1,1], k = 3 → Output: 2 | Example: nums = [1,1,2,1,1], k = 3 → Output: 2 → KEY: exactly(k) = atMost(k) - atMost(k-1) | KEY: exactly(k) = atMost(k) - atMost(k-1) → TIME: O(n) | SPACE: O(1)
+
+```mermaid
+flowchart TD
+    N1["COUNT NUMBER OF NICE SUBARRAYS (LeetCode 1248 - Medium)"]
+    N2["Nice subarray = exactly k odd numbers. Return count."]
+    N3["Example: nums = [1,1,2,1,1], k = 3 → Output: 2"]
+    N4["KEY: exactly(k) = atMost(k) - atMost(k-1)"]
+    N5["TIME: O(n) | SPACE: O(1)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
 ```
 
 ```java
@@ -809,6 +1093,21 @@ private int atMost(int[] nums, int k) {
 ║  KEY: Sliding window tracking zeros count. Shrink when > k.               ║
 ║  TIME: O(n) | SPACE: O(1)                                                 ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: MAX CONSECUTIVE ONES III (LeetCode 1004 - Medium) → Max consecutive 1's if you can flip at most k 0's. | Max consecutive 1's if you can flip at most k 0's. → Example: nums = [1,1,1,0,0,0,1,1,1,1,0], k = 2 → Output | Example: nums = [1,1,1,0,0,0,1,1,1,1,0], k = 2 → Output → KEY: Sliding window tracking zeros count. Shrink when & | KEY: Sliding window tracking zeros count. Shrink when & → TIME: O(n) | SPACE: O(1)
+
+```mermaid
+flowchart TD
+    N1["MAX CONSECUTIVE ONES III (LeetCode 1004 - Medium)"]
+    N2["Max consecutive 1's if you can flip at most k 0's."]
+    N3["Example: nums = [1,1,1,0,0,0,1,1,1,1,0], k = 2 → Output"]
+    N4["KEY: Sliding window tracking zeros count. Shrink when &"]
+    N5["TIME: O(n) | SPACE: O(1)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
 ```
 
 ```java

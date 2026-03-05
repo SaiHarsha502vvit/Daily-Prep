@@ -164,6 +164,27 @@ WHY BEM: Flat specificity (all single class), self-documenting,
 no nesting conflicts, easy to understand relationship.
 ```
 
+> **Flow**: BEM: Block__Element--Modifier → Block: Independent component .card | Block: Independent component .card → Element: Part of a block .card__title | Element: Part of a block .card__title → Modifier: Variation/state .card--featured | Modifier: Variation/state .card--featured → VISUAL: | VISUAL: → .card ← Block | .card ← Block → .card__image ← Element | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["BEM: Block__Element--Modifier"]
+    N2["Block: Independent component .card"]
+    N3["Element: Part of a block .card__title"]
+    N4["Modifier: Variation/state .card--featured"]
+    N5["VISUAL:"]
+    N6[".card ← Block"]
+    N7[".card__image ← Element"]
+    N8[".card__title ← Element"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ```css
 /* BEM IN PRACTICE: */
 .card { }
@@ -585,6 +606,27 @@ form:has(:invalid) {
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: CSS APPROACH WHEN TO USE TRADE-OFFS → Plain CSS Small projects Global scope issues | Plain CSS Small projects Global scope issues → CSS Modules React projects Best scoping (✅) | CSS Modules React projects Best scoping (✅) → Tailwind CSS Rapid prototyping Verbose HTML, learn | Tailwind CSS Rapid prototyping Verbose HTML, learn → styled-components Dynamic styling Runtime cost, bundle | styled-components Dynamic styling Runtime cost, bundle → CSS-in-JS (Panda) Design system libs Zero-runtime (✅) | CSS-in-JS (Panda) Design system libs Zero-runtime (✅) → INDUSTRY TREND (2024): | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["CSS APPROACH WHEN TO USE TRADE-OFFS"]
+    N2["Plain CSS Small projects Global scope issues"]
+    N3["CSS Modules React projects Best scoping (✅)"]
+    N4["Tailwind CSS Rapid prototyping Verbose HTML, learn"]
+    N5["styled-components Dynamic styling Runtime cost, bundle"]
+    N6["CSS-in-JS (Panda) Design system libs Zero-runtime (✅)"]
+    N7["INDUSTRY TREND (2024):"]
+    N8["CSS Modules + Tailwind = most popular combo"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### Tailwind Core Concepts
 
 ```html
@@ -647,6 +689,15 @@ Q: What is a design system?
 → A set of reusable design tokens (colors, spacing, typography),
   components, and patterns that ensure visual consistency across
   a product. Implemented as CSS variables + component library.
+```
+
+> **Flow**: Components use var(--color-bg) → automatically switch.
+
+```mermaid
+flowchart LR
+    N1["Components use var(--color-bg)"]
+    N2["automatically switch."]
+    N1 --> N2
 ```
 
 ---

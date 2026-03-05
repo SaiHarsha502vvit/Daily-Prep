@@ -54,6 +54,15 @@ Brute: Check all 15 pairs
 Two Pointers: At most 6 moves
 ```
 
+> **Flow**: for i = 0 to n: / for j = i+1 to n: / check(i,j) → left → ... ... ← right / Move based on sum: / sum &lt; 
+
+```mermaid
+flowchart TD
+    N1["for i = 0 to n: / for j = i+1 to n: / check(i,j)"]
+    N2["left → ... ... ← right / Move based on sum: / sum &lt; "]
+    N1 --> N2
+```
+
 ---
 
 ## Pattern Categories <a name="categories"></a>
@@ -130,6 +139,17 @@ Step 3: left=0, right=1
         sum = 2 + 7 = 9 = target ✓
 
 Answer: [1, 2]
+```
+
+> **Flow**: sum = 2 + 15 = 17 &gt; 9 → right-- | sum = 2 + 11 = 13 &gt; 9 → right--
+
+```mermaid
+flowchart LR
+    N1["sum = 2 + 15 = 17 &gt; 9"]
+    N2["right--"]
+    N3["sum = 2 + 11 = 13 &gt; 9"]
+    N1 --> N2
+    N3 --> N2
 ```
 
 ### 3Sum (LeetCode 15)
@@ -268,6 +288,19 @@ Step 2: Move shorter (left=0 has height 1)
           width = 7, height = min(8,7) = 7, area = 49 ←── Best!
 ```
 
+> **Flow**: height = [1,8,6,2,5,4,8,3,7] → Step 1: left=0, right=8 | Step 1: left=0, right=8 → Step 2: Move shorter (left=0 has height 1) | Step 2: Move shorter (left=0 has height 1) → left=1, right=8
+
+```mermaid
+flowchart TD
+    N1["height = [1,8,6,2,5,4,8,3,7]"]
+    N2["Step 1: left=0, right=8"]
+    N3["Step 2: Move shorter (left=0 has height 1)"]
+    N4["left=1, right=8"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 ### Valid Palindrome (LeetCode 125)
 
 ```java
@@ -392,6 +425,18 @@ Step 2: writer=1, reader=2
         [0, 1, 2, 3, 4, ...]
                        W
         Return 5
+```
+
+> **Flow**: nums[1] == nums[0] → skip | nums[2] != nums[1] → write!
+
+```mermaid
+flowchart LR
+    N1["nums[1] == nums[0]"]
+    N2["skip"]
+    N3["nums[2] != nums[1]"]
+    N4["write!"]
+    N1 --> N2
+    N3 --> N4
 ```
 
 ### Remove Element (LeetCode 27)
@@ -533,6 +578,27 @@ Step 6: S=8, F=6
 Step 7: S=4, F=8
 Step 8: S=5, F=4
 Step 9: S=6, F=6 ✓ MEET!
+```
+
+> **Flow**: List with cycle: → Step 0: S=1, F=1 | Step 0: S=1, F=1 → Step 1: S=2, F=3 | Step 1: S=2, F=3 → Step 2: S=3, F=5 | Step 2: S=3, F=5 → Step 3: S=4, F=6 | Step 3: S=4, F=6 → Step 4: S=5, F=8 | Step 4: S=5, F=8 → Step 5: S=6, F=4 | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["List with cycle:"]
+    N2["Step 0: S=1, F=1"]
+    N3["Step 1: S=2, F=3"]
+    N4["Step 2: S=3, F=5"]
+    N5["Step 3: S=4, F=6"]
+    N6["Step 4: S=5, F=8"]
+    N7["Step 5: S=6, F=4"]
+    N8["Step 6: S=8, F=6"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### Find Cycle Start (LeetCode 142)
@@ -683,6 +749,27 @@ public int findDuplicate(int[] nums) {
 │      # Update answer if needed                                  │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: SLIDING WINDOW = TWO POINTERS + WINDOW STATE → Sliding Window Template: | Sliding Window Template: → left = 0 | left = 0 → # Expand: add element at right to window | # Expand: add element at right to window → window.add(arr[right]) | window.add(arr[right]) → # Shrink: while window is invalid/too large | # Shrink: while window is invalid/too large → window.remove(arr[left]) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["SLIDING WINDOW = TWO POINTERS + WINDOW STATE"]
+    N2["Sliding Window Template:"]
+    N3["left = 0"]
+    N4["# Expand: add element at right to window"]
+    N5["window.add(arr[right])"]
+    N6["# Shrink: while window is invalid/too large"]
+    N7["window.remove(arr[left])"]
+    N8["left++"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### Minimum Window Substring (LeetCode 76)
@@ -1039,6 +1126,27 @@ public int numRescueBoats(int[] people, int limit) {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: TWO POINTER PROBLEM MAP → PAIR FINDING (Opposite Direction): | PAIR FINDING (Opposite Direction): → • Two Sum II, 3Sum, 4Sum, 3Sum Closest | • Two Sum II, 3Sum, 4Sum, 3Sum Closest → • Container With Most Water | • Container With Most Water → PALINDROME/REVERSE: | PALINDROME/REVERSE: → • Valid Palindrome I/II, Reverse String | • Valid Palindrome I/II, Reverse String → ARRAY MODIFICATION (Same Direction): | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["TWO POINTER PROBLEM MAP"]
+    N2["PAIR FINDING (Opposite Direction):"]
+    N3["• Two Sum II, 3Sum, 4Sum, 3Sum Closest"]
+    N4["• Container With Most Water"]
+    N5["PALINDROME/REVERSE:"]
+    N6["• Valid Palindrome I/II, Reverse String"]
+    N7["ARRAY MODIFICATION (Same Direction):"]
+    N8["• Remove Duplicates I/II, Remove Element"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### Squares of a Sorted Array (LeetCode 977)
 
 ```java
@@ -1173,6 +1281,27 @@ private int getNextValidIndex(String str, int index) {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: WHICH TWO POINTER PATTERN? → 'Find pair/triplet with sum' | 'Find pair/triplet with sum' → → Opposite direction (sorted array) | → Opposite direction (sorted array) → 'Remove/Move elements in-place' | 'Remove/Move elements in-place' → → Same direction (reader-writer) | → Same direction (reader-writer) → 'Detect cycle' or 'Find middle' | 'Detect cycle' or 'Find middle' → → Fast & slow pointers | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["WHICH TWO POINTER PATTERN?"]
+    N2["'Find pair/triplet with sum'"]
+    N3["→ Opposite direction (sorted array)"]
+    N4["'Remove/Move elements in-place'"]
+    N5["→ Same direction (reader-writer)"]
+    N6["'Detect cycle' or 'Find middle'"]
+    N7["→ Fast & slow pointers"]
+    N8["'Substring/Subarray with condition'"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### Two Pointer Templates
 
 ```java
@@ -1232,6 +1361,27 @@ while (p1 < m && p2 < n) {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: TWO POINTER COMPLEXITIES → Two Sum II (sorted): O(n) time, O(1) space | Two Sum II (sorted): O(n) time, O(1) space → 3Sum: O(n²) time, O(1) space | 3Sum: O(n²) time, O(1) space → 4Sum: O(n³) time, O(1) space | 4Sum: O(n³) time, O(1) space → Container With Most Water: O(n) time, O(1) space | Container With Most Water: O(n) time, O(1) space → Trapping Rain Water: O(n) time, O(1) space | Trapping Rain Water: O(n) time, O(1) space → Remove Duplicates: O(n) time, O(1) space | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["TWO POINTER COMPLEXITIES"]
+    N2["Two Sum II (sorted): O(n) time, O(1) space"]
+    N3["3Sum: O(n²) time, O(1) space"]
+    N4["4Sum: O(n³) time, O(1) space"]
+    N5["Container With Most Water: O(n) time, O(1) space"]
+    N6["Trapping Rain Water: O(n) time, O(1) space"]
+    N7["Remove Duplicates: O(n) time, O(1) space"]
+    N8["Linked List Cycle: O(n) time, O(1) space"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## Summary
@@ -1264,6 +1414,27 @@ while (p1 < m && p2 < n) {
 ║     - No valid answer exists                                  ║
 ║                                                               ║
 ╚═══════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: TWO POINTERS - MASTER CHECKLIST → 1. IDENTIFY THE PATTERN | 1. IDENTIFY THE PATTERN → - Pair with sum → Opposite direction | - Pair with sum → Opposite direction → - In-place modify → Same direction (reader-writer) | - In-place modify → Same direction (reader-writer) → - Cycle/Middle → Fast & slow | - Cycle/Middle → Fast & slow → - Merge/Compare → Multi-array | - Merge/Compare → Multi-array → 2. KEY INSIGHTS | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["TWO POINTERS - MASTER CHECKLIST"]
+    N2["1. IDENTIFY THE PATTERN"]
+    N3["- Pair with sum → Opposite direction"]
+    N4["- In-place modify → Same direction (reader-writer)"]
+    N5["- Cycle/Middle → Fast & slow"]
+    N6["- Merge/Compare → Multi-array"]
+    N7["2. KEY INSIGHTS"]
+    N8["- SORTED array often enables two pointers"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 **Pro Tip:** When you see a problem asking about pairs, subarrays, or in-place operations on sorted/sequential data, think two pointers first!

@@ -126,6 +126,27 @@ EXAMPLE: Phone Book
 └────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: CONCEPT: → - Transform key into array index using hash function | - Transform key into array index using hash function → - Store value at that index | - Store value at that index → - Retrieve in O(1) average time | - Retrieve in O(1) average time → EXAMPLE: Phone Book | EXAMPLE: Phone Book → Name 'Alice' → hash('Alice') → 3 | Name 'Alice' → hash('Alice') → 3 → Index: 0 1 2 3 4 5 | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["CONCEPT:"]
+    N2["- Transform key into array index using hash function"]
+    N3["- Store value at that index"]
+    N4["- Retrieve in O(1) average time"]
+    N5["EXAMPLE: Phone Book"]
+    N6["Name 'Alice' → hash('Alice') → 3"]
+    N7["Index: 0 1 2 3 4 5"]
+    N8["Bob Alice Carol"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### Collision Handling
 
 **Problem:** `hash("Alice") = 3` and `hash("David") = 3` — two keys hash to the same index!
@@ -155,11 +176,34 @@ variables = [
 lookup("x") → search all 10,000 → O(n)
 ```
 
+> **Flow**: lookup('x') → search all 10,000 | search all 10,000 → O(n)
+
+```mermaid
+flowchart LR
+    N1["lookup('x')"]
+    N2["search all 10,000"]
+    N3["O(n)"]
+    N1 --> N2
+    N2 --> N3
+```
+
 **Solution by H.P. Luhn (1953):** "What if we could *calculate* the position directly?"
 ```
 hash("x") = some_formula("x") → index 42
 variables[42] = {name: "x", type: "int"}
 lookup("x") → O(1)!
+```
+
+> **Flow**: hash('x') = some_formula('x') → index 42 | lookup('x') → O(1)!
+
+```mermaid
+flowchart LR
+    N1["hash('x') = some_formula('x')"]
+    N2["index 42"]
+    N3["lookup('x')"]
+    N4["O(1)!"]
+    N1 --> N2
+    N3 --> N4
 ```
 
 > ✅ **Impact:** Compilers became **100x faster**, databases became possible, every modern language has HashMap.
@@ -316,6 +360,27 @@ IMPACT:
 - Every database uses this
 - Every CDN (Cloudflare, Akamai) uses this
 - Redis, Memcached are based on this
+```
+
+> **Flow**: REAL-WORLD ORIGIN: Web Browser Cache (1990s) → PROBLEM AT NETSCAPE (1994): | PROBLEM AT NETSCAPE (1994): → - Browser loads images from internet | - Browser loads images from internet → - Loading same image again = slow | - Loading same image again = slow → - Store recently viewed images in memory | - Store recently viewed images in memory → - Memory is limited (16MB in 1994!) | - Memory is limited (16MB in 1994!) → QUESTIONS: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["REAL-WORLD ORIGIN: Web Browser Cache (1990s)"]
+    N2["PROBLEM AT NETSCAPE (1994):"]
+    N3["- Browser loads images from internet"]
+    N4["- Loading same image again = slow"]
+    N5["- Store recently viewed images in memory"]
+    N6["- Memory is limited (16MB in 1994!)"]
+    N7["QUESTIONS:"]
+    N8["1. How to quickly check if image is cached? → HashMap"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

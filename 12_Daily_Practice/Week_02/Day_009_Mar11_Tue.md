@@ -63,6 +63,17 @@ TRADE-OFF:
     prev data next       prev data next       prev data next
 ```
 
+> **Flow**: null 10 → ← 20 | ← 30 null → ← 20
+
+```mermaid
+flowchart LR
+    N1["null 10"]
+    N2["← 20"]
+    N3["← 30 null"]
+    N1 --> N2
+    N3 --> N2
+```
+
 #### 🔧 Implement
 
 ```java
@@ -143,6 +154,19 @@ public class DoublyLinkedList {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: COMPARISON OF SORTING ALGORITHMS (what you know so far) → Algorithm Best Average Worst Space Stable | Algorithm Best Average Worst Space Stable → Quick Sort wins: in-place (O(log n) stack) + cache-frie | Quick Sort wins: in-place (O(log n) stack) + cache-frie → Java's Arrays.sort(int[]) uses Dual-Pivot Quick Sort
+
+```mermaid
+flowchart TD
+    N1["COMPARISON OF SORTING ALGORITHMS (what you know so far)"]
+    N2["Algorithm Best Average Worst Space Stable"]
+    N3["Quick Sort wins: in-place (O(log n) stack) + cache-frie"]
+    N4["Java's Arrays.sort(int[]) uses Dual-Pivot Quick Sort"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 #### HOW: Partition then Recurse
 
 ```
@@ -157,6 +181,23 @@ IDEA: Pick a "pivot". Put smaller elements LEFT, larger RIGHT. Repeat.
                       ↑ pivot is in its FINAL position!
     
     Now recursively sort [1, 2, 1] and [6, 8, 10]
+```
+
+> **Flow**: [3, 6, 8, 10, 1, 2, 1] pivot = 3 → PARTITION: | PARTITION: → Elements ≤ 3: [1, 2, 1] | Elements &gt; 3: [6, 8, 10] | Elements ≤ 3: [1, 2, 1] | Elements &gt; 3: [6, 8, 10] → Result: [1, 2, 1, 3, 6, 8, 10] | Result: [1, 2, 1, 3, 6, 8, 10] → ↑ pivot is in its FINAL position! | ↑ pivot is in its FINAL position! → Now recursively sort [1, 2, 1] and [6, 8, 10]
+
+```mermaid
+flowchart TD
+    N1["[3, 6, 8, 10, 1, 2, 1] pivot = 3"]
+    N2["PARTITION:"]
+    N3["Elements ≤ 3: [1, 2, 1] | Elements &gt; 3: [6, 8, 10]"]
+    N4["Result: [1, 2, 1, 3, 6, 8, 10]"]
+    N5["↑ pivot is in its FINAL position!"]
+    N6["Now recursively sort [1, 2, 1] and [6, 8, 10]"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
 ```
 
 #### IMPLEMENT: Lomuto Partition Scheme
@@ -264,6 +305,29 @@ WHY DOUBLY LINKED LIST?
 This is LeetCode 146 (Medium) — implement it as a bonus challenge!
 ```
 
+> **Flow**: access('home') → Cache: [home] | access('about') → Cache: [about, home] | access('products') → Cache: [products, about, home] | access('home') → Cache: [home, products, about] ← home moves to fro | access('blog') → Cache: [blog, home, products] ← about evicted (LRU | • HashMap for O(1) lookup: key → node reference
+
+```mermaid
+flowchart TD
+    N1["access('home')"]
+    N2["Cache: [home]"]
+    N3["access('about')"]
+    N4["Cache: [about, home]"]
+    N5["access('products')"]
+    N6["Cache: [products, about, home]"]
+    N7["Cache: [home, products, about] ← home moves to fro"]
+    N8["access('blog')"]
+    N9["Cache: [blog, home, products] ← about evicted (LRU"]
+    N10["• HashMap for O(1) lookup: key"]
+    N11["node reference"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+    N1 --> N7
+    N8 --> N9
+    N10 --> N11
+```
+
 ---
 
 ## BLOCK 5: SQL (40 min)
@@ -348,6 +412,21 @@ WHY does it work?
   Eventually fast "laps" slow → they meet inside the cycle.
 ```
 
+> **Flow**: If they MEET → cycle exists | If fast reaches null → no cycle | Eventually fast 'laps' slow → they meet inside the cycle.
+
+```mermaid
+flowchart LR
+    N1["If they MEET"]
+    N2["cycle exists"]
+    N3["If fast reaches null"]
+    N4["no cycle"]
+    N5["Eventually fast 'laps' slow"]
+    N6["they meet inside the cycle."]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+```
+
 ```java
 public boolean hasCycle(ListNode head) {
     ListNode slow = head, fast = head;
@@ -383,6 +462,18 @@ TRICK: Two-pointer with gap of n
               slow     fast(null)
     
     slow.next = slow.next.next → removes node 4 ✓
+```
+
+> **Flow**: 3. slow is now at the node BEFORE the target → remove it | slow.next = slow.next.next → removes node 4 ✓
+
+```mermaid
+flowchart LR
+    N1["3. slow is now at the node BEFORE the target"]
+    N2["remove it"]
+    N3["slow.next = slow.next.next"]
+    N4["removes node 4 ✓"]
+    N1 --> N2
+    N3 --> N4
 ```
 
 ```java

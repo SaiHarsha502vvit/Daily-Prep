@@ -49,6 +49,19 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: WHY: Why JPA/Hibernate is Essential? / • ORM magic: Map → HOW: How JPA Maps Objects to Database? / • @Entity: Cla | HOW: How JPA Maps Objects to Database? / • @Entity: Cla → WHEN: When to Use Different Query Strategies? / • findB | WHEN: When to Use Different Query Strategies? / • findB → WHICH: Which JPA Concepts to Master? / ESSENTIAL: @Enti
+
+```mermaid
+flowchart TD
+    N1["WHY: Why JPA/Hibernate is Essential? / • ORM magic: Map"]
+    N2["HOW: How JPA Maps Objects to Database? / • @Entity: Cla"]
+    N3["WHEN: When to Use Different Query Strategies? / • findB"]
+    N4["WHICH: Which JPA Concepts to Master? / ESSENTIAL: @Enti"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 ---
 
 # 📌 Tier 5: Data Access (JPA & Hibernate)
@@ -132,6 +145,23 @@ public interface UserRepository extends JpaRepository<User, Long> {
 │  └──────────────────────────────────────────────────────────────────────────┘   │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: YOUR APPLICATION CODE / UserService → UserRepository →  → SPRING DATA JPA / Query derivation, automatic repositor | SPRING DATA JPA / Query derivation, automatic repositor → JPA (API/Specification) / EntityManager, @Entity, JPQL, | JPA (API/Specification) / EntityManager, @Entity, JPQL, → HIBERNATE (JPA Implementation) / Session, 1st/2nd level | HIBERNATE (JPA Implementation) / Session, 1st/2nd level → JDBC / DataSource / Connection pooling (HikariCP), actu | JDBC / DataSource / Connection pooling (HikariCP), actu → DATABASE / MySQL, PostgreSQL, Oracle, etc.
+
+```mermaid
+flowchart TD
+    N1["YOUR APPLICATION CODE / UserService → UserRepository → "]
+    N2["SPRING DATA JPA / Query derivation, automatic repositor"]
+    N3["JPA (API/Specification) / EntityManager, @Entity, JPQL,"]
+    N4["HIBERNATE (JPA Implementation) / Session, 1st/2nd level"]
+    N5["JDBC / DataSource / Connection pooling (HikariCP), actu"]
+    N6["DATABASE / MySQL, PostgreSQL, Oracle, etc."]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
 ```
 
 ---
@@ -801,6 +831,27 @@ public record ErrorResponse(String message, List<String> errors) {}
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: AUTHENTICATION vs AUTHORIZATION → AUTHENTICATION = 'WHO are you?' | AUTHENTICATION = 'WHO are you?' → • Username/password login | • Username/password login → • OAuth2/Social login | • OAuth2/Social login → • JWT token validation | • JWT token validation → • Certificate verification | • Certificate verification → AUTHORIZATION = 'WHAT can you do?' | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["AUTHENTICATION vs AUTHORIZATION"]
+    N2["AUTHENTICATION = 'WHO are you?'"]
+    N3["• Username/password login"]
+    N4["• OAuth2/Social login"]
+    N5["• JWT token validation"]
+    N6["• Certificate verification"]
+    N7["AUTHORIZATION = 'WHAT can you do?'"]
+    N8["• Role-based: ADMIN can delete, USER can only read"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### 🟢 HOW: Security Configuration
 
 ```java
@@ -921,6 +972,17 @@ public class UserService {
 │              /     └─────────────────────────────┘                              │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: E2E / Tests → Integration / Tests | Integration / Tests → Unit Tests / @Mock, no Spring context
+
+```mermaid
+flowchart TD
+    N1["E2E / Tests"]
+    N2["Integration / Tests"]
+    N3["Unit Tests / @Mock, no Spring context"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 ### Unit Tests (No Spring Context)
@@ -1149,6 +1211,27 @@ TESTING:
 □ Know when to use @MockBean vs @Mock
 ```
 
+> **Flow**: JPA & DATA ACCESS: → □ Can map entities with all relationship types | □ Can map entities with all relationship types → □ Understand LAZY vs EAGER and N+1 problem | □ Understand LAZY vs EAGER and N+1 problem → □ Can write derived queries and @Query methods | □ Can write derived queries and @Query methods → □ Can use projections and pagination | □ Can use projections and pagination → WEB & REST: | WEB & REST: → □ Can build complete REST API with all HTTP methods | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["JPA & DATA ACCESS:"]
+    N2["□ Can map entities with all relationship types"]
+    N3["□ Understand LAZY vs EAGER and N+1 problem"]
+    N4["□ Can write derived queries and @Query methods"]
+    N5["□ Can use projections and pagination"]
+    N6["WEB & REST:"]
+    N7["□ Can build complete REST API with all HTTP methods"]
+    N8["□ Know request validation with JSR-380"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 # 🎯 FINAL SUMMARY
@@ -1190,6 +1273,27 @@ TESTING:
 │  KEY PRINCIPLE: Always understand WHY before learning HOW                      │
 │                                                                                │
 └────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: SPRING BOOT MASTERY ROADMAP → TIER 1: Java Foundations | TIER 1: Java Foundations → Memory, ClassLoading, Threading, Functional Programming | Memory, ClassLoading, Threading, Functional Programming → TIER 2: Spring Core | TIER 2: Spring Core → IoC, DI, Beans, Lifecycle, Events | IoC, DI, Beans, Lifecycle, Events → TIER 3: AOP | TIER 3: AOP → Aspects, Pointcuts, Proxies | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["SPRING BOOT MASTERY ROADMAP"]
+    N2["TIER 1: Java Foundations"]
+    N3["Memory, ClassLoading, Threading, Functional Programming"]
+    N4["TIER 2: Spring Core"]
+    N5["IoC, DI, Beans, Lifecycle, Events"]
+    N6["TIER 3: AOP"]
+    N7["Aspects, Pointcuts, Proxies"]
+    N8["TIER 4: Spring Boot"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

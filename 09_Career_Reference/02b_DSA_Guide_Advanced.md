@@ -8,12 +8,38 @@
 └── Weakly consistent iterators
 ```
 
+> **Flow**: Root → Lock-free reads | Root → Better throughput than synchronized HashMap | Root → Weakly consistent iterators
+
+```mermaid
+flowchart TD
+    N1["Root"]
+    N2["Lock-free reads"]
+    N3["Better throughput than synchronized HashMap"]
+    N4["Weakly consistent iterators"]
+    N1 --> N2
+    N1 --> N3
+    N1 --> N4
+```
+
 
 // Lock-Free Hash Tables
 ```
 └── Use CAS (Compare-and-Swap) operations
 └── Higher throughput under contention
 └── More complex implementation
+```
+
+> **Flow**: Root → Use CAS (Compare-and-Swap) operations | Root → Higher throughput under contention | Root → More complex implementation
+
+```mermaid
+flowchart TD
+    N1["Root"]
+    N2["Use CAS (Compare-and-Swap) operations"]
+    N3["Higher throughput under contention"]
+    N4["More complex implementation"]
+    N1 --> N2
+    N1 --> N3
+    N1 --> N4
 ```
 
 
@@ -159,6 +185,56 @@ Use Cases:
    └── Consistent hashing (load distribution)
    └── Distributed hash tables (DHT)
    └── Content-addressable storage
+```
+
+> **Flow**: 1. DATABASES → Index structures | 1. DATABASES → Join operations (hash join) | 1. DATABASES → Query result caching | 1. DATABASES → Partition routing | 2. CACHING SYSTEMS (Redis, Memcached) → Key-value storage | 2. CACHING SYSTEMS (Redis, Memcached) → Session management | ...+13 more
+
+```mermaid
+flowchart TD
+    N1["1. DATABASES"]
+    N2["Index structures"]
+    N3["Join operations (hash join)"]
+    N4["Query result caching"]
+    N5["Partition routing"]
+    N6["2. CACHING SYSTEMS (Redis, Memcached)"]
+    N7["Key-value storage"]
+    N8["Session management"]
+    N9["Rate limiting counters"]
+    N10["3. COMPILERS"]
+    N11["Symbol tables"]
+    N12["String interning"]
+    N13["Macro expansion"]
+    N14["4. NETWORKING"]
+    N15["Routing tables"]
+    N16["Connection tracking"]
+    N17["Load balancer mappings"]
+    N18["5. SECURITY"]
+    N19["Password storage (with salting)"]
+    N20["Digital signatures"]
+    N21["Certificate validation"]
+    N22["6. DISTRIBUTED SYSTEMS"]
+    N23["Consistent hashing (load distribution)"]
+    N24["Distributed hash tables (DHT)"]
+    N25["Content-addressable storage"]
+    N1 --> N2
+    N1 --> N3
+    N1 --> N4
+    N1 --> N5
+    N6 --> N7
+    N6 --> N8
+    N6 --> N9
+    N10 --> N11
+    N10 --> N12
+    N10 --> N13
+    N14 --> N15
+    N14 --> N16
+    N14 --> N17
+    N18 --> N19
+    N18 --> N20
+    N18 --> N21
+    N22 --> N23
+    N22 --> N24
+    N22 --> N25
 ```
 
 ---
@@ -603,6 +679,54 @@ Modern Alternative: Suffix Array + LCP Array (less space)
    └── Device trees
 ```
 
+> **Flow**: 1. DATABASES → B+ Tree indexes | 1. DATABASES → Query execution plans (tree structure) | 1. DATABASES → Parse trees for SQL | 2. FILE SYSTEMS → Directory structure (N-ary tree) | 2. FILE SYSTEMS → B-Tree for file allocation | 2. FILE SYSTEMS → Merkle trees for integrity | ...+12 more
+
+```mermaid
+flowchart TD
+    N1["1. DATABASES"]
+    N2["B+ Tree indexes"]
+    N3["Query execution plans (tree structure)"]
+    N4["Parse trees for SQL"]
+    N5["2. FILE SYSTEMS"]
+    N6["Directory structure (N-ary tree)"]
+    N7["B-Tree for file allocation"]
+    N8["Merkle trees for integrity"]
+    N9["3. COMPILERS"]
+    N10["Abstract Syntax Trees (AST)"]
+    N11["Parse trees"]
+    N12["Expression trees"]
+    N13["4. NETWORKING"]
+    N14["Routing tables (Trie)"]
+    N15["DOM trees (HTML/XML)"]
+    N16["Protocol buffers"]
+    N17["5. AI/MACHINE LEARNING"]
+    N18["Decision trees"]
+    N19["Random forests"]
+    N20["Game trees (minimax)"]
+    N21["6. OPERATING SYSTEMS"]
+    N22["Process trees"]
+    N23["Virtual memory (page tables)"]
+    N24["Device trees"]
+    N1 --> N2
+    N1 --> N3
+    N1 --> N4
+    N5 --> N6
+    N5 --> N7
+    N5 --> N8
+    N9 --> N10
+    N9 --> N11
+    N9 --> N12
+    N13 --> N14
+    N13 --> N15
+    N13 --> N16
+    N17 --> N18
+    N17 --> N19
+    N17 --> N20
+    N21 --> N22
+    N21 --> N23
+    N21 --> N24
+```
+
 ---
 
 ## Heaps - Complete Guide
@@ -651,6 +775,25 @@ Array: [100, 90, 80, 70, 60, 50, 40]
 Parent(i) = (i-1) / 2
 LeftChild(i) = 2*i + 1
 RightChild(i) = 2*i + 2
+```
+
+> **Flow**: Sorted Array: → Find min/max: O(1) | Sorted Array: → Insert: O(n) - shift elements | Sorted Array: → Delete min/max: O(n) | Heap: → Find min/max: O(1) | Heap: → Insert: O(log n) | Heap: → Delete min/max: O(log n)
+
+```mermaid
+flowchart TD
+    N1["Sorted Array:"]
+    N2["Find min/max: O(1)"]
+    N3["Insert: O(n) - shift elements"]
+    N4["Delete min/max: O(n)"]
+    N5["Heap:"]
+    N6["Insert: O(log n)"]
+    N7["Delete min/max: O(log n)"]
+    N1 --> N2
+    N1 --> N3
+    N1 --> N4
+    N5 --> N2
+    N5 --> N6
+    N5 --> N7
 ```
 
 ### Heap Operations
@@ -894,6 +1037,44 @@ Median = (5 + 6) / 2 = 5.5
    └── Top-K queries
 ```
 
+> **Flow**: 1. OPERATING SYSTEMS → Process scheduling (priority) | 1. OPERATING SYSTEMS → Timer management | 1. OPERATING SYSTEMS → Memory management | 2. GRAPH ALGORITHMS → Dijkstra's shortest path | 2. GRAPH ALGORITHMS → Prim's MST | 2. GRAPH ALGORITHMS → A* search | ...+7 more
+
+```mermaid
+flowchart TD
+    N1["1. OPERATING SYSTEMS"]
+    N2["Process scheduling (priority)"]
+    N3["Timer management"]
+    N4["Memory management"]
+    N5["2. GRAPH ALGORITHMS"]
+    N6["Dijkstra's shortest path"]
+    N7["Prim's MST"]
+    N8["A* search"]
+    N9["3. EVENT-DRIVEN SIMULATION"]
+    N10["Event queue (by time)"]
+    N11["Scheduled tasks"]
+    N12["4. DATA COMPRESSION"]
+    N13["Huffman coding"]
+    N14["5. NETWORKING"]
+    N15["Bandwidth management (QoS)"]
+    N16["Connection scheduling"]
+    N17["6. DATABASES"]
+    N18["External sorting (k-way merge)"]
+    N19["Top-K queries"]
+    N1 --> N2
+    N1 --> N3
+    N1 --> N4
+    N5 --> N6
+    N5 --> N7
+    N5 --> N8
+    N9 --> N10
+    N9 --> N11
+    N12 --> N13
+    N14 --> N15
+    N14 --> N16
+    N17 --> N18
+    N17 --> N19
+```
+
 ---
 
 ## Graphs - Complete Guide
@@ -912,6 +1093,23 @@ Real-World Modeled by Graphs:
 ├── Internet (web pages, links)
 ├── Dependencies (tasks, prerequisites)
 └── Molecules (atoms, bonds)
+```
+
+> **Flow**: Real-World Modeled by Graphs: → Social networks (friends) | Real-World Modeled by Graphs: → Road networks (cities, distances) | Real-World Modeled by Graphs: → Internet (web pages, links) | Real-World Modeled by Graphs: → Dependencies (tasks, prerequisites) | Real-World Modeled by Graphs: → Molecules (atoms, bonds)
+
+```mermaid
+flowchart TD
+    N1["Real-World Modeled by Graphs:"]
+    N2["Social networks (friends)"]
+    N3["Road networks (cities, distances)"]
+    N4["Internet (web pages, links)"]
+    N5["Dependencies (tasks, prerequisites)"]
+    N6["Molecules (atoms, bonds)"]
+    N1 --> N2
+    N1 --> N3
+    N1 --> N4
+    N1 --> N5
+    N1 --> N6
 ```
 
 ### Graph Representations
@@ -1364,6 +1562,54 @@ Use Cases: Network design, clustering
    └── Drug discovery
 ```
 
+> **Flow**: 1. SOCIAL NETWORKS → Friend recommendations (BFS) | 1. SOCIAL NETWORKS → Influence analysis (PageRank) | 1. SOCIAL NETWORKS → Community detection | 2. NAVIGATION → GPS routing (Dijkstra, A*) | 2. NAVIGATION → Flight booking (shortest path) | 2. NAVIGATION → Traffic optimization | ...+12 more
+
+```mermaid
+flowchart TD
+    N1["1. SOCIAL NETWORKS"]
+    N2["Friend recommendations (BFS)"]
+    N3["Influence analysis (PageRank)"]
+    N4["Community detection"]
+    N5["2. NAVIGATION"]
+    N6["GPS routing (Dijkstra, A*)"]
+    N7["Flight booking (shortest path)"]
+    N8["Traffic optimization"]
+    N9["3. INTERNET"]
+    N10["Web crawling (BFS/DFS)"]
+    N11["PageRank algorithm"]
+    N12["Network routing protocols"]
+    N13["4. DEPENDENCIES"]
+    N14["Package managers (npm, pip)"]
+    N15["Build systems (make)"]
+    N16["Database transactions"]
+    N17["5. RECOMMENDATIONS"]
+    N18["Netflix/Amazon recommendations"]
+    N19["Graph neural networks"]
+    N20["Knowledge graphs"]
+    N21["6. BIOLOGY"]
+    N22["Protein interaction networks"]
+    N23["Phylogenetic trees"]
+    N24["Drug discovery"]
+    N1 --> N2
+    N1 --> N3
+    N1 --> N4
+    N5 --> N6
+    N5 --> N7
+    N5 --> N8
+    N9 --> N10
+    N9 --> N11
+    N9 --> N12
+    N13 --> N14
+    N13 --> N15
+    N13 --> N16
+    N17 --> N18
+    N17 --> N19
+    N17 --> N20
+    N21 --> N22
+    N21 --> N23
+    N21 --> N24
+```
+
 ---
 
 ## Advanced Data Structures
@@ -1725,6 +1971,92 @@ Kubernetes:
 └── ConfigMaps (hash maps)
 ```
 
+> **Flow**: MySQL/PostgreSQL: → B+ Tree indexes (primary, secondary) | MySQL/PostgreSQL: → Hash indexes (equality queries) | MySQL/PostgreSQL: → Heap files (table data) | MySQL/PostgreSQL: → Buffer pool (LRU cache) | MySQL/PostgreSQL: → WAL (write-ahead log as queue) | Redis: → Skip List (sorted sets) | ...+30 more
+
+```mermaid
+flowchart TD
+    N1["MySQL/PostgreSQL:"]
+    N2["B+ Tree indexes (primary, secondary)"]
+    N3["Hash indexes (equality queries)"]
+    N4["Heap files (table data)"]
+    N5["Buffer pool (LRU cache)"]
+    N6["WAL (write-ahead log as queue)"]
+    N7["Redis:"]
+    N8["Skip List (sorted sets)"]
+    N9["Hash Table (keys, hash type)"]
+    N10["Linked List (lists)"]
+    N11["Bit arrays (HyperLogLog)"]
+    N12["Radix tree (cluster slots)"]
+    N13["Cassandra:"]
+    N14["LSM Tree (write-optimized)"]
+    N15["Bloom filters (reduce disk reads)"]
+    N16["Consistent hashing (partition)"]
+    N17["Merkle trees (repair)"]
+    N18["Linux Kernel:"]
+    N19["Red-Black Tree (process scheduling CFS)"]
+    N20["Radix Tree (page cache)"]
+    N21["Hash Table (inode cache)"]
+    N22["Linked Lists (run queues)"]
+    N23["B-Tree (file systems)"]
+    N24["Skip List (timer wheel)"]
+    N25["Browsers:"]
+    N26["DOM (N-ary tree)"]
+    N27["History (doubly linked list)"]
+    N28["Cache (LRU hash map)"]
+    N29["JS engine (AST trees)"]
+    N30["Search Engines:"]
+    N31["Inverted index (hash + posting lists)"]
+    N32["Trie (autocomplete)"]
+    N33["Graph (PageRank)"]
+    N34["KD-Tree (geospatial)"]
+    N35["Kafka:"]
+    N36["Commit log (append-only)"]
+    N37["Partition (ring buffer concept)"]
+    N38["Consumer groups (hash assignment)"]
+    N39["Replication (chain replication)"]
+    N40["Kubernetes:"]
+    N41["etcd (B+ tree)"]
+    N42["Scheduler (priority queue)"]
+    N43["Service mesh (consistent hashing)"]
+    N44["ConfigMaps (hash maps)"]
+    N1 --> N2
+    N1 --> N3
+    N1 --> N4
+    N1 --> N5
+    N1 --> N6
+    N7 --> N8
+    N7 --> N9
+    N7 --> N10
+    N7 --> N11
+    N7 --> N12
+    N13 --> N14
+    N13 --> N15
+    N13 --> N16
+    N13 --> N17
+    N18 --> N19
+    N18 --> N20
+    N18 --> N21
+    N18 --> N22
+    N18 --> N23
+    N18 --> N24
+    N25 --> N26
+    N25 --> N27
+    N25 --> N28
+    N25 --> N29
+    N30 --> N31
+    N30 --> N32
+    N30 --> N33
+    N30 --> N34
+    N35 --> N36
+    N35 --> N37
+    N35 --> N38
+    N35 --> N39
+    N40 --> N41
+    N40 --> N42
+    N40 --> N43
+    N40 --> N44
+```
+
 ---
 
 ## Learning Roadmap
@@ -1764,6 +2096,26 @@ Weekly:
 ├── Review and revise weak areas
 ```
 
+> **Flow**: Daily: → 2-3 LeetCode problems | Daily: → Review one data structure's internals | Daily: → Implement one operation from scratch | Weekly: → One mock interview | Weekly: → One system design discussion | Weekly: → Review and revise weak areas
+
+```mermaid
+flowchart TD
+    N1["Daily:"]
+    N2["2-3 LeetCode problems"]
+    N3["Review one data structure's internals"]
+    N4["Implement one operation from scratch"]
+    N5["Weekly:"]
+    N6["One mock interview"]
+    N7["One system design discussion"]
+    N8["Review and revise weak areas"]
+    N1 --> N2
+    N1 --> N3
+    N1 --> N4
+    N5 --> N6
+    N5 --> N7
+    N5 --> N8
+```
+
 ---
 
 ## Key Takeaways
@@ -1796,6 +2148,23 @@ _"Data structures + Algorithms = Programs. Master both, master programming."_
 ║  • Interview-level advanced patterns                                              ║
 ║                                                                                   ║
 ╚═══════════════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: ADVANCED DSA - FROM BASICS TO CUTTING EDGE → • String matching algorithms (beyond basic search) | • String matching algorithms (beyond basic search) → • Randomized algorithms and their applications | • Randomized algorithms and their applications → • Approximate algorithms for NP-hard problems | • Approximate algorithms for NP-hard problems → • Modern data structures used in production systems | • Modern data structures used in production systems → • Interview-level advanced patterns
+
+```mermaid
+flowchart TD
+    N1["ADVANCED DSA - FROM BASICS TO CUTTING EDGE"]
+    N2["• String matching algorithms (beyond basic search)"]
+    N3["• Randomized algorithms and their applications"]
+    N4["• Approximate algorithms for NP-hard problems"]
+    N5["• Modern data structures used in production systems"]
+    N6["• Interview-level advanced patterns"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
 ```
 
 

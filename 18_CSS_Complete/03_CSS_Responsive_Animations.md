@@ -117,6 +117,27 @@
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: STANDARD BREAKPOINTS (Tailwind-inspired): → Name Min-Width Typical Device | Name Min-Width Typical Device → sm 640px Large phone (landscape) | sm 640px Large phone (landscape) → md 768px Tablet | md 768px Tablet → lg 1024px Small laptop / Tablet landscape | lg 1024px Small laptop / Tablet landscape → xl 1280px Desktop | xl 1280px Desktop → 2xl 1536px Large desktop | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["STANDARD BREAKPOINTS (Tailwind-inspired):"]
+    N2["Name Min-Width Typical Device"]
+    N3["sm 640px Large phone (landscape)"]
+    N4["md 768px Tablet"]
+    N5["lg 1024px Small laptop / Tablet landscape"]
+    N6["xl 1280px Desktop"]
+    N7["2xl 1536px Large desktop"]
+    N8["CSS CUSTOM PROPERTIES for reuse:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### Advanced Media Query Features
 
 ```css
@@ -264,6 +285,23 @@ SLOW (triggers reflow):        FAST (GPU, no reflow):
 RULE: Animate ONLY transform and opacity for 60fps.
 ```
 
+> **Flow**: SLOW (triggers reflow): FAST (GPU, no reflow): → left, top, right, bottom transform: translate() | SLOW (triggers reflow): FAST (GPU, no reflow): → width, height transform: scale() | SLOW (triggers reflow): FAST (GPU, no reflow): → margin, padding transform: rotate() | SLOW (triggers reflow): FAST (GPU, no reflow): → font-size opacity | SLOW (triggers reflow): FAST (GPU, no reflow): → filter
+
+```mermaid
+flowchart TD
+    N1["SLOW (triggers reflow): FAST (GPU, no reflow):"]
+    N2["left, top, right, bottom transform: translate()"]
+    N3["width, height transform: scale()"]
+    N4["margin, padding transform: rotate()"]
+    N5["font-size opacity"]
+    N6["filter"]
+    N1 --> N2
+    N1 --> N3
+    N1 --> N4
+    N1 --> N5
+    N1 --> N6
+```
+
 ---
 
 ## 3. CSS Transitions — Smooth Property Changes
@@ -328,6 +366,27 @@ RULE: Animate ONLY transform and opacity for 60fps.
 ║           Use ease-in for EXITS (element leaving).                   ║
 ║           Use ease-in-out for moves.                                 ║
 ╚══════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: TIMING FUNCTION: Controls acceleration of animation → ease (default): slow → fast → slow | ease (default): slow → fast → slow → ease-in: slow → fast (accelerate) | ease-in: slow → fast (accelerate) → ease-out: fast → slow (decelerate) | ease-out: fast → slow (decelerate) → ease-in-out: slow → fast → slow | ease-in-out: slow → fast → slow → linear: constant speed | linear: constant speed → CUSTOM: cubic-bezier(x1, y1, x2, y2) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["TIMING FUNCTION: Controls acceleration of animation"]
+    N2["ease (default): slow → fast → slow"]
+    N3["ease-in: slow → fast (accelerate)"]
+    N4["ease-out: fast → slow (decelerate)"]
+    N5["ease-in-out: slow → fast → slow"]
+    N6["linear: constant speed"]
+    N7["CUSTOM: cubic-bezier(x1, y1, x2, y2)"]
+    N8["Bouncy: cubic-bezier(0.68, -0.55, 0.265, 1.55)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### Common Transition Patterns
@@ -462,6 +521,27 @@ RULE: Animate ONLY transform and opacity for 60fps.
 ║                                                                      ║
 ║  MOST USED: forwards (keep the end state after animation)            ║
 ╚══════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: animation-fill-mode: → Before → [Animation runs...] → After (back to original) | Before → [Animation runs...] → After (back to original) → forwards: Element STAYS at the final keyframe | forwards: Element STAYS at the final keyframe → Before → [Animation runs...] → Stays at 100% state | Before → [Animation runs...] → Stays at 100% state → backwards: Element takes 0% state during delay | backwards: Element takes 0% state during delay → At 0% state → [delay...] → [Animation runs...] → Origin | At 0% state → [delay...] → [Animation runs...] → Origin → both: Combines forwards + backwards | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["animation-fill-mode:"]
+    N2["Before → [Animation runs...] → After (back to original)"]
+    N3["forwards: Element STAYS at the final keyframe"]
+    N4["Before → [Animation runs...] → Stays at 100% state"]
+    N5["backwards: Element takes 0% state during delay"]
+    N6["At 0% state → [delay...] → [Animation runs...] → Origin"]
+    N7["both: Combines forwards + backwards"]
+    N8["At 0% state → [delay...] → [Animation runs...] → At 100"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### Stunning Animation Examples
@@ -611,6 +691,27 @@ RULE: Animate ONLY transform and opacity for 60fps.
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: 60 FPS ANIMATION RULES: → ✅ DO animate: | ✅ DO animate: → • transform (translate, scale, rotate) ← GPU accelerate | • transform (translate, scale, rotate) ← GPU accelerate → • opacity ← GPU accelerated | • opacity ← GPU accelerated → • filter (blur, brightness) ← GPU accelerated | • filter (blur, brightness) ← GPU accelerated → ❌ AVOID animating: | ❌ AVOID animating: → • width, height ← Triggers layout + paint + composite | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["60 FPS ANIMATION RULES:"]
+    N2["✅ DO animate:"]
+    N3["• transform (translate, scale, rotate) ← GPU accelerate"]
+    N4["• opacity ← GPU accelerated"]
+    N5["• filter (blur, brightness) ← GPU accelerated"]
+    N6["❌ AVOID animating:"]
+    N7["• width, height ← Triggers layout + paint + composite"]
+    N8["• margin, padding ← Triggers layout + paint + composite"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ```css
 /* PROMOTE element for better animation performance: */
 .animated-element {
@@ -702,6 +803,15 @@ Q: How do you handle motion accessibility?
 Q: What is animation-fill-mode: forwards?
 → After animation ends, element stays at the final keyframe state.
   Without it, element snaps back to its original state.
+```
+
+> **Flow**: Transition: A → B state change triggered by event (hover, class to
+
+```mermaid
+flowchart LR
+    N1["Transition: A"]
+    N2["B state change triggered by event (hover, class to"]
+    N1 --> N2
 ```
 
 ---

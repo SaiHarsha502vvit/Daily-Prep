@@ -49,6 +49,19 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: WHY: Why Understand HTTP Deeply? / • Debug network issu → HOW: How HTTP Request/Response Cycle Works? / • DNS loo | HOW: How HTTP Request/Response Cycle Works? / • DNS loo → WHEN: When to Use Each HTTP Method? / • GET: Retrieve d | WHEN: When to Use Each HTTP Method? / • GET: Retrieve d → WHICH: Which HTTP Concepts to Master? / ESSENTIAL: Stat
+
+```mermaid
+flowchart TD
+    N1["WHY: Why Understand HTTP Deeply? / • Debug network issu"]
+    N2["HOW: How HTTP Request/Response Cycle Works? / • DNS loo"]
+    N3["WHEN: When to Use Each HTTP Method? / • GET: Retrieve d"]
+    N4["WHICH: Which HTTP Concepts to Master? / ESSENTIAL: Stat"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 ---
 
 # 📌 Section 1: HTTP Request Lifecycle
@@ -306,6 +319,27 @@ RESPONSE BODY
 │  └────────────────────────── Query start marker                                 │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: URL STRUCTURE BREAKDOWN → SCHEME HOST PORT PATH QUERY STRING | SCHEME HOST PORT PATH QUERY STRING → BREAKING DOWN THE PATH: | BREAKING DOWN THE PATH: → /api/v1/users/123/orders | /api/v1/users/123/orders → Resource: orders | Resource: orders → PATH VARIABLE: 123 (user ID) | PATH VARIABLE: 123 (user ID) → Resource: users | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["URL STRUCTURE BREAKDOWN"]
+    N2["SCHEME HOST PORT PATH QUERY STRING"]
+    N3["BREAKING DOWN THE PATH:"]
+    N4["/api/v1/users/123/orders"]
+    N5["Resource: orders"]
+    N6["PATH VARIABLE: 123 (user ID)"]
+    N7["Resource: users"]
+    N8["Version: v1"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---
@@ -740,6 +774,27 @@ public class RequestParamExamplesController {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: @PathVariable vs @RequestParam DECISION GUIDE → @PathVariable @RequestParam | @PathVariable @RequestParam → /users/123 /users?name=John | /users/123 /users?name=John → /orders/abc-def-123 /orders?status=pending | /orders/abc-def-123 /orders?status=pending → /products/electronics/laptops /products?page=2&size=10 | /products/electronics/laptops /products?page=2&size=10 → IDENTIFIES a resource FILTERS or MODIFIES the request | IDENTIFIES a resource FILTERS or MODIFIES the request → Required (part of URL) Usually optional | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["@PathVariable vs @RequestParam DECISION GUIDE"]
+    N2["@PathVariable @RequestParam"]
+    N3["/users/123 /users?name=John"]
+    N4["/orders/abc-def-123 /orders?status=pending"]
+    N5["/products/electronics/laptops /products?page=2&size=10"]
+    N6["IDENTIFIES a resource FILTERS or MODIFIES the request"]
+    N7["Required (part of URL) Usually optional"]
+    N8["'WHICH specific thing?' 'HOW do you want it?'"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 # 🧪 Section 3: Testing in Postman
@@ -922,6 +977,27 @@ public class RequestParamExamplesController {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: POSTMAN PRO TIPS → ENVIRONMENT VARIABLES | ENVIRONMENT VARIABLES → Create environments: Development, Staging, Production | Create environments: Development, Staging, Production → Variables: | Variables: → Variable Value | Variable Value → baseUrl http://localhost:8080 ← Dev | baseUrl http://localhost:8080 ← Dev → baseUrl https://api.staging.myapp.com ← Staging | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["POSTMAN PRO TIPS"]
+    N2["ENVIRONMENT VARIABLES"]
+    N3["Create environments: Development, Staging, Production"]
+    N4["Variables:"]
+    N5["Variable Value"]
+    N6["baseUrl http://localhost:8080 ← Dev"]
+    N7["baseUrl https://api.staging.myapp.com ← Staging"]
+    N8["baseUrl https://api.myapp.com ← Prod"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 # 🌐 Section 4: Network Protocols
@@ -987,6 +1063,27 @@ public class RequestParamExamplesController {
 │  └─────────────────────────────────┴─────────────────────────────────────────┘  │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: NETWORK PROTOCOLS OVERVIEW → OSI MODEL LAYERS: | OSI MODEL LAYERS: → Layer 6: PRESENTATION SSL/TLS, JPEG, ASCII | Layer 6: PRESENTATION SSL/TLS, JPEG, ASCII → Layer 5: SESSION NetBIOS, PPTP | Layer 5: SESSION NetBIOS, PPTP → Layer 4: TRANSPORT TCP, UDP | Layer 4: TRANSPORT TCP, UDP → Layer 3: NETWORK IP, ICMP | Layer 3: NETWORK IP, ICMP → Layer 2: DATA LINK Ethernet, WiFi | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["NETWORK PROTOCOLS OVERVIEW"]
+    N2["OSI MODEL LAYERS:"]
+    N3["Layer 6: PRESENTATION SSL/TLS, JPEG, ASCII"]
+    N4["Layer 5: SESSION NetBIOS, PPTP"]
+    N5["Layer 4: TRANSPORT TCP, UDP"]
+    N6["Layer 3: NETWORK IP, ICMP"]
+    N7["Layer 2: DATA LINK Ethernet, WiFi"]
+    N8["Layer 1: PHYSICAL Cables, Radio waves"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

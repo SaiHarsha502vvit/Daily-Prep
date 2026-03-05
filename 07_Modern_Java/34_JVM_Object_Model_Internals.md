@@ -58,6 +58,15 @@ EVERY object has this structure. Even `new Object()`:
 Header (12 bytes) + Padding (4 bytes) = 16 bytes minimum
 ```
 
+> **Flow**: Mark Word (8 bytes / 64-bit JVM) / → Identity: hashCode → Klass Pointer (4 bytes compressed) / → 'What type am I?
+
+```mermaid
+flowchart TD
+    N1["Mark Word (8 bytes / 64-bit JVM) / → Identity: hashCode"]
+    N2["Klass Pointer (4 bytes compressed) / → 'What type am I?"]
+    N1 --> N2
+```
+
 ### Visual Memory Layout
 
 ```
@@ -85,6 +94,17 @@ Header (12 bytes) + Padding (4 bytes) = 16 bytes minimum
 │  ⚠️ Arrays have an EXTRA 4-byte length field in header           │
 │  ⚠️ Everything padded to multiple of 8 bytes (object alignment)  │
 └──────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: Mark Word Klass Pointer Padding / (8 bytes) (4 bytes) ( → Mark Word Klass Pointer Array Len Padding / (8 bytes) ( | Mark Word Klass Pointer Array Len Padding / (8 bytes) ( → Mark Word Klass Pointer x y / (8 bytes) (4 bytes) (4 b)
+
+```mermaid
+flowchart TD
+    N1["Mark Word Klass Pointer Padding / (8 bytes) (4 bytes) ("]
+    N2["Mark Word Klass Pointer Array Len Padding / (8 bytes) ("]
+    N3["Mark Word Klass Pointer x y / (8 bytes) (4 bytes) (4 b)"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 ---
@@ -131,6 +151,21 @@ State: GC (marked for garbage collection)
 └──────────────────────────────────────┴─────────┘
 ```
 
+> **Flow**: identity hashCode unused GC age state / (31 bits) (1 bi → thread ID epoch GC age state / (54 bits) (2 bits) (4 bi | thread ID epoch GC age state / (54 bits) (2 bits) (4 bi → pointer to lock record on stack state / (62 bits) (2 bi | pointer to lock record on stack state / (62 bits) (2 bi → pointer to ObjectMonitor (OS mutex) state / (62 bits) ( | pointer to ObjectMonitor (OS mutex) state / (62 bits) ( → forwarding pointer state / (62 bits) (2 bits)
+
+```mermaid
+flowchart TD
+    N1["identity hashCode unused GC age state / (31 bits) (1 bi"]
+    N2["thread ID epoch GC age state / (54 bits) (2 bits) (4 bi"]
+    N3["pointer to lock record on stack state / (62 bits) (2 bi"]
+    N4["pointer to ObjectMonitor (OS mutex) state / (62 bits) ("]
+    N5["forwarding pointer state / (62 bits) (2 bits)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+```
+
 ### State Bits Decoding
 
 ```
@@ -150,6 +185,27 @@ State: GC (marked for garbage collection)
 │    Reason: complexity didn't justify the small performance gain│
 │    for modern workloads with many short-lived objects          │
 └────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: Last 3 bits of mark word determine the object's lock st → Bits State What It Means | Bits State What It Means → 001 Normal (unlocked) hashCode stored, no lock | 001 Normal (unlocked) hashCode stored, no lock → 101 Biased One thread owns it cheaply | 101 Biased One thread owns it cheaply → 00 Thin Lock CAS-based lightweight lock | 00 Thin Lock CAS-based lightweight lock → 10 Fat Lock OS mutex (heavyweight) | 10 Fat Lock OS mutex (heavyweight) → 11 GC marked Being garbage collected | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Last 3 bits of mark word determine the object's lock st"]
+    N2["Bits State What It Means"]
+    N3["001 Normal (unlocked) hashCode stored, no lock"]
+    N4["101 Biased One thread owns it cheaply"]
+    N5["00 Thin Lock CAS-based lightweight lock"]
+    N6["10 Fat Lock OS mutex (heavyweight)"]
+    N7["11 GC marked Being garbage collected"]
+    N8["⚠️ Notice: biased locking was DEPRECATED in Java 15"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### Identity HashCode Deep Reasoning
@@ -211,6 +267,27 @@ synchronized(obj) {
 ╚═══════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: THE EMPLOYEE ID BADGE ANALOGY → Klass Pointer = ID badge that says 'I work in Departmen | Klass Pointer = ID badge that says 'I work in Departmen → Object in heap: 'I am a String' | Object in heap: 'I am a String' → → Klass Pointer → String.class metadata | → Klass Pointer → String.class metadata → (in Metaspace, NOT heap) | (in Metaspace, NOT heap) → Contains: | Contains: → → vtable (virtual method table) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE EMPLOYEE ID BADGE ANALOGY"]
+    N2["Klass Pointer = ID badge that says 'I work in Departmen"]
+    N3["Object in heap: 'I am a String'"]
+    N4["→ Klass Pointer → String.class metadata"]
+    N5["(in Metaspace, NOT heap)"]
+    N6["Contains:"]
+    N7["→ vtable (virtual method table)"]
+    N8["→ field offsets"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### Why This Matters: `instanceof` Performance
 
 ```java
@@ -261,6 +338,27 @@ if (obj instanceof String s) {
 ║  4. Object references grouped together (for GC card marking)     ║
 ║  5. Final padding to 8-byte boundary                             ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: THE BOOKSHELF ANALOGY → If a `long` (8 bytes) starts at address 5: | If a `long` (8 bytes) starts at address 5: → → CPU must do TWO reads (bytes 0-7 and bytes 8-15) | → CPU must do TWO reads (bytes 0-7 and bytes 8-15) → → Then combine them = SLOW | → Then combine them = SLOW → If a `long` starts at address 8 (aligned): | If a `long` starts at address 8 (aligned): → → CPU does ONE read = FAST | → CPU does ONE read = FAST → JVM RULES for field ordering: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE BOOKSHELF ANALOGY"]
+    N2["If a `long` (8 bytes) starts at address 5:"]
+    N3["→ CPU must do TWO reads (bytes 0-7 and bytes 8-15)"]
+    N4["→ Then combine them = SLOW"]
+    N5["If a `long` starts at address 8 (aligned):"]
+    N6["→ CPU does ONE read = FAST"]
+    N7["JVM RULES for field ordering:"]
+    N8["1. Fields are NOT laid out in declaration order"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### Code Proof — Field Reordering
@@ -321,6 +419,27 @@ class BadLayout {
 └──────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: Object Actual Size 'Useful' Data → new Object() 16 bytes 0 bytes (!) | new Object() 16 bytes 0 bytes (!) → new Integer(42) 16 bytes 4 bytes (int) | new Integer(42) 16 bytes 4 bytes (int) → new Long(42L) 24 bytes 8 bytes (long) | new Long(42L) 24 bytes 8 bytes (long) → new Boolean(true) 16 bytes 1 byte (!) | new Boolean(true) 16 bytes 1 byte (!) → '' (empty String) 40 bytes 0 chars (!) | '' (empty String) 40 bytes 0 chars (!) → 'Hello' (5 chars) ~56 bytes 10 bytes | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Object Actual Size 'Useful' Data"]
+    N2["new Object() 16 bytes 0 bytes (!)"]
+    N3["new Integer(42) 16 bytes 4 bytes (int)"]
+    N4["new Long(42L) 24 bytes 8 bytes (long)"]
+    N5["new Boolean(true) 16 bytes 1 byte (!)"]
+    N6["'' (empty String) 40 bytes 0 chars (!)"]
+    N7["'Hello' (5 chars) ~56 bytes 10 bytes"]
+    N8["new int[0] 16 bytes 0 bytes (!)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 5. Lock Escalation: Biased → Thin → Fat
@@ -357,6 +476,27 @@ class BadLayout {
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: THE BATHROOM LOCK ANALOGY → BIASED LOCK (you live alone): | BIASED LOCK (you live alone): → → Bathroom door has your name on it permanently | → Bathroom door has your name on it permanently → → You walk in without checking — ZERO cost | → You walk in without checking — ZERO cost → → If a guest arrives, name must be erased (revoke bias) | → If a guest arrives, name must be erased (revoke bias) → → Cost: ~0 for single thread, expensive revocation | → Cost: ~0 for single thread, expensive revocation → THIN LOCK (you have a roommate): | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE BATHROOM LOCK ANALOGY"]
+    N2["BIASED LOCK (you live alone):"]
+    N3["→ Bathroom door has your name on it permanently"]
+    N4["→ You walk in without checking — ZERO cost"]
+    N5["→ If a guest arrives, name must be erased (revoke bias)"]
+    N6["→ Cost: ~0 for single thread, expensive revocation"]
+    N7["THIN LOCK (you have a roommate):"]
+    N8["→ Bathroom has a sign you flip: 'OCCUPIED' / 'FREE'"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### Lock Escalation Steps
 
 ```
@@ -387,6 +527,27 @@ class BadLayout {
 │  ⚠️ Once inflated to fat lock, it stays fat for that object!    │
 │  (Deflation is possible but rare — implementation-dependent)    │
 └─────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: Step-by-step lock escalation: → 1. NEW OBJECT → Mark word: unlocked (state bits = 001) | 1. NEW OBJECT → Mark word: unlocked (state bits = 001) → 2. First synchronized(obj) by Thread A: | 2. First synchronized(obj) by Thread A: → → JVM sets biased lock (write thread A's ID into mark w | → JVM sets biased lock (write thread A's ID into mark w → → Future locks by Thread A: check ID match → FREE! | → Future locks by Thread A: check ID match → FREE! → → Mark word state bits: 101 (biased) | → Mark word state bits: 101 (biased) → 3. Thread B tries synchronized(obj): | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Step-by-step lock escalation:"]
+    N2["1. NEW OBJECT → Mark word: unlocked (state bits = 001)"]
+    N3["2. First synchronized(obj) by Thread A:"]
+    N4["→ JVM sets biased lock (write thread A's ID into mark w"]
+    N5["→ Future locks by Thread A: check ID match → FREE!"]
+    N6["→ Mark word state bits: 101 (biased)"]
+    N7["3. Thread B tries synchronized(obj):"]
+    N8["→ Thread A's bias must be REVOKED (stop-the-world pause"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---
@@ -424,6 +585,27 @@ class BadLayout {
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: THE PHONE DIRECTORY ANALOGY (vtable) → Every class has a VIRTUAL METHOD TABLE (vtable): | Every class has a VIRTUAL METHOD TABLE (vtable): → Like a phone directory listing methods and their addres | Like a phone directory listing methods and their addres → class Animal: | class Animal: → vtable = [ eat → Animal.eat, makeSound → Animal.makeSou | vtable = [ eat → Animal.eat, makeSound → Animal.makeSou → class Dog extends Animal: | class Dog extends Animal: → vtable = [ eat → Animal.eat, makeSound → Dog.makeSound | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE PHONE DIRECTORY ANALOGY (vtable)"]
+    N2["Every class has a VIRTUAL METHOD TABLE (vtable):"]
+    N3["Like a phone directory listing methods and their addres"]
+    N4["class Animal:"]
+    N5["vtable = [ eat → Animal.eat, makeSound → Animal.makeSou"]
+    N6["class Dog extends Animal:"]
+    N7["vtable = [ eat → Animal.eat, makeSound → Dog.makeSound"]
+    N8["↑ inherited ↑ OVERRIDDEN"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### The 5 Bytecode Invoke Instructions
 
 ```
@@ -445,6 +627,27 @@ class BadLayout {
 │ BUT: JIT compiler makes this nearly irrelevant in practice.        │
 │ Monomorphic calls (only one type ever seen) are INLINED.           │
 └────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: Bytecode When Used Dispatch Method → invokevirtual Normal instance methods vtable lookup | invokevirtual Normal instance methods vtable lookup → invokeinterface Interface methods itable lookup (slower | invokeinterface Interface methods itable lookup (slower → invokespecial Constructors, super, STATIC binding | invokespecial Constructors, super, STATIC binding → private methods (no lookup needed) | private methods (no lookup needed) → invokestatic Static methods STATIC binding | invokestatic Static methods STATIC binding → invokedynamic Lambdas, string concat Bootstrap method | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Bytecode When Used Dispatch Method"]
+    N2["invokevirtual Normal instance methods vtable lookup"]
+    N3["invokeinterface Interface methods itable lookup (slower"]
+    N4["invokespecial Constructors, super, STATIC binding"]
+    N5["private methods (no lookup needed)"]
+    N6["invokestatic Static methods STATIC binding"]
+    N7["invokedynamic Lambdas, string concat Bootstrap method"]
+    N8["(Java 7+) (resolved once)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### Why Interface Calls Are Slightly Slower
@@ -491,6 +694,27 @@ s.makeSound();      // invokeinterface → must search itable!
 ║  WHY? Static methods belong to the CLASS, not the OBJECT.        ║
 ║  There IS no object to check at runtime → no polymorphism.       ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: THE NAME TAG vs EMPLOYEE BADGE ANALOGY → OVERRIDING (instance methods) = Employee Badge | OVERRIDING (instance methods) = Employee Badge → → Machine reads your badge (runtime type) to decide acc | → Machine reads your badge (runtime type) to decide acc → → You ARE a Dog, so Dog.makeSound() runs, regardless of | → You ARE a Dog, so Dog.makeSound() runs, regardless of → whether someone labeled you 'Animal' | whether someone labeled you 'Animal' → → Dynamic dispatch: 'What type IS this object?' | → Dynamic dispatch: 'What type IS this object?' → HIDING (static methods) = Name Tag | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE NAME TAG vs EMPLOYEE BADGE ANALOGY"]
+    N2["OVERRIDING (instance methods) = Employee Badge"]
+    N3["→ Machine reads your badge (runtime type) to decide acc"]
+    N4["→ You ARE a Dog, so Dog.makeSound() runs, regardless of"]
+    N5["whether someone labeled you 'Animal'"]
+    N6["→ Dynamic dispatch: 'What type IS this object?'"]
+    N7["HIDING (static methods) = Name Tag"]
+    N8["→ People read the name tag (compile-time type) on your"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### Code Proof — This Confuses 90% of Java Developers
@@ -545,6 +769,27 @@ public class Test {
 └───────────────────┴─────────────────────────┴─────────────────────────┘
 ```
 
+> **Flow**: Feature Overriding Hiding → Applies to Instance methods Static methods | Applies to Instance methods Static methods → Dispatch Runtime (dynamic) Compile-time (static) | Dispatch Runtime (dynamic) Compile-time (static) → @Override ✅ Compiler checks ❌ Not applicable | @Override ✅ Compiler checks ❌ Not applicable → Polymorphism ✅ Yes ❌ No | Polymorphism ✅ Yes ❌ No → Bytecode invokevirtual (vtable) invokestatic (direct) | Bytecode invokevirtual (vtable) invokestatic (direct) → Binding Late binding Early binding | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Feature Overriding Hiding"]
+    N2["Applies to Instance methods Static methods"]
+    N3["Dispatch Runtime (dynamic) Compile-time (static)"]
+    N4["@Override ✅ Compiler checks ❌ Not applicable"]
+    N5["Polymorphism ✅ Yes ❌ No"]
+    N6["Bytecode invokevirtual (vtable) invokestatic (direct)"]
+    N7["Binding Late binding Early binding"]
+    N8["Which runs? Object's actual type Variable's declared ty"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### Field Hiding Too!
 
 ```java
@@ -588,6 +833,27 @@ System.out.println(((Child) obj).x);  // 20 (Child's x — need cast!)
 ║  5. Ensure exclusive access to mutable components                ║
 ║     (defensive copy mutable fields in constructor AND getter)    ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: WHY IMMUTABLE BY DEFAULT? → Mutable object = A whiteboard anyone can erase and rewr | Mutable object = A whiteboard anyone can erase and rewr → Benefits: | Benefits: → → Thread-safe WITHOUT synchronization (nothing to corru | → Thread-safe WITHOUT synchronization (nothing to corru → → Safe as HashMap key (hashCode never changes) | → Safe as HashMap key (hashCode never changes) → → Safe to share references (no defensive copies needed) | → Safe to share references (no defensive copies needed) → → Easier to reason about (predictable state) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["WHY IMMUTABLE BY DEFAULT?"]
+    N2["Mutable object = A whiteboard anyone can erase and rewr"]
+    N3["Benefits:"]
+    N4["→ Thread-safe WITHOUT synchronization (nothing to corru"]
+    N5["→ Safe as HashMap key (hashCode never changes)"]
+    N6["→ Safe to share references (no defensive copies needed)"]
+    N7["→ Easier to reason about (predictable state)"]
+    N8["→ Cacheable (String pool, Integer cache work this way)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```java
@@ -736,6 +1002,27 @@ sealed interface Shape permits Circle, Rectangle, Triangle {
 ║  → Add instance fields (only the record components)              ║
 ║  → Make fields mutable (always final)                            ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: WHAT YOU GET FREE: → → final class (can't extend, only implement interfaces) | → final class (can't extend, only implement interfaces) → → private final fields | → private final fields → → All-args constructor | → All-args constructor → → Accessor methods (name(), not getName()) | → Accessor methods (name(), not getName()) → → equals() based on ALL fields | → equals() based on ALL fields → → hashCode() based on ALL fields | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["WHAT YOU GET FREE:"]
+    N2["→ final class (can't extend, only implement interfaces)"]
+    N3["→ private final fields"]
+    N4["→ All-args constructor"]
+    N5["→ Accessor methods (name(), not getName())"]
+    N6["→ equals() based on ALL fields"]
+    N7["→ hashCode() based on ALL fields"]
+    N8["→ toString() with field names and values"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### Sealed Classes (Java 17+) — Controlled Hierarchies

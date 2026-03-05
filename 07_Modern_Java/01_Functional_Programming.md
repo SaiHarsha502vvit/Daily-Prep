@@ -210,6 +210,15 @@ List<Integer> result = numbers.stream()
    - Describe WHAT you want, not HOW to get it
 ```
 
+> **Flow**: - Same input → Same output (always!)
+
+```mermaid
+flowchart LR
+    N1["- Same input"]
+    N2["Same output (always!)"]
+    N1 --> N2
+```
+
 ---
 
 # 📌 Part 2: Lambda Expressions

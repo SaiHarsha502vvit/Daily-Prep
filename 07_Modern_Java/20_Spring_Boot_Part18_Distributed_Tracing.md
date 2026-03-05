@@ -50,6 +50,19 @@ Distributed tracing tracks requests across multiple services, helping debug and 
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: WHY: Why Distributed Tracing? / • Debug microservices:  → HOW: How Does Tracing Work? / • Trace ID: Unique ID for | HOW: How Does Tracing Work? / • Trace ID: Unique ID for → WHEN: When to Use Distributed Tracing? / • Microservice | WHEN: When to Use Distributed Tracing? / • Microservice → WHICH: Which Tools to Use? / SPRING BOOT 2.x: Spring Cl
+
+```mermaid
+flowchart TD
+    N1["WHY: Why Distributed Tracing? / • Debug microservices: "]
+    N2["HOW: How Does Tracing Work? / • Trace ID: Unique ID for"]
+    N3["WHEN: When to Use Distributed Tracing? / • Microservice"]
+    N4["WHICH: Which Tools to Use? / SPRING BOOT 2.x: Spring Cl"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 ---
 
 ## 1. Tracing Fundamentals
@@ -69,6 +82,25 @@ Distributed tracing tracks requests across multiple services, helping debug and 
 │  Parent-Child Relationships:                                    │
 │  span-001 (root) → span-002 → span-003 → span-004               │
 └─────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: TRACE → Trace ID: abc123 (unique per request journey) | Trace ID: abc123 (unique per request journey) → SPAN 1 SPAN 2 SPAN 3 SPAN 4 | SPAN 1 SPAN 2 SPAN 3 SPAN 4 → Gateway Service A Service B Database | Gateway Service A Service B Database → span-001 span-002 span-003 span-004 | span-001 span-002 span-003 span-004 → Parent-Child Relationships: | Parent-Child Relationships: → span-001 (root) → span-002 → span-003 → span-004
+
+```mermaid
+flowchart TD
+    N1["TRACE"]
+    N2["Trace ID: abc123 (unique per request journey)"]
+    N3["SPAN 1 SPAN 2 SPAN 3 SPAN 4"]
+    N4["Gateway Service A Service B Database"]
+    N5["span-001 span-002 span-003 span-004"]
+    N6["Parent-Child Relationships:"]
+    N7["span-001 (root) → span-002 → span-003 → span-004"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
 ```
 
 ### Key Terms
@@ -875,6 +907,25 @@ distributed-tracing-demo/
 └── docker-compose.yml
 ```
 
+> **Flow**: distributed-tracing-demo/ → api-gateway/ | distributed-tracing-demo/ → order-service/ | distributed-tracing-demo/ → inventory-service/ | distributed-tracing-demo/ → payment-service/ | distributed-tracing-demo/ → notification-service/ | distributed-tracing-demo/ → docker-compose.yml
+
+```mermaid
+flowchart TD
+    N1["distributed-tracing-demo/"]
+    N2["api-gateway/"]
+    N3["order-service/"]
+    N4["inventory-service/"]
+    N5["payment-service/"]
+    N6["notification-service/"]
+    N7["docker-compose.yml"]
+    N1 --> N2
+    N1 --> N3
+    N1 --> N4
+    N1 --> N5
+    N1 --> N6
+    N1 --> N7
+```
+
 ### API Gateway
 ```java
 // ApiGatewayApplication.java
@@ -1385,6 +1436,27 @@ Common Issues Identified:
 │ │  │  └─ external-gateway (2.2s)         🔴 BOTTLENECK          │
 │ │  └─ notification-service (100ms)       ✓ OK                  │
 └────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: Zipkin UI (http://localhost:9411): → 1. Search by trace ID from logs | 1. Search by trace ID from logs → 2. Find slow spans (duration &gt; threshold) | 2. Find slow spans (duration &gt; threshold) → 3. Look for error tags | 3. Look for error tags → 4. Analyze service dependencies | 4. Analyze service dependencies → Common Issues Identified: | Common Issues Identified: → Trace: abc123def456 Duration: 2.5s | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Zipkin UI (http://localhost:9411):"]
+    N2["1. Search by trace ID from logs"]
+    N3["2. Find slow spans (duration &gt; threshold)"]
+    N4["3. Look for error tags"]
+    N5["4. Analyze service dependencies"]
+    N6["Common Issues Identified:"]
+    N7["Trace: abc123def456 Duration: 2.5s"]
+    N8["api-gateway (5ms) ✓ OK"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### Querying Zipkin API

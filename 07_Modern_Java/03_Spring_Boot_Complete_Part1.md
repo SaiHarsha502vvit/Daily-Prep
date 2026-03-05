@@ -49,6 +49,19 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: WHY: Why Java Foundations Before Spring? / • JVM memory → HOW: How JVM Manages Your Spring Application? / • Heap: | HOW: How JVM Manages Your Spring Application? / • Heap: → WHEN: When to Deep Dive into JVM Internals? / • Memory  | WHEN: When to Deep Dive into JVM Internals? / • Memory  → WHICH: Which JVM Topics to Focus On? / ESSENTIAL: Memor
+
+```mermaid
+flowchart TD
+    N1["WHY: Why Java Foundations Before Spring? / • JVM memory"]
+    N2["HOW: How JVM Manages Your Spring Application? / • Heap:"]
+    N3["WHEN: When to Deep Dive into JVM Internals? / • Memory "]
+    N4["WHICH: Which JVM Topics to Focus On? / ESSENTIAL: Memor"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 ---
 
 # 🎯 LEARNING PHILOSOPHY
@@ -80,6 +93,27 @@
 ❌ COMMON MISTAKE: Jumping to Spring Boot without Java internals
 ✅ RIGHT APPROACH: Master foundations → Understand Spring magic
 
+```
+
+> **Flow**: THE SPRING LEARNING HIERARCHY → TIER 9: Testing (Professional's Mark) | TIER 9: Testing (Professional's Mark) → TIER 8: Microservices & Cloud Native | TIER 8: Microservices & Cloud Native → TIER 7: Spring Security | TIER 7: Spring Security → TIER 6: Web & REST API | TIER 6: Web & REST API → TIER 5: Data Access (JPA & Hibernate) | TIER 5: Data Access (JPA & Hibernate) → TIER 4: Spring Boot (Auto-Pilot) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE SPRING LEARNING HIERARCHY"]
+    N2["TIER 9: Testing (Professional's Mark)"]
+    N3["TIER 8: Microservices & Cloud Native"]
+    N4["TIER 7: Spring Security"]
+    N5["TIER 6: Web & REST API"]
+    N6["TIER 5: Data Access (JPA & Hibernate)"]
+    N7["TIER 4: Spring Boot (Auto-Pilot)"]
+    N8["TIER 3: AOP (Cross-Cutting Concerns)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---
@@ -165,6 +199,21 @@ classes from reflection never got garbage collected.
 │  └──────────────────────────────────────────────────────────────────────────┘   │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: HEAP (Shared - GC Managed) / Young Generation Old Gener → METASPACE (Native Memory - No GC by default!) / • Class | METASPACE (Native Memory - No GC by default!) / • Class → Frame 3 / Frame 2 / Frame 1 | Frame 3 / Frame 2 / Frame 1 → Frame 2 / Frame 1 | Frame 2 / Frame 1 → Frame 1
+
+```mermaid
+flowchart TD
+    N1["HEAP (Shared - GC Managed) / Young Generation Old Gener"]
+    N2["METASPACE (Native Memory - No GC by default!) / • Class"]
+    N3["Frame 3 / Frame 2 / Frame 1"]
+    N4["Frame 2 / Frame 1"]
+    N5["Frame 1"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
 ```
 
 ### Stack vs Heap - The Critical Difference
@@ -295,6 +344,27 @@ public class StringPoolDemo {
 │  • PhantomReference for cleanup callbacks                                       │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: WHY REFERENCE TYPES MATTER → SCENARIO: Building a cache in Spring | SCENARIO: Building a cache in Spring → WITHOUT KNOWLEDGE: | WITHOUT KNOWLEDGE: → Map&lt;String, User&gt; cache = new HashMap&lt;&gt;();  | Map&lt;String, User&gt; cache = new HashMap&lt;&gt;();  → WITH KNOWLEDGE: | WITH KNOWLEDGE: → SPRING USES THESE: | SPRING USES THESE: → • WeakHashMap for internal caches | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["WHY REFERENCE TYPES MATTER"]
+    N2["SCENARIO: Building a cache in Spring"]
+    N3["WITHOUT KNOWLEDGE:"]
+    N4["Map&lt;String, User&gt; cache = new HashMap&lt;&gt;(); "]
+    N5["WITH KNOWLEDGE:"]
+    N6["SPRING USES THESE:"]
+    N7["• WeakHashMap for internal caches"]
+    N8["• SoftReference for session data"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### 🟢 HOW: The Four Reference Types
@@ -431,6 +501,19 @@ public class ReferenceTypesDemo {
 └────────────────┴───────────────────────┴────────────────────────────────────────┘
 ```
 
+> **Flow**: Type When Collected? Use Case → Strong Never (while exists) Normal variables | Strong Never (while exists) Normal variables → Soft Memory pressure only Memory-sensitive caches | Soft Memory pressure only Memory-sensitive caches → Weak Next GC cycle Canonical mappings, WeakHashMap
+
+```mermaid
+flowchart TD
+    N1["Type When Collected? Use Case"]
+    N2["Strong Never (while exists) Normal variables"]
+    N3["Soft Memory pressure only Memory-sensitive caches"]
+    N4["Weak Next GC cycle Canonical mappings, WeakHashMap"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 ---
 
 ## Chapter 3: Garbage Collection Algorithms
@@ -465,6 +548,15 @@ public class ReferenceTypesDemo {
 │  Result: Consistent latency, happy customers                                    │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: Request 1: 50ms ✓ / Request 2: 60ms ✓ / Request 3: 45ms → Request 1: 50ms ✓ / Request 2: 60ms ✓ / Request 3: 55ms
+
+```mermaid
+flowchart TD
+    N1["Request 1: 50ms ✓ / Request 2: 60ms ✓ / Request 3: 45ms"]
+    N2["Request 1: 50ms ✓ / Request 2: 60ms ✓ / Request 3: 55ms"]
+    N1 --> N2
 ```
 
 ### 🟢 HOW: GC Algorithms Explained
@@ -516,6 +608,17 @@ public class ReferenceTypesDemo {
 │     • USE: Low latency alternative to ZGC                                       │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: Application Threads: ████████░░░░░░░░░░░░██████████████ → Application Threads: ██████████░░░░░░░░░░░█████████████ | Application Threads: ██████████░░░░░░░░░░░█████████████ → Application Threads: ██████████████████████████████████ | Application Threads: ██████████████████████████████████ → Application Threads: ██████████████████████████████████
+
+```mermaid
+flowchart TD
+    N1["Application Threads: ████████░░░░░░░░░░░░██████████████"]
+    N2["Application Threads: ██████████░░░░░░░░░░░█████████████"]
+    N3["Application Threads: ██████████████████████████████████"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 ### Practical JVM Tuning for Spring Boot
@@ -586,6 +689,27 @@ java -Xms8g -Xmx8g \
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: CLASS LOADING ERRORS - THE CRITICAL DIFFERENCE → ClassNotFoundException | ClassNotFoundException → WHEN: Class.forName('com.example.MyClass') fails | WHEN: Class.forName('com.example.MyClass') fails → WHY: .class file not in classpath | WHY: .class file not in classpath → FIX: Add missing JAR/dependency | FIX: Add missing JAR/dependency → NoClassDefFoundError | NoClassDefFoundError → WHEN: Class was found at compile time but not at runtim | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["CLASS LOADING ERRORS - THE CRITICAL DIFFERENCE"]
+    N2["ClassNotFoundException"]
+    N3["WHEN: Class.forName('com.example.MyClass') fails"]
+    N4["WHY: .class file not in classpath"]
+    N5["FIX: Add missing JAR/dependency"]
+    N6["NoClassDefFoundError"]
+    N7["WHEN: Class was found at compile time but not at runtim"]
+    N8["WHY: JAR present during build, missing during run"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### 🟢 HOW: Class Loader Hierarchy
 
 ```
@@ -627,6 +751,19 @@ java -Xms8g -Xmx8g \
 │  4. If child also fails → ClassNotFoundException                                │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: Bootstrap ClassLoader / (Native code - JVM) / Loads: ja → Platform ClassLoader / (Java 9+, was Extension) / Loads | Platform ClassLoader / (Java 9+, was Extension) / Loads → Application ClassLoader / (System ClassLoader) / Loads: | Application ClassLoader / (System ClassLoader) / Loads: → Custom ClassLoaders / (Spring Boot uses this!) / Loads:
+
+```mermaid
+flowchart TD
+    N1["Bootstrap ClassLoader / (Native code - JVM) / Loads: ja"]
+    N2["Platform ClassLoader / (Java 9+, was Extension) / Loads"]
+    N3["Application ClassLoader / (System ClassLoader) / Loads:"]
+    N4["Custom ClassLoaders / (Spring Boot uses this!) / Loads:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
 ```
 
 ### Spring Boot's Special ClassLoader
@@ -686,6 +823,27 @@ java -Xms8g -Xmx8g \
 │  }                                                                              │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: WHY THREADING MATTERS IN SPRING → HTTP Request Flow in Spring Boot: | HTTP Request Flow in Spring Boot: → Request 1 Thread-1 Controller Service Repository | Request 1 Thread-1 Controller Service Repository → Request 2 Thread-2 Controller Service Repository | Request 2 Thread-2 Controller Service Repository → Request 3 Thread-3 Controller Service Repository | Request 3 Thread-3 Controller Service Repository → ⚠️ 3 threads accessing the SAME Singleton bean! | ⚠️ 3 threads accessing the SAME Singleton bean! → DANGEROUS CODE: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["WHY THREADING MATTERS IN SPRING"]
+    N2["HTTP Request Flow in Spring Boot:"]
+    N3["Request 1 Thread-1 Controller Service Repository"]
+    N4["Request 2 Thread-2 Controller Service Repository"]
+    N5["Request 3 Thread-3 Controller Service Repository"]
+    N6["⚠️ 3 threads accessing the SAME Singleton bean!"]
+    N7["DANGEROUS CODE:"]
+    N8["@Service"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### ThreadLocal - How Spring Stores Request-Scoped Data
@@ -971,6 +1129,27 @@ public class CompletableFutureDemo {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: FUNCTIONAL JAVA IN SPRING → Spring WebFlux (Reactive): | Spring WebFlux (Reactive): → Flux.fromIterable(users) | Flux.fromIterable(users) → .filter(u -&gt; u.isActive()) | .filter(u -&gt; u.isActive()) → .map(u -&gt; u.getEmail()) | .map(u -&gt; u.getEmail()) → .subscribe(email -&gt; sendNewsletter(email)); | .subscribe(email -&gt; sendNewsletter(email)); → Spring Data JPA: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["FUNCTIONAL JAVA IN SPRING"]
+    N2["Spring WebFlux (Reactive):"]
+    N3["Flux.fromIterable(users)"]
+    N4[".filter(u -&gt; u.isActive())"]
+    N5[".map(u -&gt; u.getEmail())"]
+    N6[".subscribe(email -&gt; sendNewsletter(email));"]
+    N7["Spring Data JPA:"]
+    N8["repository.findAll().stream()"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### Lambda Expressions Deep Dive
 
 ```java
@@ -1159,6 +1338,27 @@ FUNCTIONAL JAVA:
 □ Can use all Stream intermediate and terminal operations
 □ Understand Optional and avoid orElse antipattern
 □ Can explain effectively final variables
+```
+
+> **Flow**: MEMORY & JVM: → □ Can explain Stack vs Heap with diagram | □ Can explain Stack vs Heap with diagram → □ Understand String Pool and immutability | □ Understand String Pool and immutability → □ Know all 4 reference types and their GC behavior | □ Know all 4 reference types and their GC behavior → □ Can choose appropriate GC for workload | □ Can choose appropriate GC for workload → □ Understand Metaspace and class metadata | □ Understand Metaspace and class metadata → CLASS LOADING: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["MEMORY & JVM:"]
+    N2["□ Can explain Stack vs Heap with diagram"]
+    N3["□ Understand String Pool and immutability"]
+    N4["□ Know all 4 reference types and their GC behavior"]
+    N5["□ Can choose appropriate GC for workload"]
+    N6["□ Understand Metaspace and class metadata"]
+    N7["CLASS LOADING:"]
+    N8["□ Know the ClassLoader hierarchy"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

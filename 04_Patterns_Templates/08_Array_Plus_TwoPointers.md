@@ -18,6 +18,15 @@ IF input is:
 THEN → Two Pointers on Array
 ```
 
+> **Flow**: THEN → Two Pointers on Array
+
+```mermaid
+flowchart LR
+    N1["THEN"]
+    N2["Two Pointers on Array"]
+    N1 --> N2
+```
+
 ### Decision Tree
 ```
 Problem involves array?
@@ -30,6 +39,31 @@ Problem involves array?
 │   └── THREE POINTERS (Dutch National Flag)
 └── Compare from both ends?
     └── OPPOSITE DIRECTION pointers
+```
+
+> **Flow**: Problem involves array? → Need pair with target sum? | Problem involves array? → Array sorted? → OPPOSITE DIRECTION pointers | Problem involves array? → Array unsorted? → HashMap (not two pointers) | Problem involves array? → Remove/move elements in-place? | Problem involves array? → SAME DIRECTION (reader-writer) pointers | Problem involves array? → Partition into groups (0s, 1s, 2s)? | ...+3 more
+
+```mermaid
+flowchart TD
+    N1["Problem involves array?"]
+    N2["Need pair with target sum?"]
+    N3["Array sorted? → OPPOSITE DIRECTION pointers"]
+    N4["Array unsorted? → HashMap (not two pointers)"]
+    N5["Remove/move elements in-place?"]
+    N6["SAME DIRECTION (reader-writer) pointers"]
+    N7["Partition into groups (0s, 1s, 2s)?"]
+    N8["THREE POINTERS (Dutch National Flag)"]
+    N9["Compare from both ends?"]
+    N10["OPPOSITE DIRECTION pointers"]
+    N1 --> N2
+    N1 --> N3
+    N1 --> N4
+    N1 --> N5
+    N1 --> N6
+    N1 --> N7
+    N1 --> N8
+    N1 --> N9
+    N1 --> N10
 ```
 
 ---
@@ -108,6 +142,32 @@ WHY it works: Each step eliminates an entire row or column
 of the n×n search matrix → O(n) instead of O(n²)
 ```
 
+> **Flow**: Step 1: L=0, R=6 → 1+15=16 &gt; 14 | 1+15=16 &gt; 14 → R-- | Step 2: L=0, R=5 → 1+10=11 &lt; 14 | 1+10=11 &lt; 14 → L++ | Step 3: L=1, R=5 → 2+10=12 &lt; 14 | 2+10=12 &lt; 14 → L++ | ...+2 more
+
+```mermaid
+flowchart TD
+    N1["Step 1: L=0, R=6"]
+    N2["1+15=16 &gt; 14"]
+    N3["R--"]
+    N4["Step 2: L=0, R=5"]
+    N5["1+10=11 &lt; 14"]
+    N6["L++"]
+    N7["Step 3: L=1, R=5"]
+    N8["2+10=12 &lt; 14"]
+    N9["Step 4: L=2, R=5"]
+    N10["4+10=14 ✅ FOUND!"]
+    N11["of the n×n search matrix"]
+    N12["O(n) instead of O(n²)"]
+    N1 --> N2
+    N2 --> N3
+    N4 --> N5
+    N5 --> N6
+    N7 --> N8
+    N8 --> N6
+    N9 --> N10
+    N11 --> N12
+```
+
 ---
 
 ## 🔬 FULL WALKTHROUGH: 3Sum — Fix One + Two Pointers
@@ -146,6 +206,48 @@ DUPLICATE HANDLING (critical!):
 Time: O(n²) | Space: O(1) (excluding output)
 ```
 
+> **Flow**: Step 0: SORT → [-4, -1, -1, 0, 1, 2] | L=1, R=5 → -1+2=1 &lt; 4 | -1+2=1 &lt; 4 → L++ | L=2, R=5 → -1+2=1 &lt; 4 | -1+2=1 &lt; 4 → L++ | L=3, R=5 → 0+2=2 &lt; 4 | ...+10 more
+
+```mermaid
+flowchart TD
+    N1["Step 0: SORT"]
+    N2["[-4, -1, -1, 0, 1, 2]"]
+    N3["L=1, R=5"]
+    N4["-1+2=1 &lt; 4"]
+    N5["L++"]
+    N6["L=2, R=5"]
+    N7["L=3, R=5"]
+    N8["0+2=2 &lt; 4"]
+    N9["L=4, R=5"]
+    N10["1+2=3 &lt; 4"]
+    N11["L=5, R=5"]
+    N12["stop. No triplet with -4."]
+    N13["-1+2=1 = 1 ✅ Found [-1, -1, 2]!"]
+    N14["L=3, R=4"]
+    N15["0+1=1 = 1 ✅ Found [-1, 0, 1]!"]
+    N16["L=4, R=3"]
+    N17["stop."]
+    N18["1+2=3 &gt; 0"]
+    N19["R--"]
+    N20["L=4, R=4"]
+    N21["stop. No triplet."]
+    N1 --> N2
+    N3 --> N4
+    N4 --> N5
+    N6 --> N4
+    N7 --> N8
+    N8 --> N5
+    N9 --> N10
+    N10 --> N5
+    N11 --> N12
+    N6 --> N13
+    N14 --> N15
+    N16 --> N17
+    N9 --> N18
+    N18 --> N19
+    N20 --> N21
+```
+
 ---
 
 ## 🔬 FULL WALKTHROUGH: Trapping Rain Water — Two Boundary Pointers
@@ -178,6 +280,30 @@ is correctly computed without needing the full array.
 Time: O(n) | Space: O(1) — better than prefix array O(n) space
 ```
 
+> **Flow**: h[L]=0 ≤ h[R]=1 → maxL=max(0,0)=0, water+=0-0=0, L++ | h[L]=1 ≤ h[R]=1 → maxL=max(0,1)=1, water+=1-1=0, L++ | h[L]=0 ≤ h[R]=1 → maxL=1, water+=1-0=1, L++ 💧+1 | h[L]=2 &gt; h[R]=1 → maxR=max(0,1)=1, water+=1-1=0, R-- | h[L]=2 &gt; h[R]=2 → maxR=max(1,2)=2, water+=2-2=0, R-- | h[L]=2 &gt; h[R]=1 → maxR=2, water+=2-1=1, R-- 💧+1 | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["h[L]=0 ≤ h[R]=1"]
+    N2["maxL=max(0,0)=0, water+=0-0=0, L++"]
+    N3["h[L]=1 ≤ h[R]=1"]
+    N4["maxL=max(0,1)=1, water+=1-1=0, L++"]
+    N5["maxL=1, water+=1-0=1, L++ 💧+1"]
+    N6["h[L]=2 &gt; h[R]=1"]
+    N7["maxR=max(0,1)=1, water+=1-1=0, R--"]
+    N8["h[L]=2 &gt; h[R]=2"]
+    N9["maxR=max(1,2)=2, water+=2-2=0, R--"]
+    N10["maxR=2, water+=2-1=1, R-- 💧+1"]
+    N11["maxR=2, water+=2-2=0, R--"]
+    N1 --> N2
+    N3 --> N4
+    N1 --> N5
+    N6 --> N7
+    N8 --> N9
+    N6 --> N10
+    N8 --> N11
+```
+
 ---
 
 ## 🛡️ EDGE CASES TO WATCH
@@ -195,6 +321,27 @@ Time: O(n) | Space: O(1) — better than prefix array O(n) space
 │ Negative numbers       │ Two pointers still works on sorted array  │
 │ Overflow (a[L]+a[R])   │ Use long for sum if values near INT_MAX   │
 └────────────────────────┴───────────────────────────────────────────┘
+```
+
+> **Flow**: Edge Case What Happens → Empty array [] Return immediately, no pointers to set | Empty array [] Return immediately, no pointers to set → Single element [5] No pair exists, return -1 / false | Single element [5] No pair exists, return -1 / false → Two elements [1,5] Only one pair to check | Two elements [1,5] Only one pair to check → All same values [3,3,3] All sums equal, handle duplicat | All same values [3,3,3] All sums equal, handle duplicat → Already sorted Two pointer works perfectly | Already sorted Two pointer works perfectly → Target impossible L crosses R without finding → return | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Edge Case What Happens"]
+    N2["Empty array [] Return immediately, no pointers to set"]
+    N3["Single element [5] No pair exists, return -1 / false"]
+    N4["Two elements [1,5] Only one pair to check"]
+    N5["All same values [3,3,3] All sums equal, handle duplicat"]
+    N6["Already sorted Two pointer works perfectly"]
+    N7["Target impossible L crosses R without finding → return"]
+    N8["Negative numbers Two pointers still works on sorted arr"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

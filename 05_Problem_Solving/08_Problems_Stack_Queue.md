@@ -25,6 +25,15 @@
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: 3 / 2 / 1 → 1 2 3 4
+
+```mermaid
+flowchart TD
+    N1["3 / 2 / 1"]
+    N2["1 2 3 4"]
+    N1 --> N2
+```
+
 ---
 
 ## PART 0: WHY Stack/Queue — The Two Most Interview-Tested Data Structures
@@ -253,6 +262,27 @@
 └────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: VALID PARENTHESES - Check if brackets are balanced → Input: '({[]})' | Input: '({[]})' → Processing with Stack: | Processing with Stack: → Char Action Stack State | Char Action Stack State → ( push ) [)] | ( push ) [)] → { push } [), }] | { push } [), }] → [ push ] [), }, ]] | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["VALID PARENTHESES - Check if brackets are balanced"]
+    N2["Input: '({[]})'"]
+    N3["Processing with Stack:"]
+    N4["Char Action Stack State"]
+    N5["( push ) [)]"]
+    N6["{ push } [), }]"]
+    N7["[ push ] [), }, ]]"]
+    N8["] pop [), }] ✓"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 **Examples:**
 
 - Input: `"()"` → Output: `true`
@@ -313,6 +343,25 @@ public boolean isValid(String s) {
 │  Stack: [(5,5), (2,2), (7,2), (1,1)]                           │
 │          (val, minSoFar)                                       │
 └────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: MIN STACK - Stack that supports getMin() in O(1) → Approach 1: Two Stacks | Approach 1: Two Stacks → Main Stack Min Stack | Main Stack Min Stack → 1 1 ← top | 1 1 ← top → getMin() → peek min stack → 1 | getMin() → peek min stack → 1 → Approach 2: Single Stack with Pairs | Approach 2: Single Stack with Pairs → (val, minSoFar)
+
+```mermaid
+flowchart TD
+    N1["MIN STACK - Stack that supports getMin() in O(1)"]
+    N2["Approach 1: Two Stacks"]
+    N3["Main Stack Min Stack"]
+    N4["1 1 ← top"]
+    N5["getMin() → peek min stack → 1"]
+    N6["Approach 2: Single Stack with Pairs"]
+    N7["(val, minSoFar)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
 ```
 
 **Operations:**
@@ -383,6 +432,27 @@ class MinStack {
 │  - At most 10^4 operations                                     │
 │  - popMax and pop called only when stack not empty             │
 └────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: MAX STACK - Stack with popMax() operation → Design a max stack that supports: | Design a max stack that supports: → - push(x): Push x onto stack | - push(x): Push x onto stack → - pop(): Remove top element | - pop(): Remove top element → - top(): Get top element | - top(): Get top element → - peekMax(): Retrieve maximum element | - peekMax(): Retrieve maximum element → - popMax(): Remove maximum element (topmost if tie) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["MAX STACK - Stack with popMax() operation"]
+    N2["Design a max stack that supports:"]
+    N3["- push(x): Push x onto stack"]
+    N4["- pop(): Remove top element"]
+    N5["- top(): Get top element"]
+    N6["- peekMax(): Retrieve maximum element"]
+    N7["- popMax(): Remove maximum element (topmost if tie)"]
+    N8["Example:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 **Solution (Using TreeMap + Doubly Linked List for O(log n)):**
@@ -495,6 +565,27 @@ class MaxStack {
 └────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: DECODE STRING - Expand encoded string → Input: '3[a2[c]]' | Input: '3[a2[c]]' → Process with Stack: | Process with Stack: → Char Action Stack / Result | Char Action Stack / Result → 3 build num num=3 | 3 build num num=3 → [ push [(3, '')] | [ push [(3, '')] → a build str currentStr='a' | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["DECODE STRING - Expand encoded string"]
+    N2["Input: '3[a2[c]]'"]
+    N3["Process with Stack:"]
+    N4["Char Action Stack / Result"]
+    N5["3 build num num=3"]
+    N6["[ push [(3, '')]"]
+    N7["a build str currentStr='a'"]
+    N8["2 build num num=2"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 **Examples:**
 
 - Input: `"3[a]2[bc]"` → Output: `"aaabcbc"`
@@ -563,6 +654,27 @@ public String decodeString(String s) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: REVERSE POLISH NOTATION (Postfix Expression) → Input: ['2','1','+','3','*'] | Input: ['2','1','+','3','*'] → Infix equivalent: ((2 + 1) * 3) = 9 | Infix equivalent: ((2 + 1) * 3) = 9 → Stack Processing: | Stack Processing: → Token Action Stack | Token Action Stack → 2 push [2] | 2 push [2] → 1 push [2, 1] | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["REVERSE POLISH NOTATION (Postfix Expression)"]
+    N2["Input: ['2','1','+','3','*']"]
+    N3["Infix equivalent: ((2 + 1) * 3) = 9"]
+    N4["Stack Processing:"]
+    N5["Token Action Stack"]
+    N6["2 push [2]"]
+    N7["1 push [2, 1]"]
+    N8["+ pop 1,2 → 2+1=3 [3]"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 **Examples:**
 
 - Input: `["2","1","+","3","*"]` → Output: `9` (((2+1)\*3))
@@ -620,6 +732,27 @@ public int evalRPN(String[] tokens) {
 │  - s represents a valid expression                             │
 │  - All intermediate results in range [-2^31, 2^31 - 1]         │
 └────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: BASIC CALCULATOR III - Evaluate expression with +,-,*,/ → string. The expression string contains only non-negativ | string. The expression string contains only non-negativ → integers, +, -, *, / operators, open ( and closing ) | integers, +, -, *, / operators, open ( and closing ) → parentheses, and empty spaces. | parentheses, and empty spaces. → Examples: | Examples: → Input: '1+1' → Output: 2 | Input: '1+1' → Output: 2 → Input: '6-4/2' → Output: 4 | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["BASIC CALCULATOR III - Evaluate expression with +,-,*,/"]
+    N2["string. The expression string contains only non-negativ"]
+    N3["integers, +, -, *, / operators, open ( and closing )"]
+    N4["parentheses, and empty spaces."]
+    N5["Examples:"]
+    N6["Input: '1+1' → Output: 2"]
+    N7["Input: '6-4/2' → Output: 4"]
+    N8["Input: '2*(5+5*2)/3+(6/2+8)' → Output: 21"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 **Solution:**
@@ -695,6 +828,27 @@ private int helper(Queue<Character> queue) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: MONOTONIC STACK - Elements in sorted order → DECREASING Stack (for Next Greater Element): | DECREASING Stack (for Next Greater Element): → Array: [2, 1, 2, 4, 3] | Array: [2, 1, 2, 4, 3] → i=0: stack=[2] | i=0: stack=[2] → i=1: 1 &lt; 2, stack=[2,1] | i=1: 1 &lt; 2, stack=[2,1] → i=4: 3 &lt; 4, stack=[4,3] | i=4: 3 &lt; 4, stack=[4,3] → NGE = [4, 2, 4, -1, -1] | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["MONOTONIC STACK - Elements in sorted order"]
+    N2["DECREASING Stack (for Next Greater Element):"]
+    N3["Array: [2, 1, 2, 4, 3]"]
+    N4["i=0: stack=[2]"]
+    N5["i=1: 1 &lt; 2, stack=[2,1]"]
+    N6["i=4: 3 &lt; 4, stack=[4,3]"]
+    N7["NGE = [4, 2, 4, -1, -1]"]
+    N8["INCREASING Stack (for Next Smaller Element):"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ### Problem 84: Daily Temperatures
@@ -723,6 +877,27 @@ private int helper(Queue<Character> queue) {
 │                                                                │
 │  Output: [1, 1, 4, 2, 1, 1, 0, 0]                              │
 └────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: DAILY TEMPERATURES - Days until warmer temperature → temperatures = [73, 74, 75, 71, 69, 72, 76, 73] | temperatures = [73, 74, 75, 71, 69, 72, 76, 73] → Visual Process (Monotonic Decreasing Stack by index): | Visual Process (Monotonic Decreasing Stack by index): → i temp Stack (indices) Result | i temp Stack (indices) Result → 1 74 74&gt;73, pop, [1] [1,_,_,_,_,_,_,_] | 1 74 74&gt;73, pop, [1] [1,_,_,_,_,_,_,_] → 2 75 75&gt;74, pop, [2] [1,1,_,_,_,_,_,_] | 2 75 75&gt;74, pop, [2] [1,1,_,_,_,_,_,_] → 5 72 72&gt;69,71 pop×2 [2,5] [1,1,_,2,1,_,_,_] | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["DAILY TEMPERATURES - Days until warmer temperature"]
+    N2["temperatures = [73, 74, 75, 71, 69, 72, 76, 73]"]
+    N3["Visual Process (Monotonic Decreasing Stack by index):"]
+    N4["i temp Stack (indices) Result"]
+    N5["1 74 74&gt;73, pop, [1] [1,_,_,_,_,_,_,_]"]
+    N6["2 75 75&gt;74, pop, [2] [1,1,_,_,_,_,_,_]"]
+    N7["5 72 72&gt;69,71 pop×2 [2,5] [1,1,_,2,1,_,_,_]"]
+    N8["6 76 76&gt;72,75 pop×2 [6] [1,1,4,2,1,1,_,_]"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 **Solution:**
@@ -771,6 +946,27 @@ public int[] dailyTemperatures(int[] temperatures) {
 │                                                                │
 │  Output: [-1, 3, -1]                                           │
 └────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: NEXT GREATER ELEMENT I → nums1 = [4, 1, 2] (subset of nums2) | nums1 = [4, 1, 2] (subset of nums2) → nums2 = [1, 3, 4, 2] | nums2 = [1, 3, 4, 2] → Find NGE in nums2 for each element in nums1: | Find NGE in nums2 for each element in nums1: → nums2: [1, 3, 4, 2] | nums2: [1, 3, 4, 2] → NGE: [3, 4, -1, -1] | NGE: [3, 4, -1, -1] → For nums1 = [4, 1, 2]: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["NEXT GREATER ELEMENT I"]
+    N2["nums1 = [4, 1, 2] (subset of nums2)"]
+    N3["nums2 = [1, 3, 4, 2]"]
+    N4["Find NGE in nums2 for each element in nums1:"]
+    N5["nums2: [1, 3, 4, 2]"]
+    N6["NGE: [3, 4, -1, -1]"]
+    N7["For nums1 = [4, 1, 2]:"]
+    N8["- 4 → NGE in nums2 = -1"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 **Solution:**
@@ -828,6 +1024,23 @@ public int[] nextGreaterElement(int[] nums1, int[] nums2) {
 │                                                                │
 │  Output: [2, -1, 2]                                            │
 └────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: NEXT GREATER ELEMENT II - Circular Array → nums = [1, 2, 1] (circular: ...1, 2, 1, 1, 2, 1...) | nums = [1, 2, 1] (circular: ...1, 2, 1, 1, 2, 1...) → For each element, search circularly: | For each element, search circularly: → Index Element → Search NGE | Index Element → Search NGE → Trick: Iterate 2n times, use i % n | Trick: Iterate 2n times, use i % n → Output: [2, -1, 2]
+
+```mermaid
+flowchart TD
+    N1["NEXT GREATER ELEMENT II - Circular Array"]
+    N2["nums = [1, 2, 1] (circular: ...1, 2, 1, 1, 2, 1...)"]
+    N3["For each element, search circularly:"]
+    N4["Index Element → Search NGE"]
+    N5["Trick: Iterate 2n times, use i % n"]
+    N6["Output: [2, -1, 2]"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
 ```
 
 **Solution:**
@@ -888,6 +1101,19 @@ public int[] nextGreaterElements(int[] nums) {
 │  │  │██████████│                                               │
 │  ...                                                           │
 └────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: LARGEST RECTANGLE IN HISTOGRAM → heights = [2, 1, 5, 6, 2, 3] | heights = [2, 1, 5, 6, 2, 3] → Largest rectangle = 10 (5×2 using heights 5,6) | Largest rectangle = 10 (5×2 using heights 5,6) → ██████████ ← Area = 5 × 2 = 10
+
+```mermaid
+flowchart TD
+    N1["LARGEST RECTANGLE IN HISTOGRAM"]
+    N2["heights = [2, 1, 5, 6, 2, 3]"]
+    N3["Largest rectangle = 10 (5×2 using heights 5,6)"]
+    N4["██████████ ← Area = 5 × 2 = 10"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
 ```
 
 **Key Insight:** For each bar, find how far it can extend left and right.
@@ -965,6 +1191,27 @@ public int largestRectangleArea(int[] heights) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: matrix = [ → Convert each row to histogram heights: | Convert each row to histogram heights: → Row 0: heights = [1, 0, 1, 0, 0] → maxRect in hist | Row 0: heights = [1, 0, 1, 0, 0] → maxRect in hist → Row 1: heights = [2, 0, 2, 1, 1] → maxRect in hist | Row 1: heights = [2, 0, 2, 1, 1] → maxRect in hist → Row 2: heights = [3, 1, 3, 2, 2] → maxRect in hist = 6 | Row 2: heights = [3, 1, 3, 2, 2] → maxRect in hist = 6 → Row 3: heights = [4, 0, 0, 3, 0] → maxRect in hist | Row 3: heights = [4, 0, 0, 3, 0] → maxRect in hist → The maximum rectangle of 6 comes from row 2: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["matrix = ["]
+    N2["Convert each row to histogram heights:"]
+    N3["Row 0: heights = [1, 0, 1, 0, 0] → maxRect in hist"]
+    N4["Row 1: heights = [2, 0, 2, 1, 1] → maxRect in hist"]
+    N5["Row 2: heights = [3, 1, 3, 2, 2] → maxRect in hist = 6"]
+    N6["Row 3: heights = [4, 0, 0, 3, 0] → maxRect in hist"]
+    N7["The maximum rectangle of 6 comes from row 2:"]
+    N8["heights [3, 1, 3, 2, 2] → use [2, 2, 2] with height 2 ="]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 **Solution:**
 
 ```java
@@ -1032,6 +1279,21 @@ private int largestRectangleArea(int[] heights) {
 │  For each position i:                                          │
 │  water[i] = min(maxLeft[i], maxRight[i]) - height[i]           │
 └────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: TRAPPING RAIN WATER → height = [0,1,0,2,1,0,1,3,2,1,2,1] | height = [0,1,0,2,1,0,1,3,2,1,2,1] → ░ = Trapped water = 6 units | ░ = Trapped water = 6 units → For each position i: | For each position i: → water[i] = min(maxLeft[i], maxRight[i]) - height[i]
+
+```mermaid
+flowchart TD
+    N1["TRAPPING RAIN WATER"]
+    N2["height = [0,1,0,2,1,0,1,3,2,1,2,1]"]
+    N3["░ = Trapped water = 6 units"]
+    N4["For each position i:"]
+    N5["water[i] = min(maxLeft[i], maxRight[i]) - height[i]"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
 ```
 
 **Solution 1: Two Pointers (O(n) time, O(1) space)**
@@ -1123,6 +1385,19 @@ public int trapStack(int[] height) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: inputStack / [1,2,3] → outputStack / [] | outputStack / [] → inputStack / [] | inputStack / [] → outputStack / [3,2,1]
+
+```mermaid
+flowchart TD
+    N1["inputStack / [1,2,3]"]
+    N2["outputStack / []"]
+    N3["inputStack / []"]
+    N4["outputStack / [3,2,1]"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 **Solution:**
 
 ```java
@@ -1181,6 +1456,27 @@ class MyQueue {
 │  pop() → returns 3                                             │
 │  top() → returns 2                                             │
 └────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: IMPLEMENT STACK USING QUEUES → Approach: Make push O(n) to keep LIFO order | Approach: Make push O(n) to keep LIFO order → push(1): queue = [1] | push(1): queue = [1] → push(2): add 2, rotate 1 time | push(2): add 2, rotate 1 time → [1,2] → poll 1, add 1 → [2,1] | [1,2] → poll 1, add 1 → [2,1] → push(3): add 3, rotate 2 times | push(3): add 3, rotate 2 times → Now front of queue is top of stack! | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["IMPLEMENT STACK USING QUEUES"]
+    N2["Approach: Make push O(n) to keep LIFO order"]
+    N3["push(1): queue = [1]"]
+    N4["push(2): add 2, rotate 1 time"]
+    N5["[1,2] → poll 1, add 1 → [2,1]"]
+    N6["push(3): add 3, rotate 2 times"]
+    N7["Now front of queue is top of stack!"]
+    N8["pop() → returns 3"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 **Solution:**
@@ -1248,6 +1544,27 @@ class MyStack {
 └────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: SLIDING WINDOW MAXIMUM - Max in each window of size k → nums = [1, 3, -1, -3, 5, 3, 6, 7], k = 3 | nums = [1, 3, -1, -3, 5, 3, 6, 7], k = 3 → Use Monotonic Decreasing Deque (store indices): | Use Monotonic Decreasing Deque (store indices): → Window Deque (indices) Max | Window Deque (indices) Max → [1,3,-1] [1,2]→vals[3,-1] 3 | [1,3,-1] [1,2]→vals[3,-1] 3 → Output: [3, 3, 5, 5, 6, 7] | Output: [3, 3, 5, 5, 6, 7] → Why Monotonic Decreasing? | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["SLIDING WINDOW MAXIMUM - Max in each window of size k"]
+    N2["nums = [1, 3, -1, -3, 5, 3, 6, 7], k = 3"]
+    N3["Use Monotonic Decreasing Deque (store indices):"]
+    N4["Window Deque (indices) Max"]
+    N5["[1,3,-1] [1,2]→vals[3,-1] 3"]
+    N6["Output: [3, 3, 5, 5, 6, 7]"]
+    N7["Why Monotonic Decreasing?"]
+    N8["- Front always has maximum"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 **Solution:**
 
 ```java
@@ -1304,6 +1621,27 @@ public int[] maxSlidingWindow(int[] nums, int k) {
 │  Key Insight: Use prefix sum + monotonic deque                 │
 │  prefix[j] - prefix[i] >= k means subarray (i,j] has sum >= k  │
 └────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: SHORTEST SUBARRAY WITH SUM AT LEAST K → Return the length of the shortest non-empty subarray wi | Return the length of the shortest non-empty subarray wi → sum at least k. If no such subarray exists, return -1. | sum at least k. If no such subarray exists, return -1. → Note: Array can have NEGATIVE numbers! | Note: Array can have NEGATIVE numbers! → Examples: | Examples: → Input: nums = [1], k = 1 → Output: 1 | Input: nums = [1], k = 1 → Output: 1 → Input: nums = [1,2], k = 4 → Output: -1 | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["SHORTEST SUBARRAY WITH SUM AT LEAST K"]
+    N2["Return the length of the shortest non-empty subarray wi"]
+    N3["sum at least k. If no such subarray exists, return -1."]
+    N4["Note: Array can have NEGATIVE numbers!"]
+    N5["Examples:"]
+    N6["Input: nums = [1], k = 1 → Output: 1"]
+    N7["Input: nums = [1,2], k = 4 → Output: -1"]
+    N8["Input: nums = [2,-1,2], k = 3 → Output: 3"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 **Solution:**
@@ -1380,6 +1718,17 @@ public int shortestSubarray(int[] nums, int k) {
 │  - isEmpty(): Check if empty                                   │
 │  - isFull(): Check if full                                     │
 └────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: 1 2 3 → 1 2 3 4 5 | 1 2 3 4 5 → 6 3 4 5
+
+```mermaid
+flowchart TD
+    N1["1 2 3"]
+    N2["1 2 3 4 5"]
+    N3["6 3 4 5"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 **Solution:**
@@ -1467,6 +1816,27 @@ class MyCircularQueue {
 │  - 0 <= value <= 1000                                          │
 │  - At most 2000 calls to operations                            │
 └────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: DESIGN CIRCULAR DEQUE (Double-ended Queue) → Design a circular deque with these operations: | Design a circular deque with these operations: → - insertFront(): Add at front | - insertFront(): Add at front → - insertLast(): Add at rear | - insertLast(): Add at rear → - deleteFront(): Remove from front | - deleteFront(): Remove from front → - deleteLast(): Remove from rear | - deleteLast(): Remove from rear → - getFront(): Get front element | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["DESIGN CIRCULAR DEQUE (Double-ended Queue)"]
+    N2["Design a circular deque with these operations:"]
+    N3["- insertFront(): Add at front"]
+    N4["- insertLast(): Add at rear"]
+    N5["- deleteFront(): Remove from front"]
+    N6["- deleteLast(): Remove from rear"]
+    N7["- getFront(): Get front element"]
+    N8["- getRear(): Get rear element"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 **Solution:**
@@ -1571,6 +1941,27 @@ class MyCircularDeque {
 └────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: REMOVE K DIGITS - Make smallest number by removing k di → num = '1432219', k = 3 | num = '1432219', k = 3 → Use monotonic increasing stack: | Use monotonic increasing stack: → Digit Stack k | Digit Stack k → 3 [1,3] (pop 4) 2 | 3 [1,3] (pop 4) 2 → 2 [1,2] (pop 3) 1 | 2 [1,2] (pop 3) 1 → 1 [1,2,1] (pop 2) 0 | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["REMOVE K DIGITS - Make smallest number by removing k di"]
+    N2["num = '1432219', k = 3"]
+    N3["Use monotonic increasing stack:"]
+    N4["Digit Stack k"]
+    N5["3 [1,3] (pop 4) 2"]
+    N6["2 [1,2] (pop 3) 1"]
+    N7["1 [1,2,1] (pop 2) 0"]
+    N8["Result: '1219'"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 **Solution:**
 
 ```java
@@ -1637,6 +2028,27 @@ public String removeKdigits(String num, int k) {
 │                                                                │
 │  Wait... let me redo: Final = "acdb"                           │
 └────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: REMOVE DUPLICATE LETTERS - Smallest lexicographic resul → s = 'cbacdcbc' | s = 'cbacdcbc' → Goal: Remove duplicates, keep smallest lex order | Goal: Remove duplicates, keep smallest lex order → Each letter appears exactly once in result | Each letter appears exactly once in result → Process: | Process: → Char Stack Reason | Char Stack Reason → c [c] push | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["REMOVE DUPLICATE LETTERS - Smallest lexicographic resul"]
+    N2["s = 'cbacdcbc'"]
+    N3["Goal: Remove duplicates, keep smallest lex order"]
+    N4["Each letter appears exactly once in result"]
+    N5["Process:"]
+    N6["Char Stack Reason"]
+    N7["c [c] push"]
+    N8["b [b] b&lt;c, c appears later,pop"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 **Solution:**
@@ -1707,6 +2119,21 @@ public String removeDuplicateLetters(String s) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: 132 PATTERN - Find i &lt; j &lt; k where a[i] &lt; a[k] → Example: [3, 1, 4, 2] | Example: [3, 1, 4, 2] → Pattern Visualization: | Pattern Visualization: → Approach: Iterate from right, track 'a[k]' candidates | Approach: Iterate from right, track 'a[k]' candidates → using monotonic decreasing stack
+
+```mermaid
+flowchart TD
+    N1["132 PATTERN - Find i &lt; j &lt; k where a[i] &lt; a[k]"]
+    N2["Example: [3, 1, 4, 2]"]
+    N3["Pattern Visualization:"]
+    N4["Approach: Iterate from right, track 'a[k]' candidates"]
+    N5["using monotonic decreasing stack"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+```
+
 **Solution:**
 
 ```java
@@ -1765,6 +2192,27 @@ public boolean find132pattern(int[] nums) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: ONLINE STOCK SPAN - Days before with price &lt;= today → Prices: [100, 80, 60, 70, 60, 75, 85] | Prices: [100, 80, 60, 70, 60, 75, 85] → where price &lt;= today's price: | where price &lt;= today's price: → Day Price Explanation Span | Day Price Explanation Span → 0 100 Just today 1 | 0 100 Just today 1 → 1 80 Just today (100&gt;80) 1 | 1 80 Just today (100&gt;80) 1 → 2 60 Just today (80&gt;60) 1 | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["ONLINE STOCK SPAN - Days before with price &lt;= today"]
+    N2["Prices: [100, 80, 60, 70, 60, 75, 85]"]
+    N3["where price &lt;= today's price:"]
+    N4["Day Price Explanation Span"]
+    N5["0 100 Just today 1"]
+    N6["1 80 Just today (100&gt;80) 1"]
+    N7["2 60 Just today (80&gt;60) 1"]
+    N8["4 60 Just today (70&gt;60) 1"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 **Solution:**
 
 ```java
@@ -1814,6 +2262,27 @@ class StockSpanner {
 │  - 1 <= |s| <= 10^5                                            │
 │  - String contains alphanumeric and bracket characters         │
 └────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: BALANCED BRACKETS - Extended validation → Given a string containing brackets and other characters | Given a string containing brackets and other characters → determine if the brackets are balanced. | determine if the brackets are balanced. → Invalid: '{[}]', '(()', 'a{b(c]d}e' | Invalid: '{[}]', '(()', 'a{b(c]d}e' → Examples: | Examples: → Input: '{[a+b]*[c-d]}' → Output: 'YES' | Input: '{[a+b]*[c-d]}' → Output: 'YES' → Input: '({[}])' → Output: 'NO' (mismatched) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["BALANCED BRACKETS - Extended validation"]
+    N2["Given a string containing brackets and other characters"]
+    N3["determine if the brackets are balanced."]
+    N4["Invalid: '{[}]', '(()', 'a{b(c]d}e'"]
+    N5["Examples:"]
+    N6["Input: '{[a+b]*[c-d]}' → Output: 'YES'"]
+    N7["Input: '({[}])' → Output: 'NO' (mismatched)"]
+    N8["Input: '((()))' → Output: 'YES'"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 **Solution:**
@@ -1875,6 +2344,27 @@ public String isBalanced(String s) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: MAXIMUM ELEMENT - Stack with max queries → Support these operations: | Support these operations: → 1 x : Push x onto the stack | 1 x : Push x onto the stack → 2 : Pop the top element | 2 : Pop the top element → 3 : Print the maximum element in the stack | 3 : Print the maximum element in the stack → Example: | Example: → Operations: 1 97, 2, 1 20, 2, 1 26, 1 20, 2, 3, 1 91, 3 | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["MAXIMUM ELEMENT - Stack with max queries"]
+    N2["Support these operations:"]
+    N3["1 x : Push x onto the stack"]
+    N4["2 : Pop the top element"]
+    N5["3 : Print the maximum element in the stack"]
+    N6["Example:"]
+    N7["Operations: 1 97, 2, 1 20, 2, 1 26, 1 20, 2, 3, 1 91, 3"]
+    N8["Query Action Stack Output"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 **Solution:**
 
 ```java
@@ -1932,6 +2422,27 @@ public void processQueries(int[][] queries) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: NEAREST SMALLER ELEMENT → For each element, find the nearest smaller element to i | For each element, find the nearest smaller element to i → left. If none exists, output -1. | left. If none exists, output -1. → Input: [4, 5, 2, 10, 8] | Input: [4, 5, 2, 10, 8] → Index Element Elements to Left Answer | Index Element Elements to Left Answer → 0 4 none -1 | 0 4 none -1 → 2 2 4,5 (none smaller) -1 | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["NEAREST SMALLER ELEMENT"]
+    N2["For each element, find the nearest smaller element to i"]
+    N3["left. If none exists, output -1."]
+    N4["Input: [4, 5, 2, 10, 8]"]
+    N5["Index Element Elements to Left Answer"]
+    N6["0 4 none -1"]
+    N7["2 2 4,5 (none smaller) -1"]
+    N8["3 10 4,5,2 → nearest is 2 2"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 **Solution:**
 
 ```java
@@ -1982,6 +2493,27 @@ public int[] nearestSmallerElement(int[] arr) {
 │                                                                │
 │  Result: "AB+CD-*"                                             │
 └────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: PREFIX TO POSTFIX CONVERSION → Convert prefix expression to postfix using stack | Convert prefix expression to postfix using stack → Prefix: *+AB-CD (operator before operands) | Prefix: *+AB-CD (operator before operands) → Postfix: AB+CD-* (operator after operands) | Postfix: AB+CD-* (operator after operands) → Algorithm: Read from RIGHT to LEFT | Algorithm: Read from RIGHT to LEFT → Char Action Stack | Char Action Stack → D push [D] | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["PREFIX TO POSTFIX CONVERSION"]
+    N2["Convert prefix expression to postfix using stack"]
+    N3["Prefix: *+AB-CD (operator before operands)"]
+    N4["Postfix: AB+CD-* (operator after operands)"]
+    N5["Algorithm: Read from RIGHT to LEFT"]
+    N6["Char Action Stack"]
+    N7["D push [D]"]
+    N8["C push [D, C]"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 **Solution:**

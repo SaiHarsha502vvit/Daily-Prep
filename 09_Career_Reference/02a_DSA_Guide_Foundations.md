@@ -246,6 +246,15 @@ int max = Math.max(a, b);  // Modern JIT uses cmov instruction
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: ArrayList Object: / Header (16 bytes) / Object[] elemen → Structure Memory for 10 ints Memory per element / int[]
+
+```mermaid
+flowchart TD
+    N3["ArrayList Object: / Header (16 bytes) / Object[] elemen"]
+    N4["Structure Memory for 10 ints Memory per element / int[]"]
+    N3 --> N4
+```
+
 
 
 ## 📖 Operation Cost Reference Table
@@ -312,6 +321,19 @@ int max = Math.max(a, b);  // Modern JIT uses cmov instruction
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: Operation Cycles Notes / Integer add/sub 1 Can do 4+ pe → Operation Cycles Notes / L1 cache hit 4 Best case for m | Operation Cycles Notes / L1 cache hit 4 Best case for m → Operation Cycles Notes / Static method call 5-10 Direct | Operation Cycles Notes / Static method call 5-10 Direct → Operation Cycles Notes / Object allocation 10-20 Bump p
+
+```mermaid
+flowchart TD
+    N1["Operation Cycles Notes / Integer add/sub 1 Can do 4+ pe"]
+    N2["Operation Cycles Notes / L1 cache hit 4 Best case for m"]
+    N3["Operation Cycles Notes / Static method call 5-10 Direct"]
+    N4["Operation Cycles Notes / Object allocation 10-20 Bump p"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 
 
 ## 💪 Big — O in Practice — the Reality Check
@@ -367,6 +389,27 @@ int max = Math.max(a, b);  // Modern JIT uses cmov instruction
 │ 5. Profile before optimizing - intuition is often wrong!                        │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: WHEN BIG-O DOESN'T TELL THE FULL STORY → CASE 1: O(n) can beat O(log n) for small n | CASE 1: O(n) can beat O(log n) for small n → Crossover: Around n = 100-500 elements | Crossover: Around n = 100-500 elements → For n &lt; 100: Linear search often faster! | For n &lt; 100: Linear search often faster! → CASE 2: O(n) can beat O(1) amortized | CASE 2: O(n) can beat O(1) amortized → ArrayList.add(): O(1) amortized, but occasional O(n) re | ArrayList.add(): O(1) amortized, but occasional O(n) re → LinkedList.addFirst(): O(1) always, but cache-unfriendl | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["WHEN BIG-O DOESN'T TELL THE FULL STORY"]
+    N2["CASE 1: O(n) can beat O(log n) for small n"]
+    N3["Crossover: Around n = 100-500 elements"]
+    N4["For n &lt; 100: Linear search often faster!"]
+    N5["CASE 2: O(n) can beat O(1) amortized"]
+    N6["ArrayList.add(): O(1) amortized, but occasional O(n) re"]
+    N7["LinkedList.addFirst(): O(1) always, but cache-unfriendl"]
+    N8["For many small adds: ArrayList wins (spatial locality)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 
@@ -426,6 +469,27 @@ int max = Math.max(a, b);  // Modern JIT uses cmov instruction
 │ └── Modern tech stack applications                          │
 │                                                             │
 └─────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: LEARNING FRAMEWORK → WHY does this exist? | WHY does this exist? → What problem does it solve? | What problem does it solve? → What limitations of other structures does it address? | What limitations of other structures does it address? → HOW does it work internally? | HOW does it work internally? → Memory layout | Memory layout → Operations implementation | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["LEARNING FRAMEWORK"]
+    N2["WHY does this exist?"]
+    N3["What problem does it solve?"]
+    N4["What limitations of other structures does it address?"]
+    N5["HOW does it work internally?"]
+    N6["Memory layout"]
+    N7["Operations implementation"]
+    N8["Time/Space complexity derivation"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 
@@ -670,6 +734,39 @@ class SparseArray<T> {
    └── Use: Max sum subarray and variants
 ```
 
+> **Flow**: 1. TWO POINTERS → Start/End pointers moving toward middle | 1. TWO POINTERS → Fast/Slow pointers | 1. TWO POINTERS → Use: Sorted arrays, palindrome, pair sum | 2. SLIDING WINDOW → Fixed or variable window | 2. SLIDING WINDOW → Use: Subarrays, continuous sequences | 3. PREFIX SUM → Precompute cumulative sums | ...+5 more
+
+```mermaid
+flowchart TD
+    N1["1. TWO POINTERS"]
+    N2["Start/End pointers moving toward middle"]
+    N3["Fast/Slow pointers"]
+    N4["Use: Sorted arrays, palindrome, pair sum"]
+    N5["2. SLIDING WINDOW"]
+    N6["Fixed or variable window"]
+    N7["Use: Subarrays, continuous sequences"]
+    N8["3. PREFIX SUM"]
+    N9["Precompute cumulative sums"]
+    N10["Use: Range sum queries O(1)"]
+    N11["4. BINARY SEARCH"]
+    N12["Search space reduction"]
+    N13["Use: Sorted arrays, optimization problems"]
+    N14["5. KADANE'S ALGORITHM"]
+    N15["Maximum subarray tracking"]
+    N16["Use: Max sum subarray and variants"]
+    N1 --> N2
+    N1 --> N3
+    N1 --> N4
+    N5 --> N6
+    N5 --> N7
+    N8 --> N9
+    N8 --> N10
+    N11 --> N12
+    N11 --> N13
+    N14 --> N15
+    N14 --> N16
+```
+
 ### LeetCode Problems - Arrays
 
 | #   | Problem                         | Difficulty | Pattern         | Link                                                           |
@@ -708,6 +805,42 @@ class SparseArray<T> {
 6. FINANCIAL SYSTEMS
    └── Time Series Data: Arrays of price points
    └── Order Books: Arrays sorted by price
+```
+
+> **Flow**: 1. DATABASE SYSTEMS → Buffer Pool: Fixed array of page frames | 1. DATABASE SYSTEMS → Query Results: Dynamic arrays for result sets | 2. OPERATING SYSTEMS → Process Table: Array of PCB pointers | 2. OPERATING SYSTEMS → Page Tables: Arrays mapping virtual to physical | 3. GRAPHICS/GAMING → Pixel Buffers: 2D arrays for frame data | 3. GRAPHICS/GAMING → Vertex Arrays: Mesh geometry storage | ...+6 more
+
+```mermaid
+flowchart TD
+    N1["1. DATABASE SYSTEMS"]
+    N2["Buffer Pool: Fixed array of page frames"]
+    N3["Query Results: Dynamic arrays for result sets"]
+    N4["2. OPERATING SYSTEMS"]
+    N5["Process Table: Array of PCB pointers"]
+    N6["Page Tables: Arrays mapping virtual to physical"]
+    N7["3. GRAPHICS/GAMING"]
+    N8["Pixel Buffers: 2D arrays for frame data"]
+    N9["Vertex Arrays: Mesh geometry storage"]
+    N10["4. NETWORKING"]
+    N11["Packet Buffers: Ring buffers for network I/O"]
+    N12["Routing Tables: Arrays with hash indexing"]
+    N13["5. MACHINE LEARNING"]
+    N14["Tensors: Multi-dimensional arrays"]
+    N15["Feature Vectors: 1D arrays per data point"]
+    N16["6. FINANCIAL SYSTEMS"]
+    N17["Time Series Data: Arrays of price points"]
+    N18["Order Books: Arrays sorted by price"]
+    N1 --> N2
+    N1 --> N3
+    N4 --> N5
+    N4 --> N6
+    N7 --> N8
+    N7 --> N9
+    N10 --> N11
+    N10 --> N12
+    N13 --> N14
+    N13 --> N15
+    N16 --> N17
+    N16 --> N18
 ```
 
 ---
@@ -749,6 +882,19 @@ Head ────────►
 Key Insight:
 Each node knows ONLY where the next node is.
 No formula to calculate position - must traverse.
+```
+
+> **Flow**: Data: 10 / Next:2048 → Data: 20 / Next:1524 | Data: 20 / Next:1524 → Data: 30 / Next:3000 | Data: 30 / Next:3000 → Data: 40 / Next:null
+
+```mermaid
+flowchart TD
+    N1["Data: 10 / Next:2048"]
+    N2["Data: 20 / Next:1524"]
+    N3["Data: 30 / Next:3000"]
+    N4["Data: 40 / Next:null"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
 ```
 
 ### Linked List Variants
@@ -1001,6 +1147,39 @@ class UnrolledNode {
    └── Combine lists
 ```
 
+> **Flow**: 1. FAST-SLOW POINTERS (Floyd's Algorithm) → Cycle detection | 1. FAST-SLOW POINTERS (Floyd's Algorithm) → Find middle element | 1. FAST-SLOW POINTERS (Floyd's Algorithm) → Find nth from end | 2. DUMMY HEAD → Simplify edge cases | 2. DUMMY HEAD → Uniform handling of operations | 3. REVERSAL → Reverse entire/part of list | ...+5 more
+
+```mermaid
+flowchart TD
+    N1["1. FAST-SLOW POINTERS (Floyd's Algorithm)"]
+    N2["Cycle detection"]
+    N3["Find middle element"]
+    N4["Find nth from end"]
+    N5["2. DUMMY HEAD"]
+    N6["Simplify edge cases"]
+    N7["Uniform handling of operations"]
+    N8["3. REVERSAL"]
+    N9["Reverse entire/part of list"]
+    N10["k-group reversal"]
+    N11["4. MERGE"]
+    N12["Merge sorted lists"]
+    N13["Merge k lists"]
+    N14["5. INTERSECTION/UNION"]
+    N15["Find common node"]
+    N16["Combine lists"]
+    N1 --> N2
+    N1 --> N3
+    N1 --> N4
+    N5 --> N6
+    N5 --> N7
+    N8 --> N9
+    N8 --> N10
+    N11 --> N12
+    N11 --> N13
+    N14 --> N15
+    N14 --> N16
+```
+
 ### LeetCode Problems - Linked Lists
 
 | #   | Problem                  | Difficulty | Pattern             | Link                                                            |
@@ -1043,6 +1222,46 @@ class UnrolledNode {
    └── Version control (Git commits)
 ```
 
+> **Flow**: 1. OPERATING SYSTEMS → Process scheduling queues | 1. OPERATING SYSTEMS → Memory allocation (free list) | 1. OPERATING SYSTEMS → File system (FAT - File Allocation Table) | 2. BROWSERS → Back/Forward navigation (Doubly LL) | 2. BROWSERS → Tab management | 3. MUSIC PLAYERS → Playlist (next/previous) | ...+8 more
+
+```mermaid
+flowchart TD
+    N1["1. OPERATING SYSTEMS"]
+    N2["Process scheduling queues"]
+    N3["Memory allocation (free list)"]
+    N4["File system (FAT - File Allocation Table)"]
+    N5["2. BROWSERS"]
+    N6["Back/Forward navigation (Doubly LL)"]
+    N7["Tab management"]
+    N8["3. MUSIC PLAYERS"]
+    N9["Playlist (next/previous)"]
+    N10["Shuffle queue"]
+    N11["4. DATABASES"]
+    N12["Buffer pool management"]
+    N13["Transaction log chains"]
+    N14["Skip lists for indexing (Redis ZSET)"]
+    N15["5. CACHING SYSTEMS"]
+    N16["LRU Cache (Doubly LL + HashMap)"]
+    N17["MRU Cache variants"]
+    N18["6. UNDO/REDO SYSTEMS"]
+    N19["Command pattern implementation"]
+    N20["Version control (Git commits)"]
+    N1 --> N2
+    N1 --> N3
+    N1 --> N4
+    N5 --> N6
+    N5 --> N7
+    N8 --> N9
+    N8 --> N10
+    N11 --> N12
+    N11 --> N13
+    N11 --> N14
+    N15 --> N16
+    N15 --> N17
+    N18 --> N19
+    N18 --> N20
+```
+
 ---
 
 ## Stacks - Complete Guide
@@ -1079,6 +1298,27 @@ POP:  Remove element from top
 PEEK: View top element without removing
 
 All operations: O(1)
+```
+
+> **Flow**: Problem: Need to access data in reverse order of arriva → (Last In, First Out - LIFO) | (Last In, First Out - LIFO) → Real-World Analogy: | Real-World Analogy: → Stack of plates (take from top) | Stack of plates (take from top) → Undo in text editor (last action first) | Undo in text editor (last action first) → Browser back button (last page first) | Browser back button (last page first) → Function calls (last called, first returned) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Problem: Need to access data in reverse order of arriva"]
+    N2["(Last In, First Out - LIFO)"]
+    N3["Real-World Analogy:"]
+    N4["Stack of plates (take from top)"]
+    N5["Undo in text editor (last action first)"]
+    N6["Browser back button (last page first)"]
+    N7["Function calls (last called, first returned)"]
+    N8["Key Insight:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### Stack Implementations
@@ -1349,6 +1589,54 @@ class StackWithMiddle {
    └── Local variable storage
 ```
 
+> **Flow**: 1. COMPILERS & INTERPRETERS → Syntax parsing | 1. COMPILERS & INTERPRETERS → Expression evaluation | 1. COMPILERS & INTERPRETERS → Symbol table management | 2. RUNTIME SYSTEMS → Call stack (function calls) | 2. RUNTIME SYSTEMS → Stack frame management | 2. RUNTIME SYSTEMS → Exception handling | ...+12 more
+
+```mermaid
+flowchart TD
+    N1["1. COMPILERS & INTERPRETERS"]
+    N2["Syntax parsing"]
+    N3["Expression evaluation"]
+    N4["Symbol table management"]
+    N5["2. RUNTIME SYSTEMS"]
+    N6["Call stack (function calls)"]
+    N7["Stack frame management"]
+    N8["Exception handling"]
+    N9["3. BACKTRACKING ALGORITHMS"]
+    N10["Maze solving"]
+    N11["Puzzle solvers (Sudoku)"]
+    N12["Path finding"]
+    N13["4. TEXT EDITORS"]
+    N14["Undo/Redo operations"]
+    N15["Bracket matching"]
+    N16["Auto-complete suggestions"]
+    N17["5. WEB BROWSERS"]
+    N18["Navigation history"]
+    N19["JavaScript event loop"]
+    N20["DOM parsing"]
+    N21["6. MEMORY MANAGEMENT"]
+    N22["Stack allocation"]
+    N23["Activation records"]
+    N24["Local variable storage"]
+    N1 --> N2
+    N1 --> N3
+    N1 --> N4
+    N5 --> N6
+    N5 --> N7
+    N5 --> N8
+    N9 --> N10
+    N9 --> N11
+    N9 --> N12
+    N13 --> N14
+    N13 --> N15
+    N13 --> N16
+    N17 --> N18
+    N17 --> N19
+    N17 --> N20
+    N21 --> N22
+    N21 --> N23
+    N21 --> N24
+```
+
 ---
 
 ## Queues - Complete Guide
@@ -1368,6 +1656,21 @@ Real-World Analogy:
 Key Insight:
 Queues ensure FAIRNESS - first request gets served first.
 Essential for ordering and buffering in systems.
+```
+
+> **Flow**: Real-World Analogy: → Line at a ticket counter | Real-World Analogy: → Print job queue | Real-World Analogy: → Message queue | Real-World Analogy: → Task scheduling
+
+```mermaid
+flowchart TD
+    N1["Real-World Analogy:"]
+    N2["Line at a ticket counter"]
+    N3["Print job queue"]
+    N4["Message queue"]
+    N5["Task scheduling"]
+    N1 --> N2
+    N1 --> N3
+    N1 --> N4
+    N1 --> N5
 ```
 
 ### Queue Variants
@@ -1638,6 +1941,56 @@ Use Case: Sliding Window Maximum in O(n) instead of O(n*k)
    └── Interrupt handling
 ```
 
+> **Flow**: 1. MESSAGE QUEUES (Kafka, RabbitMQ, SQS) → Decoupling services | 1. MESSAGE QUEUES (Kafka, RabbitMQ, SQS) → Load leveling | 1. MESSAGE QUEUES (Kafka, RabbitMQ, SQS) → Event streaming | 1. MESSAGE QUEUES (Kafka, RabbitMQ, SQS) → Async processing | 2. OPERATING SYSTEMS → Process scheduling (ready queue) | 2. OPERATING SYSTEMS → I/O request queues | ...+13 more
+
+```mermaid
+flowchart TD
+    N1["1. MESSAGE QUEUES (Kafka, RabbitMQ, SQS)"]
+    N2["Decoupling services"]
+    N3["Load leveling"]
+    N4["Event streaming"]
+    N5["Async processing"]
+    N6["2. OPERATING SYSTEMS"]
+    N7["Process scheduling (ready queue)"]
+    N8["I/O request queues"]
+    N9["Print spooler"]
+    N10["3. WEB SERVERS"]
+    N11["Request queues"]
+    N12["Connection pools"]
+    N13["Rate limiting"]
+    N14["4. DATABASES"]
+    N15["Write-ahead log (WAL)"]
+    N16["Replication queues"]
+    N17["Query queues"]
+    N18["5. NETWORKING"]
+    N19["Packet queues (routers)"]
+    N20["TCP send/receive buffers"]
+    N21["QoS implementation"]
+    N22["6. REAL-TIME SYSTEMS"]
+    N23["Event queues"]
+    N24["Task scheduling"]
+    N25["Interrupt handling"]
+    N1 --> N2
+    N1 --> N3
+    N1 --> N4
+    N1 --> N5
+    N6 --> N7
+    N6 --> N8
+    N6 --> N9
+    N10 --> N11
+    N10 --> N12
+    N10 --> N13
+    N14 --> N15
+    N14 --> N16
+    N14 --> N17
+    N18 --> N19
+    N18 --> N20
+    N18 --> N21
+    N22 --> N23
+    N22 --> N24
+    N22 --> N25
+```
+
 ---
 
 ## Hash Tables - Complete Guide
@@ -1679,6 +2032,19 @@ Hash Function converts key to index:
 │  Array[10] ← Store ("apple", value)                        │
 │                                                            │
 └────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: Problem: Fast lookup by key / Array: O(n) search by val → Hash h('apple') = 97 × 31^4 + ... = 93029210 / Function | Hash h('apple') = 97 × 31^4 + ... = 93029210 / Function → 93029210 % 16 = 10 (Index in array of size 16) | 93029210 % 16 = 10 (Index in array of size 16) → Array[10] ← Store ('apple', value)
+
+```mermaid
+flowchart TD
+    N1["Problem: Fast lookup by key / Array: O(n) search by val"]
+    N2["Hash h('apple') = 97 × 31^4 + ... = 93029210 / Function"]
+    N3["93029210 % 16 = 10 (Index in array of size 16)"]
+    N4["Array[10] ← Store ('apple', value)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
 ```
 
 ### Hash Table Variants

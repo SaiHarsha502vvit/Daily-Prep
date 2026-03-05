@@ -83,6 +83,17 @@ STEP 3 — IDENTIFY DATA FLOW:
 • Reviews → separate API call, lazy loaded in tab
 ```
 
+> **Flow**: IMAGE / GALLERY / ○ ○ ● ○ → Product Title / ★★★★☆ (42 reviews) / $129.99 ~$159.99~  | Product Title / ★★★★☆ (42 reviews) / $129.99 ~$159.99~  → Tab content here...
+
+```mermaid
+flowchart TD
+    N1["IMAGE / GALLERY / ○ ○ ● ○"]
+    N2["Product Title / ★★★★☆ (42 reviews) / $129.99 ~$159.99~ "]
+    N3["Tab content here..."]
+    N1 --> N2
+    N2 --> N3
+```
+
 ---
 
 ## 2. The Data-First Approach
@@ -114,6 +125,36 @@ BEFORE WRITING ANY JSX, ANSWER:
 THEN: Write JSX structure → Style with CSS → Add interactions
 ```
 
+> **Flow**: selectedColor → changes on click | changes on click → useState | cartItems → changes across pages | changes across pages → Zustand/context | Click 'Add to Cart' → update cart state | Click thumbnail → change main image | ...+3 more
+
+```mermaid
+flowchart TD
+    N1["selectedColor"]
+    N2["changes on click"]
+    N3["useState"]
+    N4["cartItems"]
+    N5["changes across pages"]
+    N6["Zustand/context"]
+    N7["Click 'Add to Cart'"]
+    N8["update cart state"]
+    N9["Click thumbnail"]
+    N10["change main image"]
+    N11["Click tab"]
+    N12["switch visible panel"]
+    N13["THEN: Write JSX structure"]
+    N14["Style with CSS"]
+    N15["Add interactions"]
+    N1 --> N2
+    N2 --> N3
+    N4 --> N5
+    N5 --> N6
+    N7 --> N8
+    N9 --> N10
+    N11 --> N12
+    N13 --> N14
+    N14 --> N15
+```
+
 ---
 
 ## 3. State Ownership Rule
@@ -140,6 +181,15 @@ IF PROP DRILLING > 3 LEVELS DEEP → Consider:
 ├── Context (for stable data like theme, auth, locale)
 ├── Zustand (for frequently changing shared state)
 └── Composition pattern (pass components as children)
+```
+
+> **Flow**: IF PROP DRILLING &gt; 3 LEVELS DEEP → Consider:
+
+```mermaid
+flowchart LR
+    N1["IF PROP DRILLING &gt; 3 LEVELS DEEP"]
+    N2["Consider:"]
+    N1 --> N2
 ```
 
 ---
@@ -172,6 +222,21 @@ GOLDEN RULES:
 3. Both can be responsive WITHOUT media queries
 4. Don't use float for layout (flex/grid replace it)
 5. Position absolute ONLY for overlays/tooltips/badges
+```
+
+> **Flow**: YES → CSS Grid (header, sidebar, main, footer) | YES → Flexbox | YES → CSS Grid with auto-fit | YES → Normal flow (no special CSS)
+
+```mermaid
+flowchart LR
+    N1["YES"]
+    N2["CSS Grid (header, sidebar, main, footer)"]
+    N3["Flexbox"]
+    N4["CSS Grid with auto-fit"]
+    N5["Normal flow (no special CSS)"]
+    N1 --> N2
+    N1 --> N3
+    N1 --> N4
+    N1 --> N5
 ```
 
 ---
@@ -334,6 +399,27 @@ function ProductList() {
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: FORM WIZARD ARCHITECTURE: → Step 1 Step 2 Step 3 Step 4 | Step 1 Step 2 Step 3 Step 4 → [Personal] → [Address] → [Payment] → [Review] | [Personal] → [Address] → [Payment] → [Review] → State Shape: | State Shape: → currentStep: 2, | currentStep: 2, → formData: { | formData: { → personal: { name, email, phone }, // validated | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["FORM WIZARD ARCHITECTURE:"]
+    N2["Step 1 Step 2 Step 3 Step 4"]
+    N3["[Personal] → [Address] → [Payment] → [Review]"]
+    N4["State Shape:"]
+    N5["currentStep: 2,"]
+    N6["formData: {"]
+    N7["personal: { name, email, phone }, // validated"]
+    N8["address: { street, city, zip }, // in progress"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ```tsx
 // FormWizard.tsx — Multi-step form
 type WizardState = {
@@ -426,6 +512,27 @@ function FormWizard() {
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: BEFORE you write code for any new feature: → □ 1. UNDERSTAND the requirement | □ 1. UNDERSTAND the requirement → What exactly should happen? List every behavior. | What exactly should happen? List every behavior. → □ 2. DECOMPOSE into components | □ 2. DECOMPOSE into components → Draw the component tree on paper/whiteboard. | Draw the component tree on paper/whiteboard. → □ 3. DEFINE types/interfaces | □ 3. DEFINE types/interfaces → What data flows through? What can change? | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["BEFORE you write code for any new feature:"]
+    N2["□ 1. UNDERSTAND the requirement"]
+    N3["What exactly should happen? List every behavior."]
+    N4["□ 2. DECOMPOSE into components"]
+    N5["Draw the component tree on paper/whiteboard."]
+    N6["□ 3. DEFINE types/interfaces"]
+    N7["What data flows through? What can change?"]
+    N8["□ 4. IDENTIFY state ownership"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 7. Responsive Design Mental Model
@@ -459,6 +566,27 @@ function FormWizard() {
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: THINK IN FLUID RANGES, NOT FIXED BREAKPOINTS: → OLD WAY (Bad): | OLD WAY (Bad): → 'At 768px, switch to 2 columns. At 1024px, switch to 3. | 'At 768px, switch to 2 columns. At 1024px, switch to 3. → → Brittle. What about 767px? 769px? | → Brittle. What about 767px? 769px? → NEW WAY (Good): | NEW WAY (Good): → 'Each card should be 280-400px wide. As many as fit.' | 'Each card should be 280-400px wide. As many as fit.' → → Works at EVERY screen size. No breakpoints needed. | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THINK IN FLUID RANGES, NOT FIXED BREAKPOINTS:"]
+    N2["OLD WAY (Bad):"]
+    N3["'At 768px, switch to 2 columns. At 1024px, switch to 3."]
+    N4["→ Brittle. What about 767px? 769px?"]
+    N5["NEW WAY (Good):"]
+    N6["'Each card should be 280-400px wide. As many as fit.'"]
+    N7["→ Works at EVERY screen size. No breakpoints needed."]
+    N8["CONTENT-FIRST RESPONSIVE:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## Interview Quick-Fire
@@ -489,6 +617,34 @@ Q: What makes a good component API (props)?
   Consistent: follow established patterns in codebase.
   TypeScript: enforce correct usage at compile time.
   Avoid boolean overload: use variant="primary" not isPrimary, isSecondary.
+```
+
+> **Flow**: 5. Build bottom-up: atoms → molecules | molecules → organisms | organisms → page. | If yes to any → extract into its own component. | Categorize: Server state → TanStack Query. | UI state (open/closed, selected) → useState. | ...+2 more
+
+```mermaid
+flowchart TD
+    N1["5. Build bottom-up: atoms"]
+    N2["molecules"]
+    N3["organisms"]
+    N4["page."]
+    N5["If yes to any"]
+    N6["extract into its own component."]
+    N7["Categorize: Server state"]
+    N8["TanStack Query."]
+    N9["UI state (open/closed, selected)"]
+    N10["useState."]
+    N11["Complex form/wizard"]
+    N12["useReducer."]
+    N13["Shared across routes"]
+    N14["Zustand or Context."]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N5 --> N6
+    N7 --> N8
+    N9 --> N10
+    N11 --> N12
+    N13 --> N14
 ```
 
 ---

@@ -29,6 +29,20 @@
 Your API = a CONTRACT. Once published, breaking changes = TRUST broken.
 ```
 
+> **Flow**: Frontend / (React/ / Angular) --(HTTP Request)--> Backend / (Spring / Boot) | Mobile / App --(HTTP Request)--> Your API | Partner / Company --(HTTP Request)--> Your API
+
+```mermaid
+flowchart TD
+    N1["Frontend / (React/ / Angular)"]
+    N2["Backend / (Spring / Boot)"]
+    N3["Mobile / App"]
+    N4["Your API"]
+    N5["Partner / Company"]
+    N1 -->|"HTTP Request"| N2
+    N3 -->|"HTTP Request"| N4
+    N5 -->|"HTTP Request"| N4
+```
+
 ---
 
 # WHAT: REST Principles
@@ -65,6 +79,21 @@ Example:
   POST /users         → Creates new user (calling twice = TWO users!)
 ```
 
+> **Flow**: GET /users/42 → Returns user 42 (no change) | DELETE /users/42 → Deletes user 42 (calling again = same state) | POST /users → Creates new user (calling twice = TWO users!)
+
+```mermaid
+flowchart LR
+    N1["GET /users/42"]
+    N2["Returns user 42 (no change)"]
+    N3["DELETE /users/42"]
+    N4["Deletes user 42 (calling again = same state)"]
+    N5["POST /users"]
+    N6["Creates new user (calling twice = TWO users!)"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+```
+
 ## HTTP Status Codes
 
 ```
@@ -90,6 +119,57 @@ Example:
   500 Internal Error    → Bug in your code
   502 Bad Gateway       → Upstream service down
   503 Service Unavailable → Server overloaded, try later
+```
+
+> **Flow**: 200 OK → GET/PUT/PATCH succeeded | 201 Created → POST succeeded, new resource created | 204 No Content → DELETE succeeded, nothing to return | 301 Moved Permanently → Resource has new URL forever | 304 Not Modified → Cached version is still valid | 400 Bad Request → Malformed JSON, missing required field | ...+9 more
+
+```mermaid
+flowchart TD
+    N1["200 OK"]
+    N2["GET/PUT/PATCH succeeded"]
+    N3["201 Created"]
+    N4["POST succeeded, new resource created"]
+    N5["204 No Content"]
+    N6["DELETE succeeded, nothing to return"]
+    N7["301 Moved Permanently"]
+    N8["Resource has new URL forever"]
+    N9["304 Not Modified"]
+    N10["Cached version is still valid"]
+    N11["400 Bad Request"]
+    N12["Malformed JSON, missing required field"]
+    N13["401 Unauthorized"]
+    N14["Not authenticated (who are you?)"]
+    N15["403 Forbidden"]
+    N16["Authenticated but not authorized (you can't do thi"]
+    N17["404 Not Found"]
+    N18["Resource doesn't exist"]
+    N19["409 Conflict"]
+    N20["Duplicate key, version conflict"]
+    N21["422 Unprocessable"]
+    N22["Valid JSON, but business logic rejects it"]
+    N23["429 Too Many Requests"]
+    N24["Rate limited"]
+    N25["500 Internal Error"]
+    N26["Bug in your code"]
+    N27["502 Bad Gateway"]
+    N28["Upstream service down"]
+    N29["503 Service Unavailable"]
+    N30["Server overloaded, try later"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+    N7 --> N8
+    N9 --> N10
+    N11 --> N12
+    N13 --> N14
+    N15 --> N16
+    N17 --> N18
+    N19 --> N20
+    N21 --> N22
+    N23 --> N24
+    N25 --> N26
+    N27 --> N28
+    N29 --> N30
 ```
 
 ---
@@ -124,6 +204,36 @@ PATH rules:
   - Use PLURAL: /api/users (NOT /api/user)
   - Max 3 levels deep: /api/users/42/orders (NOT /api/a/b/c/d/e)
   - Version in URL: /api/v1/users
+```
+
+> **Flow**: GET /api/users → List all users | GET /api/users/42 → Get user 42 | POST /api/users → Create user | PUT /api/users/42 → Update user 42 | DELETE /api/users/42 → Delete user 42 | GET /api/users/42/orders → All orders for user 42 | ...+2 more
+
+```mermaid
+flowchart TD
+    N1["GET /api/users"]
+    N2["List all users"]
+    N3["GET /api/users/42"]
+    N4["Get user 42"]
+    N5["POST /api/users"]
+    N6["Create user"]
+    N7["PUT /api/users/42"]
+    N8["Update user 42"]
+    N9["DELETE /api/users/42"]
+    N10["Delete user 42"]
+    N11["GET /api/users/42/orders"]
+    N12["All orders for user 42"]
+    N13["GET /api/users/42/orders/7"]
+    N14["Order 7 of user 42"]
+    N15["POST /api/users/42/orders"]
+    N16["Create order for user 42"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+    N7 --> N8
+    N9 --> N10
+    N11 --> N12
+    N13 --> N14
+    N15 --> N16
 ```
 
 ## Level 2 — Request & Response Design
@@ -245,6 +355,26 @@ ADDING fields     → NOT a breaking change (backward compatible)
 REMOVING fields   → BREAKING change (must version)
 CHANGING types    → BREAKING change (string → int)
 CHANGING URL      → BREAKING change (new version)
+```
+
+> **Flow**: ADDING fields → NOT a breaking change (backward compatible) | REMOVING fields → BREAKING change (must version) | CHANGING types → BREAKING change (string | BREAKING change (string → int) | CHANGING URL → BREAKING change (new version)
+
+```mermaid
+flowchart TD
+    N1["ADDING fields"]
+    N2["NOT a breaking change (backward compatible)"]
+    N3["REMOVING fields"]
+    N4["BREAKING change (must version)"]
+    N5["CHANGING types"]
+    N6["BREAKING change (string"]
+    N7["int)"]
+    N8["CHANGING URL"]
+    N9["BREAKING change (new version)"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+    N6 --> N7
+    N8 --> N9
 ```
 
 ## Level 6 — Filtering, Sorting, Field Selection

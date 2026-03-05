@@ -41,6 +41,19 @@ STEP 4: NOW design the storage to support those queries.
 └──────────┘    └──────────┘    └──────────┘    └──────────┘
 ```
 
+> **Flow**: Users → Actions | Actions → Views | Views → Storage
+
+```mermaid
+flowchart LR
+    N1["Users"]
+    N2["Actions"]
+    N3["Views"]
+    N4["Storage"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 ---
 
 ## Mental Model 2: The Napkin Math Framework
@@ -72,6 +85,27 @@ Storage/day:   10M × 300B = 3 GB/day
 Storage/year:  3 GB × 365 ≈ 1 TB
 
 Insight: Read-heavy (100:1 ratio) → need caching + CDN
+```
+
+> **Flow**: BACK-OF-THE-ENVELOPE ESTIMATION → Before designing, ESTIMATE the scale: | Before designing, ESTIMATE the scale: → NUMBERS TO MEMORIZE: | NUMBERS TO MEMORIZE: → 1 day = 86,400 seconds ≈ 100K seconds | 1 day = 86,400 seconds ≈ 100K seconds → 1 month = 2.5 million seconds | 1 month = 2.5 million seconds → 1 year = 30 million seconds | 1 year = 30 million seconds → 1 char = 1 byte (ASCII) / 2 bytes (UTF) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["BACK-OF-THE-ENVELOPE ESTIMATION"]
+    N2["Before designing, ESTIMATE the scale:"]
+    N3["NUMBERS TO MEMORIZE:"]
+    N4["1 day = 86,400 seconds ≈ 100K seconds"]
+    N5["1 month = 2.5 million seconds"]
+    N6["1 year = 30 million seconds"]
+    N7["1 char = 1 byte (ASCII) / 2 bytes (UTF)"]
+    N8["1 tweet ≈ 300 bytes"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---
@@ -127,6 +161,19 @@ Only NOW consider breaking into services + horizontal sharding
 
 KEY INSIGHT: Over-engineering at Stage 1 is worse than
 under-engineering. Build for 10x your current scale, not 1000x.
+```
+
+> **Flow**: App / Server → Database / (separate) | App / Server → Cache / (Redis) | Cache / (Redis) → DB
+
+```mermaid
+flowchart TD
+    N2["App / Server"]
+    N3["Database / (separate)"]
+    N4["Cache / (Redis)"]
+    N5["DB"]
+    N2 --> N3
+    N2 --> N4
+    N4 --> N5
 ```
 
 ---

@@ -48,6 +48,17 @@ Client: "Any new messages?" → Server: "No"       (wasted request)
 Client: "Any new messages?" → Server: "No"       (wasted request)
 Client: "Any new messages?" → Server: "Yes! Here" (finally useful)
 ```
+
+> **Flow**: Client: 'Any new messages?' → Server: 'No' (wasted request) | Client: 'Any new messages?' → Server: 'No' (wasted request) | Client: 'Any new messages?' → Server: 'Yes! Here' (finally useful)
+
+```mermaid
+flowchart LR
+    N1["Client: 'Any new messages?'"]
+    N2["Server: 'No' (wasted request)"]
+    N3["Server: 'Yes! Here' (finally useful)"]
+    N1 --> N2
+    N1 --> N3
+```
 **1000 users polling every 2 seconds = 500 requests/second doing NOTHING**
 
 ### WebSocket = Persistent Two-Way Connection
@@ -55,6 +66,21 @@ Client: "Any new messages?" → Server: "Yes! Here" (finally useful)
 Client ←→ Server (always connected)
 Server: "Hey, new message!" → Client gets it INSTANTLY
 Client: "I'm typing..."     → Server knows INSTANTLY
+```
+
+> **Flow**: Client ← → Server (always connected) | Server: 'Hey, new message!' → Client gets it INSTANTLY | Client: 'I'm typing...' → Server knows INSTANTLY
+
+```mermaid
+flowchart LR
+    N1["Client ←"]
+    N2["Server (always connected)"]
+    N3["Server: 'Hey, new message!'"]
+    N4["Client gets it INSTANTLY"]
+    N5["Client: 'I'm typing...'"]
+    N6["Server knows INSTANTLY"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
 ```
 
 ## HOW — WebSocket in Spring Boot
@@ -238,6 +264,21 @@ REST GET /api/users/1  → gets user
 REST GET /api/users/1/orders → gets orders
 REST GET /api/orders/5/items → gets items
 → 3 API calls for 1 page (UNDER-FETCHING)
+```
+
+> **Flow**: REST GET /api/users/1 → gets user | REST GET /api/users/1/orders → gets orders | REST GET /api/orders/5/items → gets items
+
+```mermaid
+flowchart LR
+    N1["REST GET /api/users/1"]
+    N2["gets user"]
+    N3["REST GET /api/users/1/orders"]
+    N4["gets orders"]
+    N5["REST GET /api/orders/5/items"]
+    N6["gets items"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
 ```
 
 GraphQL solution: **Client asks for EXACTLY what it needs**
@@ -551,6 +592,27 @@ public class UserGrpcClient {
 4. Bidirectional:   Client ↔ N messages ↔ Server (like WebSocket)
 ```
 
+> **Flow**: 1. Unary: Client → 1 request | 1 request → Server | Server → 1 response | 2. Server Stream: Client → 1 request | 1 request → Server | Server → N responses (streaming) | ...+3 more
+
+```mermaid
+flowchart TD
+    N1["1. Unary: Client"]
+    N2["1 request"]
+    N3["Server"]
+    N4["1 response"]
+    N5["2. Server Stream: Client"]
+    N6["N responses (streaming)"]
+    N7["3. Client Stream: Client"]
+    N8["N requests"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N5 --> N2
+    N3 --> N6
+    N7 --> N8
+    N8 --> N3
+```
+
 ### Interview Questions
 1. **Q: When gRPC over REST?** A: Internal microservice communication where speed matters. REST for public/browser APIs.
 2. **Q: What is Protocol Buffers?** A: Binary serialization format — smaller, faster than JSON. Needs .proto schema file.
@@ -582,6 +644,26 @@ Each Step has:
   ItemReader  → reads one item at a time
   ItemProcessor → transforms/validates
   ItemWriter  → writes in chunks (e.g., 100 at a time)
+```
+
+> **Flow**: Step 1: Read CSV → Process | Process → Write to DB | ItemReader → reads one item at a time | ItemProcessor → transforms/validates | ItemWriter → writes in chunks (e.g., 100 at a time)
+
+```mermaid
+flowchart TD
+    N1["Step 1: Read CSV"]
+    N2["Process"]
+    N3["Write to DB"]
+    N4["ItemReader"]
+    N5["reads one item at a time"]
+    N6["ItemProcessor"]
+    N7["transforms/validates"]
+    N8["ItemWriter"]
+    N9["writes in chunks (e.g., 100 at a time)"]
+    N1 --> N2
+    N2 --> N3
+    N4 --> N5
+    N6 --> N7
+    N8 --> N9
 ```
 
 ### Step 1: Dependencies
@@ -723,6 +805,17 @@ WHY Chunks?
 - Memory efficient (don't load all 10K at once)
 - Transaction safety (if chunk 50 fails, only 100 records lost)
 - Restartable (resume from last successful chunk)
+```
+
+> **Flow**: Chunk 1: Records 1-100 → INSERT 100 rows (1 transaction) | Chunk 2: Records 101-200 → INSERT 100 rows (1 transaction)
+
+```mermaid
+flowchart LR
+    N1["Chunk 1: Records 1-100"]
+    N2["INSERT 100 rows (1 transaction)"]
+    N3["Chunk 2: Records 101-200"]
+    N1 --> N2
+    N3 --> N2
 ```
 
 ### Interview Questions
@@ -929,6 +1022,21 @@ src/main/resources/
 └── messages_te.properties           # Telugu
 ```
 
+> **Flow**: src/main/resources/ → messages.properties # Default (English) | src/main/resources/ → messages_hi.properties # Hindi | src/main/resources/ → messages_ja.properties # Japanese | src/main/resources/ → messages_te.properties # Telugu
+
+```mermaid
+flowchart TD
+    N1["src/main/resources/"]
+    N2["messages.properties # Default (English)"]
+    N3["messages_hi.properties # Hindi"]
+    N4["messages_ja.properties # Japanese"]
+    N5["messages_te.properties # Telugu"]
+    N1 --> N2
+    N1 --> N3
+    N1 --> N4
+    N1 --> N5
+```
+
 ```properties
 # messages.properties (English - default)
 user.welcome=Welcome, {0}!
@@ -994,6 +1102,18 @@ Accept-Language: hi     → responds in Hindi
 Accept-Language: en     → responds in English
 ```
 
+> **Flow**: Accept-Language: hi → responds in Hindi | Accept-Language: en → responds in English
+
+```mermaid
+flowchart LR
+    N1["Accept-Language: hi"]
+    N2["responds in Hindi"]
+    N3["Accept-Language: en"]
+    N4["responds in English"]
+    N1 --> N2
+    N3 --> N4
+```
+
 ### Interview Questions
 1. **Q: How does Spring resolve locale?** A: Accept-Language header → LocaleResolver → MessageSource lookup.
 2. **Q: What is {0} in messages.properties?** A: Placeholder for dynamic values, replaced at runtime.
@@ -1022,6 +1142,18 @@ Tenant B → database_company_b
 ❌ Expensive, ❌ Hard to manage 100+ databases
 ```
 
+> **Flow**: Tenant A → database_company_a | Tenant B → database_company_b
+
+```mermaid
+flowchart LR
+    N1["Tenant A"]
+    N2["database_company_a"]
+    N3["Tenant B"]
+    N4["database_company_b"]
+    N1 --> N2
+    N3 --> N4
+```
+
 ### Strategy 2: Shared Database, Separate Schema
 ```
 Same DB, different schemas:
@@ -1030,6 +1162,18 @@ Tenant B → schema_b.users, schema_b.orders
 
 ✅ Good isolation, ✅ Moderate cost
 ❌ Schema migrations must run for each tenant
+```
+
+> **Flow**: Tenant A → schema_a.users, schema_a.orders | Tenant B → schema_b.users, schema_b.orders
+
+```mermaid
+flowchart LR
+    N1["Tenant A"]
+    N2["schema_a.users, schema_a.orders"]
+    N3["Tenant B"]
+    N4["schema_b.users, schema_b.orders"]
+    N1 --> N2
+    N3 --> N4
 ```
 
 ### Strategy 3: Shared Everything + Tenant Column (Most Common)

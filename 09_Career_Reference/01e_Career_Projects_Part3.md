@@ -70,6 +70,17 @@
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: KUBELET / • Agent running on each node / • Watches API  → CONTAINER RUNTIME / (containerd/CRI-O) / Actually runs  | CONTAINER RUNTIME / (containerd/CRI-O) / Actually runs  → Pod 3 / App
+
+```mermaid
+flowchart TD
+    N2["KUBELET / • Agent running on each node / • Watches API "]
+    N3["CONTAINER RUNTIME / (containerd/CRI-O) / Actually runs "]
+    N6["Pod 3 / App"]
+    N2 --> N3
+    N3 --> N6
+```
+
 
 ### Pod Scheduling - How It Works
 
@@ -222,6 +233,17 @@ Ingress:
 │                     line 127                                     │
 │                                                                  │
 └──────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: METRICS → LOGS | LOGS → TRACES
+
+```mermaid
+flowchart TD
+    N1["METRICS"]
+    N2["LOGS"]
+    N3["TRACES"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 
@@ -588,6 +610,41 @@ Trace ID: abc123
     └── Email Service (200ms)
 ```
 
+> **Flow**: Trace ID: abc123 → API Gateway (2ms) | Trace ID: abc123 → Auth check | Trace ID: abc123 → Order Service (150ms) | Trace ID: abc123 → Validate request (5ms) | Trace ID: abc123 → Check inventory (50ms) | Inventory Service (45ms) → Query database (40ms) | ...+7 more
+
+```mermaid
+flowchart TD
+    N1["Trace ID: abc123"]
+    N2["API Gateway (2ms)"]
+    N3["Auth check"]
+    N4["Order Service (150ms)"]
+    N5["Validate request (5ms)"]
+    N6["Check inventory (50ms)"]
+    N7["Inventory Service (45ms)"]
+    N8["Query database (40ms)"]
+    N9["Process payment (80ms)"]
+    N10["Payment Service (75ms)"]
+    N11["Fraud check (30ms)"]
+    N12["Charge card (40ms)"]
+    N13["Create order (15ms)"]
+    N14["Save to DB (10ms)"]
+    N15["Send confirmation email (async)"]
+    N16["Email Service (200ms)"]
+    N1 --> N2
+    N1 --> N3
+    N1 --> N4
+    N1 --> N5
+    N1 --> N6
+    N7 --> N8
+    N7 --> N9
+    N10 --> N11
+    N10 --> N12
+    N10 --> N13
+    N10 --> N14
+    N10 --> N15
+    N10 --> N16
+```
+
 ---
 
 _Stage 4 Complete! Ready for Stage 5: Complete Application Scenarios_
@@ -640,6 +697,23 @@ _Stage 4 Complete! Ready for Stage 5: Complete Application Scenarios_
 │   └─────────────────────────────────────────────────────┘        │
 │                                                                  │
 └──────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: API Gateway / (Kong/AWS) → Account / Service / - Balance / - Statement / - KYC | Auth / Service / - Login/MFA / - JWT/OAuth / - Session → Redis / (Sessions) | Account / Service / - Balance / - Statement / - KYC → PostgreSQL / (Accounts) | Transaction / Service / - Transfer / - Payment / - Hist → PostgreSQL / (Ledger)
+
+```mermaid
+flowchart TD
+    N1["API Gateway / (Kong/AWS)"]
+    N2["Auth / Service / - Login/MFA / - JWT/OAuth / - Session"]
+    N3["Account / Service / - Balance / - Statement / - KYC"]
+    N4["Transaction / Service / - Transfer / - Payment / - Hist"]
+    N5["Redis / (Sessions)"]
+    N6["PostgreSQL / (Accounts)"]
+    N7["PostgreSQL / (Ledger)"]
+    N1 --> N3
+    N2 --> N5
+    N3 --> N6
+    N4 --> N7
 ```
 
 #### Transaction Service - Double Entry Ledger
@@ -896,6 +970,47 @@ public class FinancialCalculations {
 │   └─────────────────────────────────────────────────────────┘    │
 │                                                                  │
 └──────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: CDN / (CloudFront) → ▼ ▼ ▼ / React API Gateway Admin / SPA Portal | ▼ ▼ ▼ / React API Gateway Admin / SPA Portal → Cart / Service | ▼ ▼ ▼ / React API Gateway Admin / SPA Portal → Order / Service | ▼ ▼ ▼ / React API Gateway Admin / SPA Portal → Payment / Service | React / SPA → Product / Service | React / SPA → Cart / Service | ...+15 more
+
+```mermaid
+flowchart TD
+    N1["CDN / (CloudFront)"]
+    N2["▼ ▼ ▼ / React API Gateway Admin / SPA Portal"]
+    N3["React / SPA"]
+    N4["Admin / Portal"]
+    N5["Product / Service"]
+    N6["Cart / Service"]
+    N7["Order / Service"]
+    N8["Payment / Service"]
+    N9["Search / Service"]
+    N10["PostgreSQL / (Products)"]
+    N11["Redis / (Cart)"]
+    N12["PostgreSQ / (Orders)"]
+    N13["Stripe / API"]
+    N14["Elastic- / search"]
+    N1 --> N2
+    N2 --> N6
+    N2 --> N7
+    N2 --> N8
+    N3 --> N5
+    N3 --> N6
+    N4 --> N8
+    N4 --> N9
+    N5 --> N10
+    N5 --> N11
+    N6 --> N10
+    N6 --> N11
+    N6 --> N12
+    N7 --> N11
+    N7 --> N12
+    N7 --> N13
+    N8 --> N12
+    N8 --> N13
+    N8 --> N14
+    N9 --> N13
+    N9 --> N14
 ```
 
 #### Cart Service with Redis
@@ -1269,6 +1384,31 @@ public class ProductSearchService {
 └──────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: Client 1 / (React) → Chat / Server 1 | Client 2 / (Mobile) → Load Balancer / (Sticky/WS) | Client N / (Web) → Chat / Server 3 | Load Balancer / (Sticky/WS) → ▼ ▼ ▼ / t Chat Chat / er 1 Server 2 Server | ▼ ▼ ▼ / t Chat Chat / er 1 Server 2 Server → Redis / Pub/Sub | Chat / Server 1 → MongoDB / Messages / History | ...+2 more
+
+```mermaid
+flowchart TD
+    N1["Client 1 / (React)"]
+    N2["Client 2 / (Mobile)"]
+    N3["Client N / (Web)"]
+    N4["Load Balancer / (Sticky/WS)"]
+    N5["▼ ▼ ▼ / t Chat Chat / er 1 Server 2 Server"]
+    N6["Chat / Server 1"]
+    N7["Chat / Server 3"]
+    N8["Redis / Pub/Sub"]
+    N9["MongoDB / Messages / History"]
+    N10["Redis / Presence / Online/ / Typing"]
+    N11["S3/CDN / Media / Files"]
+    N1 --> N6
+    N2 --> N4
+    N3 --> N7
+    N4 --> N5
+    N5 --> N8
+    N6 --> N9
+    N7 --> N11
+    N8 --> N10
+```
+
 #### WebSocket Chat Server (Node.js/Socket.io)
 
 ```typescript
@@ -1571,6 +1711,15 @@ export function useChat(token: string) {
 │   └─────────────────────────────────────────────────────────┘    │
 │                                                                  │
 └──────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: CLOSED OPEN HALF-OPEN / ▲ / CLOSED: Normal operation, r → Service A Service B Service C / Pool: 10 Pool: 20 Pool:
+
+```mermaid
+flowchart TD
+    N1["CLOSED OPEN HALF-OPEN / ▲ / CLOSED: Normal operation, r"]
+    N2["Service A Service B Service C / Pool: 10 Pool: 20 Pool:"]
+    N1 --> N2
 ```
 
 #### Resilience4j Implementation
@@ -2080,6 +2229,27 @@ DAILY PRACTICE:
 □ 30 min cloud hands-on
 ```
 
+> **Flow**: YOUR JOURNEY MAP → PHASE 1: DSA FOUNDATION (Month 1-2) | PHASE 1: DSA FOUNDATION (Month 1-2) → Arrays, Strings, Hashing | Arrays, Strings, Hashing → Two Pointers, Sliding Window | Two Pointers, Sliding Window → Trees, Graphs, DP | Trees, Graphs, DP → ✅ See: 26_Ultimate_DataStructures_Algorithms_Guide.md | ✅ See: 26_Ultimate_DataStructures_Algorithms_Guide.md → PHASE 2: SYSTEM DESIGN (Month 2-3) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["YOUR JOURNEY MAP"]
+    N2["PHASE 1: DSA FOUNDATION (Month 1-2)"]
+    N3["Arrays, Strings, Hashing"]
+    N4["Two Pointers, Sliding Window"]
+    N5["Trees, Graphs, DP"]
+    N6["✅ See: 26_Ultimate_DataStructures_Algorithms_Guide.md"]
+    N7["PHASE 2: SYSTEM DESIGN (Month 2-3)"]
+    N8["Database Design & SQL"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 🏁 Final Checklist: Are You Ready?
@@ -2116,6 +2286,27 @@ READY FOR:
 □ Tech lead positions
 □ System design interviews
 □ Building your own products
+```
+
+> **Flow**: TECHNICAL SKILLS: → □ Can solve medium DSA problems in 30 mins | □ Can solve medium DSA problems in 30 mins → □ Can design database schema for any app | □ Can design database schema for any app → □ Can build REST API from scratch | □ Can build REST API from scratch → □ Can containerize and deploy applications | □ Can containerize and deploy applications → □ Can set up CI/CD pipeline | □ Can set up CI/CD pipeline → □ Can debug distributed systems | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["TECHNICAL SKILLS:"]
+    N2["□ Can solve medium DSA problems in 30 mins"]
+    N3["□ Can design database schema for any app"]
+    N4["□ Can build REST API from scratch"]
+    N5["□ Can containerize and deploy applications"]
+    N6["□ Can set up CI/CD pipeline"]
+    N7["□ Can debug distributed systems"]
+    N8["SOFT SKILLS:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

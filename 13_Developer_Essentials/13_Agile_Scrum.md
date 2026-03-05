@@ -111,6 +111,17 @@ SCRUM TEAM (Typically 5-9 People)
 └──────────────────────────────────────────────────┘
 ```
 
+> **Flow**: PRODUCT OWNER (1 person) / • Owns the Product Backlog / → SCRUM MASTER (1 person, servant-leader) / • Facilitates | SCRUM MASTER (1 person, servant-leader) / • Facilitates → DEVELOPMENT TEAM (3-7 people) / • Cross-functional (fro
+
+```mermaid
+flowchart TD
+    N1["PRODUCT OWNER (1 person) / • Owns the Product Backlog /"]
+    N2["SCRUM MASTER (1 person, servant-leader) / • Facilitates"]
+    N3["DEVELOPMENT TEAM (3-7 people) / • Cross-functional (fro"]
+    N1 --> N2
+    N2 --> N3
+```
+
 ### The Sprint — 2-Week Cycle
 
 ```
@@ -131,6 +142,19 @@ Day 1           Day 2-9              Day 10
 
 KEY RULE: Sprint scope is FIXED once planning is done.
 No adding work mid-sprint (unless truly urgent).
+```
+
+> **Flow**: Sprint / Planning / (4 hrs) → Development / Daily Standups / (15 min each) | Development / Daily Standups / (15 min each) → Sprint Review / → (Demo to PO) / (2 hrs) | Sprint Review / → (Demo to PO) / (2 hrs) → Retrospective / (What to improve) / (1.5 hrs)
+
+```mermaid
+flowchart TD
+    N1["Sprint / Planning / (4 hrs)"]
+    N2["Development / Daily Standups / (15 min each)"]
+    N3["Sprint Review / → (Demo to PO) / (2 hrs)"]
+    N4["Retrospective / (What to improve) / (1.5 hrs)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
 ```
 
 ---
@@ -391,6 +415,21 @@ Remaining
 
   ── Ideal Burndown (straight line)
   ╲_ Actual Burndown (healthy — roughly follows ideal)
+```
+
+> **Flow**: Story Points → Remaining | Remaining → Day 1 5 10 | Day 1 5 10 → Ideal Burndown (straight line) | Ideal Burndown (straight line) → ╲_ Actual Burndown (healthy — roughly follows ideal)
+
+```mermaid
+flowchart TD
+    N1["Story Points"]
+    N2["Remaining"]
+    N3["Day 1 5 10"]
+    N4["Ideal Burndown (straight line)"]
+    N5["╲_ Actual Burndown (healthy — roughly follows ideal)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
 ```
 
 ---

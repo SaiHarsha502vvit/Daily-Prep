@@ -52,6 +52,28 @@ Only works on DAG (Directed Acyclic Graph)
 If cycle exists → NO valid ordering (detect: not all nodes processed)
 ```
 
+> **Flow**: Valid order: CS101 → CS201 | CS201 → CS301 | CS301 → CS202 | CS101 → CS202 | CS202 → CS201 | CS201 → CS301 | ...+2 more
+
+```mermaid
+flowchart TD
+    N1["Valid order: CS101"]
+    N2["CS201"]
+    N3["CS301"]
+    N4["CS202"]
+    N5["CS101"]
+    N6["Topological sort = LINEAR ordering where for every"]
+    N7["v,"]
+    N8["If cycle exists"]
+    N9["NO valid ordering (detect: not all nodes processed"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N5 --> N4
+    N4 --> N2
+    N6 --> N7
+    N8 --> N9
+```
+
 ### Kahn's Algorithm (BFS-based)
 
 ```java
@@ -205,6 +227,21 @@ Return true if you can finish all courses.
 
 Input: numCourses = 2, prerequisites = [[1,0],[0,1]]
 Output: false (cycle: 0→1→0)
+```
+
+> **Flow**: numCourses = 2, prerequisites = [[1,0]] → Means: to take course 1, you must first take course 0 | Means: to take course 1, you must first take course 0 → Return true if you can finish all courses. | Return true if you can finish all courses. → Input: numCourses = 2, prerequisites = [[1,0],[0,1]] | Input: numCourses = 2, prerequisites = [[1,0],[0,1]] → Output: false (cycle: 0→1→0)
+
+```mermaid
+flowchart TD
+    N1["numCourses = 2, prerequisites = [[1,0]]"]
+    N2["Means: to take course 1, you must first take course 0"]
+    N3["Return true if you can finish all courses."]
+    N4["Input: numCourses = 2, prerequisites = [[1,0],[0,1]]"]
+    N5["Output: false (cycle: 0→1→0)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
 ```
 
 **Pattern**: Topological sort — if cycle detected, return false.

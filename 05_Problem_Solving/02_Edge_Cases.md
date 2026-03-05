@@ -653,6 +653,27 @@ DURING INTERVIEW:
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: EDGE CASE QUICK CHECK → Arrays: | Arrays: → □ Empty array □ Single element □ Two elements | □ Empty array □ Single element □ Two elements → □ All same □ Sorted □ Reverse sorted | □ All same □ Sorted □ Reverse sorted → □ Negatives □ Zeros □ Large values | □ Negatives □ Zeros □ Large values → Strings: | Strings: → □ Empty '' □ Single char □ All spaces | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["EDGE CASE QUICK CHECK"]
+    N2["Arrays:"]
+    N3["□ Empty array □ Single element □ Two elements"]
+    N4["□ All same □ Sorted □ Reverse sorted"]
+    N5["□ Negatives □ Zeros □ Large values"]
+    N6["Strings:"]
+    N7["□ Empty '' □ Single char □ All spaces"]
+    N8["□ Mixed case □ Special chars □ Unicode"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 _The difference between a good programmer and a great programmer is edge case handling!_ ⚡

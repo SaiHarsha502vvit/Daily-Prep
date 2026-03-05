@@ -52,6 +52,27 @@ String Pool (special memory area):
   RULE: ALWAYS use .equals() for String comparison, NEVER ==
 ```
 
+> **Flow**: Before: Stack: s → [heap: 'hello'] | After: Stack: s → [heap: 'hello world'] | a == b → true (same reference) | a == c → false (different references) | a.equals(c) → true (same content)
+
+```mermaid
+flowchart TD
+    N1["Before: Stack: s"]
+    N2["[heap: 'hello']"]
+    N3["After: Stack: s"]
+    N4["[heap: 'hello world']"]
+    N5["a == b"]
+    N6["true (same reference)"]
+    N7["a == c"]
+    N8["false (different references)"]
+    N9["a.equals(c)"]
+    N10["true (same content)"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+    N7 --> N8
+    N9 --> N10
+```
+
 #### HOW: Essential String operations
 
 ```java
@@ -155,6 +176,42 @@ Pass 4:
   (1,2) → ok:   [1, 2, 3, 5, 8]  ← DONE
 ```
 
+> **Flow**: (5,3) → swap: [3, 5, 8, 1, 2] | (5,8) → ok: [3, 5, 8, 1, 2] | (8,1) → swap: [3, 5, 1, 8, 2] | (8,2) → swap: [3, 5, 1, 2, 8] ← 8 is in final position | (3,5) → ok: [3, 5, 1, 2, 8] | (5,1) → swap: [3, 1, 5, 2, 8] | ...+4 more
+
+```mermaid
+flowchart TD
+    N1["(5,3)"]
+    N2["swap: [3, 5, 8, 1, 2]"]
+    N3["(5,8)"]
+    N4["ok: [3, 5, 8, 1, 2]"]
+    N5["(8,1)"]
+    N6["swap: [3, 5, 1, 8, 2]"]
+    N7["(8,2)"]
+    N8["swap: [3, 5, 1, 2, 8] ← 8 is in final position"]
+    N9["(3,5)"]
+    N10["ok: [3, 5, 1, 2, 8]"]
+    N11["(5,1)"]
+    N12["swap: [3, 1, 5, 2, 8]"]
+    N13["(5,2)"]
+    N14["swap: [3, 1, 2, 5, 8] ← 5 is in final position"]
+    N15["(3,1)"]
+    N16["swap: [1, 3, 2, 5, 8]"]
+    N17["(3,2)"]
+    N18["swap: [1, 2, 3, 5, 8] ← 3 is in final position"]
+    N19["(1,2)"]
+    N20["ok: [1, 2, 3, 5, 8] ← DONE"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+    N7 --> N8
+    N9 --> N10
+    N11 --> N12
+    N13 --> N14
+    N15 --> N16
+    N17 --> N18
+    N19 --> N20
+```
+
 #### Optimized Bubble Sort (early termination)
 
 ```java
@@ -205,6 +262,20 @@ Two strings are anagrams if they contain the same characters in different order.
 "listen" and "silent" → true
 "hello" and "world"   → false
 "anagram" and "nagaram" → true
+```
+
+> **Flow**: 'listen' and 'silent' → true | 'hello' and 'world' → false | 'anagram' and 'nagaram' → true
+
+```mermaid
+flowchart LR
+    N1["'listen' and 'silent'"]
+    N2["true"]
+    N3["'hello' and 'world'"]
+    N4["false"]
+    N5["'anagram' and 'nagaram'"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N2
 ```
 
 **Three approaches:**

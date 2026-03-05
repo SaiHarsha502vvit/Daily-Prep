@@ -49,6 +49,19 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: WHY: Why Service Layer Pattern? / • Fat controller anti → HOW: How to Structure Service Layer? / • Interface + Im | HOW: How to Structure Service Layer? / • Interface + Im → WHEN: When to Use Service vs Repository? / SERVICE: Bus | WHEN: When to Use Service vs Repository? / SERVICE: Bus → WHICH: Which Patterns to Use? / ESSENTIAL: @Service, @R
+
+```mermaid
+flowchart TD
+    N1["WHY: Why Service Layer Pattern? / • Fat controller anti"]
+    N2["HOW: How to Structure Service Layer? / • Interface + Im"]
+    N3["WHEN: When to Use Service vs Repository? / SERVICE: Bus"]
+    N4["WHICH: Which Patterns to Use? / ESSENTIAL: @Service, @R"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 ---
 
 # 📌 The Service Layer
@@ -122,6 +135,27 @@
 │  ✅ Maintainable - changes isolated to one layer                                 │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: THE SERVICE LAYER PURPOSE → WITHOUT SERVICE LAYER (Fat Controller Anti-Pattern): | WITHOUT SERVICE LAYER (Fat Controller Anti-Pattern): → @RestController | @RestController → public class OrderController { | public class OrderController { → @PostMapping('/orders') | @PostMapping('/orders') → public Order createOrder(@RequestBody OrderRequest req) | public Order createOrder(@RequestBody OrderRequest req) → double total = 0; | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE SERVICE LAYER PURPOSE"]
+    N2["WITHOUT SERVICE LAYER (Fat Controller Anti-Pattern):"]
+    N3["@RestController"]
+    N4["public class OrderController {"]
+    N5["@PostMapping('/orders')"]
+    N6["public Order createOrder(@RequestBody OrderRequest req)"]
+    N7["double total = 0;"]
+    N8["Product p = productRepo.findById(item.productId);"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---
@@ -674,6 +708,23 @@ public interface OrderSpecification {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: SPRING DATA JPA REPOSITORY HIERARCHY / Repository&lt;T, → CrudRepository&lt;T, ID&gt; ← Basic CRUD operations / • | CrudRepository&lt;T, ID&gt; ← Basic CRUD operations / • → ListCrudRepository&lt;T, ID&gt; ← Returns List instead  | ListCrudRepository&lt;T, ID&gt; ← Returns List instead  → PagingAndSortingRepository&lt;T, ID&gt; ← + Pagination  | PagingAndSortingRepository&lt;T, ID&gt; ← + Pagination  → JpaRepository&lt;T, ID&gt; ← + JPA specific features /  | JpaRepository&lt;T, ID&gt; ← + JPA specific features /  → JpaSpecificationExecutor&lt;T&gt; ← + Dynamic queries /
+
+```mermaid
+flowchart TD
+    N1["SPRING DATA JPA REPOSITORY HIERARCHY / Repository&lt;T,"]
+    N2["CrudRepository&lt;T, ID&gt; ← Basic CRUD operations / •"]
+    N3["ListCrudRepository&lt;T, ID&gt; ← Returns List instead "]
+    N4["PagingAndSortingRepository&lt;T, ID&gt; ← + Pagination "]
+    N5["JpaRepository&lt;T, ID&gt; ← + JPA specific features / "]
+    N6["JpaSpecificationExecutor&lt;T&gt; ← + Dynamic queries /"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+```
+
 ### Basic Repository
 
 ```java
@@ -926,6 +977,27 @@ public interface UserRepository extends JpaRepository<User, Long> {
 │  Distinct       → SELECT DISTINCT                                             │
 │                                                                               │
 └───────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: QUERY METHOD KEYWORDS → SUBJECT KEYWORDS (Start of method name): | SUBJECT KEYWORDS (Start of method name): → find...By → Query returning result(s) | find...By → Query returning result(s) → read...By → Same as find | read...By → Same as find → query...By → Same as find | query...By → Same as find → get...By → Same as find | get...By → Same as find → search...By → Same as find | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["QUERY METHOD KEYWORDS"]
+    N2["SUBJECT KEYWORDS (Start of method name):"]
+    N3["find...By → Query returning result(s)"]
+    N4["read...By → Same as find"]
+    N5["query...By → Same as find"]
+    N6["get...By → Same as find"]
+    N7["search...By → Same as find"]
+    N8["stream...By → Returns Stream&lt;T&gt;"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---
@@ -1266,6 +1338,27 @@ public class UserSearchCriteria {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: REPOSITORY BEST PRACTICES → 1. USE OPTIONAL FOR SINGLE RESULTS | 1. USE OPTIONAL FOR SINGLE RESULTS → ✅ Optional&lt;User&gt; findByEmail(String email); | ✅ Optional&lt;User&gt; findByEmail(String email); → 2. PREFER DERIVED QUERIES FOR SIMPLE CASES | 2. PREFER DERIVED QUERIES FOR SIMPLE CASES → ✅ List&lt;User&gt; findByActiveTrue(); // Clear, type-s | ✅ List&lt;User&gt; findByActiveTrue(); // Clear, type-s → 3. USE @Query FOR COMPLEX QUERIES | 3. USE @Query FOR COMPLEX QUERIES → ✅ @Query('SELECT u FROM User u WHERE u.active = true ' | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["REPOSITORY BEST PRACTICES"]
+    N2["1. USE OPTIONAL FOR SINGLE RESULTS"]
+    N3["✅ Optional&lt;User&gt; findByEmail(String email);"]
+    N4["2. PREFER DERIVED QUERIES FOR SIMPLE CASES"]
+    N5["✅ List&lt;User&gt; findByActiveTrue(); // Clear, type-s"]
+    N6["3. USE @Query FOR COMPLEX QUERIES"]
+    N7["✅ @Query('SELECT u FROM User u WHERE u.active = true '"]
+    N8["'AND u.role IN :roles AND u.createdAt &gt; :date')"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### Custom Repository Implementation
 
 ```java
@@ -1357,6 +1450,27 @@ REPOSITORY LAYER:
 □ Use projections for read-only DTOs
 □ Add JpaSpecificationExecutor for dynamic queries
 □ Consider custom repository for complex logic
+```
+
+> **Flow**: SERVICE LAYER: → □ @Service + @RequiredArgsConstructor + @Slf4j | □ @Service + @RequiredArgsConstructor + @Slf4j → □ All dependencies are final (immutable) | □ All dependencies are final (immutable) → □ Return DTOs, not entities | □ Return DTOs, not entities → □ Log important operations | □ Log important operations → □ Throw meaningful exceptions (not generic Exception) | □ Throw meaningful exceptions (not generic Exception) → □ Private helper methods for complex logic | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["SERVICE LAYER:"]
+    N2["□ @Service + @RequiredArgsConstructor + @Slf4j"]
+    N3["□ All dependencies are final (immutable)"]
+    N4["□ Return DTOs, not entities"]
+    N5["□ Log important operations"]
+    N6["□ Throw meaningful exceptions (not generic Exception)"]
+    N7["□ Private helper methods for complex logic"]
+    N8["REPOSITORY LAYER:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

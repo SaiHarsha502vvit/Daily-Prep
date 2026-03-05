@@ -89,6 +89,27 @@ state) and classes (old class components). Factory functions
 avoid `this` problems entirely — good for utility modules.
 ```
 
+> **Flow**: WHICH TO USE: → Approach When to Use | Approach When to Use → Object literal One-off objects, configs, data | Object literal One-off objects, configs, data → Class Multiple instances, inheritance | Class Multiple instances, inheritance → Factory function Privacy, no `this` confusion | Factory function Privacy, no `this` confusion → Object.create When you need specific prototype | Object.create When you need specific prototype → Constructor fn Legacy code only (use class) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["WHICH TO USE:"]
+    N2["Approach When to Use"]
+    N3["Object literal One-off objects, configs, data"]
+    N4["Class Multiple instances, inheritance"]
+    N5["Factory function Privacy, no `this` confusion"]
+    N6["Object.create When you need specific prototype"]
+    N7["Constructor fn Legacy code only (use class)"]
+    N8["avoid `this` problems entirely — good for utility modul"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 2. Property Descriptors — What Properties Really Are
@@ -162,6 +183,27 @@ person.firstName;          // "New"
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: LEVEL 1: Object.preventExtensions(obj) → → Cannot ADD new properties. Can modify/delete existing | → Cannot ADD new properties. Can modify/delete existing → LEVEL 2: Object.seal(obj) | LEVEL 2: Object.seal(obj) → → Cannot ADD or DELETE properties. CAN modify values. | → Cannot ADD or DELETE properties. CAN modify values. → (Sets configurable: false on all properties) | (Sets configurable: false on all properties) → LEVEL 3: Object.freeze(obj) | LEVEL 3: Object.freeze(obj) → → Cannot ADD, DELETE, or MODIFY. Completely immutable. | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["LEVEL 1: Object.preventExtensions(obj)"]
+    N2["→ Cannot ADD new properties. Can modify/delete existing"]
+    N3["LEVEL 2: Object.seal(obj)"]
+    N4["→ Cannot ADD or DELETE properties. CAN modify values."]
+    N5["(Sets configurable: false on all properties)"]
+    N6["LEVEL 3: Object.freeze(obj)"]
+    N7["→ Cannot ADD, DELETE, or MODIFY. Completely immutable."]
+    N8["(Sets writable: false AND configurable: false)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 4. Prototypes — JS's Inheritance Mechanism
@@ -184,6 +226,27 @@ person.firstName;          // "New"
 ║  HOW:  Access via Object.getPrototypeOf(obj) or obj.__proto__        ║
 ║        (deprecated but widely known).                                ║
 ╚══════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: object. This forms a CHAIN (until null). → WHY: Memory efficiency. Instead of copying methods to e | WHY: Memory efficiency. Instead of copying methods to e → instance, all instances SHARE methods via the prototype | instance, all instances SHARE methods via the prototype → 1000 users, 1 copy of greet() — not 1000 copies. | 1000 users, 1 copy of greet() — not 1000 copies. → ANALOGY: Prototype chain is like a family tree. | ANALOGY: Prototype chain is like a family tree. → If you don't know something, ask your parent. | If you don't know something, ask your parent. → HOW: Access via Object.getPrototypeOf(obj) or obj.__pro | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["object. This forms a CHAIN (until null)."]
+    N2["WHY: Memory efficiency. Instead of copying methods to e"]
+    N3["instance, all instances SHARE methods via the prototype"]
+    N4["1000 users, 1 copy of greet() — not 1000 copies."]
+    N5["ANALOGY: Prototype chain is like a family tree."]
+    N6["If you don't know something, ask your parent."]
+    N7["HOW: Access via Object.getPrototypeOf(obj) or obj.__pro"]
+    N8["(deprecated but widely known)."]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```
@@ -211,6 +274,19 @@ person.firstName;          // "New"
 ║  1. arr → No  2. Array.prototype → has its own toString → Use it     ║
 ║  (If Array.prototype didn't have it, would go to Object.prototype)   ║
 ╚══════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: PROTOTYPE CHAIN VISUALIZATION: / const arr = [1, 2, 3]; → Array.prototype { map, filter, reduce, forEach, ... } / | Array.prototype { map, filter, reduce, forEach, ... } / → Object.prototype { toString, hasOwnProperty, valueOf, . | Object.prototype { toString, hasOwnProperty, valueOf, . → null ← END OF CHAIN / When you call arr.map(), JS looks
+
+```mermaid
+flowchart TD
+    N1["PROTOTYPE CHAIN VISUALIZATION: / const arr = [1, 2, 3];"]
+    N2["Array.prototype { map, filter, reduce, forEach, ... } /"]
+    N3["Object.prototype { toString, hasOwnProperty, valueOf, ."]
+    N4["null ← END OF CHAIN / When you call arr.map(), JS looks"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
 ```
 
 ```javascript
@@ -324,6 +400,27 @@ rex.showTricks();     // "sit"
 ║  still prototypes. But class syntax prevents common mistakes         ║
 ║  like forgetting to set constructor.                                 ║
 ╚══════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: CLASS ≡ PROTOTYPE (what class actually does): → class Dog extends Animal { bark() {} } | class Dog extends Animal { bark() {} } → IS EXACTLY THE SAME AS: | IS EXACTLY THE SAME AS: → function Dog(name, breed) { Animal.call(this, name); .. | function Dog(name, breed) { Animal.call(this, name); .. → Dog.prototype = Object.create(Animal.prototype); | Dog.prototype = Object.create(Animal.prototype); → Dog.prototype.constructor = Dog; | Dog.prototype.constructor = Dog; → Dog.prototype.bark = function() {}; | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["CLASS ≡ PROTOTYPE (what class actually does):"]
+    N2["class Dog extends Animal { bark() {} }"]
+    N3["IS EXACTLY THE SAME AS:"]
+    N4["function Dog(name, breed) { Animal.call(this, name); .."]
+    N5["Dog.prototype = Object.create(Animal.prototype);"]
+    N6["Dog.prototype.constructor = Dog;"]
+    N7["Dog.prototype.bark = function() {};"]
+    N8["still prototypes. But class syntax prevents common mist"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---
@@ -475,6 +572,27 @@ In JS, objects are "bags of properties" — you can add/remove
 properties at any time. More flexible, but less safe.
 ```
 
+> **Flow**: Feature JavaScript Java → Typing Dynamic Static | Typing Dynamic Static → Inheritance Prototype-based Class-based | Inheritance Prototype-based Class-based → Class keyword Sugar over proto Real class | Class keyword Sugar over proto Real class → Private fields # prefix (new) private keyword | Private fields # prefix (new) private keyword → Interfaces None (use TS) interface keyword | Interfaces None (use TS) interface keyword → Multiple inherit Mixins/compose Interfaces only | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Feature JavaScript Java"]
+    N2["Typing Dynamic Static"]
+    N3["Inheritance Prototype-based Class-based"]
+    N4["Class keyword Sugar over proto Real class"]
+    N5["Private fields # prefix (new) private keyword"]
+    N6["Interfaces None (use TS) interface keyword"]
+    N7["Multiple inherit Mixins/compose Interfaces only"]
+    N8["Object creation Literal {}, new new only"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## Interview Quick-Fire
@@ -507,6 +625,27 @@ Q: How to check if a property exists?
 → "prop" in obj (includes prototype chain)
   obj.hasOwnProperty("prop") (own only)
   Object.hasOwn(obj, "prop") (modern, own only — preferred)
+```
+
+> **Flow**: Q: How does prototypal inheritance work? → on the object, JS walks up the prototype chain until nu | on the object, JS walks up the prototype chain until nu → Q: What does `new` keyword do? | Q: What does `new` keyword do? → → 1. Creates empty object {} | → 1. Creates empty object {} → 2. Sets its [[Prototype]] to Constructor.prototype | 2. Sets its [[Prototype]] to Constructor.prototype → 3. Calls constructor with `this` = new object | 3. Calls constructor with `this` = new object → Q: Difference between hasOwnProperty and `in`? | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Q: How does prototypal inheritance work?"]
+    N2["on the object, JS walks up the prototype chain until nu"]
+    N3["Q: What does `new` keyword do?"]
+    N4["→ 1. Creates empty object {}"]
+    N5["2. Sets its [[Prototype]] to Constructor.prototype"]
+    N6["3. Calls constructor with `this` = new object"]
+    N7["Q: Difference between hasOwnProperty and `in`?"]
+    N8["→ hasOwnProperty: only checks the object itself."]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

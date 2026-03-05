@@ -74,6 +74,25 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: emp_id name dept / 1 Alice 10 / 2 Bob 20 / 3 Carol 10 / → dept_id dept_name / 10 Engineering / 20 Marketing / 30  | dept_id dept_name / 10 Engineering / 20 Marketing / 30  → A ████ ████ B / ████ ████ / Result: Alice, Bob, Carol ( | A ████ ████ B / ████ ████ / Result: Alice, Bob, Carol ( → ████████ ████ B / ████████ ████ / Result: Alice, Bob, C | ████████ ████ B / ████████ ████ / Result: Alice, Bob, C → A ████ ████████ / ████ ████████ / Result: Alice, Bob, C | A ████ ████████ / ████ ████████ / Result: Alice, Bob, C → ████████ ████████ / ████████ ████████ / Result: Alice,  | ████████ ████████ / ████████ ████████ / Result: Alice,  → 4 employees × 3 departments = 12 rows / (Alice, Eng), (
+
+```mermaid
+flowchart TD
+    N1["emp_id name dept / 1 Alice 10 / 2 Bob 20 / 3 Carol 10 /"]
+    N2["dept_id dept_name / 10 Engineering / 20 Marketing / 30 "]
+    N3["A ████ ████ B / ████ ████ / Result: Alice, Bob, Carol ("]
+    N4["████████ ████ B / ████████ ████ / Result: Alice, Bob, C"]
+    N5["A ████ ████████ / ████ ████████ / Result: Alice, Bob, C"]
+    N6["████████ ████████ / ████████ ████████ / Result: Alice, "]
+    N7["4 employees × 3 departments = 12 rows / (Alice, Eng), ("]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+```
+
 ### JOIN Syntax and Examples
 
 ```sql

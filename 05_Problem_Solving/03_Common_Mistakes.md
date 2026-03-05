@@ -150,6 +150,27 @@ while (left < right)              // CORRECT: < (stop when they meet)
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: ARRAY INDEX OUT OF BOUNDS → MISTAKE 1: Accessing negative index | MISTAKE 1: Accessing negative index → int[] arr = {1, 2, 3}; | int[] arr = {1, 2, 3}; → int x = arr[-1]; // CRASH! ArrayIndexOutOfBoundsExcepti | int x = arr[-1]; // CRASH! ArrayIndexOutOfBoundsExcepti → MISTAKE 2: Accessing arr[i-1] without check | MISTAKE 2: Accessing arr[i-1] without check → ✗ WRONG: | ✗ WRONG: → ✓ CORRECT: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["ARRAY INDEX OUT OF BOUNDS"]
+    N2["MISTAKE 1: Accessing negative index"]
+    N3["int[] arr = {1, 2, 3};"]
+    N4["int x = arr[-1]; // CRASH! ArrayIndexOutOfBoundsExcepti"]
+    N5["MISTAKE 2: Accessing arr[i-1] without check"]
+    N6["✗ WRONG:"]
+    N7["✓ CORRECT:"]
+    N8["MISTAKE 3: Accessing arr[i+1] without check"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 💥 3. Integer Overflow
@@ -211,6 +232,27 @@ while (left < right)              // CORRECT: < (stop when they meet)
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: INTEGER OVERFLOW → MISTAKE 1: Factorial overflow | MISTAKE 1: Factorial overflow → 13! = 6,227,020,800 &gt; Integer.MAX_VALUE | 13! = 6,227,020,800 &gt; Integer.MAX_VALUE → ✗ WRONG: | ✗ WRONG: → int factorial = 1; | int factorial = 1; → factorial *= i; // Overflows at n=13 | factorial *= i; // Overflows at n=13 → ✓ CORRECT (use long): | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["INTEGER OVERFLOW"]
+    N2["MISTAKE 1: Factorial overflow"]
+    N3["13! = 6,227,020,800 &gt; Integer.MAX_VALUE"]
+    N4["✗ WRONG:"]
+    N5["int factorial = 1;"]
+    N6["factorial *= i; // Overflows at n=13"]
+    N7["✓ CORRECT (use long):"]
+    N8["long factorial = 1L;"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 📝 4. String Comparison Mistakes
@@ -258,6 +300,17 @@ s1 == s2;  // TRUE! (Both point to same string in pool)
 
 But DON'T rely on this! Always use .equals() to be safe.
 
+```
+
+> **Flow**: s1 / (ref A) → 'hello' | s2 / (ref B) → 'hello'
+
+```mermaid
+flowchart TD
+    N1["s1 / (ref A)"]
+    N2["s2 / (ref B)"]
+    N3["'hello'"]
+    N1 --> N3
+    N2 --> N3
 ```
 
 ---
@@ -325,6 +378,27 @@ But DON'T rely on this! Always use .equals() to be safe.
 ║  }                                                                        ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: SCANNER INPUT MISTAKES → MISTAKE 1: nextInt() leaves newline | MISTAKE 1: nextInt() leaves newline → Input: '5\nhello' | Input: '5\nhello' → ✗ WRONG: | ✗ WRONG: → int n = scanner.nextInt(); // Reads '5', leaves '\n' | int n = scanner.nextInt(); // Reads '5', leaves '\n' → Buffer state: | Buffer state: → Before: '5\nhello' | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["SCANNER INPUT MISTAKES"]
+    N2["MISTAKE 1: nextInt() leaves newline"]
+    N3["Input: '5\nhello'"]
+    N4["✗ WRONG:"]
+    N5["int n = scanner.nextInt(); // Reads '5', leaves '\n'"]
+    N6["Buffer state:"]
+    N7["Before: '5\nhello'"]
+    N8["After nextInt(): '5\nhello'"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---
@@ -400,6 +474,27 @@ for (int i = 0; i < n; i++) {
 
 ```
 
+> **Flow**: LOOP MISTAKES → MISTAKE 1: Infinite loop | MISTAKE 1: Infinite loop → ✗ WRONG: | ✗ WRONG: → int i = 0; | int i = 0; → System.out.println(i); | System.out.println(i); → ✗ ALSO WRONG: | ✗ ALSO WRONG: → MISTAKE 2: Modifying loop variable inside loop | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["LOOP MISTAKES"]
+    N2["MISTAKE 1: Infinite loop"]
+    N3["✗ WRONG:"]
+    N4["int i = 0;"]
+    N5["System.out.println(i);"]
+    N6["✗ ALSO WRONG:"]
+    N7["MISTAKE 2: Modifying loop variable inside loop"]
+    N8["✗ CONFUSING:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 📌 7. Edge Case Mistakes
@@ -456,6 +551,25 @@ ALWAYS CHECK THESE BEFORE SUBMITTING:
 │ arr = [5, 4, 3, 2, 1]  (reverse sorted)                            │
 └────────────────────────────────────────────────────────────────────┘
 
+```
+
+> **Flow**: arr = [] / str = '' / n = 0 → arr = [5] / str = 'a' / n = 1 | arr = [5] / str = 'a' / n = 1 → arr = [1, 2] (minimum for comparison) / str = 'ab' | arr = [1, 2] (minimum for comparison) / str = 'ab' → arr = [5, 5, 5, 5, 5] / str = 'aaaa' | arr = [5, 5, 5, 5, 5] / str = 'aaaa' → arr = [-5, -3, -1] / sum with negatives / max of all ne | arr = [-5, -3, -1] / sum with negatives / max of all ne → Integer.MAX_VALUE, Integer.MIN_VALUE / k = 0, k = n (wi | Integer.MAX_VALUE, Integer.MIN_VALUE / k = 0, k = n (wi → arr = [1, 2, 3, 4, 5] (already sorted) / arr = [5, 4, 3
+
+```mermaid
+flowchart TD
+    N1["arr = [] / str = '' / n = 0"]
+    N2["arr = [5] / str = 'a' / n = 1"]
+    N3["arr = [1, 2] (minimum for comparison) / str = 'ab'"]
+    N4["arr = [5, 5, 5, 5, 5] / str = 'aaaa'"]
+    N5["arr = [-5, -3, -1] / sum with negatives / max of all ne"]
+    N6["Integer.MAX_VALUE, Integer.MIN_VALUE / k = 0, k = n (wi"]
+    N7["arr = [1, 2, 3, 4, 5] (already sorted) / arr = [5, 4, 3"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
 ```
 
 ---
@@ -519,6 +633,27 @@ ALWAYS CHECK THESE BEFORE SUBMITTING:
 ║  // Check bounds FIRST, then access                                       ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: LOGIC MISTAKES → MISTAKE 1: Wrong boolean logic | MISTAKE 1: Wrong boolean logic → De Morgan's Laws: | De Morgan's Laws: → ✗ WRONG: | ✗ WRONG: → ✓ CLEARER: | ✓ CLEARER: → MISTAKE 2: && vs || confusion | MISTAKE 2: && vs || confusion → 'x is between 5 and 10' (inclusive): | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["LOGIC MISTAKES"]
+    N2["MISTAKE 1: Wrong boolean logic"]
+    N3["De Morgan's Laws:"]
+    N4["✗ WRONG:"]
+    N5["✓ CLEARER:"]
+    N6["MISTAKE 2: && vs || confusion"]
+    N7["'x is between 5 and 10' (inclusive):"]
+    N8["✓ CORRECT:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---
@@ -593,6 +728,27 @@ ALWAYS CHECK THESE BEFORE SUBMITTING:
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: RETURN STATEMENT MISTAKES → MISTAKE 1: Missing return statement | MISTAKE 1: Missing return statement → ✗ WRONG (compile error): | ✗ WRONG (compile error): → public int findMax(int[] arr) { | public int findMax(int[] arr) { → int max = arr[0]; | int max = arr[0]; → ✓ CORRECT: | ✓ CORRECT: → return max; // Don't forget! | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["RETURN STATEMENT MISTAKES"]
+    N2["MISTAKE 1: Missing return statement"]
+    N3["✗ WRONG (compile error):"]
+    N4["public int findMax(int[] arr) {"]
+    N5["int max = arr[0];"]
+    N6["✓ CORRECT:"]
+    N7["return max; // Don't forget!"]
+    N8["MISTAKE 2: Return inside loop (early exit)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 📌 10. Variable Initialization Mistakes
@@ -665,6 +821,27 @@ REFERENCE TABLE:
 
 ```
 
+> **Flow**: VARIABLE INITIALIZATION MISTAKES → MISTAKE 1: Wrong initial value for min/max | MISTAKE 1: Wrong initial value for min/max → ✗ WRONG: | ✗ WRONG: → int max = 0; // What if all numbers are negative? | int max = 0; // What if all numbers are negative? → ✓ CORRECT OPTIONS: | ✓ CORRECT OPTIONS: → int max = Integer.MIN_VALUE; // Smallest possible value | int max = Integer.MIN_VALUE; // Smallest possible value → int max = arr[0]; // First element (if array not empty) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["VARIABLE INITIALIZATION MISTAKES"]
+    N2["MISTAKE 1: Wrong initial value for min/max"]
+    N3["✗ WRONG:"]
+    N4["int max = 0; // What if all numbers are negative?"]
+    N5["✓ CORRECT OPTIONS:"]
+    N6["int max = Integer.MIN_VALUE; // Smallest possible value"]
+    N7["int max = arr[0]; // First element (if array not empty)"]
+    N8["MISTAKE 2: Wrong initial value for sum with subtraction"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 📋 PRE-SUBMISSION CHECKLIST
@@ -687,6 +864,27 @@ REFERENCE TABLE:
 ║  □ Did I test with the given examples?                                    ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: BEFORE YOU SUBMIT - CHECK THESE! → □ Did I handle single element input? | □ Did I handle single element input? → □ Did I handle all negative numbers? | □ Did I handle all negative numbers? → □ Did I handle all same elements? | □ Did I handle all same elements? → □ Is my loop bound correct (&lt; vs &lt;=)? | □ Is my loop bound correct (&lt; vs &lt;=)? → □ Did I use .equals() for string comparison (not ==)? | □ Did I use .equals() for string comparison (not ==)? → □ Did I handle Scanner newline after nextInt()? | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["BEFORE YOU SUBMIT - CHECK THESE!"]
+    N2["□ Did I handle single element input?"]
+    N3["□ Did I handle all negative numbers?"]
+    N4["□ Did I handle all same elements?"]
+    N5["□ Is my loop bound correct (&lt; vs &lt;=)?"]
+    N6["□ Did I use .equals() for string comparison (not ==)?"]
+    N7["□ Did I handle Scanner newline after nextInt()?"]
+    N8["□ Will my code overflow? (use long if needed)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

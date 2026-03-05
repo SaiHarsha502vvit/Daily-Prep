@@ -19,6 +19,15 @@ IF the problem involves:
 THEN → LinkedList + Two Pointers
 ```
 
+> **Flow**: THEN → LinkedList + Two Pointers
+
+```mermaid
+flowchart LR
+    N1["THEN"]
+    N2["LinkedList + Two Pointers"]
+    N1 --> N2
+```
+
 ---
 
 ## 📐 CORE TEMPLATES
@@ -114,6 +123,15 @@ Find cycle start:
   Both at 3! → Cycle starts at 3 ✅
 ```
 
+> **Flow**: Both at 3! → Cycle starts at 3 ✅
+
+```mermaid
+flowchart LR
+    N1["Both at 3!"]
+    N2["Cycle starts at 3 ✅"]
+    N1 --> N2
+```
+
 ---
 
 ## � FULL WALKTHROUGH: Reverse a Linked List (3-Pointer Technique)
@@ -147,6 +165,27 @@ Step-by-step:
 Time: O(n) | Space: O(1)
 WHY 3 pointers? You need `next` because once you reverse curr.next,
 you lose the reference to the rest of the list.
+```
+
+> **Flow**: Problem: Reverse 1→2→3→4→5→null to 5→4→3→2→1→null → Approach: Three pointers: prev, curr, next. | Approach: Three pointers: prev, curr, next. → At each step: save next, reverse the link, advance. | At each step: save next, reverse the link, advance. → Step-by-step: | Step-by-step: → prev=null, curr=1 | prev=null, curr=1 → null ← 1 2 → 3 → 4 → 5 | null ← 1 2 → 3 → 4 → 5 → null ← 1 ← 2 3 → 4 → 5 | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Problem: Reverse 1→2→3→4→5→null to 5→4→3→2→1→null"]
+    N2["Approach: Three pointers: prev, curr, next."]
+    N3["At each step: save next, reverse the link, advance."]
+    N4["Step-by-step:"]
+    N5["prev=null, curr=1"]
+    N6["null ← 1 2 → 3 → 4 → 5"]
+    N7["null ← 1 ← 2 3 → 4 → 5"]
+    N8["null ← 1 ← 2 ← 3 4 → 5"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---
@@ -185,6 +224,21 @@ WHY does the math work?
 Time: O(n) | Space: O(1)
 ```
 
+> **Flow**: Step 3: slow=4, fast=4 → MEET! Cycle exists. | Step 2: ptr1=3, ptr2=3 → MEET at node 3 = cycle start! ✅ | Fast is 2× slow: 2(a + b) = a + b + c → a = c - b
+
+```mermaid
+flowchart LR
+    N1["Step 3: slow=4, fast=4"]
+    N2["MEET! Cycle exists."]
+    N3["Step 2: ptr1=3, ptr2=3"]
+    N4["MEET at node 3 = cycle start! ✅"]
+    N5["Fast is 2× slow: 2(a + b) = a + b + c"]
+    N6["a = c - b"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+```
+
 ---
 
 ## 🛡️ EDGE CASES & COMMON MISTAKES
@@ -211,6 +265,27 @@ COMMON MISTAKES:
 4. Off-by-one in "k-th from end" — advance first pointer EXACTLY k steps
 5. Modifying the original list when problem says "don't modify"
    Palindrome check: reverse second half, check, then REVERSE BACK
+```
+
+> **Flow**: EDGE CASES: → Edge Case Handling | Edge Case Handling → Empty list (null) Return immediately | Empty list (null) Return immediately → Single node, no cycle fast.next is null → no cycle | Single node, no cycle fast.next is null → no cycle → Single node, self-cycle 1 → 1. fast == slow after 1 ste | Single node, self-cycle 1 → 1. fast == slow after 1 ste → Cycle at head a = 0, cycle start = head | Cycle at head a = 0, cycle start = head → Cycle at tail Long path before cycle | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["EDGE CASES:"]
+    N2["Edge Case Handling"]
+    N3["Empty list (null) Return immediately"]
+    N4["Single node, no cycle fast.next is null → no cycle"]
+    N5["Single node, self-cycle 1 → 1. fast == slow after 1 ste"]
+    N6["Cycle at head a = 0, cycle start = head"]
+    N7["Cycle at tail Long path before cycle"]
+    N8["Even vs odd length Fast/slow still works for middle fin"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

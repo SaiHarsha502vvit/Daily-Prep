@@ -54,6 +54,27 @@ CLIENT (Browser/Mobile/Postman)
 └───────────────────────────────────────┘
 ```
 
+> **Flow**: CLIENT (Browser/Mobile/Postman) → ↓ HTTP Request | ↓ HTTP Request → @RestController ← Handles HTTP, validates input | @RestController ← Handles HTTP, validates input → ProductController Returns JSON responses | ProductController Returns JSON responses → @Service ← Business logic | @Service ← Business logic → ProductService Validation rules, calculations | ProductService Validation rules, calculations → @Repository ← Data access | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["CLIENT (Browser/Mobile/Postman)"]
+    N2["↓ HTTP Request"]
+    N3["@RestController ← Handles HTTP, validates input"]
+    N4["ProductController Returns JSON responses"]
+    N5["@Service ← Business logic"]
+    N6["ProductService Validation rules, calculations"]
+    N7["@Repository ← Data access"]
+    N8["ProductRepository (JPA) SQL queries, CRUD operations"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### Complete CRUD REST Controller
 
 ```java
@@ -132,6 +153,25 @@ public class ProductController {
 │ PATCH   │ Partial    │ /products/1  │ 200 OK           │
 │ DELETE  │ Delete     │ /products/1  │ 204 No Content   │
 └─────────┴────────────┴──────────────┴──────────────────┘
+```
+
+> **Flow**: HTTP CRUD URL Response Code → GET Read /products 200 OK | GET Read /products 200 OK → GET Read one /products/1 200 or 404 | GET Read one /products/1 200 or 404 → POST Create /products 201 Created | POST Create /products 201 Created → PUT Full update /products/1 200 OK | PUT Full update /products/1 200 OK → PATCH Partial /products/1 200 OK | PATCH Partial /products/1 200 OK → DELETE Delete /products/1 204 No Content
+
+```mermaid
+flowchart TD
+    N1["HTTP CRUD URL Response Code"]
+    N2["GET Read /products 200 OK"]
+    N3["GET Read one /products/1 200 or 404"]
+    N4["POST Create /products 201 Created"]
+    N5["PUT Full update /products/1 200 OK"]
+    N6["PATCH Partial /products/1 200 OK"]
+    N7["DELETE Delete /products/1 204 No Content"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
 ```
 
 ### DTO Pattern (Don't Expose Entities!)
@@ -427,6 +467,24 @@ SQL Advanced:
 Spring Boot:
   Controller → Service → Repository layers
   @Valid + @RestControllerAdvice = clean error handling
+```
+
+> **Flow**: UNION/CASE → Window Functions | Window Functions → LAG/LEAD | LAG/LEAD → CTEs | Controller → Service | Service → Repository layers
+
+```mermaid
+flowchart TD
+    N1["UNION/CASE"]
+    N2["Window Functions"]
+    N3["LAG/LEAD"]
+    N4["CTEs"]
+    N5["Controller"]
+    N6["Service"]
+    N7["Repository layers"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N5 --> N6
+    N6 --> N7
 ```
 
 ---

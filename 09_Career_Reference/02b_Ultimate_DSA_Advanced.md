@@ -31,6 +31,27 @@
 │  ──────────────────────────────────────                                         │
 ```
 
+> **Flow**: STRING ALGORITHMS HIERARCHY → PATTERN MATCHING ALGORITHMS: | PATTERN MATCHING ALGORITHMS: → Algorithm Time Space Best For | Algorithm Time Space Best For → Naive O(nm) O(1) Short patterns, simple cases | Naive O(nm) O(1) Short patterns, simple cases → KMP O(n+m) O(m) Single pattern, streaming | KMP O(n+m) O(m) Single pattern, streaming → Rabin-Karp O(n+m)† O(1) Multiple patterns same length | Rabin-Karp O(n+m)† O(1) Multiple patterns same length → Z-Algorithm O(n+m) O(n) All occurrences, string analysi | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["STRING ALGORITHMS HIERARCHY"]
+    N2["PATTERN MATCHING ALGORITHMS:"]
+    N3["Algorithm Time Space Best For"]
+    N4["Naive O(nm) O(1) Short patterns, simple cases"]
+    N5["KMP O(n+m) O(m) Single pattern, streaming"]
+    N6["Rabin-Karp O(n+m)† O(1) Multiple patterns same length"]
+    N7["Z-Algorithm O(n+m) O(n) All occurrences, string analysi"]
+    N8["Aho-Corasick O(n+m+z) O(m) Multiple patterns simultaneo"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ```java
 // Z[i] = length of longest substring starting at i that matches prefix
 int[] zFunction(String s) {
@@ -165,6 +186,23 @@ class AhoCorasick {
 │                                                                                 │
 │ QUICKSELECT (Find k-th smallest element):                                       │
 │ ──────────────────────────────────────────                                      │
+```
+
+> **Flow**: RANDOMIZED ALGORITHMS - POWER OF RANDOMNESS → WHY RANDOMIZATION? | WHY RANDOMIZATION? → • Simpler algorithms with good expected performance | • Simpler algorithms with good expected performance → • Avoid adversarial worst cases | • Avoid adversarial worst cases → • Handle uncertain or dynamic data | • Handle uncertain or dynamic data → QUICKSELECT (Find k-th smallest element):
+
+```mermaid
+flowchart TD
+    N1["RANDOMIZED ALGORITHMS - POWER OF RANDOMNESS"]
+    N2["WHY RANDOMIZATION?"]
+    N3["• Simpler algorithms with good expected performance"]
+    N4["• Avoid adversarial worst cases"]
+    N5["• Handle uncertain or dynamic data"]
+    N6["QUICKSELECT (Find k-th smallest element):"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
 ```
 
 
@@ -307,6 +345,15 @@ int[] reservoirSample(Iterator<Integer> stream, int k) {
 │ ─────────────────────────────────                                               │
 ```
 
+> **Flow**: APPROXIMATION ALGORITHMS FOR NP-HARD PROBLEMS → VERTEX COVER - 2-APPROXIMATION:
+
+```mermaid
+flowchart TD
+    N1["APPROXIMATION ALGORITHMS FOR NP-HARD PROBLEMS"]
+    N2["VERTEX COVER - 2-APPROXIMATION:"]
+    N1 --> N2
+```
+
 
 ```java
 // Find vertex cover at most 2x optimal
@@ -444,6 +491,15 @@ List<Integer> tspApprox(int[][] dist, int n) {
 │                                                                                 │
 │ COUNT-MIN SKETCH (Approximate frequency counting):                              │
 │ ──────────────────────────────────────────────────                              │
+```
+
+> **Flow**: PRODUCTION-GRADE DATA STRUCTURES → COUNT-MIN SKETCH (Approximate frequency counting):
+
+```mermaid
+flowchart TD
+    N1["PRODUCTION-GRADE DATA STRUCTURES"]
+    N2["COUNT-MIN SKETCH (Approximate frequency counting):"]
+    N1 --> N2
 ```
 
 
@@ -642,6 +698,15 @@ class CuckooFilter {
 │                                                                                 │
 │ PATTERN 1: MONOTONIC STACK VARIATIONS                                           │
 │ ─────────────────────────────────────────                                       │
+```
+
+> **Flow**: ADVANCED INTERVIEW PATTERNS → PATTERN 1: MONOTONIC STACK VARIATIONS
+
+```mermaid
+flowchart TD
+    N1["ADVANCED INTERVIEW PATTERNS"]
+    N2["PATTERN 1: MONOTONIC STACK VARIATIONS"]
+    N1 --> N2
 ```
 
 
@@ -909,6 +974,27 @@ int closestSum(int[] nums, int target) {
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: DSA MASTERY CHECKLIST → FUNDAMENTALS (Must master completely): | FUNDAMENTALS (Must master completely): → □ Arrays: Access, insertion, deletion, resizing | □ Arrays: Access, insertion, deletion, resizing → □ Linked Lists: Singly, doubly, circular, operations | □ Linked Lists: Singly, doubly, circular, operations → □ Queues: Regular, circular, deque, priority queue | □ Queues: Regular, circular, deque, priority queue → □ Hash Tables: Collision handling, load factor, rehashi | □ Hash Tables: Collision handling, load factor, rehashi → □ Heaps: Build, insert, extract, heapify | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["DSA MASTERY CHECKLIST"]
+    N2["FUNDAMENTALS (Must master completely):"]
+    N3["□ Arrays: Access, insertion, deletion, resizing"]
+    N4["□ Linked Lists: Singly, doubly, circular, operations"]
+    N5["□ Queues: Regular, circular, deque, priority queue"]
+    N6["□ Hash Tables: Collision handling, load factor, rehashi"]
+    N7["□ Heaps: Build, insert, extract, heapify"]
+    N8["□ Graphs: Representations, BFS, DFS, connectivity"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 
 ```
 
@@ -931,6 +1017,25 @@ int closestSum(int[] nums, int target) {
 ║ • Ace senior-level Java interviews                                               ║
 ║                                                                                  ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: JVM INTERNALS - THE COMPLETE GUIDE FOR BUILDING FRAMEWO → Why JVM knowledge matters: | Why JVM knowledge matters: → • Understand WHY your code performs the way it does | • Understand WHY your code performs the way it does → • Debug memory issues (leaks, OOM errors) | • Debug memory issues (leaks, OOM errors) → • Build frameworks like Spring, Hibernate, Mockito | • Build frameworks like Spring, Hibernate, Mockito → • Optimize applications for production | • Optimize applications for production → • Ace senior-level Java interviews
+
+```mermaid
+flowchart TD
+    N1["JVM INTERNALS - THE COMPLETE GUIDE FOR BUILDING FRAMEWO"]
+    N2["Why JVM knowledge matters:"]
+    N3["• Understand WHY your code performs the way it does"]
+    N4["• Debug memory issues (leaks, OOM errors)"]
+    N5["• Build frameworks like Spring, Hibernate, Mockito"]
+    N6["• Optimize applications for production"]
+    N7["• Ace senior-level Java interviews"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
 ```
 
 

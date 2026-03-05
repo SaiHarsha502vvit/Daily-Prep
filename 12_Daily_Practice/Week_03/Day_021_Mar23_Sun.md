@@ -132,6 +132,17 @@ WHAT'S COMING:
   Building on trees (→ tries) and BFS (→ Dijkstra)!
 ```
 
+> **Flow**: Building on trees ( → tries) and BFS ( | tries) and BFS ( → Dijkstra)!
+
+```mermaid
+flowchart LR
+    N1["Building on trees ("]
+    N2["tries) and BFS ("]
+    N3["Dijkstra)!"]
+    N1 --> N2
+    N2 --> N3
+```
+
 ---
 
 ## BONUS CHALLENGES (Optional)
@@ -220,6 +231,18 @@ PROBLEMS SOLVED:
   TOTAL:  38 problems (+ bonus challenges)
 
 NEXT MILESTONE: 50 problems by end of Week 4!
+```
+
+> **Flow**: Binary Search, Two Pointers, SQL WHERE → Subqueries, Spring DI | Week 2: 13 problems (Easy → Medium)
+
+```mermaid
+flowchart LR
+    N1["Binary Search, Two Pointers, SQL WHERE"]
+    N2["Subqueries, Spring DI"]
+    N3["Week 2: 13 problems (Easy"]
+    N4["Medium)"]
+    N1 --> N2
+    N3 --> N4
 ```
 
 

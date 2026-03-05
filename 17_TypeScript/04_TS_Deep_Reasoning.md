@@ -107,6 +107,27 @@ function isUser(obj: unknown): obj is User {
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: The REAL differences (not 'they're basically the same') → interface: | interface: → → DECLARATION MERGING (can be extended across files) | → DECLARATION MERGING (can be extended across files) → → extends keyword for inheritance | → extends keyword for inheritance → → Better error messages (shows interface name) | → Better error messages (shows interface name) → → Best for: object shapes, public APIs, library types | → Best for: object shapes, public APIs, library types → type: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["The REAL differences (not 'they're basically the same')"]
+    N2["interface:"]
+    N3["→ DECLARATION MERGING (can be extended across files)"]
+    N4["→ extends keyword for inheritance"]
+    N5["→ Better error messages (shows interface name)"]
+    N6["→ Best for: object shapes, public APIs, library types"]
+    N7["type:"]
+    N8["→ UNIONS & INTERSECTIONS (type A = B | C)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ```typescript
 // Declaration merging — ONLY interface can do this
 interface Window {
@@ -164,6 +185,27 @@ interface Employee extends Person { employeeId: string }
 ║         │                                                        ║
 ║    never (bottom — accepts nothing)                              ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: THE SECURITY CLEARANCE ANALOGY → any = NO security (VIP badge — go anywhere, do anything | any = NO security (VIP badge — go anywhere, do anything → Disables ALL type checking. Defeats purpose of TS. | Disables ALL type checking. Defeats purpose of TS. → Use: legacy code migration, truly dynamic values | Use: legacy code migration, truly dynamic values → Can hold any value, but MUST narrow before using. | Can hold any value, but MUST narrow before using. → Use: API responses, user input, unknown JSON | Use: API responses, user input, unknown JSON → never = IMPOSSIBLE (the locked room nobody can enter) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE SECURITY CLEARANCE ANALOGY"]
+    N2["any = NO security (VIP badge — go anywhere, do anything"]
+    N3["Disables ALL type checking. Defeats purpose of TS."]
+    N4["Use: legacy code migration, truly dynamic values"]
+    N5["Can hold any value, but MUST narrow before using."]
+    N6["Use: API responses, user input, unknown JSON"]
+    N7["never = IMPOSSIBLE (the locked room nobody can enter)"]
+    N8["No value can ever be this type."]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```typescript
@@ -233,6 +275,27 @@ const dog: Dog = cat; // No error?!
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: STRUCTURAL vs NOMINAL TYPING → Java/C# (Nominal): 'Are you wearing the RIGHT uniform?' | Java/C# (Nominal): 'Are you wearing the RIGHT uniform?' → → Cat and Dog must explicitly implement the same interf | → Cat and Dog must explicitly implement the same interf → → Same shape ≠ same type | → Same shape ≠ same type → TypeScript (Structural): 'Can you do the JOB?' | TypeScript (Structural): 'Can you do the JOB?' → → If it has name:string and meow():void, it's compatibl | → If it has name:string and meow():void, it's compatibl → This is WHY: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["STRUCTURAL vs NOMINAL TYPING"]
+    N2["Java/C# (Nominal): 'Are you wearing the RIGHT uniform?'"]
+    N3["→ Cat and Dog must explicitly implement the same interf"]
+    N4["→ Same shape ≠ same type"]
+    N5["TypeScript (Structural): 'Can you do the JOB?'"]
+    N6["→ If it has name:string and meow():void, it's compatibl"]
+    N7["This is WHY:"]
+    N8["- An object literal with extra props can be assigned"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ```typescript
 // This is valid TS — no explicit relationship needed:
 interface Printable { print(): void; }
@@ -288,6 +351,27 @@ const eur: Euros = usd; // ❌ Error! Different brands.
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: strict: true = Seatbelt + Airbag + ABS + Lane Assist → It enables 8 individual flags: | It enables 8 individual flags: → strictNullChecks → null/undefined aren't assignable to | strictNullChecks → null/undefined aren't assignable to → other types. MOST IMPORTANT. Catches | other types. MOST IMPORTANT. Catches → 'Cannot read property of null' at | 'Cannot read property of null' at → compile time instead of runtime. | compile time instead of runtime. → noImplicitAny → Must explicitly type when TS can't infe | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["strict: true = Seatbelt + Airbag + ABS + Lane Assist"]
+    N2["It enables 8 individual flags:"]
+    N3["strictNullChecks → null/undefined aren't assignable to"]
+    N4["other types. MOST IMPORTANT. Catches"]
+    N5["'Cannot read property of null' at"]
+    N6["compile time instead of runtime."]
+    N7["noImplicitAny → Must explicitly type when TS can't infe"]
+    N8["strictFunctionTypes → Function parameter types checked"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 6. Generics: Not Just `<T>` — The REAL Mental Model
@@ -311,6 +395,27 @@ const eur: Euros = usd; // ❌ Error! Different brands.
 ║  what's inside. But once you put shoes in (Wrapper<Shoes>),      ║
 ║  the box "knows" it contains shoes and can tell you so.          ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: GENERICS = A Function for Types → Regular function: takes VALUE, returns VALUE | Regular function: takes VALUE, returns VALUE → function double(n: number): number { return n * 2; } | function double(n: number): number { return n * 2; } → Generic: takes TYPE, returns TYPE | Generic: takes TYPE, returns TYPE → type Wrapper&lt;T&gt; = { value: T; timestamp: Date }; | type Wrapper&lt;T&gt; = { value: T; timestamp: Date }; → Wrapper&lt;string&gt; → { value: string; timestamp: Dat | Wrapper&lt;string&gt; → { value: string; timestamp: Dat → Wrapper&lt;number&gt; → { value: number; timestamp: Dat | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["GENERICS = A Function for Types"]
+    N2["Regular function: takes VALUE, returns VALUE"]
+    N3["function double(n: number): number { return n * 2; }"]
+    N4["Generic: takes TYPE, returns TYPE"]
+    N5["type Wrapper&lt;T&gt; = { value: T; timestamp: Date };"]
+    N6["Wrapper&lt;string&gt; → { value: string; timestamp: Dat"]
+    N7["Wrapper&lt;number&gt; → { value: number; timestamp: Dat"]
+    N8["Analogy: A gift box. The box is generic — it doesn't ca"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```typescript
@@ -364,6 +469,27 @@ type B = IsString<number>;  // "no"
 ║  type Color = typeof COLORS[number]; // 'red'|'green'|'blue'     ║
 ║  → No runtime code, tree-shakable, same type safety              ║
 ╚══════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: ENUM PROBLEMS → 1. They generate RUNTIME code (unlike most TS features) | 1. They generate RUNTIME code (unlike most TS features) → enum Color { Red, Green, Blue } | enum Color { Red, Green, Blue } → compiles to: | compiles to: → var Color; (function(Color) { | var Color; (function(Color) { → Color[Color['Red'] = 0] = 'Red'; ... | Color[Color['Red'] = 0] = 'Red'; ... → })(Color || (Color = {})); | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["ENUM PROBLEMS"]
+    N2["1. They generate RUNTIME code (unlike most TS features)"]
+    N3["enum Color { Red, Green, Blue }"]
+    N4["compiles to:"]
+    N5["var Color; (function(Color) {"]
+    N6["Color[Color['Red'] = 0] = 'Red'; ..."]
+    N7["})(Color || (Color = {}));"]
+    N8["→ More JS shipped to browser. Defeats tree shaking."]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

@@ -48,6 +48,19 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: WHY: Why Build Real-World Projects? / • Portfolio: TODO → HOW: How Top Companies Structure Spring Boot Apps? / •  | HOW: How Top Companies Structure Spring Boot Apps? / •  → WHEN: When to Build Which Type of Project? / • Beginner | WHEN: When to Build Which Type of Project? / • Beginner → WHICH: Which Projects Stand Out in Interviews? / IMPRES
+
+```mermaid
+flowchart TD
+    N1["WHY: Why Build Real-World Projects? / • Portfolio: TODO"]
+    N2["HOW: How Top Companies Structure Spring Boot Apps? / • "]
+    N3["WHEN: When to Build Which Type of Project? / • Beginner"]
+    N4["WHICH: Which Projects Stand Out in Interviews? / IMPRES"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 ---
 
 # 🌱 Section 1: How Big Companies Use Spring Boot
@@ -146,6 +159,24 @@
 │  • Slack/Discord: Free webhooks                                                 │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: Client / Services → Notification / API | Client / Services → Email Worker / (SMTP/SES) | Notification / API → Message / Queue | Notification / API → Email Worker / (SMTP/SES) | Message / Queue → SMS Worker / (Twilio) | Message / Queue → Push / Worker
+
+```mermaid
+flowchart TD
+    N1["Client / Services"]
+    N2["Notification / API"]
+    N3["Message / Queue"]
+    N4["Email Worker / (SMTP/SES)"]
+    N5["SMS Worker / (Twilio)"]
+    N6["Push / Worker"]
+    N1 --> N2
+    N1 --> N4
+    N2 --> N3
+    N2 --> N4
+    N3 --> N5
+    N3 --> N6
 ```
 
 ```java
@@ -360,6 +391,27 @@ public class SlackNotificationSender implements NotificationSender {
 │  • Binary Search: Percentage bucket allocation                                  │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: PROJECT: FEATURE FLAG MANAGEMENT SYSTEM → WHAT IT IS: | WHAT IT IS: → and gradually roll out new features to users. | and gradually roll out new features to users. → REAL-WORLD USAGE: | REAL-WORLD USAGE: → • Netflix: Testing new UI features on % of users | • Netflix: Testing new UI features on % of users → • Facebook: Gradual feature rollouts | • Facebook: Gradual feature rollouts → • Amazon: A/B testing checkout flows | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["PROJECT: FEATURE FLAG MANAGEMENT SYSTEM"]
+    N2["WHAT IT IS:"]
+    N3["and gradually roll out new features to users."]
+    N4["REAL-WORLD USAGE:"]
+    N5["• Netflix: Testing new UI features on % of users"]
+    N6["• Facebook: Gradual feature rollouts"]
+    N7["• Amazon: A/B testing checkout flows"]
+    N8["• Microsoft: Feature gating in Windows/Office"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```java
@@ -636,6 +688,27 @@ public class CheckoutController {
 │  • Min/Max Heap: Top-K metrics                                                  │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: PROJECT: REAL-TIME ANALYTICS & METRICS PLATFORM → WHAT IT IS: | WHAT IT IS: → Every enterprise needs this for monitoring. | Every enterprise needs this for monitoring. → REAL-WORLD USAGE: | REAL-WORLD USAGE: → • All companies: Application performance monitoring | • All companies: Application performance monitoring → • E-commerce: Real-time sales dashboards | • E-commerce: Real-time sales dashboards → • Social media: Engagement metrics | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["PROJECT: REAL-TIME ANALYTICS & METRICS PLATFORM"]
+    N2["WHAT IT IS:"]
+    N3["Every enterprise needs this for monitoring."]
+    N4["REAL-WORLD USAGE:"]
+    N5["• All companies: Application performance monitoring"]
+    N6["• E-commerce: Real-time sales dashboards"]
+    N7["• Social media: Engagement metrics"]
+    N8["• DevOps: System health monitoring"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```java
@@ -933,6 +1006,27 @@ public class AnalyticsController {
 │  • Topological Sort: Step ordering                                              │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: PROJECT: WORKFLOW/APPROVAL ENGINE → WHAT IT IS: | WHAT IT IS: → conditions, and automated actions. | conditions, and automated actions. → REAL-WORLD USAGE: | REAL-WORLD USAGE: → • HR: Leave approval, onboarding workflows | • HR: Leave approval, onboarding workflows → • Finance: Expense approval, purchase orders | • Finance: Expense approval, purchase orders → • IT: Change management, access requests | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["PROJECT: WORKFLOW/APPROVAL ENGINE"]
+    N2["WHAT IT IS:"]
+    N3["conditions, and automated actions."]
+    N4["REAL-WORLD USAGE:"]
+    N5["• HR: Leave approval, onboarding workflows"]
+    N6["• Finance: Expense approval, purchase orders"]
+    N7["• IT: Change management, access requests"]
+    N8["• Sales: Quote approvals, contract workflows"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```java
@@ -1294,6 +1388,27 @@ public class WorkflowEngine {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: PROJECT: RESOURCE BOOKING & SCHEDULING SYSTEM → WHAT IT IS: | WHAT IT IS: → vehicles, employees' time, etc. | vehicles, employees' time, etc. → REAL-WORLD USAGE: | REAL-WORLD USAGE: → • Google/Microsoft: Meeting room booking | • Google/Microsoft: Meeting room booking → • Hospitals: Doctor appointments, equipment scheduling | • Hospitals: Doctor appointments, equipment scheduling → • Car rentals: Vehicle availability | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["PROJECT: RESOURCE BOOKING & SCHEDULING SYSTEM"]
+    N2["WHAT IT IS:"]
+    N3["vehicles, employees' time, etc."]
+    N4["REAL-WORLD USAGE:"]
+    N5["• Google/Microsoft: Meeting room booking"]
+    N6["• Hospitals: Doctor appointments, equipment scheduling"]
+    N7["• Car rentals: Vehicle availability"]
+    N8["• Consulting firms: Employee allocation"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ```java
 // ═══════════════════════════════════════════════════════════════════════════════
 // RESOURCE BOOKING SYSTEM IMPLEMENTATION
@@ -1612,6 +1727,27 @@ public record BookingResult(Long bookingId, BookingStatus status, Long waitlistI
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: MORE INDUSTRY-LEVEL PROJECT IDEAS → 6. 📝 AUDIT LOG & COMPLIANCE SYSTEM | 6. 📝 AUDIT LOG & COMPLIANCE SYSTEM → Track all changes to data, who changed what, when | Track all changes to data, who changed what, when → DSA: Append-only log, Merkle trees for integrity | DSA: Append-only log, Merkle trees for integrity → Used by: Every regulated industry (finance, healthcare) | Used by: Every regulated industry (finance, healthcare) → 7. 🔍 FULL-TEXT SEARCH SERVICE | 7. 🔍 FULL-TEXT SEARCH SERVICE → Build your own search with inverted index | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["MORE INDUSTRY-LEVEL PROJECT IDEAS"]
+    N2["6. 📝 AUDIT LOG & COMPLIANCE SYSTEM"]
+    N3["Track all changes to data, who changed what, when"]
+    N4["DSA: Append-only log, Merkle trees for integrity"]
+    N5["Used by: Every regulated industry (finance, healthcare)"]
+    N6["7. 🔍 FULL-TEXT SEARCH SERVICE"]
+    N7["Build your own search with inverted index"]
+    N8["DSA: Inverted Index, TF-IDF, BM25 ranking"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 # 📌 Building a Portfolio
@@ -1659,6 +1795,27 @@ public record BookingResult(Long bookingId, BookingStatus status, Long waitlistI
 │  • GitHub Actions - Free CI/CD                                                  │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: PORTFOLIO STRATEGY FOR JOB INTERVIEWS → BUILD 2-3 OF THESE PROJECTS TO STAND OUT: | BUILD 2-3 OF THESE PROJECTS TO STAND OUT: → BEGINNER LEVEL (Start Here): | BEGINNER LEVEL (Start Here): → • Feature Flag System - Shows architectural thinking | • Feature Flag System - Shows architectural thinking → INTERMEDIATE LEVEL: | INTERMEDIATE LEVEL: → • Booking System - Shows conflict handling, business lo | • Booking System - Shows conflict handling, business lo → ADVANCED LEVEL: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["PORTFOLIO STRATEGY FOR JOB INTERVIEWS"]
+    N2["BUILD 2-3 OF THESE PROJECTS TO STAND OUT:"]
+    N3["BEGINNER LEVEL (Start Here):"]
+    N4["• Feature Flag System - Shows architectural thinking"]
+    N5["INTERMEDIATE LEVEL:"]
+    N6["• Booking System - Shows conflict handling, business lo"]
+    N7["ADVANCED LEVEL:"]
+    N8["• Workflow Engine - Shows state machines, graph travers"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

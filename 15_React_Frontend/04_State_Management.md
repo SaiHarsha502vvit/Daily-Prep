@@ -231,6 +231,25 @@ function CartButton() {
 └──────────────────┴────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: Solution When to Use → useState Local component state (default) | useState Local component state (default) → useReducer Complex local state with many transitions | useReducer Complex local state with many transitions → Context Theme, auth, locale (infrequent updates) | Context Theme, auth, locale (infrequent updates) → Zustand Simple global state, minimal boilerplate | Zustand Simple global state, minimal boilerplate → React Query Server state (API data, caching, sync) | React Query Server state (API data, caching, sync) → Jotai/Recoil Atomic state, fine-grained reactivity
+
+```mermaid
+flowchart TD
+    N1["Solution When to Use"]
+    N2["useState Local component state (default)"]
+    N3["useReducer Complex local state with many transitions"]
+    N4["Context Theme, auth, locale (infrequent updates)"]
+    N5["Zustand Simple global state, minimal boilerplate"]
+    N6["React Query Server state (API data, caching, sync)"]
+    N7["Jotai/Recoil Atomic state, fine-grained reactivity"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+```
+
 ---
 
 > **Navigation**: [< Previous](03_Hooks_Deep_Dive.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_React_TypeScript.md)

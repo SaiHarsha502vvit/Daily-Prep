@@ -49,6 +49,19 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: WHY: Why IoC & DI are Foundation of Spring? / • IoC IS  → HOW: How DI Works in Spring? / • IoC Container: Applica | HOW: How DI Works in Spring? / • IoC Container: Applica → WHEN: When to Use Each Bean Scope? / • Singleton (defau | WHEN: When to Use Each Bean Scope? / • Singleton (defau → WHICH: Which DI Concepts to Master? / ESSENTIAL: Constr
+
+```mermaid
+flowchart TD
+    N1["WHY: Why IoC & DI are Foundation of Spring? / • IoC IS "]
+    N2["HOW: How DI Works in Spring? / • IoC Container: Applica"]
+    N3["WHEN: When to Use Each Bean Scope? / • Singleton (defau"]
+    N4["WHICH: Which DI Concepts to Master? / ESSENTIAL: Constr"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 ---
 
 # TIER 2: SPRING CORE (IoC & DI)
@@ -143,6 +156,16 @@ this.payment = payment;
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: OrderService → SPRING IoC CONTAINER / 1. Creates OrderService / 2. Cre | SPRING IoC CONTAINER / 1. Creates OrderService / 2. Cre → OrderService
+
+```mermaid
+flowchart TD
+    N1["OrderService"]
+    N2["SPRING IoC CONTAINER / 1. Creates OrderService / 2. Cre"]
+    N1 --> N2
+    N2 --> N1
+```
+
 ### IoC Container Resolution — Step-by-Step Flow
 
 ```
@@ -206,6 +229,19 @@ this.payment = payment;
 │  Fix: @Lazy on one side, or redesign (extract shared logic)                     │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: IoC CONTAINER BEAN RESOLUTION PROCESS / PHASE 1: COMPON → PHASE 2: BeanDefinition CREATION / Each class → BeanDef | PHASE 2: BeanDefinition CREATION / Each class → BeanDef → OrderRepo NotificationService | OrderRepo NotificationService → DataSource EmailClient / PHASE 4: CREATION ORDER (Topol
+
+```mermaid
+flowchart TD
+    N1["IoC CONTAINER BEAN RESOLUTION PROCESS / PHASE 1: COMPON"]
+    N2["PHASE 2: BeanDefinition CREATION / Each class → BeanDef"]
+    N3["OrderRepo NotificationService"]
+    N4["DataSource EmailClient / PHASE 4: CREATION ORDER (Topol"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
 ```
 
 ---
@@ -334,6 +370,21 @@ public class AppConfig { }
 │  └────────────────┴──────────────────┴─────────────────────────────────────────┘│
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: DEPENDENCY INJECTION TYPES COMPARISON → Type Recommended? Use Case | Type Recommended? Use Case → Constructor ✅ YES (Default) Required dependencies | Constructor ✅ YES (Default) Required dependencies → Setter ⚠️ Sometimes Optional dependencies | Setter ⚠️ Sometimes Optional dependencies → Field ❌ NO Tests only (convenient but bad)
+
+```mermaid
+flowchart TD
+    N1["DEPENDENCY INJECTION TYPES COMPARISON"]
+    N2["Type Recommended? Use Case"]
+    N3["Constructor ✅ YES (Default) Required dependencies"]
+    N4["Setter ⚠️ Sometimes Optional dependencies"]
+    N5["Field ❌ NO Tests only (convenient but bad)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
 ```
 
 ### 1. Constructor Injection (RECOMMENDED)
@@ -607,6 +658,27 @@ public class UserService {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: BEAN SCOPE COMPARISON → Scope Description | Scope Description → singleton One instance per container (DEFAULT) | singleton One instance per container (DEFAULT) → prototype New instance every time bean is requested | prototype New instance every time bean is requested → request One instance per HTTP request (Web only) | request One instance per HTTP request (Web only) → session One instance per HTTP session (Web only) | session One instance per HTTP session (Web only) → application One instance per ServletContext (Web only) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["BEAN SCOPE COMPARISON"]
+    N2["Scope Description"]
+    N3["singleton One instance per container (DEFAULT)"]
+    N4["prototype New instance every time bean is requested"]
+    N5["request One instance per HTTP request (Web only)"]
+    N6["session One instance per HTTP session (Web only)"]
+    N7["application One instance per ServletContext (Web only)"]
+    N8["websocket One instance per WebSocket session"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### Singleton Scope (Default)
 
 ```java
@@ -793,6 +865,31 @@ public class OrderService {
 │  └──────────────────────────────────────────────────────────────────────────┘   │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: COMPLETE BEAN LIFECYCLE / 1. INSTANTIATE: Bean instance → 2. POPULATE PROPERTIES: Dependencies injected | 2. POPULATE PROPERTIES: Dependencies injected → 3. BEAN NAME AWARE: setBeanName() called if implements | 3. BEAN NAME AWARE: setBeanName() called if implements → 4. BEAN FACTORY AWARE: setBeanFactory() if implements B | 4. BEAN FACTORY AWARE: setBeanFactory() if implements B → 5. APPLICATION CONTEXT AWARE: setApplicationContext() i | 5. APPLICATION CONTEXT AWARE: setApplicationContext() i → 6. PRE-INITIALIZATION: BeanPostProcessor.postProcessBef | 6. PRE-INITIALIZATION: BeanPostProcessor.postProcessBef → 7. INITIALIZATION: @PostConstruct or InitializingBean.a | ...+3 more
+
+```mermaid
+flowchart TD
+    N1["COMPLETE BEAN LIFECYCLE / 1. INSTANTIATE: Bean instance"]
+    N2["2. POPULATE PROPERTIES: Dependencies injected"]
+    N3["3. BEAN NAME AWARE: setBeanName() called if implements"]
+    N4["4. BEAN FACTORY AWARE: setBeanFactory() if implements B"]
+    N5["5. APPLICATION CONTEXT AWARE: setApplicationContext() i"]
+    N6["6. PRE-INITIALIZATION: BeanPostProcessor.postProcessBef"]
+    N7["7. INITIALIZATION: @PostConstruct or InitializingBean.a"]
+    N8["8. POST-INITIALIZATION: BeanPostProcessor.postProcessAf"]
+    N9["BEAN IS READY FOR USE"]
+    N10["9. DESTRUCTION: @PreDestroy or DisposableBean.destroy()"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+    N8 --> N9
+    N9 --> N10
 ```
 
 ### Lifecycle Callbacks in Code
@@ -1505,6 +1602,27 @@ EVENTS:
 □ Can implement event-driven communication
 □ Know @EventListener options (async, conditional, ordered)
 □ Understand when to use events vs direct calls
+```
+
+> **Flow**: IoC & DI CONCEPTS: → □ Can explain Inversion of Control vs traditional contr | □ Can explain Inversion of Control vs traditional contr → □ Know the difference: BeanFactory vs ApplicationContex | □ Know the difference: BeanFactory vs ApplicationContex → □ Understand the Hollywood Principle | □ Understand the Hollywood Principle → BEAN DEFINITION: | BEAN DEFINITION: → □ Understand @Component stereotype hierarchy | □ Understand @Component stereotype hierarchy → □ Can configure third-party classes as beans | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["IoC & DI CONCEPTS:"]
+    N2["□ Can explain Inversion of Control vs traditional contr"]
+    N3["□ Know the difference: BeanFactory vs ApplicationContex"]
+    N4["□ Understand the Hollywood Principle"]
+    N5["BEAN DEFINITION:"]
+    N6["□ Understand @Component stereotype hierarchy"]
+    N7["□ Can configure third-party classes as beans"]
+    N8["DEPENDENCY INJECTION:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

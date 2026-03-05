@@ -839,6 +839,27 @@ EXAMPLES:
 └───────────────────────────────────┴─────────────────┘
 ```
 
+> **Flow**: MASTER THEOREM: → For T(n) = aT(n/b) + f(n) where a ≥ 1, b &gt; 1 | For T(n) = aT(n/b) + f(n) where a ≥ 1, b &gt; 1 → AND af(n/b) ≤ cf(n) for some c &lt; 1 | AND af(n/b) ≤ cf(n) for some c &lt; 1 → EXAMPLES: | EXAMPLES: → Recurrence Solution | Recurrence Solution → T(n) = 2T(n/2) + n O(n log n) | T(n) = 2T(n/2) + n O(n log n) → T(n) = T(n/2) + 1 O(log n) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["MASTER THEOREM:"]
+    N2["For T(n) = aT(n/b) + f(n) where a ≥ 1, b &gt; 1"]
+    N3["AND af(n/b) ≤ cf(n) for some c &lt; 1"]
+    N4["EXAMPLES:"]
+    N5["Recurrence Solution"]
+    N6["T(n) = 2T(n/2) + n O(n log n)"]
+    N7["T(n) = T(n/2) + 1 O(log n)"]
+    N8["T(n) = 4T(n/2) + n² O(n² log n)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### Amortized Analysis
 
 ```

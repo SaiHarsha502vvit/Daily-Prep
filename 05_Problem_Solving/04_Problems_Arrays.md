@@ -90,6 +90,27 @@ public int[] twoSum(int[] nums, int target) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: TWO SUM III - DATA STRUCTURE DESIGN → (LeetCode Premium - Full Problem Description) | (LeetCode Premium - Full Problem Description) → Implement the TwoSum class: | Implement the TwoSum class: → - TwoSum() Initializes the TwoSum object | - TwoSum() Initializes the TwoSum object → - void add(int number) Adds number to the data structur | - void add(int number) Adds number to the data structur → Example 1: | Example 1: → Input: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["TWO SUM III - DATA STRUCTURE DESIGN"]
+    N2["(LeetCode Premium - Full Problem Description)"]
+    N3["Implement the TwoSum class:"]
+    N4["- TwoSum() Initializes the TwoSum object"]
+    N5["- void add(int number) Adds number to the data structur"]
+    N6["Example 1:"]
+    N7["Input:"]
+    N8["['TwoSum', 'add', 'add', 'add', 'find', 'find']"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ```java
 class TwoSum {
     private Map<Integer, Integer> numCount;
@@ -139,6 +160,21 @@ class TwoSum {
 ║  Output: false                                                            ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: CONTAINS DUPLICATE → Input: nums = [1, 2, 3, 1] | Input: nums = [1, 2, 3, 1] → Output: true | Output: true → Input: nums = [1, 2, 3, 4] | Input: nums = [1, 2, 3, 4] → Output: false
+
+```mermaid
+flowchart TD
+    N1["CONTAINS DUPLICATE"]
+    N2["Input: nums = [1, 2, 3, 1]"]
+    N3["Output: true"]
+    N4["Input: nums = [1, 2, 3, 4]"]
+    N5["Output: false"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
 ```
 
 ```java
@@ -191,6 +227,27 @@ public boolean containsDuplicate(int[] nums) {
 ║  - 0 <= valueDiff <= 10^9                                                 ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: CONTAINS DUPLICATE III → (Premium-Level Difficulty) | (Premium-Level Difficulty) → find a pair of indices (i, j) such that: | find a pair of indices (i, j) such that: → - abs(i - j) &lt;= indexDiff | - abs(i - j) &lt;= indexDiff → - abs(nums[i] - nums[j]) &lt;= valueDiff | - abs(nums[i] - nums[j]) &lt;= valueDiff → Return true if such pair exists, false otherwise. | Return true if such pair exists, false otherwise. → Example 1: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["CONTAINS DUPLICATE III"]
+    N2["(Premium-Level Difficulty)"]
+    N3["find a pair of indices (i, j) such that:"]
+    N4["- abs(i - j) &lt;= indexDiff"]
+    N5["- abs(nums[i] - nums[j]) &lt;= valueDiff"]
+    N6["Return true if such pair exists, false otherwise."]
+    N7["Example 1:"]
+    N8["Output: true"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```java
@@ -247,6 +304,19 @@ private long getBucket(int num, long bucketSize) {
 ║  Output: [1, 3, 12, 0, 0]                                                 ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: MOVE ZEROES → elements. Do it in-place. | elements. Do it in-place. → Input: nums = [0, 1, 0, 3, 12] | Input: nums = [0, 1, 0, 3, 12] → Output: [1, 3, 12, 0, 0]
+
+```mermaid
+flowchart TD
+    N1["MOVE ZEROES"]
+    N2["elements. Do it in-place."]
+    N3["Input: nums = [0, 1, 0, 3, 12]"]
+    N4["Output: [1, 3, 12, 0, 0]"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
 ```
 
 ```java
@@ -318,6 +388,27 @@ public void moveZeroes(int[] nums) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: MEETING ROOMS → (LeetCode Premium - Full Problem Description) | (LeetCode Premium - Full Problem Description) → Example 1: | Example 1: → Input: intervals = [[0,30], [5,10], [15,20]] | Input: intervals = [[0,30], [5,10], [15,20]] → Output: false | Output: false → Explanation: [0,30] overlaps with [5,10] and [15,20] | Explanation: [0,30] overlaps with [5,10] and [15,20] → Example 2: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["MEETING ROOMS"]
+    N2["(LeetCode Premium - Full Problem Description)"]
+    N3["Example 1:"]
+    N4["Input: intervals = [[0,30], [5,10], [15,20]]"]
+    N5["Output: false"]
+    N6["Explanation: [0,30] overlaps with [5,10] and [15,20]"]
+    N7["Example 2:"]
+    N8["Input: intervals = [[7,10], [2,4]]"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ```java
 public boolean canAttendMeetings(int[][] intervals) {
     // Sort by start time
@@ -382,6 +473,27 @@ public boolean canAttendMeetings(int[][] intervals) {
 ║  - 0 <= start_i < end_i <= 10^6                                           ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: MEETING ROOMS II → (LeetCode Premium - Full Problem Description) | (LeetCode Premium - Full Problem Description) → conference rooms required. | conference rooms required. → Example 1: | Example 1: → Input: intervals = [[0,30], [5,10], [15,20]] | Input: intervals = [[0,30], [5,10], [15,20]] → Output: 2 | Output: 2 → Explanation: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["MEETING ROOMS II"]
+    N2["(LeetCode Premium - Full Problem Description)"]
+    N3["conference rooms required."]
+    N4["Example 1:"]
+    N5["Input: intervals = [[0,30], [5,10], [15,20]]"]
+    N6["Output: 2"]
+    N7["Explanation:"]
+    N8["Room 1: [0,30]"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```java
@@ -489,6 +601,27 @@ public int minMeetingRoomsV2(int[][] intervals) {
 ║  - All values of nums are unique                                          ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: MISSING RANGES → (LeetCode Premium - Full Problem Description) | (LeetCode Premium - Full Problem Description) → and each missing number is in one of the ranges. | and each missing number is in one of the ranges. → Each range [a,b] in the list should be output as: | Each range [a,b] in the list should be output as: → Example 1: | Example 1: → Output: ['2', '4-&gt;49', '51-&gt;74', '76-&gt;99'] | Output: ['2', '4-&gt;49', '51-&gt;74', '76-&gt;99'] → Explanation: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["MISSING RANGES"]
+    N2["(LeetCode Premium - Full Problem Description)"]
+    N3["and each missing number is in one of the ranges."]
+    N4["Each range [a,b] in the list should be output as:"]
+    N5["Example 1:"]
+    N6["Output: ['2', '4-&gt;49', '51-&gt;74', '76-&gt;99']"]
+    N7["Explanation:"]
+    N8["- 2 is missing"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```java

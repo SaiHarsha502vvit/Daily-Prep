@@ -61,6 +61,23 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: BAD: SELECT * FROM large_table WHERE id = 1; / GOOD: SE → • Index columns in WHERE, JOIN, ORDER BY / • Composite  | • Index columns in WHERE, JOIN, ORDER BY / • Composite  → BAD: WHERE YEAR(created_at) = 2024 / GOOD: WHERE create | BAD: WHERE YEAR(created_at) = 2024 / GOOD: WHERE create → BAD: WHERE id IN (SELECT id FROM other_table WHERE ...) | BAD: WHERE id IN (SELECT id FROM other_table WHERE ...) → • Use LIMIT to reduce result set / • Filter in subqueri | • Use LIMIT to reduce result set / • Filter in subqueri → • INSERT multiple rows in single statement / • DELETE/U
+
+```mermaid
+flowchart TD
+    N1["BAD: SELECT * FROM large_table WHERE id = 1; / GOOD: SE"]
+    N2["• Index columns in WHERE, JOIN, ORDER BY / • Composite "]
+    N3["BAD: WHERE YEAR(created_at) = 2024 / GOOD: WHERE create"]
+    N4["BAD: WHERE id IN (SELECT id FROM other_table WHERE ...)"]
+    N5["• Use LIMIT to reduce result set / • Filter in subqueri"]
+    N6["• INSERT multiple rows in single statement / • DELETE/U"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+```
+
 ```sql
 -- ═══════════════════════════════════════════════════════════════════════════════
 -- QUERY OPTIMIZATION EXAMPLES

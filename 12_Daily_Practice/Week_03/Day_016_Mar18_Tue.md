@@ -56,6 +56,15 @@ BST INVARIANT: For every node N:
   ALWAYS SORTED! That's the magic.
 ```
 
+> **Flow**: Inorder traversal → 1, 3, 4, 6, 7, 8, 10, 13, 14
+
+```mermaid
+flowchart LR
+    N1["Inorder traversal"]
+    N2["1, 3, 4, 6, 7, 8, 10, 13, 14"]
+    N1 --> N2
+```
+
 ### HOW — Operations
 
 ```java
@@ -125,6 +134,16 @@ Step 2: Copy 4's value to 3's position
 Step 3: Delete 4 from right subtree (it's a leaf, easy)
 ```
 
+> **Flow**: / \ → / \ | Step 1: Find inorder successor of 3 → smallest in right subtree
+
+```mermaid
+flowchart LR
+    N1["/ \"]
+    N2["Step 1: Find inorder successor of 3"]
+    N3["smallest in right subtree"]
+    N2 --> N3
+```
+
 ---
 
 ## 2. ALGO DEEP DIVE: BFS / Level-Order Traversal (30 min)
@@ -152,6 +171,27 @@ Queue trace:
   Step 5: Dequeue 7, no children     → Q = []
 
 Output: [[3], [9, 20], [15, 7]]
+```
+
+> **Flow**: Step 1: Dequeue 3, enqueue 9,20 → Q = [9, 20] | Step 2: Dequeue 9, no children → Q = [20] | Step 3: Dequeue 20, enqueue 15,7 → Q = [15, 7] | Step 4: Dequeue 15, no children → Q = [7] | Step 5: Dequeue 7, no children → Q = []
+
+```mermaid
+flowchart TD
+    N1["Step 1: Dequeue 3, enqueue 9,20"]
+    N2["Q = [9, 20]"]
+    N3["Step 2: Dequeue 9, no children"]
+    N4["Q = [20]"]
+    N5["Step 3: Dequeue 20, enqueue 15,7"]
+    N6["Q = [15, 7]"]
+    N7["Step 4: Dequeue 15, no children"]
+    N8["Q = [7]"]
+    N9["Step 5: Dequeue 7, no children"]
+    N10["Q = []"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+    N7 --> N8
+    N9 --> N10
 ```
 
 ### Implementation — Level-by-Level BFS
@@ -203,6 +243,27 @@ CRITICAL PATTERN:
 └──────────────┴────────────────┴────────────────┘
 ```
 
+> **Flow**: DFS BFS → Data Struct Stack/Recursion Queue | Data Struct Stack/Recursion Queue → Memory O(h) height O(w) width | Memory O(h) height O(w) width → Deep tree Uses less mem Uses more mem | Deep tree Uses less mem Uses more mem → Wide tree Uses more mem Uses less mem | Wide tree Uses more mem Uses less mem → Shortest path Not guaranteed YES (unweight) | Shortest path Not guaranteed YES (unweight) → Use case Path finding, Level-order, | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["DFS BFS"]
+    N2["Data Struct Stack/Recursion Queue"]
+    N3["Memory O(h) height O(w) width"]
+    N4["Deep tree Uses less mem Uses more mem"]
+    N5["Wide tree Uses more mem Uses less mem"]
+    N6["Shortest path Not guaranteed YES (unweight)"]
+    N7["Use case Path finding, Level-order,"]
+    N8["backtracking shortest path"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 3. SQL LESSON: Window Functions Intro (40 min)
@@ -224,6 +285,15 @@ GROUP BY collapses rows:         Window functions KEEP rows:
                                  │Eve  │  55k   │  HR  │  2   │
                                  └─────┴────────┴──────┴──────┘
                                   (kept all rows + added rank!)
+```
+
+> **Flow**: dept COUNT(*) avg / IT 3 80k / HR 2 60k → name salary dept rank / Alice 90k IT 1 / Bob 80k IT 2 /
+
+```mermaid
+flowchart TD
+    N1["dept COUNT(*) avg / IT 3 80k / HR 2 60k"]
+    N2["name salary dept rank / Alice 90k IT 1 / Bob 80k IT 2 /"]
+    N1 --> N2
 ```
 
 ### Syntax
@@ -259,6 +329,25 @@ DIFFERENCE:
   80k    │     2      │  2   │    2
   80k    │     3      │  2   │    2
   70k    │     4      │  4   │    3    ← RANK skips 3, DENSE doesn't
+```
+
+> **Flow**: DIFFERENCE: → If two people tie at position 2: | If two people tie at position 2: → ROW_NUMBER: 1, 2, 3, 4 (always unique, arbitrary tie-br | ROW_NUMBER: 1, 2, 3, 4 (always unique, arbitrary tie-br → RANK: 1, 2, 2, 4 (skip next rank after tie) | RANK: 1, 2, 2, 4 (skip next rank after tie) → DENSE_RANK: 1, 2, 2, 3 (no gap after tie) | DENSE_RANK: 1, 2, 2, 3 (no gap after tie) → salary | ROW_NUMBER | RANK | DENSE_RANK | salary | ROW_NUMBER | RANK | DENSE_RANK → 70k 4 4 3 ← RANK skips 3, DENSE doesn't
+
+```mermaid
+flowchart TD
+    N1["DIFFERENCE:"]
+    N2["If two people tie at position 2:"]
+    N3["ROW_NUMBER: 1, 2, 3, 4 (always unique, arbitrary tie-br"]
+    N4["RANK: 1, 2, 2, 4 (skip next rank after tie)"]
+    N5["DENSE_RANK: 1, 2, 2, 3 (no gap after tie)"]
+    N6["salary | ROW_NUMBER | RANK | DENSE_RANK"]
+    N7["70k 4 4 3 ← RANK skips 3, DENSE doesn't"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
 ```
 
 ### Practice Exercises
@@ -348,6 +437,21 @@ Level 2: queue=[15,7]  → process 15, 7
 Output: [[3], [9,20], [15,7]]
 ```
 
+> **Flow**: Level 0: queue=[3] → process 3, enqueue 9,20 | Level 1: queue=[9,20] → process 9(no kids), 20(enqueue 15,7) | Level 2: queue=[15,7] → process 15, 7
+
+```mermaid
+flowchart LR
+    N1["Level 0: queue=[3]"]
+    N2["process 3, enqueue 9,20"]
+    N3["Level 1: queue=[9,20]"]
+    N4["process 9(no kids), 20(enqueue 15,7)"]
+    N5["Level 2: queue=[15,7]"]
+    N6["process 15, 7"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+```
+
 ### Solution
 
 ```java
@@ -392,4 +496,16 @@ BFS POWERS:
   Web crawlers = BFS through hyperlinks
   GPS navigation shortest path = BFS/Dijkstra
   Network broadcast = BFS from source
+```
+
+> **Flow**: TreeMap&lt;K,V&gt; in Java = Red-Black BST → O(log n) sorted map | TreeSet&lt;K&gt; in Java = Red-Black BST → O(log n) sorted set
+
+```mermaid
+flowchart LR
+    N1["TreeMap&lt;K,V&gt; in Java = Red-Black BST"]
+    N2["O(log n) sorted map"]
+    N3["TreeSet&lt;K&gt; in Java = Red-Black BST"]
+    N4["O(log n) sorted set"]
+    N1 --> N2
+    N3 --> N4
 ```

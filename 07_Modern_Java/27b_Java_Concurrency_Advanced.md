@@ -29,6 +29,15 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: [T1] [T2] [T3] [T4] / ↓ ↓ ↓ ↓ / Idle Working Idle Worki → Task5, Task6..
+
+```mermaid
+flowchart TD
+    N1["[T1] [T2] [T3] [T4] / ↓ ↓ ↓ ↓ / Idle Working Idle Worki"]
+    N2["Task5, Task6.."]
+    N1 --> N2
+```
+
 ## Thread Pool Types
 
 ```java
@@ -79,6 +88,17 @@ ThreadPoolExecutor production = new ThreadPoolExecutor(
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: AbortPolicy (default) — throws RejectedExecutionExcepti → DiscardPolicy — silently drops the task (dangerous!) | DiscardPolicy — silently drops the task (dangerous!) → PRODUCTION RULE: Almost always use CallerRunsPolicy
+
+```mermaid
+flowchart TD
+    N1["AbortPolicy (default) — throws RejectedExecutionExcepti"]
+    N2["DiscardPolicy — silently drops the task (dangerous!)"]
+    N3["PRODUCTION RULE: Almost always use CallerRunsPolicy"]
+    N1 --> N2
+    N2 --> N3
+```
+
 ## Submitting Tasks — Runnable vs Callable
 
 ```java
@@ -125,6 +145,25 @@ executor.awaitTermination(10, TimeUnit.SECONDS);
 │                                                                                 │
 │  Pattern: Start async → Chain transformations → Handle errors → Combine         │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: Future PROBLEMS: → • get() blocks the calling thread | • get() blocks the calling thread → • Can't chain multiple async operations | • Can't chain multiple async operations → • No way to combine futures | • No way to combine futures → • No callback support | • No callback support → CompletableFuture SOLVES ALL OF THESE. | CompletableFuture SOLVES ALL OF THESE. → It's Java's Promise (like JavaScript Promise).
+
+```mermaid
+flowchart TD
+    N1["Future PROBLEMS:"]
+    N2["• get() blocks the calling thread"]
+    N3["• Can't chain multiple async operations"]
+    N4["• No way to combine futures"]
+    N5["• No callback support"]
+    N6["CompletableFuture SOLVES ALL OF THESE."]
+    N7["It's Java's Promise (like JavaScript Promise)."]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
 ```
 
 ```java
@@ -255,6 +294,27 @@ CompletableFuture<String> logged = CompletableFuture
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: COMPLETABLEFUTURE CHEAT SHEET → Operation Description | Operation Description → supplyAsync() Start async with return value | supplyAsync() Start async with return value → runAsync() Start async, no return value | runAsync() Start async, no return value → thenApply() Transform result (sync) | thenApply() Transform result (sync) → thenApplyAsync() Transform result (async, different thr | thenApplyAsync() Transform result (async, different thr → thenCompose() Chain another CF (flatMap) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["COMPLETABLEFUTURE CHEAT SHEET"]
+    N2["Operation Description"]
+    N3["supplyAsync() Start async with return value"]
+    N4["runAsync() Start async, no return value"]
+    N5["thenApply() Transform result (sync)"]
+    N6["thenApplyAsync() Transform result (async, different thr"]
+    N7["thenCompose() Chain another CF (flatMap)"]
+    N8["thenAccept() Consume result, return void"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 # PART 10: java.util.concurrent LOCKS
@@ -328,6 +388,27 @@ if (!sl.validate(stamp)) {    // Check if a write happened
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: synchronized vs ReentrantLock → Feature synchronized ReentrantLock | Feature synchronized ReentrantLock → Auto-release ✅ Yes ❌ Manual (finally) | Auto-release ✅ Yes ❌ Manual (finally) → tryLock ❌ No ✅ Yes | tryLock ❌ No ✅ Yes → Fairness ❌ No ✅ new RL(true) | Fairness ❌ No ✅ new RL(true) → Multiple conditions ❌ 1 wait set ✅ newCondition() | Multiple conditions ❌ 1 wait set ✅ newCondition() → Interruptible ❌ No ✅ lockInterruptibly | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["synchronized vs ReentrantLock"]
+    N2["Feature synchronized ReentrantLock"]
+    N3["Auto-release ✅ Yes ❌ Manual (finally)"]
+    N4["tryLock ❌ No ✅ Yes"]
+    N5["Fairness ❌ No ✅ new RL(true)"]
+    N6["Multiple conditions ❌ 1 wait set ✅ newCondition()"]
+    N7["Interruptible ❌ No ✅ lockInterruptibly"]
+    N8["Performance Similar Similar"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 # PART 11: VIRTUAL THREADS (Java 21 — Project Loom)
@@ -358,6 +439,39 @@ if (!sl.validate(stamp)) {    // Check if a write happened
 │  └─────┘└─────┘           └────────────┘└────────┘                              │
 │  2 OS threads              2 OS threads carry 6 virtual threads                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: T1 → OS T1 | T1 → OS T2 | T2 → OS T1 | T2 → OS T2 | v1 → OS T2 | v1 → Carrier T1 | ...+9 more
+
+```mermaid
+flowchart TD
+    N1["T1"]
+    N2["T2"]
+    N3["v1"]
+    N4["v2"]
+    N5["v3"]
+    N6["v4"]
+    N7["v5"]
+    N8["v6"]
+    N9["OS T1"]
+    N10["OS T2"]
+    N11["Carrier T1"]
+    N12["Car T2"]
+    N1 --> N9
+    N1 --> N10
+    N2 --> N9
+    N2 --> N10
+    N3 --> N10
+    N3 --> N11
+    N4 --> N11
+    N5 --> N11
+    N5 --> N12
+    N6 --> N11
+    N6 --> N12
+    N7 --> N11
+    N7 --> N12
+    N8 --> N11
+    N8 --> N12
 ```
 
 ```java
@@ -418,6 +532,27 @@ try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
 │  }                                                                              │
 │  // If either fails → both cancelled automatically!                             │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: VIRTUAL THREADS — WHEN TO USE → ✅ USE for: ❌ DON'T USE for: | ✅ USE for: ❌ DON'T USE for: → • I/O-bound tasks (HTTP, DB, files) • CPU-bound computa | • I/O-bound tasks (HTTP, DB, files) • CPU-bound computa → simpler I/O-bound concurrent code | simpler I/O-bound concurrent code → GOTCHAS: | GOTCHAS: → • Not faster for CPU work — only for I/O waiting | • Not faster for CPU work — only for I/O waiting → STRUCTURED CONCURRENCY (Preview, Java 21+): | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["VIRTUAL THREADS — WHEN TO USE"]
+    N2["✅ USE for: ❌ DON'T USE for:"]
+    N3["• I/O-bound tasks (HTTP, DB, files) • CPU-bound computa"]
+    N4["simpler I/O-bound concurrent code"]
+    N5["GOTCHAS:"]
+    N6["• Not faster for CPU work — only for I/O waiting"]
+    N7["STRUCTURED CONCURRENCY (Preview, Java 21+):"]
+    N8["var user = scope.fork(() -&gt; fetchUser(id));"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---
@@ -499,6 +634,27 @@ for (int i = 0; i < tasks.size(); i++) {
 │  □ Implement graceful shutdown (shutdown + awaitTermination)                    │
 │  □ Log thread name in every log statement                                       │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: PRODUCTION CONCURRENCY CHECKLIST → □ Set bounded queues (prevent OOM) | □ Set bounded queues (prevent OOM) → □ Name your threads (ThreadFactory with meaningful name | □ Name your threads (ThreadFactory with meaningful name → □ Always handle InterruptedException properly | □ Always handle InterruptedException properly → □ Use try-finally for lock.unlock() | □ Use try-finally for lock.unlock() → □ Prefer concurrent collections over synchronized wrapp | □ Prefer concurrent collections over synchronized wrapp → □ Use CompletableFuture over raw Future | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["PRODUCTION CONCURRENCY CHECKLIST"]
+    N2["□ Set bounded queues (prevent OOM)"]
+    N3["□ Name your threads (ThreadFactory with meaningful name"]
+    N4["□ Always handle InterruptedException properly"]
+    N5["□ Use try-finally for lock.unlock()"]
+    N6["□ Prefer concurrent collections over synchronized wrapp"]
+    N7["□ Use CompletableFuture over raw Future"]
+    N8["□ Set timeouts on all blocking calls"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

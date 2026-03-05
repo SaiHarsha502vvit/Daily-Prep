@@ -136,6 +136,27 @@ WITH SPACED REPETITION + UNDERSTANDING:
 - You keep 90%+ forever
 ```
 
+> **Flow**: THE FORGETTING CURVE (Ebbinghaus): → Day1 Day2 Day7 Day30 | Day1 Day2 Day7 Day30 → Without review: | Without review: → - After 1 day: 50-80% forgotten | - After 1 day: 50-80% forgotten → - After 1 week: 90% forgotten | - After 1 week: 90% forgotten → - After 1 month: Almost everything gone | - After 1 month: Almost everything gone → WITH SPACED REPETITION + UNDERSTANDING: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE FORGETTING CURVE (Ebbinghaus):"]
+    N2["Day1 Day2 Day7 Day30"]
+    N3["Without review:"]
+    N4["- After 1 day: 50-80% forgotten"]
+    N5["- After 1 week: 90% forgotten"]
+    N6["- After 1 month: Almost everything gone"]
+    N7["WITH SPACED REPETITION + UNDERSTANDING:"]
+    N8["- You keep 90%+ forever"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ## Why Rote Learning Fails
 
 ```
@@ -157,6 +178,15 @@ NOW YOU UNDERSTAND:
 - Why it works
 - When to apply it
 - How to adapt it
+```
+
+> **Flow**: - No context → No recall trigger
+
+```mermaid
+flowchart LR
+    N1["- No context"]
+    N2["No recall trigger"]
+    N1 --> N2
 ```
 
 ---
@@ -207,6 +237,27 @@ NOW you understand the FOUNDATION!
 
 When something goes wrong (collision, rehashing),
 you know WHY because you understand the mechanism.
+```
+
+> **Flow**: SURFACE: 'Use HashMap for O(1) lookup' → WHY does HashMap give O(1)? | WHY does HashMap give O(1)? → → Because it uses hash function to compute index direct | → Because it uses hash function to compute index direct → WHY does that give O(1)? | WHY does that give O(1)? → → Because array access by index is O(1) | → Because array access by index is O(1) → WHY is array access O(1)? | WHY is array access O(1)? → → Because memory is contiguous, address = base + offset | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["SURFACE: 'Use HashMap for O(1) lookup'"]
+    N2["WHY does HashMap give O(1)?"]
+    N3["→ Because it uses hash function to compute index direct"]
+    N4["WHY does that give O(1)?"]
+    N5["→ Because array access by index is O(1)"]
+    N6["WHY is array access O(1)?"]
+    N7["→ Because memory is contiguous, address = base + offset"]
+    N8["NOW you understand the FOUNDATION!"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ## 3. Visualize Everything
@@ -295,6 +346,27 @@ STEP 2: RECALL THE TEMPLATE
 STEP 3: ADAPT TO THIS PROBLEM
 "This specific problem needs to find leftmost occurrence,
 so when I find target, I continue searching left"
+```
+
+> **Flow**: STEP 1: IDENTIFY THE CATEGORY → 'This is about finding something in a sorted array' | 'This is about finding something in a sorted array' → → Probably Binary Search | → Probably Binary Search → 'This involves making optimal choices' | 'This involves making optimal choices' → → Probably Greedy or DP | → Probably Greedy or DP → 'This needs to track frequency of elements' | 'This needs to track frequency of elements' → → Probably HashMap | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["STEP 1: IDENTIFY THE CATEGORY"]
+    N2["'This is about finding something in a sorted array'"]
+    N3["→ Probably Binary Search"]
+    N4["'This involves making optimal choices'"]
+    N5["→ Probably Greedy or DP"]
+    N6["'This needs to track frequency of elements'"]
+    N7["→ Probably HashMap"]
+    N8["STEP 2: RECALL THE TEMPLATE"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ## Building Pattern Intuition
@@ -435,6 +507,27 @@ Can't do it? You don't truly understand!
                 └────────────────┘
 ```
 
+> **Flow**: PROBLEM → STRUGGLE / (15-30 min) | STRUGGLE / (15-30 min) → ▼ ▼ / ED! STUCK / ze & Study s / ariants UNDERST | STRUGGLE / (15-30 min) → SOLVED! / Optimize & / find variants | STRUGGLE / (15-30 min) → STUCK / Study soln / UNDERSTAND it | ▼ ▼ / ED! STUCK / ze & Study s / ariants UNDERST → REFLECTION / What pattern? / What learned? / Similar pr | SOLVED! / Optimize & / find variants → REFLECTION / What pattern? / What learned? / Similar pr | ...+2 more
+
+```mermaid
+flowchart TD
+    N1["PROBLEM"]
+    N2["STRUGGLE / (15-30 min)"]
+    N3["▼ ▼ / ED! STUCK / ze & Study s / ariants UNDERST"]
+    N4["SOLVED! / Optimize & / find variants"]
+    N5["STUCK / Study soln / UNDERSTAND it"]
+    N6["REFLECTION / What pattern? / What learned? / Similar pr"]
+    N7["TEACH/EXPLAIN / in own words"]
+    N1 --> N2
+    N2 --> N3
+    N2 --> N4
+    N2 --> N5
+    N3 --> N6
+    N4 --> N6
+    N5 --> N6
+    N6 --> N7
+```
+
 ## The 3-Pass Method
 
 ```
@@ -487,6 +580,15 @@ Instead of linear notes, create concept maps:
                    • Range? → Two Binary Searches
 ```
 
+> **Flow**: ARRAY SEARCH → SORTED / 1D
+
+```mermaid
+flowchart TD
+    N1["ARRAY SEARCH"]
+    N3["SORTED / 1D"]
+    N1 --> N3
+```
+
 ## Connect Patterns to Problems
 
 ```
@@ -511,6 +613,27 @@ Instead of linear notes, create concept maps:
     │   add arr[i]           │     shrink window      │
     │   remove arr[i-k]      │   update answer        │
     └────────────────────────┴────────────────────────┘
+```
+
+> **Flow**: SLIDING WINDOW → FIXED SIZE VARIABLE SIZE | FIXED SIZE VARIABLE SIZE → • Max sum of k • Longest substring | • Max sum of k • Longest substring → • Max avg of k without repeating | • Max avg of k without repeating → • Contains duplicate • Min window substring | • Contains duplicate • Min window substring → within k • Longest repeating | within k • Longest repeating → char replacement | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["SLIDING WINDOW"]
+    N2["FIXED SIZE VARIABLE SIZE"]
+    N3["• Max sum of k • Longest substring"]
+    N4["• Max avg of k without repeating"]
+    N5["• Contains duplicate • Min window substring"]
+    N6["within k • Longest repeating"]
+    N7["char replacement"]
+    N8["Template: Template:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---
@@ -616,6 +739,25 @@ Eventually solve without help
 Result: Actually retained!
 ```
 
+> **Flow**: Watch solution video → 'I understand!' | 'I understand!' → Move to next problem | Struggle with problem → Watch video | Watch video → Close video | Solve from scratch → Struggle again next day
+
+```mermaid
+flowchart TD
+    N1["Watch solution video"]
+    N2["'I understand!'"]
+    N3["Move to next problem"]
+    N4["Struggle with problem"]
+    N5["Watch video"]
+    N6["Close video"]
+    N7["Solve from scratch"]
+    N8["Struggle again next day"]
+    N1 --> N2
+    N2 --> N3
+    N4 --> N5
+    N5 --> N6
+    N7 --> N8
+```
+
 ## The Collection Fallacy
 
 ```
@@ -641,6 +783,19 @@ Identify gap in understanding →
 Fill the gap →
 Return to medium →
 Success!
+```
+
+> **Flow**: Can't solve medium → Jump to hard | Jump to hard → Frustrated | Frustrated → Give up
+
+```mermaid
+flowchart LR
+    N1["Can't solve medium"]
+    N2["Jump to hard"]
+    N3["Frustrated"]
+    N4["Give up"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
 ```
 
 ---
@@ -808,6 +963,15 @@ Keep your blurt papers - they become revision sheets!
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: 'Spaced repetition BEATS last-minute cramming.' / Each  → Topic Day 1 Day 2 Day 3 Day 7 / Two Pointers ✓ Mon ✓ Tu
+
+```mermaid
+flowchart TD
+    N1["'Spaced repetition BEATS last-minute cramming.' / Each "]
+    N2["Topic Day 1 Day 2 Day 3 Day 7 / Two Pointers ✓ Mon ✓ Tu"]
+    N1 --> N2
+```
+
 ## 👶 Technique 5: FEYNMAN TECHNIQUE
 
 ## Feynman Technique
@@ -945,6 +1109,27 @@ WEEKLY SCHEDULE (2-3-7 Rule):
 │   than most people get in 8 hours of unfocused work!                         │
 │                                                                              │
 └──────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: THE ULTIMATE DAILY LEARNING WORKFLOW → MORNING SESSION (45-15-45-15): | MORNING SESSION (45-15-45-15): → [09:00-09:45] Deep Work Block 1: | [09:00-09:45] Deep Work Block 1: → • Look at problems FIRST (Question First Approach) | • Look at problems FIRST (Question First Approach) → • Try to solve, note gaps | • Try to solve, note gaps → [09:45-10:00] Break (walk, no phone!) | [09:45-10:00] Break (walk, no phone!) → [10:00-10:45] Deep Work Block 2: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE ULTIMATE DAILY LEARNING WORKFLOW"]
+    N2["MORNING SESSION (45-15-45-15):"]
+    N3["[09:00-09:45] Deep Work Block 1:"]
+    N4["• Look at problems FIRST (Question First Approach)"]
+    N5["• Try to solve, note gaps"]
+    N6["[09:45-10:00] Break (walk, no phone!)"]
+    N7["[10:00-10:45] Deep Work Block 2:"]
+    N8["• Read theory with purpose"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

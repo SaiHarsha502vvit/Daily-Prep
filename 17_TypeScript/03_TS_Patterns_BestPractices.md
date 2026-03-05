@@ -516,6 +516,17 @@ RULE: Never stop at Phase 1. Phase 1 TS is worse than JS
 because it gives FALSE confidence. Reach Phase 3.
 ```
 
+> **Flow**: 1. npm install -D typescript / 2. npx tsc --init / 3. S → 1. Start with leaf files (utils, helpers — no dependenc | 1. Start with leaf files (utils, helpers — no dependenc → 1. Enable strict flags ONE AT A TIME: / noImplicitAny →
+
+```mermaid
+flowchart TD
+    N1["1. npm install -D typescript / 2. npx tsc --init / 3. S"]
+    N2["1. Start with leaf files (utils, helpers — no dependenc"]
+    N3["1. Enable strict flags ONE AT A TIME: / noImplicitAny →"]
+    N1 --> N2
+    N2 --> N3
+```
+
 ---
 
 ## 8. Performance Tips
@@ -575,6 +586,15 @@ Library/Package:
 └── strict: true
 ```
 
+> **Flow**: PROJECT TYPE → KEY TSCONFIG OPTIONS:
+
+```mermaid
+flowchart LR
+    N1["PROJECT TYPE"]
+    N2["KEY TSCONFIG OPTIONS:"]
+    N1 --> N2
+```
+
 ---
 
 ## Interview Quick-Fire
@@ -606,6 +626,27 @@ Q: What are branded types?
 Q: How do you type a function that accepts any object with a specific key?
 → Generic with constraint: function get<T extends { id: number }>(obj: T): number
   Or: function get<T, K extends keyof T>(obj: T, key: K): T[K]
+```
+
+> **Flow**: based on a variant? → → Discriminated union of prop types: | → Discriminated union of prop types: → Then narrow on props.variant. | Then narrow on props.variant. → Q: How do you handle API response types? | Q: How do you handle API response types? → Q: How would you migrate a large JS project to TS? | Q: How would you migrate a large JS project to TS? → → Phase 1: Install TS, allowJs, rename files gradually. | → Phase 1: Install TS, allowJs, rename files gradually. → Phase 2: Add types starting from leaf files. | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["based on a variant?"]
+    N2["→ Discriminated union of prop types:"]
+    N3["Then narrow on props.variant."]
+    N4["Q: How do you handle API response types?"]
+    N5["Q: How would you migrate a large JS project to TS?"]
+    N6["→ Phase 1: Install TS, allowJs, rename files gradually."]
+    N7["Phase 2: Add types starting from leaf files."]
+    N8["Q: What are branded types?"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

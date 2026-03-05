@@ -193,6 +193,19 @@ Batch, HATEOAS, i18n, GraalVM
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: LEARNING PHILOSOPHY → EACH PHASE BUILDS ON THE PREVIOUS ONE | EACH PHASE BUILDS ON THE PREVIOUS ONE → Don't skip phases unless you're already proficient! | Don't skip phases unless you're already proficient! → ⏱️ ESTIMATED TOTAL TIME: 10-14 weeks (2-3 hours/day)
+
+```mermaid
+flowchart TD
+    N1["LEARNING PHILOSOPHY"]
+    N2["EACH PHASE BUILDS ON THE PREVIOUS ONE"]
+    N3["Don't skip phases unless you're already proficient!"]
+    N4["⏱️ ESTIMATED TOTAL TIME: 10-14 weeks (2-3 hours/day)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 ---
 
 # 📚 COMPLETE LEARNING SEQUENCE
@@ -235,6 +248,27 @@ Batch, HATEOAS, i18n, GraalVM
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: 📄 FUNCTIONAL PROGRAMMING IN JAVA → File: 01_Functional_Programming.md | File: 01_Functional_Programming.md → TOPICS COVERED: | TOPICS COVERED: → C. Stream API filter, map, reduce, collect | C. Stream API filter, map, reduce, collect → D. Method References Class::method shorthand | D. Method References Class::method shorthand → E. Optional Null-safe value handling | E. Optional Null-safe value handling → G. Java Records Immutable data carriers: record User(.. | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["📄 FUNCTIONAL PROGRAMMING IN JAVA"]
+    N2["File: 01_Functional_Programming.md"]
+    N3["TOPICS COVERED:"]
+    N4["C. Stream API filter, map, reduce, collect"]
+    N5["D. Method References Class::method shorthand"]
+    N6["E. Optional Null-safe value handling"]
+    N7["G. Java Records Immutable data carriers: record User(.."]
+    N8["⏱️ TIME: 2-3 days"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## PHASE 0: HIDDEN FOUNDATIONS (Week 1 - Read First!) ⚫
@@ -266,6 +300,27 @@ Batch, HATEOAS, i18n, GraalVM
 │  ⚠️ READ THIS FIRST if you want to understand WHY, not just HOW                 │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: 📄 PART 0: THE HIDDEN FOUNDATIONS → File: 02_Spring_Boot_Part0_Hidden_Foundations.md | File: 02_Spring_Boot_Part0_Hidden_Foundations.md → TOPICS COVERED: | TOPICS COVERED: → A. Java Reflection How Spring reads @Autowired, @Compon | A. Java Reflection How Spring reads @Autowired, @Compon → D. Servlet API What Spring Boot hides from you | D. Servlet API What Spring Boot hides from you → E. Jackson Serialization How JSON ↔ Java conversion wor | E. Jackson Serialization How JSON ↔ Java conversion wor → F. Connection Pooling Why HikariCP matters | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["📄 PART 0: THE HIDDEN FOUNDATIONS"]
+    N2["File: 02_Spring_Boot_Part0_Hidden_Foundations.md"]
+    N3["TOPICS COVERED:"]
+    N4["A. Java Reflection How Spring reads @Autowired, @Compon"]
+    N5["D. Servlet API What Spring Boot hides from you"]
+    N6["E. Jackson Serialization How JSON ↔ Java conversion wor"]
+    N7["F. Connection Pooling Why HikariCP matters"]
+    N8["G. Classloading How Spring DevTools hot-reload works"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### Why Part 0 Exists
@@ -300,6 +355,25 @@ Batch, HATEOAS, i18n, GraalVM
 │  File: 05_Spring_Boot_Complete_Part3.md                                         │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: PART 1 → PART 2 → PART 3 → 📄 PART 1 📄 PART 2 📄 PART 3 | 📄 PART 1 📄 PART 2 📄 PART 3 → Java Spring Core AOP & | Java Spring Core AOP & → Foundations (IoC & DI) Auto-Config | Foundations (IoC & DI) Auto-Config → File: 03_Spring_Boot_Complete_Part1.md | File: 03_Spring_Boot_Complete_Part1.md → File: 04_Spring_Boot_Complete_Part2.md | File: 04_Spring_Boot_Complete_Part2.md → File: 05_Spring_Boot_Complete_Part3.md
+
+```mermaid
+flowchart TD
+    N1["PART 1 → PART 2 → PART 3"]
+    N2["📄 PART 1 📄 PART 2 📄 PART 3"]
+    N3["Java Spring Core AOP &"]
+    N4["Foundations (IoC & DI) Auto-Config"]
+    N5["File: 03_Spring_Boot_Complete_Part1.md"]
+    N6["File: 04_Spring_Boot_Complete_Part2.md"]
+    N7["File: 05_Spring_Boot_Complete_Part3.md"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
 ```
 
 ### Part 1: Java Foundations (PREREQUISITE)
@@ -385,6 +459,25 @@ Batch, HATEOAS, i18n, GraalVM
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: PART 5 → PART 10 → PART 4 (Overview) → 📄 PART 5 📄 PART 10 📄 PART 4 | 📄 PART 5 📄 PART 10 📄 PART 4 → Lombok & HTTP Deep Quick Overview | Lombok & HTTP Deep Quick Overview → DTOs Dive (Optional) | DTOs Dive (Optional) → File: 07_Spring_Boot_Part5_Lombok_DTOs.md | File: 07_Spring_Boot_Part5_Lombok_DTOs.md → File: 12_Spring_Boot_Part10_HTTP_Deep_Dive.md | File: 12_Spring_Boot_Part10_HTTP_Deep_Dive.md → File: 06_Spring_Boot_Complete_Part4.md (Optional overvi
+
+```mermaid
+flowchart TD
+    N1["PART 5 → PART 10 → PART 4 (Overview)"]
+    N2["📄 PART 5 📄 PART 10 📄 PART 4"]
+    N3["Lombok & HTTP Deep Quick Overview"]
+    N4["DTOs Dive (Optional)"]
+    N5["File: 07_Spring_Boot_Part5_Lombok_DTOs.md"]
+    N6["File: 12_Spring_Boot_Part10_HTTP_Deep_Dive.md"]
+    N7["File: 06_Spring_Boot_Complete_Part4.md (Optional overvi"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+```
+
 ### Part 5: Lombok & DTOs
 
 **File:** `07_Spring_Boot_Part5_Lombok_DTOs.md`
@@ -441,6 +534,25 @@ _High-level overview of JPA, Web, Security, Testing. Read for context, but detai
 │  File: 10_Spring_Boot_Part8_JPA_Deep_Dive.md                                    │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: PART 7 → PART 6 → PART 8 → 📄 PART 7 📄 PART 6 📄 PART 8 | 📄 PART 7 📄 PART 6 📄 PART 8 → Controllers Service & JPA Deep | Controllers Service & JPA Deep → & REST API Repository Dive | & REST API Repository Dive → File: 09_Spring_Boot_Part7_Controllers_REST.md | File: 09_Spring_Boot_Part7_Controllers_REST.md → File: 08_Spring_Boot_Part6_Service_Repository.md | File: 08_Spring_Boot_Part6_Service_Repository.md → File: 10_Spring_Boot_Part8_JPA_Deep_Dive.md
+
+```mermaid
+flowchart TD
+    N1["PART 7 → PART 6 → PART 8"]
+    N2["📄 PART 7 📄 PART 6 📄 PART 8"]
+    N3["Controllers Service & JPA Deep"]
+    N4["& REST API Repository Dive"]
+    N5["File: 09_Spring_Boot_Part7_Controllers_REST.md"]
+    N6["File: 08_Spring_Boot_Part6_Service_Repository.md"]
+    N7["File: 10_Spring_Boot_Part8_JPA_Deep_Dive.md"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
 ```
 
 ### Part 7: Controllers & REST API
@@ -516,6 +628,23 @@ _High-level overview of JPA, Web, Security, Testing. Read for context, but detai
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: PART 14 → PART 11 → 📄 PART 14 📄 PART 11 | 📄 PART 14 📄 PART 11 → Essential Authentication | Essential Authentication → Topics & Security | Topics & Security → File: 16_Spring_Boot_Part14_Essential_Missing_Topics.md | File: 16_Spring_Boot_Part14_Essential_Missing_Topics.md → File: 13_Spring_Boot_Part11_Auth_Security.md
+
+```mermaid
+flowchart TD
+    N1["PART 14 → PART 11"]
+    N2["📄 PART 14 📄 PART 11"]
+    N3["Essential Authentication"]
+    N4["Topics & Security"]
+    N5["File: 16_Spring_Boot_Part14_Essential_Missing_Topics.md"]
+    N6["File: 13_Spring_Boot_Part11_Auth_Security.md"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+```
+
 ### Part 14: Essential Production Topics
 
 **File:** `16_Spring_Boot_Part14_Essential_Missing_Topics.md`
@@ -570,6 +699,25 @@ _High-level overview of JPA, Web, Security, Testing. Read for context, but detai
 │  File: 15_Spring_Boot_Part13_Industry_Projects.md                               │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: PART 9 → PART 12 → PART 13 → 📄 PART 9 📄 PART 12 📄 PART 13 | 📄 PART 9 📄 PART 12 📄 PART 13 → Clean DSA in Industry | Clean DSA in Industry → Architecture Spring Boot Projects | Architecture Spring Boot Projects → File: 11_Spring_Boot_Part9_Architecture_Quality.md | File: 11_Spring_Boot_Part9_Architecture_Quality.md → File: 14_Spring_Boot_Part12_DSA_Applications.md | File: 14_Spring_Boot_Part12_DSA_Applications.md → File: 15_Spring_Boot_Part13_Industry_Projects.md
+
+```mermaid
+flowchart TD
+    N1["PART 9 → PART 12 → PART 13"]
+    N2["📄 PART 9 📄 PART 12 📄 PART 13"]
+    N3["Clean DSA in Industry"]
+    N4["Architecture Spring Boot Projects"]
+    N5["File: 11_Spring_Boot_Part9_Architecture_Quality.md"]
+    N6["File: 14_Spring_Boot_Part12_DSA_Applications.md"]
+    N7["File: 15_Spring_Boot_Part13_Industry_Projects.md"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
 ```
 
 ### Part 9: Clean Architecture & Quality
@@ -647,6 +795,25 @@ _High-level overview of JPA, Web, Security, Testing. Read for context, but detai
 │  └── 23_Spring_Boot_Part21_Cloud_Deployment.md                                  │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: PART 15 / WebFlux / Reactive → PART 16 / SOLID / Principles | PART 16 / SOLID / Principles → PART 17 / Database / Security | PART 16 / SOLID / Principles → PART 20 PART 21 / Microservices Cloud / Patterns Deploy | PART 17 / Database / Security → PART 18 / Distrib. / Tracing | PART 17 / Database / Security → PART 20 PART 21 / Microservices Cloud / Patterns Deploy | PART 18 / Distrib. / Tracing → PART 19 / Testing / Complete | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["PART 15 / WebFlux / Reactive"]
+    N2["PART 16 / SOLID / Principles"]
+    N3["PART 17 / Database / Security"]
+    N4["PART 18 / Distrib. / Tracing"]
+    N5["PART 19 / Testing / Complete"]
+    N6["PART 20 PART 21 / Microservices Cloud / Patterns Deploy"]
+    N1 --> N2
+    N2 --> N3
+    N2 --> N6
+    N3 --> N4
+    N3 --> N6
+    N4 --> N5
+    N4 --> N6
 ```
 
 ### Part 15: WebFlux & Reactive Programming
@@ -795,6 +962,27 @@ _High-level overview of JPA, Web, Security, Testing. Read for context, but detai
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: PART 22: ANNOTATIONS COMPLETE REFERENCE → • Security: @PreAuthorize, @PostAuthorize, @Secured | • Security: @PreAuthorize, @PostAuthorize, @Secured → • Caching: @Cacheable, @CacheEvict, @CachePut | • Caching: @Cacheable, @CacheEvict, @CachePut → • Async: @Async, @Scheduled | • Async: @Async, @Scheduled → • Testing: @SpringBootTest, @MockBean, @DataJpaTest | • Testing: @SpringBootTest, @MockBean, @DataJpaTest → • Lombok: @Data, @Builder, @Slf4j, @Value | • Lombok: @Data, @Builder, @Slf4j, @Value → • Hibernate: @Formula, @Where, @BatchSize, @DynamicUpda | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["PART 22: ANNOTATIONS COMPLETE REFERENCE"]
+    N2["• Security: @PreAuthorize, @PostAuthorize, @Secured"]
+    N3["• Caching: @Cacheable, @CacheEvict, @CachePut"]
+    N4["• Async: @Async, @Scheduled"]
+    N5["• Testing: @SpringBootTest, @MockBean, @DataJpaTest"]
+    N6["• Lombok: @Data, @Builder, @Slf4j, @Value"]
+    N7["• Hibernate: @Formula, @Where, @BatchSize, @DynamicUpda"]
+    N8["⭐ USE AS QUICK REFERENCE - Bookmark this file!"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 # 📋 QUICK REFERENCE: ALL PARTS
@@ -848,6 +1036,27 @@ _High-level overview of JPA, Web, Security, Testing. Read for context, but detai
 │  TOTAL: 25 FILES (Part 0-23 + Curriculum)                                       │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: COMPLETE FILE LIST (IN LEARNING ORDER) → PHASE 0: HIDDEN FOUNDATIONS (Read First!) | PHASE 0: HIDDEN FOUNDATIONS (Read First!) → PHASE 1: FOUNDATIONS | PHASE 1: FOUNDATIONS → 📄 03_Spring_Boot_Complete_Part1.md → Java Foundations | 📄 03_Spring_Boot_Complete_Part1.md → Java Foundations → 📄 04_Spring_Boot_Complete_Part2.md → IoC & DI | 📄 04_Spring_Boot_Complete_Part2.md → IoC & DI → 📄 05_Spring_Boot_Complete_Part3.md → AOP & Auto-Config | 📄 05_Spring_Boot_Complete_Part3.md → AOP & Auto-Config → PHASE 2: TOOLING & WEB BASICS | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["COMPLETE FILE LIST (IN LEARNING ORDER)"]
+    N2["PHASE 0: HIDDEN FOUNDATIONS (Read First!)"]
+    N3["PHASE 1: FOUNDATIONS"]
+    N4["📄 03_Spring_Boot_Complete_Part1.md → Java Foundations"]
+    N5["📄 04_Spring_Boot_Complete_Part2.md → IoC & DI"]
+    N6["📄 05_Spring_Boot_Complete_Part3.md → AOP & Auto-Config"]
+    N7["PHASE 2: TOOLING & WEB BASICS"]
+    N8["📄 07_Spring_Boot_Part5_Lombok_DTOs.md → Lombok & DTOs"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

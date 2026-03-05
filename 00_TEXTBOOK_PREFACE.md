@@ -61,6 +61,19 @@ This repository is organized as a **progressive textbook** — each folder is a 
   └─────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: PART 1: Getting Started / [01_Getting_Started/02_Study_ → PART 2: Data Structures I — Linear Structures / [02_Dat | PART 2: Data Structures I — Linear Structures / [02_Dat → PART 3: Algorithms I — Thinking & Sorting / [03_Algorit | PART 3: Algorithms I — Thinking & Sorting / [03_Algorit → PART 4: SQL I — Foundations / [08_SQL/01_Foundations_Da
+
+```mermaid
+flowchart TD
+    N1["PART 1: Getting Started / [01_Getting_Started/02_Study_"]
+    N2["PART 2: Data Structures I — Linear Structures / [02_Dat"]
+    N3["PART 3: Algorithms I — Thinking & Sorting / [03_Algorit"]
+    N4["PART 4: SQL I — Foundations / [08_SQL/01_Foundations_Da"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 ### Phase 2: Core Patterns (Weeks 4-6)
 
 ```
@@ -98,6 +111,19 @@ This repository is organized as a **progressive textbook** — each folder is a 
   └─────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: PART 5: Coding Patterns / [04_Patterns_Templates/01_Sli → PART 6: Algorithms II — Recursion & Trees / [03_Algorit | PART 6: Algorithms II — Recursion & Trees / [03_Algorit → PART 7: SQL II — Intermediate / [08_SQL/06_Aggregations | PART 7: SQL II — Intermediate / [08_SQL/06_Aggregations → PART 8: Spring Boot I — Core (weekends) / [07_Modern_Ja
+
+```mermaid
+flowchart TD
+    N1["PART 5: Coding Patterns / [04_Patterns_Templates/01_Sli"]
+    N2["PART 6: Algorithms II — Recursion & Trees / [03_Algorit"]
+    N3["PART 7: SQL II — Intermediate / [08_SQL/06_Aggregations"]
+    N4["PART 8: Spring Boot I — Core (weekends) / [07_Modern_Ja"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 ### Phase 3: Advanced (Weeks 7-10)
 
 ```
@@ -131,6 +157,19 @@ This repository is organized as a **progressive textbook** — each folder is a 
   │ Through: [22a_SB_Microservices_Core.md]                │
   │ JPA, Security, Auth, Testing, Microservices.            │
   └─────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: PART 9: Algorithms III — Advanced Techniques / [03_Algo → PART 10: Advanced Data Structures / [03_Algorithms/07a_ | PART 10: Advanced Data Structures / [03_Algorithms/07a_ → PART 11: SQL III — Expert / [08_SQL/10_Normalization.md | PART 11: SQL III — Expert / [08_SQL/10_Normalization.md → PART 12: Spring Boot II — Production (weekends) / [10_S
+
+```mermaid
+flowchart TD
+    N1["PART 9: Algorithms III — Advanced Techniques / [03_Algo"]
+    N2["PART 10: Advanced Data Structures / [03_Algorithms/07a_"]
+    N3["PART 11: SQL III — Expert / [08_SQL/10_Normalization.md"]
+    N4["PART 12: Spring Boot II — Production (weekends) / [10_S"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
 ```
 
 ### Phase 4: Integration (Week 11)
@@ -168,6 +207,19 @@ This repository is organized as a **progressive textbook** — each folder is a 
   │ [09_Career_Reference/02c_Ultimate_DSA_JVM.md]          │
   │ The comprehensive reference — DSA + JVM + career.       │
   └─────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: PART 13: System Design & OOP / [06_OOP_Design/01_OOPS_P → PART 14: Enterprise & Real-World / [10_Enterprise_Syste | PART 14: Enterprise & Real-World / [10_Enterprise_Syste → PART 15: Developer Essentials (READ ALONGSIDE!) / [13_D | PART 15: Developer Essentials (READ ALONGSIDE!) / [13_D → PART 16: Career & Interview Prep / [09_Career_Reference
+
+```mermaid
+flowchart TD
+    N1["PART 13: System Design & OOP / [06_OOP_Design/01_OOPS_P"]
+    N2["PART 14: Enterprise & Real-World / [10_Enterprise_Syste"]
+    N3["PART 15: Developer Essentials (READ ALONGSIDE!) / [13_D"]
+    N4["PART 16: Career & Interview Prep / [09_Career_Reference"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
 ```
 
 ### Phase 5: Frontend & Deep Reasoning (Weeks 12-14)
@@ -239,6 +291,19 @@ This repository is organized as a **progressive textbook** — each folder is a 
   └─────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: PART 17: JavaScript & TypeScript / [16_JavaScript/01_JS → PART 18: React & CSS / [15_React_Frontend/01_React_Fund | PART 18: React & CSS / [15_React_Frontend/01_React_Fund → PART 19: Frontend Integration / [19_Frontend_Integratio | PART 19: Frontend Integration / [19_Frontend_Integratio → PART 21: Concurrency & Async Models / [13_Developer_Ess
+
+```mermaid
+flowchart TD
+    N1["PART 17: JavaScript & TypeScript / [16_JavaScript/01_JS"]
+    N2["PART 18: React & CSS / [15_React_Frontend/01_React_Fund"]
+    N3["PART 19: Frontend Integration / [19_Frontend_Integratio"]
+    N4["PART 21: Concurrency & Async Models / [13_Developer_Ess"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 ---
 
 ## Prerequisites Map
@@ -281,6 +346,87 @@ Concurrency Track:
   Java Threads → Virtual Threads → Coroutines → Event Loop → Goroutines
 ```
 
+> **Flow**: DEPENDENCY GRAPH (read left → right): | Arrays → Sorting | Sorting → Binary Search | Strings Merge Sort Two Pointers → Sliding Window | LinkedList Recursion → Backtracking | Stack/Queue Trees → DFS/BFS Graphs | ...+26 more
+
+```mermaid
+flowchart TD
+    N1["DEPENDENCY GRAPH (read left"]
+    N2["right):"]
+    N3["Arrays"]
+    N4["Sorting"]
+    N5["Binary Search"]
+    N6["Strings Merge Sort Two Pointers"]
+    N7["Sliding Window"]
+    N8["LinkedList Recursion"]
+    N9["Backtracking"]
+    N10["Stack/Queue Trees"]
+    N11["DFS/BFS Graphs"]
+    N12["BST/Heap"]
+    N13["Priority Queue Dijkstra/Topological"]
+    N14["Basics"]
+    N15["DDL"]
+    N16["DML"]
+    N17["SELECT"]
+    N18["Aggregates"]
+    N19["JOINs"]
+    N20["Subqueries"]
+    N21["Window Functions"]
+    N22["Indexes"]
+    N23["Transactions"]
+    N24["Optimization"]
+    N25["Java Basics"]
+    N26["IoC/DI"]
+    N27["REST"]
+    N28["JPA"]
+    N29["Security"]
+    N30["Testing"]
+    N31["Microservices"]
+    N32["JS Foundations"]
+    N33["Closures/Async"]
+    N34["DOM"]
+    N35["TypeScript"]
+    N36["React"]
+    N37["CSS"]
+    N38["Integration"]
+    N39["Java Threads"]
+    N40["Virtual Threads"]
+    N41["Coroutines"]
+    N42["Event Loop"]
+    N43["Goroutines"]
+    N1 --> N2
+    N3 --> N4
+    N4 --> N5
+    N6 --> N7
+    N8 --> N9
+    N10 --> N11
+    N12 --> N13
+    N14 --> N15
+    N15 --> N16
+    N16 --> N17
+    N17 --> N18
+    N18 --> N19
+    N19 --> N20
+    N21 --> N22
+    N22 --> N23
+    N23 --> N24
+    N25 --> N26
+    N26 --> N27
+    N27 --> N28
+    N28 --> N29
+    N29 --> N30
+    N30 --> N31
+    N32 --> N33
+    N33 --> N34
+    N34 --> N35
+    N35 --> N36
+    N36 --> N37
+    N37 --> N38
+    N39 --> N40
+    N40 --> N41
+    N41 --> N42
+    N42 --> N43
+```
+
 ---
 
 ## Difficulty Progression
@@ -302,6 +448,17 @@ Concurrency Track:
            │                      │                         │
            └──────────────────────┴─────────────────────────┘
                     "Each week builds on the last"
+```
+
+> **Flow**: Weeks 1-3 / • Arrays / • Strings / • Basic Sort / • Lin → Weeks 4-6 / • Hash Maps / • Trees/BST / • Binary Search | Weeks 4-6 / • Hash Maps / • Trees/BST / • Binary Search → Weeks 7-11 / • DP / • Graphs (adv) / • Backtracking / •
+
+```mermaid
+flowchart TD
+    N1["Weeks 1-3 / • Arrays / • Strings / • Basic Sort / • Lin"]
+    N2["Weeks 4-6 / • Hash Maps / • Trees/BST / • Binary Search"]
+    N3["Weeks 7-11 / • DP / • Graphs (adv) / • Backtracking / •"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 ---

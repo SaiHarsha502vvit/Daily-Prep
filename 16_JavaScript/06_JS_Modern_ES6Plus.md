@@ -116,6 +116,27 @@ const merged = { ...defaults, ...prefs };
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: WHAT: ES Modules let you split code into separate files → import/export between them. | import/export between them. → WHY: Before modules, all JS shared one global scope. | WHY: Before modules, all JS shared one global scope. → → Variable collisions, dependency chaos, huge files. | → Variable collisions, dependency chaos, huge files. → Modules give each file its own scope + explicit deps. | Modules give each file its own scope + explicit deps. → HOW: Two module systems exist: | HOW: Two module systems exist: → • ES Modules (ESM): import/export — standard, browser+N | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["WHAT: ES Modules let you split code into separate files"]
+    N2["import/export between them."]
+    N3["WHY: Before modules, all JS shared one global scope."]
+    N4["→ Variable collisions, dependency chaos, huge files."]
+    N5["Modules give each file its own scope + explicit deps."]
+    N6["HOW: Two module systems exist:"]
+    N7["• ES Modules (ESM): import/export — standard, browser+N"]
+    N8["• CommonJS (CJS): require/module.exports — Node legacy"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ```javascript
 // ──── math.js (exporting) ────
 
@@ -180,6 +201,27 @@ ESM vs CommonJS:
 TREE-SHAKING: ESM imports are STATIC (analyzed at compile time).
 Bundlers (Webpack/Vite) can remove unused exports (dead code).
 CommonJS is dynamic — bundler can't know what's used.
+```
+
+> **Flow**: ESM vs CommonJS: → Feature ESM CommonJS | Feature ESM CommonJS → Syntax import/export require/module. | Syntax import/export require/module. → exports | exports → Loading Async (parallel) Sync (blocking) | Loading Async (parallel) Sync (blocking) → Tree-shaking Yes (static) No (dynamic) | Tree-shaking Yes (static) No (dynamic) → Top-level await Yes No | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["ESM vs CommonJS:"]
+    N2["Feature ESM CommonJS"]
+    N3["Syntax import/export require/module."]
+    N4["exports"]
+    N5["Loading Async (parallel) Sync (blocking)"]
+    N6["Tree-shaking Yes (static) No (dynamic)"]
+    N7["Top-level await Yes No"]
+    N8["Browser support Yes No (needs bundler)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---
@@ -493,6 +535,27 @@ ES15  │ Map.groupBy, Promise.withResolvers, well-formed
 2024  │ Unicode strings, Atomics.waitAsync, RegExp v flag
 ```
 
+> **Flow**: YEAR KEY FEATURES → ES6 let/const, arrow fn, class, template lit, destructu | ES6 let/const, arrow fn, class, template lit, destructu → 2015 modules, Promise, Map/Set, Symbol, generators, for | 2015 modules, Promise, Map/Set, Symbol, generators, for → ES7 Array.includes(), ** (exponent) | ES7 Array.includes(), ** (exponent) → ES8 async/await, Object.entries/values, string padding | ES8 async/await, Object.entries/values, string padding → ES9 rest/spread for objects, for await...of, finally | ES9 rest/spread for objects, for await...of, finally → ES10 flat/flatMap, Object.fromEntries, trimStart/End | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["YEAR KEY FEATURES"]
+    N2["ES6 let/const, arrow fn, class, template lit, destructu"]
+    N3["2015 modules, Promise, Map/Set, Symbol, generators, for"]
+    N4["ES7 Array.includes(), ** (exponent)"]
+    N5["ES8 async/await, Object.entries/values, string padding"]
+    N6["ES9 rest/spread for objects, for await...of, finally"]
+    N7["ES10 flat/flatMap, Object.fromEntries, trimStart/End"]
+    N8["2019 optional catch, Array.sort stability"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## Interview Quick-Fire
@@ -519,6 +582,27 @@ Q: Explain ES6 modules.
 Q: What is the Proxy object?
 → Intercepts operations (get, set, delete, etc.) on objects.
   Used for validation, reactivity (Vue), logging, dynamic APIs.
+```
+
+> **Flow**: Q: What is tree-shaking? → imports are static and can be analyzed at build time. | imports are static and can be analyzed at build time. → Q: Difference between Map and Object? | Q: Difference between Map and Object? → Q: What is a Symbol? | Q: What is a Symbol? → Used for non-colliding property keys and internal proto | Used for non-colliding property keys and internal proto → (Symbol.iterator, Symbol.toPrimitive). | (Symbol.iterator, Symbol.toPrimitive). → Q: Explain ES6 modules. | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Q: What is tree-shaking?"]
+    N2["imports are static and can be analyzed at build time."]
+    N3["Q: Difference between Map and Object?"]
+    N4["Q: What is a Symbol?"]
+    N5["Used for non-colliding property keys and internal proto"]
+    N6["(Symbol.iterator, Symbol.toPrimitive)."]
+    N7["Q: Explain ES6 modules."]
+    N8["and default exports. Static analysis enables tree-shaki"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

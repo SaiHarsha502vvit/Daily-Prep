@@ -91,6 +91,27 @@ SPECIALIZED:
 └── Bloom Filter
 ```
 
+> **Flow**: COMPLETE DATA STRUCTURE VARIANT HIERARCHY → DATA STRUCTURES | DATA STRUCTURES → LINEAR NON-LINEAR HASH-BASED SPECIALIZED PROBABILISTIC | LINEAR NON-LINEAR HASH-BASED SPECIALIZED PROBABILISTIC → LINEAR DATA STRUCTURES: | LINEAR DATA STRUCTURES: → ARRAYS | ARRAYS → Static Array | Static Array → Dynamic Array (ArrayList) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["COMPLETE DATA STRUCTURE VARIANT HIERARCHY"]
+    N2["DATA STRUCTURES"]
+    N3["LINEAR NON-LINEAR HASH-BASED SPECIALIZED PROBABILISTIC"]
+    N4["LINEAR DATA STRUCTURES:"]
+    N5["ARRAYS"]
+    N6["Static Array"]
+    N7["Dynamic Array (ArrayList)"]
+    N8["Circular Array"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 :::
 
 ---
@@ -152,6 +173,17 @@ SPECIALIZED:
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: WHAT IS IT? / A linear data structure where each elemen → TIME COMPLEXITY / Operation Time Explanation / Access b | TIME COMPLEXITY / Operation Time Explanation / Access b → WHEN TO USE? / ✅ Frequent insertions/deletions at begin
+
+```mermaid
+flowchart TD
+    N1["WHAT IS IT? / A linear data structure where each elemen"]
+    N2["TIME COMPLEXITY / Operation Time Explanation / Access b"]
+    N3["WHEN TO USE? / ✅ Frequent insertions/deletions at begin"]
+    N1 --> N2
+    N2 --> N3
+```
+
 :::
 
 ::: example
@@ -178,6 +210,39 @@ REAL-WORLD APPLICATIONS:
    Engine → Car1 → Car2 → Caboose → null
    │
    └── Each car connects to next
+```
+
+> **Flow**: Action1 → Action2 | Action2 → Action3 | Action3 → null | Page1 → Page2 | Page2 → Page3 | Page3 → null | ...+7 more
+
+```mermaid
+flowchart TD
+    N1["Action1"]
+    N2["Action2"]
+    N3["Action3"]
+    N4["null"]
+    N5["Page1"]
+    N6["Page2"]
+    N7["Page3"]
+    N8["Song1"]
+    N9["Song2"]
+    N10["Song3"]
+    N11["Engine"]
+    N12["Car1"]
+    N13["Car2"]
+    N14["Caboose"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N5 --> N6
+    N6 --> N7
+    N7 --> N4
+    N8 --> N9
+    N9 --> N10
+    N10 --> N4
+    N11 --> N12
+    N12 --> N13
+    N13 --> N14
+    N14 --> N4
 ```
 
 :::
@@ -514,6 +579,15 @@ public class SinglyLinkedList<T> {
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: prev 20 nex → prev 10 next
+
+```mermaid
+flowchart TD
+    N1["prev 10 next"]
+    N2["prev 20 nex"]
+    N2 --> N1
+```
+
 :::
 
 ::: example
@@ -545,6 +619,24 @@ REAL-WORLD APPLICATIONS:
 
 5. IMAGE VIEWER (Swipe left/right):
    null ← Img1 ↔ Img2 ↔ Img3 → null
+```
+
+> **Flow**: null ← Page1 ↔ Page2 ↔ Page3 → null | null ← Song1 ↔ Song2 ↔ Song3 → null | null ← Edit1 ↔ Edit2 ↔ Edit3 → null | head ↔ Recent1 ↔ Recent2 ↔ LeastRecent → tail | null ← Img1 ↔ Img2 ↔ Img3 → null
+
+```mermaid
+flowchart TD
+    N1["null ← Page1 ↔ Page2 ↔ Page3"]
+    N2["null"]
+    N3["null ← Song1 ↔ Song2 ↔ Song3"]
+    N4["null ← Edit1 ↔ Edit2 ↔ Edit3"]
+    N5["head ↔ Recent1 ↔ Recent2 ↔ LeastRecent"]
+    N6["tail"]
+    N7["null ← Img1 ↔ Img2 ↔ Img3"]
+    N1 --> N2
+    N3 --> N2
+    N4 --> N2
+    N5 --> N6
+    N7 --> N2
 ```
 
 :::
@@ -902,6 +994,27 @@ public class DoublyLinkedList<T> {
    → Handle edge cases (head/tail)
 ```
 
+> **Flow**: 🧠 INTERVIEW KEY POINTS - DOUBLY LINKED LIST: → 1. 'Why use doubly over singly?' | 1. 'Why use doubly over singly?' → → Delete at tail: O(1) vs O(n) | → Delete at tail: O(1) vs O(n) → → Bidirectional traversal | → Bidirectional traversal → → Delete given node: O(1) vs O(n) | → Delete given node: O(1) vs O(n) → 2. 'What's the main disadvantage?' | 2. 'What's the main disadvantage?' → → Extra memory for prev pointer | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["🧠 INTERVIEW KEY POINTS - DOUBLY LINKED LIST:"]
+    N2["1. 'Why use doubly over singly?'"]
+    N3["→ Delete at tail: O(1) vs O(n)"]
+    N4["→ Bidirectional traversal"]
+    N5["→ Delete given node: O(1) vs O(n)"]
+    N6["2. 'What's the main disadvantage?'"]
+    N7["→ Extra memory for prev pointer"]
+    N8["→ More complex code"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 :::
 
 ---
@@ -968,6 +1081,27 @@ public class DoublyLinkedList<T> {
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: 10 ● → 20 ● | 10 ● → ● 10 ● | 20 ● → 30 ● | 20 ● → ● 10 ● | 30 ● → 40 ● | 40 ● → ● 30 ● | ...+2 more
+
+```mermaid
+flowchart TD
+    N1["10 ●"]
+    N2["20 ●"]
+    N3["30 ●"]
+    N4["40 ●"]
+    N5["● 10 ●"]
+    N6["● 20 ●"]
+    N7["● 30 ●"]
+    N1 --> N2
+    N1 --> N5
+    N2 --> N3
+    N2 --> N5
+    N3 --> N4
+    N4 --> N7
+    N5 --> N6
+    N6 --> N7
+```
+
 :::
 
 ::: example
@@ -1006,6 +1140,17 @@ REAL-WORLD APPLICATIONS:
 4. JOSEPHUS PROBLEM (Classical):
    n people in circle, every k-th person eliminated
    Who survives? (Famous interview problem!)
+```
+
+> **Flow**: Process1 → Process2 → Process3 / ▲ → Alice → Bob → Charlie → Diana / ▲ | Alice → Bob → Charlie → Diana / ▲ → Song1 → Song2 → Song3 / ▲
+
+```mermaid
+flowchart TD
+    N1["Process1 → Process2 → Process3 / ▲"]
+    N2["Alice → Bob → Charlie → Diana / ▲"]
+    N3["Song1 → Song2 → Song3 / ▲"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 :::
@@ -1212,6 +1357,15 @@ public class CircularLinkedList<T> {
 │ • Applications needing wrap-around in both directions                       │
 │ • When you frequently access both ends                                      │
 └─────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: ▼ ▼ / ev A next prev B next prev C next / ▲ → prev A next
+
+```mermaid
+flowchart TD
+    N1["▼ ▼ / ev A next prev B next prev C next / ▲"]
+    N2["prev A next"]
+    N1 --> N2
 ```
 
 :::
@@ -1435,6 +1589,27 @@ public class CircularDoublyLinkedList<T> {
 │ KEY ADVANTAGE: Easier to implement concurrent (thread-safe) version!        │
 │ This is why Redis uses skip list for sorted sets!                           │
 └─────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: SKIP LIST - COMPLETE GUIDE → WHAT IS IT? | WHAT IS IT? → INVENTED: 1989 by William Pugh | INVENTED: 1989 by William Pugh → VISUAL - MULTIPLE LAYERS OF LINKED LISTS: | VISUAL - MULTIPLE LAYERS OF LINKED LISTS: → Level 3: HEAD &gt; 50 &gt; NIL | Level 3: HEAD &gt; 50 &gt; NIL → Level 2: HEAD &gt; 25 &gt; 50 &gt; NIL | Level 2: HEAD &gt; 25 &gt; 50 &gt; NIL → Level 1: HEAD &gt; 10 &gt; 25 &gt; 35 &gt; 50 &gt; NIL | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["SKIP LIST - COMPLETE GUIDE"]
+    N2["WHAT IS IT?"]
+    N3["INVENTED: 1989 by William Pugh"]
+    N4["VISUAL - MULTIPLE LAYERS OF LINKED LISTS:"]
+    N5["Level 3: HEAD &gt; 50 &gt; NIL"]
+    N6["Level 2: HEAD &gt; 25 &gt; 50 &gt; NIL"]
+    N7["Level 1: HEAD &gt; 10 &gt; 25 &gt; 35 &gt; 50 &gt; NIL"]
+    N8["SEARCH FOR 35:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 :::

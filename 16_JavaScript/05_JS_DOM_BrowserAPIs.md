@@ -50,6 +50,27 @@ KEY INSIGHT: The DOM is NOT your HTML file. It's a LIVE object
 tree in memory. When JS modifies it, the page updates visually.
 ```
 
+> **Flow**: HTML FILE: DOM TREE (in memory): → &lt;html&gt; document | &lt;html&gt; document → &lt;head&gt; | &lt;head&gt; → &lt;title&gt;Page&lt;/title&gt; | &lt;title&gt;Page&lt;/title&gt; → &lt;/head&gt; html (doctype) | &lt;/head&gt; html (doctype) → &lt;body&gt; | &lt;body&gt; → &lt;h1&gt;Hello&lt;/h1&gt; head body | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["HTML FILE: DOM TREE (in memory):"]
+    N2["&lt;html&gt; document"]
+    N3["&lt;head&gt;"]
+    N4["&lt;title&gt;Page&lt;/title&gt;"]
+    N5["&lt;/head&gt; html (doctype)"]
+    N6["&lt;body&gt;"]
+    N7["&lt;h1&gt;Hello&lt;/h1&gt; head body"]
+    N8["&lt;p&gt;World&lt;/p&gt;"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### Node Types
 
 ```javascript
@@ -123,6 +144,27 @@ cardsArray.filter(card => card.classList.contains("active"));
 ║  ⚠ Use *Element* versions (not childNodes/firstChild) to skip        ║
 ║  text nodes (whitespace between tags counts as text nodes!)          ║
 ╚══════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: GIVEN THIS DOM: → &lt;ul id='list'&gt; ul#list | &lt;ul id='list'&gt; ul#list → &lt;li&gt;First&lt;/li&gt; | &lt;li&gt;First&lt;/li&gt; → &lt;li&gt;Second&lt;/li&gt; li li li | &lt;li&gt;Second&lt;/li&gt; li li li → &lt;li&gt;Third&lt;/li&gt; | &lt;li&gt;Third&lt;/li&gt; → PARENT: li.parentElement → ul | PARENT: li.parentElement → ul → CHILDREN: ul.children → [li, li, li] (elements) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["GIVEN THIS DOM:"]
+    N2["&lt;ul id='list'&gt; ul#list"]
+    N3["&lt;li&gt;First&lt;/li&gt;"]
+    N4["&lt;li&gt;Second&lt;/li&gt; li li li"]
+    N5["&lt;li&gt;Third&lt;/li&gt;"]
+    N6["PARENT: li.parentElement → ul"]
+    N7["CHILDREN: ul.children → [li, li, li] (elements)"]
+    N8["FIRST: ul.firstElementChild → li (First)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```javascript
@@ -251,6 +293,27 @@ list.appendChild(fragment); // ONE DOM update!
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: scroll, load, resize, etc. Event listeners react to the → WHY: This is the bridge between user actions and your c | WHY: This is the bridge between user actions and your c → Every interactive web page uses events. | Every interactive web page uses events. → HOW: Events PROPAGATE through the DOM in 3 phases: | HOW: Events PROPAGATE through the DOM in 3 phases: → Phase 1: CAPTURING (top → target) | Phase 1: CAPTURING (top → target) → document → html → body → div → button | document → html → body → div → button → Phase 2: TARGET (the element that was clicked) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["scroll, load, resize, etc. Event listeners react to the"]
+    N2["WHY: This is the bridge between user actions and your c"]
+    N3["Every interactive web page uses events."]
+    N4["HOW: Events PROPAGATE through the DOM in 3 phases:"]
+    N5["Phase 1: CAPTURING (top → target)"]
+    N6["document → html → body → div → button"]
+    N7["Phase 2: TARGET (the element that was clicked)"]
+    N8["button ← event fires here"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ```
 EVENT PROPAGATION VISUAL:
 
@@ -268,6 +331,19 @@ EVENT PROPAGATION VISUAL:
 │  │  └────────────────────────────────────────┘   │    │
 │  └───────────────────────────────────────────────┘    │
 └───────────────────────────────────────────────────────┘
+```
+
+> **Flow**: EVENT PROPAGATION VISUAL: / document → body | body → div.container | div.container → button / ② TARGET — event fires here
+
+```mermaid
+flowchart TD
+    N1["EVENT PROPAGATION VISUAL: / document"]
+    N2["body"]
+    N3["div.container"]
+    N4["button / ② TARGET — event fires here"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
 ```
 
 ```javascript
@@ -349,6 +425,27 @@ document.querySelector("#todo-list").addEventListener("click", (e) => {
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: MOUSE: click, dblclick, mouseenter, mouseleave, mousemo → KEYBOARD: keydown, keyup, keypress (deprecated) | KEYBOARD: keydown, keyup, keypress (deprecated) → FORM: submit, change, input, focus, blur, reset | FORM: submit, change, input, focus, blur, reset → TOUCH: touchstart, touchmove, touchend | TOUCH: touchstart, touchmove, touchend → DRAG: dragstart, drag, dragover, drop, dragend | DRAG: dragstart, drag, dragover, drop, dragend → CLIPBOARD: copy, cut, paste | CLIPBOARD: copy, cut, paste → input vs change: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["MOUSE: click, dblclick, mouseenter, mouseleave, mousemo"]
+    N2["KEYBOARD: keydown, keyup, keypress (deprecated)"]
+    N3["FORM: submit, change, input, focus, blur, reset"]
+    N4["TOUCH: touchstart, touchmove, touchend"]
+    N5["DRAG: dragstart, drag, dragover, drop, dragend"]
+    N6["CLIPBOARD: copy, cut, paste"]
+    N7["input vs change:"]
+    N8["• input: fires on EVERY keystroke/change (real-time)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 6. Forms & Validation
@@ -416,6 +513,27 @@ USE CASES:
 • sessionStorage: one-time banners, wizard progress
 • Cookies: authentication (httpOnly cookies), tracking
 • IndexedDB: offline apps, large data, file caching
+```
+
+> **Flow**: Feature localStorage session Cookies IndexedDB → Capacity ~5-10 MB ~5 MB ~4 KB Large | Capacity ~5-10 MB ~5 MB ~4 KB Large → Persistence Forever Tab close Expires Forever | Persistence Forever Tab close Expires Forever → Sent to server No No Yes (!) No | Sent to server No No Yes (!) No → Scope Origin Tab+origin Domain Origin | Scope Origin Tab+origin Domain Origin → API Simple Simple Complex Complex | API Simple Simple Complex Complex → Data type String only String String Any | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Feature localStorage session Cookies IndexedDB"]
+    N2["Capacity ~5-10 MB ~5 MB ~4 KB Large"]
+    N3["Persistence Forever Tab close Expires Forever"]
+    N4["Sent to server No No Yes (!) No"]
+    N5["Scope Origin Tab+origin Domain Origin"]
+    N6["API Simple Simple Complex Complex"]
+    N7["Data type String only String String Any"]
+    N8["Sync/Async Sync Sync Sync Async"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```javascript
@@ -573,6 +691,27 @@ navigator.geolocation.getCurrentPosition(
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: THE PROBLEM WITH MANUAL DOM MANIPULATION: → 1. Imperative: You tell the DOM WHAT to do, step by ste | 1. Imperative: You tell the DOM WHAT to do, step by ste → 'Find this element, change its text, add this class...' | 'Find this element, change its text, add this class...' → → Complex apps become spaghetti code. | → Complex apps become spaghetti code. → 2. State Sync: Your data (state) and the DOM can get ou | 2. State Sync: Your data (state) and the DOM can get ou → sync. Update one, forget the other → bugs. | sync. Update one, forget the other → bugs. → 3. Performance: Each DOM change = reflow + repaint. | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE PROBLEM WITH MANUAL DOM MANIPULATION:"]
+    N2["1. Imperative: You tell the DOM WHAT to do, step by ste"]
+    N3["'Find this element, change its text, add this class...'"]
+    N4["→ Complex apps become spaghetti code."]
+    N5["2. State Sync: Your data (state) and the DOM can get ou"]
+    N6["sync. Update one, forget the other → bugs."]
+    N7["3. Performance: Each DOM change = reflow + repaint."]
+    N8["100 small changes = 100 reflows (expensive!)."]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## Interview Quick-Fire
@@ -605,6 +744,21 @@ Q: How does React's Virtual DOM relate to the real DOM?
 → React creates a JS object tree (virtual DOM). On state change,
   it diffs old vs new virtual trees, calculates minimum changes,
   then applies only those to the real DOM (reconciliation).
+```
+
+> **Flow**: button → div | div → body | body → html | html → document.
+
+```mermaid
+flowchart LR
+    N1["button"]
+    N2["div"]
+    N3["body"]
+    N4["html"]
+    N5["document."]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
 ```
 
 ---

@@ -19,6 +19,15 @@ If you can't use Linux CLI → you can't deploy, debug, or
 manage ANY production application.
 ```
 
+> **Flow**: If you can't use Linux CLI → you can't deploy, debug, or
+
+```mermaid
+flowchart LR
+    N1["If you can't use Linux CLI"]
+    N2["you can't deploy, debug, or"]
+    N1 --> N2
+```
+
 ## WHO: Origin Story
 
 ```
@@ -34,6 +43,27 @@ GNU Project (1983, Richard Stallman)
 Linux = GNU tools + Linux kernel = FREE complete OS
 
 Today: Powers everything from your phone to Mars rovers
+```
+
+> **Flow**: 1991: Linus Torvalds (Finnish CS student, age 21) → 'I'm doing a free operating system (just a hobby)' | 'I'm doing a free operating system (just a hobby)' → Inspired by: UNIX (1969, Bell Labs) | Inspired by: UNIX (1969, Bell Labs) → → Expensive, proprietary | → Expensive, proprietary → GNU Project (1983, Richard Stallman) | GNU Project (1983, Richard Stallman) → → Free tools but NO KERNEL | → Free tools but NO KERNEL → Linux = GNU tools + Linux kernel = FREE complete OS | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["1991: Linus Torvalds (Finnish CS student, age 21)"]
+    N2["'I'm doing a free operating system (just a hobby)'"]
+    N3["Inspired by: UNIX (1969, Bell Labs)"]
+    N4["→ Expensive, proprietary"]
+    N5["GNU Project (1983, Richard Stallman)"]
+    N6["→ Free tools but NO KERNEL"]
+    N7["Linux = GNU tools + Linux kernel = FREE complete OS"]
+    N8["Today: Powers everything from your phone to Mars rovers"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---
@@ -75,6 +105,15 @@ Shell = text-based interface to the operating system
         Your superpower for automation
 ```
 
+> **Flow**: SHELL / (Interpreter) / Translates / commands to / kern → KERNEL / Controls: / - CPU / - Memory / - Disk / - Netw
+
+```mermaid
+flowchart TD
+    N1["SHELL / (Interpreter) / Translates / commands to / kern"]
+    N2["KERNEL / Controls: / - CPU / - Memory / - Disk / - Netw"]
+    N1 --> N2
+```
+
 ## File System Hierarchy
 
 ```
@@ -104,6 +143,52 @@ KEY INSIGHT: Everything in Linux is a FILE
   - Devices → files (/dev/sda)
   - Processes → files (/proc/1234)
   - Network sockets → files
+```
+
+> **Flow**: /bin/ → Essential commands (ls, cp, cat) | /sbin/ → System admin commands (iptables, mount) | /etc/ → Configuration files (ALL config lives here) | /home/ → User home directories | /var/ → Variable data (logs, databases) | /tmp/ → Temporary files (cleared on reboot) | ...+8 more
+
+```mermaid
+flowchart TD
+    N1["/bin/"]
+    N2["Essential commands (ls, cp, cat)"]
+    N3["/sbin/"]
+    N4["System admin commands (iptables, mount)"]
+    N5["/etc/"]
+    N6["Configuration files (ALL config lives here)"]
+    N7["/home/"]
+    N8["User home directories"]
+    N9["/var/"]
+    N10["Variable data (logs, databases)"]
+    N11["/tmp/"]
+    N12["Temporary files (cleared on reboot)"]
+    N13["/opt/"]
+    N14["Optional/third-party software"]
+    N15["/usr/"]
+    N16["User programs"]
+    N17["/dev/"]
+    N18["Device files (disks, terminals)"]
+    N19["- Files"]
+    N20["files"]
+    N21["- Directories"]
+    N22["- Devices"]
+    N23["files (/dev/sda)"]
+    N24["- Processes"]
+    N25["files (/proc/1234)"]
+    N26["- Network sockets"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+    N7 --> N8
+    N9 --> N10
+    N11 --> N12
+    N13 --> N14
+    N15 --> N16
+    N17 --> N18
+    N19 --> N20
+    N21 --> N20
+    N22 --> N23
+    N24 --> N25
+    N26 --> N20
 ```
 
 ---

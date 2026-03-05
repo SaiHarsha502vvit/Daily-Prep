@@ -234,6 +234,21 @@ void backtrack(List<List<Integer>> result, List<Integer> current,
 └────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: SUBSETS - All possible subsets (power set) → nums = [1, 2, 3] | nums = [1, 2, 3] → Decision Tree: | Decision Tree: → include 1 skip 1 | include 1 skip 1 → Output: [[], [1], [2], [3], [1,2], [1,3], [2,3], [1,2,3
+
+```mermaid
+flowchart TD
+    N1["SUBSETS - All possible subsets (power set)"]
+    N2["nums = [1, 2, 3]"]
+    N3["Decision Tree:"]
+    N4["include 1 skip 1"]
+    N5["Output: [[], [1], [2], [3], [1,2], [1,3], [2,3], [1,2,3"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+```
+
 **Solution:**
 
 ```java
@@ -272,6 +287,21 @@ private void backtrack(int[] nums, int start, List<Integer> path,
 │                                                                │
 │  Output: [[], [1], [1,2], [1,2,2], [2], [2,2]]                 │
 └────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: SUBSETS II - Skip duplicates → nums = [1, 2, 2] | nums = [1, 2, 2] → Without skip: [1,2], [1,2] would appear twice | Without skip: [1,2], [1,2] would appear twice → Key: Skip nums[i] if nums[i] == nums[i-1] at same level | Key: Skip nums[i] if nums[i] == nums[i-1] at same level → Output: [[], [1], [1,2], [1,2,2], [2], [2,2]]
+
+```mermaid
+flowchart TD
+    N1["SUBSETS II - Skip duplicates"]
+    N2["nums = [1, 2, 2]"]
+    N3["Without skip: [1,2], [1,2] would appear twice"]
+    N4["Key: Skip nums[i] if nums[i] == nums[i-1] at same level"]
+    N5["Output: [[], [1], [1,2], [1,2,2], [2], [2,2]]"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
 ```
 
 **Solution:**
@@ -319,6 +349,19 @@ private void backtrack(int[] nums, int start, List<Integer> path,
 └────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: COMBINATION SUM - Unlimited use of each number → candidates = [2, 3, 6, 7], target = 7 | candidates = [2, 3, 6, 7], target = 7 → Can reuse same number: | Can reuse same number: → Output: [[2,2,3], [7]]
+
+```mermaid
+flowchart TD
+    N1["COMBINATION SUM - Unlimited use of each number"]
+    N2["candidates = [2, 3, 6, 7], target = 7"]
+    N3["Can reuse same number:"]
+    N4["Output: [[2,2,3], [7]]"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 **Solution:**
 
 ```java
@@ -361,6 +404,19 @@ private void backtrack(int[] candidates, int remain, int start,
 │                                                                │
 │  Key: Sort + skip duplicates at same level                     │
 └────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: COMBINATION SUM II - Each number used once → candidates = [10,1,2,7,6,1,5], target = 8 | candidates = [10,1,2,7,6,1,5], target = 8 → Output: [[1,1,6], [1,2,5], [1,7], [2,6]] | Output: [[1,1,6], [1,2,5], [1,7], [2,6]] → Key: Sort + skip duplicates at same level
+
+```mermaid
+flowchart TD
+    N1["COMBINATION SUM II - Each number used once"]
+    N2["candidates = [10,1,2,7,6,1,5], target = 8"]
+    N3["Output: [[1,1,6], [1,2,5], [1,7], [2,6]]"]
+    N4["Key: Sort + skip duplicates at same level"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
 ```
 
 **Solution:**
@@ -406,6 +462,17 @@ private void backtrack(int[] candidates, int remain, int start,
 │                                                                │
 │  Output: [[1,2], [1,3], [1,4], [2,3], [2,4], [3,4]]            │
 └────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: COMBINATIONS - Choose k from n → Choose 2 numbers from [1, 2, 3, 4] | Choose 2 numbers from [1, 2, 3, 4] → Output: [[1,2], [1,3], [1,4], [2,3], [2,4], [3,4]]
+
+```mermaid
+flowchart TD
+    N1["COMBINATIONS - Choose k from n"]
+    N2["Choose 2 numbers from [1, 2, 3, 4]"]
+    N3["Output: [[1,2], [1,3], [1,4], [2,3], [2,4], [3,4]]"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 **Solution:**
@@ -462,6 +529,19 @@ private void backtrack(int n, int k, int start, List<Integer> path,
 └────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: PERMUTATIONS - All arrangements → nums = [1, 2, 3] | nums = [1, 2, 3] → Tree (swap approach): | Tree (swap approach): → Output: [[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1
+
+```mermaid
+flowchart TD
+    N1["PERMUTATIONS - All arrangements"]
+    N2["nums = [1, 2, 3]"]
+    N3["Tree (swap approach):"]
+    N4["Output: [[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 **Solution:**
 
 ```java
@@ -506,6 +586,19 @@ private void backtrack(int[] nums, List<Integer> path, boolean[] used,
 │                                                                │
 │  Key: Sort + skip if same as previous AND previous not used    │
 └────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: PERMUTATIONS II - Unique permutations → nums = [1, 1, 2] | nums = [1, 1, 2] → Output: [[1,1,2], [1,2,1], [2,1,1]] | Output: [[1,1,2], [1,2,1], [2,1,1]] → Key: Sort + skip if same as previous AND previous not u
+
+```mermaid
+flowchart TD
+    N1["PERMUTATIONS II - Unique permutations"]
+    N2["nums = [1, 1, 2]"]
+    N3["Output: [[1,1,2], [1,2,1], [2,1,1]]"]
+    N4["Key: Sort + skip if same as previous AND previous not u"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
 ```
 
 **Solution:**
@@ -565,6 +658,19 @@ private void backtrack(int[] nums, List<Integer> path, boolean[] used,
 └────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: PALINDROME PARTITIONING → s = 'aab' | s = 'aab' → Partitions where each part is palindrome: | Partitions where each part is palindrome: → Output: [['a','a','b'], ['aa','b']]
+
+```mermaid
+flowchart TD
+    N1["PALINDROME PARTITIONING"]
+    N2["s = 'aab'"]
+    N3["Partitions where each part is palindrome:"]
+    N4["Output: [['a','a','b'], ['aa','b']]"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 **Solution:**
 
 ```java
@@ -622,6 +728,23 @@ private boolean isPalindrome(String s, int left, int right) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: LETTER COMBINATIONS OF PHONE NUMBER → digits = '23' | digits = '23' → 2 → 'abc', 3 → 'def' | 2 → 'abc', 3 → 'def' → a b c ← digit 2 | a b c ← digit 2 → d,e,f d,e,f d,e,f ← digit 3 | d,e,f d,e,f d,e,f ← digit 3 → Output: ['ad','ae','af','bd','be','bf','cd','ce','cf']
+
+```mermaid
+flowchart TD
+    N1["LETTER COMBINATIONS OF PHONE NUMBER"]
+    N2["digits = '23'"]
+    N3["2 → 'abc', 3 → 'def'"]
+    N4["a b c ← digit 2"]
+    N5["d,e,f d,e,f d,e,f ← digit 3"]
+    N6["Output: ['ad','ae','af','bd','be','bf','cd','ce','cf']"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+```
+
 **Solution:**
 
 ```java
@@ -670,6 +793,21 @@ private void backtrack(String digits, int index, StringBuilder path,
 │                                                                │
 │  Output: ["((()))","(()())","(())()","()(())","()()()"]        │
 └────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: GENERATE PARENTHESES → n = 3 (3 pairs) | n = 3 (3 pairs) → Rules: | Rules: → - Can add '(' if open &lt; n | - Can add '(' if open &lt; n → - Can add ')' if close &lt; open
+
+```mermaid
+flowchart TD
+    N1["GENERATE PARENTHESES"]
+    N2["n = 3 (3 pairs)"]
+    N3["Rules:"]
+    N4["- Can add '(' if open &lt; n"]
+    N5["- Can add ')' if close &lt; open"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
 ```
 
 **Solution:**
@@ -736,6 +874,19 @@ private void backtrack(int n, int open, int close, StringBuilder path,
 └────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: WORD SEARCH - Find word in grid → board = [['A','B','C','E'], | board = [['A','B','C','E'], → word = 'ABCCED' | word = 'ABCCED' → Output: true
+
+```mermaid
+flowchart TD
+    N1["WORD SEARCH - Find word in grid"]
+    N2["board = [['A','B','C','E'],"]
+    N3["word = 'ABCCED'"]
+    N4["Output: true"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 **Solution:**
 
 ```java
@@ -799,6 +950,15 @@ private boolean backtrack(char[][] board, String word, int r, int c, int idx) {
 │                                                                │
 │  Constraints: No two queens on same row, col, or diagonal      │
 └────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: . Q . . / . . . Q / Q . . . / . . Q . → . . Q . / Q . . . / . . . Q / . Q . .
+
+```mermaid
+flowchart TD
+    N1[". Q . . / . . . Q / Q . . . / . . Q ."]
+    N2[". . Q . / Q . . . / . . . Q / . Q . ."]
+    N1 --> N2
 ```
 
 **Solution:**
@@ -879,6 +1039,17 @@ private List<String> construct(char[][] board) {
 │  │ . │ . │ . ║ . │ 8 │ . ║ . │ 7 │ 9 │                         │
 │  └───┴───┴───╨───┴───┴───╨───┴───┴───┘                         │
 └────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: SUDOKU SOLVER → Fill 9x9 grid so each row, column, and 3x3 box | Fill 9x9 grid so each row, column, and 3x3 box → contains digits 1-9 exactly once
+
+```mermaid
+flowchart TD
+    N1["SUDOKU SOLVER"]
+    N2["Fill 9x9 grid so each row, column, and 3x3 box"]
+    N3["contains digits 1-9 exactly once"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 **Solution:**

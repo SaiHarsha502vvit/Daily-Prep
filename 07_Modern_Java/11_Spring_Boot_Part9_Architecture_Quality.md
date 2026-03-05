@@ -49,6 +49,19 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: WHY: Why Clean Architecture? / • Technical debt: Bad ar → HOW: How to Structure a Spring Boot Project? / • Layere | HOW: How to Structure a Spring Boot Project? / • Layere → WHEN: When to Use Each Architecture Style? / • Simple l | WHEN: When to Use Each Architecture Style? / • Simple l → WHICH: Which Quality Practices to Follow? / ESSENTIAL: 
+
+```mermaid
+flowchart TD
+    N1["WHY: Why Clean Architecture? / • Technical debt: Bad ar"]
+    N2["HOW: How to Structure a Spring Boot Project? / • Layere"]
+    N3["WHEN: When to Use Each Architecture Style? / • Simple l"]
+    N4["WHICH: Which Quality Practices to Follow? / ESSENTIAL: "]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 ---
 
 # 📌 Application Architecture
@@ -110,6 +123,21 @@
 │                           └─────────────┘                                       │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: CLIENT / (Browser/App) → CONTROLLER LAYER / • @RestController, @Controller / • R | CONTROLLER LAYER / • @RestController, @Controller / • R → SERVICE LAYER / • @Service / • Business logic / • Trans | SERVICE LAYER / • @Service / • Business logic / • Trans → REPOSITORY LAYER / • @Repository / • Data access (JpaRe | REPOSITORY LAYER / • @Repository / • Data access (JpaRe → DATABASE
+
+```mermaid
+flowchart TD
+    N1["CLIENT / (Browser/App)"]
+    N2["CONTROLLER LAYER / • @RestController, @Controller / • R"]
+    N3["SERVICE LAYER / • @Service / • Business logic / • Trans"]
+    N4["REPOSITORY LAYER / • @Repository / • Data access (JpaRe"]
+    N5["DATABASE"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
 ```
 
 ---
@@ -192,6 +220,27 @@
 │  ❌ CONS: Less obvious layer separation                                          │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: RECOMMENDED PACKAGE STRUCTURE → OPTION 1: LAYER-BASED (Traditional) | OPTION 1: LAYER-BASED (Traditional) → com.company.myapp/ | com.company.myapp/ → MyApplication.java | MyApplication.java → controller/ | controller/ → UserController.java | UserController.java → OrderController.java | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["RECOMMENDED PACKAGE STRUCTURE"]
+    N2["OPTION 1: LAYER-BASED (Traditional)"]
+    N3["com.company.myapp/"]
+    N4["MyApplication.java"]
+    N5["controller/"]
+    N6["UserController.java"]
+    N7["OrderController.java"]
+    N8["ProductController.java"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---
@@ -1164,6 +1213,27 @@ class UserApiIntegrationTest {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: SPRING BOOT MASTERY CHECKLIST → ARCHITECTURE: | ARCHITECTURE: → □ Clear separation: Controller → Service → Repository | □ Clear separation: Controller → Service → Repository → □ DTOs for API contracts, Entities for persistence | □ DTOs for API contracts, Entities for persistence → □ Single Responsibility in each class | □ Single Responsibility in each class → □ Dependency injection via constructor (final fields) | □ Dependency injection via constructor (final fields) → CONTROLLERS: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["SPRING BOOT MASTERY CHECKLIST"]
+    N2["ARCHITECTURE:"]
+    N3["□ Clear separation: Controller → Service → Repository"]
+    N4["□ DTOs for API contracts, Entities for persistence"]
+    N5["□ Single Responsibility in each class"]
+    N6["□ Dependency injection via constructor (final fields)"]
+    N7["CONTROLLERS:"]
+    N8["□ @Valid on request bodies"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 # 🎓 SPRING BOOT MASTERY COMPLETE!
@@ -1194,6 +1264,27 @@ class UserApiIntegrationTest {
 │  Keep practicing! Build projects to reinforce these concepts.                   │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: You've completed the Spring Boot Mastery Guide covering → Part 1: Java Foundations (JVM, Memory, GC, Threading) | Part 1: Java Foundations (JVM, Memory, GC, Threading) → Part 2: Spring Core (IoC, DI, Beans, Lifecycle) | Part 2: Spring Core (IoC, DI, Beans, Lifecycle) → Part 3: AOP & Spring Boot Auto-Configuration | Part 3: AOP & Spring Boot Auto-Configuration → Part 4: Data Access, Web, Security, Testing | Part 4: Data Access, Web, Security, Testing → Part 5: Lombok & DTOs | Part 5: Lombok & DTOs → Part 6: Service & Repository Best Practices | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["You've completed the Spring Boot Mastery Guide covering"]
+    N2["Part 1: Java Foundations (JVM, Memory, GC, Threading)"]
+    N3["Part 2: Spring Core (IoC, DI, Beans, Lifecycle)"]
+    N4["Part 3: AOP & Spring Boot Auto-Configuration"]
+    N5["Part 4: Data Access, Web, Security, Testing"]
+    N6["Part 5: Lombok & DTOs"]
+    N7["Part 6: Service & Repository Best Practices"]
+    N8["Part 7: Controllers & REST API Architecture"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

@@ -28,6 +28,24 @@ Every developer will face these decisions.
 System design isn't just for interviews — it's your daily reality.
 ```
 
+> **Flow**: 10-100 users → one server handles everything | 1,000 users → bigger CPU, more RAM, faster disk | 100,000 users → multiple servers behind a load balancer | 1,000,000+ users → microservices, caching, CDN, message queues
+
+```mermaid
+flowchart LR
+    N1["10-100 users"]
+    N2["one server handles everything"]
+    N3["1,000 users"]
+    N4["bigger CPU, more RAM, faster disk"]
+    N5["100,000 users"]
+    N6["multiple servers behind a load balancer"]
+    N7["1,000,000+ users"]
+    N8["microservices, caching, CDN, message queues"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+    N7 --> N8
+```
+
 ---
 
 # WHAT: Core Building Blocks
@@ -52,6 +70,17 @@ Algorithms:
   Weighted       → Server with 8 CPU gets 4x traffic vs 2 CPU
 
 Tools: NGINX, HAProxy, AWS ALB, Kubernetes Ingress
+```
+
+> **Flow**: Client → Load Balancer / (distributes) | Load Balancer / (distributes) → Server 1 / Server 2 / Server 3
+
+```mermaid
+flowchart LR
+    N1["Client"]
+    N2["Load Balancer / (distributes)"]
+    N3["Server 1 / Server 2 / Server 3"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 ## 2. Caching
@@ -80,6 +109,19 @@ Eviction Policies:
   LRU  → Least Recently Used (most common)
   LFU  → Least Frequently Used
   TTL  → Time To Live (expire after N seconds)
+```
+
+> **Flow**: Browser / Cache / (local) → CDN / Cache / (edge) | CDN / Cache / (edge) → App / Cache / (Redis) | App / Cache / (Redis) → Database
+
+```mermaid
+flowchart LR
+    N1["Browser / Cache / (local)"]
+    N2["CDN / Cache / (edge)"]
+    N3["App / Cache / (Redis)"]
+    N4["Database"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
 ```
 
 ```java
@@ -127,6 +169,15 @@ SQL vs NoSQL Decision:
   NoSQL (MongoDB, DynamoDB) → Flexible schema, high throughput, horizontal scale
 ```
 
+> **Flow**: Master / (writes) → Read Replica / (reads only)
+
+```mermaid
+flowchart TD
+    N1["Master / (writes)"]
+    N2["Read Replica / (reads only)"]
+    N1 --> N2
+```
+
 ## 4. Message Queues
 
 ```
@@ -151,6 +202,17 @@ Use Cases:
 Tools: Apache Kafka, RabbitMQ, AWS SQS, Redis Streams
 ```
 
+> **Flow**: API / Server → Queue / (Kafka/ / RabbitMQ | Queue / (Kafka/ / RabbitMQ → Worker / Process
+
+```mermaid
+flowchart LR
+    N1["API / Server"]
+    N2["Queue / (Kafka/ / RabbitMQ"]
+    N3["Worker / Process"]
+    N1 --> N2
+    N2 --> N3
+```
+
 ## 5. CDN (Content Delivery Network)
 
 ```
@@ -172,6 +234,17 @@ WITH CDN (edge server in India):
 
 Cache: HTML, CSS, JS, images, videos, fonts
 Tools: Cloudflare, AWS CloudFront, Akamai
+```
+
+> **Flow**: User / India → CDN / Mumbai | CDN / Mumbai → Origin / US-East
+
+```mermaid
+flowchart TD
+    N1["User / India"]
+    N2["CDN / Mumbai"]
+    N3["Origin / US-East"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 ---
@@ -207,6 +280,21 @@ MICROSERVICES:
 RULE: Start with monolith, extract microservices WHEN NEEDED
 ```
 
+> **Flow**: ONE BIG APPLICATION / Users + Orders + Pay + / Inventor → Users / Service | Users / Service → Orders / Service | Orders / Service → Payment / Service | Payment / Service → Inventory / Service
+
+```mermaid
+flowchart TD
+    N1["ONE BIG APPLICATION / Users + Orders + Pay + / Inventor"]
+    N2["Users / Service"]
+    N3["Orders / Service"]
+    N4["Payment / Service"]
+    N5["Inventory / Service"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+```
+
 ## CAP Theorem
 
 ```
@@ -226,6 +314,27 @@ So you choose: CP or AP.
   AP (Availability + Partition Tolerance):
     → Social media: Show stale feed, but ALWAYS respond
     → Tools: Cassandra, DynamoDB, CouchDB
+```
+
+> **Flow**: You can only have 2 of 3: → C — Consistency: Every read gets the most recent write | C — Consistency: Every read gets the most recent write → So you choose: CP or AP. | So you choose: CP or AP. → CP (Consistency + Partition Tolerance): | CP (Consistency + Partition Tolerance): → → Banking: Balance MUST be correct, even if slow | → Banking: Balance MUST be correct, even if slow → → Tools: PostgreSQL, MongoDB (default), Redis Cluster | → Tools: PostgreSQL, MongoDB (default), Redis Cluster → AP (Availability + Partition Tolerance): | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["You can only have 2 of 3:"]
+    N2["C — Consistency: Every read gets the most recent write"]
+    N3["So you choose: CP or AP."]
+    N4["CP (Consistency + Partition Tolerance):"]
+    N5["→ Banking: Balance MUST be correct, even if slow"]
+    N6["→ Tools: PostgreSQL, MongoDB (default), Redis Cluster"]
+    N7["AP (Availability + Partition Tolerance):"]
+    N8["→ Social media: Show stale feed, but ALWAYS respond"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ## Rate Limiting Algorithms
@@ -273,6 +382,19 @@ So you choose: CP or AP.
    - Monitoring and alerting?
 ```
 
+> **Flow**: - Draw boxes: Client → LB | LB → API | API → DB
+
+```mermaid
+flowchart LR
+    N1["- Draw boxes: Client"]
+    N2["LB"]
+    N3["API"]
+    N4["DB"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 ## Back-of-Envelope Calculations
 
 ```
@@ -294,6 +416,27 @@ Useful numbers to memorize:
   1 PB  → 1B photos
 ```
 
+> **Flow**: 1 KB → a short email | 1 MB → a photo | 1 GB → a movie | 1 TB → 1M photos | 1 PB → 1B photos
+
+```mermaid
+flowchart TD
+    N1["1 KB"]
+    N2["a short email"]
+    N3["1 MB"]
+    N4["a photo"]
+    N5["1 GB"]
+    N6["a movie"]
+    N7["1 TB"]
+    N8["1M photos"]
+    N9["1 PB"]
+    N10["1B photos"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+    N7 --> N8
+    N9 --> N10
+```
+
 ---
 
 # 🧭 System Design Cheat Sheet
@@ -308,6 +451,39 @@ Search        → Elasticsearch
 File storage  → Object Storage (S3)
 Rate limit    → Token Bucket / API Gateway
 Monitor       → Prometheus + Grafana + ELK Stack
+```
+
+> **Flow**: Scale reads → Caching (Redis) + Read Replicas + CDN | Scale writes → Sharding + Message Queues + Async processing | High avail → Load Balancer + Multiple servers + Health checks | Low latency → CDN + Cache + Database indexing | Decouple → Message Queue (Kafka/RabbitMQ) | Search → Elasticsearch | ...+3 more
+
+```mermaid
+flowchart TD
+    N1["Scale reads"]
+    N2["Caching (Redis) + Read Replicas + CDN"]
+    N3["Scale writes"]
+    N4["Sharding + Message Queues + Async processing"]
+    N5["High avail"]
+    N6["Load Balancer + Multiple servers + Health checks"]
+    N7["Low latency"]
+    N8["CDN + Cache + Database indexing"]
+    N9["Decouple"]
+    N10["Message Queue (Kafka/RabbitMQ)"]
+    N11["Search"]
+    N12["Elasticsearch"]
+    N13["File storage"]
+    N14["Object Storage (S3)"]
+    N15["Rate limit"]
+    N16["Token Bucket / API Gateway"]
+    N17["Monitor"]
+    N18["Prometheus + Grafana + ELK Stack"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+    N7 --> N8
+    N9 --> N10
+    N11 --> N12
+    N13 --> N14
+    N15 --> N16
+    N17 --> N18
 ```
 
 ---
@@ -326,6 +502,18 @@ Think about:
   - How to handle 1 billion URLs?
   - Caching hot URLs?
   - Analytics (click count)?
+```
+
+> **Flow**: - POST /shorten → returns short URL | - GET /{shortCode} → redirects to original
+
+```mermaid
+flowchart LR
+    N1["- POST /shorten"]
+    N2["returns short URL"]
+    N3["- GET /{shortCode}"]
+    N4["redirects to original"]
+    N1 --> N2
+    N3 --> N4
 ```
 
 ## Exercise 2: Chat Application

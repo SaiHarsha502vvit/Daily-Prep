@@ -18,6 +18,15 @@ IF the problem has:
 THEN → Matrix + BFS/DFS/Math
 ```
 
+> **Flow**: THEN → Matrix + BFS/DFS/Math
+
+```mermaid
+flowchart LR
+    N1["THEN"]
+    N2["Matrix + BFS/DFS/Math"]
+    N1 --> N2
+```
+
 ---
 
 ## 📐 CORE TEMPLATES
@@ -132,6 +141,26 @@ Each boundary shrinks inward after processing that side.
 Time: O(R×C) | Space: O(1) extra (output doesn't count)
 ```
 
+> **Flow**: Round 1: → top row: 1,2,3 (top++ | top row: 1,2,3 (top++ → 1) | ↓ right col: 6,9 (right-- → 1) | ← bottom row: 8,7 (bottom-- → 1) | ↑ left col: 4 (left++ → 1) | Round 2: → top row: 5 (top=1, left=1, right=1)
+
+```mermaid
+flowchart TD
+    N1["Round 1:"]
+    N2["top row: 1,2,3 (top++"]
+    N3["1)"]
+    N4["↓ right col: 6,9 (right--"]
+    N5["← bottom row: 8,7 (bottom--"]
+    N6["↑ left col: 4 (left++"]
+    N7["Round 2:"]
+    N8["top row: 5 (top=1, left=1, right=1)"]
+    N1 --> N2
+    N2 --> N3
+    N4 --> N3
+    N5 --> N3
+    N6 --> N3
+    N7 --> N8
+```
+
 ---
 
 ## 🔬 FULL WALKTHROUGH 2: BFS Shortest Path in Grid
@@ -171,6 +200,15 @@ KEY: BFS guarantees shortest path in unweighted grids.
 Time: O(R×C) | Space: O(R×C)
 ```
 
+> **Flow**: Neighbors: (2,2)✅ → TARGET REACHED!
+
+```mermaid
+flowchart LR
+    N1["Neighbors: (2,2)✅"]
+    N2["TARGET REACHED!"]
+    N1 --> N2
+```
+
 ---
 
 ## 🛡️ EDGE CASES & COMMON MISTAKES
@@ -199,6 +237,27 @@ COMMON MISTAKES:
 4. Forgetting bounds check: row < 0 || row >= R || col < 0 || col >= C
 5. Set Matrix Zeroes: zeroing as you scan → cascade effect
    Mark first, then zero in a second pass!
+```
+
+> **Flow**: EDGE CASES: → Edge Case Handling | Edge Case Handling → 1×1 matrix Spiral = [matrix[0][0]], path = 0 steps | 1×1 matrix Spiral = [matrix[0][0]], path = 0 steps → Single row [1,2,3] Spiral = [1,2,3], no up/down movemen | Single row [1,2,3] Spiral = [1,2,3], no up/down movemen → Start/end blocked Return -1 (no path exists) | Start/end blocked Return -1 (no path exists) → All walls Return -1 | All walls Return -1 → 8-directional movement Use 8-dir array instead of 4 | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["EDGE CASES:"]
+    N2["Edge Case Handling"]
+    N3["1×1 matrix Spiral = [matrix[0][0]], path = 0 steps"]
+    N4["Single row [1,2,3] Spiral = [1,2,3], no up/down movemen"]
+    N5["Start/end blocked Return -1 (no path exists)"]
+    N6["All walls Return -1"]
+    N7["8-directional movement Use 8-dir array instead of 4"]
+    N8["COMMON MISTAKES:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

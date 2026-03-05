@@ -31,6 +31,27 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: AGGREGATE FUNCTIONS - SUMMARY → a SINGLE value. They ignore NULL values (except COUNT(* | a SINGLE value. They ignore NULL values (except COUNT(* → Function Description Example | Function Description Example → COUNT(*) Count all rows COUNT(*) | COUNT(*) Count all rows COUNT(*) → COUNT(column) Count non-NULL values COUNT(email) | COUNT(column) Count non-NULL values COUNT(email) → COUNT(DISTINCT) Count unique values COUNT(DISTINCT d) | COUNT(DISTINCT) Count unique values COUNT(DISTINCT d) → SUM(column) Sum of all values SUM(salary) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["AGGREGATE FUNCTIONS - SUMMARY"]
+    N2["a SINGLE value. They ignore NULL values (except COUNT(*"]
+    N3["Function Description Example"]
+    N4["COUNT(*) Count all rows COUNT(*)"]
+    N5["COUNT(column) Count non-NULL values COUNT(email)"]
+    N6["COUNT(DISTINCT) Count unique values COUNT(DISTINCT d)"]
+    N7["SUM(column) Sum of all values SUM(salary)"]
+    N8["AVG(column) Average of all values AVG(price)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ```sql
 -- ═══════════════════════════════════════════════════════════════════════════════
 -- AGGREGATE FUNCTIONS - EXAMPLES
@@ -101,6 +122,15 @@ FROM employees WHERE dept_id = 1;
 │                                   GROUP BY dept_id;                             │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: emp_id dept salary / 1 1 100000 / 2 1 80000 / 3 1 10000 → dept count sum_sal avg_sal / 1 3 280000 93333.33 / 2 2 
+
+```mermaid
+flowchart TD
+    N1["emp_id dept salary / 1 1 100000 / 2 1 80000 / 3 1 10000"]
+    N2["dept count sum_sal avg_sal / 1 3 280000 93333.33 / 2 2 "]
+    N1 --> N2
 ```
 
 ```sql

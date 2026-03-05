@@ -70,6 +70,25 @@ Java:
   Deque methods:  offerFirst(x), offerLast(x), pollFirst(), pollLast()
 ```
 
+> **Flow**: QUEUE (FIFO): DEQUE (Double-Ended): → enqueue(x) → addFirst(x) → ← addLast(x) | enqueue(x) → addFirst(x) → ← addLast(x) → A B C removeFirst()← A B C → removeLast() | A B C removeFirst()← A B C → removeLast() → dequeue() ← | dequeue() ← → (returns A) (can add/remove from BOTH ends) | (returns A) (can add/remove from BOTH ends) → Java: | Java: → Queue methods: offer(x), poll(), peek()
+
+```mermaid
+flowchart TD
+    N1["QUEUE (FIFO): DEQUE (Double-Ended):"]
+    N2["enqueue(x) → addFirst(x) → ← addLast(x)"]
+    N3["A B C removeFirst()← A B C → removeLast()"]
+    N4["dequeue() ←"]
+    N5["(returns A) (can add/remove from BOTH ends)"]
+    N6["Java:"]
+    N7["Queue methods: offer(x), poll(), peek()"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+```
+
 #### IMPLEMENT: Circular Queue (Array-based)
 
 ```java
@@ -126,6 +145,20 @@ HashMap converts ANY key into an array index using a hash function.
 RESULT: O(1) average for get/put/contains
 ```
 
+> **Flow**: 'apple' → price? Can't use 'apple' as array index! | hash('apple') → 42 | 42 → store at bucket[42]
+
+```mermaid
+flowchart LR
+    N1["'apple'"]
+    N2["price? Can't use 'apple' as array index!"]
+    N3["hash('apple')"]
+    N4["42"]
+    N5["store at bucket[42]"]
+    N1 --> N2
+    N3 --> N4
+    N4 --> N5
+```
+
 #### HOW: Internal Mechanism
 
 ```
@@ -155,6 +188,27 @@ RESULT: O(1) average for get/put/contains
 │    Worst:   O(log n) per bucket (tree) or O(n) (pathological)  │
 │    Space:   O(n)                                               │
 └────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: HashMap INTERNALS (Java 8+) → 1. Key → hashCode() → index = hash % capacity | 1. Key → hashCode() → index = hash % capacity → 2. Array of buckets: | 2. Array of buckets: → [0] → null | [0] → null → [1] → ('apple',5) → ('kiwi',3) → null ← COLLISION! | [1] → ('apple',5) → ('kiwi',3) → null ← COLLISION! → [2] → ('banana',7) → null | [2] → ('banana',7) → null → [3] → null | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["HashMap INTERNALS (Java 8+)"]
+    N2["1. Key → hashCode() → index = hash % capacity"]
+    N3["2. Array of buckets:"]
+    N4["[0] → null"]
+    N5["[1] → ('apple',5) → ('kiwi',3) → null ← COLLISION!"]
+    N6["[2] → ('banana',7) → null"]
+    N7["[3] → null"]
+    N8["3. COLLISION HANDLING:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 #### Common HashMap Patterns
@@ -199,6 +253,18 @@ Input:  "loveleetcode" → Output: 2 (first unique = 'v')
 APPROACH: HashMap for frequency + scan for first with count==1
 ```
 
+> **Flow**: Input: 'leetcode' → Output: 0 (first unique = 'l') | Input: 'loveleetcode' → Output: 2 (first unique = 'v')
+
+```mermaid
+flowchart LR
+    N1["Input: 'leetcode'"]
+    N2["Output: 0 (first unique = 'l')"]
+    N3["Input: 'loveleetcode'"]
+    N4["Output: 2 (first unique = 'v')"]
+    N1 --> N2
+    N3 --> N4
+```
+
 ```java
 public int firstUniqChar(String s) {
     Map<Character, Integer> freq = new HashMap<>();
@@ -239,6 +305,21 @@ WHY Queue? Oldest timestamps naturally at front → easy to clean up.
 WHY HashMap? O(1) lookup of each user's queue.
 ```
 
+> **Flow**: [T-55, T-40, T-30, T-20, T-10, T] ← 6 requests in → OK | HashMap&lt;String, Queue&lt;Long&gt;&gt; : userId → request timestamps | WHY Queue? Oldest timestamps naturally at front → easy to clean up.
+
+```mermaid
+flowchart LR
+    N1["[T-55, T-40, T-30, T-20, T-10, T] ← 6 requests in"]
+    N2["OK"]
+    N3["HashMap&lt;String, Queue&lt;Long&gt;&gt; : userId"]
+    N4["request timestamps"]
+    N5["WHY Queue? Oldest timestamps naturally at front"]
+    N6["easy to clean up."]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+```
+
 ---
 
 ## BLOCK 5: SQL (40 min)
@@ -261,6 +342,15 @@ departments: dept_id | dept_name
              30      | Sales          ← No employees!
 
 To see "Alice works in Engineering" → you need a JOIN.
+```
+
+> **Flow**: To see 'Alice works in Engineering' → you need a JOIN.
+
+```mermaid
+flowchart LR
+    N1["To see 'Alice works in Engineering'"]
+    N2["you need a JOIN."]
+    N1 --> N2
 ```
 
 ```sql
@@ -367,6 +457,21 @@ peek() → need to return 1 (first in)
 
 pop() → returns 1
   outStack: [3, 2]
+```
+
+> **Flow**: peek() → need to return 1 (first in) | Transfer: inStack → outStack: [3, 2, 1] | pop() → returns 1
+
+```mermaid
+flowchart LR
+    N1["peek()"]
+    N2["need to return 1 (first in)"]
+    N3["Transfer: inStack"]
+    N4["outStack: [3, 2, 1]"]
+    N5["pop()"]
+    N6["returns 1"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
 ```
 
 ```java

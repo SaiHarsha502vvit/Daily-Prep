@@ -51,6 +51,19 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: WHY: Why Database Security Matters? / • SQL injection i → HOW: How to Secure Database Layer? / • Use parameterize | HOW: How to Secure Database Layer? / • Use parameterize → WHEN: When to Apply Security Measures? / • User managem | WHEN: When to Apply Security Measures? / • User managem → WHICH: Which Security Layers to Implement? / ESSENTIAL:
+
+```mermaid
+flowchart TD
+    N1["WHY: Why Database Security Matters? / • SQL injection i"]
+    N2["HOW: How to Secure Database Layer? / • Use parameterize"]
+    N3["WHEN: When to Apply Security Measures? / • User managem"]
+    N4["WHICH: Which Security Layers to Implement? / ESSENTIAL:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 ---
 
 # 📌 Table of Contents
@@ -74,6 +87,27 @@
 │  12. Multi-Tenancy Security                                                     │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: WHAT THIS PART COVERS → 1. User Management Entity Design | 1. User Management Entity Design → 2. Role-Based Access Control (RBAC) | 2. Role-Based Access Control (RBAC) → 3. Permission/Authority Management | 3. Permission/Authority Management → 4. Password Security (BCrypt, Argon2) | 4. Password Security (BCrypt, Argon2) → 5. Custom UserDetailsService Implementation | 5. Custom UserDetailsService Implementation → 6. Method-Level Security (@PreAuthorize, @Secured) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["WHAT THIS PART COVERS"]
+    N2["1. User Management Entity Design"]
+    N3["2. Role-Based Access Control (RBAC)"]
+    N4["3. Permission/Authority Management"]
+    N5["4. Password Security (BCrypt, Argon2)"]
+    N6["5. Custom UserDetailsService Implementation"]
+    N7["6. Method-Level Security (@PreAuthorize, @Secured)"]
+    N8["7. Database Row-Level Security"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---
@@ -111,6 +145,18 @@
 │                                              └─────────────┘                    │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: USER / - id / - username / - email / - password / - ena → USER_ROLES / (Join Table) / - user_id / - role_id | ROLE / - id / - name / - desc → PERMISSION / - id / - name / - resource / - action
+
+```mermaid
+flowchart TD
+    N1["USER / - id / - username / - email / - password / - ena"]
+    N2["USER_ROLES / (Join Table) / - user_id / - role_id"]
+    N3["ROLE / - id / - name / - desc"]
+    N5["PERMISSION / - id / - name / - resource / - action"]
+    N1 --> N2
+    N3 --> N5
 ```
 
 ### Entity Classes

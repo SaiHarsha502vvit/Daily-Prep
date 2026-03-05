@@ -49,6 +49,19 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: WHY: Why Deep JPA Knowledge? / • N+1 queries: #1 perfor → HOW: How JPA/Hibernate Works Under the Hood? / • Persis | HOW: How JPA/Hibernate Works Under the Hood? / • Persis → WHEN: When to Use Different Fetch Strategies? / • LAZY  | WHEN: When to Use Different Fetch Strategies? / • LAZY  → WHICH: Which JPA Concepts to Master? / ESSENTIAL: Entit
+
+```mermaid
+flowchart TD
+    N1["WHY: Why Deep JPA Knowledge? / • N+1 queries: #1 perfor"]
+    N2["HOW: How JPA/Hibernate Works Under the Hood? / • Persis"]
+    N3["WHEN: When to Use Different Fetch Strategies? / • LAZY "]
+    N4["WHICH: Which JPA Concepts to Master? / ESSENTIAL: Entit"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+```
+
 ---
 
 # 📖 JPA Fundamentals
@@ -123,6 +136,21 @@
 │                           DATABASE (PostgreSQL, MySQL, etc.)                    │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: YOUR APPLICATION CODE / @Entity, @Repository, @Service → SPRING DATA JPA / • Repository interfaces (JpaRepositor | SPRING DATA JPA / • Repository interfaces (JpaRepositor → JPA (Jakarta Persistence API) / • SPECIFICATION (not im | JPA (Jakarta Persistence API) / • SPECIFICATION (not im → HIBERNATE (JPA Implementation) / • MOST POPULAR JPA imp | HIBERNATE (JPA Implementation) / • MOST POPULAR JPA imp → JDBC / • Low-level database access / • SQL execution / 
+
+```mermaid
+flowchart TD
+    N1["YOUR APPLICATION CODE / @Entity, @Repository, @Service"]
+    N2["SPRING DATA JPA / • Repository interfaces (JpaRepositor"]
+    N3["JPA (Jakarta Persistence API) / • SPECIFICATION (not im"]
+    N4["HIBERNATE (JPA Implementation) / • MOST POPULAR JPA imp"]
+    N5["JDBC / • Low-level database access / • SQL execution / "]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
 ```
 
 ---
@@ -392,6 +420,21 @@ public class Address {
 │  @ManyToMany   User >>────<< Role           (Many users have many roles)        │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: JPA RELATIONSHIP TYPES → @OneToOne User Address (One user has one address) | @OneToOne User Address (One user has one address) → @OneToMany User &lt;&lt; Order (One user has many order | @OneToMany User &lt;&lt; Order (One user has many order → @ManyToOne Order &gt;&gt; User (Many orders belong to o | @ManyToOne Order &gt;&gt; User (Many orders belong to o → @ManyToMany User &gt;&gt; &lt;&lt; Role (Many users hav
+
+```mermaid
+flowchart TD
+    N1["JPA RELATIONSHIP TYPES"]
+    N2["@OneToOne User Address (One user has one address)"]
+    N3["@OneToMany User &lt;&lt; Order (One user has many order"]
+    N4["@ManyToOne Order &gt;&gt; User (Many orders belong to o"]
+    N5["@ManyToMany User &gt;&gt; &lt;&lt; Role (Many users hav"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
 ```
 
 ### One-to-One Relationship
@@ -713,6 +756,27 @@ public class UserRoleId implements Serializable {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: THE N+1 PROBLEM → RESULT: 1 + 10 = 11 queries for just 10 users! | RESULT: 1 + 10 = 11 queries for just 10 users! → With 1000 users = 1001 queries! 🔥 DATABASE MELTS | With 1000 users = 1001 queries! 🔥 DATABASE MELTS → Query 1: SELECT * FROM users | Query 1: SELECT * FROM users → Query 2: SELECT * FROM orders WHERE user_id = 1 | Query 2: SELECT * FROM orders WHERE user_id = 1 → Query 3: SELECT * FROM orders WHERE user_id = 2 | Query 3: SELECT * FROM orders WHERE user_id = 2 → Query 4: SELECT * FROM orders WHERE user_id = 3 | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE N+1 PROBLEM"]
+    N2["RESULT: 1 + 10 = 11 queries for just 10 users!"]
+    N3["With 1000 users = 1001 queries! 🔥 DATABASE MELTS"]
+    N4["Query 1: SELECT * FROM users"]
+    N5["Query 2: SELECT * FROM orders WHERE user_id = 1"]
+    N6["Query 3: SELECT * FROM orders WHERE user_id = 2"]
+    N7["Query 4: SELECT * FROM orders WHERE user_id = 3"]
+    N8["Query 11: SELECT * FROM orders WHERE user_id = 10"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### N+1 Query Visual Flow — Sequence Diagram
 
 ```
@@ -780,6 +844,27 @@ public class UserRoleId implements Serializable {
 │      │  TOTAL: 1 + 20 = 21 queries (vs 1001!) ✅                                 │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: N+1 PROBLEM — VISUAL SEQUENCE COMPARISON → BAD: N+1 Queries (Lazy Loading) | BAD: N+1 Queries (Lazy Loading) → Application Hibernate Database | Application Hibernate Database → findAllUsers() | findAllUsers() → SELECT * FROM | SELECT * FROM → users ← Query 1 | users ← Query 1 → 10 User rows | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["N+1 PROBLEM — VISUAL SEQUENCE COMPARISON"]
+    N2["BAD: N+1 Queries (Lazy Loading)"]
+    N3["Application Hibernate Database"]
+    N4["findAllUsers()"]
+    N5["SELECT * FROM"]
+    N6["users ← Query 1"]
+    N7["10 User rows"]
+    N8["List&lt;User&gt;"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### Solutions to N+1
@@ -906,6 +991,27 @@ public record UserWithOrderCount(Long id, String name, String email, Long orderC
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: FETCH TYPE RECOMMENDATIONS → Relationship Default Recommendation | Relationship Default Recommendation → @OneToOne EAGER → Change to LAZY | @OneToOne EAGER → Change to LAZY → @ManyToOne EAGER → Change to LAZY | @ManyToOne EAGER → Change to LAZY → @OneToMany LAZY → Keep LAZY ✓ | @OneToMany LAZY → Keep LAZY ✓ → @ManyToMany LAZY → Keep LAZY ✓ | @ManyToMany LAZY → Keep LAZY ✓ → Then fetch when needed: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["FETCH TYPE RECOMMENDATIONS"]
+    N2["Relationship Default Recommendation"]
+    N3["@OneToOne EAGER → Change to LAZY"]
+    N4["@ManyToOne EAGER → Change to LAZY"]
+    N5["@OneToMany LAZY → Keep LAZY ✓"]
+    N6["@ManyToMany LAZY → Keep LAZY ✓"]
+    N7["Then fetch when needed:"]
+    N8["- JOIN FETCH in JPQL"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## Chapter 5: Entity Lifecycle & Persistence Context
@@ -945,6 +1051,15 @@ public record UserWithOrderCount(Long id, String name, String email, Long orderC
 │       remove() on MANAGED ──────► REMOVED (scheduled for DELETE)                │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: NEW / (no ID) → PERSISTENCE CONTEXT / (1st Level Cache) / MANAGED find(
+
+```mermaid
+flowchart TD
+    N1["NEW / (no ID)"]
+    N2["PERSISTENCE CONTEXT / (1st Level Cache) / MANAGED find("]
+    N1 --> N2
 ```
 
 ### Understanding the States
@@ -1364,6 +1479,27 @@ public class BrokenService {
 │  □ Consider 2nd level cache for read-heavy data                                 │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: JPA BEST PRACTICES CHECKLIST → ENTITY DESIGN: | ENTITY DESIGN: → □ Use LAZY fetch for all relationships | □ Use LAZY fetch for all relationships → □ Override equals/hashCode using only business key or I | □ Override equals/hashCode using only business key or I → □ Exclude collections from toString to prevent lazy loa | □ Exclude collections from toString to prevent lazy loa → □ Use @Version for optimistic locking | □ Use @Version for optimistic locking → □ Use Set (not List) for @ManyToMany | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["JPA BEST PRACTICES CHECKLIST"]
+    N2["ENTITY DESIGN:"]
+    N3["□ Use LAZY fetch for all relationships"]
+    N4["□ Override equals/hashCode using only business key or I"]
+    N5["□ Exclude collections from toString to prevent lazy loa"]
+    N6["□ Use @Version for optimistic locking"]
+    N7["□ Use Set (not List) for @ManyToMany"]
+    N8["□ Provide helper methods for bidirectional relationship"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

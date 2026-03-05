@@ -154,6 +154,17 @@ public class WatchHistoryService {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: COMPANY: Netflix / YouTube → SYSTEM: Recommendation Engine | SYSTEM: Recommendation Engine → FEATURE: 'Because you watched X, you might like Y'
+
+```mermaid
+flowchart TD
+    N1["COMPANY: Netflix / YouTube"]
+    N2["SYSTEM: Recommendation Engine"]
+    N3["FEATURE: 'Because you watched X, you might like Y'"]
+    N1 --> N2
+    N2 --> N3
+```
+
 ```java
 /**
  * PROBLEM: Recommend Videos Based on Viewing Patterns
@@ -257,6 +268,17 @@ public class VideoRecommender {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: COMPANY: YouTube / Netflix → SYSTEM: Video Player | SYSTEM: Video Player → CHALLENGE: Adjust video quality based on network speed
+
+```mermaid
+flowchart TD
+    N1["COMPANY: YouTube / Netflix"]
+    N2["SYSTEM: Video Player"]
+    N3["CHALLENGE: Adjust video quality based on network speed"]
+    N1 --> N2
+    N2 --> N3
+```
+
 ```java
 /**
  * PROBLEM: Adaptive Bitrate Streaming
@@ -357,6 +379,17 @@ public class AdaptiveBitrateController {
 ║ SYSTEM: Appointment Booking                                                  ║
 ║ CHALLENGE: Find available slots, prevent double booking                      ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: COMPANY: Practo / Apollo247 → SYSTEM: Appointment Booking | SYSTEM: Appointment Booking → CHALLENGE: Find available slots, prevent double booking
+
+```mermaid
+flowchart TD
+    N1["COMPANY: Practo / Apollo247"]
+    N2["SYSTEM: Appointment Booking"]
+    N3["CHALLENGE: Find available slots, prevent double booking"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 ```java
@@ -497,6 +530,15 @@ public class AppointmentScheduler {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: COMPANY: Any Healthcare App → SYSTEM: Prescription Safety
+
+```mermaid
+flowchart TD
+    N1["COMPANY: Any Healthcare App"]
+    N2["SYSTEM: Prescription Safety"]
+    N1 --> N2
+```
+
 ```java
 /**
  * PROBLEM: Check Medicine Interactions
@@ -599,6 +641,17 @@ public class MedicineInteractionChecker {
 ║ SYSTEM: Flight Search                                                        ║
 ║ FEATURE: Find cheapest flight route (with connections)                       ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: COMPANY: MakeMyTrip / Cleartrip → SYSTEM: Flight Search | SYSTEM: Flight Search → FEATURE: Find cheapest flight route (with connections)
+
+```mermaid
+flowchart TD
+    N1["COMPANY: MakeMyTrip / Cleartrip"]
+    N2["SYSTEM: Flight Search"]
+    N3["FEATURE: Find cheapest flight route (with connections)"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 ```java
@@ -733,6 +786,15 @@ public class FlightSearchEngine {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: COMPANY: OYO / Booking.com → SYSTEM: Inventory Management
+
+```mermaid
+flowchart TD
+    N1["COMPANY: OYO / Booking.com"]
+    N2["SYSTEM: Inventory Management"]
+    N1 --> N2
+```
+
 ```java
 /**
  * PROBLEM: Hotel Room Availability
@@ -865,6 +927,15 @@ public class HotelRoomInventory {
 ║ SYSTEM: Route Planning                                                       ║
 ║ CHALLENGE: Delivery person has 10 stops - find optimal route                 ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: COMPANY: Delhivery / Amazon Logistics → SYSTEM: Route Planning
+
+```mermaid
+flowchart TD
+    N1["COMPANY: Delhivery / Amazon Logistics"]
+    N2["SYSTEM: Route Planning"]
+    N1 --> N2
 ```
 
 ```java
@@ -1005,6 +1076,15 @@ public class DeliveryRouteOptimizer {
 ║ SYSTEM: Shipment Tracking                                                    ║
 ║ FEATURE: Track package through states with valid transitions only            ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: COMPANY: Any Logistics → SYSTEM: Shipment Tracking
+
+```mermaid
+flowchart TD
+    N1["COMPANY: Any Logistics"]
+    N2["SYSTEM: Shipment Tracking"]
+    N1 --> N2
 ```
 
 ```java
@@ -1150,6 +1230,27 @@ Network latency causes:
 - Then receives "Hi"
 
 Without proper ordering, conversation looks wrong!
+```
+
+> **Flow**: COMPANY: WhatsApp / Slack → SYSTEM: Messaging | SYSTEM: Messaging → THE PROBLEM: | THE PROBLEM: → User A sends 'Hi' at 10:00:00.001 | User A sends 'Hi' at 10:00:00.001 → User B sends 'Hello' at 10:00:00.002 | User B sends 'Hello' at 10:00:00.002 → Network latency causes: | Network latency causes: → - Server receives 'Hello' first | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["COMPANY: WhatsApp / Slack"]
+    N2["SYSTEM: Messaging"]
+    N3["THE PROBLEM:"]
+    N4["User A sends 'Hi' at 10:00:00.001"]
+    N5["User B sends 'Hello' at 10:00:00.002"]
+    N6["Network latency causes:"]
+    N7["- Server receives 'Hello' first"]
+    N8["- Then receives 'Hi'"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```java

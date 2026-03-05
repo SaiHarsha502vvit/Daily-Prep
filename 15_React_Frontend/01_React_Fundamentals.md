@@ -289,6 +289,27 @@ function Dashboard({ user, notifications }) {
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: FUNCTION COMPONENT LIFECYCLE (via Hooks) → Mount (component appears): | Mount (component appears): → 1. Function called → JSX returned → DOM updated | 1. Function called → JSX returned → DOM updated → Update (state/props change): | Update (state/props change): → 2. useEffect(() =&gt; { ... }, [dep]) runs if dep chang | 2. useEffect(() =&gt; { ... }, [dep]) runs if dep chang → Unmount (component removed): | Unmount (component removed): → 1. Cleanup function from useEffect runs | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["FUNCTION COMPONENT LIFECYCLE (via Hooks)"]
+    N2["Mount (component appears):"]
+    N3["1. Function called → JSX returned → DOM updated"]
+    N4["Update (state/props change):"]
+    N5["2. useEffect(() =&gt; { ... }, [dep]) runs if dep chang"]
+    N6["Unmount (component removed):"]
+    N7["1. Cleanup function from useEffect runs"]
+    N8["useEffect(() =&gt; {"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 > **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_Component_Patterns.md)

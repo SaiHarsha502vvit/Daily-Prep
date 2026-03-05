@@ -22,6 +22,23 @@ LESSON: Security is not a feature to add later.
         It's a MINDSET from line 1 of code.
 ```
 
+> **Flow**: Equifax Breach (2017) → 147 million records leaked | 147 million records leaked → $700M+ settlement | Log4Shell (2021) → Affected MILLIONS of servers worldwide | SolarWinds (2020) → 18,000 organizations compromised
+
+```mermaid
+flowchart LR
+    N1["Equifax Breach (2017)"]
+    N2["147 million records leaked"]
+    N3["$700M+ settlement"]
+    N4["Log4Shell (2021)"]
+    N5["Affected MILLIONS of servers worldwide"]
+    N6["SolarWinds (2020)"]
+    N7["18,000 organizations compromised"]
+    N1 --> N2
+    N2 --> N3
+    N4 --> N5
+    N6 --> N7
+```
+
 ---
 
 # WHAT: Core Security Concepts
@@ -44,6 +61,18 @@ Flow:
   4. Server AUTHORIZES → checks role/permissions for that endpoint
 ```
 
+> **Flow**: 2. Server AUTHENTICATES → issues token (JWT) | 4. Server AUTHORIZES → checks role/permissions for that endpoint
+
+```mermaid
+flowchart LR
+    N1["2. Server AUTHENTICATES"]
+    N2["issues token (JWT)"]
+    N3["4. Server AUTHORIZES"]
+    N4["checks role/permissions for that endpoint"]
+    N1 --> N2
+    N3 --> N4
+```
+
 ## The OWASP Top 10 (2021)
 
 ```
@@ -60,6 +89,15 @@ Flow:
 9  │ Logging Failures           │ Can't detect breaches            │ Log security events, monitor alerts
 10 │ SSRF                       │ Server makes requests attacker   │ Allowlist URLs, disable redirects
    │                            │ chooses                          │
+```
+
+> **Flow**: # Vulnerability What It Means Prevention → chooses
+
+```mermaid
+flowchart TD
+    N1["# Vulnerability What It Means Prevention"]
+    N2["chooses"]
+    N1 --> N2
 ```
 
 ---
@@ -139,6 +177,15 @@ Flow:
   └────────┘                            └────────┘
 ```
 
+> **Flow**: Client --(POST /login &gt;)--> Server
+
+```mermaid
+flowchart LR
+    N1["Client"]
+    N2["Server"]
+    N1 -->|"POST /login &gt;"| N2
+```
+
 ```java
 // Spring Security + JWT Configuration (Spring Boot 3):
 @Configuration
@@ -200,6 +247,18 @@ Encryption Types:
   HASHING:    One-way function, no decryption (BCrypt, SHA-256)
 ```
 
+> **Flow**: 1. Client → Server: 'Hello, I support these ciphers' | 2. Server → Client: 'Let's use this cipher + here's my certifi
+
+```mermaid
+flowchart LR
+    N1["1. Client"]
+    N2["Server: 'Hello, I support these ciphers'"]
+    N3["2. Server"]
+    N4["Client: 'Let's use this cipher + here's my certifi"]
+    N1 --> N2
+    N3 --> N4
+```
+
 ## Level 6 — CORS (Cross-Origin Resource Sharing)
 
 ```java
@@ -252,6 +311,15 @@ DEPENDENCIES:
   ☐ Remove unused dependencies
 ```
 
+> **Flow**: ☐ HTTPS everywhere (redirect HTTP → HTTPS)
+
+```mermaid
+flowchart LR
+    N1["☐ HTTPS everywhere (redirect HTTP"]
+    N2["HTTPS)"]
+    N1 --> N2
+```
+
 ---
 
 # 🧭 Security Cheat Sheet
@@ -265,6 +333,36 @@ Auth             → JWT + refresh token
 Transport        → HTTPS + HSTS
 Secrets          → Environment variables, vault
 Dependencies     → Dependabot + regular updates
+```
+
+> **Flow**: SQL Injection → Parameterized queries | XSS → Escape output, CSP headers | CSRF → Anti-CSRF tokens (or stateless JWT) | Password Storage → BCrypt (never MD5/SHA) | Auth → JWT + refresh token | Transport → HTTPS + HSTS | ...+2 more
+
+```mermaid
+flowchart TD
+    N1["SQL Injection"]
+    N2["Parameterized queries"]
+    N3["XSS"]
+    N4["Escape output, CSP headers"]
+    N5["CSRF"]
+    N6["Anti-CSRF tokens (or stateless JWT)"]
+    N7["Password Storage"]
+    N8["BCrypt (never MD5/SHA)"]
+    N9["Auth"]
+    N10["JWT + refresh token"]
+    N11["Transport"]
+    N12["HTTPS + HSTS"]
+    N13["Secrets"]
+    N14["Environment variables, vault"]
+    N15["Dependencies"]
+    N16["Dependabot + regular updates"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+    N7 --> N8
+    N9 --> N10
+    N11 --> N12
+    N13 --> N14
+    N15 --> N16
 ```
 
 ---

@@ -117,6 +117,27 @@ public boolean isIsomorphicMap(String s, String t) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: WORD PATTERN → Check if string follows same pattern as given pattern. | Check if string follows same pattern as given pattern. → Pattern char → word must be bijective (one-to-one). | Pattern char → word must be bijective (one-to-one). → Input: pattern = 'abba', s = 'dog cat cat dog' | Input: pattern = 'abba', s = 'dog cat cat dog' → Output: true | Output: true → Explanation: a→dog, b→cat | Explanation: a→dog, b→cat → Input: pattern = 'abba', s = 'dog cat cat fish' | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["WORD PATTERN"]
+    N2["Check if string follows same pattern as given pattern."]
+    N3["Pattern char → word must be bijective (one-to-one)."]
+    N4["Input: pattern = 'abba', s = 'dog cat cat dog'"]
+    N5["Output: true"]
+    N6["Explanation: a→dog, b→cat"]
+    N7["Input: pattern = 'abba', s = 'dog cat cat fish'"]
+    N8["Output: false"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ```java
 public boolean wordPattern(String pattern, String s) {
     String[] words = s.split(" ");
@@ -195,6 +216,27 @@ public boolean wordPattern(String pattern, String s) {
 ║  - pattern and s consist of only lowercase English letters                ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: WORD PATTERN II → (LeetCode Premium - Full Problem Description) | (LeetCode Premium - Full Problem Description) → between a letter in pattern and a non-empty substring i | between a letter in pattern and a non-empty substring i → You must determine where words begin and end. | You must determine where words begin and end. → Example 1: | Example 1: → Input: pattern = 'abab', s = 'redblueredblue' | Input: pattern = 'abab', s = 'redblueredblue' → Output: true | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["WORD PATTERN II"]
+    N2["(LeetCode Premium - Full Problem Description)"]
+    N3["between a letter in pattern and a non-empty substring i"]
+    N4["You must determine where words begin and end."]
+    N5["Example 1:"]
+    N6["Input: pattern = 'abab', s = 'redblueredblue'"]
+    N7["Output: true"]
+    N8["Explanation: a→'red', b→'blue'"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```java
@@ -287,6 +329,27 @@ private boolean backtrack(String pattern, int pIdx, String s, int sIdx,
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: FIND ALL ISOMORPHIC PAIRS → (Custom Premium-Style Problem) | (Custom Premium-Style Problem) → Example 1: | Example 1: → Output: [['egg', 'add'], ['foo'], ['bar', 'abc', 'xyz'] | Output: [['egg', 'add'], ['foo'], ['bar', 'abc', 'xyz'] → ['paper', 'title']] | ['paper', 'title']] → Explanation: | Explanation: → - 'egg' ↔ 'add' (pattern: 011) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["FIND ALL ISOMORPHIC PAIRS"]
+    N2["(Custom Premium-Style Problem)"]
+    N3["Example 1:"]
+    N4["Output: [['egg', 'add'], ['foo'], ['bar', 'abc', 'xyz']"]
+    N5["['paper', 'title']]"]
+    N6["Explanation:"]
+    N7["- 'egg' ↔ 'add' (pattern: 011)"]
+    N8["- 'foo' alone (pattern: 011, but different length group"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ```java
 public List<List<String>> groupIsomorphic(String[] words) {
     Map<String, List<String>> groups = new HashMap<>();
@@ -342,6 +405,23 @@ private String getPattern(String s) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: VALID ANAGRAM → Anagram = same characters, same frequency, different or | Anagram = same characters, same frequency, different or → Input: s = 'anagram', t = 'nagaram' | Input: s = 'anagram', t = 'nagaram' → Output: true | Output: true → Input: s = 'rat', t = 'car' | Input: s = 'rat', t = 'car' → Output: false
+
+```mermaid
+flowchart TD
+    N1["VALID ANAGRAM"]
+    N2["Anagram = same characters, same frequency, different or"]
+    N3["Input: s = 'anagram', t = 'nagaram'"]
+    N4["Output: true"]
+    N5["Input: s = 'rat', t = 'car'"]
+    N6["Output: false"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+```
+
 ```java
 public boolean isAnagram(String s, String t) {
     if (s.length() != t.length()) return false;
@@ -384,6 +464,27 @@ public boolean isAnagram(String s, String t) {
 ║  Output: [0, 1, 2]                                                        ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: FIND ALL ANAGRAMS IN A STRING → Find all start indices of p's anagrams in s. | Find all start indices of p's anagrams in s. → Input: s = 'cbaebabacd', p = 'abc' | Input: s = 'cbaebabacd', p = 'abc' → Output: [0, 6] | Output: [0, 6] → Explanation: | Explanation: → Index 0: 'cba' is anagram of 'abc' | Index 0: 'cba' is anagram of 'abc' → Index 6: 'bac' is anagram of 'abc' | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["FIND ALL ANAGRAMS IN A STRING"]
+    N2["Find all start indices of p's anagrams in s."]
+    N3["Input: s = 'cbaebabacd', p = 'abc'"]
+    N4["Output: [0, 6]"]
+    N5["Explanation:"]
+    N6["Index 0: 'cba' is anagram of 'abc'"]
+    N7["Index 6: 'bac' is anagram of 'abc'"]
+    N8["Input: s = 'abab', p = 'ab'"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```java
@@ -471,6 +572,27 @@ public List<Integer> findAnagrams(String s, String p) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: STROBOGRAMMATIC NUMBER → (LeetCode Premium - Full Problem Description) | (LeetCode Premium - Full Problem Description) → 180 degrees (looked at upside down). | 180 degrees (looked at upside down). → strobogrammatic number. | strobogrammatic number. → Valid strobogrammatic digits: | Valid strobogrammatic digits: → - 0 rotated is 0 | - 0 rotated is 0 → - 1 rotated is 1 | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["STROBOGRAMMATIC NUMBER"]
+    N2["(LeetCode Premium - Full Problem Description)"]
+    N3["180 degrees (looked at upside down)."]
+    N4["strobogrammatic number."]
+    N5["Valid strobogrammatic digits:"]
+    N6["- 0 rotated is 0"]
+    N7["- 1 rotated is 1"]
+    N8["- 6 rotated is 9"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ```java
 public boolean isStrobogrammatic(String num) {
     Map<Character, Character> map = new HashMap<>();
@@ -539,6 +661,27 @@ public boolean isStrobogrammatic(String num) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: STROBOGRAMMATIC NUMBER II → (LeetCode Premium - Full Problem Description) | (LeetCode Premium - Full Problem Description) → when rotated 180 degrees. | when rotated 180 degrees. → You may return the answer in any order. | You may return the answer in any order. → Example 1: | Example 1: → Input: n = 2 | Input: n = 2 → Output: ['11', '69', '88', '96'] | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["STROBOGRAMMATIC NUMBER II"]
+    N2["(LeetCode Premium - Full Problem Description)"]
+    N3["when rotated 180 degrees."]
+    N4["You may return the answer in any order."]
+    N5["Example 1:"]
+    N6["Input: n = 2"]
+    N7["Output: ['11', '69', '88', '96']"]
+    N8["Example 2:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ```java
 public List<String> findStrobogrammatic(int n) {
     return helper(n, n);
@@ -591,6 +734,25 @@ private List<String> helper(int n, int finalLength) {
 ║  Output: false                                                            ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: VALID PALINDROME II → at most one character. | at most one character. → Input: s = 'abca' | Input: s = 'abca' → Output: true | Output: true → Explanation: Delete 'c' → 'aba' or delete 'b' → 'aca' | Explanation: Delete 'c' → 'aba' or delete 'b' → 'aca' → Input: s = 'abc' | Input: s = 'abc' → Output: false
+
+```mermaid
+flowchart TD
+    N1["VALID PALINDROME II"]
+    N2["at most one character."]
+    N3["Input: s = 'abca'"]
+    N4["Output: true"]
+    N5["Explanation: Delete 'c' → 'aba' or delete 'b' → 'aca'"]
+    N6["Input: s = 'abc'"]
+    N7["Output: false"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
 ```
 
 ```java
@@ -665,6 +827,27 @@ private boolean isPalindrome(String s, int left, int right) {
 ║  - s consists of only lowercase English letters                           ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: PALINDROME PERMUTATION → (LeetCode Premium - Full Problem Description) | (LeetCode Premium - Full Problem Description) → form a palindrome. | form a palindrome. → Example 1: | Example 1: → Input: s = 'code' | Input: s = 'code' → Output: false | Output: false → Explanation: No permutation of 'code' is a palindrome. | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["PALINDROME PERMUTATION"]
+    N2["(LeetCode Premium - Full Problem Description)"]
+    N3["form a palindrome."]
+    N4["Example 1:"]
+    N5["Input: s = 'code'"]
+    N6["Output: false"]
+    N7["Explanation: No permutation of 'code' is a palindrome."]
+    N8["Example 2:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```java

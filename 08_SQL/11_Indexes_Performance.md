@@ -54,6 +54,17 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: SELECT * FROM employees WHERE last_name = 'Kumar'; / 1  → [K-P] ← Root: Is 'Kumar' &lt; 'K' or &gt; 'P'? / ▼ ▼ ▼  | [K-P] ← Root: Is 'Kumar' &lt; 'K' or &gt; 'P'? / ▼ ▼ ▼  → Type Description Use Case / B-Tree Balanced tree, defau
+
+```mermaid
+flowchart TD
+    N1["SELECT * FROM employees WHERE last_name = 'Kumar'; / 1 "]
+    N2["[K-P] ← Root: Is 'Kumar' &lt; 'K' or &gt; 'P'? / ▼ ▼ ▼ "]
+    N3["Type Description Use Case / B-Tree Balanced tree, defau"]
+    N1 --> N2
+    N2 --> N3
+```
+
 ```sql
 -- ═══════════════════════════════════════════════════════════════════════════════
 -- CREATING AND MANAGING INDEXES

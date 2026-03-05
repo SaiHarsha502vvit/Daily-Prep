@@ -28,6 +28,15 @@ Graph Database    │ Neo4j, Amazon     │ Nodes + edges  │ Social networks,
                   │                   │                │ fraud detection
 ```
 
+> **Flow**: Key-Value Store Redis, DynamoDB key → blob Caching, sessions,
+
+```mermaid
+flowchart LR
+    N1["Key-Value Store Redis, DynamoDB key"]
+    N2["blob Caching, sessions,"]
+    N1 --> N2
+```
+
 ---
 
 ## Part 2: SQL vs NoSQL Decision Framework
@@ -53,6 +62,27 @@ Graph Database    │ Neo4j, Amazon     │ Nodes + edges  │ Social networks,
 │  → Elasticsearch for search                                                     │
 │  → MongoDB for product catalog                                                  │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: CHOOSE SQL WHEN: CHOOSE NoSQL WHEN: → ✅ Complex queries with JOINs ✅ Flexible/evolving schema | ✅ Complex queries with JOINs ✅ Flexible/evolving schema → ✅ ACID transactions required ✅ Massive write throughput | ✅ ACID transactions required ✅ Massive write throughput → ✅ Strong consistency needed ✅ Horizontal scaling needed | ✅ Strong consistency needed ✅ Horizontal scaling needed → ✅ Complex reporting/analytics ✅ Low latency at any scal | ✅ Complex reporting/analytics ✅ Low latency at any scal → EXAMPLES: EXAMPLES: | EXAMPLES: EXAMPLES: → • Banking, financial systems • Product catalogs (MongoD | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["CHOOSE SQL WHEN: CHOOSE NoSQL WHEN:"]
+    N2["✅ Complex queries with JOINs ✅ Flexible/evolving schema"]
+    N3["✅ ACID transactions required ✅ Massive write throughput"]
+    N4["✅ Strong consistency needed ✅ Horizontal scaling needed"]
+    N5["✅ Complex reporting/analytics ✅ Low latency at any scal"]
+    N6["EXAMPLES: EXAMPLES:"]
+    N7["• Banking, financial systems • Product catalogs (MongoD"]
+    N8["• Order management • Session storage (Redis)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---
@@ -100,6 +130,27 @@ db.users.createIndex({ email: 1 }, { unique: true })          // unique index
 db.users.createIndex({ "address.city": 1, name: 1 })          // compound index
 db.users.createIndex({ name: "text", bio: "text" })            // text search index
 db.events.createIndex({ createdAt: 1 }, { expireAfterSeconds: 86400 }) // TTL index
+```
+
+> **Flow**: name: 'John Doe', → email: 'john@example.com', | email: 'john@example.com', → address: { // embedded document (denormalized) | address: { // embedded document (denormalized) → street: '123 Main St', | street: '123 Main St', → city: 'Springfield', | city: 'Springfield', → state: 'IL' | state: 'IL' → orders: [ // embedded array | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["name: 'John Doe',"]
+    N2["email: 'john@example.com',"]
+    N3["address: { // embedded document (denormalized)"]
+    N4["street: '123 Main St',"]
+    N5["city: 'Springfield',"]
+    N6["state: 'IL'"]
+    N7["orders: [ // embedded array"]
+    N8["tags: ['premium', 'active']"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### Data Modeling: Embed vs Reference
@@ -159,6 +210,24 @@ HSET session:abc userId "123" role "admin" expiry "1700000000"
 // Distributed Lock (Redlock)
 SET lock:order:456 "owner-id" NX EX 30  // acquire lock for 30s
 // NX = only if not exists (atomic)
+```
+
+> **Flow**: GET user:1:name // → 'John' | HGETALL user:1 // → name: John, age: 30 | RPOP queue:orders // → 'order123' | SISMEMBER user:1:tags 'premium' // → true
+
+```mermaid
+flowchart LR
+    N1["GET user:1:name //"]
+    N2["'John'"]
+    N3["HGETALL user:1 //"]
+    N4["name: John, age: 30"]
+    N5["RPOP queue:orders //"]
+    N6["'order123'"]
+    N7["SISMEMBER user:1:tags 'premium' //"]
+    N8["true"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+    N7 --> N8
 ```
 
 ---

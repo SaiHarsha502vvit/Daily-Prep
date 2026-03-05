@@ -48,6 +48,27 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: WINDOW FUNCTIONS - OVERVIEW → Syntax: | Syntax: → function_name() OVER ( | function_name() OVER ( → [PARTITION BY column1, column2] ← Groups for calculatio | [PARTITION BY column1, column2] ← Groups for calculatio → [ORDER BY column3] ← Order within group | [ORDER BY column3] ← Order within group → [ROWS/RANGE frame_clause] ← Which rows to consider | [ROWS/RANGE frame_clause] ← Which rows to consider → WINDOW FUNCTION CATEGORIES: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["WINDOW FUNCTIONS - OVERVIEW"]
+    N2["Syntax:"]
+    N3["function_name() OVER ("]
+    N4["[PARTITION BY column1, column2] ← Groups for calculatio"]
+    N5["[ORDER BY column3] ← Order within group"]
+    N6["[ROWS/RANGE frame_clause] ← Which rows to consider"]
+    N7["WINDOW FUNCTION CATEGORIES:"]
+    N8["1. RANKING Functions"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### Ranking Functions
 
 ```sql
@@ -572,6 +593,54 @@ Level 6: ADVANCED ANALYTICS (Week 11-12)
 
 ```
 
+> **Flow**: Level 1: BASIC QUERIES (Week 1-2) → SELECT, WHERE, ORDER BY, LIMIT | Level 1: BASIC QUERIES (Week 1-2) → Comparison & Logical Operators | Level 1: BASIC QUERIES (Week 1-2) → Basic filtering and sorting | Level 2: AGGREGATIONS (Week 3-4) → GROUP BY, HAVING | Level 2: AGGREGATIONS (Week 3-4) → COUNT, SUM, AVG, MIN, MAX | Level 2: AGGREGATIONS (Week 3-4) → Aggregate with conditions | ...+12 more
+
+```mermaid
+flowchart TD
+    N1["Level 1: BASIC QUERIES (Week 1-2)"]
+    N2["SELECT, WHERE, ORDER BY, LIMIT"]
+    N3["Comparison & Logical Operators"]
+    N4["Basic filtering and sorting"]
+    N5["Level 2: AGGREGATIONS (Week 3-4)"]
+    N6["GROUP BY, HAVING"]
+    N7["COUNT, SUM, AVG, MIN, MAX"]
+    N8["Aggregate with conditions"]
+    N9["Level 3: JOINS (Week 5-6)"]
+    N10["INNER, LEFT, RIGHT, FULL JOIN"]
+    N11["Self Joins, Cross Joins"]
+    N12["Multiple table combinations"]
+    N13["Level 4: SUBQUERIES & CTEs (Week 7-8)"]
+    N14["Scalar subqueries"]
+    N15["Correlated subqueries"]
+    N16["Common Table Expressions"]
+    N17["Level 5: WINDOW FUNCTIONS (Week 9-10)"]
+    N18["ROW_NUMBER, RANK, DENSE_RANK"]
+    N19["LAG, LEAD, FIRST_VALUE"]
+    N20["Running totals, Moving averages"]
+    N21["Level 6: ADVANCED ANALYTICS (Week 11-12)"]
+    N22["PIVOT/UNPIVOT"]
+    N23["Cohort analysis"]
+    N24["Funnel analysis"]
+    N1 --> N2
+    N1 --> N3
+    N1 --> N4
+    N5 --> N6
+    N5 --> N7
+    N5 --> N8
+    N9 --> N10
+    N9 --> N11
+    N9 --> N12
+    N13 --> N14
+    N13 --> N15
+    N13 --> N16
+    N17 --> N18
+    N17 --> N19
+    N17 --> N20
+    N21 --> N22
+    N21 --> N23
+    N21 --> N24
+```
+
 ---
 
 # 🔗 Part 1: Joins — the Foundation of Data Analysis
@@ -632,6 +701,17 @@ Level 6: ADVANCED ANALYTICS (Week 11-12)
 │  BUT: To get complete information, we need JOIN!                                │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: order_id customer_name customer_email product_name pric → id name email / 1 John Doe john@ / 2 Jane Smith jane@ | id name email / 1 John Doe john@ / 2 Jane Smith jane@ → id customer_id product_id / 1 1 101 / 2 1 102 / 3 1 103
+
+```mermaid
+flowchart TD
+    N1["order_id customer_name customer_email product_name pric"]
+    N2["id name email / 1 John Doe john@ / 2 Jane Smith jane@"]
+    N3["id customer_id product_id / 1 1 101 / 2 1 102 / 3 1 103"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 ### Visual: All JOIN Types
@@ -947,6 +1027,15 @@ WHERE c.customer_id IN (
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: order_id customer_id product_id quantity price order_da → 📊 EXECUTIVE DASHBOARD - January 2024 / Total Revenue: $
+
+```mermaid
+flowchart TD
+    N1["order_id customer_id product_id quantity price order_da"]
+    N2["📊 EXECUTIVE DASHBOARD - January 2024 / Total Revenue: $"]
+    N1 --> N2
+```
+
 ### 🟢 HOW: Complete Aggregation Guide
 
 ```sql
@@ -1176,6 +1265,15 @@ GROUP BY o.order_id, o.order_date;
 │  All require WINDOW FUNCTIONS!                                                  │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: emp dept salary / A IT 60000 / B IT 70000 / C HR 50000 → dept avg_sal / IT 65000 / HR 50000
+
+```mermaid
+flowchart TD
+    N1["emp dept salary / A IT 60000 / B IT 70000 / C HR 50000"]
+    N2["dept avg_sal / IT 65000 / HR 50000"]
+    N1 --> N2
 ```
 
 ### 🟢 HOW: Window Functions Complete Guide
@@ -1445,6 +1543,27 @@ SELECT * FROM ranked_customers WHERE percentile >= 0.90;
 │  └────────────────────────────────────────────────────────────────────────────┘ │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: WHY CTEs EXIST → THE PROBLEM: Nested Subqueries are Hard to Read | THE PROBLEM: Nested Subqueries are Hard to Read → -- Then show their spending rank | -- Then show their spending rank → SELECT customer_id, name, total_spent, rank_num FROM ( | SELECT customer_id, name, total_spent, rank_num FROM ( → SELECT c.customer_id, c.name, total_spent, | SELECT c.customer_id, c.name, total_spent, → RANK() OVER (ORDER BY total_spent DESC) as rank_num | RANK() OVER (ORDER BY total_spent DESC) as rank_num → FROM customers c | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["WHY CTEs EXIST"]
+    N2["THE PROBLEM: Nested Subqueries are Hard to Read"]
+    N3["-- Then show their spending rank"]
+    N4["SELECT customer_id, name, total_spent, rank_num FROM ("]
+    N5["SELECT c.customer_id, c.name, total_spent,"]
+    N6["RANK() OVER (ORDER BY total_spent DESC) as rank_num"]
+    N7["FROM customers c"]
+    N8["JOIN ("]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### 🟢 HOW: CTE Patterns
@@ -1889,6 +2008,27 @@ FROM orders;
 ║    PERCENT_RANK() OVER (ORDER BY value)                                          ║
 ║                                                                                  ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: SQL FOR DATA ANALYSIS - CHEAT SHEET → JOIN TYPES: | JOIN TYPES: → INNER JOIN - Only matching rows | INNER JOIN - Only matching rows → LEFT JOIN - All left + matching right (NULL if no match | LEFT JOIN - All left + matching right (NULL if no match → RIGHT JOIN - All right + matching left | RIGHT JOIN - All right + matching left → FULL JOIN - Everything from both | FULL JOIN - Everything from both → SELF JOIN - Table joined to itself (hierarchies) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["SQL FOR DATA ANALYSIS - CHEAT SHEET"]
+    N2["JOIN TYPES:"]
+    N3["INNER JOIN - Only matching rows"]
+    N4["LEFT JOIN - All left + matching right (NULL if no match"]
+    N5["RIGHT JOIN - All right + matching left"]
+    N6["FULL JOIN - Everything from both"]
+    N7["SELF JOIN - Table joined to itself (hierarchies)"]
+    N8["AGGREGATE FUNCTIONS:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

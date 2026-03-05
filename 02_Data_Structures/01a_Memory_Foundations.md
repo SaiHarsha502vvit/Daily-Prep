@@ -76,6 +76,25 @@ Let's go DEEP into how computers actually work!
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: CPU CORE → REGISTERS (64 bytes) / Access: 0.5 nanoseconds | REGISTERS (64 bytes) / Access: 0.5 nanoseconds → L1 CACHE (32KB per core) / Access: 1 nanosecond | L1 CACHE (32KB per core) / Access: 1 nanosecond → L2 CACHE (256KB per core) / Access: 4 nanoseconds | L2 CACHE (256KB per core) / Access: 4 nanoseconds → L3 CACHE (8MB shared) / Access: 15 nanoseconds | L3 CACHE (8MB shared) / Access: 15 nanoseconds → MAIN MEMORY / RAM (16GB) / Access: 100 nanoseconds | MAIN MEMORY / RAM (16GB) / Access: 100 nanoseconds → SSD / DISK (1TB) / Access: 100,000 nanoseconds
+
+```mermaid
+flowchart TD
+    N1["CPU CORE"]
+    N2["REGISTERS (64 bytes) / Access: 0.5 nanoseconds"]
+    N3["L1 CACHE (32KB per core) / Access: 1 nanosecond"]
+    N4["L2 CACHE (256KB per core) / Access: 4 nanoseconds"]
+    N5["L3 CACHE (8MB shared) / Access: 15 nanoseconds"]
+    N6["MAIN MEMORY / RAM (16GB) / Access: 100 nanoseconds"]
+    N7["SSD / DISK (1TB) / Access: 100,000 nanoseconds"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+```
+
 ## HOW MEMORY IS ORGANIZED (Addresses & Bytes)
 
 ```
@@ -146,6 +165,15 @@ Let's go DEEP into how computers actually work!
 │  • Must convert when sending data over network!                                 │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: Address 0x1000 0x1001 0x1002 0x1003 / Content 0x2A 0x00 → Address 0x1000 0x1001 0x1002 0x1003 / Content 0x00 0x00
+
+```mermaid
+flowchart TD
+    N1["Address 0x1000 0x1001 0x1002 0x1003 / Content 0x2A 0x00"]
+    N2["Address 0x1000 0x1001 0x1002 0x1003 / Content 0x00 0x00"]
+    N1 --> N2
 ```
 
 ## JAVA MEMORY MODEL - Stack vs Heap
@@ -357,6 +385,20 @@ sum += arr[i];  // Most accesses are cache hits!
 │  LinkedList uses 6.7x MORE memory!                                              │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: Node / value: 10 / next: 0x5F00 / prev: null → Node / value: 20 / next: 0x2A00 / prev: 0x1000 | Node / value: 20 / next: 0x2A00 / prev: 0x1000 → Node / value: 30 / next: 0x8B00 / prev: 0x5F00 | Node / value: 40 / next: 0x3C00 / prev: 0x2A00 → Node / value: 50 / next: null / prev: 0x8B00
+
+```mermaid
+flowchart TD
+    N1["Node / value: 10 / next: 0x5F00 / prev: null"]
+    N2["Node / value: 20 / next: 0x2A00 / prev: 0x1000"]
+    N3["Node / value: 30 / next: 0x8B00 / prev: 0x5F00"]
+    N4["Node / value: 40 / next: 0x3C00 / prev: 0x2A00"]
+    N5["Node / value: 50 / next: null / prev: 0x8B00"]
+    N1 --> N2
+    N2 --> N3
+    N4 --> N5
 ```
 
 ## CPU OPERATIONS - What Actually Happens

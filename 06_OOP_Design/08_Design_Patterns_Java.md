@@ -299,6 +299,15 @@ processor.charge("cust_123", 49.99);
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: decorator wrapping the base coffee. → USE: Java I/O streams, logging, caching, validation lay
+
+```mermaid
+flowchart TD
+    N1["decorator wrapping the base coffee."]
+    N2["USE: Java I/O streams, logging, caching, validation lay"]
+    N1 --> N2
+```
+
 ```java
 // --- Component interface ---
 public interface DataSource {
@@ -383,6 +392,15 @@ source.write("sensitive data");  // compressed → encrypted → file
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: ANALOGY: A hotel concierge — one person handles restaur → taxi, and room service instead of you calling each.
+
+```mermaid
+flowchart TD
+    N1["ANALOGY: A hotel concierge — one person handles restaur"]
+    N2["taxi, and room service instead of you calling each."]
+    N1 --> N2
+```
+
 ```java
 // Complex subsystems
 class InventoryService { boolean checkStock(String productId) { /*...*/ } }
@@ -434,6 +452,17 @@ OrderResult result = orderFacade.placeOrder(order);
 ║           building (real object).                                    ║
 ║  USE: Caching proxy, lazy initialization, access control, logging    ║
 ╚══════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: an object without changing it. → ANALOGY: A security guard (proxy) controlling access to | ANALOGY: A security guard (proxy) controlling access to → building (real object).
+
+```mermaid
+flowchart TD
+    N1["an object without changing it."]
+    N2["ANALOGY: A security guard (proxy) controlling access to"]
+    N3["building (real object)."]
+    N1 --> N2
+    N2 --> N3
 ```
 
 ```java
@@ -548,6 +577,15 @@ cart.setDiscountStrategy(price -> price * 0.9); // 10% off inline
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: PROBLEM: Object changes → multiple others need to know. → notified (along with all other subscribers).
+
+```mermaid
+flowchart TD
+    N1["PROBLEM: Object changes → multiple others need to know."]
+    N2["notified (along with all other subscribers)."]
+    N1 --> N2
+```
+
 ```java
 // Observer interface
 public interface OrderEventListener {
@@ -613,6 +651,15 @@ orderService.placeOrder(new Order(/*...*/));
 ║           ingredients/method differ for each dish.                   ║
 ║  USE: Frameworks (Spring's JdbcTemplate), data processing pipes      ║
 ╚══════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: ANALOGY: A recipe — same steps (prep, cook, serve) but → ingredients/method differ for each dish.
+
+```mermaid
+flowchart TD
+    N1["ANALOGY: A recipe — same steps (prep, cook, serve) but"]
+    N2["ingredients/method differ for each dish."]
+    N1 --> N2
 ```
 
 ```java
@@ -766,6 +813,27 @@ chain.handle(request);
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: PATTERN WHERE IT APPEARS IN SPRING → Singleton @Component, @Service, @Bean (default) | Singleton @Component, @Service, @Bean (default) → Factory BeanFactory, FactoryBean | Factory BeanFactory, FactoryBean → Builder ResponseEntity.ok().body(data).build() | Builder ResponseEntity.ok().body(data).build() → Proxy @Transactional, @Cacheable, @Async | Proxy @Transactional, @Cacheable, @Async → Template Method JdbcTemplate, RestTemplate | Template Method JdbcTemplate, RestTemplate → Observer ApplicationEvent + @EventListener | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["PATTERN WHERE IT APPEARS IN SPRING"]
+    N2["Singleton @Component, @Service, @Bean (default)"]
+    N3["Factory BeanFactory, FactoryBean"]
+    N4["Builder ResponseEntity.ok().body(data).build()"]
+    N5["Proxy @Transactional, @Cacheable, @Async"]
+    N6["Template Method JdbcTemplate, RestTemplate"]
+    N7["Observer ApplicationEvent + @EventListener"]
+    N8["Strategy AuthenticationProvider implementations"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## Pattern Selection Guide
@@ -788,6 +856,27 @@ chain.handle(request);
 ║  Process through multiple steps   │  Chain of Responsibility         ║
 ║  Represent tree structures        │  Composite                       ║
 ╚══════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: WHEN YOU NEED TO... USE THIS PATTERN → Create objects flexibly Factory / Abstract Factory | Create objects flexibly Factory / Abstract Factory → Build complex objects step by Builder | Build complex objects step by Builder → step | step → Ensure one instance Singleton | Ensure one instance Singleton → Make incompatible code work Adapter | Make incompatible code work Adapter → Add behavior without modifying Decorator | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["WHEN YOU NEED TO... USE THIS PATTERN"]
+    N2["Create objects flexibly Factory / Abstract Factory"]
+    N3["Build complex objects step by Builder"]
+    N4["step"]
+    N5["Ensure one instance Singleton"]
+    N6["Make incompatible code work Adapter"]
+    N7["Add behavior without modifying Decorator"]
+    N8["Simplify a complex subsystem Facade"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---
@@ -839,6 +928,27 @@ A: Global state, hard to test (use DI instead), hides dependencies,
 ║  The cure shouldn't be worse than the disease.                       ║
 ║  Simple problems deserve simple solutions.                           ║
 ╚══════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: Design patterns are a SHARED VOCABULARY between develop → Without patterns: | Without patterns: → 'I made a class that wraps another class and adds loggi | 'I made a class that wraps another class and adds loggi → before calling the original method and...' | before calling the original method and...' → With patterns: | With patterns: → 'I used a Decorator for logging.' | 'I used a Decorator for logging.' → → Everyone immediately understands the architecture. | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Design patterns are a SHARED VOCABULARY between develop"]
+    N2["Without patterns:"]
+    N3["'I made a class that wraps another class and adds loggi"]
+    N4["before calling the original method and...'"]
+    N5["With patterns:"]
+    N6["'I used a Decorator for logging.'"]
+    N7["→ Everyone immediately understands the architecture."]
+    N8["⚠️ WARNING: Don't force patterns where they're not need"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

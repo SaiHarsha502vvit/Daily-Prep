@@ -42,6 +42,15 @@
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: 0 1 1 0 / 1 0 1 1 / 1 1 0 0 / 0 1 0 0 → DFS (Stack/Recursion) BFS (Queue) / - Go deep first - G
+
+```mermaid
+flowchart TD
+    N1["0 1 1 0 / 1 0 1 1 / 1 1 0 0 / 0 1 0 0"]
+    N2["DFS (Stack/Recursion) BFS (Queue) / - Go deep first - G"]
+    N1 --> N2
+```
+
 ---
 
 ## PART 0: WHY Graph Problems & How to Think About Them
@@ -98,6 +107,15 @@
 │   │ 0 │ 0 │ 1 │    V = rows × cols,  E = up to 4 × V                         │
 │   └───┴───┴───┘    Time for BFS/DFS on grid: O(rows × cols)                  │
 └──────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: Problem Node = Edge = / Number of Islands Cell (r,c) Ad → 1 1 0 / 1 0 0 / 0 0 1
+
+```mermaid
+flowchart TD
+    N1["Problem Node = Edge = / Number of Islands Cell (r,c) Ad"]
+    N2["1 1 0 / 1 0 0 / 0 0 1"]
+    N1 --> N2
 ```
 
 ```java
@@ -305,6 +323,27 @@ void dfs(int[][] grid, int r, int c, boolean[][] visited) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: NUMBER OF ISLANDS - Count connected components of '1's → grid = [ | grid = [ → ['1','1','0','0','0'], Island 1: top-left 1s | ['1','1','0','0','0'], Island 1: top-left 1s → ['0','0','1','0','0'], Island 2: middle 1 | ['0','0','1','0','0'], Island 2: middle 1 → ['0','0','0','1','1'] Island 3: bottom-right 1s | ['0','0','0','1','1'] Island 3: bottom-right 1s → Visual: | Visual: → 1 1 0 0 0 🏝️ Island 1 | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["NUMBER OF ISLANDS - Count connected components of '1's"]
+    N2["grid = ["]
+    N3["['1','1','0','0','0'], Island 1: top-left 1s"]
+    N4["['0','0','1','0','0'], Island 2: middle 1"]
+    N5["['0','0','0','1','1'] Island 3: bottom-right 1s"]
+    N6["Visual:"]
+    N7["1 1 0 0 0 🏝️ Island 1"]
+    N8["0 0 1 0 0 🏝️ Island 2"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 **Solution (DFS):**
 
 ```java
@@ -409,6 +448,17 @@ public int numIslandsBFS(char[][] grid) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: MAX AREA OF ISLAND → grid = [ | grid = [ → Maximum area = 6 (the island in middle-right)
+
+```mermaid
+flowchart TD
+    N1["MAX AREA OF ISLAND"]
+    N2["grid = ["]
+    N3["Maximum area = 6 (the island in middle-right)"]
+    N1 --> N2
+    N2 --> N3
+```
+
 **Solution:**
 
 ```java
@@ -462,6 +512,21 @@ private int dfs(int[][] grid, int i, int j) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: CLONE GRAPH - Deep copy of undirected graph → Input: Output (Clone): | Input: Output (Clone): → Each node has: val, List&lt;Node&gt; neighbors | Each node has: val, List&lt;Node&gt; neighbors → Key: Use HashMap to track original → clone mapping | Key: Use HashMap to track original → clone mapping → Prevents infinite loop when graph has cycles
+
+```mermaid
+flowchart TD
+    N1["CLONE GRAPH - Deep copy of undirected graph"]
+    N2["Input: Output (Clone):"]
+    N3["Each node has: val, List&lt;Node&gt; neighbors"]
+    N4["Key: Use HashMap to track original → clone mapping"]
+    N5["Prevents infinite loop when graph has cycles"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+```
+
 **Solution:**
 
 ```java
@@ -513,6 +578,15 @@ public Node cloneGraph(Node node) {
 │  │ 1 │ 0 │ 1 │    │ 2 │ 0 │ 1 │                                │
 │  └───┴───┴───┘    └───┴───┴───┘                                │
 └────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: 1 1 1 / 1 1 0 / 1 0 1 → 2 2 2 / 2 2 0 / 2 0 1
+
+```mermaid
+flowchart LR
+    N1["1 1 1 / 1 1 0 / 1 0 1"]
+    N2["2 2 2 / 2 2 0 / 2 0 1"]
+    N1 --> N2
 ```
 
 **Solution:**
@@ -572,6 +646,21 @@ private void dfs(int[][] image, int r, int c, int original, int newColor) {
 │                                                                │
 │  Output: 4 minutes                                             │
 └────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: 2 1 1 / 1 1 0 / 0 1 1 → 2 2 1 / 2 1 0 / 0 1 1 | 2 2 1 / 2 1 0 / 0 1 1 → 2 2 2 / 2 2 0 / 0 1 1 | 2 2 2 / 2 2 0 / 0 1 1 → 2 2 2 / 2 2 0 / 0 2 1 | 2 2 2 / 2 2 0 / 0 2 1 → 2 2 2 / 2 2 0 / 0 2 2
+
+```mermaid
+flowchart TD
+    N1["2 1 1 / 1 1 0 / 0 1 1"]
+    N2["2 2 1 / 2 1 0 / 0 1 1"]
+    N3["2 2 2 / 2 2 0 / 0 1 1"]
+    N4["2 2 2 / 2 2 0 / 0 2 1"]
+    N5["2 2 2 / 2 2 0 / 0 2 2"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
 ```
 
 **Solution:**
@@ -657,6 +746,15 @@ public int orangesRotting(int[][] grid) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: INF -1 0 INF / INF INF INF -1 / INF -1 INF -1 / 0 -1 IN → 3 -1 0 1 / 2 2 1 -1 / 1 -1 2 -1 / 0 -1 3 4
+
+```mermaid
+flowchart LR
+    N1["INF -1 0 INF / INF INF INF -1 / INF -1 INF -1 / 0 -1 IN"]
+    N2["3 -1 0 1 / 2 2 1 -1 / 1 -1 2 -1 / 0 -1 3 4"]
+    N1 --> N2
+```
+
 **Solution:**
 
 ```java
@@ -728,6 +826,17 @@ public void wallsAndGates(int[][] rooms) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: COURSE SCHEDULE - Detect cycle in directed graph / numC → 1 2 No cycle → Can finish all courses ✓ | 1 2 No cycle → Can finish all courses ✓ → With cycle: [[1,0], [0,1]] / 0 ↔ 1 Cycle! → Cannot fini
+
+```mermaid
+flowchart TD
+    N1["COURSE SCHEDULE - Detect cycle in directed graph / numC"]
+    N2["1 2 No cycle → Can finish all courses ✓"]
+    N3["With cycle: [[1,0], [0,1]] / 0 ↔ 1 Cycle! → Cannot fini"]
+    N1 --> N2
+    N2 --> N3
+```
+
 **Solution (DFS with colors):**
 
 ```java
@@ -794,6 +903,27 @@ private boolean hasCycle(List<List<Integer>> graph, int node, int[] state) {
 │  3. Remove node, reduce neighbors' in-degree                   │
 │  4. Add nodes with in-degree 0 to queue                        │
 └────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: COURSE SCHEDULE II - Return valid course order → numCourses = 4 | numCourses = 4 → prerequisites = [[1,0], [2,0], [3,1], [3,2]] | prerequisites = [[1,0], [2,0], [3,1], [3,2]] → Valid orders: | Valid orders: → Topological Sort: Order where all prerequisites come fi | Topological Sort: Order where all prerequisites come fi → Using Kahn's Algorithm (BFS): | Using Kahn's Algorithm (BFS): → 1. Calculate in-degree for each node | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["COURSE SCHEDULE II - Return valid course order"]
+    N2["numCourses = 4"]
+    N3["prerequisites = [[1,0], [2,0], [3,1], [3,2]]"]
+    N4["Valid orders:"]
+    N5["Topological Sort: Order where all prerequisites come fi"]
+    N6["Using Kahn's Algorithm (BFS):"]
+    N7["1. Calculate in-degree for each node"]
+    N8["2. Start with nodes having in-degree 0"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 **Solution (Kahn's Algorithm - BFS):**
@@ -871,6 +1001,27 @@ public int[] findOrder(int numCourses, int[][] prerequisites) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: GRAPH VALID TREE → A valid tree has: | A valid tree has: → 1. No cycles | 1. No cycles → 2. All nodes connected (single connected component) | 2. All nodes connected (single connected component) → 3. Exactly n-1 edges for n nodes | 3. Exactly n-1 edges for n nodes → Example 1: n=5, edges=[[0,1],[0,2],[0,3],[1,4]] | Example 1: n=5, edges=[[0,1],[0,2],[0,3],[1,4]] → 1 2 3 Valid tree ✓ | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["GRAPH VALID TREE"]
+    N2["A valid tree has:"]
+    N3["1. No cycles"]
+    N4["2. All nodes connected (single connected component)"]
+    N5["3. Exactly n-1 edges for n nodes"]
+    N6["Example 1: n=5, edges=[[0,1],[0,2],[0,3],[1,4]]"]
+    N7["1 2 3 Valid tree ✓"]
+    N8["Example 2: n=5, edges=[[0,1],[1,2],[2,3],[1,3],[1,4]]"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 **Solution (Union-Find):**
 
 ```java
@@ -932,6 +1083,17 @@ private int find(int[] parent, int x) {
 │                                                                │
 │  Multi-source BFS from all 0s simultaneously                   │
 └────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: 01 MATRIX - Distance to nearest 0 for each cell → Input: Output: | Input: Output: → Multi-source BFS from all 0s simultaneously
+
+```mermaid
+flowchart TD
+    N1["01 MATRIX - Distance to nearest 0 for each cell"]
+    N2["Input: Output:"]
+    N3["Multi-source BFS from all 0s simultaneously"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 **Solution:**
@@ -1002,6 +1164,23 @@ public int[][] updateMatrix(int[][] mat) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: SHORTEST PATH IN BINARY MATRIX → Find shortest clear path from top-left to bottom-right | Find shortest clear path from top-left to bottom-right → Can move in 8 directions (including diagonals) | Can move in 8 directions (including diagonals) → 0 = clear, 1 = blocked | 0 = clear, 1 = blocked → grid = [[0,0,0], | grid = [[0,0,0], → Length = 4
+
+```mermaid
+flowchart TD
+    N1["SHORTEST PATH IN BINARY MATRIX"]
+    N2["Find shortest clear path from top-left to bottom-right"]
+    N3["Can move in 8 directions (including diagonals)"]
+    N4["0 = clear, 1 = blocked"]
+    N5["grid = [[0,0,0],"]
+    N6["Length = 4"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+```
+
 **Solution:**
 
 ```java
@@ -1065,6 +1244,25 @@ public int shortestPathBinaryMatrix(int[][] grid) {
 │                                                                │
 │  All nodes reached, max time = 2                               │
 └────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: NETWORK DELAY TIME - Dijkstra's Algorithm → Start from node 2: | Start from node 2: → - Node 2: time 0 | - Node 2: time 0 → - Node 1: time 1 (via 2→1) | - Node 1: time 1 (via 2→1) → - Node 3: time 1 (via 2→3) | - Node 3: time 1 (via 2→3) → - Node 4: time 2 (via 2→3→4) | - Node 4: time 2 (via 2→3→4) → All nodes reached, max time = 2
+
+```mermaid
+flowchart TD
+    N1["NETWORK DELAY TIME - Dijkstra's Algorithm"]
+    N2["Start from node 2:"]
+    N3["- Node 2: time 0"]
+    N4["- Node 1: time 1 (via 2→1)"]
+    N5["- Node 3: time 1 (via 2→3)"]
+    N6["- Node 4: time 2 (via 2→3→4)"]
+    N7["All nodes reached, max time = 2"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
 ```
 
 **Solution:**
@@ -1149,6 +1347,23 @@ public int networkDelayTime(int[][] times, int n, int k) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: CHEAPEST FLIGHTS WITHIN K STOPS → n = 4, flights = [[0,1,100],[1,2,100],[2,0,100],[1,3,60 | n = 4, flights = [[0,1,100],[1,2,100],[2,0,100],[1,3,60 → With at most 1 stop: | With at most 1 stop: → - 0→1→3 = 700 (1 stop) | - 0→1→3 = 700 (1 stop) → - 0→1→2→3 = 400 but has 2 stops ✗ | - 0→1→2→3 = 400 but has 2 stops ✗ → Output: 700
+
+```mermaid
+flowchart TD
+    N1["CHEAPEST FLIGHTS WITHIN K STOPS"]
+    N2["n = 4, flights = [[0,1,100],[1,2,100],[2,0,100],[1,3,60"]
+    N3["With at most 1 stop:"]
+    N4["- 0→1→3 = 700 (1 stop)"]
+    N5["- 0→1→2→3 = 400 but has 2 stops ✗"]
+    N6["Output: 700"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+```
+
 **Solution (Modified Dijkstra):**
 
 ```java
@@ -1222,6 +1437,27 @@ public int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: UNION-FIND DATA STRUCTURE → Operations: | Operations: → - find(x): Find root/representative of x's set | - find(x): Find root/representative of x's set → - union(x, y): Merge sets containing x and y | - union(x, y): Merge sets containing x and y → Optimizations: | Optimizations: → 1. Path Compression: Flatten tree during find | 1. Path Compression: Flatten tree during find → 2. Union by Rank: Attach smaller tree under larger | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["UNION-FIND DATA STRUCTURE"]
+    N2["Operations:"]
+    N3["- find(x): Find root/representative of x's set"]
+    N4["- union(x, y): Merge sets containing x and y"]
+    N5["Optimizations:"]
+    N6["1. Path Compression: Flatten tree during find"]
+    N7["2. Union by Rank: Attach smaller tree under larger"]
+    N8["Example:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ### Problem 149: Number of Connected Components
@@ -1246,6 +1482,27 @@ public int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
 │  - 0 <= edges.length <= 5000                                   │
 │  - No duplicate edges                                          │
 └────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: NUMBER OF CONNECTED COMPONENTS → n = 5, edges = [[0,1], [1,2], [3,4]] | n = 5, edges = [[0,1], [1,2], [3,4]] → Component 1: {0,1,2} | Component 1: {0,1,2} → Component 2: {3,4} | Component 2: {3,4} → Output: 2 | Output: 2 → Constraints: | Constraints: → - 0 &lt;= edges.length &lt;= 5000 | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["NUMBER OF CONNECTED COMPONENTS"]
+    N2["n = 5, edges = [[0,1], [1,2], [3,4]]"]
+    N3["Component 1: {0,1,2}"]
+    N4["Component 2: {3,4}"]
+    N5["Output: 2"]
+    N6["Constraints:"]
+    N7["- 0 &lt;= edges.length &lt;= 5000"]
+    N8["- No duplicate edges"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 **Solution:**
@@ -1316,6 +1573,21 @@ private boolean union(int[] parent, int[] rank, int x, int y) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: REDUNDANT CONNECTION - Find edge that creates cycle → edges = [[1,2], [1,3], [2,3]] | edges = [[1,2], [1,3], [2,3]] → 2 3 Edge [2,3] creates the cycle | 2 3 Edge [2,3] creates the cycle → Return the last edge that creates a cycle | Return the last edge that creates a cycle → Output: [2, 3]
+
+```mermaid
+flowchart TD
+    N1["REDUNDANT CONNECTION - Find edge that creates cycle"]
+    N2["edges = [[1,2], [1,3], [2,3]]"]
+    N3["2 3 Edge [2,3] creates the cycle"]
+    N4["Return the last edge that creates a cycle"]
+    N5["Output: [2, 3]"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+```
+
 **Solution:**
 
 ```java
@@ -1374,6 +1646,27 @@ private int find(int[] parent, int x) {
 │    ["John", "johnny@mail.com"]                                 │
 │  ]                                                             │
 └────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: ACCOUNTS MERGE - Merge accounts with same email → accounts = [ | accounts = [ → ['John', 'john@mail.com', 'john_work@mail.com'], | ['John', 'john@mail.com', 'john_work@mail.com'], → ['John', 'john@mail.com', 'john_home@mail.com'], | ['John', 'john@mail.com', 'john_home@mail.com'], → ['Mary', 'mary@mail.com'], | ['Mary', 'mary@mail.com'], → ['John', 'johnny@mail.com'] | ['John', 'johnny@mail.com'] → John (account 0) and John (account 1) share 'john@mail. | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["ACCOUNTS MERGE - Merge accounts with same email"]
+    N2["accounts = ["]
+    N3["['John', 'john@mail.com', 'john_work@mail.com'],"]
+    N4["['John', 'john@mail.com', 'john_home@mail.com'],"]
+    N5["['Mary', 'mary@mail.com'],"]
+    N6["['John', 'johnny@mail.com']"]
+    N7["John (account 0) and John (account 1) share 'john@mail."]
+    N8["→ Merge them"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 **Solution:**
@@ -1468,6 +1761,27 @@ private void union(Map<String, String> parent, String x, String y) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: WORD LADDER - Shortest transformation sequence → beginWord = 'hit', endWord = 'cog' | beginWord = 'hit', endWord = 'cog' → wordList = ['hot','dot','dog','lot','log','cog'] | wordList = ['hot','dot','dog','lot','log','cog'] → Transformation: Change one letter at a time | Transformation: Change one letter at a time → Each intermediate word must be in wordList | Each intermediate word must be in wordList → hit → hot → dot → dog → cog | hit → hot → dot → dog → cog → → 5 words | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["WORD LADDER - Shortest transformation sequence"]
+    N2["beginWord = 'hit', endWord = 'cog'"]
+    N3["wordList = ['hot','dot','dog','lot','log','cog']"]
+    N4["Transformation: Change one letter at a time"]
+    N5["Each intermediate word must be in wordList"]
+    N6["hit → hot → dot → dog → cog"]
+    N7["→ 5 words"]
+    N8["Graph representation:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 **Solution:**
 
 ```java
@@ -1544,6 +1858,27 @@ public int ladderLength(String beginWord, String endWord, List<String> wordList)
 │  - 1 <= words[i].length <= 100                                 │
 │  - All characters are lowercase English letters                │
 └────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: ALIEN DICTIONARY - Find character order from sorted wor → words = ['wrt', 'wrf', 'er', 'ett', 'rftt'] | words = ['wrt', 'wrf', 'er', 'ett', 'rftt'] → These words are sorted in alien language order | These words are sorted in alien language order → Compare adjacent words to find relationships: | Compare adjacent words to find relationships: → 'wrt' vs 'wrf' → t comes before f (t &lt; f) | 'wrt' vs 'wrf' → t comes before f (t &lt; f) → 'wrf' vs 'er' → w comes before e (w &lt; e) | 'wrf' vs 'er' → w comes before e (w &lt; e) → 'er' vs 'ett' → r comes before t (r &lt; t) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["ALIEN DICTIONARY - Find character order from sorted wor"]
+    N2["words = ['wrt', 'wrf', 'er', 'ett', 'rftt']"]
+    N3["These words are sorted in alien language order"]
+    N4["Compare adjacent words to find relationships:"]
+    N5["'wrt' vs 'wrf' → t comes before f (t &lt; f)"]
+    N6["'wrf' vs 'er' → w comes before e (w &lt; e)"]
+    N7["'er' vs 'ett' → r comes before t (r &lt; t)"]
+    N8["'ett' vs 'rftt'→ e comes before r (e &lt; r)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 **Solution:**
@@ -1626,6 +1961,21 @@ public String alienOrder(String[] words) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: IS GRAPH BIPARTITE - Can nodes be divided into 2 sets? → A graph is bipartite if we can color nodes with 2 color | A graph is bipartite if we can color nodes with 2 color → such that no two adjacent nodes have the same color. | such that no two adjacent nodes have the same color. → Bipartite: Not Bipartite: | Bipartite: Not Bipartite: → Colors: 0,2=RED, 1,3=BLUE Triangle can't be 2-colored
+
+```mermaid
+flowchart TD
+    N1["IS GRAPH BIPARTITE - Can nodes be divided into 2 sets?"]
+    N2["A graph is bipartite if we can color nodes with 2 color"]
+    N3["such that no two adjacent nodes have the same color."]
+    N4["Bipartite: Not Bipartite:"]
+    N5["Colors: 0,2=RED, 1,3=BLUE Triangle can't be 2-colored"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+```
+
 **Solution:**
 
 ```java
@@ -1693,6 +2043,27 @@ private boolean bfs(int[][] graph, int[] colors, int start) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: FIND THE TOWN JUDGE → In a town of n people, one might be the judge. | In a town of n people, one might be the judge. → The judge: | The judge: → 1. Trusts nobody | 1. Trusts nobody → 2. Everybody else trusts the judge | 2. Everybody else trusts the judge → trust = [[1,2], [3,2]] (a trusts b) | trust = [[1,2], [3,2]] (a trusts b) → Person 2: in-degree = 2 (n-1), out-degree = 0 | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["FIND THE TOWN JUDGE"]
+    N2["In a town of n people, one might be the judge."]
+    N3["The judge:"]
+    N4["1. Trusts nobody"]
+    N5["2. Everybody else trusts the judge"]
+    N6["trust = [[1,2], [3,2]] (a trusts b)"]
+    N7["Person 2: in-degree = 2 (n-1), out-degree = 0"]
+    N8["Output: 2"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 **Solution:**
 
 ```java
@@ -1740,6 +2111,23 @@ public int findJudge(int n, int[][] trust) {
 │                                                                │
 │  Kruskal's: Sort edges, add if doesn't create cycle            │
 └────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: MINIMUM SPANNING TREE - Kruskal's Algorithm → Connect all nodes with minimum total edge weight | Connect all nodes with minimum total edge weight → n = 4, edges = [[1,2,1], [1,3,4], [2,3,2], [3,4,3]] | n = 4, edges = [[1,2,1], [1,3,4], [2,3,2], [3,4,3]] → MST edges: [1,2,1], [2,3,2], [3,4,3] | MST edges: [1,2,1], [2,3,2], [3,4,3] → Total weight = 1 + 2 + 3 = 6 | Total weight = 1 + 2 + 3 = 6 → Kruskal's: Sort edges, add if doesn't create cycle
+
+```mermaid
+flowchart TD
+    N1["MINIMUM SPANNING TREE - Kruskal's Algorithm"]
+    N2["Connect all nodes with minimum total edge weight"]
+    N3["n = 4, edges = [[1,2,1], [1,3,4], [2,3,2], [3,4,3]]"]
+    N4["MST edges: [1,2,1], [2,3,2], [3,4,3]"]
+    N5["Total weight = 1 + 2 + 3 = 6"]
+    N6["Kruskal's: Sort edges, add if doesn't create cycle"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
 ```
 
 **Solution:**
@@ -1798,6 +2186,19 @@ private int find(int[] parent, int x) {
 │  DFS: If we visit a node that's already visited and            │
 │  it's not the parent → cycle detected                          │
 └────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: DETECT CYCLE IN UNDIRECTED GRAPH → Has Cycle: No Cycle: | Has Cycle: No Cycle: → DFS: If we visit a node that's already visited and | DFS: If we visit a node that's already visited and → it's not the parent → cycle detected
+
+```mermaid
+flowchart TD
+    N1["DETECT CYCLE IN UNDIRECTED GRAPH"]
+    N2["Has Cycle: No Cycle:"]
+    N3["DFS: If we visit a node that's already visited and"]
+    N4["it's not the parent → cycle detected"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
 ```
 
 **Solution:**
@@ -1872,6 +2273,27 @@ private boolean dfs(List<List<Integer>> graph, boolean[] visited,
 │  2. Transpose graph                                            │
 │  3. DFS in reverse finish order on transposed graph            │
 └────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: STRONGLY CONNECTED COMPONENTS (Kosaraju's Algorithm) → A directed graph's SCC is a maximal set of vertices whe | A directed graph's SCC is a maximal set of vertices whe → every vertex is reachable from every other vertex. | every vertex is reachable from every other vertex. → SCC 1: {0, 1, 2} (form a cycle) | SCC 1: {0, 1, 2} (form a cycle) → SCC 2: {3, 4} (form a cycle) | SCC 2: {3, 4} (form a cycle) → Kosaraju's Algorithm: | Kosaraju's Algorithm: → 1. DFS to get finish order | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["STRONGLY CONNECTED COMPONENTS (Kosaraju's Algorithm)"]
+    N2["A directed graph's SCC is a maximal set of vertices whe"]
+    N3["every vertex is reachable from every other vertex."]
+    N4["SCC 1: {0, 1, 2} (form a cycle)"]
+    N5["SCC 2: {3, 4} (form a cycle)"]
+    N6["Kosaraju's Algorithm:"]
+    N7["1. DFS to get finish order"]
+    N8["2. Transpose graph"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 **Solution:**

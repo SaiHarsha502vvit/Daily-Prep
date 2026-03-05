@@ -19,6 +19,15 @@ IF the problem says:
 THEN → HashMap + Counting
 ```
 
+> **Flow**: THEN → HashMap + Counting
+
+```mermaid
+flowchart LR
+    N1["THEN"]
+    N2["HashMap + Counting"]
+    N1 --> N2
+```
+
 ---
 
 ## 📐 CORE TEMPLATES
@@ -101,6 +110,33 @@ i=4: prefix=7, need 7-4=3,  IN MAP(1)! → count=2, map={.., 7:1}
 Answer: 2
 ```
 
+> **Flow**: i=0: prefix=1, need 1-4=-3, not in map → count=0, map={0:1, 1:1} | i=1: prefix=3, need 3-4=-1, not in map → count=0, map={0:1, 1:1, 3:1} | i=2: prefix=6, need 6-4=2, not in map → count=0, map={0:1, 1:1, 3:1, 6:1} | i=3: prefix=5, need 5-4=1, IN MAP(1)! → count=1, map={.., 5:1} | subarray from index 1 → 3: [2,3,-1] sum=4 ✅ | i=4: prefix=7, need 7-4=3, IN MAP(1)! → count=2, map={.., 7:1} | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["i=0: prefix=1, need 1-4=-3, not in map"]
+    N2["count=0, map={0:1, 1:1}"]
+    N3["i=1: prefix=3, need 3-4=-1, not in map"]
+    N4["count=0, map={0:1, 1:1, 3:1}"]
+    N5["i=2: prefix=6, need 6-4=2, not in map"]
+    N6["count=0, map={0:1, 1:1, 3:1, 6:1}"]
+    N7["i=3: prefix=5, need 5-4=1, IN MAP(1)!"]
+    N8["count=1, map={.., 5:1}"]
+    N9["subarray from index 1"]
+    N10["3: [2,3,-1] sum=4 ✅"]
+    N11["i=4: prefix=7, need 7-4=3, IN MAP(1)!"]
+    N12["count=2, map={.., 7:1}"]
+    N13["subarray from index 2"]
+    N14["4: [3,-1,2] sum=4 ✅"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+    N7 --> N8
+    N9 --> N10
+    N11 --> N12
+    N13 --> N14
+```
+
 ---
 
 ## 🔥 KEY TRICKS
@@ -138,6 +174,15 @@ The KEY pattern (use for many problems):
   4. One-pass: check BEFORE adding
 
 Time: O(n) | Space: O(n)
+```
+
+> **Flow**: HashMap stores seen numbers, so lookup is O(1) per → O(n) total.
+
+```mermaid
+flowchart LR
+    N1["HashMap stores seen numbers, so lookup is O(1) per"]
+    N2["O(n) total."]
+    N1 --> N2
 ```
 
 ---
@@ -179,6 +224,27 @@ Time: O(n) | Space: O(n)
 CRITICAL: Always initialize map with {0: 1}!
 ```
 
+> **Flow**: Problem: Count subarrays whose sum equals k=7. → nums = [3, 4, 7, 2, -3, 1, 4, 2] | nums = [3, 4, 7, 2, -3, 1, 4, 2] → Step-by-step: | Step-by-step: → sum = 0, count = 0 | sum = 0, count = 0 → map={0:1, 3:1, 7:1} | map={0:1, 3:1, 7:1} → map={0:1, 3:1, 7:1, 14:1} | map={0:1, 3:1, 7:1, 14:1} → map={..., 14:2} (14 now appears twice!) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Problem: Count subarrays whose sum equals k=7."]
+    N2["nums = [3, 4, 7, 2, -3, 1, 4, 2]"]
+    N3["Step-by-step:"]
+    N4["sum = 0, count = 0"]
+    N5["map={0:1, 3:1, 7:1}"]
+    N6["map={0:1, 3:1, 7:1, 14:1}"]
+    N7["map={..., 14:2} (14 now appears twice!)"]
+    N8["Answer: 4 subarrays ✅"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## 🛡️ EDGE CASES
@@ -196,6 +262,25 @@ CRITICAL: Always initialize map with {0: 1}!
 │ HashMap collision concern   │ Java handles internally, but int[26]     │
 │                             │ is faster for lowercase-only problems    │
 └─────────────────────────────┴──────────────────────────────────────────┘
+```
+
+> **Flow**: Edge Case Handling → Single element = target Subarray of length 1 is valid | Single element = target Subarray of length 1 is valid → Negative numbers Prefix Sum + HashMap (NOT sliding wind | Negative numbers Prefix Sum + HashMap (NOT sliding wind → All zeros, target=0 Every subarray of any length sums t | All zeros, target=0 Every subarray of any length sums t → Empty array Return 0 / empty | Empty array Return 0 / empty → Large values (overflow) Use long for prefix sums if nee | Large values (overflow) Use long for prefix sums if nee → is faster for lowercase-only problems
+
+```mermaid
+flowchart TD
+    N1["Edge Case Handling"]
+    N2["Single element = target Subarray of length 1 is valid"]
+    N3["Negative numbers Prefix Sum + HashMap (NOT sliding wind"]
+    N4["All zeros, target=0 Every subarray of any length sums t"]
+    N5["Empty array Return 0 / empty"]
+    N6["Large values (overflow) Use long for prefix sums if nee"]
+    N7["is faster for lowercase-only problems"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
 ```
 
 ---

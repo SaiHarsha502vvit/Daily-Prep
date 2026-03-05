@@ -15,6 +15,22 @@ A developer who masters their tools finishes in 2 hours
 what another takes 2 days to do.
 ```
 
+> **Flow**: Junior Dev: Writes code → clicks buttons | clicks buttons → debugs with println | Senior Dev: Writes code → keyboard shortcuts | keyboard shortcuts → debugs with debugger + profiler
+
+```mermaid
+flowchart LR
+    N1["Junior Dev: Writes code"]
+    N2["clicks buttons"]
+    N3["debugs with println"]
+    N4["Senior Dev: Writes code"]
+    N5["keyboard shortcuts"]
+    N6["debugs with debugger + profiler"]
+    N1 --> N2
+    N2 --> N3
+    N4 --> N5
+    N5 --> N6
+```
+
 ---
 
 # WHAT: The Essential Toolkit
@@ -32,6 +48,27 @@ Containerization  │ Docker                │ Consistent environments
 Debugging         │ IDE Debugger          │ Step through code
 Profiling         │ VisualVM / JProfiler  │ Find performance bottlenecks
 Monitoring        │ Prometheus + Grafana  │ Watch production metrics
+```
+
+> **Flow**: Category Tool Why → IDE/Editor IntelliJ / VS Code Where you live 8 hours/da | IDE/Editor IntelliJ / VS Code Where you live 8 hours/da → Version Control Git + GitHub Track every change | Version Control Git + GitHub Track every change → Terminal Bash/PowerShell Automation, scripts | Terminal Bash/PowerShell Automation, scripts → Build Tool Maven / Gradle Compile, test, package | Build Tool Maven / Gradle Compile, test, package → API Testing Postman / curl Test HTTP endpoints | API Testing Postman / curl Test HTTP endpoints → Containerization Docker Consistent environments | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Category Tool Why"]
+    N2["IDE/Editor IntelliJ / VS Code Where you live 8 hours/da"]
+    N3["Version Control Git + GitHub Track every change"]
+    N4["Terminal Bash/PowerShell Automation, scripts"]
+    N5["Build Tool Maven / Gradle Compile, test, package"]
+    N6["API Testing Postman / curl Test HTTP endpoints"]
+    N7["Containerization Docker Consistent environments"]
+    N8["Debugging IDE Debugger Step through code"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---
@@ -56,6 +93,15 @@ File Structure (methods)    │ Ctrl+F12           │ Cmd+F12
 Navigate Back/Forward       │ Ctrl+Alt+←/→       │ Cmd+Opt+←/→
 ```
 
+> **Flow**: Navigate Back/Forward Ctrl+Alt+←/ → Cmd+Opt+←/
+
+```mermaid
+flowchart LR
+    N1["Navigate Back/Forward Ctrl+Alt+←/"]
+    N2["Cmd+Opt+←/"]
+    N1 --> N2
+```
+
 ### Editing Shortcuts
 
 ```
@@ -73,6 +119,27 @@ Auto-format Code            │ Ctrl+Alt+L         │ Cmd+Opt+L
 Quick Fix (suggestions)     │ Alt+Enter          │ Opt+Enter
 Generate (constructor etc)  │ Alt+Insert         │ Cmd+N
 Surround With (try/if)      │ Ctrl+Alt+T         │ Cmd+Opt+T
+```
+
+> **Flow**: ACTION Windows/Linux Mac → Rename (refactor) Shift+F6 Shift+F6 | Rename (refactor) Shift+F6 Shift+F6 → Extract Variable Ctrl+Alt+V Cmd+Opt+V | Extract Variable Ctrl+Alt+V Cmd+Opt+V → Extract Method Ctrl+Alt+M Cmd+Opt+M | Extract Method Ctrl+Alt+M Cmd+Opt+M → Inline Ctrl+Alt+N Cmd+Opt+N | Inline Ctrl+Alt+N Cmd+Opt+N → Comment Line Ctrl+/ Cmd+/ | Comment Line Ctrl+/ Cmd+/ → Duplicate Line Ctrl+D Cmd+D | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["ACTION Windows/Linux Mac"]
+    N2["Rename (refactor) Shift+F6 Shift+F6"]
+    N3["Extract Variable Ctrl+Alt+V Cmd+Opt+V"]
+    N4["Extract Method Ctrl+Alt+M Cmd+Opt+M"]
+    N5["Inline Ctrl+Alt+N Cmd+Opt+N"]
+    N6["Comment Line Ctrl+/ Cmd+/"]
+    N7["Duplicate Line Ctrl+D Cmd+D"]
+    N8["Delete Line Ctrl+Y Cmd+Backspace"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### IntelliJ Power Features
@@ -98,6 +165,56 @@ MULTI-CURSOR:
   Ctrl+G           → Select next occurrence
 ```
 
+> **Flow**: LIVE TEMPLATES: Type abbreviation → Tab | Tab → expands code | sout → System.out.println(); | psvm → public static void main(String[] args) {} | fori → for (int i = 0; i &lt; ; i++) {} | iter → for (Type item : collection) {} | ...+9 more
+
+```mermaid
+flowchart TD
+    N1["LIVE TEMPLATES: Type abbreviation"]
+    N2["Tab"]
+    N3["expands code"]
+    N4["sout"]
+    N5["System.out.println();"]
+    N6["psvm"]
+    N7["public static void main(String[] args) {}"]
+    N8["fori"]
+    N9["for (int i = 0; i &lt; ; i++) {}"]
+    N10["iter"]
+    N11["for (Type item : collection) {}"]
+    N12["myList.for"]
+    N13["for (Object o : myList) {}"]
+    N14["myVar.null"]
+    N15["if (myVar == null) {}"]
+    N16["myVar.nn"]
+    N17["if (myVar != null) {}"]
+    N18["myBool.if"]
+    N19["if (myBool) {}"]
+    N20["value.return"]
+    N21["return value;"]
+    N22["text.sout"]
+    N23["System.out.println(text);"]
+    N24["Alt+Click"]
+    N25["Add cursor at click position"]
+    N26["Ctrl+Shift+Alt+J"]
+    N27["Select all occurrences"]
+    N28["Ctrl+G"]
+    N29["Select next occurrence"]
+    N1 --> N2
+    N2 --> N3
+    N4 --> N5
+    N6 --> N7
+    N8 --> N9
+    N10 --> N11
+    N12 --> N13
+    N14 --> N15
+    N16 --> N17
+    N18 --> N19
+    N20 --> N21
+    N22 --> N23
+    N24 --> N25
+    N26 --> N27
+    N28 --> N29
+```
+
 ## Level 2 — VS Code Essentials
 
 ```
@@ -120,6 +237,27 @@ MUST-HAVE Extensions:
   - REST Client (test APIs in editor)
   - Docker (manage containers)
   - Live Share (pair programming)
+```
+
+> **Flow**: ACTION Shortcut → Command Palette Ctrl+Shift+P | Command Palette Ctrl+Shift+P → Quick Open File Ctrl+P | Quick Open File Ctrl+P → Toggle Terminal Ctrl+` | Toggle Terminal Ctrl+` → Search in Files Ctrl+Shift+F | Search in Files Ctrl+Shift+F → Multi-cursor (same word) Ctrl+D (repeat) | Multi-cursor (same word) Ctrl+D (repeat) → Go to Line Ctrl+G | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["ACTION Shortcut"]
+    N2["Command Palette Ctrl+Shift+P"]
+    N3["Quick Open File Ctrl+P"]
+    N4["Toggle Terminal Ctrl+`"]
+    N5["Search in Files Ctrl+Shift+F"]
+    N6["Multi-cursor (same word) Ctrl+D (repeat)"]
+    N7["Go to Line Ctrl+G"]
+    N8["Toggle Sidebar Ctrl+B"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ## Level 3 — Debugging Like a Pro
@@ -255,6 +393,24 @@ TOOLS:
 QUICK PROFILING with Spring Boot:
 ```
 
+> **Flow**: - /actuator/health → Is app running? | - /actuator/metrics → JVM stats | - /actuator/info → App info | - /actuator/loggers → Change log level at runtime
+
+```mermaid
+flowchart LR
+    N1["- /actuator/health"]
+    N2["Is app running?"]
+    N3["- /actuator/metrics"]
+    N4["JVM stats"]
+    N5["- /actuator/info"]
+    N6["App info"]
+    N7["- /actuator/loggers"]
+    N8["Change log level at runtime"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+    N7 --> N8
+```
+
 ```java
 // Measure method execution time
 @Aspect
@@ -313,6 +469,25 @@ public class PerformanceAspect {
    git push origin feature/add-user-api
 
 10. REVIEW feedback → fix → merge
+```
+
+> **Flow**: Write failing test → implement | implement → test passes | Ctrl+Alt+L (IntelliJ) → consistent style | 10. REVIEW feedback → fix | fix → merge
+
+```mermaid
+flowchart TD
+    N1["Write failing test"]
+    N2["implement"]
+    N3["test passes"]
+    N4["Ctrl+Alt+L (IntelliJ)"]
+    N5["consistent style"]
+    N6["10. REVIEW feedback"]
+    N7["fix"]
+    N8["merge"]
+    N1 --> N2
+    N2 --> N3
+    N4 --> N5
+    N6 --> N7
+    N7 --> N8
 ```
 
 ## Useful Aliases

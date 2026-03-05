@@ -17,6 +17,21 @@ Phase 2: PRODUCTION (Week 4-6)       → Security, Testing, Performance
 Phase 3: EXPERT/CLOUD (Week 7-10)    → Microservices, Cloud, Advanced
 ```
 
+> **Flow**: Phase 1: FOUNDATIONS (Week 1-3) → Build your first REST API | Phase 2: PRODUCTION (Week 4-6) → Security, Testing, Performance | Phase 3: EXPERT/CLOUD (Week 7-10) → Microservices, Cloud, Advanced
+
+```mermaid
+flowchart LR
+    N1["Phase 1: FOUNDATIONS (Week 1-3)"]
+    N2["Build your first REST API"]
+    N3["Phase 2: PRODUCTION (Week 4-6)"]
+    N4["Security, Testing, Performance"]
+    N5["Phase 3: EXPERT/CLOUD (Week 7-10)"]
+    N6["Microservices, Cloud, Advanced"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+```
+
 ---
 
 ## 🎯 DAILY STRUCTURE

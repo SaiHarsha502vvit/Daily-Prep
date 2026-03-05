@@ -30,6 +30,27 @@
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: LINKED LIST PATTERNS → SINGLY LINKED LIST: | SINGLY LINKED LIST: → head → [1|•] → [2|•] → [3|•] → [4|•] → null | head → [1|•] → [2|•] → [3|•] → [4|•] → null → val next val next val next val next | val next val next val next val next → DOUBLY LINKED LIST: | DOUBLY LINKED LIST: → null ← [•|1|•] ⇄ [•|2|•] ⇄ [•|3|•] ⇄ [•|4|•] → null | null ← [•|1|•] ⇄ [•|2|•] ⇄ [•|3|•] ⇄ [•|4|•] → null → prev val next | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["LINKED LIST PATTERNS"]
+    N2["SINGLY LINKED LIST:"]
+    N3["head → [1|•] → [2|•] → [3|•] → [4|•] → null"]
+    N4["val next val next val next val next"]
+    N5["DOUBLY LINKED LIST:"]
+    N6["null ← [•|1|•] ⇄ [•|2|•] ⇄ [•|3|•] ⇄ [•|4|•] → null"]
+    N7["prev val next"]
+    N8["CIRCULAR:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## PART 0: WHY Linked List — MIT/KTH Style Deep Understanding
@@ -247,6 +268,37 @@ EXAMPLES:
   Input: head = []           →  Output: []
 ```
 
+> **Flow**: [1] → [2] | [2] → [3] | [3] → [4] | [4] → [5] | [5] → null | [5] → [4] | ...+7 more
+
+```mermaid
+flowchart TD
+    N1["[1]"]
+    N2["[2]"]
+    N3["[3]"]
+    N4["[4]"]
+    N5["[5]"]
+    N6["null"]
+    N7["Input: head = [1,2,3,4,5]"]
+    N8["Output: [5,4,3,2,1]"]
+    N9["Input: head = [1,2]"]
+    N10["Output: [2,1]"]
+    N11["Input: head = []"]
+    N12["Output: []"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N5 --> N4
+    N4 --> N3
+    N3 --> N2
+    N2 --> N1
+    N1 --> N6
+    N7 --> N8
+    N9 --> N10
+    N11 --> N12
+```
+
 **OBSERVATION 1:** We need to reverse each pointer: instead of vᵢ.next = vᵢ₊₁, set vᵢ.next = vᵢ₋₁. This can be done in a single pass left-to-right, maintaining `prev` and `curr`.
 
 **OBSERVATION 2:** Before setting curr.next = prev, we must save curr.next (otherwise we lose access to the rest of the list).
@@ -362,6 +414,18 @@ EXAMPLES:
   Input: [1,2,3,4,5,6] → Output: node 4 (second middle)
 ```
 
+> **Flow**: Input: [1,2,3,4,5] → Output: node 3 | Input: [1,2,3,4,5,6] → Output: node 4 (second middle)
+
+```mermaid
+flowchart LR
+    N1["Input: [1,2,3,4,5]"]
+    N2["Output: node 3"]
+    N3["Input: [1,2,3,4,5,6]"]
+    N4["Output: node 4 (second middle)"]
+    N1 --> N2
+    N3 --> N4
+```
+
 **OBSERVATION 1:** Slow/fast runner. If fast moves 2 steps per iteration and slow moves 1 step, when fast reaches the end, slow is at the midpoint.
 
 **OBSERVATION 2 (formal):** Let n = |L|. After t iterations, slow is at position t, fast at 2t. Fast stops when 2t ≥ n, i.e., t = ⌊n/2⌋. So slow is at position ⌊n/2⌋, which is the (second) middle.
@@ -433,6 +497,28 @@ EXAMPLES:
   L₁: [1] → [2] → [4] → null
   L₂: [1] → [3] → [4] → null
   Out: [1] → [1] → [2] → [3] → [4] → [4] → null
+```
+
+> **Flow**: L₁: [1] → [2] | [2] → [4] | [4] → null | L₂: [1] → [3] | [3] → [4] | [4] → null | ...+6 more
+
+```mermaid
+flowchart TD
+    N1["L₁: [1]"]
+    N2["[2]"]
+    N3["[4]"]
+    N4["null"]
+    N5["L₂: [1]"]
+    N6["[3]"]
+    N7["Out: [1]"]
+    N8["[1]"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N5 --> N6
+    N6 --> N3
+    N7 --> N8
+    N8 --> N2
+    N2 --> N6
 ```
 
 **OBSERVATION 1:** Use a dummy head to avoid special-casing which list provides the first node.
@@ -528,6 +614,23 @@ EXAMPLES:
                                       Output: false
 ```
 
+> **Flow**: [3] → [2] | [2] → [0] | [0] → [-4] Input: head = [3,2,0,-4], pos = 1 | [1] → [2] | [2] → null Input: head = [1,2], pos = -1
+
+```mermaid
+flowchart TD
+    N1["[3]"]
+    N2["[2]"]
+    N3["[0]"]
+    N4["[-4] Input: head = [3,2,0,-4], pos = 1"]
+    N5["[1]"]
+    N6["null Input: head = [1,2], pos = -1"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N5 --> N2
+    N2 --> N6
+```
+
 **OBSERVATION 1:** If we use two pointers at different speeds, in a cycle they MUST eventually meet (like runners on a circular track).
 
 **OBSERVATION 2 (Floyd's Cycle Detection):** Slow moves 1 step, fast moves 2 steps. If no cycle, fast reaches null. If cycle exists, fast enters the cycle first and "laps" slow.
@@ -540,6 +643,15 @@ Step 2: While fast ≠ null AND fast.next ≠ null:
           fast = fast.next.next
           If slow == fast: return true  (cycle detected)
 Step 3: Return false  (fast reached end → no cycle)
+```
+
+> **Flow**: Step 3: Return false (fast reached end → no cycle)
+
+```mermaid
+flowchart LR
+    N1["Step 3: Return false (fast reached end"]
+    N2["no cycle)"]
+    N1 --> N2
 ```
 
 **PROOF OF CORRECTNESS (Floyd's Theorem):**
@@ -571,6 +683,20 @@ Why? When they first meet:
   Since fast = 2 × slow: t + a + kc = 2(t + a) → kc = t + a → t = kc - a
   So moving t steps from meeting point = kc - a steps in cycle = cycle start.
   Moving t steps from head also reaches cycle start. They meet there. ∎
+```
+
+> **Flow**: • After (c - g) steps, the gap becomes 0 mod c → they meet. | Since fast = 2 × slow: t + a + kc = 2(t + a) → kc = t + a | kc = t + a → t = kc - a
+
+```mermaid
+flowchart LR
+    N1["• After (c - g) steps, the gap becomes 0 mod c"]
+    N2["they meet."]
+    N3["Since fast = 2 × slow: t + a + kc = 2(t + a)"]
+    N4["kc = t + a"]
+    N5["t = kc - a"]
+    N1 --> N2
+    N3 --> N4
+    N4 --> N5
 ```
 
 **JAVA CODE:**
@@ -781,6 +907,15 @@ APPROACH:
 TEMPLATE: Single-pass accumulation.
 ```
 
+> **Flow**: This is Horner's method for binary → decimal conversion.
+
+```mermaid
+flowchart LR
+    N1["This is Horner's method for binary"]
+    N2["decimal conversion."]
+    N1 --> N2
+```
+
 ```java
 public int getDecimalValue(ListNode head) {
     int result = 0;
@@ -821,6 +956,18 @@ EXAMPLES:
   Input: [1], n = 1           →  Output: []           (removed head)
 ```
 
+> **Flow**: Input: [1,2,3,4,5], n = 2 → Output: [1,2,3,5] (removed 4) | Input: [1], n = 1 → Output: [] (removed head)
+
+```mermaid
+flowchart LR
+    N1["Input: [1,2,3,4,5], n = 2"]
+    N2["Output: [1,2,3,5] (removed 4)"]
+    N3["Input: [1], n = 1"]
+    N4["Output: [] (removed head)"]
+    N1 --> N2
+    N3 --> N4
+```
+
 **OBSERVATION 1:** Two-pointer gap technique: if fast is n steps ahead of slow, when fast reaches null, slow is at the node BEFORE the one to delete.
 
 **OBSERVATION 2:** Use a dummy head because the head itself might be the node to remove (e.g., single-node list with n=1).
@@ -832,6 +979,15 @@ Step 2: Advance fast by (n + 1) steps.
 Step 3: Move both fast and slow together until fast = null.
 Step 4: slow.next = slow.next.next  (skip the target node)
 Step 5: Return dummy.next
+```
+
+> **Flow**: Step 1: Create dummy → head. Set fast = dummy, slow = dummy.
+
+```mermaid
+flowchart LR
+    N1["Step 1: Create dummy"]
+    N2["head. Set fast = dummy, slow = dummy."]
+    N1 --> N2
 ```
 
 **PROOF OF CORRECTNESS:**
@@ -903,6 +1059,27 @@ EXAMPLES:
        After:  1 → 4 → 3 → 2 → 5
 ```
 
+> **Flow**: PROBLEM (formal): → only the sublist from position left to right inclusive. | only the sublist from position left to right inclusive. → INPUT: head, left, right (1 ≤ left ≤ right ≤ n) | INPUT: head, left, right (1 ≤ left ≤ right ≤ n) → OUTPUT: head of modified list | OUTPUT: head of modified list → EXAMPLES: | EXAMPLES: → Input: [1,2,3,4,5], left=2, right=4 | Input: [1,2,3,4,5], left=2, right=4 → Output: [1,4,3,2,5] | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["PROBLEM (formal):"]
+    N2["only the sublist from position left to right inclusive."]
+    N3["INPUT: head, left, right (1 ≤ left ≤ right ≤ n)"]
+    N4["OUTPUT: head of modified list"]
+    N5["EXAMPLES:"]
+    N6["Input: [1,2,3,4,5], left=2, right=4"]
+    N7["Output: [1,4,3,2,5]"]
+    N8["Before: 1 → 2 → 3 → 4 → 5"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 **OBSERVATION 1:** Navigate to position (left - 1) — the node just before the reversal zone. Then reverse exactly (right - left + 1) nodes.
 
 **OBSERVATION 2:** Use dummy head since left=1 means the head changes.
@@ -914,6 +1091,15 @@ Step 2: curr = prev.next (first node in reversal zone).
 Step 3: For i = 0 to (right - left - 1):
           Move curr.next to just after prev (front-insertion).
 Step 4: Return dummy.next.
+```
+
+> **Flow**: Step 1: Create dummy → head. Navigate prev to position (left - 1).
+
+```mermaid
+flowchart LR
+    N1["Step 1: Create dummy"]
+    N2["head. Navigate prev to position (left - 1)."]
+    N1 --> N2
 ```
 
 **JAVA CODE:**
@@ -972,6 +1158,31 @@ EXAMPLES:
   l1: [7] → [2] → [4] → [3]     (represents 7243)
   l2:      [5] → [6] → [4]      (represents 564)
   out: [7] → [8] → [0] → [7]    (7243 + 564 = 7807)
+```
+
+> **Flow**: l1: [7] → [2] | [2] → [4] | [4] → [3] (represents 7243) | l2: [5] → [6] | [6] → [4] (represents 564) | out: [7] → [8] | ...+2 more
+
+```mermaid
+flowchart TD
+    N1["l1: [7]"]
+    N2["[2]"]
+    N3["[4]"]
+    N4["[3] (represents 7243)"]
+    N5["l2: [5]"]
+    N6["[6]"]
+    N7["[4] (represents 564)"]
+    N8["out: [7]"]
+    N9["[8]"]
+    N10["[0]"]
+    N11["[7] (7243 + 564 = 7807)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N5 --> N6
+    N6 --> N7
+    N8 --> N9
+    N9 --> N10
+    N10 --> N11
 ```
 
 **OBSERVATION 1:** Digits are stored most-significant first, but addition starts from least-significant. Use stacks to reverse the processing order without modifying the original lists.
@@ -1057,6 +1268,15 @@ Pass 3 — Separate: Extract cloned nodes into their own list.
   Restore original list.
 ```
 
+> **Flow**: C becomes A → A'
+
+```mermaid
+flowchart LR
+    N1["C becomes A"]
+    N2["A'"]
+    N1 --> N2
+```
+
 **JAVA CODE:**
 
 ```java
@@ -1104,6 +1324,15 @@ Space: O(1) extra (cloned nodes are part of the output, not extra space)
 Alternative (HashMap): O(n) time, O(n) space — map original → clone
 ```
 
+> **Flow**: Alternative (HashMap): O(n) time, O(n) space — map → clone
+
+```mermaid
+flowchart LR
+    N1["Alternative (HashMap): O(n) time, O(n) space — map"]
+    N2["clone"]
+    N1 --> N2
+```
+
 ---
 
 ### Problem 229: Partition List
@@ -1117,6 +1346,15 @@ APPROACH:
   Connect less.tail → greaterOrEqual.head. Set greaterOrEqual.tail.next = null.
 
 TEMPLATE: Two dummy heads + single pass.
+```
+
+> **Flow**: Connect less.tail → greaterOrEqual.head. Set greaterOrEqual.tail.next
+
+```mermaid
+flowchart LR
+    N1["Connect less.tail"]
+    N2["greaterOrEqual.head. Set greaterOrEqual.tail.next"]
+    N1 --> N2
 ```
 
 ```java
@@ -1153,6 +1391,15 @@ APPROACH:
   Stack approach: push next, then push child → DFS order.
 
 TEMPLATE: DFS flattening.
+```
+
+> **Flow**: Stack approach: push next, then push child → DFS order.
+
+```mermaid
+flowchart LR
+    N1["Stack approach: push next, then push child"]
+    N2["DFS order."]
+    N1 --> N2
 ```
 
 **Complexity:** Time O(n), Space O(depth) for recursion stack.
@@ -1212,6 +1459,15 @@ APPROACH:
 TEMPLATE: Two dummy heads.
 ```
 
+> **Flow**: Traverse and distribute, then connect even → odd.
+
+```mermaid
+flowchart LR
+    N1["Traverse and distribute, then connect even"]
+    N2["odd."]
+    N1 --> N2
+```
+
 **Complexity:** Time O(n), Space O(1).
 
 ---
@@ -1230,6 +1486,17 @@ APPROACH (Dutch National Flag adaptation):
   but adapted to linked lists with O(1) space pointer manipulation.
 
 TEMPLATE: Three dummy heads + single pass.
+```
+
+> **Flow**: Connect: zero.tail → one.head | one.head → two.head. Set two.tail.next = null.
+
+```mermaid
+flowchart LR
+    N1["Connect: zero.tail"]
+    N2["one.head"]
+    N3["two.head. Set two.tail.next = null."]
+    N1 --> N2
+    N2 --> N3
 ```
 
 **Complexity:** Time O(n), Space O(1).
@@ -1361,6 +1628,18 @@ EXAMPLES:
   Input: [1,2,3,4,5], k=3  →  Output: [3,2,1,4,5]
 ```
 
+> **Flow**: Input: [1,2,3,4,5], k=2 → Output: [2,1,4,3,5] | Input: [1,2,3,4,5], k=3 → Output: [3,2,1,4,5]
+
+```mermaid
+flowchart LR
+    N1["Input: [1,2,3,4,5], k=2"]
+    N2["Output: [2,1,4,3,5]"]
+    N3["Input: [1,2,3,4,5], k=3"]
+    N4["Output: [3,2,1,4,5]"]
+    N1 --> N2
+    N3 --> N4
+```
+
 **OBSERVATION:** Process the list in chunks of k. For each chunk: check if k nodes remain, reverse them, connect to the previous group.
 
 **ALGORITHM:**
@@ -1371,6 +1650,20 @@ Step 3: If yes, reverse the next k nodes.
         Connect: groupPrev → reversed group → rest.
         Update groupPrev = tail of reversed group.
 Step 4: Repeat from Step 2.
+```
+
+> **Flow**: Step 1: Create dummy → head, groupPrev = dummy. | Connect: groupPrev → reversed group | reversed group → rest.
+
+```mermaid
+flowchart LR
+    N1["Step 1: Create dummy"]
+    N2["head, groupPrev = dummy."]
+    N3["Connect: groupPrev"]
+    N4["reversed group"]
+    N5["rest."]
+    N1 --> N2
+    N3 --> N4
+    N4 --> N5
 ```
 
 **JAVA CODE:**
@@ -1698,6 +1991,27 @@ TEMPLATE: Two-pointer on sorted DLL.
 │ │ Merge K Sorted            │ < 8 min    │                                   │
 │ └───────────────────────────┴────────────┘                                   │
 └──────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: ✅ LINKED LIST MASTERY — TRACK YOUR PROGRESS → FUNDAMENTALS: | FUNDAMENTALS: → - [ ] Can find the middle using slow/fast runner | - [ ] Can find the middle using slow/fast runner → - [ ] Can merge two sorted lists with dummy head | - [ ] Can merge two sorted lists with dummy head → - [ ] Can remove nth from end using two-pointer gap | - [ ] Can remove nth from end using two-pointer gap → INTERMEDIATE: | INTERMEDIATE: → - [ ] Can reverse a sublist (positions left to right) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["✅ LINKED LIST MASTERY — TRACK YOUR PROGRESS"]
+    N2["FUNDAMENTALS:"]
+    N3["- [ ] Can find the middle using slow/fast runner"]
+    N4["- [ ] Can merge two sorted lists with dummy head"]
+    N5["- [ ] Can remove nth from end using two-pointer gap"]
+    N6["INTERMEDIATE:"]
+    N7["- [ ] Can reverse a sublist (positions left to right)"]
+    N8["- [ ] Can partition a list around a value (two dummy he"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

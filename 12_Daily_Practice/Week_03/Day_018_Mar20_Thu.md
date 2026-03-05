@@ -65,6 +65,25 @@ PATTERN 3: ACCUMULATOR RECURSION (Tail Recursion)
   int sum(int n, int acc) { return n == 0 ? acc : sum(n-1, acc+n); }
 ```
 
+> **Flow**: factorial(5) → 5 * factorial(4) | 5 * factorial(4) → 4 * factorial(3) | 4 * factorial(3) → ... | fib(4) → fib(3) + fib(2) | Carry result as parameter → no work after recursive call
+
+```mermaid
+flowchart TD
+    N1["factorial(5)"]
+    N2["5 * factorial(4)"]
+    N3["4 * factorial(3)"]
+    N4["..."]
+    N5["fib(4)"]
+    N6["fib(3) + fib(2)"]
+    N7["Carry result as parameter"]
+    N8["no work after recursive call"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N5 --> N6
+    N7 --> N8
+```
+
 ### How to Think About Recursion
 
 ```
@@ -79,6 +98,15 @@ Example: Max depth of binary tree
   2. One step: compare left vs right depth
   3. Smaller: go to left child, go to right child
   4. Combine: 1 + max(left, right)
+```
+
+> **Flow**: 1. Base case: node == null → return 0
+
+```mermaid
+flowchart LR
+    N1["1. Base case: node == null"]
+    N2["return 0"]
+    N1 --> N2
 ```
 
 ### Call Stack Visualization
@@ -100,6 +128,27 @@ maxDepth([3])
 │       return 1
 │   return 1 + max(1,1) = 2
 return 1 + max(1,2) = 3
+```
+
+> **Flow**: maxDepth([3]) → maxDepth([9]) | maxDepth([3]) → maxDepth(null) → 0 | maxDepth([3]) → maxDepth(null) → 0 | return 1 + max(0,0) = 1 → maxDepth([20]) | return 1 + max(0,0) = 1 → maxDepth([15]) | return 1 + max(0,0) = 1 → maxDepth(null) → 0 | ...+4 more
+
+```mermaid
+flowchart TD
+    N1["maxDepth([3])"]
+    N2["maxDepth([9])"]
+    N3["maxDepth(null) → 0"]
+    N4["return 1 + max(0,0) = 1"]
+    N5["maxDepth([20])"]
+    N6["maxDepth([15])"]
+    N7["return 1"]
+    N8["maxDepth([7])"]
+    N1 --> N2
+    N1 --> N3
+    N4 --> N5
+    N4 --> N6
+    N4 --> N3
+    N7 --> N8
+    N7 --> N3
 ```
 
 ---
@@ -155,6 +204,23 @@ At each node:
   → Undo (backtrack) after exploring
 ```
 
+> **Flow**: Input: [1, 2, 3] → Result: [], [1], [1,2], [1,2,3], [1,3], [2], [2,3], [3] | Result: [], [1], [1,2], [1,2,3], [1,3], [2], [2,3], [3] → At each node: | At each node: → → Add current to result | → Add current to result → → Try adding each remaining element | → Try adding each remaining element → → Undo (backtrack) after exploring
+
+```mermaid
+flowchart TD
+    N1["Input: [1, 2, 3]"]
+    N2["Result: [], [1], [1,2], [1,2,3], [1,3], [2], [2,3], [3]"]
+    N3["At each node:"]
+    N4["→ Add current to result"]
+    N5["→ Try adding each remaining element"]
+    N6["→ Undo (backtrack) after exploring"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+```
+
 ### Backtracking Decision Tree — Permutations
 
 ```
@@ -202,6 +268,15 @@ SELF-JOIN MENTAL MODEL:
   └────┴───────┴────────┘   └────┴───────┴────────┘
 ```
 
+> **Flow**: id name mgr_id / 1 Alice NULL / 2 Bob 1 / 3 Carol 1 → id name salary / 1 Alice 90k / 1 Alice 90k / 1 Alice 90
+
+```mermaid
+flowchart LR
+    N1["id name mgr_id / 1 Alice NULL / 2 Bob 1 / 3 Carol 1"]
+    N2["id name salary / 1 Alice 90k / 1 Alice 90k / 1 Alice 90"]
+    N1 --> N2
+```
+
 ### HAVING vs WHERE
 
 ```sql
@@ -220,6 +295,23 @@ EXECUTION ORDER:
   FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY
                       ↑                  ↑
               rows are grouped     groups are filtered
+```
+
+> **Flow**: FROM → WHERE | WHERE → GROUP BY | GROUP BY → HAVING | HAVING → SELECT | SELECT → ORDER BY
+
+```mermaid
+flowchart TD
+    N1["FROM"]
+    N2["WHERE"]
+    N3["GROUP BY"]
+    N4["HAVING"]
+    N5["SELECT"]
+    N6["ORDER BY"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
 ```
 
 ### Multi-Table JOINs
@@ -305,6 +397,36 @@ TRACE for [1,2,3]:
     backtrack([2], 2) → add [2]
       backtrack([2,3], 3) → add [2,3], return
     backtrack([3], 3) → add [3], return
+```
+
+> **Flow**: backtrack([], 0) → add [] | backtrack([1], 1) → add [1] | backtrack([1,2], 2) → add [1,2] | backtrack([1,2,3], 3) → add [1,2,3], return | backtrack([1,3], 3) → add [1,3], return | backtrack([2], 2) → add [2] | ...+2 more
+
+```mermaid
+flowchart TD
+    N1["backtrack([], 0)"]
+    N2["add []"]
+    N3["backtrack([1], 1)"]
+    N4["add [1]"]
+    N5["backtrack([1,2], 2)"]
+    N6["add [1,2]"]
+    N7["backtrack([1,2,3], 3)"]
+    N8["add [1,2,3], return"]
+    N9["backtrack([1,3], 3)"]
+    N10["add [1,3], return"]
+    N11["backtrack([2], 2)"]
+    N12["add [2]"]
+    N13["backtrack([2,3], 3)"]
+    N14["add [2,3], return"]
+    N15["backtrack([3], 3)"]
+    N16["add [3], return"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+    N7 --> N8
+    N9 --> N10
+    N11 --> N12
+    N13 --> N14
+    N15 --> N16
 ```
 
 ---

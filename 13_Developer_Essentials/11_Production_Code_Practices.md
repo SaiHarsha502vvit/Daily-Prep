@@ -106,6 +106,27 @@ public class RequestFilter implements Filter {
 └───────────┴──────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: Level When to Use → ERROR Something failed that needs human attention NOW | ERROR Something failed that needs human attention NOW → e.g., payment gateway down, data corruption | e.g., payment gateway down, data corruption → WARN Something unexpected but handled. Monitor trends. | WARN Something unexpected but handled. Monitor trends. → e.g., retry succeeded, cache miss, deprecated API call | e.g., retry succeeded, cache miss, deprecated API call → INFO Business-significant events. 'What happened?' | INFO Business-significant events. 'What happened?' → e.g., order placed, user registered, deployment started | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Level When to Use"]
+    N2["ERROR Something failed that needs human attention NOW"]
+    N3["e.g., payment gateway down, data corruption"]
+    N4["WARN Something unexpected but handled. Monitor trends."]
+    N5["e.g., retry succeeded, cache miss, deprecated API call"]
+    N6["INFO Business-significant events. 'What happened?'"]
+    N7["e.g., order placed, user registered, deployment started"]
+    N8["DEBUG Detailed flow for troubleshooting. Off in prod."]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## Part 4: Error Handling
@@ -256,6 +277,27 @@ public PaymentResult processPayment(PaymentRequest req) {
 ║  → First call: process payment, store result keyed by "abc-123-def"              ║
 ║  → Second call: return stored result (no double charge)                          ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: REST API Checklist: → ✅ Consistent error response format | ✅ Consistent error response format → ✅ Pagination (page/size or cursor-based for large datas | ✅ Pagination (page/size or cursor-based for large datas → ✅ Rate limiting (return 429 + Retry-After header) | ✅ Rate limiting (return 429 + Retry-After header) → ✅ CORS configuration for frontend | ✅ CORS configuration for frontend → ✅ Request/response logging with sensitive data masking | ✅ Request/response logging with sensitive data masking → Pagination Example: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["REST API Checklist:"]
+    N2["✅ Consistent error response format"]
+    N3["✅ Pagination (page/size or cursor-based for large datas"]
+    N4["✅ Rate limiting (return 429 + Retry-After header)"]
+    N5["✅ CORS configuration for frontend"]
+    N6["✅ Request/response logging with sensitive data masking"]
+    N7["Pagination Example:"]
+    N8["Idempotency Example:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

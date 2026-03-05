@@ -59,6 +59,27 @@
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: GOAL: A correct but possibly slow solution → WHY START HERE? | WHY START HERE? → • Proves you understand the problem | • Proves you understand the problem → • Gives you a baseline to optimize FROM | • Gives you a baseline to optimize FROM → HOW: | HOW: → 2. For each candidate, check if it satisfies the constr | 2. For each candidate, check if it satisfies the constr → 3. Track the best answer | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["GOAL: A correct but possibly slow solution"]
+    N2["WHY START HERE?"]
+    N3["• Proves you understand the problem"]
+    N4["• Gives you a baseline to optimize FROM"]
+    N5["HOW:"]
+    N6["2. For each candidate, check if it satisfies the constr"]
+    N7["3. Track the best answer"]
+    N8["COMMON BRUTE FORCE PATTERNS:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## Stage 2: Identify the Redundancy
@@ -342,6 +363,27 @@ Topological order?     → TOPOLOGICAL SORT     O(V²) → O(V+E)
 └──────────────────────┴──────────────────────┴───────────────────────────────┘
 ```
 
+> **Flow**: OPTIMIZATION CHEAT SHEET → Brute Force Optimization Technique | Brute Force Optimization Technique → O(n²) pairs O(n) HashMap | O(n²) pairs O(n) HashMap → O(n²) pairs O(n) or O(n log n) Sort + Two Pointers | O(n²) pairs O(n) or O(n log n) Sort + Two Pointers → O(n²) subarrays O(n) Sliding Window | O(n²) subarrays O(n) Sliding Window → O(n²) subarrays O(n) Prefix Sum + HashMap | O(n²) subarrays O(n) Prefix Sum + HashMap → O(n³) substrings O(n) Sliding Window + HashSet | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["OPTIMIZATION CHEAT SHEET"]
+    N2["Brute Force Optimization Technique"]
+    N3["O(n²) pairs O(n) HashMap"]
+    N4["O(n²) pairs O(n) or O(n log n) Sort + Two Pointers"]
+    N5["O(n²) subarrays O(n) Sliding Window"]
+    N6["O(n²) subarrays O(n) Prefix Sum + HashMap"]
+    N7["O(n³) substrings O(n) Sliding Window + HashSet"]
+    N8["O(2ⁿ) subsets O(n·W) Dynamic Programming"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## Common Interview Mistakes in Optimization
@@ -357,6 +399,15 @@ Topological order?     → TOPOLOGICAL SORT     O(V²) → O(V+E)
 │ Over-optimize (premature)           │ Check if brute force meets constraints│
 │ Forget to analyze new complexity    │ Always state old → new Big-O          │
 └─────────────────────────────────────┴───────────────────────────────────────┘
+```
+
+> **Flow**: MISTAKE FIX → Wrong technique for redundancy Use the decision map
+
+```mermaid
+flowchart TD
+    N1["MISTAKE FIX"]
+    N2["Wrong technique for redundancy Use the decision map"]
+    N1 --> N2
 ```
 
 ---

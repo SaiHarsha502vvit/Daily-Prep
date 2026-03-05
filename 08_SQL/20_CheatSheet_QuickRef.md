@@ -157,6 +157,27 @@
   □ Write clean, readable SQL code
 ```
 
+> **Flow**: □ Database Fundamentals → □ Understand RDBMS architecture | □ Understand RDBMS architecture → □ Know SQL command categories (DDL, DML, DCL, TCL) | □ Know SQL command categories (DDL, DML, DCL, TCL) → □ Understand data types and when to use them | □ Understand data types and when to use them → □ Basic Operations | □ Basic Operations → □ Master SELECT with all clauses | □ Master SELECT with all clauses → □ Use all comparison and logical operators | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["□ Database Fundamentals"]
+    N2["□ Understand RDBMS architecture"]
+    N3["□ Know SQL command categories (DDL, DML, DCL, TCL)"]
+    N4["□ Understand data types and when to use them"]
+    N5["□ Basic Operations"]
+    N6["□ Master SELECT with all clauses"]
+    N7["□ Use all comparison and logical operators"]
+    N8["□ Perform CRUD operations confidently"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 _"Congratulations! You've completed the comprehensive SQL guide from scratch to expert level. Now practice consistently and build projects!"_

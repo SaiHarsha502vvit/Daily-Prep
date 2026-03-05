@@ -564,6 +564,27 @@ SPACE COMPLEXITY:
 - Plus any data structures passed/returned
 ```
 
+> **Flow**: RECURSION TYPE RECURRENCE TIME → Tree traversal T(n) = 2T(n/2)+1 O(n) | Tree traversal T(n) = 2T(n/2)+1 O(n) → Subsets T(n) = 2T(n-1)+1 O(2^n) | Subsets T(n) = 2T(n-1)+1 O(2^n) → Permutations T(n) = n*T(n-1) O(n!) | Permutations T(n) = n*T(n-1) O(n!) → SPACE COMPLEXITY: | SPACE COMPLEXITY: → - Usually O(max recursion depth) | - Usually O(max recursion depth) → - For trees: O(height) = O(log n) balanced, O(n) skewed | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["RECURSION TYPE RECURRENCE TIME"]
+    N2["Tree traversal T(n) = 2T(n/2)+1 O(n)"]
+    N3["Subsets T(n) = 2T(n-1)+1 O(2^n)"]
+    N4["Permutations T(n) = n*T(n-1) O(n!)"]
+    N5["SPACE COMPLEXITY:"]
+    N6["- Usually O(max recursion depth)"]
+    N7["- For trees: O(height) = O(log n) balanced, O(n) skewed"]
+    N8["- For subsets/permutations: O(n) for the path being bui"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### Counting Recursive Calls
 
 ```java
@@ -604,6 +625,15 @@ You don't care HOW factorial(4) got 24.
 You just trust that it did its job correctly.
 ```
 
+> **Flow**: YOU (CEO) → Don't do all the work yourself!
+
+```mermaid
+flowchart LR
+    N1["YOU (CEO)"]
+    N2["Don't do all the work yourself!"]
+    N1 --> N2
+```
+
 ### Model 2: The Smaller Copy Model
 
 ```
@@ -618,6 +648,15 @@ Sort smaller: Sort [8, 1, 9]
 ... eventually sort [9] → trivially sorted!
 
 Then combine results back up.
+```
+
+> **Flow**: ... eventually sort [9] → trivially sorted!
+
+```mermaid
+flowchart LR
+    N1["... eventually sort [9]"]
+    N2["trivially sorted!"]
+    N1 --> N2
 ```
 
 ### Model 3: The Trust Model
@@ -636,6 +675,27 @@ Now just attach node 1:
 
 Don't trace through every call!
 Just trust the smaller call works.
+```
+
+> **Flow**: TRUST that your recursive call works correctly. → Example: Reverse a linked list | Example: Reverse a linked list → reverseList(1 → 2 → 3 → 4 → null) | reverseList(1 → 2 → 3 → 4 → null) → TRUST: reverseList(2 → 3 → 4 → null) = 4 → 3 → 2 → null | TRUST: reverseList(2 → 3 → 4 → null) = 4 → 3 → 2 → null → Now just attach node 1: | Now just attach node 1: → 4 → 3 → 2 → 1 → null | 4 → 3 → 2 → 1 → null → Don't trace through every call! | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["TRUST that your recursive call works correctly."]
+    N2["Example: Reverse a linked list"]
+    N3["reverseList(1 → 2 → 3 → 4 → null)"]
+    N4["TRUST: reverseList(2 → 3 → 4 → null) = 4 → 3 → 2 → null"]
+    N5["Now just attach node 1:"]
+    N6["4 → 3 → 2 → 1 → null"]
+    N7["Don't trace through every call!"]
+    N8["Just trust the smaller call works."]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### Model 4: The Leap of Faith
@@ -780,6 +840,27 @@ public long factorial(int n) {
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: ADVANCED RECURSION - BEYOND THE BASICS → system-level programming: | system-level programming: → • Mutual recursion | • Mutual recursion → • Indirect recursion | • Indirect recursion → • Continuation Passing Style (CPS) | • Continuation Passing Style (CPS) → • Y-Combinator (anonymous recursion) | • Y-Combinator (anonymous recursion) → • Recursion with immutable state | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["ADVANCED RECURSION - BEYOND THE BASICS"]
+    N2["system-level programming:"]
+    N3["• Mutual recursion"]
+    N4["• Indirect recursion"]
+    N5["• Continuation Passing Style (CPS)"]
+    N6["• Y-Combinator (anonymous recursion)"]
+    N7["• Recursion with immutable state"]
+    N8["• Advanced backtracking optimizations"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ## 🔁 Mutual Recursion
 
 ```
@@ -798,6 +879,15 @@ public long factorial(int n) {
 │                                                                                 │
 │  EXAMPLE: Check if a number is even or odd using mutual recursion               │
 │  ────────────────────────────────────────────────────────                       │
+```
+
+> **Flow**: isEven → isOdd
+
+```mermaid
+flowchart LR
+    N1["isEven"]
+    N2["isOdd"]
+    N1 --> N2
 ```
 
 ```java
@@ -886,6 +976,27 @@ class Parser {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: CALL GRAPH for parsing '(2+3)*4': → parseExpr() | parseExpr() → → parseTerm() | → parseTerm() → → parseFactor() [sees '('] | → parseFactor() [sees '('] → → parseExpr() ← MUTUAL CALL | → parseExpr() ← MUTUAL CALL → → parseFactor() → 2 | → parseFactor() → 2 → → parseFactor() → 3 | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["CALL GRAPH for parsing '(2+3)*4':"]
+    N2["parseExpr()"]
+    N3["→ parseTerm()"]
+    N4["→ parseFactor() [sees '(']"]
+    N5["→ parseExpr() ← MUTUAL CALL"]
+    N6["→ parseFactor() → 2"]
+    N7["→ parseFactor() → 3"]
+    N8["→ returns 5"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ## 📌 Continuation Passing Style (cps)
 
 ```
@@ -903,6 +1014,21 @@ class Parser {
 │                                                                                 │
 │ EXAMPLE: Factorial in CPS                                                       │
 │ ───────────────────────────                                                     │
+```
+
+> **Flow**: CONTINUATION PASSING STYLE (CPS) → result. Every call becomes a tail call! | result. Every call becomes a tail call! → TRADITIONAL: CPS: | TRADITIONAL: CPS: → return value ← caller continuation(value) → no return | return value ← caller continuation(value) → no return → EXAMPLE: Factorial in CPS
+
+```mermaid
+flowchart TD
+    N1["CONTINUATION PASSING STYLE (CPS)"]
+    N2["result. Every call becomes a tail call!"]
+    N3["TRADITIONAL: CPS:"]
+    N4["return value ← caller continuation(value) → no return"]
+    N5["EXAMPLE: Factorial in CPS"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
 ```
 
 ```java
@@ -951,6 +1077,27 @@ factorialCPS(5, result -> System.out.println(result));  // Prints 120
 │  ─────────────────                                                              │
 ```
 
+> **Flow**: TRACE OF factorialCPS(4, print): → factorialCPS(4, k₀) where k₀ = print | factorialCPS(4, k₀) where k₀ = print → → factorialCPS(3, k₁) where k₁ = r → k₀(4 * r) | → factorialCPS(3, k₁) where k₁ = r → k₀(4 * r) → → factorialCPS(2, k₂) where k₂ = r → k₁(3 * r) | → factorialCPS(2, k₂) where k₂ = r → k₁(3 * r) → → factorialCPS(1, k₃) where k₃ = r → k₂(2 * r) | → factorialCPS(1, k₃) where k₃ = r → k₂(2 * r) → → k₃.accept(1) | → k₃.accept(1) → → k₂.accept(2) // 2 * 1 | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["TRACE OF factorialCPS(4, print):"]
+    N2["factorialCPS(4, k₀) where k₀ = print"]
+    N3["→ factorialCPS(3, k₁) where k₁ = r → k₀(4 * r)"]
+    N4["→ factorialCPS(2, k₂) where k₂ = r → k₁(3 * r)"]
+    N5["→ factorialCPS(1, k₃) where k₃ = r → k₂(2 * r)"]
+    N6["→ k₃.accept(1)"]
+    N7["→ k₂.accept(2) // 2 * 1"]
+    N8["→ k₁.accept(6) // 3 * 2"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ```java
 void fibCPS(int n, Continuation<Integer> k) {
     if (n <= 1) {
@@ -975,6 +1122,17 @@ void fibCPS(int n, Continuation<Integer> k) {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: WHY USE CPS? → • Explicit control flow → useful for async programming | • Explicit control flow → useful for async programming → • Foundation of async/await patterns
+
+```mermaid
+flowchart TD
+    N1["WHY USE CPS?"]
+    N2["• Explicit control flow → useful for async programming"]
+    N3["• Foundation of async/await patterns"]
+    N1 --> N2
+    N2 --> N3
+```
+
 ## 🔁 Y — Combinator — Anonymous Recursion
 
 ```
@@ -992,6 +1150,19 @@ void fibCPS(int n, Continuation<Integer> k) {
 │                                                                                 │
 │ JAVA IMPLEMENTATION:                                                            │
 │ ─────────────────────                                                           │
+```
+
+> **Flow**: Y-COMBINATOR - RECURSION WITHOUT NAMING → (Lambda calculus has no assignment!) | (Lambda calculus has no assignment!) → MATHEMATICAL DEFINITION: | MATHEMATICAL DEFINITION: → JAVA IMPLEMENTATION:
+
+```mermaid
+flowchart TD
+    N1["Y-COMBINATOR - RECURSION WITHOUT NAMING"]
+    N2["(Lambda calculus has no assignment!)"]
+    N3["MATHEMATICAL DEFINITION:"]
+    N4["JAVA IMPLEMENTATION:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
 ```
 
 ```java
@@ -1048,6 +1219,19 @@ Function<Integer, Integer> factorial = new Function<>() {
 │  • Asked in advanced interviews about programming theory                        │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+> **Flow**: WHY CARE ABOUT Y-COMBINATOR? → • Foundation of lambda calculus and functional programm | • Foundation of lambda calculus and functional programm → • Proves recursion can be derived from simpler construc | • Proves recursion can be derived from simpler construc → • Asked in advanced interviews about programming theory
+
+```mermaid
+flowchart TD
+    N1["WHY CARE ABOUT Y-COMBINATOR?"]
+    N2["• Foundation of lambda calculus and functional programm"]
+    N3["• Proves recursion can be derived from simpler construc"]
+    N4["• Asked in advanced interviews about programming theory"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
 ```
 
 ## 🚀 Advanced Backtracking Optimizations
@@ -1264,6 +1448,15 @@ class SudokuSolver {
 │ PATTERN 1: CLOSEST PAIR OF POINTS (2D)                                          │
 │ ──────────────────────────────────────                                          │
 
+```
+
+> **Flow**: ADVANCED DIVIDE AND CONQUER PATTERNS → PATTERN 1: CLOSEST PAIR OF POINTS (2D)
+
+```mermaid
+flowchart TD
+    N1["ADVANCED DIVIDE AND CONQUER PATTERNS"]
+    N2["PATTERN 1: CLOSEST PAIR OF POINTS (2D)"]
+    N1 --> N2
 ```java
 class ClosestPair {
     // Find minimum distance between any two points
@@ -1422,6 +1615,17 @@ int[][] strassen(int[][] A, int[][] B) {
 │                                                                                 │
 │ MUTABLE (hard to reason): IMMUTABLE (easier to reason):                         │
 
+```
+
+> **Flow**: IMMUTABLE STATE IN RECURSION → SOLUTION: Pass state as parameters, return new state | SOLUTION: Pass state as parameters, return new state → MUTABLE (hard to reason): IMMUTABLE (easier to reason):
+
+```mermaid
+flowchart TD
+    N1["IMMUTABLE STATE IN RECURSION"]
+    N2["SOLUTION: Pass state as parameters, return new state"]
+    N3["MUTABLE (hard to reason): IMMUTABLE (easier to reason):"]
+    N1 --> N2
+    N2 --> N3
 ```java
 // MUTABLE - state is shared/modified
 List<String> result = new ArrayList<>();
@@ -1549,6 +1753,15 @@ List<Integer> vals = foldTree(root, new ArrayList<>(), (list, val) -> {
 
 ```
 
+> **Flow**: Problem Recursive (ns) Iterative (ns) Ratio / Factorial → Problem Recursive Iterative / Factorial(1000) 32 KB sta
+
+```mermaid
+flowchart TD
+    N1["Problem Recursive (ns) Iterative (ns) Ratio / Factorial"]
+    N2["Problem Recursive Iterative / Factorial(1000) 32 KB sta"]
+    N1 --> N2
+```
+
 ## COMPLETE RECURSION PROBLEM TAXONOMY
 
 ```
@@ -1607,6 +1820,27 @@ List<Integer> vals = foldTree(root, new ArrayList<>(), (list, val) -> {
 
 ```
 
+> **Flow**: RECURSION PROBLEM CLASSIFICATION → RECURSION PROBLEM TYPES | RECURSION PROBLEM TYPES → LINEAR Only ONE recursive call per invocation | LINEAR Only ONE recursive call per invocation → RECURSION • Factorial, Sum, Array traversal | RECURSION • Factorial, Sum, Array traversal → O(n) calls • Can always convert to simple iteration | O(n) calls • Can always convert to simple iteration → BINARY TWO recursive calls per invocation | BINARY TWO recursive calls per invocation → RECURSION • Fibonacci, Merge Sort, Binary Tree traversa | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["RECURSION PROBLEM CLASSIFICATION"]
+    N2["RECURSION PROBLEM TYPES"]
+    N3["LINEAR Only ONE recursive call per invocation"]
+    N4["RECURSION • Factorial, Sum, Array traversal"]
+    N5["O(n) calls • Can always convert to simple iteration"]
+    N6["BINARY TWO recursive calls per invocation"]
+    N7["RECURSION • Fibonacci, Merge Sort, Binary Tree traversa"]
+    N8["O(2ⁿ) naive • Often needs memoization for efficiency"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ## MASTER CHECKLIST FOR WRITING RECURSION
 
 ```
@@ -1653,6 +1887,27 @@ List<Integer> vals = foldTree(root, new ArrayList<>(), (list, val) -> {
 
 ```
 
+> **Flow**: RECURSION WRITING CHECKLIST ✓ → BEFORE CODING: | BEFORE CODING: → □ Identify the subproblem - what's the 'smaller version | □ Identify the subproblem - what's the 'smaller version → □ Identify base case(s) - when can you answer directly? | □ Identify base case(s) - when can you answer directly? → □ Identify what each call returns (or modifies) | □ Identify what each call returns (or modifies) → □ Estimate max depth - will stack overflow? | □ Estimate max depth - will stack overflow? → □ Check for overlapping subproblems - need memoization? | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["RECURSION WRITING CHECKLIST ✓"]
+    N2["BEFORE CODING:"]
+    N3["□ Identify the subproblem - what's the 'smaller version"]
+    N4["□ Identify base case(s) - when can you answer directly?"]
+    N5["□ Identify what each call returns (or modifies)"]
+    N6["□ Estimate max depth - will stack overflow?"]
+    N7["□ Check for overlapping subproblems - need memoization?"]
+    N8["WHILE CODING:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 _Recursion is not about memorizing - it's about TRUSTING!_ 🔄
@@ -1696,6 +1951,27 @@ _Recursion is not about memorizing - it's about TRUSTING!_ 🔄
 ║                                                                                  ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 
+```
+
+> **Flow**: RECURSION QUICK REFERENCE → TEMPLATE: | TEMPLATE: → returnType solve(input) { | returnType solve(input) { → return combine(solve(smallerInput)); | return combine(solve(smallerInput)); → COMPLEXITY RULES: | COMPLEXITY RULES: → BACKTRACKING TEMPLATE: | BACKTRACKING TEMPLATE: → void backtrack(state, choices) { | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["RECURSION QUICK REFERENCE"]
+    N2["TEMPLATE:"]
+    N3["returnType solve(input) {"]
+    N4["return combine(solve(smallerInput));"]
+    N5["COMPLEXITY RULES:"]
+    N6["BACKTRACKING TEMPLATE:"]
+    N7["void backtrack(state, choices) {"]
+    N8["make(choice);"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---

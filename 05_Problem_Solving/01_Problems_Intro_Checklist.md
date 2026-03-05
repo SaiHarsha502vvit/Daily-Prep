@@ -106,6 +106,27 @@ public int maxArea(int[] height) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: PROBLEM: 3Sum → Find all unique triplets that sum to zero. | Find all unique triplets that sum to zero. → Input: [-1, 0, 1, 2, -1, -4] | Input: [-1, 0, 1, 2, -1, -4] → Output: [[-1, -1, 2], [-1, 0, 1]] | Output: [[-1, -1, 2], [-1, 0, 1]] → Approach: | Approach: → 1. Sort array | 1. Sort array → 2. For each element, use two pointers to find pairs | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["PROBLEM: 3Sum"]
+    N2["Find all unique triplets that sum to zero."]
+    N3["Input: [-1, 0, 1, 2, -1, -4]"]
+    N4["Output: [[-1, -1, 2], [-1, 0, 1]]"]
+    N5["Approach:"]
+    N6["1. Sort array"]
+    N7["2. For each element, use two pointers to find pairs"]
+    N8["Sorted: [-4, -1, -1, 0, 1, 2]"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 **Try it yourself first!**
 
 <details>
@@ -176,6 +197,17 @@ When we see repeat, shrink window from left
 
 ```
 
+> **Flow**: Root → 'abc' length 3 | Root → 'bca' length 3
+
+```mermaid
+flowchart TD
+    N1["Root"]
+    N2["'abc' length 3"]
+    N3["'bca' length 3"]
+    N1 --> N2
+    N1 --> N3
+```
+
 **Try it yourself first!**
 
 <details>
@@ -235,6 +267,17 @@ Visual:
 
 ```
 
+> **Flow**: 2 1 5 1 → 1 5 1 3 | 1 5 1 3 → 5 1 3 2
+
+```mermaid
+flowchart TD
+    N1["2 1 5 1"]
+    N2["1 5 1 3"]
+    N3["5 1 3 2"]
+    N1 --> N2
+    N2 --> N3
+```
+
 **Try it yourself first!**
 
 <details>
@@ -291,6 +334,27 @@ public int maxSumSubarrayK(int[] arr, int k) {
 ║  Check if target is in sorted half, else search other half                ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: PROBLEM: Search in Rotated Sorted Array → Array was sorted, then rotated at some pivot. | Array was sorted, then rotated at some pivot. → Find target in O(log N). | Find target in O(log N). → Original: [0, 1, 2, 4, 5, 6, 7] | Original: [0, 1, 2, 4, 5, 6, 7] → Rotated: [4, 5, 6, 7, 0, 1, 2] (rotated at pivot 4) | Rotated: [4, 5, 6, 7, 0, 1, 2] (rotated at pivot 4) → Target: 0 | Target: 0 → Output: 4 (index of 0) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["PROBLEM: Search in Rotated Sorted Array"]
+    N2["Array was sorted, then rotated at some pivot."]
+    N3["Find target in O(log N)."]
+    N4["Original: [0, 1, 2, 4, 5, 6, 7]"]
+    N5["Rotated: [4, 5, 6, 7, 0, 1, 2] (rotated at pivot 4)"]
+    N6["Target: 0"]
+    N7["Output: 4 (index of 0)"]
+    N8["Key insight: One half is ALWAYS sorted!"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 **Try it yourself first!**
@@ -360,6 +424,27 @@ public int search(int[] nums, int target) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: PROBLEM: Find Peak Element → Peak = element greater than its neighbors. | Peak = element greater than its neighbors. → nums[-1] and nums[n] are considered -∞. | nums[-1] and nums[n] are considered -∞. → Input: [1, 2, 3, 1] | Input: [1, 2, 3, 1] → Output: 2 (index of element 3) | Output: 2 (index of element 3) → Visual: | Visual: → 3 ← peak | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["PROBLEM: Find Peak Element"]
+    N2["Peak = element greater than its neighbors."]
+    N3["nums[-1] and nums[n] are considered -∞."]
+    N4["Input: [1, 2, 3, 1]"]
+    N5["Output: 2 (index of element 3)"]
+    N6["Visual:"]
+    N7["3 ← peak"]
+    N8["Binary Search approach:"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 **Try it yourself first!**
 
 <details>
@@ -411,6 +496,27 @@ public int findPeakElement(int[] nums) {
 ║  Reverse [k, n-1]: [5, 6, 7, 1, 2, 3, 4] ✓                                ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: PROBLEM: Rotate Array → Rotate array to the right by k steps. | Rotate array to the right by k steps. → Input: [1, 2, 3, 4, 5, 6, 7], k = 3 | Input: [1, 2, 3, 4, 5, 6, 7], k = 3 → Output: [5, 6, 7, 1, 2, 3, 4] | Output: [5, 6, 7, 1, 2, 3, 4] → Approach: Three reverses | Approach: Three reverses → Original: [1, 2, 3, 4, 5, 6, 7] | Original: [1, 2, 3, 4, 5, 6, 7] → Reverse all: [7, 6, 5, 4, 3, 2, 1] | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["PROBLEM: Rotate Array"]
+    N2["Rotate array to the right by k steps."]
+    N3["Input: [1, 2, 3, 4, 5, 6, 7], k = 3"]
+    N4["Output: [5, 6, 7, 1, 2, 3, 4]"]
+    N5["Approach: Three reverses"]
+    N6["Original: [1, 2, 3, 4, 5, 6, 7]"]
+    N7["Reverse all: [7, 6, 5, 4, 3, 2, 1]"]
+    N8["Reverse [0, k-1]: [5, 6, 7, 4, 3, 2, 1]"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 **Try it yourself first!**
@@ -470,6 +576,27 @@ private void reverse(int[] nums, int start, int end) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: PROBLEM: Product of Array Except Self → Cannot use division. | Cannot use division. → Input: [1, 2, 3, 4] | Input: [1, 2, 3, 4] → Output: [24, 12, 8, 6] | Output: [24, 12, 8, 6] → output[0] = 2 * 3 * 4 = 24 | output[0] = 2 * 3 * 4 = 24 → output[1] = 1 * 3 * 4 = 12 | output[1] = 1 * 3 * 4 = 12 → output[2] = 1 * 2 * 4 = 8 | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["PROBLEM: Product of Array Except Self"]
+    N2["Cannot use division."]
+    N3["Input: [1, 2, 3, 4]"]
+    N4["Output: [24, 12, 8, 6]"]
+    N5["output[0] = 2 * 3 * 4 = 24"]
+    N6["output[1] = 1 * 3 * 4 = 12"]
+    N7["output[2] = 1 * 2 * 4 = 8"]
+    N8["output[3] = 1 * 2 * 3 = 6"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 **Try it yourself first!**
 
 <details>
@@ -524,6 +651,25 @@ public int[] productExceptSelf(int[] nums) {
 ║  Two pointers from both ends, skip non-alphanumeric                       ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: PROBLEM: Valid Palindrome → case). | case). → Input: 'A man, a plan, a canal: Panama' | Input: 'A man, a plan, a canal: Panama' → Output: true | Output: true → After cleaning: 'amanaplanacanalpanama' | After cleaning: 'amanaplanacanalpanama' → left right | left right → Two pointers from both ends, skip non-alphanumeric
+
+```mermaid
+flowchart TD
+    N1["PROBLEM: Valid Palindrome"]
+    N2["case)."]
+    N3["Input: 'A man, a plan, a canal: Panama'"]
+    N4["Output: true"]
+    N5["After cleaning: 'amanaplanacanalpanama'"]
+    N6["left right"]
+    N7["Two pointers from both ends, skip non-alphanumeric"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
 ```
 
 **Try it yourself first!**
@@ -583,6 +729,27 @@ public boolean isPalindrome(String s) {
 ║  Use sorted form as HashMap key                                           ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: PROBLEM: Group Anagrams → Group words that are anagrams of each other. | Group words that are anagrams of each other. → Input: ['eat', 'tea', 'tan', 'ate', 'nat', 'bat'] | Input: ['eat', 'tea', 'tan', 'ate', 'nat', 'bat'] → Output: [['eat','tea','ate'], ['tan','nat'], ['bat']] | Output: [['eat','tea','ate'], ['tan','nat'], ['bat']] → Key insight: Anagrams have same SORTED form | Key insight: Anagrams have same SORTED form → eat → aet | eat → aet → tea → aet (same!) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["PROBLEM: Group Anagrams"]
+    N2["Group words that are anagrams of each other."]
+    N3["Input: ['eat', 'tea', 'tan', 'ate', 'nat', 'bat']"]
+    N4["Output: [['eat','tea','ate'], ['tan','nat'], ['bat']]"]
+    N5["Key insight: Anagrams have same SORTED form"]
+    N6["eat → aet"]
+    N7["tea → aet (same!)"]
+    N8["ate → aet (same!)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 **Try it yourself first!**
@@ -660,6 +827,27 @@ public List<List<String>> groupAnagramsV2(String[] strs) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: PROBLEM: Missing Number → Input: [3, 0, 1] | Input: [3, 0, 1] → Output: 2 | Output: 2 → Method 1: Math (Sum formula) | Method 1: Math (Sum formula) → Expected sum = n * (n + 1) / 2 | Expected sum = n * (n + 1) / 2 → Missing = Expected sum - Actual sum | Missing = Expected sum - Actual sum → Method 2: XOR | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["PROBLEM: Missing Number"]
+    N2["Input: [3, 0, 1]"]
+    N3["Output: 2"]
+    N4["Method 1: Math (Sum formula)"]
+    N5["Expected sum = n * (n + 1) / 2"]
+    N6["Missing = Expected sum - Actual sum"]
+    N7["Method 2: XOR"]
+    N8["XOR all indices 0 to n, XOR all array elements"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 **Try it yourself first!**
 
 <details>
@@ -715,6 +903,25 @@ public int missingNumberXOR(int[] nums) {
 ║  = 4                                                                      ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: PROBLEM: Single Number → Every element appears twice except one. Find that one. | Every element appears twice except one. Find that one. → Input: [4, 1, 2, 1, 2] | Input: [4, 1, 2, 1, 2] → Output: 4 | Output: 4 → XOR property: | XOR property: → a ^ a = 0 (same numbers cancel) | a ^ a = 0 (same numbers cancel) → a ^ 0 = a (XOR with 0 gives same number)
+
+```mermaid
+flowchart TD
+    N1["PROBLEM: Single Number"]
+    N2["Every element appears twice except one. Find that one."]
+    N3["Input: [4, 1, 2, 1, 2]"]
+    N4["Output: 4"]
+    N5["XOR property:"]
+    N6["a ^ a = 0 (same numbers cancel)"]
+    N7["a ^ 0 = a (XOR with 0 gives same number)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
 ```
 
 **Try it yourself first!**

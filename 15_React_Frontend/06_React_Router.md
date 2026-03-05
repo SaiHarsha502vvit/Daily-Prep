@@ -100,6 +100,27 @@ function UserDetail() {
 }
 ```
 
+> **Flow**: 1. useEffect + fetch (basic, no caching) → React Router v6.4 Loader (fetch before component render | React Router v6.4 Loader (fetch before component render → const router = createBrowserRouter([ | const router = createBrowserRouter([ → path: '/users/:id', | path: '/users/:id', → element: &lt;UserDetail /&gt;, | element: &lt;UserDetail /&gt;, → loader: async ({ params }) =&gt; { | loader: async ({ params }) =&gt; { → const res = await fetch('/api/users/' + params.id); | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["1. useEffect + fetch (basic, no caching)"]
+    N2["React Router v6.4 Loader (fetch before component render"]
+    N3["const router = createBrowserRouter(["]
+    N4["path: '/users/:id',"]
+    N5["element: &lt;UserDetail /&gt;,"]
+    N6["loader: async ({ params }) =&gt; {"]
+    N7["const res = await fetch('/api/users/' + params.id);"]
+    N8["return res.json();"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ---
 
 ## API Layer Pattern (Production)

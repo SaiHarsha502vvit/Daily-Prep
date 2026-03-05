@@ -63,6 +63,15 @@ TYPE 2: VARIABLE-SIZE WINDOW
                ├───┤    sum=7 ≥ 7 ← smallest! (len=2)
 ```
 
+> **Flow**: Window size is given → just slide it
+
+```mermaid
+flowchart LR
+    N1["Window size is given"]
+    N2["just slide it"]
+    N1 --> N2
+```
+
 ### TEMPLATE: Fixed-Size Window
 
 ```java
@@ -193,6 +202,24 @@ TREE PROBLEM PATTERNS:
   
   4. "Check a property"   → return boolean
      Examples: isSameTree, isSymmetric, isValidBST
+```
+
+> **Flow**: 1. 'Return a value' → return something from recursion | 2. 'Modify the tree' → return modified node | 3. 'Collect values' → pass list as parameter | 4. 'Check a property' → return boolean
+
+```mermaid
+flowchart LR
+    N1["1. 'Return a value'"]
+    N2["return something from recursion"]
+    N3["2. 'Modify the tree'"]
+    N4["return modified node"]
+    N5["3. 'Collect values'"]
+    N6["pass list as parameter"]
+    N7["4. 'Check a property'"]
+    N8["return boolean"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+    N7 --> N8
 ```
 
 ---
@@ -408,6 +435,21 @@ WHICH TYPE:
   Fixed:    "...of size K" → one pointer, fixed distance
   Variable: "smallest/longest that..." → two pointers, expand+shrink
   HashMap:  "...distinct/unique..." → track counts in map
+```
+
+> **Flow**: Fixed: '...of size K' → one pointer, fixed distance | Variable: 'smallest/longest that...' → two pointers, expand+shrink | HashMap: '...distinct/unique...' → track counts in map
+
+```mermaid
+flowchart LR
+    N1["Fixed: '...of size K'"]
+    N2["one pointer, fixed distance"]
+    N3["Variable: 'smallest/longest that...'"]
+    N4["two pointers, expand+shrink"]
+    N5["HashMap: '...distinct/unique...'"]
+    N6["track counts in map"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
 ```
 
 

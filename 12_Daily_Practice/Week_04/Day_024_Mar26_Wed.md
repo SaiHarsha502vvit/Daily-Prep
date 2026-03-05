@@ -159,6 +159,15 @@ I — Isolation:    Concurrent transactions don't interfere
 D — Durability:   Once committed, data survives crashes
 ```
 
+> **Flow**: A — Atomicity: All or nothing (partial failure → rollback ALL)
+
+```mermaid
+flowchart LR
+    N1["A — Atomicity: All or nothing (partial failure"]
+    N2["rollback ALL)"]
+    N1 --> N2
+```
+
 ### HOW: Transaction Syntax
 
 ```sql
@@ -197,6 +206,24 @@ SERIALIZABLE     → Full isolation (slowest, safest)
 SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
 ```
 
+> **Flow**: READ UNCOMMITTED → Can see uncommitted data (dirty reads) | READ COMMITTED → Only see committed data (default in PostgreSQL) | REPEATABLE READ → Same query returns same results within transaction | SERIALIZABLE → Full isolation (slowest, safest)
+
+```mermaid
+flowchart LR
+    N1["READ UNCOMMITTED"]
+    N2["Can see uncommitted data (dirty reads)"]
+    N3["READ COMMITTED"]
+    N4["Only see committed data (default in PostgreSQL)"]
+    N5["REPEATABLE READ"]
+    N6["Same query returns same results within transaction"]
+    N7["SERIALIZABLE"]
+    N8["Full isolation (slowest, safest)"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+    N7 --> N8
+```
+
 ---
 
 ## 🎯 PROBLEMS
@@ -209,6 +236,17 @@ Given n edges (one extra), find the edge that creates a cycle.
 
 Input: edges = [[1,2],[1,3],[2,3]]
 Output: [2,3]  ← removing this restores the tree
+```
+
+> **Flow**: Tree with n nodes has exactly n-1 edges. → Input: edges = [[1,2],[1,3],[2,3]] | Input: edges = [[1,2],[1,3],[2,3]] → Output: [2,3] ← removing this restores the tree
+
+```mermaid
+flowchart TD
+    N1["Tree with n nodes has exactly n-1 edges."]
+    N2["Input: edges = [[1,2],[1,3],[2,3]]"]
+    N3["Output: [2,3] ← removing this restores the tree"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 **Pattern**: Union-Find — when union returns false, that edge creates a cycle.

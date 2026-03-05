@@ -82,6 +82,23 @@ SELECTOR              │ WHAT IT TARGETS
 .parent ~ p           │ ALL <p> siblings after .parent
 ```
 
+> **Flow**: &lt;div class='parent'&gt; → &lt;p&gt;Direct child&lt;/p&gt; ← child (&gt;) | &lt;div class='parent'&gt; → &lt;section&gt; | &lt;div class='parent'&gt; → &lt;p&gt;Nested&lt;/p&gt; ← descendant (space) | &lt;div class='parent'&gt; → &lt;p&gt;Another child&lt;/p&gt; ← child (&gt;) | &lt;div class='parent'&gt; → &lt;p&gt;Yet another&lt;/p&gt; ← child (&gt;)
+
+```mermaid
+flowchart TD
+    N1["&lt;div class='parent'&gt;"]
+    N2["&lt;p&gt;Direct child&lt;/p&gt; ← child (&gt;)"]
+    N3["&lt;section&gt;"]
+    N4["&lt;p&gt;Nested&lt;/p&gt; ← descendant (space)"]
+    N5["&lt;p&gt;Another child&lt;/p&gt; ← child (&gt;)"]
+    N6["&lt;p&gt;Yet another&lt;/p&gt; ← child (&gt;)"]
+    N1 --> N2
+    N1 --> N3
+    N1 --> N4
+    N1 --> N5
+    N1 --> N6
+```
+
 ```css
 /* DESCENDANT (space) — any depth */
 .sidebar a { color: white; }   /* Any <a> inside .sidebar */
@@ -150,6 +167,27 @@ The CASCADE resolves in this ORDER (highest to lowest priority):
 If SPECIFICITY is EQUAL → LAST rule in source order wins.
 ```
 
+> **Flow**: WHEN MULTIPLE RULES TARGET THE SAME ELEMENT, WHO WINS? → 1. !important declarations (AVOID!) | 1. !important declarations (AVOID!) → 2. Inline styles (style='...') (RARE) | 2. Inline styles (style='...') (RARE) → 3. ID selectors (#id) (HIGHEST specificity) | 3. ID selectors (#id) (HIGHEST specificity) → 4. Class/attribute/pseudo-class (.class, [attr]) | 4. Class/attribute/pseudo-class (.class, [attr]) → 5. Element/pseudo-element (p, ::before) | 5. Element/pseudo-element (p, ::before) → 6. Universal (*) (LOWEST specificity) | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["WHEN MULTIPLE RULES TARGET THE SAME ELEMENT, WHO WINS?"]
+    N2["1. !important declarations (AVOID!)"]
+    N3["2. Inline styles (style='...') (RARE)"]
+    N4["3. ID selectors (#id) (HIGHEST specificity)"]
+    N5["4. Class/attribute/pseudo-class (.class, [attr])"]
+    N6["5. Element/pseudo-element (p, ::before)"]
+    N7["6. Universal (*) (LOWEST specificity)"]
+    N8["If SPECIFICITY is EQUAL → LAST rule in source order win"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### Specificity Calculator
 
 ```
@@ -177,6 +215,27 @@ If SPECIFICITY is EQUAL → LAST rule in source order wins.
 ║  • :where() has ZERO specificity (great for resets!)                 ║
 ║  • :has() takes specificity of its argument                          ║
 ╚══════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: SPECIFICITY = (Inline, IDs, Classes, Elements) → Selector Specificity Score | Selector Specificity Score → p.intro (0,0,1,1) 11 | p.intro (0,0,1,1) 11 → .nav .link (0,0,2,0) 20 | .nav .link (0,0,2,0) 20 → #header (0,1,0,0) 100 | #header (0,1,0,0) 100 → #header .nav .link (0,1,2,0) 120 | #header .nav .link (0,1,2,0) 120 → #header .nav a:hover (0,1,2,1) 121 | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["SPECIFICITY = (Inline, IDs, Classes, Elements)"]
+    N2["Selector Specificity Score"]
+    N3["p.intro (0,0,1,1) 11"]
+    N4[".nav .link (0,0,2,0) 20"]
+    N5["#header (0,1,0,0) 100"]
+    N6["#header .nav .link (0,1,2,0) 120"]
+    N7["#header .nav a:hover (0,1,2,1) 121"]
+    N8["style='color: red' (1,0,0,0) 1000"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### Inheritance
@@ -231,6 +290,27 @@ CONTENT-BOX (default):
 BORDER-BOX (what you want):
   width: 300px = content + padding + border = 300px total
   Content shrinks to fit. WHAT YOU SET IS WHAT YOU GET.
+```
+
+> **Flow**: THE CSS BOX MODEL (Every element is a box): → MARGIN | MARGIN → BORDER | BORDER → PADDING | PADDING → CONTENT | CONTENT → (width × height) | (width × height) → CONTENT-BOX (default): | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["THE CSS BOX MODEL (Every element is a box):"]
+    N2["MARGIN"]
+    N3["BORDER"]
+    N4["PADDING"]
+    N5["CONTENT"]
+    N6["(width × height)"]
+    N7["CONTENT-BOX (default):"]
+    N8["width: 300px = content is 300px"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```css
@@ -302,6 +382,15 @@ FIX/PREVENT:
 • Use overflow: hidden on parent
 ```
 
+> **Flow**: Element A / margin-bottom: / 20px → Element B / margin-top: / 30px
+
+```mermaid
+flowchart TD
+    N1["Element A / margin-bottom: / 20px"]
+    N2["Element B / margin-top: / 30px"]
+    N1 --> N2
+```
+
 ---
 
 ## 4. Display Property — How Elements Behave
@@ -329,6 +418,27 @@ grid           │ Element becomes GRID CONTAINER.
 ───────────────┼─────────────────────────────────────────────
 contents       │ Element box disappears, children act as if
                │ they're direct children of grandparent.
+```
+
+> **Flow**: display VALUE BEHAVIOR → block Takes full width. New line before/after. | block Takes full width. New line before/after. → Can set width/height. &lt;div&gt;, &lt;p&gt;, &lt;h1&gt | Can set width/height. &lt;div&gt;, &lt;p&gt;, &lt;h1&gt → inline Only as wide as content. NO width/height. | inline Only as wide as content. NO width/height. → Same line as neighbors. &lt;span&gt;, &lt;a&gt;, &lt;st | Same line as neighbors. &lt;span&gt;, &lt;a&gt;, &lt;st → inline-block Inline flow BUT allows width/height. | inline-block Inline flow BUT allows width/height. → Best of both worlds. &lt;img&gt;, &lt;button&gt; | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["display VALUE BEHAVIOR"]
+    N2["block Takes full width. New line before/after."]
+    N3["Can set width/height. &lt;div&gt;, &lt;p&gt;, &lt;h1&gt"]
+    N4["inline Only as wide as content. NO width/height."]
+    N5["Same line as neighbors. &lt;span&gt;, &lt;a&gt;, &lt;st"]
+    N6["inline-block Inline flow BUT allows width/height."]
+    N7["Best of both worlds. &lt;img&gt;, &lt;button&gt;"]
+    N8["none Element GONE from layout (not just invisible)."]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```css
@@ -413,6 +523,27 @@ contents       │ Element box disappears, children act as if
 ║  TRICK: html { font-size: 62.5%; } → 1rem = 10px (easy math)         ║
 ║         body { font-size: 1.6rem; } → back to 16px base              ║
 ╚══════════════════════════════════════════════════════════════════════╝
+```
+
+> **Flow**: UNIT RELATIVE TO USE CASE → px Absolute (1/96') Borders, shadows, fine details | px Absolute (1/96') Borders, shadows, fine details → rem Root font-size Font sizes, spacing, MOST things | rem Root font-size Font sizes, spacing, MOST things → em Parent font-size Relative to current text size | em Parent font-size Relative to current text size → % Parent element Widths, heights, layout | % Parent element Widths, heights, layout → vw Viewport width Full-width sections, fluid text | vw Viewport width Full-width sections, fluid text → vh Viewport height Full-height sections, hero banners | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["UNIT RELATIVE TO USE CASE"]
+    N2["px Absolute (1/96') Borders, shadows, fine details"]
+    N3["rem Root font-size Font sizes, spacing, MOST things"]
+    N4["em Parent font-size Relative to current text size"]
+    N5["% Parent element Widths, heights, layout"]
+    N6["vw Viewport width Full-width sections, fluid text"]
+    N7["vh Viewport height Full-height sections, hero banners"]
+    N8["dvh Dynamic viewport Mobile-safe vh (accounts for toolb"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ### Typography
@@ -531,6 +662,25 @@ contents       │ Element box disappears, children act as if
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
+> **Flow**: POSITION RELATIVE TO IN FLOW? USE CASE → static Normal document flow YES Default (no offset) | static Normal document flow YES Default (no offset) → relative Its normal position YES Offset + context | relative Its normal position YES Offset + context → absolute Nearest positioned NO Overlays, tooltips | absolute Nearest positioned NO Overlays, tooltips → ancestor | ancestor → fixed Viewport NO Sticky nav, modals | fixed Viewport NO Sticky nav, modals → sticky Scroll threshold YES* Sticky headers
+
+```mermaid
+flowchart TD
+    N1["POSITION RELATIVE TO IN FLOW? USE CASE"]
+    N2["static Normal document flow YES Default (no offset)"]
+    N3["relative Its normal position YES Offset + context"]
+    N4["absolute Nearest positioned NO Overlays, tooltips"]
+    N5["ancestor"]
+    N6["fixed Viewport NO Sticky nav, modals"]
+    N7["sticky Scroll threshold YES* Sticky headers"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+```
+
 ```css
 /* ABSOLUTE + RELATIVE pattern (most common): */
 .parent {
@@ -594,6 +744,27 @@ LAYER SYSTEM (use consistent values):
 STACKING CONTEXT: z-index creates a new context.
 Children of z-index:5 can NEVER be above a sibling with z:10.
 This is why z-index "doesn't work" sometimes!
+```
+
+> **Flow**: Z-INDEX GUIDE: → z-index only works on POSITIONED elements (not static). | z-index only works on POSITIONED elements (not static). → LAYER SYSTEM (use consistent values): | LAYER SYSTEM (use consistent values): → z-index: 9999 MODAL OVERLAY ← On top of everything | z-index: 9999 MODAL OVERLAY ← On top of everything → z-index: 1000 NAVIGATION | z-index: 1000 NAVIGATION → z-index: 100 DROPDOWN/POPUP | z-index: 100 DROPDOWN/POPUP → z-index: 50 STICKY ELEMENTS | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Z-INDEX GUIDE:"]
+    N2["z-index only works on POSITIONED elements (not static)."]
+    N3["LAYER SYSTEM (use consistent values):"]
+    N4["z-index: 9999 MODAL OVERLAY ← On top of everything"]
+    N5["z-index: 1000 NAVIGATION"]
+    N6["z-index: 100 DROPDOWN/POPUP"]
+    N7["z-index: 50 STICKY ELEMENTS"]
+    N8["z-index: 10 FLOATING UI"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ---
@@ -683,6 +854,22 @@ Q: What is the cascade?
 → CSS applies rules in order: importance (!important) → specificity
   → source order. The "cascading" in CSS means styles cascade through
   these priority levels to determine final applied styles.
+```
+
+> **Flow**: Every element is a box: Content → Padding | Padding → Border | Border → Margin. | CSS applies rules in order: importance (!important → specificity
+
+```mermaid
+flowchart LR
+    N1["Every element is a box: Content"]
+    N2["Padding"]
+    N3["Border"]
+    N4["Margin."]
+    N5["CSS applies rules in order: importance (!important"]
+    N6["specificity"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N5 --> N6
 ```
 
 ---

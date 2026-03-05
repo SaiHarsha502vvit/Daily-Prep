@@ -23,6 +23,44 @@ Problem says:                          → Model as:
 "Maze from start to end"             → Grid graph (BFS = shortest)
 ```
 
+> **Flow**: Problem says: → Model as: | 'Dependencies between tasks' → Directed graph (topological sort) | 'Can person A reach person B?' → Undirected graph (BFS/DFS) | 'Convert word A to word B' → Graph where words are nodes | '2D grid with obstacles' → Grid graph (4-directional) | 'Network of computers' → Undirected graph | ...+5 more
+
+```mermaid
+flowchart TD
+    N1["Problem says:"]
+    N2["Model as:"]
+    N3["'Dependencies between tasks'"]
+    N4["Directed graph (topological sort)"]
+    N5["'Can person A reach person B?'"]
+    N6["Undirected graph (BFS/DFS)"]
+    N7["'Convert word A to word B'"]
+    N8["Graph where words are nodes"]
+    N9["'2D grid with obstacles'"]
+    N10["Grid graph (4-directional)"]
+    N11["'Network of computers'"]
+    N12["Undirected graph"]
+    N13["'Course prerequisites'"]
+    N14["DAG (directed acyclic)"]
+    N15["'Binary/N-ary tree'"]
+    N16["Special case of graph (no cycles)"]
+    N17["'Social network friends'"]
+    N18["'State machine transitions'"]
+    N19["Directed graph"]
+    N20["'Maze from start to end'"]
+    N21["Grid graph (BFS = shortest)"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+    N7 --> N8
+    N9 --> N10
+    N11 --> N12
+    N13 --> N14
+    N15 --> N16
+    N17 --> N12
+    N18 --> N19
+    N20 --> N21
+```
+
 ---
 
 ## Part 2: BFS vs DFS — The Decision Framework
@@ -39,6 +77,17 @@ Mental model: BFS = "Ripple in a pond"
 Drop a stone → it expands in CIRCLES → nearest first
 ```
 
+> **Flow**: Drop a stone → it expands in CIRCLES | it expands in CIRCLES → nearest first
+
+```mermaid
+flowchart LR
+    N1["Drop a stone"]
+    N2["it expands in CIRCLES"]
+    N3["nearest first"]
+    N1 --> N2
+    N2 --> N3
+```
+
 ### When to use DFS (Stack/Recursion):
 ```
 ✅ Path finding — "does any path exist?"
@@ -50,6 +99,19 @@ Drop a stone → it expands in CIRCLES → nearest first
 
 Mental model: DFS = "Exploring a maze"
 Go as DEEP as possible → hit dead end → BACKTRACK → try next path
+```
+
+> **Flow**: Go as DEEP as possible → hit dead end | hit dead end → BACKTRACK | BACKTRACK → try next path
+
+```mermaid
+flowchart LR
+    N1["Go as DEEP as possible"]
+    N2["hit dead end"]
+    N3["BACKTRACK"]
+    N4["try next path"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
 ```
 
 ### When to use Dijkstra (Priority Queue):
@@ -70,6 +132,18 @@ Always expand the CHEAPEST unexplored node
 
 Mental model: Union-Find = "Clubs merging"
 Each person belongs to a club → when two people connect, their clubs merge
+```
+
+> **Flow**: ✅ Cycle detection in undirected graph (if union re → cycle) | Each person belongs to a club → when two people connect, their clubs merge
+
+```mermaid
+flowchart LR
+    N1["✅ Cycle detection in undirected graph (if union re"]
+    N2["cycle)"]
+    N3["Each person belongs to a club"]
+    N4["when two people connect, their clubs merge"]
+    N1 --> N2
+    N3 --> N4
 ```
 
 ### Decision Tree
@@ -95,6 +169,18 @@ Graph problem?
     ├── Root-to-leaf? → DFS
     ├── Level-order? → BFS
     └── LCA? → DFS with parent tracking
+```
+
+> **Flow**: Root-to-leaf? → DFS | Level-order? → BFS
+
+```mermaid
+flowchart LR
+    N1["Root-to-leaf?"]
+    N2["DFS"]
+    N3["Level-order?"]
+    N4["BFS"]
+    N1 --> N2
+    N3 --> N4
 ```
 
 ---
@@ -138,6 +224,27 @@ Category 4: "FIND something in the tree"
 → Example: LCA = if both sides return non-null, current is LCA
 ```
 
+> **Flow**: Category 1: 'RETURN something about the tree' → → DFS that returns a value (height, sum, boolean) | → DFS that returns a value (height, sum, boolean) → → Example: max depth = 1 + max(leftDepth, rightDepth) | → Example: max depth = 1 + max(leftDepth, rightDepth) → Category 2: 'UPDATE a global answer during traversal' | Category 2: 'UPDATE a global answer during traversal' → → DFS with a class variable | → DFS with a class variable → Category 3: 'BUILD or TRANSFORM the tree' | Category 3: 'BUILD or TRANSFORM the tree' → → DFS that returns new nodes | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["Category 1: 'RETURN something about the tree'"]
+    N2["→ DFS that returns a value (height, sum, boolean)"]
+    N3["→ Example: max depth = 1 + max(leftDepth, rightDepth)"]
+    N4["Category 2: 'UPDATE a global answer during traversal'"]
+    N5["→ DFS with a class variable"]
+    N6["Category 3: 'BUILD or TRANSFORM the tree'"]
+    N7["→ DFS that returns new nodes"]
+    N8["→ Example: invert tree = swap left and right, recurse b"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
+```
+
 ### BST-Specific Thinking
 ```
 BST = sorted structure → INORDER traversal gives sorted array
@@ -147,6 +254,32 @@ BST = sorted structure → INORDER traversal gives sorted array
 "Search?" → Go left if smaller, right if larger → O(log n)
 "Insert?" → Find the right spot like binary search
 "Delete?" → Three cases: leaf, one child, two children (find successor)
+```
+
+> **Flow**: BST = sorted structure → INORDER traversal gives sorted array | 'Kth smallest?' → Inorder, count to k | 'Validate BST?' → Every node has a valid range [min, max] | 'Search?' → Go left if smaller, right if larger | Go left if smaller, right if larger → O(log n) | 'Insert?' → Find the right spot like binary search | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["BST = sorted structure"]
+    N2["INORDER traversal gives sorted array"]
+    N3["'Kth smallest?'"]
+    N4["Inorder, count to k"]
+    N5["'Validate BST?'"]
+    N6["Every node has a valid range [min, max]"]
+    N7["'Search?'"]
+    N8["Go left if smaller, right if larger"]
+    N9["O(log n)"]
+    N10["'Insert?'"]
+    N11["Find the right spot like binary search"]
+    N12["'Delete?'"]
+    N13["Three cases: leaf, one child, two children (find s"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+    N7 --> N8
+    N8 --> N9
+    N10 --> N11
+    N12 --> N13
 ```
 
 ---
@@ -190,6 +323,30 @@ boolean[][] visited;  // When you can't mutate the grid
 "Rotting oranges?" → Multi-source BFS with time tracking
 ```
 
+> **Flow**: 'How many islands?' → Count DFS/BFS starts on unvisited land | 'Shortest path to exit?' → BFS from start | 'Distance from all 1s?' → MULTI-SOURCE BFS (enqueue ALL 1s first) | 'Can we escape?' → DFS/BFS to check connectivity | 'Surrounded regions?' → DFS from BORDERS first, then fill rest | 'Rotting oranges?' → Multi-source BFS with time tracking
+
+```mermaid
+flowchart TD
+    N1["'How many islands?'"]
+    N2["Count DFS/BFS starts on unvisited land"]
+    N3["'Shortest path to exit?'"]
+    N4["BFS from start"]
+    N5["'Distance from all 1s?'"]
+    N6["MULTI-SOURCE BFS (enqueue ALL 1s first)"]
+    N7["'Can we escape?'"]
+    N8["DFS/BFS to check connectivity"]
+    N9["'Surrounded regions?'"]
+    N10["DFS from BORDERS first, then fill rest"]
+    N11["'Rotting oranges?'"]
+    N12["Multi-source BFS with time tracking"]
+    N1 --> N2
+    N3 --> N4
+    N5 --> N6
+    N7 --> N8
+    N9 --> N10
+    N11 --> N12
+```
+
 ---
 
 ## Part 5: Common Graph Patterns & When They Appear
@@ -212,6 +369,15 @@ If conflict found → not bipartite
 Mental model: "Color neighbors with opposite color. Contradiction = not bipartite."
 ```
 
+> **Flow**: If conflict found → not bipartite
+
+```mermaid
+flowchart LR
+    N1["If conflict found"]
+    N2["not bipartite"]
+    N1 --> N2
+```
+
 ### Tarjan's / Bridges — "What if this edge is removed?"
 ```
 When: "Critical connections", "bridges", "articulation points"
@@ -219,6 +385,15 @@ How: DFS with discovery time and low-link values
 If low[child] > disc[parent] → bridge edge
 
 Mental model: "Can child reach higher than parent without this edge?"
+```
+
+> **Flow**: If low[child] &gt; disc[parent] → bridge edge
+
+```mermaid
+flowchart LR
+    N1["If low[child] &gt; disc[parent]"]
+    N2["bridge edge"]
+    N1 --> N2
 ```
 
 ---
@@ -235,6 +410,18 @@ Mental model: "Can child reach higher than parent without this edge?"
 □ Grid: Am I checking bounds BEFORE accessing array?
 □ Tree: Am I handling null nodes in base case?
 □ Weighted graph: Am I using PQ correctly? (skip outdated entries in Dijkstra)
+```
+
+> **Flow**: Wrong: mark when poll → may enqueue duplicates | Right: mark when offer → each node enqueued once
+
+```mermaid
+flowchart LR
+    N1["Wrong: mark when poll"]
+    N2["may enqueue duplicates"]
+    N3["Right: mark when offer"]
+    N4["each node enqueued once"]
+    N1 --> N2
+    N3 --> N4
 ```
 
 ---

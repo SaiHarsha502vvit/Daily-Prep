@@ -263,6 +263,15 @@ CONNECTED: All nodes reachable from any node
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **Flow**: BFS (Breadth-First Search) / STRATEGY: Visit all neighb → Problem Type Use / Shortest path (unweighted) BFS / Sho
+
+```mermaid
+flowchart TD
+    N1["BFS (Breadth-First Search) / STRATEGY: Visit all neighb"]
+    N2["Problem Type Use / Shortest path (unweighted) BFS / Sho"]
+    N1 --> N2
+```
+
 ## DFS (Depth-First Search)
 
 ```
@@ -282,6 +291,27 @@ USES:
 - Cycle detection
 - Topological sort
 - Connected components
+```
+
+> **Flow**: GO DEEP first, then backtrack! → Start at node, visit neighbor, visit neighbor's neighbo | Start at node, visit neighbor, visit neighbor's neighbo → Until dead end, then backtrack. | Until dead end, then backtrack. → DFS from 0: 0 → 1 → 2 → 3 (one possible order) | DFS from 0: 0 → 1 → 2 → 3 (one possible order) → USES: | USES: → - Path finding | - Path finding → - Cycle detection | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["GO DEEP first, then backtrack!"]
+    N2["Start at node, visit neighbor, visit neighbor's neighbo"]
+    N3["Until dead end, then backtrack."]
+    N4["DFS from 0: 0 → 1 → 2 → 3 (one possible order)"]
+    N5["USES:"]
+    N6["- Path finding"]
+    N7["- Cycle detection"]
+    N8["- Topological sort"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```java
@@ -344,6 +374,27 @@ USES:
 - Shortest path (unweighted)
 - Level-order traversal
 - Finding nearest neighbor
+```
+
+> **Flow**: GO WIDE first! Visit all neighbors before going deeper. → BFS from 0: | BFS from 0: → Level 0: 0 | Level 0: 0 → Level 1: 1, 3 | Level 1: 1, 3 → Level 2: 2 | Level 2: 2 → BFS order: 0 → 1 → 3 → 2 | BFS order: 0 → 1 → 3 → 2 → USES: | ...+1 more
+
+```mermaid
+flowchart TD
+    N1["GO WIDE first! Visit all neighbors before going deeper."]
+    N2["BFS from 0:"]
+    N3["Level 0: 0"]
+    N4["Level 1: 1, 3"]
+    N5["Level 2: 2"]
+    N6["BFS order: 0 → 1 → 3 → 2"]
+    N7["USES:"]
+    N8["- Shortest path (unweighted)"]
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 --> N6
+    N6 --> N7
+    N7 --> N8
 ```
 
 ```java
@@ -482,6 +533,17 @@ Course 1 → Course 2 → Course 3
        ↘    Course 4 ↗
 
 Valid orders: [1, 2, 4, 3] or [1, 4, 2, 3]
+```
+
+> **Flow**: Course 1 → Course 2 | Course 2 → Course 3
+
+```mermaid
+flowchart LR
+    N1["Course 1"]
+    N2["Course 2"]
+    N3["Course 3"]
+    N1 --> N2
+    N2 --> N3
 ```
 
 ```java
