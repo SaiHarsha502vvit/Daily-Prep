@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](15_System_Design_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](17_Frontend_Architecture_Thinking.md)
+
 # Mental Models — Distributed Systems Thinking
 
 ## How to Think About Distributed Systems
@@ -332,3 +334,8 @@ TECHNIQUES TO REDUCE BLAST RADIUS:
 ---
 
 *Distributed systems thinking is about accepting uncertainty and building systems that work DESPITE it, not pretending it doesn't exist.*
+
+
+---
+
+> **Navigation**: [< Previous](15_System_Design_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](17_Frontend_Architecture_Thinking.md)

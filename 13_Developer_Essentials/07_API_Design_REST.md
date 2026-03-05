@@ -364,3 +364,8 @@ Using Spring Boot, implement a REST API for a TODO app:
 ---
 
 > **Next Chapter**: [Security Fundamentals →](08_Security_Fundamentals.md)
+
+
+---
+
+> **Navigation**: [< Previous](06_Testing_Fundamentals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08_Security_Fundamentals.md)

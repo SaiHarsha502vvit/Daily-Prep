@@ -292,3 +292,5 @@ function Dashboard({ user, notifications }) {
 ```
 
 ---
+
+> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_Component_Patterns.md)

@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](06_Resources_Links.md) | [Back to Index](../00_MASTER_INDEX.md)
+
 # Behavioral Interview — Complete Guide
 
 ## Why Behavioral Interviews Matter
@@ -566,3 +568,8 @@ PREPARATION = CONFIDENCE = PERFORMANCE
 ---
 
 *Practice your stories out loud 3 times each. Record yourself once. You'll be surprised how different it sounds vs. what's in your head.*
+
+
+---
+
+> **Navigation**: [< Previous](06_Resources_Links.md) | [Back to Index](../00_MASTER_INDEX.md)

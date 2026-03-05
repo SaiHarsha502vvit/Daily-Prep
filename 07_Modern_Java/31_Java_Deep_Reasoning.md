@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](30_Spring_Boot_Dependencies_Annotations.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](32_Spring_Boot_Deep_Reasoning.md)
+
 # Chapter 31 — Java Deep Reasoning: The Questions That Freeze People
 
 > **"Anyone can say 'Java is object-oriented.' The senior engineer explains WHY String is immutable, HOW HashMap actually works under the hood, and WHAT happens when you write `Integer a = 127; Integer b = 127; a == b`."**
@@ -627,3 +629,8 @@ counter.incrementAndGet(); // ✅ Atomic, no lock needed
 ← Previous: [Chapter 30 — Spring Boot Dependencies Map](30_Spring_Boot_Dependencies_Annotations.md)
 | [📚 Index](../00_MASTER_INDEX.md)
 | Next: [Spring Boot Deep Reasoning →](32_Spring_Boot_Deep_Reasoning.md)
+
+
+---
+
+> **Navigation**: [< Previous](30_Spring_Boot_Dependencies_Annotations.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](32_Spring_Boot_Deep_Reasoning.md)

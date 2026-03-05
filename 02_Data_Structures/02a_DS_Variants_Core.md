@@ -8,7 +8,7 @@
 
 ---
 
-# PART 0: DATA STRUCTURE VARIANT MAP
+# 📌 Part 0: Data Structure Variant Map
 
 ::: map
 
@@ -95,7 +95,7 @@ SPECIALIZED:
 
 ---
 
-# PART 1: LINKED LIST VARIANTS (COMPLETE)
+# 🔗 Part 1: Linked List Variants (complete)
 
 ## 1.1 Singly Linked List
 
@@ -1625,3 +1625,4 @@ public class SkipList<T extends Comparable<T>> {
 
 ---
 
+> **Navigation**: [< Previous](01g_DS_Internals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](02b_DS_Variants_Advanced.md)

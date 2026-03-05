@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](09_Problems_Trees.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](11_Problems_Dynamic_Programming.md)
+
 > **Problems 10/14** | [Prev](09_Problems_Trees.md) | [Index](../00_MASTER_INDEX.md) | [Next](11_Problems_Dynamic_Programming.md)
 
 ---
@@ -1937,3 +1939,4 @@ private void dfs2(List<List<Integer>> graph, boolean[] visited, int node) {
 
 ---
 
+> **Navigation**: [< Previous](09_Problems_Trees.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](11_Problems_Dynamic_Programming.md)

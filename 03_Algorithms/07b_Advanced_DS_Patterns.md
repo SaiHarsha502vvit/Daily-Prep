@@ -259,7 +259,7 @@ class LazySegTree {
 
 ---
 
-# PART 5: DISJOINT SET (UNION-FIND)
+# 🔗 Part 5: Disjoint Set (union — Find)
 
 ## Concept
 
@@ -399,7 +399,7 @@ public int kruskalMST(int n, int[][] edges) {
 
 ---
 
-# PART 6: SKIP LIST
+# 📌 Part 6: Skip List
 
 ## Concept
 
@@ -532,7 +532,7 @@ class SkipList {
 
 ---
 
-# PART 7: BLOOM FILTER
+# 📌 Part 7: Bloom Filter
 
 ## Concept
 
@@ -625,7 +625,7 @@ class BloomFilter {
 
 ---
 
-# PART 8: LRU CACHE
+# 💾 Part 8: LRU Cache
 
 ## Concept
 
@@ -740,7 +740,7 @@ class LRUCache {
 
 ---
 
-# PART 9: B-TREE AND B+ TREE
+# 🌳 Part 9: B — Tree and B+ Tree
 
 ## Concept
 
@@ -780,7 +780,7 @@ WHY B+ TREE for DATABASES?
 
 ---
 
-# PART 10: COMPARISON TABLE
+# ⚖️ Part 10: Comparison Table
 
 ```
 ┌───────────────────┬─────────────┬─────────────┬─────────────────────┐
@@ -808,7 +808,7 @@ _These data structures are the building blocks of modern systems!_ 🏗️
 
 ---
 
-# PART 11: MORE ADVANCED DATA STRUCTURES
+# 🚀 Part 11: More Advanced Data Structures
 
 ## Sparse Table (Range Minimum Query)
 
@@ -1378,7 +1378,7 @@ class MerkleTree {
 
 ---
 
-# PART 12: LEETCODE PROBLEMS BY DATA STRUCTURE
+# 🧩 Part 12: Leetcode Problems By Data Structure
 
 ## Practice Problems Mapped to DS
 
@@ -1427,7 +1427,7 @@ HEAP/PRIORITY QUEUE:
 
 ---
 
-# PART 13: COMPLEXITY CHEAT SHEET (EXTENDED)
+# 📋 Part 13: Complexity Cheat Sheet (extended)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -1467,7 +1467,7 @@ k = number of hash functions
 
 ---
 
-# PART 14: WHEN TO USE WHAT (DECISION FLOWCHART)
+# 📌 Part 14: When to Use What (decision Flowchart)
 
 ```
 START: What problem are you solving?
@@ -1511,3 +1511,8 @@ START: What problem are you solving?
 ---
 
 _Master these structures, and you can build anything!_ 🚀
+
+
+---
+
+> **Navigation**: [< Previous](07a_Advanced_DS_Core.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08a_NumberTheory_Core.md)

@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](Day_023_Mar25_Tue.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_025_Mar27_Thu.md)
+
 # DAY 024 — Wednesday, March 26, 2026
 ## Dijkstra's Algorithm + Union-Find + SQL Transactions
 
@@ -15,9 +17,6 @@
 | 1:20–1:40 | 20 min | REAL-WORLD: GPS = Dijkstra + A* |
 | 1:40–2:20 | 40 min | SQL: Transactions & ACID |
 | 2:20–3:00 | 40 min | PROBLEMS: Q1 + Q2 |
-
----
-
 
 ---
 
@@ -240,3 +239,5 @@ Output: 2
 - [ ] Solved LC 743 (Network Delay Time)
 
 ---
+
+> **Navigation**: [< Previous](Day_023_Mar25_Tue.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_025_Mar27_Thu.md)

@@ -9,7 +9,7 @@
 
 ---
 
-## THE LLD INTERVIEW FRAMEWORK
+## 🎤 The Lld Interview Framework
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════════╗
@@ -475,3 +475,5 @@ class LoggerConfig {
 ```
 
 ---
+
+> **Navigation**: [< Previous](06_Distributed_Systems_Fundamentals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08_Design_Patterns_Java.md)

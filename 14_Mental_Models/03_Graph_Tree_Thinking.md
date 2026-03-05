@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](02_DP_State_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_Array_String_Thinking.md)
+
 # 🗺️ Graph & Tree Problem Thinking — Mental Model
 
 > **The key insight**: Most graph/tree problems are just asking "how do I explore this structure?" The answer is almost always BFS, DFS, or Union-Find. The skill is knowing WHICH one and WHY.
@@ -244,3 +246,8 @@ Mental model: "Can child reach higher than parent without this edge?"
 
 ---
 [← 02 DP State](02_DP_State_Thinking.md) | [04 Array & String →](04_Array_String_Thinking.md)
+
+
+---
+
+> **Navigation**: [< Previous](02_DP_State_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_Array_String_Thinking.md)

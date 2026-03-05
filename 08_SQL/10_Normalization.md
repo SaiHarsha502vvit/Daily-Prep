@@ -255,3 +255,4 @@ CREATE TABLE orders (
 
 ---
 
+> **Navigation**: [< Previous](09_Window_Functions.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](11_Indexes_Performance.md)

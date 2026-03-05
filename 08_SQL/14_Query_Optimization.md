@@ -210,3 +210,4 @@ SELECT * FROM employees WHERE dept_id = 1;
 
 ---
 
+> **Navigation**: [< Previous](13_Transactions_ACID.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](15_Analytics_Warehousing_ETL.md)

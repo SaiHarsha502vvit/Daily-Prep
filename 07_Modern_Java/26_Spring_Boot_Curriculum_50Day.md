@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](25_Spring_Boot_Part23_Missing_Essential_Topics.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](27a_Java_Concurrency_Core.md)
+
 # 🚀 SPRING BOOT COMPLETE CURRICULUM — Separate Study Plan
 
 > **Duration:** 10 Weeks (alongside your DSA plan or standalone)
@@ -771,3 +773,8 @@ Each day: ~2-3 hours
 ---
 
 _50 Days • 50 Topics • Beginner → Expert • All in your workspace_
+
+
+---
+
+> **Navigation**: [< Previous](25_Spring_Boot_Part23_Missing_Essential_Topics.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](27a_Java_Concurrency_Core.md)

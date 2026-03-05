@@ -11,7 +11,7 @@
 
 ---
 
-## GRAPH REPRESENTATION - MEMORY DEEP DIVE
+## 🧠 Graph Representation — Memory Deep Dive
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -93,7 +93,7 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## EDGE LIST REPRESENTATION
+## 📌 Edge List Representation
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -166,7 +166,7 @@ Arrays.sort(edges, (a, b) -> a[2] - b[2]);  // sort by weight
 // Then process with Union-Find...
 ```
 
-## BFS AND DFS - INTERNAL OPERATIONS
+## 🔬 BFS and DFS — Internal Operations
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -247,7 +247,7 @@ Arrays.sort(edges, (a, b) -> a[2] - b[2]);  // sort by weight
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## SHORTEST PATH ALGORITHMS - INTERNAL COMPARISON
+## 🔬 Shortest Path Algorithms — Internal Comparison
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -330,3 +330,4 @@ Arrays.sort(edges, (a, b) -> a[2] - b[2]);  // sort by weight
 
 ---
 
+> **Navigation**: [< Previous](05_Trees.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05c_Graphs_Fundamentals.md)

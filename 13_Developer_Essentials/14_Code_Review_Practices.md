@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](13_Agile_Scrum.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](15_Cloud_Services_Guide.md)
+
 # Code Review — Best Practices & Checklist
 
 ## Why Code Reviews Matter
@@ -428,3 +430,8 @@ The author learns:
 ---
 
 *The best code reviews feel like pair programming, not a courtroom trial.*
+
+
+---
+
+> **Navigation**: [< Previous](13_Agile_Scrum.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](15_Cloud_Services_Guide.md)

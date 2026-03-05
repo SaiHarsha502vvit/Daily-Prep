@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](05_RealWorld_Problems_Part3.md) | [Back to Index](../00_MASTER_INDEX.md)
+
 # 🔥 Real-Life Tech Incidents & DSA Lessons
 
 ## Learn From The Failures of Giants
@@ -24,7 +26,7 @@
 
 # ═══════════════════════════════════════════════════════════
 
-# PART 1: DATA STRUCTURE DISASTERS
+# 📌 Part 1: Data Structure Disasters
 
 # ═══════════════════════════════════════════════════════════
 
@@ -416,7 +418,7 @@ func measureLatencyMonotonic(start, end time.Time) float64 {
 
 # ═══════════════════════════════════════════════════════════
 
-# PART 2: ALGORITHM COMPLEXITY DISASTERS
+# 📈 Part 2: Algorithm Complexity Disasters
 
 # ═══════════════════════════════════════════════════════════
 
@@ -784,7 +786,7 @@ public class SmartShuffle {
 
 # ═══════════════════════════════════════════════════════════
 
-# PART 3: CONCURRENCY DISASTERS
+# 🔀 Part 3: Concurrency Disasters
 
 # ═══════════════════════════════════════════════════════════
 
@@ -1071,7 +1073,7 @@ public class VersionedSurge {
 
 # ═══════════════════════════════════════════════════════════
 
-# PART 4: QUICK REFERENCE - INCIDENT TO DSA MAPPING
+# 📖 Part 4: Quick Reference — Incident to DSA Mapping
 
 # ═══════════════════════════════════════════════════════════
 
@@ -1124,3 +1126,8 @@ When discussing an incident in an interview:
 
 _"Those who cannot remember the past are condemned to repeat it."_
 _— Learn from others' mistakes. They've already paid the price._
+
+
+---
+
+> **Navigation**: [< Previous](05_RealWorld_Problems_Part3.md) | [Back to Index](../00_MASTER_INDEX.md)

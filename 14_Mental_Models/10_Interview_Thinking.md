@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](09_Complexity_Intuition.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](11_Greedy_vs_DP_Decision.md)
+
 # 🎯 Interview Thinking — Solve Problems Under Pressure
 
 > **The key insight**: Interview performance = Problem-solving skill × Communication × Composure. You can be an amazing coder and still fail if you can't communicate your thinking or manage pressure. This guide covers the thinking process for live problem-solving.

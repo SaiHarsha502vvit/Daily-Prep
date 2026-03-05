@@ -183,10 +183,10 @@ You place an order → get a receipt (promise). Eventually:
 
 STATES:
 ┌──────────┐    resolve()    ┌───────────┐
-│ PENDING  │───────────────→│ FULFILLED │
+│ PENDING  │───────────────→│ FULFILLED  │
 │          │                 └───────────┘
 │          │    reject()     ┌───────────┐
-│          │───────────────→│ REJECTED  │
+│          │───────────────→│ REJECTED   │
 └──────────┘                 └───────────┘
 Once settled (fulfilled/rejected), a promise NEVER changes state.
 ```

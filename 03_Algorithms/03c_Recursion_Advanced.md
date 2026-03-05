@@ -780,9 +780,9 @@ public long factorial(int n) {
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
-## MUTUAL RECURSION
+## 🔁 Mutual Recursion
 
-````
+```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │                    MUTUAL RECURSION - TWO FUNCTIONS CALL EACH OTHER             │
 ├─────────────────────────────────────────────────────────────────────────────────┤
@@ -790,7 +790,7 @@ public long factorial(int n) {
 │  CONCEPT: Two or more functions that call each other in a cycle.                │
 │                                                                                 │
 │       ┌───────────┐                    ┌───────────┐                            │
-│       │  isEven   │ ────────────────→ │  isOdd    │                             │
+│       │  isEven   │ ────────────────→  │  isOdd    │                            │
 │       └───────────┘                    └───────────┘                            │
 │             ↑                                │                                  │
 │             └────────────────────────────────┘                                  │
@@ -798,6 +798,8 @@ public long factorial(int n) {
 │                                                                                 │
 │  EXAMPLE: Check if a number is even or odd using mutual recursion               │
 │  ────────────────────────────────────────────────────────                       │
+```
+
 ```java
 // Mutually recursive functions
 boolean isEven(int n) {
@@ -812,12 +814,14 @@ boolean isOdd(int n) {
 
 // Trace: isEven(4)
 // isEven(4) → isOdd(3) → isEven(2) → isOdd(1) → isEven(0) → true
-````
+```
 
-│ │
-│ │
-│ REAL-WORLD USE: Expression Parsing │
-│ ────────────────────────────────── │
+```
+│                                                                                 │
+│                                                                                 │
+│  REAL-WORLD USE: Expression Parsing                                             │
+│  ──────────────────────────────────                                             │
+```
 
 ```java
 // Recursive descent parser for expressions
@@ -865,24 +869,24 @@ class Parser {
 }
 ```
 
-│ │
-│ CALL GRAPH for parsing "(2+3)\*4": │
-│ parseExpr() │
-│ └→ parseTerm() │
-│ └→ parseFactor() [sees '('] │
-│ └→ parseExpr() ← MUTUAL CALL │
-│ └→ parseTerm() │
-│ └→ parseFactor() → 2 │
-│ └→ parseFactor() → 3 │
-│ └→ returns 5 │
-│ └→ parseFactor() → 4 │
-│ └→ returns 20 │
-│ │
+```
+│                                                                                 │
+│  CALL GRAPH for parsing "(2+3)*4":                                              │
+│  parseExpr()                                                                    │
+│  └→ parseTerm()                                                                 │
+│     └→ parseFactor() [sees '(']                                                 │
+│        └→ parseExpr()              ← MUTUAL CALL                                │
+│           └→ parseTerm()                                                        │
+│              └→ parseFactor() → 2                                               │
+│              └→ parseFactor() → 3                                               │
+│           └→ returns 5                                                          │
+│        └→ parseFactor() → 4                                                     │
+│     └→ returns 20                                                               │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
-
 ```
 
-## CONTINUATION PASSING STYLE (CPS)
+## 📌 Continuation Passing Style (cps)
 
 ```
 
@@ -899,6 +903,7 @@ class Parser {
 │                                                                                 │
 │ EXAMPLE: Factorial in CPS                                                       │
 │ ───────────────────────────                                                     │
+```
 
 ```java
 // Traditional recursive factorial
@@ -926,23 +931,25 @@ void factorialCPS(int n, Continuation<Integer> k) {
 factorialCPS(5, result -> System.out.println(result));  // Prints 120
 ```
 
-│ │
-│ │
-│ TRACE OF factorialCPS(4, print): │
-│ ──────────────────────────────── │
-│ factorialCPS(4, k₀) where k₀ = print │
-│ └→ factorialCPS(3, k₁) where k₁ = r → k₀(4 _ r) │
-│ └→ factorialCPS(2, k₂) where k₂ = r → k₁(3 _ r) │
-│ └→ factorialCPS(1, k₃) where k₃ = r → k₂(2 _ r) │
-│ └→ k₃.accept(1) │
-│ └→ k₂.accept(2) // 2 _ 1 │
-│ └→ k₁.accept(6) // 3 _ 2 │
-│ └→ k₀.accept(24) // 4 _ 6 │
-│ └→ print(24) │
-│ │
-│ │
-│ FIBONACCI IN CPS: │
-│ ───────────────── │
+```
+│                                                                                 │
+│                                                                                 │
+│  TRACE OF factorialCPS(4, print):                                               │
+│  ────────────────────────────────                                               │
+│  factorialCPS(4, k₀) where k₀ = print                                          │
+│  └→ factorialCPS(3, k₁) where k₁ = r → k₀(4 * r)                              │
+│     └→ factorialCPS(2, k₂) where k₂ = r → k₁(3 * r)                           │
+│        └→ factorialCPS(1, k₃) where k₃ = r → k₂(2 * r)                        │
+│           └→ k₃.accept(1)                                                      │
+│        └→ k₂.accept(2)       // 2 * 1                                          │
+│     └→ k₁.accept(6)          // 3 * 2                                          │
+│  └→ k₀.accept(24)            // 4 * 6                                          │
+│     └→ print(24)                                                                │
+│                                                                                 │
+│                                                                                 │
+│  FIBONACCI IN CPS:                                                              │
+│  ─────────────────                                                              │
+```
 
 ```java
 void fibCPS(int n, Continuation<Integer> k) {
@@ -958,20 +965,19 @@ void fibCPS(int n, Continuation<Integer> k) {
 }
 ```
 
-│ │
-│ WHY USE CPS? │
-│ • All calls become tail calls → can be optimized in functional languages │
-│ • Explicit control flow → useful for async programming │
-│ • Foundation of async/await patterns │
-│ │
+```
+│                                                                                 │
+│ WHY USE CPS?                                                                    │
+│ • All calls become tail calls → can be optimized in functional languages        │
+│ • Explicit control flow → useful for async programming                          │
+│ • Foundation of async/await patterns                                            │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
-
 ```
 
-## Y-COMBINATOR - ANONYMOUS RECURSION
+## 🔁 Y — Combinator — Anonymous Recursion
 
 ```
-
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │ Y-COMBINATOR - RECURSION WITHOUT NAMING                                         │
 ├─────────────────────────────────────────────────────────────────────────────────┤
@@ -986,6 +992,7 @@ void fibCPS(int n, Continuation<Integer> k) {
 │                                                                                 │
 │ JAVA IMPLEMENTATION:                                                            │
 │ ─────────────────────                                                           │
+```
 
 ```java
 // Function that takes itself and returns a function
@@ -1015,10 +1022,12 @@ Function<Integer, Integer> fib = Y((self, n) -> {
 System.out.println(fib.apply(10));  // 55
 ```
 
-│ │
-│ │
-│ SIMPLER JAVA 8 VERSION: │
-│ ──────────────────────── │
+```
+│                                                                                 │
+│                                                                                 │
+│  SIMPLER JAVA 8 VERSION:                                                        │
+│  ────────────────────────                                                       │
+```
 
 ```java
 // Using Java's Function interface directly
@@ -1031,17 +1040,17 @@ Function<Integer, Integer> factorial = new Function<>() {
 };
 ```
 
-│ │
-│ WHY CARE ABOUT Y-COMBINATOR? │
-│ • Foundation of lambda calculus and functional programming │
-│ • Proves recursion can be derived from simpler constructs │
-│ • Asked in advanced interviews about programming theory │
-│ │
+```
+│                                                                                 │
+│  WHY CARE ABOUT Y-COMBINATOR?                                                   │
+│  • Foundation of lambda calculus and functional programming                      │
+│  • Proves recursion can be derived from simpler constructs                       │
+│  • Asked in advanced interviews about programming theory                        │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
-
 ```
 
-## ADVANCED BACKTRACKING OPTIMIZATIONS
+## 🚀 Advanced Backtracking Optimizations
 
 ```
 
@@ -1088,10 +1097,12 @@ class NQueens {
 // 8-Queens: Only ~2,000 nodes visited instead of 8^8 = 16 million
 ```
 
-│ │
-│ │
-│ TECHNIQUE 2: BRANCH AND BOUND - Track best solution │
-│ ─────────────────────────────────────────────────────── │
+```
+│                                                                                 │
+│                                                                                 │
+│  TECHNIQUE 2: BRANCH AND BOUND - Track best solution                            │
+│  ───────────────────────────────────────────────────────                         │
+```
 
 ```java
 // Traveling Salesman with Branch and Bound
@@ -1151,10 +1162,12 @@ class TSPBranchAndBound {
 }
 ```
 
-│ │
-│ │
-│ TECHNIQUE 3: SYMMETRY BREAKING │
-│ ───────────────────────────── │
+```
+│                                                                                 │
+│                                                                                 │
+│  TECHNIQUE 3: SYMMETRY BREAKING                                                 │
+│  ─────────────────────────────                                                  │
+```
 
 ```java
 // Permutations without duplicates using symmetry breaking
@@ -1177,10 +1190,12 @@ void permuteUnique(int[] nums, int start, List<List<Integer>> result) {
 }
 ```
 
-│ │
-│ │
-│ TECHNIQUE 4: CONSTRAINT PROPAGATION (Sudoku) │
-│ ──────────────────────────────────────────── │
+```
+│                                                                                 │
+│                                                                                 │
+│  TECHNIQUE 4: CONSTRAINT PROPAGATION (Sudoku)                                   │
+│  ────────────────────────────────────────────                                   │
+```
 
 ```java
 class SudokuSolver {
@@ -1233,9 +1248,9 @@ class SudokuSolver {
 }
 ```
 
-│ │
+```
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
-
 ```
 
 ## DIVIDE AND CONQUER - ADVANCED PATTERNS
@@ -1304,10 +1319,12 @@ class ClosestPair {
 }
 ```
 
-│ │
-│ │
-│ PATTERN 2: KARATSUBA MULTIPLICATION │
-│ ───────────────────────────────────── │
+```
+│                                                                                 │
+│                                                                                 │
+│  PATTERN 2: KARATSUBA MULTIPLICATION                                            │
+│  ─────────────────────────────────────                                          │
+```
 
 ```java
 // Multiply two n-digit numbers in O(n^1.585) instead of O(n²)
@@ -1340,10 +1357,12 @@ BigInteger karatsuba(BigInteger x, BigInteger y) {
 // Only 3 multiplications instead of 4!
 ```
 
-│ │
-│ │
-│ PATTERN 3: STRASSEN'S MATRIX MULTIPLICATION │
-│ ─────────────────────────────────────────── │
+```
+│                                                                                 │
+│                                                                                 │
+│  PATTERN 3: STRASSEN'S MATRIX MULTIPLICATION                                    │
+│  ───────────────────────────────────────────                                    │
+```
 
 ```java
 // O(n^2.807) instead of O(n³) for matrix multiplication
@@ -1385,12 +1404,12 @@ int[][] strassen(int[][] A, int[][] B) {
 }
 ```
 
-│ │
+```
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
-
 ```
 
-## RECURSION WITH STATE - FUNCTIONAL APPROACH
+## 🔁 Recursion With State — Functional Approach
 
 ```
 
@@ -1432,10 +1451,12 @@ List<String> generateImmutable(String prefix, int n) {
 // No backtracking needed! Each call is independent.
 ```
 
-│ │
-│ │
-│ TREE ACCUMULATOR PATTERN: │
-│ ────────────────────────── │
+```
+│                                                                                 │
+│                                                                                 │
+│  TREE ACCUMULATOR PATTERN:                                                      │
+│  ──────────────────────────                                                     │
+```
 
 ```java
 // Sum all nodes in tree - functional style
@@ -1467,9 +1488,9 @@ List<Integer> vals = foldTree(root, new ArrayList<>(), (list, val) -> {
 });
 ```
 
-│ │
+```
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
-
 ```
 
 ## RECURSION PERFORMANCE COMPARISON
@@ -1677,8 +1698,6 @@ _Recursion is not about memorizing - it's about TRUSTING!_ 🔄
 
 ```
 
-```
-
 ---
 
 # CURATED PRACTICE PROBLEMS — RECURSION & BACKTRACKING
@@ -1749,3 +1768,5 @@ _Recursion is not about memorizing - it's about TRUSTING!_ 🔄
 | 8 | Split Array into Fibonacci Sequence (LC 842) | LeetCode | Fibonacci constraint + string splitting |
 
 ---
+
+> **Navigation**: [< Previous](03b_Recursion_Fundamentals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04a_DP_Internals.md)

@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](02_Problems_Math_Numbers.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_Problems_Strings.md)
+
 # 🚨 COMMON MISTAKES & HOW TO AVOID THEM
 
 ## Every mistake you might make, with visual explanations!
@@ -19,7 +21,7 @@
 
 ---
 
-## 1. OFF-BY-ONE ERRORS
+## 📌 1. Off — By — One Errors
 
 ```
 ╔═══════════════════════════════════════════════════════════════════════════╗
@@ -92,7 +94,7 @@ while (left < right)              // CORRECT: < (stop when they meet)
 
 ---
 
-## 2. ARRAY INDEX OUT OF BOUNDS
+## 📊 2. Array Index Out of Bounds
 
 ```
 ╔═══════════════════════════════════════════════════════════════════════════╗
@@ -153,7 +155,7 @@ while (left < right)              // CORRECT: < (stop when they meet)
 
 ---
 
-## 3. INTEGER OVERFLOW
+## 💥 3. Integer Overflow
 
 ```
 ╔═══════════════════════════════════════════════════════════════════════════╗
@@ -214,7 +216,7 @@ while (left < right)              // CORRECT: < (stop when they meet)
 
 ---
 
-## 4. STRING COMPARISON MISTAKES
+## 📝 4. String Comparison Mistakes
 
 ```
                   STRING COMPARISON MISTAKES
@@ -263,7 +265,7 @@ But DON'T rely on this! Always use .equals() to be safe.
 
 ---
 
-## 5. SCANNER INPUT MISTAKES
+## 📌 5. Scanner Input Mistakes
 
 ```
 ╔═══════════════════════════════════════════════════════════════════════════╗
@@ -330,7 +332,7 @@ But DON'T rely on this! Always use .equals() to be safe.
 
 ---
 
-## 6. LOOP MISTAKES
+## 🏛️ 6. Loop Mistakes
 
 ```
                   LOOP MISTAKES
@@ -403,7 +405,7 @@ for (int i = 0; i < n; i++) {
 
 ---
 
-## 7. EDGE CASE MISTAKES
+## 📌 7. Edge Case Mistakes
 
 ```
                   EDGE CASE MISTAKES
@@ -461,7 +463,7 @@ ALWAYS CHECK THESE BEFORE SUBMITTING:
 
 ---
 
-## 8. LOGIC MISTAKES
+## 📌 8. Logic Mistakes
 
 ```
 ╔═══════════════════════════════════════════════════════════════════════════╗
@@ -524,7 +526,7 @@ ALWAYS CHECK THESE BEFORE SUBMITTING:
 
 ---
 
-## 9. RETURN STATEMENT MISTAKES
+## 📦 9. Return Statement Mistakes
 
 ```
 ╔═══════════════════════════════════════════════════════════════════════════╗
@@ -596,7 +598,7 @@ ALWAYS CHECK THESE BEFORE SUBMITTING:
 
 ---
 
-## 10. VARIABLE INITIALIZATION MISTAKES
+## 📌 10. Variable Initialization Mistakes
 
 ```
                   VARIABLE INITIALIZATION MISTAKES
@@ -697,3 +699,8 @@ REFERENCE TABLE:
 Remember: **Most bugs are in boundaries, not logic!**
 
 Check edges, check bounds, and you'll catch 80% of bugs before they happen.
+
+
+---
+
+> **Navigation**: [< Previous](02_Problems_Math_Numbers.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_Problems_Strings.md)

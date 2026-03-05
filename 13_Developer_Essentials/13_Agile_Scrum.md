@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](12_Monitoring_Observability.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](14_Code_Review_Practices.md)
+
 # Agile & Scrum — Complete Developer Guide
 
 ## Why Every Developer Needs This
@@ -489,3 +491,8 @@ A: By user workflow, by input method, by data type,
 ---
 
 *The best sprint is one where the team delivers what they committed to, learns something new, and enjoys working together.*
+
+
+---
+
+> **Navigation**: [< Previous](12_Monitoring_Observability.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](14_Code_Review_Practices.md)

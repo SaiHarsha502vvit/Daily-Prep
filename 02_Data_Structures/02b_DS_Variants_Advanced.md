@@ -2,7 +2,7 @@
 
 ---
 
-# PART 2: STACK VARIANTS
+# 📚 Part 2: Stack Variants
 
 ## 2.1 Min Stack
 
@@ -209,7 +209,7 @@ public class MaxStackSimple {
 
 ---
 
-# PART 3: QUEUE VARIANTS
+# 📬 Part 3: Queue Variants
 
 ## 3.1 Circular Queue
 
@@ -605,7 +605,7 @@ public class MonotonicQueue {
 
 ---
 
-# PART 4: TREE VARIANTS
+# 🌳 Part 4: Tree Variants
 
 ## 4.1 Binary Tree Types
 
@@ -1004,7 +1004,7 @@ public class AVLTree {
 
 ---
 
-# PART 5: HEAP VARIANTS
+# 📦 Part 5: Heap Variants
 
 ::: pattern
 
@@ -1190,7 +1190,7 @@ public class MinHeap {
 
 ---
 
-# PART 6: HASH TABLE VARIANTS
+# #️⃣ Part 6: Hash Table Variants
 
 ::: pattern
 
@@ -1256,7 +1256,7 @@ public class MinHeap {
 
 ---
 
-# PART 7: QUICK REFERENCE - ALL VARIANTS
+# 📖 Part 7: Quick Reference — All Variants
 
 ::: memory
 
@@ -1427,3 +1427,5 @@ This guide covers ALL major variants of data structures with:
 | 5 | Count of Smaller Numbers After Self (LC 315) | LeetCode | Merge sort or BIT — teaches augmented DS |
 
 ---
+
+> **Navigation**: [< Previous](02a_DS_Variants_Core.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_Collections_Java.md)

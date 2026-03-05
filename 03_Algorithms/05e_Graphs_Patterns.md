@@ -1107,3 +1107,5 @@ Which graph problem type am I facing?
 ```
 
 ---
+
+> **Navigation**: [< Previous](05d_Graphs_Advanced_Algos.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06a_Greedy_BitManip.md)

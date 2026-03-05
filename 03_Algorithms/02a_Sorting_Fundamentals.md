@@ -26,7 +26,7 @@
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
-## COMPARISON OPERATION - AT CPU INSTRUCTION LEVEL
+## ⚖️ Comparison Operation — at CPU Instruction Level
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -102,7 +102,7 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## SWAP OPERATION - AT CPU INSTRUCTION LEVEL
+## 🖥️ Swap Operation — at CPU Instruction Level
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -170,7 +170,7 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## CACHE BEHAVIOR - WHY SOME SORTS ARE FASTER
+## 🔄 Cache Behavior — Why Some Sorts Are Faster
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -253,7 +253,7 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## MEMORY ACCESS PATTERNS VISUALIZATION
+## 🧠 Memory Access Patterns Visualization
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -304,7 +304,7 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## WHY ARRAYS.SORT() USES DIFFERENT ALGORITHMS
+## 📊 Why Arrays.sort() Uses Different Algorithms
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -360,7 +360,7 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## COUNTING COMPARISONS AND SWAPS
+## ⚖️ Counting Comparisons and Swaps
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -430,7 +430,7 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## REAL BENCHMARK DATA
+## 📌 Real Benchmark Data
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -486,7 +486,7 @@
 
 ---
 
-# PART 1: WHY LEARN SORTING?
+# 🔄 Part 1: Why Learn Sorting?
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
@@ -627,7 +627,7 @@
 
 ---
 
-# PART 2: BUBBLE SORT
+# 🔄 Part 2: Bubble Sort
 
 ## The Idea
 
@@ -701,7 +701,7 @@ public void bubbleSort(int[] arr) {
 
 ---
 
-# PART 3: SELECTION SORT
+# 🔄 Part 3: Selection Sort
 
 ## The Idea
 
@@ -765,7 +765,7 @@ public void selectionSort(int[] arr) {
 
 ---
 
-# PART 4: INSERTION SORT
+# 🔄 Part 4: Insertion Sort
 
 ## The Idea
 
@@ -826,7 +826,7 @@ public void insertionSort(int[] arr) {
 
 ---
 
-# PART 5: MERGE SORT
+# 🔄 Part 5: Merge Sort
 
 ## The Idea
 
@@ -940,7 +940,7 @@ private void merge(int[] arr, int left, int mid, int right) {
 
 ---
 
-# PART 6: QUICK SORT
+# 🔄 Part 6: Quick Sort
 
 ## The Idea
 
@@ -1039,3 +1039,4 @@ private int partition(int[] arr, int low, int high) {
 
 ---
 
+> **Navigation**: [< Previous](01_Algorithm_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](02b_Sorting_Advanced.md)

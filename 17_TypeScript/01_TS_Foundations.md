@@ -1,3 +1,5 @@
+> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_TS_Advanced_Types.md)
+
 > **TypeScript Chapter 1/3** | [Index](../00_MASTER_INDEX.md) | [Next → Advanced Types](02_TS_Advanced_Types.md)
 
 # TypeScript Foundations — Why Types Matter
@@ -563,3 +565,8 @@ Q: What is `as const`?
 ---
 
 > [Index](../00_MASTER_INDEX.md) | [Next → Advanced Types](02_TS_Advanced_Types.md)
+
+
+---
+
+> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_TS_Advanced_Types.md)

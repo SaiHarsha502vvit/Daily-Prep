@@ -5,9 +5,9 @@
 
 ---
 
-## STRING ALGORITHMS - THE COMPLETE TOOLKIT
+## 📝 String Algorithms — the Complete Toolkit
 
-````
+```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │                    STRING ALGORITHMS HIERARCHY                                  │
 ├─────────────────────────────────────────────────────────────────────────────────┤
@@ -29,6 +29,8 @@
 │                                                                                 │
 │  Z-ALGORITHM (All pattern occurrences):                                         │
 │  ──────────────────────────────────────                                         │
+```
+
 ```java
 // Z[i] = length of longest substring starting at i that matches prefix
 int[] zFunction(String s) {
@@ -66,12 +68,15 @@ List<Integer> findPattern(String text, String pattern) {
     }
     return matches;
 }
-````
+```
 
+```
 │ │
 │ │
 │ AHO-CORASICK (Multiple pattern matching): │
 │ ────────────────────────────────────────── │
+```
+
 
 ```java
 class AhoCorasick {
@@ -137,15 +142,17 @@ class AhoCorasick {
 // Used in: Virus scanners, content filters, DNA analysis
 ```
 
+```
 │ │
 └─────────────────────────────────────────────────────────────────────────────────┘
-
 ```
 
-## RANDOMIZED ALGORITHMS
+
+
+## 📌 Randomized Algorithms
+
 
 ```
-
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │ RANDOMIZED ALGORITHMS - POWER OF RANDOMNESS                                     │
 ├─────────────────────────────────────────────────────────────────────────────────┤
@@ -158,6 +165,8 @@ class AhoCorasick {
 │                                                                                 │
 │ QUICKSELECT (Find k-th smallest element):                                       │
 │ ──────────────────────────────────────────                                      │
+```
+
 
 ```java
 // O(n) expected, O(n²) worst case
@@ -191,10 +200,13 @@ int partition(int[] arr, int lo, int hi, int pivotIdx) {
 }
 ```
 
+```
 │ │
 │ │
 │ MILLER-RABIN PRIMALITY TEST: │
 │ ──────────────────────────── │
+```
+
 
 ```java
 // Test if n is prime with high probability
@@ -237,10 +249,13 @@ boolean millerTest(long a, long d, long n, int r) {
 // Used in cryptography for generating large primes
 ```
 
+```
 │ │
 │ │
 │ RESERVOIR SAMPLING (Random sample from stream): │
 │ ─────────────────────────────────────────────── │
+```
+
 
 ```java
 // Select k random items from unknown-size stream
@@ -270,15 +285,17 @@ int[] reservoirSample(Iterator<Integer> stream, int k) {
 // Used in: Big data sampling, A/B testing, analytics
 ```
 
+```
 │ │
 └─────────────────────────────────────────────────────────────────────────────────┘
-
 ```
 
-## APPROXIMATION ALGORITHMS
+
+
+## 📌 Approximation Algorithms
+
 
 ```
-
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │ APPROXIMATION ALGORITHMS FOR NP-HARD PROBLEMS                                   │
 ├─────────────────────────────────────────────────────────────────────────────────┤
@@ -288,6 +305,8 @@ int[] reservoirSample(Iterator<Integer> stream, int k) {
 │                                                                                 │
 │ VERTEX COVER - 2-APPROXIMATION:                                                 │
 │ ─────────────────────────────────                                               │
+```
+
 
 ```java
 // Find vertex cover at most 2x optimal
@@ -318,10 +337,13 @@ Set<Integer> vertexCover(int n, int[][] edges) {
 // We include both, so at most 2x optimal
 ```
 
+```
 │ │
 │ │
 │ SET COVER - log(n)-APPROXIMATION: │
 │ ────────────────────────────────── │
+```
+
 
 ```java
 // Cover all elements using minimum number of sets
@@ -356,10 +378,13 @@ List<Set<Integer>> setCover(Set<Integer> universe, List<Set<Integer>> sets) {
 // Used in: Resource allocation, facility location
 ```
 
+```
 │ │
 │ │
 │ TSP - 1.5-APPROXIMATION (Christofides): │
 │ ──────────────────────────────────────── │
+```
+
 
 ```java
 // For metric TSP (triangle inequality holds)
@@ -402,21 +427,25 @@ List<Integer> tspApprox(int[][] dist, int n) {
 // Christofides improves to 1.5x using minimum matching
 ```
 
+```
 │ │
 └─────────────────────────────────────────────────────────────────────────────────┘
-
 ```
 
-## MODERN DATA STRUCTURES IN PRODUCTION
+
+
+## 📌 Modern Data Structures in Production
+
 
 ```
-
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │ PRODUCTION-GRADE DATA STRUCTURES                                                │
 ├─────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                 │
 │ COUNT-MIN SKETCH (Approximate frequency counting):                              │
 │ ──────────────────────────────────────────────────                              │
+```
+
 
 ```java
 class CountMinSketch {
@@ -461,10 +490,13 @@ class CountMinSketch {
 // Memory: O(1/ε * log(1/δ)) regardless of stream size!
 ```
 
+```
 │ │
 │ │
 │ HYPERLOGLOG (Cardinality estimation): │
 │ ────────────────────────────────────── │
+```
+
 
 ```java
 class HyperLogLog {
@@ -517,10 +549,13 @@ class HyperLogLog {
 // Error: ~1.04/√m standard error (m=2048 gives ~2% error)
 ```
 
+```
 │ │
 │ │
 │ CUCKOO FILTER (Better than Bloom filter): │
 │ ────────────────────────────────────────── │
+```
+
 
 ```java
 class CuckooFilter {
@@ -590,21 +625,25 @@ class CuckooFilter {
 // • Similar space efficiency
 ```
 
+```
 │ │
 └─────────────────────────────────────────────────────────────────────────────────┘
-
 ```
 
-## INTERVIEW PATTERNS - ADVANCED LEVEL
+
+
+## 🎨 Interview Patterns — Advanced Level
+
 
 ```
-
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │ ADVANCED INTERVIEW PATTERNS                                                     │
 ├─────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                 │
 │ PATTERN 1: MONOTONIC STACK VARIATIONS                                           │
 │ ─────────────────────────────────────────                                       │
+```
+
 
 ```java
 // Next Greater Element with circular array
@@ -643,10 +682,13 @@ int largestRectangle(int[] heights) {
 }
 ```
 
+```
 │ │
 │ │
 │ PATTERN 2: SWEEP LINE ALGORITHM │
 │ ──────────────────────────────── │
+```
+
 
 ```java
 // Count overlapping intervals at any point
@@ -703,10 +745,13 @@ List<int[]> getSkyline(int[][] buildings) {
 }
 ```
 
+```
 │ │
 │ │
 │ PATTERN 3: BINARY SEARCH ON ANSWER │
 │ ────────────────────────────────────── │
+```
+
 
 ```java
 // Minimize maximum: Allocate books to students
@@ -749,10 +794,13 @@ boolean canAllocate(int[] books, int students, int maxPages) {
 // - Capacity To Ship Packages
 ```
 
+```
 │ │
 │ │
 │ PATTERN 4: MEET IN THE MIDDLE │
 │ ───────────────────────────────── │
+```
+
 
 ```java
 // Subset sum with n up to 40 (too large for 2^n, but 2^20 is ok)
@@ -796,15 +844,17 @@ int closestSum(int[] nums, int target) {
 // vs naive O(2^n)
 ```
 
+```
 │ │
 └─────────────────────────────────────────────────────────────────────────────────┘
-
 ```
 
-## COMPLETE DSA MASTERY CHECKLIST
+
+
+## 📚 Complete DSA Mastery Checklist
+
 
 ```
-
 ╔══════════════════════════════════════════════════════════════════════════════════╗
 ║ DSA MASTERY CHECKLIST                                                            ║
 ╠══════════════════════════════════════════════════════════════════════════════════╣
@@ -857,6 +907,8 @@ int closestSum(int[] nums, int target) {
 ║ □ Communication and problem-solving approach                                     ║
 ║                                                                                  ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
+```
+
 
 ```
 
@@ -866,6 +918,7 @@ int closestSum(int[] nums, int target) {
 
 ```
 
+```
 ╔══════════════════════════════════════════════════════════════════════════════════╗
 ║ JVM INTERNALS - THE COMPLETE GUIDE FOR BUILDING FRAMEWORKS                       ║
 ╠══════════════════════════════════════════════════════════════════════════════════╣
@@ -878,12 +931,16 @@ int closestSum(int[] nums, int target) {
 ║ • Ace senior-level Java interviews                                               ║
 ║                                                                                  ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
-
 ```
 
----
+
 
 
 ---
 
 > **Prev**: [Part 1: Data Structures](02_Ultimate_DSA_Guide.md) | **Next**: [Part 3: JVM Internals](02c_Ultimate_DSA_JVM.md)
+
+
+---
+
+> **Navigation**: [< Previous](02b_DSA_Guide_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](02c_Ultimate_DSA_JVM.md)

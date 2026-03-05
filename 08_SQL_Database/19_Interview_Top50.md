@@ -1,3 +1,5 @@
+> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](21_Database_Internals.md)
+
 # SQL Interview — Top 50 Problems & Patterns
 
 ## How to Use This Guide
@@ -581,7 +583,7 @@ WHERE d.name = 'Engineering';
 
 ---
 
-### Q32. INSERT ... ON DUPLICATE KEY / UPSERT
+### 📌 Q32. Insert ... on Duplicate Key / Upsert
 
 ```sql
 -- MySQL: Insert or update if exists
@@ -1002,3 +1004,8 @@ JOIN logs l3 ON l3.id = l1.id + 2 AND l3.value = l1.value;
 ---
 
 *Practice these 50 problems and you'll recognize patterns in any SQL interview question.*
+
+
+---
+
+> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](21_Database_Internals.md)

@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](01_TS_Foundations.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_TS_Patterns_BestPractices.md)
+
 > **TypeScript Chapter 2/3** | [← Foundations](01_TS_Foundations.md) | [Index](../00_MASTER_INDEX.md) | [Next → Patterns](03_TS_Patterns_BestPractices.md)
 
 # TypeScript Advanced Types — Generics, Utility Types & Type Gymnastics
@@ -635,3 +637,8 @@ Q: Explain conditional types distribution?
 ---
 
 > [← Foundations](01_TS_Foundations.md) | [Index](../00_MASTER_INDEX.md) | [Next → Patterns](03_TS_Patterns_BestPractices.md)
+
+
+---
+
+> **Navigation**: [< Previous](01_TS_Foundations.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_TS_Patterns_BestPractices.md)

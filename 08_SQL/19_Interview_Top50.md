@@ -122,3 +122,4 @@ SELECT user_id, COUNT(*) AS consecutive_days FROM numbered GROUP BY user_id, grp
 
 ---
 
+> **Navigation**: [< Previous](18b_SQL_Projects_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](20_CheatSheet_QuickRef.md)

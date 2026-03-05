@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](00_MASTER_INDEX.md) | [Back to Index](../00_MASTER_INDEX.md)
+
 # THE COMPLETE SOFTWARE ENGINEER — Preface & Reading Guide
 
 > *A self-contained textbook covering Data Structures, Algorithms, SQL, Spring Boot, JavaScript, React, TypeScript, CSS, System Design, and Career Development.*
@@ -381,3 +383,8 @@ Concurrency Track:
 > *"The purpose of computing is insight, not numbers."* — Richard Hamming
 > 
 > *"First, solve the problem. Then, write the code."* — John Johnson
+
+
+---
+
+> **Navigation**: [< Previous](00_MASTER_INDEX.md) | [Back to Index](../00_MASTER_INDEX.md)

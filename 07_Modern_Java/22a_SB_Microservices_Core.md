@@ -818,11 +818,9 @@ With Circuit Breaker:
 │  ✅ Periodic health checks                                       │
 │  ✅ Automatic recovery when service recovers                     │
 └─────────────────────────────────────────────────────────────────┘
-```
 
 ### Circuit Breaker States
 
-```
 ┌─────────────────────────────────────────────────────────────────┐
 │                  CIRCUIT BREAKER STATES                         │
 ├─────────────────────────────────────────────────────────────────┤
@@ -1193,11 +1191,9 @@ public class UserServiceLoadBalancerConfig {
         );
     }
 }
-```
 
 ### Load Balancing Strategies
 
-```
 ┌─────────────────────────────────────────────────────────────────┐
 │                  LOAD BALANCING STRATEGIES                      │
 ├─────────────────────────────────────────────────────────────────┤
@@ -1244,4 +1240,7 @@ public class ConfigServerApplication {
 }
 ```
 
-```yaml
+
+---
+
+> **Navigation**: [< Previous](21b_SB_Testing_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](22b_SB_Microservices_Patterns.md)

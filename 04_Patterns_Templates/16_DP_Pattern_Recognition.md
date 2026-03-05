@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](15_Heap_Plus_GreedySelection.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](17_Backtracking_Plus_Pruning.md)
+
 # DP Pattern Recognition — Combined Pattern Guide
 
 > **WHY this matters?** DP problems look overwhelming because there are hundreds of them. But they ALL fall into ~8 pattern families. Recognize the family → apply the template → solve.
@@ -320,3 +322,8 @@ COMMON MISTAKES:
 
 ---
 [← 15 Heap+Greedy](15_Heap_Plus_GreedySelection.md) | [17 Backtracking+Pruning →](17_Backtracking_Plus_Pruning.md)
+
+
+---
+
+> **Navigation**: [< Previous](15_Heap_Plus_GreedySelection.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](17_Backtracking_Plus_Pruning.md)

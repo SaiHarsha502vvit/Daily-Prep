@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](03_CSS_Responsive_Animations.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_CSS_Deep_Reasoning.md)
+
 > **CSS Chapter 4/4** | [← Responsive & Animations](03_CSS_Responsive_Animations.md) | [Index](../00_MASTER_INDEX.md) | [Next Series → Frontend Integration](../19_Frontend_Integration/01_React_JS_CSS_Combined.md)
 
 # CSS Modern Architecture — Variables, Methodologies & Stunning UIs
@@ -652,3 +654,8 @@ Q: What is a design system?
 ---
 
 > [← Responsive & Animations](03_CSS_Responsive_Animations.md) | [Index](../00_MASTER_INDEX.md) | [Next Series → Frontend Integration](../19_Frontend_Integration/01_React_JS_CSS_Combined.md)
+
+
+---
+
+> **Navigation**: [< Previous](03_CSS_Responsive_Animations.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_CSS_Deep_Reasoning.md)

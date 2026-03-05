@@ -1,10 +1,12 @@
+> **Navigation**: [< Previous](02b_ERP_Finance_RealWorld.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_RealWorld_Problems_Part2.md)
+
 # 🌍 Real-World Problems Solved with DSA
 
 ## From Production Systems to Your Interview
 
 ---
 
-# PART 1: E-COMMERCE PROBLEMS
+# 🧩 Part 1: E — Commerce Problems
 
 ## Problem 1: Find Duplicate Orders (HashMap)
 
@@ -318,7 +320,7 @@ public class ProductAutocomplete {
 
 ---
 
-# PART 2: BANKING & FINANCE PROBLEMS
+# 🧩 Part 2: Banking & Finance Problems
 
 ## Problem 4: Transaction Fraud Detection (Sliding Window)
 
@@ -644,7 +646,7 @@ public class BankTest {
 
 ---
 
-# PART 3: FOOD DELIVERY PROBLEMS
+# 🧩 Part 3: Food Delivery Problems
 
 ## Problem 7: Find Nearest Delivery Partners (Min Heap / Priority Queue)
 
@@ -881,7 +883,7 @@ public class RatingCalculator {
 
 ---
 
-# PART 4: SOCIAL MEDIA PROBLEMS
+# 🧩 Part 4: Social Media Problems
 
 ## Problem 9: Mutual Friends (Set Intersection)
 
@@ -1069,7 +1071,7 @@ public class NewsFeedGenerator {
 
 ---
 
-# PART 5: RIDE-SHARING PROBLEMS
+# 🧩 Part 5: Ride — Sharing Problems
 
 ## Problem 11: Surge Pricing Calculator (Demand/Supply Ratio)
 
@@ -1264,3 +1266,8 @@ _More problems in next part..._
 - Travel Booking (MakeMyTrip)
 - Logistics (Delhivery)
 - Chat Systems (WhatsApp)
+
+
+---
+
+> **Navigation**: [< Previous](02b_ERP_Finance_RealWorld.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_RealWorld_Problems_Part2.md)

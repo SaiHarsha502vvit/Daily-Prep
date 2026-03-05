@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](20_BitManipulation_Plus_Tricks.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](22_Cyclic_Sort_Pattern.md)
+
 > **Pattern 21** | [Prev](20_BitManipulation_Plus_Tricks.md) | [Index](../00_MASTER_INDEX.md) | [Next](22_Cyclic_Sort_Pattern.md)
 
 ---
@@ -475,7 +477,7 @@ COMPLEXITY: Time O(n log n) | Space O(1)
 
 ---
 
-## SUMMARY: THE INTERVAL PATTERN CHEATSHEET
+## 📋 Summary: the Interval Pattern Cheatsheet
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐

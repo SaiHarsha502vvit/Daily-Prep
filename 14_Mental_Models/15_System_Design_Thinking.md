@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](14_Optimization_Pipeline.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](16_Distributed_Systems_Thinking.md)
+
 # Mental Models — System Design Thinking
 
 ## How to THINK About System Design
@@ -304,3 +306,8 @@ The Netflix approach:
 ---
 
 *System design is a conversation, not a test. Show your thinking process — that matters more than the final diagram.*
+
+
+---
+
+> **Navigation**: [< Previous](14_Optimization_Pipeline.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](16_Distributed_Systems_Thinking.md)

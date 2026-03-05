@@ -186,3 +186,5 @@ A: Redis: data structures (hashes, lists, sets, sorted sets), persistence,
 ```
 
 ---
+
+> **Navigation**: [< Previous](21_Database_Internals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](23_SQL_Deep_Reasoning.md)

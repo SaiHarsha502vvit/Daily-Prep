@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](10_Spring_Boot_Part8_JPA_Deep_Dive.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](12_Spring_Boot_Part10_HTTP_Deep_Dive.md)
+
 # 🌱 SPRING BOOT MASTERY - Part 9: Clean Architecture & Quality Code
 
 > **Building Production-Ready Applications**
@@ -49,7 +51,7 @@
 
 ---
 
-# APPLICATION ARCHITECTURE
+# 📌 Application Architecture
 
 ---
 
@@ -1197,3 +1199,8 @@ class UserApiIntegrationTest {
 ---
 
 _End of Spring Boot Mastery Guide_
+
+
+---
+
+> **Navigation**: [< Previous](10_Spring_Boot_Part8_JPA_Deep_Dive.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](12_Spring_Boot_Part10_HTTP_Deep_Dive.md)

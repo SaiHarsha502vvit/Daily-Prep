@@ -226,3 +226,5 @@ A: Use functional updates (setCount(c => c + 1)), include deps in
 ```
 
 ---
+
+> **Navigation**: [< Previous](07_React_Testing.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](09_React_Deep_Reasoning.md)

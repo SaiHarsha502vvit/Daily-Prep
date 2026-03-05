@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](24b_SB_Annotations_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](26_Spring_Boot_Curriculum_50Day.md)
+
 # 🔥 Spring Boot Part 23 — Missing Essential Topics
 
 > **WHY this file?** Parts 0-22 cover a LOT, but these topics were missing.
@@ -193,7 +195,7 @@ public class SSEController {
 | Use case | Chat, Gaming | Notifications, Feeds | Legacy systems |
 | Complexity | High | Low | Medium |
 
-### PITFALL
+### 📌 Pitfall
 ```java
 // ❌ WRONG: Don't use WebSocket for everything
 // If data flows only one way (server → client), use SSE
@@ -407,7 +409,7 @@ spring:
 | Real-time | WebSocket | ✅ Subscriptions |
 | Learning curve | ✅ Easy | ❌ Steeper |
 
-### PITFALL
+### 📌 Pitfall
 ```java
 // ❌ WRONG: Allowing unlimited query depth
 // A malicious query could crash your server:
@@ -822,7 +824,7 @@ public List<UserDTO> getUsersCursor(
 }
 ```
 
-### PITFALL
+### 📌 Pitfall
 ```java
 // ❌ WRONG: Paginating in Java instead of database
 List<User> all = userRepository.findAll();              // Load ALL into memory
@@ -841,7 +843,7 @@ Page<User> page = userRepository.findAll(PageRequest.of(0, 20)); // DB does LIMI
 
 # 6. HATEOAS (Hypermedia-Driven REST)
 
-## WHY HATEOAS?
+## ❓ Why Hateoas?
 
 Normal REST: Client must KNOW all URLs
 ```json
@@ -1572,3 +1574,8 @@ databaseChangeLog:
 ---
 
 _Now Parts 0-23 cover EVERY important Spring Boot topic from beginner to expert level._
+
+
+---
+
+> **Navigation**: [< Previous](24b_SB_Annotations_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](26_Spring_Boot_Curriculum_50Day.md)

@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](08_Array_Plus_TwoPointers.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](10_HashMap_Plus_Counting.md)
+
 # Array + Sliding Window — Combined Pattern Guide
 
 > **WHY this combination?** When you need to find optimal **contiguous subarrays** or **substrings**, the sliding window maintains a running computation as it moves across the array. Reduces O(n²) brute force → O(n).
@@ -261,3 +263,8 @@ WHY fixed window? Size is given (k=3), so just slide it.
 
 ---
 [← 08 Array+TwoPointers](08_Array_Plus_TwoPointers.md) | [10 HashMap+Counting →](10_HashMap_Plus_Counting.md)
+
+
+---
+
+> **Navigation**: [< Previous](08_Array_Plus_TwoPointers.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](10_HashMap_Plus_Counting.md)

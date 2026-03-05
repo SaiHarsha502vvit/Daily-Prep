@@ -1,3 +1,5 @@
+> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_002_Mar04_Tue.md)
+
 # Day 001 - Monday, March 3, 2026
 
 > **Week 01** | **Difficulty:** EASY | **Theme:** Arrays Fundamentals + SQL Start
@@ -630,3 +632,8 @@ public int singleNumber(int[] nums) {
 > **Mentor Note:** Don't rush. If you didn't finish everything today, that's okay. 
 > The most important thing is understanding WHY, not just typing code.
 > If you understood the XOR pattern deeply, you've already won today.
+
+
+---
+
+> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_002_Mar04_Tue.md)

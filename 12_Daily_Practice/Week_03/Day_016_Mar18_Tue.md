@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](Day_015_Mar17_Mon.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_017_Mar19_Wed.md)
+
 # Day 016 — Tuesday, March 18, 2026
 
 > **Week 03** | **Day 2** | **Theme:** Binary Search Tree (BST) + BFS (Level-Order) + SQL Window Functions Intro
@@ -13,9 +15,6 @@
 - [ ] Problem 1: LC 700 — Search in a BST (15 min)
 - [ ] Problem 2: LC 102 — Binary Tree Level Order Traversal (25 min)
 - [ ] Real-World Connection (10 min)
-
----
-
 
 ---
 
@@ -380,7 +379,7 @@ class Solution {
 
 ---
 
-## 6. REAL-WORLD CONNECTION
+## 📌 6. Real — World Connection
 
 ```
 BST POWERS:

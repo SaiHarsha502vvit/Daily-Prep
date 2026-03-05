@@ -1,10 +1,12 @@
+> **Navigation**: [< Previous](03_System_Design.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_SD_Interview_Problems.md)
+
 # 🔄 Understanding User Flows & System Flows
 
 ## Complete Guide: From Concept to Implementation
 
 ---
 
-# PART 0: COMPLETE UNDERSTANDING OF FLOWS
+# 📚 Part 0: Complete Understanding of Flows
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
@@ -184,7 +186,7 @@
 
 ---
 
-# PART 1: USER FLOW DESIGN
+# 🏗️ Part 1: User Flow Design
 
 ## What is User Flow?
 
@@ -338,7 +340,7 @@ SIMPLE USER FLOW EXAMPLE - LOGIN:
 
 ---
 
-# PART 2: DATA FLOW DESIGN
+# 🏗️ Part 2: Data Flow Design
 
 ## Understanding Data Flow
 
@@ -534,7 +536,7 @@ USER REQUEST: GET /api/products/123
 
 ---
 
-# PART 4: CREATING FLOWS FOR NEW FEATURES
+# 📌 Part 4: Creating Flows for New Features
 
 ## Step-by-Step Feature Flow Creation
 
@@ -719,7 +721,7 @@ STEP 5: DRAW THE COMPLETE FLOW
 
 ---
 
-# PART 5: FLOW DESIGN IN CODE
+# 🏗️ Part 5: Flow Design in Code
 
 ## Translating Flow to Code Structure
 
@@ -800,7 +802,7 @@ public class SocialShareService {
 
 ---
 
-# PART 6: FLOW PRACTICE EXERCISES
+# 💪 Part 6: Flow Practice Exercises
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
@@ -842,7 +844,7 @@ For each exercise:
 
 ---
 
-# QUICK REFERENCE: FLOW DESIGN CHECKLIST
+# 🏗️ Quick Reference: Flow Design Checklist
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
@@ -862,3 +864,8 @@ For each exercise:
 □ Security checkpoints
 □ Logging/monitoring points
 ```
+
+
+---
+
+> **Navigation**: [< Previous](03_System_Design.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_SD_Interview_Problems.md)

@@ -1572,3 +1572,8 @@ public class MyAgent {
 ---
 
 _This foundation makes Spring LOGICAL instead of MAGICAL!_
+
+
+---
+
+> **Navigation**: [< Previous](02c_SB_HiddenFoundations_Part1.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](02e_AlgoEng_Advanced.md)

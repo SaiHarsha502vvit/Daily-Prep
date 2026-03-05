@@ -1283,3 +1283,8 @@ Microservices patterns solve distributed system challenges:
 ---
 
 *Next: Part 21 - Cloud Deployment (AWS/Azure/GCP Integration)*
+
+
+---
+
+> **Navigation**: [< Previous](22a_SB_Microservices_Core.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](23a_SB_Cloud_Core.md)

@@ -2,17 +2,23 @@
 
 ---
 
+```
 ├── Lock-free reads
 ├── Better throughput than synchronized HashMap
 └── Weakly consistent iterators
+```
+
 
 // Lock-Free Hash Tables
+```
 └── Use CAS (Compare-and-Swap) operations
 └── Higher throughput under contention
 └── More complex implementation
 ```
 
+
 #### 6. Hash Set (Unique Elements)
+
 
 ```java
 // Hash table where value doesn't matter, only keys
@@ -619,11 +625,9 @@ Heap:
 Key Insight:
 Heaps sacrifice sorted order for faster operations.
 Only guarantee: root is min/max.
-```
 
 ### HOW Heaps Work
 
-```
 Binary Heap (Complete Binary Tree):
 
 MAX HEAP: Parent ≥ Children
@@ -970,11 +974,9 @@ DIRECTED:
 
 Edges: (1,2), (1,3), (2,4), (4,3)
 Each edge has direction
-```
 
 #### 2. Weighted vs Unweighted
 
-```
 WEIGHTED:
     1 ──5── 2
     │       │
@@ -991,11 +993,9 @@ UNWEIGHTED:
     3 ───── 4
 
 All edges have implicit weight 1
-```
 
 #### 3. Cyclic vs Acyclic
 
-```
 CYCLIC:
     1 ──► 2
     ▲     │
@@ -1011,11 +1011,9 @@ DAG (Directed Acyclic Graph):
     3 ──► 4
 
 No cycles - used for dependencies, scheduling
-```
 
 #### 4. Connected vs Disconnected
 
-```
 CONNECTED (Undirected):
 All vertices reachable from any vertex
 
@@ -1031,11 +1029,9 @@ DISCONNECTED:
     3 ─── 4
 
 Multiple components
-```
 
 #### 5. Bipartite Graph
 
-```
     Set A      Set B
      1    ╲    ╱    4
            ╲╱
@@ -1047,11 +1043,9 @@ Edges only between sets, not within
 Use: Matching problems, 2-coloring
 
 Detection: BFS/DFS coloring - if odd cycle, not bipartite
-```
 
 #### 6. Complete Graph
 
-```
 Every vertex connected to every other vertex
 
     1 ─── 2
@@ -1691,11 +1685,9 @@ Cassandra:
 ├── Bloom filters (reduce disk reads)
 ├── Consistent hashing (partition)
 └── Merkle trees (repair)
-```
 
 ### 2. Operating Systems
 
-```
 Linux Kernel:
 ├── Red-Black Tree (process scheduling CFS)
 ├── Radix Tree (page cache)
@@ -1703,11 +1695,9 @@ Linux Kernel:
 ├── Linked Lists (run queues)
 ├── B-Tree (file systems)
 └── Skip List (timer wheel)
-```
 
 ### 3. Web Technologies
 
-```
 Browsers:
 ├── DOM (N-ary tree)
 ├── History (doubly linked list)
@@ -1719,11 +1709,9 @@ Search Engines:
 ├── Trie (autocomplete)
 ├── Graph (PageRank)
 └── KD-Tree (geospatial)
-```
 
 ### 4. Distributed Systems
 
-```
 Kafka:
 ├── Commit log (append-only)
 ├── Partition (ring buffer concept)
@@ -1748,29 +1736,23 @@ Week 1: Arrays, Strings
 Week 2: Linked Lists, Stacks, Queues
 Week 3: Hash Tables
 Week 4: Trees (Binary, BST, traversals)
-```
 
 ### Phase 2: Intermediate (Weeks 5-8)
 
-```
 Week 5: Heaps, Priority Queues
 Week 6: Graphs (BFS, DFS)
 Week 7: Graph algorithms (Dijkstra, Topological Sort)
 Week 8: Tries, Union-Find
-```
 
 ### Phase 3: Advanced (Weeks 9-12)
 
-```
 Week 9: AVL/Red-Black Trees, Segment Trees
 Week 10: Advanced Graph algorithms
 Week 11: Specialized structures (Bloom filter, Skip list)
 Week 12: System design applications
-```
 
 ### Practice Strategy
 
-```
 Daily:
 ├── 2-3 LeetCode problems
 ├── Review one data structure's internals
@@ -1820,3 +1802,8 @@ _"Data structures + Algorithms = Programs. Master both, master programming."_
 ---
 
 > **Next**: [Part 2: Advanced Algorithms & Interview Patterns](02b_Ultimate_DSA_Advanced.md)
+
+
+---
+
+> **Navigation**: [< Previous](02a_DSA_Guide_Foundations.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](02b_Ultimate_DSA_Advanced.md)

@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](07_LLD_Solved_Problems.md) | [Back to Index](../00_MASTER_INDEX.md)
+
 # Design Patterns in Java — Gang of Four & Beyond
 
 ## Why Learn Design Patterns?
@@ -848,3 +850,8 @@ A: Global state, hard to test (use DI instead), hides dependencies,
 ---
 
 *Learn 5 patterns deeply (Strategy, Factory, Builder, Observer, Decorator). The rest you can recognize and reference.*
+
+
+---
+
+> **Navigation**: [< Previous](07_LLD_Solved_Problems.md) | [Back to Index](../00_MASTER_INDEX.md)

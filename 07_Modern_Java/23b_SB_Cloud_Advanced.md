@@ -703,7 +703,7 @@ variable "node_size" {
   type = string
 }
 
-# AWS EKS
+# 📌 AWS Eks
 resource "aws_eks_cluster" "main" {
   count = var.cloud_provider == "aws" ? 1 : 0
   name  = var.cluster_name
@@ -717,7 +717,7 @@ resource "azurerm_kubernetes_cluster" "main" {
   # ... AKS configuration
 }
 
-# GCP GKE
+# 📌 GCP Gke
 resource "google_container_cluster" "main" {
   count = var.cloud_provider == "gcp" ? 1 : 0
   name  = var.cluster_name
@@ -1143,3 +1143,8 @@ Cloud deployment requires understanding:
 ---
 
 *This completes the Spring Boot Cloud Deployment guide - you're now ready to deploy anywhere!*
+
+
+---
+
+> **Navigation**: [< Previous](23a_SB_Cloud_Core.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](24a_SB_Annotations_Core.md)

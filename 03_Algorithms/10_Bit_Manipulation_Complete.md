@@ -1118,3 +1118,8 @@ clearBit: n & ~(1 << i)
 4. Time yourself - most bit problems should take < 15 min
 
 **Pro Tip:** When stuck on a bit problem, write out the binary representation and trace through manually. Visual understanding beats memorization!
+
+
+---
+
+> **Navigation**: [< Previous](09_Pattern_Programs_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](11_Backtracking_Complete.md)

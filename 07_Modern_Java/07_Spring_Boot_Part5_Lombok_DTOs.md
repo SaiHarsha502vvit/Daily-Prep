@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](06_Spring_Boot_Complete_Part4.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08_Spring_Boot_Part6_Service_Repository.md)
+
 # 🌱 SPRING BOOT MASTERY - Part 5: Lombok & DTO Patterns
 
 > **Eliminating Boilerplate, Clean Data Transfer**
@@ -49,7 +51,7 @@
 
 ---
 
-# LOMBOK - THE BOILERPLATE KILLER
+# 📌 Lombok — the Boilerplate Killer
 
 ---
 
@@ -1469,3 +1471,8 @@ DTOs:
 ---
 
 _Continue to Part 6: Service Layer & Repository Best Practices_
+
+
+---
+
+> **Navigation**: [< Previous](06_Spring_Boot_Complete_Part4.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08_Spring_Boot_Part6_Service_Repository.md)

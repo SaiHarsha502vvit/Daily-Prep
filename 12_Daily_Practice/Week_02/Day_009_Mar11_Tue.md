@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](Day_008_Mar10_Mon.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_010_Mar12_Wed.md)
+
 # Day 009 - Tuesday, March 11, 2026
 
 > **Week 02** | **Difficulty:** EASY-MEDIUM | **Theme:** Doubly LinkedList + Quick Sort + SQL ORDER BY
@@ -14,9 +16,6 @@
 - [ ] SQL: ORDER BY, LIMIT, OFFSET, aliases (40 min)
 - [ ] Q1: Coding problem 1 (20 min)
 - [ ] Q2: Coding problem 2 (20 min)
-
----
-
 
 ---
 
@@ -64,7 +63,7 @@ TRADE-OFF:
     prev data next       prev data next       prev data next
 ```
 
-#### IMPLEMENT
+#### 🔧 Implement
 
 ```java
 public class DoublyLinkedList {
@@ -421,3 +420,8 @@ CONFIDENCE LEVEL: 😟 | 😐 | 😊 | 🔥
 
 TOMORROW'S PREVIEW: Stack + Binary Search + SQL Aggregate Functions
 ```
+
+
+---
+
+> **Navigation**: [< Previous](Day_008_Mar10_Mon.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_010_Mar12_Wed.md)

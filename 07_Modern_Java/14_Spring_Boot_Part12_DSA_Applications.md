@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](13_Spring_Boot_Part11_Auth_Security.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](15_Spring_Boot_Part13_Industry_Projects.md)
+
 # 🧮 SPRING BOOT MASTERY - Part 12: DSA in Spring Boot Applications
 
 > **Where Data Structures & Algorithms Meet Real World**
@@ -49,7 +51,7 @@
 
 ---
 
-# SECTION 1: WHERE DSA APPEARS IN SPRING BOOT
+# 🌱 Section 1: Where DSA Appears in Spring Boot
 
 ---
 
@@ -131,7 +133,7 @@
 
 ---
 
-# SECTION 2: REAL IMPLEMENTATIONS
+# 🔧 Section 2: Real Implementations
 
 ---
 
@@ -1250,7 +1252,7 @@ public class OrganizationController {
 
 ---
 
-# DSA + SPRING BOOT SUMMARY
+# 📋 DSA + Spring Boot Summary
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -1278,3 +1280,8 @@ public class OrganizationController {
 ---
 
 _Continue to Part 13: Industry-Level Real Projects_
+
+
+---
+
+> **Navigation**: [< Previous](13_Spring_Boot_Part11_Auth_Security.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](15_Spring_Boot_Part13_Industry_Projects.md)

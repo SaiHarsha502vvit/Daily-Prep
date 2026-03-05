@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](04_RealWorld_Problems_Part2.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_RealWorld_Incidents_DSA.md)
+
 # 🎯 Real-World Problems - Part 3: Interview Favorites
 
 ## Classic Problems from Top Company Interviews
@@ -972,7 +974,7 @@ public class DuplicateFileFinder {
 
 ---
 
-# PART 14: GAMING SYSTEMS
+# ⚙️ Part 14: Gaming Systems
 
 ## Problem 29: Leaderboard System (Sorted Set / Skip List)
 
@@ -1353,3 +1355,8 @@ public class MatchmakingService {
 ---
 
 _These are real problems from real systems. Master these patterns and you'll handle any interview!_
+
+
+---
+
+> **Navigation**: [< Previous](04_RealWorld_Problems_Part2.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_RealWorld_Incidents_DSA.md)

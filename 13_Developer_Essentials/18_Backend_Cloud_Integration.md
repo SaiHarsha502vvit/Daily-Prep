@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](17_Servers_Ports_Networking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](19_Concurrency_Models_Coroutines.md)
+
 > **Developer Essentials Chapter 18** | [← Servers & Networking](17_Servers_Ports_Networking.md) | [Index](../00_MASTER_INDEX.md) | [Next Series → Spring Boot Deps Map](../07_Modern_Java/30_Spring_Boot_Dependencies_Annotations.md)
 
 # Backend + Cloud Integration — From Local to Production
@@ -339,3 +341,8 @@ Q: How do you handle database migrations in production?
 ---
 
 > [← Servers & Networking](17_Servers_Ports_Networking.md) | [Index](../00_MASTER_INDEX.md) | [Next Series → Spring Boot Deps Map](../07_Modern_Java/30_Spring_Boot_Dependencies_Annotations.md)
+
+
+---
+
+> **Navigation**: [< Previous](17_Servers_Ports_Networking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](19_Concurrency_Models_Coroutines.md)

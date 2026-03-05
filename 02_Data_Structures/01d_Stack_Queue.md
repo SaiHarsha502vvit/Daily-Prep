@@ -2,7 +2,7 @@
 
 ---
 
-# PART 4: STACK
+# 📚 Part 4: Stack
 
 ## 🧬 Nature & Behavior
 
@@ -43,25 +43,16 @@ PHYSICAL REALITY - Like a stack of plates:
 
 ### 🔴 Real-World Origin: Function Call Management (1960s)
 
+**Problem (Early Computers):** Programs call functions, which call other functions. How do you remember where to return?
+
+**Example:**
+- `main()` calls `A()` → `A()` calls `B()` → `B()` calls `C()`
+- `C()` returns to `B` → `B()` returns to `A` → `A()` returns to `main`
+
+**Without Stack:** No way to track return addresses — programs would get lost!
+
+**Solution — Call Stack:**
 ```
-PROBLEM (Early Computers):
-- Programs call functions
-- Functions call other functions
-- How to remember where to return?
-
-EXAMPLE:
-main() calls A()
-    A() calls B()
-        B() calls C()
-        C() returns to B
-    B() returns to A
-A() returns to main
-
-WITHOUT STACK:
-- No way to track return addresses
-- Programs would get lost!
-
-SOLUTION - CALL STACK:
 ┌─────────────┐
 │ C() addr    │ ← Top (current)
 ├─────────────┤
@@ -71,15 +62,11 @@ SOLUTION - CALL STACK:
 ├─────────────┤
 │ main() addr │
 └─────────────┘
-
-When C() returns → pop → go to B()
-When B() returns → pop → go to A()
-
-THIS IS WHY:
-- StackOverflowError exists (too many calls)
-- Recursion works (each call pushed to stack)
-- Debuggers show "call stack"
 ```
+
+When `C()` returns → pop → go to `B()`. When `B()` returns → pop → go to `A()`.
+
+> 💡 **This is why:** `StackOverflowError` exists (too many calls), recursion works (each call pushed to stack), and debuggers show a "call stack".
 
 ## 💻 Implementation WITHOUT Collections
 
@@ -208,7 +195,7 @@ NOW USED IN:
 
 ---
 
-# PART 5: QUEUE
+# 📬 Part 5: Queue
 
 ## 🧬 Nature & Behavior
 
@@ -244,22 +231,13 @@ PHYSICAL REALITY - Like a line at a store:
 
 ### 🔴 Real-World Origin: Print Spooler (1970s)
 
+**Problem (Office with 1 printer, 50 computers):** Multiple users send print jobs, but the printer can only do one at a time. Who prints first?
+
+**Without Queue:** Last person to click "Print" goes first — people who clicked earlier wait forever. *Unfair and chaotic!*
+
+**Solution — Print Queue:** Jobs added to back, printer takes from front. First submitted = first printed.
+
 ```
-PROBLEM (Office with 1 printer, 50 computers):
-- Multiple users send print jobs
-- Printer can only do one job at a time
-- Who prints first?
-
-WITHOUT QUEUE:
-- Last person to click "Print" goes first
-- People who clicked earlier wait forever
-- Unfair and chaotic!
-
-SOLUTION - PRINT QUEUE:
-- Jobs added to back of queue
-- Printer takes from front
-- First submitted = First printed
-
 PRINT QUEUE:
 ┌────────────────────────────────────────┐
 │ Front                            Back  │
@@ -267,13 +245,9 @@ PRINT QUEUE:
 │   ↑                              ↑     │
 │ Printing                    New jobs   │
 └────────────────────────────────────────┘
-
-NOW USED IN:
-- Operating System task scheduling
-- Web server request handling
-- Message queues (Kafka, RabbitMQ)
-- Breadth-First Search algorithm
 ```
+
+> ✅ **Now used in:** OS task scheduling, web server request handling, message queues (Kafka, RabbitMQ), BFS algorithm
 
 ## 💻 Implementation WITHOUT Collections
 
@@ -354,37 +328,24 @@ No wasted space!
 
 ### Problem: Number of Islands (BFS with Queue)
 
-```
-REAL-WORLD ORIGIN: Google Maps (2005)
+> 🌍 **Real-World Origin:** Google Maps (2005)
 
-PROBLEM:
-- Satellite images show land and water
-- Need to count distinct landmasses
-- Need to identify boundaries of each island
+**Problem:** Satellite images show land and water. Need to count distinct landmasses and identify boundaries of each island.
 
-INITIAL APPROACH:
-- Manual counting by humans
-- Time: Weeks for one region
-- Cost: Millions of dollars
+**Initial Approach:** Manual counting by humans — takes *weeks* for one region, costing *millions*.
 
-SOLUTION - BFS:
+**Solution — BFS:**
 1. Find a land pixel
-2. Use queue to explore all connected land
+2. Use **queue** to explore all connected land
 3. Mark as visited
 4. Count increments by 1
 5. Repeat for unexplored land
 
-WHY BFS (Queue) NOT DFS (Stack)?
-- BFS explores in "waves" from starting point
-- Natural for geographic spreading
-- Won't get stuck in long narrow peninsulas
+> ❓ **Why BFS (Queue) not DFS (Stack)?**
+> BFS explores in "waves" from starting point — natural for geographic spreading. Won't get stuck in long narrow peninsulas.
 
-IMPACT:
-- Automated island counting
-- Ocean mapping
-- Disease spread modeling (same algorithm!)
-- Network connectivity analysis
-```
+> ✅ **Impact:** Automated island counting, ocean mapping, disease spread modeling (same algorithm!), network connectivity analysis
 
 ---
 
+> **Navigation**: [< Previous](01c_LinkedList.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](01e_HashTable.md)

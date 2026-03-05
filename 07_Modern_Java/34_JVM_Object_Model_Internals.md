@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](33_Streams_Deep_Reasoning.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](35_Concurrency_Synchronizers_Deep.md)
+
 # Chapter 34 — JVM Object Model Internals: How Java Objects REALLY Live in Memory
 
 > **"Every time you write `new Object()`, the JVM creates a precise memory layout with an object header, klass pointer, and aligned fields. Understanding this turns you from 'I write Java' to 'I understand the machine I'm commanding.'"**

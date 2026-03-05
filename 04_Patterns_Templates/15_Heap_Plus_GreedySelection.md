@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](14_Graph_Plus_Traversal.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](16_DP_Pattern_Recognition.md)
+
 # Heap + Greedy Selection — Combined Pattern Guide
 
 > **WHY this combination?** Heaps give O(log n) access to the min/max element. Combined with greedy strategy (always pick the best available), they solve "Top K", "merge K sorted", and scheduling problems efficiently.
@@ -249,3 +251,8 @@ COMMON MISTAKES:
 
 ---
 [← 14 Graph+Traversal](14_Graph_Plus_Traversal.md) | [16 DP Patterns →](16_DP_Pattern_Recognition.md)
+
+
+---
+
+> **Navigation**: [< Previous](14_Graph_Plus_Traversal.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](16_DP_Pattern_Recognition.md)

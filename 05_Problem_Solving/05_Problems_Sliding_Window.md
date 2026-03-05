@@ -1,12 +1,14 @@
+> **Navigation**: [< Previous](04_Problems_Arrays.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_Problems_Two_Pointers.md)
+
 > **Problems 05/14** | [Prev](04_Problems_Arrays.md) | [Index](../00_MASTER_INDEX.md) | [Next](06_Problems_Two_Pointers.md)
 
 ---
 
-# SECTION 4: SLIDING WINDOW PATTERN VARIANTS
+# 🎨 Section 4: Sliding Window Pattern Variants
 
 ---
 
-## 4.1 FIXED SIZE WINDOW
+## 📌 4.1 Fixed Size Window
 
 ### Problem: Maximum Sum Subarray of Size K
 
@@ -194,7 +196,7 @@ public long maximumSubarraySum(int[] nums, int k) {
 
 ---
 
-## 4.2 VARIABLE SIZE WINDOW
+## 📌 4.2 Variable Size Window
 
 ### Problem: Minimum Size Subarray Sum
 
@@ -446,7 +448,7 @@ public int longestOnes(int[] nums, int k) {
 
 ---
 
-## 4.3 SLIDING WINDOW - STRING MATCHING
+## 📝 4.3 Sliding Window — String Matching
 
 ### Problem: Permutation in String
 
@@ -825,3 +827,5 @@ public int longestOnes(int[] nums, int k) {
 ```
 
 ---
+
+> **Navigation**: [< Previous](04_Problems_Arrays.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_Problems_Two_Pointers.md)

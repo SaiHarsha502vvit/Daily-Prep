@@ -86,11 +86,9 @@
 │  ✅ Regression prevention                                    │
 │  ✅ Continuous Integration enablement                        │
 └─────────────────────────────────────────────────────────────┘
-```
 
 ### Cost of Bugs by Stage
 
-```
 Stage          │ Cost Multiplier │ Example
 ───────────────┼─────────────────┼─────────────────────
 Development    │ 1x              │ $100 to fix
@@ -1262,4 +1260,7 @@ class UserControllerTest {
 
 ### Testing with Security
 
-```java
+
+---
+
+> **Navigation**: [< Previous](20_Spring_Boot_Part18_Distributed_Tracing.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](21b_SB_Testing_Advanced.md)

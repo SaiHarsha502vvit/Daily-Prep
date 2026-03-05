@@ -1,5 +1,3 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](18b_SQL_Projects_Advanced.md)
-
 ---
 
 > **SQL Chapter 18/20** | [← Previous](17_Practice_100_Problems.md) | [Index](../00_MASTER_INDEX.md) | [Next →](19_Interview_Top50.md)
@@ -443,10 +441,6 @@ END //
 
 DELIMITER ;
 ```
-
----
-
-
 
 ---
 
@@ -1188,3 +1182,4 @@ ORDER BY b.department, b.category, b.budget_month;
 
 ---
 
+> **Navigation**: [< Previous](17_Practice_100_Problems.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](18b_SQL_Projects_Advanced.md)

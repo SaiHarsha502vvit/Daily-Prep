@@ -300,3 +300,5 @@ function useDebounce(value, delay = 300) {
 ```
 
 ---
+
+> **Navigation**: [< Previous](02_Component_Patterns.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_State_Management.md)

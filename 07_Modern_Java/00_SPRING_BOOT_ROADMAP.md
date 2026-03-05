@@ -1,3 +1,5 @@
+> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](01_Functional_Programming.md)
+
 # 🗺️ SPRING BOOT MASTERY ROADMAP
 
 > **The Complete Learning Path - From Zero to Industry Expert**
@@ -177,7 +179,7 @@ ESTIMATED TIME: 10-14 weeks (2-3 hours/day)
 
 ---
 
-# HOW TO USE THIS ROADMAP
+# 🔍 How to Use This Roadmap
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -1025,3 +1027,8 @@ _Start with Functional Programming if you're weak in modern Java._
 _Start with Part 0 if you want to understand the magic._
 _Start with Part 1 if you're completely new to Java._
 _Trust the process!_ 🚀
+
+
+---
+
+> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](01_Functional_Programming.md)

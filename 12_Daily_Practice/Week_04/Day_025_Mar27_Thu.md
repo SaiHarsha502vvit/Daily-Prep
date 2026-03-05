@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](Day_024_Mar26_Wed.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_026_Mar28_Fri.md)
+
 # DAY 025 — Thursday, March 27, 2026
 ## Topological Sort + Kruskal's MST + SQL Views & Stored Procedures
 
@@ -15,9 +17,6 @@
 | 1:20–1:40 | 20 min | REAL-WORLD: Build systems = Topo Sort |
 | 1:40–2:20 | 40 min | SQL: Views + Stored Procedures |
 | 2:20–3:00 | 40 min | PROBLEMS: Q1 + Q2 |
-
----
-
 
 ---
 
@@ -235,3 +234,5 @@ Output: 20
 - [ ] Solved LC 1584 (Min Cost Connect Points)
 
 ---
+
+> **Navigation**: [< Previous](Day_024_Mar26_Wed.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_026_Mar28_Fri.md)

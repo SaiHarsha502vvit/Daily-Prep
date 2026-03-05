@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](23_SQL_Deep_Reasoning.md) | [Back to Index](../00_MASTER_INDEX.md)
+
 # Chapter 24 — SQL for Data Analysts: Real-World Patterns That Get You Hired
 
 > **"Knowing SELECT and JOIN makes you a developer who queries databases. Knowing cohort analysis, funnel queries, retention curves, and A/B testing SQL makes you a DATA ANALYST. This chapter bridges the gap."**

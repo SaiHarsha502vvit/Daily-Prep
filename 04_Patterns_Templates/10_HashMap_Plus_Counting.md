@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](09_Array_Plus_SlidingWindow.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](11_Stack_Plus_MonotonicPattern.md)
+
 # HashMap + Frequency Counting — Combined Pattern Guide
 
 > **WHY this combination?** HashMap gives O(1) lookup/insert. Combined with counting, grouping, or existence checks, it transforms O(n²) comparisons into O(n) lookups. The most versatile DS+Algo combination.
@@ -258,3 +260,8 @@ CRITICAL: Always initialize map with {0: 1}!
 
 ---
 [← 09 Array+SlidingWindow](09_Array_Plus_SlidingWindow.md) | [11 Stack+Monotonic →](11_Stack_Plus_MonotonicPattern.md)
+
+
+---
+
+> **Navigation**: [< Previous](09_Array_Plus_SlidingWindow.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](11_Stack_Plus_MonotonicPattern.md)

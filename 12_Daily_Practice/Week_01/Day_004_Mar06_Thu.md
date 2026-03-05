@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](Day_003_Mar05_Wed.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_005_Mar07_Fri.md)
+
 # Day 004 - Thursday, March 6, 2026
 
 > **Week 01** | **Difficulty:** EASY-MEDIUM | **Theme:** Subarrays + Kadane's + SQL DML
@@ -463,3 +465,8 @@ public int equilibriumIndex(int[] arr) {
 > **Mentor Note:** Kadane's Algorithm is a MUST-KNOW. If you could only memorize 
 > one algorithm from this week, make it this one. It appears directly or as a 
 > sub-problem in dozens of medium/hard problems.
+
+
+---
+
+> **Navigation**: [< Previous](Day_003_Mar05_Wed.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_005_Mar07_Fri.md)

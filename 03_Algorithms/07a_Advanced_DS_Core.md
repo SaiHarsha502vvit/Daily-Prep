@@ -24,7 +24,7 @@
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
-## TRIE NODE MEMORY LAYOUT
+## 🧠 Trie Node Memory Layout
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -100,7 +100,7 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## SEGMENT TREE MEMORY LAYOUT
+## 🧠 Segment Tree Memory Layout
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -164,7 +164,7 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## FENWICK TREE - BIT MANIPULATION DEEP DIVE
+## 🌳 Fenwick Tree — Bit Manipulation Deep Dive
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -241,7 +241,7 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## UNION-FIND - PATH COMPRESSION VISUALIZATION
+## 📌 Union — Find — Path Compression Visualization
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -318,7 +318,7 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## SKIP LIST - PROBABILISTIC MEMORY LAYOUT
+## 🧠 Skip List — Probabilistic Memory Layout
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -388,7 +388,7 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## BLOOM FILTER - BIT ARRAY INTERNALS
+## 📊 Bloom Filter — Bit Array Internals
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -455,7 +455,7 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## LRU CACHE - DOUBLY LINKED LIST + HASHMAP
+## 🔗 LRU Cache — Doubly Linked List + Hashmap
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -528,7 +528,7 @@
 
 ---
 
-# PART 1: WHY THESE DATA STRUCTURES MATTER
+# ❓ Part 1: Why These Data Structures Matter
 
 ```
 REAL-WORLD USAGE:
@@ -575,7 +575,7 @@ LRU CACHE:
 
 ---
 
-# PART 2: TRIE (PREFIX TREE)
+# 🌳 Part 2: Trie (prefix Tree)
 
 ## Concept and Structure
 
@@ -882,7 +882,7 @@ public String longestCommonPrefix(String[] words) {
 
 ---
 
-# PART 3: SEGMENT TREE
+# 🌳 Part 3: Segment Tree
 
 ## Concept
 
@@ -1163,3 +1163,4 @@ class SegmentTree {
 
 ---
 
+> **Navigation**: [< Previous](06e_Algorithm_Patterns.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07b_Advanced_DS_Patterns.md)

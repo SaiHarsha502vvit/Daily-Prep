@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](13_Tree_Plus_DFS_BFS.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](15_Heap_Plus_GreedySelection.md)
+
 # Graph + Traversal Patterns — Combined Pattern Guide
 
 > **WHY this combination?** Graphs model relationships. BFS gives shortest unweighted path. DFS explores all reachable nodes. Dijkstra handles weighted graphs. Union-Find manages connected components. Choosing the right traversal is THE key skill.
@@ -280,3 +282,8 @@ COMMON MISTAKES:
 
 ---
 [← 13 Tree+DFS/BFS](13_Tree_Plus_DFS_BFS.md) | [15 Heap+Greedy →](15_Heap_Plus_GreedySelection.md)
+
+
+---
+
+> **Navigation**: [< Previous](13_Tree_Plus_DFS_BFS.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](15_Heap_Plus_GreedySelection.md)

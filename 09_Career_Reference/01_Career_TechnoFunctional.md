@@ -1,3 +1,5 @@
+> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](01b2_Career_Guide_Part1B.md)
+
 > **Career Guide** | See also: [01b_Career_ProjectGuide_Part1.md](01b_Career_ProjectGuide_Part1.md) | [01c_Career_ProjectGuide_Part2.md](01c_Career_ProjectGuide_Part2.md) | [Index](../00_MASTER_INDEX.md)
 
 ---
@@ -1598,3 +1600,4 @@ Week 21-24: Portfolio & Presentation
 
 ---
 
+> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](01b2_Career_Guide_Part1B.md)

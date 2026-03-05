@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](16_DP_Pattern_Recognition.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](18_String_Plus_Advanced.md)
+
 # Backtracking + Pruning — Combined Pattern Guide
 
 > **WHY this combination?** Backtracking explores ALL possibilities systematically. Pruning eliminates impossible branches early ⇒ can reduce exponential time dramatically. Together they solve constraint satisfaction problems.
@@ -263,3 +265,8 @@ COMMON MISTAKES:
 
 ---
 [← 16 DP Patterns](16_DP_Pattern_Recognition.md) | [18 String+Advanced →](18_String_Plus_Advanced.md)
+
+
+---
+
+> **Navigation**: [< Previous](16_DP_Pattern_Recognition.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](18_String_Plus_Advanced.md)

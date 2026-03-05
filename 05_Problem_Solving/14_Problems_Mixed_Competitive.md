@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](13_Problems_Greedy.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](15_Problems_LinkedList.md)
+
 > **Problems 14/14** | [Prev](13_Problems_Greedy.md) | [Index](../00_MASTER_INDEX.md) | 
 
 ---
@@ -817,7 +819,7 @@ public int subarraySum(int[] nums, int k) {
 - [ ] Palindrome Number (LeetCode 9)
 - [ ] Happy Number (LeetCode 202)
 
-### GCD/LCM
+### 📌 Gcd/lcm
 
 - [ ] GCD (Euclidean Algorithm)
 - [ ] 🔒 GCD of Array (LeetCode 1979)
@@ -1169,3 +1171,8 @@ public int subarraySum(int[] nums, int k) {
 **📎 = Has LeetCode Link**
 
 **🎉 ALL 210+ PROBLEMS COMPLETE! Good luck with your practice! 💪**
+
+
+---
+
+> **Navigation**: [< Previous](13_Problems_Greedy.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](15_Problems_LinkedList.md)

@@ -300,7 +300,7 @@ public void processPayment(Payment payment) {
 }
 ```
 
-## 6. DRY, KISS, YAGNI
+## 📌 6. Dry, Kiss, Yagni
 
 ```
 DRY — Don't Repeat Yourself
@@ -408,3 +408,8 @@ Suggest improvements in comments.
 ---
 
 > **Next Chapter**: [Testing Fundamentals →](06_Testing_Fundamentals.md)
+
+
+---
+
+> **Navigation**: [< Previous](04_CICD_Pipelines.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_Testing_Fundamentals.md)

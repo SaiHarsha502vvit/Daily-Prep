@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](Day_010_Mar12_Wed.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_012_Mar14_Fri.md)
+
 # Day 011 - Thursday, March 13, 2026
 
 > **Week 02** | **Difficulty:** MEDIUM | **Theme:** Queue & Deque + HashMap + SQL JOINs Part 1
@@ -14,9 +16,6 @@
 - [ ] SQL: INNER JOIN & LEFT JOIN (40 min)
 - [ ] Q1: Coding problem 1 (20 min)
 - [ ] Q2: Coding problem 2 (20 min)
-
----
-
 
 ---
 
@@ -413,3 +412,8 @@ CONFIDENCE LEVEL: 😟 | 😐 | 😊 | 🔥
 
 TOMORROW'S PREVIEW: HashSet + Two Pointers technique + SQL Subqueries
 ```
+
+
+---
+
+> **Navigation**: [< Previous](Day_010_Mar12_Wed.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_012_Mar14_Fri.md)

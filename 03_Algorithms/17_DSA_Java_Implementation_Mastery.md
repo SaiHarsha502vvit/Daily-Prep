@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](16_DSA_Deep_Reasoning.md) | [Back to Index](../00_MASTER_INDEX.md)
+
 # Chapter 17 — DSA Java Implementation Mastery: The Language-Specific Reasoning
 
 > **"Knowing an algorithm is one thing. Implementing it in Java with the right collections, the right Comparator, the right edge-case handling — that's what separates the whiteboard from the real solution. This chapter fills the gap between algorithm theory and Java implementation."**

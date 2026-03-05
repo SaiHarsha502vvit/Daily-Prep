@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](05_Spring_Boot_Complete_Part3.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_Spring_Boot_Part5_Lombok_DTOs.md)
+
 # 🌱 SPRING BOOT COMPLETE GUIDE - Part 4: Data Access, Web, Security & Testing
 
 > **The Practical Tiers - Building Real Applications**
@@ -49,7 +51,7 @@
 
 ---
 
-# TIER 5: DATA ACCESS (JPA & HIBERNATE)
+# 📌 Tier 5: Data Access (JPA & Hibernate)
 
 ---
 
@@ -632,7 +634,7 @@ public class OrderService {
 
 ---
 
-# TIER 6: WEB & REST API
+# 🔌 Tier 6: Web & REST API
 
 ---
 
@@ -778,7 +780,7 @@ public record ErrorResponse(String message, List<String> errors) {}
 
 ---
 
-# TIER 7: SPRING SECURITY
+# 🌱 Tier 7: Spring Security
 
 ---
 
@@ -901,7 +903,7 @@ public class UserService {
 
 ---
 
-# TIER 9: TESTING
+# 🧪 Tier 9: Testing
 
 ---
 
@@ -1204,3 +1206,8 @@ TESTING:
 ---
 
 _You now have a complete Spring Boot foundation. Practice with real projects!_
+
+
+---
+
+> **Navigation**: [< Previous](05_Spring_Boot_Complete_Part3.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_Spring_Boot_Part5_Lombok_DTOs.md)

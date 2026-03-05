@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](03_Build_Tools_Ecosystem.md) | [Back to Index](../00_MASTER_INDEX.md)
+
 > **Frontend Integration Chapter 4/4** | [← Build Tools](03_Build_Tools_Ecosystem.md) | [Index](../00_MASTER_INDEX.md) | [Next Series → Servers & Networking](../13_Developer_Essentials/17_Servers_Ports_Networking.md)
 
 # Frontend Mental Models — Thinking in Components & UIs
@@ -496,3 +498,8 @@ Q: What makes a good component API (props)?
 ---
 
 > [← Build Tools](03_Build_Tools_Ecosystem.md) | [Index](../00_MASTER_INDEX.md) | [Next Series → Servers & Networking](../13_Developer_Essentials/17_Servers_Ports_Networking.md)
+
+
+---
+
+> **Navigation**: [< Previous](03_Build_Tools_Ecosystem.md) | [Back to Index](../00_MASTER_INDEX.md)

@@ -2,7 +2,7 @@
 
 ---
 
-# PART 7: TREES
+# 🌳 Part 7: Trees
 
 ## 🧬 Nature & Behavior
 
@@ -66,13 +66,10 @@ Time: O(log n) for balanced tree
 
 ### 🔴 Real-World Origin: File Systems (1965)
 
-```
-PROBLEM (UNIX, 1969):
-- Computer needs to organize thousands of files
-- Need hierarchical structure (folders in folders)
-- Need fast file lookup
+**Problem (UNIX, 1969):** Computers need to organize thousands of files with hierarchical structure (folders in folders) and fast file lookup.
 
-SOLUTION - TREE STRUCTURE:
+**Solution — Tree Structure:**
+```
 /
 ├── home/
 │   ├── alice/
@@ -83,18 +80,11 @@ SOLUTION - TREE STRUCTURE:
 │   ├── bin/
 │   └── lib/
 └── etc/
-
-WHY TREE?
-- Natural hierarchy (parent-child)
-- Path from root to any file
-- Easy to navigate (cd, ls commands)
-
-IMPACT:
-- Every OS uses tree for files
-- Every website URL is a tree path
-- Every organization chart is a tree
-- Every family tree is... a tree!
 ```
+
+**Why Tree?** Natural hierarchy (parent-child), path from root to any file, easy to navigate (`cd`, `ls` commands).
+
+> ✅ **Impact:** Every OS uses trees for files, every URL is a tree path, every org chart is a tree, every family tree is... a tree!
 
 ## 💻 Implementation WITHOUT Collections
 
@@ -241,7 +231,7 @@ public class MyBinaryTree {
 
 ---
 
-# PART 8: HEAPS (PRIORITY QUEUE)
+# 📦 Part 8: Heaps (priority Queue)
 
 ## 🧬 Nature & Behavior
 
@@ -279,37 +269,29 @@ Right child of i: 2*i + 2
 
 ### 🔴 Real-World Origin: Emergency Room Triage (1970s)
 
+**Problem in Hospitals:** Patients arrive randomly — some critical, some minor. Need to treat the most urgent first, **NOT** first-come-first-served!
+
+**Without Priority Queue:** Check all patients to find most urgent → **O(n)** for each decision. Lives lost due to delay!
+
+**With Heap (Priority Queue):**
+
+| Operation | Time |
+|-----------|------|
+| Insert patient with priority | O(log n) |
+| Get most urgent | **O(1)** |
+| Remove most urgent | O(log n) |
+
+**Example:**
 ```
-PROBLEM IN HOSPITALS:
-- Patients arrive randomly
-- Some are critical, some are minor
-- Need to treat most urgent first
-- NOT first-come-first-served!
-
-WITHOUT PRIORITY QUEUE:
-- Check all patients to find most urgent
-- Time: O(n) for each decision
-- Lives lost due to delay!
-
-WITH HEAP (Priority Queue):
-- Insert patient with priority: O(log n)
-- Get most urgent: O(1)
-- Remove most urgent: O(log n)
-
-EXAMPLE:
 Patient arrives: priority 5 (medium)
 Patient arrives: priority 9 (critical)
 Patient arrives: priority 3 (minor)
 
 Heap: [9, 5, 3]
-Next patient to treat: 9 (critical) - O(1)!
-
-NOW USED IN:
-- OS process scheduling (highest priority process)
-- Network packet prioritization
-- Dijkstra's shortest path algorithm
-- Event-driven simulations
+Next to treat: 9 (critical) - O(1)!
 ```
+
+> ✅ **Now used in:** OS process scheduling, network packet prioritization, Dijkstra's shortest path, event-driven simulations
 
 ## 💻 Implementation WITHOUT Collections
 
@@ -424,3 +406,4 @@ public class MyMinHeap {
 
 ---
 
+> **Navigation**: [< Previous](01e_HashTable.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](01g_DS_Internals.md)

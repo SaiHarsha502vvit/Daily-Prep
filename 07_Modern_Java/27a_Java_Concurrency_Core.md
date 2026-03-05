@@ -9,7 +9,7 @@
 
 ---
 
-## WHY THIS MATTERS
+## ❓ Why This Matters
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════════╗
@@ -34,7 +34,7 @@
 
 ---
 
-# PART 1: THREAD FUNDAMENTALS
+# 📖 Part 1: Thread Fundamentals
 
 ## What Is a Thread (At CPU Level)?
 
@@ -271,7 +271,7 @@ class CorrectStopFlag {
 
 ---
 
-# PART 3: RACE CONDITIONS & SYNCHRONIZATION
+# 📌 Part 3: Race Conditions & Synchronization
 
 ## The Race Condition
 
@@ -551,7 +551,7 @@ adder.sum();         // Get final count (slightly delayed)
 
 ---
 
-# PART 6: CONCURRENT COLLECTIONS
+# 📌 Part 6: Concurrent Collections
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -603,7 +603,7 @@ Task t = queue.take(); // Blocks if empty (consumer waits)
 
 ---
 
-# PART 7: COMMON MISTAKES & INTERVIEW QUESTIONS
+# 🎤 Part 7: Common Mistakes & Interview Questions
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -637,3 +637,8 @@ Task t = queue.take(); // Blocks if empty (consumer waits)
 ---
 
 > **Next**: [Part 2 — ExecutorService, CompletableFuture, Virtual Threads →](27b_Java_Concurrency_Advanced.md)
+
+
+---
+
+> **Navigation**: [< Previous](26_Spring_Boot_Curriculum_50Day.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](27b_Java_Concurrency_Advanced.md)

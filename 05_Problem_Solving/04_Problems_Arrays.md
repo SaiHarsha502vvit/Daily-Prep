@@ -1,12 +1,14 @@
+> **Navigation**: [< Previous](04_Problem_Origins.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_Problems_Sliding_Window.md)
+
 > **Problems 04/14** | [Prev](03_Problems_Strings.md) | [Index](../00_MASTER_INDEX.md) | [Next](05_Problems_Sliding_Window.md)
 
 ---
 
-# SECTION 3: ARRAY PROBLEMS
+# 📊 Section 3: Array Problems
 
 ---
 
-## 3.1 BASIC ARRAY OPERATIONS
+## 📊 3.1 Basic Array Operations
 
 ### Problem: Two Sum
 
@@ -547,7 +549,7 @@ private String formatRange(int lower, int upper) {
 - [ ] Palindrome Number (LeetCode 9)
 - [ ] Happy Number (LeetCode 202)
 
-### GCD/LCM
+### 📌 Gcd/lcm
 
 - [ ] GCD (Euclidean Algorithm)
 - [ ] 🔒 GCD of Array (LeetCode 1979)
@@ -584,3 +586,4 @@ private String formatRange(int lower, int upper) {
 
 ---
 
+> **Navigation**: [< Previous](04_Problem_Origins.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_Problems_Sliding_Window.md)

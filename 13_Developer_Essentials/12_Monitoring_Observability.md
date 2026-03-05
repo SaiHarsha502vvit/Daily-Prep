@@ -155,3 +155,5 @@ OpenTelemetry (standard): auto-instruments Spring Boot, propagates trace IDs
 ```
 
 ---
+
+> **Navigation**: [< Previous](11_Production_Code_Practices.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](13_Agile_Scrum.md)

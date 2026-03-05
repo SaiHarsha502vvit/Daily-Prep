@@ -1721,3 +1721,8 @@ public int dpCoinChange(int[] coins, int amount) {
 ```
 
 **Pro Tip:** If greedy doesn't work for a problem, try DP. If you can prove the greedy choice property (exchange argument), greedy is usually faster!
+
+
+---
+
+> **Navigation**: [< Previous](11_Backtracking_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](13_String_Algorithms_Complete.md)

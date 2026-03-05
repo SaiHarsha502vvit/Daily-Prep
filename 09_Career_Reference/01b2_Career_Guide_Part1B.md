@@ -2,6 +2,7 @@
 
 ---
 
+```
 │  Before modifying data, write to WAL:                          │
 │                                                                  │
 │  ┌───────────────────────────────────────────────────────┐     │
@@ -45,13 +46,19 @@
 │  • Can now discard old WAL records                             │
 │                                                                  │
 └─────────────────────────────────────────────────────────────────┘
+```
+
 
 
 MVCC (Multi-Version Concurrency Control):
+```
 ────────────────────────────────────────
+```
+
 
 HOW MULTIPLE TRANSACTIONS SEE DIFFERENT DATA:
 
+```
 ┌──────────────────────────────────────────────────────────────────┐
 │                                                                  │
 │  Row versions in database:                                       │
@@ -81,9 +88,12 @@ HOW MULTIPLE TRANSACTIONS SEE DIFFERENT DATA:
 │  • This is "snapshot isolation"                                  │
 │                                                                  │
 └──────────────────────────────────────────────────────────────────┘
+```
+
 
 
 DEADLOCK DETECTION:
+```
 ──────────────────
 
 ┌──────────────────────────────────────────────────────────────────┐
@@ -113,16 +123,23 @@ DEADLOCK DETECTION:
 └──────────────────────────────────────────────────────────────────┘
 ```
 
+
 ### Connection Pooling Internals
 
-```
 DATABASE CONNECTION LIFECYCLE:
+```
 ═════════════════════════════
+```
+
 
 WITHOUT CONNECTION POOLING:
+```
 ──────────────────────────
+```
+
 
 Each request:
+```
 ┌──────────────────────────────────────────────────────────────────┐
 │                                                                  │
 │  1. TCP connection to DB (30-100ms)                              │
@@ -141,9 +158,12 @@ Each request:
 │  • Database overwhelmed!                                         │
 │                                                                  │
 └──────────────────────────────────────────────────────────────────┘
+```
+
 
 
 WITH CONNECTION POOLING (e.g., HikariCP):
+```
 ────────────────────────────────────────
 
 ┌──────────────────────────────────────────────────────────────────┐
@@ -190,6 +210,8 @@ WITH CONNECTION POOLING (e.g., HikariCP):
 └──────────────────────────────────────────────────────────────────┘
 ```
 
+```
+
 ---
 
 _Stage 1 Complete! Ready for Stage 2: Cloud Fundamentals to Expertise_
@@ -202,18 +224,25 @@ _Stage 1 Complete! Ready for Stage 2: Cloud Fundamentals to Expertise_
 
 ```
 BEFORE CLOUD:
+```
 ─────────────
+```
+
 Buy Server → Wait 2-4 weeks → Setup → Configure → Hope it's enough
 Cost: $50,000 upfront
 Risk: Over-provision (waste) or Under-provision (crash)
 
 WITH CLOUD:
+```
 ───────────
+```
+
 Click → Server in 60 seconds → Scale up/down anytime
 Cost: Pay only what you use
 Risk: Minimal - add/remove resources instantly
 
 CLOUD BENEFITS:
+```
 ├── No upfront capital expense
 ├── Pay-as-you-go pricing
 ├── Global availability
@@ -222,39 +251,41 @@ CLOUD BENEFITS:
 └── Security (often better than DIY)
 ```
 
+
 ### Cloud Service Models
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────────┐
 │                  CLOUD SERVICE MODELS                            │
-├─────────────────────────────────────────────────────────────────┤
+├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
-│  ON-PREMISES         IaaS              PaaS              SaaS    │
-│  ───────────         ────              ────              ────    │
-│  You Manage:         You Manage:       You Manage:       You:    │
-│  ┌──────────┐        ┌──────────┐      ┌──────────┐      Just   │
-│  │Application│       │Application│     │Application│     Use    │
-│  │Data      │        │Data      │      │Data      │      It!    │
-│  │Runtime   │        │Runtime   │      └──────────┘             │
-│  │Middleware│        │Middleware│                               │
-│  │OS        │        │OS        │      Provider:                │
-│  │Virtual   │        └──────────┘      ┌──────────┐             │
-│  │Servers   │                          │Runtime   │             │
-│  │Storage   │        Provider:         │Middleware│             │
-│  │Network   │        ┌──────────┐      │OS        │             │
-│  └──────────┘        │Virtual   │      │Virtual   │             │
-│                      │Servers   │      │Servers   │             │
-│                      │Storage   │      │Storage   │             │
-│                      │Network   │      │Network   │             │
-│                      └──────────┘      └──────────┘             │
+│  ON-PREMISES        IaaS             PaaS             SaaS       │
+│  ───────────        ────             ────             ────       │
+│  You Manage:        You Manage:      You Manage:      You:       │
+│  ┌──────────┐       ┌──────────┐     ┌──────────┐     Just       │
+│  │Application│      │Application│    │Application│    Use It!    │
+│  │Data       │      │Data       │    │Data       │               │
+│  │Runtime    │      │Runtime    │    └──────────┘                │
+│  │Middleware │      │Middleware │                                │
+│  │OS         │      │OS         │    Provider:                   │
+│  │Virtual    │      └──────────┘     ┌──────────┐                │
+│  │Servers    │                       │Runtime    │               │
+│  │Storage    │      Provider:        │Middleware │               │
+│  │Network    │      ┌──────────┐     │OS         │               │
+│  └──────────┘       │Virtual    │    │Virtual    │               │
+│                     │Servers    │    │Servers    │               │
+│                     │Storage    │    │Storage    │               │
+│                     │Network    │    │Network    │               │
+│                     └──────────┘     └──────────┘                │
 │                                                                  │
-│  Example:            Example:          Example:          Example:│
-│  Your Data Center    AWS EC2           Heroku            Gmail   │
-│                      Azure VMs         AWS Elastic       Slack   │
-│                      Google GCE        Beanstalk         Salesforce
+│  Example:           Example:         Example:         Example:   │
+│  Your Data Center   AWS EC2          Heroku           Gmail      │
+│                     Azure VMs        AWS Elastic      Slack      │
+│                     Google GCE       Beanstalk        Salesforce │
 │                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 ```
+
 
 ### AWS Services - Complete Map
 
@@ -301,10 +332,13 @@ CLOUD BENEFITS:
 └──────────────────────────────────────────────────────────────────┘
 ```
 
+```
+
 ### AWS Architecture - Real Examples
 
 #### Example 1: Simple Web Application
 
+```
 ```
 ┌──────────────────────────────────────────────────────────────────┐
 │                    SIMPLE WEB APP ARCHITECTURE                   │
@@ -346,6 +380,7 @@ CLOUD BENEFITS:
 │                                                                  │
 └──────────────────────────────────────────────────────────────────┘
 ```
+
 
 #### Example 2: Serverless Architecture
 
@@ -395,6 +430,7 @@ CLOUD BENEFITS:
 └──────────────────────────────────────────────────────────────────┘
 ```
 
+
 #### Example 3: Microservices Architecture
 
 ```
@@ -438,11 +474,14 @@ CLOUD BENEFITS:
 └──────────────────────────────────────────────────────────────────┘
 ```
 
+
 ### AWS Cost Optimization - Expert Level
 
-```
 COST OPTIMIZATION STRATEGIES:
+```
 ─────────────────────────────
+```
+
 
 1. RIGHT-SIZING
    ├── Monitor CPU/Memory usage
@@ -491,7 +530,6 @@ COST OPTIMIZATION STRATEGIES:
    ├── Same-AZ communication when possible
    ├── CloudFront for content delivery
    └── Compress data before transfer
-```
 
 ### Azure Services - Complete Map
 
@@ -529,11 +567,14 @@ COST OPTIMIZATION STRATEGIES:
 └──────────────────────────────────────────────────────────────────┘
 ```
 
+
 ### Cloud Security Best Practices
 
-```
 CLOUD SECURITY CHECKLIST:
+```
 ─────────────────────────
+```
+
 
 1. IDENTITY & ACCESS
    □ Enable MFA for all users
@@ -569,9 +610,9 @@ CLOUD SECURITY CHECKLIST:
    □ Compliance certifications (SOC2, ISO27001)
    □ Data retention policies
    □ Incident response plan
-```
 
 ### Infrastructure as Code (IaC)
+
 
 ```hcl
 # TERRAFORM EXAMPLE - Complete Web App Infrastructure
@@ -893,11 +934,9 @@ You click "Launch Instance":
        ▼
 7. Instance running!
    Time: ~30-60 seconds
-```
 
 ### EBS Storage Internals
 
-```
 HOW EBS (Elastic Block Store) WORKS:
 ═══════════════════════════════════
 
@@ -956,11 +995,9 @@ EBS VOLUME TYPES - WHEN TO USE:
 │ sc1           │ 250 IOPS    │ 250 MB/s   │ Archive, cold data    │
 │ (Cold)        │ baseline    │            │ (infrequent access)   │
 └───────────────┴─────────────┴────────────┴───────────────────────┘
-```
 
 ### Load Balancer Internals
 
-```
 HOW APPLICATION LOAD BALANCER (ALB) WORKS:
 ═════════════════════════════════════════
 
@@ -1047,11 +1084,9 @@ ALB vs NLB vs CLB:
 ├──────────────┼────────────┼──────────────┼────────────────────────┤
 │ Use Case     │ Web apps   │ Gaming, IoT  │ Don't use (legacy)     │
 └──────────────┴────────────┴──────────────┴────────────────────────┘
-```
 
 ### S3 Internals
 
-```
 HOW S3 STORES YOUR DATA:
 ═══════════════════════
 
@@ -1134,11 +1169,9 @@ S3 STORAGE CLASSES:
 │ Glacier Deep      │ 12-48 hours  │ $0.00099    │ 7-10 year archive│
 │ Archive           │              │             │                  │
 └───────────────────┴──────────────┴─────────────┴──────────────────┘
-```
 
 ### Auto Scaling Internals
 
-```
 HOW AUTO SCALING WORKS:
 ══════════════════════
 
@@ -1233,3 +1266,4 @@ _Stage 2 Complete! Ready for Stage 3: Full-Stack Development Complete Guide_
 
 ---
 
+> **Navigation**: [< Previous](01_Career_TechnoFunctional.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](01b_Career_Guide_Part1A.md)

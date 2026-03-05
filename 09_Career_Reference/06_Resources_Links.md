@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](05_Daily_Habits_Tracking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_Behavioral_Interview.md)
+
 # 🎓 Top University CS Resources & Learning Links
 
 ## World's Best Algorithm & Data Structure Resources
@@ -1172,3 +1174,8 @@ STAGE 4: MASTERY (Ongoing)
 ---
 
 _"The goal is not to consume courses. The goal is to see systems everywhere."_ 🌟
+
+
+---
+
+> **Navigation**: [< Previous](05_Daily_Habits_Tracking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_Behavioral_Interview.md)

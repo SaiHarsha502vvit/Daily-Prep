@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](08_React_Performance.md) | [Back to Index](../00_MASTER_INDEX.md)
+
 # Chapter 9 — React Deep Reasoning: The Questions That Freeze People
 
 > **"Anyone can say 'useState manages state.' The senior engineer explains WHY React re-renders, HOW batching works, and WHAT happens when you call setState 3 times in a row."**
@@ -856,3 +858,8 @@ function handleSubmit() {
 ← Previous: [Chapter 8 — React Performance](08_React_Performance.md)
 | [📚 Index](../00_MASTER_INDEX.md)
 | Next: [TypeScript Deep Reasoning →](../17_TypeScript/04_TS_Deep_Reasoning.md)
+
+
+---
+
+> **Navigation**: [< Previous](08_React_Performance.md) | [Back to Index](../00_MASTER_INDEX.md)

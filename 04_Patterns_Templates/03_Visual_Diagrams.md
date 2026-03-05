@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](02_Code_Templates.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_Pattern_Recognition.md)
+
 # 🎨 VISUAL ALGORITHM DIAGRAMS - COMPLETE REFERENCE
 
 ## This file contains VISUAL diagrams for ALL algorithm patterns
@@ -888,3 +890,8 @@ DATA STRUCTURES
 4. **If stuck**: Go back to the diagram, not the code
 
 Remember: **Visual thinking → Clearer code!**
+
+
+---
+
+> **Navigation**: [< Previous](02_Code_Templates.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_Pattern_Recognition.md)

@@ -62,11 +62,9 @@ public class DigitDP {
 // How many numbers in [1, 100] have digit sum = 5?
 // Answer: 10 (5, 14, 23, 32, 41, 50, 104... wait, cap at 100)
 // Actually: 5, 14, 23, 32, 41, 50 = 6 numbers
-```
 
 ## Pattern 2: Bitmask DP
 
-```
 CONCEPT:
 Use bitmask to represent which elements are "used" or "visited".
 Each bit represents one element's state.
@@ -163,11 +161,9 @@ public class AssignmentProblem {
         return result;
     }
 }
-```
 
 ## Pattern 3: Interval DP
 
-```
 CONCEPT:
 Solve problems on intervals/subarrays by considering all ways
 to split the interval and combining results.
@@ -242,11 +238,9 @@ public int maxCoins(int[] nums) {
 
     return dp[1][n];
 }
-```
 
 ## Pattern 4: Tree DP
 
-```
 CONCEPT:
 DP on tree structures. Usually compute answers for subtrees
 and combine at each node.
@@ -302,11 +296,9 @@ private int maxPath(TreeNode node, int[] maxSum) {
     // Return max path starting at this node and going down
     return node.val + Math.max(leftMax, rightMax);
 }
-```
 
 ## Pattern 5: DP with Monotonic Optimization
 
-```
 CONCEPT:
 Use monotonic data structures to optimize DP transitions.
 Reduces O(n²) to O(n) or O(n log n).
@@ -776,11 +768,9 @@ MISTAKE 6: Redundant states
 ║  • Real-world optimization problems                                              ║
 ║                                                                                  ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
-```
 
 ## DIGIT DP - COUNTING NUMBERS WITH PROPERTIES
 
-````
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │                    DIGIT DP - THE PATTERN                                       │
 ├─────────────────────────────────────────────────────────────────────────────────┤
@@ -799,6 +789,8 @@ MISTAKE 6: Redundant states
 │                                                                                 │
 │  TEMPLATE:                                                                      │
 │  ───────────                                                                    │
+```
+
 ```java
 // Count numbers from 0 to N with digit sum = targetSum
 Long[][] memo;  // [position][sum][tight]
@@ -831,12 +823,15 @@ long solve(String N, int pos, int sum, boolean tight, int target) {
 }
 
 // For range [L, R]: answer = count(R) - count(L-1)
-````
+```
 
+```
 │ │
 │ │
 │ EXAMPLE: Count numbers 1 to N with no repeated adjacent digits │
 │ ───────────────────────────────────────────────────────────── │
+```
+
 
 ```java
 Long[][][] memo;  // [pos][prevDigit][tight]
@@ -866,15 +861,17 @@ long solve(String N, int pos, int prev, boolean tight) {
 }
 ```
 
+```
 │ │
 └─────────────────────────────────────────────────────────────────────────────────┘
-
 ```
 
-## BITMASK DP - SUBSET STATE TRACKING
+
+
+## ⚡ Bitmask DP — Subset State Tracking
+
 
 ```
-
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │ BITMASK DP - COMPLETE GUIDE                                                     │
 ├─────────────────────────────────────────────────────────────────────────────────┤
@@ -899,6 +896,8 @@ long solve(String N, int pos, int prev, boolean tight) {
 │                                                                                 │
 │ TRAVELING SALESMAN PROBLEM (TSP):                                               │
 │ ──────────────────────────────────                                              │
+```
+
 
 ```java
 // dp[mask][i] = min cost to visit cities in mask, ending at city i
@@ -938,10 +937,13 @@ int tsp(int[][] dist) {
 }
 ```
 
+```
 │ │
 │ │
 │ ITERATING OVER ALL SUBSETS OF A MASK: │
 │ ───────────────────────────────────── │
+```
+
 
 ```java
 // Iterate all subsets of mask (including empty and mask itself)
@@ -955,10 +957,13 @@ for (int subset = mask; subset > 0; subset = (subset - 1) & mask) {
 // Loop generates: 5 → 4 → 1 → (stops, handle 0 separately)
 ```
 
+```
 │ │
 │ │
 │ ASSIGNMENT PROBLEM (HUNGARIAN ALTERNATIVE): │
 │ ─────────────────────────────────────────── │
+```
+
 
 ```java
 // Assign n workers to n tasks, minimize total cost
@@ -984,15 +989,17 @@ int assignmentProblem(int[][] cost) {
 }
 ```
 
+```
 │ │
 └─────────────────────────────────────────────────────────────────────────────────┘
-
 ```
 
-## INTERVAL DP - OPTIMAL SUBSTRUCTURE ON RANGES
+
+
+## 📌 Interval DP — Optimal Substructure on Ranges
+
 
 ```
-
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │ INTERVAL DP - THE PATTERN                                                       │
 ├─────────────────────────────────────────────────────────────────────────────────┤
@@ -1009,6 +1016,8 @@ int assignmentProblem(int[][] cost) {
 │                                                                                 │
 │ TEMPLATE:                                                                       │
 │ ───────────                                                                     │
+```
+
 
 ```java
 // dp[i][j] = optimal solution for interval [i, j]
@@ -1041,10 +1050,13 @@ int intervalDP(int[] arr) {
 }
 ```
 
+```
 │ │
 │ │
 │ MATRIX CHAIN MULTIPLICATION: │
 │ ──────────────────────────── │
+```
+
 
 ```java
 // dims[i-1] x dims[i] = dimensions of matrix i (0-indexed)
@@ -1074,10 +1086,13 @@ int matrixChain(int[] dims) {
 }
 ```
 
+```
 │ │
 │ │
 │ BURST BALLOONS (LeetCode 312): │
 │ ────────────────────────────── │
+```
+
 
 ```java
 // Burst all balloons, maximize coins collected
@@ -1108,10 +1123,13 @@ int maxCoins(int[] nums) {
 // Key insight: Think of k as LAST to burst, not first!
 ```
 
+```
 │ │
 │ │
 │ MINIMUM COST TO CUT A STICK (LeetCode 1547): │
 │ ──────────────────────────────────────────── │
+```
+
 
 ```java
 // Given stick of length n, cuts[] = positions to cut at.
@@ -1148,6 +1166,7 @@ int minCost(int n, int[] cuts) {
 // This is the DUAL of Burst Balloons — same template, different cost!
 ```
 
+```
 │ │
 │ │
 │ INTERVAL DP DECISION GUIDE: │
@@ -1182,13 +1201,14 @@ int minCost(int n, int[] cuts) {
 │ 8. Minimum Cost Tree From Leaf Values (LC 1130) — https://leetcode.com/problems/minimum-cost-tree-from-leaf-values/ │
 │ │
 └─────────────────────────────────────────────────────────────────────────────────┘
-
 ```
 
-## DP ON TREES
+
+
+## 🌳 DP on Trees
+
 
 ```
-
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │ TREE DP - THE PATTERN                                                           │
 ├─────────────────────────────────────────────────────────────────────────────────┤
@@ -1200,6 +1220,8 @@ int minCost(int n, int[] cuts) {
 │                                                                                 │
 │ BASIC TREE DP - MAXIMUM INDEPENDENT SET:                                        │
 │ ─────────────────────────────────────────                                       │
+```
+
 
 ```java
 // Select maximum weight of non-adjacent nodes
@@ -1227,10 +1249,13 @@ void dfs(int v, int parent) {
 // Answer: Math.max(dp[root][0], dp[root][1])
 ```
 
+```
 │ │
 │ │
 │ TREE DIAMETER: │
 │ ────────────── │
+```
+
 
 ```java
 // Longest path in tree
@@ -1258,10 +1283,13 @@ int dfs(int v, int parent) {
 }
 ```
 
+```
 │ │
 │ │
 │ REROOTING TECHNIQUE (for all-roots DP): │
 │ ───────────────────────────────────────── │
+```
+
 
 ```java
 // Compute answer for all possible roots in O(n)
@@ -1312,15 +1340,17 @@ void dfs2(int v, int parent) {
 }
 ```
 
+```
 │ │
 └─────────────────────────────────────────────────────────────────────────────────┘
-
 ```
 
-## DP OPTIMIZATIONS - CONVEX HULL TRICK
+
+
+## ⚡ DP Optimizations — Convex Hull Trick
+
 
 ```
-
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │ CONVEX HULL TRICK (CHT)                                                         │
 ├─────────────────────────────────────────────────────────────────────────────────┤
@@ -1356,6 +1386,8 @@ void dfs2(int v, int parent) {
 │                                                                                 │
 │ IMPLEMENTATION (monotonic slopes and queries):                                  │
 │ ─────────────────────────────────────────────                                   │
+```
+
 
 ```java
 class ConvexHullTrick {
@@ -1399,19 +1431,21 @@ for (int i = 1; i < n; i++) {
 }
 ```
 
+```
 │ │
 │ COMPLEXITY: │
 │ • Amortized O(1) per addLine and query if both are monotonic │
 │ • O(log n) per query with binary search if queries not monotonic │
 │ │
 └─────────────────────────────────────────────────────────────────────────────────┘
-
 ```
 
-## DIVIDE AND CONQUER DP OPTIMIZATION
+
+
+## ⚡ Divide and Conquer DP Optimization
+
 
 ```
-
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │ DIVIDE AND CONQUER DP                                                           │
 ├─────────────────────────────────────────────────────────────────────────────────┤
@@ -1425,6 +1459,8 @@ for (int i = 1; i < n; i++) {
 │                                                                                 │
 │ IMPLEMENTATION:                                                                 │
 │ ───────────────                                                                 │
+```
+
 
 ```java
 // dp[i][j] = optimal value using exactly i partitions ending at j
@@ -1455,10 +1491,13 @@ void compute(int level, int lo, int hi, int optLo, int optHi) {
 // Call: compute(i, 1, n, 0, n) for each level i
 ```
 
+```
 │ │
 │ │
 │ EXAMPLE: Partition array into k subarrays, minimize max sum │
 │ ────────────────────────────────────────────────────────── │
+```
+
 
 ```java
 long solve(int[] arr, int k) {
@@ -1482,15 +1521,17 @@ long cost(int l, int r) {
 }
 ```
 
+```
 │ │
 └─────────────────────────────────────────────────────────────────────────────────┘
-
 ```
 
-## BROKEN PROFILE DP (PLUG DP)
+
+
+## 📌 Broken Profile DP (plug DP)
+
 
 ```
-
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │ BROKEN PROFILE DP - GRID TILING                                                 │
 ├─────────────────────────────────────────────────────────────────────────────────┤
@@ -1519,6 +1560,8 @@ long cost(int l, int r) {
 │                                                                                 │
 │ DOMINO TILING (count ways to tile n×m grid with 1×2 dominoes):                  │
 │ ──────────────────────────────────────────────────────────────                  │
+```
+
 
 ```java
 // Count ways to tile n×m grid with dominoes
@@ -1569,21 +1612,25 @@ long dominoTiling(int n, int m) {
 }
 ```
 
+```
 │ │
 │ Time: O(m × n × 2^n) │
 │ Space: O(2^n) │
 │ Practical for n ≤ 15-20 │
 │ │
 └─────────────────────────────────────────────────────────────────────────────────┘
-
 ```
 
-## DP PATTERN QUICK REFERENCE
 
-```
+
+## 🎨 DP Pattern Quick Reference
+
 
  DP PATTERNS QUICK REFERENCE
+```
 ──────────────────────────────────────────────────
+```
+
 
  ┌─────────────────────────────────────────────────────────────────────────────┐
  │ Pattern │ Signal │ Time │ Space │
@@ -1680,3 +1727,8 @@ _DP is not about memorizing solutions - it's about SEEING the substructure!_
 | Maximum Length of Pair Chain | LC 646 | Greedy or DP — compare both approaches |
 | Largest Divisible Subset | LC 368 | LIS variant with divisibility |
 | Counting Bits | LC 338 | DP on bits — beautiful O(n) pattern |
+
+
+---
+
+> **Navigation**: [< Previous](04b_DP_Fundamentals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_Trees.md)

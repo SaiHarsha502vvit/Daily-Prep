@@ -3,7 +3,7 @@
 
 ---
 
-# PART 1: WHAT IS RECURSION REALLY?
+# 🔁 Part 1: What is Recursion Really?
 
 ## Complete Understanding
 
@@ -154,11 +154,9 @@
 │ • T(n) = T(n-1) + T(n-2) → O(2^n) [Naive Fibonacci]                          │
 └──────────────────────────────────────────────────────────────────────────────┘
 
-```
 
 ## The Mental Model
 
-```
 
 RECURSION = TRUSTING YOUR FUTURE SELF
 
@@ -192,11 +190,9 @@ WHY THIS WORKS:
 2. Each step makes progress (asking person IN FRONT, not behind)
 3. Combining is simple (just add 1)
 
-```
 
 ## The Three Laws of Recursion
 
-```
 
 ┌──────────────────────────────────────────────────────────────┐
 │ LAW 1: BASE CASE                                             │
@@ -212,11 +208,11 @@ WHY THIS WORKS:
 │ Focus on: "If sub-problem is solved, how do I use it?"       │
 └──────────────────────────────────────────────────────────────┘
 
-````
+```
 
 ---
 
-# PART 2: ANATOMY OF A RECURSIVE FUNCTION
+# 📌 Part 2: Anatomy of a Recursive Function
 
 ```java
 public int recursiveFunction(parameters) {
@@ -233,7 +229,7 @@ public int recursiveFunction(parameters) {
     // 3. COMBINE - Use sub-result to build answer
     return combine(subResult, currentData);
 }
-````
+```
 
 ## Classic Example: Factorial
 
@@ -287,7 +283,7 @@ public int factorial(int n) {
 
 ---
 
-# PART 3: TYPES OF RECURSION
+# 🔁 Part 3: Types of Recursion
 
 ## Type 1: Linear Recursion
 
@@ -372,7 +368,7 @@ public boolean isOdd(int n) {
 
 ---
 
-# PART 4: RECURSION PATTERNS FOR DSA
+# 🔁 Part 4: Recursion Patterns for DSA
 
 ## Pattern 1: Process and Recurse
 
@@ -460,7 +456,7 @@ public void generateSubsets(int[] nums, int index, List<Integer> current,
 
 ---
 
-# PART 5: RECURSION ON DATA STRUCTURES
+# 🔁 Part 5: Recursion on Data Structures
 
 ## Linked List Recursion
 
@@ -540,7 +536,7 @@ private int checkHeight(TreeNode root) {
 
 ---
 
-# PART 6: COMMON MISTAKES & HOW TO AVOID
+# 🔍 Part 6: Common Mistakes & How to Avoid
 
 ## Mistake 1: No Base Case
 
@@ -618,7 +614,7 @@ public void explore(int n) {
 
 ---
 
-# PART 7: RECURSION TO ITERATION CONVERSION
+# 🔁 Part 7: Recursion to Iteration Conversion
 
 ## Why Convert?
 
@@ -768,7 +764,7 @@ At 1 move/second, that's 585 billion years. The universe is 13.8 billion.
 
 ---
 
-# PART 8: PRACTICE PROBLEMS BY DIFFICULTY
+# 💪 Part 8: Practice Problems By Difficulty
 
 ## Easy
 
@@ -802,7 +798,7 @@ At 1 move/second, that's 585 billion years. The universe is 13.8 billion.
 
 ---
 
-# PART 9: MENTAL EXERCISES
+# 📌 Part 9: Mental Exercises
 
 ## Exercise 1: Trace by Hand
 
@@ -816,20 +812,16 @@ Before coding, trace these by hand:
 
 Draw the call stack!
 Draw the return values!
-```
 
 ## Exercise 2: Identify the Pattern
 
-```
 For each problem, identify:
 1. What is the base case?
 2. How does problem get smaller?
 3. How to combine sub-results?
-```
 
 ## Exercise 3: Convert
 
-```
 Take any recursive solution and:
 1. Convert to tail recursion
 2. Convert to iteration
@@ -838,7 +830,7 @@ Take any recursive solution and:
 
 ---
 
-# PART 10: REAL-WORLD APPLICATIONS
+# 📌 Part 10: Real — World Applications
 
 ```
 1. FILE SYSTEM TRAVERSAL
@@ -868,3 +860,4 @@ Take any recursive solution and:
 
 ---
 
+> **Navigation**: [< Previous](03a_Recursion_Internals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03c_Recursion_Advanced.md)

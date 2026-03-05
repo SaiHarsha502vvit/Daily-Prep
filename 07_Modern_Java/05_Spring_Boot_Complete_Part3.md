@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](04_Spring_Boot_Complete_Part2.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_Spring_Boot_Complete_Part4.md)
+
 # 🌱 SPRING BOOT COMPLETE GUIDE - Part 3: AOP & Spring Boot Magic
 
 > **Aspect-Oriented Programming & Boot Auto-Configuration**
@@ -49,7 +51,7 @@
 
 ---
 
-# TIER 3: ASPECT-ORIENTED PROGRAMMING (AOP)
+# 📌 Tier 3: Aspect — Oriented Programming (aop)
 
 ---
 
@@ -789,7 +791,7 @@ public class ExternalApiService {
 
 ---
 
-# TIER 4: SPRING BOOT AUTO-CONFIGURATION
+# 🌱 Tier 4: Spring Boot Auto — Configuration
 
 ---
 
@@ -1153,3 +1155,8 @@ CONFIGURATION:
 ---
 
 _Continue to Part 4: Data Access (JPA & Hibernate), Security, Web & Testing_
+
+
+---
+
+> **Navigation**: [< Previous](04_Spring_Boot_Complete_Part2.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_Spring_Boot_Complete_Part4.md)

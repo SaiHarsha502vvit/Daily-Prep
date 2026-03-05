@@ -3,7 +3,7 @@
 
 ---
 
-# PART 1: UNDERSTANDING DP FROM SCRATCH
+# 📌 Part 1: Understanding DP From Scratch
 
 ## What is Dynamic Programming?
 
@@ -200,11 +200,9 @@
 │ • Ultra-optimized: Sometimes O(1) space possible (like Fibonacci)            │
 └──────────────────────────────────────────────────────────────────────────────┘
 
-```
 
 ### The Story Metaphor
 
-```
 
 THE STORY:
 Imagine you're solving a maze. Every time you hit a dead end,
@@ -224,11 +222,11 @@ SMART WAY (DP):
 
 THIS IS MEMOIZATION: Remember what you've already calculated.
 
-````
+```
 
 ---
 
-# PART 2: FIBONACCI - THE GATEWAY TO DP
+# 📌 Part 2: Fibonacci — the Gateway to DP
 
 ## Evolution of Solutions
 
@@ -255,7 +253,7 @@ public int fibRecursive(int n) {
 // fib(3) computed 2 times
 // fib(2) computed 3 times
 // WASTEFUL!
-````
+```
 
 ### Level 2: Memoization - Top Down (✅ Efficient)
 
@@ -345,7 +343,7 @@ public int fibOptimized(int n) {
 
 ---
 
-# PART 3: THE DP RECIPE
+# 📌 Part 3: the DP Recipe
 
 ## 5-Step Process
 
@@ -373,7 +371,7 @@ STEP 5: DETERMINE COMPUTATION ORDER
 
 ---
 
-# PART 4: CLASSIC DP PROBLEMS WITH TRACES
+# 🧩 Part 4: Classic DP Problems With Traces
 
 ## Problem 1: Climbing Stairs
 
@@ -543,7 +541,7 @@ public int lengthOfLIS(int[] nums) {
 
 ---
 
-# PART 5: 2D DYNAMIC PROGRAMMING
+# 💎 Part 5: 2d Dynamic Programming
 
 ## Problem 5: Unique Paths
 
@@ -671,7 +669,7 @@ public int knapsack(int[] weights, int[] values, int capacity) {
 
 ---
 
-# PART 6: DP PATTERNS
+# 🎨 Part 6: DP Patterns
 
 ## Pattern 1: Linear DP
 
@@ -681,41 +679,33 @@ Examples: Fibonacci, House Robber, Climbing Stairs
 
 STATE: Single index
 TRANSITION: dp[i] = f(dp[i-1], dp[i-2], ...)
-```
 
 ## Pattern 2: Grid DP
 
-```
 dp[i][j] depends on dp[i-1][j], dp[i][j-1], dp[i-1][j-1]
 Examples: Unique Paths, Min Path Sum, Edit Distance
 
 STATE: Two indices (row, column)
 TRANSITION: dp[i][j] = f(dp[i-1][j], dp[i][j-1], dp[i-1][j-1])
-```
 
 ## Pattern 3: String DP
 
-```
 dp[i][j] for two strings s1[0..i], s2[0..j]
 Examples: LCS, Edit Distance, Regex Matching
 
 STATE: Indices into both strings
 TRANSITION: Based on character match/mismatch
-```
 
 ## Pattern 4: Knapsack DP
 
-```
 dp[i][w] for items 0..i with capacity w
 Examples: 0/1 Knapsack, Subset Sum, Coin Change
 
 STATE: Item index + remaining capacity
 TRANSITION: Take or don't take current item
-```
 
 ## Pattern 5: Interval DP
 
-```
 dp[i][j] for interval [i, j]
 Examples: Matrix Chain Multiplication, Burst Balloons
 
@@ -725,7 +715,7 @@ TRANSITION: Try all split points k between i and j
 
 ---
 
-# PART 7: MEMOIZATION VS TABULATION
+# 🧠 Part 7: Memoization vs Tabulation
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -763,7 +753,7 @@ TABULATION:
 
 ---
 
-# PART 8: SPACE OPTIMIZATION
+# ⚡ Part 8: Space Optimization
 
 ```java
 // Many DP problems can be optimized from O(n²) to O(n) space!
@@ -799,7 +789,7 @@ public int lcsOptimized(String s1, String s2) {
 
 ---
 
-# PART 9: PRACTICE PROBLEMS BY PATTERN
+# 💪 Part 9: Practice Problems By Pattern
 
 ## Linear DP
 
@@ -835,7 +825,7 @@ public int lcsOptimized(String s1, String s2) {
 
 ---
 
-# PART 10: EDGE CASES CHECKLIST
+# 📌 Part 10: Edge Cases Checklist
 
 ```
 ⬜ Empty input: n = 0, empty array, empty string
@@ -850,3 +840,4 @@ public int lcsOptimized(String s1, String s2) {
 
 ---
 
+> **Navigation**: [< Previous](04a_DP_Internals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04c_DP_Advanced.md)

@@ -1266,3 +1266,8 @@ Testing is a critical skill for professional developers:
 ---
 
 *Next: Part 20 - Microservices Patterns (Service Discovery, API Gateway, Circuit Breakers)*
+
+
+---
+
+> **Navigation**: [< Previous](21a_SB_Testing_Fundamentals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](22a_SB_Microservices_Core.md)

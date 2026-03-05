@@ -1097,3 +1097,8 @@ THIS IS SOLVABLE. Here's the truth:
 ---
 
 _This document is part of your journey. Come back to it when you need direction._
+
+
+---
+
+> **Navigation**: [< Previous](02a_ERP_Finance_Core.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_RealWorld_Problems_DSA.md)

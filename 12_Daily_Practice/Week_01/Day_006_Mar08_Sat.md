@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](Day_005_Mar07_Fri.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_007_Mar09_Sun.md)
+
 # Day 006 - Saturday, March 8, 2026
 
 > **Week 01** | **WEEKEND** | **Theme:** Spring Boot Foundations + SQL Practice + Review
@@ -436,3 +438,8 @@ Sunday:    Review + weak spot practice
 > **Mentor Note:** Rate yourself honestly. If any topic is below 3, spend 
 > tomorrow's review time re-reading that section and solving the problem AGAIN 
 > without looking at the solution. Struggle leads to learning.
+
+
+---
+
+> **Navigation**: [< Previous](Day_005_Mar07_Fri.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_007_Mar09_Sun.md)

@@ -277,3 +277,5 @@ public class PaymentEventConsumer {
 > → **Guarantee**: If the DB is updated, the event **WILL** be published (eventually).
 
 ---
+
+> **Navigation**: [< Previous](28_Modern_Java_Features.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](30_Spring_Boot_Dependencies_Annotations.md)

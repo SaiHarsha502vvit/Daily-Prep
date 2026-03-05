@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](19b_SB_Security.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](21a_SB_Testing_Fundamentals.md)
+
 # Spring Boot Part 18: Distributed Tracing - Sleuth, Zipkin & Micrometer
 
 ## Overview
@@ -1586,3 +1588,8 @@ tracestate: key1=value1,key2=value2
 - **Baggage** = Context propagated across services
 - **Sampling** = Control trace volume in production
 - **Log Correlation** = Include traceId/spanId in logs
+
+
+---
+
+> **Navigation**: [< Previous](19b_SB_Security.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](21a_SB_Testing_Fundamentals.md)

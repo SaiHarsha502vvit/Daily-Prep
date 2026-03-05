@@ -731,3 +731,4 @@ DO CALL run_daily_etl();
 
 ---
 
+> **Navigation**: [< Previous](14_Query_Optimization.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](16_RealWorld_CaseStudies.md)

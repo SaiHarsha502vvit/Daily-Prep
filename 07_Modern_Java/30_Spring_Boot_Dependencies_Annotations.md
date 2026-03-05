@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](29_Message_Queues_Kafka.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](31_Java_Deep_Reasoning.md)
+
 > **Modern Java Chapter 30** | [← Message Queues](29_Message_Queues_Kafka.md) | [Index](../00_MASTER_INDEX.md)
 
 # Spring Boot Dependencies → Annotations Map
@@ -513,3 +515,8 @@ Q: Why is my @Autowired field null?
 ---
 
 > [← Message Queues](29_Message_Queues_Kafka.md) | [Index](../00_MASTER_INDEX.md)
+
+
+---
+
+> **Navigation**: [< Previous](29_Message_Queues_Kafka.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](31_Java_Deep_Reasoning.md)

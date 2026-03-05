@@ -53,7 +53,7 @@
 
 ---
 
-# TABLE OF CONTENTS
+# 📌 Table of Contents
 
 ```
 SECTION A: JAVA REFLECTION - THE MAGIC BEHIND SPRING
@@ -73,7 +73,7 @@ SECTION M: BYTECODE & INSTRUMENTATION - ULTIMATE FOUNDATION
 
 ---
 
-# SECTION A: JAVA REFLECTION - THE MAGIC BEHIND SPRING
+# ☕ Section a: Java Reflection — the Magic Behind Spring
 
 ## Why This Matters
 
@@ -458,11 +458,9 @@ for (Type type : genericInterfaces) {
         // NOW Spring knows the entity type!
     }
 }
-```
 
 ## A.8 Performance Considerations
 
-```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │                    REFLECTION PERFORMANCE                                       │
 ├─────────────────────────────────────────────────────────────────────────────────┤
@@ -702,11 +700,9 @@ public class User {
     public String getName() { return this.name; }
     public void setName(String name) { this.name = name; }
 }
-```
 
 ### How Compile-Time Processing Works
 
-```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │                    COMPILE-TIME PROCESSING FLOW                                 │
 ├─────────────────────────────────────────────────────────────────────────────────┤
@@ -786,7 +782,7 @@ public class BuilderProcessor extends AbstractProcessor {
 
 ---
 
-# SECTION C: PROXY PATTERNS - THE REAL SPRING MAGIC
+# 🎨 Section C: Proxy Patterns — the Real Spring Magic
 
 ## Why Proxies Are THE Most Important Concept
 
@@ -956,11 +952,9 @@ class TransactionInterceptor implements MethodInterceptor {
         return proxy.invokeSuper(obj, args);
     }
 }
-```
 
 ## C.3 JDK vs CGLIB - When Spring Uses Which
 
-```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │                    JDK PROXY vs CGLIB                                           │
 ├─────────────────────────────────────────────────────────────────────────────────┤
@@ -994,11 +988,9 @@ public class UserService {
         methodA();  // ⚠️ NO TRANSACTION! Why?
     }
 }
-```
 
 ### Why It Happens
 
-```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │                    SELF-INVOCATION PROBLEM                                      │
 ├─────────────────────────────────────────────────────────────────────────────────┤
@@ -1078,11 +1070,9 @@ public class UserService {
         // ...
     }
 }
-```
 
 ### The Reason
 
-```
 CGLIB creates a SUBCLASS of your service:
 
 class UserService$CglibProxy extends UserService {
@@ -1103,7 +1093,7 @@ RESULT: Private methods bypass the proxy entirely
 
 ---
 
-# SECTION D: SERVLET API - WHAT SPRING BOOT HIDES
+# 🌱 Section D: Servlet API — What Spring Boot Hides
 
 ## Why This Matters
 
@@ -1248,11 +1238,9 @@ public void customResponse(HttpServletResponse response) throws IOException {
     // === ERRORS ===
     response.sendError(HttpServletResponse.SC_FORBIDDEN, "Access denied");
 }
-```
 
 ## D.4 Filters - The Pipeline Before Controllers
 
-```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │                    HTTP REQUEST FLOW IN SPRING                                  │
 ├─────────────────────────────────────────────────────────────────────────────────┤
@@ -1321,11 +1309,9 @@ public class RequestLoggingFilter implements Filter {
                 requestId, duration, httpResponse.getStatus());
     }
 }
-```
 
 ### Filter vs Interceptor vs AOP
 
-```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │                    FILTER vs INTERCEPTOR vs AOP                                 │
 ├─────────────────────────────────────────────────────────────────────────────────┤
@@ -1383,7 +1369,7 @@ public class DispatcherServlet extends FrameworkServlet {
 
 ---
 
-# SECTION E: JACKSON & SERIALIZATION - JSON ISN'T MAGIC
+# 📌 Section E: Jackson & Serialization — JSON Isn't Magic
 
 ## Why This Matters
 
@@ -1423,11 +1409,9 @@ String json = mapper.writeValueAsString(user);
 // JSON → Java (Deserialization)
 String json = "{\"name\":\"Jane\",\"age\":30}";
 User user = mapper.readValue(json, User.class);
-```
 
 ### How Jackson Serializes
 
-```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │                    JACKSON SERIALIZATION PROCESS                                │
 ├─────────────────────────────────────────────────────────────────────────────────┤
@@ -1569,3 +1553,9 @@ public class MoneySerializer extends JsonSerializer<BigDecimal> {
         }
     }
 }
+```
+
+
+---
+
+> **Navigation**: [< Previous](02a_AlgoEng_Core.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](02d_SB_HiddenFoundations_Part2.md)

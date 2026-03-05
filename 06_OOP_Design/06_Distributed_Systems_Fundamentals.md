@@ -307,3 +307,5 @@ A: Vertical: bigger machine (more CPU/RAM). Simple but has ceiling.
 ```
 
 ---
+
+> **Navigation**: [< Previous](05_SD_Interview_Problems.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_LLD_Solved_Problems.md)

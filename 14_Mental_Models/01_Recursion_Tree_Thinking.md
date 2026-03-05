@@ -1,3 +1,5 @@
+> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_DP_State_Thinking.md)
+
 # 🌳 Recursion & Tree Thinking — Mental Model
 
 > **The #1 reason people struggle with recursion**: they try to trace every call in their head. Stop doing that. This guide teaches you the **Leap of Faith** method and how to draw recursion trees like a whiteboard pro.
@@ -378,3 +380,8 @@ Subsets:   h=n, b=2 → 2^n leaves → O(2^n)
 
 ---
 [← Index](00_INDEX.md) | [02 DP State Thinking →](02_DP_State_Thinking.md)
+
+
+---
+
+> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_DP_State_Thinking.md)

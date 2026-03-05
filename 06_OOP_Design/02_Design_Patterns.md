@@ -1,10 +1,12 @@
+> **Navigation**: [< Previous](01_OOPS_Principles.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_System_Design.md)
+
 # 🎨 Design Patterns: Complete Guide from Scratch
 
 ## Building Reusable, Maintainable Software
 
 ---
 
-# PART 0: COMPLETE UNDERSTANDING OF DESIGN PATTERNS
+# 🎨 Part 0: Complete Understanding of Design Patterns
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
@@ -227,7 +229,7 @@
 
 ---
 
-# PART 1: CREATIONAL PATTERNS
+# 🎨 Part 1: Creational Patterns
 
 ## 1.1 Singleton Pattern
 
@@ -572,7 +574,7 @@ REAL-WORLD: StringBuilder, HttpRequest.Builder, AlertDialog.Builder
 
 ---
 
-# PART 2: STRUCTURAL PATTERNS
+# 🎨 Part 2: Structural Patterns
 
 ## 2.1 Adapter Pattern
 
@@ -822,7 +824,7 @@ REAL-WORLD: JDBC (hides database complexity), SLF4J (hides logging frameworks)
 
 ---
 
-# PART 3: BEHAVIORAL PATTERNS
+# 🎨 Part 3: Behavioral Patterns
 
 ## 3.1 Observer Pattern
 
@@ -1142,7 +1144,7 @@ REAL-WORLD: Text editors (undo/redo), Task schedulers, Transaction systems
 
 ---
 
-# PART 4: PATTERN COMBINATIONS
+# 🎨 Part 4: Pattern Combinations
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
@@ -1239,7 +1241,7 @@ order.setStatus(OrderStatus.PAID); // Notifies observers
 
 ---
 
-# PART 5: QUICK REFERENCE TABLE
+# 📖 Part 5: Quick Reference Table
 
 ```
 ╔════════════════╦═══════════════════════════════════════════════════════════════╗
@@ -1263,7 +1265,7 @@ order.setStatus(OrderStatus.PAID); // Notifies observers
 
 ---
 
-# CURATED PRACTICE PROBLEMS — OOP & DESIGN PATTERNS
+# 💪 Curated Practice Problems — OOP & Design Patterns
 
 > **HOW TO USE**: These are system design / OOP implementation problems.
 > Section 1 = implement data structures using OOP. Section 2 = apply design patterns.
@@ -1326,3 +1328,5 @@ order.setStatus(OrderStatus.PAID); // Notifies observers
 | 5 | Online Stock Span (LC 901) | LeetCode | Monotonic stack as internal state |
 
 ---
+
+> **Navigation**: [< Previous](01_OOPS_Principles.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_System_Design.md)

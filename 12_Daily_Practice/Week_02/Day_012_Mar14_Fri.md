@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](Day_011_Mar13_Thu.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_013_Mar15_Sat.md)
+
 # Day 012 - Friday, March 14, 2026
 
 > **Week 02** | **Difficulty:** MEDIUM | **Theme:** HashSet + Two Pointers + SQL Subqueries
@@ -14,9 +16,6 @@
 - [ ] SQL: Subqueries + EXISTS (40 min)
 - [ ] Q1: Coding problem 1 (20 min)
 - [ ] Q2: Coding problem 2 (20 min)
-
----
-
 
 ---
 
@@ -54,7 +53,7 @@ USE CASES:
   • Word dictionaries (is this word valid?)
 ```
 
-#### WHAT
+#### 📌 What
 
 ```
 HashSet is just HashMap<K, PRESENT> internally (value is a dummy constant).
@@ -130,7 +129,7 @@ TWO VARIANTS:
 └──────────────────────────────────────────────────────────┘
 ```
 
-#### TEMPLATES
+#### 📐 Templates
 
 ```java
 // TEMPLATE 1: Opposite direction (sorted array)
@@ -359,3 +358,8 @@ CONFIDENCE LEVEL: 😟 | 😐 | 😊 | 🔥
 
 TOMORROW (SAT): Spring Boot Day #2 — Dependency Injection Deep + SQL Practice
 ```
+
+
+---
+
+> **Navigation**: [< Previous](Day_011_Mar13_Thu.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_013_Mar15_Sat.md)

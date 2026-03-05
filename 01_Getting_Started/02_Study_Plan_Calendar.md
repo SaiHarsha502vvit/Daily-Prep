@@ -1,3 +1,5 @@
+> **Navigation**: [Back to Index](../00_MASTER_INDEX.md)
+
 # 📅 2.5-Month Study Plan — February 19 to May 5, 2026
 
 ## Your Daily Roadmap: DS + Algorithm + Combo + Pattern + 2 Questions
@@ -1344,3 +1346,8 @@ _Plan Duration: 76 Days | 11 Weeks | Feb 19 - May 5, 2026_
 _Structure: DS + Algo + Combo + Pattern + 2 Questions daily_
 
 **Your journey starts TODAY. One day at a time. Let's go.**
+
+
+---
+
+> **Navigation**: [Back to Index](../00_MASTER_INDEX.md)

@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](05_LeetCode_RealWorld_Map.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_Two_Pointers_Complete.md)
+
 # 🔍 Binary Search Patterns Complete Guide
 
 > Master Every Variation of the Most Powerful Search Technique
@@ -1208,3 +1210,8 @@ After coding:
 ```
 
 **Pro Tip:** When stuck, ask yourself: "At each step, can I eliminate half of the remaining possibilities?" If yes, binary search applies!
+
+
+---
+
+> **Navigation**: [< Previous](05_LeetCode_RealWorld_Map.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_Two_Pointers_Complete.md)

@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](17_Frontend_Architecture_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md)
+
 # Mental Models — Production Debugging Thinking
 
 ## How to Think About Debugging in Production
@@ -393,3 +395,8 @@ Q: "How would you design a system to be observable?"
 ---
 
 *The best debuggers aren't the ones who fix bugs fastest — they're the ones who build systems where bugs are found before users notice.*
+
+
+---
+
+> **Navigation**: [< Previous](17_Frontend_Architecture_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md)

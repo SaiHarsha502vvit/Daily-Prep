@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](07_Two_Pointers_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](09_Array_Plus_SlidingWindow.md)
+
 # Array + Two Pointers — Combined Pattern Guide
 
 > **WHY this combination?** Arrays provide O(1) random access. Two pointers exploit **sorted order** or **structural constraints** to avoid nested loops, reducing O(n²) → O(n).
@@ -271,3 +273,8 @@ Time: O(n) | Space: O(1) — better than prefix array O(n) space
 
 ---
 [← 07 Two Pointers](07_Two_Pointers_Complete.md) | [09 Array + Sliding Window →](09_Array_Plus_SlidingWindow.md)
+
+
+---
+
+> **Navigation**: [< Previous](07_Two_Pointers_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](09_Array_Plus_SlidingWindow.md)

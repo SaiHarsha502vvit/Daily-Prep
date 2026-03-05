@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](06_Implementation_Checklist.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08_Debugging_DryRun.md)
+
 # 🗃️ SQL Mental Pipeline — Think in Sets, Build Queries Step-by-Step
 
 > **The key insight**: SQL doesn't work like Java. In Java, you think in LOOPS (process one row at a time). In SQL, you think in SETS (operate on entire tables at once). This shift is the #1 barrier for programmers learning SQL.
@@ -330,3 +332,8 @@ See these keywords in the problem? → Use this approach:
 
 ---
 [← 06 Implementation Checklist](06_Implementation_Checklist.md) | [08 Debugging & Dry Run →](08_Debugging_DryRun.md)
+
+
+---
+
+> **Navigation**: [< Previous](06_Implementation_Checklist.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08_Debugging_DryRun.md)

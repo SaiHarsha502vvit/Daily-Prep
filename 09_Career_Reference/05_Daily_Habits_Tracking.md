@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](04_Brain_Psychology.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_Resources_Links.md)
+
 # 📅 Daily DSA Practice Tracker
 
 ## How to Use This Template
@@ -410,3 +412,8 @@ Night:    Can you explain it simply? (Feynman test)
 ---
 
 **Remember**: Progress is not linear. Bad days are part of the journey. 🚀
+
+
+---
+
+> **Navigation**: [< Previous](04_Brain_Psychology.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_Resources_Links.md)

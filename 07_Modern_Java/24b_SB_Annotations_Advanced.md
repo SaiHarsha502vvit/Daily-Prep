@@ -1340,3 +1340,8 @@ Inline callbacks (@PrePersist on entity):
 ---
 
 *This completes the Spring Boot Annotations Reference - bookmark this for quick lookup!*
+
+
+---
+
+> **Navigation**: [< Previous](24a_SB_Annotations_Core.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](25_Spring_Boot_Part23_Missing_Essential_Topics.md)

@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](Day_002_Mar04_Tue.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_004_Mar06_Thu.md)
+
 # Day 003 - Wednesday, March 5, 2026
 
 > **Week 01** | **Difficulty:** EASY | **Theme:** Strings + Bubble Sort + SQL DDL
@@ -506,3 +508,8 @@ public int firstUniqChar(String s) {
 > **Mentor Note:** The frequency array pattern (int[26] for lowercase) is one of 
 > the most reusable tricks in string problems. Master it — it appears in 15+ 
 > LeetCode problems.
+
+
+---
+
+> **Navigation**: [< Previous](Day_002_Mar04_Tue.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_004_Mar06_Thu.md)

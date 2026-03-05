@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](10_Interview_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](12_Space_Time_Tradeoffs.md)
+
 > **Mental Model 11** | [Index](../00_MASTER_INDEX.md)
 
 ---

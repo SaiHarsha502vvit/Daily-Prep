@@ -1,5 +1,3 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](06e_Algorithm_Patterns.md)
-
 ---
 
 # Advanced Algorithm Patterns & Competitive Programming
@@ -1175,3 +1173,4 @@ public class FenwickTree {
 
 ---
 
+> **Navigation**: [< Previous](06c_Advanced_Algo_Deep.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06e_Algorithm_Patterns.md)

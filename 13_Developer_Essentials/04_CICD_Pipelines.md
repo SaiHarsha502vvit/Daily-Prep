@@ -293,3 +293,8 @@ Azure DevOps    → Best for Microsoft ecosystem
 ---
 
 > **Next Chapter**: [Clean Code Principles →](05_Clean_Code.md)
+
+
+---
+
+> **Navigation**: [< Previous](03_Docker_Containers.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_Clean_Code.md)

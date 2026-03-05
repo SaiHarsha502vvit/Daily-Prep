@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](08_Debugging_DryRun.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](10_Interview_Thinking.md)
+
 # ⏱️ Complexity Intuition — Reason About Time & Space Without Formulas
 
 > **The key insight**: You don't need to do math to estimate complexity. You need to count HOW MANY TIMES the core operation runs. This guide teaches you to "see" complexity at a glance.
@@ -275,7 +277,7 @@ When resize happens (double from m to 2m):
 We charged $3 per operation → amortized cost = O(3) = O(1)
 
 ┌─────────────────────────────────────┐
-│  $1   $1   $1   $1   $1   $1  $1   │
+│  $1   $1   $1   $1   $1   $1  $1    │
 │  [a]  [b]  [c]  [d]  [e]  [f] [g]  │ ← each has $2
 │  $2   $2   $2   $2   $2   $2  $2   │    credit attached
 └─────────────────────────────────────┘
@@ -411,3 +413,8 @@ For SPACE complexity:
 
 ---
 [← 08 Debugging & Dry Run](08_Debugging_DryRun.md) | [10 Interview Thinking →](10_Interview_Thinking.md)
+
+
+---
+
+> **Navigation**: [< Previous](08_Debugging_DryRun.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](10_Interview_Thinking.md)

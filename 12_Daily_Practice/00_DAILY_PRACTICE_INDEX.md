@@ -1,3 +1,5 @@
+> **Navigation**: [Back to Index](../00_MASTER_INDEX.md)
+
 # Daily Practice System - Master Index
 
 > **Start Date:** March 3, 2026 | **Style:** MIT/KTH Academic
@@ -98,3 +100,8 @@ Each daily file links to these study materials:
 | Problems: Sliding Window | [05_Problem_Solving/05_Problems_Sliding_Window.md](../05_Problem_Solving/05_Problems_Sliding_Window.md) |
 | Problems: Two Pointers | [05_Problem_Solving/06_Problems_Two_Pointers.md](../05_Problem_Solving/06_Problems_Two_Pointers.md) |
 | Spring Boot | [07_Modern_Java/00_SPRING_BOOT_ROADMAP.md](../07_Modern_Java/00_SPRING_BOOT_ROADMAP.md) |
+
+
+---
+
+> **Navigation**: [Back to Index](../00_MASTER_INDEX.md)

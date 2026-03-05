@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](01_CSS_Foundations.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_CSS_Responsive_Animations.md)
+
 > **CSS Chapter 2/4** | [← Foundations](01_CSS_Foundations.md) | [Index](../00_MASTER_INDEX.md) | [Next → Responsive & Animations](03_CSS_Responsive_Animations.md)
 
 # CSS Layout Systems — Flexbox, Grid & the Complete Toolkit
@@ -584,3 +586,8 @@ Q: What are container queries?
 ---
 
 > [← Foundations](01_CSS_Foundations.md) | [Index](../00_MASTER_INDEX.md) | [Next → Responsive & Animations](03_CSS_Responsive_Animations.md)
+
+
+---
+
+> **Navigation**: [< Previous](01_CSS_Foundations.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_CSS_Responsive_Animations.md)

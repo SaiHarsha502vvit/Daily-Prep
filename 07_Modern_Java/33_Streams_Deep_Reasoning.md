@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](32_Spring_Boot_Deep_Reasoning.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](34_JVM_Object_Model_Internals.md)
+
 # Chapter 33 — Java Streams Deep Reasoning: WHY They Work the Way They Do
 
 > **"Anyone can write `.filter().map().collect()`. The senior engineer explains WHY streams are lazy, WHAT happens when you use `parallelStream()` on a LinkedList, and HOW `reduce()` actually accumulates — not just that it does."**

@@ -471,3 +471,8 @@ Script that:
 ---
 
 > **Next Chapter**: [Docker & Containers →](03_Docker_Containers.md)
+
+
+---
+
+> **Navigation**: [< Previous](01_Git_Version_Control.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_Docker_Containers.md)

@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](Day_019_Mar21_Fri.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_021_Mar23_Sun.md)
+
 # Day 020 — Saturday, March 22, 2026
 
 > **Week 03** | **Day 6 (Weekend)** | **Theme:** Spring Boot REST Controllers + Error Handling + SQL Practice
@@ -11,9 +13,6 @@
 - [ ] Spring Boot: Error Handling + Validation (45 min)
 - [ ] SQL Practice: Mixed Drills (45 min)
 - [ ] Week Review: Concept Map (15 min)
-
----
-
 
 ---
 
@@ -453,3 +452,8 @@ Error Handling            [ ]      [ ]          [ ]
 SCORE: ___ / 39 (13 × 3)
 TARGET: 26+ before moving to Week 4
 ```
+
+
+---
+
+> **Navigation**: [< Previous](Day_019_Mar21_Fri.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_021_Mar23_Sun.md)

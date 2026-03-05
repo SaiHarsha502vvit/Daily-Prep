@@ -1028,3 +1028,8 @@ public class CredentialRotationService {
 **END OF PART 17: DATABASE SECURITY & USER MANAGEMENT**
 
 ➡️ **Next: Part 18 - Distributed Tracing (Sleuth, Zipkin)**
+
+
+---
+
+> **Navigation**: [< Previous](19a_SB_Database.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](20_Spring_Boot_Part18_Distributed_Tracing.md)

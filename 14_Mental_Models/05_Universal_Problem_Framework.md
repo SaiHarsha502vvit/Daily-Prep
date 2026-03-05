@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](04_Array_String_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_Implementation_Checklist.md)
+
 # 🧭 Universal Problem-Solving Framework — 6-Step Method for ANY Problem
 
 > **The key insight**: Every problem — DSA, SQL, system design — follows the same thinking process. Master this 6-step framework and you'll never freeze in front of a problem again.
@@ -239,3 +241,8 @@ Step 6: OPTIMIZE → Scaling bottlenecks, caching, CDN, sharding
 
 ---
 [← 04 Array & String](04_Array_String_Thinking.md) | [06 Implementation Checklist →](06_Implementation_Checklist.md)
+
+
+---
+
+> **Navigation**: [< Previous](04_Array_String_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_Implementation_Checklist.md)

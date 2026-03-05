@@ -1,12 +1,14 @@
+> **Navigation**: [< Previous](06_Problems_Two_Pointers.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08_Problems_Stack_Queue.md)
+
 > **Problems 07/14** | [Prev](06_Problems_Two_Pointers.md) | [Index](../00_MASTER_INDEX.md) | [Next](08_Problems_Stack_Queue.md)
 
 ---
 
-# SECTION 6: BINARY SEARCH PATTERNS
+# 🔍 Section 6: Binary Search Patterns
 
 ---
 
-## 6.1 BASIC BINARY SEARCH
+## 🔍 6.1 Basic Binary Search
 
 ### Problem: Binary Search
 
@@ -146,7 +148,7 @@ public int firstBadVersion(int n) {
 
 ---
 
-## 6.2 FIND BOUNDARIES
+## 📌 6.2 Find Boundaries
 
 ### Problem: Find First and Last Position
 
@@ -263,7 +265,7 @@ public char nextGreatestLetter(char[] letters, char target) {
 
 ---
 
-## 6.3 ROTATED SORTED ARRAY
+## 📊 6.3 Rotated Sorted Array
 
 ### Problem: Search in Rotated Sorted Array
 
@@ -432,7 +434,7 @@ public int findMin(int[] nums) {
 
 ---
 
-## 6.4 BINARY SEARCH ON ANSWER
+## 🔍 6.4 Binary Search on Answer
 
 ### Problem: Sqrt(x)
 
@@ -974,3 +976,4 @@ private boolean canPlace(int[] position, int m, int minDist) {
 
 ---
 
+> **Navigation**: [< Previous](06_Problems_Two_Pointers.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08_Problems_Stack_Queue.md)

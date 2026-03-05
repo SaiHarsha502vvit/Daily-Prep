@@ -6,7 +6,7 @@
 
 ---
 
-# PART 0: COMPLETE UNDERSTANDING OF 2D ARRAYS
+# 📊 Part 0: Complete Understanding of 2d Arrays
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
@@ -148,7 +148,7 @@
 
 ---
 
-# PART 1: UNDERSTANDING 2D ARRAYS FROM SCRATCH
+# 📊 Part 1: Understanding 2d Arrays From Scratch
 
 ## 🧬 What is a 2D Array REALLY?
 
@@ -197,7 +197,7 @@ YOUR PHONE CAMERA:
 
 ---
 
-# PART 2: DECLARATION & INITIALIZATION
+# 📌 Part 2: Declaration & Initialization
 
 ## Different Ways to Create 2D Arrays
 
@@ -261,7 +261,7 @@ int cols = matrix[0].length;  // ⚠️ Only safe after checking matrix.length >
 
 ---
 
-# PART 3: TRAVERSAL PATTERNS
+# 🎨 Part 3: Traversal Patterns
 
 ## Pattern 1: Row-by-Row (Standard)
 
@@ -411,7 +411,7 @@ public void printBoundary(int[][] matrix) {
 
 ---
 
-# PART 4: MATRIX TRANSFORMATIONS
+# 📌 Part 4: Matrix Transformations
 
 ## Rotate Matrix 90° Clockwise (⭐ AMAZON FAVORITE)
 
@@ -474,7 +474,7 @@ public void rotate90InPlace(int[][] matrix) {
 
 ---
 
-# PART 5: COMMON 2D ARRAY PROBLEMS
+# 📊 Part 5: Common 2d Array Problems
 
 ## Problem 1: Search in Sorted Matrix
 
@@ -614,7 +614,7 @@ private int kadane(int[] arr) {
 
 ---
 
-# PART 6: MATRIX IN GRAPH PROBLEMS
+# 🕸️ Part 6: Matrix in Graph Problems
 
 ## Grid as Graph
 
@@ -722,7 +722,7 @@ private void dfs(char[][] grid, int i, int j) {
 
 ---
 
-# PART 7: PRACTICE PROBLEMS
+# 💪 Part 7: Practice Problems
 
 ## Difficulty Progression
 
@@ -791,7 +791,7 @@ public int minPathSum(int[][] grid) {
 
 ---
 
-# PART 7.5: CODERBYTE & INTERVIEW MATRIX CHALLENGES
+# 🎤 Part 7.5: Coderbyte & Interview Matrix Challenges
 
 ## Challenge 1: Closest Enemy with Wrap-Around (BFS)
 
@@ -1112,7 +1112,7 @@ private static void dfsIsland(int[][] grid, int r, int c,
 
 ---
 
-# PART 8: EDGE CASES CHECKLIST
+# 📌 Part 8: Edge Cases Checklist
 
 ```
 ⬜ Empty matrix: matrix.length == 0 or matrix[0].length == 0
@@ -1129,7 +1129,7 @@ private static void dfsIsland(int[][] grid, int r, int c,
 
 ---
 
-# PART 9: REAL-WORLD APPLICATIONS
+# 📌 Part 9: Real — World Applications
 
 ```
 1. IMAGE PROCESSING
@@ -1157,7 +1157,7 @@ private static void dfsIsland(int[][] grid, int r, int c,
 
 ---
 
-# CURATED PRACTICE PROBLEMS — 2D ARRAYS & MATRIX
+# 📊 Curated Practice Problems — 2d Arrays & Matrix
 
 > **HOW TO USE**: Section 1 = traversal basics. Section 2 = search/transform. Section 3 = advanced.
 
@@ -1216,3 +1216,8 @@ private static void dfsIsland(int[][] grid, int r, int c,
 ---
 
 _Master 2D arrays = Master half of interview problems!_ 🔲
+
+
+---
+
+> **Navigation**: [< Previous](03_Collections_Java.md) | [Back to Index](../00_MASTER_INDEX.md)

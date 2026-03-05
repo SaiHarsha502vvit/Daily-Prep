@@ -5,7 +5,7 @@
 
 # 🔬 PART FINAL: MODERN ALGORITHMS AND ADVANCED TOPICS
 
-## NP-COMPLETENESS - THE COMPLETE UNDERSTANDING
+## 📚 NP — Completeness — the Complete Understanding
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -72,11 +72,9 @@
 │  Contrapositive: If A has no poly solution and A ≤_p B → B has no poly sol      │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
-```
 
 ## APPROXIMATION ALGORITHMS
 
-````
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │                    APPROXIMATION ALGORITHMS FOR NP-HARD PROBLEMS                │
 ├─────────────────────────────────────────────────────────────────────────────────┤
@@ -110,6 +108,8 @@
 │  • Our ALG = 2 × (edges picked)                                                 │
 │  • Therefore ALG/OPT ≤ 2                                                        │
 │                                                                                 │
+```
+
 ```java
 public Set<Integer> vertexCover2Approx(int n, int[][] edges) {
     Set<Integer> cover = new HashSet<>();
@@ -136,8 +136,9 @@ public Set<Integer> vertexCover2Approx(int n, int[][] edges) {
     }
     return cover;
 }
-````
+```
 
+```
 │ │
 │ │
 │ EXAMPLE 2: SET COVER (log n - Approximation) │
@@ -168,13 +169,14 @@ public Set<Integer> vertexCover2Approx(int n, int[][] edges) {
 │ (Best known for metric TSP!) │
 │ │
 └─────────────────────────────────────────────────────────────────────────────────┘
-
 ```
 
-## RANDOMIZED ALGORITHMS
+
+
+## 📌 Randomized Algorithms
+
 
 ```
-
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │ RANDOMIZED ALGORITHMS - DEEP DIVE                                               │
 ├─────────────────────────────────────────────────────────────────────────────────┤
@@ -190,6 +192,8 @@ public Set<Integer> vertexCover2Approx(int n, int[][] edges) {
 │                                                                                 │
 │ RANDOMIZED QUICKSORT:                                                           │
 │ ─────────────────────                                                           │
+```
+
 
 ```java
 void randomizedQuickSort(int[] arr, int low, int high) {
@@ -208,6 +212,7 @@ void randomizedQuickSort(int[] arr, int low, int high) {
 // Worst case: O(n²) but probability is 1/n! → negligible
 ```
 
+```
 │ │
 │ │
 │ KARGER'S MIN-CUT ALGORITHM: │
@@ -228,6 +233,8 @@ void randomizedQuickSort(int[] arr, int low, int high) {
 │ │
 │ MILLER-RABIN PRIMALITY TEST: │
 │ ───────────────────────────── │
+```
+
 
 ```java
 // Monte Carlo: May report composite as prime, never reports prime as composite
@@ -269,15 +276,17 @@ private boolean millerRabinTest(long n, long d, int r, long a) {
 // For k = 40: error probability < 10^-24
 ```
 
+```
 │ │
 └─────────────────────────────────────────────────────────────────────────────────┘
-
 ```
 
-## ADVANCED STRING ALGORITHMS
+
+
+## 📝 Advanced String Algorithms
+
 
 ```
-
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │ STRING MATCHING ALGORITHMS - COMPLETE COMPARISON                                │
 ├─────────────────────────────────────────────────────────────────────────────────┤
@@ -300,6 +309,8 @@ private boolean millerRabinTest(long n, long d, int r, long a) {
 │                                                                                 │
 │ n = text length, m = pattern length, σ = alphabet size                          │
 │                                                                                 │
+```
+
 
 ```java
 // Z-ALGORITHM: Find all occurrences of pattern in text
@@ -405,15 +416,17 @@ class AhoCorasick {
 }
 ```
 
+```
 │ │
 └─────────────────────────────────────────────────────────────────────────────────┘
-
 ```
 
-## NETWORK FLOW ALGORITHMS
+
+
+## 🌐 Network Flow Algorithms
+
 
 ```
-
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │ MAXIMUM FLOW - COMPLETE GUIDE                                                   │
 ├─────────────────────────────────────────────────────────────────────────────────┤
@@ -432,6 +445,8 @@ class AhoCorasick {
 │ │ Dinic (unit cap) │ O(E × √V) │ For unit capacity graphs │                     │
 │ └─────────────────────┴────────────────────────┴────────────────────────────┘   │
 │                                                                                 │
+```
+
 
 ```java
 // DINIC'S ALGORITHM - O(V²E)
@@ -508,19 +523,23 @@ class Dinic {
 // 4. Circulation with Demands: Add super-source and super-sink
 ```
 
+```
 │ │
 └─────────────────────────────────────────────────────────────────────────────────┘
-
 ```
 
-## COMPUTATIONAL GEOMETRY BASICS
+
+
+## 📌 Computational Geometry Basics
+
 
 ```
-
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │ COMPUTATIONAL GEOMETRY - ESSENTIAL ALGORITHMS                                   │
 ├─────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                 │
+```
+
 
 ```java
 // CONVEX HULL - Graham Scan O(n log n)
@@ -600,15 +619,17 @@ boolean onSegment(int[] a, int[] b, int[] c) {
 // Divide and conquer: split, solve recursively, merge considering strip
 ```
 
+```
 │ │
 └─────────────────────────────────────────────────────────────────────────────────┘
-
 ```
 
-## ALGORITHM DESIGN PARADIGMS - SUMMARY
+
+
+## 📋 Algorithm Design Paradigms — Summary
+
 
 ```
-
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │ WHEN TO USE WHICH PARADIGM                                                      │
 ├─────────────────────────────────────────────────────────────────────────────────┤
@@ -657,6 +678,8 @@ boolean onSegment(int[] a, int[] b, int[] c) {
 │ └──────────────────────┴────────────────────────────────────────────────────┘   │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
 
 ```
 
@@ -671,7 +694,7 @@ _Master these algorithms to understand the foundations of computer science!_ �
 
 ---
 
-# CURATED PRACTICE PROBLEMS — ADVANCED ALGORITHMS
+# 💪 Curated Practice Problems — Advanced Algorithms
 
 > **HOW TO USE**: These are harder problems covering greedy, bit manipulation, string algorithms, and competitive patterns.
 > Attempt only after mastering the fundamentals in earlier chapters.
@@ -741,3 +764,5 @@ _Master these algorithms to understand the foundations of computer science!_ �
 | 6 | Circular Array Loop (LC 457) | LeetCode | Slow/fast pointer on circular |
 
 ---
+
+> **Navigation**: [< Previous](06d_String_Algorithms.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07a_Advanced_DS_Core.md)

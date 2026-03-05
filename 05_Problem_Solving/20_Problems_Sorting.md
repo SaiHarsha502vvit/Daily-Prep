@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](19_Problems_Matrix.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](21_Problems_Design.md)
+
 > **Problems 20** | [Prev](19_Problems_Matrix.md) | [Index](../00_MASTER_INDEX.md) | [Next](21_Problems_Design.md)
 
 ---

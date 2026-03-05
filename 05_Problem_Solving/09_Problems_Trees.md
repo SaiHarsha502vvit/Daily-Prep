@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](08_Problems_Stack_Queue.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](10_Problems_Graphs.md)
+
 > **Problems 09/14** | [Prev](08_Problems_Stack_Queue.md) | [Index](../00_MASTER_INDEX.md) | [Next](10_Problems_Graphs.md)
 
 ---
@@ -2013,3 +2015,4 @@ private void dfs(TreeNode node, int level, List<Integer> result) {
 
 ---
 
+> **Navigation**: [< Previous](08_Problems_Stack_Queue.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](10_Problems_Graphs.md)

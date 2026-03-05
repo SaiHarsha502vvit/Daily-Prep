@@ -6,7 +6,7 @@
 
 ---
 
-# PART 0: COMPLETE UNDERSTANDING OF JAVA COLLECTIONS
+# ☕ Part 0: Complete Understanding of Java Collections
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
@@ -157,7 +157,7 @@
 
 ---
 
-# SECTION 1: LIST INTERFACE
+# 📌 Section 1: List Interface
 
 ## ArrayList Methods (Most Used for Arrays/DSA)
 
@@ -255,7 +255,7 @@ list.removeLast();  // Remove from back
 
 ---
 
-# SECTION 2: MAP INTERFACE
+# 📌 Section 2: Map Interface
 
 ## HashMap Methods (CRITICAL for DSA!)
 
@@ -370,7 +370,7 @@ treeMap.floorKey(7);      // 5 (largest <= 7)
 
 ---
 
-# SECTION 3: SET INTERFACE
+# 📌 Section 3: Set Interface
 
 ## HashSet Methods
 
@@ -453,7 +453,7 @@ treeSet.floor(7);     // 5 (largest <= 7)
 
 ---
 
-# SECTION 4: QUEUE INTERFACE
+# 📬 Section 4: Queue Interface
 
 ## Queue/Deque Methods (Using ArrayDeque)
 
@@ -534,7 +534,7 @@ PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[0] - b[0]);
 
 ---
 
-# SECTION 5: STACK OPERATIONS
+# 📚 Section 5: Stack Operations
 
 ## Using ArrayDeque as Stack (RECOMMENDED)
 
@@ -582,7 +582,7 @@ while (!stack.isEmpty()) {
 
 ---
 
-# SECTION 6: STRING BUILDER
+# 📝 Section 6: String Builder
 
 ## StringBuilder Methods (For String Manipulation)
 
@@ -625,7 +625,7 @@ if (sb.length() > 0) {
 
 ---
 
-# SECTION 7: ARRAYS UTILITY CLASS
+# 📊 Section 7: Arrays Utility Class
 
 ## Static Methods in java.util.Arrays
 
@@ -669,7 +669,7 @@ System.out.println(Arrays.deepToString(matrix));  // [[1, 2], [3, 4]]
 
 ---
 
-# SECTION 8: COLLECTIONS UTILITY CLASS
+# 📌 Section 8: Collections Utility Class
 
 ## Static Methods in java.util.Collections
 
@@ -701,7 +701,7 @@ Collections.sort(list, Collections.reverseOrder());  // [5, 4, 3, 1, 1]
 
 ---
 
-# SECTION 9: QUICK REFERENCE TABLES
+# 📖 Section 9: Quick Reference Tables
 
 ## When to Use Which Collection?
 
@@ -731,7 +731,7 @@ Collections.sort(list, Collections.reverseOrder());  // [5, 4, 3, 1, 1]
 
 ---
 
-# SECTION 10: DSA PROBLEM → COLLECTION MAPPING
+# 🧩 Section 10: DSA Problem → Collection Mapping
 
 | Problem Type       | Primary Collection      | Why                      |
 | ------------------ | ----------------------- | ------------------------ |
@@ -751,7 +751,7 @@ Collections.sort(list, Collections.reverseOrder());  // [5, 4, 3, 1, 1]
 
 ---
 
-# CURATED PRACTICE PROBLEMS — JAVA COLLECTIONS IN ACTION
+# 💪 Curated Practice Problems — Java Collections in Action
 
 > **HOW TO USE**: These problems specifically test your knowledge of Java Collections API.
 > Focus on choosing the RIGHT collection for each problem.
@@ -776,3 +776,8 @@ Collections.sort(list, Collections.reverseOrder());  // [5, 4, 3, 1, 1]
 ---
 
 _This reference is your go-to guide during practice!_
+
+
+---
+
+> **Navigation**: [< Previous](02b_DS_Variants_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_2D_Arrays_Matrix.md)

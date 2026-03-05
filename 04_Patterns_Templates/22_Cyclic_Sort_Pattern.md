@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](21_Intervals_Pattern.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](23_Knapsack_Family.md)
+
 > **Pattern 22** | [Prev](21_Intervals_Pattern.md) | [Index](../00_MASTER_INDEX.md)
 
 ---
@@ -399,7 +401,7 @@ COMPLEXITY: Time O(n) | Space O(1)
 
 ---
 
-## SUMMARY: CYCLIC SORT DECISION TABLE
+## 🔄 Summary: Cyclic Sort Decision Table
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐

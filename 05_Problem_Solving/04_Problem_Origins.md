@@ -1,10 +1,12 @@
+> **Navigation**: [< Previous](03_Problems_Strings.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_Problems_Arrays.md)
+
 # 🌍 Real-World Problem Origins: Where DSA Concepts Were Born
 
 ## Understanding the "WHY" Behind Every Algorithm
 
 ---
 
-# PART 0: WHY UNDERSTANDING ORIGINS MATTERS
+# ❓ Part 0: Why Understanding Origins Matters
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
@@ -115,7 +117,7 @@ WHEN YOU KNOW THE STORY:
 
 ---
 
-# PART 1: SEARCH ALGORITHMS
+# 🔍 Part 1: Search Algorithms
 
 ## Binary Search
 
@@ -340,7 +342,7 @@ THIS IS:
 
 ---
 
-# PART 2: SORTING ALGORITHMS
+# 🔄 Part 2: Sorting Algorithms
 
 ## Merge Sort
 
@@ -461,7 +463,7 @@ THIS IS:
 
 ---
 
-# PART 3: DYNAMIC PROGRAMMING
+# 💎 Part 3: Dynamic Programming
 
 ## Fibonacci → DP Discovery
 
@@ -542,7 +544,7 @@ Result:
 
 ---
 
-# PART 4: GRAPH ALGORITHMS
+# 🕸️ Part 4: Graph Algorithms
 
 ## BFS - Breadth First Search
 
@@ -739,7 +741,7 @@ OPTIMIZATION:
 
 ---
 
-# PART 5: TREE ALGORITHMS
+# 🌳 Part 5: Tree Algorithms
 
 ## Binary Search Tree
 
@@ -795,7 +797,7 @@ THIS IS WHY:
 
 ---
 
-# PART 6: HASH TABLES
+# #️⃣ Part 6: Hash Tables
 
 ## HashMap Collision Resolution
 
@@ -855,7 +857,7 @@ THIS IS WHY:
 
 ---
 
-# PART 7: SPECIFIC PROBLEM ORIGINS
+# 🧩 Part 7: Specific Problem Origins
 
 ## Two Sum - The Classic
 
@@ -979,7 +981,7 @@ THIS IS:
 
 ---
 
-# PART 8: CONNECTING LEETCODE TO YOUR FUTURE JOB
+# 📌 Part 8: Connecting Leetcode to Your Future Job
 
 ## Problem → Job Role Mapping
 
@@ -1007,7 +1009,7 @@ THIS IS:
 
 ---
 
-# FINAL WISDOM
+# 📌 Final Wisdom
 
 ```
 "Every LeetCode problem was once a REAL problem
@@ -1030,3 +1032,8 @@ THIS IS:
 ---
 
 _Reference this guide whenever you learn a new topic to understand its origin!_ 🌍
+
+
+---
+
+> **Navigation**: [< Previous](03_Problems_Strings.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_Problems_Arrays.md)

@@ -236,7 +236,7 @@ _Practice consistently. Aim for 2-3 problems daily. Review solutions even for pr
 
 ---
 
-# SECTION 1: BULK DATA OPERATIONS
+# 📌 Section 1: Bulk Data Operations
 
 ## 🔵 WHY Bulk Operations Matter
 
@@ -443,7 +443,7 @@ TRUNCATE TABLE large_table RESTART IDENTITY CASCADE;  -- Reset sequences, cascad
 
 ---
 
-# SECTION 2: ETL TRANSFORMATIONS IN SQL
+# 🗃️ Section 2: ETL Transformations in SQL
 
 ## 🔵 WHY: ETL = Extract, Transform, Load
 
@@ -635,7 +635,7 @@ SELECT 'Negative Values', COUNT(*)::TEXT FROM orders
 
 ---
 
-# SECTION 3: ADVANCED ANALYTICS QUERIES
+# 🚀 Section 3: Advanced Analytics Queries
 
 ## 3.1 Cohort Analysis
 
@@ -800,7 +800,7 @@ FROM customer_stats;
 
 ---
 
-# SECTION 4: WINDOW FUNCTIONS DEEP DIVE
+# 🔬 Section 4: Window Functions Deep Dive
 
 ## 4.1 Ranking Functions Comparison
 
@@ -866,7 +866,7 @@ FROM orders;
 
 ---
 
-# SECTION 5: MORE INTERVIEW QUESTIONS
+# 🎤 Section 5: More Interview Questions
 
 ## Questions Set 1: Data Cleaning
 
@@ -1023,7 +1023,7 @@ WHERE o.total_amount > ca.avg_amount;
 
 ---
 
-# SECTION 6: DATA ENGINEERING SPECIFIC
+# 📌 Section 6: Data Engineering Specific
 
 ## 6.1 Slowly Changing Dimensions (SCD)
 
@@ -1161,3 +1161,8 @@ VALUES ('fact_sales', @@ROWCOUNT, CURRENT_TIMESTAMP);
 ---
 
 _Data Engineering is 80% SQL. Master these patterns and you'll excel in any DE interview!_
+
+
+---
+
+> **Navigation**: [< Previous](18a_SQL_Projects_Beginner.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](19_Interview_Top50.md)

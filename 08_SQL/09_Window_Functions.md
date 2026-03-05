@@ -523,10 +523,6 @@ _"Part 2 Complete! You now understand Aggregates, GROUP BY, JOINs, Subqueries, C
 
 ---
 
-
-
----
-
 # ═══════════════════════════════════════════════════════════════════
 # MERGED FROM: 02_SQL_Data_Analysis.md (WHY-HOW Framework Edition)
 # ═══════════════════════════════════════════════════════════════════
@@ -578,7 +574,7 @@ Level 6: ADVANCED ANALYTICS (Week 11-12)
 
 ---
 
-# PART 1: JOINS - THE FOUNDATION OF DATA ANALYSIS
+# 🔗 Part 1: Joins — the Foundation of Data Analysis
 
 ---
 
@@ -907,7 +903,7 @@ WHERE c.customer_id IN (
 
 ---
 
-# PART 2: AGGREGATE FUNCTIONS & GROUP BY
+# 📌 Part 2: Aggregate Functions & Group By
 
 ---
 
@@ -1115,7 +1111,7 @@ GROUP BY o.order_id, o.order_date;
 
 ---
 
-# PART 3: WINDOW FUNCTIONS - ADVANCED ANALYTICS
+# 🚀 Part 3: Window Functions — Advanced Analytics
 
 ---
 
@@ -1609,7 +1605,7 @@ USE TEMP TABLE WHEN:
 
 ---
 
-# PART 5: REAL-WORLD ANALYTICS QUERIES
+# 📌 Part 5: Real — World Analytics Queries
 
 ---
 
@@ -1834,7 +1830,7 @@ FROM orders;
 
 ---
 
-# QUICK REFERENCE CARD
+# 📖 Quick Reference Card
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════════╗
@@ -1898,3 +1894,8 @@ FROM orders;
 ---
 
 **NEXT: 03_SQL_RealWorld_Incidents.md - Production SQL Stories and Lessons**
+
+
+---
+
+> **Navigation**: [< Previous](08_Subqueries_CTEs.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](10_Normalization.md)

@@ -1,3 +1,5 @@
+> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_CSS_Layout_Systems.md)
+
 > **CSS Chapter 1/4** | [Index](../00_MASTER_INDEX.md) | [Next → Layout Systems](02_CSS_Layout_Systems.md)
 
 # CSS Foundations — Selectors, Cascade, Box Model & Display
@@ -688,3 +690,8 @@ Q: What is the cascade?
 ---
 
 > [Index](../00_MASTER_INDEX.md) | [Next → Layout Systems (Flex, Grid)](02_CSS_Layout_Systems.md)
+
+
+---
+
+> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_CSS_Layout_Systems.md)

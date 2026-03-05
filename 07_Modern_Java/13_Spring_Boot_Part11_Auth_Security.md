@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](12_Spring_Boot_Part10_HTTP_Deep_Dive.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](14_Spring_Boot_Part12_DSA_Applications.md)
+
 # 🔐 SPRING BOOT MASTERY - Part 11: Authentication & Authorization
 
 > **Securing Your Applications**
@@ -1140,7 +1142,7 @@ public class ProjectController {
 
 ---
 
-# SECTION 4: OTHER AUTH METHODS
+# 📌 Section 4: Other Auth Methods
 
 ---
 
@@ -1500,7 +1502,7 @@ public class BasicAuthSecurityConfig {
 
 ---
 
-# SECURITY BEST PRACTICES CHECKLIST
+# 💪 Security Best Practices Checklist
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -1542,3 +1544,8 @@ public class BasicAuthSecurityConfig {
 ---
 
 _Continue to Part 12: DSA in Spring Boot Applications_
+
+
+---
+
+> **Navigation**: [< Previous](12_Spring_Boot_Part10_HTTP_Deep_Dive.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](14_Spring_Boot_Part12_DSA_Applications.md)

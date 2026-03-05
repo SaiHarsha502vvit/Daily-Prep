@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](02_TS_Advanced_Types.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_TS_Deep_Reasoning.md)
+
 > **TypeScript Chapter 3/3** | [← Advanced Types](02_TS_Advanced_Types.md) | [Index](../00_MASTER_INDEX.md) | [Next Series → CSS Foundations](../18_CSS_Complete/01_CSS_Foundations.md)
 
 # TypeScript Patterns & Best Practices — Production-Grade TS
@@ -613,3 +615,8 @@ Q: How do you type a function that accepts any object with a specific key?
 ---
 
 > [← Advanced Types](02_TS_Advanced_Types.md) | [Index](../00_MASTER_INDEX.md) | [Next Series → CSS Foundations](../18_CSS_Complete/01_CSS_Foundations.md)
+
+
+---
+
+> **Navigation**: [< Previous](02_TS_Advanced_Types.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_TS_Deep_Reasoning.md)

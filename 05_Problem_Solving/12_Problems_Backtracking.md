@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](11_Problems_Dynamic_Programming.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](13_Problems_Greedy.md)
+
 > **Problems 12/14** | [Prev](11_Problems_Dynamic_Programming.md) | [Index](../00_MASTER_INDEX.md) | [Next](13_Problems_Greedy.md)
 
 ---
@@ -943,3 +945,4 @@ private boolean isValid(char[][] board, int row, int col, char c) {
 
 ---
 
+> **Navigation**: [< Previous](11_Problems_Dynamic_Programming.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](13_Problems_Greedy.md)

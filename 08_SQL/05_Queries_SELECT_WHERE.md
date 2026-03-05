@@ -392,3 +392,4 @@ _"Part 1 Complete! You now understand Database basics, Data Types, DDL, DML, and
 
 ---
 
+> **Navigation**: [< Previous](04_DML_Manipulating_Data.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_Aggregations_GroupBy.md)

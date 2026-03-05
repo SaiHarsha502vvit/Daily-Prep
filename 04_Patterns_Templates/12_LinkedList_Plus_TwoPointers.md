@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](11_Stack_Plus_MonotonicPattern.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](13_Tree_Plus_DFS_BFS.md)
+
 # LinkedList + Two Pointers — Combined Pattern Guide
 
 > **WHY this combination?** LinkedLists have no random access — you can't use indices. Two pointers (fast/slow) let you find midpoints, detect cycles, and locate k-th from end in a single pass.
@@ -293,3 +295,8 @@ COMMON MISTAKES:
 
 ---
 [← 11 Stack+Monotonic](11_Stack_Plus_MonotonicPattern.md) | [13 Tree+DFS/BFS →](13_Tree_Plus_DFS_BFS.md)
+
+
+---
+
+> **Navigation**: [< Previous](11_Stack_Plus_MonotonicPattern.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](13_Tree_Plus_DFS_BFS.md)

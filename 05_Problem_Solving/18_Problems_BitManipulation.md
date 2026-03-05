@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](17_Problems_HashMap_Hashing.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](19_Problems_Matrix.md)
+
 > **Problems 18/22** | [Prev](17_Problems_HashMap_Hashing.md) | [Index](../00_MASTER_INDEX.md) | [Next](19_Problems_Matrix_Grid.md)
 
 ---
@@ -1393,3 +1395,8 @@ PROOFS:
 ---
 
 > **End of Section 16** | [Prev](17_Problems_HashMap_Hashing.md) | [Index](../00_MASTER_INDEX.md) | [Next](19_Problems_Matrix_Grid.md)
+
+
+---
+
+> **Navigation**: [< Previous](17_Problems_HashMap_Hashing.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](19_Problems_Matrix.md)

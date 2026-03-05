@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](03_RealWorld_Problems_DSA.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_RealWorld_Problems_Part3.md)
+
 # 🌍 Real-World Problems Solved with DSA - Part 2
 
 ## Streaming, Healthcare, Travel & More
@@ -347,7 +349,7 @@ public class AdaptiveBitrateController {
 
 ---
 
-# PART 7: HEALTHCARE SYSTEMS
+# ⚙️ Part 7: Healthcare Systems
 
 ## Problem 16: Doctor Appointment Scheduling (Interval Scheduling)
 
@@ -1258,3 +1260,8 @@ public class ChatMessageOrderer {
 ---
 
 _Continued in Part 3: Interview Practice Problems_
+
+
+---
+
+> **Navigation**: [< Previous](03_RealWorld_Problems_DSA.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_RealWorld_Problems_Part3.md)

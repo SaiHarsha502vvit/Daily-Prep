@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](14_Spring_Boot_Part12_DSA_Applications.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](16a_SB_Missing_Core.md)
+
 # 🏭 SPRING BOOT MASTERY - Part 13: Industry-Level Real Projects
 
 > **What Top Companies Actually Build**
@@ -48,7 +50,7 @@
 
 ---
 
-# SECTION 1: HOW BIG COMPANIES USE SPRING BOOT
+# 🌱 Section 1: How Big Companies Use Spring Boot
 
 ---
 
@@ -114,7 +116,7 @@
 
 ---
 
-# SECTION 2: INDUSTRY-LEVEL PROJECT IDEAS (FREE TO BUILD)
+# 🏗️ Section 2: Industry — Level Project Ideas (free to Build)
 
 ---
 
@@ -1569,7 +1571,7 @@ public record BookingResult(Long bookingId, BookingStatus status, Long waitlistI
 
 ---
 
-# MORE PROJECT IDEAS
+# 🏗️ More Project Ideas
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -1631,7 +1633,7 @@ public record BookingResult(Long bookingId, BookingStatus status, Long waitlistI
 
 ---
 
-# BUILDING A PORTFOLIO
+# 📌 Building a Portfolio
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -1681,3 +1683,8 @@ public record BookingResult(Long bookingId, BookingStatus status, Long waitlistI
 ---
 
 _End of Spring Boot Mastery Guide - You now have everything needed to build production-quality applications!_
+
+
+---
+
+> **Navigation**: [< Previous](14_Spring_Boot_Part12_DSA_Applications.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](16a_SB_Missing_Core.md)

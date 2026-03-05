@@ -256,3 +256,5 @@ A: Run EXPLAIN ANALYZE. Common causes:
 ```
 
 ---
+
+> **Navigation**: [< Previous](19_Interview_Top50.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](22_NoSQL_MongoDB.md)

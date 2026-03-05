@@ -2,7 +2,7 @@
 
 ---
 
-# SECTION 4: INTERFACE SEGREGATION PRINCIPLE (ISP)
+# 📐 Section 4: Interface Segregation Principle (isp)
 
 ---
 
@@ -249,7 +249,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {}
 
 ---
 
-# SECTION 5: DEPENDENCY INVERSION PRINCIPLE (DIP)
+# 📐 Section 5: Dependency Inversion Principle (dip)
 
 ---
 
@@ -562,7 +562,7 @@ payment:
 
 ---
 
-# SECTION 6: COMPLETE SPRING BOOT PROJECT EXAMPLE
+# 🏗️ Section 6: Complete Spring Boot Project Example
 
 ---
 
@@ -992,7 +992,7 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
 
 ---
 
-# SECTION 7: COMMON VIOLATIONS & REFACTORING
+# 📌 Section 7: Common Violations & Refactoring
 
 ---
 
@@ -1034,7 +1034,7 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
 
 ---
 
-# INTERVIEW QUESTIONS
+# 🎤 Interview Questions
 
 ```
 Q1: Why is SRP important?
@@ -1086,3 +1086,8 @@ A: LSP ensures subtypes can replace base types without breaking code.
 **END OF PART 16: SOLID PRINCIPLES DEEP DIVE**
 
 ➡️ **Next: Part 17 - Database Security (User Management, Roles)**
+
+
+---
+
+> **Navigation**: [< Previous](18a_SB_SOLID_Core.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](19a_SB_Database.md)

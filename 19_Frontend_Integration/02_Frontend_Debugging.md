@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](01_React_JS_CSS_Combined.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_Build_Tools_Ecosystem.md)
+
 > **Frontend Integration Chapter 2/4** | [← React Combined](01_React_JS_CSS_Combined.md) | [Index](../00_MASTER_INDEX.md) | [Next → Build Tools](03_Build_Tools_Ecosystem.md)
 
 # Frontend Debugging — From Console.log to Expert
@@ -437,3 +439,8 @@ Q: How do you debug a CORS error?
 ---
 
 > [← React Combined](01_React_JS_CSS_Combined.md) | [Index](../00_MASTER_INDEX.md) | [Next → Build Tools](03_Build_Tools_Ecosystem.md)
+
+
+---
+
+> **Navigation**: [< Previous](01_React_JS_CSS_Combined.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_Build_Tools_Ecosystem.md)

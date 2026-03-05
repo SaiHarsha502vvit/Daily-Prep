@@ -1,3 +1,5 @@
+> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](00_TEXTBOOK_PREFACE.md)
+
 # MASTER INDEX — Complete DSA, SQL, Spring Boot & Career Preparation
 
 **Last Updated: March 2026 | 280+ files | 19 folders**
@@ -586,3 +588,8 @@ Open [07_Modern_Java/26_Spring_Boot_Curriculum_50Day.md](07_Modern_Java/26_Sprin
 ---
 
 _Last restructured: March 2026 — Phase 23: +5 Deep Mastery files (Streams, JVM Object Model, Concurrency Synchronizers, SQL Data Analyst, DSA Java Implementation). Phase 22: +9 Deep Reasoning files + Coroutines. 13 deep reasoning guides across all domains + comprehensive Coroutines/Synchronizers coverage. 280+ total files across 19 folders._
+
+
+---
+
+> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](00_TEXTBOOK_PREFACE.md)

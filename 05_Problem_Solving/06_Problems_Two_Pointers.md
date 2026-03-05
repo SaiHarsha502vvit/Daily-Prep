@@ -1,12 +1,14 @@
+> **Navigation**: [< Previous](05_Problems_Sliding_Window.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_Problems_Binary_Search.md)
+
 > **Problems 06/14** | [Prev](05_Problems_Sliding_Window.md) | [Index](../00_MASTER_INDEX.md) | [Next](07_Problems_Binary_Search.md)
 
 ---
 
-# SECTION 5: TWO POINTERS ADVANCED VARIANTS
+# 🚀 Section 5: Two Pointers Advanced Variants
 
 ---
 
-## 5.1 OPPOSITE DIRECTION TWO POINTERS
+## 📌 5.1 Opposite Direction Two Pointers
 
 ### Problem: Two Sum II - Input Array Is Sorted
 
@@ -355,7 +357,7 @@ public int triangleNumber(int[] nums) {
 
 ---
 
-## 5.2 SAME DIRECTION TWO POINTERS
+## 📌 5.2 Same Direction Two Pointers
 
 ### Problem: Remove Duplicates from Sorted Array
 
@@ -574,7 +576,7 @@ public int[] pivotArray(int[] nums, int pivot) {
 
 ---
 
-## 5.3 LINKED LIST TWO POINTERS
+## 🔗 5.3 Linked List Two Pointers
 
 ### Problem: Linked List Cycle
 
@@ -839,3 +841,4 @@ public ListNode plusOne(ListNode head) {
 
 ---
 
+> **Navigation**: [< Previous](05_Problems_Sliding_Window.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_Problems_Binary_Search.md)

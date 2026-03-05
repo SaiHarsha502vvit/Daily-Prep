@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](01_Sliding_Window.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_Visual_Diagrams.md)
+
 # 🎨 COMPLETE CODE TEMPLATES WITH VISUAL EXPLANATIONS
 
 ## Ready-to-use templates with step-by-step visual diagrams
@@ -19,7 +21,7 @@
 
 ---
 
-## 1. TWO POINTERS
+## 📌 1. Two Pointers
 
 ### Visual Concept
 
@@ -156,7 +158,7 @@ public boolean isPalindrome(String s) {
 
 ---
 
-## 2. SLIDING WINDOW - FIXED
+## 📌 2. Sliding Window — Fixed
 
 ### Visual Concept
 
@@ -257,7 +259,7 @@ public int maxSumSubarrayV2(int[] arr, int k) {
 
 ---
 
-## 3. SLIDING WINDOW - VARIABLE
+## 📌 3. Sliding Window — Variable
 
 ### Visual Concept
 
@@ -409,7 +411,7 @@ public String minWindow(String s, String t) {
 
 ---
 
-## 4. BINARY SEARCH
+## 🔍 4. Binary Search
 
 ### Visual Concept
 
@@ -537,7 +539,7 @@ public int findLastOccurrence(int[] arr, int target) {
 
 ---
 
-## 5. PREFIX SUM
+## 📌 5. Prefix Sum
 
 ### Visual Concept
 
@@ -653,7 +655,7 @@ public int subarraySum(int[] arr, int k) {
 
 ---
 
-## 6. FREQUENCY COUNT
+## 📌 6. Frequency Count
 
 ### Visual Concept
 
@@ -775,7 +777,7 @@ public int firstUniqChar(String s) {
 
 ---
 
-## 7. STACK PROBLEMS
+## 📚 7. Stack Problems
 
 ### Visual Concept
 
@@ -876,7 +878,7 @@ public int[] nextGreaterElement(int[] arr) {
 
 ---
 
-## 8. BFS/DFS
+## 📌 8. Bfs/dfs
 
 ### Visual Concept
 
@@ -1018,7 +1020,7 @@ public void dfsIterative(int start, List<List<Integer>> adjList) {
 
 ---
 
-## 9. RECURSION & BACKTRACKING
+## 🔁 9. Recursion & Backtracking
 
 ### Visual Concept
 
@@ -1126,7 +1128,7 @@ private void backtrack(int[] nums, List<Integer> current, boolean[] used, List<L
 
 ---
 
-## 10. DYNAMIC PROGRAMMING
+## 💎 10. Dynamic Programming
 
 ### Visual Concept
 
@@ -1302,7 +1304,7 @@ Before writing code for any problem:
 
 ---
 
-# CURATED PRACTICE PROBLEMS — TEMPLATE APPLICATION DRILL
+# 💪 Curated Practice Problems — Template Application Drill
 
 > **HOW TO USE**: Each problem maps to a specific template from this guide.
 > Practice: open the template, then adapt it to solve the problem.
@@ -1329,3 +1331,8 @@ Before writing code for any problem:
 ---
 
 **You've got this!**
+
+
+---
+
+> **Navigation**: [< Previous](01_Sliding_Window.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_Visual_Diagrams.md)

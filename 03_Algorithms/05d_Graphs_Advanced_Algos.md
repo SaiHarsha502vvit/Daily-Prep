@@ -1,4 +1,3 @@
-> **Navigation**: [< Previous Chapter](05c_Graphs_Fundamentals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](05e_Graphs_Patterns.md)
 > 🧠 **Mental Model**: See [Graph & Tree Thinking](../14_Mental_Models/03_Graph_Tree_Thinking.md) — shortest path and MST mental models
 
 ---
@@ -399,8 +398,6 @@ private boolean dfs(int node, List<List<Integer>> adj, int[] color) {
 
 ---
 
----
-
 # PART 15: Complete Graph Problems with Solutions
 
 ## Problem 1: Clone Graph
@@ -548,13 +545,11 @@ public int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
 
 ---
 
----
-
 # 🔬 PART FINAL: ADVANCED TREE & GRAPH ALGORITHMS - DEEP DIVE
 
-## ADVANCED TREE ALGORITHMS
+## 🌳 Advanced Tree Algorithms
 
-### 1. LOWEST COMMON ANCESTOR (LCA) - MULTIPLE APPROACHES
+### 📌 1. Lowest Common Ancestor (lca) — Multiple Approaches
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -731,7 +726,7 @@ class LCABinaryLifting {
 }
 ```
 
-### 2. TREE DIAMETER AND CENTER
+### 🌳 2. Tree Diameter and Center
 
 ```java
 /*
@@ -854,7 +849,7 @@ public List<Integer> findCenter(int n, int[][] edges) {
 }
 ```
 
-### 3. TREE DP - COMPREHENSIVE PATTERNS
+### 🌳 3. Tree DP — Comprehensive Patterns
 
 ```java
 /*
@@ -962,9 +957,9 @@ private void dfs2(int u, int parent, List<List<Integer>> adj,
 }
 ```
 
-## ADVANCED GRAPH ALGORITHMS
+## 🕸️ Advanced Graph Algorithms
 
-### 4. TOPOLOGICAL SORT - ALL APPROACHES
+### 🔄 4. Topological Sort — All Approaches
 
 ```java
 /*
@@ -1058,7 +1053,7 @@ private boolean dfs(int u, List<List<Integer>> adj,
 }
 ```
 
-### 5. STRONGLY CONNECTED COMPONENTS (SCC)
+### 🧩 5. Strongly Connected Components (scc)
 
 ```
 SCC: Maximal set of vertices where EVERY vertex is
@@ -1199,7 +1194,7 @@ If xᵢ and ¬xᵢ are in SAME SCC → UNSATISFIABLE
 Otherwise: xᵢ = true if SCC(xᵢ) has higher topological order than SCC(¬xᵢ)
 ```
 
-### 6. A* SEARCH ALGORITHM
+### 🔍 6. A* Search Algorithm
 
 ```
 ╔════════════════════════════════════════════════════════════════╗
@@ -1343,3 +1338,8 @@ public class AStar {
 ║    ║ https://leetcode.com/problems/find-the-city-with-the-smallest-number-of-neighbors-at-a-threshold-distance/ ║ ║
 ╚════╩══════════════════════════════════════════════════════════════╩═══════════════════════════════════════════════╝
 ```
+
+
+---
+
+> **Navigation**: [< Previous](05c_Graphs_Fundamentals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05e_Graphs_Patterns.md)

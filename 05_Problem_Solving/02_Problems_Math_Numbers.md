@@ -1,12 +1,14 @@
+> **Navigation**: [< Previous](02_Edge_Cases.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_Common_Mistakes.md)
+
 > **Problems 02/14** | [Prev](01_Problems_Intro_Checklist.md) | [Index](../00_MASTER_INDEX.md) | [Next](03_Problems_Strings.md)
 
 ---
 
-# SECTION 1: BASIC MATH & NUMBER PROBLEMS
+# 🧩 Section 1: Basic Math & Number Problems
 
 ---
 
-## 1.1 PRIME NUMBER PROBLEMS
+## 🧩 1.1 Prime Number Problems
 
 ### Problem: Check if Prime
 
@@ -362,7 +364,7 @@ public int[] closestPrimes(int left, int right) {
 
 ---
 
-## 1.2 FIBONACCI PROBLEMS
+## 🧩 1.2 Fibonacci Problems
 
 ### Problem: Nth Fibonacci Number
 
@@ -615,7 +617,7 @@ public int climbStairs(int n) {
 
 ---
 
-## 1.3 DIGIT MANIPULATION PROBLEMS
+## 🧩 1.3 Digit Manipulation Problems
 
 ### Problem: Sum of Digits
 
@@ -857,7 +859,7 @@ private int sumSquareDigits(int n) {
 
 ---
 
-## 1.4 GCD & LCM PROBLEMS
+## 🧩 1.4 GCD & Lcm Problems
 
 ### Problem: GCD (Greatest Common Divisor)
 
@@ -983,3 +985,4 @@ private int gcd(int a, int b) {
 
 ---
 
+> **Navigation**: [< Previous](02_Edge_Cases.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_Common_Mistakes.md)

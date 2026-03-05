@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](07_Spring_Boot_Part5_Lombok_DTOs.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](09_Spring_Boot_Part7_Controllers_REST.md)
+
 # 🌱 SPRING BOOT MASTERY - Part 6: Service Layer & Repository Patterns
 
 > **The Architecture of Clean Business Logic**
@@ -49,7 +51,7 @@
 
 ---
 
-# THE SERVICE LAYER
+# 📌 The Service Layer
 
 ---
 
@@ -620,7 +622,7 @@ public interface OrderSpecification {
 
 ---
 
-# THE REPOSITORY LAYER
+# 📌 The Repository Layer
 
 ---
 
@@ -1360,3 +1362,8 @@ REPOSITORY LAYER:
 ---
 
 _Continue to Part 7: Controllers & REST API Best Practices_
+
+
+---
+
+> **Navigation**: [< Previous](07_Spring_Boot_Part5_Lombok_DTOs.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](09_Spring_Boot_Part7_Controllers_REST.md)

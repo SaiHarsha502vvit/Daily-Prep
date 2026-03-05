@@ -1,3 +1,5 @@
+> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_JS_Functions_Closures.md)
+
 > **JavaScript Chapter 1/7** | [Index](../00_MASTER_INDEX.md) | [Next → Functions & Closures](02_JS_Functions_Closures.md)
 
 # JavaScript Foundations — Types, Variables, Scope & Hoisting
@@ -579,3 +581,8 @@ Q: "5" + 3 vs "5" - 3?
 ---
 
 > [Next → Chapter 2: Functions & Closures](02_JS_Functions_Closures.md)
+
+
+---
+
+> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_JS_Functions_Closures.md)

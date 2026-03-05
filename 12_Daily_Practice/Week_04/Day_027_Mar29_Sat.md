@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](Day_026_Mar28_Fri.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_028_Mar30_Sun.md)
+
 # DAY 027 — Saturday, March 29, 2026
 ## Spring Boot: JPA & Hibernate Deep Dive + SQL Practice
 
@@ -12,9 +14,6 @@
 | 0:00–1:30 | 90 min | Spring Boot: JPA & Hibernate |
 | 1:30–2:15 | 45 min | SQL: Mixed Drill (Indexes + Transactions + Normalization) |
 | 2:15–3:00 | 45 min | Week Review + Graph Algorithm Summary |
-
----
-
 
 ---
 
@@ -265,3 +264,5 @@ EXPLAIN SELECT * FROM products WHERE category = 'Electronics' AND price > 100;
 - [ ] Can recite all graph algorithms and when to use each
 
 ---
+
+> **Navigation**: [< Previous](Day_026_Mar28_Fri.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_028_Mar30_Sun.md)

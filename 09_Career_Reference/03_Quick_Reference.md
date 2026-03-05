@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](02c_Ultimate_DSA_JVM.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_Brain_Psychology.md)
+
 # 🚀 NETCRACKER EXAM - QUICK REFERENCE CHEAT SHEET
 
 ## 🧠 IF YOU FREEZE WHEN CODING - USE THIS!
@@ -989,3 +991,8 @@ if (n < 0) {
 ---
 
 # 🚀 YOU'RE READY! GO ACE THAT EXAM! 🚀
+
+
+---
+
+> **Navigation**: [< Previous](02c_Ultimate_DSA_JVM.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_Brain_Psychology.md)

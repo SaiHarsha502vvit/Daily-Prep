@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](17_Backtracking_Plus_Pruning.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](19_Matrix_Plus_Grid_Traversal.md)
+
 # String + Advanced Tricks — Combined Pattern Guide
 
 > **WHY this combination?** Strings combine array access, hashing, sliding window, DP, and specialized algorithms (KMP, Rabin-Karp). Most "string" problems are actually pattern problems in disguise.
@@ -218,3 +220,8 @@ COMMON MISTAKES:
 
 ---
 [← 17 Backtracking+Pruning](17_Backtracking_Plus_Pruning.md) | [19 Matrix+Grid →](19_Matrix_Plus_Grid_Traversal.md)
+
+
+---
+
+> **Navigation**: [< Previous](17_Backtracking_Plus_Pruning.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](19_Matrix_Plus_Grid_Traversal.md)

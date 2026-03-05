@@ -24,7 +24,7 @@
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
-## TREE NODE MEMORY LAYOUT
+## 🧠 Tree Node Memory Layout
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -61,9 +61,9 @@
 │       /    \                 ┌──────────────────────────┐                       │
 │     [5]    [15]              │ TreeNode                 │                       │
 │    /  \    /  \              │ val: 10                  │                       │
-│  [3]  [7][12] [20]           │ left: 0x00110000 ─┐     │                        │
-│                              │ right: 0x00220000 │     │                        │
-│                              └──────────────────│─┼────┘                        │
+│  [3]  [7][12] [20]           │ left: 0x00110000 ─┐      │                       │
+│                              │ right: 0x00220000 │      │                       │
+│                              └──────────────────│─┼────-┘                       │
 │                                                 │ │                             │
 │                              ┌──────────────────┘ │                             │
 │                              ▼                    ▼                             │
@@ -84,7 +84,7 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## RECURSION STACK - WHAT ACTUALLY HAPPENS
+## 📚 Recursion Stack — What Actually Happens
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -183,7 +183,7 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## ITERATIVE TRAVERSAL - EXPLICIT STACK
+## 📚 Iterative Traversal — Explicit Stack
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -237,7 +237,7 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## CACHE BEHAVIOR IN TREE TRAVERSAL
+## 🌳 Cache Behavior in Tree Traversal
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -294,11 +294,11 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## GRAPH REPRESENTATION - MEMORY DEEP DIVE
+## 🧠 Graph Representation — Memory Deep Dive
 
 ---
 
-# PART 1: BINARY TREE FUNDAMENTALS
+# 🌳 Part 1: Binary Tree Fundamentals
 
 ## Complete Understanding
 
@@ -501,7 +501,7 @@ root.left.right = new TreeNode(5);
 
 ---
 
-# PART 2: TREE TRAVERSALS
+# 🌳 Part 2: Tree Traversals
 
 ## The Three DFS Traversals
 
@@ -687,7 +687,7 @@ public List<List<Integer>> levelOrder(TreeNode root) {
 
 ---
 
-# PART 3: COMMON TREE PROBLEMS
+# 🌳 Part 3: Common Tree Problems
 
 ## Maximum Depth
 
@@ -770,7 +770,7 @@ public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
 
 ---
 
-# PART 4: BINARY SEARCH TREE (BST)
+# 🌳 Part 4: Binary Search Tree (bst)
 
 ## BST Property
 
@@ -837,8 +837,6 @@ private boolean validate(TreeNode node, long min, long max) {
            validate(node.right, node.val, max);
 }
 ```
-
----
 
 ---
 
@@ -1054,8 +1052,6 @@ public class EulerTour {
 
 ---
 
----
-
 # PART 14: Complete Tree Problems with Solutions
 
 ## Problem 1: Serialize and Deserialize Binary Tree
@@ -1215,9 +1211,7 @@ public void flatten(TreeNode root) {
 
 ---
 
----
-
-# PART 10: CODERBYTE & INTERVIEW TREE CHALLENGES
+# 🌳 Part 10: Coderbyte & Interview Tree Challenges
 
 ## Challenge 1: Binary Tree LCA from Array Representation
 
@@ -1660,3 +1654,8 @@ _Trees and graphs are everywhere - master them and unlock many problems!_
 | Sum of Distances in Tree | LC 834 | Re-rooting technique (Hard, teaches re-root) |
 | Check Completeness of Binary Tree | LC 958 | BFS — null before value = incomplete |
 | Count Complete Tree Nodes | LC 222 | O(log²n) using height comparison |
+
+
+---
+
+> **Navigation**: [< Previous](04c_DP_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05b_Graphs_Internals.md)

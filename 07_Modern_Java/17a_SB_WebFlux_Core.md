@@ -59,7 +59,7 @@
 
 ---
 
-# TABLE OF CONTENTS
+# 📌 Table of Contents
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -82,7 +82,7 @@
 
 ---
 
-# SECTION 1: REACTIVE PROGRAMMING FUNDAMENTALS
+# ⚛️ Section 1: Reactive Programming Fundamentals
 
 ---
 
@@ -632,7 +632,7 @@ public class ReactorOperators {
 
 ---
 
-# SECTION 3: SPRING WEBFLUX
+# 🌱 Section 3: Spring Webflux
 
 ---
 
@@ -943,7 +943,7 @@ public class UserHandler {
 
 ---
 
-# SECTION 4: REACTIVE DATA ACCESS (R2DBC)
+# ⚛️ Section 4: Reactive Data Access (r2dbc)
 
 ---
 
@@ -1168,4 +1168,9 @@ public class UserDatabaseService {
             .flatMap(this::insertUser)
             .count();
     }
+```
 
+
+---
+
+> **Navigation**: [< Previous](16b_SB_Missing_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](17b_SB_WebFlux_Advanced.md)

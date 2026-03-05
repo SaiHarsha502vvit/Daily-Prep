@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](22_NoSQL_MongoDB.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](24_SQL_Data_Analyst_RealWorld.md)
+
 # Chapter 23 — SQL Deep Reasoning: The Questions That Freeze People
 
 > **"Anyone can write SELECT * FROM users. The senior engineer explains WHY NULL breaks everything, WHEN indexes make queries SLOWER, and HOW transaction isolation levels cause phantom reads."**
@@ -467,3 +469,8 @@ FROM employees;
 ← Previous: [Chapter 22 — NoSQL MongoDB](22_NoSQL_MongoDB.md)
 | [📚 Index](../00_MASTER_INDEX.md)
 | Next: [Coroutines & Concurrency Models →](../13_Developer_Essentials/19_Concurrency_Models_Coroutines.md)
+
+
+---
+
+> **Navigation**: [< Previous](22_NoSQL_MongoDB.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](24_SQL_Data_Analyst_RealWorld.md)

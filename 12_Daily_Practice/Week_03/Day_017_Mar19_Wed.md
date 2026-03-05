@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](Day_016_Mar18_Tue.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_018_Mar20_Thu.md)
+
 # Day 017 — Wednesday, March 19, 2026
 
 > **Week 03** | **Day 3** | **Theme:** Heap / Priority Queue + Heap Sort + SQL Window Functions (SUM, AVG, LAG, LEAD)
@@ -13,9 +15,6 @@
 - [ ] Problem 1: LC 215 — Kth Largest Element in an Array (25 min)
 - [ ] Problem 2: LC 347 — Top K Frequent Elements (25 min)
 - [ ] Real-World Connection (10 min)
-
----
-
 
 ---
 
@@ -434,7 +433,7 @@ class Solution {
 
 ---
 
-## 6. REAL-WORLD CONNECTION
+## 📌 6. Real — World Connection
 
 ```
 HEAP IN THE REAL WORLD:
@@ -444,3 +443,8 @@ HEAP IN THE REAL WORLD:
   4. Merge K Sorted Lists: Min-heap of K heads → always extract smallest
   5. Event Queue: Process earliest event first (min-heap by timestamp)
 ```
+
+
+---
+
+> **Navigation**: [< Previous](Day_016_Mar18_Tue.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_018_Mar20_Thu.md)

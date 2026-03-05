@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](10_HashMap_Plus_Counting.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](12_LinkedList_Plus_TwoPointers.md)
+
 # Stack + Monotonic Pattern — Combined Pattern Guide
 
 > **WHY this combination?** A stack processes elements in LIFO order. A **monotonic stack** maintains elements in sorted order, enabling O(n) solutions for "next greater/smaller element" problems that seem to need O(n²).
@@ -253,3 +255,8 @@ KEY: Stack stores elements waiting for their NGE.
 
 ---
 [← 10 HashMap+Counting](10_HashMap_Plus_Counting.md) | [12 LinkedList+TwoPointers →](12_LinkedList_Plus_TwoPointers.md)
+
+
+---
+
+> **Navigation**: [< Previous](10_HashMap_Plus_Counting.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](12_LinkedList_Plus_TwoPointers.md)

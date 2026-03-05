@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](34_JVM_Object_Model_Internals.md) | [Back to Index](../00_MASTER_INDEX.md)
+
 # Chapter 35 — Concurrency Synchronizers Deep: Semaphore, CountDownLatch, CyclicBarrier, Phaser & Beyond
 
 > **"Synchronized and volatile are training wheels. Real concurrent systems use Semaphores to control throughput, CountDownLatch for startup sequencing, CyclicBarrier for parallel phases, and Phaser for dynamic coordination. This chapter gives you the deep reasoning for WHEN and WHY."**

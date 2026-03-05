@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](02e_AlgoEng_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_Spring_Boot_Complete_Part2.md)
+
 # 🌱 SPRING BOOT COMPLETE GUIDE - Part 1: Java Foundations
 
 > **The WHY-HOW-WHAT Framework for Spring Mastery**
@@ -82,7 +84,7 @@
 
 ---
 
-# TIER 1: THE NON-NEGOTIABLE JAVA FOUNDATIONS
+# ☕ Tier 1: the Non — Negotiable Java Foundations
 
 ---
 
@@ -1168,3 +1170,8 @@ FUNCTIONAL JAVA:
 ---
 
 _Continue to Part 2: Spring Core (IoC & Dependency Injection)_
+
+
+---
+
+> **Navigation**: [< Previous](02e_AlgoEng_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_Spring_Boot_Complete_Part2.md)

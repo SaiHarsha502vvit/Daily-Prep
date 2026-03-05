@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](Day_017_Mar19_Wed.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_019_Mar21_Fri.md)
+
 # Day 018 — Thursday, March 20, 2026
 
 > **Week 03** | **Day 4** | **Theme:** Recursion Deepening + Backtracking Intro + SQL HAVING & Complex JOINs
@@ -13,9 +15,6 @@
 - [ ] Problem 1: LC 78 — Subsets (25 min)
 - [ ] Problem 2: LC 46 — Permutations (25 min)
 - [ ] Real-World Connection (10 min)
-
----
-
 
 ---
 
@@ -110,7 +109,7 @@ return 1 + max(1,2) = 3
 ### WHY?
 Backtracking = recursion + "undo choices." It generates all valid combinations/permutations/subsets. Many interview problems are backtracking in disguise.
 
-### THE UNIVERSAL BACKTRACKING TEMPLATE
+### 📐 The Universal Backtracking Template
 
 ```java
 void backtrack(List<List<Integer>> result, List<Integer> current, 
@@ -355,7 +354,7 @@ KEY DIFFERENCE:
 
 ---
 
-## 6. REAL-WORLD CONNECTION
+## 📌 6. Real — World Connection
 
 ```
 BACKTRACKING IN REAL LIFE:
@@ -365,3 +364,8 @@ BACKTRACKING IN REAL LIFE:
   4. Route planning   — try paths, backtrack on dead end
   5. Compiler parsing — try grammar rules, backtrack on mismatch
 ```
+
+
+---
+
+> **Navigation**: [< Previous](Day_017_Mar19_Wed.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_019_Mar21_Fri.md)

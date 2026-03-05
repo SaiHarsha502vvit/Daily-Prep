@@ -3,7 +3,7 @@
 
 ---
 
-# PART 7: HEAP SORT
+# 📦 Part 7: Heap Sort
 
 ## The Idea
 
@@ -103,7 +103,7 @@ private void heapify(int[] arr, int n, int i) {
 
 ---
 
-# PART 8: COMPARISON TABLE
+# ⚖️ Part 8: Comparison Table
 
 ```
 ┌─────────────┬──────────┬───────────┬───────────┬────────┬─────────┐
@@ -120,7 +120,7 @@ private void heapify(int[] arr, int n, int i) {
 
 ---
 
-# PART 9: WHEN TO USE WHICH
+# 📌 Part 9: When to Use Which
 
 ```
 USE INSERTION SORT WHEN:
@@ -152,7 +152,7 @@ USE BUILT-IN SORT:
 
 ---
 
-# PART 10: PRACTICE PROBLEMS
+# 💪 Part 10: Practice Problems
 
 ```
 EASY:
@@ -825,7 +825,7 @@ _Understanding sorting algorithms teaches you how to think about efficiency!_ �
 
 # 🔬 PART FINAL: ADVANCED SORTING DEEP DIVE
 
-## RADIX SORT - NON-COMPARISON BASED SORTING
+## 🔄 Radix Sort — Non — Comparison Based Sorting
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -918,7 +918,7 @@ _Understanding sorting algorithms teaches you how to think about efficiency!_ �
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## TIMSORT - THE REAL-WORLD CHAMPION
+## 🔄 Timsort — the Real — World Champion
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -981,7 +981,7 @@ _Understanding sorting algorithms teaches you how to think about efficiency!_ �
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## EXTERNAL SORTING - WHEN DATA DOESN'T FIT IN MEMORY
+## 🧠 External Sorting — When Data Doesn't Fit in Memory
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -1041,7 +1041,7 @@ _Understanding sorting algorithms teaches you how to think about efficiency!_ �
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## PARALLEL SORTING - USING MULTIPLE CPU CORES
+## 🔄 Parallel Sorting — Using Multiple CPU Cores
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -1101,7 +1101,7 @@ _Understanding sorting algorithms teaches you how to think about efficiency!_ �
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## SORTING STABILITY - DEEP EXPLANATION
+## 🔄 Sorting Stability — Deep Explanation
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -1168,7 +1168,7 @@ _Understanding sorting algorithms teaches you how to think about efficiency!_ �
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## SORTING IN COMPETITIVE PROGRAMMING
+## 🔄 Sorting in Competitive Programming
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -1304,3 +1304,8 @@ _Master sorting and you master a huge portion of algorithm problems!_
 | Minimum Number of Arrows | LC 452 | Sort intervals + greedy |
 | Count of Smaller Numbers After Self | Hard LC 315 | Merge sort + counting inversions |
 | Magnetic Force Between Two Balls | Medium LC 1552 | Binary search on answer (like Aggressive Cows) |
+
+
+---
+
+> **Navigation**: [< Previous](02a_Sorting_Fundamentals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](02c_Divide_And_Conquer.md)

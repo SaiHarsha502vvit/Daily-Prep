@@ -263,3 +263,4 @@ INNER JOIN departments d ON e.dept_id = d.dept_id;
 
 ---
 
+> **Navigation**: [< Previous](06_Aggregations_GroupBy.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08_Subqueries_CTEs.md)

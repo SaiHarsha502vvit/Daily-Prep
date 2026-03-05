@@ -1,3 +1,5 @@
+> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_DataTypes_Constraints.md)
+
 > **SQL Chapter 01/20** |  | [Index](../00_MASTER_INDEX.md) | [Next →](02_DataTypes_Constraints.md)
 
 ---
@@ -141,10 +143,6 @@
 
 ---
 
-
-
----
-
 # ═══════════════════════════════════════════════════════════════════
 # MERGED FROM: 01_SQL_Foundations_WHY_HOW.md (WHY-HOW Framework Edition)
 # ═══════════════════════════════════════════════════════════════════
@@ -187,7 +185,7 @@ For every SQL concept, we answer:
 
 ---
 
-# PART 1: WHY DATABASES EXIST
+# 🗄️ Part 1: Why Databases Exist
 
 ---
 
@@ -270,7 +268,7 @@ For every SQL concept, we answer:
 
 ---
 
-# PART 2: SQL COMMAND CATEGORIES - WHY EACH EXISTS
+# 🗃️ Part 2: SQL Command Categories — Why Each Exists
 
 ---
 
@@ -1480,7 +1478,7 @@ TRADE-OFF: Higher isolation = Slower performance (more locking)
 
 ---
 
-# PRACTICE PROBLEMS
+# 💪 Practice Problems
 
 ```sql
 -- ═══════════════════════════════════════════════════════════════════════════════
@@ -1513,7 +1511,7 @@ TRADE-OFF: Higher isolation = Slower performance (more locking)
 
 ---
 
-# QUICK REFERENCE
+# 📖 Quick Reference
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════════╗
@@ -1553,3 +1551,8 @@ _"Understanding WHY makes HOW unforgettable"_
 ---
 
 **NEXT: 02_SQL_Intermediate_JoinsWindows.md - JOINs, Subqueries, CTEs, Window Functions**
+
+
+---
+
+> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_DataTypes_Constraints.md)

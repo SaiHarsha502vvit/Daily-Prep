@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](07_JS_Error_Handling_Debugging.md) | [Back to Index](../00_MASTER_INDEX.md)
+
 # Chapter 8 — JavaScript Deep Reasoning: The Questions That Freeze People
 
 > **"Anyone can memorize 'var is function-scoped.' The senior engineer explains WHY that was a design choice, WHEN it became a problem, and HOW let/const solved it at the specification level."**
@@ -906,3 +908,8 @@ document.getElementById('button-container').addEventListener('click', (e) => {
 ← Previous: [Chapter 7 — Error Handling & Debugging](07_JS_Error_Handling_Debugging.md)
 | [📚 Index](../00_MASTER_INDEX.md)
 | Next: [React Deep Reasoning →](../15_React_Frontend/09_React_Deep_Reasoning.md)
+
+
+---
+
+> **Navigation**: [< Previous](07_JS_Error_Handling_Debugging.md) | [Back to Index](../00_MASTER_INDEX.md)

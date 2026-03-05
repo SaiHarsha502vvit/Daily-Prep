@@ -1337,3 +1337,9 @@ public class DatabaseInitializer {
 public class MailProperties {
     
     private String host;
+```
+
+
+---
+
+> **Navigation**: [< Previous](23b_SB_Cloud_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](24b_SB_Annotations_Advanced.md)

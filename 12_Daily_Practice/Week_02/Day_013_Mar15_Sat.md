@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](Day_012_Mar14_Fri.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_014_Mar16_Sun.md)
+
 # Day 013 - Saturday, March 15, 2026
 
 > **Week 02** | **Weekend** | **Theme:** Spring Boot — Beans & DI Deep Dive + SQL Practice
@@ -10,9 +12,6 @@
 - [ ] Spring Boot: Bean Scopes & Dependency Injection (90 min)
 - [ ] SQL Practice: JOINs + Aggregates mixed drills (45 min)
 - [ ] Review: Week 2 concepts recap (45 min)
-
----
-
 
 ---
 
@@ -318,3 +317,8 @@ WEEK 2 CONFIDENCE:
 
 AREAS TO REVISIT: _______________
 ```
+
+
+---
+
+> **Navigation**: [< Previous](Day_012_Mar14_Fri.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_014_Mar16_Sun.md)

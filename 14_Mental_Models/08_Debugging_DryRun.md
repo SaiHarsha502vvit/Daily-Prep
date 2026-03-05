@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](07_SQL_Mental_Pipeline.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](09_Complexity_Intuition.md)
+
 # 🔬 Debugging & Dry Run — How to Find Bugs Systematically
 
 > **The key insight**: Debugging is NOT random. It's a systematic process: reproduce → isolate → identify → fix → verify. The best debuggers aren't smarter — they have a PROCESS.
@@ -349,3 +351,8 @@ When your code fails:
 
 ---
 [← 07 SQL Mental Pipeline](07_SQL_Mental_Pipeline.md) | [09 Complexity Intuition →](09_Complexity_Intuition.md)
+
+
+---
+
+> **Navigation**: [< Previous](07_SQL_Mental_Pipeline.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](09_Complexity_Intuition.md)

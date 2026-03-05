@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](12_LinkedList_Plus_TwoPointers.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](14_Graph_Plus_Traversal.md)
+
 # Tree + DFS/BFS — Combined Pattern Guide
 
 > **WHY this combination?** Trees are hierarchical. DFS explores depth-first (recursion/stack) — ideal for path problems. BFS explores level-by-level (queue) — ideal for shortest path and level-order problems.
@@ -301,3 +303,8 @@ COMMON MISTAKES:
 
 ---
 [← 12 LinkedList+TwoPointers](12_LinkedList_Plus_TwoPointers.md) | [14 Graph+Traversal →](14_Graph_Plus_Traversal.md)
+
+
+---
+
+> **Navigation**: [< Previous](12_LinkedList_Plus_TwoPointers.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](14_Graph_Plus_Traversal.md)

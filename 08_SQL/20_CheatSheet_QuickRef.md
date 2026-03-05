@@ -198,3 +198,5 @@ Practice Databases:
 _"Data is the new oil, and now you have the tools to refine it!"_
 
 ---
+
+> **Navigation**: [< Previous](19_Interview_Top50.md) | [Back to Index](../00_MASTER_INDEX.md)

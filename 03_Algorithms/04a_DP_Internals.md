@@ -24,11 +24,9 @@
 ║  • Branch prediction in DP transitions                                           ║
 ║                                                                                  ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
-```
 
 ## DP TABLE MEMORY LAYOUT
 
-```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │                    DP TABLE IN PHYSICAL MEMORY                                  │
 ├─────────────────────────────────────────────────────────────────────────────────┤
@@ -80,11 +78,9 @@
 │  • Column access (dp[0][j] to dp[m-1][j]) → BAD (jumps between arrays!)         │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
-```
 
 ## CACHE BEHAVIOR IN DP - CRITICAL FOR PERFORMANCE
 
-```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │                    DP ITERATION ORDER AND CACHE PERFORMANCE                     │
 ├─────────────────────────────────────────────────────────────────────────────────┤
@@ -138,11 +134,9 @@
 │  RULE: In Java, always iterate rows in outer loop, columns in inner loop!       │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
-```
 
 ## SPACE OPTIMIZATION - ROLLING ARRAY TECHNIQUE
 
-````
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │                    ROLLING ARRAY - FROM O(mn) TO O(n) SPACE                     │
 ├─────────────────────────────────────────────────────────────────────────────────┤
@@ -168,6 +162,8 @@
 │                                                                                 │
 │  CODE TRANSFORMATION:                                                           │
 │  ───────────────────                                                            │
+```
+
 ```java
 // BEFORE: O(mn) space
 int[][] dp = new int[m+1][n+1];
@@ -217,8 +213,9 @@ for (int i = 1; i <= m; i++) {
     }
 }
 return dp[n];
-````
+```
 
+```
 │ │
 │ │
 │ MEMORY SAVINGS: │
@@ -233,13 +230,14 @@ return dp[n];
 │ CACHE BENEFIT: Smaller array fits in L1/L2 cache → MUCH faster! │
 │ │
 └─────────────────────────────────────────────────────────────────────────────────┘
-
 ```
 
-## MEMOIZATION VS TABULATION - CPU PERSPECTIVE
+
+
+## 🖥️ Memoization vs Tabulation — CPU Perspective
+
 
 ```
-
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │ TOP-DOWN VS BOTTOM-UP: HARDWARE DIFFERENCES                                     │
 ├─────────────────────────────────────────────────────────────────────────────────┤
@@ -305,13 +303,14 @@ return dp[n];
 │ • Perfect branch prediction                                                     │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
-
 ```
 
-## STATE REPRESENTATION - MEMORY EFFICIENCY
+
+
+## 🧠 State Representation — Memory Efficiency
+
 
 ```
-
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │ STATE REPRESENTATION TECHNIQUES                                                 │
 ├─────────────────────────────────────────────────────────────────────────────────┤
@@ -344,6 +343,8 @@ return dp[n];
 │ Problem: dp[i] where i can be up to 10^9                                        │
 │ But only 10^5 distinct values actually used!                                    │
 │                                                                                 │
+```
+
 
 ```java
 // Compress coordinates
@@ -358,6 +359,7 @@ for (int i = 0; i < sorted.length; i++) {
 // Can use int[5] instead of int[10^9]!
 ```
 
+```
 │ │
 │ │
 │ TECHNIQUE 3: STATE ENCODING │
@@ -369,6 +371,8 @@ for (int i = 0; i < sorted.length; i++) {
 │ • direction: 0-3 │
 │ • speed: 0-9 │
 │ │
+```
+
 
 ```java
 // Instead of: int[][][] dp = new int[1000][4][10];
@@ -390,15 +394,17 @@ int decodeSpd(int state) { return state % 10; }
 // • Can use as hash key directly
 ```
 
+```
 │ │
 └─────────────────────────────────────────────────────────────────────────────────┘
-
 ```
 
-## DP TRANSITION COST ANALYSIS
+
+
+## 📌 DP Transition Cost Analysis
+
 
 ```
-
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │ TRANSITION OPERATION COSTS                                                      │
 ├─────────────────────────────────────────────────────────────────────────────────┤
@@ -424,6 +430,8 @@ int decodeSpd(int state) { return state % 10; }
 │ Problem: dp[i] = (dp[i-1] + dp[i-2]) % MOD                                      │
 │ Modulo (%) uses integer division, which is SLOW (20-80 cycles)!                 │
 │                                                                                 │
+```
+
 
 ```java
 // SLOW: Modulo on every operation
@@ -446,6 +454,7 @@ for (int i = 2; i <= n; i++) {
 }
 ```
 
+```
 │ │
 │ BENCHMARK (n=10^7 Fibonacci mod 10^9+7): │
 │ • With % every iter: 180 ms │
@@ -453,19 +462,22 @@ for (int i = 2; i <= n; i++) {
 │ • ~2.8x speedup! │
 │ │
 └─────────────────────────────────────────────────────────────────────────────────┘
-
 ```
 
-## MEMORY ALLOCATION PATTERNS
+
+
+## 🧠 Memory Allocation Patterns
+
 
 ```
-
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │ DP ARRAY ALLOCATION STRATEGIES                                                  │
 ├─────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                 │
 │ STRATEGY 1: PREALLOCATE ARRAYS (Best for fixed size)                            │
 │ ────────────────────────────────────────────────────                            │
+```
+
 
 ```java
 // GOOD: Single allocation
@@ -487,6 +499,7 @@ for (int i = 0; i < tests; i++) {
 }
 ```
 
+```
 │ │
 │ ALLOCATION COSTS: │
 │ • new int[1000]: ~50-100 ns │
@@ -496,6 +509,8 @@ for (int i = 0; i < tests; i++) {
 │ │
 │ STRATEGY 2: LAZY INITIALIZATION (When sparse) │
 │ ───────────────────────────────────────────── │
+```
+
 
 ```java
 // When most values stay at default, don't fill!
@@ -506,6 +521,7 @@ int[] dp = new int[n + 1];
 // Java guarantees all zeros - use 0 as "not computed" if valid answers are > 0
 ```
 
+```
 │ │
 │ │
 │ STRATEGY 3: USE PRIMITIVES, NOT OBJECTS │
@@ -524,8 +540,11 @@ int[] dp = new int[n + 1];
 │ Use HashMap only when state space is truly sparse and unpredictable. │
 │ │
 └─────────────────────────────────────────────────────────────────────────────────┘
-
 ```
+
+
+
 
 ---
 
+> **Navigation**: [< Previous](03c_Recursion_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04b_DP_Fundamentals.md)

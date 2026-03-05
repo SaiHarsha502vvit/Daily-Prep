@@ -255,3 +255,4 @@ _"Part 3 Complete! You now understand Normalization, Indexes, Views, Stored Proc
 
 ---
 
+> **Navigation**: [< Previous](12_Views_StoredProcs_Triggers.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](14_Query_Optimization.md)

@@ -1277,3 +1277,8 @@ All three share: CHOOSE → EXPLORE → UNCHOOSE
 ```
 
 **Pro Tip:** When solving a new backtracking problem, first identify which of these 3 patterns it maps to. Then adapt the template!
+
+
+---
+
+> **Navigation**: [< Previous](10_Bit_Manipulation_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](12_Greedy_Algorithms_Complete.md)

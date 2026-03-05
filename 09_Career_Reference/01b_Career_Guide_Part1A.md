@@ -117,11 +117,9 @@ BEFORE THE MEETING:
 □ What's your preferred communication method?
 □ Who will provide content (text, images)?
 □ Who will do user acceptance testing?
-```
 
 ### Client Meeting Template
 
-```
 PROJECT DISCOVERY DOCUMENT
 ===========================
 
@@ -204,11 +202,9 @@ CLIENT SAYS                    YOU TRANSLATE TO
                                Template management
                                Delivery tracking
                                Rate limiting
-```
 
 ### User Stories Framework
 
-```
 AS A [user type]
 I WANT TO [action]
 SO THAT [benefit/reason]
@@ -240,11 +236,9 @@ TECHNICAL NOTES:
 - Caching: 5-minute TTL
 - Security: Account owner only (authorization)
 - Response time: < 200ms
-```
 
 ### Requirements Document Template
 
-```
 FUNCTIONAL REQUIREMENTS SPECIFICATION
 =====================================
 
@@ -360,11 +354,9 @@ Landing Page
               │              └──► Preferences
               │
               └──► Logout ──► Landing Page
-```
 
 #### 2. API UX (Developer Experience - DX)
 
-```
 GOOD API UX:
 ─────────────
 
@@ -403,11 +395,9 @@ GOOD API UX:
    - OpenAPI/Swagger spec
    - Code examples
    - Postman collection
-```
 
 #### 3. CLI Tool UX
 
-```
 GOOD CLI UX:
 ────────────
 
@@ -443,11 +433,9 @@ GOOD CLI UX:
    ⚠ Warning (yellow)
    ✗ Error (red)
    ℹ Info (blue)
-```
 
 #### 4. Backend Service UX (Ops Experience)
 
-```
 GOOD BACKEND SERVICE UX:
 ────────────────────────
 
@@ -480,11 +468,9 @@ GOOD BACKEND SERVICE UX:
    - Environment variables
    - Config files (with examples)
    - Secrets management
-```
 
 ### Wireframing Process
 
-```
 WIREFRAMING STAGES:
 ───────────────────
 
@@ -517,11 +503,9 @@ WIREFRAMING STAGES:
    - User testing
    - Feedback collection
    - Iteration
-```
 
 ### Design Tools Recommendation
 
-```
 FREE TOOLS:
 ├── Figma (Web-based, collaborative)
 ├── Penpot (Open-source Figma alternative)
@@ -568,11 +552,9 @@ FOR DEVELOPERS:
 
 7. PLAN FOR SCALE
    └── Partitioning, sharding strategy
-```
 
 ### Entity Identification Example (Finance App)
 
-```
 ENTITIES FOR A FINANCE APPLICATION:
 ───────────────────────────────────
 
@@ -780,11 +762,9 @@ CREATE TABLE user_preferences (
     privacy         JSONB DEFAULT '{"show_balance": true}',
     updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-```
 
 ### Database Relationships Diagram
 
-```
 ┌─────────────────────────────────────────────────────────────────┐
 │                    ENTITY RELATIONSHIP DIAGRAM                  │
 ├─────────────────────────────────────────────────────────────────┤
@@ -820,11 +800,9 @@ CREATE TABLE user_preferences (
 │  >────────< N:N (Many to Many)                                  │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
-```
 
 ### Normalization vs Denormalization
 
-```
 NORMALIZED (3NF):
 ─────────────────
 Users → Accounts → Transactions → Categories
@@ -1028,11 +1006,9 @@ Query: SELECT * FROM users WHERE email = 'john@example.com'
 │  Row data sent back through network to application              │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
-```
 
 ### How Indexes Work Internally
 
-```
 INDEX TYPES - DEEP DIVE:
 ═══════════════════════
 
@@ -1126,11 +1102,9 @@ Structure:
 │  Search "world" → Instantly find docs [1, 3]                    │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
-```
 
 ### EXPLAIN ANALYZE - Reading Query Plans
 
-```
 UNDERSTANDING EXPLAIN ANALYZE:
 ═════════════════════════════
 
@@ -1209,11 +1183,9 @@ EXPLAIN ANALYZE SELECT * FROM users WHERE LOWER(email) = 'john@example.com';
 │      (Expression index)                                                  │
 │                                                                          │
 └──────────────────────────────────────────────────────────────────────────┘
-```
 
 ### Database Transactions - ACID Internals
 
-```
 HOW TRANSACTIONS WORK INTERNALLY:
 ═════════════════════════════════
 
@@ -1231,3 +1203,9 @@ Transaction: BEGIN; UPDATE accounts SET balance = balance - 100 WHERE id = 1; CO
 │                                                                 │
 │  2. WRITE-AHEAD LOG (WAL)                                       │
 │  ────────────────────────                                       │
+```
+
+
+---
+
+> **Navigation**: [< Previous](01b2_Career_Guide_Part1B.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](01c_Career_Projects_Part1.md)

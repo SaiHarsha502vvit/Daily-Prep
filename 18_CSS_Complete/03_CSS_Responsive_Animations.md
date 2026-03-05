@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](02_CSS_Layout_Systems.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_CSS_Modern_Architecture.md)
+
 > **CSS Chapter 3/4** | [← Layout Systems](02_CSS_Layout_Systems.md) | [Index](../00_MASTER_INDEX.md) | [Next → Modern Architecture](04_CSS_Modern_Architecture.md)
 
 # CSS Responsive Design, Animations & Transforms
@@ -707,3 +709,8 @@ Q: What is animation-fill-mode: forwards?
 ---
 
 > [← Layout Systems](02_CSS_Layout_Systems.md) | [Index](../00_MASTER_INDEX.md) | [Next → Modern Architecture](04_CSS_Modern_Architecture.md)
+
+
+---
+
+> **Navigation**: [< Previous](02_CSS_Layout_Systems.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_CSS_Modern_Architecture.md)

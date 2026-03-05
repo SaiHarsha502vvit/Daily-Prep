@@ -8,7 +8,7 @@
 
 ---
 
-# PART 0: WHY THIS MATTERS FOR YOUR CAREER
+# 🚀 Part 0: Why This Matters for Your Career
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
@@ -87,11 +87,9 @@ AFTER ERP (Connected):
 │              │    Truth!)            │                       │
 │              └───────────────────────┘                       │
 └──────────────────────────────────────────────────────────────┘
-```
 
 ## 🏗️ Oracle ERP Cloud Modules Overview
 
-```
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │                        ORACLE ERP CLOUD - ALL MODULES                        │
 ├──────────────────────────────────────────────────────────────────────────────┤
@@ -151,7 +149,7 @@ AFTER ERP (Connected):
 
 ---
 
-# PART 2: HOW TO CONVERT DOMAIN KNOWLEDGE TO CODE
+# 🔍 Part 2: How to Convert Domain Knowledge to Code
 
 ## 🧠 The Developer's Mindset
 
@@ -209,11 +207,9 @@ REAL WORLD SCENARIO:
 │ 4. Reports go DOWN the chain for information                   │
 │ 5. Salary changes need manager + HR approval                   │
 └────────────────────────────────────────────────────────────────┘
-```
 
 ### Step 2: Identify Entities (→ Classes)
 
-```
 NOUNS in the scenario → CLASSES
 
 ┌─────────────────┐
@@ -646,7 +642,7 @@ public class OrgChartController {
 
 ---
 
-# PART 3: UNIQUE ID GENERATION SYSTEMS
+# ⚙️ Part 3: Unique Id Generation Systems
 
 ## 🔢 The Problem Your Anna Mentioned
 
@@ -1136,7 +1132,7 @@ WHERE status IN ('ACTIVE', 'DELIVERED');
 
 ---
 
-# PART 4: FINANCE MODULE - AUTOMATED ACCOUNTING
+# 📌 Part 4: Finance Module — Automated Accounting
 
 ## 💰 Understanding Double-Entry Bookkeeping
 
@@ -1609,3 +1605,9 @@ public class AccountsPayableService {
                     invoiceLine.getItem().getName());
             }
         }
+```
+
+
+---
+
+> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](01b_ERP_Advanced.md)

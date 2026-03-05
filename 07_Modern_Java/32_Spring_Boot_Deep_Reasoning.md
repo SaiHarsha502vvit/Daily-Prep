@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](31_Java_Deep_Reasoning.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](33_Streams_Deep_Reasoning.md)
+
 # Chapter 32 — Spring Boot Deep Reasoning: The Questions That Freeze People
 
 > **"Anyone can say 'Spring Boot auto-configures everything.' The senior engineer explains WHAT DispatcherServlet actually does, WHY @Transactional fails on private methods, and HOW the proxy pattern secretly runs your entire application."**
@@ -736,3 +738,8 @@ public class EmailService {
 ← Previous: [Chapter 31 — Java Deep Reasoning](31_Java_Deep_Reasoning.md)
 | [📚 Index](../00_MASTER_INDEX.md)
 | Next: [DSA Deep Reasoning →](../03_Algorithms/16_DSA_Deep_Reasoning.md)
+
+
+---
+
+> **Navigation**: [< Previous](31_Java_Deep_Reasoning.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](33_Streams_Deep_Reasoning.md)

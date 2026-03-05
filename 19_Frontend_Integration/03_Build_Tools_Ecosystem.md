@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](02_Frontend_Debugging.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_Frontend_Mental_Models_UI.md)
+
 > **Frontend Integration Chapter 3/4** | [← Debugging](02_Frontend_Debugging.md) | [Index](../00_MASTER_INDEX.md) | [Next → Mental Models](04_Frontend_Mental_Models_UI.md)
 
 # Build Tools Ecosystem — npm, Babel, Webpack, Vite
@@ -469,3 +471,8 @@ Q: What's the difference between Babel and TypeScript compiler?
 ---
 
 > [← Debugging](02_Frontend_Debugging.md) | [Index](../00_MASTER_INDEX.md) | [Next → Mental Models](04_Frontend_Mental_Models_UI.md)
+
+
+---
+
+> **Navigation**: [< Previous](02_Frontend_Debugging.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_Frontend_Mental_Models_UI.md)

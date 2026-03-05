@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](21_Problems_Design.md) | [Back to Index](../00_MASTER_INDEX.md)
+
 > **Problems 22** | [Prev](21_Problems_Design.md) | [Index](../00_MASTER_INDEX.md) | [Next](../06_OOP_Design/01_OOPS_Principles.md)
 
 ---

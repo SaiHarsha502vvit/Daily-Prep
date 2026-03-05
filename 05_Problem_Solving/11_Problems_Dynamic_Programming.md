@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](10_Problems_Graphs.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](12_Problems_Backtracking.md)
+
 > **Problems 11/14** | [Prev](10_Problems_Graphs.md) | [Index](../00_MASTER_INDEX.md) | [Next](12_Problems_Backtracking.md)
 
 ---
@@ -1179,3 +1181,4 @@ public int maxProfit(int[] prices) {
 
 ---
 
+> **Navigation**: [< Previous](10_Problems_Graphs.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](12_Problems_Backtracking.md)

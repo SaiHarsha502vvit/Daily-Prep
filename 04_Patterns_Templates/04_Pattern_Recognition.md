@@ -1,10 +1,12 @@
+> **Navigation**: [< Previous](03_Visual_Diagrams.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_LeetCode_RealWorld_Map.md)
+
 # 🔥 Advanced DSA Patterns & Templates
 
 ## Beyond the Basics - Level Up Your Problem Solving
 
 ---
 
-# PATTERN 1: PREFIX SUM
+# 🎨 Pattern 1: Prefix Sum
 
 ## Concept
 
@@ -45,7 +47,7 @@ int rangeSum = prefix[right + 1] - prefix[left];
 
 ---
 
-# PATTERN 2: KADANE'S ALGORITHM
+# 🎨 Pattern 2: Kadane's Algorithm
 
 ## Concept
 
@@ -124,7 +126,7 @@ public int[] maxSubArrayWithIndices(int[] arr) {
 
 ---
 
-# PATTERN 3: MONOTONIC STACK
+# 📚 Pattern 3: Monotonic Stack
 
 ## Concept
 
@@ -185,7 +187,7 @@ public int largestRectangleArea(int[] heights) {
 
 ---
 
-# PATTERN 4: UNION-FIND (DISJOINT SET)
+# 🎨 Pattern 4: Union — Find (disjoint Set)
 
 ## Concept
 
@@ -301,7 +303,7 @@ class UnionFind {
 
 ---
 
-# PATTERN 5: TRIE (PREFIX TREE)
+# 🌳 Pattern 5: Trie (prefix Tree)
 
 ## Concept
 
@@ -385,7 +387,7 @@ class Trie {
 
 ---
 
-# PATTERN 6: TOPOLOGICAL SORT
+# 🔄 Pattern 6: Topological Sort
 
 ## Concept
 
@@ -507,7 +509,7 @@ private boolean dfs(int node, List<List<Integer>> adj,
 
 ---
 
-# PATTERN 7: BINARY SEARCH VARIANTS
+# 🔍 Pattern 7: Binary Search Variants
 
 ## Variant 1: Find First True (Lower Bound)
 
@@ -635,7 +637,7 @@ private boolean canShip(int[] weights, int days, int capacity) {
 
 ---
 
-# PATTERN 8: INTERVAL PROBLEMS
+# 🧩 Pattern 8: Interval Problems
 
 ## Common Operations
 
@@ -721,7 +723,7 @@ public int minMeetingRooms(int[][] intervals) {
 
 ---
 
-# PATTERN 9: GRAPH ALGORITHMS
+# 🕸️ Pattern 9: Graph Algorithms
 
 ## Dijkstra's Algorithm (Shortest Path with Weights)
 
@@ -787,7 +789,7 @@ public int[][] floydWarshall(int[][] graph) {
 
 ---
 
-# PATTERN 10: BIT MANIPULATION
+# ⚡ Pattern 10: Bit Manipulation
 
 ## Common Operations
 
@@ -860,7 +862,7 @@ public List<List<Integer>> subsets(int[] nums) {
 
 ---
 
-# QUICK COMPLEXITY REFERENCE
+# 📖 Quick Complexity Reference
 
 | Pattern          | Time                    | Space        |
 | ---------------- | ----------------------- | ------------ |
@@ -917,7 +919,7 @@ public List<List<Integer>> subsets(int[] nums) {
 
 ---
 
-# CURATED PRACTICE PROBLEMS — PATTERN RECOGNITION DRILL
+# 💪 Curated Practice Problems — Pattern Recognition Drill
 
 > **HOW TO USE**: For each problem below, FIRST identify the pattern BEFORE coding.
 > Write down: "This is a [pattern] problem because [reason]."
@@ -944,3 +946,8 @@ public List<List<Integer>> subsets(int[] nums) {
 ---
 
 **Master these patterns, and you'll solve 90% of interview problems!**
+
+
+---
+
+> **Navigation**: [< Previous](03_Visual_Diagrams.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_LeetCode_RealWorld_Map.md)

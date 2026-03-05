@@ -1,3 +1,5 @@
+> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_Edge_Cases.md)
+
 > **Problems 01/14** |  | [Index](../00_MASTER_INDEX.md) | [Next](02_Problems_Math_Numbers.md)
 
 ---
@@ -19,7 +21,7 @@
 
 ---
 
-## TWO POINTERS PROBLEMS
+## 🧩 Two Pointers Problems
 
 ### Problem 1: Container With Most Water
 
@@ -154,7 +156,7 @@ public List<List<Integer>> threeSum(int[] nums) {
 
 ---
 
-## SLIDING WINDOW PROBLEMS
+## 🧩 Sliding Window Problems
 
 ### Problem 3: Longest Substring Without Repeating Characters
 
@@ -265,7 +267,7 @@ public int maxSumSubarrayK(int[] arr, int k) {
 
 ---
 
-## BINARY SEARCH PROBLEMS
+## 🔍 Binary Search Problems
 
 ### Problem 5: Search in Rotated Sorted Array
 
@@ -390,7 +392,7 @@ public int findPeakElement(int[] nums) {
 
 ---
 
-## ARRAY PROBLEMS
+## 📊 Array Problems
 
 ### Problem 7: Rotate Array
 
@@ -503,7 +505,7 @@ public int[] productExceptSelf(int[] nums) {
 
 ---
 
-## STRING PROBLEMS
+## 📝 String Problems
 
 ### Problem 9: Valid Palindrome
 
@@ -636,7 +638,7 @@ public List<List<String>> groupAnagramsV2(String[] strs) {
 
 ---
 
-## MATH PROBLEMS
+## 🧩 Math Problems
 
 ### Problem 11: Missing Number
 
@@ -797,3 +799,4 @@ Here are problem names to search on LeetCode/HackerRank:
 
 ---
 
+> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_Edge_Cases.md)

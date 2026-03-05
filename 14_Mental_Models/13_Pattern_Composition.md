@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](12_Space_Time_Tradeoffs.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](14_Optimization_Pipeline.md)
+
 > **Mental Model 13** | [Index](../00_MASTER_INDEX.md)
 
 ---
@@ -220,7 +222,7 @@ private boolean canSplit(int[] nums, int m, int maxSum) {
 
 ---
 
-## HOW TO RECOGNIZE COMPOSITIONS
+## 🔍 How to Recognize Compositions
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐

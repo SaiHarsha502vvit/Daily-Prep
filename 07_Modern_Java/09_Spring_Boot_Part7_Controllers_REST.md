@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](08_Spring_Boot_Part6_Service_Repository.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](10_Spring_Boot_Part8_JPA_Deep_Dive.md)
+
 # 🌱 SPRING BOOT MASTERY - Part 7: Controllers & REST API Architecture
 
 > **The Gateway to Your Application**
@@ -49,7 +51,7 @@
 
 ---
 
-# REST CONTROLLER FUNDAMENTALS
+# 📖 REST Controller Fundamentals
 
 ---
 
@@ -1248,3 +1250,8 @@ public class UserController {
 ---
 
 _Continue to Part 8: JPA & Hibernate Deep Dive_
+
+
+---
+
+> **Navigation**: [< Previous](08_Spring_Boot_Part6_Service_Repository.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](10_Spring_Boot_Part8_JPA_Deep_Dive.md)

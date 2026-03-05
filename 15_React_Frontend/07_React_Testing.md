@@ -201,3 +201,5 @@ test('user can add item to cart', async ({ page }) => {
 ```
 
 ---
+
+> **Navigation**: [< Previous](06_React_Router.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08_React_Performance.md)

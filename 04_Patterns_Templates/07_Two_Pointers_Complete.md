@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](06_Binary_Search_Patterns.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08_Array_Plus_TwoPointers.md)
+
 # 👆👆 Two Pointers Pattern Complete Guide
 > From Simple Traversals to Complex Multi-Pointer Techniques
 
@@ -1277,3 +1279,8 @@ while (p1 < m && p2 < n) {
 ```
 
 **Pro Tip:** When you see a problem asking about pairs, subarrays, or in-place operations on sorted/sequential data, think two pointers first!
+
+
+---
+
+> **Navigation**: [< Previous](06_Binary_Search_Patterns.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08_Array_Plus_TwoPointers.md)

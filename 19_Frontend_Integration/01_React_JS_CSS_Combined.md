@@ -1,3 +1,5 @@
+> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_Frontend_Debugging.md)
+
 > **Frontend Integration Chapter 1/4** | [Index](../00_MASTER_INDEX.md) | [Next → Debugging](02_Frontend_Debugging.md)
 
 # React + JavaScript + CSS — Building Complex UIs from Scratch
@@ -755,3 +757,8 @@ Q: Server state vs client state?
 ---
 
 > [Index](../00_MASTER_INDEX.md) | [Next → Frontend Debugging](02_Frontend_Debugging.md)
+
+
+---
+
+> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_Frontend_Debugging.md)

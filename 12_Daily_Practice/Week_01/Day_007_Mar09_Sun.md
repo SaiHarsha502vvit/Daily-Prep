@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](Day_006_Mar08_Sat.md) | [Back to Index](../00_MASTER_INDEX.md)
+
 # Day 007 - Sunday, March 9, 2026
 
 > **Week 01** | **REVIEW DAY** | **Theme:** Consolidation + Re-attempt Weak Problems
@@ -314,3 +316,8 @@ PATTERNS:         Two Pointers, Frequency Array, Prefix Sum, Sliding Window,
 > **Mentor Note:** Week 1 wasn't about mastering everything — it was about 
 > building the FOUNDATIONS. If you can trace through Merge Sort and write 
 > Kadane's from memory, you're ahead of 80% of candidates. Keep going.
+
+
+---
+
+> **Navigation**: [< Previous](Day_006_Mar08_Sat.md) | [Back to Index](../00_MASTER_INDEX.md)

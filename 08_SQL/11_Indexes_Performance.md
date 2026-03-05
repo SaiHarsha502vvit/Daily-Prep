@@ -213,3 +213,4 @@ SELECT emp_id, dept_id FROM employees WHERE dept_id = 1;
 
 ---
 
+> **Navigation**: [< Previous](10_Normalization.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](12_Views_StoredProcs_Triggers.md)

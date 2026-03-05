@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](01_Recursion_Tree_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_Graph_Tree_Thinking.md)
+
 # 🎯 DP: State & Transition Thinking — Mental Model
 
 > **The #1 mistake in DP**: jumping straight to the recurrence relation. This guide teaches you to think about DP as **defining states**, then **defining transitions between them** — like designing a spreadsheet before filling it.
@@ -264,3 +266,8 @@ dp[3]: [...]
 
 ---
 [← 01 Recursion](01_Recursion_Tree_Thinking.md) | [03 Graph & Tree Thinking →](03_Graph_Tree_Thinking.md)
+
+
+---
+
+> **Navigation**: [< Previous](01_Recursion_Tree_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_Graph_Tree_Thinking.md)

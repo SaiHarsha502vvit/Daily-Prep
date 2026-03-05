@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](20_Problems_Sorting.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](22_Problems_Recursion_Subsets.md)
+
 > **Problems 21** | [Prev](20_Problems_Sorting.md) | [Index](../00_MASTER_INDEX.md) | [Next](22_Problems_Recursion_Subsets.md)
 
 ---

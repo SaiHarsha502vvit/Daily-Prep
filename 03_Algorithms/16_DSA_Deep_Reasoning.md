@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](15_Monotonic_Stack_Queue_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](17_DSA_Java_Implementation_Mastery.md)
+
 # Chapter 16 — DSA Deep Reasoning: The Questions That Freeze People
 
 > **"Anyone can say 'Binary search is O(log n).' The senior engineer explains WHY HashMap isn't always O(1), WHEN quicksort beats mergesort, and HOW to choose between BFS and DFS without memorizing."**
@@ -434,3 +436,8 @@ int fib(int n) {
 ← Previous: [Chapter 15 — Pattern Programs](09_Pattern_Programs_Complete.md)
 | [📚 Index](../00_MASTER_INDEX.md)
 | Next: [SQL Deep Reasoning →](../08_SQL_Database/21_SQL_Deep_Reasoning.md)
+
+
+---
+
+> **Navigation**: [< Previous](15_Monotonic_Stack_Queue_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](17_DSA_Java_Implementation_Mastery.md)

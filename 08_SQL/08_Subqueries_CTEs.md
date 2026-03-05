@@ -331,3 +331,4 @@ SELECT * FROM category_tree ORDER BY full_path;
 
 ---
 
+> **Navigation**: [< Previous](07_JOINs_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](09_Window_Functions.md)

@@ -422,7 +422,7 @@ try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
 
 ---
 
-# PART 12: CONCURRENCY PATTERNS IN PRODUCTION
+# 🎨 Part 12: Concurrency Patterns in Production
 
 ```java
 // PATTERN 1: Thread-Safe Singleton (Double-Checked Locking)
@@ -504,3 +504,8 @@ for (int i = 0; i < tasks.size(); i++) {
 ---
 
 > **Previous**: [Part 1 — Thread Fundamentals, synchronized, Atomic, Collections ←](27a_Java_Concurrency_Core.md)
+
+
+---
+
+> **Navigation**: [< Previous](27a_Java_Concurrency_Core.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](28_Modern_Java_Features.md)

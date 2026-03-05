@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](14_Code_Review_Practices.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](16_IaC_Terraform.md)
+
 # Cloud Services — AWS, Azure & GCP Guide
 
 ## Why Cloud Knowledge is Essential
@@ -470,3 +472,8 @@ A: Vertical = bigger machine (limited, downtime to change)
 ---
 
 *Start with ONE cloud provider (the one your target company uses). Master 10 core services deeply. The rest transfers.*
+
+
+---
+
+> **Navigation**: [< Previous](14_Code_Review_Practices.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](16_IaC_Terraform.md)

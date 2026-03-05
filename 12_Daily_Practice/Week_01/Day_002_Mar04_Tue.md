@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](Day_001_Mar03_Mon.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_003_Mar05_Wed.md)
+
 # Day 002 - Tuesday, March 4, 2026
 
 > **Week 01** | **Difficulty:** EASY | **Theme:** Array Operations + Insertion Sort + SQL Data Types
@@ -477,3 +479,8 @@ public int maxSumSubarray(int[] arr, int k) {
 > **Mentor Note:** The reverse trick for array rotation is one of those "aha!" 
 > moments. If you understood it, try to explain it to someone (or write it in 
 > your own words). Teaching solidifies understanding.
+
+
+---
+
+> **Navigation**: [< Previous](Day_001_Mar03_Mon.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_003_Mar05_Wed.md)

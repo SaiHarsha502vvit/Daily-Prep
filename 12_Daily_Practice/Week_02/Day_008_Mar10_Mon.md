@@ -1,3 +1,5 @@
+> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_009_Mar11_Tue.md)
+
 # Day 008 - Monday, March 10, 2026
 
 > **Week 02** | **Difficulty:** EASY-MEDIUM | **Theme:** LinkedList + Merge Sort Mastery + SQL WHERE
@@ -14,9 +16,6 @@
 - [ ] SQL: WHERE, AND, OR, BETWEEN, IN (40 min)
 - [ ] Q1: Coding problem 1 (20 min)
 - [ ] Q2: Coding problem 2 (20 min)
-
----
-
 
 ---
 
@@ -525,3 +524,8 @@ CONFIDENCE LEVEL: (circle one)
 
 TOMORROW'S PREVIEW: Doubly LinkedList + Quick Sort + SQL ORDER BY/LIMIT
 ```
+
+
+---
+
+> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_009_Mar11_Tue.md)

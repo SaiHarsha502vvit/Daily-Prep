@@ -237,7 +237,7 @@ VARIANTS:
 
 ---
 
-## PART 1: EASY PROBLEMS
+## 🧩 Part 1: Easy Problems
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
@@ -450,7 +450,7 @@ class Solution {
 
 ---
 
-## PART 2: MEDIUM PROBLEMS
+## 🧩 Part 2: Medium Problems
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
@@ -1178,7 +1178,7 @@ class Solution {
 
 ---
 
-## PART 3: HARD PROBLEMS
+## 🧩 Part 3: Hard Problems
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
@@ -1551,7 +1551,7 @@ class Solution {
 
 ---
 
-## PART 4: CHEAT SHEETS AND REFERENCE
+## 📖 Part 4: Cheat Sheets and Reference
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗

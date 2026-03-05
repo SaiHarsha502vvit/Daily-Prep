@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](11_Greedy_vs_DP_Decision.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](13_Pattern_Composition.md)
+
 > **Mental Model 12** | [Index](../00_MASTER_INDEX.md)
 
 ---

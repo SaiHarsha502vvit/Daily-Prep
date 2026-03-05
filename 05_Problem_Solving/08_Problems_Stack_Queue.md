@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](07_Problems_Binary_Search.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](09_Problems_Trees.md)
+
 > **Problems 08/14** | [Prev](07_Problems_Binary_Search.md) | [Index](../00_MASTER_INDEX.md) | [Next](09_Problems_Trees.md)
 
 ---
@@ -2009,3 +2011,4 @@ public String prefixToPostfix(String prefix) {
 
 ---
 
+> **Navigation**: [< Previous](07_Problems_Binary_Search.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](09_Problems_Trees.md)

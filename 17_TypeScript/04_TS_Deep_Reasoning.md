@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](03_TS_Patterns_BestPractices.md) | [Back to Index](../00_MASTER_INDEX.md)
+
 # Chapter 4 — TypeScript Deep Reasoning: The Questions That Freeze People
 
 > **"Anyone can say 'TypeScript adds types to JavaScript.' The senior explains WHY structural typing matters, WHEN `any` is acceptable, and HOW the compiler erases everything before runtime."**
@@ -489,3 +491,8 @@ const keys = Object.keys(user) as (keyof User)[];
 ← Previous: [Chapter 3 — Patterns & Best Practices](03_TS_Patterns_BestPractices.md)
 | [📚 Index](../00_MASTER_INDEX.md)
 | Next: [CSS Deep Reasoning →](../18_CSS_Complete/05_CSS_Deep_Reasoning.md)
+
+
+---
+
+> **Navigation**: [< Previous](03_TS_Patterns_BestPractices.md) | [Back to Index](../00_MASTER_INDEX.md)

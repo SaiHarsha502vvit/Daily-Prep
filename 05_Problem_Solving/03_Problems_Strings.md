@@ -1,12 +1,14 @@
+> **Navigation**: [< Previous](03_Common_Mistakes.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_Problem_Origins.md)
+
 > **Problems 03/14** | [Prev](02_Problems_Math_Numbers.md) | [Index](../00_MASTER_INDEX.md) | [Next](04_Problems_Arrays.md)
 
 ---
 
-# SECTION 2: STRING PROBLEMS
+# 📝 Section 2: String Problems
 
 ---
 
-## 2.1 ISOMORPHIC & PATTERN MATCHING
+## 🎨 2.1 Isomorphic & Pattern Matching
 
 ### Problem: Isomorphic Strings
 
@@ -319,7 +321,7 @@ private String getPattern(String s) {
 
 ---
 
-## 2.2 ANAGRAM PROBLEMS
+## 🧩 2.2 Anagram Problems
 
 ### Problem: Valid Anagram
 
@@ -569,7 +571,7 @@ private List<String> helper(int n, int finalLength) {
 
 ---
 
-## 2.3 PALINDROME PROBLEMS
+## 🧩 2.3 Palindrome Problems
 
 ### Problem: Valid Palindrome II
 
@@ -703,3 +705,4 @@ public boolean canPermutePalindromeSet(String s) {
 
 ---
 
+> **Navigation**: [< Previous](03_Common_Mistakes.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_Problem_Origins.md)

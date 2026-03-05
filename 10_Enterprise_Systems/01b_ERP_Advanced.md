@@ -1612,3 +1612,8 @@ Understanding this = CAREER ADVANTAGE!
 ---
 
 _"The best developers understand BOTH the code AND the business."_
+
+
+---
+
+> **Navigation**: [< Previous](01a_ERP_Fundamentals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](02a_ERP_Finance_Core.md)

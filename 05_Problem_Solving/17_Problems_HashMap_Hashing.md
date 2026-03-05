@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](16_Problems_Heap.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](18_Problems_BitManipulation.md)
+
 > **Problems 17/22** | [Prev](16_Problems_Heap_PriorityQueue.md) | [Index](../00_MASTER_INDEX.md) | [Next](18_Problems_BitManipulation.md)
 
 ---
@@ -809,7 +811,7 @@ VARIANTS:
 
 ---
 
-## 15.3 DESIGN / ADVANCED HASHMAP
+## #️⃣ 15.3 Design / Advanced Hashmap
 
 ---
 
@@ -1077,7 +1079,7 @@ APPROACH: In-place hashing (cyclic sort variant)
 
 ---
 
-## 15.4 HIDDEN GEMS
+## 📌 15.4 Hidden Gems
 
 ---
 
@@ -1130,7 +1132,7 @@ APPROACH: DLL + HashMap
 
 ---
 
-## HASHMAP COMPLEXITY CHEAT SHEET
+## #️⃣ Hashmap Complexity Cheat Sheet
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
@@ -1171,7 +1173,7 @@ APPROACH: DLL + HashMap
 
 ---
 
-## MASTERY CHECKLIST
+## 📌 Mastery Checklist
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
@@ -1224,3 +1226,8 @@ APPROACH: DLL + HashMap
 
 > **End of Section 15** | Problems #266–#285 (20 problems)
 > [Prev: Heap & Priority Queue](16_Problems_Heap_PriorityQueue.md) | [Index](../00_MASTER_INDEX.md) | [Next: Bit Manipulation](18_Problems_BitManipulation.md)
+
+
+---
+
+> **Navigation**: [< Previous](16_Problems_Heap.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](18_Problems_BitManipulation.md)

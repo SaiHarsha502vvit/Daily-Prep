@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](Day_009_Mar11_Tue.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_011_Mar13_Thu.md)
+
 # Day 010 - Wednesday, March 12, 2026
 
 > **Week 02** | **Difficulty:** MEDIUM | **Theme:** Stack + Binary Search + SQL Aggregates
@@ -14,9 +16,6 @@
 - [ ] SQL: COUNT, SUM, AVG, MIN, MAX, GROUP BY (40 min)
 - [ ] Q1: Coding problem 1 (20 min)
 - [ ] Q2: Coding problem 2 (20 min)
-
----
-
 
 ---
 
@@ -396,3 +395,8 @@ CONFIDENCE LEVEL: 😟 | 😐 | 😊 | 🔥
 
 TOMORROW'S PREVIEW: Queue/Deque + HashMap intro + SQL JOINs Part 1
 ```
+
+
+---
+
+> **Navigation**: [< Previous](Day_009_Mar11_Tue.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_011_Mar13_Thu.md)

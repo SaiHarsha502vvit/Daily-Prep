@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](Day_025_Mar27_Thu.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_027_Mar29_Sat.md)
+
 # DAY 026 — Friday, March 28, 2026
 ## Bellman-Ford + Bipartite Check + SQL Normalization
 
@@ -15,9 +17,6 @@
 | 1:20–1:40 | 20 min | REAL-WORLD: Currency arbitrage = Bellman-Ford |
 | 1:40–2:20 | 40 min | SQL: Database Normalization (1NF → 3NF) |
 | 2:20–3:00 | 40 min | PROBLEMS: Q1 + Q2 |
-
----
-
 
 ---
 
@@ -263,3 +262,5 @@ Output: false (odd cycle exists)
 - [ ] Solved LC 785 (Is Graph Bipartite)
 
 ---
+
+> **Navigation**: [< Previous](Day_025_Mar27_Thu.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_027_Mar29_Sat.md)

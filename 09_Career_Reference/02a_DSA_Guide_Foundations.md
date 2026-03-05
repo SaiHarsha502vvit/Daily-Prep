@@ -30,11 +30,9 @@
 ║  • Why some "slow" algorithms are fast in practice                               ║
 ║                                                                                  ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
-```
 
 ## THE MEMORY HIERARCHY - THE FOUNDATION OF PERFORMANCE
 
-```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │                    CPU MEMORY HIERARCHY                                         │
 ├─────────────────────────────────────────────────────────────────────────────────┤
@@ -79,11 +77,9 @@
 │  constantly misses to RAM, even with the same Big-O complexity!                 │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
-```
 
 ## CACHE-FRIENDLY VS CACHE-UNFRIENDLY ALGORITHMS
 
-```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │                    THE CACHE LINE - 64 BYTES OF MAGIC                           │
 ├─────────────────────────────────────────────────────────────────────────────────┤
@@ -128,11 +124,9 @@
 │  even when Big-O suggests otherwise!                                            │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
-```
 
 ## BRANCH PREDICTION AND ITS IMPACT
 
-````
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │                    BRANCH PREDICTION - THE HIDDEN FACTOR                        │
 ├─────────────────────────────────────────────────────────────────────────────────┤
@@ -171,6 +165,8 @@
 │                                                                                 │
 │  BRANCH-FREE CODE:                                                              │
 │  ─────────────────                                                              │
+```
+
 ```java
 // BRANCHY (branch misprediction possible)
 int max = (a > b) ? a : b;
@@ -180,17 +176,19 @@ int max = b + ((a - b) & -(a > b ? 1 : 0));
 
 // Even better: let compiler optimize
 int max = Math.max(a, b);  // Modern JIT uses cmov instruction
-````
+```
 
+```
 │ │
 └─────────────────────────────────────────────────────────────────────────────────┘
-
 ```
 
-## JAVA MEMORY MODEL FOR DATA STRUCTURES
+
+
+## 🧠 Java Memory Model for Data Structures
+
 
 ```
-
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │ JAVA OBJECT MEMORY LAYOUT                                                       │
 ├─────────────────────────────────────────────────────────────────────────────────┤
@@ -246,13 +244,14 @@ int max = Math.max(a, b);  // Modern JIT uses cmov instruction
 │ LESSON: Use primitive arrays when possible!                                     │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
-
 ```
 
-## OPERATION COST REFERENCE TABLE
+
+
+## 📖 Operation Cost Reference Table
+
 
 ```
-
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │ CPU OPERATION COSTS (APPROXIMATE)                                               │
 ├─────────────────────────────────────────────────────────────────────────────────┤
@@ -311,13 +310,14 @@ int max = Math.max(a, b);  // Modern JIT uses cmov instruction
 │ └──────────────────────────────────────────────────────────────────────────┘    │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
-
 ```
 
-## BIG-O IN PRACTICE - THE REALITY CHECK
+
+
+## 💪 Big — O in Practice — the Reality Check
+
 
 ```
-
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │ WHEN BIG-O DOESN'T TELL THE FULL STORY                                          │
 ├─────────────────────────────────────────────────────────────────────────────────┤
@@ -367,6 +367,8 @@ int max = Math.max(a, b);  // Modern JIT uses cmov instruction
 │ 5. Profile before optimizing - intuition is often wrong!                        │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
 
 ```
 
@@ -395,6 +397,7 @@ int max = Math.max(a, b);  // Modern JIT uses cmov instruction
 
 ```
 
+```
 ┌─────────────────────────────────────────────────────────────┐
 │ LEARNING FRAMEWORK                                          │
 ├─────────────────────────────────────────────────────────────┤
@@ -423,6 +426,8 @@ int max = Math.max(a, b);  // Modern JIT uses cmov instruction
 │ └── Modern tech stack applications                          │
 │                                                             │
 └─────────────────────────────────────────────────────────────┘
+```
+
 
 ```
 
@@ -449,18 +454,22 @@ Key Insight:
 Arrays solve the problem of managing COLLECTIONS of same-type data
 with O(1) random access using index-based addressing.
 
-```
 
 ### HOW Arrays Work (Memory Model)
 
-```
 
 Memory Layout (Contiguous Allocation):
 
 Address: 1000 1004 1008 1012 1016
+```
 ┌───────┬───────┬───────┬───────┬───────┐
+```
+
 int[] arr = │ 10 │ 20 │ 30 │ 40 │ 50 │
+```
 └───────┴───────┴───────┴───────┴───────┘
+```
+
 Index: [0] [1] [2] [3] [4]
 
 Address Calculation:
@@ -471,11 +480,13 @@ Why O(1) Access?
 → Direct arithmetic calculation, no traversal needed
 → CPU can fetch any element in constant time
 
-````
+```
 
 ### Array Variants
 
 #### 1. Static Array (Fixed Size)
+
+```
 
 ```java
 // Declaration
@@ -492,7 +503,7 @@ int[] arr2 = {1, 2, 3, 4, 5};     // Initialized with values
 - Size is known beforehand
 - Performance is critical
 - Memory efficiency matters
-````
+```
 
 #### 2. Dynamic Array (ArrayList, Vector)
 
@@ -722,11 +733,9 @@ Trade-off:
 ├── No random access (O(n) to reach element)
 ├── Extra memory per element (pointer storage)
 └── Poor cache locality
-```
 
 ### HOW Linked Lists Work
 
-```
 Memory Model (Non-Contiguous):
 
 Address:   1000        2048        1524        3000
@@ -1053,11 +1062,9 @@ Real-World Analogy:
 Key Insight:
 Stacks provide controlled access - only top element accessible
 This RESTRICTION is the FEATURE, not a limitation.
-```
 
 ### HOW Stacks Work
 
-```
 Operations:
           ┌───────────┐
   push()  │     5     │  ◄── top
@@ -1272,11 +1279,9 @@ class StackWithMiddle {
         }
     }
 }
-```
 
 ### Stack Patterns
 
-```
 1. PARENTHESES MATCHING
    └── Valid parentheses
    └── Balanced brackets
@@ -1649,11 +1654,9 @@ Hash Table: O(1) average lookup!
 Key Insight:
 Convert keys to array indices using a hash function.
 Direct addressing without search.
-```
 
 ### HOW Hash Tables Work
 
-```
 Hash Function converts key to index:
 "apple" → hash("apple") → 42 → store at index 42
 
@@ -1817,3 +1820,9 @@ ConcurrentHashMap<String, Integer> map = new ConcurrentHashMap<>();
 
 Features:
 ├── Segment-level locking (not whole map)
+```
+
+
+---
+
+> **Navigation**: [< Previous](01e_Career_Projects_Part3.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](02b_DSA_Guide_Advanced.md)

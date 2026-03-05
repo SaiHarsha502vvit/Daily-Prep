@@ -1064,3 +1064,8 @@ public class RabbitConsumer {
 ---
 
 _This completes the essential missing topics in Spring Boot!_
+
+
+---
+
+> **Navigation**: [< Previous](16a_SB_Missing_Core.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](17a_SB_WebFlux_Core.md)

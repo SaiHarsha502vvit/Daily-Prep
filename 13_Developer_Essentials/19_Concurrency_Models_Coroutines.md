@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](18_Backend_Cloud_Integration.md) | [Back to Index](../00_MASTER_INDEX.md)
+
 # Chapter 19 — Concurrency Models, Coroutines & Continuations: Deep Reasoning
 
 > **"Anyone can say 'threads run in parallel.' The senior engineer explains WHY coroutines aren't threads, WHAT a continuation actually is, and HOW async/await works differently in Java, Kotlin, JavaScript, and Go."**
@@ -569,3 +571,8 @@ Solution: Worker Threads, or offload to microservices.
 
 ← Previous: [Chapter 18 — Backend Cloud Integration](18_Backend_Cloud_Integration.md)
 | [📚 Index](../00_MASTER_INDEX.md)
+
+
+---
+
+> **Navigation**: [< Previous](18_Backend_Cloud_Integration.md) | [Back to Index](../00_MASTER_INDEX.md)

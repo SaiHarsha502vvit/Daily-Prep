@@ -1,10 +1,12 @@
+> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_Design_Patterns.md)
+
 # 🏗️ OOPS & Design Principles: Complete Guide
 
 ## Building Software That Lasts
 
 ---
 
-# PART 0: COMPLETE UNDERSTANDING OF OOP
+# 📚 Part 0: Complete Understanding of OOP
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
@@ -205,7 +207,7 @@
 
 ---
 
-# PART 1: OOP FROM FIRST PRINCIPLES
+# 🏛️ Part 1: OOP From First Principles
 
 ## What is OOP Really About?
 
@@ -369,7 +371,7 @@ public double totalArea(Shape[] shapes) {
 
 ---
 
-# PART 2: COMPOSITION VS INHERITANCE
+# 📌 Part 2: Composition vs Inheritance
 
 ## The "Has-A" vs "Is-A" Debate
 
@@ -525,7 +527,7 @@ THIS IS DEPENDENCY INJECTION!
 
 ---
 
-# PART 3: SOLID PRINCIPLES
+# 📐 Part 3: SOLID Principles
 
 ## S - Single Responsibility Principle
 
@@ -744,7 +746,7 @@ UserService userService = new UserService(new SMSNotificationService());
 
 ---
 
-# PART 4: COMMON DESIGN PATTERNS
+# 🎨 Part 4: Common Design Patterns
 
 ## Creational Patterns
 
@@ -1056,7 +1058,7 @@ agency.publishNews("Breaking: Java 21 released!");
 
 ---
 
-# PART 5: WHEN TO USE WHAT
+# 📌 Part 5: When to Use What
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -1077,7 +1079,7 @@ agency.publishNews("Breaking: Java 21 released!");
 
 ---
 
-# PART 6: PRACTICE QUESTIONS
+# 💪 Part 6: Practice Questions
 
 1. Design a parking lot system
 2. Design a library management system
@@ -1094,7 +1096,7 @@ For each, think about:
 
 ---
 
-# CURATED PRACTICE PROBLEMS — OOP PRINCIPLES
+# 💪 Curated Practice Problems — OOP Principles
 
 > **HOW TO USE**: These are conceptual + coding problems that test your grasp of OOP pillars.
 
@@ -1128,3 +1130,8 @@ For each, think about:
 ---
 
 _OOP is about managing complexity through smart organization!_
+
+
+---
+
+> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_Design_Patterns.md)

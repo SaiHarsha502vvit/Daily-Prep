@@ -80,7 +80,7 @@ data:
 
 ---
 # ============================================
-# 6. HORIZONTAL POD AUTOSCALER (HPA)
+# 📌 6. Horizontal Pod Autoscaler (hpa)
 # ============================================
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
@@ -115,7 +115,7 @@ spec:
 
 ---
 # ============================================
-# 7. PERSISTENT VOLUME CLAIM
+# 📌 7. Persistent Volume Claim
 # ============================================
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -2165,32 +2165,43 @@ KUBERNETES ARCHITECTURE - DEEP DIVE:
 ═══════════════════════════════════
 
 ┌─────────────────────────────────────────────────────────────────┐
-│                   KUBERNETES CLUSTER                             │
+│                   KUBERNETES CLUSTER                            │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  ┌─────────────────────────────────────────────────────────┐   │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐    │
 │  │                  CONTROL PLANE                           │   │
 │  │               (Master Node)                              │   │
 │  │                                                          │   │
-│  │  ┌──────────────────────────────────────────────────┐   │   │
+│  │  ┌──────────────────────────────────────────────────┐   │    │
 │  │  │              API SERVER                           │   │   │
 │  │  │                                                   │   │   │
-│  │  │  • All communication goes through here           │   │   │
-│  │  │  • Validates requests                            │   │   │
-│  │  │  • Updates etcd                                  │   │   │
-│  │  │  • Exposes REST API                              │   │   │
+│  │  │  • All communication goes through here           │   │    │
+│  │  │  • Validates requests                            │   │    │
+│  │  │  • Updates etcd                                  │   │    │
+│  │  │  • Exposes REST API                              │   │    │
 │  │  │                                                   │   │   │
-│  │  │  kubectl get pods → API Server → etcd → response│   │   │
+│  │  │  kubectl get pods → API Server → etcd → response│   │     │
 │  │  │                                                   │   │   │
-│  │  └──────────────────────────────────────────────────┘   │   │
+│  │  └──────────────────────────────────────────────────┘   │    │
 │  │                          │                               │   │
-│  │              ┌───────────┴───────────┐                  │   │
-│  │              │                       │                  │   │
-│  │  ┌───────────▼──────────┐  ┌────────▼─────────┐        │   │
-│  │  │     ETCD            │  │  CONTROLLER      │        │   │
-│  │  │                      │  │  MANAGER         │        │   │
-│  │  │  • Distributed       │  │                  │        │   │
-│  │  │    key-value store   │  │  • ReplicaSet    │        │   │
-│  │  │  • Stores all        │  │    Controller    │        │   │
-│  │  │    cluster state     │  │  • Deployment    │        │   │
-│  │  │  • "Source of truth" │  │    Controller    │        │   │
+│  │              ┌───────────┴───────────┐                  │    │
+│  │              │                       │                  │    │
+│  │  ┌───────────▼──────────┐  ┌────────▼─────────┐        │     │
+│  │  │     ETCD            │  │  CONTROLLER      │        │      │
+│  │  │                      │  │  MANAGER         │        │     │
+│  │  │  • Distributed       │  │                  │        │     │
+│  │  │    key-value store   │  │  • ReplicaSet    │        │     │
+│  │  │  • Stores all        │  │    Controller    │        │     │
+│  │  │    cluster state     │  │  • Deployment    │        │     │
+│  │  │  • "Source of truth" │  │    Controller    │        │     │
+│  │  └──────────────────────┘  └──────────────────┘        │     │
+│  │                                                          │   │
+│  └─────────────────────────────────────────────────────────┘    │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+
+---
+
+> **Navigation**: [< Previous](01c_Career_Projects_Part1.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](01e_Career_Projects_Part3.md)

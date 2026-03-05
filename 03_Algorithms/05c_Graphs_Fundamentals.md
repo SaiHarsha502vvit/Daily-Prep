@@ -3,7 +3,7 @@
 
 ---
 
-# PART 5: GRAPH FUNDAMENTALS
+# 🕸️ Part 5: Graph Fundamentals
 
 ## Complete Understanding of Graphs
 
@@ -201,7 +201,7 @@ CONNECTED: All nodes reachable from any node
 
 ---
 
-# PART 6: GRAPH TRAVERSALS
+# 🕸️ Part 6: Graph Traversals
 
 ## DFS vs BFS - When to Use Which
 
@@ -395,7 +395,7 @@ public int shortestPath(int start, int end, List<List<Integer>> graph) {
 
 ---
 
-# PART 7: CYCLE DETECTION
+# 📌 Part 7: Cycle Detection
 
 ## In Undirected Graph
 
@@ -471,7 +471,7 @@ private boolean dfsHasCycleDirected(int node, List<List<Integer>> graph, int[] c
 
 ---
 
-# PART 8: TOPOLOGICAL SORT
+# 🔄 Part 8: Topological Sort
 
 ```
 ORDER TASKS RESPECTING DEPENDENCIES
@@ -529,7 +529,7 @@ public List<Integer> topologicalSort(int numCourses, int[][] prerequisites) {
 
 ---
 
-# PART 9: SHORTEST PATH ALGORITHMS
+# 📌 Part 9: Shortest Path Algorithms
 
 ## Dijkstra's Algorithm
 
@@ -593,7 +593,7 @@ public int[] dijkstra(int n, List<int[]>[] graph, int source) {
 
 ---
 
-# PART 10: PRACTICE PROBLEMS
+# 💪 Part 10: Practice Problems
 
 ## Trees
 
@@ -638,3 +638,4 @@ HARD:
 
 ---
 
+> **Navigation**: [< Previous](05b_Graphs_Internals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05d_Graphs_Advanced_Algos.md)

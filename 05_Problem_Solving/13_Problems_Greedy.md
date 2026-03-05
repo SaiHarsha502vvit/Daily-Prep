@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](12_Problems_Backtracking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](14_Problems_Mixed_Competitive.md)
+
 > **Problems 13/14** | [Prev](12_Problems_Backtracking.md) | [Index](../00_MASTER_INDEX.md) | [Next](14_Problems_Mixed_Competitive.md)
 
 ---
@@ -857,3 +859,4 @@ public int maxProfit(int[] prices) {
 
 ---
 
+> **Navigation**: [< Previous](12_Problems_Backtracking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](14_Problems_Mixed_Competitive.md)

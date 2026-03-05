@@ -473,3 +473,5 @@ Scale: 50M DAU, each user sends 40 msgs/day = 2B msgs/day
 ```
 
 ---
+
+> **Navigation**: [< Previous](04_User_System_Flows.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_Distributed_Systems_Fundamentals.md)

@@ -1049,4 +1049,7 @@ cloudWatch:
 </dependency>
 ```
 
-```yaml
+
+---
+
+> **Navigation**: [< Previous](22b_SB_Microservices_Patterns.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](23b_SB_Cloud_Advanced.md)

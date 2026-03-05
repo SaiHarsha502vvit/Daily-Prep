@@ -53,7 +53,7 @@
 
 ---
 
-# TABLE OF CONTENTS
+# 📌 Table of Contents
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -78,7 +78,7 @@
 
 ---
 
-# SECTION 1: USER MANAGEMENT ENTITY DESIGN
+# 🏗️ Section 1: User Management Entity Design
 
 ---
 
@@ -658,7 +658,7 @@ public class AuthenticationEventListener {
 
 ---
 
-# SECTION 3: PASSWORD SECURITY
+# 🔒 Section 3: Password Security
 
 ---
 
@@ -876,7 +876,7 @@ public class PasswordExpiryChecker {
 
 ---
 
-# SECTION 4: METHOD-LEVEL SECURITY
+# 🔒 Section 4: Method — Level Security
 
 ---
 
@@ -1026,3 +1026,9 @@ public class SecurityService {
         User currentUser = (User) auth.getPrincipal();
         
         return userRepository.findById(targetUserId)
+```
+
+
+---
+
+> **Navigation**: [< Previous](18b_SB_SOLID_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](19b_SB_Security.md)

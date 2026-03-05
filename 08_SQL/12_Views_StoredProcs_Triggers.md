@@ -535,3 +535,4 @@ DROP TRIGGER IF EXISTS employee_audit_trigger ON employees;
 
 ---
 
+> **Navigation**: [< Previous](11_Indexes_Performance.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](13_Transactions_ACID.md)

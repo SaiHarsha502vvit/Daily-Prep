@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](09_Spring_Boot_Part7_Controllers_REST.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](11_Spring_Boot_Part9_Architecture_Quality.md)
+
 # 🌱 SPRING BOOT MASTERY - Part 8: JPA & Hibernate Deep Dive
 
 > **Object-Relational Mapping Mastery**
@@ -49,7 +51,7 @@
 
 ---
 
-# JPA FUNDAMENTALS
+# 📖 JPA Fundamentals
 
 ---
 
@@ -1367,3 +1369,8 @@ public class BrokenService {
 ---
 
 _Continue to Part 9: Clean Architecture & Quality Code_
+
+
+---
+
+> **Navigation**: [< Previous](09_Spring_Boot_Part7_Controllers_REST.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](11_Spring_Boot_Part9_Architecture_Quality.md)

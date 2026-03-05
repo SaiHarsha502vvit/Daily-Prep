@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](Day_018_Mar20_Thu.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_020_Mar22_Sat.md)
+
 # Day 019 — Friday, March 21, 2026
 
 > **Week 03** | **Day 5** | **Theme:** Sliding Window + Tree Problems Combo + SQL CTEs (Common Table Expressions)
@@ -13,9 +15,6 @@
 - [ ] Problem 1: LC 3 — Longest Substring Without Repeating Characters (25 min)
 - [ ] Problem 2: LC 104 — Maximum Depth of Binary Tree (15 min)
 - [ ] Problem 3: LC 226 — Invert Binary Tree (15 min)
-
----
-
 
 ---
 
@@ -410,3 +409,8 @@ WHICH TYPE:
   Variable: "smallest/longest that..." → two pointers, expand+shrink
   HashMap:  "...distinct/unique..." → track counts in map
 ```
+
+
+---
+
+> **Navigation**: [< Previous](Day_018_Mar20_Thu.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_020_Mar22_Sat.md)

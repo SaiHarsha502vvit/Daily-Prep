@@ -2,6 +2,7 @@
 
 ---
 
+```
 │  │  │                      │  │  • Node          │        │   │
 │  │  │                      │  │    Controller    │        │   │
 │  │  └──────────────────────┘  └──────────────────┘        │   │
@@ -69,14 +70,18 @@
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+
 ### Pod Scheduling - How It Works
 
-```
 WHAT HAPPENS WHEN YOU CREATE A DEPLOYMENT:
+```
 ═════════════════════════════════════════
+```
+
 
 kubectl apply -f deployment.yaml
 
+```
 ┌──────────────────────────────────────────────────────────────────┐
 │              POD SCHEDULING FLOW                                 │
 ├──────────────────────────────────────────────────────────────────┤
@@ -162,15 +167,19 @@ kubectl apply -f deployment.yaml
 └──────────────────────────────────────────────────────────────────┘
 ```
 
+
 ### Kubernetes Service Networking
 
-```
 HOW SERVICES ROUTE TRAFFIC:
+```
 ══════════════════════════
+```
+
 
 Service: myapp-service (ClusterIP: 10.96.45.123, Port: 80)
 Pods: myapp-abc (10.244.1.5:8080), myapp-def (10.244.2.8:8080)
 
+```
 ┌──────────────────────────────────────────────────────────────────┐
 │              SERVICE NETWORKING                                  │
 ├──────────────────────────────────────────────────────────────────┤
@@ -244,12 +253,15 @@ Pods: myapp-abc (10.244.1.5:8080), myapp-def (10.244.2.8:8080)
 └──────────────────────────────────────────────────────────────────┘
 ```
 
+```
+
 ---
 
 ## Phase 9: Monitoring & Observability
 
 ### The Three Pillars
 
+```
 ```
 ┌──────────────────────────────────────────────────────────────────┐
 │              OBSERVABILITY - THREE PILLARS                       │
@@ -279,7 +291,9 @@ Pods: myapp-abc (10.244.1.5:8080), myapp-def (10.244.2.8:8080)
 └──────────────────────────────────────────────────────────────────┘
 ```
 
+
 ### Prometheus + Grafana Setup
+
 
 ```yaml
 # prometheus.yml - Prometheus Configuration
@@ -2194,3 +2208,8 @@ You now have a complete guide covering:
 ---
 
 _"The goal is not to become a better coder. It's to become a better problem solver who happens to use code."_
+
+
+---
+
+> **Navigation**: [< Previous](01d_Career_Projects_Part2.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](02a_DSA_Guide_Foundations.md)

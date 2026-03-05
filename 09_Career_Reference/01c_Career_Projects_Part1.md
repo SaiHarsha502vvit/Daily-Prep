@@ -979,11 +979,9 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 }
-```
 
 ### API Design - REST Best Practices
 
-```
 REST API DESIGN CHECKLIST:
 ──────────────────────────
 
@@ -1554,11 +1552,9 @@ public class MyApp {
 │  └──────────────────────────────────────────────────────────┘   │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
-```
 
 ### HTTP Request Flow Through Spring MVC
 
-```
 COMPLETE REQUEST LIFECYCLE IN SPRING BOOT:
 ═════════════════════════════════════════
 
@@ -1773,11 +1769,9 @@ Client sends: GET /api/users/123
 │  TOTAL TIME: ~50ms                                              │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
-```
 
 ### JPA/Hibernate Query Execution
 
-```
 WHAT HAPPENS WHEN YOU CALL repository.findById():
 ═════════════════════════════════════════════════
 
@@ -1911,11 +1905,9 @@ Total queries: 1 + N (if 100 users = 101 queries!)
 // GOOD: Eager fetch with JOIN
 @Query("SELECT u FROM User u JOIN FETCH u.orders")
 List<User> findAllWithOrders();  // 1 query only!
-```
 
 ### Transaction Management Internals
 
-```
 @TRANSACTIONAL - HOW IT WORKS:
 ═════════════════════════════
 
@@ -2194,3 +2186,9 @@ metadata:
 spec:
     type: ClusterIP # Internal only
     selector:
+```
+
+
+---
+
+> **Navigation**: [< Previous](01b_Career_Guide_Part1A.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](01d_Career_Projects_Part2.md)

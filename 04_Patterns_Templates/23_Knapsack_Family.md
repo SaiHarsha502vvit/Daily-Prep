@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](22_Cyclic_Sort_Pattern.md) | [Back to Index](../00_MASTER_INDEX.md)
+
 > **Pattern 23** | [Index](../00_MASTER_INDEX.md)
 
 ---
@@ -438,7 +440,7 @@ COMPLEXITY: Time O(strs × m × n) | Space O(m × n)
 
 ---
 
-## THE DIRECTION RULE — VISUAL PROOF
+## 📌 The Direction Rule — Visual Proof
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐

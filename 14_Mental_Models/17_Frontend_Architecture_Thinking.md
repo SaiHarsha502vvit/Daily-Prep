@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](16_Distributed_Systems_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](18_Production_Debugging_Thinking.md)
+
 # Mental Models — Frontend Architecture Thinking
 
 ## How to Think About Frontend Architecture
@@ -342,3 +344,8 @@ SKELETON SCREENS (perceived performance):
 ---
 
 *The best frontend code doesn't look clever — it looks obvious. Anyone on the team should read a component and immediately understand what it does.*
+
+
+---
+
+> **Navigation**: [< Previous](16_Distributed_Systems_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](18_Production_Debugging_Thinking.md)

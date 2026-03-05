@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](04_CSS_Modern_Architecture.md) | [Back to Index](../00_MASTER_INDEX.md)
+
 # Chapter 5 — CSS Deep Reasoning: The Questions That Freeze People
 
 > **"Anyone can center a div with Flexbox. The senior engineer explains WHY `z-index` doesn't work, WHAT creates a new stacking context, and HOW the cascade ACTUALLY resolves conflicts."**
@@ -425,3 +427,8 @@ WHEN IT DOESN'T:
 ← Previous: [Chapter 4 — CSS Responsive & Performance](04_CSS_Responsive_Performance.md)
 | [📚 Index](../00_MASTER_INDEX.md)
 | Next: [Java Deep Reasoning →](../07_Modern_Java/31_Java_Deep_Reasoning.md)
+
+
+---
+
+> **Navigation**: [< Previous](04_CSS_Modern_Architecture.md) | [Back to Index](../00_MASTER_INDEX.md)

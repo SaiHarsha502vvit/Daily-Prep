@@ -1484,3 +1484,8 @@ public int[] maxWindow(int[] arr, int k) {
 ```
 
 **Pro Tip:** When you see "next greater/smaller", "sliding window max/min", or problems involving "how far can we extend", think monotonic stack/queue!
+
+
+---
+
+> **Navigation**: [< Previous](14_Union_Find_DSU_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](16_DSA_Deep_Reasoning.md)

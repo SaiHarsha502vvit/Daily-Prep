@@ -53,7 +53,7 @@
 
 ---
 
-# TABLE OF CONTENTS
+# 📌 Table of Contents
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -74,7 +74,7 @@
 
 ---
 
-# WHY SOLID MATTERS
+# 🏛️ Why SOLID Matters
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -100,7 +100,7 @@
 
 ---
 
-# SECTION 1: SINGLE RESPONSIBILITY PRINCIPLE (SRP)
+# 📐 Section 1: Single Responsibility Principle (srp)
 
 ---
 
@@ -414,7 +414,7 @@ public class ReportService {
 
 ---
 
-# SECTION 2: OPEN/CLOSED PRINCIPLE (OCP)
+# 📐 Section 2: Open/closed Principle (ocp)
 
 ---
 
@@ -765,7 +765,7 @@ public class RetryableNotificationDecorator implements NotificationSender {
 
 ---
 
-# SECTION 3: LISKOV SUBSTITUTION PRINCIPLE (LSP)
+# 📐 Section 3: Liskov Substitution Principle (lsp)
 
 ---
 
@@ -1061,3 +1061,4 @@ public class DatabaseDataProcessor implements DataProcessor {
 
 ---
 
+> **Navigation**: [< Previous](17b_SB_WebFlux_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](18b_SB_SOLID_Advanced.md)

@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](Day_004_Mar06_Thu.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_006_Mar08_Sat.md)
+
 # Day 005 - Friday, March 7, 2026
 
 > **Week 01** | **Difficulty:** EASY-MEDIUM | **Theme:** 2D Arrays + Merge Sort + SQL SELECT
@@ -551,3 +553,8 @@ public int findSaddlePoint(int[][] matrix) {
 > **Mentor Note:** You now know 4 sorting algorithms (Selection, Insertion, 
 > Bubble, Merge). Next week adds Quick Sort and Counting Sort. At that point 
 > you'll have a complete sorting toolkit for any interview.
+
+
+---
+
+> **Navigation**: [< Previous](Day_004_Mar06_Thu.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_006_Mar08_Sat.md)

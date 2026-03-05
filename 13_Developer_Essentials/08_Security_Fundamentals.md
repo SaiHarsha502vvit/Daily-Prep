@@ -301,3 +301,8 @@ Build a Spring Boot REST API with:
 ---
 
 > **Next Chapter**: [System Design →](09_System_Design.md)
+
+
+---
+
+> **Navigation**: [< Previous](07_API_Design_REST.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](09_System_Design.md)

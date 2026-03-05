@@ -1,3 +1,5 @@
+> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_016_Mar18_Tue.md)
+
 # Day 015 — Monday, March 17, 2026
 
 > **Week 03** | **Day 1** | **Theme:** Binary Tree Fundamentals + DFS Intro + SQL UNION & CASE
@@ -14,9 +16,6 @@
 - [ ] Problem 2: LC 94 — Binary Tree Inorder Traversal (20 min)
 - [ ] Real-World Connection (10 min)
 - [ ] Self-Assessment (5 min)
-
----
-
 
 ---
 
@@ -39,7 +38,7 @@
 ### WHY?
 Every hierarchical structure in computing is a tree: file systems, DOM, organization charts, JSON, XML, database indexes (B-Trees). Trees are the bridge between linear structures (arrays, lists) and complex networks (graphs). If you only learn one non-linear data structure deeply, it should be the binary tree.
 
-### WHAT?
+### 📌 What?
 A **binary tree** is a tree where each node has at most **two children** (left, right).
 
 ```
@@ -490,7 +489,7 @@ PATTERN TO MEMORIZE:
 
 ---
 
-## 6. REAL-WORLD CONNECTION
+## 📌 6. Real — World Connection
 
 ```
 WHERE YOU'LL SEE TREES:
@@ -536,3 +535,8 @@ WHERE YOU'LL SEE TREES:
 | CASE with aggregates (pivot) | ___ |
 
 **Target:** All 4+ before Week 3 ends.
+
+
+---
+
+> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_016_Mar18_Tue.md)

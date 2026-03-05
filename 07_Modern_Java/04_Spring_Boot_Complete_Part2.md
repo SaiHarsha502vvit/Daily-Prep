@@ -1,3 +1,5 @@
+> **Navigation**: [< Previous](03_Spring_Boot_Complete_Part1.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_Spring_Boot_Complete_Part3.md)
+
 # 🌱 SPRING BOOT COMPLETE GUIDE - Part 2: Spring Core (IoC & DI)
 
 > **The Heart of Spring - Dependency Injection**
@@ -1326,7 +1328,7 @@ public class SecondListener {
 
 ---
 
-# CHAPTER 10: CIRCULAR DEPENDENCIES - COMPLETE GUIDE
+# 📚 Chapter 10: Circular Dependencies — Complete Guide
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -1527,3 +1529,8 @@ EVENTS:
 ---
 
 _Continue to Part 3: AOP (Aspect-Oriented Programming)_
+
+
+---
+
+> **Navigation**: [< Previous](03_Spring_Boot_Complete_Part1.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_Spring_Boot_Complete_Part3.md)

@@ -346,3 +346,8 @@ Think about:
 ---
 
 > **Next Chapter**: [Dev Tools & Productivity →](10_Dev_Tools_Productivity.md)
+
+
+---
+
+> **Navigation**: [< Previous](08_Security_Fundamentals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](10_Dev_Tools_Productivity.md)

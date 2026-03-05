@@ -353,3 +353,8 @@ Handle: negative amounts, insufficient funds, null account
 ---
 
 > **Next Chapter**: [API Design & REST →](07_API_Design_REST.md)
+
+
+---
+
+> **Navigation**: [< Previous](05_Clean_Code.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_API_Design_REST.md)
