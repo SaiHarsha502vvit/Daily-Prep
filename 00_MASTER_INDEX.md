@@ -2,7 +2,7 @@
 
 # MASTER INDEX — Complete DSA, SQL, Spring Boot & Career Preparation
 
-**Last Updated: March 2026 | 300+ files | 19 folders**
+**Last Updated: March 2026 | 306+ files | 19 folders**
 
 ---
 
@@ -16,7 +16,7 @@
 | DSA Guide (Foundations) | [09_Career_Reference/02a_DSA_Guide_Foundations.md](09_Career_Reference/02a_DSA_Guide_Foundations.md) |
 | Practice Problems (14 chapters) | [05_Problem_Solving/](#practice--problem-solving) |
 | SQL from Zero (21 chapters) | [08_SQL/](#sql-21-chapters) |
-| Spring Boot (43+ chapters + 50-Day Plan) | [07_Modern_Java/](#modern-java--spring-boot) |
+| Spring Boot (58 chapters + 50-Day Plan) | [07_Modern_Java/](#modern-java--spring-boot) |
 | Developer Essentials (10 guides) | [13_Developer_Essentials/](#developer-essentials-new) |
 | **Mental Models — HOW TO THINK (18 guides)** | [14_Mental_Models/](#mental-models--how-to-think-new) |
 | **React Frontend (11 files)** | [15_React_Frontend/](#react-frontend-new) |
@@ -146,7 +146,7 @@ Daily-Prep/
 │   ├── 07_LLD_Solved_Problems.md        → 🆕 5 LLD problems with full Java code
 │   └── 08_Design_Patterns_Java.md       → 🆕 GoF patterns with Java + Spring Boot mapping
 │
-├── 07_Modern_Java/                      (50 chapter files)
+├── 07_Modern_Java/                      (56 chapter files)
 │   ├── 00_SPRING_BOOT_ROADMAP.md        → Spring Boot learning path
 │   ├── 01_Functional_Programming.md     → Streams, Lambdas, Optionals
 │   ├── 02a_AlgoEng_Core.md             → Algorithm engineering fundamentals
@@ -205,7 +205,13 @@ Daily-Prep/
 │   ├── 43_Performance_Engineering.md → 🆕 Profiling, flamegraphs, GC tuning, JMH benchmarks, memory leaks, connection pool tuning
 │   ├── 44_Java_Collections_Internals.md → 🆕 HashMap buckets/rehash, ConcurrentHashMap CAS, TreeMap red-black tree, LRU with LinkedHashMap
 │   ├── 45_Maven_Gradle_Build_Internals.md → 🆕 Maven lifecycle phases, POM hierarchy, dependency resolution, Gradle task DAG, wrapper
-│   └── 46_Java_Networking_NIO.md → 🆕 Socket API, HttpClient, NIO channels/buffers/selectors, non-blocking server, SSL/TLS
+│   ├── 46_Java_Networking_NIO.md → 🆕 Socket API, HttpClient, NIO channels/buffers/selectors, non-blocking server, SSL/TLS
+│   ├── 47_Java_Reflection_Annotations_Deep.md → 🆕 Reflection API 5W1H, Class<?>, Field/Method invoke, Custom Annotations, @Target/@Retention, Dynamic Proxy, Mini Spring Container
+│   ├── 48_Java_Events_Listeners_Observers.md → 🆕 Event/Listener pattern, Observer, Generic EventBus, Spring @EventListener, PropertyChangeSupport, Event-Driven Architecture
+│   ├── 49_Java_Enums_Records_Sealed_Deep.md → 🆕 Advanced Enums (state machine, singleton), Records (production patterns), Sealed Classes (algebraic data types, pattern matching)
+│   ├── 50_Java_DateTime_Regex_Mastery.md → 🆕 Date/Time API (LocalDate→ZonedDateTime, Duration/Period, formatters), Regex (Pattern/Matcher, capturing groups, lookahead)
+│   ├── 51_Java_Generics_Exceptions_Deep.md → 🆕 Type erasure, PECS (Producer Extends Consumer Super), bounded types, custom exceptions, try-with-resources internals, exception translation
+│   └── 52_Java_ClassLoader_JDBC_Logging.md → 🆕 ClassLoader delegation model, JDBC PreparedStatement/connection pooling/transactions, SLF4J/Logback/MDC/JSON logging
 │
 ├── 08_SQL/                              (21 chapter files — zero to expert)
 │   ├── 01_Foundations_Database_Basics.md → What is a database, RDBMS, SQL
@@ -421,7 +427,7 @@ Daily-Prep/
 - **🆕** [SD Interview Problems](06_OOP_Design/05_SD_Interview_Problems.md) | [Distributed Systems](06_OOP_Design/06_Distributed_Systems_Fundamentals.md)
 - **🆕** [LLD Solved Problems](06_OOP_Design/07_LLD_Solved_Problems.md) | [Design Patterns Java](06_OOP_Design/08_Design_Patterns_Java.md)
 
-### Modern Java & Spring Boot (52 chapters)
+### Modern Java & Spring Boot (58 chapters)
 - **Roadmap**: [Spring Boot Roadmap](07_Modern_Java/00_SPRING_BOOT_ROADMAP.md) | [50-Day Curriculum](07_Modern_Java/26_Spring_Boot_Curriculum_50Day.md)
 - **Java Core**: [Functional Programming](07_Modern_Java/01_Functional_Programming.md) | [Algo Engineering](07_Modern_Java/02a_AlgoEng_Core.md) | [Algo Eng Advanced](07_Modern_Java/02e_AlgoEng_Advanced.md)
 - **Pre-Spring**: [Hidden Foundations Part 1](07_Modern_Java/02c_SB_HiddenFoundations_Part1.md) | [Part 2](07_Modern_Java/02d_SB_HiddenFoundations_Part2.md)
@@ -450,6 +456,9 @@ Daily-Prep/
 - **🆕 System Fundamentals**: [OS Fundamentals](07_Modern_Java/39_OS_Fundamentals_For_Backend_Devs.md) — Processes, threads, virtual memory, epoll, I/O models | [Event Sourcing & CQRS](07_Modern_Java/40_Event_Sourcing_CQRS.md) — Event stores, projections, saga pattern | [Kubernetes Deep Dive](07_Modern_Java/41_Kubernetes_Deep_Dive.md) — Architecture, pods, services, scheduling
 - **🆕 Distributed & Performance**: [Distributed Patterns](07_Modern_Java/42_Distributed_Patterns_Consensus.md) — Raft, 2PC, consistent hashing, CRDTs, circuit breaker, outbox | [Performance Engineering](07_Modern_Java/43_Performance_Engineering.md) — Profiling, flamegraphs, GC tuning, JMH, memory leaks
 - **🆕 Collections & Build & Networking**: [Collections Internals](07_Modern_Java/44_Java_Collections_Internals.md) — HashMap rehash, ConcurrentHashMap CAS, TreeMap red-black tree, LRU cache | [Maven & Gradle](07_Modern_Java/45_Maven_Gradle_Build_Internals.md) — Lifecycle, POM, dependency resolution, Gradle tasks, wrapper | [Networking & NIO](07_Modern_Java/46_Java_Networking_NIO.md) — Sockets, HttpClient, NIO channels/selectors, non-blocking server
+- **🆕 Java Deep Fundamentals**: [Reflection & Annotations](07_Modern_Java/47_Java_Reflection_Annotations_Deep.md) — Reflection API, Custom Annotations, Dynamic Proxy, Mini Spring Container | [Events & Listeners](07_Modern_Java/48_Java_Events_Listeners_Observers.md) — Event/Observer pattern, Generic EventBus, Spring @EventListener
+- **🆕 Java Types & Patterns**: [Enums/Records/Sealed](07_Modern_Java/49_Java_Enums_Records_Sealed_Deep.md) — Advanced Enums, Records in production, Sealed Classes + pattern matching | [DateTime & Regex](07_Modern_Java/50_Java_DateTime_Regex_Mastery.md) — Date/Time API mastery, Regex Pattern/Matcher
+- **🆕 Generics & Infrastructure**: [Generics & Exceptions](07_Modern_Java/51_Java_Generics_Exceptions_Deep.md) — Type erasure, PECS, bounded types, exception hierarchy design | [ClassLoader/JDBC/Logging](07_Modern_Java/52_Java_ClassLoader_JDBC_Logging.md) — ClassLoader delegation, JDBC internals, SLF4J + Logback + MDC
 
 ### SQL (21 chapters)
 - [01 Foundations](08_SQL/01_Foundations_Database_Basics.md) | [02 Data Types](08_SQL/02_DataTypes_Constraints.md) | [03 DDL](08_SQL/03_DDL_Creating_Structure.md) | [04 DML](08_SQL/04_DML_Manipulating_Data.md)
