@@ -416,7 +416,7 @@ flowchart TD
 📖 **Related Chapters:**
 - [02_Data_Structures/01b_Arrays.md](../02_Data_Structures/01b_Arrays.md) — Array fundamentals
 - [04_Patterns_Templates/07_Two_Pointers_Complete.md](07_Two_Pointers_Complete.md) — Two Pointers deep dive
-- [05_Problem_Solving/06_Problems_Two_Pointers.md](../05_Problem_Solving/06_Problems_Two_Pointers.md) — More two pointer problems
+- [05_Problem_Solving/06_Two_Pointers.md](../05_Problem_Solving/06_Two_Pointers.md) — More two pointer problems
 
 ---
 [← 07 Two Pointers](07_Two_Pointers_Complete.md) | [09 Array + Sliding Window →](09_Array_Plus_SlidingWindow.md)

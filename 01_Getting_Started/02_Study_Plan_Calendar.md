@@ -1150,7 +1150,7 @@ Every day follows this structure:
 | ❓ Q2 | SQL — Find duplicate emails | *Classic SQL* |
 
 📘 Read: [11_SQL_Complete/02_SQL_Data_Analysis.md](../11_SQL_Complete/02_SQL_Data_Analysis.md)  
-📘 Read: [08_SQL_Database/01_SQL_Complete_Guide.md](../08_SQL_Database/01_SQL_Complete_Guide.md)
+📘 Read: [08_SQL/01_SQL_Complete_Guide.md](../08_SQL/01_SQL_Complete_Guide.md)
 
 ---
 
@@ -1218,10 +1218,10 @@ Evening (1 hr):
   Edge cases checklist review
 ```
 
-📘 Read: [09_Career_Reference/03_Quick_Reference.md](../09_Career_Reference/03_Quick_Reference.md)  
+📘 Read: [09_Career_Reference/11_Quick_Reference.md](../09_Career_Reference/11_Quick_Reference.md)  
 📘 Read: [04_Patterns_Templates/02_Code_Templates.md](../04_Patterns_Templates/02_Code_Templates.md)  
-📘 Read: [05_Problem_Solving/02_Edge_Cases.md](../05_Problem_Solving/02_Edge_Cases.md)  
-📘 Read: [05_Problem_Solving/03_Common_Mistakes.md](../05_Problem_Solving/03_Common_Mistakes.md)
+📘 Read: [05_Problem_Solving/23_Edge_Cases.md](../05_Problem_Solving/23_Edge_Cases.md)  
+📘 Read: [05_Problem_Solving/24_Common_Mistakes.md](../05_Problem_Solving/24_Common_Mistakes.md)
 
 ---
 
@@ -1244,7 +1244,7 @@ Evening:
   Tomorrow you perform. Today you prepare your mind.
 ```
 
-📘 Read: [09_Career_Reference/04_Brain_Psychology.md](../09_Career_Reference/04_Brain_Psychology.md)
+📘 Read: [09_Career_Reference/12_Brain_Psychology.md](../09_Career_Reference/12_Brain_Psychology.md)
 
 > **Final Mentor Note:** You've covered Arrays, Strings, Matrices, LinkedLists, Stacks, Queues, HashMaps, Trees, Graphs, Heaps, DP, Greedy, Backtracking, Tries, Union-Find, Bit Manipulation, Monotonic Stacks, SQL, System Design, and OOP. You solved 150+ problems. You learned 20+ patterns. You are ready. Trust the process.
 
@@ -1305,7 +1305,7 @@ Tomorrow's focus:      _______________________
 | 8 | [04_Dynamic_Programming.md](../03_Algorithms/04_Dynamic_Programming.md) |
 | 9 | [12_Greedy_Algorithms_Complete.md](../03_Algorithms/12_Greedy_Algorithms_Complete.md), [11_Backtracking_Complete.md](../03_Algorithms/11_Backtracking_Complete.md), [07_Advanced_DataStructures.md](../03_Algorithms/07_Advanced_DataStructures.md) (Trie) |
 | 10 | [10_Bit_Manipulation_Complete.md](../03_Algorithms/10_Bit_Manipulation_Complete.md), [14_Union_Find_DSU_Complete.md](../03_Algorithms/14_Union_Find_DSU_Complete.md), [13_String_Algorithms_Complete.md](../03_Algorithms/13_String_Algorithms_Complete.md), [15_Monotonic_Stack_Queue_Complete.md](../03_Algorithms/15_Monotonic_Stack_Queue_Complete.md) |
-| 11 | [01_OOPS_Principles.md](../06_OOP_Design/01_OOPS_Principles.md), [03_System_Design.md](../06_OOP_Design/03_System_Design.md), [01_SQL_Foundations_WHY_HOW.md](../11_SQL_Complete/01_SQL_Foundations_WHY_HOW.md), [03_Quick_Reference.md](../09_Career_Reference/03_Quick_Reference.md) |
+| 11 | [01_OOPS_Principles.md](../06_OOP_Design/01_OOPS_Principles.md), [03_System_Design.md](../06_OOP_Design/03_System_Design.md), [01_SQL_Foundations_WHY_HOW.md](../11_SQL_Complete/01_SQL_Foundations_WHY_HOW.md), [11_Quick_Reference.md](../09_Career_Reference/11_Quick_Reference.md) |
 
 ---
 

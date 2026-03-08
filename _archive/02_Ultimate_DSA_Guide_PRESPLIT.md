@@ -3,7 +3,7 @@
 > **Framework**: WHY → HOW → WHAT → WHEN → PRACTICE → REAL-WORLD
 
 ---
-> **Navigation**: [Part 1: Data Structures] | [Part 2: Advanced Algorithms](02b_Ultimate_DSA_Advanced.md) | [Part 3: JVM Internals](02c_Ultimate_DSA_JVM.md)
+> **Navigation**: [Part 1: Data Structures] | [Part 2: Advanced Algorithms](09_Ultimate_DSA_Advanced.md) | [Part 3: JVM Internals](10_Ultimate_DSA_JVM.md)
 
 ---
 
@@ -3630,4 +3630,4 @@ _"Data structures + Algorithms = Programs. Master both, master programming."_
 
 ---
 
-> **Next**: [Part 2: Advanced Algorithms & Interview Patterns](02b_Ultimate_DSA_Advanced.md)
+> **Next**: [Part 2: Advanced Algorithms & Interview Patterns](09_Ultimate_DSA_Advanced.md)

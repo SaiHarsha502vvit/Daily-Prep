@@ -19,7 +19,7 @@
 >
 > Today's topics link to detailed chapter files for deeper study:
 >
-> | **Spring Boot: Bean Scopes & DI** | [Spring Boot: IoC & Beans](../../07_Modern_Java/04_Spring_Boot_Complete_Part2.md) |
+> | **Spring Boot: Bean Scopes & DI** | [Spring Boot: IoC & Beans](../../07_Modern_Java/Ch32_SB_Data_Part2.md) |
 > | **SQL: JOINs + Aggregate Drills** | [SQL: JOINs Complete](../../08_SQL/07_JOINs_Complete.md) |
 >
 > *Open the linked file for full theory, diagrams, and practice problems.*
@@ -32,7 +32,7 @@
 
 ### Topic: Beans, Scopes, and Dependency Injection
 
-> Cross-reference: [Spring Boot Part 2 — IoC & Beans](../../07_Modern_Java/04_Spring_Boot_Complete_Part2.md)
+> Cross-reference: [Spring Boot Part 2 — IoC & Beans](../../07_Modern_Java/Ch32_SB_Data_Part2.md)
 
 #### Chapter 1: Bean Scopes — WHEN Spring Creates Objects
 

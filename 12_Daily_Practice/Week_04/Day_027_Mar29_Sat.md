@@ -21,7 +21,7 @@
 >
 > Today's topics link to detailed chapter files for deeper study:
 >
-> | **Spring Boot: JPA & Hibernate Deep Dive** | [Spring Boot: JPA Deep Dive](../../07_Modern_Java/10_Spring_Boot_Part8_JPA_Deep_Dive.md) |
+> | **Spring Boot: JPA & Hibernate Deep Dive** | [Spring Boot: JPA Deep Dive](../../07_Modern_Java/Ch40_SB_JPA_Deep_Dive.md) |
 > | **SQL: Mixed Drill (Indexes + Transactions)** | [SQL: Indexes & Performance](../../08_SQL/11_Indexes_Performance.md) |
 >
 > *Open the linked file for full theory, diagrams, and practice problems.*

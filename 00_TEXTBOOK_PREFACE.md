@@ -105,8 +105,8 @@ flowchart TD
                              │
   ┌──────────────────────────▼──────────────────────────────┐
   │ PART 8: Spring Boot I — Core (weekends)                 │
-  │ [07_Modern_Java/02c_SB_HiddenFoundations_Part1.md]     │
-  │ Through: [07_Spring_Boot_Part5_Lombok_DTOs.md]          │
+  │ [07_Modern_Java/Ch26_Pre_Spring_Part1.md]     │
+  │ Through: [Ch35_SB_Lombok_DTOs.md]          │
   │ IoC, DI, Beans, REST basics, DTO pattern.               │
   └─────────────────────────────────────────────────────────┘
 ```
@@ -153,8 +153,8 @@ flowchart TD
                              │
   ┌──────────────────────────▼──────────────────────────────┐
   │ PART 12: Spring Boot II — Production (weekends)         │
-  │ [10_Spring_Boot_Part8_JPA_Deep_Dive.md]                │
-  │ Through: [22a_SB_Microservices_Core.md]                │
+  │ [Ch40_SB_JPA_Deep_Dive.md]                │
+  │ Through: [Ch61_SB_Microservices_Core.md]                │
   │ JPA, Security, Auth, Testing, Microservices.            │
   └─────────────────────────────────────────────────────────┘
 ```
@@ -185,7 +185,7 @@ flowchart TD
                              │
   ┌──────────────────────────▼──────────────────────────────┐
   │ PART 14: Enterprise & Real-World                        │
-  │ [10_Enterprise_Systems/01a_ERP_Fundamentals.md]        │
+  │ [10_Enterprise_Systems/01_ERP_Fundamentals.md]        │
   │ Through: [06_RealWorld_Incidents_DSA.md]                │
   │ How DSA appears in production systems.                  │
   └──────────────────────────┬──────────────────────────────┘
@@ -202,9 +202,9 @@ flowchart TD
   ┌──────────────────────────▼──────────────────────────────┐
   │ PART 16: Career & Interview Prep                        │
   │ [09_Career_Reference/01_Career_TechnoFunctional.md]    │
-  │ [09_Career_Reference/02a_DSA_Guide_Foundations.md]     │
-  │ [09_Career_Reference/02b_Ultimate_DSA_Advanced.md]     │
-  │ [09_Career_Reference/02c_Ultimate_DSA_JVM.md]          │
+  │ [09_Career_Reference/07_DSA_Guide_Foundations.md]     │
+  │ [09_Career_Reference/09_Ultimate_DSA_Advanced.md]     │
+  │ [09_Career_Reference/10_Ultimate_DSA_JVM.md]          │
   │ The comprehensive reference — DSA + JVM + career.       │
   └─────────────────────────────────────────────────────────┘
 ```
@@ -261,19 +261,19 @@ flowchart TD
   │ [15_React_Frontend/09_React_Deep_Reasoning.md]         │
   │ [17_TypeScript/04_TS_Deep_Reasoning.md]                │
   │ [18_CSS_Complete/05_CSS_Deep_Reasoning.md]             │
-  │ [07_Modern_Java/31_Java_Deep_Reasoning.md]             │
-  │ [07_Modern_Java/32_Spring_Boot_Deep_Reasoning.md]      │
+  │ [07_Modern_Java/Ch22_Java_Deep_Reasoning.md]             │
+  │ [07_Modern_Java/Ch58_SB_Deep_Reasoning.md]      │
   │ [03_Algorithms/16_DSA_Deep_Reasoning.md]               │
-  │ [08_SQL_Database/23_SQL_Deep_Reasoning.md]             │
+  │ [08_SQL/23_SQL_Deep_Reasoning.md]             │
   │                                                         │
   │ Each file: Surface → Deep reasoning with analogy →      │
   │ Code proof → Follow-up traps → Quick-fire table         │
   │                                                         │
   │ 🆕 Phase 23 — Deep Mastery (5 new files):               │
-  │ [07_Modern_Java/33_Streams_Deep_Reasoning.md]           │
-  │ [07_Modern_Java/34_JVM_Object_Model_Internals.md]       │
-  │ [07_Modern_Java/35_Concurrency_Synchronizers_Deep.md]   │
-  │ [08_SQL_Database/24_SQL_Data_Analyst_RealWorld.md]       │
+  │ [07_Modern_Java/Ch23_Streams_Deep_Reasoning.md]           │
+  │ [07_Modern_Java/Ch19_JVM_Object_Model.md]       │
+  │ [07_Modern_Java/Ch17_Concurrency_Synchronizers.md]   │
+  │ [08_SQL/24_SQL_Data_Analyst_RealWorld.md]       │
   │ [03_Algorithms/17_DSA_Java_Implementation_Mastery.md]    │
   │                                                         │
   │ Streams internals & lazy evaluation, JVM object headers  │
@@ -489,11 +489,11 @@ flowchart TD
 | Learn an algorithm | [03_Algorithms/](03_Algorithms/) |
 | Find a coding pattern | [04_Patterns_Templates/](04_Patterns_Templates/) |
 | Solve practice problems | [05_Problem_Solving/](05_Problem_Solving/) |
-| Study Spring Boot | [07_Modern_Java/00_SPRING_BOOT_ROADMAP.md](07_Modern_Java/00_SPRING_BOOT_ROADMAP.md) |
+| Study Spring Boot | [07_Modern_Java/Ch24_Spring_Boot_Roadmap.md](07_Modern_Java/Ch24_Spring_Boot_Roadmap.md) |
 | Learn SQL from scratch | [08_SQL/01_Foundations_Database_Basics.md](08_SQL/01_Foundations_Database_Basics.md) |
 | Learn Git/Docker/CI-CD | [13_Developer_Essentials/00_INDEX.md](13_Developer_Essentials/00_INDEX.md) |
-| Quick reference before interview | [09_Career_Reference/03_Quick_Reference.md](09_Career_Reference/03_Quick_Reference.md) |
-| Understand JVM internals | [09_Career_Reference/02c_Ultimate_DSA_JVM.md](09_Career_Reference/02c_Ultimate_DSA_JVM.md) |
+| Quick reference before interview | [09_Career_Reference/11_Quick_Reference.md](09_Career_Reference/11_Quick_Reference.md) |
+| Understand JVM internals | [09_Career_Reference/10_Ultimate_DSA_JVM.md](09_Career_Reference/10_Ultimate_DSA_JVM.md) |
 | See how DSA is used in production | [10_Enterprise_Systems/](10_Enterprise_Systems/) |
 | Learn JavaScript from scratch | [16_JavaScript/01_JS_Foundations.md](16_JavaScript/01_JS_Foundations.md) |
 | Learn React | [15_React_Frontend/01_React_Fundamentals.md](15_React_Frontend/01_React_Fundamentals.md) |
@@ -501,15 +501,15 @@ flowchart TD
 | Learn CSS properly | [18_CSS_Complete/01_CSS_Foundations.md](18_CSS_Complete/01_CSS_Foundations.md) |
 | **Stop freezing in JS interviews** | [16_JavaScript/08_JS_Deep_Reasoning.md](16_JavaScript/08_JS_Deep_Reasoning.md) |
 | **Stop freezing in React interviews** | [15_React_Frontend/09_React_Deep_Reasoning.md](15_React_Frontend/09_React_Deep_Reasoning.md) |
-| **Stop freezing in Java interviews** | [07_Modern_Java/31_Java_Deep_Reasoning.md](07_Modern_Java/31_Java_Deep_Reasoning.md) |
-| **Stop freezing in Spring Boot interviews** | [07_Modern_Java/32_Spring_Boot_Deep_Reasoning.md](07_Modern_Java/32_Spring_Boot_Deep_Reasoning.md) |
+| **Stop freezing in Java interviews** | [07_Modern_Java/Ch22_Java_Deep_Reasoning.md](07_Modern_Java/Ch22_Java_Deep_Reasoning.md) |
+| **Stop freezing in Spring Boot interviews** | [07_Modern_Java/Ch58_SB_Deep_Reasoning.md](07_Modern_Java/Ch58_SB_Deep_Reasoning.md) |
 | **Stop freezing in DSA interviews** | [03_Algorithms/16_DSA_Deep_Reasoning.md](03_Algorithms/16_DSA_Deep_Reasoning.md) |
 | **Master Java DSA implementation** | [03_Algorithms/17_DSA_Java_Implementation_Mastery.md](03_Algorithms/17_DSA_Java_Implementation_Mastery.md) |
-| **Stop freezing in SQL interviews** | [08_SQL_Database/23_SQL_Deep_Reasoning.md](08_SQL_Database/23_SQL_Deep_Reasoning.md) |
-| **Become intermediate Data Analyst** | [08_SQL_Database/24_SQL_Data_Analyst_RealWorld.md](08_SQL_Database/24_SQL_Data_Analyst_RealWorld.md) |
-| **Master Streams internals** | [07_Modern_Java/33_Streams_Deep_Reasoning.md](07_Modern_Java/33_Streams_Deep_Reasoning.md) |
-| **JVM object headers & lock escalation** | [07_Modern_Java/34_JVM_Object_Model_Internals.md](07_Modern_Java/34_JVM_Object_Model_Internals.md) |
-| **Semaphore, CountDownLatch, Phaser** | [07_Modern_Java/35_Concurrency_Synchronizers_Deep.md](07_Modern_Java/35_Concurrency_Synchronizers_Deep.md) |
+| **Stop freezing in SQL interviews** | [08_SQL/23_SQL_Deep_Reasoning.md](08_SQL/23_SQL_Deep_Reasoning.md) |
+| **Become intermediate Data Analyst** | [08_SQL/24_SQL_Data_Analyst_RealWorld.md](08_SQL/24_SQL_Data_Analyst_RealWorld.md) |
+| **Master Streams internals** | [07_Modern_Java/Ch23_Streams_Deep_Reasoning.md](07_Modern_Java/Ch23_Streams_Deep_Reasoning.md) |
+| **JVM object headers & lock escalation** | [07_Modern_Java/Ch19_JVM_Object_Model.md](07_Modern_Java/Ch19_JVM_Object_Model.md) |
+| **Semaphore, CountDownLatch, Phaser** | [07_Modern_Java/Ch17_Concurrency_Synchronizers.md](07_Modern_Java/Ch17_Concurrency_Synchronizers.md) |
 | **Understand Coroutines & Concurrency** | [13_Developer_Essentials/19_Concurrency_Models_Coroutines.md](13_Developer_Essentials/19_Concurrency_Models_Coroutines.md) |
 
 ---

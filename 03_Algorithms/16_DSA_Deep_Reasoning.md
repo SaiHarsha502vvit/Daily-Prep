@@ -540,7 +540,7 @@ flowchart TD
 
 ← Previous: [Chapter 15 — Pattern Programs](09_Pattern_Programs_Complete.md)
 | [📚 Index](../00_MASTER_INDEX.md)
-| Next: [SQL Deep Reasoning →](../08_SQL_Database/21_SQL_Deep_Reasoning.md)
+| Next: [SQL Deep Reasoning →](../08_SQL/21_SQL_Deep_Reasoning.md)
 
 
 ---

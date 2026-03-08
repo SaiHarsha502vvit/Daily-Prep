@@ -2,7 +2,7 @@
 
 # MASTER INDEX — Complete DSA, SQL, Spring Boot & Career Preparation
 
-**Last Updated: March 2026 | 306+ files | 19 folders**
+**Last Updated: March 2026 | 310+ files | 18 folders**
 
 ---
 
@@ -13,7 +13,7 @@
 | **Start Today's Practice** | [12_Daily_Practice/00_DAILY_PRACTICE_INDEX.md](12_Daily_Practice/00_DAILY_PRACTICE_INDEX.md) |
 | Textbook Reading Order | [00_TEXTBOOK_PREFACE.md](00_TEXTBOOK_PREFACE.md) |
 | 76-Day Study Calendar | [01_Getting_Started/02_Study_Plan_Calendar.md](01_Getting_Started/02_Study_Plan_Calendar.md) |
-| DSA Guide (Foundations) | [09_Career_Reference/02a_DSA_Guide_Foundations.md](09_Career_Reference/02a_DSA_Guide_Foundations.md) |
+| DSA Guide (Foundations) | [09_Career_Reference/07_DSA_Guide_Foundations.md](09_Career_Reference/07_DSA_Guide_Foundations.md) |
 | Practice Problems (14 chapters) | [05_Problem_Solving/](#practice--problem-solving) |
 | SQL from Zero (21 chapters) | [08_SQL/](#sql-21-chapters) |
 | Spring Boot (60 chapters, 12 Parts) | [07_Modern_Java/](#modern-java--spring-boot) |
@@ -27,10 +27,10 @@
 | **⚡ Deep Reasoning — Stop Freezing!** | [All 14 Deep Reasoning files](#deep-reasoning--senior-engineer-thinking-new) |
 | **Concurrency & Coroutines** | [13_Developer_Essentials/19_Concurrency_Models_Coroutines.md](13_Developer_Essentials/19_Concurrency_Models_Coroutines.md) |
 | Java Concurrency + Modern Java | [07_Modern_Java/](#modern-java--spring-boot) |
-| Spring Boot Deps → Annotations Map | [07_Modern_Java/30_Spring_Boot_Dependencies_Annotations.md](07_Modern_Java/30_Spring_Boot_Dependencies_Annotations.md) |
+| Spring Boot Deps → Annotations Map | [07_Modern_Java/Ch30_Dependencies_Annotations_Map.md](07_Modern_Java/Ch30_Dependencies_Annotations_Map.md) |
 | Servers, Ports & Networking | [13_Developer_Essentials/17_Servers_Ports_Networking.md](13_Developer_Essentials/17_Servers_Ports_Networking.md) |
-| Behavioral Interview | [09_Career_Reference/07_Behavioral_Interview.md](09_Career_Reference/07_Behavioral_Interview.md) |
-| Quick Reference Sheet | [09_Career_Reference/03_Quick_Reference.md](09_Career_Reference/03_Quick_Reference.md) |
+| Behavioral Interview | [09_Career_Reference/15_Behavioral_Interview.md](09_Career_Reference/15_Behavioral_Interview.md) |
+| Quick Reference Sheet | [09_Career_Reference/11_Quick_Reference.md](09_Career_Reference/11_Quick_Reference.md) |
 
 ---
 
@@ -117,24 +117,32 @@ Daily-Prep/
 │   ├── 22_Cyclic_Sort_Pattern.md        → 🆕 Cyclic sort for missing/duplicate (6 solved)
 │   └── 23_Knapsack_Family.md            → 🆕 0/1, Unbounded, Bounded unification (6 solved)
 │
-├── 05_Problem_Solving/                  (23 files)
-│   ├── 01_Problems_Intro_Checklist.md   → Problem-solving methodology
-│   ├── 02_Problems_Math_Numbers.md      → Number theory problems
-│   ├── 03_Problems_Strings.md           → String manipulation problems
-│   ├── 04_Problems_Arrays.md            → Array problems
-│   ├── 05_Problems_Sliding_Window.md    → Sliding window problems
-│   ├── 06_Problems_Two_Pointers.md      → Two pointer problems
-│   ├── 07_Problems_Binary_Search.md     → Binary search problems
-│   ├── 08_Problems_Stack_Queue.md       → Stack & queue problems
-│   ├── 09_Problems_Trees.md             → Tree problems
-│   ├── 10_Problems_Graphs.md            → Graph problems
-│   ├── 11_Problems_Dynamic_Programming.md → DP problems
-│   ├── 12_Problems_Backtracking.md      → Backtracking problems
-│   ├── 13_Problems_Greedy.md            → Greedy problems
-│   ├── 14_Problems_Mixed_Competitive.md → Mixed competitive problems
-│   ├── 02_Edge_Cases.md                 → Edge case handling guide
-│   ├── 03_Common_Mistakes.md            → Common mistakes to avoid
-│   └── 04_Problem_Origins.md            → Real-world problem origins
+├── 05_Problem_Solving/                  (25 files)
+│   ├── 01_Intro_Checklist.md    → Problem-solving methodology
+│   ├── 02_Math_Numbers.md       → Number theory problems
+│   ├── 03_Strings.md            → String manipulation problems
+│   ├── 04_Arrays.md             → Array problems
+│   ├── 05_Sliding_Window.md     → Sliding window problems
+│   ├── 06_Two_Pointers.md       → Two pointer problems
+│   ├── 07_Binary_Search.md      → Binary search problems
+│   ├── 08_Stack_Queue.md        → Stack & queue problems
+│   ├── 09_Trees.md              → Tree problems
+│   ├── 10_Graphs.md             → Graph problems
+│   ├── 11_Dynamic_Programming.md → DP problems
+│   ├── 12_Backtracking.md       → Backtracking problems
+│   ├── 13_Greedy.md             → Greedy problems
+│   ├── 14_Mixed_Competitive.md  → Mixed competitive problems
+│   ├── 15_LinkedList.md         → LinkedList problems
+│   ├── 16_Heap.md               → Heap / Priority Queue problems
+│   ├── 17_HashMap_Hashing.md    → Hashing problems
+│   ├── 18_BitManipulation.md    → Bit manipulation problems
+│   ├── 19_Matrix.md             → Matrix problems
+│   ├── 20_Sorting.md            → Sorting problems
+│   ├── 21_Design.md             → Design problems
+│   ├── 22_Recursion_Subsets.md  → Recursion & subsets problems
+│   ├── 23_Edge_Cases.md         → Edge case handling guide
+│   ├── 24_Common_Mistakes.md    → Common mistakes to avoid
+│   └── 25_Problem_Origins.md    → Real-world problem origins
 │
 ├── 06_OOP_Design/                       (8 files)
 │   ├── 01_OOPS_Principles.md            → OOP concepts + SOLID
@@ -146,138 +154,138 @@ Daily-Prep/
 │   ├── 07_LLD_Solved_Problems.md        → 🆕 5 LLD problems with full Java code
 │   └── 08_Design_Patterns_Java.md       → 🆕 GoF patterns with Java + Spring Boot mapping
 │
-├── 07_Modern_Java/                      (60 files — read in order below)
+├── 07_Modern_Java/                      (69 files — read in order below)
 │   │
 │   │  ╔══════════════════════════════════════════════════════════╗
 │   │  ║  PART I: JAVA LANGUAGE FOUNDATIONS (start here)          ║
 │   │  ╚══════════════════════════════════════════════════════════╝
 │   │
-│   ├── Ch 1.  56_Java_Core_Foundations_Missing.md   → Inner classes, initialization order, wrapper caches, Comparable/Comparator, Optional, Iterator, equals/hashCode, JPMS
-│   ├── Ch 2.  55_Java_Strings_Immutability_Deep.md  → String pool, intern(), StringBuilder, CompactStrings, text blocks, defensive copies, immutable class design
-│   ├── Ch 3.  49_Java_Enums_Records_Sealed_Deep.md  → Enums (state machine, singleton), Records (DTOs), Sealed Classes + pattern matching
-│   ├── Ch 4.  51_Java_Generics_Exceptions_Deep.md   → Type erasure, PECS, Invariance/Covariance/Contravariance, try-with-resources, exception translation
-│   ├── Ch 5.  50_Java_DateTime_Regex_Mastery.md     → LocalDate→ZonedDateTime, Duration/Period, Regex Pattern/Matcher, lookahead
-│   ├── Ch 6.  01_Functional_Programming.md          → Streams, Lambdas, Optionals, method references
-│   ├── Ch 7.  28_Modern_Java_Features.md            → Java 9-21: var, records, sealed, pattern matching, text blocks
+│   ├── Ch 1.  Ch01_Core_Foundations.md   → Inner classes, initialization order, wrapper caches, Comparable/Comparator, Optional, Iterator, equals/hashCode, JPMS
+│   ├── Ch 2.  Ch02_Strings_Immutability.md  → String pool, intern(), StringBuilder, CompactStrings, text blocks, defensive copies, immutable class design
+│   ├── Ch 3.  Ch03_Enums_Records_Sealed.md  → Enums (state machine, singleton), Records (DTOs), Sealed Classes + pattern matching
+│   ├── Ch 4.  Ch04_Generics_Exceptions.md   → Type erasure, PECS, Invariance/Covariance/Contravariance, try-with-resources, exception translation
+│   ├── Ch 5.  Ch05_DateTime_Regex.md     → LocalDate→ZonedDateTime, Duration/Period, Regex Pattern/Matcher, lookahead
+│   ├── Ch 6.  Ch06_Functional_Programming.md          → Streams, Lambdas, Optionals, method references
+│   ├── Ch 7.  Ch07_Modern_Java_9to21.md            → Java 9-21: var, records, sealed, pattern matching, text blocks
 │   │
 │   │  ╔══════════════════════════════════════════════════════════╗
 │   │  ║  PART II: JAVA INTERMEDIATE                              ║
 │   │  ╚══════════════════════════════════════════════════════════╝
 │   │
-│   ├── Ch 8.  44_Java_Collections_Internals.md      → HashMap buckets/rehash, ConcurrentHashMap CAS, TreeMap red-black tree, LRU
-│   ├── Ch 9.  53_Java_Serialization_IO_Streams.md   → Serializable, transient, Externalizable, I/O stream hierarchy, NIO.2 Files API
-│   ├── Ch 10. 47_Java_Reflection_Annotations_Deep.md → Reflection API, Class<?>, Dynamic Proxy, Custom Annotations, Mini Spring Container
-│   ├── Ch 11. 48_Java_Events_Listeners_Observers.md → Event/Listener pattern, Observer, EventBus, Spring @EventListener
-│   ├── Ch 12. 52_Java_ClassLoader_JDBC_Logging.md   → ClassLoader delegation, JDBC internals, SLF4J/Logback/MDC
-│   ├── Ch 13. 46_Java_Networking_NIO.md             → Socket API, HttpClient, NIO channels/buffers/selectors, SSL/TLS
-│   ├── Ch 14. 45_Maven_Gradle_Build_Internals.md    → Maven lifecycle, POM hierarchy, Gradle task DAG, wrapper
+│   ├── Ch 8.  Ch08_Collections_Internals.md      → HashMap buckets/rehash, ConcurrentHashMap CAS, TreeMap red-black tree, LRU
+│   ├── Ch 9.  Ch09_Serialization_IO.md   → Serializable, transient, Externalizable, I/O stream hierarchy, NIO.2 Files API
+│   ├── Ch 10. Ch10_Reflection_Annotations.md → Reflection API, Class<?>, Dynamic Proxy, Custom Annotations, Mini Spring Container
+│   ├── Ch 11. Ch11_Events_Listeners.md → Event/Listener pattern, Observer, EventBus, Spring @EventListener
+│   ├── Ch 12. Ch12_ClassLoader_JDBC_Logging.md   → ClassLoader delegation, JDBC internals, SLF4J/Logback/MDC
+│   ├── Ch 13. Ch13_Networking_NIO.md             → Socket API, HttpClient, NIO channels/buffers/selectors, SSL/TLS
+│   ├── Ch 14. Ch14_Maven_Gradle.md    → Maven lifecycle, POM hierarchy, Gradle task DAG, wrapper
 │   │
 │   │  ╔══════════════════════════════════════════════════════════╗
 │   │  ║  PART III: JAVA ADVANCED — CONCURRENCY & JVM             ║
 │   │  ╚══════════════════════════════════════════════════════════╝
 │   │
-│   ├── Ch 15. 27a_Java_Concurrency_Core.md          → Threads, synchronized, volatile, atomics
-│   ├── Ch 16. 27b_Java_Concurrency_Advanced.md      → Executors, CompletableFuture, Virtual Threads
-│   ├── Ch 17. 35_Concurrency_Synchronizers_Deep.md  → Semaphore, CountDownLatch, CyclicBarrier, Phaser, livelock
-│   ├── Ch 18. 54_Java_Memory_Model_GC_Deep.md       → JMM happens-before, volatile, GC algorithms (G1/ZGC), memory leaks, tuning
-│   ├── Ch 19. 34_JVM_Object_Model_Internals.md      → Object headers, mark word, lock escalation, vtable, method dispatch
-│   ├── Ch 20. 02a_AlgoEng_Core.md                   → Algorithm engineering fundamentals
-│   ├── Ch 21. 02e_AlgoEng_Advanced.md               → Advanced optimization techniques
+│   ├── Ch 15. Ch15_Concurrency_Core.md          → Threads, synchronized, volatile, atomics
+│   ├── Ch 16. Ch16_Concurrency_Advanced.md      → Executors, CompletableFuture, Virtual Threads
+│   ├── Ch 17. Ch17_Concurrency_Synchronizers.md  → Semaphore, CountDownLatch, CyclicBarrier, Phaser, livelock
+│   ├── Ch 18. Ch18_JMM_GC_Deep.md       → JMM happens-before, volatile, GC algorithms (G1/ZGC), memory leaks, tuning
+│   ├── Ch 19. Ch19_JVM_Object_Model.md      → Object headers, mark word, lock escalation, vtable, method dispatch
+│   ├── Ch 20. Ch20_AlgoEng_Core.md                   → Algorithm engineering fundamentals
+│   ├── Ch 21. Ch21_AlgoEng_Advanced.md               → Advanced optimization techniques
 │   │
 │   │  ╔══════════════════════════════════════════════════════════╗
 │   │  ║  PART IV: JAVA DEEP REASONING (stop freezing!)           ║
 │   │  ╚══════════════════════════════════════════════════════════╝
 │   │
-│   ├── Ch 22. 31_Java_Deep_Reasoning.md             → 13 "freeze moments" — pass-by-value, String pool, HashMap
-│   ├── Ch 23. 33_Streams_Deep_Reasoning.md          → 12 "freeze moments" — lazy evaluation, flatMap, parallelStream traps
+│   ├── Ch 22. Ch22_Java_Deep_Reasoning.md             → 13 "freeze moments" — pass-by-value, String pool, HashMap
+│   ├── Ch 23. Ch23_Streams_Deep_Reasoning.md          → 12 "freeze moments" — lazy evaluation, flatMap, parallelStream traps
 │   │
 │   │  ╔══════════════════════════════════════════════════════════╗
 │   │  ║  PART V: SPRING BOOT — GETTING STARTED                   ║
 │   │  ╚══════════════════════════════════════════════════════════╝
 │   │
-│   ├── Ch 24. 00_SPRING_BOOT_ROADMAP.md             → Spring Boot learning path & overview
-│   ├── Ch 25. 26_Spring_Boot_Curriculum_50Day.md    → 50-Day Spring Boot Study Plan
-│   ├── Ch 26. 02c_SB_HiddenFoundations_Part1.md     → Servlet, IoC, DI — what Spring builds ON
-│   ├── Ch 27. 02d_SB_HiddenFoundations_Part2.md     → AOP, proxy, BeanFactory deep dive
-│   ├── Ch 28. 24a_SB_Annotations_Core.md            → Essential Spring annotations
-│   ├── Ch 29. 24b_SB_Annotations_Advanced.md        → Custom annotations, meta-annotations
-│   ├── Ch 30. 30_Spring_Boot_Dependencies_Annotations.md → Which dependency → which annotations map
+│   ├── Ch 24. Ch24_Spring_Boot_Roadmap.md             → Spring Boot learning path & overview
+│   ├── Ch 25. Ch25_Spring_Boot_50Day_Plan.md    → 50-Day Spring Boot Study Plan
+│   ├── Ch 26. Ch26_Pre_Spring_Part1.md     → Servlet, IoC, DI — what Spring builds ON
+│   ├── Ch 27. Ch27_Pre_Spring_Part2.md     → AOP, proxy, BeanFactory deep dive
+│   ├── Ch 28. Ch28_Annotations_Core.md            → Essential Spring annotations
+│   ├── Ch 29. Ch29_Annotations_Advanced.md        → Custom annotations, meta-annotations
+│   ├── Ch 30. Ch30_Dependencies_Annotations_Map.md → Which dependency → which annotations map
 │   │
 │   │  ╔══════════════════════════════════════════════════════════╗
 │   │  ║  PART VI: SPRING BOOT — CORE FRAMEWORK                   ║
 │   │  ╚══════════════════════════════════════════════════════════╝
 │   │
-│   ├── Ch 31. 03_Spring_Boot_Complete_Part1.md      → Core Spring Boot
-│   ├── Ch 32. 04_Spring_Boot_Complete_Part2.md      → Data & Persistence
-│   ├── Ch 33. 05_Spring_Boot_Complete_Part3.md      → Web & REST APIs
-│   ├── Ch 34. 06_Spring_Boot_Complete_Part4.md      → Security & Auth
-│   ├── Ch 35. 07_Spring_Boot_Part5_Lombok_DTOs.md   → Lombok, DTOs, MapStruct
-│   ├── Ch 36. 08_Spring_Boot_Part6_Service_Repository.md → Service & Repository layers
-│   ├── Ch 37. 09_Spring_Boot_Part7_Controllers_REST.md → Controllers & REST design
-│   ├── Ch 38. 18a_SB_SOLID_Core.md                  → SOLID principles in Spring
-│   ├── Ch 39. 18b_SB_SOLID_Advanced.md              → Advanced SOLID patterns
+│   ├── Ch 31. Ch31_SB_Core_Part1.md      → Core Spring Boot
+│   ├── Ch 32. Ch32_SB_Data_Part2.md      → Data & Persistence
+│   ├── Ch 33. Ch33_SB_Web_Part3.md      → Web & REST APIs
+│   ├── Ch 34. Ch34_SB_Security_Part4.md      → Security & Auth
+│   ├── Ch 35. Ch35_SB_Lombok_DTOs.md   → Lombok, DTOs, MapStruct
+│   ├── Ch 36. Ch36_SB_Service_Repository.md → Service & Repository layers
+│   ├── Ch 37. Ch37_SB_Controllers_REST.md → Controllers & REST design
+│   ├── Ch 38. Ch38_SB_SOLID_Core.md                  → SOLID principles in Spring
+│   ├── Ch 39. Ch39_SB_SOLID_Advanced.md              → Advanced SOLID patterns
 │   │
 │   │  ╔══════════════════════════════════════════════════════════╗
 │   │  ║  PART VII: SPRING BOOT — DEEP DIVES                      ║
 │   │  ╚══════════════════════════════════════════════════════════╝
 │   │
-│   ├── Ch 40. 10_Spring_Boot_Part8_JPA_Deep_Dive.md → JPA/Hibernate deep dive
-│   ├── Ch 41. 11_Spring_Boot_Part9_Architecture_Quality.md → Architecture & code quality
-│   ├── Ch 42. 12_Spring_Boot_Part10_HTTP_Deep_Dive.md → HTTP internals
-│   ├── Ch 43. 13_Spring_Boot_Part11_Auth_Security.md → Auth & Spring Security
-│   ├── Ch 44. 16a_SB_Missing_Core.md                → Caching, scheduling, profiles
-│   ├── Ch 45. 16b_SB_Missing_Advanced.md            → Actuator, metrics, health checks
-│   ├── Ch 46. 19a_SB_Database.md                    → Database design in Spring
-│   ├── Ch 47. 19b_SB_Security.md                    → Security deep dive
+│   ├── Ch 40. Ch40_SB_JPA_Deep_Dive.md → JPA/Hibernate deep dive
+│   ├── Ch 41. Ch41_SB_Architecture_Quality.md → Architecture & code quality
+│   ├── Ch 42. Ch42_SB_HTTP_Deep_Dive.md → HTTP internals
+│   ├── Ch 43. Ch43_SB_Auth_Security.md → Auth & Spring Security
+│   ├── Ch 44. Ch44_SB_Caching_Scheduling.md                → Caching, scheduling, profiles
+│   ├── Ch 45. Ch45_SB_Actuator_Metrics.md            → Actuator, metrics, health checks
+│   ├── Ch 46. Ch46_SB_Database_Design.md                    → Database design in Spring
+│   ├── Ch 47. Ch47_SB_Security_Deep.md                    → Security deep dive
 │   │
 │   │  ╔══════════════════════════════════════════════════════════╗
 │   │  ║  PART VIII: SPRING BOOT — ADVANCED TOPICS                 ║
 │   │  ╚══════════════════════════════════════════════════════════╝
 │   │
-│   ├── Ch 48. 17a_SB_WebFlux_Core.md                → Reactive programming basics
-│   ├── Ch 49. 17b_SB_WebFlux_Advanced.md            → WebFlux patterns, R2DBC
-│   ├── Ch 50. 14_Spring_Boot_Part12_DSA_Applications.md → DSA in backend applications
-│   ├── Ch 51. 15_Spring_Boot_Part13_Industry_Projects.md → Industry project patterns
-│   ├── Ch 52. 25_Spring_Boot_Part23_Missing_Essential_Topics.md → WebSocket, GraphQL, gRPC, Batch
-│   ├── Ch 53. 20_Spring_Boot_Part18_Distributed_Tracing.md → Tracing & observability
-│   ├── Ch 54. 29_Message_Queues_Kafka.md            → Kafka architecture, Spring Boot+Kafka, event-driven
+│   ├── Ch 48. Ch48_SB_WebFlux_Core.md                → Reactive programming basics
+│   ├── Ch 49. Ch49_SB_WebFlux_Advanced.md            → WebFlux patterns, R2DBC
+│   ├── Ch 50. Ch50_SB_DSA_Applications.md → DSA in backend applications
+│   ├── Ch 51. Ch51_SB_Industry_Projects.md → Industry project patterns
+│   ├── Ch 52. Ch52_SB_WebSocket_GraphQL_gRPC.md → WebSocket, GraphQL, gRPC, Batch
+│   ├── Ch 53. Ch53_SB_Distributed_Tracing.md → Tracing & observability
+│   ├── Ch 54. Ch54_Message_Queues_Kafka.md            → Kafka architecture, Spring Boot+Kafka, event-driven
 │   │
 │   │  ╔══════════════════════════════════════════════════════════╗
 │   │  ║  PART IX: SPRING BOOT — INTERNALS & DEEP REASONING       ║
 │   │  ╚══════════════════════════════════════════════════════════╝
 │   │
-│   ├── Ch 55. 36_Spring_Internals_How_It_Actually_Works.md → 23-step startup, bean lifecycle, CGLIB proxies, @Transactional
-│   ├── Ch 56. 37_Hibernate_JPA_Internals.md         → Persistence Context, dirty checking, L2 cache, N+1
-│   ├── Ch 57. 38_Spring_Security_Internals.md       → 15-filter chain, JWT flow, OAuth2, CORS/CSRF
-│   ├── Ch 58. 32_Spring_Boot_Deep_Reasoning.md      → 12 "freeze moments" — DispatcherServlet, proxy pattern
+│   ├── Ch 55. Ch55_Spring_Internals.md → 23-step startup, bean lifecycle, CGLIB proxies, @Transactional
+│   ├── Ch 56. Ch56_Hibernate_JPA_Internals.md         → Persistence Context, dirty checking, L2 cache, N+1
+│   ├── Ch 57. Ch57_Spring_Security_Internals.md       → 15-filter chain, JWT flow, OAuth2, CORS/CSRF
+│   ├── Ch 58. Ch58_SB_Deep_Reasoning.md      → 12 "freeze moments" — DispatcherServlet, proxy pattern
 │   │
 │   │  ╔══════════════════════════════════════════════════════════╗
 │   │  ║  PART X: TESTING                                          ║
 │   │  ╚══════════════════════════════════════════════════════════╝
 │   │
-│   ├── Ch 59. 21a_SB_Testing_Fundamentals.md        → Unit testing, Mockito
-│   ├── Ch 60. 21b_SB_Testing_Advanced.md            → Integration testing, TestContainers
+│   ├── Ch 59. Ch59_SB_Testing_Fundamentals.md        → Unit testing, Mockito
+│   ├── Ch 60. Ch60_SB_Testing_Advanced.md            → Integration testing, TestContainers
 │   │
 │   │  ╔══════════════════════════════════════════════════════════╗
 │   │  ║  PART XI: MICROSERVICES & CLOUD                           ║
 │   │  ╚══════════════════════════════════════════════════════════╝
 │   │
-│   ├── Ch 61. 22a_SB_Microservices_Core.md          → Microservices architecture
-│   ├── Ch 62. 22b_SB_Microservices_Patterns.md      → Saga, CQRS, circuit breaker
-│   ├── Ch 63. 23a_SB_Cloud_Core.md                  → Cloud deployment basics
-│   ├── Ch 64. 23b_SB_Cloud_Advanced.md              → Kubernetes, service mesh
+│   ├── Ch 61. Ch61_SB_Microservices_Core.md          → Microservices architecture
+│   ├── Ch 62. Ch62_SB_Microservices_Patterns.md      → Saga, CQRS, circuit breaker
+│   ├── Ch 63. Ch63_SB_Cloud_Core.md                  → Cloud deployment basics
+│   ├── Ch 64. Ch64_SB_Cloud_Advanced.md              → Kubernetes, service mesh
 │   │
 │   │  ╔══════════════════════════════════════════════════════════╗
 │   │  ║  PART XII: SYSTEM & INFRASTRUCTURE (senior-level)         ║
 │   │  ╚══════════════════════════════════════════════════════════╝
 │   │
-│   ├── Ch 65. 39_OS_Fundamentals_For_Backend_Devs.md → Processes, virtual memory, epoll, I/O models
-│   ├── Ch 66. 40_Event_Sourcing_CQRS.md             → Event stores, projections, saga pattern
-│   ├── Ch 67. 41_Kubernetes_Deep_Dive.md            → Control plane, pods, services, scheduling
-│   ├── Ch 68. 42_Distributed_Patterns_Consensus.md  → Raft, 2PC, consistent hashing, CRDTs, outbox
-│   └── Ch 69. 43_Performance_Engineering.md         → Profiling, flamegraphs, JMH, memory leaks, GC tuning
+│   ├── Ch 65. Ch65_OS_Fundamentals.md → Processes, virtual memory, epoll, I/O models
+│   ├── Ch 66. Ch66_Event_Sourcing_CQRS.md             → Event stores, projections, saga pattern
+│   ├── Ch 67. Ch67_Kubernetes_Deep_Dive.md            → Control plane, pods, services, scheduling
+│   ├── Ch 68. Ch68_Distributed_Patterns.md  → Raft, 2PC, consistent hashing, CRDTs, outbox
+│   └── Ch 69. Ch69_Performance_Engineering.md         → Profiling, flamegraphs, JMH, memory leaks, GC tuning
 │
-├── 08_SQL/                              (21 chapter files — zero to expert)
+├── 08_SQL/                              (25 chapter files — zero to expert)
 │   ├── 01_Foundations_Database_Basics.md → What is a database, RDBMS, SQL
 │   ├── 02_DataTypes_Constraints.md      → INT, VARCHAR, DECIMAL, NOT NULL
 │   ├── 03_DDL_Creating_Structure.md     → CREATE, ALTER, DROP, TRUNCATE
@@ -298,41 +306,39 @@ Daily-Prep/
 │   ├── 18a_SQL_Projects_Beginner.md     → Beginner mini projects
 │   ├── 18b_SQL_Projects_Advanced.md     → Advanced projects
 │   ├── 19_Interview_Top50.md            → Top 50 interview questions
-│   └── 20_CheatSheet_QuickRef.md        → Syntax quick reference
-│
-├── 08_SQL_Database/                     (4 files — advanced SQL/DB topics)
-│   ├── 19_Interview_Top50.md            → 🆕 50 SQL interview problems by pattern
-│   ├── 21_Database_Internals.md         → 🆕 B-Tree, WAL, MVCC, buffer pool, query plans
-│   ├── 22_NoSQL_MongoDB.md             → 🆕 NoSQL categories, MongoDB, Redis
-│   ├── 23_SQL_Deep_Reasoning.md         → 🆕 10 SQL "freeze moments" — NULL logic, JOIN execution, isolation levels
-│   └── 24_SQL_Data_Analyst_RealWorld.md  → 🆕 Cohort, funnel, retention, A/B testing, RFM, KPI dashboards
+│   ├── 20_CheatSheet_QuickRef.md        → Syntax quick reference
+│   ├── 21_Database_Internals.md         → B-Tree, WAL, MVCC, buffer pool, query plans
+│   ├── 22_NoSQL_MongoDB.md              → NoSQL categories, MongoDB, Redis
+│   ├── 23_SQL_Deep_Reasoning.md         → SQL "freeze moments" — NULL logic, JOIN execution
+│   ├── 24_SQL_Data_Analyst_RealWorld.md → Cohort, funnel, A/B testing, RFM, KPI dashboards
+│   └── 25_Interview_Patterns_Expanded.md → Advanced interview patterns
 │
 ├── 09_Career_Reference/                 (15 chapter files)
 │   ├── 01_Career_TechnoFunctional.md    → Framework, skills, domains
-│   ├── 01b_Career_Guide_Part1A.md       → Career roadmap & skills matrix
-│   ├── 01b2_Career_Guide_Part1B.md      → Interview prep & salary guide
-│   ├── 01c_Career_Projects_Part1.md     → Project phases 1–4
-│   ├── 01d_Career_Projects_Part2.md     → Project phases 5–7
-│   ├── 01e_Career_Projects_Part3.md     → Project phases 8–10 + OS/Docker
-│   ├── 02a_DSA_Guide_Foundations.md     → DSA learning path + data structures
-│   ├── 02b_DSA_Guide_Advanced.md        → Advanced algorithms & patterns
-│   ├── 02b_Ultimate_DSA_Advanced.md     → String/Randomized algos, patterns
-│   ├── 02c_Ultimate_DSA_JVM.md          → JVM Architecture, GC, JIT, tuning
-│   ├── 03_Quick_Reference.md            → Quick revision sheet
-│   ├── 04_Brain_Psychology.md           → Learning psychology & memory
-│   ├── 05_Daily_Habits_Tracking.md      → Habit tracking system
-│   ├── 06_Resources_Links.md            → External resources & links
-│   └── 07_Behavioral_Interview.md       → 🆕 STAR method, 8 question categories, Amazon LPs
+│   ├── 02_Career_Guide_Part1A.md       → Career roadmap & skills matrix
+│   ├── 03_Career_Guide_Part1B.md      → Interview prep & salary guide
+│   ├── 04_Career_Projects_Part1.md     → Project phases 1–4
+│   ├── 05_Career_Projects_Part2.md     → Project phases 5–7
+│   ├── 06_Career_Projects_Part3.md     → Project phases 8–10 + OS/Docker
+│   ├── 07_DSA_Guide_Foundations.md     → DSA learning path + data structures
+│   ├── 08_DSA_Guide_Advanced.md        → Advanced algorithms & patterns
+│   ├── 09_Ultimate_DSA_Advanced.md     → String/Randomized algos, patterns
+│   ├── 10_Ultimate_DSA_JVM.md          → JVM Architecture, GC, JIT, tuning
+│   ├── 11_Quick_Reference.md            → Quick revision sheet
+│   ├── 12_Brain_Psychology.md           → Learning psychology & memory
+│   ├── 13_Daily_Habits_Tracking.md      → Habit tracking system
+│   ├── 14_Resources_Links.md            → External resources & links
+│   └── 15_Behavioral_Interview.md       → 🆕 STAR method, 8 question categories, Amazon LPs
 │
 ├── 10_Enterprise_Systems/               (8 chapter files)
-│   ├── 01a_ERP_Fundamentals.md          → ERP concepts, modules, architecture
-│   ├── 01b_ERP_Advanced.md              → Integration, customization, cloud
-│   ├── 02a_ERP_Finance_Core.md          → GL, AP, AR, fixed assets
-│   ├── 02b_ERP_Finance_RealWorld.md     → Finance optimization, reconciliation
-│   ├── 03_RealWorld_Problems_DSA.md     → Part 1: E-commerce, Banking
-│   ├── 04_RealWorld_Problems_Part2.md   → Part 2: Streaming, Healthcare
-│   ├── 05_RealWorld_Problems_Part3.md   → Part 3: Payments, Search
-│   └── 06_RealWorld_Incidents_DSA.md    → Production disasters & DSA lessons
+│   ├── 01_ERP_Fundamentals.md          → ERP concepts, modules, architecture
+│   ├── 02_ERP_Advanced.md              → Integration, customization, cloud
+│   ├── 03_ERP_Finance_Core.md          → GL, AP, AR, fixed assets
+│   ├── 04_ERP_Finance_RealWorld.md     → Finance optimization, reconciliation
+│   ├── 05_RealWorld_Problems_DSA.md     → Part 1: E-commerce, Banking
+│   ├── 06_RealWorld_Problems_Part2.md   → Part 2: Streaming, Healthcare
+│   ├── 07_RealWorld_Problems_Part3.md   → Part 3: Payments, Search
+│   └── 08_RealWorld_Incidents_DSA.md    → Production disasters & DSA lessons
 │
 ├── 12_Daily_Practice/                   (29 files — index + 28 days)
 │   ├── 00_DAILY_PRACTICE_INDEX.md       → Master daily practice navigation
@@ -475,15 +481,15 @@ Daily-Prep/
 - [Intervals](04_Patterns_Templates/21_Intervals_Pattern.md) | [Cyclic Sort](04_Patterns_Templates/22_Cyclic_Sort_Pattern.md) | [Knapsack Family](04_Patterns_Templates/23_Knapsack_Family.md)
 
 ### Practice & Problem Solving (23 files)
-- [Intro & Checklist](05_Problem_Solving/01_Problems_Intro_Checklist.md)
-- [Math & Numbers](05_Problem_Solving/02_Problems_Math_Numbers.md) | [Strings](05_Problem_Solving/03_Problems_Strings.md) | [Arrays](05_Problem_Solving/04_Problems_Arrays.md)
-- [Sliding Window](05_Problem_Solving/05_Problems_Sliding_Window.md) | [Two Pointers](05_Problem_Solving/06_Problems_Two_Pointers.md) | [Binary Search](05_Problem_Solving/07_Problems_Binary_Search.md)
-- [Stack & Queue](05_Problem_Solving/08_Problems_Stack_Queue.md) | [Trees](05_Problem_Solving/09_Problems_Trees.md) | [Graphs](05_Problem_Solving/10_Problems_Graphs.md)
-- [Dynamic Programming](05_Problem_Solving/11_Problems_Dynamic_Programming.md) | [Backtracking](05_Problem_Solving/12_Problems_Backtracking.md) | [Greedy](05_Problem_Solving/13_Problems_Greedy.md)
-- [Mixed Competitive](05_Problem_Solving/14_Problems_Mixed_Competitive.md) | [Linked Lists](05_Problem_Solving/15_Problems_LinkedList.md) | [Heap / Priority Queue](05_Problem_Solving/16_Problems_Heap.md)
-- [Hashing](05_Problem_Solving/17_Problems_Hashing.md) | [Bit Manipulation](05_Problem_Solving/18_Problems_Bit_Manipulation.md) | [Matrix](05_Problem_Solving/19_Problems_Matrix.md)
-- [Sorting](05_Problem_Solving/20_Problems_Sorting.md) | [Design](05_Problem_Solving/21_Problems_Design.md) | [Recursion & Subsets](05_Problem_Solving/22_Problems_Recursion_Subsets.md)
-- [Edge Cases](05_Problem_Solving/02_Edge_Cases.md) | [Common Mistakes](05_Problem_Solving/03_Common_Mistakes.md) | [Problem Origins](05_Problem_Solving/04_Problem_Origins.md)
+- [Intro & Checklist](05_Problem_Solving/01_Intro_Checklist.md)
+- [Math & Numbers](05_Problem_Solving/02_Math_Numbers.md) | [Strings](05_Problem_Solving/03_Strings.md) | [Arrays](05_Problem_Solving/04_Arrays.md)
+- [Sliding Window](05_Problem_Solving/05_Sliding_Window.md) | [Two Pointers](05_Problem_Solving/06_Two_Pointers.md) | [Binary Search](05_Problem_Solving/07_Binary_Search.md)
+- [Stack & Queue](05_Problem_Solving/08_Stack_Queue.md) | [Trees](05_Problem_Solving/09_Trees.md) | [Graphs](05_Problem_Solving/10_Graphs.md)
+- [Dynamic Programming](05_Problem_Solving/11_Dynamic_Programming.md) | [Backtracking](05_Problem_Solving/12_Backtracking.md) | [Greedy](05_Problem_Solving/13_Greedy.md)
+- [Mixed Competitive](05_Problem_Solving/14_Mixed_Competitive.md) | [Linked Lists](05_Problem_Solving/15_LinkedList.md) | [Heap / Priority Queue](05_Problem_Solving/16_Heap.md)
+- [Hashing](05_Problem_Solving/17_HashMap_Hashing.md) | [Bit Manipulation](05_Problem_Solving/18_BitManipulation.md) | [Matrix](05_Problem_Solving/19_Matrix.md)
+- [Sorting](05_Problem_Solving/20_Sorting.md) | [Design](05_Problem_Solving/21_Design.md) | [Recursion & Subsets](05_Problem_Solving/22_Recursion_Subsets.md)
+- [Edge Cases](05_Problem_Solving/23_Edge_Cases.md) | [Common Mistakes](05_Problem_Solving/24_Common_Mistakes.md) | [Problem Origins](05_Problem_Solving/25_Problem_Origins.md)
 
 ### OOP & Design (8 files)
 - [OOP Principles + SOLID](06_OOP_Design/01_OOPS_Principles.md) | [Design Patterns](06_OOP_Design/02_Design_Patterns.md)
@@ -494,80 +500,80 @@ Daily-Prep/
 ### Modern Java & Spring Boot (60 chapters — 12 Parts, textbook order)
 
 #### Part I: Java Language Foundations
-- Ch 1. [Core Foundations](07_Modern_Java/56_Java_Core_Foundations_Missing.md) — Inner classes, initialization order, wrapper caches, equals/hashCode, Comparable/Comparator, Optional, Iterator, JPMS
-- Ch 2. [Strings & Immutability](07_Modern_Java/55_Java_Strings_Immutability_Deep.md) — String pool, intern(), StringBuilder, CompactStrings, text blocks, defensive copies, immutable design
-- Ch 3. [Enums, Records & Sealed](07_Modern_Java/49_Java_Enums_Records_Sealed_Deep.md) — Enums (state machine, singleton), Records (DTOs), Sealed + pattern matching
-- Ch 4. [Generics & Exceptions](07_Modern_Java/51_Java_Generics_Exceptions_Deep.md) — Type erasure, PECS, Invariance/Covariance/Contravariance, try-with-resources
-- Ch 5. [DateTime & Regex](07_Modern_Java/50_Java_DateTime_Regex_Mastery.md) — java.time API, Duration/Period, Regex Pattern/Matcher, lookahead
-- Ch 6. [Functional Programming](07_Modern_Java/01_Functional_Programming.md) — Streams, Lambdas, Optionals, method references
-- Ch 7. [Modern Java 9-21](07_Modern_Java/28_Modern_Java_Features.md) — var, records, sealed classes, pattern matching, text blocks
+- Ch 1. [Core Foundations](07_Modern_Java/Ch01_Core_Foundations.md) — Inner classes, initialization order, wrapper caches, equals/hashCode, Comparable/Comparator, Optional, Iterator, JPMS
+- Ch 2. [Strings & Immutability](07_Modern_Java/Ch02_Strings_Immutability.md) — String pool, intern(), StringBuilder, CompactStrings, text blocks, defensive copies, immutable design
+- Ch 3. [Enums, Records & Sealed](07_Modern_Java/Ch03_Enums_Records_Sealed.md) — Enums (state machine, singleton), Records (DTOs), Sealed + pattern matching
+- Ch 4. [Generics & Exceptions](07_Modern_Java/Ch04_Generics_Exceptions.md) — Type erasure, PECS, Invariance/Covariance/Contravariance, try-with-resources
+- Ch 5. [DateTime & Regex](07_Modern_Java/Ch05_DateTime_Regex.md) — java.time API, Duration/Period, Regex Pattern/Matcher, lookahead
+- Ch 6. [Functional Programming](07_Modern_Java/Ch06_Functional_Programming.md) — Streams, Lambdas, Optionals, method references
+- Ch 7. [Modern Java 9-21](07_Modern_Java/Ch07_Modern_Java_9to21.md) — var, records, sealed classes, pattern matching, text blocks
 
 #### Part II: Java Intermediate
-- Ch 8. [Collections Internals](07_Modern_Java/44_Java_Collections_Internals.md) — HashMap rehash, ConcurrentHashMap CAS, TreeMap red-black tree, LRU
-- Ch 9. [Serialization & I/O](07_Modern_Java/53_Java_Serialization_IO_Streams.md) — Serializable, transient, Externalizable, I/O hierarchy, NIO.2 Files API
-- Ch 10. [Reflection & Annotations](07_Modern_Java/47_Java_Reflection_Annotations_Deep.md) — Reflection API, Dynamic Proxy, Custom Annotations, Mini Spring Container
-- Ch 11. [Events & Listeners](07_Modern_Java/48_Java_Events_Listeners_Observers.md) — Observer pattern, EventBus, Spring @EventListener
-- Ch 12. [ClassLoader, JDBC & Logging](07_Modern_Java/52_Java_ClassLoader_JDBC_Logging.md) — ClassLoader delegation, JDBC internals, SLF4J/Logback/MDC
-- Ch 13. [Networking & NIO](07_Modern_Java/46_Java_Networking_NIO.md) — Sockets, HttpClient, NIO channels/selectors, SSL/TLS
-- Ch 14. [Maven & Gradle](07_Modern_Java/45_Maven_Gradle_Build_Internals.md) — Maven lifecycle, POM hierarchy, Gradle tasks, wrapper
+- Ch 8. [Collections Internals](07_Modern_Java/Ch08_Collections_Internals.md) — HashMap rehash, ConcurrentHashMap CAS, TreeMap red-black tree, LRU
+- Ch 9. [Serialization & I/O](07_Modern_Java/Ch09_Serialization_IO.md) — Serializable, transient, Externalizable, I/O hierarchy, NIO.2 Files API
+- Ch 10. [Reflection & Annotations](07_Modern_Java/Ch10_Reflection_Annotations.md) — Reflection API, Dynamic Proxy, Custom Annotations, Mini Spring Container
+- Ch 11. [Events & Listeners](07_Modern_Java/Ch11_Events_Listeners.md) — Observer pattern, EventBus, Spring @EventListener
+- Ch 12. [ClassLoader, JDBC & Logging](07_Modern_Java/Ch12_ClassLoader_JDBC_Logging.md) — ClassLoader delegation, JDBC internals, SLF4J/Logback/MDC
+- Ch 13. [Networking & NIO](07_Modern_Java/Ch13_Networking_NIO.md) — Sockets, HttpClient, NIO channels/selectors, SSL/TLS
+- Ch 14. [Maven & Gradle](07_Modern_Java/Ch14_Maven_Gradle.md) — Maven lifecycle, POM hierarchy, Gradle tasks, wrapper
 
 #### Part III: Java Advanced — Concurrency & JVM
-- Ch 15. [Concurrency Core](07_Modern_Java/27a_Java_Concurrency_Core.md) — Threads, synchronized, volatile, atomics
-- Ch 16. [Concurrency Advanced](07_Modern_Java/27b_Java_Concurrency_Advanced.md) — Executors, CompletableFuture, Virtual Threads
-- Ch 17. [Concurrency Synchronizers](07_Modern_Java/35_Concurrency_Synchronizers_Deep.md) — Semaphore, CountDownLatch, CyclicBarrier, Phaser, livelock
-- Ch 18. [JMM & GC Deep](07_Modern_Java/54_Java_Memory_Model_GC_Deep.md) — Happens-before, volatile mechanics, GC algorithms, memory leaks, tuning
-- Ch 19. [JVM Object Model](07_Modern_Java/34_JVM_Object_Model_Internals.md) — Object headers, mark word, lock escalation, vtable
-- Ch 20. [Algo Engineering Core](07_Modern_Java/02a_AlgoEng_Core.md) — Algorithm engineering fundamentals
-- Ch 21. [Algo Engineering Advanced](07_Modern_Java/02e_AlgoEng_Advanced.md) — Advanced optimization techniques
+- Ch 15. [Concurrency Core](07_Modern_Java/Ch15_Concurrency_Core.md) — Threads, synchronized, volatile, atomics
+- Ch 16. [Concurrency Advanced](07_Modern_Java/Ch16_Concurrency_Advanced.md) — Executors, CompletableFuture, Virtual Threads
+- Ch 17. [Concurrency Synchronizers](07_Modern_Java/Ch17_Concurrency_Synchronizers.md) — Semaphore, CountDownLatch, CyclicBarrier, Phaser, livelock
+- Ch 18. [JMM & GC Deep](07_Modern_Java/Ch18_JMM_GC_Deep.md) — Happens-before, volatile mechanics, GC algorithms, memory leaks, tuning
+- Ch 19. [JVM Object Model](07_Modern_Java/Ch19_JVM_Object_Model.md) — Object headers, mark word, lock escalation, vtable
+- Ch 20. [Algo Engineering Core](07_Modern_Java/Ch20_AlgoEng_Core.md) — Algorithm engineering fundamentals
+- Ch 21. [Algo Engineering Advanced](07_Modern_Java/Ch21_AlgoEng_Advanced.md) — Advanced optimization techniques
 
 #### Part IV: Java Deep Reasoning
-- Ch 22. [Java Deep Reasoning](07_Modern_Java/31_Java_Deep_Reasoning.md) — 13 "freeze moments": pass-by-value, String pool, HashMap internals
-- Ch 23. [Streams Deep Reasoning](07_Modern_Java/33_Streams_Deep_Reasoning.md) — 12 "freeze moments": lazy evaluation, flatMap, parallelStream traps
+- Ch 22. [Java Deep Reasoning](07_Modern_Java/Ch22_Java_Deep_Reasoning.md) — 13 "freeze moments": pass-by-value, String pool, HashMap internals
+- Ch 23. [Streams Deep Reasoning](07_Modern_Java/Ch23_Streams_Deep_Reasoning.md) — 12 "freeze moments": lazy evaluation, flatMap, parallelStream traps
 
 #### Part V: Spring Boot — Getting Started
-- Ch 24. [Spring Boot Roadmap](07_Modern_Java/00_SPRING_BOOT_ROADMAP.md) — Learning path & overview
-- Ch 25. [50-Day Curriculum](07_Modern_Java/26_Spring_Boot_Curriculum_50Day.md) — Day-by-day study plan
-- Ch 26. [Pre-Spring Part 1](07_Modern_Java/02c_SB_HiddenFoundations_Part1.md) — Servlet, IoC, DI — what Spring builds on
-- Ch 27. [Pre-Spring Part 2](07_Modern_Java/02d_SB_HiddenFoundations_Part2.md) — AOP, Proxy, BeanFactory deep dive
-- Ch 28. [Annotations Core](07_Modern_Java/24a_SB_Annotations_Core.md) — Essential Spring annotations
-- Ch 29. [Annotations Advanced](07_Modern_Java/24b_SB_Annotations_Advanced.md) — Custom annotations, meta-annotations
-- Ch 30. [Deps → Annotations Map](07_Modern_Java/30_Spring_Boot_Dependencies_Annotations.md) — Which dependency gives which annotations
+- Ch 24. [Spring Boot Roadmap](07_Modern_Java/Ch24_Spring_Boot_Roadmap.md) — Learning path & overview
+- Ch 25. [50-Day Curriculum](07_Modern_Java/Ch25_Spring_Boot_50Day_Plan.md) — Day-by-day study plan
+- Ch 26. [Pre-Spring Part 1](07_Modern_Java/Ch26_Pre_Spring_Part1.md) — Servlet, IoC, DI — what Spring builds on
+- Ch 27. [Pre-Spring Part 2](07_Modern_Java/Ch27_Pre_Spring_Part2.md) — AOP, Proxy, BeanFactory deep dive
+- Ch 28. [Annotations Core](07_Modern_Java/Ch28_Annotations_Core.md) — Essential Spring annotations
+- Ch 29. [Annotations Advanced](07_Modern_Java/Ch29_Annotations_Advanced.md) — Custom annotations, meta-annotations
+- Ch 30. [Deps → Annotations Map](07_Modern_Java/Ch30_Dependencies_Annotations_Map.md) — Which dependency gives which annotations
 
 #### Part VI: Spring Boot — Core Framework
-- Ch 31. [Core Part 1](07_Modern_Java/03_Spring_Boot_Complete_Part1.md) → Ch 32. [Part 2 (Data)](07_Modern_Java/04_Spring_Boot_Complete_Part2.md) → Ch 33. [Part 3 (Web)](07_Modern_Java/05_Spring_Boot_Complete_Part3.md) → Ch 34. [Part 4 (Security)](07_Modern_Java/06_Spring_Boot_Complete_Part4.md)
-- Ch 35. [Lombok & DTOs](07_Modern_Java/07_Spring_Boot_Part5_Lombok_DTOs.md) | Ch 36. [Service & Repository](07_Modern_Java/08_Spring_Boot_Part6_Service_Repository.md) | Ch 37. [Controllers & REST](07_Modern_Java/09_Spring_Boot_Part7_Controllers_REST.md)
-- Ch 38. [SOLID Core](07_Modern_Java/18a_SB_SOLID_Core.md) | Ch 39. [SOLID Advanced](07_Modern_Java/18b_SB_SOLID_Advanced.md)
+- Ch 31. [Core Part 1](07_Modern_Java/Ch31_SB_Core_Part1.md) → Ch 32. [Part 2 (Data)](07_Modern_Java/Ch32_SB_Data_Part2.md) → Ch 33. [Part 3 (Web)](07_Modern_Java/Ch33_SB_Web_Part3.md) → Ch 34. [Part 4 (Security)](07_Modern_Java/Ch34_SB_Security_Part4.md)
+- Ch 35. [Lombok & DTOs](07_Modern_Java/Ch35_SB_Lombok_DTOs.md) | Ch 36. [Service & Repository](07_Modern_Java/Ch36_SB_Service_Repository.md) | Ch 37. [Controllers & REST](07_Modern_Java/Ch37_SB_Controllers_REST.md)
+- Ch 38. [SOLID Core](07_Modern_Java/Ch38_SB_SOLID_Core.md) | Ch 39. [SOLID Advanced](07_Modern_Java/Ch39_SB_SOLID_Advanced.md)
 
 #### Part VII: Spring Boot — Deep Dives
-- Ch 40. [JPA Deep Dive](07_Modern_Java/10_Spring_Boot_Part8_JPA_Deep_Dive.md) | Ch 41. [Architecture](07_Modern_Java/11_Spring_Boot_Part9_Architecture_Quality.md) | Ch 42. [HTTP Internals](07_Modern_Java/12_Spring_Boot_Part10_HTTP_Deep_Dive.md)
-- Ch 43. [Auth & Security](07_Modern_Java/13_Spring_Boot_Part11_Auth_Security.md) | Ch 44. [Caching/Scheduling](07_Modern_Java/16a_SB_Missing_Core.md) | Ch 45. [Actuator/Metrics](07_Modern_Java/16b_SB_Missing_Advanced.md)
-- Ch 46. [Database Design](07_Modern_Java/19a_SB_Database.md) | Ch 47. [Security Deep Dive](07_Modern_Java/19b_SB_Security.md)
+- Ch 40. [JPA Deep Dive](07_Modern_Java/Ch40_SB_JPA_Deep_Dive.md) | Ch 41. [Architecture](07_Modern_Java/Ch41_SB_Architecture_Quality.md) | Ch 42. [HTTP Internals](07_Modern_Java/Ch42_SB_HTTP_Deep_Dive.md)
+- Ch 43. [Auth & Security](07_Modern_Java/Ch43_SB_Auth_Security.md) | Ch 44. [Caching/Scheduling](07_Modern_Java/Ch44_SB_Caching_Scheduling.md) | Ch 45. [Actuator/Metrics](07_Modern_Java/Ch45_SB_Actuator_Metrics.md)
+- Ch 46. [Database Design](07_Modern_Java/Ch46_SB_Database_Design.md) | Ch 47. [Security Deep Dive](07_Modern_Java/Ch47_SB_Security_Deep.md)
 
 #### Part VIII: Spring Boot — Advanced Topics
-- Ch 48. [WebFlux Core](07_Modern_Java/17a_SB_WebFlux_Core.md) | Ch 49. [WebFlux Advanced](07_Modern_Java/17b_SB_WebFlux_Advanced.md)
-- Ch 50. [DSA in Backend](07_Modern_Java/14_Spring_Boot_Part12_DSA_Applications.md) | Ch 51. [Industry Projects](07_Modern_Java/15_Spring_Boot_Part13_Industry_Projects.md)
-- Ch 52. [WebSocket/GraphQL/gRPC/Batch](07_Modern_Java/25_Spring_Boot_Part23_Missing_Essential_Topics.md) | Ch 53. [Distributed Tracing](07_Modern_Java/20_Spring_Boot_Part18_Distributed_Tracing.md) | Ch 54. [Kafka & MQ](07_Modern_Java/29_Message_Queues_Kafka.md)
+- Ch 48. [WebFlux Core](07_Modern_Java/Ch48_SB_WebFlux_Core.md) | Ch 49. [WebFlux Advanced](07_Modern_Java/Ch49_SB_WebFlux_Advanced.md)
+- Ch 50. [DSA in Backend](07_Modern_Java/Ch50_SB_DSA_Applications.md) | Ch 51. [Industry Projects](07_Modern_Java/Ch51_SB_Industry_Projects.md)
+- Ch 52. [WebSocket/GraphQL/gRPC/Batch](07_Modern_Java/Ch52_SB_WebSocket_GraphQL_gRPC.md) | Ch 53. [Distributed Tracing](07_Modern_Java/Ch53_SB_Distributed_Tracing.md) | Ch 54. [Kafka & MQ](07_Modern_Java/Ch54_Message_Queues_Kafka.md)
 
 #### Part IX: Spring Boot — Internals & Deep Reasoning
-- Ch 55. [Spring Internals](07_Modern_Java/36_Spring_Internals_How_It_Actually_Works.md) — 23-step startup, bean lifecycle, CGLIB proxies
-- Ch 56. [Hibernate/JPA Internals](07_Modern_Java/37_Hibernate_JPA_Internals.md) — Persistence Context, dirty checking, L2 cache, N+1
-- Ch 57. [Spring Security Internals](07_Modern_Java/38_Spring_Security_Internals.md) — 15-filter chain, JWT flow, OAuth2
-- Ch 58. [Spring Boot Deep Reasoning](07_Modern_Java/32_Spring_Boot_Deep_Reasoning.md) — 12 "freeze moments"
+- Ch 55. [Spring Internals](07_Modern_Java/Ch55_Spring_Internals.md) — 23-step startup, bean lifecycle, CGLIB proxies
+- Ch 56. [Hibernate/JPA Internals](07_Modern_Java/Ch56_Hibernate_JPA_Internals.md) — Persistence Context, dirty checking, L2 cache, N+1
+- Ch 57. [Spring Security Internals](07_Modern_Java/Ch57_Spring_Security_Internals.md) — 15-filter chain, JWT flow, OAuth2
+- Ch 58. [Spring Boot Deep Reasoning](07_Modern_Java/Ch58_SB_Deep_Reasoning.md) — 12 "freeze moments"
 
 #### Part X: Testing
-- Ch 59. [Testing Fundamentals](07_Modern_Java/21a_SB_Testing_Fundamentals.md) — Unit testing, Mockito
-- Ch 60. [Testing Advanced](07_Modern_Java/21b_SB_Testing_Advanced.md) — Integration testing, TestContainers
+- Ch 59. [Testing Fundamentals](07_Modern_Java/Ch59_SB_Testing_Fundamentals.md) — Unit testing, Mockito
+- Ch 60. [Testing Advanced](07_Modern_Java/Ch60_SB_Testing_Advanced.md) — Integration testing, TestContainers
 
 #### Part XI: Microservices & Cloud
-- Ch 61. [Microservices Core](07_Modern_Java/22a_SB_Microservices_Core.md) | Ch 62. [Microservices Patterns](07_Modern_Java/22b_SB_Microservices_Patterns.md) — Saga, CQRS, circuit breaker
-- Ch 63. [Cloud Core](07_Modern_Java/23a_SB_Cloud_Core.md) | Ch 64. [Cloud Advanced](07_Modern_Java/23b_SB_Cloud_Advanced.md) — Kubernetes, service mesh
+- Ch 61. [Microservices Core](07_Modern_Java/Ch61_SB_Microservices_Core.md) | Ch 62. [Microservices Patterns](07_Modern_Java/Ch62_SB_Microservices_Patterns.md) — Saga, CQRS, circuit breaker
+- Ch 63. [Cloud Core](07_Modern_Java/Ch63_SB_Cloud_Core.md) | Ch 64. [Cloud Advanced](07_Modern_Java/Ch64_SB_Cloud_Advanced.md) — Kubernetes, service mesh
 
 #### Part XII: System & Infrastructure (Senior-Level)
-- Ch 65. [OS Fundamentals](07_Modern_Java/39_OS_Fundamentals_For_Backend_Devs.md) — Processes, virtual memory, epoll, I/O models
-- Ch 66. [Event Sourcing & CQRS](07_Modern_Java/40_Event_Sourcing_CQRS.md) — Event stores, projections, saga pattern
-- Ch 67. [Kubernetes Deep Dive](07_Modern_Java/41_Kubernetes_Deep_Dive.md) — Control plane, pods, scheduling
-- Ch 68. [Distributed Patterns](07_Modern_Java/42_Distributed_Patterns_Consensus.md) — Raft, 2PC, consistent hashing, CRDTs
-- Ch 69. [Performance Engineering](07_Modern_Java/43_Performance_Engineering.md) — Profiling, flamegraphs, JMH, memory leaks
+- Ch 65. [OS Fundamentals](07_Modern_Java/Ch65_OS_Fundamentals.md) — Processes, virtual memory, epoll, I/O models
+- Ch 66. [Event Sourcing & CQRS](07_Modern_Java/Ch66_Event_Sourcing_CQRS.md) — Event stores, projections, saga pattern
+- Ch 67. [Kubernetes Deep Dive](07_Modern_Java/Ch67_Kubernetes_Deep_Dive.md) — Control plane, pods, scheduling
+- Ch 68. [Distributed Patterns](07_Modern_Java/Ch68_Distributed_Patterns.md) — Raft, 2PC, consistent hashing, CRDTs
+- Ch 69. [Performance Engineering](07_Modern_Java/Ch69_Performance_Engineering.md) — Profiling, flamegraphs, JMH, memory leaks
 
 ### SQL (21 chapters)
 - [01 Foundations](08_SQL/01_Foundations_Database_Basics.md) | [02 Data Types](08_SQL/02_DataTypes_Constraints.md) | [03 DDL](08_SQL/03_DDL_Creating_Structure.md) | [04 DML](08_SQL/04_DML_Manipulating_Data.md)
@@ -578,23 +584,23 @@ Daily-Prep/
 - [19 Interview Top 50](08_SQL/19_Interview_Top50.md) | [20 Cheat Sheet](08_SQL/20_CheatSheet_QuickRef.md)
 
 ### SQL & Database — Advanced (5 files)
-- **🆕** [SQL Interview Top 50 (expanded)](08_SQL_Database/19_Interview_Top50.md) — 50 problems organized by pattern
-- **🆕** [Database Internals](08_SQL_Database/21_Database_Internals.md) — B-Tree, WAL, MVCC, buffer pool, query plans
-- **🆕** [NoSQL & MongoDB](08_SQL_Database/22_NoSQL_MongoDB.md) — NoSQL categories, MongoDB CRUD, Redis
-- **⚡** [SQL Deep Reasoning](08_SQL_Database/23_SQL_Deep_Reasoning.md) — 10 SQL "freeze moments" (NULL logic, JOIN execution, isolation levels)
-- **⚡** [SQL Data Analyst Real-World](08_SQL_Database/24_SQL_Data_Analyst_RealWorld.md) — Cohort, funnel, retention, A/B testing SQL, RFM segmentation, KPI dashboards
+- **🆕** [SQL Interview Top 50 (expanded)](08_SQL/25_Interview_Patterns_Expanded.md) — 50 problems organized by pattern
+- **🆕** [Database Internals](08_SQL/21_Database_Internals.md) — B-Tree, WAL, MVCC, buffer pool, query plans
+- **🆕** [NoSQL & MongoDB](08_SQL/22_NoSQL_MongoDB.md) — NoSQL categories, MongoDB CRUD, Redis
+- **⚡** [SQL Deep Reasoning](08_SQL/23_SQL_Deep_Reasoning.md) — 10 SQL "freeze moments" (NULL logic, JOIN execution, isolation levels)
+- **⚡** [SQL Data Analyst Real-World](08_SQL/24_SQL_Data_Analyst_RealWorld.md) — Cohort, funnel, retention, A/B testing SQL, RFM segmentation, KPI dashboards
 
 ### Career & Reference (14 files)
 - [Career Framework](09_Career_Reference/01_Career_TechnoFunctional.md)
-- Project Guide: [Part 1A](09_Career_Reference/01b_Career_Guide_Part1A.md) | [Part 1B](09_Career_Reference/01b2_Career_Guide_Part1B.md) | [Projects 1](09_Career_Reference/01c_Career_Projects_Part1.md) | [Projects 2](09_Career_Reference/01d_Career_Projects_Part2.md) | [Projects 3](09_Career_Reference/01e_Career_Projects_Part3.md)
-- DSA Reference: [Foundations](09_Career_Reference/02a_DSA_Guide_Foundations.md) | [Advanced](09_Career_Reference/02b_DSA_Guide_Advanced.md) | [Advanced Patterns](09_Career_Reference/02b_Ultimate_DSA_Advanced.md) | [JVM Internals](09_Career_Reference/02c_Ultimate_DSA_JVM.md)
-- [Quick Reference](09_Career_Reference/03_Quick_Reference.md) | [Brain & Psychology](09_Career_Reference/04_Brain_Psychology.md) | [Daily Habits](09_Career_Reference/05_Daily_Habits_Tracking.md) | [Resources](09_Career_Reference/06_Resources_Links.md)
-- **🆕** [Behavioral Interview](09_Career_Reference/07_Behavioral_Interview.md) — STAR method, 8 categories, Amazon LPs, story bank
+- Project Guide: [Part 1A](09_Career_Reference/02_Career_Guide_Part1A.md) | [Part 1B](09_Career_Reference/03_Career_Guide_Part1B.md) | [Projects 1](09_Career_Reference/04_Career_Projects_Part1.md) | [Projects 2](09_Career_Reference/05_Career_Projects_Part2.md) | [Projects 3](09_Career_Reference/06_Career_Projects_Part3.md)
+- DSA Reference: [Foundations](09_Career_Reference/07_DSA_Guide_Foundations.md) | [Advanced](09_Career_Reference/08_DSA_Guide_Advanced.md) | [Advanced Patterns](09_Career_Reference/09_Ultimate_DSA_Advanced.md) | [JVM Internals](09_Career_Reference/10_Ultimate_DSA_JVM.md)
+- [Quick Reference](09_Career_Reference/11_Quick_Reference.md) | [Brain & Psychology](09_Career_Reference/12_Brain_Psychology.md) | [Daily Habits](09_Career_Reference/13_Daily_Habits_Tracking.md) | [Resources](09_Career_Reference/14_Resources_Links.md)
+- **🆕** [Behavioral Interview](09_Career_Reference/15_Behavioral_Interview.md) — STAR method, 8 categories, Amazon LPs, story bank
 
 ### Enterprise & Real-World (8 files)
-- ERP: [Fundamentals](10_Enterprise_Systems/01a_ERP_Fundamentals.md) | [Advanced](10_Enterprise_Systems/01b_ERP_Advanced.md || [Finance Core](10_Enterprise_Systems/02a_ERP_Finance_Core.md) | [Finance Real-World](10_Enterprise_Systems/02b_ERP_Finance_RealWorld.md)
-- Real-World Problems: [Part 1](10_Enterprise_Systems/03_RealWorld_Problems_DSA.md) | [Part 2](10_Enterprise_Systems/04_RealWorld_Problems_Part2.md) | [Part 3](10_Enterprise_Systems/05_RealWorld_Problems_Part3.md)
-- [Production Incidents & DSA](10_Enterprise_Systems/06_RealWorld_Incidents_DSA.md)
+- ERP: [Fundamentals](10_Enterprise_Systems/01_ERP_Fundamentals.md) | [Advanced](10_Enterprise_Systems/02_ERP_Advanced.md || [Finance Core](10_Enterprise_Systems/03_ERP_Finance_Core.md) | [Finance Real-World](10_Enterprise_Systems/04_ERP_Finance_RealWorld.md)
+- Real-World Problems: [Part 1](10_Enterprise_Systems/05_RealWorld_Problems_DSA.md) | [Part 2](10_Enterprise_Systems/06_RealWorld_Problems_Part2.md) | [Part 3](10_Enterprise_Systems/07_RealWorld_Problems_Part3.md)
+- [Production Incidents & DSA](10_Enterprise_Systems/08_RealWorld_Incidents_DSA.md)
 
 ### Daily Practice (29 files)
 - [Daily Practice Index](12_Daily_Practice/00_DAILY_PRACTICE_INDEX.md)
@@ -671,24 +677,24 @@ Daily-Prep/
 | React | [React Deep Reasoning](15_React_Frontend/09_React_Deep_Reasoning.md) | 13 — useState batching, re-renders, virtual DOM, Fiber, keys |
 | TypeScript | [TS Deep Reasoning](17_TypeScript/04_TS_Deep_Reasoning.md) | 10 — Type erasure, structural typing, generics, enums |
 | CSS | [CSS Deep Reasoning](18_CSS_Complete/05_CSS_Deep_Reasoning.md) | 10 — z-index stacking, BFC, margin collapse, reflow vs repaint |
-| Java | [Java Deep Reasoning](07_Modern_Java/31_Java_Deep_Reasoning.md) | 13 — Pass-by-value, String pool, HashMap internals, generics erasure |
-| Spring Boot | [Spring Boot Deep Reasoning](07_Modern_Java/32_Spring_Boot_Deep_Reasoning.md) | 12 — DispatcherServlet vs Filter, proxy/self-call, bean lifecycle |
+| Java | [Java Deep Reasoning](07_Modern_Java/Ch22_Java_Deep_Reasoning.md) | 13 — Pass-by-value, String pool, HashMap internals, generics erasure |
+| Spring Boot | [Spring Boot Deep Reasoning](07_Modern_Java/Ch58_SB_Deep_Reasoning.md) | 12 — DispatcherServlet vs Filter, proxy/self-call, bean lifecycle |
 | DSA | [DSA Deep Reasoning](03_Algorithms/16_DSA_Deep_Reasoning.md) | 10 — Big O misconceptions, HashMap O(1), quicksort vs mergesort |
 | DSA (Java) | [DSA Java Implementation](03_Algorithms/17_DSA_Java_Implementation_Mastery.md) | 11 — PriorityQueue gotchas, TreeMap, Comparator overflow, sort internals |
-| SQL | [SQL Deep Reasoning](08_SQL_Database/23_SQL_Deep_Reasoning.md) | 10 — NULL logic, JOIN execution, isolation levels, N+1 problem |
-| SQL (Analyst) | [SQL Data Analyst](08_SQL_Database/24_SQL_Data_Analyst_RealWorld.md) | 12 — Cohort, funnel, retention, A/B testing, RFM, KPI dashboards |
-| Java Streams | [Streams Deep Reasoning](07_Modern_Java/33_Streams_Deep_Reasoning.md) | 12 — Lazy evaluation, flatMap, parallelStream traps, Collector internals |
-| JVM Internals | [JVM Object Model](07_Modern_Java/34_JVM_Object_Model_Internals.md) | 10 — Object headers, mark word, lock escalation, vtable, method hiding |
-| Synchronizers | [Concurrency Synchronizers](07_Modern_Java/35_Concurrency_Synchronizers_Deep.md) | 10 — Semaphore, CountDownLatch, CyclicBarrier, Phaser, livelock, starvation |
+| SQL | [SQL Deep Reasoning](08_SQL/23_SQL_Deep_Reasoning.md) | 10 — NULL logic, JOIN execution, isolation levels, N+1 problem |
+| SQL (Analyst) | [SQL Data Analyst](08_SQL/24_SQL_Data_Analyst_RealWorld.md) | 12 — Cohort, funnel, retention, A/B testing, RFM, KPI dashboards |
+| Java Streams | [Streams Deep Reasoning](07_Modern_Java/Ch23_Streams_Deep_Reasoning.md) | 12 — Lazy evaluation, flatMap, parallelStream traps, Collector internals |
+| JVM Internals | [JVM Object Model](07_Modern_Java/Ch19_JVM_Object_Model.md) | 10 — Object headers, mark word, lock escalation, vtable, method hiding |
+| Synchronizers | [Concurrency Synchronizers](07_Modern_Java/Ch17_Concurrency_Synchronizers.md) | 10 — Semaphore, CountDownLatch, CyclicBarrier, Phaser, livelock, starvation |
 | **Concurrency** | [Coroutines & Concurrency](13_Developer_Essentials/19_Concurrency_Models_Coroutines.md) | 12 — Coroutines vs Continuations, Virtual Threads, goroutines |
-| Spring Internals | [Spring Internals](07_Modern_Java/36_Spring_Internals_How_It_Actually_Works.md) | 13 — Startup sequence, annotation mechanics, bean lifecycle, CGLIB, @Transactional |
-| Hibernate/JPA | [Hibernate Internals](07_Modern_Java/37_Hibernate_JPA_Internals.md) | 12 — Persistence Context, dirty checking, flush modes, lazy loading, L2 cache, N+1 |
-| Spring Security | [Security Internals](07_Modern_Java/38_Spring_Security_Internals.md) | 12 — Filter chain, JWT auth, OAuth2, CORS/CSRF, @PreAuthorize |
-| OS Fundamentals | [OS for Backend Devs](07_Modern_Java/39_OS_Fundamentals_For_Backend_Devs.md) | 13 — Processes, virtual memory, epoll, I/O models, latency numbers |
-| Event Sourcing | [Event Sourcing & CQRS](07_Modern_Java/40_Event_Sourcing_CQRS.md) | 10 — Event stores, snapshots, CQRS, projections, saga pattern |
-| Kubernetes | [Kubernetes Deep Dive](07_Modern_Java/41_Kubernetes_Deep_Dive.md) | 12 — Architecture, pods, services, ingress, scheduling, production patterns |
-| Distributed | [Distributed Patterns](07_Modern_Java/42_Distributed_Patterns_Consensus.md) | 10 — Raft, 2PC, consistent hashing, CRDTs, circuit breaker, outbox |
-| Performance | [Performance Engineering](07_Modern_Java/43_Performance_Engineering.md) | 12 — Profiling, flamegraphs, GC tuning, JMH, caching, connection pools |
+| Spring Internals | [Spring Internals](07_Modern_Java/Ch55_Spring_Internals.md) | 13 — Startup sequence, annotation mechanics, bean lifecycle, CGLIB, @Transactional |
+| Hibernate/JPA | [Hibernate Internals](07_Modern_Java/Ch56_Hibernate_JPA_Internals.md) | 12 — Persistence Context, dirty checking, flush modes, lazy loading, L2 cache, N+1 |
+| Spring Security | [Security Internals](07_Modern_Java/Ch57_Spring_Security_Internals.md) | 12 — Filter chain, JWT auth, OAuth2, CORS/CSRF, @PreAuthorize |
+| OS Fundamentals | [OS for Backend Devs](07_Modern_Java/Ch65_OS_Fundamentals.md) | 13 — Processes, virtual memory, epoll, I/O models, latency numbers |
+| Event Sourcing | [Event Sourcing & CQRS](07_Modern_Java/Ch66_Event_Sourcing_CQRS.md) | 10 — Event stores, snapshots, CQRS, projections, saga pattern |
+| Kubernetes | [Kubernetes Deep Dive](07_Modern_Java/Ch67_Kubernetes_Deep_Dive.md) | 12 — Architecture, pods, services, ingress, scheduling, production patterns |
+| Distributed | [Distributed Patterns](07_Modern_Java/Ch68_Distributed_Patterns.md) | 10 — Raft, 2PC, consistent hashing, CRDTs, circuit breaker, outbox |
+| Performance | [Performance Engineering](07_Modern_Java/Ch69_Performance_Engineering.md) | 12 — Profiling, flamegraphs, GC tuning, JMH, caching, connection pools |
 
 ---
 
@@ -714,7 +720,7 @@ Open [12_Daily_Practice/00_DAILY_PRACTICE_INDEX.md](12_Daily_Practice/00_DAILY_P
 Open [01_Getting_Started/02_Study_Plan_Calendar.md](01_Getting_Started/02_Study_Plan_Calendar.md) for the full day-by-day plan.
 
 ### 50-Day Spring Boot Curriculum (weekends)
-Open [07_Modern_Java/26_Spring_Boot_Curriculum_50Day.md](07_Modern_Java/26_Spring_Boot_Curriculum_50Day.md) for the schedule.
+Open [07_Modern_Java/Ch25_Spring_Boot_50Day_Plan.md](07_Modern_Java/Ch25_Spring_Boot_50Day_Plan.md) for the schedule.
 
 ---
 
@@ -723,30 +729,29 @@ Open [07_Modern_Java/26_Spring_Boot_Curriculum_50Day.md](07_Modern_Java/26_Sprin
 | Folder | Files | Description |
 |--------|------:|-------------|
 | Root (indexes) | 2 | Master index + Textbook preface |
-| 01_Getting_Started | 1 | Study plan calendar |
-| 02_Data_Structures | 11 | Memory → Arrays → LinkedList → Stack/Queue → Hash → Trees → Internals → Variants |
-| 03_Algorithms | 31 | Sorting → Recursion → DP → Trees → Graphs → Advanced → Number Theory → Specialized → Deep Reasoning → Java DSA Mastery |
-| 04_Patterns_Templates | 20 | 7 original + 13 combined DS+Algo patterns with Excel problems |
-| 05_Problem_Solving | 23 | 20 topic chapters + Edge/Mistakes/Origins |
-| 06_OOP_Design | 8 | OOP, Design Patterns, System Design, LLD, Distributed Systems |
-| 07_Modern_Java | 55 | Functional, Algo Eng, 30+ Spring Boot, Concurrency, Kafka, Deps Map, Deep Reasoning, Streams, JVM, Synchronizers, Spring/Hibernate/Security Internals, OS, K8s, Distributed, Performance |
-| 08_SQL | 21 | Zero to expert in 21 chapters |
-| 08_SQL_Database | 5 | Database Internals, NoSQL, Interview Top 50, SQL Deep Reasoning, Data Analyst Real-World |
-| 09_Career_Reference | 15 | Career path, DSA ref, JVM, Psychology, Behavioral Interview |
-| 10_Enterprise_Systems | 8 | ERP, Finance, Real-world problems |
+| 01_Getting_Started | 3 | Start here + Study plan + Feb 10 plan |
+| 02_Data_Structures | 4 | DS Complete, Variants, Collections, 2D Arrays |
+| 03_Algorithms | 9 | Sorting, Recursion, DP, Trees/Graphs, Advanced, Number Theory, Patterns |
+| 04_Patterns_Templates | 5 | Sliding Window, Templates, Visual Diagrams, Pattern Recognition, LeetCode Map |
+| 05_Problem_Solving | 25 | 22 topic chapters + Edge Cases, Common Mistakes, Problem Origins |
+| 06_OOP_Design | 4 | OOP, Design Patterns, System Design, User Flows |
+| 07_Modern_Java | 69 | Ch01–Ch69: Core Java → Collections → Concurrency → Spring Boot → Microservices → Infrastructure |
+| 08_SQL | 25 | Zero to expert in 25 chapters: foundations → advanced → internals → interview |
+| 09_Career_Reference | 15 | Career path, DSA ref, Quick ref, Psychology, Habits, Resources + specialist guides |
+| 10_Enterprise_Systems | 8 | ERP, Finance, Real-world problems & incidents |
 | 12_Daily_Practice | 29 | Index + 28 days (4 weeks) with cross-reference links |
-| 13_Developer_Essentials | 20 | Git, Linux, Docker, CI/CD, Clean Code, Testing, REST, Security, Cloud, Terraform, Agile, Servers, Networking, Concurrency Models |
+| 13_Developer_Essentials | 20 | Git, Linux, Docker, CI/CD, Clean Code, Testing, REST, Security, Cloud, Terraform, Agile |
 | 14_Mental_Models | 19 | Index + 18 HOW-TO-THINK guides: DSA, System Design, Distributed, Frontend, Debugging |
 | 15_React_Frontend | 9 | Full React curriculum: Fundamentals to Performance + Deep Reasoning |
 | 16_JavaScript | 8 | Complete JS: Foundations, Closures, Async, DOM, ES6+, Debugging, Deep Reasoning |
 | 17_TypeScript | 4 | TS standalone: Foundations, Advanced Types, Patterns, Deep Reasoning |
 | 18_CSS_Complete | 5 | Visual CSS: Foundations, Layout, Animations, Architecture, Deep Reasoning |
 | 19_Frontend_Integration | 4 | React+JS+CSS combined, Debugging, Build Tools, Mental Models |
-| **TOTAL** | **~288** | |
+| **TOTAL** | **~310** | |
 
 ---
 
-_Last restructured: March 2026 — Phase 24: +8 System Internals files (Spring Internals, Hibernate/JPA Internals, Spring Security Internals, OS Fundamentals, Event Sourcing/CQRS, Kubernetes Deep Dive, Distributed Patterns & Consensus, Performance Engineering). Phase 23: +5 Deep Mastery files. Phase 22: +9 Deep Reasoning files + Coroutines. 22 deep reasoning/internals guides across all domains. 288+ total files across 19 folders._
+_Last restructured: March 2026 — Phase 25: Full textbook restructure. All files renamed to sequential chapter order. 122 files renamed across 5 folders. 15 per-folder 00_INDEX.md roadmaps created. 08_SQL_Database merged into 08_SQL. Cross-references updated across all 386 .md files. 310+ total files across 18 folders._
 
 
 ---

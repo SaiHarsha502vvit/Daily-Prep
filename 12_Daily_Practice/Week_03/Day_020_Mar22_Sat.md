@@ -20,7 +20,7 @@
 >
 > Today's topics link to detailed chapter files for deeper study:
 >
-> | **Spring Boot: REST Controllers + Validation** | [Spring Boot: Controllers & REST](../../07_Modern_Java/09_Spring_Boot_Part7_Controllers_REST.md) |
+> | **Spring Boot: REST Controllers + Validation** | [Spring Boot: Controllers & REST](../../07_Modern_Java/Ch37_SB_Controllers_REST.md) |
 > | **SQL: Mixed Drills** | [SQL: JOINs Complete](../../08_SQL/07_JOINs_Complete.md) |
 >
 > *Open the linked file for full theory, diagrams, and practice problems.*

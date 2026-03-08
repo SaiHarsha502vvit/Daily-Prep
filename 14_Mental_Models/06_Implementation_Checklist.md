@@ -322,7 +322,7 @@ flowchart TD
 📖 **Related Files:**
 - [05_Universal_Problem_Framework.md](05_Universal_Problem_Framework.md) — 6-step approach
 - [08_Debugging_DryRun.md](08_Debugging_DryRun.md) — Finding bugs systematically
-- [05_Problem_Solving/03_Common_Mistakes.md](../05_Problem_Solving/03_Common_Mistakes.md) — Extended mistake catalog
+- [05_Problem_Solving/24_Common_Mistakes.md](../05_Problem_Solving/24_Common_Mistakes.md) — Extended mistake catalog
 
 ---
 [← 05 Universal Framework](05_Universal_Problem_Framework.md) | [07 SQL Mental Pipeline →](07_SQL_Mental_Pipeline.md)

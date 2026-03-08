@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](10_Web_Workers_ServiceWorkers.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](../07_Modern_Java/44_Java_Collections_Internals.md)
+> **Navigation**: [< Previous](10_Web_Workers_ServiceWorkers.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](../07_Modern_Java/Ch08_Collections_Internals.md)
 
 # 🌐 Chapter 11 — Advanced Web APIs: The Browser's Hidden Powers
 
@@ -718,4 +718,4 @@ themeChannel.onmessage = (event) => {
 
 ---
 
-> **Next Chapter**: [Java Collections Internals →](../07_Modern_Java/44_Java_Collections_Internals.md)
+> **Next Chapter**: [Java Collections Internals →](../07_Modern_Java/Ch08_Collections_Internals.md)

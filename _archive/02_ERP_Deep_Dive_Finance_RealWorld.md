@@ -1997,7 +1997,7 @@ WEEK 4: BUILD MINI-MODULE
 ╔══════════════════════════════════════════════════════════════════════════════╗
 ║     USE THESE 6 TECHNIQUES TO ACTUALLY RETAIN WHAT YOU LEARN                  ║
 ║                                                                               ║
-║     Full details: 09_Career_Reference/04_Brain_Psychology.md                 ║
+║     Full details: 09_Career_Reference/12_Brain_Psychology.md                 ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 ┌──────────────────────────────────────────────────────────────────────────────┐

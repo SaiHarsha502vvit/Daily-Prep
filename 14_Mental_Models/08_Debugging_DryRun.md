@@ -499,8 +499,8 @@ flowchart TD
 
 📖 **Related Files:**
 - [06_Implementation_Checklist.md](06_Implementation_Checklist.md) — Avoid bugs in the first place
-- [05_Problem_Solving/02_Edge_Cases.md](../05_Problem_Solving/02_Edge_Cases.md) — Edge case catalog
-- [05_Problem_Solving/03_Common_Mistakes.md](../05_Problem_Solving/03_Common_Mistakes.md) — Common mistakes
+- [05_Problem_Solving/23_Edge_Cases.md](../05_Problem_Solving/23_Edge_Cases.md) — Edge case catalog
+- [05_Problem_Solving/24_Common_Mistakes.md](../05_Problem_Solving/24_Common_Mistakes.md) — Common mistakes
 
 ---
 [← 07 SQL Mental Pipeline](07_SQL_Mental_Pipeline.md) | [09 Complexity Intuition →](09_Complexity_Intuition.md)

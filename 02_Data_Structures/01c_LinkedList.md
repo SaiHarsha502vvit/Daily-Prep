@@ -543,7 +543,7 @@ ListNode detectCycleStart(ListNode head) {
 📖 **Related Files:**
 - [14_Mental_Models/03_Graph_Tree_Thinking.md](../14_Mental_Models/03_Graph_Tree_Thinking.md) — Graph/tree mental models
 - [04_Patterns_Templates/12_LinkedList_Plus_TwoPointers.md](../04_Patterns_Templates/12_LinkedList_Plus_TwoPointers.md) — LinkedList pattern problems
-- [05_Problem_Solving/01_Problems_Intro_Checklist.md](../05_Problem_Solving/01_Problems_Intro_Checklist.md) — Practice problems
+- [05_Problem_Solving/01_Intro_Checklist.md](../05_Problem_Solving/01_Intro_Checklist.md) — Practice problems
 
 
 

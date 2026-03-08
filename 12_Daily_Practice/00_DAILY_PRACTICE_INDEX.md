@@ -96,10 +96,10 @@ Each daily file links to these study materials:
 | Two Pointers | [04_Patterns_Templates/07_Two_Pointers_Complete.md](../04_Patterns_Templates/07_Two_Pointers_Complete.md) |
 | Sliding Window | [04_Patterns_Templates/01_Sliding_Window.md](../04_Patterns_Templates/01_Sliding_Window.md) |
 | SQL Foundations | [08_SQL/01_Foundations_Database_Basics.md](../08_SQL/01_Foundations_Database_Basics.md) |
-| Problems: Arrays | [05_Problem_Solving/04_Problems_Arrays.md](../05_Problem_Solving/04_Problems_Arrays.md) |
-| Problems: Sliding Window | [05_Problem_Solving/05_Problems_Sliding_Window.md](../05_Problem_Solving/05_Problems_Sliding_Window.md) |
-| Problems: Two Pointers | [05_Problem_Solving/06_Problems_Two_Pointers.md](../05_Problem_Solving/06_Problems_Two_Pointers.md) |
-| Spring Boot | [07_Modern_Java/00_SPRING_BOOT_ROADMAP.md](../07_Modern_Java/00_SPRING_BOOT_ROADMAP.md) |
+| Problems: Arrays | [05_Problem_Solving/04_Arrays.md](../05_Problem_Solving/04_Arrays.md) |
+| Problems: Sliding Window | [05_Problem_Solving/05_Sliding_Window.md](../05_Problem_Solving/05_Sliding_Window.md) |
+| Problems: Two Pointers | [05_Problem_Solving/06_Two_Pointers.md](../05_Problem_Solving/06_Two_Pointers.md) |
+| Spring Boot | [07_Modern_Java/Ch24_Spring_Boot_Roadmap.md](../07_Modern_Java/Ch24_Spring_Boot_Roadmap.md) |
 
 
 ---

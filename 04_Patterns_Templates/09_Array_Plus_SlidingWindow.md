@@ -325,7 +325,7 @@ flowchart TD
 
 📖 **Related Chapters:**
 - [04_Patterns_Templates/01_Sliding_Window.md](01_Sliding_Window.md) — Sliding Window deep dive
-- [05_Problem_Solving/05_Problems_Sliding_Window.md](../05_Problem_Solving/05_Problems_Sliding_Window.md) — More window problems
+- [05_Problem_Solving/05_Sliding_Window.md](../05_Problem_Solving/05_Sliding_Window.md) — More window problems
 
 ---
 [← 08 Array+TwoPointers](08_Array_Plus_TwoPointers.md) | [10 HashMap+Counting →](10_HashMap_Plus_Counting.md)
