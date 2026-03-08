@@ -146,7 +146,7 @@ Daily-Prep/
 │   ├── 07_LLD_Solved_Problems.md        → 🆕 5 LLD problems with full Java code
 │   └── 08_Design_Patterns_Java.md       → 🆕 GoF patterns with Java + Spring Boot mapping
 │
-├── 07_Modern_Java/                      (56 chapter files)
+├── 07_Modern_Java/                      (60 chapter files)
 │   ├── 00_SPRING_BOOT_ROADMAP.md        → Spring Boot learning path
 │   ├── 01_Functional_Programming.md     → Streams, Lambdas, Optionals
 │   ├── 02a_AlgoEng_Core.md             → Algorithm engineering fundamentals
@@ -212,6 +212,10 @@ Daily-Prep/
 │   ├── 50_Java_DateTime_Regex_Mastery.md → 🆕 Date/Time API (LocalDate→ZonedDateTime, Duration/Period, formatters), Regex (Pattern/Matcher, capturing groups, lookahead)
 │   ├── 51_Java_Generics_Exceptions_Deep.md → 🆕 Type erasure, PECS (Producer Extends Consumer Super), bounded types, custom exceptions, try-with-resources internals, exception translation
 │   └── 52_Java_ClassLoader_JDBC_Logging.md → 🆕 ClassLoader delegation model, JDBC PreparedStatement/connection pooling/transactions, SLF4J/Logback/MDC/JSON logging
+│   ├── 53_Java_Serialization_IO_Streams.md → 🆕 Serializable, serialVersionUID, transient, Externalizable, I/O stream hierarchy, NIO.2 Files API, encoding
+│   ├── 54_Java_Memory_Model_GC_Deep.md → 🆕 JMM happens-before, volatile mechanics, GC algorithms (G1/ZGC), generational hypothesis, memory leaks, GC tuning
+│   ├── 55_Java_Strings_Immutability_Deep.md → 🆕 String pool, intern(), StringBuilder internals, CompactStrings, text blocks, defensive copies, immutable class design
+│   └── 56_Java_Core_Foundations_Missing.md → 🆕 Inner classes (4 types), initialization order, wrapper caches, Comparable/Comparator chains, Optional deep dive, Iterator fail-fast/fail-safe, clone, JPMS
 │
 ├── 08_SQL/                              (21 chapter files — zero to expert)
 │   ├── 01_Foundations_Database_Basics.md → What is a database, RDBMS, SQL
@@ -459,6 +463,8 @@ Daily-Prep/
 - **🆕 Java Deep Fundamentals**: [Reflection & Annotations](07_Modern_Java/47_Java_Reflection_Annotations_Deep.md) — Reflection API, Custom Annotations, Dynamic Proxy, Mini Spring Container | [Events & Listeners](07_Modern_Java/48_Java_Events_Listeners_Observers.md) — Event/Observer pattern, Generic EventBus, Spring @EventListener
 - **🆕 Java Types & Patterns**: [Enums/Records/Sealed](07_Modern_Java/49_Java_Enums_Records_Sealed_Deep.md) — Advanced Enums, Records in production, Sealed Classes + pattern matching | [DateTime & Regex](07_Modern_Java/50_Java_DateTime_Regex_Mastery.md) — Date/Time API mastery, Regex Pattern/Matcher
 - **🆕 Generics & Infrastructure**: [Generics & Exceptions](07_Modern_Java/51_Java_Generics_Exceptions_Deep.md) — Type erasure, PECS, bounded types, exception hierarchy design | [ClassLoader/JDBC/Logging](07_Modern_Java/52_Java_ClassLoader_JDBC_Logging.md) — ClassLoader delegation, JDBC internals, SLF4J + Logback + MDC
+- **🆕 Serialization & Memory**: [Serialization & I/O](07_Modern_Java/53_Java_Serialization_IO_Streams.md) — Serializable, transient, Externalizable, NIO.2 Files API | [JMM & GC Deep](07_Modern_Java/54_Java_Memory_Model_GC_Deep.md) — Happens-before, volatile, GC algorithms, memory leaks, tuning
+- **🆕 Strings & Core Foundations**: [Strings & Immutability](07_Modern_Java/55_Java_Strings_Immutability_Deep.md) — String pool, intern(), StringBuilder, CompactStrings, defensive copies, immutable design | [Core Foundations](07_Modern_Java/56_Java_Core_Foundations_Missing.md) — Inner classes, initialization order, wrapper caches, Comparable/Comparator, Optional, Iterator, JPMS
 
 ### SQL (21 chapters)
 - [01 Foundations](08_SQL/01_Foundations_Database_Basics.md) | [02 Data Types](08_SQL/02_DataTypes_Constraints.md) | [03 DDL](08_SQL/03_DDL_Creating_Structure.md) | [04 DML](08_SQL/04_DML_Manipulating_Data.md)
