@@ -570,7 +570,7 @@ flowchart TD
 
 📖 **Related Files:**
 - [03_Algorithms/03a_Recursion_Internals.md](../03_Algorithms/03a_Recursion_Internals.md) — How recursion works in memory
-- [03_Algorithms/03b_Recursion_Core.md](../03_Algorithms/03b_Recursion_Core.md) — Core recursion patterns
+- [03_Algorithms/03b_Recursion_Fundamentals.md](../03_Algorithms/03b_Recursion_Fundamentals.md) — Core recursion patterns
 - [04_Patterns_Templates/17_Backtracking_Plus_Pruning.md](../04_Patterns_Templates/17_Backtracking_Plus_Pruning.md) — Backtracking problems
 
 ---

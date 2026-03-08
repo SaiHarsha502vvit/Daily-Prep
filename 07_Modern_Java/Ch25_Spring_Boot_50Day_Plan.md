@@ -82,7 +82,7 @@ Each day: ~2-3 hours
 ### Day 3 — Hidden Foundations Part A
 | Block | Topic | File |
 |-------|-------|------|
-| 📖 | Java Reflection, Annotation Processing | [02_Spring_Boot_Part0_Hidden_Foundations.md](02_Spring_Boot_Part0_Hidden_Foundations.md) Sections A-B |
+| 📖 | Java Reflection, Annotation Processing | [Ch26_Pre_Spring_Part1.md](Ch26_Pre_Spring_Part1.md) Sections A-B |
 | 💻 | Write a custom annotation + processor | Same file |
 | 🧪 | Read Spring's @Component source code | Practice |
 | 📝 | WHY does Spring need reflection? | Notes |
@@ -94,7 +94,7 @@ Each day: ~2-3 hours
 ### Day 4 — Hidden Foundations Part B
 | Block | Topic | File |
 |-------|-------|------|
-| 📖 | Proxy Patterns, Servlet API, Design Patterns | [02_Spring_Boot_Part0_Hidden_Foundations.md](02_Spring_Boot_Part0_Hidden_Foundations.md) Sections C-D, J |
+| 📖 | Proxy Patterns, Servlet API, Design Patterns | [Ch26_Pre_Spring_Part1.md](Ch26_Pre_Spring_Part1.md) Sections C-D, J |
 | 💻 | Create JDK Dynamic Proxy, implement Filter | Same file |
 | 🧪 | Debug DispatcherServlet flow in IntelliJ | Practice |
 | 📝 | HOW does @Transactional use proxies? | Notes |
@@ -106,7 +106,7 @@ Each day: ~2-3 hours
 ### Day 5 — Hidden Foundations Part C
 | Block | Topic | File |
 |-------|-------|------|
-| 📖 | Jackson, Connection Pooling, ClassLoading, Maven | [02_Spring_Boot_Part0_Hidden_Foundations.md](02_Spring_Boot_Part0_Hidden_Foundations.md) Sections E-H |
+| 📖 | Jackson, Connection Pooling, ClassLoading, Maven | [Ch26_Pre_Spring_Part1.md](Ch26_Pre_Spring_Part1.md) Sections E-H |
 | 💻 | Custom ObjectMapper, HikariCP config | Same file |
 | 🧪 | Serialize/Deserialize complex objects | Practice |
 | 📝 | WHY is HikariCP the default pool? | Notes |
@@ -302,7 +302,7 @@ Each day: ~2-3 hours
 ### Day 21 — SOLID Principles in Spring Boot
 | Block | Topic | File |
 |-------|-------|------|
-| 📖 | SRP, OCP, LSP, ISP, DIP applied to Spring | [18_Spring_Boot_Part16_SOLID_Principles.md](18_Spring_Boot_Part16_SOLID_Principles.md) |
+| 📖 | SRP, OCP, LSP, ISP, DIP applied to Spring | [Ch38_SB_SOLID_Core.md](Ch38_SB_SOLID_Core.md) |
 | 💻 | Refactor your project following SOLID | Same file |
 | 🧪 | Identify SOLID violations in your code | Practice |
 | 📝 | Each principle in 1 sentence with example | Notes |
@@ -358,7 +358,7 @@ Each day: ~2-3 hours
 ### Day 25 — Database Security Deep Dive
 | Block | Topic | File |
 |-------|-------|------|
-| 📖 | User entity, Password encoding, SQL injection, Encryption | [19_Spring_Boot_Part17_Database_Security.md](19_Spring_Boot_Part17_Database_Security.md) |
+| 📖 | User entity, Password encoding, SQL injection, Encryption | [Ch46_SB_Database_Design.md](Ch46_SB_Database_Design.md) |
 | 💻 | BCrypt password encoding, audit logging | Same file |
 | 🧪 | Try SQL injection on your app, verify it's blocked | Practice |
 | 📝 | Row-level security — WHY and HOW | Notes |
@@ -372,7 +372,7 @@ Each day: ~2-3 hours
 ### Day 26 — Unit Testing (JUnit 5 + Mockito)
 | Block | Topic | File |
 |-------|-------|------|
-| 📖 | Testing philosophy, JUnit 5, Mockito | [21_Spring_Boot_Part19_Testing_Complete.md](21_Spring_Boot_Part19_Testing_Complete.md) First half |
+| 📖 | Testing philosophy, JUnit 5, Mockito | [Ch59_SB_Testing_Fundamentals.md](Ch59_SB_Testing_Fundamentals.md) First half |
 | 💻 | 10 unit tests for your service layer | Same file |
 | 🧪 | Mock repository, verify interactions | Practice |
 | 📝 | @Mock vs @InjectMocks vs @MockBean | Notes |
@@ -384,7 +384,7 @@ Each day: ~2-3 hours
 ### Day 27 — Integration & Controller Testing
 | Block | Topic | File |
 |-------|-------|------|
-| 📖 | @SpringBootTest, @WebMvcTest, TestContainers, TDD | [21_Spring_Boot_Part19_Testing_Complete.md](21_Spring_Boot_Part19_Testing_Complete.md) Second half |
+| 📖 | @SpringBootTest, @WebMvcTest, TestContainers, TDD | [Ch59_SB_Testing_Fundamentals.md](Ch59_SB_Testing_Fundamentals.md) Second half |
 | 💻 | Write controller tests with MockMvc | Same file |
 | 🧪 | Integration test with real H2 database | Practice |
 | 📝 | Testing pyramid: Unit > Integration > E2E | Notes |
@@ -396,7 +396,7 @@ Each day: ~2-3 hours
 ### Day 28 — Caching + Async + Scheduling
 | Block | Topic | File |
 |-------|-------|------|
-| 📖 | Spring Cache, @Async, @Scheduled | [16_Spring_Boot_Part14_Essential_Missing_Topics.md](16_Spring_Boot_Part14_Essential_Missing_Topics.md) Ch 1-3 |
+| 📖 | Spring Cache, @Async, @Scheduled | [Ch44_SB_Caching_Scheduling.md](Ch44_SB_Caching_Scheduling.md) Ch 1-3 |
 | 💻 | Add caching to your API, create async task, scheduled job | Same file |
 | 🧪 | Verify cache hit/miss in logs | Practice |
 | 📝 | @Cacheable vs @CacheEvict vs @CachePut | Notes |
@@ -408,7 +408,7 @@ Each day: ~2-3 hours
 ### Day 29 — Actuator + Swagger + Logging
 | Block | Topic | File |
 |-------|-------|------|
-| 📖 | Actuator endpoints, OpenAPI/Swagger, Logging | [16_Spring_Boot_Part14_Essential_Missing_Topics.md](16_Spring_Boot_Part14_Essential_Missing_Topics.md) Ch 4-5, 8 |
+| 📖 | Actuator endpoints, OpenAPI/Swagger, Logging | [Ch44_SB_Caching_Scheduling.md](Ch44_SB_Caching_Scheduling.md) Ch 4-5, 8 |
 | 💻 | Enable actuator, add Swagger UI to your project | Same file |
 | 🧪 | Visit /actuator/health, /swagger-ui.html | Practice |
 | 📝 | Which Actuator endpoints to expose in prod? | Notes |
@@ -420,7 +420,7 @@ Each day: ~2-3 hours
 ### Day 30 — File Upload + Email + Externalized Config
 | Block | Topic | File |
 |-------|-------|------|
-| 📖 | Multipart upload, JavaMailSender, Config | [16_Spring_Boot_Part14_Essential_Missing_Topics.md](16_Spring_Boot_Part14_Essential_Missing_Topics.md) Ch 6-7, 11 |
+| 📖 | Multipart upload, JavaMailSender, Config | [Ch44_SB_Caching_Scheduling.md](Ch44_SB_Caching_Scheduling.md) Ch 6-7, 11 |
 | 💻 | Build file upload endpoint, send test email | Same file |
 | 🧪 | Upload large file, test size limits | Practice |
 | 📝 | @ConfigurationProperties vs @Value | Notes |
@@ -434,7 +434,7 @@ Each day: ~2-3 hours
 ### Day 31 — Flyway + Liquibase
 | Block | Topic | File |
 |-------|-------|------|
-| 📖 | Flyway migrations + Liquibase alternative | [16_Spring_Boot_Part14_Essential_Missing_Topics.md](16_Spring_Boot_Part14_Essential_Missing_Topics.md) Ch 9 + [Ch52_SB_WebSocket_GraphQL_gRPC.md](Ch52_SB_WebSocket_GraphQL_gRPC.md) §14 |
+| 📖 | Flyway migrations + Liquibase alternative | [Ch44_SB_Caching_Scheduling.md](Ch44_SB_Caching_Scheduling.md) Ch 9 + [Ch52_SB_WebSocket_GraphQL_gRPC.md](Ch52_SB_WebSocket_GraphQL_gRPC.md) §14 |
 | 💻 | Set up Flyway, write 3 migration scripts | Both files |
 | 🧪 | Mess up a migration, learn to fix it | Practice |
 | 📝 | WHY database migrations > JPA auto-DDL? | Notes |
@@ -446,7 +446,7 @@ Each day: ~2-3 hours
 ### Day 32 — Annotations Complete Reference
 | Block | Topic | File |
 |-------|-------|------|
-| 📖 | ALL annotations: JPA, Spring, Security, Testing, Lombok | [24_Spring_Boot_Part22_Annotations_Complete_Reference.md](24_Spring_Boot_Part22_Annotations_Complete_Reference.md) |
+| 📖 | ALL annotations: JPA, Spring, Security, Testing, Lombok | [Ch28_Annotations_Core.md](Ch28_Annotations_Core.md) |
 | 💻 | Create a cheat sheet of 30 most-used annotations | Same file |
 | 🧪 | Use 5 annotations you've never used before | Practice |
 | 📝 | Group annotations by category in your notes | Notes |
@@ -490,7 +490,7 @@ Each day: ~2-3 hours
 ### Day 35 — Kafka & RabbitMQ
 | Block | Topic | File |
 |-------|-------|------|
-| 📖 | Messaging basics, Kafka produce/consume, RabbitMQ | [16_Spring_Boot_Part14_Essential_Missing_Topics.md](16_Spring_Boot_Part14_Essential_Missing_Topics.md) Ch 12 |
+| 📖 | Messaging basics, Kafka produce/consume, RabbitMQ | [Ch44_SB_Caching_Scheduling.md](Ch44_SB_Caching_Scheduling.md) Ch 12 |
 | 💻 | Set up Kafka with Docker, produce/consume messages | Same file |
 | 🧪 | Send 1000 messages, verify all consumed | Practice |
 | 📝 | Kafka vs RabbitMQ — when to use which? | Notes |
@@ -514,7 +514,7 @@ Each day: ~2-3 hours
 ### Day 37 — Reactive Programming (WebFlux) Part 1
 | Block | Topic | File |
 |-------|-------|------|
-| 📖 | Reactive fundamentals, Mono, Flux, Operators | [17_Spring_Boot_Part15_WebFlux_Reactive.md](17_Spring_Boot_Part15_WebFlux_Reactive.md) Ch 1-5 |
+| 📖 | Reactive fundamentals, Mono, Flux, Operators | [Ch48_SB_WebFlux_Core.md](Ch48_SB_WebFlux_Core.md) Ch 1-5 |
 | 💻 | Build reactive GET endpoints with Flux | Same file |
 | 🧪 | Stream data to browser with text/event-stream | Practice |
 | 📝 | Mono = 0 or 1 item, Flux = 0 to N items | Notes |
@@ -526,7 +526,7 @@ Each day: ~2-3 hours
 ### Day 38 — Reactive Programming Part 2
 | Block | Topic | File |
 |-------|-------|------|
-| 📖 | R2DBC, WebClient, Error handling, Testing | [17_Spring_Boot_Part15_WebFlux_Reactive.md](17_Spring_Boot_Part15_WebFlux_Reactive.md) Ch 6-11 |
+| 📖 | R2DBC, WebClient, Error handling, Testing | [Ch48_SB_WebFlux_Core.md](Ch48_SB_WebFlux_Core.md) Ch 6-11 |
 | 💻 | WebClient to call external API, StepVerifier tests | Same file |
 | 🧪 | Compare WebClient vs RestTemplate performance | Practice |
 | 📝 | MVC vs WebFlux — decision framework | Notes |
@@ -540,7 +540,7 @@ Each day: ~2-3 hours
 ### Day 39 — Microservices Architecture + Service Discovery
 | Block | Topic | File |
 |-------|-------|------|
-| 📖 | Architecture overview, Eureka, Consul | [22_Spring_Boot_Part20_Microservices_Patterns.md](22_Spring_Boot_Part20_Microservices_Patterns.md) First half |
+| 📖 | Architecture overview, Eureka, Consul | [Ch61_SB_Microservices_Core.md](Ch61_SB_Microservices_Core.md) First half |
 | 💻 | Set up Eureka Server + 2 client services | Same file |
 | 🧪 | Kill a service, watch Eureka deregister it | Practice |
 | 📝 | Monolith vs Microservice — decision criteria | Notes |
@@ -552,7 +552,7 @@ Each day: ~2-3 hours
 ### Day 40 — API Gateway + Circuit Breaker
 | Block | Topic | File |
 |-------|-------|------|
-| 📖 | API Gateway, Circuit Breaker (Resilience4j), Load Balancing | [22_Spring_Boot_Part20_Microservices_Patterns.md](22_Spring_Boot_Part20_Microservices_Patterns.md) Middle |
+| 📖 | API Gateway, Circuit Breaker (Resilience4j), Load Balancing | [Ch61_SB_Microservices_Core.md](Ch61_SB_Microservices_Core.md) Middle |
 | 💻 | Spring Cloud Gateway with routes, Resilience4j circuit breaker | Same file |
 | 🧪 | Simulate service failure, verify circuit opens | Practice |
 | 📝 | Circuit states: CLOSED → OPEN → HALF_OPEN | Notes |
@@ -564,7 +564,7 @@ Each day: ~2-3 hours
 ### Day 41 — Config Server + Saga + CQRS
 | Block | Topic | File |
 |-------|-------|------|
-| 📖 | Config management, Saga pattern, CQRS, Event-driven | [22_Spring_Boot_Part20_Microservices_Patterns.md](22_Spring_Boot_Part20_Microservices_Patterns.md) Second half |
+| 📖 | Config management, Saga pattern, CQRS, Event-driven | [Ch61_SB_Microservices_Core.md](Ch61_SB_Microservices_Core.md) Second half |
 | 💻 | Spring Cloud Config Server from Git repo | Same file |
 | 🧪 | Change config in Git, see app pick it up | Practice |
 | 📝 | Saga choreography vs orchestration | Notes |
@@ -590,7 +590,7 @@ Each day: ~2-3 hours
 ### Day 43 — Docker + Kubernetes
 | Block | Topic | File |
 |-------|-------|------|
-| 📖 | Docker containers, K8s deployment | [23_Spring_Boot_Part21_Cloud_Deployment.md](23_Spring_Boot_Part21_Cloud_Deployment.md) First half + [16_Spring_Boot_Part14_Essential_Missing_Topics.md](16_Spring_Boot_Part14_Essential_Missing_Topics.md) Ch 10 |
+| 📖 | Docker containers, K8s deployment | [Ch63_SB_Cloud_Core.md](Ch63_SB_Cloud_Core.md) First half + [Ch44_SB_Caching_Scheduling.md](Ch44_SB_Caching_Scheduling.md) Ch 10 |
 | 💻 | Dockerfile for your app, docker-compose with DB | Both files |
 | 🧪 | Build image, run container, test API | Practice |
 | 📝 | Multi-stage Docker build — WHY? | Notes |
@@ -602,7 +602,7 @@ Each day: ~2-3 hours
 ### Day 44 — Cloud Deployment (AWS/Azure/GCP)
 | Block | Topic | File |
 |-------|-------|------|
-| 📖 | AWS, Azure, GCP deployment, CI/CD, Secrets | [23_Spring_Boot_Part21_Cloud_Deployment.md](23_Spring_Boot_Part21_Cloud_Deployment.md) Second half |
+| 📖 | AWS, Azure, GCP deployment, CI/CD, Secrets | [Ch63_SB_Cloud_Core.md](Ch63_SB_Cloud_Core.md) Second half |
 | 💻 | GitHub Actions CI/CD pipeline | Same file |
 | 🧪 | Deploy to a cloud provider (free tier) | Practice |
 | 📝 | IaC: Terraform vs CloudFormation | Notes |
@@ -759,8 +759,8 @@ Each day: ~2-3 hours
 | File | Content | Used In |
 |------|---------|---------|
 | [Ch06_Functional_Programming.md](Ch06_Functional_Programming.md) | Streams, Lambda, Optional | Day 1 |
-| [02_Algorithm_Engineering.md](02_Algorithm_Engineering.md) | Algorithm optimization | Reference |
-| [02_Spring_Boot_Part0_Hidden_Foundations.md](02_Spring_Boot_Part0_Hidden_Foundations.md) | Reflection, Proxy, Servlets, Jackson | Day 3-5 |
+| [Ch20_AlgoEng_Core.md](Ch20_AlgoEng_Core.md) | Algorithm optimization | Reference |
+| [Ch26_Pre_Spring_Part1.md](Ch26_Pre_Spring_Part1.md) | Reflection, Proxy, Servlets, Jackson | Day 3-5 |
 | [Ch31_SB_Core_Part1.md](Ch31_SB_Core_Part1.md) | JVM, Memory, GC, Threading | Day 2 |
 | [Ch32_SB_Data_Part2.md](Ch32_SB_Data_Part2.md) | IoC, DI, Beans, Events | Day 6-7 |
 | [Ch33_SB_Web_Part3.md](Ch33_SB_Web_Part3.md) | AOP, Auto-config, Profiles | Day 8-9 |
@@ -774,15 +774,15 @@ Each day: ~2-3 hours
 | [Ch43_SB_Auth_Security.md](Ch43_SB_Auth_Security.md) | JWT, OAuth2, RBAC | Day 22-24 |
 | [Ch50_SB_DSA_Applications.md](Ch50_SB_DSA_Applications.md) | DSA in backend | Day 48 |
 | [Ch51_SB_Industry_Projects.md](Ch51_SB_Industry_Projects.md) | 5 project blueprints | Day 49 |
-| [16_Spring_Boot_Part14_Essential_Missing_Topics.md](16_Spring_Boot_Part14_Essential_Missing_Topics.md) | Cache, Async, Actuator, Kafka, Docker | Day 28-31, 35, 43 |
-| [17_Spring_Boot_Part15_WebFlux_Reactive.md](17_Spring_Boot_Part15_WebFlux_Reactive.md) | WebFlux, Mono, Flux, R2DBC | Day 37-38 |
-| [18_Spring_Boot_Part16_SOLID_Principles.md](18_Spring_Boot_Part16_SOLID_Principles.md) | SOLID in Spring | Day 21 |
-| [19_Spring_Boot_Part17_Database_Security.md](19_Spring_Boot_Part17_Database_Security.md) | DB security, encryption | Day 25 |
+| [Ch44_SB_Caching_Scheduling.md](Ch44_SB_Caching_Scheduling.md) | Cache, Async, Actuator, Kafka, Docker | Day 28-31, 35, 43 |
+| [Ch48_SB_WebFlux_Core.md](Ch48_SB_WebFlux_Core.md) | WebFlux, Mono, Flux, R2DBC | Day 37-38 |
+| [Ch38_SB_SOLID_Core.md](Ch38_SB_SOLID_Core.md) | SOLID in Spring | Day 21 |
+| [Ch46_SB_Database_Design.md](Ch46_SB_Database_Design.md) | DB security, encryption | Day 25 |
 | [Ch53_SB_Distributed_Tracing.md](Ch53_SB_Distributed_Tracing.md) | Tracing, Zipkin | Day 42 |
-| [21_Spring_Boot_Part19_Testing_Complete.md](21_Spring_Boot_Part19_Testing_Complete.md) | JUnit, Mockito, TDD | Day 26-27 |
-| [22_Spring_Boot_Part20_Microservices_Patterns.md](22_Spring_Boot_Part20_Microservices_Patterns.md) | Microservices patterns | Day 39-41 |
-| [23_Spring_Boot_Part21_Cloud_Deployment.md](23_Spring_Boot_Part21_Cloud_Deployment.md) | Docker, K8s, AWS, CI/CD | Day 43-44 |
-| [24_Spring_Boot_Part22_Annotations_Complete_Reference.md](24_Spring_Boot_Part22_Annotations_Complete_Reference.md) | All annotations | Day 32 |
+| [Ch59_SB_Testing_Fundamentals.md](Ch59_SB_Testing_Fundamentals.md) | JUnit, Mockito, TDD | Day 26-27 |
+| [Ch61_SB_Microservices_Core.md](Ch61_SB_Microservices_Core.md) | Microservices patterns | Day 39-41 |
+| [Ch63_SB_Cloud_Core.md](Ch63_SB_Cloud_Core.md) | Docker, K8s, AWS, CI/CD | Day 43-44 |
+| [Ch28_Annotations_Core.md](Ch28_Annotations_Core.md) | All annotations | Day 32 |
 | [Ch52_SB_WebSocket_GraphQL_gRPC.md](Ch52_SB_WebSocket_GraphQL_gRPC.md) | WebSocket, GraphQL, gRPC, Batch, Pagination, HATEOAS, i18n, Multi-tenancy, Java 17+, GraalVM, Modulith, Rate Limiting, Data REST, Liquibase | Day 18, 33-34, 36, 45-48 |
 
 ---

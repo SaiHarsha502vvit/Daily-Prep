@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](04_RealWorld_Problems_Part2.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_RealWorld_Incidents_DSA.md)
+> **Navigation**: [< Previous](06_RealWorld_Problems_Part2.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08_RealWorld_Incidents_DSA.md)
 
 # 🎯 Real-World Problems - Part 3: Interview Favorites
 
@@ -1440,4 +1440,4 @@ _These are real problems from real systems. Master these patterns and you'll han
 
 ---
 
-> **Navigation**: [< Previous](04_RealWorld_Problems_Part2.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_RealWorld_Incidents_DSA.md)
+> **Navigation**: [< Previous](06_RealWorld_Problems_Part2.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08_RealWorld_Incidents_DSA.md)

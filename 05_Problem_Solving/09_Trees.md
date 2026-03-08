@@ -323,7 +323,7 @@ int bothDirections(TreeNode node) {
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
-📖 **Related theory:** [03_Algorithms/05_Trees_Graphs.md](../03_Algorithms/05_Trees_Graphs.md) — Full tree theory & implementations
+📖 **Related theory:** [03_Algorithms/05_Trees.md](../03_Algorithms/05_Trees.md) — Full tree theory & implementations
 
 ---
 

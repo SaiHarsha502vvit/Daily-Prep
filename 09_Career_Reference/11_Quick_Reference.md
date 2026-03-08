@@ -63,7 +63,7 @@ flowchart TD
     N4 --> N5
 ```
 
-**See:** [PaperToCode_TranslationGuide.md](PaperToCode_TranslationGuide.md) for details
+**See:** [07_DSA_Guide_Foundations.md](07_DSA_Guide_Foundations.md) for details
 
 ---
 

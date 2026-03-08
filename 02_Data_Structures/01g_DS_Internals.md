@@ -1047,7 +1047,7 @@ queue.offer(neighbor);
 
 ---
 
-_Continue in Part 2: 02_DataStructures_Variants.md_
+_Continue in Part 2: 02a_DS_Variants_Core.md_
 
 
 ---

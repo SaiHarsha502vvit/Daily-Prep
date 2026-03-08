@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](Day_010_Mar12_Wed.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_012_Mar14_Fri.md)
+> **Navigation**: [< Previous](Day_010_Mar12_Wed.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_012_Mar14_Fri.md)
 
 # Day 011 - Thursday, March 13, 2026
 
@@ -521,4 +521,4 @@ TOMORROW'S PREVIEW: HashSet + Two Pointers technique + SQL Subqueries
 
 ---
 
-> **Navigation**: [< Previous](Day_010_Mar12_Wed.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_012_Mar14_Fri.md)
+> **Navigation**: [< Previous](Day_010_Mar12_Wed.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_012_Mar14_Fri.md)

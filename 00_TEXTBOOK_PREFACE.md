@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](00_MASTER_INDEX.md) | [Back to Index](../00_MASTER_INDEX.md)
+> **Navigation**: [< Previous](00_MASTER_INDEX.md) | [Back to Index](00_MASTER_INDEX.md)
 
 # THE COMPLETE SOFTWARE ENGINEER — Preface & Reading Guide
 
@@ -186,7 +186,7 @@ flowchart TD
   ┌──────────────────────────▼──────────────────────────────┐
   │ PART 14: Enterprise & Real-World                        │
   │ [10_Enterprise_Systems/01_ERP_Fundamentals.md]        │
-  │ Through: [06_RealWorld_Incidents_DSA.md]                │
+  │ Through: [08_RealWorld_Incidents_DSA.md]                │
   │ How DSA appears in production systems.                  │
   └──────────────────────────┬──────────────────────────────┘
                              │
@@ -544,4 +544,4 @@ flowchart TD
 
 ---
 
-> **Navigation**: [< Previous](00_MASTER_INDEX.md) | [Back to Index](../00_MASTER_INDEX.md)
+> **Navigation**: [< Previous](00_MASTER_INDEX.md) | [Back to Index](00_MASTER_INDEX.md)

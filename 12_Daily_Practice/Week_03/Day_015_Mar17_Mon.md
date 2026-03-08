@@ -1,4 +1,4 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_016_Mar18_Tue.md)
+> **Navigation**: [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_016_Mar18_Tue.md)
 
 # Day 015 — Monday, March 17, 2026
 
@@ -691,4 +691,4 @@ flowchart TD
 
 ---
 
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_016_Mar18_Tue.md)
+> **Navigation**: [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_016_Mar18_Tue.md)

@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](Day_013_Mar15_Sat.md) | [Back to Index](../00_MASTER_INDEX.md)
+> **Navigation**: [< Previous](Day_013_Mar15_Sat.md) | [Back to Index](../../00_MASTER_INDEX.md)
 
 # Day 014 - Sunday, March 16, 2026
 
@@ -216,4 +216,4 @@ TARGET: 28+ (at least "can code it" for everything)
 
 ---
 
-> **Navigation**: [< Previous](Day_013_Mar15_Sat.md) | [Back to Index](../00_MASTER_INDEX.md)
+> **Navigation**: [< Previous](Day_013_Mar15_Sat.md) | [Back to Index](../../00_MASTER_INDEX.md)

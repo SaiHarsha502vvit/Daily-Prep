@@ -608,7 +608,7 @@ flowchart TD
 📖 **Related Files:**
 - [05_Universal_Problem_Framework.md](05_Universal_Problem_Framework.md) — 6-step problem solving
 - [06_Implementation_Checklist.md](06_Implementation_Checklist.md) — Coding quality checklist
-- [09_Career_Reference/01_Career_Guide.md](../09_Career_Reference/01_Career_Guide.md) — Career guidance
+- [09_Career_Reference/01_Career_TechnoFunctional.md](../09_Career_Reference/01_Career_TechnoFunctional.md) — Career guidance
 
 ---
 [← 09 Complexity Intuition](09_Complexity_Intuition.md) | [Back to Index →](00_INDEX.md)

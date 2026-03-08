@@ -1,7 +1,7 @@
 # Advanced Algorithms & Interview Patterns
 
 > **Part 2 of Ultimate DSA Guide**
-> **Navigation**: [Part 1: Data Structures](02_Ultimate_DSA_Guide.md) | [Part 2: Advanced] | [Part 3: JVM Internals](10_Ultimate_DSA_JVM.md)
+> **Navigation**: [Part 1: Data Structures](07_DSA_Guide_Foundations.md) | [Part 2: Advanced] | [Part 3: JVM Internals](10_Ultimate_DSA_JVM.md)
 
 ---
 
@@ -1043,7 +1043,7 @@ flowchart TD
 
 ---
 
-> **Prev**: [Part 1: Data Structures](02_Ultimate_DSA_Guide.md) | **Next**: [Part 3: JVM Internals](10_Ultimate_DSA_JVM.md)
+> **Prev**: [Part 1: Data Structures](07_DSA_Guide_Foundations.md) | **Next**: [Part 3: JVM Internals](10_Ultimate_DSA_JVM.md)
 
 
 ---

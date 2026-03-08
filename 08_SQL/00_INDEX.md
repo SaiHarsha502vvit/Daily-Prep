@@ -42,5 +42,21 @@
 | 24 | [Data Analyst Real-World](24_SQL_Data_Analyst_RealWorld.md) | Analytics SQL for data roles |
 | 25 | [Interview Patterns](25_Interview_Patterns_Expanded.md) | Advanced interview patterns |
 
+### Python + SQL & Data Analytics
+| 26 | [Python SQL Integration](26_Python_SQL_Integration.md) | sqlite3, psycopg2, SQLAlchemy, pandas |
+| 27 | [Python SQL Visualization](27_Python_SQL_Visualization.md) | matplotlib, seaborn, plotly dashboards |
+| 28 | [Data Analytics Intermediate](28_Data_Analytics_Intermediate.md) | Cohort, funnel, RFM, churn analysis |
+| 29 | [Data Analytics Advanced](29_Data_Analytics_Advanced.md) | A/B testing, anomaly detection, ML prep |
+
+### Architecture & Operations
+| 30 | [Recursive Queries](30_Recursive_Queries_Hierarchical.md) | Recursive CTEs, org charts, BOM, graphs |
+| 31 | [JSON XML Modern SQL](31_JSON_XML_Modern_SQL.md) | JSONB, JSON_TABLE, XML, arrays |
+| 32 | [Partitioning & Sharding](32_Partitioning_Sharding_Replication.md) | Range/list/hash partitions, replicas |
+| 33 | [SQL Security](33_SQL_Security_Injection.md) | Injection prevention, roles, RLS, encryption |
+| 34 | [Time Series & Temporal](34_TimeSeries_Temporal.md) | Temporal tables, SCD types, gap detection |
+| 35 | [Database Migrations](35_Database_Migration_Schema.md) | Flyway, Liquibase, Alembic, zero-downtime |
+| 36 | [Advanced Data Modeling](36_Advanced_Data_Modeling.md) | Star/snowflake schema, Data Vault |
+| 37 | [5W-H Deep Reasoning](37_SQL_5WH_Deep_Reasoning.md) | 5W-H framework applied to all SQL concepts |
+
 ---
 [← Back to Master Index](../00_MASTER_INDEX.md)

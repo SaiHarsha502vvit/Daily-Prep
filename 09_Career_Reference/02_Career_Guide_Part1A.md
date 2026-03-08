@@ -2,7 +2,7 @@
 
 ---
 
-> **Career Guide** | See also: [01_Career_TechnoFunctional.md](01_Career_TechnoFunctional.md) | [01c_Career_ProjectGuide_Part2.md](01c_Career_ProjectGuide_Part2.md) | [Index](../00_MASTER_INDEX.md)
+> **Career Guide** | See also: [01_Career_TechnoFunctional.md](01_Career_TechnoFunctional.md) | [05_Career_Projects_Part2.md](05_Career_Projects_Part2.md) | [Index](../00_MASTER_INDEX.md)
 
 ---
 

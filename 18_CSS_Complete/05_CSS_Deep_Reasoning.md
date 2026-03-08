@@ -610,7 +610,7 @@ flowchart TD
 
 ---
 
-← Previous: [Chapter 4 — CSS Responsive & Performance](04_CSS_Responsive_Performance.md)
+← Previous: [Chapter 4 — CSS Responsive & Performance](04_CSS_Modern_Architecture.md)
 | [📚 Index](../00_MASTER_INDEX.md)
 | Next: [Java Deep Reasoning →](../07_Modern_Java/Ch22_Java_Deep_Reasoning.md)
 

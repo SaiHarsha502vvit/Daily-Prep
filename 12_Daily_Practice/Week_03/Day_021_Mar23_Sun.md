@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](Day_020_Mar22_Sat.md) | [Back to Index](../00_MASTER_INDEX.md)
+> **Navigation**: [< Previous](Day_020_Mar22_Sat.md) | [Back to Index](../../00_MASTER_INDEX.md)
 
 # Day 021 — Sunday, March 23, 2026
 
@@ -248,4 +248,4 @@ flowchart LR
 
 ---
 
-> **Navigation**: [< Previous](Day_020_Mar22_Sat.md) | [Back to Index](../00_MASTER_INDEX.md)
+> **Navigation**: [< Previous](Day_020_Mar22_Sat.md) | [Back to Index](../../00_MASTER_INDEX.md)

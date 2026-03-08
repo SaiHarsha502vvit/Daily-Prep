@@ -1,4 +1,4 @@
-> **SQL Chapter 19/20** | [← Previous](18_Projects_Mini.md) | [Index](../00_MASTER_INDEX.md) | [Next →](20_CheatSheet_QuickRef.md)
+> **SQL Chapter 19/20** | [← Previous](18a_SQL_Projects_Beginner.md) | [Index](../00_MASTER_INDEX.md) | [Next →](20_CheatSheet_QuickRef.md)
 
 ---
 

@@ -1111,7 +1111,7 @@ SAT → 3-SAT → CLIQUE → VERTEX COVER → HAMILTONIAN → TSP
 
 ---
 
-> **Next**: [Part B: Advanced Patterns & Competitive Programming](06b_Advanced_Algorithms_Patterns.md)
+> **Next**: [Part B: Advanced Patterns & Competitive Programming](06e_Algorithm_Patterns.md)
 
 
 ---

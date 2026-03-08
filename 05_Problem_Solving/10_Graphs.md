@@ -284,7 +284,7 @@ void dfs(int[][] grid, int r, int c, boolean[][] visited) {
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
-📖 **Related theory:** [03_Algorithms/05_Trees_Graphs.md](../03_Algorithms/05_Trees_Graphs.md) — Full graph theory & implementations
+📖 **Related theory:** [03_Algorithms/05_Trees.md](../03_Algorithms/05_Trees.md) — Full graph theory & implementations
 
 ---
 

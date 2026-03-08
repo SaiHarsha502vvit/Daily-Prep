@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](03_RealWorld_Problems_DSA.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_RealWorld_Problems_Part3.md)
+> **Navigation**: [< Previous](05_RealWorld_Problems_DSA.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_RealWorld_Problems_Part3.md)
 
 # 🌍 Real-World Problems Solved with DSA - Part 2
 
@@ -1363,4 +1363,4 @@ _Continued in Part 3: Interview Practice Problems_
 
 ---
 
-> **Navigation**: [< Previous](03_RealWorld_Problems_DSA.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_RealWorld_Problems_Part3.md)
+> **Navigation**: [< Previous](05_RealWorld_Problems_DSA.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_RealWorld_Problems_Part3.md)

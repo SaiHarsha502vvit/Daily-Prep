@@ -755,7 +755,7 @@ _Master these algorithms to understand the foundations of computer science!_ ðŸŽ
 
 ---
 
-> **Prev**: [Part A: Core Algorithm Techniques](06_Advanced_Algorithms.md)
+> **Prev**: [Part A: Core Algorithm Techniques](06a_Greedy_BitManip.md)
 
 ---
 

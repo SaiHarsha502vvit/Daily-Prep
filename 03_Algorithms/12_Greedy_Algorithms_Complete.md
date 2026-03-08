@@ -409,7 +409,7 @@ public int greedySolve(int[][] items) {
 
 📖 **Related mental models:**
 - [14_Mental_Models/05_Universal_Problem_Framework.md](../14_Mental_Models/05_Universal_Problem_Framework.md) — Classification decision tree
-- [14_Mental_Models/03_Optimization_Thinking.md](../14_Mental_Models/03_Optimization_Thinking.md) — Greedy vs DP decision framework
+- [14_Mental_Models/14_Optimization_Pipeline.md](../14_Mental_Models/14_Optimization_Pipeline.md) — Greedy vs DP decision framework
 
 ---
 

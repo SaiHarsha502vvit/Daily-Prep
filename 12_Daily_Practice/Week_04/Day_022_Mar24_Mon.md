@@ -1,4 +1,4 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_023_Mar25_Tue.md)
+> **Navigation**: [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_023_Mar25_Tue.md)
 
 # DAY 022 — Monday, March 24, 2026
 ## WEEK 04: Trie + Graph BFS/DFS + SQL Indexes
@@ -327,4 +327,4 @@ Output: 3
 
 ---
 
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_023_Mar25_Tue.md)
+> **Navigation**: [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_023_Mar25_Tue.md)

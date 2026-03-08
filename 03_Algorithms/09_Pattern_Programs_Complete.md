@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](08_GCD_NumberTheory_Patterns.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](10_Bit_Manipulation_Complete.md)
+> **Navigation**: [< Previous](08a_NumberTheory_Core.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](10_Bit_Manipulation_Complete.md)
 
 # ⭐ Complete Pattern Programs - From Zero to Hero
 

@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](09_React_Custom_Hooks.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](11_Complex_UI_Pages_Patterns.md)
+> **Navigation**: [< Previous](10_Custom_Hooks_Library.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](11_Complex_UI_Pages_Patterns.md)
 
 # 🪝 Chapter 10 — Custom Hooks Library: Production-Ready Patterns
 

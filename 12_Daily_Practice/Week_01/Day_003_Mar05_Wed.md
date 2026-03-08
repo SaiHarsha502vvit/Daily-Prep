@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](Day_002_Mar04_Tue.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_004_Mar06_Thu.md)
+> **Navigation**: [< Previous](Day_002_Mar04_Tue.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_004_Mar06_Thu.md)
 
 # Day 003 - Wednesday, March 5, 2026
 
@@ -472,7 +472,7 @@ DROP TABLE products;
 ```
 </details>
 
-> **Read more:** [08_SQL/03_DDL_CreateAlterDrop.md](../../08_SQL/03_DDL_CreateAlterDrop.md)
+> **Read more:** [08_SQL/03_DDL_Creating_Structure.md](../../08_SQL/03_DDL_Creating_Structure.md)
 
 ---
 
@@ -583,4 +583,4 @@ public int firstUniqChar(String s) {
 
 ---
 
-> **Navigation**: [< Previous](Day_002_Mar04_Tue.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_004_Mar06_Thu.md)
+> **Navigation**: [< Previous](Day_002_Mar04_Tue.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_004_Mar06_Thu.md)

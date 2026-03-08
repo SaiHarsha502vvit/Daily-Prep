@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](Day_022_Mar24_Mon.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_024_Mar26_Wed.md)
+> **Navigation**: [< Previous](Day_022_Mar24_Mon.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_024_Mar26_Wed.md)
 
 # DAY 023 — Tuesday, March 25, 2026
 ## Graph DFS + Trie Applications + SQL EXPLAIN & Query Optimization
@@ -260,4 +260,4 @@ Output: 2 (cities 0,1 = one province; city 2 = another)
 
 ---
 
-> **Navigation**: [< Previous](Day_022_Mar24_Mon.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_024_Mar26_Wed.md)
+> **Navigation**: [< Previous](Day_022_Mar24_Mon.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_024_Mar26_Wed.md)

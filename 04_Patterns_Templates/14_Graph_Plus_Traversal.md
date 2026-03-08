@@ -379,7 +379,7 @@ flowchart TD
 ---
 
 📖 **Related Chapters:**
-- [03_Algorithms/05b_Graphs_Core.md](../03_Algorithms/05b_Graphs_Core.md) — Graph fundamentals
+- [03_Algorithms/05c_Graphs_Fundamentals.md](../03_Algorithms/05c_Graphs_Fundamentals.md) — Graph fundamentals
 - [03_Algorithms/05d_Graphs_Advanced_Algos.md](../03_Algorithms/05d_Graphs_Advanced_Algos.md) — Advanced graph algorithms
 - [03_Algorithms/14_Union_Find_DSU_Complete.md](../03_Algorithms/14_Union_Find_DSU_Complete.md) — Union-Find deep dive
 

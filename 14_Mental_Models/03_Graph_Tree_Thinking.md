@@ -427,7 +427,7 @@ flowchart LR
 ---
 
 📖 **Related Files:**
-- [03_Algorithms/05b_Graphs_Core.md](../03_Algorithms/05b_Graphs_Core.md) — Graph algorithms
+- [03_Algorithms/05c_Graphs_Fundamentals.md](../03_Algorithms/05c_Graphs_Fundamentals.md) — Graph algorithms
 - [04_Patterns_Templates/13_Tree_Plus_DFS_BFS.md](../04_Patterns_Templates/13_Tree_Plus_DFS_BFS.md) — Tree+DFS/BFS problems
 - [04_Patterns_Templates/14_Graph_Plus_Traversal.md](../04_Patterns_Templates/14_Graph_Plus_Traversal.md) — Graph+Traversal problems
 

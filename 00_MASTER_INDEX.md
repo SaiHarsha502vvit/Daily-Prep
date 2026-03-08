@@ -1,4 +1,4 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](00_TEXTBOOK_PREFACE.md)
+> **Navigation**: [Back to Index](00_MASTER_INDEX.md) | [Next >](00_TEXTBOOK_PREFACE.md)
 
 # MASTER INDEX — Complete DSA, SQL, Spring Boot & Career Preparation
 
@@ -15,7 +15,7 @@
 | 76-Day Study Calendar | [01_Getting_Started/02_Study_Plan_Calendar.md](01_Getting_Started/02_Study_Plan_Calendar.md) |
 | DSA Guide (Foundations) | [09_Career_Reference/07_DSA_Guide_Foundations.md](09_Career_Reference/07_DSA_Guide_Foundations.md) |
 | Practice Problems (14 chapters) | [05_Problem_Solving/](#practice--problem-solving) |
-| SQL from Zero (21 chapters) | [08_SQL/](#sql-21-chapters) |
+| SQL from Zero (37 chapters) | [08_SQL/](#sql-37-chapters) |
 | Spring Boot (60 chapters, 12 Parts) | [07_Modern_Java/](#modern-java--spring-boot) |
 | Developer Essentials (10 guides) | [13_Developer_Essentials/](#developer-essentials-new) |
 | **Mental Models — HOW TO THINK (18 guides)** | [14_Mental_Models/](#mental-models--how-to-think-new) |
@@ -285,7 +285,7 @@ Daily-Prep/
 │   ├── Ch 68. Ch68_Distributed_Patterns.md  → Raft, 2PC, consistent hashing, CRDTs, outbox
 │   └── Ch 69. Ch69_Performance_Engineering.md         → Profiling, flamegraphs, JMH, memory leaks, GC tuning
 │
-├── 08_SQL/                              (25 chapter files — zero to expert)
+├── 08_SQL/                              (37 chapter files — zero to expert)
 │   ├── 01_Foundations_Database_Basics.md → What is a database, RDBMS, SQL
 │   ├── 02_DataTypes_Constraints.md      → INT, VARCHAR, DECIMAL, NOT NULL
 │   ├── 03_DDL_Creating_Structure.md     → CREATE, ALTER, DROP, TRUNCATE
@@ -575,7 +575,7 @@ Daily-Prep/
 - Ch 68. [Distributed Patterns](07_Modern_Java/Ch68_Distributed_Patterns.md) — Raft, 2PC, consistent hashing, CRDTs
 - Ch 69. [Performance Engineering](07_Modern_Java/Ch69_Performance_Engineering.md) — Profiling, flamegraphs, JMH, memory leaks
 
-### SQL (21 chapters)
+### SQL (37 chapters)
 - [01 Foundations](08_SQL/01_Foundations_Database_Basics.md) | [02 Data Types](08_SQL/02_DataTypes_Constraints.md) | [03 DDL](08_SQL/03_DDL_Creating_Structure.md) | [04 DML](08_SQL/04_DML_Manipulating_Data.md)
 - [05 SELECT](08_SQL/05_Queries_SELECT_WHERE.md) | [06 Aggregations](08_SQL/06_Aggregations_GroupBy.md) | [07 JOINs](08_SQL/07_JOINs_Complete.md) | [08 Subqueries/CTEs](08_SQL/08_Subqueries_CTEs.md)
 - [09 Window Functions](08_SQL/09_Window_Functions.md) | [10 Normalization](08_SQL/10_Normalization.md) | [11 Indexes](08_SQL/11_Indexes_Performance.md) | [12 Views/Procs](08_SQL/12_Views_StoredProcs_Triggers.md)
@@ -584,11 +584,27 @@ Daily-Prep/
 - [19 Interview Top 50](08_SQL/19_Interview_Top50.md) | [20 Cheat Sheet](08_SQL/20_CheatSheet_QuickRef.md)
 
 ### SQL & Database — Advanced (5 files)
-- **🆕** [SQL Interview Top 50 (expanded)](08_SQL/25_Interview_Patterns_Expanded.md) — 50 problems organized by pattern
-- **🆕** [Database Internals](08_SQL/21_Database_Internals.md) — B-Tree, WAL, MVCC, buffer pool, query plans
-- **🆕** [NoSQL & MongoDB](08_SQL/22_NoSQL_MongoDB.md) — NoSQL categories, MongoDB CRUD, Redis
-- **⚡** [SQL Deep Reasoning](08_SQL/23_SQL_Deep_Reasoning.md) — 10 SQL "freeze moments" (NULL logic, JOIN execution, isolation levels)
-- **⚡** [SQL Data Analyst Real-World](08_SQL/24_SQL_Data_Analyst_RealWorld.md) — Cohort, funnel, retention, A/B testing SQL, RFM segmentation, KPI dashboards
+- [SQL Interview Patterns](08_SQL/25_Interview_Patterns_Expanded.md) — 50 problems organized by pattern
+- [Database Internals](08_SQL/21_Database_Internals.md) — B-Tree, WAL, MVCC, buffer pool, query plans
+- [NoSQL & MongoDB](08_SQL/22_NoSQL_MongoDB.md) — NoSQL categories, MongoDB CRUD, Redis
+- [SQL Deep Reasoning](08_SQL/23_SQL_Deep_Reasoning.md) — 10 SQL "freeze moments" (NULL logic, JOIN execution, isolation levels)
+- [SQL Data Analyst Real-World](08_SQL/24_SQL_Data_Analyst_RealWorld.md) — Cohort, funnel, retention, A/B testing SQL, RFM segmentation, KPI dashboards
+
+### SQL — Python + Analytics (4 files) 🆕
+- [Python SQL Integration](08_SQL/26_Python_SQL_Integration.md) — sqlite3, psycopg2, SQLAlchemy, pandas+SQL pipelines
+- [Python SQL Visualization](08_SQL/27_Python_SQL_Visualization.md) — matplotlib, seaborn, plotly dashboards from SQL data
+- [Data Analytics Intermediate](08_SQL/28_Data_Analytics_Intermediate.md) — Cohort, funnel, RFM segmentation, churn, CLV
+- [Data Analytics Advanced](08_SQL/29_Data_Analytics_Advanced.md) — A/B testing, anomaly detection, ML feature prep
+
+### SQL — Architecture & Operations (8 files) 🆕
+- [Recursive Queries](08_SQL/30_Recursive_Queries_Hierarchical.md) — Recursive CTEs, org charts, BOM, graph traversal
+- [JSON XML Modern SQL](08_SQL/31_JSON_XML_Modern_SQL.md) — JSONB, JSON_TABLE, XML, PostgreSQL arrays
+- [Partitioning & Sharding](08_SQL/32_Partitioning_Sharding_Replication.md) — Range/list/hash partitions, replicas, scaling
+- [SQL Security](08_SQL/33_SQL_Security_Injection.md) — Injection prevention, roles, RLS, encryption, audit
+- [Time Series & Temporal](08_SQL/34_TimeSeries_Temporal.md) — Temporal tables, SCD types, gap detection
+- [Database Migrations](08_SQL/35_Database_Migration_Schema.md) — Flyway, Liquibase, Alembic, zero-downtime
+- [Advanced Data Modeling](08_SQL/36_Advanced_Data_Modeling.md) — Star/snowflake schema, Data Vault, fact types
+- [5W-H Deep Reasoning](08_SQL/37_SQL_5WH_Deep_Reasoning.md) — 5W-H framework applied to all SQL concepts
 
 ### Career & Reference (14 files)
 - [Career Framework](09_Career_Reference/01_Career_TechnoFunctional.md)
@@ -598,7 +614,7 @@ Daily-Prep/
 - **🆕** [Behavioral Interview](09_Career_Reference/15_Behavioral_Interview.md) — STAR method, 8 categories, Amazon LPs, story bank
 
 ### Enterprise & Real-World (8 files)
-- ERP: [Fundamentals](10_Enterprise_Systems/01_ERP_Fundamentals.md) | [Advanced](10_Enterprise_Systems/02_ERP_Advanced.md || [Finance Core](10_Enterprise_Systems/03_ERP_Finance_Core.md) | [Finance Real-World](10_Enterprise_Systems/04_ERP_Finance_RealWorld.md)
+- ERP: [Fundamentals](10_Enterprise_Systems/01_ERP_Fundamentals.md) | [Advanced](10_Enterprise_Systems/02_ERP_Advanced.md) | [Finance Core](10_Enterprise_Systems/03_ERP_Finance_Core.md) | [Finance Real-World](10_Enterprise_Systems/04_ERP_Finance_RealWorld.md)
 - Real-World Problems: [Part 1](10_Enterprise_Systems/05_RealWorld_Problems_DSA.md) | [Part 2](10_Enterprise_Systems/06_RealWorld_Problems_Part2.md) | [Part 3](10_Enterprise_Systems/07_RealWorld_Problems_Part3.md)
 - [Production Incidents & DSA](10_Enterprise_Systems/08_RealWorld_Incidents_DSA.md)
 
@@ -736,7 +752,7 @@ Open [07_Modern_Java/Ch25_Spring_Boot_50Day_Plan.md](07_Modern_Java/Ch25_Spring_
 | 05_Problem_Solving | 25 | 22 topic chapters + Edge Cases, Common Mistakes, Problem Origins |
 | 06_OOP_Design | 4 | OOP, Design Patterns, System Design, User Flows |
 | 07_Modern_Java | 69 | Ch01–Ch69: Core Java → Collections → Concurrency → Spring Boot → Microservices → Infrastructure |
-| 08_SQL | 25 | Zero to expert in 25 chapters: foundations → advanced → internals → interview |
+| 08_SQL | 37 | Zero to expert in 37 chapters: foundations → advanced → Python+SQL → analytics → architecture |
 | 09_Career_Reference | 15 | Career path, DSA ref, Quick ref, Psychology, Habits, Resources + specialist guides |
 | 10_Enterprise_Systems | 8 | ERP, Finance, Real-world problems & incidents |
 | 12_Daily_Practice | 29 | Index + 28 days (4 weeks) with cross-reference links |
@@ -756,4 +772,4 @@ _Last restructured: March 2026 — Phase 25: Full textbook restructure. All file
 
 ---
 
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](00_TEXTBOOK_PREFACE.md)
+> **Navigation**: [Back to Index](00_MASTER_INDEX.md) | [Next >](00_TEXTBOOK_PREFACE.md)

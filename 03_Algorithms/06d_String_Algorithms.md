@@ -3,7 +3,7 @@
 # Advanced Algorithm Patterns & Competitive Programming
 
 > **Part B of Advanced Algorithms**
-> **Navigation**: [Part A: Core Techniques](06_Advanced_Algorithms.md) | [Part B: Advanced Patterns]
+> **Navigation**: [Part A: Core Techniques](06a_Greedy_BitManip.md) | [Part B: Advanced Patterns]
 
 ---
 

@@ -1,4 +1,4 @@
-> **SQL Chapter 17/20** | [← Previous](16_RealWorld_CaseStudies.md) | [Index](../00_MASTER_INDEX.md) | [Next →](18_Projects_Mini.md)
+> **SQL Chapter 17/20** | [← Previous](16_RealWorld_CaseStudies.md) | [Index](../00_MASTER_INDEX.md) | [Next →](18a_SQL_Projects_Beginner.md)
 
 ---
 

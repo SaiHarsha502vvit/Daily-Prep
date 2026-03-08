@@ -72,7 +72,7 @@ Every day follows this structure:
 | ❓ Q1 | Find the maximum element in an array | *Easy — single pass* |
 | ❓ Q2 | Count occurrences of a number in an array | *Easy — frequency counting intro* |
 
-📘 Read: [02_Data_Structures/01_DataStructures_Complete.md](../02_Data_Structures/01_DataStructures_Complete.md) — Arrays section  
+📘 Read: [02_Data_Structures/01a_Memory_Foundations.md](../02_Data_Structures/01a_Memory_Foundations.md) — Arrays section  
 📘 Read: [03_Algorithms/01_Algorithm_Thinking.md](../03_Algorithms/01_Algorithm_Thinking.md) — How to approach problems
 
 > **Mentor Note:** Today is Day 1. Don't rush. Understand WHY arrays are indexed from 0. Understand WHY linear search is O(n). These "obvious" things become your vocabulary.
@@ -107,7 +107,7 @@ Every day follows this structure:
 | ❓ Q1 | Find second largest element in array | *Easy — two-pass or one-pass* |
 | ❓ Q2 | Move all zeros to end (LC 283) | *Easy — two pointer intro* |
 
-📘 Read: [03_Algorithms/02_Sorting_Algorithms.md](../03_Algorithms/02_Sorting_Algorithms.md) — Selection Sort section
+📘 Read: [03_Algorithms/02a_Sorting_Fundamentals.md](../03_Algorithms/02a_Sorting_Fundamentals.md) — Selection Sort section
 
 > **Mentor Note:** Weekend = extra time. After solving, try writing Selection Sort from memory 3 times. Muscle memory > reading.
 
@@ -124,7 +124,7 @@ Every day follows this structure:
 | ❓ Q1 | Reverse a string | *Easy — two pointers or StringBuilder* |
 | ❓ Q2 | Check if string is palindrome | *Easy — compare from both ends* |
 
-📘 Read: [02_Data_Structures/01_DataStructures_Complete.md](../02_Data_Structures/01_DataStructures_Complete.md) — Strings section  
+📘 Read: [02_Data_Structures/01a_Memory_Foundations.md](../02_Data_Structures/01a_Memory_Foundations.md) — Strings section  
 📘 Read: [03_Algorithms/09_Pattern_Programs_Complete.md](../03_Algorithms/09_Pattern_Programs_Complete.md) — Part 3 (Character Patterns)
 
 ---
@@ -188,7 +188,7 @@ Every day follows this structure:
 | ❓ Q1 | LC 26 — Remove Duplicates from Sorted Array | *Easy — in-place with pointer* |
 | ❓ Q2 | LC 283 — Move Zeroes | *Easy — review with two pointer lens* |
 
-📘 Read: [03_Algorithms/02_Sorting_Algorithms.md](../03_Algorithms/02_Sorting_Algorithms.md) — Merge Sort  
+📘 Read: [03_Algorithms/02a_Sorting_Fundamentals.md](../03_Algorithms/02a_Sorting_Fundamentals.md) — Merge Sort  
 📘 Read: [04_Patterns_Templates/07_Two_Pointers_Complete.md](../04_Patterns_Templates/07_Two_Pointers_Complete.md) — Introduction
 
 > **Mentor Note:** Merge Sort is your first "real" algorithm. Trace the recursion tree on paper. Draw the merge step. This is where you level up.
@@ -206,7 +206,7 @@ Every day follows this structure:
 | ❓ Q1 | LC 125 — Valid Palindrome | *Easy — two pointers classic* |
 | ❓ Q2 | LC 344 — Reverse String | *Easy — in-place swap* |
 
-📘 Read: [03_Algorithms/02_Sorting_Algorithms.md](../03_Algorithms/02_Sorting_Algorithms.md) — Quick Sort
+📘 Read: [03_Algorithms/02a_Sorting_Fundamentals.md](../03_Algorithms/02a_Sorting_Fundamentals.md) — Quick Sort
 
 ---
 
@@ -295,8 +295,8 @@ Every day follows this structure:
 | ❓ Q1 | Create a linked list and print all elements | *Easy — implementation* |
 | ❓ Q2 | LC 509 — Fibonacci Number (recursive) | *Easy — classic recursion* |
 
-📘 Read: [02_Data_Structures/02_DataStructures_Variants.md](../02_Data_Structures/02_DataStructures_Variants.md) — Linked List section  
-📘 Read: [03_Algorithms/03_Recursion_Complete.md](../03_Algorithms/03_Recursion_Complete.md) — Part 1
+📘 Read: [02_Data_Structures/02a_DS_Variants_Core.md](../02_Data_Structures/02a_DS_Variants_Core.md) — Linked List section  
+📘 Read: [03_Algorithms/03b_Recursion_Fundamentals.md](../03_Algorithms/03b_Recursion_Fundamentals.md) — Part 1
 
 > **Mentor Note:** Linked Lists are where most students first feel "lost." Draw boxes with arrows on paper. EVERY. SINGLE. TIME. Visualization is not optional here.
 
@@ -326,7 +326,7 @@ Every day follows this structure:
 | ❓ Q1 | LC 206 — Reverse Linked List | *Easy — must-know* |
 | ❓ Q2 | LC 21 — Merge Two Sorted Lists | *Easy — pointer manipulation* |
 
-📘 Read: [03_Algorithms/03_Recursion_Complete.md](../03_Algorithms/03_Recursion_Complete.md) — Reversal techniques
+📘 Read: [03_Algorithms/03b_Recursion_Fundamentals.md](../03_Algorithms/03b_Recursion_Fundamentals.md) — Reversal techniques
 
 > **Mentor Note:** LC 206 is asked in 80% of interviews. You must be able to write it in under 3 minutes, both iteratively and recursively. Practice until it's automatic.
 
@@ -343,7 +343,7 @@ Every day follows this structure:
 | ❓ Q1 | LC 141 — Linked List Cycle | *Easy — detect cycle* |
 | ❓ Q2 | LC 876 — Middle of the Linked List | *Easy — slow-fast* |
 
-📘 Read: [03_Algorithms/08_GCD_NumberTheory_Patterns.md](../03_Algorithms/08_GCD_NumberTheory_Patterns.md) — Part 1
+📘 Read: [03_Algorithms/08a_NumberTheory_Core.md](../03_Algorithms/08a_NumberTheory_Core.md) — Part 1
 
 ---
 
@@ -371,7 +371,7 @@ Every day follows this structure:
 | ❓ Q1 | LC 204 — Count Primes | *Medium — sieve* |
 | ❓ Q2 | LC 160 — Intersection of Two Linked Lists | *Easy — two pointer on LL* |
 
-📘 Read: [03_Algorithms/08_GCD_NumberTheory_Patterns.md](../03_Algorithms/08_GCD_NumberTheory_Patterns.md) — Part 3
+📘 Read: [03_Algorithms/08a_NumberTheory_Core.md](../03_Algorithms/08a_NumberTheory_Core.md) — Part 3
 
 ---
 
@@ -408,8 +408,8 @@ Every day follows this structure:
 | ❓ Q1 | LC 20 — Valid Parentheses | *Easy — stack classic* |
 | ❓ Q2 | LC 1281 — Subtract Product and Sum of Digits | *Easy — digit extraction* |
 
-📘 Read: [02_Data_Structures/02_DataStructures_Variants.md](../02_Data_Structures/02_DataStructures_Variants.md) — Stack section  
-📘 Read: [03_Algorithms/08_GCD_NumberTheory_Patterns.md](../03_Algorithms/08_GCD_NumberTheory_Patterns.md) — Part 4 (Modular)
+📘 Read: [02_Data_Structures/02a_DS_Variants_Core.md](../02_Data_Structures/02a_DS_Variants_Core.md) — Stack section  
+📘 Read: [03_Algorithms/08a_NumberTheory_Core.md](../03_Algorithms/08a_NumberTheory_Core.md) — Part 4 (Modular)
 
 ---
 
@@ -439,7 +439,7 @@ Every day follows this structure:
 | ❓ Q1 | LC 303 — Range Sum Query (Immutable) | *Easy — prefix sum* |
 | ❓ Q2 | LC 232 — Implement Queue using Stacks | *Easy — design* |
 
-📘 Read: [02_Data_Structures/02_DataStructures_Variants.md](../02_Data_Structures/02_DataStructures_Variants.md) — Queue section
+📘 Read: [02_Data_Structures/02a_DS_Variants_Core.md](../02_Data_Structures/02a_DS_Variants_Core.md) — Queue section
 
 ---
 
@@ -617,7 +617,7 @@ Every day follows this structure:
 | ❓ Q1 | LC 94 — Binary Tree Inorder Traversal | *Easy — recursive* |
 | ❓ Q2 | LC 144 — Binary Tree Preorder Traversal | *Easy — recursive + iterative* |
 
-📘 Read: [03_Algorithms/05_Trees_Graphs.md](../03_Algorithms/05_Trees_Graphs.md) — Part 1 (Trees)
+📘 Read: [03_Algorithms/05_Trees.md](../03_Algorithms/05_Trees.md) — Part 1 (Trees)
 
 > **Mentor Note:** Trees are recursion in action. If recursion felt hard in Week 3, it'll click now. Every tree problem = "process root, recurse left, recurse right."
 
@@ -721,8 +721,8 @@ Every day follows this structure:
 | ❓ Q1 | LC 215 — Kth Largest Element in an Array | *Medium — heap or quickselect* |
 | ❓ Q2 | LC 703 — Kth Largest Element in a Stream | *Easy — min-heap of size K* |
 
-📘 Read: [02_Data_Structures/02_DataStructures_Variants.md](../02_Data_Structures/02_DataStructures_Variants.md) — Heap section  
-📘 Read: [03_Algorithms/07_Advanced_DataStructures.md](../03_Algorithms/07_Advanced_DataStructures.md) — Heap section
+📘 Read: [02_Data_Structures/02a_DS_Variants_Core.md](../02_Data_Structures/02a_DS_Variants_Core.md) — Heap section  
+📘 Read: [03_Algorithms/07a_Advanced_DS_Core.md](../03_Algorithms/07a_Advanced_DS_Core.md) — Heap section
 
 ---
 
@@ -750,7 +750,7 @@ Every day follows this structure:
 | ❓ Q1 | LC 200 — Number of Islands | *Medium — BFS/DFS on grid* |
 | ❓ Q2 | LC 733 — Flood Fill | *Easy — BFS/DFS* |
 
-📘 Read: [03_Algorithms/05_Trees_Graphs.md](../03_Algorithms/05_Trees_Graphs.md) — Graphs section
+📘 Read: [03_Algorithms/05_Trees.md](../03_Algorithms/05_Trees.md) — Graphs section
 
 > **Mentor Note:** Graphs are just "trees with cycles." BFS on graphs = BFS on trees + visited set. You already know the foundation from Week 6.
 
@@ -820,7 +820,7 @@ Every day follows this structure:
 | ❓ Q1 | LC 70 — Climbing Stairs | *Easy — 1D DP* |
 | ❓ Q2 | LC 509 — Fibonacci (DP approach) | *Easy — tabulation* |
 
-📘 Read: [03_Algorithms/04_Dynamic_Programming.md](../03_Algorithms/04_Dynamic_Programming.md) — Basics section
+📘 Read: [03_Algorithms/04b_DP_Fundamentals.md](../03_Algorithms/04b_DP_Fundamentals.md) — Basics section
 
 > **Mentor Note:** DP is the most feared topic. But it's just: "Can I break this into smaller problems? Can I store results to avoid re-solving?" That's it. Start simple, build confidence.
 
@@ -850,7 +850,7 @@ Every day follows this structure:
 | ❓ Q1 | LC 416 — Partition Equal Subset Sum | *Medium — subset sum* |
 | ❓ Q2 | LC 494 — Target Sum (approach) | *Medium — knapsack variant* |
 
-📘 Read: [03_Algorithms/04_Dynamic_Programming.md](../03_Algorithms/04_Dynamic_Programming.md) — Knapsack section
+📘 Read: [03_Algorithms/04b_DP_Fundamentals.md](../03_Algorithms/04b_DP_Fundamentals.md) — Knapsack section
 
 ---
 
@@ -921,7 +921,7 @@ Every day follows this structure:
 | ❓ Q2 | LC 452 — Minimum Number of Arrows | *Medium — intervals* |
 
 📘 Read: [03_Algorithms/12_Greedy_Algorithms_Complete.md](../03_Algorithms/12_Greedy_Algorithms_Complete.md)  
-📘 Read: [03_Algorithms/06_Advanced_Algorithms.md](../03_Algorithms/06_Advanced_Algorithms.md) — Greedy section
+📘 Read: [03_Algorithms/06a_Greedy_BitManip.md](../03_Algorithms/06a_Greedy_BitManip.md) — Greedy section
 
 ---
 
@@ -950,7 +950,7 @@ Every day follows this structure:
 | ❓ Q2 | LC 47 — Permutations II (with duplicates) | *Medium — skip duplicates* |
 
 📘 Read: [03_Algorithms/11_Backtracking_Complete.md](../03_Algorithms/11_Backtracking_Complete.md)  
-📘 Read: [03_Algorithms/03_Recursion_Complete.md](../03_Algorithms/03_Recursion_Complete.md) — Backtracking section
+📘 Read: [03_Algorithms/03b_Recursion_Fundamentals.md](../03_Algorithms/03b_Recursion_Fundamentals.md) — Backtracking section
 
 > **Mentor Note:** Backtracking = recursion + undo. Draw the recursion tree for every problem. If you can draw the tree, you can write the code.
 
@@ -993,7 +993,7 @@ Every day follows this structure:
 | ❓ Q1 | LC 208 — Implement Trie | *Medium — design* |
 | ❓ Q2 | LC 14 — Longest Common Prefix | *Easy — trie or vertical scan* |
 
-📘 Read: [03_Algorithms/07_Advanced_DataStructures.md](../03_Algorithms/07_Advanced_DataStructures.md) — Trie section
+📘 Read: [03_Algorithms/07a_Advanced_DS_Core.md](../03_Algorithms/07a_Advanced_DS_Core.md) — Trie section
 
 ---
 
@@ -1134,7 +1134,7 @@ Every day follows this structure:
 
 📘 Read: [06_OOP_Design/01_OOPS_Principles.md](../06_OOP_Design/01_OOPS_Principles.md)  
 📘 Read: [06_OOP_Design/02_Design_Patterns.md](../06_OOP_Design/02_Design_Patterns.md)  
-📘 Read: [11_SQL_Complete/01_SQL_Foundations_WHY_HOW.md](../11_SQL_Complete/01_SQL_Foundations_WHY_HOW.md)
+📘 Read: [08_SQL/01_Foundations_Database_Basics.md](../08_SQL/01_Foundations_Database_Basics.md)
 
 ---
 
@@ -1149,8 +1149,8 @@ Every day follows this structure:
 | ❓ Q1 | SQL — Employee earning more than manager | *Classic SQL* |
 | ❓ Q2 | SQL — Find duplicate emails | *Classic SQL* |
 
-📘 Read: [11_SQL_Complete/02_SQL_Data_Analysis.md](../11_SQL_Complete/02_SQL_Data_Analysis.md)  
-📘 Read: [08_SQL/01_SQL_Complete_Guide.md](../08_SQL/01_SQL_Complete_Guide.md)
+📘 Read: [08_SQL/24_SQL_Data_Analyst_RealWorld.md](../08_SQL/24_SQL_Data_Analyst_RealWorld.md)  
+📘 Read: [08_SQL/01_Foundations_Database_Basics.md](../08_SQL/01_Foundations_Database_Basics.md)
 
 ---
 
@@ -1195,7 +1195,7 @@ Hour 3: Final Weak Area Push
   Write a 1-line summary for each pattern
 ```
 
-📘 Read: [11_SQL_Complete/04_SQL_Practice_Projects.md](../11_SQL_Complete/04_SQL_Practice_Projects.md)
+📘 Read: [08_SQL/17_Practice_100_Problems.md](../08_SQL/17_Practice_100_Problems.md)
 
 ---
 
@@ -1295,17 +1295,17 @@ Tomorrow's focus:      _______________________
 
 | Week | Primary Reading Files |
 |------|----------------------|
-| 1 | [01_DataStructures_Complete.md](../02_Data_Structures/01_DataStructures_Complete.md), [01_Algorithm_Thinking.md](../03_Algorithms/01_Algorithm_Thinking.md), [09_Pattern_Programs_Complete.md](../03_Algorithms/09_Pattern_Programs_Complete.md), [02_Sorting_Algorithms.md](../03_Algorithms/02_Sorting_Algorithms.md) |
-| 2 | [02_Sorting_Algorithms.md](../03_Algorithms/02_Sorting_Algorithms.md), [07_Two_Pointers_Complete.md](../04_Patterns_Templates/07_Two_Pointers_Complete.md), [06_Binary_Search_Patterns.md](../04_Patterns_Templates/06_Binary_Search_Patterns.md), [04_2D_Arrays_Matrix.md](../02_Data_Structures/04_2D_Arrays_Matrix.md) |
-| 3 | [02_DataStructures_Variants.md](../02_Data_Structures/02_DataStructures_Variants.md), [03_Recursion_Complete.md](../03_Algorithms/03_Recursion_Complete.md), [08_GCD_NumberTheory_Patterns.md](../03_Algorithms/08_GCD_NumberTheory_Patterns.md) |
-| 4 | [02_DataStructures_Variants.md](../02_Data_Structures/02_DataStructures_Variants.md) (Stack/Queue), [08_GCD_NumberTheory_Patterns.md](../03_Algorithms/08_GCD_NumberTheory_Patterns.md) (Modular), [15_Monotonic_Stack_Queue_Complete.md](../03_Algorithms/15_Monotonic_Stack_Queue_Complete.md) |
+| 1 | [01a_Memory_Foundations.md](../02_Data_Structures/01a_Memory_Foundations.md), [01_Algorithm_Thinking.md](../03_Algorithms/01_Algorithm_Thinking.md), [09_Pattern_Programs_Complete.md](../03_Algorithms/09_Pattern_Programs_Complete.md), [02a_Sorting_Fundamentals.md](../03_Algorithms/02a_Sorting_Fundamentals.md) |
+| 2 | [02a_Sorting_Fundamentals.md](../03_Algorithms/02a_Sorting_Fundamentals.md), [07_Two_Pointers_Complete.md](../04_Patterns_Templates/07_Two_Pointers_Complete.md), [06_Binary_Search_Patterns.md](../04_Patterns_Templates/06_Binary_Search_Patterns.md), [04_2D_Arrays_Matrix.md](../02_Data_Structures/04_2D_Arrays_Matrix.md) |
+| 3 | [02a_DS_Variants_Core.md](../02_Data_Structures/02a_DS_Variants_Core.md), [03b_Recursion_Fundamentals.md](../03_Algorithms/03b_Recursion_Fundamentals.md), [08a_NumberTheory_Core.md](../03_Algorithms/08a_NumberTheory_Core.md) |
+| 4 | [02a_DS_Variants_Core.md](../02_Data_Structures/02a_DS_Variants_Core.md) (Stack/Queue), [08a_NumberTheory_Core.md](../03_Algorithms/08a_NumberTheory_Core.md) (Modular), [15_Monotonic_Stack_Queue_Complete.md](../03_Algorithms/15_Monotonic_Stack_Queue_Complete.md) |
 | 5 | [01_Sliding_Window.md](../04_Patterns_Templates/01_Sliding_Window.md), [03_Collections_Java.md](../02_Data_Structures/03_Collections_Java.md), [04_Pattern_Recognition.md](../04_Patterns_Templates/04_Pattern_Recognition.md) |
-| 6 | [05_Trees_Graphs.md](../03_Algorithms/05_Trees_Graphs.md) (Trees), [04_Pattern_Recognition.md](../04_Patterns_Templates/04_Pattern_Recognition.md) |
-| 7 | [05_Trees_Graphs.md](../03_Algorithms/05_Trees_Graphs.md) (Graphs), [07_Advanced_DataStructures.md](../03_Algorithms/07_Advanced_DataStructures.md) (Heap) |
-| 8 | [04_Dynamic_Programming.md](../03_Algorithms/04_Dynamic_Programming.md) |
-| 9 | [12_Greedy_Algorithms_Complete.md](../03_Algorithms/12_Greedy_Algorithms_Complete.md), [11_Backtracking_Complete.md](../03_Algorithms/11_Backtracking_Complete.md), [07_Advanced_DataStructures.md](../03_Algorithms/07_Advanced_DataStructures.md) (Trie) |
+| 6 | [05_Trees.md](../03_Algorithms/05_Trees.md) (Trees), [04_Pattern_Recognition.md](../04_Patterns_Templates/04_Pattern_Recognition.md) |
+| 7 | [05_Trees.md](../03_Algorithms/05_Trees.md) (Graphs), [07a_Advanced_DS_Core.md](../03_Algorithms/07a_Advanced_DS_Core.md) (Heap) |
+| 8 | [04b_DP_Fundamentals.md](../03_Algorithms/04b_DP_Fundamentals.md) |
+| 9 | [12_Greedy_Algorithms_Complete.md](../03_Algorithms/12_Greedy_Algorithms_Complete.md), [11_Backtracking_Complete.md](../03_Algorithms/11_Backtracking_Complete.md), [07a_Advanced_DS_Core.md](../03_Algorithms/07a_Advanced_DS_Core.md) (Trie) |
 | 10 | [10_Bit_Manipulation_Complete.md](../03_Algorithms/10_Bit_Manipulation_Complete.md), [14_Union_Find_DSU_Complete.md](../03_Algorithms/14_Union_Find_DSU_Complete.md), [13_String_Algorithms_Complete.md](../03_Algorithms/13_String_Algorithms_Complete.md), [15_Monotonic_Stack_Queue_Complete.md](../03_Algorithms/15_Monotonic_Stack_Queue_Complete.md) |
-| 11 | [01_OOPS_Principles.md](../06_OOP_Design/01_OOPS_Principles.md), [03_System_Design.md](../06_OOP_Design/03_System_Design.md), [01_SQL_Foundations_WHY_HOW.md](../11_SQL_Complete/01_SQL_Foundations_WHY_HOW.md), [11_Quick_Reference.md](../09_Career_Reference/11_Quick_Reference.md) |
+| 11 | [01_OOPS_Principles.md](../06_OOP_Design/01_OOPS_Principles.md), [03_System_Design.md](../06_OOP_Design/03_System_Design.md), [01_Foundations_Database_Basics.md](../08_SQL/01_Foundations_Database_Basics.md), [11_Quick_Reference.md](../09_Career_Reference/11_Quick_Reference.md) |
 
 ---
 

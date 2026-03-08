@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](04_ERP_Finance_RealWorld.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_RealWorld_Problems_Part2.md)
+> **Navigation**: [< Previous](04_ERP_Finance_RealWorld.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_RealWorld_Problems_Part2.md)
 
 # 🌍 Real-World Problems Solved with DSA
 
@@ -1416,4 +1416,4 @@ _More problems in next part..._
 
 ---
 
-> **Navigation**: [< Previous](04_ERP_Finance_RealWorld.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_RealWorld_Problems_Part2.md)
+> **Navigation**: [< Previous](04_ERP_Finance_RealWorld.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_RealWorld_Problems_Part2.md)

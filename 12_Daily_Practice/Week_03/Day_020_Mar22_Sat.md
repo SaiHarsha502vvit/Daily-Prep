@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](Day_019_Mar21_Fri.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_021_Mar23_Sun.md)
+> **Navigation**: [< Previous](Day_019_Mar21_Fri.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_021_Mar23_Sun.md)
 
 # Day 020 — Saturday, March 22, 2026
 
@@ -514,4 +514,4 @@ TARGET: 26+ before moving to Week 4
 
 ---
 
-> **Navigation**: [< Previous](Day_019_Mar21_Fri.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_021_Mar23_Sun.md)
+> **Navigation**: [< Previous](Day_019_Mar21_Fri.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_021_Mar23_Sun.md)

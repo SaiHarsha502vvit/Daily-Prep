@@ -1,6 +1,6 @@
 > **Navigation**: [< Previous](17_HashMap_Hashing.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](19_Matrix.md)
 
-> **Problems 18/22** | [Prev](17_HashMap_Hashing.md) | [Index](../00_MASTER_INDEX.md) | [Next](19_Problems_Matrix_Grid.md)
+> **Problems 18/22** | [Prev](17_HashMap_Hashing.md) | [Index](../00_MASTER_INDEX.md) | [Next](19_Matrix.md)
 
 ---
 
@@ -1880,7 +1880,7 @@ flowchart TD
 
 ---
 
-> **End of Section 16** | [Prev](17_HashMap_Hashing.md) | [Index](../00_MASTER_INDEX.md) | [Next](19_Problems_Matrix_Grid.md)
+> **End of Section 16** | [Prev](17_HashMap_Hashing.md) | [Index](../00_MASTER_INDEX.md) | [Next](19_Matrix.md)
 
 
 ---

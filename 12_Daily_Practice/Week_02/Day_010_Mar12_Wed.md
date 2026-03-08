@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](Day_009_Mar11_Tue.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_011_Mar13_Thu.md)
+> **Navigation**: [< Previous](Day_009_Mar11_Tue.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_011_Mar13_Thu.md)
 
 # Day 010 - Wednesday, March 12, 2026
 
@@ -518,4 +518,4 @@ TOMORROW'S PREVIEW: Queue/Deque + HashMap intro + SQL JOINs Part 1
 
 ---
 
-> **Navigation**: [< Previous](Day_009_Mar11_Tue.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_011_Mar13_Thu.md)
+> **Navigation**: [< Previous](Day_009_Mar11_Tue.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_011_Mar13_Thu.md)

@@ -8,7 +8,7 @@
 ## From Divide & Conquer to NP-Complete
 
 ---
-> **Navigation**: [Part A: Core Techniques] | [Part B: Advanced Patterns](06b_Advanced_Algorithms_Patterns.md)
+> **Navigation**: [Part A: Core Techniques] | [Part B: Advanced Patterns](06e_Algorithm_Patterns.md)
 
 ---
 

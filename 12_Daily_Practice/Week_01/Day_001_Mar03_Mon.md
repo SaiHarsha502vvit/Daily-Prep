@@ -1,4 +1,4 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_002_Mar04_Tue.md)
+> **Navigation**: [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_002_Mar04_Tue.md)
 
 # Day 001 - Monday, March 3, 2026
 
@@ -158,7 +158,7 @@ public class ArrayBasics {
 }
 ```
 
-> **Read more:** [02_Data_Structures/01_DataStructures_Complete.md](../../02_Data_Structures/01_DataStructures_Complete.md)
+> **Read more:** [02_Data_Structures/01a_Memory_Foundations.md](../../02_Data_Structures/01a_Memory_Foundations.md)
 
 ---
 
@@ -274,7 +274,7 @@ flowchart TD
     N2 --> N3
 ```
 
-> **Read more:** [03_Algorithms/02_Sorting_Algorithms.md](../../03_Algorithms/02_Sorting_Algorithms.md)
+> **Read more:** [03_Algorithms/02a_Sorting_Fundamentals.md](../../03_Algorithms/02a_Sorting_Fundamentals.md)
 
 ---
 
@@ -748,4 +748,4 @@ public int singleNumber(int[] nums) {
 
 ---
 
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_002_Mar04_Tue.md)
+> **Navigation**: [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_002_Mar04_Tue.md)

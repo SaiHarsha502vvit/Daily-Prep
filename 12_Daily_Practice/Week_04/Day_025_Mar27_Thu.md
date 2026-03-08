@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](Day_024_Mar26_Wed.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_026_Mar28_Fri.md)
+> **Navigation**: [< Previous](Day_024_Mar26_Wed.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_026_Mar28_Fri.md)
 
 # DAY 025 — Thursday, March 27, 2026
 ## Topological Sort + Kruskal's MST + SQL Views & Stored Procedures
@@ -272,4 +272,4 @@ Output: 20
 
 ---
 
-> **Navigation**: [< Previous](Day_024_Mar26_Wed.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_026_Mar28_Fri.md)
+> **Navigation**: [< Previous](Day_024_Mar26_Wed.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_026_Mar28_Fri.md)

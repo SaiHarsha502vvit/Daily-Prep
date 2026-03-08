@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](Day_018_Mar20_Thu.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_020_Mar22_Sat.md)
+> **Navigation**: [< Previous](Day_018_Mar20_Thu.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_020_Mar22_Sat.md)
 
 # Day 019 — Friday, March 21, 2026
 
@@ -455,4 +455,4 @@ flowchart LR
 
 ---
 
-> **Navigation**: [< Previous](Day_018_Mar20_Thu.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_020_Mar22_Sat.md)
+> **Navigation**: [< Previous](Day_018_Mar20_Thu.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_020_Mar22_Sat.md)

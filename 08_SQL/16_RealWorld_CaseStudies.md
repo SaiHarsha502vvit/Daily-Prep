@@ -240,7 +240,7 @@ _"Part 4 Complete! You now understand Query Optimization, Analytics Patterns, Da
 ---
 
 # ═══════════════════════════════════════════════════════════════════
-# MERGED FROM: 03_RealWorld_Problems_DSA.md (WHY-HOW Framework Edition)
+# MERGED FROM: 05_RealWorld_Problems_DSA.md (WHY-HOW Framework Edition)
 # ═══════════════════════════════════════════════════════════════════
 
 # 🔥 SQL Production Disasters & Lessons Learned

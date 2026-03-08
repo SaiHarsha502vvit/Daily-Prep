@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](Day_025_Mar27_Thu.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_027_Mar29_Sat.md)
+> **Navigation**: [< Previous](Day_025_Mar27_Thu.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_027_Mar29_Sat.md)
 
 # DAY 026 — Friday, March 28, 2026
 ## Bellman-Ford + Bipartite Check + SQL Normalization
@@ -339,4 +339,4 @@ Output: false (odd cycle exists)
 
 ---
 
-> **Navigation**: [< Previous](Day_025_Mar27_Thu.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_027_Mar29_Sat.md)
+> **Navigation**: [< Previous](Day_025_Mar27_Thu.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_027_Mar29_Sat.md)

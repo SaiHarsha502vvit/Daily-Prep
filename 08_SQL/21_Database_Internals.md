@@ -1,4 +1,4 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [SQL Guide](01_SQL_Complete_Guide.md)
+> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [SQL Guide](01_Foundations_Database_Basics.md)
 > 🧠 **Mental Model**: See [System Design Thinking](../14_Mental_Models/15_System_Design_Thinking.md)
 
 ---

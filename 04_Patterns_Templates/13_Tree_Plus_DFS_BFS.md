@@ -353,7 +353,7 @@ flowchart TD
 
 📖 **Related Chapters:**
 - [03_Algorithms/05_Trees.md](../03_Algorithms/05_Trees.md) — Tree algorithms deep dive
-- [09_Career_Reference/02a_DSA_Foundations.md](../09_Career_Reference/02a_DSA_Foundations.md) — DSA fundamentals
+- [09_Career_Reference/07_DSA_Guide_Foundations.md](../09_Career_Reference/07_DSA_Guide_Foundations.md) — DSA fundamentals
 
 ---
 [← 12 LinkedList+TwoPointers](12_LinkedList_Plus_TwoPointers.md) | [14 Graph+Traversal →](14_Graph_Plus_Traversal.md)

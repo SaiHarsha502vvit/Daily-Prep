@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](02_DataStructures_Variants.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_2D_Arrays_Matrix.md)
+> **Navigation**: [< Previous](02a_DS_Variants_Core.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_2D_Arrays_Matrix.md)
 
 # 📊 Java Collections: Complete Method Reference Tables
 

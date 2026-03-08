@@ -329,7 +329,7 @@ int coinChangeBottomUp(int[] coins, int amount) {
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
-📖 **Related theory:** [03_Algorithms/04_Dynamic_Programming.md](../03_Algorithms/04_Dynamic_Programming.md) — Full DP theory with visual state diagrams
+📖 **Related theory:** [03_Algorithms/04b_DP_Fundamentals.md](../03_Algorithms/04b_DP_Fundamentals.md) — Full DP theory with visual state diagrams
 
 ---
 

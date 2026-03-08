@@ -1,6 +1,6 @@
 > **Navigation**: [< Previous](14_Mixed_Competitive.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](16_Heap.md)
 
-> **Problems 15/22** | [Prev](14_Mixed_Competitive.md) | [Index](../00_MASTER_INDEX.md) | [Next](16_Problems_Heap_PriorityQueue.md)
+> **Problems 15/22** | [Prev](14_Mixed_Competitive.md) | [Index](../00_MASTER_INDEX.md) | [Next](16_Heap.md)
 
 ---
 
@@ -2016,7 +2016,7 @@ flowchart TD
 
 ---
 
-> **Problems 15/22** | [Prev](14_Mixed_Competitive.md) | [Index](../00_MASTER_INDEX.md) | [Next](16_Problems_Heap_PriorityQueue.md)
+> **Problems 15/22** | [Prev](14_Mixed_Competitive.md) | [Index](../00_MASTER_INDEX.md) | [Next](16_Heap.md)
 
 
 ---

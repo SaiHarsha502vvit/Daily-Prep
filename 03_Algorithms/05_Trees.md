@@ -3,7 +3,7 @@
 
 > 🧠 **Mental Model**: See [Graph & Tree Thinking](../14_Mental_Models/03_Graph_Tree_Thinking.md) — tree traversal patterns and parent-child reasoning
 > **Split from Trees_Graphs.md for better navigation**
-> See also: [Graphs](05b_Graphs.md) | [Index](../00_MASTER_INDEX.md)
+> See also: [Graphs](05b_Graphs_Internals.md) | [Index](../00_MASTER_INDEX.md)
 
 ---
 

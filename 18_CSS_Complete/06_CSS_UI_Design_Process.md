@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](05_CSS_Deep_Reasoning.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_CSS_Component_Design_Systems.md)
+> **Navigation**: [< Previous](05_CSS_Deep_Reasoning.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_CSS_UI_Design_Process.md)
 
 # 🎨 Chapter 6 — CSS UI Design Process: From Blank Screen to Production UI
 
@@ -819,4 +819,4 @@ h3 { font-size: var(--text-2xl); line-height: var(--leading-tight); font-weight:
 
 ---
 
-> **Next Chapter**: [CSS Component Design Systems →](07_CSS_Component_Design_Systems.md)
+> **Next Chapter**: [CSS Component Design Systems →](06_CSS_UI_Design_Process.md)

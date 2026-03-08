@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](Day_003_Mar05_Wed.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_005_Mar07_Fri.md)
+> **Navigation**: [< Previous](Day_003_Mar05_Wed.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_005_Mar07_Fri.md)
 
 # Day 004 - Thursday, March 6, 2026
 
@@ -412,7 +412,7 @@ WHERE product_id IN (SELECT product_id FROM orders);
 ```
 </details>
 
-> **Read more:** [08_SQL/04_DML_InsertUpdateDelete.md](../../08_SQL/04_DML_InsertUpdateDelete.md)
+> **Read more:** [08_SQL/04_DML_Manipulating_Data.md](../../08_SQL/04_DML_Manipulating_Data.md)
 
 ---
 
@@ -507,4 +507,4 @@ public int equilibriumIndex(int[] arr) {
 
 ---
 
-> **Navigation**: [< Previous](Day_003_Mar05_Wed.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_005_Mar07_Fri.md)
+> **Navigation**: [< Previous](Day_003_Mar05_Wed.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_005_Mar07_Fri.md)

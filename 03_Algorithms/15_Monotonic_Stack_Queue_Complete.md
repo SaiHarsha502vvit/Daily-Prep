@@ -270,7 +270,7 @@ public int[] prevSmaller(int[] arr) {
 
 📖 **Related mental models:**
 - [14_Mental_Models/05_Universal_Problem_Framework.md](../14_Mental_Models/05_Universal_Problem_Framework.md) — Pattern recognition for O(n) problems
-- [14_Mental_Models/06_Brute_Force_to_Optimal.md](../14_Mental_Models/06_Brute_Force_to_Optimal.md) — How monotonic stack optimizes away nested loops
+- [14_Mental_Models/05_Universal_Problem_Framework.md](../14_Mental_Models/05_Universal_Problem_Framework.md) — How monotonic stack optimizes away nested loops
 
 ---
 

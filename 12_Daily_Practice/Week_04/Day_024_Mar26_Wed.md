@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](Day_023_Mar25_Tue.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_025_Mar27_Thu.md)
+> **Navigation**: [< Previous](Day_023_Mar25_Tue.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_025_Mar27_Thu.md)
 
 # DAY 024 — Wednesday, March 26, 2026
 ## Dijkstra's Algorithm + Union-Find + SQL Transactions
@@ -278,4 +278,4 @@ Output: 2
 
 ---
 
-> **Navigation**: [< Previous](Day_023_Mar25_Tue.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_025_Mar27_Thu.md)
+> **Navigation**: [< Previous](Day_023_Mar25_Tue.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_025_Mar27_Thu.md)

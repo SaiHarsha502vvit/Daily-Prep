@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](05_RealWorld_Problems_Part3.md) | [Back to Index](../00_MASTER_INDEX.md)
+> **Navigation**: [< Previous](07_RealWorld_Problems_Part3.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 # 🔥 Real-Life Tech Incidents & DSA Lessons
 
@@ -1462,4 +1462,4 @@ _— Learn from others' mistakes. They've already paid the price._
 
 ---
 
-> **Navigation**: [< Previous](05_RealWorld_Problems_Part3.md) | [Back to Index](../00_MASTER_INDEX.md)
+> **Navigation**: [< Previous](07_RealWorld_Problems_Part3.md) | [Back to Index](../00_MASTER_INDEX.md)

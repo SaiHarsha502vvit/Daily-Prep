@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](43_System_Internals_Part8_LoadBalancer_CDN.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch14_Maven_Gradle.md)
+> **Navigation**: [< Previous](Ch08_Collections_Internals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch14_Maven_Gradle.md)
 
 # 🔬 Chapter 44 — Java Collections Internals: What's Really Happening Inside
 

@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](Day_001_Mar03_Mon.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_003_Mar05_Wed.md)
+> **Navigation**: [< Previous](Day_001_Mar03_Mon.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_003_Mar05_Wed.md)
 
 # Day 002 - Tuesday, March 4, 2026
 
@@ -587,4 +587,4 @@ public int maxSumSubarray(int[] arr, int k) {
 
 ---
 
-> **Navigation**: [< Previous](Day_001_Mar03_Mon.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_003_Mar05_Wed.md)
+> **Navigation**: [< Previous](Day_001_Mar03_Mon.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_003_Mar05_Wed.md)

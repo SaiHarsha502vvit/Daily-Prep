@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](Day_027_Mar29_Sat.md) | [Back to Index](../00_MASTER_INDEX.md)
+> **Navigation**: [< Previous](Day_027_Mar29_Sat.md) | [Back to Index](../../00_MASTER_INDEX.md)
 
 # DAY 028 — Sunday, March 30, 2026
 ## WEEK 04 REVIEW — Trie + Graphs + SQL Performance + Spring JPA
@@ -216,4 +216,4 @@ flowchart TD
 
 ---
 
-> **Navigation**: [< Previous](Day_027_Mar29_Sat.md) | [Back to Index](../00_MASTER_INDEX.md)
+> **Navigation**: [< Previous](Day_027_Mar29_Sat.md) | [Back to Index](../../00_MASTER_INDEX.md)

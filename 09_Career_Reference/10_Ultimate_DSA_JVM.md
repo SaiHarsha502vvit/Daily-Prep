@@ -1,7 +1,7 @@
 # JVM Internals Deep Dive
 
 > **Part 3 of Ultimate DSA Guide**
-> **Navigation**: [Part 1: Data Structures](02_Ultimate_DSA_Guide.md) | [Part 2: Advanced](09_Ultimate_DSA_Advanced.md) | [Part 3: JVM Internals]
+> **Navigation**: [Part 1: Data Structures](07_DSA_Guide_Foundations.md) | [Part 2: Advanced](09_Ultimate_DSA_Advanced.md) | [Part 3: JVM Internals]
 
 ---
 

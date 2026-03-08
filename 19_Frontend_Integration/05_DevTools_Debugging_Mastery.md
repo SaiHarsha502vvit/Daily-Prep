@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](02_Debugging.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_Web_Performance_CoreWebVitals.md)
+> **Navigation**: [< Previous](02_Frontend_Debugging.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_Web_Performance_CoreWebVitals.md)
 
 # 🔍 Chapter 5 — DevTools Debugging Mastery: Beyond console.log
 

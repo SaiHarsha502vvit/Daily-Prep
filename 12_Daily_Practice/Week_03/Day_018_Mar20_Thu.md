@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](Day_017_Mar19_Wed.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_019_Mar21_Fri.md)
+> **Navigation**: [< Previous](Day_017_Mar19_Wed.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_019_Mar21_Fri.md)
 
 # Day 018 — Thursday, March 20, 2026
 
@@ -490,4 +490,4 @@ BACKTRACKING IN REAL LIFE:
 
 ---
 
-> **Navigation**: [< Previous](Day_017_Mar19_Wed.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_019_Mar21_Fri.md)
+> **Navigation**: [< Previous](Day_017_Mar19_Wed.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_019_Mar21_Fri.md)

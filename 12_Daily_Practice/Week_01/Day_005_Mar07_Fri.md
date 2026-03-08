@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](Day_004_Mar06_Thu.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_006_Mar08_Sat.md)
+> **Navigation**: [< Previous](Day_004_Mar06_Thu.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_006_Mar08_Sat.md)
 
 # Day 005 - Friday, March 7, 2026
 
@@ -522,7 +522,7 @@ ORDER BY inventory_value DESC;
 ```
 </details>
 
-> **Read more:** [08_SQL/05_SELECT_Filtering.md](../../08_SQL/05_SELECT_Filtering.md)
+> **Read more:** [08_SQL/05_Queries_SELECT_WHERE.md](../../08_SQL/05_Queries_SELECT_WHERE.md)
 
 ---
 
@@ -692,4 +692,4 @@ public int findSaddlePoint(int[][] matrix) {
 
 ---
 
-> **Navigation**: [< Previous](Day_004_Mar06_Thu.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_006_Mar08_Sat.md)
+> **Navigation**: [< Previous](Day_004_Mar06_Thu.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_006_Mar08_Sat.md)

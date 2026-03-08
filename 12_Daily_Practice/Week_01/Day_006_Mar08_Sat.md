@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](Day_005_Mar07_Fri.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_007_Mar09_Sun.md)
+> **Navigation**: [< Previous](Day_005_Mar07_Fri.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_007_Mar09_Sun.md)
 
 # Day 006 - Saturday, March 8, 2026
 
@@ -535,4 +535,4 @@ Sunday:    Review + weak spot practice
 
 ---
 
-> **Navigation**: [< Previous](Day_005_Mar07_Fri.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_007_Mar09_Sun.md)
+> **Navigation**: [< Previous](Day_005_Mar07_Fri.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_007_Mar09_Sun.md)

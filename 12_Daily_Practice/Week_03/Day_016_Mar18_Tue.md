@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](Day_015_Mar17_Mon.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_017_Mar19_Wed.md)
+> **Navigation**: [< Previous](Day_015_Mar17_Mon.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_017_Mar19_Wed.md)
 
 # Day 016 — Tuesday, March 18, 2026
 

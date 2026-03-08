@@ -278,7 +278,7 @@ flowchart TD
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  📄 PART 0: THE HIDDEN FOUNDATIONS                                               │
 │                                                                                 │
-│  File: 02_Spring_Boot_Part0_Hidden_Foundations.md                               │
+│  File: Ch26_Pre_Spring_Part1.md                               │
 │                                                                                 │
 │  TOPICS COVERED:                                                                │
 │  ┌────────────────────────────────────────────────────────────────────────┐     │
@@ -302,12 +302,12 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: 📄 PART 0: THE HIDDEN FOUNDATIONS → File: 02_Spring_Boot_Part0_Hidden_Foundations.md | File: 02_Spring_Boot_Part0_Hidden_Foundations.md → TOPICS COVERED: | TOPICS COVERED: → A. Java Reflection How Spring reads @Autowired, @Compon | A. Java Reflection How Spring reads @Autowired, @Compon → D. Servlet API What Spring Boot hides from you | D. Servlet API What Spring Boot hides from you → E. Jackson Serialization How JSON ↔ Java conversion wor | E. Jackson Serialization How JSON ↔ Java conversion wor → F. Connection Pooling Why HikariCP matters | ...+1 more
+> **Flow**: 📄 PART 0: THE HIDDEN FOUNDATIONS → File: Ch26_Pre_Spring_Part1.md | File: Ch26_Pre_Spring_Part1.md → TOPICS COVERED: | TOPICS COVERED: → A. Java Reflection How Spring reads @Autowired, @Compon | A. Java Reflection How Spring reads @Autowired, @Compon → D. Servlet API What Spring Boot hides from you | D. Servlet API What Spring Boot hides from you → E. Jackson Serialization How JSON ↔ Java conversion wor | E. Jackson Serialization How JSON ↔ Java conversion wor → F. Connection Pooling Why HikariCP matters | ...+1 more
 
 ```mermaid
 flowchart TD
     N1["📄 PART 0: THE HIDDEN FOUNDATIONS"]
-    N2["File: 02_Spring_Boot_Part0_Hidden_Foundations.md"]
+    N2["File: Ch26_Pre_Spring_Part1.md"]
     N3["TOPICS COVERED:"]
     N4["A. Java Reflection How Spring reads @Autowired, @Compon"]
     N5["D. Servlet API What Spring Boot hides from you"]
@@ -622,13 +622,13 @@ flowchart TD
 │  │  Topics          │    │  & Security      │                                   │
 │  └──────────────────┘    └──────────────────┘                                   │
 │                                                                                 │
-│  File: 16_Spring_Boot_Part14_Essential_Missing_Topics.md                        │
+│  File: Ch44_SB_Caching_Scheduling.md                        │
 │  File: Ch43_SB_Auth_Security.md                                   │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: PART 14 → PART 11 → 📄 PART 14 📄 PART 11 | 📄 PART 14 📄 PART 11 → Essential Authentication | Essential Authentication → Topics & Security | Topics & Security → File: 16_Spring_Boot_Part14_Essential_Missing_Topics.md | File: 16_Spring_Boot_Part14_Essential_Missing_Topics.md → File: Ch43_SB_Auth_Security.md
+> **Flow**: PART 14 → PART 11 → 📄 PART 14 📄 PART 11 | 📄 PART 14 📄 PART 11 → Essential Authentication | Essential Authentication → Topics & Security | Topics & Security → File: Ch44_SB_Caching_Scheduling.md | File: Ch44_SB_Caching_Scheduling.md → File: Ch43_SB_Auth_Security.md
 
 ```mermaid
 flowchart TD
@@ -636,7 +636,7 @@ flowchart TD
     N2["📄 PART 14 📄 PART 11"]
     N3["Essential Authentication"]
     N4["Topics & Security"]
-    N5["File: 16_Spring_Boot_Part14_Essential_Missing_Topics.md"]
+    N5["File: Ch44_SB_Caching_Scheduling.md"]
     N6["File: Ch43_SB_Auth_Security.md"]
     N1 --> N2
     N2 --> N3
@@ -647,7 +647,7 @@ flowchart TD
 
 ### Part 14: Essential Production Topics
 
-**File:** `16_Spring_Boot_Part14_Essential_Missing_Topics.md`
+**File:** `Ch44_SB_Caching_Scheduling.md`
 
 | Topic                   | Why It Matters           |
 | ----------------------- | ------------------------ |
@@ -786,13 +786,13 @@ flowchart TD
 │                 └──────────────────────────────┘                                │
 │                                                                                 │
 │  Files:                                                                         │
-│  ├── 17_Spring_Boot_Part15_WebFlux_Reactive.md                                  │
-│  ├── 18_Spring_Boot_Part16_SOLID_Principles.md                                  │
-│  ├── 19_Spring_Boot_Part17_Database_Security.md                                 │
+│  ├── Ch48_SB_WebFlux_Core.md                                  │
+│  ├── Ch38_SB_SOLID_Core.md                                  │
+│  ├── Ch46_SB_Database_Design.md                                 │
 │  ├── Ch53_SB_Distributed_Tracing.md                               │
-│  ├── 21_Spring_Boot_Part19_Testing_Complete.md                                  │
-│  ├── 22_Spring_Boot_Part20_Microservices_Patterns.md                            │
-│  └── 23_Spring_Boot_Part21_Cloud_Deployment.md                                  │
+│  ├── Ch59_SB_Testing_Fundamentals.md                                  │
+│  ├── Ch61_SB_Microservices_Core.md                            │
+│  └── Ch63_SB_Cloud_Core.md                                  │
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -818,7 +818,7 @@ flowchart TD
 
 ### Part 15: WebFlux & Reactive Programming
 
-**File:** `17_Spring_Boot_Part15_WebFlux_Reactive.md`
+**File:** `Ch48_SB_WebFlux_Core.md`
 
 | Topic                 | Why It Matters              |
 | --------------------- | --------------------------- |
@@ -833,7 +833,7 @@ flowchart TD
 
 ### Part 16: SOLID Principles with Spring
 
-**File:** `18_Spring_Boot_Part16_SOLID_Principles.md`
+**File:** `Ch38_SB_SOLID_Core.md`
 
 | Topic                            | Spring Example              |
 | -------------------------------- | --------------------------- |
@@ -847,7 +847,7 @@ flowchart TD
 
 ### Part 17: Database Security
 
-**File:** `19_Spring_Boot_Part17_Database_Security.md`
+**File:** `Ch46_SB_Database_Design.md`
 
 | Topic                 | Why It Matters              |
 | --------------------- | --------------------------- |
@@ -876,7 +876,7 @@ flowchart TD
 
 ### Part 19: Testing Complete Guide
 
-**File:** `21_Spring_Boot_Part19_Testing_Complete.md`
+**File:** `Ch59_SB_Testing_Fundamentals.md`
 
 | Topic                 | Why It Matters              |
 | --------------------- | --------------------------- |
@@ -892,7 +892,7 @@ flowchart TD
 
 ### Part 20: Microservices Patterns
 
-**File:** `22_Spring_Boot_Part20_Microservices_Patterns.md`
+**File:** `Ch61_SB_Microservices_Core.md`
 
 | Topic                 | Why It Matters              |
 | --------------------- | --------------------------- |
@@ -907,7 +907,7 @@ flowchart TD
 
 ### Part 21: Cloud Deployment
 
-**File:** `23_Spring_Boot_Part21_Cloud_Deployment.md`
+**File:** `Ch63_SB_Cloud_Core.md`
 
 | Topic                 | Why It Matters              |
 | --------------------- | --------------------------- |
@@ -937,7 +937,7 @@ flowchart TD
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  PART 22: ANNOTATIONS COMPLETE REFERENCE                                        │
 │                                                                                 │
-│  File: 24_Spring_Boot_Part22_Annotations_Complete_Reference.md                  │
+│  File: Ch28_Annotations_Core.md                  │
 │                                                                                 │
 │  A comprehensive reference covering ALL important annotations:                  │
 │                                                                                 │
@@ -993,7 +993,7 @@ flowchart TD
 ├─────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                 │
 │  PHASE 0: HIDDEN FOUNDATIONS (Read First!)                                      │
-│  └── 📄 02_Spring_Boot_Part0_Hidden_Foundations.md → Reflection, Proxies, etc.   │
+│  └── 📄 Ch26_Pre_Spring_Part1.md → Reflection, Proxies, etc.   │
 │                                                                                 │
 │  PHASE 1: FOUNDATIONS                                                           │
 │  ├── 📄 Ch31_SB_Core_Part1.md      → Java Foundations                 │
@@ -1011,7 +1011,7 @@ flowchart TD
 │  └── 📄 Ch40_SB_JPA_Deep_Dive.md → JPA & Hibernate                  │
 │                                                                                 │
 │  PHASE 4: PRODUCTION FEATURES                                                   │
-│  ├── 📄 16_Spring_Boot_Part14_Essential_Missing_Topics.md → Cache, Async, etc.   │
+│  ├── 📄 Ch44_SB_Caching_Scheduling.md → Cache, Async, etc.   │
 │  └── 📄 Ch43_SB_Auth_Security.md → Security                        │
 │                                                                                 │
 │  PHASE 5: MASTERY                                                               │
@@ -1020,16 +1020,16 @@ flowchart TD
 │  └── 📄 Ch51_SB_Industry_Projects.md → Projects                    │
 │                                                                                 │
 │  PHASE 6: ENTERPRISE & CLOUD                                                    │
-│  ├── 📄 17_Spring_Boot_Part15_WebFlux_Reactive.md → Reactive Programming         │
-│  ├── 📄 18_Spring_Boot_Part16_SOLID_Principles.md → SOLID in Spring              │
-│  ├── 📄 19_Spring_Boot_Part17_Database_Security.md → Database Security           │
+│  ├── 📄 Ch48_SB_WebFlux_Core.md → Reactive Programming         │
+│  ├── 📄 Ch38_SB_SOLID_Core.md → SOLID in Spring              │
+│  ├── 📄 Ch46_SB_Database_Design.md → Database Security           │
 │  ├── 📄 Ch53_SB_Distributed_Tracing.md → Tracing                   │
-│  ├── 📄 21_Spring_Boot_Part19_Testing_Complete.md → Testing                      │
-│  ├── 📄 22_Spring_Boot_Part20_Microservices_Patterns.md → Microservices          │
-│  └── 📄 23_Spring_Boot_Part21_Cloud_Deployment.md → Cloud Deployment             │
+│  ├── 📄 Ch59_SB_Testing_Fundamentals.md → Testing                      │
+│  ├── 📄 Ch61_SB_Microservices_Core.md → Microservices          │
+│  └── 📄 Ch63_SB_Cloud_Core.md → Cloud Deployment             │
 │                                                                                 │
 │  APPENDIX                                                                       │
-│  ├── 📄 24_Spring_Boot_Part22_Annotations_Complete_Reference.md → All Annotations│
+│  ├── 📄 Ch28_Annotations_Core.md → All Annotations│
 │  ├── 📄 Ch52_SB_WebSocket_GraphQL_gRPC.md → Missing Essentials   │
 │  └── 📄 Ch25_Spring_Boot_50Day_Plan.md → 50-Day Study Plan                   │
 │                                                                                 │

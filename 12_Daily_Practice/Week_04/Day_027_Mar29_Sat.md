@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](Day_026_Mar28_Fri.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_028_Mar30_Sun.md)
+> **Navigation**: [< Previous](Day_026_Mar28_Fri.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_028_Mar30_Sun.md)
 
 # DAY 027 — Saturday, March 29, 2026
 ## Spring Boot: JPA & Hibernate Deep Dive + SQL Practice
@@ -304,4 +304,4 @@ flowchart TD
 
 ---
 
-> **Navigation**: [< Previous](Day_026_Mar28_Fri.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Day_028_Mar30_Sun.md)
+> **Navigation**: [< Previous](Day_026_Mar28_Fri.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_028_Mar30_Sun.md)

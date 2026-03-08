@@ -1,6 +1,6 @@
 > **Navigation**: [< Previous](16_Heap.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](18_BitManipulation.md)
 
-> **Problems 17/22** | [Prev](16_Problems_Heap_PriorityQueue.md) | [Index](../00_MASTER_INDEX.md) | [Next](18_BitManipulation.md)
+> **Problems 17/22** | [Prev](16_Heap.md) | [Index](../00_MASTER_INDEX.md) | [Next](18_BitManipulation.md)
 
 ---
 
@@ -1462,7 +1462,7 @@ flowchart TD
 ---
 
 > **End of Section 15** | Problems #266–#285 (20 problems)
-> [Prev: Heap & Priority Queue](16_Problems_Heap_PriorityQueue.md) | [Index](../00_MASTER_INDEX.md) | [Next: Bit Manipulation](18_BitManipulation.md)
+> [Prev: Heap & Priority Queue](16_Heap.md) | [Index](../00_MASTER_INDEX.md) | [Next: Bit Manipulation](18_BitManipulation.md)
 
 
 ---

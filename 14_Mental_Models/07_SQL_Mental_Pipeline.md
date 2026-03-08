@@ -511,7 +511,7 @@ flowchart LR
 
 📖 **Related Files:**
 - [08_SQL/01_Foundations_Database_Basics.md](../08_SQL/01_Foundations_Database_Basics.md) — SQL foundations
-- [11_SQL_Complete/](../11_SQL_Complete/) — Full SQL topic files
+- [08_SQL/](../08_SQL/) — Full SQL topic files
 - [05_Universal_Problem_Framework.md](05_Universal_Problem_Framework.md) — General problem-solving
 
 ---

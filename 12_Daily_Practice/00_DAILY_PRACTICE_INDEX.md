@@ -91,8 +91,8 @@ Each daily file links to these study materials:
 
 | Topic Area | Files to Read |
 |-----------|---------------|
-| Arrays | [02_Data_Structures/01_DataStructures_Complete.md](../02_Data_Structures/01_DataStructures_Complete.md) |
-| Sorting | [03_Algorithms/02_Sorting_Algorithms.md](../03_Algorithms/02_Sorting_Algorithms.md) |
+| Arrays | [02_Data_Structures/01a_Memory_Foundations.md](../02_Data_Structures/01a_Memory_Foundations.md) |
+| Sorting | [03_Algorithms/02a_Sorting_Fundamentals.md](../03_Algorithms/02a_Sorting_Fundamentals.md) |
 | Two Pointers | [04_Patterns_Templates/07_Two_Pointers_Complete.md](../04_Patterns_Templates/07_Two_Pointers_Complete.md) |
 | Sliding Window | [04_Patterns_Templates/01_Sliding_Window.md](../04_Patterns_Templates/01_Sliding_Window.md) |
 | SQL Foundations | [08_SQL/01_Foundations_Database_Basics.md](../08_SQL/01_Foundations_Database_Basics.md) |

@@ -348,7 +348,7 @@ class UnionFind {
 
 📖 **Related mental models:**
 - [14_Mental_Models/05_Universal_Problem_Framework.md](../14_Mental_Models/05_Universal_Problem_Framework.md) — When to select Union-Find vs BFS/DFS
-- [14_Mental_Models/04_Constraint_Analysis.md](../14_Mental_Models/04_Constraint_Analysis.md) — Choosing data structure by constraint size
+- [14_Mental_Models/09_Complexity_Intuition.md](../14_Mental_Models/09_Complexity_Intuition.md) — Choosing data structure by constraint size
 
 ---
 
