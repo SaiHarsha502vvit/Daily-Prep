@@ -58,5 +58,12 @@
 | 36 | [Advanced Data Modeling](36_Advanced_Data_Modeling.md) | Star/snowflake schema, Data Vault |
 | 37 | [5W-H Deep Reasoning](37_SQL_5WH_Deep_Reasoning.md) | 5W-H framework applied to all SQL concepts |
 
+### Real-World Production Scenarios (125 scenarios across 5 files) 🆕
+| 38 | [Production Scenarios Part 1](38_RealWorld_Production_Scenarios_Part1.md) | IDs, data growth, storage crises (Scenarios 1–25) |
+| 39 | [Production Scenarios Part 2](39_RealWorld_Production_Scenarios_Part2.md) | Query performance & optimization crises (Scenarios 26–50) |
+| 40 | [Production Scenarios Part 3](40_RealWorld_Production_Scenarios_Part3.md) | Concurrency, transactions & data integrity (Scenarios 51–75) |
+| 41 | [Production Scenarios Part 4](41_RealWorld_Production_Scenarios_Part4.md) | Schema evolution, migrations & disasters (Scenarios 76–100) |
+| 42 | [Production Scenarios Part 5](42_RealWorld_Production_Scenarios_Part5.md) | Backend & Spring Boot production hell (Scenarios 101–125) |
+
 ---
 [← Back to Master Index](../00_MASTER_INDEX.md)

@@ -15,7 +15,7 @@
 | 76-Day Study Calendar | [01_Getting_Started/02_Study_Plan_Calendar.md](01_Getting_Started/02_Study_Plan_Calendar.md) |
 | DSA Guide (Foundations) | [09_Career_Reference/07_DSA_Guide_Foundations.md](09_Career_Reference/07_DSA_Guide_Foundations.md) |
 | Practice Problems (14 chapters) | [05_Problem_Solving/](#practice--problem-solving) |
-| SQL from Zero (37 chapters) | [08_SQL/](#sql-37-chapters) |
+| SQL from Zero (42 chapters) | [08_SQL/](#sql-42-chapters) |
 | Spring Boot (60 chapters, 12 Parts) | [07_Modern_Java/](#modern-java--spring-boot) |
 | Developer Essentials (10 guides) | [13_Developer_Essentials/](#developer-essentials-new) |
 | **Mental Models — HOW TO THINK (18 guides)** | [14_Mental_Models/](#mental-models--how-to-think-new) |
@@ -285,7 +285,7 @@ Daily-Prep/
 │   ├── Ch 68. Ch68_Distributed_Patterns.md  → Raft, 2PC, consistent hashing, CRDTs, outbox
 │   └── Ch 69. Ch69_Performance_Engineering.md         → Profiling, flamegraphs, JMH, memory leaks, GC tuning
 │
-├── 08_SQL/                              (37 chapter files — zero to expert)
+├── 08_SQL/                              (42 chapter files — zero to expert)
 │   ├── 01_Foundations_Database_Basics.md → What is a database, RDBMS, SQL
 │   ├── 02_DataTypes_Constraints.md      → INT, VARCHAR, DECIMAL, NOT NULL
 │   ├── 03_DDL_Creating_Structure.md     → CREATE, ALTER, DROP, TRUNCATE
@@ -311,7 +311,13 @@ Daily-Prep/
 │   ├── 22_NoSQL_MongoDB.md              → NoSQL categories, MongoDB, Redis
 │   ├── 23_SQL_Deep_Reasoning.md         → SQL "freeze moments" — NULL logic, JOIN execution
 │   ├── 24_SQL_Data_Analyst_RealWorld.md → Cohort, funnel, A/B testing, RFM, KPI dashboards
-│   └── 25_Interview_Patterns_Expanded.md → Advanced interview patterns
+│   ├── 25_Interview_Patterns_Expanded.md → Advanced interview patterns
+│   ├── 26–37 (Python+SQL, Analytics, Architecture, Operations chapters)
+│   ├── 38_RealWorld_Production_Scenarios_Part1.md → IDs, data growth, storage (1–25)
+│   ├── 39_RealWorld_Production_Scenarios_Part2.md → Query performance (26–50)
+│   ├── 40_RealWorld_Production_Scenarios_Part3.md → Concurrency, transactions (51–75)
+│   ├── 41_RealWorld_Production_Scenarios_Part4.md → Schema, migrations (76–100)
+│   └── 42_RealWorld_Production_Scenarios_Part5.md → Backend & Spring Boot (101–125)
 │
 ├── 09_Career_Reference/                 (15 chapter files)
 │   ├── 01_Career_TechnoFunctional.md    → Framework, skills, domains
@@ -575,7 +581,7 @@ Daily-Prep/
 - Ch 68. [Distributed Patterns](07_Modern_Java/Ch68_Distributed_Patterns.md) — Raft, 2PC, consistent hashing, CRDTs
 - Ch 69. [Performance Engineering](07_Modern_Java/Ch69_Performance_Engineering.md) — Profiling, flamegraphs, JMH, memory leaks
 
-### SQL (37 chapters)
+### SQL (42 chapters)
 - [01 Foundations](08_SQL/01_Foundations_Database_Basics.md) | [02 Data Types](08_SQL/02_DataTypes_Constraints.md) | [03 DDL](08_SQL/03_DDL_Creating_Structure.md) | [04 DML](08_SQL/04_DML_Manipulating_Data.md)
 - [05 SELECT](08_SQL/05_Queries_SELECT_WHERE.md) | [06 Aggregations](08_SQL/06_Aggregations_GroupBy.md) | [07 JOINs](08_SQL/07_JOINs_Complete.md) | [08 Subqueries/CTEs](08_SQL/08_Subqueries_CTEs.md)
 - [09 Window Functions](08_SQL/09_Window_Functions.md) | [10 Normalization](08_SQL/10_Normalization.md) | [11 Indexes](08_SQL/11_Indexes_Performance.md) | [12 Views/Procs](08_SQL/12_Views_StoredProcs_Triggers.md)
@@ -605,6 +611,13 @@ Daily-Prep/
 - [Database Migrations](08_SQL/35_Database_Migration_Schema.md) — Flyway, Liquibase, Alembic, zero-downtime
 - [Advanced Data Modeling](08_SQL/36_Advanced_Data_Modeling.md) — Star/snowflake schema, Data Vault, fact types
 - [5W-H Deep Reasoning](08_SQL/37_SQL_5WH_Deep_Reasoning.md) — 5W-H framework applied to all SQL concepts
+
+### SQL — Production Scenarios (5 files, 125 scenarios) 🆕
+- [Production Scenarios Part 1](08_SQL/38_RealWorld_Production_Scenarios_Part1.md) — IDs, data growth, storage crises (1–25)
+- [Production Scenarios Part 2](08_SQL/39_RealWorld_Production_Scenarios_Part2.md) — Query performance & optimization (26–50)
+- [Production Scenarios Part 3](08_SQL/40_RealWorld_Production_Scenarios_Part3.md) — Concurrency, transactions, integrity (51–75)
+- [Production Scenarios Part 4](08_SQL/41_RealWorld_Production_Scenarios_Part4.md) — Schema, migrations, disasters (76–100)
+- [Production Scenarios Part 5](08_SQL/42_RealWorld_Production_Scenarios_Part5.md) — Backend & Spring Boot production (101–125)
 
 ### Career & Reference (14 files)
 - [Career Framework](09_Career_Reference/01_Career_TechnoFunctional.md)
