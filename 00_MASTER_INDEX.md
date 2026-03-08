@@ -2,7 +2,7 @@
 
 # MASTER INDEX — Complete DSA, SQL, Spring Boot & Career Preparation
 
-**Last Updated: March 2026 | 280+ files | 19 folders**
+**Last Updated: March 2026 | 288+ files | 19 folders**
 
 ---
 
@@ -16,7 +16,7 @@
 | DSA Guide (Foundations) | [09_Career_Reference/02a_DSA_Guide_Foundations.md](09_Career_Reference/02a_DSA_Guide_Foundations.md) |
 | Practice Problems (14 chapters) | [05_Problem_Solving/](#practice--problem-solving) |
 | SQL from Zero (21 chapters) | [08_SQL/](#sql-21-chapters) |
-| Spring Boot (35+ chapters + 50-Day Plan) | [07_Modern_Java/](#modern-java--spring-boot) |
+| Spring Boot (43+ chapters + 50-Day Plan) | [07_Modern_Java/](#modern-java--spring-boot) |
 | Developer Essentials (10 guides) | [13_Developer_Essentials/](#developer-essentials-new) |
 | **Mental Models — HOW TO THINK (18 guides)** | [14_Mental_Models/](#mental-models--how-to-think-new) |
 | **React Frontend (8 files)** | [15_React_Frontend/](#react-frontend-new) |
@@ -146,7 +146,7 @@ Daily-Prep/
 │   ├── 07_LLD_Solved_Problems.md        → 🆕 5 LLD problems with full Java code
 │   └── 08_Design_Patterns_Java.md       → 🆕 GoF patterns with Java + Spring Boot mapping
 │
-├── 07_Modern_Java/                      (42 chapter files)
+├── 07_Modern_Java/                      (50 chapter files)
 │   ├── 00_SPRING_BOOT_ROADMAP.md        → Spring Boot learning path
 │   ├── 01_Functional_Programming.md     → Streams, Lambdas, Optionals
 │   ├── 02a_AlgoEng_Core.md             → Algorithm engineering fundamentals
@@ -194,7 +194,15 @@ Daily-Prep/
 │   ├── 32_Spring_Boot_Deep_Reasoning.md → 🆕 12 Spring Boot "freeze moments" — DispatcherServlet vs Filter, proxy pattern
 │   ├── 33_Streams_Deep_Reasoning.md     → 🆕 12 Streams "freeze moments" — lazy evaluation, flatMap, parallelStream traps
 │   ├── 34_JVM_Object_Model_Internals.md → 🆕 JVM object headers, mark word, lock escalation, method dispatch, vtable
-│   └── 35_Concurrency_Synchronizers_Deep.md → 🆕 Semaphore, CountDownLatch, CyclicBarrier, Phaser, livelock, starvation
+│   ├── 35_Concurrency_Synchronizers_Deep.md → 🆕 Semaphore, CountDownLatch, CyclicBarrier, Phaser, livelock, starvation
+│   ├── 36_Spring_Internals_How_It_Actually_Works.md → 🆕 Spring startup 23-step sequence, annotation mechanics, bean lifecycle, CGLIB proxies, @Transactional flow
+│   ├── 37_Hibernate_JPA_Internals.md → 🆕 Persistence Context, entity states, dirty checking, flush modes, lazy loading proxies, L2 cache, N+1
+│   ├── 38_Spring_Security_Internals.md → 🆕 15-filter chain, SecurityContext ThreadLocal, JWT auth flow, @PreAuthorize, CORS/CSRF, OAuth2
+│   ├── 39_OS_Fundamentals_For_Backend_Devs.md → 🆕 Processes, threads, virtual memory, page faults, epoll, file descriptors, I/O models
+│   ├── 40_Event_Sourcing_CQRS.md → 🆕 Event stores, state rebuilding, snapshots, CQRS, projections, saga pattern
+│   ├── 41_Kubernetes_Deep_Dive.md → 🆕 Control plane, pods, deployments, services, ingress, StatefulSets, scheduling, production patterns
+│   ├── 42_Distributed_Patterns_Consensus.md → 🆕 Raft consensus, 2PC, consistent hashing, CRDTs, circuit breaker, idempotency, outbox pattern
+│   └── 43_Performance_Engineering.md → 🆕 Profiling, flamegraphs, GC tuning, JMH benchmarks, memory leaks, connection pool tuning
 │
 ├── 08_SQL/                              (21 chapter files — zero to expert)
 │   ├── 01_Foundations_Database_Basics.md → What is a database, RDBMS, SQL
@@ -401,7 +409,7 @@ Daily-Prep/
 - **🆕** [SD Interview Problems](06_OOP_Design/05_SD_Interview_Problems.md) | [Distributed Systems](06_OOP_Design/06_Distributed_Systems_Fundamentals.md)
 - **🆕** [LLD Solved Problems](06_OOP_Design/07_LLD_Solved_Problems.md) | [Design Patterns Java](06_OOP_Design/08_Design_Patterns_Java.md)
 
-### Modern Java & Spring Boot (44 chapters)
+### Modern Java & Spring Boot (52 chapters)
 - **Roadmap**: [Spring Boot Roadmap](07_Modern_Java/00_SPRING_BOOT_ROADMAP.md) | [50-Day Curriculum](07_Modern_Java/26_Spring_Boot_Curriculum_50Day.md)
 - **Java Core**: [Functional Programming](07_Modern_Java/01_Functional_Programming.md) | [Algo Engineering](07_Modern_Java/02a_AlgoEng_Core.md) | [Algo Eng Advanced](07_Modern_Java/02e_AlgoEng_Advanced.md)
 - **Pre-Spring**: [Hidden Foundations Part 1](07_Modern_Java/02c_SB_HiddenFoundations_Part1.md) | [Part 2](07_Modern_Java/02d_SB_HiddenFoundations_Part2.md)
@@ -426,6 +434,9 @@ Daily-Prep/
 - **⚡ Streams Mastery**: [Streams Deep Reasoning](07_Modern_Java/33_Streams_Deep_Reasoning.md) — 12 Streams "freeze moments" (lazy evaluation, flatMap, parallelStream traps, Collector internals)
 - **⚡ JVM Object Model**: [JVM Object Model Internals](07_Modern_Java/34_JVM_Object_Model_Internals.md) — Object headers, mark word, klass pointer, lock escalation, vtable, method hiding
 - **⚡ Concurrency Synchronizers**: [Concurrency Synchronizers Deep](07_Modern_Java/35_Concurrency_Synchronizers_Deep.md) — Semaphore, CountDownLatch, CyclicBarrier, Phaser, livelock, starvation
+- **🆕 Spring/Hibernate/Security Internals**: [Spring Internals](07_Modern_Java/36_Spring_Internals_How_It_Actually_Works.md) — 23-step startup, annotation mechanics, bean lifecycle, proxy patterns | [Hibernate/JPA Internals](07_Modern_Java/37_Hibernate_JPA_Internals.md) — Persistence Context, dirty checking, flush modes, L2 cache, N+1 | [Spring Security Internals](07_Modern_Java/38_Spring_Security_Internals.md) — 15-filter chain, JWT flow, OAuth2, CORS/CSRF
+- **🆕 System Fundamentals**: [OS Fundamentals](07_Modern_Java/39_OS_Fundamentals_For_Backend_Devs.md) — Processes, threads, virtual memory, epoll, I/O models | [Event Sourcing & CQRS](07_Modern_Java/40_Event_Sourcing_CQRS.md) — Event stores, projections, saga pattern | [Kubernetes Deep Dive](07_Modern_Java/41_Kubernetes_Deep_Dive.md) — Architecture, pods, services, scheduling
+- **🆕 Distributed & Performance**: [Distributed Patterns](07_Modern_Java/42_Distributed_Patterns_Consensus.md) — Raft, 2PC, consistent hashing, CRDTs, circuit breaker, outbox | [Performance Engineering](07_Modern_Java/43_Performance_Engineering.md) — Profiling, flamegraphs, GC tuning, JMH, memory leaks
 
 ### SQL (21 chapters)
 - [01 Foundations](08_SQL/01_Foundations_Database_Basics.md) | [02 Data Types](08_SQL/02_DataTypes_Constraints.md) | [03 DDL](08_SQL/03_DDL_Creating_Structure.md) | [04 DML](08_SQL/04_DML_Manipulating_Data.md)
@@ -530,6 +541,14 @@ Daily-Prep/
 | JVM Internals | [JVM Object Model](07_Modern_Java/34_JVM_Object_Model_Internals.md) | 10 — Object headers, mark word, lock escalation, vtable, method hiding |
 | Synchronizers | [Concurrency Synchronizers](07_Modern_Java/35_Concurrency_Synchronizers_Deep.md) | 10 — Semaphore, CountDownLatch, CyclicBarrier, Phaser, livelock, starvation |
 | **Concurrency** | [Coroutines & Concurrency](13_Developer_Essentials/19_Concurrency_Models_Coroutines.md) | 12 — Coroutines vs Continuations, Virtual Threads, goroutines |
+| Spring Internals | [Spring Internals](07_Modern_Java/36_Spring_Internals_How_It_Actually_Works.md) | 13 — Startup sequence, annotation mechanics, bean lifecycle, CGLIB, @Transactional |
+| Hibernate/JPA | [Hibernate Internals](07_Modern_Java/37_Hibernate_JPA_Internals.md) | 12 — Persistence Context, dirty checking, flush modes, lazy loading, L2 cache, N+1 |
+| Spring Security | [Security Internals](07_Modern_Java/38_Spring_Security_Internals.md) | 12 — Filter chain, JWT auth, OAuth2, CORS/CSRF, @PreAuthorize |
+| OS Fundamentals | [OS for Backend Devs](07_Modern_Java/39_OS_Fundamentals_For_Backend_Devs.md) | 13 — Processes, virtual memory, epoll, I/O models, latency numbers |
+| Event Sourcing | [Event Sourcing & CQRS](07_Modern_Java/40_Event_Sourcing_CQRS.md) | 10 — Event stores, snapshots, CQRS, projections, saga pattern |
+| Kubernetes | [Kubernetes Deep Dive](07_Modern_Java/41_Kubernetes_Deep_Dive.md) | 12 — Architecture, pods, services, ingress, scheduling, production patterns |
+| Distributed | [Distributed Patterns](07_Modern_Java/42_Distributed_Patterns_Consensus.md) | 10 — Raft, 2PC, consistent hashing, CRDTs, circuit breaker, outbox |
+| Performance | [Performance Engineering](07_Modern_Java/43_Performance_Engineering.md) | 12 — Profiling, flamegraphs, GC tuning, JMH, caching, connection pools |
 
 ---
 
@@ -570,7 +589,7 @@ Open [07_Modern_Java/26_Spring_Boot_Curriculum_50Day.md](07_Modern_Java/26_Sprin
 | 04_Patterns_Templates | 20 | 7 original + 13 combined DS+Algo patterns with Excel problems |
 | 05_Problem_Solving | 23 | 20 topic chapters + Edge/Mistakes/Origins |
 | 06_OOP_Design | 8 | OOP, Design Patterns, System Design, LLD, Distributed Systems |
-| 07_Modern_Java | 47 | Functional, Algo Eng, 30+ Spring Boot, Concurrency, Kafka, Deps Map, Java + Spring Boot Deep Reasoning, Streams, JVM Object Model, Synchronizers |
+| 07_Modern_Java | 55 | Functional, Algo Eng, 30+ Spring Boot, Concurrency, Kafka, Deps Map, Deep Reasoning, Streams, JVM, Synchronizers, Spring/Hibernate/Security Internals, OS, K8s, Distributed, Performance |
 | 08_SQL | 21 | Zero to expert in 21 chapters |
 | 08_SQL_Database | 5 | Database Internals, NoSQL, Interview Top 50, SQL Deep Reasoning, Data Analyst Real-World |
 | 09_Career_Reference | 15 | Career path, DSA ref, JVM, Psychology, Behavioral Interview |
@@ -583,11 +602,11 @@ Open [07_Modern_Java/26_Spring_Boot_Curriculum_50Day.md](07_Modern_Java/26_Sprin
 | 17_TypeScript | 4 | TS standalone: Foundations, Advanced Types, Patterns, Deep Reasoning |
 | 18_CSS_Complete | 5 | Visual CSS: Foundations, Layout, Animations, Architecture, Deep Reasoning |
 | 19_Frontend_Integration | 4 | React+JS+CSS combined, Debugging, Build Tools, Mental Models |
-| **TOTAL** | **~280** | |
+| **TOTAL** | **~288** | |
 
 ---
 
-_Last restructured: March 2026 — Phase 23: +5 Deep Mastery files (Streams, JVM Object Model, Concurrency Synchronizers, SQL Data Analyst, DSA Java Implementation). Phase 22: +9 Deep Reasoning files + Coroutines. 13 deep reasoning guides across all domains + comprehensive Coroutines/Synchronizers coverage. 280+ total files across 19 folders._
+_Last restructured: March 2026 — Phase 24: +8 System Internals files (Spring Internals, Hibernate/JPA Internals, Spring Security Internals, OS Fundamentals, Event Sourcing/CQRS, Kubernetes Deep Dive, Distributed Patterns & Consensus, Performance Engineering). Phase 23: +5 Deep Mastery files. Phase 22: +9 Deep Reasoning files + Coroutines. 22 deep reasoning/internals guides across all domains. 288+ total files across 19 folders._
 
 
 ---
