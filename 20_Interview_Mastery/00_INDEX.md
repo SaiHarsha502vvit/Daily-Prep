@@ -22,16 +22,29 @@
 | 08 | [Problem Decomposition Framework](08_Problem_Decomposition_Framework.md) | Break ANY problem into solvable pieces — universal 4-step process, 10 worked cross-domain decompositions (DSA + SQL + System Design + OOP) |
 | 09 | [Mock Interview Simulations](09_Mock_Interview_Simulations.md) | Practice everything — 6 complete mock interviews (DSA, SQL, System Design, OOP, Mixed), self-evaluation rubric, 30-day schedule |
 
+### Problem Banks (5W+H Logic-First Explanations)
+
+| # | File | Problems Covered |
+|---|------|-----------------|
+| 10 | [DSA: Arrays, Strings, Hashing](10_DSA_Problems_Arrays_Strings_Hashing.md) | Two Sum, 3Sum, Product Except Self, Group Anagrams, Min Window Substring, Trapping Rain Water, +14 more |
+| 11 | [DSA: LinkedList, Stack, Queue, Heap](11_DSA_Problems_LinkedList_Stack_Queue_Heap.md) | Reverse LL, LRU Cache, Valid Parentheses, Daily Temperatures, Merge K Sorted, Median Stream, +14 more |
+| 12 | [DSA: Trees, Graphs, Trie, Union-Find](12_DSA_Problems_Trees_Graphs_Trie_UnionFind.md) | Validate BST, LCA, Serialize Tree, Number of Islands, Course Schedule, Word Search II, +14 more |
+| 13 | [DSA: DP, Greedy, Backtracking](13_DSA_Problems_DP_Greedy_Backtracking.md) | Coin Change, Edit Distance, Knapsack, LIS, Jump Game, N-Queens, Permutations, +13 more |
+| 14 | [DSA: Binary Search, Two Pointers, Sliding Window](14_DSA_Problems_BinarySearch_TwoPointers_SlidingWindow.md) | Rotated Search, Koko Bananas, Median Two Arrays, Container Water, Min Window, +12 more |
+| 15 | [SQL: Foundations, Joins, Aggregations](15_SQL_Problems_Foundations_Intermediate.md) | Second Highest Salary, Dept Top 3, CROSS JOIN, Rising Temp, Conditional Aggregation, +11 more |
+| 16 | [SQL: Window Functions & Advanced](16_SQL_Problems_Window_Functions_Advanced.md) | DENSE_RANK, Running Total, Islands & Gaps, Recursive CTE, PIVOT/UNPIVOT, EXISTS vs IN, +11 more |
+| 17 | [SQL: Analytics, Real-World, Design](17_SQL_Problems_Analytics_RealWorld_Design.md) | Retention, Funnel, Cohort, DAU/MAU, Friend Recs, Login Streaks, Schema Design, +10 more |
+
 ---
 
 ## How This Folder Connects to Everything Else
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│              20_Interview_Mastery                     │
-│         (Cross-Domain Capstone Layer)                │
+│              20_Interview_Mastery                   │
+│         (Cross-Domain Capstone Layer)               │
 ├─────────────────────────────────────────────────────┤
-│                                                       │
+│                                                     │
 │  File 01-04: DSA Interview Thinking                  │
 │    ↕ builds on: 02_Data_Structures/                  │
 │    ↕ builds on: 03_Algorithms/                       │
@@ -74,8 +87,13 @@
 | Day 8 | Design patterns | File 07 (creational + structural + SOLID) |
 | Day 9 | Design patterns + decomposition | File 07 (behavioral) + File 08 (decomposition framework) |
 | Day 10 | Mock interviews | File 09 (do all 6 mocks timed, score yourself) |
+| Day 11 | DSA problem practice | Files 10–11 (Arrays, Strings, LinkedList, Stack, Queue) |
+| Day 12 | DSA problem practice | Files 12–13 (Trees, Graphs, DP, Greedy, Backtracking) |
+| Day 13 | DSA problem practice | File 14 (Binary Search, Two Pointers, Sliding Window) |
+| Day 14 | SQL problem practice | Files 15–16 (Foundations, Joins, Window Functions) |
+| Day 15 | SQL problem practice | File 17 (Analytics, Real-World, Schema Design) |
 
-> **After Day 10**: Follow the 30-day mock interview schedule in File 09 for continued practice.
+> **After Day 15**: Follow the 30-day mock interview schedule in File 09 for continued practice.
 
 ---
 

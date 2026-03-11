@@ -2,7 +2,7 @@
 
 # MASTER INDEX — Complete DSA, SQL, Spring Boot & Career Preparation
 
-**Last Updated: March 2026 | 320+ files | 19 folders**
+**Last Updated: March 2026 | 328+ files | 19 folders**
 
 ---
 
@@ -24,7 +24,7 @@
 | **TypeScript (3 chapters)** | [17_TypeScript/](#typescript-3-chapters) |
 | **CSS Complete (6 chapters)** | [18_CSS_Complete/](#css-complete-6-chapters) |
 | **Frontend Integration (7 chapters)** | [19_Frontend_Integration/](#frontend-integration-7-chapters) |
-| **🏆 Interview Mastery (9 capstone files)** | [20_Interview_Mastery/](#interview-mastery-capstone-9-files--new) |
+| **🏆 Interview Mastery (17 capstone files)** | [20_Interview_Mastery/](#interview-mastery-capstone-17-files--new) |
 | **⚡ Deep Reasoning — Stop Freezing!** | [All 14 Deep Reasoning files](#deep-reasoning--senior-engineer-thinking-new) |
 | **Concurrency & Coroutines** | [13_Developer_Essentials/19_Concurrency_Models_Coroutines.md](13_Developer_Essentials/19_Concurrency_Models_Coroutines.md) |
 | Java Concurrency + Modern Java | [07_Modern_Java/](#modern-java--spring-boot) |
@@ -715,7 +715,7 @@ Daily-Prep/
 - **🆕** [Web Performance & Core Web Vitals](19_Frontend_Integration/06_Web_Performance_CoreWebVitals.md) — LCP/INP/CLS optimization, resource hints, image/font optimization, bundle splitting
 - **🆕** [Web Accessibility (a11y)](19_Frontend_Integration/07_Web_Accessibility_A11y.md) — ARIA, semantic HTML, keyboard navigation, focus management, color contrast, live regions
 
-### Interview Mastery — Capstone (9 files — NEW!)
+### Interview Mastery — Capstone (17 files — NEW!)
 - **🏆 Start Here**: [Index & Reading Order](20_Interview_Mastery/00_INDEX.md)
 - [The Interview Brain](20_Interview_Mastery/01_The_Interview_Brain.md) — Master mindset, first 60 seconds protocol, parameter recognition, decision engine, communication framework
 - [Constraint → Algorithm Map](20_Interview_Mastery/02_Constraint_to_Algorithm_Map.md) — 50+ algorithms by input size, operations budget (10⁸ rule), SQL & system design constraints
@@ -726,6 +726,14 @@ Daily-Prep/
 - [Design Patterns Interview Guide](20_Interview_Mastery/07_Design_Patterns_Interview_Guide.md) — Creational/structural/behavioral patterns, SOLID principles, anti-patterns
 - [Problem Decomposition Framework](20_Interview_Mastery/08_Problem_Decomposition_Framework.md) — Universal 4-step process, 10 cross-domain worked decompositions
 - [Mock Interview Simulations](20_Interview_Mastery/09_Mock_Interview_Simulations.md) — 6 complete mock interviews (DSA, SQL, SysDes, OOP, Mixed), rubric, 30-day schedule
+- **🆕** [DSA Problems: Arrays, Strings, Hashing](20_Interview_Mastery/10_DSA_Problems_Arrays_Strings_Hashing.md) — 20 problems with 5W+H logic-first explanations
+- **🆕** [DSA Problems: LinkedList, Stack, Queue, Heap](20_Interview_Mastery/11_DSA_Problems_LinkedList_Stack_Queue_Heap.md) — 20 problems with interview think-aloud walkthroughs
+- **🆕** [DSA Problems: Trees, Graphs, Trie, Union-Find](20_Interview_Mastery/12_DSA_Problems_Trees_Graphs_Trie_UnionFind.md) — 20 problems with logic building blocks
+- **🆕** [DSA Problems: DP, Greedy, Backtracking](20_Interview_Mastery/13_DSA_Problems_DP_Greedy_Backtracking.md) — 20 problems with pattern-to-code translation
+- **🆕** [DSA Problems: Binary Search, Two Pointers, Sliding Window](20_Interview_Mastery/14_DSA_Problems_BinarySearch_TwoPointers_SlidingWindow.md) — 17 problems with template zoo
+- **🆕** [SQL Problems: Foundations, Joins, Aggregations](20_Interview_Mastery/15_SQL_Problems_Foundations_Intermediate.md) — 16 problems with execution order model
+- **🆕** [SQL Problems: Window Functions & Advanced](20_Interview_Mastery/16_SQL_Problems_Window_Functions_Advanced.md) — 17 problems with frame specification guide
+- **🆕** [SQL Problems: Analytics, Real-World, Design](20_Interview_Mastery/17_SQL_Problems_Analytics_RealWorld_Design.md) — 17 problems with schema design patterns
 
 ### Deep Reasoning — Senior Engineer Thinking (NEW!)
 
@@ -807,12 +815,12 @@ Open [07_Modern_Java/Ch25_Spring_Boot_50Day_Plan.md](07_Modern_Java/Ch25_Spring_
 | 17_TypeScript | 4 | TS standalone: Foundations, Advanced Types, Patterns, Deep Reasoning |
 | 18_CSS_Complete | 5 | Visual CSS: Foundations, Layout, Animations, Architecture, Deep Reasoning |
 | 19_Frontend_Integration | 4 | React+JS+CSS combined, Debugging, Build Tools, Mental Models |
-| 20_Interview_Mastery | 10 | Cross-domain capstone: Interview Brain, Patterns, SQL, System Design, Mock Interviews |
-| **TOTAL** | **~320** | |
+| 20_Interview_Mastery | 18 | Cross-domain capstone: Interview Brain, Patterns, SQL, System Design, Mock Interviews + 8 problem banks |
+| **TOTAL** | **~328** | |
 
 ---
 
-_Last restructured: March 2026 — Phase 29: Interview Mastery capstone (9 cross-domain files in 20_Interview_Mastery/). Phase 25: Full textbook restructure. All files renamed to sequential chapter order. 122 files renamed across 5 folders. 15 per-folder 00_INDEX.md roadmaps created. 08_SQL_Database merged into 08_SQL. Cross-references updated across all 386 .md files. 320+ total files across 19 folders._
+_Last restructured: March 2026 — Phase 30: Added 8 problem banks (files 10–17) to 20_Interview_Mastery/ with 150+ problems using 5W+H logic-first interview explanations across all DSA & SQL topics. Phase 29: Interview Mastery capstone (9 cross-domain files in 20_Interview_Mastery/). Phase 25: Full textbook restructure. All files renamed to sequential chapter order. 122 files renamed across 5 folders. 15 per-folder 00_INDEX.md roadmaps created. 08_SQL_Database merged into 08_SQL. Cross-references updated across all 386 .md files. 328+ total files across 19 folders._
 
 
 ---
