@@ -1057,4 +1057,4 @@ CREATE INDEX idx_outbox_unpublished ON outbox_events (published) WHERE published
 
 ---
 
-[⬅ Previous: 41_RealWorld_Production_Scenarios_Part4](41_RealWorld_Production_Scenarios_Part4.md) | [📚 Index](00_INDEX.md) | [🏠 Master Index](../00_MASTER_INDEX.md)
+[⬅ Previous: 41_RealWorld_Production_Scenarios_Part4](41_RealWorld_Production_Scenarios_Part4.md) | [📚 Index](00_INDEX.md) | [Next: 43_Interview_Mindset ➡](43_Interview_Mindset_How_Professionals_Explain.md)

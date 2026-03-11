@@ -15,7 +15,7 @@
 | 76-Day Study Calendar | [01_Getting_Started/02_Study_Plan_Calendar.md](01_Getting_Started/02_Study_Plan_Calendar.md) |
 | DSA Guide (Foundations) | [09_Career_Reference/07_DSA_Guide_Foundations.md](09_Career_Reference/07_DSA_Guide_Foundations.md) |
 | Practice Problems (14 chapters) | [05_Problem_Solving/](#practice--problem-solving) |
-| SQL from Zero (42 chapters) | [08_SQL/](#sql-42-chapters) |
+| SQL from Zero (48 chapters) | [08_SQL/](#sql-48-chapters) |
 | Spring Boot (60 chapters, 12 Parts) | [07_Modern_Java/](#modern-java--spring-boot) |
 | Developer Essentials (10 guides) | [13_Developer_Essentials/](#developer-essentials-new) |
 | **Mental Models — HOW TO THINK (18 guides)** | [14_Mental_Models/](#mental-models--how-to-think-new) |
@@ -285,7 +285,7 @@ Daily-Prep/
 │   ├── Ch 68. Ch68_Distributed_Patterns.md  → Raft, 2PC, consistent hashing, CRDTs, outbox
 │   └── Ch 69. Ch69_Performance_Engineering.md         → Profiling, flamegraphs, JMH, memory leaks, GC tuning
 │
-├── 08_SQL/                              (42 chapter files — zero to expert)
+├── 08_SQL/                              (48 chapter files — zero to expert)
 │   ├── 01_Foundations_Database_Basics.md → What is a database, RDBMS, SQL
 │   ├── 02_DataTypes_Constraints.md      → INT, VARCHAR, DECIMAL, NOT NULL
 │   ├── 03_DDL_Creating_Structure.md     → CREATE, ALTER, DROP, TRUNCATE
@@ -317,7 +317,13 @@ Daily-Prep/
 │   ├── 39_RealWorld_Production_Scenarios_Part2.md → Query performance (26–50)
 │   ├── 40_RealWorld_Production_Scenarios_Part3.md → Concurrency, transactions (51–75)
 │   ├── 41_RealWorld_Production_Scenarios_Part4.md → Schema, migrations (76–100)
-│   └── 42_RealWorld_Production_Scenarios_Part5.md → Backend & Spring Boot (101–125)
+│   ├── 42_RealWorld_Production_Scenarios_Part5.md → Backend & Spring Boot (101–125)
+│   ├── 43_Interview_Mindset_How_Professionals_Explain.md → SIREN framework, professional vocabulary
+│   ├── 44_Interview_Scenarios_Explained_Part1.md → Data & performance interview walkthroughs
+│   ├── 45_Interview_Scenarios_Explained_Part2.md → Concurrency & locks interview walkthroughs
+│   ├── 46_Interview_Scenarios_Explained_Part3.md → Schema & architecture interview walkthroughs
+│   ├── 47_Theory_Deep_Dive_Database_Internals.md → B-Tree math, MVCC, WAL, optimizer internals
+│   └── 48_Problem_Variants_Bank.md → 100+ practice variants across all categories
 │
 ├── 09_Career_Reference/                 (15 chapter files)
 │   ├── 01_Career_TechnoFunctional.md    → Framework, skills, domains

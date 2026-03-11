@@ -65,5 +65,13 @@
 | 41 | [Production Scenarios Part 4](41_RealWorld_Production_Scenarios_Part4.md) | Schema evolution, migrations & disasters (Scenarios 76–100) |
 | 42 | [Production Scenarios Part 5](42_RealWorld_Production_Scenarios_Part5.md) | Backend & Spring Boot production hell (Scenarios 101–125) |
 
+### Interview Mastery & Theory Deep Dive 🆕
+| 43 | [Interview Mindset Guide](43_Interview_Mindset_How_Professionals_Explain.md) | SIREN framework, professional vocabulary, answer structures |
+| 44 | [Interview Scenarios Part 1](44_Interview_Scenarios_Explained_Part1.md) | Data & performance scenarios explained interview-grade |
+| 45 | [Interview Scenarios Part 2](45_Interview_Scenarios_Explained_Part2.md) | Concurrency, transactions & locks interview-grade |
+| 46 | [Interview Scenarios Part 3](46_Interview_Scenarios_Explained_Part3.md) | Schema, migration & architecture interview-grade |
+| 47 | [Theory Deep Dive](47_Theory_Deep_Dive_Database_Internals.md) | B-Tree math, MVCC, WAL, buffer pool, query optimizer |
+| 48 | [Problem Variants Bank](48_Problem_Variants_Bank.md) | 100+ practice variants across all categories |
+
 ---
 [← Back to Master Index](../00_MASTER_INDEX.md)
