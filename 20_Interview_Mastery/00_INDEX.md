@@ -34,6 +34,8 @@
 | 15 | [SQL: Foundations, Joins, Aggregations](15_SQL_Problems_Foundations_Intermediate.md) | Second Highest Salary, Dept Top 3, CROSS JOIN, Rising Temp, Conditional Aggregation, +11 more |
 | 16 | [SQL: Window Functions & Advanced](16_SQL_Problems_Window_Functions_Advanced.md) | DENSE_RANK, Running Total, Islands & Gaps, Recursive CTE, PIVOT/UNPIVOT, EXISTS vs IN, +11 more |
 | 17 | [SQL: Analytics, Real-World, Design](17_SQL_Problems_Analytics_RealWorld_Design.md) | Retention, Funnel, Cohort, DAU/MAU, Friend Recs, Login Streaks, Schema Design, +10 more |
+| 18 | [SQL: Foundations from Notes (Commands, Operators, Functions)](18_SQL_Foundations_Commands_Operators_Functions.md) | DDL/DML/DCL/TCL, ALTER/MODIFY/RENAME, DROP vs TRUNCATE vs DELETE, operators, joins, constraints, indexes, CTE/window bridge |
+| 19 | [DSA: Permutations & Combinations (Math-First Interview Style)](19_DSA_Permutations_Combinations_Interview_Math.md) | nPr/nCr logic, order-vs-selection decision tree, pruning rules, real-world mapping, interview narration templates |
 
 ---
 
@@ -92,8 +94,10 @@
 | Day 13 | DSA problem practice | File 14 (Binary Search, Two Pointers, Sliding Window) |
 | Day 14 | SQL problem practice | Files 15–16 (Foundations, Joins, Window Functions) |
 | Day 15 | SQL problem practice | File 17 (Analytics, Real-World, Schema Design) |
+| Day 16 | SQL fundamentals deep dive | File 18 (commands, operators, functions, constraints, indexes, alternatives) |
+| Day 17 | DSA combinatorics deep dive | File 19 (permutations/combinations in math-first interview style) |
 
-> **After Day 15**: Follow the 30-day mock interview schedule in File 09 for continued practice.
+> **After Day 17**: Follow the 30-day mock interview schedule in File 09 for continued practice.
 
 ---
 

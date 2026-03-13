@@ -1,4 +1,4 @@
-> **Navigation**: [⬅ SQL Window Functions & Advanced](16_SQL_Problems_Window_Functions_Advanced.md) | [📚 Index](00_INDEX.md) | [Back to Start: Arrays, Strings, Hashing ➡](10_DSA_Problems_Arrays_Strings_Hashing.md)
+> **Navigation**: [⬅ SQL Window Functions & Advanced](16_SQL_Problems_Window_Functions_Advanced.md) | [📚 Index](00_INDEX.md) | [Next: SQL Foundations from Notes ➡](18_SQL_Foundations_Commands_Operators_Functions.md)
 
 # File 17 — SQL Problems: Analytics, Real-World Scenarios & Schema Design
 
@@ -486,4 +486,4 @@ GOOD: WHERE id = 123                      → native type comparison
 
 ---
 
-> **Navigation**: [⬅ SQL Window Functions & Advanced](16_SQL_Problems_Window_Functions_Advanced.md) | [📚 Index](00_INDEX.md) | [Back to Start: Arrays, Strings, Hashing ➡](10_DSA_Problems_Arrays_Strings_Hashing.md)
+> **Navigation**: [⬅ SQL Window Functions & Advanced](16_SQL_Problems_Window_Functions_Advanced.md) | [📚 Index](00_INDEX.md) | [Next: SQL Foundations from Notes ➡](18_SQL_Foundations_Commands_Operators_Functions.md)
