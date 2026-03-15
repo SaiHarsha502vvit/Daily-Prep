@@ -197,7 +197,54 @@ OOP isn't about "classes and objects" — it's about **managing complexity**. As
 
 ### 1. ENCAPSULATION - "Hide the Mess"
 
-```java
+#### 5W1H: Why Encapsulation?
+
+```
+WHAT: Bundling data (fields) + behavior (methods) into one unit,
+      and restricting direct access to the data.
+
+WHY:  Without encapsulation, ANY code can modify ANY data.
+      In a 100K-line application with 500 engineers:
+      • Who set balance to -1000? Could be anywhere.
+      • Who changed the password without hashing? Unknown.
+      • Who put null in the required field? Good luck.
+
+      Encapsulation = data can ONLY be modified through controlled methods.
+      Methods enforce RULES (validation, logging, events).
+
+ANALOGY — ATM vs OPEN VAULT:
+  No encapsulation = customers walk into the bank vault directly.
+  They grab cash, leave IOUs, rearrange bills. Chaos.
+  Encapsulation = customers use the ATM (public interface).
+  ATM enforces: PIN check, balance check, withdrawal limits.
+  Vault (data) is hidden; ATM (methods) controls access.
+
+HOW JVM ENFORCES ACCESS MODIFIERS:
+  Java's access modifiers (private, protected, public, default) are
+  enforced at TWO levels:
+
+  1. COMPILE TIME: javac checks access rules in source code.
+     Trying to access a private field from outside? Compilation error.
+
+  2. RUNTIME: JVM's class verifier checks bytecode on class loading.
+     Even if you hand-write bytecode that accesses a private field,
+     the verifier rejects it with IllegalAccessError.
+
+  EXCEPTION: Reflection can bypass access modifiers:
+  field.setAccessible(true);  // Breaks encapsulation!
+  This is why frameworks (Spring, Hibernate) can inject private fields.
+  But production code should NEVER do this.
+
+ACCESS MODIFIER SCOPE:
+┌──────────────┬───────┬─────────┬────────────┬─────────┐
+│ Modifier     │ Class │ Package │ Subclass   │ World   │
+├──────────────┼───────┼─────────┼────────────┼─────────┤
+│ private      │ ✔     │ ✘      │ ✘          │ ✘      │
+│ default      │ ✔     │ ✔      │ ✘          │ ✘      │
+│ protected    │ ✔     │ ✔      │ ✔         │ ✘      │
+│ public       │ ✔     │ ✔      │ ✔          │ ✔      │
+└──────────────┴───────┴─────────┴────────────┴─────────┘
+```
 // WITHOUT ENCAPSULATION:
 class BankAccountBad {
     public double balance;  // Anyone can mess with this!
@@ -234,6 +281,40 @@ class BankAccountGood {
 ```
 
 ### 2. ABSTRACTION - "Show Only What Matters"
+
+#### 5W1H: Why Abstraction?
+
+```
+WHAT: Hiding IMPLEMENTATION details and showing only the INTERFACE.
+      The user knows WHAT an object does, not HOW it does it.
+
+WHY:  Complexity is the enemy of understanding.
+      A car driver doesn't need to understand combustion engines.
+      A Java developer calling list.sort() doesn't need to know
+      if it uses merge sort or TimSort internally.
+
+ABSTRACTION vs ENCAPSULATION (they're different!):
+  Encapsulation = hiding DATA (private fields, getters/setters)
+  Abstraction = hiding IMPLEMENTATION (interfaces, abstract classes)
+
+  Encapsulation: "You can't see my balance field directly"
+  Abstraction: "You can pay with processPayment(), I handle the rest"
+
+HOW JVM IMPLEMENTS ABSTRACTION:
+  1. abstract methods: JVM stores them in the class with ACC_ABSTRACT flag.
+     They have NO bytecode body. Subclass MUST provide implementation.
+  2. interface methods: JVM uses an itable (interface method table)
+     separate from the vtable. invokevirtual vs invokeinterface bytecodes.
+  3. At runtime, JVM resolves which CONCRETE method to call based on
+     the actual object type (dynamic dispatch).
+
+REAL-WORLD:
+  • JDBC: Connection/Statement/ResultSet are abstractions.
+    MySQL, PostgreSQL, Oracle each provide concrete implementations.
+    Your code works with ANY database through the same abstraction.
+  • Spring: @Service is an abstraction marker. The code calling it
+    doesn't know or care about the implementation class.
+```
 
 ```java
 // When you drive a car:

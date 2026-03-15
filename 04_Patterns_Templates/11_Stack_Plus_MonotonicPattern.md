@@ -4,6 +4,22 @@
 
 > **WHY this combination?** A stack processes elements in LIFO order. A **monotonic stack** maintains elements in sorted order, enabling O(n) solutions for "next greater/smaller element" problems that seem to need O(n²).
 
+### 🧠 Deep Intuition — Why Monotonic Stack Is O(n)
+
+The brute force for "next greater element" checks every element to the right for each position — nested loops, O(n²). The monotonic stack solves this in O(n) through a key insight: **elements that get "answered" can be permanently discarded.**
+
+#### The Invariant — Why This Is Correct
+
+A monotonic decreasing stack (for next greater element) maintains this invariant: all elements on the stack are **still waiting for their answer** (next greater element). When a new element comes that is larger than the stack top, **it is the answer** for the top element. We pop the top (it's answered), and check again — repeatedly until the stack top is larger or the stack is empty.
+
+#### The Amortized O(n) Proof
+
+The proof is elegant: each element is pushed onto the stack **exactly once** and popped **at most once**. Across all n elements, that's at most n pushes + n pops = **2n total operations = O(n).** The inner `while` loop doesn't make it O(n²) because the total pops across all iterations is bounded by n.
+
+#### Increasing vs Decreasing — The Key Distinction
+- **Monotonic Decreasing** stack (big → small from bottom to top): finds **next GREATER** element. New elements that are larger "answer" and pop smaller elements.
+- **Monotonic Increasing** stack (small → big from bottom to top): finds **next SMALLER** element. New elements that are smaller "answer" and pop larger elements.
+
 ---
 
 ## 🧠 WHEN TO RECOGNIZE THIS PATTERN
@@ -370,6 +386,29 @@ flowchart TD
 2. **Forgetting boundary element** — Add sentinel value (0) at end for histogram problems
 3. **Increasing vs Decreasing confusion** — Draw it out! Increasing finds next SMALLER, Decreasing finds next GREATER
 4. **Off-by-one in width** — In histogram: `width = stack.isEmpty() ? i : i - stack.peek() - 1`
+
+---
+
+## 🎯 INTERVIEW ARTICULATION — How to Explain Monotonic Stack
+
+**When the interviewer gives you a "next greater element" type problem, say this:**
+
+> "The brute force checks every element to the right for each position — O(n²). A monotonic stack solves it in O(n) because each element is pushed once and popped at most once. When a new element is larger than the stack top, it's the 'next greater' for all smaller elements on the stack — we pop and record answers. Total operations: at most n pushes + n pops = O(n)."
+
+**Key mathematical justification:**
+- "It looks O(n²) due to the inner while-loop, but each element participates in at most 2 operations (push + pop) across the entire run. Amortized O(1) per element."
+- "The invariant is: the stack always contains elements that are still waiting for their 'next greater' answer, in decreasing order."
+
+**Common mistakes to proactively mention:**
+- ❌ "Use `ArrayDeque` not `Stack` class — Stack is legacy, synchronized, and slower."
+- ❌ "For histogram problems, add a sentinel value (height 0) at the end to flush remaining stack elements."
+- ❌ "Increasing stack finds next SMALLER; decreasing finds next GREATER — draw it out to be sure."
+
+**Real-world applications:**
+- Stock span problem (how many consecutive days was the price ≤ today's price)
+- Temperature monitoring systems (days until warmer weather)
+- Expression parsing in compilers (operator precedence)
+- Undo/redo in text editors (backtracking to most recent state)
 
 ---
 

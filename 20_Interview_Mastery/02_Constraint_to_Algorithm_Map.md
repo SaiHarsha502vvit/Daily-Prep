@@ -73,6 +73,25 @@ Your brain should INSTANTLY think:
    check if (k - x) exists in the set."
 ```
 
+### Theory Lens — Constraint Decoding As a Decision System
+
+Interview speed comes from converting raw constraints into a deterministic algorithm filter.
+Treat this as a four-step decision system:
+
+1. Budget extraction:
+Convert input bounds into an operation budget per test case.
+
+2. Complexity elimination:
+Discard complexity classes that exceed the budget before thinking about implementation details.
+
+3. Structure matching:
+Use problem structure (sorted data, graph edges, frequency needs, range updates, monotonic predicate) to pick candidate families.
+
+4. Constant-factor sanity check:
+Validate language/runtime overhead, memory limits, and hidden costs like hashing collisions, string copies, and I/O volume.
+
+This process turns algorithm choice from intuition into repeatable reasoning, which is exactly what interviewers evaluate under time pressure.
+
 ---
 
 ## 2. The Master Constraint Table — With 50+ Algorithms
@@ -649,6 +668,15 @@ KEY RATIOS TO REMEMBER:
   Network within DC: 0.5ms round-trip
   Network across continents: 150ms round-trip
 ```
+
+### 🧠 Theory Lens: System Design as Physics
+When you drop from pure algorithms into System Design, the limiting factor stops being CPU Big O and becomes pure **Physics**. 
+
+1. **The Speed of Light Limitation**: The reason continental network trips take 150ms is because light physically cannot travel faster through fiber optic glass. No algorithm can "optimize" this. The only solution is architectural—bringing data geographically closer to the user via CDNs or Edge replicas.
+2. **Bandwidth vs Latency Paradox**: You can drive a truck full of hard drives across the country and move 100 Petabytes in two days (Massive Bandwidth, Catastrophic Latency). Network queries are the inverse (Fast Latency, Capped Bandwidth). True system design requires you to analytically separate these two attributes and optimize them independently.
+3. **Mechanical vs Sequential IO**: Solid state drives (SSDs) and spinning disks perform terribly on random writes because of hardware block-mapping or mechanical arm movements. This physical limitation is *exactly why* databases like Cassandra or Kafka use sequential append-only logs. They mathematically convert random application writes into sequential physical writes, effectively cheating physics.
+
+---
 
 ### Scale Estimation — Back-of-Envelope Calculations
 

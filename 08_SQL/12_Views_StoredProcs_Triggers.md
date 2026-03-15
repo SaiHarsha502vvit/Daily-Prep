@@ -4,8 +4,37 @@
 
 ## Chapter 12: Views & Materialized Views
 
+### 🧠 Understanding Database Abstraction Layers
+
+This chapter covers three ways to encapsulate logic directly in the database: **Views**, **Stored Procedures**, and **Triggers**. Each serves a different purpose, but they share a common philosophy: **push logic as close to the data as possible**.
+
+#### Views — Virtual Tables That Simplify Complex Queries
+
+A view is a **saved query** that behaves like a table. You define it once, and then query it by name. Why is this useful?
+
+1. **Simplification** — Instead of writing a 15-line JOIN query every time you need employee details with department names and manager names, create a view and query it as `SELECT * FROM employee_details`.
+2. **Security** — Views can hide sensitive columns. Give users access to a view that excludes `salary` and `ssn`, without giving them access to the underlying table.
+3. **Consistency** — If the business definition of "active employee" is `WHERE is_active = TRUE AND termination_date IS NULL`, define it once in a view. Every query uses the same definition.
+
+**Regular View vs Materialized View:**
+- A **regular view** stores no data — it re-executes the underlying query every time you query the view. Fast to create, always up-to-date, but query performance depends on the underlying complexity.
+- A **materialized view** physically stores the query result on disk, like a cached table. Reading is instant, but the data can become stale. You must explicitly `REFRESH` it. Use for expensive aggregations that don't need real-time accuracy (dashboards, reports).
+
+#### Stored Procedures & Functions — Logic in the Database
+
+Stored procedures encapsulate multi-step operations as reusable, callable units in the database. The key difference:
+- **Function** → returns a single value, can be used inside SELECT statements (like `SELECT CalculateTax(price) FROM products`)
+- **Procedure** → can perform multiple operations (INSERT, UPDATE, DELETE, control flow), called with `CALL`
+
+#### Triggers — Automatic Reactions to Data Changes
+
+Triggers are code that fires **automatically** when a specific event occurs (INSERT, UPDATE, DELETE). They're powerful for audit logging and enforcing business rules, but come with serious caveats:
+
+> ⚠️ **Warning:** Triggers are "invisible" — when you run an INSERT, you don't see that a trigger is also running behind the scenes. This makes debugging very difficult, especially when triggers call other triggers (cascading triggers). Use them sparingly, and **always document them prominently**.
+
+---
+
 ```sql
--- ═══════════════════════════════════════════════════════════════════════════════
 -- VIEWS - VIRTUAL TABLES
 -- ═══════════════════════════════════════════════════════════════════════════════
 

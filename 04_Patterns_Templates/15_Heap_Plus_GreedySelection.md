@@ -4,6 +4,28 @@
 
 > **WHY this combination?** Heaps give O(log n) access to the min/max element. Combined with greedy strategy (always pick the best available), they solve "Top K", "merge K sorted", and scheduling problems efficiently.
 
+### 🧠 Deep Intuition — Heaps and Greedy Correctness
+
+#### Why Heaps Give O(log n) Insert/Extract
+
+A heap is a **complete binary tree** stored in an array. "Complete" means every level is fully filled except possibly the last, which is filled left-to-right. The heap property (min-heap: parent ≤ children; max-heap: parent ≥ children) means the root always holds the extreme value. Insert and extract require "bubbling" up or down through the tree height, which is O(log n) since a complete binary tree has height ⌊log₂ n⌋.
+
+#### Why Min-Heap for K-Largest (The Counterintuitive Trick)
+
+This confuses everyone at first. To find the K largest elements, you maintain a **min-heap of size K**. Why? Because the min-heap's top is the smallest of the K elements you've kept. When a new element arrives:
+- If it's **larger** than the heap top → it belongs in the top K; evict the current minimum
+- If it's **smaller** → it certainly doesn't belong in the top K; skip it
+
+At the end, the heap contains exactly the K largest elements, and `heap.peek()` is the Kth largest. The alternative (max-heap of everything) uses O(n) space and O(n log n) time to build, while this approach uses only O(k) space and O(n log k) time.
+
+#### When Is Greedy Correct?
+
+Greedy algorithms make the locally optimal choice at each step, hoping to reach the globally optimal solution. They're correct when two conditions hold:
+1. **Greedy choice property**: A locally optimal choice leads to a globally optimal solution (you never need to "undo" a choice)
+2. **Optimal substructure**: After making the greedy choice, the remaining problem is a smaller instance of the same problem
+
+For many heap-based problems, the heap enables the greedy selection: "always pick the best available option." In merge K sorted lists, "best" means the smallest current head. In task scheduling, "best" means the most frequent task.
+
 ---
 
 ## 🧠 WHEN TO RECOGNIZE
@@ -328,6 +350,34 @@ flowchart TD
 | Custom comparator | Complex objects | `new PQ<>((a,b) -> a.cost - b.cost)` |
 | Lazy deletion | When can't easily remove | Mark deleted, skip on poll |
 | Heap + HashMap | Frequency-aware | Count freq → heap by freq |
+
+---
+
+## 🎯 INTERVIEW ARTICULATION — How to Explain Heap + Greedy
+
+**When the interviewer gives you a top-K or scheduling problem, say this:**
+
+> "Sorting all n elements would be O(n log n), but we only need the K largest/smallest. A min-heap of size K keeps only the K largest: for each new element, compare with heap top (the smallest of our K). If larger, swap it in. Total: O(n log K), and only O(K) space — optimal for streaming data."
+
+**For greedy problems:**
+> "At each step, I make the locally optimal choice. This works here because the greedy choice property holds — swapping any decision for the greedy decision never makes the solution worse. I can show this with an exchange argument."
+
+**Key mathematical justification:**
+- "Min-heap for K-largest is counterintuitive. The heap top is the *smallest* of the K we kept. If a new element beats the smallest, it replaces it. At the end, heap contains exactly the K largest."
+- "Greedy correctness requires proof. The *exchange argument*: take any optimal solution, swap one element for the greedy choice, show it doesn't get worse."
+- "Heap insert/extract is O(log n) because the heap is a complete binary tree of height ⌊log₂ n⌋. Bubbling up/down traverses at most h levels."
+
+**Common mistakes to proactively mention:**
+- ❌ "Min-heap for K-largest, Max-heap for K-smallest — it's always the *opposite* of what you're finding."
+- ❌ "Greedy fails for many problems (e.g., 0/1 Knapsack, coin change with arbitrary denominations). Always check with a counterexample first."
+- ❌ "PriorityQueue in Java is a min-heap by default. For max-heap: `new PriorityQueue<>(Comparator.reverseOrder())`."
+
+**Real-world applications:**
+- OS/Kubernetes task schedulers (process priority queue)
+- Dijkstra's algorithm in GPS/map routing
+- Merge K sorted log streams in distributed systems
+- Real-time analytics (top-K trending products, running median)
+- Huffman encoding in data compression (ZIP, GZIP)
 
 ---
 

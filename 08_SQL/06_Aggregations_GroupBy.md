@@ -4,7 +4,70 @@
 
 ## Chapter 6: Aggregate Functions & GROUP BY
 
-### Aggregate Functions
+### 🧠 Understanding Aggregation — Collapsing Many Rows Into One
+
+Aggregation is the process of **combining multiple rows into a single summary value**. Think of it as zooming out: instead of seeing every individual employee's salary, you see the average salary per department. This is fundamental to data analysis — business decisions are made on summaries, not individual records.
+
+#### Why GROUP BY Exists — The Single-Value Rule
+
+When you use an aggregate function like `AVG(salary)`, the database collapses all rows into one result. But what if you want the average salary **per department**? You need `GROUP BY dept_id` — this tells the database to create separate "buckets" (one per department) and apply the aggregate to each bucket independently.
+
+The **critical rule**: Every column in your `SELECT` must either be:
+1. Inside an aggregate function (`SUM(salary)`, `COUNT(*)`, etc.), OR
+2. Listed in the `GROUP BY` clause
+
+Why? Because if you say `SELECT dept_id, first_name, AVG(salary)`, the database doesn't know *which* `first_name` to pick for each department — there are many employees per department, but only one average. This creates an ambiguity that SQL prevents by requiring the GROUP BY rule.
+
+#### WHERE vs HAVING — When to Filter
+
+This distinction confuses everyone at first, but it's simple once you understand the execution order:
+
+- **WHERE** filters **individual rows** *before* groups are formed. Use it when your condition operates on raw column values (e.g., `WHERE salary > 50000`).
+- **HAVING** filters **groups** *after* aggregation. Use it when your condition operates on aggregate results (e.g., `HAVING AVG(salary) > 50000`).
+
+Think of it this way: WHERE decides which employees to consider. HAVING decides which departments to show in the final result.
+
+> 💡 **Performance Tip:** Always prefer WHERE over HAVING when possible. Filtering rows early (with WHERE) means fewer rows to aggregate, which is faster. Only use HAVING for conditions that *require* aggregate values.
+
+#### 📝 Formal Syntax — Aggregate Functions
+
+```
+SELECT <aggregate_function>(<column_name>)
+FROM <table_name>
+[WHERE <condition>];
+
+-- Available aggregate functions:
+COUNT(*)                                         -- Count all rows (including NULLs)
+COUNT(<column>)                                  -- Count non-NULL values
+COUNT(DISTINCT <column>)                         -- Count unique non-NULL values
+SUM(<column>)                                    -- Sum of all values
+AVG(<column>)                                    -- Average of all values
+MIN(<column>)                                    -- Minimum value
+MAX(<column>)                                    -- Maximum value
+```
+
+#### 📝 Formal Syntax — GROUP BY with HAVING
+
+```
+SELECT <column1>, <column2>, <aggregate_function>(<column>)
+FROM <table_name>
+[WHERE <row_condition>]                          -- Filters rows BEFORE grouping
+GROUP BY <column1>, <column2>                    -- Creates groups
+[HAVING <aggregate_condition>]                   -- Filters groups AFTER aggregation
+[ORDER BY <column_or_aggregate> [ASC|DESC]];
+```
+
+#### 📝 Formal Syntax — ROLLUP & CUBE (Subtotals)
+
+```
+-- ROLLUP: Generates subtotals in hierarchical order
+GROUP BY ROLLUP (<column1>, <column2>);          -- Subtotals for col1, then grand total
+
+-- CUBE: Generates subtotals for ALL combinations
+GROUP BY CUBE (<column1>, <column2>);            -- Subtotals for col1, col2, col1+col2, grand total
+```
+
+---
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐

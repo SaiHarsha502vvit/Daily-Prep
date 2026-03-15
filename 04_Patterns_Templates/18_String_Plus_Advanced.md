@@ -4,6 +4,30 @@
 
 > **WHY this combination?** Strings combine array access, hashing, sliding window, DP, and specialized algorithms (KMP, Rabin-Karp). Most "string" problems are actually pattern problems in disguise.
 
+### 🧠 Deep Intuition — Strings Are Disguised Pattern Problems
+
+Most string problems aren't really "string" problems — they're array, hash, or DP problems wearing a string costume. The key is to **identify the underlying pattern**:
+
+- "Find all anagrams in a string" → This is a **sliding window** problem with a frequency map
+- "Edit distance" → This is a **2D DP** problem (same as LCS family)
+- "Valid parentheses" → This is a **stack** problem
+- "Longest palindromic substring" → **Two pointers** (expand from center) or **DP**
+
+The string-specific part is usually just the data representation, not the algorithm.
+
+#### Why String Immutability Matters in Java
+
+In Java, strings are immutable — every concatenation creates a new String object. `s += c` inside a loop creates O(n) new strings of increasing size, resulting in **O(n²) total time** for what looks like an O(n) loop. Always use `StringBuilder` for building strings incrementally — it uses an internal array and amortizes to O(n) total time.
+
+#### The `int[26]` Trick — Why It's Faster Than HashMap
+
+For problems involving only lowercase letters, `int[26]` (indexed by `c - 'a'`) is strictly better than `HashMap<Character, Integer>`:
+- **Array access is O(1)** with no hash computation, no collision handling, no boxing/unboxing
+- **Comparison of two frequency arrays** is O(26) = O(1), while comparing two HashMaps is O(n) with higher constant factors
+- **Memory**: 26 ints = 104 bytes vs HashMap's ~1000+ bytes for the same data
+
+Use `int[128]` when the problem involves ASCII characters (uppercase, digits, etc.), and HashMap only when the character set is unbounded (Unicode).
+
 ---
 
 ## 🧠 PATTERN DECODER FOR STRING PROBLEMS

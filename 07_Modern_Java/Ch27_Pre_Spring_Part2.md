@@ -2,6 +2,35 @@
 
 ---
 
+## Theory-First Master Lens (Part 2: Infrastructure to Runtime Behavior)
+
+This part focuses on how production systems behave under load, during build, and inside the JVM runtime.
+
+Use these reasoning anchors while reading:
+
+1. Connection pooling is queue management.
+It shifts cost from connection setup to bounded concurrency and wait-time behavior.
+
+2. Classloading is type identity + isolation.
+Class name alone is not enough; classloader identity changes runtime compatibility.
+
+3. Build tools are graph resolution engines.
+Lifecycle phases and dependency scopes determine final classpath and runtime behavior.
+
+4. HTTP semantics drive reliability.
+Correct method, status, and header semantics are prerequisites for stable retries, caching, and gateway behavior.
+
+5. Design patterns are controlled variability.
+Spring patterns are mechanisms for change isolation, not interview vocabulary.
+
+6. Threading is resource budgeting.
+Thread pools, queues, and blocking points determine tail latency more than average latency.
+
+7. Type erasure and bytecode tooling explain "invisible" framework behavior.
+What is not visible in source can still be deterministically explained by runtime metadata and instrumentation phases.
+
+Treat every section as: mechanism -> trade-off -> failure mode -> tuning strategy.
+
 
 public class MoneyDeserializer extends JsonDeserializer<BigDecimal> {
     

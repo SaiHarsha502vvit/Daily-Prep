@@ -169,33 +169,93 @@ Ensures a class has ONLY ONE INSTANCE and provides a global point of access.
 
 ## 1.2 Factory Pattern
 
-## What Is It?
+### 5W1H: Deep Understanding
 
-Creates objects WITHOUT exposing the creation logic to the client.
-Refers to the newly created object through a common interface.
+```
+WHAT: Creates objects WITHOUT exposing the creation logic to the client.
+      The client asks for a TYPE, the factory returns the right object.
+
+WHY:  Without Factory, object creation logic is SCATTERED everywhere:
+      if-else chains in controllers, services, and utilities.
+      When you add a new type, you modify EVERY location. 
+      Factory centralizes creation in ONE place.
+
+ANALOGY — PIZZA RESTAURANT:
+  You say: "I want Margherita"  (specify type)
+  Kitchen: creates the pizza    (factory does creation)
+  You get: a pizza             (you receive the object)
+  You don't see the kitchen, you don't know the recipe,
+  and if the recipe changes, your order doesn't change.
+
+HOW IT WORKS INTERNALLY:
+  1. All products implement a common INTERFACE (Animal, Shape, etc.)
+  2. Factory method takes a TYPE parameter (string, enum)
+  3. Factory returns the correct CONCRETE class based on type
+  4. Client works with the INTERFACE — doesn't know concrete type
+
+REAL-WORLD IN SPRING:
+  Spring's BeanFactory IS a Factory pattern!
+  You ask: context.getBean("userService")
+  Spring returns: the UserServiceImpl (you don't create it)
+  Spring's entire IoC container is a sophisticated Factory.
+
+FACTORY vs ABSTRACT FACTORY:
+  Factory: creates ONE type of product family
+  Abstract Factory: creates FAMILIES of related products
+  Example: UIFactory creates Button + TextField + Menu
+           WindowsUIFactory → WindowsButton + WindowsTextField
+           MacUIFactory     → MacButton + MacTextField
+```
 
 > 💡 **ANALOGY: Pizza Restaurant**
 - You order "Margherita" → Kitchen creates it (you don't know how)
 - You order "Pepperoni" → Kitchen creates it (different recipe)
 - You just ask for a type, factory handles the creation
-## What Problem Does It Solve
-
-
-**Without Factory**:
-if (type.equals("dog")) animal = new Dog();
-else if (type.equals("cat")) animal = new Cat();
-// This code is scattered everywhere!
-
-**With Factory**:
-Animal animal = AnimalFactory.create(type);
-// Creation logic in ONE place!
 
 ## 1.3 Builder Pattern
 
-## What Is It?
+### 5W1H: Deep Understanding
 
-Separates the construction of a complex object from its representation.
-Allows step-by-step construction with fluent interface.
+```
+WHAT: Separates the construction of a complex object from its representation.
+      Allows step-by-step construction with a fluent interface.
+
+WHY:  The TELESCOPING CONSTRUCTOR anti-pattern:
+      new User(name, email, phone, address, age, null, null, null, true);
+      What are all these nulls? Which parameter is which? Error-prone.
+
+      Builder solves this:
+      User.builder().name("John").email("john@email.com").age(25).build();
+      Clear, readable, self-documenting. Add/remove fields without breaking.
+
+ANALOGY — SUBWAY SANDWICH:
+  "I'll have a 6-inch Italian on wheat" (mandatory choices)
+  "Add lettuce" (optional)
+  "Add tomato" (optional)
+  "No onions" (optional)
+  "Toast it" (optional)
+  "That's my order" (build!)
+
+  Each step is optional, order doesn't matter,
+  and the final product is immutable.
+
+HOW IT WORKS INTERNALLY:
+  1. Outer class (User) has a PRIVATE constructor
+  2. Static inner class (User.Builder) has the same fields
+  3. Each builder method sets a field and returns `this` (fluent chaining)
+  4. build() method calls the private constructor with all collected values
+  5. Allows VALIDATION in build() before creating the object
+
+REAL-WORLD IN JAVA:
+  StringBuilder, Stream API, HttpClient.newBuilder(),
+  Spring's MockMvc, Lombok's @Builder annotation.
+  ALL use the Builder pattern.
+
+BUILDER + IMMUTABILITY:
+  Builder pattern is the KEY to creating IMMUTABLE objects with
+  many fields. The object itself has no setters — all state is
+  set during construction via the builder.
+```
 
 > 💡 **ANALOGY: Building a Custom Burger**
 - Start with bun
@@ -204,19 +264,6 @@ Allows step-by-step construction with fluent interface.
 - Add vegetables (optional)
 - Add sauces (optional)
 - Build final burger
-## What Problem Does It Solve
-
-WITHOUT BUILDER (Telescoping constructor anti-pattern):
-new User(name, email, phone, address, age, null, null, null, null, true);
-// What are all these nulls? Confusing and error-prone!
-
-**With Builder**:
-User.builder()
-.name("John")
-.email("john@email.com")
-.age(25)
-.build();
-// Clear, readable, flexible!
 
 ---
 
@@ -224,45 +271,109 @@ User.builder()
 
 ## 2.1 Adapter Pattern
 
-## What Is It?
+### 5W1H: Deep Understanding
 
-Allows incompatible interfaces to work together by wrapping an object
-with an adapter that translates calls.
+```
+WHAT: Converts one interface into another that a client expects.
+      Makes incompatible interfaces work together by wrapping.
 
-> 💡 **ANALOGY: Power Adapter**
+WHY:  In real projects, you integrate third-party libraries,
+      legacy systems, or APIs with interfaces YOU can't change.
+      The Adapter translates between your interface and theirs.
+
+ANALOGY — POWER ADAPTER:
+  US plug (110V, flat pins) can't fit European socket (220V, round pins).
+  An adapter sits between them, translating the connection.
+  The plug doesn't change. The socket doesn't change.
+  The ADAPTER makes them compatible.
+
+HOW IT WORKS INTERNALLY:
+  1. You have a TARGET interface (what your code expects)
+  2. You have an ADAPTEE class (incompatible third-party code)
+  3. You create an ADAPTER that: implements TARGET, wraps ADAPTEE
+  4. Adapter translates method calls from TARGET → ADAPTEE
+
+REAL-WORLD EXAMPLES:
+  • Arrays.asList() — adapts array to List interface
+  • InputStreamReader — adapts InputStream (bytes) to Reader (chars)
+  • Spring's HandlerAdapter — adapts different controller types
+  • JDBC Driver — adapts database-specific protocol to JDBC API
+```
+
+> 💡 **ANALOGY: Travel Power Adapter**
 - US plug (110V) → Adapter → European socket (220V)
 - The adapter makes incompatible things work together
-## What Problem Does It Solve
-
-- Legacy code integration
-- Third-party library integration
-- Working with different data formats
 
 ## 2.2 Decorator Pattern
 
-## What Is It?
+### 5W1H: Deep Understanding
 
-Attaches additional responsibilities to an object DYNAMICALLY.
-Provides flexible alternative to subclassing for extending functionality.
+```
+WHAT: Attaches additional responsibilities to an object DYNAMICALLY.
+      Provides flexible alternative to subclassing.
 
-> 💡 **ANALOGY: Coffee Shop**
-- Base: Plain Coffee ($2)
-- Add Milk decorator: +$0.50
-- Add Sugar decorator: +$0.25
-- Add Whip decorator: +$0.75
-- Total: $3.50 (same coffee, enhanced!)
+WHY:  Subclassing creates a COMBINATORIAL EXPLOSION.
+      If you have 3 features (milk, sugar, whip cream) for coffee:
+      CoffeeWithMilk, CoffeeWithSugar, CoffeeWithMilkAndSugar,
+      CoffeeWithMilkAndWhip, CoffeeWithSugarAndWhip,
+      CoffeeWithMilkAndSugarAndWhip... = 7 subclasses!
+      Each new feature DOUBLES the number of classes.
+
+      Decorators compose features at RUNTIME:
+      new WhipDecorator(new SugarDecorator(new MilkDecorator(coffee)))
+      Add/remove features without creating new classes.
+
+HOW IT WORKS INTERNALLY:
+  1. Decorator implements the SAME interface as the wrapped object
+  2. Decorator holds a REFERENCE to the wrapped object
+  3. Decorator DELEGATES to the wrapped object for base behavior
+  4. Decorator adds its OWN behavior before/after delegation
+  5. Decorators can be STACKED (decorator wrapping decorator)
+
+ANALOGY — COFFEE SHOP:
+  Base: Plain Coffee ($2)
+  + MilkDecorator: delegates to coffee.cost() + $0.50
+  + SugarDecorator: delegates to milk.cost() + $0.25
+  Total: Sugar calls Milk calls Coffee = $2 + $0.50 + $0.25 = $2.75
+
+REAL-WORLD:
+  • Java I/O: BufferedReader(InputStreamReader(FileInputStream(file)))
+    Three decorators wrapping each other!
+  • Spring: @Transactional = TransactionInterceptor DECORATING your service
+  • Collections.unmodifiableList() = decorator that throws on modification
+```
 
 ## 2.3 Facade Pattern
 
-## What Is It?
+### 5W1H: Deep Understanding
 
-Provides a SIMPLIFIED INTERFACE to a complex subsystem.
-Hides complexity behind a simple API.
+```
+WHAT: Provides a SIMPLIFIED INTERFACE to a complex subsystem.
+      Hides complexity behind a simple API.
 
-> 💡 **ANALOGY: Universal Remote**
-- TV, Sound System, DVD Player, Lights - all complex
-- Remote has one button: "Watch Movie"
-- Behind scenes: dims lights, turns on TV, selects HDMI, starts player
+WHY:  Complex systems have dozens of classes that interact.
+      A client shouldn't need to understand ALL of them.
+      Facade provides a SINGLE entry point.
+
+ANALOGY — UNIVERSAL REMOTE:
+  TV: power(), selectInput(), setVolume(), setBrightness()
+  SoundSystem: power(), setEqualizer(), selectSource()
+  BluRayPlayer: power(), insertDisc(), play()
+  Lights: dim(), setColor()
+
+  Facade (Remote "Watch Movie" button):
+  watchMovie() { lights.dim(); tv.power(); soundSystem.power();
+                 tv.selectInput(HDMI); bluray.play(); }
+
+  One call replaces 6 calls. Client doesn't know the subsystem.
+
+REAL-WORLD:
+  • Spring Boot itself is a Facade over Spring Framework!
+    One annotation @SpringBootApplication hides:
+    @Configuration + @EnableAutoConfiguration + @ComponentScan
+  • SLF4J is a Facade over various logging frameworks
+  • JDBC is a Facade over database-specific protocols
+```
 
 ---
 
@@ -270,10 +381,44 @@ Hides complexity behind a simple API.
 
 ## 3.1 Observer Pattern
 
-## What Is It?
+### 5W1H: Deep Understanding
 
-Defines a one-to-many dependency between objects so that when one object
-changes state, all dependents are notified and updated automatically.
+```
+WHAT: Defines a one-to-many dependency between objects so that when
+      one object (Subject) changes state, all its dependents (Observers)
+      are notified and updated automatically.
+
+WHY:  Without Observer, objects must POLL for changes:
+      while (true) { if (subject.hasChanged()) update(); sleep(100); }
+      This wastes CPU and misses changes between polls.
+      Observer uses PUSH: subject notifies observers immediately.
+
+ANALOGY — YOUTUBE SUBSCRIPTION:
+  YouTuber = Subject (observable)
+  Subscribers = Observers
+  When YouTuber uploads a video → ALL subscribers get notified.
+  You can subscribe (register) and unsubscribe (deregister) anytime.
+  YouTuber doesn't need to know WHO the subscribers are.
+
+HOW IT WORKS INTERNALLY:
+  1. Subject maintains a List<Observer> (subscribers)
+  2. Observer interface has update(data) method
+  3. Subject.addObserver(observer) → adds to list
+  4. Subject.setState(newState) → iterates list, calls observer.update()
+  5. Each observer reacts independently to the notification
+
+REAL-WORLD:
+  • React's useState: when state changes, component re-renders (observes state)
+  • Spring's ApplicationEventPublisher / @EventListener
+  • JavaScript: addEventListener/removeEventListener
+  • Message Queues (Kafka, RabbitMQ): producers and consumers
+  • MVC: Model (subject) notifies View (observer) on data change
+
+VARIANTS:
+  Push model: Subject sends data WITH notification (observer.update(data))
+  Pull model: Subject sends notification only, observer PULLS data
+  Pub/Sub: Adds a message broker between subject and observer
+```
 
 > 💡 **ANALOGY: Newsletter Subscription**
 - You subscribe to a newsletter
@@ -282,10 +427,47 @@ changes state, all dependents are notified and updated automatically.
 
 ## 3.2 Strategy Pattern
 
-## What Is It?
+### 5W1H: Deep Understanding
 
-Defines a family of algorithms, encapsulates each one, and makes them
-interchangeable. Lets the algorithm vary independently from clients.
+```
+WHAT: Defines a family of algorithms, encapsulates each one, and makes
+      them INTERCHANGEABLE. Lets the algorithm vary independently.
+
+WHY:  Without Strategy, you get a massive if-else chain:
+      if (type == CREDIT) { ... }
+      else if (type == PAYPAL) { ... }
+      else if (type == BITCOIN) { ... }
+      Adding a new payment method = modifying existing code (violates OCP)
+
+      With Strategy: paymentStrategy.pay(amount);
+      Adding UPI? Create new UPIPayment implementing PaymentStrategy.
+      ZERO changes to existing code.
+
+ANALOGY — NAVIGATION APP:
+  Destination: same (office to home)
+  Strategy 1: by car (fastest route, consider traffic)
+  Strategy 2: by walk (shortest path, no highways)
+  Strategy 3: by bus (cheapest, follows bus routes)
+  The APP (context) doesn't know the routing algorithm.
+  It DELEGATES to the chosen strategy.
+
+HOW IT WORKS INTERNALLY:
+  1. Strategy INTERFACE defines the algorithm contract: execute(input)
+  2. ConcreteStrategy A, B, C each implement the interface differently
+  3. Context class holds a Strategy REFERENCE (composition, not inheritance)
+  4. Context delegates work to the strategy: strategy.execute(input)
+  5. Client can SWAP strategies at runtime: context.setStrategy(new B())
+
+STRATEGY vs STATE:
+  Strategy: client CHOOSES the algorithm (user selects sort method)
+  State: object TRANSITIONS between algorithms automatically
+        (order goes from Pending → Shipped → Delivered)
+
+REAL-WORLD:
+  • Collections.sort(list, comparator) — Comparator IS a Strategy
+  • Spring's AuthenticationProvider — different auth strategies
+  • Java's ScheduledExecutorService — different scheduling strategies
+```
 
 > 💡 **ANALOGY: Navigation App**
 - Same destination, different strategies: Car, Walk, Bike, Transit
@@ -294,10 +476,41 @@ interchangeable. Lets the algorithm vary independently from clients.
 
 ## 3.3 Command Pattern
 
-## What Is It?
+### 5W1H: Deep Understanding
 
-Encapsulates a request as an object, allowing you to parameterize clients,
-queue requests, log operations, and support undo/redo.
+```
+WHAT: Encapsulates a request as an OBJECT, allowing you to parameterize
+      clients, queue requests, log operations, and support undo/redo.
+
+WHY:  Sometimes you need to:
+      • UNDO an operation (Ctrl+Z in text editor)
+      • QUEUE operations for later execution (job queue)
+      • LOG all operations for audit trail
+      • RETRY failed operations
+      None of this is possible if the operation is just a method call.
+      By turning the operation into an OBJECT, it becomes data you can
+      store, queue, replay, and reverse.
+
+ANALOGY — RESTAURANT ORDER:
+  Customer → "I want pasta" (creates a command)
+  Waiter writes it on paper (Command object with all details)
+  Takes it to kitchen (passes to Invoker)
+  Chef executes the order (Receiver executes command)
+  Paper slip can be: queued, logged, undone ("cancel that pasta")
+
+HOW IT WORKS INTERNALLY:
+  1. Command interface: execute(), undo()
+  2. ConcreteCommand: stores Receiver + parameters for the action
+  3. Invoker: calls command.execute() (button, menu, scheduler)
+  4. Receiver: the object that actually does the work
+  5. History stack: stores executed commands for undo/redo
+
+REAL-WORLD:
+  • Text editor undo/redo (each keystroke = command)
+  • Transaction rollback in databases
+  • Spring's TaskExecutor — commands queued for thread pool
+  • GUI buttons — each button has a Command object
+```
 
 > 💡 **ANALOGY: Restaurant Order**
 - Waiter writes order on paper (Command object)

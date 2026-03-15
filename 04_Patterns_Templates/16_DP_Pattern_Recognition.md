@@ -4,6 +4,32 @@
 
 > **WHY this matters?** DP problems look overwhelming because there are hundreds of them. But they ALL fall into ~8 pattern families. Recognize the family → apply the template → solve.
 
+### 🧠 Deep Intuition — What Makes a Problem DP?
+
+Two conditions must BOTH be present for DP to be applicable:
+
+1. **Optimal substructure**: The optimal solution to the problem contains optimal solutions to subproblems. For example, the shortest path from A to C through B requires the shortest path from A to B *and* the shortest path from B to C. If a problem doesn't have this property (e.g., longest simple path in a general graph), DP won't work.
+
+2. **Overlapping subproblems**: The same subproblem is computed multiple times. Fibonacci is the classic example: `fib(5)` calls `fib(4)` and `fib(3)`, but `fib(4)` also calls `fib(3)` — so `fib(3)` is computed twice. Memoization or tabulation eliminates this redundancy.
+
+If a problem has optimal substructure but NO overlapping subproblems, use **greedy** or **divide-and-conquer** instead (e.g., merge sort has optimal substructure but each subarray is only solved once).
+
+#### The DP Thinking Framework — 4 Steps
+
+Every DP solution follows the same mental process:
+
+1. **Define the state**: What does `dp[i]` (or `dp[i][j]`) represent? This is the hardest step. A good state definition makes the recurrence obvious; a bad one makes the problem unsolvable.
+2. **Find the transition (recurrence)**: How does `dp[i]` relate to smaller subproblems? For House Robber: at house `i`, you either rob it (`dp[i-2] + val[i]`) or skip it (`dp[i-1]`).
+3. **Identify base cases**: What are the trivially known values? `dp[0]`, `dp[1]`, or empty string/array cases.
+4. **Determine build order**: Fill dp table so that dependencies are computed first. This is why bottom-up fills left-to-right (linear DP) or row-by-row (grid DP).
+
+#### Top-Down vs Bottom-Up — When to Use Which
+
+- **Top-down (memoization)**: Write the natural recursive solution, add a cache. Easier to think about, only computes needed states. Use when the state space is large but sparsely visited.
+- **Bottom-up (tabulation)**: Fill the table iteratively. Slightly faster (no recursion overhead), easier to optimize space (rolling array). Use when all states are needed.
+
+Both have the same time complexity. Top-down is better for **thinking**; bottom-up is better for **optimizing**.
+
 ---
 
 ## 🧠 THE DP DECISION TREE
@@ -378,6 +404,37 @@ COMMON MISTAKES:
 | Print solution | Need actual answer, not just value | Backtrack through DP table |
 | Coordinate compression | Huge range, few values | Map values to indices |
 | Binary search in DP | LIS optimization | Patience sorting O(n log n) |
+
+---
+
+## 🎯 INTERVIEW ARTICULATION — How to Explain DP
+
+**When the interviewer gives you a DP problem, say this:**
+
+> "I notice this problem has overlapping subproblems — the same subproblem is computed multiple times in a naive recursive approach. It also has optimal substructure — the optimal solution builds from optimal solutions to smaller subproblems. These two properties make it a DP problem."
+
+**The 4-step explanation framework:**
+1. "**Define the state**: `dp[i]` represents [what]. This is the hardest step — getting the state right makes the recurrence obvious."
+2. "**Find the recurrence**: `dp[i] = max(dp[i-1], dp[i-2] + val[i])` — at each step, I either take or skip."
+3. "**Base cases**: `dp[0] = 0`, `dp[1] = val[0]`."
+4. "**Build order**: I fill left-to-right because each cell depends only on earlier cells."
+
+**Key mathematical justification:**
+- "Without memoization, the recursion tree has O(2ⁿ) nodes (e.g., Fibonacci). With memoization, each of the n subproblems is solved once → O(n)."
+- "Top-down and bottom-up have identical time complexity. Top-down is easier to think about; bottom-up avoids recursion overhead and enables space optimization."
+- "Space optimization: if `dp[i]` only depends on `dp[i-1]` and `dp[i-2]`, I don't need the whole array — just two variables. O(n) → O(1)."
+
+**Common mistakes to proactively mention:**
+- ❌ "If the problem has optimal substructure but NO overlapping subproblems, use divide-and-conquer or greedy instead."
+- ❌ "Don't confuse 'maximum subarray' (Kadane's O(n)) with 'maximum subsequence' (potentially DP O(n²))."
+- ❌ "Always consider if you can optimize space — most 2D DP can be reduced to 1D if you only need the previous row."
+
+**Real-world applications:**
+- Git/diff algorithms (Edit Distance to compute file diffs)
+- Speech recognition (Viterbi algorithm — DP on Hidden Markov Models)
+- DNA sequence alignment (LCS variant in bioinformatics)
+- Cloud resource allocation (Knapsack: maximize value under cost constraint)
+- Text justification (minimize total cost of line breaks)
 
 ---
 

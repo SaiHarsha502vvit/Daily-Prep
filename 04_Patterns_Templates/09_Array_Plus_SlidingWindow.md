@@ -4,6 +4,26 @@
 
 > **WHY this combination?** When you need to find optimal **contiguous subarrays** or **substrings**, the sliding window maintains a running computation as it moves across the array. Reduces O(n²) brute force → O(n).
 
+### 🧠 Deep Intuition — Why Sliding Window Is O(n)
+
+The brute force for "best contiguous subarray" problems checks all O(n²) subarrays (each starting point × each ending point) and evaluates each one. Sliding window reduces this to O(n) by making a crucial observation: **you don't need to recompute the entire subarray when you shift by one position.**
+
+#### The Amortized Analysis — Why It's Truly O(n)
+
+Despite the nested `while (shrink)` loop inside the `for` loop, sliding window is NOT O(n²). Here's the rigorous argument:
+
+- The `right` pointer advances from 0 to n-1: exactly **n increments**
+- The `left` pointer also advances from 0 to at most n-1: at most **n increments total** (across all iterations of the outer loop, not per iteration)
+- Therefore, the total work is O(n + n) = **O(n)**
+
+Think of it this way: each element enters the window exactly once (when `right` reaches it) and leaves the window at most once (when `left` passes it). Total operations = 2n.
+
+#### Why Sliding Window FAILS With Negative Numbers
+
+Sliding window for sum problems relies on a **monotonicity assumption**: expanding the window (moving `right`) always increases the sum, and shrinking (moving `left`) always decreases it. With negative numbers, adding an element might *decrease* the sum, which breaks the invariant that "if the current window exceeds the target, we should shrink."
+
+For problems with negative numbers, use **Prefix Sum + HashMap** instead: compute `prefix[i] = sum(arr[0..i])`, then `subarray_sum(i,j) = prefix[j] - prefix[i-1]`. Store prefix sums in a HashMap to find target differences in O(1).
+
 ---
 
 ## 🧠 WHEN TO RECOGNIZE THIS PATTERN
@@ -320,6 +340,29 @@ flowchart TD
 | Variable window | O(n) | O(1) |
 | Window + HashMap | O(n) | O(k) where k = distinct elements |
 | Window + Deque | O(n) | O(k) |
+
+---
+
+## 🎯 INTERVIEW ARTICULATION — How to Explain Sliding Window
+
+**When the interviewer gives you a Sliding Window problem, say this:**
+
+> "The brute force checks all O(n²) subarrays. Sliding window reduces to O(n) because instead of recomputing from scratch, we add the new right element and remove the old left element — maintaining a running result. Each element enters the window once and leaves once, so total operations are 2n = O(n). This is amortized O(1) per element."
+
+**Key mathematical justification:**
+- "The inner while-loop looks O(n²), but each element is pushed at most once and popped at most once across ALL iterations. Total work = 2n."
+- "This only works when expanding the window monotonically changes the constraint (e.g., sum increases). With negative numbers, this invariant breaks — use prefix sums + HashMap instead."
+
+**Common mistakes to proactively mention:**
+- ❌ "Don't use sliding window for sum problems with negative numbers — the monotonicity assumption breaks."
+- ❌ "Fixed window vs variable window: if the problem gives you K, it's fixed. If it says 'longest' or 'shortest,' it's variable."
+- ❌ "Update your answer AFTER shrinking, not before — otherwise you report an invalid window state."
+
+**Real-world applications:**
+- Network throughput monitoring (requests per rolling time window)
+- Rate limiting (max N requests per T seconds — sliding window counter)
+- Stream processing (rolling averages in real-time analytics, e.g., stock price moving average)
+- Log analysis (error rate in the last 5 minutes)
 
 ---
 

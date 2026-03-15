@@ -4,6 +4,24 @@
 
 > **WHY this combination?** 2D grids are graphs where each cell connects to its 4 (or 8) neighbors. BFS/DFS on grids solve island counting, flood fill, shortest path, and rotation problems.
 
+### 🧠 Deep Intuition — Grids Are Implicit Graphs
+
+A 2D matrix with R rows and C columns is really a **graph with R×C nodes** where each cell (r,c) has edges to its 4 (or 8) neighbors. You never need to explicitly build this graph — the adjacency is implicit in the grid structure. This is why DFS/BFS on grids use the direction array `{{0,1},{0,-1},{1,0},{-1,0}}` — it defines the edges.
+
+#### DFS vs BFS for Grid Problems
+
+- **DFS (recursion or stack)**: Use for **exploring/marking connected components** (island counting, flood fill). DFS is simpler to implement recursively and uses the call stack. Caveat: for very large grids, recursive DFS can cause stack overflow — use iterative DFS or BFS instead.
+
+- **BFS (queue)**: Use for **shortest path** problems on grids. BFS explores cells in order of increasing distance, so the first time you reach the target is via the shortest path. Also essential for **multi-source BFS** — starting from multiple cells simultaneously (rotten oranges, distance to nearest 1).
+
+#### Multi-Source BFS — A Key Grid Technique
+
+Instead of running BFS from each source cell separately (O(k × R×C) for k sources), add ALL source cells to the queue at the start. They become "level 0," and BFS naturally computes the minimum distance from *any* source to every cell in a single O(R×C) pass. This is the correct approach for "rotten oranges" and "distance to nearest" problems.
+
+#### In-Place Visited Marking — Trading Purity for Efficiency
+
+Instead of maintaining a separate `boolean[][] visited` array, you can mark visited cells by modifying the grid itself (e.g., changing `'1'` to `'0'` or using a sentinel value like `'#'`). This saves O(R×C) space. However, it modifies the input — only use this when the problem allows it or when you can restore the grid afterwards.
+
 ---
 
 ## 🧠 WHEN TO RECOGNIZE

@@ -4,6 +4,39 @@
 
 > **WHY this combination?** Graphs model relationships. BFS gives shortest unweighted path. DFS explores all reachable nodes. Dijkstra handles weighted graphs. Union-Find manages connected components. Choosing the right traversal is THE key skill.
 
+### 🧠 Deep Intuition — Choosing the Right Graph Algorithm
+
+#### Graph Representation — The First Decision
+
+Before choosing an algorithm, you must decide how to represent the graph. This decision affects both code complexity and performance:
+
+| Representation | Space | Edge Lookup | Iterate Neighbors | Best When |
+|---------------|-------|-------------|-------------------|-----------|
+| **Adjacency List** | O(V + E) | O(degree) | O(degree) | Sparse graphs (most real-world graphs) |
+| **Adjacency Matrix** | O(V²) | O(1) | O(V) | Dense graphs, need fast edge queries |
+
+Most interview problems use adjacency lists because real-world graphs are sparse (each node has few connections relative to total nodes).
+
+#### Why BFS Guarantees Shortest Path (Unweighted)
+
+BFS explores nodes in **order of increasing distance from the source**. All nodes at distance 1 are explored before any node at distance 2. So the **first time you reach any node, you've reached it via the shortest path**. This is why BFS is the correct algorithm for unweighted shortest paths — it's a direct consequence of the level-by-level exploration.
+
+This does NOT work for weighted graphs — a path with more edges might have a lower total weight, and BFS doesn't account for edge weights.
+
+#### Why Dijkstra Is Correct — The Greedy Proof Sketch
+
+Dijkstra always processes the unvisited node with the **smallest known distance**. Its correctness relies on one assumption: **all edge weights are non-negative.** When you process a node, you know its distance is final because any other path would go through an unprocessed node with a *larger* distance, and since all edges are non-negative, that alternative path can only be *longer*.
+
+With negative edges, this assumption breaks — a longer path through a negative edge might turn out shorter. This is why Dijkstra fails on negative-weight graphs and you must use Bellman-Ford instead.
+
+#### Union-Find — The Power of Amortized O(1) Operations
+
+Union-Find achieves near-constant time per operation through two optimizations:
+- **Path compression**: When you call `find(x)`, make every node along the path point directly to the root. Future operations on these nodes are O(1).
+- **Union by rank**: Always attach the shorter tree under the taller tree, keeping the tree balanced. Without this, unions could create a long chain (O(n) per find).
+
+Together, these give **O(α(n))** amortized time per operation, where α is the inverse Ackermann function — so slow-growing that it's effectively ≤ 4 for any practical input size. This is essentially O(1).
+
 ---
 
 ## 🧠 WHEN TO RECOGNIZE
@@ -375,6 +408,32 @@ flowchart TD
 | 38 | Bridge in a Graph | Tarjan's algorithm |
 | 39 | Seven Bridges of Königsberg | Euler path existence |
 | 40 | Minimum edges to reverse for path | 0-1 BFS |
+
+---
+
+## 🎯 INTERVIEW ARTICULATION — How to Explain Graph Algorithms
+
+**When the interviewer gives you a graph problem, say this:**
+
+> "First, I'll represent this as a graph — [adjacency list/matrix]. Then I'll choose the right traversal: BFS for shortest unweighted path, DFS for exploring all paths or detecting cycles, Dijkstra for weighted shortest path, or Union-Find for connectivity queries."
+
+**How to justify your choice:**
+- "BFS guarantees shortest path in unweighted graphs because it explores nodes in order of increasing distance from the source. The first time we reach any node IS the shortest path."
+- "Dijkstra is correct because all edge weights are non-negative. When we settle a node (dequeue from priority queue), any alternative path goes through unsettled nodes with larger distances — so it can only be longer."
+- "Union-Find with path compression + union by rank gives amortized O(α(n)) ≈ O(1) per operation, where α is the inverse Ackermann function — practically constant."
+
+**Key anti-pattern:**
+- ❌ "NEVER use Dijkstra with negative edge weights — it will give wrong answers because a node marked 'settled' might later be reachable via a cheaper path through a negative edge. Use Bellman-Ford O(V×E) instead."
+- ❌ "For cycle detection in directed graphs, use DFS with 3-color marking (white/gray/black), not just visited/unvisited."
+- ❌ "Don't forget: grids ARE graphs! Each cell is a node, each adjacent cell is an edge. Apply standard BFS/DFS."
+
+**Real-world applications:**
+- Google Maps / GPS navigation (Dijkstra for weighted shortest path)
+- Social networks ("People You May Know" — BFS for degrees of separation)
+- Package managers (Maven, npm — topological sort for dependency resolution)
+- Network routing (BGP, OSPF — shortest path algorithms)
+- Image segmentation (connected components — Union-Find)
+- Web crawlers (BFS from seed URLs to discover pages)
 
 ---
 

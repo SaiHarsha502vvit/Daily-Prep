@@ -159,6 +159,41 @@ Every DS was created to solve a **SPECIFIC** problem:
 
 # 📊 Part 2: Arrays
 
+### 5W1H: Deep Understanding of Arrays
+
+```
+╔══════════════════════════════════════════════════════════════════════╗
+║  WHAT: An array is a CONTIGUOUS block of memory storing elements    ║
+║        of the SAME TYPE at consecutive addresses.                    ║
+║                                                                      ║
+║  WHY:  Arrays exploit how CPU hardware works:                        ║
+║        • O(1) access: address = base + (index × size)               ║
+║        • Cache-friendly: contiguous data → fewer cache misses        ║
+║        • Simplest data structure with the best raw performance       ║
+║                                                                      ║
+║  WHEN to use Arrays:                                                 ║
+║        ✔ Random access by index is frequent                          ║
+║        ✔ Size is known in advance (or rarely changes)                ║
+║        ✔ Sequential iteration (cache locality = 10x faster)          ║
+║        ✘ Frequent insertions/deletions at arbitrary positions        ║
+║        ✘ Unknown or wildly varying size at runtime                    ║
+║                                                                      ║
+║  WHERE arrays appear in production:                                  ║
+║        • Database pages are arrays of records (fixed-size pages)     ║
+║        • Image pixels: 2D array of RGB values                        ║
+║        • Network buffers: byte arrays holding packet data            ║
+║        • GPU matrices: arrays for parallel computation               ║
+║                                                                      ║
+║  HOW (JVM internals):                                                ║
+║  Java `int[] arr = new int[6]`:                                      ║
+║  1. JVM allocates 24 bytes (6 × 4) PLUS 16 bytes object header      ║
+║     (mark word + klass pointer + array length) = 40 bytes total     ║
+║  2. All 24 bytes are CONTIGUOUS in heap memory                       ║
+║  3. JVM stores the array length (arr.length is O(1))                 ║
+║  4. Bounds checking: arr[i] verifies 0 ≤ i < length (throws AIOOBE) ║
+╚══════════════════════════════════════════════════════════════════════╝
+```
+
 ## 🧬 Nature & Behavior
 
 ### What is an Array?
@@ -214,6 +249,56 @@ flowchart TD
 | Insert at middle | O(n)       | Must shift elements        |
 | Delete           | O(n)       | Must shift elements        |
 | Memory           | Contiguous | Fixed block needed         |
+
+### 🧠 CPU Cache Locality — Why Arrays Are 10x Faster Than LinkedLists
+
+```
+THE HIDDEN PERFORMANCE SECRET:
+═══════════════════════════════
+
+Big-O says array access and linked list access are both O(n) for iteration.
+But in practice, iterating an array is 10-100x FASTER. Why?
+
+THE CPU MEMORY HIERARCHY:
+┌─────────────┐ ← L1 Cache: 32KB, ~1 nanosecond (4 cycles)
+├─────────────┤ ← L2 Cache: 256KB, ~4 nanoseconds (12 cycles)
+├─────────────┤ ← L3 Cache: 8MB, ~12 nanoseconds (36 cycles)
+├─────────────┤ ← RAM: 16GB, ~100 nanoseconds (300 cycles) 
+├─────────────┤ ← SSD: 1TB, ~100,000 nanoseconds
+└─────────────┘ ← HDD: 2TB, ~10,000,000 nanoseconds
+
+When CPU reads arr[0], it doesn't just fetch 4 bytes.
+It fetches a CACHE LINE of 64 bytes (on most CPUs).
+That's 16 ints in one fetch!
+
+ARRAY ITERATION:
+  arr[0]: CACHE MISS → fetch 64 bytes → arr[0..15] now in cache
+  arr[1]: CACHE HIT!  (already in cache)
+  arr[2]: CACHE HIT!  (already in cache)
+  ...
+  arr[15]: CACHE HIT! (already in cache)
+  arr[16]: CACHE MISS → fetch next 64 bytes
+  
+  Result: Only 1 cache miss per 16 elements = 6.25% miss rate
+
+LINKED LIST ITERATION:
+  node1 at address 0x1000: CACHE MISS → fetch 64 bytes
+  node2 at address 0x5F00: CACHE MISS → different region!
+  node3 at address 0x2A00: CACHE MISS → different region!
+  node4 at address 0x8100: CACHE MISS → different region!
+  
+  Result: Nearly 100% cache miss rate (nodes scattered in memory)
+
+REAL NUMBERS (summing 1 million integers):
+  Array:      ~0.5 ms  (cache-friendly sequential access)
+  LinkedList: ~5.0 ms  (cache-hostile random access)
+  That's 10x slower with the SAME Big-O complexity!
+
+ANALOGY: Reading a book vs reading a dictionary.
+  Array = reading pages sequentially (fast — pages are next to each other)
+  LinkedList = following "see also" references that jump to random pages
+  (slow — you keep flipping through the entire dictionary)
+```
 
 ### 🔴 Real-World Origin: Supermarket Inventory (1957)
 

@@ -2,7 +2,48 @@
 
 ---
 
-# 📚 Part 4: Stack
+# 📚 Part 4: Stack & Queue
+
+### 5W1H: Deep Understanding of Stack
+
+```
+╔══════════════════════════════════════════════════════════════════════╗
+║  WHAT: A Stack is a LIFO (Last In, First Out) data structure.        ║
+║        Only the TOP element is accessible. Push/Pop are O(1).        ║
+║                                                                      ║
+║  WHY:  Many problems have a NESTING structure — what was opened      ║
+║        LAST must be closed FIRST (parentheses, function calls,       ║
+║        undo operations). LIFO naturally models this.                 ║
+║                                                                      ║
+║  HOW THE JVM USES A STACK (Call Stack):                              ║
+║  Every Java THREAD has its own call stack.                           ║
+║  When you call a method, JVM PUSHES a stack frame:                   ║
+║  ┌─────────────────────────────────────────┐                         ║
+║  │ main()     frame: { args, locals }      │ ← bottom                ║
+║  │ calculate() frame: { x=5, y=10 }       │                          ║
+║  │ multiply()  frame: { a=5, b=10 }       │ ← top (executing)        ║
+║  └─────────────────────────────────────────┘                         ║
+║  When multiply() returns, JVM POPS its frame.                        ║
+║  StackOverflowError = too many frames (infinite recursion).          ║
+║  Default stack size: 512KB - 1MB per thread.                         ║
+║                                                                      ║
+║  WHERE Stacks appear in production:                                  ║
+║  • JVM call stack (method invocation/return)                         ║
+║  • Browser back button (pages pushed, back = pop)                    ║
+║  • Ctrl+Z undo (actions pushed, undo = pop)                          ║
+║  • Expression evaluation (postfix, infix conversion)                 ║
+║  • DFS traversal (explicit or implicit via recursion)                ║
+║  • Compiler: syntax parsing, bracket matching                        ║
+║                                                                      ║
+║  WHEN to use a Stack:                                                ║
+║  ✔ Matching/nesting problems (brackets, HTML tags)                   ║
+║  ✔ Backtracking (maze solving, permutations)                         ║
+║  ✔ Converting recursion to iteration                                 ║
+║  ✔ Monotonic problems (next greater element)                         ║
+║  ✘ When you need FIFO order (use Queue)                              ║
+║  ✘ When you need random access (use Array)                           ║
+╚══════════════════════════════════════════════════════════════════════╝
+```
 
 ## 🧬 Nature & Behavior
 

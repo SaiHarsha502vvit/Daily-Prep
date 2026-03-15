@@ -4,6 +4,53 @@
 
 ## Chapter 15: Transactions & ACID Properties
 
+### 🧠 What Is a Transaction — The Concept
+
+A transaction is a **logical unit of work** — a group of SQL operations that must either **all succeed together or all fail together**. There is no in-between. The database guarantees this even if the server crashes mid-operation, even if another user is modifying the same data simultaneously, even if the power goes out.
+
+**Real-world analogy:** Think of transferring money between bank accounts. Two operations must happen: (1) deduct from sender's account, (2) add to receiver's account. If operation 1 succeeds but operation 2 fails (due to a crash), money has disappeared from the sender but never arrived at the receiver. The bank's total money has decreased — an impossible inconsistency. Transactions prevent this by treating both operations as a single atomic unit.
+
+### Why ACID Properties Matter — Deep Understanding
+
+The ACID properties are not arbitrary rules — each one prevents a specific category of real-world disaster:
+
+#### Atomicity — "All or Nothing"
+**What it prevents:** Partial operations in a multi-step process. If you're processing a purchase (create order → deduct inventory → charge payment → send confirmation), atomicity ensures that if the payment fails, the inventory deduction is also rolled back. Without atomicity, you'd have "ghost orders" — inventory reduced but no payment collected.
+
+**How it works internally:** The database uses a **Write-Ahead Log (WAL)**. Before making any change to the actual data, the database first writes the change to a log file. If a crash occurs, the database reads this log during recovery and either replays committed transactions or undoes incomplete ones.
+
+#### Consistency — "Valid State to Valid State"
+**What it prevents:** Data that violates your schema's rules. Consistency means every transaction takes the database from one valid state to another. "Valid" is defined by your constraints — foreign keys must reference existing rows, CHECK constraints must be satisfied, unique values must remain unique. If a transaction would violate any constraint, the entire transaction is rejected.
+
+#### Isolation — "Transactions Don't Interfere"
+**What it prevents:** Concurrent transactions seeing each other's intermediate (incomplete) changes. This is the most complex ACID property because there's a fundamental tension between **correctness** and **performance**:
+
+- **Perfect isolation** (SERIALIZABLE) means transactions execute as if they were sequential — no concurrency at all. This is correct but slow — every transaction waits for others to finish.
+- **Relaxed isolation** (READ COMMITTED) allows more concurrency but permits phenomena like non-repeatable reads — you read a row, another transaction modifies it, and when you read it again, the value has changed.
+
+The isolation levels represent a **spectrum of trade-offs**:
+
+| Isolation Level | Concurrency | Correctness | Use When |
+|----------------|-------------|-------------|----------|
+| **READ UNCOMMITTED** | Highest | Lowest (dirty reads possible) | Almost never — only for rough analytics where accuracy doesn't matter |
+| **READ COMMITTED** | High | Good (no dirty reads) | Default for PostgreSQL — good for most OLTP workloads |
+| **REPEATABLE READ** | Medium | Better (stable reads within a transaction) | Default for MySQL/InnoDB — good when you need consistent reads |
+| **SERIALIZABLE** | Lowest | Perfect (as if sequential) | Financial systems, inventory management — where correctness is critical |
+
+#### How Modern Databases Achieve Isolation: MVCC
+
+Most modern databases (PostgreSQL, MySQL InnoDB, Oracle) use **Multi-Version Concurrency Control (MVCC)** instead of simple locking. The idea is brilliantly simple: **instead of blocking readers when a writer is modifying a row, keep old versions of the row available.**
+
+When you start a transaction, you get a "snapshot" of the database as of that moment. Your reads see that snapshot, even if other transactions modify the data. This means **readers never block writers, and writers never block readers.** The database maintains multiple versions of each row and garbage-collects old versions after all transactions that might need them have finished.
+
+#### Durability — "Committed Means Permanent"
+**What it prevents:** Data loss after the database confirms a commit. When the database says `COMMIT` succeeded, the changes are guaranteed to survive any failure — power outages, disk crashes, operating system panics. This is achieved through:
+- Writing to the **WAL** on disk before acknowledging the commit
+- **Flushing the WAL to disk** (fsync) to ensure the OS actually writes to the physical disk, not just an in-memory buffer
+- **Replication** to other servers (in production setups) for protection against hardware failure
+
+---
+
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │                    ACID PROPERTIES                                              │

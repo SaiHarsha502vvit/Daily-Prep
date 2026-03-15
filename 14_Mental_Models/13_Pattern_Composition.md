@@ -15,6 +15,25 @@ requires Binary Search INSIDE DP, or BFS WITH Bit Masking,
 or Trie PLUS Backtracking.
 This guide maps the most common COMPOSITION PAIRS and teaches
 you to recognize when a problem needs multiple patterns.
+
+## Theory Lens: Why Composition Is the Real Skill Ceiling
+
+Single-pattern thinking answers "which tool is this?".
+Composition thinking answers "in what sequence should tools cooperate?".
+
+Most hard problems have two distinct layers:
+1. Search space strategy: how you explore possibilities (BFS, DFS, binary search, two pointers).
+2. State compression or validation strategy: how you prove/check each step efficiently (DP, bitmask, trie, greedy invariant).
+
+A strong composition workflow:
+1. Define the optimization goal or decision predicate.
+2. Choose the outer control pattern (search, traversal, ordering).
+3. Choose the inner feasibility/state pattern.
+4. Validate monotonicity or invariant correctness.
+5. Estimate total complexity as outer-cost x inner-cost.
+
+If you can articulate both outer and inner roles, you stop "trying random patterns" and start engineering solutions with predictable correctness.
+
 ## The Top 15 Pattern Compositions
 
 #  COMPOSITION              EXAMPLE PROBLEM              LC#

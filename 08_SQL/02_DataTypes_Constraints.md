@@ -4,6 +4,46 @@
 
 ## Chapter 2: Data Types & Constraints
 
+### 🧠 Why Data Types Matter — The Theory
+
+Choosing the right data type is one of the most important decisions in database design. It affects **three critical things**:
+
+1. **Storage Efficiency** — Every column in every row consumes disk space. If you have 10 million users and store `age` as `INT` (4 bytes) instead of `TINYINT` (1 byte), you waste **30 MB** just on that one column. At scale, these decisions compound dramatically.
+
+2. **Query Performance** — The database engine compares, sorts, and indexes data differently based on type. Comparing two `INT` values is a single CPU instruction. Comparing two `VARCHAR(255)` values requires character-by-character comparison, potentially across 255 bytes. Indexes on smaller types are also smaller, which means more index entries fit in a single memory page, leading to faster lookups.
+
+3. **Data Integrity** — The type itself acts as a first line of validation. If a column is `INT`, the database will reject `"hello"` before your application logic ever sees it. If a column is `DATE`, it will reject `"2024-02-30"` (February 30th doesn't exist). This is **defense in depth** — the database protects you even when your application code has bugs.
+
+> 💡 **The Core Principle:** Always choose the **smallest type that can safely hold your data**. This isn't premature optimization — it's fundamental to how databases work. Disk I/O, memory consumption, and index sizes all scale with column widths.
+
+#### The DECIMAL vs FLOAT Problem — Why This Matters for Money
+
+This is the single most important data type decision you will ever make in production:
+
+- **`FLOAT`/`DOUBLE`** use IEEE 754 floating-point representation. They store numbers in binary scientific notation (mantissa × 2^exponent). This means most decimal fractions **cannot be represented exactly**. For example, `0.1` in binary is `0.0001100110011...` (repeating forever). The database rounds it, and after many additions, these tiny rounding errors accumulate. In a banking system processing millions of transactions, a `FLOAT` price column could cause **invisible financial losses** — accounts that don't balance, audits that fail.
+
+- **`DECIMAL(p,s)`** stores numbers as exact decimal digits. `DECIMAL(10,2)` means "up to 10 digits total, with exactly 2 after the decimal point." The value `99999999.99` is stored precisely as those digits — no binary conversion, no rounding. This is why **every financial system in the world uses DECIMAL for money**.
+
+#### CHAR vs VARCHAR — When Fixed Length Wins
+
+- **`CHAR(n)`** always allocates exactly `n` bytes, padding shorter values with spaces. This seems wasteful, but it has a hidden advantage: **every row has the same size**, which means the database can calculate the position of any row by simple multiplication (`row_position = row_number × row_size`). This makes lookups faster and avoids fragmentation.
+
+- **`VARCHAR(n)`** stores only the characters you actually insert, plus 1-2 bytes for the length prefix. For a column where values range from 3 to 100 characters (like email addresses), this saves enormous space.
+
+**Rule of thumb:** Use `CHAR` when all values are the same length (country codes `US`, `IN`, `UK`; SHA-256 hashes that are always 64 characters; state abbreviations). Use `VARCHAR` for everything else.
+
+#### DATETIME vs TIMESTAMP — A Subtle But Important Difference
+
+Both store date and time, but they differ in one critical way:
+
+- **`TIMESTAMP`** converts values to UTC for storage and back to the session's timezone on retrieval. If your application serves users in India (`+05:30`) and the US (`-05:00`), a `TIMESTAMP` column automatically shows the correct local time to each user. However, it only supports dates from 1970 to 2038 (the Unix epoch range).
+
+- **`DATETIME`** stores the exact value you give it — no timezone conversion. If you insert `'2024-06-15 14:30:00'`, that's what you'll always get back, regardless of timezone settings. It supports a much wider range (1000 to 9999).
+
+**Rule of thumb:** Use `TIMESTAMP` for event times (when something happened — "user logged in at..."). Use `DATETIME` for scheduled dates that should not shift with timezone (birth dates, appointment times in a specific city).
+
+---
+
 ### 📊 SQL Data Types — Complete Reference
 
 #### Numeric Types
@@ -99,12 +139,28 @@ CREATE TABLE events (
 
 ### 🔒 SQL Constraints — Data Integrity Rules
 
+#### 🧠 Why Constraints Exist — The Database's Immune System
+
+Constraints are rules that the database enforces **automatically and unconditionally**. They exist because of a fundamental truth in software engineering: **application code has bugs, but the database is the last line of defense.**
+
+Consider this scenario: You build an e-commerce app. Your frontend validates that product prices are positive. Your backend API double-checks. But one day, a developer adds a bulk-import script that accidentally skips validation, and suddenly your database has products with price `-50.00`. Customers are getting paid to buy things. Without a `CHECK (price > 0)` constraint, nothing stops this disaster.
+
+Constraints enforce **three types of data integrity**:
+
+| Integrity Type | What It Protects | Constraint Used |
+|----------------|-----------------|-----------------|
+| **Entity Integrity** | Every row is uniquely identifiable | `PRIMARY KEY` |
+| **Referential Integrity** | Relationships between tables remain valid | `FOREIGN KEY` |
+| **Domain Integrity** | Column values stay within valid ranges | `CHECK`, `NOT NULL`, `UNIQUE`, `DEFAULT` |
+
+> 💡 **Design Philosophy:** Never rely only on your application to validate data. Constraints are **declarative** — you state the rule once, and the database enforces it forever, regardless of which application, script, or manual SQL query touches the data.
+
 #### 1. PRIMARY KEY
 
-- Uniquely identifies each row
-- Cannot be NULL
-- Only **ONE** per table
-- Automatically creates unique index
+- Uniquely identifies each row — this is the **identity** of each record. Without a primary key, you cannot reliably distinguish one row from another, and UPDATE/DELETE operations become dangerous (which "John Smith" do you mean?)
+- Cannot be NULL — an identity must always be present and known
+- Only **ONE** per table — a table has one canonical way to identify its rows
+- Automatically creates a **clustered index** (in most databases), which means the table data is physically sorted by the primary key on disk. This is why primary key lookups are the fastest possible query
 
 ```sql
 -- Single column primary key
