@@ -218,7 +218,20 @@ WHY CONTIGUOUS MATTERS:
 - This is O(1) random access!
 ```
 
-> **Flow**: PHYSICAL REALITY: → Memory is a long tape of numbered boxes | Memory is a long tape of numbered boxes → Address: 1000 1004 1008 1012 1016 1020 | Address: 1000 1004 1008 1012 1016 1020 → arr[0] arr[1] arr[2] arr[3] arr[4] arr[5] | arr[0] arr[1] arr[2] arr[3] arr[4] arr[5] → CONTIGUOUS = Next to each other in memory | CONTIGUOUS = Next to each other in memory → WHY CONTIGUOUS MATTERS: | WHY CONTIGUOUS MATTERS: → - arr[3] = baseAddress + (3 × elementSize) | ...+1 more
+**Flow:**
+- PHYSICAL REALITY:
+- ↓
+- Memory is a long tape of numbered boxes
+- ↓
+- Address: 1000 1004 1008 1012 1016 1020
+- ↓
+- arr[0] arr[1] arr[2] arr[3] arr[4] arr[5]
+- ↓
+- CONTIGUOUS = Next to each other in memory
+- ↓
+- WHY CONTIGUOUS MATTERS:
+- ↓
+- - arr[3] = baseAddress + (3 × elementSize)
 
 ```mermaid
 flowchart TD

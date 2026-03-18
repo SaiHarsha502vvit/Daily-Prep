@@ -162,7 +162,20 @@ ALGORITHMS:
 4. Token Bucket: Most flexible
 ```
 
-> **Flow**: COMPANY: Every API-based company → SYSTEM: API Gateway | SYSTEM: API Gateway → CHALLENGE: Limit requests to 100 per minute per user | CHALLENGE: Limit requests to 100 per minute per user → WHY NEEDED: | WHY NEEDED: → - Prevent abuse | - Prevent abuse → - Fair usage | - Fair usage → - Protect servers | ...+1 more
+**Flow:**
+- COMPANY: Every API-based company
+- ↓
+- SYSTEM: API Gateway
+- ↓
+- CHALLENGE: Limit requests to 100 per minute per user
+- ↓
+- WHY NEEDED:
+- ↓
+- - Prevent abuse
+- ↓
+- - Fair usage
+- ↓
+- - Protect servers
 
 ```mermaid
 flowchart TD
@@ -361,7 +374,12 @@ public class RateLimiterService {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: COMPANY: Google / Amazon Search → SYSTEM: Search Bar | SYSTEM: Search Bar → FEATURE: Show top 5 suggestions as user types
+**Flow:**
+- COMPANY: Google / Amazon Search
+- ↓
+- SYSTEM: Search Bar
+- ↓
+- FEATURE: Show top 5 suggestions as user types
 
 ```mermaid
 flowchart TD
@@ -534,7 +552,10 @@ public class SearchAutocomplete {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: COMPANY: Twitter / Reddit → SYSTEM: Trending Topics
+**Flow:**
+- COMPANY: Twitter / Reddit
+- ↓
+- SYSTEM: Trending Topics
 
 ```mermaid
 flowchart TD
@@ -695,7 +716,12 @@ public class TrendingTopicsService {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: COMPANY: Any Data Company → SYSTEM: ETL Pipeline | SYSTEM: ETL Pipeline → CHALLENGE: Sort 100GB CSV file with only 4GB RAM
+**Flow:**
+- COMPANY: Any Data Company
+- ↓
+- SYSTEM: ETL Pipeline
+- ↓
+- CHALLENGE: Sort 100GB CSV file with only 4GB RAM
 
 ```mermaid
 flowchart TD
@@ -872,7 +898,12 @@ public class ExternalSort {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: COMPANY: Google Drive / Dropbox → SYSTEM: Storage Optimization | SYSTEM: Storage Optimization → CHALLENGE: Find and remove duplicate files to save stor
+**Flow:**
+- COMPANY: Google Drive / Dropbox
+- ↓
+- SYSTEM: Storage Optimization
+- ↓
+- CHALLENGE: Find and remove duplicate files to save stor
 
 ```mermaid
 flowchart TD
@@ -1047,7 +1078,10 @@ public class DuplicateFileFinder {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: COMPANY: Ludo King / PUBG → SYSTEM: Gaming Leaderboard
+**Flow:**
+- COMPANY: Ludo King / PUBG
+- ↓
+- SYSTEM: Gaming Leaderboard
 
 ```mermaid
 flowchart TD
@@ -1220,7 +1254,12 @@ public class GameLeaderboard {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: COMPANY: PUBG / Valorant / Chess.com → SYSTEM: Multiplayer Matchmaking | SYSTEM: Multiplayer Matchmaking → CHALLENGE: Match players with similar skill for fair ga
+**Flow:**
+- COMPANY: PUBG / Valorant / Chess.com
+- ↓
+- SYSTEM: Multiplayer Matchmaking
+- ↓
+- CHALLENGE: Match players with similar skill for fair ga
 
 ```mermaid
 flowchart TD

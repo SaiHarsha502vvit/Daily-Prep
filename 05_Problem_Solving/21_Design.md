@@ -35,7 +35,20 @@
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: DESIGN PROBLEMS FUNDAMENTALS → WHAT 'DESIGN' MEANS IN INTERVIEWS: | WHAT 'DESIGN' MEANS IN INTERVIEWS: → Not system design (that's a separate round). | Not system design (that's a separate round). → These are DATA STRUCTURE DESIGN problems: | These are DATA STRUCTURE DESIGN problems: → 'Implement class X with operations A, B, C in O(?) time | 'Implement class X with operations A, B, C in O(?) time → THE 5 CATEGORIES: | THE 5 CATEGORIES: → Cache Design LRU, LFU, TTL Cache | ...+1 more
+**Flow:**
+- DESIGN PROBLEMS FUNDAMENTALS
+- ↓
+- WHAT 'DESIGN' MEANS IN INTERVIEWS:
+- ↓
+- Not system design (that's a separate round).
+- ↓
+- These are DATA STRUCTURE DESIGN problems:
+- ↓
+- 'Implement class X with operations A, B, C in O(?) time
+- ↓
+- THE 5 CATEGORIES:
+- ↓
+- Cache Design LRU, LFU, TTL Cache
 
 ```mermaid
 flowchart TD
@@ -129,7 +142,10 @@ flowchart TD
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Need Combine / O(1) access + O(1) order HashMap + Doubl → COMMON MISTAKES / 1. Starting to code before listing AL
+**Flow:**
+- Need Combine / O(1) access + O(1) order HashMap + Doubl
+- ↓
+- COMMON MISTAKES / 1. Starting to code before listing AL
 
 ```mermaid
 flowchart TD
@@ -177,7 +193,26 @@ THE KEY INSIGHT:
 SOLUTION:
 ```
 
-> **Flow**: DIFFICULTY: Medium (but Hard to get right in interview) → PATTERN: HashMap + Doubly Linked List | PATTERN: HashMap + Doubly Linked List → PROBLEM: Design LRU cache with: | PROBLEM: Design LRU cache with: → get(key) → return value if exists, else -1. Mark as use | get(key) → return value if exists, else -1. Mark as use → Both operations must be O(1). | Both operations must be O(1). → WHY THIS IS #1 INTERVIEW PROBLEM: | WHY THIS IS #1 INTERVIEW PROBLEM: → THE KEY INSIGHT: | ...+1 more
+**Flow:**
+- DIFFICULTY: Medium (but Hard to get right in interview)
+- ↓
+- PATTERN: HashMap + Doubly Linked List
+- ↓
+- PROBLEM: Design LRU cache with:
+- ↓
+- get(key)
+- ↓
+- return value if exists, else -1. Mark as use
+- ↓
+- get(key)
+- ↓
+- return value if exists, else -1. Mark as use
+- ↓
+- Both operations must be O(1).
+- ↓
+- WHY THIS IS #1 INTERVIEW PROBLEM:
+- ↓
+- THE KEY INSIGHT:
 
 ```mermaid
 flowchart TD
@@ -263,7 +298,10 @@ SENTINEL TRICK: Head and Tail dummies avoid null checks — cleaner code.
 FOLLOW-UP: "Make it thread-safe" → Use ReentrantReadWriteLock.
 ```
 
-> **Flow**: FOLLOW-UP: 'Make it thread-safe' → Use ReentrantReadWriteLock.
+**Flow:**
+- FOLLOW-UP: 'Make it thread-safe'
+- ↓
+- Use ReentrantReadWriteLock.
 
 ```mermaid
 flowchart LR
@@ -296,7 +334,20 @@ KEY INSIGHT:
 SOLUTION:
 ```
 
-> **Flow**: DIFFICULTY: Medium → COMPANIES: Amazon, Google, Bloomberg, Microsoft | COMPANIES: Amazon, Google, Bloomberg, Microsoft → PATTERN: Auxiliary Stack | PATTERN: Auxiliary Stack → KEY INSIGHT: | KEY INSIGHT: → When you push 5, 3, 7: | When you push 5, 3, 7: → Main: [5, 3, 7] ← top = 7 | Main: [5, 3, 7] ← top = 7 → MinSt: [5, 3, 3] ← top = 3 (current min) | ...+1 more
+**Flow:**
+- DIFFICULTY: Medium
+- ↓
+- COMPANIES: Amazon, Google, Bloomberg, Microsoft
+- ↓
+- PATTERN: Auxiliary Stack
+- ↓
+- KEY INSIGHT:
+- ↓
+- When you push 5, 3, 7:
+- ↓
+- Main: [5, 3, 7] ← top = 7
+- ↓
+- MinSt: [5, 3, 3] ← top = 3 (current min)
 
 ```mermaid
 flowchart TD
@@ -384,7 +435,20 @@ WHY TRIE?
 SOLUTION:
 ```
 
-> **Flow**: DIFFICULTY: Medium → COMPANIES: Google, Amazon, Facebook, Microsoft | COMPANIES: Google, Amazon, Facebook, Microsoft → PATTERN: Trie | PATTERN: Trie → PROBLEM: Implement Trie with insert, search, startsWith | PROBLEM: Implement Trie with insert, search, startsWith → WHY TRIE? | WHY TRIE? → Searching 'apple' in a HashSet: O(L) hash computation | Searching 'apple' in a HashSet: O(L) hash computation → Searching 'app*' prefix in HashSet: O(N·L) check every | ...+1 more
+**Flow:**
+- DIFFICULTY: Medium
+- ↓
+- COMPANIES: Google, Amazon, Facebook, Microsoft
+- ↓
+- PATTERN: Trie
+- ↓
+- PROBLEM: Implement Trie with insert, search, startsWith
+- ↓
+- WHY TRIE?
+- ↓
+- Searching 'apple' in a HashSet: O(L) hash computation
+- ↓
+- Searching 'app*' prefix in HashSet: O(N·L) check every
 
 ```mermaid
 flowchart TD
@@ -466,7 +530,12 @@ INSIGHT: Regular Trie for addWord. DFS with branching for '.'.
 SOLUTION:
 ```
 
-> **Flow**: addWord('bad'); search('b.d') → true; search('b..') | true; search('b..') → true
+**Flow:**
+- addWord('bad'); search('b.d')
+- ↓
+- true; search('b..')
+- ↓
+- true
 
 ```mermaid
 flowchart LR
@@ -555,7 +624,30 @@ THE ARCHITECTURE:
 SOLUTION:
 ```
 
-> **Flow**: get(key) → return value, increase frequency | put(key, value) → insert/update. At capacity, evict LEAST frequent. | keyMap: key → Node(key, val, freq) | freqMap: freq → DoublyLinkedList of nodes with that frequency | If exists → update value + same as GET | If capacity full → evict tail of freqMap[minFreq]
+**Flow:**
+- get(key)
+- ↓
+- return value, increase frequency
+- ↓
+- put(key, value)
+- ↓
+- insert/update. At capacity, evict LEAST frequent.
+- ↓
+- keyMap: key
+- ↓
+- Node(key, val, freq)
+- ↓
+- freqMap: freq
+- ↓
+- DoublyLinkedList of nodes with that frequency
+- ↓
+- If exists
+- ↓
+- update value + same as GET
+- ↓
+- If capacity full
+- ↓
+- evict tail of freqMap[minFreq]
 
 ```mermaid
 flowchart TD
@@ -745,7 +837,18 @@ KEY INSIGHT:
 SOLUTION:
 ```
 
-> **Flow**: ArrayList → O(1) random access by index | Swap target with LAST element, then remove last → O(1)! | HashMap: val → index in ArrayList
+**Flow:**
+- ArrayList
+- ↓
+- O(1) random access by index
+- ↓
+- Swap target with LAST element, then remove last
+- ↓
+- O(1)!
+- ↓
+- HashMap: val
+- ↓
+- index in ArrayList
 
 ```mermaid
 flowchart LR
@@ -865,7 +968,10 @@ INSIGHT: getNewsFeed = Merge K sorted lists (each user's tweets sorted by time)
 SOLUTION:
 ```
 
-> **Flow**: getNewsFeed(userId) → 10 most recent tweets from user + followees
+**Flow:**
+- getNewsFeed(userId)
+- ↓
+- 10 most recent tweets from user + followees
 
 ```mermaid
 flowchart LR
@@ -990,7 +1096,12 @@ KEY: Using "null" markers preserves the tree structure uniquely.
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: FLATTEN NESTED LIST ITERATOR (LeetCode 341 - Medium) → Example: [[1,1],2,[1,1]] → 1, 1, 2, 1, 1
+**Flow:**
+- FLATTEN NESTED LIST ITERATOR (LeetCode 341 - Medium)
+- ↓
+- Example: [[1,1],2,[1,1]]
+- ↓
+- 1, 1, 2, 1, 1
 
 ```mermaid
 flowchart TD
@@ -1043,7 +1154,14 @@ public class NestedIterator implements Iterator<Integer> {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: DESIGN CIRCULAR QUEUE (LeetCode 622 - Medium) → isEmpty, isFull. | isEmpty, isFull. → KEY: Array with head/tail pointers, modular arithmetic. | KEY: Array with head/tail pointers, modular arithmetic. → All operations O(1)
+**Flow:**
+- DESIGN CIRCULAR QUEUE (LeetCode 622 - Medium)
+- ↓
+- isEmpty, isFull.
+- ↓
+- KEY: Array with head/tail pointers, modular arithmetic.
+- ↓
+- All operations O(1)
 
 ```mermaid
 flowchart TD
@@ -1110,7 +1228,12 @@ class MyCircularQueue {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: SNAPSHOT ARRAY (LeetCode 1146 - Medium) → Example: | Example: → set/snap O(1), get O(log S) where S = number of snaps
+**Flow:**
+- SNAPSHOT ARRAY (LeetCode 1146 - Medium)
+- ↓
+- Example:
+- ↓
+- set/snap O(1), get O(log S) where S = number of snaps
 
 ```mermaid
 flowchart TD
@@ -1181,7 +1304,12 @@ class SnapshotArray {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: STOCK PRICE FLUCTUATION (LeetCode 2034 - Medium) → update can CORRECT previous timestamp's price. | update can CORRECT previous timestamp's price. → update O(log n), current/max/min O(1)
+**Flow:**
+- STOCK PRICE FLUCTUATION (LeetCode 2034 - Medium)
+- ↓
+- update can CORRECT previous timestamp's price.
+- ↓
+- update O(log n), current/max/min O(1)
 
 ```mermaid
 flowchart TD
@@ -1245,7 +1373,40 @@ class StockPrice {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: FIND MEDIAN FROM DATA STREAM (LeetCode 295 - Hard) → addNum(int num) — add integer from data stream | addNum(int num) — add integer from data stream → findMedian() — return median of all elements so far | findMedian() — return median of all elements so far → Example: | Example: → add(1), add(2) → median=1.5, add(3) → median=2.0 | add(1), add(2) → median=1.5, add(3) → median=2.0 → Keep balanced: |maxHeap.size - minHeap.size| &lt;= 1 | Keep balanced: |maxHeap.size - minHeap.size| &lt;= 1 → addNum O(log n), findMedian O(1)
+**Flow:**
+- FIND MEDIAN FROM DATA STREAM (LeetCode 295 - Hard)
+- ↓
+- addNum(int num) — add integer from data stream
+- ↓
+- findMedian() — return median of all elements so far
+- ↓
+- Example:
+- ↓
+- add(1), add(2)
+- ↓
+- median=1.5, add(3)
+- ↓
+- median=2.0
+- ↓
+- add(1), add(2)
+- ↓
+- median=1.5, add(3)
+- ↓
+- median=2.0
+- ↓
+- Keep balanced:
+- ↓
+- maxHeap.size - minHeap.size
+- ↓
+- <= 1
+- ↓
+- Keep balanced:
+- ↓
+- maxHeap.size - minHeap.size
+- ↓
+- <= 1
+- ↓
+- addNum O(log n), findMedian O(1)
 
 ```mermaid
 flowchart TD

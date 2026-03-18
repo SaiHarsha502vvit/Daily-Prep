@@ -27,7 +27,18 @@ Companies like Google, Netflix, Amazon deploy 100+ TIMES PER DAY.
 How? → CI/CD
 ```
 
-> **Flow**: 6. If it breaks → rollback by replacing old ZIP | - Friday 5 PM deployments → weekend debugging | How? → CI/CD
+**Flow:**
+- 6. If it breaks
+- ↓
+- rollback by replacing old ZIP
+- ↓
+- - Friday 5 PM deployments
+- ↓
+- weekend debugging
+- ↓
+- How?
+- ↓
+- CI/CD
 
 ```mermaid
 flowchart LR
@@ -62,7 +73,24 @@ CD = Continuous Deployment
    ├── Continuous Deployment ──────────────────────┤ (auto deploy)
 ```
 
-> **Flow**: 'Every code push → automatically build + test' | 'Every successful build → automatically deploys to production' | Code Push → Build | Build → Test | Test → Package | Package → Deploy
+**Flow:**
+- 'Every code push
+- ↓
+- automatically build + test'
+- ↓
+- 'Every successful build
+- ↓
+- automatically deploys to production'
+- ↓
+- Code Push
+- ↓
+- Build
+- ↓
+- Test
+- ↓
+- Package
+- ↓
+- Deploy
 
 ```mermaid
 flowchart TD
@@ -228,7 +256,12 @@ Code Push to main
   🎉 Live in Production
 ```
 
-> **Flow**: Build & Test → Docker Build / & Push | Docker Build / & Push → Deploy to / Production
+**Flow:**
+- Build & Test
+- ↓
+- Docker Build / & Push
+- ↓
+- Deploy to / Production
 
 ```mermaid
 flowchart TD
@@ -304,7 +337,12 @@ Settings → Branches → main:
 Result: NOBODY can push broken code to main
 ```
 
-> **Flow**: Settings → Branches | Branches → main:
+**Flow:**
+- Settings
+- ↓
+- Branches
+- ↓
+- main:
 
 ```mermaid
 flowchart LR
@@ -328,7 +366,30 @@ AWS CodePipeline→ Best for AWS deployments
 Azure DevOps    → Best for Microsoft ecosystem
 ```
 
-> **Flow**: GitHub Actions → Best for GitHub repos (free tier: 2000 min/month) | GitLab CI/CD → Best for GitLab repos (built-in) | Jenkins → Enterprise standard (self-hosted, complex) | CircleCI → Cloud-based, fast | AWS CodePipeline → Best for AWS deployments | Azure DevOps → Best for Microsoft ecosystem
+**Flow:**
+- GitHub Actions
+- ↓
+- Best for GitHub repos (free tier: 2000 min/month)
+- ↓
+- GitLab CI/CD
+- ↓
+- Best for GitLab repos (built-in)
+- ↓
+- Jenkins
+- ↓
+- Enterprise standard (self-hosted, complex)
+- ↓
+- CircleCI
+- ↓
+- Cloud-based, fast
+- ↓
+- AWS CodePipeline
+- ↓
+- Best for AWS deployments
+- ↓
+- Azure DevOps
+- ↓
+- Best for Microsoft ecosystem
 
 ```mermaid
 flowchart TD
@@ -364,7 +425,14 @@ flowchart TD
 4. Intentionally break a test → verify build fails
 ```
 
-> **Flow**: 3. Push code → verify build runs | 4. Intentionally break a test → verify build fails
+**Flow:**
+- 3. Push code
+- ↓
+- verify build runs
+- ↓
+- 4. Intentionally break a test
+- ↓
+- verify build fails
 
 ```mermaid
 flowchart LR

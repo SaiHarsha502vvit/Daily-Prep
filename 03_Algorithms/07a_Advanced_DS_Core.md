@@ -306,7 +306,12 @@ Now find(7) is O(1)!
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: SKIP LIST NODE (value = 25, level = 3): / value: 25 for → Start at head, level 4 / Level 4: head → nil (no nodes)
+**Flow:**
+- SKIP LIST NODE (value = 25, level = 3): / value: 25 for
+- ↓
+- Start at head, level 4 / Level 4: head
+- ↓
+- nil (no nodes)
 
 ```mermaid
 flowchart TD
@@ -455,7 +460,30 @@ LRU CACHE:
 └── CPU cache management
 ```
 
-> **Flow**: TRIE: → Autocomplete in Google Search | TRIE: → Spell checkers | TRIE: → IP routing tables | TRIE: → DNA sequence matching | SEGMENT TREE: → Range queries in databases | SEGMENT TREE: → Graphics rendering (visibility) | ...+19 more
+**Flow:**
+- TRIE:
+- ↓
+- Autocomplete in Google Search
+- ↓
+- TRIE:
+- ↓
+- Spell checkers
+- ↓
+- TRIE:
+- ↓
+- IP routing tables
+- ↓
+- TRIE:
+- ↓
+- DNA sequence matching
+- ↓
+- SEGMENT TREE:
+- ↓
+- Range queries in databases
+- ↓
+- SEGMENT TREE:
+- ↓
+- Graphics rendering (visibility)
 
 ```mermaid
 flowchart TD

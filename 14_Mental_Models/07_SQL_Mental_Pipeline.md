@@ -23,7 +23,10 @@ You're describing WHAT you want, not HOW to get it.
 SQL is declarative — you describe the result, the engine figures out the steps.
 ```
 
-> **Flow**: → SELECT name FROM employees WHERE salary &gt; 50000; → You're describing WHAT you want, not HOW to get it.
+**Flow:**
+- SELECT name FROM employees WHERE salary > 50000;
+- ↓
+- You're describing WHAT you want, not HOW to get it.
 
 ```mermaid
 flowchart TD
@@ -57,7 +60,18 @@ ORDER BY  ─── 6th ───→  7. ORDER BY       (sort)
 LIMIT     ─── 7th ───→  8. LIMIT/OFFSET   (paginate)
 ```
 
-> **Flow**: SELECT --(5th)--> 1. FROM / JOIN (which tables?) | FROM --(1st)--> 2. WHERE (filter rows) | JOIN --(1st)--> 3. GROUP BY (make groups) | WHERE --(2nd)--> 4. HAVING (filter groups) | GROUP BY --(3rd)--> 5. SELECT (pick columns) | HAVING --(4th)--> 6. DISTINCT (remove duplicates) | ...+2 more
+**Flow:**
+- SELECT --(5th)--> 1. FROM / JOIN (which tables?)
+- ↓
+- FROM --(1st)--> 2. WHERE (filter rows)
+- ↓
+- JOIN --(1st)--> 3. GROUP BY (make groups)
+- ↓
+- WHERE --(2nd)--> 4. HAVING (filter groups)
+- ↓
+- GROUP BY --(3rd)--> 5. SELECT (pick columns)
+- ↓
+- HAVING --(4th)--> 6. DISTINCT (remove duplicates)
 
 ```mermaid
 flowchart TD
@@ -176,7 +190,10 @@ FULL OUTER JOIN: All A + All B (nulls where no match)
 CROSS JOIN:      A × B         (every combo — rarely wanted)
 ```
 
-> **Flow**: A / A∩ → A∩B
+**Flow:**
+- A / A∩
+- ↓
+- A∩B
 
 ```mermaid
 flowchart TD
@@ -194,7 +211,26 @@ flowchart TD
 "Find matching records in both tables"        → INNER JOIN
 ```
 
-> **Flow**: 'Get employees WITH their department name' → INNER JOIN (skip employees with no dept) | 'Get ALL employees, even without department' → LEFT JOIN (keep all employees) | 'Find employees WITHOUT a department' → LEFT JOIN + WHERE b.id IS NULL | 'Find all possible team pairings' → CROSS JOIN (or self-join) | 'Find matching records in both tables' → INNER JOIN
+**Flow:**
+- 'Get employees WITH their department name'
+- ↓
+- INNER JOIN (skip employees with no dept)
+- ↓
+- 'Get ALL employees, even without department'
+- ↓
+- LEFT JOIN (keep all employees)
+- ↓
+- 'Find employees WITHOUT a department'
+- ↓
+- LEFT JOIN + WHERE b.id IS NULL
+- ↓
+- 'Find all possible team pairings'
+- ↓
+- CROSS JOIN (or self-join)
+- ↓
+- 'Find matching records in both tables'
+- ↓
+- INNER JOIN
 
 ```mermaid
 flowchart TD
@@ -249,7 +285,18 @@ WHERE e.salary > m.salary;
    WHERE salary = (SELECT MAX(salary) FROM employees WHERE dept_id = e.dept_id);
 ```
 
-> **Flow**: 1. 'Find employees whose salary &gt; AVERAGE salary' → → The inner query computes ONE value | → The inner query computes ONE value → 2. 'Find employees in departments located in NYC' | 2. 'Find employees in departments located in NYC' → → The inner query computes a LIST | → The inner query computes a LIST → 'Find employees who earn max in their department' | 'Find employees who earn max in their department' → SELECT * FROM employees e
+**Flow:**
+- 1. 'Find employees whose salary > AVERAGE salary'
+- ↓
+- The inner query computes ONE value
+- ↓
+- 2. 'Find employees in departments located in NYC'
+- ↓
+- The inner query computes a LIST
+- ↓
+- 'Find employees who earn max in their department'
+- ↓
+- SELECT * FROM employees e
 
 ```mermaid
 flowchart TD
@@ -276,7 +323,26 @@ Rule of thumb: If you need columns from multiple tables in SELECT → use JOIN
                If you need a value for filtering (WHERE/HAVING) → subquery is fine
 ```
 
-> **Flow**: 1. When you need columns from BOTH tables → JOIN | 2. When subquery would be executed for EACH row (c → Consider JOIN | 3. When you need to combine/match data → JOIN | Rule of thumb: If you need columns from multiple t → use JOIN | If you need a value for filtering (WHERE/HAVING) → subquery is fine
+**Flow:**
+- 1. When you need columns from BOTH tables
+- ↓
+- JOIN
+- ↓
+- 2. When subquery would be executed for EACH row (c
+- ↓
+- Consider JOIN
+- ↓
+- 3. When you need to combine/match data
+- ↓
+- JOIN
+- ↓
+- Rule of thumb: If you need columns from multiple t
+- ↓
+- use JOIN
+- ↓
+- If you need a value for filtering (WHERE/HAVING)
+- ↓
+- subquery is fine
 
 ```mermaid
 flowchart TD
@@ -323,7 +389,10 @@ Now you can only SELECT:
 ❌ Individual row values (name)   → ERROR! Which name from the pile?
 ```
 
-> **Flow**: HR pile / Alice 60K / Carol 55K → IT pile / Bob 75K / Dave 80K
+**Flow:**
+- HR pile / Alice 60K / Carol 55K
+- ↓
+- IT pile / Bob 75K / Dave 80K
 
 ```mermaid
 flowchart TD
@@ -357,7 +426,14 @@ GROUP BY dept
 HAVING AVG(salary) > 60000  -- Filter GROUPS (after grouping)
 ```
 
-> **Flow**: WHERE: Filters ROWS before grouping → Cannot use aggregates | HAVING: Filters GROUPS after grouping → CAN use aggregates
+**Flow:**
+- WHERE: Filters ROWS before grouping
+- ↓
+- Cannot use aggregates
+- ↓
+- HAVING: Filters GROUPS after grouping
+- ↓
+- CAN use aggregates
 
 ```mermaid
 flowchart LR
@@ -386,7 +462,10 @@ Window functions compute aggregates BUT keep every row!
 | Bob   | IT   | 75000  | 77500    | 2         |
 ```
 
-> **Flow**: GROUP BY collapses rows → you lose individual row data
+**Flow:**
+- GROUP BY collapses rows
+- ↓
+- you lose individual row data
 
 ```mermaid
 flowchart LR
@@ -442,7 +521,30 @@ See these keywords in the problem? → Use this approach:
 "Hierarchical data (manager chain)"  → Self-join or recursive CTE
 ```
 
-> **Flow**: See these keywords in the problem? → Use this approach: | 'For each department/category...' → GROUP BY | 'Top N per group' → Window function + ROW_NUMBER() | 'Running total / cumulative sum' → Window function + SUM() OVER | 'Compare with previous row' → LAG() / LEAD() window functions | 'Employees not in any project' → LEFT JOIN + IS NULL (or NOT IN) | ...+5 more
+**Flow:**
+- See these keywords in the problem?
+- ↓
+- Use this approach:
+- ↓
+- 'For each department/category...'
+- ↓
+- GROUP BY
+- ↓
+- 'Top N per group'
+- ↓
+- Window function + ROW_NUMBER()
+- ↓
+- 'Running total / cumulative sum'
+- ↓
+- Window function + SUM() OVER
+- ↓
+- 'Compare with previous row'
+- ↓
+- LAG() / LEAD() window functions
+- ↓
+- 'Employees not in any project'
+- ↓
+- LEFT JOIN + IS NULL (or NOT IN)
 
 ```mermaid
 flowchart TD
@@ -498,7 +600,10 @@ flowchart TD
 □ Subquery returns multiple rows but used with = instead of IN?
 ```
 
-> **Flow**: □ Am I selecting non-grouped columns without aggre → SQL error
+**Flow:**
+- □ Am I selecting non-grouped columns without aggre
+- ↓
+- SQL error
 
 ```mermaid
 flowchart LR

@@ -46,7 +46,30 @@ Q6: Limitation says O(n) and array has range [0, n-1]?
 └── NO → Brute force, then optimize
 ```
 
-> **Flow**: Read the problem → Ask these questions IN ORDER: | YES → TWO POINTERS (from both ends or same direction) | YES → SLIDING WINDOW or PREFIX SUM | YES → HASHMAP (frequency map) | YES → STACK (monotonic stack for Next Greater/Smaller) | YES → Dynamic Programming or Greedy | ...+1 more
+**Flow:**
+- Read the problem
+- ↓
+- Ask these questions IN ORDER:
+- ↓
+- YES
+- ↓
+- TWO POINTERS (from both ends or same direction)
+- ↓
+- YES
+- ↓
+- SLIDING WINDOW or PREFIX SUM
+- ↓
+- YES
+- ↓
+- HASHMAP (frequency map)
+- ↓
+- YES
+- ↓
+- STACK (monotonic stack for Next Greater/Smaller)
+- ↓
+- YES
+- ↓
+- Dynamic Programming or Greedy
 
 ```mermaid
 flowchart TD
@@ -95,7 +118,14 @@ Result: [1, 2, 3, 4, 5, 6]
 When: Merge two sorted arrays/lists, intersection of sorted arrays
 ```
 
-> **Flow**: L→ ←R → S→ F→
+**Flow:**
+- L
+- ↓
+- ←R
+- ↓
+- S
+- ↓
+- F
 
 ```mermaid
 flowchart TD
@@ -137,7 +167,26 @@ When: "Smallest subarray with sum ≥ target", "Longest substring without repeat
 Template: Expand right always, shrink left while condition met
 ```
 
-> **Flow**: [a b c] d e f → compute for window | a [b c d] e f → slide right, update | a b [c d e] f → slide right, update | [a b c d] e f → expand right until valid | a [b c d e] f → shrink left while still valid
+**Flow:**
+- [a b c] d e f
+- ↓
+- compute for window
+- ↓
+- a [b c d] e f
+- ↓
+- slide right, update
+- ↓
+- a b [c d e] f
+- ↓
+- slide right, update
+- ↓
+- [a b c d] e f
+- ↓
+- expand right until valid
+- ↓
+- a [b c d e] f
+- ↓
+- shrink left while still valid
 
 ```mermaid
 flowchart TD
@@ -199,7 +248,14 @@ Sum of subarray [i..j] = prefix[j+1] - prefix[i]
 Sum of [1..3] = prefix[4] - prefix[1] = 9 - 3 = 6  ✓ (1+4+1=6)
 ```
 
-> **Flow**: Array: [3, 1, 4, 1, 5, 9] → Prefix Sum: [0, 3, 4, 8, 9, 14, 23] | Prefix Sum: [0, 3, 4, 8, 9, 14, 23] → ↑ sentinel | ↑ sentinel → Sum of subarray [i..j] = prefix[j+1] - prefix[i]
+**Flow:**
+- Array: [3, 1, 4, 1, 5, 9]
+- ↓
+- Prefix Sum: [0, 3, 4, 8, 9, 14, 23]
+- ↓
+- ↑ sentinel
+- ↓
+- Sum of subarray [i..j] = prefix[j+1] - prefix[i]
 
 ```mermaid
 flowchart TD
@@ -222,7 +278,10 @@ Key insight: If prefix[j] - prefix[i] = k, then subarray [i+1..j] sums to k
 → Use HashMap to store frequency of prefix sums seen so far!
 ```
 
-> **Flow**: Problem: 'How many subarrays have sum equal to k?' → → Equivalent to: prefix[j] - k = prefix[i]
+**Flow:**
+- Problem: 'How many subarrays have sum equal to k?'
+- ↓
+- Equivalent to: prefix[j] - k = prefix[i]
 
 ```mermaid
 flowchart TD
@@ -262,7 +321,30 @@ Problem Type:                         → Technique:
 "Reverse words in string"             → Split → reverse array → join (or two passes)
 ```
 
-> **Flow**: Problem Type: → Technique: | 'Are two strings anagrams?' → Sort both OR frequency count (int[26]) | 'Find all anagrams in string' → Sliding window + frequency match | 'Longest palindromic substring' → Expand around center (O(n²)) or Manacher | 'Pattern matching' → KMP for exact, Rabin-Karp for rolling hash | 'All permutations of string' → Backtracking with frequency tracking | ...+6 more
+**Flow:**
+- Problem Type:
+- ↓
+- Technique:
+- ↓
+- 'Are two strings anagrams?'
+- ↓
+- Sort both OR frequency count (int[26])
+- ↓
+- 'Find all anagrams in string'
+- ↓
+- Sliding window + frequency match
+- ↓
+- 'Longest palindromic substring'
+- ↓
+- Expand around center (O(n²)) or Manacher
+- ↓
+- 'Pattern matching'
+- ↓
+- KMP for exact, Rabin-Karp for rolling hash
+- ↓
+- 'All permutations of string'
+- ↓
+- Backtracking with frequency tracking
 
 ```mermaid
 flowchart TD
@@ -345,7 +427,18 @@ for (int num : nums) {
 }
 ```
 
-> **Flow**: 'Find missing number' → XOR all values with all indices | 'Find duplicate' → Floyd's cycle detection on index chain | 'First missing positive' → Mark presence by negating at index
+**Flow:**
+- 'Find missing number'
+- ↓
+- XOR all values with all indices
+- ↓
+- 'Find duplicate'
+- ↓
+- Floyd's cycle detection on index chain
+- ↓
+- 'First missing positive'
+- ↓
+- Mark presence by negating at index
 
 ```mermaid
 flowchart LR
@@ -372,7 +465,32 @@ Three pointers: low, mid, high
 - If arr[mid] == 2: swap with high, move high left (don't move mid!)
 ```
 
-> **Flow**: When: Separate elements into groups (0s, 1s, 2s) → Three pointers: low, mid, high | Three pointers: low, mid, high → [0s | 1s | unsorted | 2s] | [0s | 1s | unsorted | 2s] → ↑low ↑mid ↑high | ↑low ↑mid ↑high → - If arr[mid] == 0: swap with low, move both right | - If arr[mid] == 0: swap with low, move both right → - If arr[mid] == 1: just move mid right
+**Flow:**
+- When: Separate elements into groups (0s, 1s, 2s)
+- ↓
+- Three pointers: low, mid, high
+- ↓
+- [0s
+- ↓
+- 1s
+- ↓
+- unsorted
+- ↓
+- 2s]
+- ↓
+- [0s
+- ↓
+- 1s
+- ↓
+- unsorted
+- ↓
+- 2s]
+- ↓
+- ↑low ↑mid ↑high
+- ↓
+- - If arr[mid] == 0: swap with low, move both right
+- ↓
+- - If arr[mid] == 1: just move mid right
 
 ```mermaid
 flowchart TD
@@ -406,7 +524,20 @@ flowchart TD
 □ Character encoding: 'a' to 'z' = 26 letters, '0' to '9' = 10 digits
 ```
 
-> **Flow**: □ Off-by-one: Is my loop bound &lt; n or &lt;= n? → □ Empty array/string: Does my code handle length 0? | □ Empty array/string: Does my code handle length 0? → □ Single element: Does it work for length 1? | □ Single element: Does it work for length 1? → □ All same elements: [5,5,5,5] — does my logic handle t | □ All same elements: [5,5,5,5] — does my logic handle t → □ Integer overflow: Am I using long for sums? | □ Integer overflow: Am I using long for sums? → □ Negative numbers: Does two-pointer still work? | □ Negative numbers: Does two-pointer still work? → □ Prefix sum: Did I include the sentinel prefix[0] = 0?
+**Flow:**
+- □ Off-by-one: Is my loop bound < n or <= n?
+- ↓
+- □ Empty array/string: Does my code handle length 0?
+- ↓
+- □ Single element: Does it work for length 1?
+- ↓
+- □ All same elements: [5,5,5,5] — does my logic handle t
+- ↓
+- □ Integer overflow: Am I using long for sums?
+- ↓
+- □ Negative numbers: Does two-pointer still work?
+- ↓
+- □ Prefix sum: Did I include the sentinel prefix[0] = 0?
 
 ```mermaid
 flowchart TD

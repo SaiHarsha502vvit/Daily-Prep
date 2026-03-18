@@ -63,7 +63,10 @@ TYPE 2: VARIABLE-SIZE WINDOW
                ├───┤    sum=7 ≥ 7 ← smallest! (len=2)
 ```
 
-> **Flow**: Window size is given → just slide it
+**Flow:**
+- Window size is given
+- ↓
+- just slide it
 
 ```mermaid
 flowchart LR
@@ -204,7 +207,22 @@ TREE PROBLEM PATTERNS:
      Examples: isSameTree, isSymmetric, isValidBST
 ```
 
-> **Flow**: 1. 'Return a value' → return something from recursion | 2. 'Modify the tree' → return modified node | 3. 'Collect values' → pass list as parameter | 4. 'Check a property' → return boolean
+**Flow:**
+- 1. 'Return a value'
+- ↓
+- return something from recursion
+- ↓
+- 2. 'Modify the tree'
+- ↓
+- return modified node
+- ↓
+- 3. 'Collect values'
+- ↓
+- pass list as parameter
+- ↓
+- 4. 'Check a property'
+- ↓
+- return boolean
 
 ```mermaid
 flowchart LR
@@ -437,7 +455,18 @@ WHICH TYPE:
   HashMap:  "...distinct/unique..." → track counts in map
 ```
 
-> **Flow**: Fixed: '...of size K' → one pointer, fixed distance | Variable: 'smallest/longest that...' → two pointers, expand+shrink | HashMap: '...distinct/unique...' → track counts in map
+**Flow:**
+- Fixed: '...of size K'
+- ↓
+- one pointer, fixed distance
+- ↓
+- Variable: 'smallest/longest that...'
+- ↓
+- two pointers, expand+shrink
+- ↓
+- HashMap: '...distinct/unique...'
+- ↓
+- track counts in map
 
 ```mermaid
 flowchart LR

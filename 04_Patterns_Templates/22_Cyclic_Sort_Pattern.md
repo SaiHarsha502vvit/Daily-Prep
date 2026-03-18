@@ -27,7 +27,26 @@
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: CYCLIC SORT PATTERN → WHEN YOU SEE: 'Find the missing/duplicate number in ran | WHEN YOU SEE: 'Find the missing/duplicate number in ran → [1..n] using O(1) extra space' → CYCLIC SORT. | [1..n] using O(1) extra space' → CYCLIC SORT. → CORE IDEA: Numbers in range [1..n] or [0..n] should eac | CORE IDEA: Numbers in range [1..n] or [0..n] should eac → sit at their 'correct' index. Place each number at its | sit at their 'correct' index. Place each number at its → index, then scan for mismatches. | index, then scan for mismatches. → TEMPLATE: | ...+1 more
+**Flow:**
+- CYCLIC SORT PATTERN
+- ↓
+- WHEN YOU SEE: 'Find the missing/duplicate number in ran
+- ↓
+- [1..n] using O(1) extra space'
+- ↓
+- CYCLIC SORT.
+- ↓
+- [1..n] using O(1) extra space'
+- ↓
+- CYCLIC SORT.
+- ↓
+- CORE IDEA: Numbers in range [1..n] or [0..n] should eac
+- ↓
+- sit at their 'correct' index. Place each number at its
+- ↓
+- index, then scan for mismatches.
+- ↓
+- TEMPLATE:
 
 ```mermaid
 flowchart TD
@@ -132,7 +151,14 @@ flowchart TD
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: for (int i = 0; i &lt; n; i++) { / while (nums[i] != nu → for (int i = 0; i &lt; n; i++) { / if (nums[i] != i + 1 | for (int i = 0; i &lt; n; i++) { / if (nums[i] != i + 1 → COMMON MISTAKES / 1. Off-by-one: [1..n] → index = val-1
+**Flow:**
+- for (int i = 0; i < n; i++) { / while (nums[i] != nu
+- ↓
+- for (int i = 0; i < n; i++) { / if (nums[i] != i + 1
+- ↓
+- COMMON MISTAKES / 1. Off-by-one: [1..n]
+- ↓
+- index = val-1
 
 ```mermaid
 flowchart TD
@@ -169,7 +195,30 @@ VISUAL (n=3, range [0..3]):
 SOLUTION:
 ```
 
-> **Flow**: Input: [3, 0, 1] → Output: 2 | Input: [9,6,4,2,3,5,7,0,1] → Output: 8 | i=0: nums[0]=3, correct idx=3 (out of bounds for s → skip | i=1: nums[1]=0, correct idx=0, swap → [0, 3, 1] | nums[1]=3, correct idx=3 (out of bounds) → skip | i=2: nums[2]=1, correct idx=1, swap → [0, 1, 3] | ...+2 more
+**Flow:**
+- Input: [3, 0, 1]
+- ↓
+- Output: 2
+- ↓
+- Input: [9,6,4,2,3,5,7,0,1]
+- ↓
+- Output: 8
+- ↓
+- i=0: nums[0]=3, correct idx=3 (out of bounds for s
+- ↓
+- skip
+- ↓
+- i=1: nums[1]=0, correct idx=0, swap
+- ↓
+- [0, 3, 1]
+- ↓
+- nums[1]=3, correct idx=3 (out of bounds)
+- ↓
+- skip
+- ↓
+- i=2: nums[2]=1, correct idx=1, swap
+- ↓
+- [0, 1, 3]
 
 ```mermaid
 flowchart TD
@@ -243,7 +292,10 @@ PROBLEM: Find ALL missing numbers in [1..n].
 SOLUTION:
 ```
 
-> **Flow**: Input: [4,3,2,7,8,2,3,1] → Output: [5, 6]
+**Flow:**
+- Input: [4,3,2,7,8,2,3,1]
+- ↓
+- Output: [5, 6]
 
 ```mermaid
 flowchart LR
@@ -291,7 +343,10 @@ PROBLEM: Find all duplicates in [1..n] where each appears at most twice.
 SOLUTION:
 ```
 
-> **Flow**: Input: [4,3,2,7,8,2,3,1] → Output: [2, 3]
+**Flow:**
+- Input: [4,3,2,7,8,2,3,1]
+- ↓
+- Output: [2, 3]
 
 ```mermaid
 flowchart LR
@@ -357,7 +412,30 @@ VISUAL:
 SOLUTION:
 ```
 
-> **Flow**: Input: [3,4,-1,1] → Output: 2 | Input: [7,8,9,11,12] → Output: 1 | i=0: nums[0]=3, correctIdx=2, swap → [-1, 4, 3, 1] | nums[0]=-1, out of range → skip | i=1: nums[1]=4, correctIdx=3, swap → [-1, 1, 3, 4] | nums[1]=1, correctIdx=0, swap → [1, -1, 3, 4] | ...+5 more
+**Flow:**
+- Input: [3,4,-1,1]
+- ↓
+- Output: 2
+- ↓
+- Input: [7,8,9,11,12]
+- ↓
+- Output: 1
+- ↓
+- i=0: nums[0]=3, correctIdx=2, swap
+- ↓
+- [-1, 4, 3, 1]
+- ↓
+- nums[0]=-1, out of range
+- ↓
+- skip
+- ↓
+- i=1: nums[1]=4, correctIdx=3, swap
+- ↓
+- [-1, 1, 3, 4]
+- ↓
+- nums[1]=1, correctIdx=0, swap
+- ↓
+- [1, -1, 3, 4]
 
 ```mermaid
 flowchart TD
@@ -454,7 +532,12 @@ APPROACH 2: Floyd's Cycle Detection (O(1) space, no modification)
   Duplicate creates a cycle. Find cycle entry = duplicate.
 ```
 
-> **Flow**: Treat array as linked list: index → value | value → next index.
+**Flow:**
+- Treat array as linked list: index
+- ↓
+- value
+- ↓
+- next index.
 
 ```mermaid
 flowchart LR
@@ -501,7 +584,10 @@ PROBLEM: Array [1..n] with one duplicate and one missing. Find both.
 SOLUTION:
 ```
 
-> **Flow**: Input: [1,2,2,4] → Output: [2, 3]
+**Flow:**
+- Input: [1,2,2,4]
+- ↓
+- Output: [2, 3]
 
 ```mermaid
 flowchart LR
@@ -564,7 +650,20 @@ COMPLEXITY: Time O(n) | Space O(1)
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: CYCLIC SORT CHEATSHEET → PROBLEM RANGE SCAN FOR LC# | PROBLEM RANGE SCAN FOR LC# → Missing Number [0..n] nums[i] ≠ i 268 | Missing Number [0..n] nums[i] ≠ i 268 → All Disappeared [1..n] nums[i] ≠ i+1 448 | All Disappeared [1..n] nums[i] ≠ i+1 448 → All Duplicates [1..n] nums[i] ≠ i+1 442 | All Duplicates [1..n] nums[i] ≠ i+1 442 → First Missing +ve [1..n] nums[i] ≠ i+1 41 | First Missing +ve [1..n] nums[i] ≠ i+1 41 → Find Duplicate [1..n] nums[i] ≠ i+1 287 | ...+1 more
+**Flow:**
+- CYCLIC SORT CHEATSHEET
+- ↓
+- PROBLEM RANGE SCAN FOR LC#
+- ↓
+- Missing Number [0..n] nums[i] ≠ i 268
+- ↓
+- All Disappeared [1..n] nums[i] ≠ i+1 448
+- ↓
+- All Duplicates [1..n] nums[i] ≠ i+1 442
+- ↓
+- First Missing +ve [1..n] nums[i] ≠ i+1 41
+- ↓
+- Find Duplicate [1..n] nums[i] ≠ i+1 287
 
 ```mermaid
 flowchart TD

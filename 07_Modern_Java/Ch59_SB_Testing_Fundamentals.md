@@ -51,7 +51,14 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHY: Why Testing is Non-Negotiable? / • Bug in producti → HOW: How to Test in Spring Boot? / • JUnit 5: Test fram | HOW: How to Test in Spring Boot? / • JUnit 5: Test fram → WHEN: When to Use Each Test Type? / • Unit tests: Busin | WHEN: When to Use Each Test Type? / • Unit tests: Busin → WHICH: Which Testing Tools to Master? / ESSENTIAL: JUni
+**Flow:**
+- WHY: Why Testing is Non-Negotiable? / • Bug in producti
+- ↓
+- HOW: How to Test in Spring Boot? / • JUnit 5: Test fram
+- ↓
+- WHEN: When to Use Each Test Type? / • Unit tests: Busin
+- ↓
+- WHICH: Which Testing Tools to Master? / ESSENTIAL: JUni
 
 ```mermaid
 flowchart TD
@@ -110,7 +117,20 @@ Production     │ 100x            │ $10,000 to fix
 Post-Release   │ 1000x           │ $100,000+ to fix
 ```
 
-> **Flow**: 🎯 Testing Benefits: → ✅ Catch bugs early (cheaper to fix) | ✅ Catch bugs early (cheaper to fix) → ✅ Documentation through code | ✅ Documentation through code → ✅ Refactoring confidence | ✅ Refactoring confidence → ✅ Design improvement (testable = good design) | ✅ Design improvement (testable = good design) → ✅ Regression prevention | ✅ Regression prevention → ✅ Continuous Integration enablement | ...+1 more
+**Flow:**
+- 🎯 Testing Benefits:
+- ↓
+- ✅ Catch bugs early (cheaper to fix)
+- ↓
+- ✅ Documentation through code
+- ↓
+- ✅ Refactoring confidence
+- ↓
+- ✅ Design improvement (testable = good design)
+- ↓
+- ✅ Regression prevention
+- ↓
+- ✅ Continuous Integration enablement
 
 ```mermaid
 flowchart TD
@@ -153,7 +173,20 @@ flowchart TD
 Recommended Ratio: 70% Unit : 20% Integration : 10% E2E
 ```
 
-> **Flow**: ╱ E2E╲ ← Few, Slow, Expensive → ╱ ╲ (Selenium, Cypress) | ╱ ╲ (Selenium, Cypress) → ╱Integration╲ ← Some, Medium Speed | ╱Integration╲ ← Some, Medium Speed → ╱ ╲ (@SpringBootTest) | ╱ ╲ (@SpringBootTest) → ╱ Unit Tests ╲ ← Many, Fast, Cheap | ╱ Unit Tests ╲ ← Many, Fast, Cheap → ╱ ╲ (JUnit, Mockito) | ╱ ╲ (JUnit, Mockito) → ╱ Foundation Base ╲ | ...+1 more
+**Flow:**
+- ╱ E2E╲ ← Few, Slow, Expensive
+- ↓
+- ╱ ╲ (Selenium, Cypress)
+- ↓
+- ╱Integration╲ ← Some, Medium Speed
+- ↓
+- ╱ ╲ (@SpringBootTest)
+- ↓
+- ╱ Unit Tests ╲ ← Many, Fast, Cheap
+- ↓
+- ╱ ╲ (JUnit, Mockito)
+- ↓
+- ╱ Foundation Base ╲
 
 ```mermaid
 flowchart TD
@@ -786,7 +819,20 @@ class StaticMockTest {
 └────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: 🎯 Spring Boot Test Annotations: → @SpringBootTest Full application context (integration) | @SpringBootTest Full application context (integration) → @WebMvcTest Only web layer (controllers) | @WebMvcTest Only web layer (controllers) → @DataJpaTest Only JPA components (repositories) | @DataJpaTest Only JPA components (repositories) → @WebFluxTest Only WebFlux components | @WebFluxTest Only WebFlux components → @JsonTest Only JSON serialization | @JsonTest Only JSON serialization → @RestClientTest Only REST client components | ...+1 more
+**Flow:**
+- 🎯 Spring Boot Test Annotations:
+- ↓
+- @SpringBootTest Full application context (integration)
+- ↓
+- @WebMvcTest Only web layer (controllers)
+- ↓
+- @DataJpaTest Only JPA components (repositories)
+- ↓
+- @WebFluxTest Only WebFlux components
+- ↓
+- @JsonTest Only JSON serialization
+- ↓
+- @RestClientTest Only REST client components
 
 ```mermaid
 flowchart TD

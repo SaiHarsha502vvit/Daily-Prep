@@ -33,7 +33,18 @@
 └─────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHY COMPANIES ASK BIT MANIPULATION → 1. Tests low-level understanding | 1. Tests low-level understanding → 2. O(1) space solutions where others use O(n) | 2. O(1) space solutions where others use O(n) → 3. Faster than arithmetic operations | 3. Faster than arithmetic operations → 4. Essential for systems programming | 4. Essential for systems programming → 5. Shows mathematical thinking
+**Flow:**
+- WHY COMPANIES ASK BIT MANIPULATION
+- ↓
+- 1. Tests low-level understanding
+- ↓
+- 2. O(1) space solutions where others use O(n)
+- ↓
+- 3. Faster than arithmetic operations
+- ↓
+- 4. Essential for systems programming
+- ↓
+- 5. Shows mathematical thinking
 
 ```mermaid
 flowchart TD
@@ -76,7 +87,14 @@ Decimal 13 in Binary:
 Position:  7    6    5    4    3    2    1    0  (right to left, 0-indexed)
 ```
 
-> **Flow**: Decimal 13 in Binary: → 128 64 32 16 8 4 2 1 ← Powers of 2 | 128 64 32 16 8 4 2 1 ← Powers of 2 → 0 0 0 0 1 1 0 1 ← Binary: 00001101 | 0 0 0 0 1 1 0 1 ← Binary: 00001101 → Position: 7 6 5 4 3 2 1 0 (right to left, 0-indexed)
+**Flow:**
+- Decimal 13 in Binary:
+- ↓
+- 128 64 32 16 8 4 2 1 ← Powers of 2
+- ↓
+- 0 0 0 0 1 1 0 1 ← Binary: 00001101
+- ↓
+- Position: 7 6 5 4 3 2 1 0 (right to left, 0-indexed)
 
 ```mermaid
 flowchart TD
@@ -104,7 +122,12 @@ flowchart TD
     0 = positive, 1 = negative
 ```
 
-> **Flow**: Sign 31 Value Bits → MSB (Most Significant Bit) | MSB (Most Significant Bit) → 0 = positive, 1 = negative
+**Flow:**
+- Sign 31 Value Bits
+- ↓
+- MSB (Most Significant Bit)
+- ↓
+- 0 = positive, 1 = negative
 
 ```mermaid
 flowchart TD
@@ -148,7 +171,20 @@ Integer.MAX_VALUE = 2147483647  (0x7FFFFFFF)
 Integer.MIN_VALUE = -2147483648 (0x80000000)
 ```
 
-> **Flow**: Type Range → byte -128 to 127 | byte -128 to 127 → short -32,768 to 32,767 | short -32,768 to 32,767 → int -2^31 to 2^31 - 1 | int -2^31 to 2^31 - 1 → ≈ -2.1 billion to 2.1 billion | ≈ -2.1 billion to 2.1 billion → long -2^63 to 2^63 - 1 | long -2^63 to 2^63 - 1 → Key Values: | ...+1 more
+**Flow:**
+- Type Range
+- ↓
+- byte -128 to 127
+- ↓
+- short -32,768 to 32,767
+- ↓
+- int -2^31 to 2^31 - 1
+- ↓
+- ≈ -2.1 billion to 2.1 billion
+- ↓
+- long -2^63 to 2^63 - 1
+- ↓
+- Key Values:
 
 ```mermaid
 flowchart TD
@@ -189,7 +225,26 @@ flowchart TD
 └──────────┴────────┴─────────────────────────────────────────┘
 ```
 
-> **Flow**: Operator Symbol Description → AND & Both bits must be 1 | AND & Both bits must be 1 → OR | At least one bit must be 1 | OR | At least one bit must be 1 → XOR ^ Exactly one bit must be 1 | XOR ^ Exactly one bit must be 1 → NOT ~ Flip all bits | NOT ~ Flip all bits → L-Shift &lt;&lt; Shift bits left (multiply by 2) | L-Shift &lt;&lt; Shift bits left (multiply by 2) → R-Shift &gt;&gt; Shift bits right (divide by 2) | ...+1 more
+**Flow:**
+- Operator Symbol Description
+- ↓
+- AND & Both bits must be 1
+- ↓
+- OR
+- ↓
+- At least one bit must be 1
+- ↓
+- OR
+- ↓
+- At least one bit must be 1
+- ↓
+- XOR ^ Exactly one bit must be 1
+- ↓
+- NOT ~ Flip all bits
+- ↓
+- L-Shift << Shift bits left (multiply by 2)
+- ↓
+- R-Shift >> Shift bits right (divide by 2)
 
 ```mermaid
 flowchart TD
@@ -234,7 +289,20 @@ XOR (^) - Exactly one is 1      NOT (~) - Flip the bit
 └───┴───┴───────────────────────────────────┘
 ```
 
-> **Flow**: A B A & B / 0 0 0 / 0 1 0 / 1 0 0 / 1 1 1 → A B A | B / 0 0 0 / 0 1 1 / 1 0 1 / 1 1 1 | A B A | B / 0 0 0 / 0 1 1 / 1 0 1 / 1 1 1 → A B A ^ B / 0 0 0 / 0 1 1 / 1 0 1 / 1 1 0 | A B A ^ B / 0 0 0 / 0 1 1 / 1 0 1 / 1 1 0 → A ~A / 0 1 / 1 0
+**Flow:**
+- A B A & B / 0 0 0 / 0 1 0 / 1 0 0 / 1 1 1
+- ↓
+- A B A
+- ↓
+- B / 0 0 0 / 0 1 1 / 1 0 1 / 1 1 1
+- ↓
+- A B A
+- ↓
+- B / 0 0 0 / 0 1 1 / 1 0 1 / 1 1 1
+- ↓
+- A B A ^ B / 0 0 0 / 0 1 1 / 1 0 1 / 1 1 0
+- ↓
+- A ~A / 0 1 / 1 0
 
 ```mermaid
 flowchart TD
@@ -324,7 +392,12 @@ UNSIGNED RIGHT SHIFT (>>>) - Always fills with 0s
 └─────────────────────────────────────────┘
 ```
 
-> **Flow**: 5 &lt;&lt; 1 = 10 / Before: 0 0 0 0 0 1 0 1 (5) / ↓ ↓ ↓ → 20 &gt;&gt; 2 = 5 / Before: 0 0 0 1 0 1 0 0 (20) / ↓ ↓  | 20 &gt;&gt; 2 = 5 / Before: 0 0 0 1 0 1 0 0 (20) / ↓ ↓  → Used for negative numbers / -8 &gt;&gt;&gt; 2 = 1073741
+**Flow:**
+- 5 << 1 = 10 / Before: 0 0 0 0 0 1 0 1 (5) / ↓ ↓ ↓
+- ↓
+- 20 >> 2 = 5 / Before: 0 0 0 1 0 1 0 0 (20) / ↓ ↓
+- ↓
+- Used for negative numbers / -8 >>> 2 = 1073741
 
 ```mermaid
 flowchart TD
@@ -406,7 +479,14 @@ Pattern: Subtracting 1 flips bits from rightmost 1 to end
          AND then clears that entire section
 ```
 
-> **Flow**: Why does n & (n-1) clear rightmost set bit? → Another example: | Another example: → Pattern: Subtracting 1 flips bits from rightmost 1 to e | Pattern: Subtracting 1 flips bits from rightmost 1 to e → AND then clears that entire section
+**Flow:**
+- Why does n & (n-1) clear rightmost set bit?
+- ↓
+- Another example:
+- ↓
+- Pattern: Subtracting 1 flips bits from rightmost 1 to e
+- ↓
+- AND then clears that entire section
 
 ```mermaid
 flowchart TD
@@ -434,7 +514,14 @@ n&(-n)     = 00000100 = 4
 The rightmost 1 is at position 2 (value = 4)
 ```
 
-> **Flow**: Why does n & (-n) isolate rightmost set bit? → Remember: -n = ~n + 1 (Two's complement) | Remember: -n = ~n + 1 (Two's complement) → -n = = 11110100 (flip + add 1) | -n = = 11110100 (flip + add 1) → The rightmost 1 is at position 2 (value = 4)
+**Flow:**
+- Why does n & (-n) isolate rightmost set bit?
+- ↓
+- Remember: -n = ~n + 1 (Two's complement)
+- ↓
+- -n = = 11110100 (flip + add 1)
+- ↓
+- The rightmost 1 is at position 2 (value = 4)
 
 ```mermaid
 flowchart TD
@@ -507,7 +594,16 @@ n >> k    // n / 2^k
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: XOR PROPERTIES → 1. a ^ 0 = a (XOR with 0 gives same number) | 1. a ^ 0 = a (XOR with 0 gives same number) → 2. a ^ a = 0 (XOR with itself gives 0) | 2. a ^ a = 0 (XOR with itself gives 0) → 3. a ^ b = b ^ a (Commutative - order doesn't matter) | 3. a ^ b = b ^ a (Commutative - order doesn't matter) → 5. a ^ b ^ a = b (Self-inverse - cancels out)
+**Flow:**
+- XOR PROPERTIES
+- ↓
+- 1. a ^ 0 = a (XOR with 0 gives same number)
+- ↓
+- 2. a ^ a = 0 (XOR with itself gives 0)
+- ↓
+- 3. a ^ b = b ^ a (Commutative - order doesn't matter)
+- ↓
+- 5. a ^ b ^ a = b (Self-inverse - cancels out)
 
 ```mermaid
 flowchart TD
@@ -1216,7 +1312,20 @@ clearBit: n & ~(1 << i)
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: EDGE CASES TO WATCH → • Negative numbers (sign bit handling) | • Negative numbers (sign bit handling) → • Integer overflow (when shifting) | • Integer overflow (when shifting) → • Empty array (XOR of nothing = 0) | • Empty array (XOR of nothing = 0) → • n = 0 (special case for many operations) | • n = 0 (special case for many operations) → • n = Integer.MIN_VALUE (-2^31, cannot negate) | • n = Integer.MIN_VALUE (-2^31, cannot negate) → • Shift by 32 or more (undefined behavior) | ...+1 more
+**Flow:**
+- EDGE CASES TO WATCH
+- ↓
+- • Negative numbers (sign bit handling)
+- ↓
+- • Integer overflow (when shifting)
+- ↓
+- • Empty array (XOR of nothing = 0)
+- ↓
+- • n = 0 (special case for many operations)
+- ↓
+- • n = Integer.MIN_VALUE (-2^31, cannot negate)
+- ↓
+- • Shift by 32 or more (undefined behavior)
 
 ```mermaid
 flowchart TD
@@ -1254,7 +1363,20 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: INTERVIEW STRATEGIES → 1. When you see 'O(1) space' - think bits | 1. When you see 'O(1) space' - think bits → 2. When elements appear k times - think XOR or bit coun | 2. When elements appear k times - think XOR or bit coun → 3. When dealing with subsets - think bitmask | 3. When dealing with subsets - think bitmask → 4. When finding unique/missing - think XOR | 4. When finding unique/missing - think XOR → 5. When asked 'power of 2' - think n & (n-1) | 5. When asked 'power of 2' - think n & (n-1) → 6. When optimizing arithmetic - think shifts | ...+1 more
+**Flow:**
+- INTERVIEW STRATEGIES
+- ↓
+- 1. When you see 'O(1) space' - think bits
+- ↓
+- 2. When elements appear k times - think XOR or bit coun
+- ↓
+- 3. When dealing with subsets - think bitmask
+- ↓
+- 4. When finding unique/missing - think XOR
+- ↓
+- 5. When asked 'power of 2' - think n & (n-1)
+- ↓
+- 6. When optimizing arithmetic - think shifts
 
 ```mermaid
 flowchart TD
@@ -1299,7 +1421,20 @@ flowchart TD
 ╚═══════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: MASTER THESE 3 AND YOU'LL SOLVE 80% OF BIT PROBLEMS → 1. XOR PROPERTIES | 1. XOR PROPERTIES → → Find single/missing numbers | → Find single/missing numbers → 2. n & (n-1) TRICK | 2. n & (n-1) TRICK → Clears rightmost set bit | Clears rightmost set bit → → Count bits, check power of 2 | → Count bits, check power of 2 → 3. BITMASK FOR SUBSETS | ...+1 more
+**Flow:**
+- MASTER THESE 3 AND YOU'LL SOLVE 80% OF BIT PROBLEMS
+- ↓
+- 1. XOR PROPERTIES
+- ↓
+- Find single/missing numbers
+- ↓
+- 2. n & (n-1) TRICK
+- ↓
+- Clears rightmost set bit
+- ↓
+- Count bits, check power of 2
+- ↓
+- 3. BITMASK FOR SUBSETS
 
 ```mermaid
 flowchart TD

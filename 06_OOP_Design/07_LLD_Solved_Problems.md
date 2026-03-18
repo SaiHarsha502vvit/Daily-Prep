@@ -132,7 +132,22 @@ Observer Pattern  → Notify display boards when spot count changes
 Singleton Pattern → ParkingLot instance (debatable, prefer DI)
 ```
 
-> **Flow**: Strategy Pattern → PricingStrategy (hourly, flat rate, weekend rates) | Factory Pattern → Could create vehicles from license plate scan | Observer Pattern → Notify display boards when spot count changes | Singleton Pattern → ParkingLot instance (debatable, prefer DI)
+**Flow:**
+- Strategy Pattern
+- ↓
+- PricingStrategy (hourly, flat rate, weekend rates)
+- ↓
+- Factory Pattern
+- ↓
+- Could create vehicles from license plate scan
+- ↓
+- Observer Pattern
+- ↓
+- Notify display boards when spot count changes
+- ↓
+- Singleton Pattern
+- ↓
+- ParkingLot instance (debatable, prefer DI)
 
 ```mermaid
 flowchart LR
@@ -245,7 +260,24 @@ class BookingService {
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: Timeline of concurrent booking: → User A pays at t=3 → confirmBooking → BOOKED | User A pays at t=3 → confirmBooking → BOOKED → OR optimistic lock with version column: | OR optimistic lock with version column: → UPDATE seat_status SET status='LOCKED', version=version
+**Flow:**
+- Timeline of concurrent booking:
+- ↓
+- User A pays at t=3
+- ↓
+- confirmBooking
+- ↓
+- BOOKED
+- ↓
+- User A pays at t=3
+- ↓
+- confirmBooking
+- ↓
+- BOOKED
+- ↓
+- OR optimistic lock with version column:
+- ↓
+- UPDATE seat_status SET status='LOCKED', version=version
 
 ```mermaid
 flowchart TD

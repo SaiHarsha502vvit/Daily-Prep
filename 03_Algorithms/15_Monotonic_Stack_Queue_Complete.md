@@ -297,7 +297,20 @@ public int[] prevSmaller(int[] arr) {
 ╚═══════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: MONOTONIC DATA STRUCTURES → MONOTONIC STACK: A stack where elements are always in | MONOTONIC STACK: A stack where elements are always in → increasing or decreasing order from bottom to top. | increasing or decreasing order from bottom to top. → MONOTONIC QUEUE: A deque where elements are always in | MONOTONIC QUEUE: A deque where elements are always in → increasing or decreasing order. | increasing or decreasing order. → WHY USE THEM? | WHY USE THEM? → • Find next/previous greater/smaller element in O(n) | ...+1 more
+**Flow:**
+- MONOTONIC DATA STRUCTURES
+- ↓
+- MONOTONIC STACK: A stack where elements are always in
+- ↓
+- increasing or decreasing order from bottom to top.
+- ↓
+- MONOTONIC QUEUE: A deque where elements are always in
+- ↓
+- increasing or decreasing order.
+- ↓
+- WHY USE THEM?
+- ↓
+- • Find next/previous greater/smaller element in O(n)
 
 ```mermaid
 flowchart TD
@@ -342,7 +355,12 @@ Monotonic Increasing Stack:
 └─────┘   (smallest at bottom)
 ```
 
-> **Flow**: 3 / 7 / 2 / 5 → 7 / 5 / 3 | 7 / 5 / 3 → 2 / 4 / 7
+**Flow:**
+- 3 / 7 / 2 / 5
+- ↓
+- 7 / 5 / 3
+- ↓
+- 2 / 4 / 7
 
 ```mermaid
 flowchart TD
@@ -375,7 +393,20 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: MONOTONIC STACK KEY INSIGHT → When we POP an element, we've found its answer! | When we POP an element, we've found its answer! → For Next Greater Element: | For Next Greater Element: → - Use DECREASING stack (larger pops smaller) | - Use DECREASING stack (larger pops smaller) → - When we pop: current element IS the next greater | - When we pop: current element IS the next greater → For Next Smaller Element: | For Next Smaller Element: → - Use INCREASING stack (smaller pops larger) | ...+1 more
+**Flow:**
+- MONOTONIC STACK KEY INSIGHT
+- ↓
+- When we POP an element, we've found its answer!
+- ↓
+- For Next Greater Element:
+- ↓
+- - Use DECREASING stack (larger pops smaller)
+- ↓
+- - When we pop: current element IS the next greater
+- ↓
+- For Next Smaller Element:
+- ↓
+- - Use INCREASING stack (smaller pops larger)
 
 ```mermaid
 flowchart TD
@@ -476,7 +507,26 @@ Final: 6, 3 have no next greater → -1
 Result: [5, 5, 6, -1, 3, -1]
 ```
 
-> **Flow**: 5 &gt; 1, pop 1 → Next greater of 1 is 5 | 5 &gt; 2, pop 2 → Next greater of 2 is 5 | 6 &gt; 5, pop 5 → Next greater of 5 is 6 | 3 &gt; 2, pop 2 → Next greater of 2 is 3 | Final: 6, 3 have no next greater → -1
+**Flow:**
+- 5 > 1, pop 1
+- ↓
+- Next greater of 1 is 5
+- ↓
+- 5 > 2, pop 2
+- ↓
+- Next greater of 2 is 5
+- ↓
+- 6 > 5, pop 5
+- ↓
+- Next greater of 5 is 6
+- ↓
+- 3 > 2, pop 2
+- ↓
+- Next greater of 2 is 3
+- ↓
+- Final: 6, 3 have no next greater
+- ↓
+- -1
 
 ```mermaid
 flowchart TD
@@ -610,7 +660,18 @@ i=5: done
 result = [2, -1, 2]
 ```
 
-> **Flow**: Array: [1, 2, 1] (circular) → Treating as: [1, 2, 1, 1, 2, 1] | Treating as: [1, 2, 1, 1, 2, 1] → ↑ ↑ (don't add to result, just for lookup) | ↑ ↑ (don't add to result, just for lookup) → i=0: push 0, stack=[0] | i=0: push 0, stack=[0] → i=5: done | i=5: done → result = [2, -1, 2]
+**Flow:**
+- Array: [1, 2, 1] (circular)
+- ↓
+- Treating as: [1, 2, 1, 1, 2, 1]
+- ↓
+- ↑ ↑ (don't add to result, just for lookup)
+- ↓
+- i=0: push 0, stack=[0]
+- ↓
+- i=5: done
+- ↓
+- result = [2, -1, 2]
 
 ```mermaid
 flowchart TD
@@ -683,7 +744,20 @@ public int[] nextSmallerElement(int[] nums) {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: COMPARISON: GREATER vs SMALLER → NEXT GREATER ELEMENT: | NEXT GREATER ELEMENT: → • Use DECREASING stack | • Use DECREASING stack → • Pop when current &gt; stack.top | • Pop when current &gt; stack.top → • 'Larger element kicks out smaller ones' | • 'Larger element kicks out smaller ones' → NEXT SMALLER ELEMENT: | NEXT SMALLER ELEMENT: → • Use INCREASING stack | ...+1 more
+**Flow:**
+- COMPARISON: GREATER vs SMALLER
+- ↓
+- NEXT GREATER ELEMENT:
+- ↓
+- • Use DECREASING stack
+- ↓
+- • Pop when current > stack.top
+- ↓
+- • 'Larger element kicks out smaller ones'
+- ↓
+- NEXT SMALLER ELEMENT:
+- ↓
+- • Use INCREASING stack
 
 ```mermaid
 flowchart TD
@@ -830,7 +904,26 @@ public int[] previousSmallerElement(int[] nums) {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: ALL FOUR PATTERNS → NEXT GREATER (right): | NEXT GREATER (right): → • Direction: Left → Right | • Direction: Left → Right → • Stack: Decreasing | • Stack: Decreasing → • Answer: When POPPING | • Answer: When POPPING → NEXT SMALLER (right): | NEXT SMALLER (right): → • Stack: Increasing | ...+1 more
+**Flow:**
+- ALL FOUR PATTERNS
+- ↓
+- NEXT GREATER (right):
+- ↓
+- • Direction: Left
+- ↓
+- Right
+- ↓
+- • Direction: Left
+- ↓
+- Right
+- ↓
+- • Stack: Decreasing
+- ↓
+- • Answer: When POPPING
+- ↓
+- NEXT SMALLER (right):
+- ↓
+- • Stack: Increasing
 
 ```mermaid
 flowchart TD
@@ -874,7 +967,20 @@ flowchart TD
 ╚═══════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: MONOTONIC QUEUE → A queue (deque) maintaining monotonic order. | A queue (deque) maintaining monotonic order. → Key Operations: | Key Operations: → • Add from back (may pop existing elements) | • Add from back (may pop existing elements) → • Remove from front (when element leaves window) | • Remove from front (when element leaves window) → • Get max/min: Front of deque | • Get max/min: Front of deque → Use case: Sliding window max/min in O(n) total
+**Flow:**
+- MONOTONIC QUEUE
+- ↓
+- A queue (deque) maintaining monotonic order.
+- ↓
+- Key Operations:
+- ↓
+- • Add from back (may pop existing elements)
+- ↓
+- • Remove from front (when element leaves window)
+- ↓
+- • Get max/min: Front of deque
+- ↓
+- Use case: Sliding window max/min in O(n) total
 
 ```mermaid
 flowchart TD
@@ -1119,7 +1225,20 @@ For bar at index 2 (height 5):
 Maximum rectangle has area 10 (using bars at indices 2,3)
 ```
 
-> **Flow**: heights = [2, 1, 5, 6, 2, 3] → For bar at index 2 (height 5): | For bar at index 2 (height 5): → - Can extend left until bar at index 1 (height 1 &lt; 5 | - Can extend left until bar at index 1 (height 1 &lt; 5 → - Can extend right until bar at index 4 (height 2 &lt;  | - Can extend right until bar at index 4 (height 2 &lt;  → - Width = 4 - 1 - 1 = 2 | - Width = 4 - 1 - 1 = 2 → - Area = 5 * 2 = 10 | - Area = 5 * 2 = 10 → Maximum rectangle has area 10 (using bars at indices 2,
+**Flow:**
+- heights = [2, 1, 5, 6, 2, 3]
+- ↓
+- For bar at index 2 (height 5):
+- ↓
+- - Can extend left until bar at index 1 (height 1 < 5
+- ↓
+- - Can extend right until bar at index 4 (height 2 <
+- ↓
+- - Width = 4 - 1 - 1 = 2
+- ↓
+- - Area = 5 * 2 = 10
+- ↓
+- Maximum rectangle has area 10 (using bars at indices 2,
 
 ```mermaid
 flowchart TD
@@ -1312,7 +1431,20 @@ public boolean find132pattern(int[] nums) {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: MONOTONIC STACK/QUEUE PROBLEMS → NEXT/PREVIOUS GREATER/SMALLER: | NEXT/PREVIOUS GREATER/SMALLER: → • Next Greater Element I/II | • Next Greater Element I/II → • Daily Temperatures | • Daily Temperatures → • Stock Span Problem | • Stock Span Problem → RECTANGLE PROBLEMS: | RECTANGLE PROBLEMS: → • Largest Rectangle in Histogram | ...+1 more
+**Flow:**
+- MONOTONIC STACK/QUEUE PROBLEMS
+- ↓
+- NEXT/PREVIOUS GREATER/SMALLER:
+- ↓
+- • Next Greater Element I/II
+- ↓
+- • Daily Temperatures
+- ↓
+- • Stock Span Problem
+- ↓
+- RECTANGLE PROBLEMS:
+- ↓
+- • Largest Rectangle in Histogram
 
 ```mermaid
 flowchart TD
@@ -1518,7 +1650,20 @@ public int sumSubarrayMins(int[] arr) {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: STACK TYPE SELECTION → DECREASING STACK (larger at bottom): | DECREASING STACK (larger at bottom): → • Next/Previous GREATER element | • Next/Previous GREATER element → • Largest rectangle (find boundaries) | • Largest rectangle (find boundaries) → • Stock span (count higher prices) | • Stock span (count higher prices) → INCREASING STACK (smaller at bottom): | INCREASING STACK (smaller at bottom): → • Next/Previous SMALLER element | ...+1 more
+**Flow:**
+- STACK TYPE SELECTION
+- ↓
+- DECREASING STACK (larger at bottom):
+- ↓
+- • Next/Previous GREATER element
+- ↓
+- • Largest rectangle (find boundaries)
+- ↓
+- • Stock span (count higher prices)
+- ↓
+- INCREASING STACK (smaller at bottom):
+- ↓
+- • Next/Previous SMALLER element
 
 ```mermaid
 flowchart TD
@@ -1619,7 +1764,20 @@ public int[] maxWindow(int[] arr, int k) {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: MONOTONIC STACK/QUEUE COMPLEXITIES → Next Greater Element: O(n) time, O(n) space | Next Greater Element: O(n) time, O(n) space → Daily Temperatures: O(n) time, O(n) space | Daily Temperatures: O(n) time, O(n) space → Largest Rectangle Histogram: O(n) time, O(n) space | Largest Rectangle Histogram: O(n) time, O(n) space → Sliding Window Maximum: O(n) time, O(k) space | Sliding Window Maximum: O(n) time, O(k) space → Remove K Digits: O(n) time, O(n) space | Remove K Digits: O(n) time, O(n) space → KEY INSIGHT: | ...+1 more
+**Flow:**
+- MONOTONIC STACK/QUEUE COMPLEXITIES
+- ↓
+- Next Greater Element: O(n) time, O(n) space
+- ↓
+- Daily Temperatures: O(n) time, O(n) space
+- ↓
+- Largest Rectangle Histogram: O(n) time, O(n) space
+- ↓
+- Sliding Window Maximum: O(n) time, O(k) space
+- ↓
+- Remove K Digits: O(n) time, O(n) space
+- ↓
+- KEY INSIGHT:
 
 ```mermaid
 flowchart TD
@@ -1676,7 +1834,40 @@ flowchart TD
 ╚═══════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: MONOTONIC STACK/QUEUE - MASTER CHECKLIST → 1. IDENTIFY THE PATTERN | 1. IDENTIFY THE PATTERN → • 'Next greater/smaller' → Monotonic Stack | • 'Next greater/smaller' → Monotonic Stack → • 'Sliding window max/min' → Monotonic Queue | • 'Sliding window max/min' → Monotonic Queue → • 'Rectangle area' → Usually needs both boundaries | • 'Rectangle area' → Usually needs both boundaries → 2. CHOOSE STACK TYPE | 2. CHOOSE STACK TYPE → • Looking for GREATER → Decreasing stack | ...+1 more
+**Flow:**
+- MONOTONIC STACK/QUEUE - MASTER CHECKLIST
+- ↓
+- 1. IDENTIFY THE PATTERN
+- ↓
+- • 'Next greater/smaller'
+- ↓
+- Monotonic Stack
+- ↓
+- • 'Next greater/smaller'
+- ↓
+- Monotonic Stack
+- ↓
+- • 'Sliding window max/min'
+- ↓
+- Monotonic Queue
+- ↓
+- • 'Sliding window max/min'
+- ↓
+- Monotonic Queue
+- ↓
+- • 'Rectangle area'
+- ↓
+- Usually needs both boundaries
+- ↓
+- • 'Rectangle area'
+- ↓
+- Usually needs both boundaries
+- ↓
+- 2. CHOOSE STACK TYPE
+- ↓
+- • Looking for GREATER
+- ↓
+- Decreasing stack
 
 ```mermaid
 flowchart TD

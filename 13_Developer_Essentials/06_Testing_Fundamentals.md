@@ -21,7 +21,20 @@ After compliance audit   │ $10,000+
 Testing = Finding bugs when they're CHEAP to fix
 ```
 
-> **Flow**: When bug is found Cost to fix → During coding $1 | During coding $1 → During code review $5 | During code review $5 → During testing $15 | During testing $15 → After deployment $100 | After deployment $100 → In production (customer) $1,000+ | In production (customer) $1,000+ → After compliance audit $10,000+ | ...+1 more
+**Flow:**
+- When bug is found Cost to fix
+- ↓
+- During coding $1
+- ↓
+- During code review $5
+- ↓
+- During testing $15
+- ↓
+- After deployment $100
+- ↓
+- In production (customer) $1,000+
+- ↓
+- After compliance audit $10,000+
 
 ```mermaid
 flowchart TD
@@ -65,7 +78,12 @@ Integration Tests: 20% of all tests (test components working together)
 E2E Tests:         10% of all tests (test full user workflows)
 ```
 
-> **Flow**: E2E → Integ / ration | Integ / ration → UNIT / TESTS
+**Flow:**
+- E2E
+- ↓
+- Integ / ration
+- ↓
+- UNIT / TESTS
 
 ```mermaid
 flowchart TD
@@ -295,7 +313,16 @@ WHY TDD?
   - Refactoring is SAFE (tests catch regressions)
 ```
 
-> **Flow**: Step 1 (RED): Write test → shouldCalculateAreaOfCircle(radius=5) | shouldCalculateAreaOfCircle(radius=5) → 78.54 | Step 2 (GREEN): Write method → return Math.PI * r * r;
+**Flow:**
+- Step 1 (RED): Write test
+- ↓
+- shouldCalculateAreaOfCircle(radius=5)
+- ↓
+- 78.54
+- ↓
+- Step 2 (GREEN): Write method
+- ↓
+- return Math.PI * r * r;
 
 ```mermaid
 flowchart LR
@@ -327,7 +354,30 @@ src/
     └── repository/      ← Integration tests (H2 DB)
 ```
 
-> **Flow**: src/ → main/java/com/myapp/ | src/ → controller/ | src/ → service/ | src/ → repository/ | src/ → test/java/com/myapp/ | src/ → controller/ ← Integration tests (MockMvc) | ...+2 more
+**Flow:**
+- src/
+- ↓
+- main/java/com/myapp/
+- ↓
+- src/
+- ↓
+- controller/
+- ↓
+- src/
+- ↓
+- service/
+- ↓
+- src/
+- ↓
+- repository/
+- ↓
+- src/
+- ↓
+- test/java/com/myapp/
+- ↓
+- src/
+- ↓
+- controller/ ← Integration tests (MockMvc)
 
 ```mermaid
 flowchart TD
@@ -381,7 +431,18 @@ IMPORTANT: High coverage ≠ good tests!
   Focus on testing BEHAVIOR, not just executing lines.
 ```
 
-> **Flow**: 80%+ → Good for most projects | 90%+ → Critical systems (banking, healthcare) | 100% → Diminishing returns, not practical
+**Flow:**
+- 80%+
+- ↓
+- Good for most projects
+- ↓
+- 90%+
+- ↓
+- Critical systems (banking, healthcare)
+- ↓
+- 100%
+- ↓
+- Diminishing returns, not practical
 
 ```mermaid
 flowchart LR
@@ -410,7 +471,12 @@ PATTERN:       Arrange → Act → Assert (AAA)
 NAMING:        should_[behavior]_when_[condition]
 ```
 
-> **Flow**: PATTERN: Arrange → Act | Act → Assert (AAA)
+**Flow:**
+- PATTERN: Arrange
+- ↓
+- Act
+- ↓
+- Assert (AAA)
 
 ```mermaid
 flowchart LR

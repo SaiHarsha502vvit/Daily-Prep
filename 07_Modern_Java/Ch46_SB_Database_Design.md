@@ -51,7 +51,14 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHY: Why Database Security Matters? / • SQL injection i → HOW: How to Secure Database Layer? / • Use parameterize | HOW: How to Secure Database Layer? / • Use parameterize → WHEN: When to Apply Security Measures? / • User managem | WHEN: When to Apply Security Measures? / • User managem → WHICH: Which Security Layers to Implement? / ESSENTIAL:
+**Flow:**
+- WHY: Why Database Security Matters? / • SQL injection i
+- ↓
+- HOW: How to Secure Database Layer? / • Use parameterize
+- ↓
+- WHEN: When to Apply Security Measures? / • User managem
+- ↓
+- WHICH: Which Security Layers to Implement? / ESSENTIAL:
 
 ```mermaid
 flowchart TD
@@ -89,7 +96,20 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHAT THIS PART COVERS → 1. User Management Entity Design | 1. User Management Entity Design → 2. Role-Based Access Control (RBAC) | 2. Role-Based Access Control (RBAC) → 3. Permission/Authority Management | 3. Permission/Authority Management → 4. Password Security (BCrypt, Argon2) | 4. Password Security (BCrypt, Argon2) → 5. Custom UserDetailsService Implementation | 5. Custom UserDetailsService Implementation → 6. Method-Level Security (@PreAuthorize, @Secured) | ...+1 more
+**Flow:**
+- WHAT THIS PART COVERS
+- ↓
+- 1. User Management Entity Design
+- ↓
+- 2. Role-Based Access Control (RBAC)
+- ↓
+- 3. Permission/Authority Management
+- ↓
+- 4. Password Security (BCrypt, Argon2)
+- ↓
+- 5. Custom UserDetailsService Implementation
+- ↓
+- 6. Method-Level Security (@PreAuthorize, @Secured)
 
 ```mermaid
 flowchart TD
@@ -147,7 +167,14 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: USER / - id / - username / - email / - password / - ena → USER_ROLES / (Join Table) / - user_id / - role_id | ROLE / - id / - name / - desc → PERMISSION / - id / - name / - resource / - action
+**Flow:**
+- USER / - id / - username / - email / - password / - ena
+- ↓
+- USER_ROLES / (Join Table) / - user_id / - role_id
+- ↓
+- ROLE / - id / - name / - desc
+- ↓
+- PERMISSION / - id / - name / - resource / - action
 
 ```mermaid
 flowchart TD

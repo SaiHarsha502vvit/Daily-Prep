@@ -174,7 +174,26 @@ PROOF OF COMPLEXITY:
 JAVA CODE:
 ```
 
-> **Flow**: Brute force checks all j ≠ i → O(n²). | HashMap stores {value → index} so complement lookup is O(1) | index} so complement lookup is O(1) → total O(n). | 1. Create HashMap&lt;Integer, Integer&gt; map (value → index) | Invariant: at iteration i, map contains {nums[0] → 0, nums[1] | 0, nums[1] → 1, ..., nums[i-1] | ...+2 more
+**Flow:**
+- Brute force checks all j ≠ i
+- ↓
+- O(n²).
+- ↓
+- HashMap stores {value
+- ↓
+- index} so complement lookup is O(1)
+- ↓
+- total O(n).
+- ↓
+- 1. Create HashMap<Integer, Integer> map (value
+- ↓
+- index)
+- ↓
+- Invariant: at iteration i, map contains {nums[0]
+- ↓
+- 0, nums[1]
+- ↓
+- 1, ..., nums[i-1]
 
 ```mermaid
 flowchart TD
@@ -269,7 +288,10 @@ PROOF:
 JAVA CODE:
 ```
 
-> **Flow**: 3. Use this as HashMap key → groups anagrams without O(K log K) sort
+**Flow:**
+- 3. Use this as HashMap key
+- ↓
+- groups anagrams without O(K log K) sort
 
 ```mermaid
 flowchart LR
@@ -366,7 +388,26 @@ PROOF OF CORRECTNESS:
 JAVA CODE:
 ```
 
-> **Flow**: If the element at that index is already negative → we've seen this value before | we've seen this value before → duplicate! | b. If nums[idx] &lt; 0: // already visited → duplicate | • If nums[v-1] &lt; 0: v was seen before (by invarian → v is a duplicate ✓ | • If nums[v-1] &gt; 0: v not seen before → negate to mark | negate to mark → invariant maintained ✓
+**Flow:**
+- If the element at that index is already negative
+- ↓
+- we've seen this value before
+- ↓
+- duplicate!
+- ↓
+- b. If nums[idx] < 0: // already visited
+- ↓
+- duplicate
+- ↓
+- • If nums[v-1] < 0: v was seen before (by invarian
+- ↓
+- v is a duplicate ✓
+- ↓
+- • If nums[v-1] > 0: v not seen before
+- ↓
+- negate to mark
+- ↓
+- invariant maintained ✓
 
 ```mermaid
 flowchart TD
@@ -456,7 +497,10 @@ APPROACH 3: HashSet
   Add all elements, check which in [0..n] is absent. O(n) time, O(n) space.
 ```
 
-> **Flow**: XOR all indices [0..n] with all array values. Pair → result is missing.
+**Flow:**
+- XOR all indices [0..n] with all array values. Pair
+- ↓
+- result is missing.
 
 ```mermaid
 flowchart LR
@@ -482,7 +526,18 @@ APPROACH: Cycle detection with HashSet
   Time: O(log n) per step, finite steps. Space: O(log n) with HashSet.
 ```
 
-> **Flow**: 2. If result = 1 → happy. If result seen before | happy. If result seen before → cycle | cycle → not happy. | The cycle always includes 4 → can also check for 4.
+**Flow:**
+- 2. If result = 1
+- ↓
+- happy. If result seen before
+- ↓
+- cycle
+- ↓
+- not happy.
+- ↓
+- The cycle always includes 4
+- ↓
+- can also check for 4.
 
 ```mermaid
 flowchart LR
@@ -789,7 +844,10 @@ VARIANTS:
   • Longest Subarray with Sum K (GFG) — first occurrence of prefixSum - K
 ```
 
-> **Flow**: • Largest subarray with equal 0s and 1s (replace 0 → -1, find longest 0-sum)
+**Flow:**
+- • Largest subarray with equal 0s and 1s (replace 0
+- ↓
+- -1, find longest 0-sum)
 
 ```mermaid
 flowchart LR
@@ -950,7 +1008,30 @@ PROOF ALL OPERATIONS O(1):
 JAVA CODE:
 ```
 
-> **Flow**: if val in map → return false | list.add(val), map.put(val, list.size()-1) → return true | if val not in map → return false | • insert: HashMap.put O(1), ArrayList.add O(1) amo → O(1) | HashMap.remove O(1), HashMap.put O(1) → O(1) | • getRandom: ArrayList.get O(1), Random.nextInt O( → O(1) | ...+1 more
+**Flow:**
+- if val in map
+- ↓
+- return false
+- ↓
+- list.add(val), map.put(val, list.size()-1)
+- ↓
+- return true
+- ↓
+- if val not in map
+- ↓
+- return false
+- ↓
+- • insert: HashMap.put O(1), ArrayList.add O(1) amo
+- ↓
+- O(1)
+- ↓
+- HashMap.remove O(1), HashMap.put O(1)
+- ↓
+- O(1)
+- ↓
+- • getRandom: ArrayList.get O(1), Random.nextInt O(
+- ↓
+- O(1)
 
 ```mermaid
 flowchart TD
@@ -1020,7 +1101,10 @@ VARIANTS:
   • Design a Leaderboard (LC 1244)
 ```
 
-> **Flow**: • Insert Delete GetRandom O(1) - Duplicates (LC 38 → Set&lt;Integer&gt; of indices
+**Flow:**
+- • Insert Delete GetRandom O(1) - Duplicates (LC 38
+- ↓
+- Set<Integer> of indices
 
 ```mermaid
 flowchart LR
@@ -1086,7 +1170,30 @@ PROOF O(1) FOR ALL OPERATIONS:
 JAVA CODE:
 ```
 
-> **Flow**: Need O(1) lookup → HashMap. | Need O(1) insertion/removal at both ends + O(1) mo → Doubly Linked List. | if key not in map → return -1 | • get: HashMap lookup O(1) + DLL move O(1) → O(1) | • put: HashMap lookup/insert O(1) + DLL add/remove → O(1) | Every access moves node to head → ordering is always correct. ∎
+**Flow:**
+- Need O(1) lookup
+- ↓
+- HashMap.
+- ↓
+- Need O(1) insertion/removal at both ends + O(1) mo
+- ↓
+- Doubly Linked List.
+- ↓
+- if key not in map
+- ↓
+- return -1
+- ↓
+- • get: HashMap lookup O(1) + DLL move O(1)
+- ↓
+- O(1)
+- ↓
+- • put: HashMap lookup/insert O(1) + DLL add/remove
+- ↓
+- O(1)
+- ↓
+- Every access moves node to head
+- ↓
+- ordering is always correct. ∎
 
 ```mermaid
 flowchart TD
@@ -1215,7 +1322,14 @@ APPROACH: In-place hashing (cyclic sort variant)
   Time: O(n) — each element swapped at most once. Space: O(1).
 ```
 
-> **Flow**: 2. Scan array: first index i where arr[i] ≠ i+1 → answer is i+1 | 3. If all correct → answer is n+1
+**Flow:**
+- 2. Scan array: first index i where arr[i] ≠ i+1
+- ↓
+- answer is i+1
+- ↓
+- 3. If all correct
+- ↓
+- answer is n+1
 
 ```mermaid
 flowchart LR
@@ -1245,7 +1359,20 @@ APPROACH: Stack + HashMap for bracket matching
   Time: O(n), Space: O(n).
 ```
 
-> **Flow**: 1. map = { ')' → '(', '}' | '(', '}' → '{', ']' | '{', ']' → '[' } | 2. For each char: if opening → push. If closing | push. If closing → pop and check match.
+**Flow:**
+- 1. map = { ')'
+- ↓
+- '(', '}'
+- ↓
+- '{', ']'
+- ↓
+- '[' }
+- ↓
+- 2. For each char: if opening
+- ↓
+- push. If closing
+- ↓
+- pop and check match.
 
 ```mermaid
 flowchart TD
@@ -1279,7 +1406,28 @@ APPROACH: Two HashMaps for bijection
   Time: O(n), Space: O(|alphabet|).
 ```
 
-> **Flow**: 1. map1: s[i] → t[i] (forward mapping) | 2. map2: t[i] → s[i] (reverse mapping) | 4. If any conflict → not isomorphic. | Why TWO maps? 'ab' → 'aa' should be false. | map1 alone would accept it (a → a, b | a, b → a), but map2 catches it (a | ...+2 more
+**Flow:**
+- 1. map1: s[i]
+- ↓
+- t[i] (forward mapping)
+- ↓
+- 2. map2: t[i]
+- ↓
+- s[i] (reverse mapping)
+- ↓
+- 4. If any conflict
+- ↓
+- not isomorphic.
+- ↓
+- Why TWO maps? 'ab'
+- ↓
+- 'aa' should be false.
+- ↓
+- map1 alone would accept it (a
+- ↓
+- a, b
+- ↓
+- a), but map2 catches it (a
 
 ```mermaid
 flowchart TD
@@ -1366,7 +1514,20 @@ APPROACH: DLL + HashMap
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: HASHMAP COMPLEXITY REFERENCE → Operation Average Worst Notes | Operation Average Worst Notes → HashMap.get(key) O(1) O(log n) Tree buckets in Java8 | HashMap.get(key) O(1) O(log n) Tree buckets in Java8 → HashMap.remove(key) O(1) O(log n) Tree buckets | HashMap.remove(key) O(1) O(log n) Tree buckets → HashMap.containsKey(key) O(1) O(log n) | HashMap.containsKey(key) O(1) O(log n) → HashMap.containsValue(val) O(n) O(n) Full scan! | HashMap.containsValue(val) O(n) O(n) Full scan! → HashSet.add/remove/contains O(1) O(log n) Same as HashM | ...+1 more
+**Flow:**
+- HASHMAP COMPLEXITY REFERENCE
+- ↓
+- Operation Average Worst Notes
+- ↓
+- HashMap.get(key) O(1) O(log n) Tree buckets in Java8
+- ↓
+- HashMap.remove(key) O(1) O(log n) Tree buckets
+- ↓
+- HashMap.containsKey(key) O(1) O(log n)
+- ↓
+- HashMap.containsValue(val) O(n) O(n) Full scan!
+- ↓
+- HashSet.add/remove/contains O(1) O(log n) Same as HashM
 
 ```mermaid
 flowchart TD
@@ -1438,7 +1599,20 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: HASHMAP MASTERY CHECKLIST → FUNDAMENTALS: | FUNDAMENTALS: → □ Can derive O(1) expected time under SUHA | □ Can derive O(1) expected time under SUHA → □ Know Java HashMap internals (buckets, treeify, rehash | □ Know Java HashMap internals (buckets, treeify, rehash → □ Understand hashCode/equals contract | □ Understand hashCode/equals contract → FREQUENCY COUNTING: | FREQUENCY COUNTING: → □ Two Sum — one-pass complement lookup | ...+1 more
+**Flow:**
+- HASHMAP MASTERY CHECKLIST
+- ↓
+- FUNDAMENTALS:
+- ↓
+- □ Can derive O(1) expected time under SUHA
+- ↓
+- □ Know Java HashMap internals (buckets, treeify, rehash
+- ↓
+- □ Understand hashCode/equals contract
+- ↓
+- FREQUENCY COUNTING:
+- ↓
+- □ Two Sum — one-pass complement lookup
 
 ```mermaid
 flowchart TD

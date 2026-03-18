@@ -93,7 +93,22 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: int[][] object (outer array): / Header (16 bytes) row[0 → Header (16 bytes) [0,0]=0 [0,1]=1 [0,2]=0 [0,3]=1 | Header (16 bytes) [0,0]=0 [0,1]=1 [0,2]=0 [0,3]=1 → ArrayList (outer): / Header Object[] elementData → [lis | ArrayList (outer): / Header Object[] elementData → [lis → Header Object[] → [Integer(1), Integer(3), null, ...]
+**Flow:**
+- int[][] object (outer array): / Header (16 bytes) row[0
+- ↓
+- Header (16 bytes) [0,0]=0 [0,1]=1 [0,2]=0 [0,3]=1
+- ↓
+- ArrayList (outer): / Header Object[] elementData
+- ↓
+- [lis
+- ↓
+- ArrayList (outer): / Header Object[] elementData
+- ↓
+- [lis
+- ↓
+- Header Object[]
+- ↓
+- [Integer(1), Integer(3), null, ...]
 
 ```mermaid
 flowchart TD
@@ -155,7 +170,20 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: EDGE LIST - THE SIMPLEST GRAPH REPRESENTATION → int[][] edges = {{0,1,5}, {0,2,3}, {1,2,1}, {2,3,7}}; | int[][] edges = {{0,1,5}, {0,2,3}, {1,2,1}, {2,3,7}}; → GRAPH: 5 3 7 | GRAPH: 5 3 7 → MEMORY: O(E) — just the edges, nothing more | MEMORY: O(E) — just the edges, nothing more → WHEN TO USE EDGE LIST: | WHEN TO USE EDGE LIST: → ✅ Kruskal's MST (sort edges by weight, process in order | ✅ Kruskal's MST (sort edges by weight, process in order → ✅ When you just need to store/sort edges | ...+1 more
+**Flow:**
+- EDGE LIST - THE SIMPLEST GRAPH REPRESENTATION
+- ↓
+- int[][] edges = {{0,1,5}, {0,2,3}, {1,2,1}, {2,3,7}};
+- ↓
+- GRAPH: 5 3 7
+- ↓
+- MEMORY: O(E) — just the edges, nothing more
+- ↓
+- WHEN TO USE EDGE LIST:
+- ↓
+- ✅ Kruskal's MST (sort edges by weight, process in order
+- ↓
+- ✅ When you just need to store/sort edges
 
 ```mermaid
 flowchart TD
@@ -281,7 +309,20 @@ Arrays.sort(edges, (a, b) -> a[2] - b[2]);  // sort by weight
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: BFS VS DFS - MEMORY AND CPU BEHAVIOR → GRAPH: 0 1 2 | GRAPH: 0 1 2 → BFS USING QUEUE: | BFS USING QUEUE: → Queue&lt;Integer&gt; queue = new LinkedList&lt;&gt;(); | Queue&lt;Integer&gt; queue = new LinkedList&lt;&gt;(); → queue.offer(0); | queue.offer(0); → visited[0] = true; | visited[0] = true; → QUEUE EVOLUTION: | ...+1 more
+**Flow:**
+- BFS VS DFS - MEMORY AND CPU BEHAVIOR
+- ↓
+- GRAPH: 0 1 2
+- ↓
+- BFS USING QUEUE:
+- ↓
+- Queue<Integer> queue = new LinkedList<>();
+- ↓
+- queue.offer(0);
+- ↓
+- visited[0] = true;
+- ↓
+- QUEUE EVOLUTION:
 
 ```mermaid
 flowchart TD
@@ -381,7 +422,20 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: DIJKSTRA VS BELLMAN-FORD VS FLOYD-WARSHALL → DIJKSTRA'S ALGORITHM (Single source, non-negative weigh | DIJKSTRA'S ALGORITHM (Single source, non-negative weigh → Time: O((V + E) log V) with binary heap | Time: O((V + E) log V) with binary heap → Space: O(V) for distance array + O(V) for priority queu | Space: O(V) for distance array + O(V) for priority queu → INTERNAL WORKING: | INTERNAL WORKING: → • pq.offer(): O(log V) - bubble up in heap | • pq.offer(): O(log V) - bubble up in heap → • pq.poll(): O(log V) - bubble down in heap | ...+1 more
+**Flow:**
+- DIJKSTRA VS BELLMAN-FORD VS FLOYD-WARSHALL
+- ↓
+- DIJKSTRA'S ALGORITHM (Single source, non-negative weigh
+- ↓
+- Time: O((V + E) log V) with binary heap
+- ↓
+- Space: O(V) for distance array + O(V) for priority queu
+- ↓
+- INTERNAL WORKING:
+- ↓
+- • pq.offer(): O(log V) - bubble up in heap
+- ↓
+- • pq.poll(): O(log V) - bubble down in heap
 
 ```mermaid
 flowchart TD

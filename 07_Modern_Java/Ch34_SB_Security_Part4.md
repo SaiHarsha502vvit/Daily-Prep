@@ -49,7 +49,14 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHY: Why JPA/Hibernate is Essential? / • ORM magic: Map → HOW: How JPA Maps Objects to Database? / • @Entity: Cla | HOW: How JPA Maps Objects to Database? / • @Entity: Cla → WHEN: When to Use Different Query Strategies? / • findB | WHEN: When to Use Different Query Strategies? / • findB → WHICH: Which JPA Concepts to Master? / ESSENTIAL: @Enti
+**Flow:**
+- WHY: Why JPA/Hibernate is Essential? / • ORM magic: Map
+- ↓
+- HOW: How JPA Maps Objects to Database? / • @Entity: Cla
+- ↓
+- WHEN: When to Use Different Query Strategies? / • findB
+- ↓
+- WHICH: Which JPA Concepts to Master? / ESSENTIAL: @Enti
 
 ```mermaid
 flowchart TD
@@ -147,7 +154,20 @@ public interface UserRepository extends JpaRepository<User, Long> {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: YOUR APPLICATION CODE / UserService → UserRepository →  → SPRING DATA JPA / Query derivation, automatic repositor | SPRING DATA JPA / Query derivation, automatic repositor → JPA (API/Specification) / EntityManager, @Entity, JPQL, | JPA (API/Specification) / EntityManager, @Entity, JPQL, → HIBERNATE (JPA Implementation) / Session, 1st/2nd level | HIBERNATE (JPA Implementation) / Session, 1st/2nd level → JDBC / DataSource / Connection pooling (HikariCP), actu | JDBC / DataSource / Connection pooling (HikariCP), actu → DATABASE / MySQL, PostgreSQL, Oracle, etc.
+**Flow:**
+- YOUR APPLICATION CODE / UserService
+- ↓
+- UserRepository
+- ↓
+- SPRING DATA JPA / Query derivation, automatic repositor
+- ↓
+- JPA (API/Specification) / EntityManager, @Entity, JPQL,
+- ↓
+- HIBERNATE (JPA Implementation) / Session, 1st/2nd level
+- ↓
+- JDBC / DataSource / Connection pooling (HikariCP), actu
+- ↓
+- DATABASE / MySQL, PostgreSQL, Oracle, etc.
 
 ```mermaid
 flowchart TD
@@ -831,7 +851,20 @@ public record ErrorResponse(String message, List<String> errors) {}
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: AUTHENTICATION vs AUTHORIZATION → AUTHENTICATION = 'WHO are you?' | AUTHENTICATION = 'WHO are you?' → • Username/password login | • Username/password login → • OAuth2/Social login | • OAuth2/Social login → • JWT token validation | • JWT token validation → • Certificate verification | • Certificate verification → AUTHORIZATION = 'WHAT can you do?' | ...+1 more
+**Flow:**
+- AUTHENTICATION vs AUTHORIZATION
+- ↓
+- AUTHENTICATION = 'WHO are you?'
+- ↓
+- • Username/password login
+- ↓
+- • OAuth2/Social login
+- ↓
+- • JWT token validation
+- ↓
+- • Certificate verification
+- ↓
+- AUTHORIZATION = 'WHAT can you do?'
 
 ```mermaid
 flowchart TD
@@ -974,7 +1007,12 @@ public class UserService {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: E2E / Tests → Integration / Tests | Integration / Tests → Unit Tests / @Mock, no Spring context
+**Flow:**
+- E2E / Tests
+- ↓
+- Integration / Tests
+- ↓
+- Unit Tests / @Mock, no Spring context
 
 ```mermaid
 flowchart TD
@@ -1211,7 +1249,20 @@ TESTING:
 □ Know when to use @MockBean vs @Mock
 ```
 
-> **Flow**: JPA & DATA ACCESS: → □ Can map entities with all relationship types | □ Can map entities with all relationship types → □ Understand LAZY vs EAGER and N+1 problem | □ Understand LAZY vs EAGER and N+1 problem → □ Can write derived queries and @Query methods | □ Can write derived queries and @Query methods → □ Can use projections and pagination | □ Can use projections and pagination → WEB & REST: | WEB & REST: → □ Can build complete REST API with all HTTP methods | ...+1 more
+**Flow:**
+- JPA & DATA ACCESS:
+- ↓
+- □ Can map entities with all relationship types
+- ↓
+- □ Understand LAZY vs EAGER and N+1 problem
+- ↓
+- □ Can write derived queries and @Query methods
+- ↓
+- □ Can use projections and pagination
+- ↓
+- WEB & REST:
+- ↓
+- □ Can build complete REST API with all HTTP methods
 
 ```mermaid
 flowchart TD
@@ -1275,7 +1326,20 @@ flowchart TD
 └────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: SPRING BOOT MASTERY ROADMAP → TIER 1: Java Foundations | TIER 1: Java Foundations → Memory, ClassLoading, Threading, Functional Programming | Memory, ClassLoading, Threading, Functional Programming → TIER 2: Spring Core | TIER 2: Spring Core → IoC, DI, Beans, Lifecycle, Events | IoC, DI, Beans, Lifecycle, Events → TIER 3: AOP | TIER 3: AOP → Aspects, Pointcuts, Proxies | ...+1 more
+**Flow:**
+- SPRING BOOT MASTERY ROADMAP
+- ↓
+- TIER 1: Java Foundations
+- ↓
+- Memory, ClassLoading, Threading, Functional Programming
+- ↓
+- TIER 2: Spring Core
+- ↓
+- IoC, DI, Beans, Lifecycle, Events
+- ↓
+- TIER 3: AOP
+- ↓
+- Aspects, Pointcuts, Proxies
 
 ```mermaid
 flowchart TD

@@ -109,7 +109,36 @@ flowchart LR
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: SHORT URL GENERATION — 3 Approaches → 1. Hash + Truncate: | 1. Hash + Truncate: → MD5(longURL) → take first 7 chars of base62 | MD5(longURL) → take first 7 chars of base62 → Problem: collisions! Need to check DB, retry with salt. | Problem: collisions! Need to check DB, retry with salt. → 2. Auto-increment ID + Base62: ← RECOMMENDED | 2. Auto-increment ID + Base62: ← RECOMMENDED → Database gives ID 12345 → convert to base62 → 'dnh' | Database gives ID 12345 → convert to base62 → 'dnh' → No collisions! But IDs are predictable (sequential). | ...+1 more
+**Flow:**
+- SHORT URL GENERATION — 3 Approaches
+- ↓
+- 1. Hash + Truncate:
+- ↓
+- MD5(longURL)
+- ↓
+- take first 7 chars of base62
+- ↓
+- MD5(longURL)
+- ↓
+- take first 7 chars of base62
+- ↓
+- Problem: collisions! Need to check DB, retry with salt.
+- ↓
+- 2. Auto-increment ID + Base62: ← RECOMMENDED
+- ↓
+- Database gives ID 12345
+- ↓
+- convert to base62
+- ↓
+- 'dnh'
+- ↓
+- Database gives ID 12345
+- ↓
+- convert to base62
+- ↓
+- 'dnh'
+- ↓
+- No collisions! But IDs are predictable (sequential).
 
 ```mermaid
 flowchart TD
@@ -149,7 +178,14 @@ Scale:
   - 500M tweets/day → ~6000 tweets/sec
 ```
 
-> **Flow**: - Average user views feed 5x/day → 750M feed reads/day | - 500M tweets/day → ~6000 tweets/sec
+**Flow:**
+- - Average user views feed 5x/day
+- ↓
+- 750M feed reads/day
+- ↓
+- - 500M tweets/day
+- ↓
+- ~6000 tweets/sec
 
 ```mermaid
 flowchart LR
@@ -256,7 +292,14 @@ Scale: 50M DAU, each user sends 40 msgs/day = 2B msgs/day
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Chat Server / (stateful!) --(WebSocket)--> Client | Message Store / (Cassandra) --(Message Queue)--> Chat Server / (stateful!) | Chat Server / (stateful!) → Presence / Service / (Redis)
+**Flow:**
+- Chat Server / (stateful!) --(WebSocket)--> Client
+- ↓
+- Message Store / (Cassandra) --(Message Queue)--> Chat Server / (stateful!)
+- ↓
+- Chat Server / (stateful!)
+- ↓
+- Presence / Service / (Redis)
 
 ```mermaid
 flowchart TD
@@ -314,7 +357,38 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: PURPOSE: Prevent abuse, protect resources, enforce SLAs → ALGORITHM 1: Token Bucket | ALGORITHM 1: Token Bucket → Bucket holds N tokens. Each request takes 1 token. | Bucket holds N tokens. Each request takes 1 token. → Bucket: [●●●●●___] capacity=8, current=5 | Bucket: [●●●●●___] capacity=8, current=5 → Request arrives → take token → [●●●●____] | Request arrives → take token → [●●●●____] → Refill (every 1/R sec) → [●●●●●___] | Refill (every 1/R sec) → [●●●●●___] → Bucket full → tokens overflow (don't exceed capacity) | ...+1 more
+**Flow:**
+- PURPOSE: Prevent abuse, protect resources, enforce SLAs
+- ↓
+- ALGORITHM 1: Token Bucket
+- ↓
+- Bucket holds N tokens. Each request takes 1 token.
+- ↓
+- Bucket: [●●●●●___] capacity=8, current=5
+- ↓
+- Request arrives
+- ↓
+- take token
+- ↓
+- [●●●●____]
+- ↓
+- Request arrives
+- ↓
+- take token
+- ↓
+- [●●●●____]
+- ↓
+- Refill (every 1/R sec)
+- ↓
+- [●●●●●___]
+- ↓
+- Refill (every 1/R sec)
+- ↓
+- [●●●●●___]
+- ↓
+- Bucket full
+- ↓
+- tokens overflow (don't exceed capacity)
 
 ```mermaid
 flowchart TD
@@ -369,7 +443,24 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Triggers / (events) → → Notificatio / Service | → Notificatio / Service → Push / Worker | → Message Queue / (Kafka/SQS) → Push / Worker | → Message Queue / (Kafka/SQS) → Email / Worker | → Message Queue / (Kafka/SQS) → SMS / Worker
+**Flow:**
+- Triggers / (events)
+- ↓
+- Notificatio / Service
+- ↓
+- Push / Worker
+- ↓
+- Message Queue / (Kafka/SQS)
+- ↓
+- Push / Worker
+- ↓
+- Message Queue / (Kafka/SQS)
+- ↓
+- Email / Worker
+- ↓
+- Message Queue / (Kafka/SQS)
+- ↓
+- SMS / Worker
 
 ```mermaid
 flowchart TD
@@ -432,7 +523,20 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHY: Reduce DB load, sub-millisecond reads → CORE DECISIONS: | CORE DECISIONS: → 1. EVICTION POLICY: | 1. EVICTION POLICY: → LRU (Least Recently Used) — most common | LRU (Least Recently Used) — most common → LFU (Least Frequently Used) — better for skewed access | LFU (Least Frequently Used) — better for skewed access → TTL (Time To Live) — expire after fixed time | TTL (Time To Live) — expire after fixed time → 2. CACHE PATTERNS: | ...+1 more
+**Flow:**
+- WHY: Reduce DB load, sub-millisecond reads
+- ↓
+- CORE DECISIONS:
+- ↓
+- 1. EVICTION POLICY:
+- ↓
+- LRU (Least Recently Used) — most common
+- ↓
+- LFU (Least Frequently Used) — better for skewed access
+- ↓
+- TTL (Time To Live) — expire after fixed time
+- ↓
+- 2. CACHE PATTERNS:
 
 ```mermaid
 flowchart TD
@@ -504,7 +608,28 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Client → → API Gateway | Client → Product / Service | → API Gateway → ▼ ▼ ▼ / duct Order Paym / vice Service Serv / duct Orde | ▼ ▼ ▼ / duct Order Paym / vice Service Serv / duct Orde → Kafka/SQS | Product / Service → Product / DB | Payment / Service → Payment / DB
+**Flow:**
+- Client
+- ↓
+- API Gateway
+- ↓
+- Client
+- ↓
+- Product / Service
+- ↓
+- API Gateway
+- ↓
+- ▼ ▼ ▼ / duct Order Paym / vice Service Serv / duct Orde
+- ↓
+- Kafka/SQS
+- ↓
+- Product / Service
+- ↓
+- Product / DB
+- ↓
+- Payment / Service
+- ↓
+- Payment / DB
 
 ```mermaid
 flowchart TD
@@ -565,7 +690,18 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: URL / Frontier / (priority / queue) → → Fetcher / (HTTP GET) | URL / Frontier / (priority / queue) → URL Filter / (visited? / robots.txt / Bloom / filter) | → Parser / (Extract / links, / content) → Content / Store / (S3/HDFS)
+**Flow:**
+- URL / Frontier / (priority / queue)
+- ↓
+- Fetcher / (HTTP GET)
+- ↓
+- URL / Frontier / (priority / queue)
+- ↓
+- URL Filter / (visited? / robots.txt / Bloom / filter)
+- ↓
+- Parser / (Extract / links, / content)
+- ↓
+- Content / Store / (S3/HDFS)
 
 ```mermaid
 flowchart TD

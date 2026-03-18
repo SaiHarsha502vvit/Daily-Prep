@@ -58,7 +58,14 @@ EVERY object has this structure. Even `new Object()`:
 Header (12 bytes) + Padding (4 bytes) = 16 bytes minimum
 ```
 
-> **Flow**: Mark Word (8 bytes / 64-bit JVM) / → Identity: hashCode → Klass Pointer (4 bytes compressed) / → 'What type am I?
+**Flow:**
+- Mark Word (8 bytes / 64-bit JVM) /
+- ↓
+- Identity: hashCode
+- ↓
+- Klass Pointer (4 bytes compressed) /
+- ↓
+- 'What type am I?
 
 ```mermaid
 flowchart TD
@@ -96,7 +103,12 @@ flowchart TD
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Mark Word Klass Pointer Padding / (8 bytes) (4 bytes) ( → Mark Word Klass Pointer Array Len Padding / (8 bytes) ( | Mark Word Klass Pointer Array Len Padding / (8 bytes) ( → Mark Word Klass Pointer x y / (8 bytes) (4 bytes) (4 b)
+**Flow:**
+- Mark Word Klass Pointer Padding / (8 bytes) (4 bytes) (
+- ↓
+- Mark Word Klass Pointer Array Len Padding / (8 bytes) (
+- ↓
+- Mark Word Klass Pointer x y / (8 bytes) (4 bytes) (4 b)
 
 ```mermaid
 flowchart TD
@@ -151,7 +163,16 @@ State: GC (marked for garbage collection)
 └──────────────────────────────────────┴─────────┘
 ```
 
-> **Flow**: identity hashCode unused GC age state / (31 bits) (1 bi → thread ID epoch GC age state / (54 bits) (2 bits) (4 bi | thread ID epoch GC age state / (54 bits) (2 bits) (4 bi → pointer to lock record on stack state / (62 bits) (2 bi | pointer to lock record on stack state / (62 bits) (2 bi → pointer to ObjectMonitor (OS mutex) state / (62 bits) ( | pointer to ObjectMonitor (OS mutex) state / (62 bits) ( → forwarding pointer state / (62 bits) (2 bits)
+**Flow:**
+- identity hashCode unused GC age state / (31 bits) (1 bi
+- ↓
+- thread ID epoch GC age state / (54 bits) (2 bits) (4 bi
+- ↓
+- pointer to lock record on stack state / (62 bits) (2 bi
+- ↓
+- pointer to ObjectMonitor (OS mutex) state / (62 bits) (
+- ↓
+- forwarding pointer state / (62 bits) (2 bits)
 
 ```mermaid
 flowchart TD
@@ -187,7 +208,20 @@ flowchart TD
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Last 3 bits of mark word determine the object's lock st → Bits State What It Means | Bits State What It Means → 001 Normal (unlocked) hashCode stored, no lock | 001 Normal (unlocked) hashCode stored, no lock → 101 Biased One thread owns it cheaply | 101 Biased One thread owns it cheaply → 00 Thin Lock CAS-based lightweight lock | 00 Thin Lock CAS-based lightweight lock → 10 Fat Lock OS mutex (heavyweight) | 10 Fat Lock OS mutex (heavyweight) → 11 GC marked Being garbage collected | ...+1 more
+**Flow:**
+- Last 3 bits of mark word determine the object's lock st
+- ↓
+- Bits State What It Means
+- ↓
+- 001 Normal (unlocked) hashCode stored, no lock
+- ↓
+- 101 Biased One thread owns it cheaply
+- ↓
+- 00 Thin Lock CAS-based lightweight lock
+- ↓
+- 10 Fat Lock OS mutex (heavyweight)
+- ↓
+- 11 GC marked Being garbage collected
 
 ```mermaid
 flowchart TD
@@ -267,7 +301,26 @@ synchronized(obj) {
 ╚═══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: THE EMPLOYEE ID BADGE ANALOGY → Klass Pointer = ID badge that says 'I work in Departmen | Klass Pointer = ID badge that says 'I work in Departmen → Object in heap: 'I am a String' | Object in heap: 'I am a String' → → Klass Pointer → String.class metadata | → Klass Pointer → String.class metadata → (in Metaspace, NOT heap) | (in Metaspace, NOT heap) → Contains: | Contains: → → vtable (virtual method table) | ...+1 more
+**Flow:**
+- THE EMPLOYEE ID BADGE ANALOGY
+- ↓
+- Klass Pointer = ID badge that says 'I work in Departmen
+- ↓
+- Object in heap: 'I am a String'
+- ↓
+- Klass Pointer
+- ↓
+- String.class metadata
+- ↓
+- Klass Pointer
+- ↓
+- String.class metadata
+- ↓
+- (in Metaspace, NOT heap)
+- ↓
+- Contains:
+- ↓
+- vtable (virtual method table)
 
 ```mermaid
 flowchart TD
@@ -340,7 +393,20 @@ if (obj instanceof String s) {
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: THE BOOKSHELF ANALOGY → If a `long` (8 bytes) starts at address 5: | If a `long` (8 bytes) starts at address 5: → → CPU must do TWO reads (bytes 0-7 and bytes 8-15) | → CPU must do TWO reads (bytes 0-7 and bytes 8-15) → → Then combine them = SLOW | → Then combine them = SLOW → If a `long` starts at address 8 (aligned): | If a `long` starts at address 8 (aligned): → → CPU does ONE read = FAST | → CPU does ONE read = FAST → JVM RULES for field ordering: | ...+1 more
+**Flow:**
+- THE BOOKSHELF ANALOGY
+- ↓
+- If a `long` (8 bytes) starts at address 5:
+- ↓
+- CPU must do TWO reads (bytes 0-7 and bytes 8-15)
+- ↓
+- Then combine them = SLOW
+- ↓
+- If a `long` starts at address 8 (aligned):
+- ↓
+- CPU does ONE read = FAST
+- ↓
+- JVM RULES for field ordering:
 
 ```mermaid
 flowchart TD
@@ -419,7 +485,20 @@ class BadLayout {
 └──────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Object Actual Size 'Useful' Data → new Object() 16 bytes 0 bytes (!) | new Object() 16 bytes 0 bytes (!) → new Integer(42) 16 bytes 4 bytes (int) | new Integer(42) 16 bytes 4 bytes (int) → new Long(42L) 24 bytes 8 bytes (long) | new Long(42L) 24 bytes 8 bytes (long) → new Boolean(true) 16 bytes 1 byte (!) | new Boolean(true) 16 bytes 1 byte (!) → '' (empty String) 40 bytes 0 chars (!) | '' (empty String) 40 bytes 0 chars (!) → 'Hello' (5 chars) ~56 bytes 10 bytes | ...+1 more
+**Flow:**
+- Object Actual Size 'Useful' Data
+- ↓
+- new Object() 16 bytes 0 bytes (!)
+- ↓
+- new Integer(42) 16 bytes 4 bytes (int)
+- ↓
+- new Long(42L) 24 bytes 8 bytes (long)
+- ↓
+- new Boolean(true) 16 bytes 1 byte (!)
+- ↓
+- '' (empty String) 40 bytes 0 chars (!)
+- ↓
+- 'Hello' (5 chars) ~56 bytes 10 bytes
 
 ```mermaid
 flowchart TD
@@ -476,7 +555,20 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: THE BATHROOM LOCK ANALOGY → BIASED LOCK (you live alone): | BIASED LOCK (you live alone): → → Bathroom door has your name on it permanently | → Bathroom door has your name on it permanently → → You walk in without checking — ZERO cost | → You walk in without checking — ZERO cost → → If a guest arrives, name must be erased (revoke bias) | → If a guest arrives, name must be erased (revoke bias) → → Cost: ~0 for single thread, expensive revocation | → Cost: ~0 for single thread, expensive revocation → THIN LOCK (you have a roommate): | ...+1 more
+**Flow:**
+- THE BATHROOM LOCK ANALOGY
+- ↓
+- BIASED LOCK (you live alone):
+- ↓
+- Bathroom door has your name on it permanently
+- ↓
+- You walk in without checking — ZERO cost
+- ↓
+- If a guest arrives, name must be erased (revoke bias)
+- ↓
+- Cost: ~0 for single thread, expensive revocation
+- ↓
+- THIN LOCK (you have a roommate):
 
 ```mermaid
 flowchart TD
@@ -529,7 +621,32 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Step-by-step lock escalation: → 1. NEW OBJECT → Mark word: unlocked (state bits = 001) | 1. NEW OBJECT → Mark word: unlocked (state bits = 001) → 2. First synchronized(obj) by Thread A: | 2. First synchronized(obj) by Thread A: → → JVM sets biased lock (write thread A's ID into mark w | → JVM sets biased lock (write thread A's ID into mark w → → Future locks by Thread A: check ID match → FREE! | → Future locks by Thread A: check ID match → FREE! → → Mark word state bits: 101 (biased) | → Mark word state bits: 101 (biased) → 3. Thread B tries synchronized(obj): | ...+1 more
+**Flow:**
+- Step-by-step lock escalation:
+- ↓
+- 1. NEW OBJECT
+- ↓
+- Mark word: unlocked (state bits = 001)
+- ↓
+- 1. NEW OBJECT
+- ↓
+- Mark word: unlocked (state bits = 001)
+- ↓
+- 2. First synchronized(obj) by Thread A:
+- ↓
+- JVM sets biased lock (write thread A's ID into mark w
+- ↓
+- Future locks by Thread A: check ID match
+- ↓
+- FREE!
+- ↓
+- Future locks by Thread A: check ID match
+- ↓
+- FREE!
+- ↓
+- Mark word state bits: 101 (biased)
+- ↓
+- 3. Thread B tries synchronized(obj):
 
 ```mermaid
 flowchart TD
@@ -585,7 +702,34 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: THE PHONE DIRECTORY ANALOGY (vtable) → Every class has a VIRTUAL METHOD TABLE (vtable): | Every class has a VIRTUAL METHOD TABLE (vtable): → Like a phone directory listing methods and their addres | Like a phone directory listing methods and their addres → class Animal: | class Animal: → vtable = [ eat → Animal.eat, makeSound → Animal.makeSou | vtable = [ eat → Animal.eat, makeSound → Animal.makeSou → class Dog extends Animal: | class Dog extends Animal: → vtable = [ eat → Animal.eat, makeSound → Dog.makeSound | ...+1 more
+**Flow:**
+- THE PHONE DIRECTORY ANALOGY (vtable)
+- ↓
+- Every class has a VIRTUAL METHOD TABLE (vtable):
+- ↓
+- Like a phone directory listing methods and their addres
+- ↓
+- class Animal:
+- ↓
+- vtable = [ eat
+- ↓
+- Animal.eat, makeSound
+- ↓
+- Animal.makeSou
+- ↓
+- vtable = [ eat
+- ↓
+- Animal.eat, makeSound
+- ↓
+- Animal.makeSou
+- ↓
+- class Dog extends Animal:
+- ↓
+- vtable = [ eat
+- ↓
+- Animal.eat, makeSound
+- ↓
+- Dog.makeSound
 
 ```mermaid
 flowchart TD
@@ -629,7 +773,20 @@ flowchart TD
 └────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Bytecode When Used Dispatch Method → invokevirtual Normal instance methods vtable lookup | invokevirtual Normal instance methods vtable lookup → invokeinterface Interface methods itable lookup (slower | invokeinterface Interface methods itable lookup (slower → invokespecial Constructors, super, STATIC binding | invokespecial Constructors, super, STATIC binding → private methods (no lookup needed) | private methods (no lookup needed) → invokestatic Static methods STATIC binding | invokestatic Static methods STATIC binding → invokedynamic Lambdas, string concat Bootstrap method | ...+1 more
+**Flow:**
+- Bytecode When Used Dispatch Method
+- ↓
+- invokevirtual Normal instance methods vtable lookup
+- ↓
+- invokeinterface Interface methods itable lookup (slower
+- ↓
+- invokespecial Constructors, super, STATIC binding
+- ↓
+- private methods (no lookup needed)
+- ↓
+- invokestatic Static methods STATIC binding
+- ↓
+- invokedynamic Lambdas, string concat Bootstrap method
 
 ```mermaid
 flowchart TD
@@ -696,7 +853,20 @@ s.makeSound();      // invokeinterface → must search itable!
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: THE NAME TAG vs EMPLOYEE BADGE ANALOGY → OVERRIDING (instance methods) = Employee Badge | OVERRIDING (instance methods) = Employee Badge → → Machine reads your badge (runtime type) to decide acc | → Machine reads your badge (runtime type) to decide acc → → You ARE a Dog, so Dog.makeSound() runs, regardless of | → You ARE a Dog, so Dog.makeSound() runs, regardless of → whether someone labeled you 'Animal' | whether someone labeled you 'Animal' → → Dynamic dispatch: 'What type IS this object?' | → Dynamic dispatch: 'What type IS this object?' → HIDING (static methods) = Name Tag | ...+1 more
+**Flow:**
+- THE NAME TAG vs EMPLOYEE BADGE ANALOGY
+- ↓
+- OVERRIDING (instance methods) = Employee Badge
+- ↓
+- Machine reads your badge (runtime type) to decide acc
+- ↓
+- You ARE a Dog, so Dog.makeSound() runs, regardless of
+- ↓
+- whether someone labeled you 'Animal'
+- ↓
+- Dynamic dispatch: 'What type IS this object?'
+- ↓
+- HIDING (static methods) = Name Tag
 
 ```mermaid
 flowchart TD
@@ -769,7 +939,20 @@ public class Test {
 └───────────────────┴─────────────────────────┴─────────────────────────┘
 ```
 
-> **Flow**: Feature Overriding Hiding → Applies to Instance methods Static methods | Applies to Instance methods Static methods → Dispatch Runtime (dynamic) Compile-time (static) | Dispatch Runtime (dynamic) Compile-time (static) → @Override ✅ Compiler checks ❌ Not applicable | @Override ✅ Compiler checks ❌ Not applicable → Polymorphism ✅ Yes ❌ No | Polymorphism ✅ Yes ❌ No → Bytecode invokevirtual (vtable) invokestatic (direct) | Bytecode invokevirtual (vtable) invokestatic (direct) → Binding Late binding Early binding | ...+1 more
+**Flow:**
+- Feature Overriding Hiding
+- ↓
+- Applies to Instance methods Static methods
+- ↓
+- Dispatch Runtime (dynamic) Compile-time (static)
+- ↓
+- @Override ✅ Compiler checks ❌ Not applicable
+- ↓
+- Polymorphism ✅ Yes ❌ No
+- ↓
+- Bytecode invokevirtual (vtable) invokestatic (direct)
+- ↓
+- Binding Late binding Early binding
 
 ```mermaid
 flowchart TD
@@ -835,7 +1018,20 @@ System.out.println(((Child) obj).x);  // 20 (Child's x — need cast!)
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: WHY IMMUTABLE BY DEFAULT? → Mutable object = A whiteboard anyone can erase and rewr | Mutable object = A whiteboard anyone can erase and rewr → Benefits: | Benefits: → → Thread-safe WITHOUT synchronization (nothing to corru | → Thread-safe WITHOUT synchronization (nothing to corru → → Safe as HashMap key (hashCode never changes) | → Safe as HashMap key (hashCode never changes) → → Safe to share references (no defensive copies needed) | → Safe to share references (no defensive copies needed) → → Easier to reason about (predictable state) | ...+1 more
+**Flow:**
+- WHY IMMUTABLE BY DEFAULT?
+- ↓
+- Mutable object = A whiteboard anyone can erase and rewr
+- ↓
+- Benefits:
+- ↓
+- Thread-safe WITHOUT synchronization (nothing to corru
+- ↓
+- Safe as HashMap key (hashCode never changes)
+- ↓
+- Safe to share references (no defensive copies needed)
+- ↓
+- Easier to reason about (predictable state)
 
 ```mermaid
 flowchart TD
@@ -1004,7 +1200,20 @@ sealed interface Shape permits Circle, Rectangle, Triangle {
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: WHAT YOU GET FREE: → → final class (can't extend, only implement interfaces) | → final class (can't extend, only implement interfaces) → → private final fields | → private final fields → → All-args constructor | → All-args constructor → → Accessor methods (name(), not getName()) | → Accessor methods (name(), not getName()) → → equals() based on ALL fields | → equals() based on ALL fields → → hashCode() based on ALL fields | ...+1 more
+**Flow:**
+- WHAT YOU GET FREE:
+- ↓
+- final class (can't extend, only implement interfaces)
+- ↓
+- private final fields
+- ↓
+- All-args constructor
+- ↓
+- Accessor methods (name(), not getName())
+- ↓
+- equals() based on ALL fields
+- ↓
+- hashCode() based on ALL fields
 
 ```mermaid
 flowchart TD

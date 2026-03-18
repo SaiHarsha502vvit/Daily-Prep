@@ -1061,7 +1061,20 @@ public class RabbitConsumer {
 └──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: PART 14 QUICK REFERENCE → CACHING: | CACHING: → @Cacheable - Read from cache | @Cacheable - Read from cache → @CacheEvict - Remove from cache | @CacheEvict - Remove from cache → @CachePut - Always update cache | @CachePut - Always update cache → ASYNC: | ASYNC: → @EnableAsync + @Async | ...+1 more
+**Flow:**
+- PART 14 QUICK REFERENCE
+- ↓
+- CACHING:
+- ↓
+- @Cacheable - Read from cache
+- ↓
+- @CacheEvict - Remove from cache
+- ↓
+- @CachePut - Always update cache
+- ↓
+- ASYNC:
+- ↓
+- @EnableAsync + @Async
 
 ```mermaid
 flowchart TD

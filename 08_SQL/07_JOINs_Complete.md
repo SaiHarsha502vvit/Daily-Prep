@@ -151,7 +151,20 @@ WHERE <table_B>.<column> IS NULL;               -- Rows in A with no match in B
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: emp_id name dept / 1 Alice 10 / 2 Bob 20 / 3 Carol 10 / → dept_id dept_name / 10 Engineering / 20 Marketing / 30  | dept_id dept_name / 10 Engineering / 20 Marketing / 30  → A ████ ████ B / ████ ████ / Result: Alice, Bob, Carol ( | A ████ ████ B / ████ ████ / Result: Alice, Bob, Carol ( → ████████ ████ B / ████████ ████ / Result: Alice, Bob, C | ████████ ████ B / ████████ ████ / Result: Alice, Bob, C → A ████ ████████ / ████ ████████ / Result: Alice, Bob, C | A ████ ████████ / ████ ████████ / Result: Alice, Bob, C → ████████ ████████ / ████████ ████████ / Result: Alice,  | ████████ ████████ / ████████ ████████ / Result: Alice,  → 4 employees × 3 departments = 12 rows / (Alice, Eng), (
+**Flow:**
+- emp_id name dept / 1 Alice 10 / 2 Bob 20 / 3 Carol 10 /
+- ↓
+- dept_id dept_name / 10 Engineering / 20 Marketing / 30
+- ↓
+- A ████ ████ B / ████ ████ / Result: Alice, Bob, Carol (
+- ↓
+- ████████ ████ B / ████████ ████ / Result: Alice, Bob, C
+- ↓
+- A ████ ████████ / ████ ████████ / Result: Alice, Bob, C
+- ↓
+- ████████ ████████ / ████████ ████████ / Result: Alice,
+- ↓
+- 4 employees × 3 departments = 12 rows / (Alice, Eng), (
 
 ```mermaid
 flowchart TD

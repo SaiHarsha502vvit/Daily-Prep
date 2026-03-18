@@ -139,7 +139,20 @@ public class MinStackOptimized {
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: MAX STACK - COMPLETE GUIDE → WHAT IS IT? | WHAT IS IT? → Similar to Min Stack but also supports: | Similar to Min Stack but also supports: → • popMax() - Remove and return the maximum element | • popMax() - Remove and return the maximum element → This is HARDER than Min Stack because: | This is HARDER than Min Stack because: → - popMax() might remove element from MIDDLE of stack | - popMax() might remove element from MIDDLE of stack → - Need to maintain consistency | ...+1 more
+**Flow:**
+- MAX STACK - COMPLETE GUIDE
+- ↓
+- WHAT IS IT?
+- ↓
+- Similar to Min Stack but also supports:
+- ↓
+- • popMax() - Remove and return the maximum element
+- ↓
+- This is HARDER than Min Stack because:
+- ↓
+- - popMax() might remove element from MIDDLE of stack
+- ↓
+- - Need to maintain consistency
 
 ```mermaid
 flowchart TD
@@ -264,7 +277,20 @@ public class MaxStackSimple {
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: CIRCULAR QUEUE - COMPLETE GUIDE → WHAT IS IT? | WHAT IS IT? → A queue implemented using a circular array. | A queue implemented using a circular array. → WHY CIRCULAR? | WHY CIRCULAR? → LINEAR QUEUE PROBLEM: | LINEAR QUEUE PROBLEM: → After many enqueue/dequeue operations: | After many enqueue/dequeue operations: → front rear | ...+1 more
+**Flow:**
+- CIRCULAR QUEUE - COMPLETE GUIDE
+- ↓
+- WHAT IS IT?
+- ↓
+- A queue implemented using a circular array.
+- ↓
+- WHY CIRCULAR?
+- ↓
+- LINEAR QUEUE PROBLEM:
+- ↓
+- After many enqueue/dequeue operations:
+- ↓
+- front rear
 
 ```mermaid
 flowchart TD
@@ -413,7 +439,32 @@ public class CircularQueue<T> {
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: DEQUE - COMPLETE GUIDE → WHAT IS IT? | WHAT IS IT? → A queue where you can add/remove from BOTH ends in O(1) | A queue where you can add/remove from BOTH ends in O(1) → VISUAL: | VISUAL: → addFirst → ← addLast | addFirst → ← addLast → removeFirst ← → removeLast | removeFirst ← → removeLast → OPERATIONS: | ...+1 more
+**Flow:**
+- DEQUE - COMPLETE GUIDE
+- ↓
+- WHAT IS IT?
+- ↓
+- A queue where you can add/remove from BOTH ends in O(1)
+- ↓
+- VISUAL:
+- ↓
+- addFirst
+- ↓
+- ← addLast
+- ↓
+- addFirst
+- ↓
+- ← addLast
+- ↓
+- removeFirst ←
+- ↓
+- removeLast
+- ↓
+- removeFirst ←
+- ↓
+- removeLast
+- ↓
+- OPERATIONS:
 
 ```mermaid
 flowchart TD
@@ -596,7 +647,20 @@ Window [-1,-3,5]:
 ...and so on
 ```
 
-> **Flow**: MONOTONIC QUEUE - COMPLETE GUIDE → WHAT IS IT? | WHAT IS IT? → A deque that maintains elements in MONOTONIC order | A deque that maintains elements in MONOTONIC order → (either increasing or decreasing). | (either increasing or decreasing). → MONOTONIC DECREASING QUEUE (for finding max): | MONOTONIC DECREASING QUEUE (for finding max): → Elements from front to back: 8 &gt; 6 &gt; 5 &gt; 3 | Elements from front to back: 8 &gt; 6 &gt; 5 &gt; 3 → Front is always the maximum! | ...+1 more
+**Flow:**
+- MONOTONIC QUEUE - COMPLETE GUIDE
+- ↓
+- WHAT IS IT?
+- ↓
+- A deque that maintains elements in MONOTONIC order
+- ↓
+- (either increasing or decreasing).
+- ↓
+- MONOTONIC DECREASING QUEUE (for finding max):
+- ↓
+- Elements from front to back: 8 > 6 > 5 > 3
+- ↓
+- Front is always the maximum!
 
 ```mermaid
 flowchart TD
@@ -675,7 +739,20 @@ public class MonotonicQueue {
    → To know position for result array
 ```
 
-> **Flow**: 🧠 INTERVIEW KEY POINTS - MONOTONIC QUEUE: → 1. 'When to use Monotonic Queue?' | 1. 'When to use Monotonic Queue?' → → Sliding window min/max problems | → Sliding window min/max problems → → Find next greater/smaller element | → Find next greater/smaller element → → Stock span problems | → Stock span problems → 2. 'Time Complexity?' | 2. 'Time Complexity?' → → O(n) overall | ...+1 more
+**Flow:**
+- 🧠 INTERVIEW KEY POINTS - MONOTONIC QUEUE:
+- ↓
+- 1. 'When to use Monotonic Queue?'
+- ↓
+- Sliding window min/max problems
+- ↓
+- Find next greater/smaller element
+- ↓
+- Stock span problems
+- ↓
+- 2. 'Time Complexity?'
+- ↓
+- O(n) overall
 
 ```mermaid
 flowchart TD
@@ -765,7 +842,20 @@ Essentially a linked list!
         3
 ```
 
-> **Flow**: BINARY TREE VARIANTS OVERVIEW → BINARY TREE | BINARY TREE → FULL COMPLETE PERFECT BALANCED DEGENERATE | FULL COMPLETE PERFECT BALANCED DEGENERATE → FULL BINARY TREE: | FULL BINARY TREE: → Every node has 0 or 2 children (never 1) | Every node has 0 or 2 children (never 1) → COMPLETE BINARY TREE: | COMPLETE BINARY TREE: → All levels filled except possibly last | ...+1 more
+**Flow:**
+- BINARY TREE VARIANTS OVERVIEW
+- ↓
+- BINARY TREE
+- ↓
+- FULL COMPLETE PERFECT BALANCED DEGENERATE
+- ↓
+- FULL BINARY TREE:
+- ↓
+- Every node has 0 or 2 children (never 1)
+- ↓
+- COMPLETE BINARY TREE:
+- ↓
+- All levels filled except possibly last
 
 ```mermaid
 flowchart TD
@@ -850,7 +940,30 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: AVL TREE - COMPLETE GUIDE → WHAT IS IT? | WHAT IS IT? → A self-balancing Binary Search Tree where: | A self-balancing Binary Search Tree where: → • For EVERY node: |height(left) - height(right)| ≤ 1 | • For EVERY node: |height(left) - height(right)| ≤ 1 → INVENTED: 1962 by Adelson-Velsky and Landis | INVENTED: 1962 by Adelson-Velsky and Landis → WHY BALANCE MATTERS: | WHY BALANCE MATTERS: → Balanced AVL: O(log n) GUARANTEED for all operations! | ...+1 more
+**Flow:**
+- AVL TREE - COMPLETE GUIDE
+- ↓
+- WHAT IS IT?
+- ↓
+- A self-balancing Binary Search Tree where:
+- ↓
+- • For EVERY node:
+- ↓
+- height(left) - height(right)
+- ↓
+- ≤ 1
+- ↓
+- • For EVERY node:
+- ↓
+- height(left) - height(right)
+- ↓
+- ≤ 1
+- ↓
+- INVENTED: 1962 by Adelson-Velsky and Landis
+- ↓
+- WHY BALANCE MATTERS:
+- ↓
+- Balanced AVL: O(log n) GUARANTEED for all operations!
 
 ```mermaid
 flowchart TD
@@ -1113,7 +1226,20 @@ public class AVLTree {
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: RED-BLACK TREE - COMPLETE GUIDE → WHAT IS IT? | WHAT IS IT? → REFINED: 1978 by Leonidas Guibas and Robert Sedgewick | REFINED: 1978 by Leonidas Guibas and Robert Sedgewick → PROPERTIES (MUST ALL BE TRUE): | PROPERTIES (MUST ALL BE TRUE): → 1. Every node is either RED or BLACK | 1. Every node is either RED or BLACK → 2. Root is always BLACK | 2. Root is always BLACK → 3. Every leaf (NIL) is BLACK | ...+1 more
+**Flow:**
+- RED-BLACK TREE - COMPLETE GUIDE
+- ↓
+- WHAT IS IT?
+- ↓
+- REFINED: 1978 by Leonidas Guibas and Robert Sedgewick
+- ↓
+- PROPERTIES (MUST ALL BE TRUE):
+- ↓
+- 1. Every node is either RED or BLACK
+- ↓
+- 2. Root is always BLACK
+- ↓
+- 3. Every leaf (NIL) is BLACK
 
 ```mermaid
 flowchart TD
@@ -1158,7 +1284,20 @@ flowchart TD
    → Must be -1, 0, or 1
 ```
 
-> **Flow**: 🧠 INTERVIEW KEY POINTS - TREE VARIANTS: → 1. 'Difference between AVL and Red-Black?' | 1. 'Difference between AVL and Red-Black?' → → AVL: More balanced, better for lookups | → AVL: More balanced, better for lookups → → RB: Less rotations, better for inserts/deletes | → RB: Less rotations, better for inserts/deletes → → Both guarantee O(log n) | → Both guarantee O(log n) → 2. 'Which does Java TreeMap use?' | 2. 'Which does Java TreeMap use?' → → Red-Black Tree | ...+1 more
+**Flow:**
+- 🧠 INTERVIEW KEY POINTS - TREE VARIANTS:
+- ↓
+- 1. 'Difference between AVL and Red-Black?'
+- ↓
+- AVL: More balanced, better for lookups
+- ↓
+- RB: Less rotations, better for inserts/deletes
+- ↓
+- Both guarantee O(log n)
+- ↓
+- 2. 'Which does Java TreeMap use?'
+- ↓
+- Red-Black Tree
 
 ```mermaid
 flowchart TD
@@ -1240,7 +1379,20 @@ Tree:      1      (index 0)
        5   9      (index 3, 4)
 ```
 
-> **Flow**: HEAP VARIANTS - COMPLETE GUIDE → HEAP TYPES | HEAP TYPES → 1. MIN HEAP: Parent ≤ Children | 1. MIN HEAP: Parent ≤ Children → Min at root! | Min at root! → 2. MAX HEAP: Parent ≥ Children | 2. MAX HEAP: Parent ≥ Children → Max at root! | Max at root! → 3. BINARY HEAP: Most common, complete binary tree | ...+1 more
+**Flow:**
+- HEAP VARIANTS - COMPLETE GUIDE
+- ↓
+- HEAP TYPES
+- ↓
+- 1. MIN HEAP: Parent ≤ Children
+- ↓
+- Min at root!
+- ↓
+- 2. MAX HEAP: Parent ≥ Children
+- ↓
+- Max at root!
+- ↓
+- 3. BINARY HEAP: Most common, complete binary tree
 
 ```mermaid
 flowchart TD
@@ -1452,7 +1604,20 @@ public class MinHeap {
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: HASH TABLE VARIANTS - COMPLETE GUIDE → COLLISION RESOLUTION STRATEGIES | COLLISION RESOLUTION STRATEGIES → 1. SEPARATE CHAINING (External Chaining): | 1. SEPARATE CHAINING (External Chaining): → Each bucket contains a linked list | Each bucket contains a linked list → Index 0: -&gt; null | Index 0: -&gt; null → Index 1: -&gt; [15] -&gt; [25] -&gt; null (15 % 10 = 5, | Index 1: -&gt; [15] -&gt; [25] -&gt; null (15 % 10 = 5, → Index 2: -&gt; [12] -&gt; null | ...+1 more
+**Flow:**
+- HASH TABLE VARIANTS - COMPLETE GUIDE
+- ↓
+- COLLISION RESOLUTION STRATEGIES
+- ↓
+- 1. SEPARATE CHAINING (External Chaining):
+- ↓
+- Each bucket contains a linked list
+- ↓
+- Index 0: -> null
+- ↓
+- Index 1: -> [15] -> [25] -> null (15 % 10 = 5,
+- ↓
+- Index 2: -> [12] -> null
 
 ```mermaid
 flowchart TD
@@ -1535,7 +1700,14 @@ HASH TABLE SELECTION:
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Need Use / Simple forward traversal Singly Linked List  → Need Use / Basic FIFO Simple Queue / Fixed size, no was | Need Use / Basic FIFO Simple Queue / Fixed size, no was → Need Use / Basic sorted structure BST / Guaranteed O(lo | Need Use / Basic sorted structure BST / Guaranteed O(lo → Need Use / Basic key-value HashMap / Maintain insertion
+**Flow:**
+- Need Use / Simple forward traversal Singly Linked List
+- ↓
+- Need Use / Basic FIFO Simple Queue / Fixed size, no was
+- ↓
+- Need Use / Basic sorted structure BST / Guaranteed O(lo
+- ↓
+- Need Use / Basic key-value HashMap / Maintain insertion
 
 ```mermaid
 flowchart TD

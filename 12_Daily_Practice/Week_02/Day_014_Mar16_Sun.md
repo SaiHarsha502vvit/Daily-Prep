@@ -142,7 +142,10 @@ WHAT'S COMING:
   You'll build on everything from Week 1-2!
 ```
 
-> **Flow**: Difficulty ramp: MEDIUM → MEDIUM-HARD
+**Flow:**
+- Difficulty ramp: MEDIUM
+- ↓
+- MEDIUM-HARD
 
 ```mermaid
 flowchart LR

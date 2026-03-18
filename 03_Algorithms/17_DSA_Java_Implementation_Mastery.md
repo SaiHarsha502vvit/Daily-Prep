@@ -72,7 +72,20 @@
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Problem Pattern Java Structure WHY → Two Sum (pair lookup) HashMap O(1) complement | Two Sum (pair lookup) HashMap O(1) complement → Sliding Window max ArrayDeque Monotonic deque | Sliding Window max ArrayDeque Monotonic deque → Top-K elements PriorityQueue Min-heap of K | Top-K elements PriorityQueue Min-heap of K → LRU Cache LinkedHashMap Access order + | LRU Cache LinkedHashMap Access order + → removeEldest | removeEldest → Intervals / sweep line TreeMap Sorted + floorKey | ...+1 more
+**Flow:**
+- Problem Pattern Java Structure WHY
+- ↓
+- Two Sum (pair lookup) HashMap O(1) complement
+- ↓
+- Sliding Window max ArrayDeque Monotonic deque
+- ↓
+- Top-K elements PriorityQueue Min-heap of K
+- ↓
+- LRU Cache LinkedHashMap Access order +
+- ↓
+- removeEldest
+- ↓
+- Intervals / sweep line TreeMap Sorted + floorKey
 
 ```mermaid
 flowchart TD
@@ -204,7 +217,46 @@ PriorityQueue<int[]> safe = new PriorityQueue<>(
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: HashMap = Unordered filing cabinet (find by name: O(1)) → TreeMap (Red-Black BST) UNIQUE abilities: | TreeMap (Red-Black BST) UNIQUE abilities: → floorKey(k) → Largest key ≤ k (or null) | floorKey(k) → Largest key ≤ k (or null) → ceilingKey(k) → Smallest key ≥ k (or null) | ceilingKey(k) → Smallest key ≥ k (or null) → lowerKey(k) → Largest key &lt; k (strict) | lowerKey(k) → Largest key &lt; k (strict) → higherKey(k) → Smallest key &gt; k (strict) | higherKey(k) → Smallest key &gt; k (strict) → firstKey() → Smallest key | ...+1 more
+**Flow:**
+- HashMap = Unordered filing cabinet (find by name: O(1))
+- ↓
+- TreeMap (Red-Black BST) UNIQUE abilities:
+- ↓
+- floorKey(k)
+- ↓
+- Largest key ≤ k (or null)
+- ↓
+- floorKey(k)
+- ↓
+- Largest key ≤ k (or null)
+- ↓
+- ceilingKey(k)
+- ↓
+- Smallest key ≥ k (or null)
+- ↓
+- ceilingKey(k)
+- ↓
+- Smallest key ≥ k (or null)
+- ↓
+- lowerKey(k)
+- ↓
+- Largest key < k (strict)
+- ↓
+- lowerKey(k)
+- ↓
+- Largest key < k (strict)
+- ↓
+- higherKey(k)
+- ↓
+- Smallest key > k (strict)
+- ↓
+- higherKey(k)
+- ↓
+- Smallest key > k (strict)
+- ↓
+- firstKey()
+- ↓
+- Smallest key
 
 ```mermaid
 flowchart TD
@@ -307,7 +359,38 @@ int closest = (target - floor <= ceiling - target) ? floor : ceiling;
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: SORTING RULES FOR DSA: → Comparator returns: | Comparator returns: → negative → first comes BEFORE second | negative → first comes BEFORE second → zero → equal (order doesn't matter) | zero → equal (order doesn't matter) → positive → first comes AFTER second | positive → first comes AFTER second → DANGER ZONE: | DANGER ZONE: → (a, b) -&gt; a - b ← OVERFLOW when a=MAX, b=negative! | ...+1 more
+**Flow:**
+- SORTING RULES FOR DSA:
+- ↓
+- Comparator returns:
+- ↓
+- negative
+- ↓
+- first comes BEFORE second
+- ↓
+- negative
+- ↓
+- first comes BEFORE second
+- ↓
+- zero
+- ↓
+- equal (order doesn't matter)
+- ↓
+- zero
+- ↓
+- equal (order doesn't matter)
+- ↓
+- positive
+- ↓
+- first comes AFTER second
+- ↓
+- positive
+- ↓
+- first comes AFTER second
+- ↓
+- DANGER ZONE:
+- ↓
+- (a, b) -> a - b ← OVERFLOW when a=MAX, b=negative!
 
 ```mermaid
 flowchart TD
@@ -411,7 +494,20 @@ System.out.println(safe.compare(Integer.MAX_VALUE, -1));  // Positive (correct!)
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: TWO DIFFERENT ALGORITHMS: → Arrays.sort(int[]): | Arrays.sort(int[]): → → Dual-Pivot Quicksort (by Vladimir Yaroslavskiy) | → Dual-Pivot Quicksort (by Vladimir Yaroslavskiy) → → In-place, O(1) space | → In-place, O(1) space → → Used for: int[], long[], double[], char[] etc. | → Used for: int[], long[], double[], char[] etc. → Arrays.sort(Object[]) / Collections.sort(): | Arrays.sort(Object[]) / Collections.sort(): → → TimSort (by Tim Peters, from Python) | ...+1 more
+**Flow:**
+- TWO DIFFERENT ALGORITHMS:
+- ↓
+- Arrays.sort(int[]):
+- ↓
+- Dual-Pivot Quicksort (by Vladimir Yaroslavskiy)
+- ↓
+- In-place, O(1) space
+- ↓
+- Used for: int[], long[], double[], char[] etc.
+- ↓
+- Arrays.sort(Object[]) / Collections.sort():
+- ↓
+- TimSort (by Tim Peters, from Python)
 
 ```mermaid
 flowchart TD
@@ -557,7 +653,20 @@ public int subarraySum(int[] nums, int k) {
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: For Stack (LIFO): ArrayDeque&lt;&gt; (push/pop/peek) → For Queue (FIFO): ArrayDeque&lt;&gt; (offer/poll/peek) | For Queue (FIFO): ArrayDeque&lt;&gt; (offer/poll/peek) → WHY ArrayDeque over LinkedList for Queue? | WHY ArrayDeque over LinkedList for Queue? → → ArrayDeque: array-backed, cache-friendly, no node obj | → ArrayDeque: array-backed, cache-friendly, no node obj → → ArrayDeque is 3-5x faster than LinkedList for queue o | → ArrayDeque is 3-5x faster than LinkedList for queue o → WHEN to use LinkedList? | WHEN to use LinkedList? → → Almost never in DSA. Only when you need: | ...+1 more
+**Flow:**
+- For Stack (LIFO): ArrayDeque<> (push/pop/peek)
+- ↓
+- For Queue (FIFO): ArrayDeque<> (offer/poll/peek)
+- ↓
+- WHY ArrayDeque over LinkedList for Queue?
+- ↓
+- ArrayDeque: array-backed, cache-friendly, no node obj
+- ↓
+- ArrayDeque is 3-5x faster than LinkedList for queue o
+- ↓
+- WHEN to use LinkedList?
+- ↓
+- Almost never in DSA. Only when you need:
 
 ```mermaid
 flowchart TD
@@ -597,7 +706,20 @@ flowchart TD
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Operation Stack (LIFO) Queue (FIFO) → Add element push(e) / addFirst offer(e) / addLast | Add element push(e) / addFirst offer(e) / addLast → Remove top pop() / removeFirst poll() / removeFirst | Remove top pop() / removeFirst poll() / removeFirst → Peek top peek() / peekFirst peek() / peekFirst | Peek top peek() / peekFirst peek() / peekFirst → Empty check isEmpty() isEmpty() | Empty check isEmpty() isEmpty() → ⚠️ Both Stack and Queue use ArrayDeque — same class! | ⚠️ Both Stack and Queue use ArrayDeque — same class! → The difference is just WHICH end you operate on. | ...+1 more
+**Flow:**
+- Operation Stack (LIFO) Queue (FIFO)
+- ↓
+- Add element push(e) / addFirst offer(e) / addLast
+- ↓
+- Remove top pop() / removeFirst poll() / removeFirst
+- ↓
+- Peek top peek() / peekFirst peek() / peekFirst
+- ↓
+- Empty check isEmpty() isEmpty()
+- ↓
+- ⚠️ Both Stack and Queue use ArrayDeque — same class!
+- ↓
+- The difference is just WHICH end you operate on.
 
 ```mermaid
 flowchart TD
@@ -700,7 +822,38 @@ public int[] maxSlidingWindow(int[] nums, int k) {
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: WHY StringBuilder MATTERS IN DSA → String concatenation in a loop: | String concatenation in a loop: → String s = ''; | String s = ''; → s += 'a'; // Creates N new String objects! | s += 'a'; // Creates N new String objects! → Time: O(N²) — because each += copies the entire string | Time: O(N²) — because each += copies the entire string → 'a' → 'aa' → 'aaa' → 'aaaa' → ... (copy 1+2+3+...+N byt | 'a' → 'aa' → 'aaa' → 'aaaa' → ... (copy 1+2+3+...+N byt → StringBuilder: | ...+1 more
+**Flow:**
+- WHY StringBuilder MATTERS IN DSA
+- ↓
+- String concatenation in a loop:
+- ↓
+- String s = '';
+- ↓
+- s += 'a'; // Creates N new String objects!
+- ↓
+- Time: O(N²) — because each += copies the entire string
+- ↓
+- 'a'
+- ↓
+- 'aa'
+- ↓
+- 'aaa'
+- ↓
+- 'aaaa'
+- ↓
+- ... (copy 1+2+3+...+N byt
+- ↓
+- 'a'
+- ↓
+- 'aa'
+- ↓
+- 'aaa'
+- ↓
+- 'aaaa'
+- ↓
+- ... (copy 1+2+3+...+N byt
+- ↓
+- StringBuilder:
 
 ```mermaid
 flowchart TD

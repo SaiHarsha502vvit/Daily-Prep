@@ -251,7 +251,30 @@ infrastructure/
 └── terraform.tfvars
 ```
 
-> **Flow**: infrastructure/ → modules/ | infrastructure/ → vpc/ | infrastructure/ → main.tf | infrastructure/ → variables.tf | infrastructure/ → outputs.tf | infrastructure/ → ec2/ | ...+14 more
+**Flow:**
+- infrastructure/
+- ↓
+- modules/
+- ↓
+- infrastructure/
+- ↓
+- vpc/
+- ↓
+- infrastructure/
+- ↓
+- main.tf
+- ↓
+- infrastructure/
+- ↓
+- variables.tf
+- ↓
+- infrastructure/
+- ↓
+- outputs.tf
+- ↓
+- infrastructure/
+- ↓
+- ec2/
 
 ```mermaid
 flowchart TD
@@ -510,7 +533,20 @@ resource "aws_db_instance" "main" {
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: STATE FILE — The Most Important Terraform Concept → .tf file says: 'I want an EC2 instance' | .tf file says: 'I want an EC2 instance' → State file says: 'That's i-0abc123 in us-east-1' | State file says: 'That's i-0abc123 in us-east-1' → RULES: | RULES: → 1. NEVER edit state manually | 1. NEVER edit state manually → 2. NEVER commit state to Git (contains secrets!) | 2. NEVER commit state to Git (contains secrets!) → 3. ALWAYS use remote state for teams: | ...+1 more
+**Flow:**
+- STATE FILE — The Most Important Terraform Concept
+- ↓
+- .tf file says: 'I want an EC2 instance'
+- ↓
+- State file says: 'That's i-0abc123 in us-east-1'
+- ↓
+- RULES:
+- ↓
+- 1. NEVER edit state manually
+- ↓
+- 2. NEVER commit state to Git (contains secrets!)
+- ↓
+- 3. ALWAYS use remote state for teams:
 
 ```mermaid
 flowchart TD
@@ -553,7 +589,14 @@ Pipeline Steps:
 RULE: Only CI/CD applies. Humans don't run apply.
 ```
 
-> **Flow**: Write / .tf --(push)--> Branch / + PR | Branch / + PR --(trigger)--> Pipeline | Pipeline → AWS
+**Flow:**
+- Write / .tf --(push)--> Branch / + PR
+- ↓
+- Branch / + PR --(trigger)--> Pipeline
+- ↓
+- Pipeline
+- ↓
+- AWS
 
 ```mermaid
 flowchart LR
@@ -647,7 +690,20 @@ Q: What happens if you delete a resource from .tf without destroy?
   stop managing it, use terraform state rm first.
 ```
 
-> **Flow**: Q: What is Terraform and why use it? → it figures out how to get there. Benefits: version cont | it figures out how to get there. Benefits: version cont → Q: Explain terraform plan vs apply. | Q: Explain terraform plan vs apply. → → Plan shows a preview (diff) without making changes. | → Plan shows a preview (diff) without making changes. → Apply executes the changes. Always plan before apply. | Apply executes the changes. Always plan before apply. → Q: What is Terraform state? How do you manage it? | Q: What is Terraform state? How do you manage it? → Q: How do you handle secrets in Terraform? | ...+1 more
+**Flow:**
+- Q: What is Terraform and why use it?
+- ↓
+- it figures out how to get there. Benefits: version cont
+- ↓
+- Q: Explain terraform plan vs apply.
+- ↓
+- Plan shows a preview (diff) without making changes.
+- ↓
+- Apply executes the changes. Always plan before apply.
+- ↓
+- Q: What is Terraform state? How do you manage it?
+- ↓
+- Q: How do you handle secrets in Terraform?
 
 ```mermaid
 flowchart TD
@@ -689,7 +745,20 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: 1. Version control everything — all .tf files in Git → 2. Use modules for reusable components | 2. Use modules for reusable components → 3. Remote state with locking — never local for teams | 3. Remote state with locking — never local for teams → 4. Separate environments — don't share state | 4. Separate environments — don't share state → 5. Use variables and outputs — no hardcoded values | 5. Use variables and outputs — no hardcoded values → 6. Pin provider versions — avoid surprise upgrades | 6. Pin provider versions — avoid surprise upgrades → 7. Run plan in CI — review changes before apply | ...+1 more
+**Flow:**
+- 1. Version control everything — all .tf files in Git
+- ↓
+- 2. Use modules for reusable components
+- ↓
+- 3. Remote state with locking — never local for teams
+- ↓
+- 4. Separate environments — don't share state
+- ↓
+- 5. Use variables and outputs — no hardcoded values
+- ↓
+- 6. Pin provider versions — avoid surprise upgrades
+- ↓
+- 7. Run plan in CI — review changes before apply
 
 ```mermaid
 flowchart TD

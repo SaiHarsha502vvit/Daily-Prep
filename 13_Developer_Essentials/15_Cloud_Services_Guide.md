@@ -75,7 +75,20 @@ Build/Deploy      │  CodePipeline    │  Azure DevOps     │  Cloud
 Container Reg.    │  ECR             │  ACR              │  GCR
 ```
 
-> **Flow**: CATEGORY AWS AZURE GCP → COMPUTE | COMPUTE → Virtual Machines EC2 Virtual Machines GCE | Virtual Machines EC2 Virtual Machines GCE → Containers ECS / EKS AKS GKE | Containers ECS / EKS AKS GKE → Serverless Lambda Azure Functions Cloud | Serverless Lambda Azure Functions Cloud → Func | Func → App Platform Elastic Beanstk App Service App | ...+1 more
+**Flow:**
+- CATEGORY AWS AZURE GCP
+- ↓
+- COMPUTE
+- ↓
+- Virtual Machines EC2 Virtual Machines GCE
+- ↓
+- Containers ECS / EKS AKS GKE
+- ↓
+- Serverless Lambda Azure Functions Cloud
+- ↓
+- Func
+- ↓
+- App Platform Elastic Beanstk App Service App
 
 ```mermaid
 flowchart TD
@@ -126,7 +139,12 @@ Rule: Deploy across 2+ AZs for high availability.
 AZs in the same region have low-latency links between them.
 ```
 
-> **Flow**: Data Center 1 / Data Center 2 → Data Center 3 / Data Center 4 | Data Center 3 / Data Center 4 → Data Center 5
+**Flow:**
+- Data Center 1 / Data Center 2
+- ↓
+- Data Center 3 / Data Center 4
+- ↓
+- Data Center 5
 
 ```mermaid
 flowchart TD
@@ -159,7 +177,20 @@ As a developer, you manage MORE in IaaS, LESS in PaaS.
 Most modern apps → PaaS or Containers (good balance).
 ```
 
-> **Flow**: WHO IS RESPONSIBLE FOR WHAT? → IaaS PaaS SaaS | IaaS PaaS SaaS → (EC2) (App Service) (Gmail) | (EC2) (App Service) (Gmail) → Your Data YOU YOU YOU | Your Data YOU YOU YOU → Your Code YOU YOU N/A | Your Code YOU YOU N/A → Runtime YOU CLOUD N/A | Runtime YOU CLOUD N/A → OS YOU CLOUD CLOUD | ...+1 more
+**Flow:**
+- WHO IS RESPONSIBLE FOR WHAT?
+- ↓
+- IaaS PaaS SaaS
+- ↓
+- (EC2) (App Service) (Gmail)
+- ↓
+- Your Data YOU YOU YOU
+- ↓
+- Your Code YOU YOU N/A
+- ↓
+- Runtime YOU CLOUD N/A
+- ↓
+- OS YOU CLOUD CLOUD
 
 ```mermaid
 flowchart TD
@@ -209,7 +240,12 @@ COMMON MISTAKE: Using root account for daily work
 FIX: Create individual IAM users with specific roles
 ```
 
-> **Flow**: User / (Person) → Role / (Assume) | Role / (Assume) → Policy / (Permission)
+**Flow:**
+- User / (Person)
+- ↓
+- Role / (Assume)
+- ↓
+- Policy / (Permission)
 
 ```mermaid
 flowchart TD
@@ -248,7 +284,20 @@ Spot:      Bid for unused capacity → up to 90% savings
 Savings:   Commit to $/hour → flexible across instance types
 ```
 
-> **Flow**: EC2 (Elastic Compute Cloud) — Virtual Servers → INSTANCE TYPES: | INSTANCE TYPES: → Category Use Case Example | Category Use Case Example → t3/t4g General purpose (burstable) Web servers | t3/t4g General purpose (burstable) Web servers → m6i General purpose (steady) App servers | m6i General purpose (steady) App servers → c6i Compute-intensive Batch jobs | c6i Compute-intensive Batch jobs → r6i Memory-intensive In-memory DB | ...+1 more
+**Flow:**
+- EC2 (Elastic Compute Cloud) — Virtual Servers
+- ↓
+- INSTANCE TYPES:
+- ↓
+- Category Use Case Example
+- ↓
+- t3/t4g General purpose (burstable) Web servers
+- ↓
+- m6i General purpose (steady) App servers
+- ↓
+- c6i Compute-intensive Batch jobs
+- ↓
+- r6i Memory-intensive In-memory DB
 
 ```mermaid
 flowchart TD
@@ -296,7 +345,12 @@ CONTAINER DEPLOYMENT OPTIONS
 └──────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Managed Kubernetes (EKS / AKS / GKE) / • Full Kubernete → Managed Container Service (ECS / Azure Container) / • S | Managed Container Service (ECS / Azure Container) / • S → Serverless Containers (Fargate / Container Apps) / • No
+**Flow:**
+- Managed Kubernetes (EKS / AKS / GKE) / • Full Kubernete
+- ↓
+- Managed Container Service (ECS / Azure Container) / • S
+- ↓
+- Serverless Containers (Fargate / Container Apps) / • No
 
 ```mermaid
 flowchart TD
@@ -379,7 +433,30 @@ RDS READ SCALING: Read Replicas (up to 15 in Aurora)
 RDS WRITE SCALING: Vertical (bigger instance) or sharding
 ```
 
-> **Flow**: YES → RDS (PostgreSQL/MySQL) or Aurora | Key-value lookups → DynamoDB / Cosmos DB | Document store → MongoDB Atlas / DocumentDB | In-memory cache → ElastiCache (Redis/Memcached) | Search → Elasticsearch / OpenSearch | Graph → Neptune / Cosmos (Gremlin)
+**Flow:**
+- YES
+- ↓
+- RDS (PostgreSQL/MySQL) or Aurora
+- ↓
+- Key-value lookups
+- ↓
+- DynamoDB / Cosmos DB
+- ↓
+- Document store
+- ↓
+- MongoDB Atlas / DocumentDB
+- ↓
+- In-memory cache
+- ↓
+- ElastiCache (Redis/Memcached)
+- ↓
+- Search
+- ↓
+- Elasticsearch / OpenSearch
+- ↓
+- Graph
+- ↓
+- Neptune / Cosmos (Gremlin)
 
 ```mermaid
 flowchart TD
@@ -444,7 +521,20 @@ Users
 + VPC with public/private subnets
 ```
 
-> **Flow**: THREE-TIER WEB APPLICATION ON AWS / Users → [Route 53 — DNS] | [Route 53 — DNS] → [CloudFront — CDN] ← [S3 — Static Assets] | [CloudFront — CDN] ← [S3 — Static Assets] → [ALB — Load Balancer] | [ALB — Load Balancer] → [EC2 / ECS] [EC2 / ECS] ← Auto Scaling Group / (App Ser | [EC2 / ECS] [EC2 / ECS] ← Auto Scaling Group / (App Ser → [RDS [ElastiCache [SQS — Message / Primary] (Redis)] Qu | [RDS [ElastiCache [SQS — Message / Primary] (Redis)] Qu → [RDS [Lambda — Worker] / Read Replica] | ...+1 more
+**Flow:**
+- THREE-TIER WEB APPLICATION ON AWS / Users
+- ↓
+- [Route 53 — DNS]
+- ↓
+- [CloudFront — CDN] ← [S3 — Static Assets]
+- ↓
+- [ALB — Load Balancer]
+- ↓
+- [EC2 / ECS] [EC2 / ECS] ← Auto Scaling Group / (App Ser
+- ↓
+- [RDS [ElastiCache [SQS — Message / Primary] (Redis)] Qu
+- ↓
+- [RDS [Lambda — Worker] / Read Replica]
 
 ```mermaid
 flowchart TD
@@ -551,7 +641,20 @@ A: Vertical = bigger machine (limited, downtime to change)
    (CPU > 70% → add instance, CPU < 30% → remove instance)
 ```
 
-> **Flow**: 1. Containerize with Docker → ECS Fargate (simplest) | 2. Kubernetes → EKS/AKS (if team already uses K8s) | (CPU &gt; 70% → add instance, CPU &lt; 30% | add instance, CPU &lt; 30% → remove instance)
+**Flow:**
+- 1. Containerize with Docker
+- ↓
+- ECS Fargate (simplest)
+- ↓
+- 2. Kubernetes
+- ↓
+- EKS/AKS (if team already uses K8s)
+- ↓
+- (CPU > 70%
+- ↓
+- add instance, CPU < 30%
+- ↓
+- remove instance)
 
 ```mermaid
 flowchart LR

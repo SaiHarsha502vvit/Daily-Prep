@@ -47,7 +47,20 @@ STEP 4: CODE THE LOOPS
   → Inner loop(s) for columns
 ```
 
-> **Flow**: STEP 1: COUNT ROWS → → How many rows? = Outer loop count | → How many rows? = Outer loop count → STEP 2: FOR EACH ROW, IDENTIFY: | STEP 2: FOR EACH ROW, IDENTIFY: → → Spaces before content (leading spaces) | → Spaces before content (leading spaces) → → Content (stars, numbers, characters) | → Content (stars, numbers, characters) → → Spaces after content (sometimes needed) | → Spaces after content (sometimes needed) → → Relationship with row number (i) | ...+1 more
+**Flow:**
+- STEP 1: COUNT ROWS
+- ↓
+- How many rows? = Outer loop count
+- ↓
+- STEP 2: FOR EACH ROW, IDENTIFY:
+- ↓
+- Spaces before content (leading spaces)
+- ↓
+- Content (stars, numbers, characters)
+- ↓
+- Spaces after content (sometimes needed)
+- ↓
+- Relationship with row number (i)
 
 ```mermaid
 flowchart TD
@@ -1925,7 +1938,44 @@ public static void rotate90(int[][] matrix) {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: PATTERN SOLVING FORMULAS → RIGHT TRIANGLE: Row i → print (i+1) items, starting col | RIGHT TRIANGLE: Row i → print (i+1) items, starting col → LEFT TRIANGLE: Row i → print (n-i) spaces, then (i+1) i | LEFT TRIANGLE: Row i → print (n-i) spaces, then (i+1) i → PYRAMID: Row i → print (n-i-1) spaces, then (2i+1) item | PYRAMID: Row i → print (n-i-1) spaces, then (2i+1) item → INVERTED: Row i → print i spaces, then (2(n-i)-1) items | INVERTED: Row i → print i spaces, then (2(n-i)-1) items → DIAMOND: Pyramid (0 to n-1) + Inverted Pyramid (n-2 to | DIAMOND: Pyramid (0 to n-1) + Inverted Pyramid (n-2 to → SANDGLASS: Inverted (0 to n-1) + Pyramid (1 to n-1) | ...+1 more
+**Flow:**
+- PATTERN SOLVING FORMULAS
+- ↓
+- RIGHT TRIANGLE: Row i
+- ↓
+- print (i+1) items, starting col
+- ↓
+- RIGHT TRIANGLE: Row i
+- ↓
+- print (i+1) items, starting col
+- ↓
+- LEFT TRIANGLE: Row i
+- ↓
+- print (n-i) spaces, then (i+1) i
+- ↓
+- LEFT TRIANGLE: Row i
+- ↓
+- print (n-i) spaces, then (i+1) i
+- ↓
+- PYRAMID: Row i
+- ↓
+- print (n-i-1) spaces, then (2i+1) item
+- ↓
+- PYRAMID: Row i
+- ↓
+- print (n-i-1) spaces, then (2i+1) item
+- ↓
+- INVERTED: Row i
+- ↓
+- print i spaces, then (2(n-i)-1) items
+- ↓
+- INVERTED: Row i
+- ↓
+- print i spaces, then (2(n-i)-1) items
+- ↓
+- DIAMOND: Pyramid (0 to n-1) + Inverted Pyramid (n-2 to
+- ↓
+- SANDGLASS: Inverted (0 to n-1) + Pyramid (1 to n-1)
 
 ```mermaid
 flowchart TD

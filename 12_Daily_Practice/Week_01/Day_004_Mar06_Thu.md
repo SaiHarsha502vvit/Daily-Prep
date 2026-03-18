@@ -78,7 +78,10 @@ BRUTE FORCE: Try all subarrays, compute sum
 OPTIMAL: Kadane's Algorithm → O(n)  (next block!)
 ```
 
-> **Flow**: OPTIMAL: Kadane's Algorithm → O(n) (next block!)
+**Flow:**
+- OPTIMAL: Kadane's Algorithm
+- ↓
+- O(n) (next block!)
 
 ```mermaid
 flowchart LR
@@ -113,7 +116,18 @@ KEY IDEA: At each position, decide:
     → Extending is beneficial (or at least not harmful)
 ```
 
-> **Flow**: KEY IDEA: At each position, decide: → currentMax = max(arr[i], currentMax + arr[i]) | currentMax = max(arr[i], currentMax + arr[i]) → If currentMax + arr[i] &lt; arr[i] | If currentMax + arr[i] &lt; arr[i] → → Previous subarray has negative sum, better to start f | → Previous subarray has negative sum, better to start f → If currentMax + arr[i] &gt;= arr[i] | If currentMax + arr[i] &gt;= arr[i] → → Extending is beneficial (or at least not harmful)
+**Flow:**
+- KEY IDEA: At each position, decide:
+- ↓
+- currentMax = max(arr[i], currentMax + arr[i])
+- ↓
+- If currentMax + arr[i] < arr[i]
+- ↓
+- Previous subarray has negative sum, better to start f
+- ↓
+- If currentMax + arr[i] >= arr[i]
+- ↓
+- Extending is beneficial (or at least not harmful)
 
 ```mermaid
 flowchart TD
@@ -300,7 +314,14 @@ DDL (yesterday) → changes schema (tables, columns)
 DML (today)     → changes data within tables
 ```
 
-> **Flow**: DDL (yesterday) → changes schema (tables, columns) | DML (today) → changes data within tables
+**Flow:**
+- DDL (yesterday)
+- ↓
+- changes schema (tables, columns)
+- ↓
+- DML (today)
+- ↓
+- changes data within tables
 
 ```mermaid
 flowchart LR

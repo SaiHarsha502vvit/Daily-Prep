@@ -29,7 +29,26 @@
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: BIT MANIPULATION & MATH PATTERNS → BITS ARE THE ATOMS OF COMPUTATION | BITS ARE THE ATOMS OF COMPUTATION → Every integer in memory is already a sequence of bits. | Every integer in memory is already a sequence of bits. → Bit operations are single CPU instructions — O(1) each, | Bit operations are single CPU instructions — O(1) each, → the fastest operations possible on any processor. | the fastest operations possible on any processor. → Decimal 13 → Binary 1101 | Decimal 13 → Binary 1101 → bit: 3210 | ...+1 more
+**Flow:**
+- BIT MANIPULATION & MATH PATTERNS
+- ↓
+- BITS ARE THE ATOMS OF COMPUTATION
+- ↓
+- Every integer in memory is already a sequence of bits.
+- ↓
+- Bit operations are single CPU instructions — O(1) each,
+- ↓
+- the fastest operations possible on any processor.
+- ↓
+- Decimal 13
+- ↓
+- Binary 1101
+- ↓
+- Decimal 13
+- ↓
+- Binary 1101
+- ↓
+- bit: 3210
 
 ```mermaid
 flowchart TD
@@ -356,7 +375,20 @@ public int singleNumber(int[] nums) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: MISSING NUMBER — Array of [0..n] with one number missin → Input: [3, 0, 1] (n = 3, range [0..3]) | Input: [3, 0, 1] (n = 3, range [0..3]) → Output: 2 | Output: 2 → APPROACH: XOR all indices [0..n] with all values. | APPROACH: XOR all indices [0..n] with all values. → Paired index-value cancel, missing number remains. | Paired index-value cancel, missing number remains. → TRACE: | TRACE: → Index: 0 1 2 (plus n=3) | ...+1 more
+**Flow:**
+- MISSING NUMBER — Array of [0..n] with one number missin
+- ↓
+- Input: [3, 0, 1] (n = 3, range [0..3])
+- ↓
+- Output: 2
+- ↓
+- APPROACH: XOR all indices [0..n] with all values.
+- ↓
+- Paired index-value cancel, missing number remains.
+- ↓
+- TRACE:
+- ↓
+- Index: 0 1 2 (plus n=3)
 
 ```mermaid
 flowchart TD
@@ -423,7 +455,20 @@ public int missingNumber(int[] nums) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: SINGLE NUMBER II — Every element appears 3 times except → Input: [2, 2, 3, 2] | Input: [2, 2, 3, 2] → Output: 3 | Output: 3 → XOR won't work (a^a^a = a, not 0)! | XOR won't work (a^a^a = a, not 0)! → APPROACH: Count bits mod 3 | APPROACH: Count bits mod 3 → For each bit position (0 to 31): | For each bit position (0 to 31): → Count how many numbers have that bit set. | ...+1 more
+**Flow:**
+- SINGLE NUMBER II — Every element appears 3 times except
+- ↓
+- Input: [2, 2, 3, 2]
+- ↓
+- Output: 3
+- ↓
+- XOR won't work (a^a^a = a, not 0)!
+- ↓
+- APPROACH: Count bits mod 3
+- ↓
+- For each bit position (0 to 31):
+- ↓
+- Count how many numbers have that bit set.
 
 ```mermaid
 flowchart TD
@@ -519,7 +564,28 @@ public int singleNumberStateMachine(int[] nums) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: SINGLE NUMBER III — TWO elements appear once, rest twic → Input: [1, 2, 1, 3, 2, 5] | Input: [1, 2, 1, 3, 2, 5] → Output: [3, 5] | Output: [3, 5] → STEP 1: XOR all → get xorAll = 3 ^ 5 = 6 (110) | STEP 1: XOR all → get xorAll = 3 ^ 5 = 6 (110) → This is XOR of the two unique numbers. | This is XOR of the two unique numbers. → STEP 2: Find rightmost set bit of xorAll. | STEP 2: Find rightmost set bit of xorAll. → 6 = 110 → rightmost set bit = 010 (bit 1) | ...+1 more
+**Flow:**
+- SINGLE NUMBER III — TWO elements appear once, rest twic
+- ↓
+- Input: [1, 2, 1, 3, 2, 5]
+- ↓
+- Output: [3, 5]
+- ↓
+- STEP 1: XOR all
+- ↓
+- get xorAll = 3 ^ 5 = 6 (110)
+- ↓
+- STEP 1: XOR all
+- ↓
+- get xorAll = 3 ^ 5 = 6 (110)
+- ↓
+- This is XOR of the two unique numbers.
+- ↓
+- STEP 2: Find rightmost set bit of xorAll.
+- ↓
+- 6 = 110
+- ↓
+- rightmost set bit = 010 (bit 1)
 
 ```mermaid
 flowchart TD
@@ -599,7 +665,20 @@ public int[] singleNumber(int[] nums) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: POWER OF TWO — Check if n is a power of 2 → Powers of 2 in binary: | Powers of 2 in binary: → 8 = 1000 ← exactly ONE bit set! | 8 = 1000 ← exactly ONE bit set! → KEY INSIGHT: n & (n - 1) clears the lowest set bit. | KEY INSIGHT: n & (n - 1) clears the lowest set bit. → If n is a power of 2, it has exactly one bit set. | If n is a power of 2, it has exactly one bit set. → Clearing it gives 0. | Clearing it gives 0. → 8 & 7 = 1000 & 0111 = 0000 ✓ (power of 2) | ...+1 more
+**Flow:**
+- POWER OF TWO — Check if n is a power of 2
+- ↓
+- Powers of 2 in binary:
+- ↓
+- 8 = 1000 ← exactly ONE bit set!
+- ↓
+- KEY INSIGHT: n & (n - 1) clears the lowest set bit.
+- ↓
+- If n is a power of 2, it has exactly one bit set.
+- ↓
+- Clearing it gives 0.
+- ↓
+- 8 & 7 = 1000 & 0111 = 0000 ✓ (power of 2)
 
 ```mermaid
 flowchart TD
@@ -661,7 +740,20 @@ public boolean isPowerOfTwo(int n) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: COUNTING BITS — For every i in [0..n], count set bits → Input: n = 5 | Input: n = 5 → Output: [0, 1, 1, 2, 1, 2] | Output: [0, 1, 1, 2, 1, 2] → DP RECURRENCE: dp[i] = dp[i & (i - 1)] + 1 | DP RECURRENCE: dp[i] = dp[i & (i - 1)] + 1 → WHY: i & (i-1) clears the lowest set bit of i. | WHY: i & (i-1) clears the lowest set bit of i. → So dp[i] = (number of bits in i with lowest cleared) + | So dp[i] = (number of bits in i with lowest cleared) + → = dp[parent] + 1 | ...+1 more
+**Flow:**
+- COUNTING BITS — For every i in [0..n], count set bits
+- ↓
+- Input: n = 5
+- ↓
+- Output: [0, 1, 1, 2, 1, 2]
+- ↓
+- DP RECURRENCE: dp[i] = dp[i & (i - 1)] + 1
+- ↓
+- WHY: i & (i-1) clears the lowest set bit of i.
+- ↓
+- So dp[i] = (number of bits in i with lowest cleared) +
+- ↓
+- = dp[parent] + 1
 
 ```mermaid
 flowchart TD
@@ -721,7 +813,20 @@ public int[] countBits(int n) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: HAMMING WEIGHT — Count number of 1 bits in an integer → Input: n = 11 (1011) | Input: n = 11 (1011) → Output: 3 | Output: 3 → BRIAN KERNIGHAN'S ALGORITHM: | BRIAN KERNIGHAN'S ALGORITHM: → Loop: n = n & (n-1) clears one set bit per iteration. | Loop: n = n & (n-1) clears one set bit per iteration. → Count iterations = number of set bits. | Count iterations = number of set bits. → TRACE: | ...+1 more
+**Flow:**
+- HAMMING WEIGHT — Count number of 1 bits in an integer
+- ↓
+- Input: n = 11 (1011)
+- ↓
+- Output: 3
+- ↓
+- BRIAN KERNIGHAN'S ALGORITHM:
+- ↓
+- Loop: n = n & (n-1) clears one set bit per iteration.
+- ↓
+- Count iterations = number of set bits.
+- ↓
+- TRACE:
 
 ```mermaid
 flowchart TD
@@ -780,7 +885,22 @@ public int hammingWeight(int n) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: REVERSE BITS — Reverse all 32 bits of an unsigned integ → Input: 0000...1011 (11) | Input: 0000...1011 (11) → Output: 1101...0000 (3489660928 or 0xD0000000) | Output: 1101...0000 (3489660928 or 0xD0000000) → APPROACH: Extract each bit from right, place into resul | APPROACH: Extract each bit from right, place into resul → from left. Process all 32 bits. | from left. Process all 32 bits. → result &lt;&lt;= 1 (make room) | result &lt;&lt;= 1 (make room) → result |= (n & 1) (copy lowest bit of n) | ...+1 more
+**Flow:**
+- REVERSE BITS — Reverse all 32 bits of an unsigned integ
+- ↓
+- Input: 0000...1011 (11)
+- ↓
+- Output: 1101...0000 (3489660928 or 0xD0000000)
+- ↓
+- APPROACH: Extract each bit from right, place into resul
+- ↓
+- from left. Process all 32 bits.
+- ↓
+- result <<= 1 (make room)
+- ↓
+- result
+- ↓
+- = (n & 1) (copy lowest bit of n)
 
 ```mermaid
 flowchart TD
@@ -834,7 +954,24 @@ public int reverseBits(int n) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: HAMMING DISTANCE — Count positions where bits differ → Input: x = 1 (0001), y = 4 (0100) | Input: x = 1 (0001), y = 4 (0100) → Output: 2 | Output: 2 → APPROACH: XOR gives 1 at positions where bits differ. | APPROACH: XOR gives 1 at positions where bits differ. → Count set bits in x ^ y → that's the Hamming distance. | Count set bits in x ^ y → that's the Hamming distance. → Time: O(1) Space: O(1)
+**Flow:**
+- HAMMING DISTANCE — Count positions where bits differ
+- ↓
+- Input: x = 1 (0001), y = 4 (0100)
+- ↓
+- Output: 2
+- ↓
+- APPROACH: XOR gives 1 at positions where bits differ.
+- ↓
+- Count set bits in x ^ y
+- ↓
+- that's the Hamming distance.
+- ↓
+- Count set bits in x ^ y
+- ↓
+- that's the Hamming distance.
+- ↓
+- Time: O(1) Space: O(1)
 
 ```mermaid
 flowchart TD
@@ -893,7 +1030,38 @@ public int hammingDistance(int x, int y) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: REVERSE INTEGER — Reverse digits with overflow handling → Input: 123 → 321 | Input: 123 → 321 → Input: -123 → -321 | Input: -123 → -321 → Input: 120 → 21 | Input: 120 → 21 → If overflow: return 0 | If overflow: return 0 → APPROACH: Build reversed number digit-by-digit. | APPROACH: Build reversed number digit-by-digit. → Extract last digit: digit = x % 10 | ...+1 more
+**Flow:**
+- REVERSE INTEGER — Reverse digits with overflow handling
+- ↓
+- Input: 123
+- ↓
+- 321
+- ↓
+- Input: 123
+- ↓
+- 321
+- ↓
+- Input: -123
+- ↓
+- -321
+- ↓
+- Input: -123
+- ↓
+- -321
+- ↓
+- Input: 120
+- ↓
+- 21
+- ↓
+- Input: 120
+- ↓
+- 21
+- ↓
+- If overflow: return 0
+- ↓
+- APPROACH: Build reversed number digit-by-digit.
+- ↓
+- Extract last digit: digit = x % 10
 
 ```mermaid
 flowchart TD
@@ -968,7 +1136,38 @@ public int reverse(int x) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: PALINDROME NUMBER — Check without converting to string → Input: 121 → true | Input: 121 → true → Input: -121 → false (leading '-') | Input: -121 → false (leading '-') → Input: 10 → false | Input: 10 → false → APPROACH: Reverse ONLY the second half, compare with fi | APPROACH: Reverse ONLY the second half, compare with fi → This avoids overflow (we never build the full reverse). | This avoids overflow (we never build the full reverse). → TRACE (x = 12321): | ...+1 more
+**Flow:**
+- PALINDROME NUMBER — Check without converting to string
+- ↓
+- Input: 121
+- ↓
+- true
+- ↓
+- Input: 121
+- ↓
+- true
+- ↓
+- Input: -121
+- ↓
+- false (leading '-')
+- ↓
+- Input: -121
+- ↓
+- false (leading '-')
+- ↓
+- Input: 10
+- ↓
+- false
+- ↓
+- Input: 10
+- ↓
+- false
+- ↓
+- APPROACH: Reverse ONLY the second half, compare with fi
+- ↓
+- This avoids overflow (we never build the full reverse).
+- ↓
+- TRACE (x = 12321):
 
 ```mermaid
 flowchart TD
@@ -1033,7 +1232,18 @@ public boolean isPalindrome(int x) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: ADD BINARY — Add two binary strings → Input: a = '1010', b = '1011' | Input: a = '1010', b = '1011' → Output: '10101' | Output: '10101' → 1 0 1 0 1 (carry propagates) | 1 0 1 0 1 (carry propagates) → At each position: sum = digitA + digitB + carry | At each position: sum = digitA + digitB + carry → Result digit = sum % 2. New carry = sum / 2.
+**Flow:**
+- ADD BINARY — Add two binary strings
+- ↓
+- Input: a = '1010', b = '1011'
+- ↓
+- Output: '10101'
+- ↓
+- 1 0 1 0 1 (carry propagates)
+- ↓
+- At each position: sum = digitA + digitB + carry
+- ↓
+- Result digit = sum % 2. New carry = sum / 2.
 
 ```mermaid
 flowchart TD
@@ -1091,7 +1301,14 @@ public String addBinary(String a, String b) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: EXCEL COLUMN TITLE — Convert number to column title → APPROACH: Like base-26 conversion, but 1-indexed. | APPROACH: Like base-26 conversion, but 1-indexed. → char = 'A' + (n % 26); | char = 'A' + (n % 26); → Time: O(log₂₆(n)) Space: O(1)
+**Flow:**
+- EXCEL COLUMN TITLE — Convert number to column title
+- ↓
+- APPROACH: Like base-26 conversion, but 1-indexed.
+- ↓
+- char = 'A' + (n % 26);
+- ↓
+- Time: O(log₂₆(n)) Space: O(1)
 
 ```mermaid
 flowchart TD
@@ -1139,7 +1356,32 @@ public String convertToTitle(int n) {
 └───────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: MAX PRODUCT OF THREE → Input: [1, 2, 3, 4] → Output: 24 (2×3×4) | Input: [1, 2, 3, 4] → Output: 24 (2×3×4) → Input: [-4, -3, 1, 2, 3] → Output: 36 ((-4)×(-3)×3) | Input: [-4, -3, 1, 2, 3] → Output: 36 ((-4)×(-3)×3) → APPROACH: After sorting, answer is max of: | APPROACH: After sorting, answer is max of: → 1. Three largest: nums[n-1] × nums[n-2] × nums[n-3] | 1. Three largest: nums[n-1] × nums[n-2] × nums[n-3] → WHY? Two negatives multiply to positive, which × larges | WHY? Two negatives multiply to positive, which × larges → positive could exceed three positives. | ...+1 more
+**Flow:**
+- MAX PRODUCT OF THREE
+- ↓
+- Input: [1, 2, 3, 4]
+- ↓
+- Output: 24 (2×3×4)
+- ↓
+- Input: [1, 2, 3, 4]
+- ↓
+- Output: 24 (2×3×4)
+- ↓
+- Input: [-4, -3, 1, 2, 3]
+- ↓
+- Output: 36 ((-4)×(-3)×3)
+- ↓
+- Input: [-4, -3, 1, 2, 3]
+- ↓
+- Output: 36 ((-4)×(-3)×3)
+- ↓
+- APPROACH: After sorting, answer is max of:
+- ↓
+- 1. Three largest: nums[n-1] × nums[n-2] × nums[n-3]
+- ↓
+- WHY? Two negatives multiply to positive, which × larges
+- ↓
+- positive could exceed three positives.
 
 ```mermaid
 flowchart TD
@@ -1190,7 +1432,24 @@ public int maximumProduct(int[] nums) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: KTH FACTOR OF N → Input: n = 12, k = 3 → Output: 3 (factors: 1,2,3,4,6,12 | Input: n = 12, k = 3 → Output: 3 (factors: 1,2,3,4,6,12 → APPROACH: Iterate 1 to √n, collect smaller factors. | APPROACH: Iterate 1 to √n, collect smaller factors. → If k-th not found, check larger factors (n/factor) in | If k-th not found, check larger factors (n/factor) in → reverse order. Total factors come in pairs. | reverse order. Total factors come in pairs. → Time: O(√n) Space: O(1)
+**Flow:**
+- KTH FACTOR OF N
+- ↓
+- Input: n = 12, k = 3
+- ↓
+- Output: 3 (factors: 1,2,3,4,6,12
+- ↓
+- Input: n = 12, k = 3
+- ↓
+- Output: 3 (factors: 1,2,3,4,6,12
+- ↓
+- APPROACH: Iterate 1 to √n, collect smaller factors.
+- ↓
+- If k-th not found, check larger factors (n/factor) in
+- ↓
+- reverse order. Total factors come in pairs.
+- ↓
+- Time: O(√n) Space: O(1)
 
 ```mermaid
 flowchart TD
@@ -1242,7 +1501,44 @@ public int kthFactor(int n, int k) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: HAPPY NUMBER — Detect cycle in digit-square-sum sequenc → Process: Replace n with sum of squares of its digits. | Process: Replace n with sum of squares of its digits. → If reaches 1 → happy. If cycles → not happy. | If reaches 1 → happy. If cycles → not happy. → APPROACH: Floyd's cycle detection (fast/slow pointers). | APPROACH: Floyd's cycle detection (fast/slow pointers). → slow = step(n), fast = step(step(n)). | slow = step(n), fast = step(step(n)). → If fast reaches 1 → happy. If slow == fast → cycle → no | If fast reaches 1 → happy. If slow == fast → cycle → no → Time: O(log n) Space: O(1) with Floyd's
+**Flow:**
+- HAPPY NUMBER — Detect cycle in digit-square-sum sequenc
+- ↓
+- Process: Replace n with sum of squares of its digits.
+- ↓
+- If reaches 1
+- ↓
+- happy. If cycles
+- ↓
+- not happy.
+- ↓
+- If reaches 1
+- ↓
+- happy. If cycles
+- ↓
+- not happy.
+- ↓
+- APPROACH: Floyd's cycle detection (fast/slow pointers).
+- ↓
+- slow = step(n), fast = step(step(n)).
+- ↓
+- If fast reaches 1
+- ↓
+- happy. If slow == fast
+- ↓
+- cycle
+- ↓
+- no
+- ↓
+- If fast reaches 1
+- ↓
+- happy. If slow == fast
+- ↓
+- cycle
+- ↓
+- no
+- ↓
+- Time: O(log n) Space: O(1) with Floyd's
 
 ```mermaid
 flowchart TD
@@ -1301,7 +1597,20 @@ private int step(int n) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: VALID SQUARE — Given 4 points, check if they form a squ → APPROACH: Compute all 6 pairwise distances. | APPROACH: Compute all 6 pairwise distances. → A valid square has: 4 equal sides + 2 equal diagonals. | A valid square has: 4 equal sides + 2 equal diagonals. → Diagonals = √2 × side. | Diagonals = √2 × side. → So among 6 distances: 4 must be equal (sides) and | So among 6 distances: 4 must be equal (sides) and → 2 must be equal AND longer (diagonals). All &gt; 0. | 2 must be equal AND longer (diagonals). All &gt; 0. → Time: O(1) Space: O(1)
+**Flow:**
+- VALID SQUARE — Given 4 points, check if they form a squ
+- ↓
+- APPROACH: Compute all 6 pairwise distances.
+- ↓
+- A valid square has: 4 equal sides + 2 equal diagonals.
+- ↓
+- Diagonals = √2 × side.
+- ↓
+- So among 6 distances: 4 must be equal (sides) and
+- ↓
+- 2 must be equal AND longer (diagonals). All > 0.
+- ↓
+- Time: O(1) Space: O(1)
 
 ```mermaid
 flowchart TD
@@ -1365,7 +1674,28 @@ private int dist(int[] a, int[] b) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: MAX POINTS ON A LINE — Find max collinear points → Input: [[1,1],[2,2],[3,3],[1,2],[2,3]] | Input: [[1,1],[2,2],[3,3],[1,2],[2,3]] → Output: 3 (points [1,1],[2,2],[3,3] are collinear) | Output: 3 (points [1,1],[2,2],[3,3] are collinear) → APPROACH: For each point i, compute slope to every othe | APPROACH: For each point i, compute slope to every othe → point j. Use HashMap&lt;String, Integer&gt; of slopes. | point j. Use HashMap&lt;String, Integer&gt; of slopes. → Slope = dy/dx → normalize with GCD to avoid floating po | Slope = dy/dx → normalize with GCD to avoid floating po → Handle vertical lines: dx=0 → slope = 'INF'. | ...+1 more
+**Flow:**
+- MAX POINTS ON A LINE — Find max collinear points
+- ↓
+- Input: [[1,1],[2,2],[3,3],[1,2],[2,3]]
+- ↓
+- Output: 3 (points [1,1],[2,2],[3,3] are collinear)
+- ↓
+- APPROACH: For each point i, compute slope to every othe
+- ↓
+- point j. Use HashMap<String, Integer> of slopes.
+- ↓
+- Slope = dy/dx
+- ↓
+- normalize with GCD to avoid floating po
+- ↓
+- Slope = dy/dx
+- ↓
+- normalize with GCD to avoid floating po
+- ↓
+- Handle vertical lines: dx=0
+- ↓
+- slope = 'INF'.
 
 ```mermaid
 flowchart TD
@@ -1471,7 +1801,34 @@ private int gcd(int a, int b) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: GENERATE ALL SUBSETS OF [1, 2, 3] USING BITMASK → n = 3 elements → 2³ = 8 subsets | n = 3 elements → 2³ = 8 subsets → Iterate mask from 0 to 7 (binary 000 to 111): | Iterate mask from 0 to 7 (binary 000 to 111): → mask binary bits set for [1,2,3] subset | mask binary bits set for [1,2,3] subset → 0 000 none {} | 0 000 none {} → 1 001 index 0 → 1 {1} | 1 001 index 0 → 1 {1} → 2 010 index 1 → 2 {2} | ...+1 more
+**Flow:**
+- GENERATE ALL SUBSETS OF [1, 2, 3] USING BITMASK
+- ↓
+- n = 3 elements
+- ↓
+- 2³ = 8 subsets
+- ↓
+- n = 3 elements
+- ↓
+- 2³ = 8 subsets
+- ↓
+- Iterate mask from 0 to 7 (binary 000 to 111):
+- ↓
+- mask binary bits set for [1,2,3] subset
+- ↓
+- 0 000 none {}
+- ↓
+- 1 001 index 0
+- ↓
+- 1 {1}
+- ↓
+- 1 001 index 0
+- ↓
+- 1 {1}
+- ↓
+- 2 010 index 1
+- ↓
+- 2 {2}
 
 ```mermaid
 flowchart TD
@@ -1545,7 +1902,26 @@ public List<List<Integer>> subsets(int[] nums) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: COUNT SUBSETS WITH SUM = TARGET → Input: nums = [1, 2, 3, 4, 5], target = 5 | Input: nums = [1, 2, 3, 4, 5], target = 5 → Output: 3 → {5}, {2,3}, {1,4} | Output: 3 → {5}, {2,3}, {1,4} → METHOD 1: BITMASK BRUTE FORCE (for n ≤ 20) | METHOD 1: BITMASK BRUTE FORCE (for n ≤ 20) → Enumerate all 2ⁿ subsets, compute sum, count matches. | Enumerate all 2ⁿ subsets, compute sum, count matches. → Time: O(n × 2ⁿ) | Time: O(n × 2ⁿ) → METHOD 2: DP (0/1 Knapsack counting — for larger n) | ...+1 more
+**Flow:**
+- COUNT SUBSETS WITH SUM = TARGET
+- ↓
+- Input: nums = [1, 2, 3, 4, 5], target = 5
+- ↓
+- Output: 3
+- ↓
+- {5}, {2,3}, {1,4}
+- ↓
+- Output: 3
+- ↓
+- {5}, {2,3}, {1,4}
+- ↓
+- METHOD 1: BITMASK BRUTE FORCE (for n ≤ 20)
+- ↓
+- Enumerate all 2ⁿ subsets, compute sum, count matches.
+- ↓
+- Time: O(n × 2ⁿ)
+- ↓
+- METHOD 2: DP (0/1 Knapsack counting — for larger n)
 
 ```mermaid
 flowchart TD
@@ -1620,7 +1996,22 @@ public int countSubsetsWithSumDP(int[] nums, int target) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: PARTITION EQUAL SUBSET SUM → Can we partition array into two subsets with equal sum? | Can we partition array into two subsets with equal sum? → Equivalent to: does a subset with sum = totalSum / 2 ex | Equivalent to: does a subset with sum = totalSum / 2 ex → APPROACH: 0/1 knapsack boolean DP (see DP section). | APPROACH: 0/1 knapsack boolean DP (see DP section). → dp[j] = true if a subset with sum j exists. | dp[j] = true if a subset with sum j exists. → dp[0] = true | dp[0] = true → For each num: dp[j] |= dp[j - num] (reverse order) | ...+1 more
+**Flow:**
+- PARTITION EQUAL SUBSET SUM
+- ↓
+- Can we partition array into two subsets with equal sum?
+- ↓
+- Equivalent to: does a subset with sum = totalSum / 2 ex
+- ↓
+- APPROACH: 0/1 knapsack boolean DP (see DP section).
+- ↓
+- dp[j] = true if a subset with sum j exists.
+- ↓
+- dp[0] = true
+- ↓
+- For each num: dp[j]
+- ↓
+- = dp[j - num] (reverse order)
 
 ```mermaid
 flowchart TD
@@ -1664,7 +2055,20 @@ flowchart TD
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: ONES AND ZEROES — Max strings fitting m zeros and n one → Given binary strings, at most m 0s and n 1s, find max | Given binary strings, at most m 0s and n 1s, find max → number of strings formable. | number of strings formable. → APPROACH: 2D 0/1 knapsack DP. | APPROACH: 2D 0/1 knapsack DP. → dp[i][j] = max strings using at most i zeros and j ones | dp[i][j] = max strings using at most i zeros and j ones → For each string with z zeros and o ones: | For each string with z zeros and o ones: → dp[i][j] = max(dp[i][j], dp[i-z][j-o] + 1) | ...+1 more
+**Flow:**
+- ONES AND ZEROES — Max strings fitting m zeros and n one
+- ↓
+- Given binary strings, at most m 0s and n 1s, find max
+- ↓
+- number of strings formable.
+- ↓
+- APPROACH: 2D 0/1 knapsack DP.
+- ↓
+- dp[i][j] = max strings using at most i zeros and j ones
+- ↓
+- For each string with z zeros and o ones:
+- ↓
+- dp[i][j] = max(dp[i][j], dp[i-z][j-o] + 1)
 
 ```mermaid
 flowchart TD
@@ -1724,7 +2128,20 @@ flowchart TD
 ╚════════════════════════════════════╩══════════════════════╩══════════════════╝
 ```
 
-> **Flow**: COMPREHENSIVE BIT TRICKS REFERENCE → Operation Code Complexity | Operation Code Complexity → Check if n is even (n & 1) == 0 O(1) | Check if n is even (n & 1) == 0 O(1) → Check if n is odd (n & 1) == 1 O(1) | Check if n is odd (n & 1) == 1 O(1) → Multiply by 2 n &lt;&lt; 1 O(1) | Multiply by 2 n &lt;&lt; 1 O(1) → Divide by 2 n &gt;&gt; 1 O(1) | Divide by 2 n &gt;&gt; 1 O(1) → Multiply by 2ᵏ n &lt;&lt; k O(1) | ...+1 more
+**Flow:**
+- COMPREHENSIVE BIT TRICKS REFERENCE
+- ↓
+- Operation Code Complexity
+- ↓
+- Check if n is even (n & 1) == 0 O(1)
+- ↓
+- Check if n is odd (n & 1) == 1 O(1)
+- ↓
+- Multiply by 2 n << 1 O(1)
+- ↓
+- Divide by 2 n >> 1 O(1)
+- ↓
+- Multiply by 2ᵏ n << k O(1)
 
 ```mermaid
 flowchart TD
@@ -1783,7 +2200,14 @@ PROOFS:
   • C(n,k) identity: (1+1)ⁿ = Σ C(n,k) × 1ᵏ × 1ⁿ⁻ᵏ = Σ C(n,k) = 2ⁿ.
 ```
 
-> **Flow**: • Subsets containing x: Fix x as IN. Remaining n-1 → 2ⁿ⁻¹. | • Sum of subset sizes: Each element appears in 2ⁿ⁻ → n × 2ⁿ⁻¹.
+**Flow:**
+- • Subsets containing x: Fix x as IN. Remaining n-1
+- ↓
+- 2ⁿ⁻¹.
+- ↓
+- • Sum of subset sizes: Each element appears in 2ⁿ⁻
+- ↓
+- n × 2ⁿ⁻¹.
 
 ```mermaid
 flowchart LR
@@ -1857,7 +2281,20 @@ flowchart LR
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: BIT MANIPULATION MASTERY CHECKLIST → FUNDAMENTALS (must be instant — no thinking required) | FUNDAMENTALS (must be instant — no thinking required) → [ ] I can explain AND, OR, XOR, NOT, &lt;&lt;, &gt;&gt; | [ ] I can explain AND, OR, XOR, NOT, &lt;&lt;, &gt;&gt; → [ ] I understand two's complement: -x = ~x + 1 | [ ] I understand two's complement: -x = ~x + 1 → [ ] I know operator precedence: ALWAYS parenthesize bit | [ ] I know operator precedence: ALWAYS parenthesize bit → [ ] I know Java has no unsigned int — when to use long | [ ] I know Java has no unsigned int — when to use long → ESSENTIAL TRICKS (should take &lt; 30 seconds each) | ...+1 more
+**Flow:**
+- BIT MANIPULATION MASTERY CHECKLIST
+- ↓
+- FUNDAMENTALS (must be instant — no thinking required)
+- ↓
+- [ ] I can explain AND, OR, XOR, NOT, <<, >>
+- ↓
+- [ ] I understand two's complement: -x = ~x + 1
+- ↓
+- [ ] I know operator precedence: ALWAYS parenthesize bit
+- ↓
+- [ ] I know Java has no unsigned int — when to use long
+- ↓
+- ESSENTIAL TRICKS (should take < 30 seconds each)
 
 ```mermaid
 flowchart TD

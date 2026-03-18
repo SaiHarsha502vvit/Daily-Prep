@@ -65,7 +65,18 @@ Delete at index i   O(n)      Must shift elements left
 ─────────────────────────────────────────────────────
 ```
 
-> **Flow**: OPERATION TIME WHY? → Access arr[i] O(1) Direct address calculation | Access arr[i] O(1) Direct address calculation → Search (unsorted) O(n) Must check every element | Search (unsorted) O(n) Must check every element → Search (sorted) O(log n) Binary search possible | Search (sorted) O(log n) Binary search possible → Insert at index i O(n) Must shift elements right | Insert at index i O(n) Must shift elements right → Delete at index i O(n) Must shift elements left
+**Flow:**
+- OPERATION TIME WHY?
+- ↓
+- Access arr[i] O(1) Direct address calculation
+- ↓
+- Search (unsorted) O(n) Must check every element
+- ↓
+- Search (sorted) O(log n) Binary search possible
+- ↓
+- Insert at index i O(n) Must shift elements right
+- ↓
+- Delete at index i O(n) Must shift elements left
 
 ```mermaid
 flowchart TD
@@ -98,7 +109,22 @@ DON'T USE ARRAY WHEN:
   - Size changes dramatically → ArrayList (dynamic array)
 ```
 
-> **Flow**: - Frequent insertions/deletions in middle → LinkedList | - Need key-value lookup → HashMap | - Need sorted dynamic data → TreeSet/BST | - Size changes dramatically → ArrayList (dynamic array)
+**Flow:**
+- - Frequent insertions/deletions in middle
+- ↓
+- LinkedList
+- ↓
+- - Need key-value lookup
+- ↓
+- HashMap
+- ↓
+- - Need sorted dynamic data
+- ↓
+- TreeSet/BST
+- ↓
+- - Size changes dramatically
+- ↓
+- ArrayList (dynamic array)
 
 ```mermaid
 flowchart LR
@@ -263,7 +289,12 @@ Bubble Sort      O(n)     O(n^2)    O(n^2)   O(1)   Yes       Yes
 "Stable"   = equal elements keep their relative order
 ```
 
-> **Flow**: Algorithm Best Average Worst Space Stable? Adaptive? → 'Adaptive' = performs better on partially sorted data | 'Adaptive' = performs better on partially sorted data → 'Stable' = equal elements keep their relative order
+**Flow:**
+- Algorithm Best Average Worst Space Stable? Adaptive?
+- ↓
+- 'Adaptive' = performs better on partially sorted data
+- ↓
+- 'Stable' = equal elements keep their relative order
 
 ```mermaid
 flowchart TD
@@ -445,7 +476,24 @@ There are 4 types of SQL commands:
   TCL (Txn)     : COMMIT, ROLLBACK, SAVEPOINT → Transaction safety
 ```
 
-> **Flow**: YOU → SQL Query | SQL Query → DATABASE ENGINE | DATABASE ENGINE → DISK | DISK → Results back to YOU | DDL (Define) : CREATE, ALTER, DROP → Build the structure | DML (Data) : SELECT, INSERT, UPDATE, DELETE → Work with data | ...+2 more
+**Flow:**
+- YOU
+- ↓
+- SQL Query
+- ↓
+- DATABASE ENGINE
+- ↓
+- DISK
+- ↓
+- Results back to YOU
+- ↓
+- DDL (Define) : CREATE, ALTER, DROP
+- ↓
+- Build the structure
+- ↓
+- DML (Data) : SELECT, INSERT, UPDATE, DELETE
+- ↓
+- Work with data
 
 ```mermaid
 flowchart TD
@@ -597,7 +645,18 @@ Example 2: nums = [0, 1]    → Output: 2
 Example 3: nums = [9,6,4,2,3,5,7,0,1] → Output: 8
 ```
 
-> **Flow**: Example 1: nums = [3, 0, 1] → Output: 2 | Example 2: nums = [0, 1] → Output: 2 | Example 3: nums = [9,6,4,2,3,5,7,0,1] → Output: 8
+**Flow:**
+- Example 1: nums = [3, 0, 1]
+- ↓
+- Output: 2
+- ↓
+- Example 2: nums = [0, 1]
+- ↓
+- Output: 2
+- ↓
+- Example 3: nums = [9,6,4,2,3,5,7,0,1]
+- ↓
+- Output: 8
 
 ```mermaid
 flowchart LR
@@ -669,7 +728,18 @@ Example 2: [1, 1, 2]             → Output: 2
 Example 3: [7]                    → Output: 7
 ```
 
-> **Flow**: Example 1: [2, 3, 5, 4, 5, 3, 4] → Output: 2 | Example 2: [1, 1, 2] → Output: 2 | Example 3: [7] → Output: 7
+**Flow:**
+- Example 1: [2, 3, 5, 4, 5, 3, 4]
+- ↓
+- Output: 2
+- ↓
+- Example 2: [1, 1, 2]
+- ↓
+- Output: 2
+- ↓
+- Example 3: [7]
+- ↓
+- Output: 7
 
 ```mermaid
 flowchart LR
@@ -695,7 +765,12 @@ So: 2 ^ 3 ^ 5 ^ 4 ^ 5 ^ 3 ^ 4
   = 2  ← The single element!
 ```
 
-> **Flow**: PROPERTY: a ^ a = 0 (any number XOR itself = 0) → PROPERTY: a ^ 0 = a (any number XOR 0 = itself) | PROPERTY: a ^ 0 = a (any number XOR 0 = itself) → = 2 ← The single element!
+**Flow:**
+- PROPERTY: a ^ a = 0 (any number XOR itself = 0)
+- ↓
+- PROPERTY: a ^ 0 = a (any number XOR 0 = itself)
+- ↓
+- = 2 ← The single element!
 
 ```mermaid
 flowchart TD

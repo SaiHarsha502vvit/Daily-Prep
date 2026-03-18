@@ -22,7 +22,44 @@ Code reviews also:
 • Build shared ownership of codebase
 ```
 
-> **Flow**: CODE REVIEWS: The Most Underrated Engineering Practice → Bug found in Code Review → Costs: 15 minutes | Bug found in Code Review → Costs: 15 minutes → Bug found in QA → Costs: 2 hours | Bug found in QA → Costs: 2 hours → Bug found in Production → Costs: 2 days | Bug found in Production → Costs: 2 days → Bug found by customer → Costs: reputation | Bug found by customer → Costs: reputation → Code reviews also: | Code reviews also: → • Spread knowledge across team (bus factor ↑) | ...+1 more
+**Flow:**
+- CODE REVIEWS: The Most Underrated Engineering Practice
+- ↓
+- Bug found in Code Review
+- ↓
+- Costs: 15 minutes
+- ↓
+- Bug found in Code Review
+- ↓
+- Costs: 15 minutes
+- ↓
+- Bug found in QA
+- ↓
+- Costs: 2 hours
+- ↓
+- Bug found in QA
+- ↓
+- Costs: 2 hours
+- ↓
+- Bug found in Production
+- ↓
+- Costs: 2 days
+- ↓
+- Bug found in Production
+- ↓
+- Costs: 2 days
+- ↓
+- Bug found by customer
+- ↓
+- Costs: reputation
+- ↓
+- Bug found by customer
+- ↓
+- Costs: reputation
+- ↓
+- Code reviews also:
+- ↓
+- • Spread knowledge across team (bus factor ↑)
 
 ```mermaid
 flowchart TD
@@ -220,7 +257,20 @@ if (!isValid(input)) {
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: THE REVIEWER'S MINDSET → 1. Review the CODE, not the PERSON | 1. Review the CODE, not the PERSON → ❌ 'You did this wrong' | ❌ 'You did this wrong' → ✅ 'This line might cause issues because...' | ✅ 'This line might cause issues because...' → 2. Ask questions instead of making demands | 2. Ask questions instead of making demands → ❌ 'Change this to use a HashMap' | ❌ 'Change this to use a HashMap' → ✅ 'Have you considered using a HashMap? It would give | ...+1 more
+**Flow:**
+- THE REVIEWER'S MINDSET
+- ↓
+- 1. Review the CODE, not the PERSON
+- ↓
+- ❌ 'You did this wrong'
+- ↓
+- ✅ 'This line might cause issues because...'
+- ↓
+- 2. Ask questions instead of making demands
+- ↓
+- ❌ 'Change this to use a HashMap'
+- ↓
+- ✅ 'Have you considered using a HashMap? It would give
 
 ```mermaid
 flowchart TD
@@ -272,7 +322,20 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: THE AUTHOR'S MINDSET → 1. Don't take it personally | 1. Don't take it personally → They're reviewing code, not judging your worth. | They're reviewing code, not judging your worth. → 2. Assume positive intent | 2. Assume positive intent → The reviewer is trying to make the code better. | The reviewer is trying to make the code better. → 3. Explain your reasoning, don't just defend | 3. Explain your reasoning, don't just defend → 'I chose ArrayList because we iterate 95% of the time | ...+1 more
+**Flow:**
+- THE AUTHOR'S MINDSET
+- ↓
+- 1. Don't take it personally
+- ↓
+- They're reviewing code, not judging your worth.
+- ↓
+- 2. Assume positive intent
+- ↓
+- The reviewer is trying to make the code better.
+- ↓
+- 3. Explain your reasoning, don't just defend
+- ↓
+- 'I chose ArrayList because we iterate 95% of the time
 
 ```mermaid
 flowchart TD
@@ -317,7 +380,20 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: PR SIZE MATTERS → Lines Changed Review Quality Time to Review | Lines Changed Review Quality Time to Review → &lt; 200 Excellent ★★★ 30 min | &lt; 200 Excellent ★★★ 30 min → 200 - 400 Good ★★ 1 hour | 200 - 400 Good ★★ 1 hour → 400 - 800 Mediocre ★ 2 hours | 400 - 800 Mediocre ★ 2 hours → &gt; 800 'LGTM' ☆ Rubber stamp | &gt; 800 'LGTM' ☆ Rubber stamp → If your PR is &gt; 400 lines, consider splitting it: | ...+1 more
+**Flow:**
+- PR SIZE MATTERS
+- ↓
+- Lines Changed Review Quality Time to Review
+- ↓
+- < 200 Excellent ★★★ 30 min
+- ↓
+- 200 - 400 Good ★★ 1 hour
+- ↓
+- 400 - 800 Mediocre ★ 2 hours
+- ↓
+- > 800 'LGTM' ☆ Rubber stamp
+- ↓
+- If your PR is > 400 lines, consider splitting it:
 
 ```mermaid
 flowchart TD
@@ -383,7 +459,20 @@ Before and After screenshots.
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: CONVENTIONAL COMMITS → Format: type(scope): description | Format: type(scope): description → feat(auth): add password reset endpoint | feat(auth): add password reset endpoint → fix(payment): handle null discount code | fix(payment): handle null discount code → refactor(user): extract validation to separate class | refactor(user): extract validation to separate class → test(order): add edge case tests for empty cart | test(order): add edge case tests for empty cart → docs(api): update Swagger annotations | ...+1 more
+**Flow:**
+- CONVENTIONAL COMMITS
+- ↓
+- Format: type(scope): description
+- ↓
+- feat(auth): add password reset endpoint
+- ↓
+- fix(payment): handle null discount code
+- ↓
+- refactor(user): extract validation to separate class
+- ↓
+- test(order): add edge case tests for empty cart
+- ↓
+- docs(api): update Swagger annotations
 
 ```mermaid
 flowchart TD
@@ -444,7 +533,20 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: TYPICAL PR WORKFLOW → 1. Developer creates feature branch from develop | 1. Developer creates feature branch from develop → git checkout -b feat/JIRA-123-password-reset | git checkout -b feat/JIRA-123-password-reset → 2. Developer pushes and creates PR | 2. Developer pushes and creates PR → Target: develop (or main for small teams) | Target: develop (or main for small teams) → Assigns reviewer(s) | Assigns reviewer(s) → 3. CI runs automatically | ...+1 more
+**Flow:**
+- TYPICAL PR WORKFLOW
+- ↓
+- 1. Developer creates feature branch from develop
+- ↓
+- git checkout -b feat/JIRA-123-password-reset
+- ↓
+- 2. Developer pushes and creates PR
+- ↓
+- Target: develop (or main for small teams)
+- ↓
+- Assigns reviewer(s)
+- ↓
+- 3. CI runs automatically
 
 ```mermaid
 flowchart TD
@@ -490,7 +592,20 @@ RULE: Automate what can be automated.
       Machines should check STYLE, FORMAT, and KNOWN BUGS.
 ```
 
-> **Flow**: TOOL WHAT IT CHECKS LANGUAGE → SonarQube Bugs, smells, vulnerabilities Multi | SonarQube Bugs, smells, vulnerabilities Multi → Checkstyle Java code style conventions Java | Checkstyle Java code style conventions Java → SpotBugs Potential bugs in bytecode Java | SpotBugs Potential bugs in bytecode Java → ESLint JavaScript/TS code quality JS/TS | ESLint JavaScript/TS code quality JS/TS → Prettier Code formatting Multi | Prettier Code formatting Multi → PMD Common programming flaws Java | ...+1 more
+**Flow:**
+- TOOL WHAT IT CHECKS LANGUAGE
+- ↓
+- SonarQube Bugs, smells, vulnerabilities Multi
+- ↓
+- Checkstyle Java code style conventions Java
+- ↓
+- SpotBugs Potential bugs in bytecode Java
+- ↓
+- ESLint JavaScript/TS code quality JS/TS
+- ↓
+- Prettier Code formatting Multi
+- ↓
+- PMD Common programming flaws Java
 
 ```mermaid
 flowchart TD
@@ -533,7 +648,20 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: SMELL WHAT IT LOOKS LIKE → God Class Class &gt; 500 lines, does everything | God Class Class &gt; 500 lines, does everything → Long Method Method &gt; 30 lines | Long Method Method &gt; 30 lines → Feature Envy Method uses another class more | Feature Envy Method uses another class more → than its own | than its own → Primitive Obsession String email instead of Email type | Primitive Obsession String email instead of Email type → Boolean Parameter process(data, true, false, true) | ...+1 more
+**Flow:**
+- SMELL WHAT IT LOOKS LIKE
+- ↓
+- God Class Class > 500 lines, does everything
+- ↓
+- Long Method Method > 30 lines
+- ↓
+- Feature Envy Method uses another class more
+- ↓
+- than its own
+- ↓
+- Primitive Obsession String email instead of Email type
+- ↓
+- Boolean Parameter process(data, true, false, true)
 
 ```mermaid
 flowchart TD
@@ -581,7 +709,20 @@ The author learns:
 4. The principle behind it (to apply elsewhere)
 ```
 
-> **Flow**: make the code better. → Bad Reviewer: 'Fix this.' | Bad Reviewer: 'Fix this.' → Good Reviewer: 'This could cause | Good Reviewer: 'This could cause → issues because [reason]. Here's | issues because [reason]. Here's → a pattern that handles it: | a pattern that handles it: → [example]. This is important | [example]. This is important → because [context].' | ...+1 more
+**Flow:**
+- make the code better.
+- ↓
+- Bad Reviewer: 'Fix this.'
+- ↓
+- Good Reviewer: 'This could cause
+- ↓
+- issues because [reason]. Here's
+- ↓
+- a pattern that handles it:
+- ↓
+- [example]. This is important
+- ↓
+- because [context].'
 
 ```mermaid
 flowchart TD

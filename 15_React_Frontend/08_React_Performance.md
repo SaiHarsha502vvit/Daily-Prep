@@ -119,7 +119,30 @@ src/
 └── App.tsx
 ```
 
-> **Flow**: src/ → api/ # API client & domain-specific APIs | src/ → client.ts # Base HTTP client (fetch wrapper) | src/ → users.ts # User-related API calls | src/ → orders.ts | src/ → components/ # Shared/reusable UI components | src/ → ui/ # Primitives: Button, Modal, Input | ...+23 more
+**Flow:**
+- src/
+- ↓
+- api/ # API client & domain-specific APIs
+- ↓
+- src/
+- ↓
+- client.ts # Base HTTP client (fetch wrapper)
+- ↓
+- src/
+- ↓
+- users.ts # User-related API calls
+- ↓
+- src/
+- ↓
+- orders.ts
+- ↓
+- src/
+- ↓
+- components/ # Shared/reusable UI components
+- ↓
+- src/
+- ↓
+- ui/ # Primitives: Button, Modal, Input
 
 ```mermaid
 flowchart TD
@@ -257,7 +280,34 @@ const mutation = useMutation({
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: ENVIRONMENT VARIABLES (Vite): → .env → VITE_API_URL=http://localhost:8080 | .env → VITE_API_URL=http://localhost:8080 → .env.production → VITE_API_URL=https://api.myapp.com | .env.production → VITE_API_URL=https://api.myapp.com → Access: import.meta.env.VITE_API_URL | Access: import.meta.env.VITE_API_URL → RULE: Only VITE_ prefixed vars are exposed to client! | RULE: Only VITE_ prefixed vars are exposed to client! → BUILD & DEPLOY PIPELINE: | BUILD & DEPLOY PIPELINE: → npm run build → dist/ folder (static HTML/CSS/JS) | ...+1 more
+**Flow:**
+- ENVIRONMENT VARIABLES (Vite):
+- ↓
+- .env
+- ↓
+- VITE_API_URL=http://localhost:8080
+- ↓
+- .env
+- ↓
+- VITE_API_URL=http://localhost:8080
+- ↓
+- .env.production
+- ↓
+- VITE_API_URL=https://api.myapp.com
+- ↓
+- .env.production
+- ↓
+- VITE_API_URL=https://api.myapp.com
+- ↓
+- Access: import.meta.env.VITE_API_URL
+- ↓
+- RULE: Only VITE_ prefixed vars are exposed to client!
+- ↓
+- BUILD & DEPLOY PIPELINE:
+- ↓
+- npm run build
+- ↓
+- dist/ folder (static HTML/CSS/JS)
 
 ```mermaid
 flowchart TD

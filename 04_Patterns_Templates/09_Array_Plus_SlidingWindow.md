@@ -38,7 +38,10 @@ IF the problem says:
 THEN → Sliding Window on Array
 ```
 
-> **Flow**: THEN → Sliding Window on Array
+**Flow:**
+- THEN
+- ↓
+- Sliding Window on Array
 
 ```mermaid
 flowchart LR
@@ -57,7 +60,10 @@ Fixed Window (size k):          Variable Window:
 Use when: size is given         Use when: find optimal size
 ```
 
-> **Flow**: k=3 --(→ slide)--> expand →
+**Flow:**
+- k=3 --(
+- ↓
+- slide)--> expand
 
 ```mermaid
 flowchart LR
@@ -158,7 +164,30 @@ Step 9: [1, 3, 2] sum=6 ≤ 7 → len=3 ✅ tied best
 Answer: 3
 ```
 
-> **Flow**: Step 1: [2] sum=2 ≤ 7 → len=1 | Step 2: [2, 1] sum=3 ≤ 7 → len=2 | Step 3: [2, 1, 5] sum=8 &gt; 7 → SHRINK! | Step 4: [1, 5] sum=6 ≤ 7 → len=2 | Step 5: [1, 5, 1] sum=7 ≤ 7 → len=3 ✅ best so far | Step 6: [1, 5, 1, 3] sum=10 &gt; 7 → SHRINK! | ...+3 more
+**Flow:**
+- Step 1: [2] sum=2 ≤ 7
+- ↓
+- len=1
+- ↓
+- Step 2: [2, 1] sum=3 ≤ 7
+- ↓
+- len=2
+- ↓
+- Step 3: [2, 1, 5] sum=8 > 7
+- ↓
+- SHRINK!
+- ↓
+- Step 4: [1, 5] sum=6 ≤ 7
+- ↓
+- len=2
+- ↓
+- Step 5: [1, 5, 1] sum=7 ≤ 7
+- ↓
+- len=3 ✅ best so far
+- ↓
+- Step 6: [1, 5, 1, 3] sum=10 > 7
+- ↓
+- SHRINK!
 
 ```mermaid
 flowchart TD
@@ -279,7 +308,20 @@ WHY fixed window? Size is given (k=3), so just slide it.
 └───────────────────────────────┴──────────────────────────────────────┘
 ```
 
-> **Flow**: Edge Case Handling → Empty string / array Return 0 immediately | Empty string / array Return 0 immediately → k &gt; array length Invalid — return -1 or throw | k &gt; array length Invalid — return -1 or throw → All same characters 'aaaa' Longest unique substring = 1 | All same characters 'aaaa' Longest unique substring = 1 → All unique 'abcdef' Entire string is the answer | All unique 'abcdef' Entire string is the answer → Use Prefix Sum + HashMap instead | Use Prefix Sum + HashMap instead → Single element Window of size 1 = that element
+**Flow:**
+- Edge Case Handling
+- ↓
+- Empty string / array Return 0 immediately
+- ↓
+- k > array length Invalid — return -1 or throw
+- ↓
+- All same characters 'aaaa' Longest unique substring = 1
+- ↓
+- All unique 'abcdef' Entire string is the answer
+- ↓
+- Use Prefix Sum + HashMap instead
+- ↓
+- Single element Window of size 1 = that element
 
 ```mermaid
 flowchart TD

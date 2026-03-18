@@ -57,7 +57,14 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHY: Why Learn Reactive Programming? / • Handle 10-100x → HOW: How Does WebFlux Work? / • Event loop model (not t | HOW: How Does WebFlux Work? / • Event loop model (not t → WHEN: When to Use WebFlux vs MVC? / USE WEBFLUX WHEN: / | WHEN: When to Use WebFlux vs MVC? / USE WEBFLUX WHEN: / → WHICH: Which Components to Master? / ESSENTIAL: Mono, F
+**Flow:**
+- WHY: Why Learn Reactive Programming? / • Handle 10-100x
+- ↓
+- HOW: How Does WebFlux Work? / • Event loop model (not t
+- ↓
+- WHEN: When to Use WebFlux vs MVC? / USE WEBFLUX WHEN: /
+- ↓
+- WHICH: Which Components to Master? / ESSENTIAL: Mono, F
 
 ```mermaid
 flowchart TD
@@ -93,7 +100,20 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHAT THIS PART COVERS → 1. Reactive Programming Fundamentals | 1. Reactive Programming Fundamentals → 2. Project Reactor: Mono & Flux | 2. Project Reactor: Mono & Flux → 3. Spring WebFlux Basics | 3. Spring WebFlux Basics → 4. Functional Endpoints (RouterFunction) | 4. Functional Endpoints (RouterFunction) → 5. Reactive Data Access (R2DBC) | 5. Reactive Data Access (R2DBC) → 6. WebClient (Reactive HTTP Client) | ...+1 more
+**Flow:**
+- WHAT THIS PART COVERS
+- ↓
+- 1. Reactive Programming Fundamentals
+- ↓
+- 2. Project Reactor: Mono & Flux
+- ↓
+- 3. Spring WebFlux Basics
+- ↓
+- 4. Functional Endpoints (RouterFunction)
+- ↓
+- 5. Reactive Data Access (R2DBC)
+- ↓
+- 6. WebClient (Reactive HTTP Client)
 
 ```mermaid
 flowchart TD
@@ -153,7 +173,14 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Request → Thread 1 (BLOCKED waiting for DB) → Response  → Event Loop Thread (never blocks!) / Receives request 1 
+**Flow:**
+- Request
+- ↓
+- Thread 1 (BLOCKED waiting for DB)
+- ↓
+- Response
+- ↓
+- Event Loop Thread (never blocks!) / Receives request 1
 
 ```mermaid
 flowchart TD
@@ -266,7 +293,10 @@ public interface Processor<T, R> extends Subscriber<T>, Publisher<R> {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Like Optional&lt;T&gt; but ASYNC / Mono.just('Hello') / → Like Stream&lt;T&gt; but ASYNC / Flux.just('A', 'B', 'C
+**Flow:**
+- Like Optional<T> but ASYNC / Mono.just('Hello') /
+- ↓
+- Like Stream<T> but ASYNC / Flux.just('A', 'B', 'C
 
 ```mermaid
 flowchart TD
@@ -1025,7 +1055,20 @@ public class UserHandler {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: R2DBC vs JDBC → JDBC (Traditional): | JDBC (Traditional): → • Blocking - Thread waits for database response | • Blocking - Thread waits for database response → • Uses thread pool (HikariCP) | • Uses thread pool (HikariCP) → • Works with JPA/Hibernate | • Works with JPA/Hibernate → R2DBC (Reactive): | R2DBC (Reactive): → • Non-blocking - Event loop handles responses | ...+1 more
+**Flow:**
+- R2DBC vs JDBC
+- ↓
+- JDBC (Traditional):
+- ↓
+- • Blocking - Thread waits for database response
+- ↓
+- • Uses thread pool (HikariCP)
+- ↓
+- • Works with JPA/Hibernate
+- ↓
+- R2DBC (Reactive):
+- ↓
+- • Non-blocking - Event loop handles responses
 
 ```mermaid
 flowchart TD

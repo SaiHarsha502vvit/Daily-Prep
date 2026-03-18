@@ -25,7 +25,22 @@ Technical Debt:
   → Developers quit because working on it is misery
 ```
 
-> **Flow**: Bad code → slow reading | slow reading → slow changes | slow changes → bugs | bugs → more bad code | more bad code → DEATH SPIRAL | 'We'll clean it up later' → Later NEVER comes
+**Flow:**
+- Bad code
+- ↓
+- slow reading
+- ↓
+- slow changes
+- ↓
+- bugs
+- ↓
+- more bad code
+- ↓
+- DEATH SPIRAL
+- ↓
+- 'We'll clean it up later'
+- ↓
+- Later NEVER comes
 
 ```mermaid
 flowchart TD
@@ -166,7 +181,18 @@ Rule 6: Command/Query SEPARATION
   Either DO something OR RETURN something, not both
 ```
 
-> **Flow**: If you can extract a meaningful sub-function → it does too much | If it's longer → extract sub-methods | More → create a parameter object
+**Flow:**
+- If you can extract a meaningful sub-function
+- ↓
+- it does too much
+- ↓
+- If it's longer
+- ↓
+- extract sub-methods
+- ↓
+- More
+- ↓
+- create a parameter object
 
 ```mermaid
 flowchart LR
@@ -310,7 +336,30 @@ Switch on type              →  Polymorphism
 Dead Code (unused)          →  DELETE IT (Git remembers)
 ```
 
-> **Flow**: Long Method (&gt;20 lines) → Extract Method | Long Parameter List (&gt;3) → Parameter Object | Duplicate Code → Extract to shared method | God Class (too many fields) → Split into focused classes | Feature Envy (uses other → Move method to the right class | Magic Numbers → Named constants | ...+3 more
+**Flow:**
+- Long Method (>20 lines)
+- ↓
+- Extract Method
+- ↓
+- Long Parameter List (>3)
+- ↓
+- Parameter Object
+- ↓
+- Duplicate Code
+- ↓
+- Extract to shared method
+- ↓
+- God Class (too many fields)
+- ↓
+- Split into focused classes
+- ↓
+- Feature Envy (uses other
+- ↓
+- Move method to the right class
+- ↓
+- Magic Numbers
+- ↓
+- Named constants
 
 ```mermaid
 flowchart TD

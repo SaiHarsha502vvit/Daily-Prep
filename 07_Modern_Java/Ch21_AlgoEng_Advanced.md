@@ -24,7 +24,20 @@ YOUR THINKING CHAIN:
 Data → Behavior → Scale → Failure → Human Experience → Cost → Time → Evolution
 ```
 
-> **Flow**: THE CORE SKILL OF ENGINEERING: → YOU ARE NOT JUST A CODER. YOU ARE: | YOU ARE NOT JUST A CODER. YOU ARE: → 🔬 A Computer Scientist - Understanding computation limi | 🔬 A Computer Scientist - Understanding computation limi → 🏗️ A System Architect - Designing scalable structures | 🏗️ A System Architect - Designing scalable structures → 🎨 A Product Engineer - Building what users truly need | 🎨 A Product Engineer - Building what users truly need → 🧠 A UX Thinker - Feeling the user's pain | 🧠 A UX Thinker - Feeling the user's pain → ⚙️ A DevOps Pragmatist - Keeping systems alive | ...+1 more
+**Flow:**
+- THE CORE SKILL OF ENGINEERING:
+- ↓
+- YOU ARE NOT JUST A CODER. YOU ARE:
+- ↓
+- 🔬 A Computer Scientist - Understanding computation limi
+- ↓
+- 🏗️ A System Architect - Designing scalable structures
+- ↓
+- 🎨 A Product Engineer - Building what users truly need
+- ↓
+- 🧠 A UX Thinker - Feeling the user's pain
+- ↓
+- ⚙️ A DevOps Pragmatist - Keeping systems alive
 
 ```mermaid
 flowchart TD
@@ -102,7 +115,20 @@ STEP 6 — FAILURE DESIGN
 └─────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: What does the user EMOTIONALLY want? / 'I want to find  → What must exist DIGITALLY? / • Data to store / • Operat | What must exist DIGITALLY? / • Data to store / • Operat → What are the ENTITIES and RELATIONSHIPS? / • Users have | What are the ENTITIES and RELATIONSHIPS? / • Users have → What BREAKS at scale? / • 10x users: Database queries s | What BREAKS at scale? / • 10x users: Database queries s → Which DATA STRUCTURES power each part? / • User search  | Which DATA STRUCTURES power each part? / • User search  → What happens when things BREAK? / • Server dies → Failo
+**Flow:**
+- What does the user EMOTIONALLY want? / 'I want to find
+- ↓
+- What must exist DIGITALLY? / • Data to store / • Operat
+- ↓
+- What are the ENTITIES and RELATIONSHIPS? / • Users have
+- ↓
+- What BREAKS at scale? / • 10x users: Database queries s
+- ↓
+- Which DATA STRUCTURES power each part? / • User search
+- ↓
+- What happens when things BREAK? / • Server dies
+- ↓
+- Failo
 
 ```mermaid
 flowchart TD
@@ -136,7 +162,30 @@ DON'T THINK:                    THINK:
 "Heap gives min/max"       →    "Heap models PRIORITY and importance"
 ```
 
-> **Flow**: 'Array stores data' → 'Array models SEQUENCE in time/space' | 'HashMap is fast lookup' → 'HashMap models ASSOCIATION between things' | 'Tree has nodes' → 'Tree models HIERARCHY and relationships' | 'Graph has edges' → 'Graph models CONNECTIONS in complex systems' | 'Queue is FIFO' → 'Queue models FAIRNESS and ordering' | 'Stack is LIFO' → 'Stack models CONTEXT and undoing' | ...+1 more
+**Flow:**
+- 'Array stores data'
+- ↓
+- 'Array models SEQUENCE in time/space'
+- ↓
+- 'HashMap is fast lookup'
+- ↓
+- 'HashMap models ASSOCIATION between things'
+- ↓
+- 'Tree has nodes'
+- ↓
+- 'Tree models HIERARCHY and relationships'
+- ↓
+- 'Graph has edges'
+- ↓
+- 'Graph models CONNECTIONS in complex systems'
+- ↓
+- 'Queue is FIFO'
+- ↓
+- 'Queue models FAIRNESS and ordering'
+- ↓
+- 'Stack is LIFO'
+- ↓
+- 'Stack models CONTEXT and undoing'
 
 ```mermaid
 flowchart TD
@@ -190,7 +239,20 @@ Ring Buffer             Circular log               Streaming systems
 QuadTree/KD-Tree        Spatial partitioning       Maps, Game collision
 ```
 
-> **Flow**: DATA STRUCTURE REAL-WORLD MODEL PRODUCTION SYSTEM → Array Timeline, Sequence Time-series DB | Array Timeline, Sequence Time-series DB → Dynamic Array Growing history Event logs | Dynamic Array Growing history Event logs → Linked List Chain of events Blockchain | Linked List Chain of events Blockchain → HashMap Dictionary, Index Cache, Session store | HashMap Dictionary, Index Cache, Session store → Stack Undo history Call stack, Parsers | Stack Undo history Call stack, Parsers → Queue Waiting line Message queue, BFS | ...+1 more
+**Flow:**
+- DATA STRUCTURE REAL-WORLD MODEL PRODUCTION SYSTEM
+- ↓
+- Array Timeline, Sequence Time-series DB
+- ↓
+- Dynamic Array Growing history Event logs
+- ↓
+- Linked List Chain of events Blockchain
+- ↓
+- HashMap Dictionary, Index Cache, Session store
+- ↓
+- Stack Undo history Call stack, Parsers
+- ↓
+- Queue Waiting line Message queue, BFS
 
 ```mermaid
 flowchart TD
@@ -241,7 +303,20 @@ flowchart TD
 └────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: 1. MEMORY BEHAVIOR → - Contiguous or scattered? | - Contiguous or scattered? → - Cache-friendly? | - Cache-friendly? → - Memory overhead per element? | - Memory overhead per element? → 2. TIME TRADEOFFS | 2. TIME TRADEOFFS → - Best/Worst/Average case? | - Best/Worst/Average case? → - Amortized analysis? | ...+1 more
+**Flow:**
+- 1. MEMORY BEHAVIOR
+- ↓
+- - Contiguous or scattered?
+- ↓
+- - Cache-friendly?
+- ↓
+- - Memory overhead per element?
+- ↓
+- 2. TIME TRADEOFFS
+- ↓
+- - Best/Worst/Average case?
+- ↓
+- - Amortized analysis?
 
 ```mermaid
 flowchart TD
@@ -282,7 +357,12 @@ Streaming Algorithms    Real-time stats   Live updates    Data reduction  Memory
 Probabilistic           Deduplication     Personalization Quick checks    Accuracy vs cost
 ```
 
-> **Flow**: ALGORITHM BACKEND UI NETWORK COST → BFS/DFS Crawlers Navigation Routing Bandwidth | BFS/DFS Crawlers Navigation Routing Bandwidth → Dynamic Programming Optimization Prediction Caching Sto
+**Flow:**
+- ALGORITHM BACKEND UI NETWORK COST
+- ↓
+- BFS/DFS Crawlers Navigation Routing Bandwidth
+- ↓
+- Dynamic Programming Optimization Prediction Caching Sto
 
 ```mermaid
 flowchart TD
@@ -314,7 +394,18 @@ Autocomplete               Trie + Heap                Prefix match + top results
 Fraud Detection            Graph + Streaming Algo     Pattern detection in flow
 ```
 
-> **Flow**: SYSTEM DSA FUSION WHY IT WORKS → Rate Limiter HashMap + Queue Track requests in window | Rate Limiter HashMap + Queue Track requests in window → Recommendation Engine Graph + Heap Find top-k similar i | Recommendation Engine Graph + Heap Find top-k similar i → High-Scale API Cache + Bloom Filter Fast negative looku | High-Scale API Cache + Bloom Filter Fast negative looku → LRU Cache HashMap + Doubly LL O(1) access + ordering | LRU Cache HashMap + Doubly LL O(1) access + ordering → Autocomplete Trie + Heap Prefix match + top results
+**Flow:**
+- SYSTEM DSA FUSION WHY IT WORKS
+- ↓
+- Rate Limiter HashMap + Queue Track requests in window
+- ↓
+- Recommendation Engine Graph + Heap Find top-k similar i
+- ↓
+- High-Scale API Cache + Bloom Filter Fast negative looku
+- ↓
+- LRU Cache HashMap + Doubly LL O(1) access + ordering
+- ↓
+- Autocomplete Trie + Heap Prefix match + top results
 
 ```mermaid
 flowchart TD
@@ -359,7 +450,26 @@ FUSION DESIGN:
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: PROBLEM: Limit user to 100 requests per minute → HUMAN INTENT: Prevent abuse, ensure fair usage | HUMAN INTENT: Prevent abuse, ensure fair usage → DSA ANALYSIS: | DSA ANALYSIS: → - Need to track: User ID → Request timestamps | - Need to track: User ID → Request timestamps → - Need to count: Requests in last 60 seconds | - Need to count: Requests in last 60 seconds → - Need to expire: Old requests | - Need to expire: Old requests → FUSION DESIGN: | ...+1 more
+**Flow:**
+- PROBLEM: Limit user to 100 requests per minute
+- ↓
+- HUMAN INTENT: Prevent abuse, ensure fair usage
+- ↓
+- DSA ANALYSIS:
+- ↓
+- - Need to track: User ID
+- ↓
+- Request timestamps
+- ↓
+- - Need to track: User ID
+- ↓
+- Request timestamps
+- ↓
+- - Need to count: Requests in last 60 seconds
+- ↓
+- - Need to expire: Old requests
+- ↓
+- FUSION DESIGN:
 
 ```mermaid
 flowchart TD
@@ -459,7 +569,20 @@ MEMORIZE THESE. ASK THEM ALWAYS.
     → Financial data, inventory, user state
 ```
 
-> **Flow**: MEMORIZE THESE. ASK THEM ALWAYS. → 1. What grows UNBOUNDED? | 1. What grows UNBOUNDED? → → Memory leaks, infinite loops, data accumulation | → Memory leaks, infinite loops, data accumulation → 2. What must be INSTANT? | 2. What must be INSTANT? → → User interactions, health checks, critical paths | → User interactions, health checks, critical paths → 3. What can be EVENTUALLY correct? | 3. What can be EVENTUALLY correct? → → Analytics, recommendations, logs | ...+1 more
+**Flow:**
+- MEMORIZE THESE. ASK THEM ALWAYS.
+- ↓
+- 1. What grows UNBOUNDED?
+- ↓
+- Memory leaks, infinite loops, data accumulation
+- ↓
+- 2. What must be INSTANT?
+- ↓
+- User interactions, health checks, critical paths
+- ↓
+- 3. What can be EVENTUALLY correct?
+- ↓
+- Analytics, recommendations, logs
 
 ```mermaid
 flowchart TD
@@ -535,7 +658,24 @@ ELITE ENGINEER EXTRACTS:
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: LATENCY SOURCES / • Frontend rendering time / • API res → DATA FLOW ANALYSIS / User Click → Frontend → API Gatewa | DATA FLOW ANALYSIS / User Click → Frontend → API Gatewa → DSA BOTTLENECKS / • Linear search where binary search p | DSA BOTTLENECKS / • Linear search where binary search p → UX BOTTLENECKS / • Blocking UI during computation? / • 
+**Flow:**
+- LATENCY SOURCES / • Frontend rendering time / • API res
+- ↓
+- DATA FLOW ANALYSIS / User Click
+- ↓
+- Frontend
+- ↓
+- API Gatewa
+- ↓
+- DATA FLOW ANALYSIS / User Click
+- ↓
+- Frontend
+- ↓
+- API Gatewa
+- ↓
+- DSA BOTTLENECKS / • Linear search where binary search p
+- ↓
+- UX BOTTLENECKS / • Blocking UI during computation? / •
 
 ```mermaid
 flowchart TD
@@ -596,7 +736,20 @@ DSA Lesson: Use WeakHashMap or explicit cleanup
 Fix: TTL-based eviction policy
 ```
 
-> **Flow**: STORY 1: THE UNBOUNDED QUEUE → System: E-commerce checkout | System: E-commerce checkout → Problem: Queue grew unbounded during flash sale | Problem: Queue grew unbounded during flash sale → Root Cause: Producer faster than consumer, no backpress | Root Cause: Producer faster than consumer, no backpress → Fix: Ring buffer with overflow handling | Fix: Ring buffer with overflow handling → STORY 2: THE MISSING INDEX | STORY 2: THE MISSING INDEX → System: Social media feed | ...+1 more
+**Flow:**
+- STORY 1: THE UNBOUNDED QUEUE
+- ↓
+- System: E-commerce checkout
+- ↓
+- Problem: Queue grew unbounded during flash sale
+- ↓
+- Root Cause: Producer faster than consumer, no backpress
+- ↓
+- Fix: Ring buffer with overflow handling
+- ↓
+- STORY 2: THE MISSING INDEX
+- ↓
+- System: Social media feed
 
 ```mermaid
 flowchart TD
@@ -664,7 +817,18 @@ PROJECT 3: ANALYTICS PIPELINE
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Components: / • Message Queue (Ring Buffer) / • User Se → Components: / • Inverted Index (HashMap of word → docum | Components: / • Inverted Index (HashMap of word → docum → Components: / • Event Stream (Ring Buffer) / • Aggregat
+**Flow:**
+- Components: / • Message Queue (Ring Buffer) / • User Se
+- ↓
+- Components: / • Inverted Index (HashMap of word
+- ↓
+- docum
+- ↓
+- Components: / • Inverted Index (HashMap of word
+- ↓
+- docum
+- ↓
+- Components: / • Event Stream (Ring Buffer) / • Aggregat
 
 ```mermaid
 flowchart TD
@@ -703,7 +867,20 @@ WEEKLY:
 □ Connect one algorithm to a real system
 ```
 
-> **Flow**: MORNING (Before Coding): → □ What system am I building/improving today? | □ What system am I building/improving today? → □ What data structures are involved? | □ What data structures are involved? → □ What could break? | □ What could break? → DURING CODING: | DURING CODING: → □ Am I creating unbounded growth? | □ Am I creating unbounded growth? → □ Is this O(n²) hidden somewhere? | ...+1 more
+**Flow:**
+- MORNING (Before Coding):
+- ↓
+- □ What system am I building/improving today?
+- ↓
+- □ What data structures are involved?
+- ↓
+- □ What could break?
+- ↓
+- DURING CODING:
+- ↓
+- □ Am I creating unbounded growth?
+- ↓
+- □ Is this O(n²) hidden somewhere?
 
 ```mermaid
 flowchart TD
@@ -748,7 +925,20 @@ flowchart TD
 ╚═══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: YOU ARE NOT PREPARING FOR INTERVIEWS. → YOU ARE PREPARING FOR SYSTEMS THAT CANNOT FAIL QUIETLY. | YOU ARE PREPARING FOR SYSTEMS THAT CANNOT FAIL QUIETLY. → Every algorithm is a tool for CONTROLLING CHAOS. | Every algorithm is a tool for CONTROLLING CHAOS. → Every data structure is a SHAPE OF THOUGHT. | Every data structure is a SHAPE OF THOUGHT. → Every system you build is a TRANSLATION OF HUMAN NEED. | Every system you build is a TRANSLATION OF HUMAN NEED. → The goal is not to memorize patterns. | The goal is not to memorize patterns. → The goal is to SEE THE INVISIBLE ALGORITHMS | ...+1 more
+**Flow:**
+- YOU ARE NOT PREPARING FOR INTERVIEWS.
+- ↓
+- YOU ARE PREPARING FOR SYSTEMS THAT CANNOT FAIL QUIETLY.
+- ↓
+- Every algorithm is a tool for CONTROLLING CHAOS.
+- ↓
+- Every data structure is a SHAPE OF THOUGHT.
+- ↓
+- Every system you build is a TRANSLATION OF HUMAN NEED.
+- ↓
+- The goal is not to memorize patterns.
+- ↓
+- The goal is to SEE THE INVISIBLE ALGORITHMS
 
 ```mermaid
 flowchart TD
@@ -972,7 +1162,20 @@ DSA ANALYSIS:
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: USER STORY: 'Show top 100 players in real-time for my g → REQUIREMENTS: | REQUIREMENTS: → • 10M players total | • 10M players total → • 1000 score updates/second | • 1000 score updates/second → • Get top K players: O(K) | • Get top K players: O(K) → • Get player rank: O(log N) | • Get player rank: O(log N) → • Handle ties correctly | ...+1 more
+**Flow:**
+- USER STORY: 'Show top 100 players in real-time for my g
+- ↓
+- REQUIREMENTS:
+- ↓
+- • 10M players total
+- ↓
+- • 1000 score updates/second
+- ↓
+- • Get top K players: O(K)
+- ↓
+- • Get player rank: O(log N)
+- ↓
+- • Handle ties correctly
 
 ```mermaid
 flowchart TD
@@ -1122,7 +1325,20 @@ DSA MAPPING:
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: USER STORY: 'Show suggestions as user types in search b → REQUIREMENTS: | REQUIREMENTS: → • 1M unique search terms | • 1M unique search terms → • Return top 5 suggestions | • Return top 5 suggestions → • &lt; 50ms response time | • &lt; 50ms response time → • Handle prefix matching | • Handle prefix matching → • Rank by popularity | ...+1 more
+**Flow:**
+- USER STORY: 'Show suggestions as user types in search b
+- ↓
+- REQUIREMENTS:
+- ↓
+- • 1M unique search terms
+- ↓
+- • Return top 5 suggestions
+- ↓
+- • < 50ms response time
+- ↓
+- • Handle prefix matching
+- ↓
+- • Rank by popularity
 
 ```mermaid
 flowchart TD
@@ -1267,7 +1483,20 @@ LEETCODE PROBLEMS AND THEIR PRODUCTION COUNTERPARTS:
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: LEETCODE PROBLEMS AND THEIR PRODUCTION COUNTERPARTS: → LC Problem Real System Application | LC Problem Real System Application → Two Sum Finding matching orders in trading systems | Two Sum Finding matching orders in trading systems → LRU Cache Caching layer in any web service | LRU Cache Caching layer in any web service → Merge Intervals Calendar scheduling, resource allocatio | Merge Intervals Calendar scheduling, resource allocatio → Word Search II Search engine indexing, plagiarism detec | Word Search II Search engine indexing, plagiarism detec → Design Twitter Social media feed generation | ...+1 more
+**Flow:**
+- LEETCODE PROBLEMS AND THEIR PRODUCTION COUNTERPARTS:
+- ↓
+- LC Problem Real System Application
+- ↓
+- Two Sum Finding matching orders in trading systems
+- ↓
+- LRU Cache Caching layer in any web service
+- ↓
+- Merge Intervals Calendar scheduling, resource allocatio
+- ↓
+- Word Search II Search engine indexing, plagiarism detec
+- ↓
+- Design Twitter Social media feed generation
 
 ```mermaid
 flowchart TD
@@ -1375,7 +1604,16 @@ DSA-RELATED PERFORMANCE ISSUES:
    FIX: Sort once, maintain sorted structure
 ```
 
-> **Flow**: WHEN SYSTEM IS SLOW: / 1. MEASURE FIRST / 'Where is tim → Check latency / percentiles | Check latency / percentiles → P99 high P50 high | P99 high P50 high → Edge cases Everything / are slow is slow | Edge cases Everything / are slow is slow → Check for: Check for: / - Large data - Database / - Bad
+**Flow:**
+- WHEN SYSTEM IS SLOW: / 1. MEASURE FIRST / 'Where is tim
+- ↓
+- Check latency / percentiles
+- ↓
+- P99 high P50 high
+- ↓
+- Edge cases Everything / are slow is slow
+- ↓
+- Check for: Check for: / - Large data - Database / - Bad
 
 ```mermaid
 flowchart TD
@@ -1440,7 +1678,30 @@ COMPLEXITY RED FLAGS:
 🚩 database query in loop → N+1 problem
 ```
 
-> **Flow**: 🚩 nested loops → O(n²) or worse | 🚩 recursion without memoization → exponential | 🚩 .contains() in a loop on List → O(n²) | 🚩 string concatenation in loop → O(n²) | 🚩 sorting in a loop → O(n² log n) | 🚩 regex compilation in loop → O(n × regex) | ...+1 more
+**Flow:**
+- 🚩 nested loops
+- ↓
+- O(n²) or worse
+- ↓
+- 🚩 recursion without memoization
+- ↓
+- exponential
+- ↓
+- 🚩 .contains() in a loop on List
+- ↓
+- O(n²)
+- ↓
+- 🚩 string concatenation in loop
+- ↓
+- O(n²)
+- ↓
+- 🚩 sorting in a loop
+- ↓
+- O(n² log n)
+- ↓
+- 🚩 regex compilation in loop
+- ↓
+- O(n × regex)
 
 ```mermaid
 flowchart TD
@@ -1540,7 +1801,30 @@ FOR EACH ALGORITHM, KNOW:
 └── Real-world applications
 ```
 
-> **Flow**: FOR EACH ALGORITHM, KNOW: → When to use it | FOR EACH ALGORITHM, KNOW: → Time complexity | FOR EACH ALGORITHM, KNOW: → Space complexity | FOR EACH ALGORITHM, KNOW: → Implementation | FOR EACH ALGORITHM, KNOW: → Common variations | FOR EACH ALGORITHM, KNOW: → Real-world applications
+**Flow:**
+- FOR EACH ALGORITHM, KNOW:
+- ↓
+- When to use it
+- ↓
+- FOR EACH ALGORITHM, KNOW:
+- ↓
+- Time complexity
+- ↓
+- FOR EACH ALGORITHM, KNOW:
+- ↓
+- Space complexity
+- ↓
+- FOR EACH ALGORITHM, KNOW:
+- ↓
+- Implementation
+- ↓
+- FOR EACH ALGORITHM, KNOW:
+- ↓
+- Common variations
+- ↓
+- FOR EACH ALGORITHM, KNOW:
+- ↓
+- Real-world applications
 
 ```mermaid
 flowchart TD
@@ -1625,7 +1909,30 @@ WEEK 10: SYSTEM DESIGN
 └── Study: Trade-offs in system design
 ```
 
-> **Flow**: WEEK 1: ARRAYS & HASHING → Implement HashMap from scratch | WEEK 1: ARRAYS & HASHING → Solve: Two Sum, Contains Duplicate, Group Anagrams | WEEK 1: ARRAYS & HASHING → Build: In-memory key-value store | WEEK 1: ARRAYS & HASHING → Study: Hash collision resolution strategies | WEEK 2: TWO POINTERS & SLIDING WINDOW → Implement: Sliding window template | WEEK 2: TWO POINTERS & SLIDING WINDOW → Solve: 3Sum, Container With Most Water, Minimum Window | ...+34 more
+**Flow:**
+- WEEK 1: ARRAYS & HASHING
+- ↓
+- Implement HashMap from scratch
+- ↓
+- WEEK 1: ARRAYS & HASHING
+- ↓
+- Solve: Two Sum, Contains Duplicate, Group Anagrams
+- ↓
+- WEEK 1: ARRAYS & HASHING
+- ↓
+- Build: In-memory key-value store
+- ↓
+- WEEK 1: ARRAYS & HASHING
+- ↓
+- Study: Hash collision resolution strategies
+- ↓
+- WEEK 2: TWO POINTERS & SLIDING WINDOW
+- ↓
+- Implement: Sliding window template
+- ↓
+- WEEK 2: TWO POINTERS & SLIDING WINDOW
+- ↓
+- Solve: 3Sum, Container With Most Water, Minimum Window
 
 ```mermaid
 flowchart TD

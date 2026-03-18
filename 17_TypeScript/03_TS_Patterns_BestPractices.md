@@ -516,7 +516,12 @@ RULE: Never stop at Phase 1. Phase 1 TS is worse than JS
 because it gives FALSE confidence. Reach Phase 3.
 ```
 
-> **Flow**: 1. npm install -D typescript / 2. npx tsc --init / 3. S → 1. Start with leaf files (utils, helpers — no dependenc | 1. Start with leaf files (utils, helpers — no dependenc → 1. Enable strict flags ONE AT A TIME: / noImplicitAny →
+**Flow:**
+- 1. npm install -D typescript / 2. npx tsc --init / 3. S
+- ↓
+- 1. Start with leaf files (utils, helpers — no dependenc
+- ↓
+- 1. Enable strict flags ONE AT A TIME: / noImplicitAny
 
 ```mermaid
 flowchart TD
@@ -586,7 +591,10 @@ Library/Package:
 └── strict: true
 ```
 
-> **Flow**: PROJECT TYPE → KEY TSCONFIG OPTIONS:
+**Flow:**
+- PROJECT TYPE
+- ↓
+- KEY TSCONFIG OPTIONS:
 
 ```mermaid
 flowchart LR
@@ -628,7 +636,20 @@ Q: How do you type a function that accepts any object with a specific key?
   Or: function get<T, K extends keyof T>(obj: T, key: K): T[K]
 ```
 
-> **Flow**: based on a variant? → → Discriminated union of prop types: | → Discriminated union of prop types: → Then narrow on props.variant. | Then narrow on props.variant. → Q: How do you handle API response types? | Q: How do you handle API response types? → Q: How would you migrate a large JS project to TS? | Q: How would you migrate a large JS project to TS? → → Phase 1: Install TS, allowJs, rename files gradually. | → Phase 1: Install TS, allowJs, rename files gradually. → Phase 2: Add types starting from leaf files. | ...+1 more
+**Flow:**
+- based on a variant?
+- ↓
+- Discriminated union of prop types:
+- ↓
+- Then narrow on props.variant.
+- ↓
+- Q: How do you handle API response types?
+- ↓
+- Q: How would you migrate a large JS project to TS?
+- ↓
+- Phase 1: Install TS, allowJs, rename files gradually.
+- ↓
+- Phase 2: Add types starting from leaf files.
 
 ```mermaid
 flowchart TD

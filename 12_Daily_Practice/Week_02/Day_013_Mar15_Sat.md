@@ -62,7 +62,20 @@
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: BEAN SCOPES — Controls object lifecycle → SINGLETON (default): | SINGLETON (default): → ONE instance per application context. Shared by all. | ONE instance per application context. Shared by all. → @Scope('singleton') or just @Service / @Component | @Scope('singleton') or just @Service / @Component → USE: Stateless services, repositories, controllers | USE: Stateless services, repositories, controllers → PROTOTYPE: | PROTOTYPE: → NEW instance every time it's requested. | ...+1 more
+**Flow:**
+- BEAN SCOPES — Controls object lifecycle
+- ↓
+- SINGLETON (default):
+- ↓
+- ONE instance per application context. Shared by all.
+- ↓
+- @Scope('singleton') or just @Service / @Component
+- ↓
+- USE: Stateless services, repositories, controllers
+- ↓
+- PROTOTYPE:
+- ↓
+- NEW instance every time it's requested.
 
 ```mermaid
 flowchart TD
@@ -229,7 +242,20 @@ public class ProductController {
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: SPRING DI RULES: → 1. Always use constructor injection | 1. Always use constructor injection → 2. Make fields final | 2. Make fields final → 3. One constructor = @Autowired optional | 3. One constructor = @Autowired optional → 4. Never use new XxxService() — let Spring manage it | 4. Never use new XxxService() — let Spring manage it → 5. @Service for business logic, @Repository for data ac | 5. @Service for business logic, @Repository for data ac → 6. @Component for generic beans | ...+1 more
+**Flow:**
+- SPRING DI RULES:
+- ↓
+- 1. Always use constructor injection
+- ↓
+- 2. Make fields final
+- ↓
+- 3. One constructor = @Autowired optional
+- ↓
+- 4. Never use new XxxService() — let Spring manage it
+- ↓
+- 5. @Service for business logic, @Repository for data ac
+- ↓
+- 6. @Component for generic beans
 
 ```mermaid
 flowchart TD
@@ -332,7 +358,18 @@ PATTERNS:
   • Merge logic (arrays, lists)
 ```
 
-> **Flow**: Week 2: LinkedList (Singly + Doubly), Stack, Queue → You now know 7/10 essential data structures! | Week 2: Merge Sort, Quick Sort, Binary Search, Two → You now have O(n²) AND O(n log n) sorts + O(log n) sear | Week 2: WHERE, ORDER BY, LIMIT, JOINs, GROUP BY, H → You can now write 80% of real-world SQL queries!
+**Flow:**
+- Week 2: LinkedList (Singly + Doubly), Stack, Queue
+- ↓
+- You now know 7/10 essential data structures!
+- ↓
+- Week 2: Merge Sort, Quick Sort, Binary Search, Two
+- ↓
+- You now have O(n²) AND O(n log n) sorts + O(log n) sear
+- ↓
+- Week 2: WHERE, ORDER BY, LIMIT, JOINs, GROUP BY, H
+- ↓
+- You can now write 80% of real-world SQL queries!
 
 ```mermaid
 flowchart TD

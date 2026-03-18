@@ -232,7 +232,12 @@ return dp[n];
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: MEMORY SAVINGS: → Array Size Full 2D Two Rows Single Row | Array Size Full 2D Two Rows Single Row → Savings baseline 500x less 1000x less
+**Flow:**
+- MEMORY SAVINGS:
+- ↓
+- Array Size Full 2D Two Rows Single Row
+- ↓
+- Savings baseline 500x less 1000x less
 
 ```mermaid
 flowchart TD
@@ -316,7 +321,20 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: TOP-DOWN VS BOTTOM-UP: HARDWARE DIFFERENCES → TOP-DOWN (MEMOIZATION): | TOP-DOWN (MEMOIZATION): → int fib(int n, int[] memo) { | int fib(int n, int[] memo) { → memo[n] = fib(n-1, memo) + fib(n-2, memo); | memo[n] = fib(n-1, memo) + fib(n-2, memo); → return memo[n]; | return memo[n]; → CPU Operations per call: | CPU Operations per call: → • Function call overhead: ~15-30 cycles | ...+1 more
+**Flow:**
+- TOP-DOWN VS BOTTOM-UP: HARDWARE DIFFERENCES
+- ↓
+- TOP-DOWN (MEMOIZATION):
+- ↓
+- int fib(int n, int[] memo) {
+- ↓
+- memo[n] = fib(n-1, memo) + fib(n-2, memo);
+- ↓
+- return memo[n];
+- ↓
+- CPU Operations per call:
+- ↓
+- • Function call overhead: ~15-30 cycles
 
 ```mermaid
 flowchart TD
@@ -377,7 +395,26 @@ flowchart TD
 │                                                                                 │
 ```
 
-> **Flow**: STATE REPRESENTATION TECHNIQUES → TECHNIQUE 1: BITMASK DP | TECHNIQUE 1: BITMASK DP → Instead of boolean[] visited → use int bitmask | Instead of boolean[] visited → use int bitmask → Example: Traveling Salesman (n ≤ 20 cities) | Example: Traveling Salesman (n ≤ 20 cities) → int[][] dp = new int[1 &lt;&lt; n][n]; // dp[mask][last | int[][] dp = new int[1 &lt;&lt; n][n]; // dp[mask][last → Memory for n=20: | Memory for n=20: → • Array: 2^20 × 20 × 4 = 80 MB (fits in RAM!) | ...+1 more
+**Flow:**
+- STATE REPRESENTATION TECHNIQUES
+- ↓
+- TECHNIQUE 1: BITMASK DP
+- ↓
+- Instead of boolean[] visited
+- ↓
+- use int bitmask
+- ↓
+- Instead of boolean[] visited
+- ↓
+- use int bitmask
+- ↓
+- Example: Traveling Salesman (n ≤ 20 cities)
+- ↓
+- int[][] dp = new int[1 << n][n]; // dp[mask][last
+- ↓
+- Memory for n=20:
+- ↓
+- • Array: 2^20 × 20 × 4 = 80 MB (fits in RAM!)
 
 ```mermaid
 flowchart TD
@@ -426,7 +463,18 @@ for (int i = 0; i < sorted.length; i++) {
 │ │
 ```
 
-> **Flow**: TECHNIQUE 3: STATE ENCODING → Combine multiple small states into one integer | Combine multiple small states into one integer → Example: Track (position, direction, speed) where: | Example: Track (position, direction, speed) where: → • position: 0-999 | • position: 0-999 → • direction: 0-3 | • direction: 0-3 → • speed: 0-9
+**Flow:**
+- TECHNIQUE 3: STATE ENCODING
+- ↓
+- Combine multiple small states into one integer
+- ↓
+- Example: Track (position, direction, speed) where:
+- ↓
+- • position: 0-999
+- ↓
+- • direction: 0-3
+- ↓
+- • speed: 0-9
 
 ```mermaid
 flowchart TD
@@ -502,7 +550,20 @@ int decodeSpd(int state) { return state % 10; }
 │                                                                                 │
 ```
 
-> **Flow**: TRANSITION OPERATION COSTS → COMMON DP TRANSITION OPERATIONS AND THEIR COSTS: | COMMON DP TRANSITION OPERATIONS AND THEIR COSTS: → Operation CPU Cycles Notes | Operation CPU Cycles Notes → dp[i] = dp[i-1] + 1 3-5 Cache hit likely | dp[i] = dp[i-1] + 1 3-5 Cache hit likely → dp[i][j] = dp[i-1][j-1] 5-10 Depends on cache | dp[i][j] = dp[i-1][j-1] 5-10 Depends on cache → dp[i] = max(dp[i], dp[j] + val) 4-6 Comparison + maybe | dp[i] = max(dp[i], dp[j] + val) 4-6 Comparison + maybe → dp[i] = min(dp[i], dp[j] + val) 4-6 Same as max | ...+1 more
+**Flow:**
+- TRANSITION OPERATION COSTS
+- ↓
+- COMMON DP TRANSITION OPERATIONS AND THEIR COSTS:
+- ↓
+- Operation CPU Cycles Notes
+- ↓
+- dp[i] = dp[i-1] + 1 3-5 Cache hit likely
+- ↓
+- dp[i][j] = dp[i-1][j-1] 5-10 Depends on cache
+- ↓
+- dp[i] = max(dp[i], dp[j] + val) 4-6 Comparison + maybe
+- ↓
+- dp[i] = min(dp[i], dp[j] + val) 4-6 Same as max
 
 ```mermaid
 flowchart TD
@@ -555,7 +616,14 @@ for (int i = 2; i <= n; i++) {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: BENCHMARK (n=10^7 Fibonacci mod 10^9+7): → • With % every iter: 180 ms | • With % every iter: 180 ms → • With conditional: 65 ms | • With conditional: 65 ms → • ~2.8x speedup!
+**Flow:**
+- BENCHMARK (n=10^7 Fibonacci mod 10^9+7):
+- ↓
+- • With % every iter: 180 ms
+- ↓
+- • With conditional: 65 ms
+- ↓
+- • ~2.8x speedup!
 
 ```mermaid
 flowchart TD
@@ -582,7 +650,10 @@ flowchart TD
 │ ────────────────────────────────────────────────────                            │
 ```
 
-> **Flow**: DP ARRAY ALLOCATION STRATEGIES → STRATEGY 1: PREALLOCATE ARRAYS (Best for fixed size)
+**Flow:**
+- DP ARRAY ALLOCATION STRATEGIES
+- ↓
+- STRATEGY 1: PREALLOCATE ARRAYS (Best for fixed size)
 
 ```mermaid
 flowchart TD
@@ -624,7 +695,14 @@ for (int i = 0; i < tests; i++) {
 │ ───────────────────────────────────────────── │
 ```
 
-> **Flow**: ALLOCATION COSTS: → • new int[1000]: ~50-100 ns | • new int[1000]: ~50-100 ns → • new int[1000000]: ~500-2000 ns | • new int[1000000]: ~500-2000 ns → STRATEGY 2: LAZY INITIALIZATION (When sparse)
+**Flow:**
+- ALLOCATION COSTS:
+- ↓
+- • new int[1000]: ~50-100 ns
+- ↓
+- • new int[1000000]: ~500-2000 ns
+- ↓
+- STRATEGY 2: LAZY INITIALIZATION (When sparse)
 
 ```mermaid
 flowchart TD
@@ -668,7 +746,20 @@ int[] dp = new int[n + 1];
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: STRATEGY 3: USE PRIMITIVES, NOT OBJECTS → Storage Memory per element Access time | Storage Memory per element Access time → int[] 4 bytes ~3-4 cycles | int[] 4 bytes ~3-4 cycles → Integer[] 16+ bytes ~10-15 cycles | Integer[] 16+ bytes ~10-15 cycles → ArrayList&lt;Integer&gt; 20+ bytes ~15-20 cycles | ArrayList&lt;Integer&gt; 20+ bytes ~15-20 cycles → HashMap&lt;Integer,Integer&gt; 48+ bytes ~50-200 cycles | HashMap&lt;Integer,Integer&gt; 48+ bytes ~50-200 cycles → Rule: Use primitive arrays for DP whenever possible!
+**Flow:**
+- STRATEGY 3: USE PRIMITIVES, NOT OBJECTS
+- ↓
+- Storage Memory per element Access time
+- ↓
+- int[] 4 bytes ~3-4 cycles
+- ↓
+- Integer[] 16+ bytes ~10-15 cycles
+- ↓
+- ArrayList<Integer> 20+ bytes ~15-20 cycles
+- ↓
+- HashMap<Integer,Integer> 48+ bytes ~50-200 cycles
+- ↓
+- Rule: Use primitive arrays for DP whenever possible!
 
 ```mermaid
 flowchart TD

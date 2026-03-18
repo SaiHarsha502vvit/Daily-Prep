@@ -343,7 +343,22 @@ ORDER BY MIN(total);
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: dim_product / (Dimension) → dim_customer / (Dimension) | dim_product / (Dimension) → dim_date / (Dimension) | dim_customer / (Dimension) → fact_sales / (Fact) | dim_date / (Dimension) → fact_sales / (Fact)
+**Flow:**
+- dim_product / (Dimension)
+- ↓
+- dim_customer / (Dimension)
+- ↓
+- dim_product / (Dimension)
+- ↓
+- dim_date / (Dimension)
+- ↓
+- dim_customer / (Dimension)
+- ↓
+- fact_sales / (Fact)
+- ↓
+- dim_date / (Dimension)
+- ↓
+- fact_sales / (Fact)
 
 ```mermaid
 flowchart TD

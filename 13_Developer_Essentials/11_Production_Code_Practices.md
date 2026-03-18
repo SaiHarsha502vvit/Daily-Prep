@@ -106,7 +106,20 @@ public class RequestFilter implements Filter {
 └───────────┴──────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Level When to Use → ERROR Something failed that needs human attention NOW | ERROR Something failed that needs human attention NOW → e.g., payment gateway down, data corruption | e.g., payment gateway down, data corruption → WARN Something unexpected but handled. Monitor trends. | WARN Something unexpected but handled. Monitor trends. → e.g., retry succeeded, cache miss, deprecated API call | e.g., retry succeeded, cache miss, deprecated API call → INFO Business-significant events. 'What happened?' | INFO Business-significant events. 'What happened?' → e.g., order placed, user registered, deployment started | ...+1 more
+**Flow:**
+- Level When to Use
+- ↓
+- ERROR Something failed that needs human attention NOW
+- ↓
+- e.g., payment gateway down, data corruption
+- ↓
+- WARN Something unexpected but handled. Monitor trends.
+- ↓
+- e.g., retry succeeded, cache miss, deprecated API call
+- ↓
+- INFO Business-significant events. 'What happened?'
+- ↓
+- e.g., order placed, user registered, deployment started
 
 ```mermaid
 flowchart TD
@@ -279,7 +292,20 @@ public PaymentResult processPayment(PaymentRequest req) {
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: REST API Checklist: → ✅ Consistent error response format | ✅ Consistent error response format → ✅ Pagination (page/size or cursor-based for large datas | ✅ Pagination (page/size or cursor-based for large datas → ✅ Rate limiting (return 429 + Retry-After header) | ✅ Rate limiting (return 429 + Retry-After header) → ✅ CORS configuration for frontend | ✅ CORS configuration for frontend → ✅ Request/response logging with sensitive data masking | ✅ Request/response logging with sensitive data masking → Pagination Example: | ...+1 more
+**Flow:**
+- REST API Checklist:
+- ↓
+- ✅ Consistent error response format
+- ↓
+- ✅ Pagination (page/size or cursor-based for large datas
+- ↓
+- ✅ Rate limiting (return 429 + Retry-After header)
+- ↓
+- ✅ CORS configuration for frontend
+- ↓
+- ✅ Request/response logging with sensitive data masking
+- ↓
+- Pagination Example:
 
 ```mermaid
 flowchart TD

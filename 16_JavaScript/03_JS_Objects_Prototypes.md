@@ -89,7 +89,20 @@ state) and classes (old class components). Factory functions
 avoid `this` problems entirely — good for utility modules.
 ```
 
-> **Flow**: WHICH TO USE: → Approach When to Use | Approach When to Use → Object literal One-off objects, configs, data | Object literal One-off objects, configs, data → Class Multiple instances, inheritance | Class Multiple instances, inheritance → Factory function Privacy, no `this` confusion | Factory function Privacy, no `this` confusion → Object.create When you need specific prototype | Object.create When you need specific prototype → Constructor fn Legacy code only (use class) | ...+1 more
+**Flow:**
+- WHICH TO USE:
+- ↓
+- Approach When to Use
+- ↓
+- Object literal One-off objects, configs, data
+- ↓
+- Class Multiple instances, inheritance
+- ↓
+- Factory function Privacy, no `this` confusion
+- ↓
+- Object.create When you need specific prototype
+- ↓
+- Constructor fn Legacy code only (use class)
 
 ```mermaid
 flowchart TD
@@ -183,7 +196,20 @@ person.firstName;          // "New"
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: LEVEL 1: Object.preventExtensions(obj) → → Cannot ADD new properties. Can modify/delete existing | → Cannot ADD new properties. Can modify/delete existing → LEVEL 2: Object.seal(obj) | LEVEL 2: Object.seal(obj) → → Cannot ADD or DELETE properties. CAN modify values. | → Cannot ADD or DELETE properties. CAN modify values. → (Sets configurable: false on all properties) | (Sets configurable: false on all properties) → LEVEL 3: Object.freeze(obj) | LEVEL 3: Object.freeze(obj) → → Cannot ADD, DELETE, or MODIFY. Completely immutable. | ...+1 more
+**Flow:**
+- LEVEL 1: Object.preventExtensions(obj)
+- ↓
+- Cannot ADD new properties. Can modify/delete existing
+- ↓
+- LEVEL 2: Object.seal(obj)
+- ↓
+- Cannot ADD or DELETE properties. CAN modify values.
+- ↓
+- (Sets configurable: false on all properties)
+- ↓
+- LEVEL 3: Object.freeze(obj)
+- ↓
+- Cannot ADD, DELETE, or MODIFY. Completely immutable.
 
 ```mermaid
 flowchart TD
@@ -228,7 +254,20 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: object. This forms a CHAIN (until null). → WHY: Memory efficiency. Instead of copying methods to e | WHY: Memory efficiency. Instead of copying methods to e → instance, all instances SHARE methods via the prototype | instance, all instances SHARE methods via the prototype → 1000 users, 1 copy of greet() — not 1000 copies. | 1000 users, 1 copy of greet() — not 1000 copies. → ANALOGY: Prototype chain is like a family tree. | ANALOGY: Prototype chain is like a family tree. → If you don't know something, ask your parent. | If you don't know something, ask your parent. → HOW: Access via Object.getPrototypeOf(obj) or obj.__pro | ...+1 more
+**Flow:**
+- object. This forms a CHAIN (until null).
+- ↓
+- WHY: Memory efficiency. Instead of copying methods to e
+- ↓
+- instance, all instances SHARE methods via the prototype
+- ↓
+- 1000 users, 1 copy of greet() — not 1000 copies.
+- ↓
+- ANALOGY: Prototype chain is like a family tree.
+- ↓
+- If you don't know something, ask your parent.
+- ↓
+- HOW: Access via Object.getPrototypeOf(obj) or obj.__pro
 
 ```mermaid
 flowchart TD
@@ -276,7 +315,14 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: PROTOTYPE CHAIN VISUALIZATION: / const arr = [1, 2, 3]; → Array.prototype { map, filter, reduce, forEach, ... } / | Array.prototype { map, filter, reduce, forEach, ... } / → Object.prototype { toString, hasOwnProperty, valueOf, . | Object.prototype { toString, hasOwnProperty, valueOf, . → null ← END OF CHAIN / When you call arr.map(), JS looks
+**Flow:**
+- PROTOTYPE CHAIN VISUALIZATION: / const arr = [1, 2, 3];
+- ↓
+- Array.prototype { map, filter, reduce, forEach, ... } /
+- ↓
+- Object.prototype { toString, hasOwnProperty, valueOf, .
+- ↓
+- null ← END OF CHAIN / When you call arr.map(), JS looks
 
 ```mermaid
 flowchart TD
@@ -402,7 +448,20 @@ rex.showTricks();     // "sit"
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: CLASS ≡ PROTOTYPE (what class actually does): → class Dog extends Animal { bark() {} } | class Dog extends Animal { bark() {} } → IS EXACTLY THE SAME AS: | IS EXACTLY THE SAME AS: → function Dog(name, breed) { Animal.call(this, name); .. | function Dog(name, breed) { Animal.call(this, name); .. → Dog.prototype = Object.create(Animal.prototype); | Dog.prototype = Object.create(Animal.prototype); → Dog.prototype.constructor = Dog; | Dog.prototype.constructor = Dog; → Dog.prototype.bark = function() {}; | ...+1 more
+**Flow:**
+- CLASS ≡ PROTOTYPE (what class actually does):
+- ↓
+- class Dog extends Animal { bark() {} }
+- ↓
+- IS EXACTLY THE SAME AS:
+- ↓
+- function Dog(name, breed) { Animal.call(this, name); ..
+- ↓
+- Dog.prototype = Object.create(Animal.prototype);
+- ↓
+- Dog.prototype.constructor = Dog;
+- ↓
+- Dog.prototype.bark = function() {};
 
 ```mermaid
 flowchart TD
@@ -572,7 +631,20 @@ In JS, objects are "bags of properties" — you can add/remove
 properties at any time. More flexible, but less safe.
 ```
 
-> **Flow**: Feature JavaScript Java → Typing Dynamic Static | Typing Dynamic Static → Inheritance Prototype-based Class-based | Inheritance Prototype-based Class-based → Class keyword Sugar over proto Real class | Class keyword Sugar over proto Real class → Private fields # prefix (new) private keyword | Private fields # prefix (new) private keyword → Interfaces None (use TS) interface keyword | Interfaces None (use TS) interface keyword → Multiple inherit Mixins/compose Interfaces only | ...+1 more
+**Flow:**
+- Feature JavaScript Java
+- ↓
+- Typing Dynamic Static
+- ↓
+- Inheritance Prototype-based Class-based
+- ↓
+- Class keyword Sugar over proto Real class
+- ↓
+- Private fields # prefix (new) private keyword
+- ↓
+- Interfaces None (use TS) interface keyword
+- ↓
+- Multiple inherit Mixins/compose Interfaces only
 
 ```mermaid
 flowchart TD
@@ -627,7 +699,20 @@ Q: How to check if a property exists?
   Object.hasOwn(obj, "prop") (modern, own only — preferred)
 ```
 
-> **Flow**: Q: How does prototypal inheritance work? → on the object, JS walks up the prototype chain until nu | on the object, JS walks up the prototype chain until nu → Q: What does `new` keyword do? | Q: What does `new` keyword do? → → 1. Creates empty object {} | → 1. Creates empty object {} → 2. Sets its [[Prototype]] to Constructor.prototype | 2. Sets its [[Prototype]] to Constructor.prototype → 3. Calls constructor with `this` = new object | 3. Calls constructor with `this` = new object → Q: Difference between hasOwnProperty and `in`? | ...+1 more
+**Flow:**
+- Q: How does prototypal inheritance work?
+- ↓
+- on the object, JS walks up the prototype chain until nu
+- ↓
+- Q: What does `new` keyword do?
+- ↓
+- 1. Creates empty object {}
+- ↓
+- 2. Sets its [[Prototype]] to Constructor.prototype
+- ↓
+- 3. Calls constructor with `this` = new object
+- ↓
+- Q: Difference between hasOwnProperty and `in`?
 
 ```mermaid
 flowchart TD

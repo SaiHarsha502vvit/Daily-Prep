@@ -59,7 +59,12 @@ KEY INSIGHT: justify-content works on MAIN axis.
 When you change direction, their effects SWAP!
 ```
 
-> **Flow**: Item 1 → Item 1 | Item 2 → Item 1
+**Flow:**
+- Item 1
+- ↓
+- Item 2
+- ↓
+- Item 1
 
 ```mermaid
 flowchart TD
@@ -157,7 +162,22 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: Extra space: 600 - 300 = 300px → flex-grow: 0 (default) — items stay at their size: | flex-grow: 0 (default) — items stay at their size: → ┃ A(100) B(100) C(100) empty 300px ┃ | ┃ A(100) B(100) C(100) empty 300px ┃ → A: flex-grow: 1, B: flex-grow: 1, C: flex-grow: 1 | A: flex-grow: 1, B: flex-grow: 1, C: flex-grow: 1 → Each gets 300/3 = 100px extra: | Each gets 300/3 = 100px extra: → A: flex-grow: 2, B: flex-grow: 1, C: flex-grow: 1 | A: flex-grow: 2, B: flex-grow: 1, C: flex-grow: 1 → Ratio 2:1:1 → A gets 150px, B gets 75px, C gets 75px: | ...+1 more
+**Flow:**
+- Extra space: 600 - 300 = 300px
+- ↓
+- flex-grow: 0 (default) — items stay at their size:
+- ↓
+- ┃ A(100) B(100) C(100) empty 300px ┃
+- ↓
+- A: flex-grow: 1, B: flex-grow: 1, C: flex-grow: 1
+- ↓
+- Each gets 300/3 = 100px extra:
+- ↓
+- A: flex-grow: 2, B: flex-grow: 1, C: flex-grow: 1
+- ↓
+- Ratio 2:1:1
+- ↓
+- A gets 150px, B gets 75px, C gets 75px:
 
 ```mermaid
 flowchart TD
@@ -282,7 +302,20 @@ AREA: Rectangle spanning one or more cells
 GAP: Space between tracks
 ```
 
-> **Flow**: GRID ANATOMY: → Column 1 Column 2 Column 3 | Column 1 Column 2 Column 3 → ← Row 1 | ← Row 1 → Cell(1,1) Cell(1,2) Cell(1,3) | Cell(1,1) Cell(1,2) Cell(1,3) → ← Grid Line | ← Grid Line → ← Row 2 | ← Row 2 → Cell(2,1) Cell(2,2) Cell(2,3) | ...+1 more
+**Flow:**
+- GRID ANATOMY:
+- ↓
+- Column 1 Column 2 Column 3
+- ↓
+- ← Row 1
+- ↓
+- Cell(1,1) Cell(1,2) Cell(1,3)
+- ↓
+- ← Grid Line
+- ↓
+- ← Row 2
+- ↓
+- Cell(2,1) Cell(2,2) Cell(2,3)
 
 ```mermaid
 flowchart TD
@@ -524,7 +557,10 @@ COMMON COMBO: Grid for page layout, Flex inside components.
   .footer { display: flex; }   ← Footer links are flex
 ```
 
-> **Flow**: Navigation bars / Centering content / Single row/column → Page-level layouts / Card grids (responsive) / Dashboar
+**Flow:**
+- Navigation bars / Centering content / Single row/column
+- ↓
+- Page-level layouts / Card grids (responsive) / Dashboar
 
 ```mermaid
 flowchart TD
@@ -641,7 +677,10 @@ Q: What are container queries?
   Essential for reusable components that live in different contexts.
 ```
 
-> **Flow**: 2fr + 1fr + 1fr = total 4fr → 50%, 25%, 25%.
+**Flow:**
+- 2fr + 1fr + 1fr = total 4fr
+- ↓
+- 50%, 25%, 25%.
 
 ```mermaid
 flowchart LR

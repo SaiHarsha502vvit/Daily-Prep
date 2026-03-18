@@ -38,7 +38,20 @@ AFTER Spring Boot:
   → "Hello World" in 5 MINUTES
 ```
 
-> **Flow**: BEFORE Spring Boot (traditional Java web dev): → 1. Write 200+ lines of XML configuration | 1. Write 200+ lines of XML configuration → 2. Set up a Tomcat server manually | 2. Set up a Tomcat server manually → 3. Add 30+ library dependencies with exact versions | 3. Add 30+ library dependencies with exact versions → 4. Configure database connection pools | 4. Configure database connection pools → 5. Write boilerplate code for every endpoint | 5. Write boilerplate code for every endpoint → → 2-3 DAYS just to get 'Hello World' running | ...+1 more
+**Flow:**
+- BEFORE Spring Boot (traditional Java web dev):
+- ↓
+- 1. Write 200+ lines of XML configuration
+- ↓
+- 2. Set up a Tomcat server manually
+- ↓
+- 3. Add 30+ library dependencies with exact versions
+- ↓
+- 4. Configure database connection pools
+- ↓
+- 5. Write boilerplate code for every endpoint
+- ↓
+- 2-3 DAYS just to get 'Hello World' running
 
 ```mermaid
 flowchart TD
@@ -102,7 +115,30 @@ WHY layers?
   - Maintainability (change database without touching controller)
 ```
 
-> **Flow**: Spring Boot Architecture: → YOUR APPLICATION | YOUR APPLICATION → Controller Service Repository | Controller Service Repository → (REST API) → (Business) → (Database) | (REST API) → (Business) → (Database) → SPRING BOOT AUTO-CONFIG | SPRING BOOT AUTO-CONFIG → (Tomcat, Jackson, DataSource, Security) | (Tomcat, Jackson, DataSource, Security) → SPRING FRAMEWORK | ...+1 more
+**Flow:**
+- Spring Boot Architecture:
+- ↓
+- YOUR APPLICATION
+- ↓
+- Controller Service Repository
+- ↓
+- (REST API)
+- ↓
+- (Business)
+- ↓
+- (Database)
+- ↓
+- (REST API)
+- ↓
+- (Business)
+- ↓
+- (Database)
+- ↓
+- SPRING BOOT AUTO-CONFIG
+- ↓
+- (Tomcat, Jackson, DataSource, Security)
+- ↓
+- SPRING FRAMEWORK
 
 ```mermaid
 flowchart TD
@@ -156,7 +192,10 @@ IoC CONTAINER:
     ORDER (injection) = @Autowired, constructor injection
 ```
 
-> **Flow**: // Switch MySQL → PostgreSQL by changing ONE config line
+**Flow:**
+- // Switch MySQL
+- ↓
+- PostgreSQL by changing ONE config line
 
 ```mermaid
 flowchart LR
@@ -234,7 +273,20 @@ STEP 2: Project structure generated:
         templates/                  ← HTML templates
 ```
 
-> **Flow**: STEP 1: Go to https://start.spring.io → - Project: Maven | - Project: Maven → - Language: Java | - Language: Java → - Spring Boot: 3.x | - Spring Boot: 3.x → - Dependencies: Spring Web, Spring Data JPA, H2 Databas | - Dependencies: Spring Web, Spring Data JPA, H2 Databas → STEP 2: Project structure generated: | STEP 2: Project structure generated: → src/ | ...+1 more
+**Flow:**
+- STEP 1: Go to https://start.spring.io
+- ↓
+- - Project: Maven
+- ↓
+- - Language: Java
+- ↓
+- - Spring Boot: 3.x
+- ↓
+- - Dependencies: Spring Web, Spring Data JPA, H2 Databas
+- ↓
+- STEP 2: Project structure generated:
+- ↓
+- src/
 
 ```mermaid
 flowchart TD
@@ -354,7 +406,20 @@ GET http://localhost:8080/api/products/1
   → Returns: {"id": 1, "name": "Laptop", "price": 999.99}
 ```
 
-> **Flow**: START: mvn spring-boot:run → → Tomcat starts on port 8080 | → Tomcat starts on port 8080 → GET http://localhost:8080/api/products | GET http://localhost:8080/api/products → → Returns: [] | → Returns: [] → POST http://localhost:8080/api/products | POST http://localhost:8080/api/products → Body: {'name': 'Laptop', 'price': 999.99} | Body: {'name': 'Laptop', 'price': 999.99} → → Returns: {'id': 1, 'name': 'Laptop', 'price': 999.99} | ...+1 more
+**Flow:**
+- START: mvn spring-boot:run
+- ↓
+- Tomcat starts on port 8080
+- ↓
+- GET http://localhost:8080/api/products
+- ↓
+- Returns: []
+- ↓
+- POST http://localhost:8080/api/products
+- ↓
+- Body: {'name': 'Laptop', 'price': 999.99}
+- ↓
+- Returns: {'id': 1, 'name': 'Laptop', 'price': 999.99}
 
 ```mermaid
 flowchart TD

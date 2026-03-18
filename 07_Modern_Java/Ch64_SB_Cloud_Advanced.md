@@ -678,7 +678,30 @@ infrastructure/
     └── gcp/
 ```
 
-> **Flow**: infrastructure/ → modules/ | infrastructure/ → kubernetes/ | infrastructure/ → main.tf | infrastructure/ → variables.tf | infrastructure/ → outputs.tf | infrastructure/ → database/ | ...+16 more
+**Flow:**
+- infrastructure/
+- ↓
+- modules/
+- ↓
+- infrastructure/
+- ↓
+- kubernetes/
+- ↓
+- infrastructure/
+- ↓
+- main.tf
+- ↓
+- infrastructure/
+- ↓
+- variables.tf
+- ↓
+- infrastructure/
+- ↓
+- outputs.tf
+- ↓
+- infrastructure/
+- ↓
+- database/
 
 ```mermaid
 flowchart TD
@@ -954,7 +977,20 @@ management:
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: COST OPTIMIZATION STRATEGIES → COMPUTE | COMPUTE → ✅ Right-size instances based on actual usage | ✅ Right-size instances based on actual usage → ✅ Use Spot/Preemptible instances for non-critical workl | ✅ Use Spot/Preemptible instances for non-critical workl → ✅ Implement auto-scaling with proper thresholds | ✅ Implement auto-scaling with proper thresholds → ✅ Schedule non-prod environments to shut down | ✅ Schedule non-prod environments to shut down → STORAGE | ...+1 more
+**Flow:**
+- COST OPTIMIZATION STRATEGIES
+- ↓
+- COMPUTE
+- ↓
+- ✅ Right-size instances based on actual usage
+- ↓
+- ✅ Use Spot/Preemptible instances for non-critical workl
+- ↓
+- ✅ Implement auto-scaling with proper thresholds
+- ↓
+- ✅ Schedule non-prod environments to shut down
+- ↓
+- STORAGE
 
 ```mermaid
 flowchart TD
@@ -1184,7 +1220,20 @@ Strategies:
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: CLOUD DEPLOYMENT CHEAT SHEET → DOCKER COMMANDS | DOCKER COMMANDS → docker build -t app . Build image | docker build -t app . Build image → docker run -p 8080:8080 app Run container | docker run -p 8080:8080 app Run container → docker push registry/app Push to registry | docker push registry/app Push to registry → docker-compose up -d Start services | docker-compose up -d Start services → KUBECTL COMMANDS | ...+1 more
+**Flow:**
+- CLOUD DEPLOYMENT CHEAT SHEET
+- ↓
+- DOCKER COMMANDS
+- ↓
+- docker build -t app . Build image
+- ↓
+- docker run -p 8080:8080 app Run container
+- ↓
+- docker push registry/app Push to registry
+- ↓
+- docker-compose up -d Start services
+- ↓
+- KUBECTL COMMANDS
 
 ```mermaid
 flowchart TD

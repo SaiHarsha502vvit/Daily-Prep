@@ -234,7 +234,16 @@ void backtrack(List<List<Integer>> result, List<Integer> current,
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: SUBSETS - All possible subsets (power set) → nums = [1, 2, 3] | nums = [1, 2, 3] → Decision Tree: | Decision Tree: → include 1 skip 1 | include 1 skip 1 → Output: [[], [1], [2], [3], [1,2], [1,3], [2,3], [1,2,3
+**Flow:**
+- SUBSETS - All possible subsets (power set)
+- ↓
+- nums = [1, 2, 3]
+- ↓
+- Decision Tree:
+- ↓
+- include 1 skip 1
+- ↓
+- Output: [[], [1], [2], [3], [1,2], [1,3], [2,3], [1,2,3
 
 ```mermaid
 flowchart TD
@@ -289,7 +298,16 @@ private void backtrack(int[] nums, int start, List<Integer> path,
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: SUBSETS II - Skip duplicates → nums = [1, 2, 2] | nums = [1, 2, 2] → Without skip: [1,2], [1,2] would appear twice | Without skip: [1,2], [1,2] would appear twice → Key: Skip nums[i] if nums[i] == nums[i-1] at same level | Key: Skip nums[i] if nums[i] == nums[i-1] at same level → Output: [[], [1], [1,2], [1,2,2], [2], [2,2]]
+**Flow:**
+- SUBSETS II - Skip duplicates
+- ↓
+- nums = [1, 2, 2]
+- ↓
+- Without skip: [1,2], [1,2] would appear twice
+- ↓
+- Key: Skip nums[i] if nums[i] == nums[i-1] at same level
+- ↓
+- Output: [[], [1], [1,2], [1,2,2], [2], [2,2]]
 
 ```mermaid
 flowchart TD
@@ -349,7 +367,14 @@ private void backtrack(int[] nums, int start, List<Integer> path,
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: COMBINATION SUM - Unlimited use of each number → candidates = [2, 3, 6, 7], target = 7 | candidates = [2, 3, 6, 7], target = 7 → Can reuse same number: | Can reuse same number: → Output: [[2,2,3], [7]]
+**Flow:**
+- COMBINATION SUM - Unlimited use of each number
+- ↓
+- candidates = [2, 3, 6, 7], target = 7
+- ↓
+- Can reuse same number:
+- ↓
+- Output: [[2,2,3], [7]]
 
 ```mermaid
 flowchart TD
@@ -406,7 +431,14 @@ private void backtrack(int[] candidates, int remain, int start,
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: COMBINATION SUM II - Each number used once → candidates = [10,1,2,7,6,1,5], target = 8 | candidates = [10,1,2,7,6,1,5], target = 8 → Output: [[1,1,6], [1,2,5], [1,7], [2,6]] | Output: [[1,1,6], [1,2,5], [1,7], [2,6]] → Key: Sort + skip duplicates at same level
+**Flow:**
+- COMBINATION SUM II - Each number used once
+- ↓
+- candidates = [10,1,2,7,6,1,5], target = 8
+- ↓
+- Output: [[1,1,6], [1,2,5], [1,7], [2,6]]
+- ↓
+- Key: Sort + skip duplicates at same level
 
 ```mermaid
 flowchart TD
@@ -464,7 +496,12 @@ private void backtrack(int[] candidates, int remain, int start,
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: COMBINATIONS - Choose k from n → Choose 2 numbers from [1, 2, 3, 4] | Choose 2 numbers from [1, 2, 3, 4] → Output: [[1,2], [1,3], [1,4], [2,3], [2,4], [3,4]]
+**Flow:**
+- COMBINATIONS - Choose k from n
+- ↓
+- Choose 2 numbers from [1, 2, 3, 4]
+- ↓
+- Output: [[1,2], [1,3], [1,4], [2,3], [2,4], [3,4]]
 
 ```mermaid
 flowchart TD
@@ -529,7 +566,14 @@ private void backtrack(int n, int k, int start, List<Integer> path,
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: PERMUTATIONS - All arrangements → nums = [1, 2, 3] | nums = [1, 2, 3] → Tree (swap approach): | Tree (swap approach): → Output: [[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1
+**Flow:**
+- PERMUTATIONS - All arrangements
+- ↓
+- nums = [1, 2, 3]
+- ↓
+- Tree (swap approach):
+- ↓
+- Output: [[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1
 
 ```mermaid
 flowchart TD
@@ -588,7 +632,14 @@ private void backtrack(int[] nums, List<Integer> path, boolean[] used,
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: PERMUTATIONS II - Unique permutations → nums = [1, 1, 2] | nums = [1, 1, 2] → Output: [[1,1,2], [1,2,1], [2,1,1]] | Output: [[1,1,2], [1,2,1], [2,1,1]] → Key: Sort + skip if same as previous AND previous not u
+**Flow:**
+- PERMUTATIONS II - Unique permutations
+- ↓
+- nums = [1, 1, 2]
+- ↓
+- Output: [[1,1,2], [1,2,1], [2,1,1]]
+- ↓
+- Key: Sort + skip if same as previous AND previous not u
 
 ```mermaid
 flowchart TD
@@ -658,7 +709,14 @@ private void backtrack(int[] nums, List<Integer> path, boolean[] used,
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: PALINDROME PARTITIONING → s = 'aab' | s = 'aab' → Partitions where each part is palindrome: | Partitions where each part is palindrome: → Output: [['a','a','b'], ['aa','b']]
+**Flow:**
+- PALINDROME PARTITIONING
+- ↓
+- s = 'aab'
+- ↓
+- Partitions where each part is palindrome:
+- ↓
+- Output: [['a','a','b'], ['aa','b']]
 
 ```mermaid
 flowchart TD
@@ -728,7 +786,28 @@ private boolean isPalindrome(String s, int left, int right) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: LETTER COMBINATIONS OF PHONE NUMBER → digits = '23' | digits = '23' → 2 → 'abc', 3 → 'def' | 2 → 'abc', 3 → 'def' → a b c ← digit 2 | a b c ← digit 2 → d,e,f d,e,f d,e,f ← digit 3 | d,e,f d,e,f d,e,f ← digit 3 → Output: ['ad','ae','af','bd','be','bf','cd','ce','cf']
+**Flow:**
+- LETTER COMBINATIONS OF PHONE NUMBER
+- ↓
+- digits = '23'
+- ↓
+- 2
+- ↓
+- 'abc', 3
+- ↓
+- 'def'
+- ↓
+- 2
+- ↓
+- 'abc', 3
+- ↓
+- 'def'
+- ↓
+- a b c ← digit 2
+- ↓
+- d,e,f d,e,f d,e,f ← digit 3
+- ↓
+- Output: ['ad','ae','af','bd','be','bf','cd','ce','cf']
 
 ```mermaid
 flowchart TD
@@ -795,7 +874,16 @@ private void backtrack(String digits, int index, StringBuilder path,
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: GENERATE PARENTHESES → n = 3 (3 pairs) | n = 3 (3 pairs) → Rules: | Rules: → - Can add '(' if open &lt; n | - Can add '(' if open &lt; n → - Can add ')' if close &lt; open
+**Flow:**
+- GENERATE PARENTHESES
+- ↓
+- n = 3 (3 pairs)
+- ↓
+- Rules:
+- ↓
+- - Can add '(' if open < n
+- ↓
+- - Can add ')' if close < open
 
 ```mermaid
 flowchart TD
@@ -874,7 +962,14 @@ private void backtrack(int n, int open, int close, StringBuilder path,
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WORD SEARCH - Find word in grid → board = [['A','B','C','E'], | board = [['A','B','C','E'], → word = 'ABCCED' | word = 'ABCCED' → Output: true
+**Flow:**
+- WORD SEARCH - Find word in grid
+- ↓
+- board = [['A','B','C','E'],
+- ↓
+- word = 'ABCCED'
+- ↓
+- Output: true
 
 ```mermaid
 flowchart TD
@@ -952,7 +1047,10 @@ private boolean backtrack(char[][] board, String word, int r, int c, int idx) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: . Q . . / . . . Q / Q . . . / . . Q . → . . Q . / Q . . . / . . . Q / . Q . .
+**Flow:**
+- . Q . . / . . . Q / Q . . . / . . Q .
+- ↓
+- . . Q . / Q . . . / . . . Q / . Q . .
 
 ```mermaid
 flowchart TD
@@ -1041,7 +1139,12 @@ private List<String> construct(char[][] board) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: SUDOKU SOLVER → Fill 9x9 grid so each row, column, and 3x3 box | Fill 9x9 grid so each row, column, and 3x3 box → contains digits 1-9 exactly once
+**Flow:**
+- SUDOKU SOLVER
+- ↓
+- Fill 9x9 grid so each row, column, and 3x3 box
+- ↓
+- contains digits 1-9 exactly once
 
 ```mermaid
 flowchart TD

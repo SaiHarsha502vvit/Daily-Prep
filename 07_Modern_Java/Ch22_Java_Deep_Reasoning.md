@@ -109,7 +109,34 @@ public class PassByValueDemo {
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: THE PUBLIC LIBRARY ANALOGY → String pool = A public library with ONE copy of each bo | String pool = A public library with ONE copy of each bo → String a = 'hello'; → Library: 'We have 'hello'. Here's | String a = 'hello'; → Library: 'We have 'hello'. Here's → reference to the SAME copy.' | reference to the SAME copy.' → String b = 'hello'; → Library: 'We already have 'hello' | String b = 'hello'; → Library: 'We already have 'hello' → Here's the SAME reference.' | Here's the SAME reference.' → a == b → true! Same physical book (same object in pool) | ...+1 more
+**Flow:**
+- THE PUBLIC LIBRARY ANALOGY
+- ↓
+- String pool = A public library with ONE copy of each bo
+- ↓
+- String a = 'hello';
+- ↓
+- Library: 'We have 'hello'. Here's
+- ↓
+- String a = 'hello';
+- ↓
+- Library: 'We have 'hello'. Here's
+- ↓
+- reference to the SAME copy.'
+- ↓
+- String b = 'hello';
+- ↓
+- Library: 'We already have 'hello'
+- ↓
+- String b = 'hello';
+- ↓
+- Library: 'We already have 'hello'
+- ↓
+- Here's the SAME reference.'
+- ↓
+- a == b
+- ↓
+- true! Same physical book (same object in pool)
 
 ```mermaid
 flowchart TD
@@ -179,7 +206,28 @@ System.out.println(original); // "hello" — unchanged!
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: == → 'Are these the SAME object in memory?' → (Compares references / addresses) | (Compares references / addresses) → .equals()→ 'Do these have the SAME content?' | .equals()→ 'Do these have the SAME content?' → (Compares values — but MUST be overridden!) | (Compares values — but MUST be overridden!) → For PRIMITIVES (int, char, boolean): | For PRIMITIVES (int, char, boolean): → → Use == (there's no .equals() for primitives) | → Use == (there's no .equals() for primitives) → → 5 == 5 is true. Simple. | ...+1 more
+**Flow:**
+- ==
+- ↓
+- 'Are these the SAME object in memory?'
+- ↓
+- (Compares references / addresses)
+- ↓
+- .equals()
+- ↓
+- 'Do these have the SAME content?'
+- ↓
+- .equals()
+- ↓
+- 'Do these have the SAME content?'
+- ↓
+- (Compares values — but MUST be overridden!)
+- ↓
+- For PRIMITIVES (int, char, boolean):
+- ↓
+- Use == (there's no .equals() for primitives)
+- ↓
+- 5 == 5 is true. Simple.
 
 ```mermaid
 flowchart TD
@@ -257,7 +305,40 @@ class Point {
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: THE VIP LOUNGE ANALOGY → Java has a VIP lounge for 'popular' integers: -128 to 1 | Java has a VIP lounge for 'popular' integers: -128 to 1 → These 256 Integer objects are pre-created and CACHED. | These 256 Integer objects are pre-created and CACHED. → Integer a = 127 → '127 is a VIP. Here's the cached obje | Integer a = 127 → '127 is a VIP. Here's the cached obje → a == b → true (same object from cache!) | a == b → true (same object from cache!) → Integer c = 128 → '128 is NOT a VIP. Create a NEW objec | Integer c = 128 → '128 is NOT a VIP. Create a NEW objec → c == d → false (different objects!) | ...+1 more
+**Flow:**
+- THE VIP LOUNGE ANALOGY
+- ↓
+- Java has a VIP lounge for 'popular' integers: -128 to 1
+- ↓
+- These 256 Integer objects are pre-created and CACHED.
+- ↓
+- Integer a = 127
+- ↓
+- '127 is a VIP. Here's the cached obje
+- ↓
+- Integer a = 127
+- ↓
+- '127 is a VIP. Here's the cached obje
+- ↓
+- a == b
+- ↓
+- true (same object from cache!)
+- ↓
+- a == b
+- ↓
+- true (same object from cache!)
+- ↓
+- Integer c = 128
+- ↓
+- '128 is NOT a VIP. Create a NEW objec
+- ↓
+- Integer c = 128
+- ↓
+- '128 is NOT a VIP. Create a NEW objec
+- ↓
+- c == d
+- ↓
+- false (different objects!)
 
 ```mermaid
 flowchart TD
@@ -324,7 +405,32 @@ System.out.println(c.equals(d)); // true  — always use this
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: TYPE ERASURE = The Costume Party → At compile time, everyone wears name tags (types). | At compile time, everyone wears name tags (types). → At runtime, all name tags are removed — everyone looks | At runtime, all name tags are removed — everyone looks → same (raw types). | same (raw types). → List&lt;String&gt; at compile time → List at runtime | List&lt;String&gt; at compile time → List at runtime → List&lt;Integer&gt; at compile time → List at runtime | List&lt;Integer&gt; at compile time → List at runtime → They're THE SAME class at runtime! | ...+1 more
+**Flow:**
+- TYPE ERASURE = The Costume Party
+- ↓
+- At compile time, everyone wears name tags (types).
+- ↓
+- At runtime, all name tags are removed — everyone looks
+- ↓
+- same (raw types).
+- ↓
+- List<String> at compile time
+- ↓
+- List at runtime
+- ↓
+- List<String> at compile time
+- ↓
+- List at runtime
+- ↓
+- List<Integer> at compile time
+- ↓
+- List at runtime
+- ↓
+- List<Integer> at compile time
+- ↓
+- List at runtime
+- ↓
+- They're THE SAME class at runtime!
 
 ```mermaid
 flowchart TD
@@ -408,7 +514,22 @@ Dog dog = create(Dog.class); // Works!
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: THE FILING CABINET ANALOGY → 1. PUT('Alice', 25): | 1. PUT('Alice', 25): → hashCode('Alice') = 92668751 | hashCode('Alice') = 92668751 → Drawer index = 92668751 % 16 = 7 | Drawer index = 92668751 % 16 = 7 → Put entry in Drawer 7. | Put entry in Drawer 7. → 2. PUT('Bob', 30): | 2. PUT('Bob', 30): → hashCode('Bob') = 66965 → Drawer 5. No collision. | ...+1 more
+**Flow:**
+- THE FILING CABINET ANALOGY
+- ↓
+- 1. PUT('Alice', 25):
+- ↓
+- hashCode('Alice') = 92668751
+- ↓
+- Drawer index = 92668751 % 16 = 7
+- ↓
+- Put entry in Drawer 7.
+- ↓
+- 2. PUT('Bob', 30):
+- ↓
+- hashCode('Bob') = 66965
+- ↓
+- Drawer 5. No collision.
 
 ```mermaid
 flowchart TD
@@ -473,7 +594,26 @@ Map<String, Integer> map = new HashMap<>(100); // avoids resizing
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: final List&lt;String&gt; list = new ArrayList&lt;&gt;() → list.add('hello'); // ✅ Modifying contents is fine | list.add('hello'); // ✅ Modifying contents is fine → list = new ArrayList&lt;&gt;(); // ❌ Can't reassign the | list = new ArrayList&lt;&gt;(); // ❌ Can't reassign the → ↑ Like a permanent parking spot — the car in it can cha | ↑ Like a permanent parking spot — the car in it can cha → its color, but you can't move to a different spot. | its color, but you can't move to a different spot. → final METHOD → can't be overridden by subclasses | final METHOD → can't be overridden by subclasses → public final void doWork() { ... } | ...+1 more
+**Flow:**
+- final List<String> list = new ArrayList<>()
+- ↓
+- list.add('hello'); // ✅ Modifying contents is fine
+- ↓
+- list = new ArrayList<>(); // ❌ Can't reassign the
+- ↓
+- ↑ Like a permanent parking spot — the car in it can cha
+- ↓
+- its color, but you can't move to a different spot.
+- ↓
+- final METHOD
+- ↓
+- can't be overridden by subclasses
+- ↓
+- final METHOD
+- ↓
+- can't be overridden by subclasses
+- ↓
+- public final void doWork() { ... }
 
 ```mermaid
 flowchart TD
@@ -526,7 +666,22 @@ argue checked exceptions are too verbose. Spring uses unchecked
 exceptions extensively. The debate continues.
 ```
 
-> **Flow**: Throwable → Error (unchecked — JVM problems: OutOfMemoryError) | Throwable → Exception | Throwable → RuntimeException (unchecked — bugs) | Throwable → Everything else (checked — expected failures)
+**Flow:**
+- Throwable
+- ↓
+- Error (unchecked — JVM problems: OutOfMemoryError)
+- ↓
+- Throwable
+- ↓
+- Exception
+- ↓
+- Throwable
+- ↓
+- RuntimeException (unchecked — bugs)
+- ↓
+- Throwable
+- ↓
+- Everything else (checked — expected failures)
 
 ```mermaid
 flowchart TD
@@ -608,7 +763,20 @@ for (String s : list) {
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: THE COUNTING CARDS ANALOGY → You: *removes a card from the middle* | You: *removes a card from the middle* → Iterator: 'Wait — the deck changed! My count is wrong n | Iterator: 'Wait — the deck changed! My count is wrong n → → Throws ConcurrentModificationException | → Throws ConcurrentModificationException → FAIL-FAST: Java collections track a modCount. The itera | FAIL-FAST: Java collections track a modCount. The itera → checks modCount each step. If it changed (someone modif | checks modCount each step. If it changed (someone modif → the collection), it immediately fails rather than give | ...+1 more
+**Flow:**
+- THE COUNTING CARDS ANALOGY
+- ↓
+- You: *removes a card from the middle*
+- ↓
+- Iterator: 'Wait — the deck changed! My count is wrong n
+- ↓
+- Throws ConcurrentModificationException
+- ↓
+- FAIL-FAST: Java collections track a modCount. The itera
+- ↓
+- checks modCount each step. If it changed (someone modif
+- ↓
+- the collection), it immediately fails rather than give
 
 ```mermaid
 flowchart TD
@@ -683,7 +851,20 @@ list.removeAll(toRemove);
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: volatile = A shared whiteboard (visibility only) → → Ensures ALL threads see the LATEST value | → Ensures ALL threads see the LATEST value → → Does NOT prevent race conditions with compound action | → Does NOT prevent race conditions with compound action → → Use for: flags (boolean isRunning), simple reads/writ | → Use for: flags (boolean isRunning), simple reads/writ → synchronized = A room with ONE key (mutual exclusion) | synchronized = A room with ONE key (mutual exclusion) → → Only ONE thread can enter at a time | → Only ONE thread can enter at a time → → Provides both visibility AND atomicity | ...+1 more
+**Flow:**
+- volatile = A shared whiteboard (visibility only)
+- ↓
+- Ensures ALL threads see the LATEST value
+- ↓
+- Does NOT prevent race conditions with compound action
+- ↓
+- Use for: flags (boolean isRunning), simple reads/writ
+- ↓
+- synchronized = A room with ONE key (mutual exclusion)
+- ↓
+- Only ONE thread can enter at a time
+- ↓
+- Provides both visibility AND atomicity
 
 ```mermaid
 flowchart TD
@@ -755,7 +936,20 @@ counter.incrementAndGet(); // ✅ Atomic, no lock needed
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: PRE-JAVA 8: Clear distinction → Abstract class = partial implementation + state | Abstract class = partial implementation + state → Interface = pure contract (all abstract) | Interface = pure contract (all abstract) → POST-JAVA 8: Lines blurred (interfaces got default meth | POST-JAVA 8: Lines blurred (interfaces got default meth → REMAINING DIFFERENCES: | REMAINING DIFFERENCES: → Abstract class: | Abstract class: → → CAN have instance fields (state) | ...+1 more
+**Flow:**
+- PRE-JAVA 8: Clear distinction
+- ↓
+- Abstract class = partial implementation + state
+- ↓
+- Interface = pure contract (all abstract)
+- ↓
+- POST-JAVA 8: Lines blurred (interfaces got default meth
+- ↓
+- REMAINING DIFFERENCES:
+- ↓
+- Abstract class:
+- ↓
+- CAN have instance fields (state)
 
 ```mermaid
 flowchart TD
@@ -813,7 +1007,20 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: THE OFFICE CLEANING SERVICE ANALOGY → HEAP = An office building | HEAP = An office building → Objects = Desks | Objects = Desks → References = Name plates on desks | References = Name plates on desks → GC = Cleaning service | GC = Cleaning service → GC asks: 'Which desks still have name plates? Keep thos | GC asks: 'Which desks still have name plates? Keep thos → Any desk with NO name plate? Clean it up.' | ...+1 more
+**Flow:**
+- THE OFFICE CLEANING SERVICE ANALOGY
+- ↓
+- HEAP = An office building
+- ↓
+- Objects = Desks
+- ↓
+- References = Name plates on desks
+- ↓
+- GC = Cleaning service
+- ↓
+- GC asks: 'Which desks still have name plates? Keep thos
+- ↓
+- Any desk with NO name plate? Clean it up.'
 
 ```mermaid
 flowchart TD

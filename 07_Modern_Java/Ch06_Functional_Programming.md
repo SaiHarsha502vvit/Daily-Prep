@@ -210,7 +210,10 @@ List<Integer> result = numbers.stream()
    - Describe WHAT you want, not HOW to get it
 ```
 
-> **Flow**: - Same input → Same output (always!)
+**Flow:**
+- - Same input
+- ↓
+- Same output (always!)
 
 ```mermaid
 flowchart LR

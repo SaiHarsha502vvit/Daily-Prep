@@ -648,7 +648,30 @@ THE FIBER ARCHITECTURE (React 16+):
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: FUNCTION COMPONENT LIFECYCLE (via Hooks) → Mount (component appears): | Mount (component appears): → 1. Function called → JSX returned → DOM updated | 1. Function called → JSX returned → DOM updated → Update (state/props change): | Update (state/props change): → 2. useEffect(() =&gt; { ... }, [dep]) runs if dep chang | 2. useEffect(() =&gt; { ... }, [dep]) runs if dep chang → Unmount (component removed): | Unmount (component removed): → 1. Cleanup function from useEffect runs | ...+1 more
+**Flow:**
+- FUNCTION COMPONENT LIFECYCLE (via Hooks)
+- ↓
+- Mount (component appears):
+- ↓
+- 1. Function called
+- ↓
+- JSX returned
+- ↓
+- DOM updated
+- ↓
+- 1. Function called
+- ↓
+- JSX returned
+- ↓
+- DOM updated
+- ↓
+- Update (state/props change):
+- ↓
+- 2. useEffect(() => { ... }, [dep]) runs if dep chang
+- ↓
+- Unmount (component removed):
+- ↓
+- 1. Cleanup function from useEffect runs
 
 ```mermaid
 flowchart TD

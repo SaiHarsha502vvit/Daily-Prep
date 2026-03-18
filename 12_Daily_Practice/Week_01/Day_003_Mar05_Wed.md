@@ -52,7 +52,26 @@ String Pool (special memory area):
   RULE: ALWAYS use .equals() for String comparison, NEVER ==
 ```
 
-> **Flow**: Before: Stack: s → [heap: 'hello'] | After: Stack: s → [heap: 'hello world'] | a == b → true (same reference) | a == c → false (different references) | a.equals(c) → true (same content)
+**Flow:**
+- Before: Stack: s
+- ↓
+- [heap: 'hello']
+- ↓
+- After: Stack: s
+- ↓
+- [heap: 'hello world']
+- ↓
+- a == b
+- ↓
+- true (same reference)
+- ↓
+- a == c
+- ↓
+- false (different references)
+- ↓
+- a.equals(c)
+- ↓
+- true (same content)
 
 ```mermaid
 flowchart TD
@@ -176,7 +195,30 @@ Pass 4:
   (1,2) → ok:   [1, 2, 3, 5, 8]  ← DONE
 ```
 
-> **Flow**: (5,3) → swap: [3, 5, 8, 1, 2] | (5,8) → ok: [3, 5, 8, 1, 2] | (8,1) → swap: [3, 5, 1, 8, 2] | (8,2) → swap: [3, 5, 1, 2, 8] ← 8 is in final position | (3,5) → ok: [3, 5, 1, 2, 8] | (5,1) → swap: [3, 1, 5, 2, 8] | ...+4 more
+**Flow:**
+- (5,3)
+- ↓
+- swap: [3, 5, 8, 1, 2]
+- ↓
+- (5,8)
+- ↓
+- ok: [3, 5, 8, 1, 2]
+- ↓
+- (8,1)
+- ↓
+- swap: [3, 5, 1, 8, 2]
+- ↓
+- (8,2)
+- ↓
+- swap: [3, 5, 1, 2, 8] ← 8 is in final position
+- ↓
+- (3,5)
+- ↓
+- ok: [3, 5, 1, 2, 8]
+- ↓
+- (5,1)
+- ↓
+- swap: [3, 1, 5, 2, 8]
 
 ```mermaid
 flowchart TD
@@ -264,7 +306,18 @@ Two strings are anagrams if they contain the same characters in different order.
 "anagram" and "nagaram" → true
 ```
 
-> **Flow**: 'listen' and 'silent' → true | 'hello' and 'world' → false | 'anagram' and 'nagaram' → true
+**Flow:**
+- 'listen' and 'silent'
+- ↓
+- true
+- ↓
+- 'hello' and 'world'
+- ↓
+- false
+- ↓
+- 'anagram' and 'nagaram'
+- ↓
+- true
 
 ```mermaid
 flowchart LR

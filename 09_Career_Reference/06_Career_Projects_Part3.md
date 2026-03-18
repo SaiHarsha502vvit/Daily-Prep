@@ -70,7 +70,12 @@
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: KUBELET / • Agent running on each node / • Watches API  → CONTAINER RUNTIME / (containerd/CRI-O) / Actually runs  | CONTAINER RUNTIME / (containerd/CRI-O) / Actually runs  → Pod 3 / App
+**Flow:**
+- KUBELET / • Agent running on each node / • Watches API
+- ↓
+- CONTAINER RUNTIME / (containerd/CRI-O) / Actually runs
+- ↓
+- Pod 3 / App
 
 ```mermaid
 flowchart TD
@@ -235,7 +240,12 @@ Ingress:
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: METRICS → LOGS | LOGS → TRACES
+**Flow:**
+- METRICS
+- ↓
+- LOGS
+- ↓
+- TRACES
 
 ```mermaid
 flowchart TD
@@ -610,7 +620,30 @@ Trace ID: abc123
     └── Email Service (200ms)
 ```
 
-> **Flow**: Trace ID: abc123 → API Gateway (2ms) | Trace ID: abc123 → Auth check | Trace ID: abc123 → Order Service (150ms) | Trace ID: abc123 → Validate request (5ms) | Trace ID: abc123 → Check inventory (50ms) | Inventory Service (45ms) → Query database (40ms) | ...+7 more
+**Flow:**
+- Trace ID: abc123
+- ↓
+- API Gateway (2ms)
+- ↓
+- Trace ID: abc123
+- ↓
+- Auth check
+- ↓
+- Trace ID: abc123
+- ↓
+- Order Service (150ms)
+- ↓
+- Trace ID: abc123
+- ↓
+- Validate request (5ms)
+- ↓
+- Trace ID: abc123
+- ↓
+- Check inventory (50ms)
+- ↓
+- Inventory Service (45ms)
+- ↓
+- Query database (40ms)
 
 ```mermaid
 flowchart TD
@@ -699,7 +732,22 @@ _Stage 4 Complete! Ready for Stage 5: Complete Application Scenarios_
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: API Gateway / (Kong/AWS) → Account / Service / - Balance / - Statement / - KYC | Auth / Service / - Login/MFA / - JWT/OAuth / - Session → Redis / (Sessions) | Account / Service / - Balance / - Statement / - KYC → PostgreSQL / (Accounts) | Transaction / Service / - Transfer / - Payment / - Hist → PostgreSQL / (Ledger)
+**Flow:**
+- API Gateway / (Kong/AWS)
+- ↓
+- Account / Service / - Balance / - Statement / - KYC
+- ↓
+- Auth / Service / - Login/MFA / - JWT/OAuth / - Session
+- ↓
+- Redis / (Sessions)
+- ↓
+- Account / Service / - Balance / - Statement / - KYC
+- ↓
+- PostgreSQL / (Accounts)
+- ↓
+- Transaction / Service / - Transfer / - Payment / - Hist
+- ↓
+- PostgreSQL / (Ledger)
 
 ```mermaid
 flowchart TD
@@ -972,7 +1020,28 @@ public class FinancialCalculations {
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: CDN / (CloudFront) → ▼ ▼ ▼ / React API Gateway Admin / SPA Portal | ▼ ▼ ▼ / React API Gateway Admin / SPA Portal → Cart / Service | ▼ ▼ ▼ / React API Gateway Admin / SPA Portal → Order / Service | ▼ ▼ ▼ / React API Gateway Admin / SPA Portal → Payment / Service | React / SPA → Product / Service | React / SPA → Cart / Service | ...+15 more
+**Flow:**
+- CDN / (CloudFront)
+- ↓
+- ▼ ▼ ▼ / React API Gateway Admin / SPA Portal
+- ↓
+- Cart / Service
+- ↓
+- ▼ ▼ ▼ / React API Gateway Admin / SPA Portal
+- ↓
+- Order / Service
+- ↓
+- ▼ ▼ ▼ / React API Gateway Admin / SPA Portal
+- ↓
+- Payment / Service
+- ↓
+- React / SPA
+- ↓
+- Product / Service
+- ↓
+- React / SPA
+- ↓
+- Cart / Service
 
 ```mermaid
 flowchart TD
@@ -1384,7 +1453,28 @@ public class ProductSearchService {
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Client 1 / (React) → Chat / Server 1 | Client 2 / (Mobile) → Load Balancer / (Sticky/WS) | Client N / (Web) → Chat / Server 3 | Load Balancer / (Sticky/WS) → ▼ ▼ ▼ / t Chat Chat / er 1 Server 2 Server | ▼ ▼ ▼ / t Chat Chat / er 1 Server 2 Server → Redis / Pub/Sub | Chat / Server 1 → MongoDB / Messages / History | ...+2 more
+**Flow:**
+- Client 1 / (React)
+- ↓
+- Chat / Server 1
+- ↓
+- Client 2 / (Mobile)
+- ↓
+- Load Balancer / (Sticky/WS)
+- ↓
+- Client N / (Web)
+- ↓
+- Chat / Server 3
+- ↓
+- Load Balancer / (Sticky/WS)
+- ↓
+- ▼ ▼ ▼ / t Chat Chat / er 1 Server 2 Server
+- ↓
+- Redis / Pub/Sub
+- ↓
+- Chat / Server 1
+- ↓
+- MongoDB / Messages / History
 
 ```mermaid
 flowchart TD
@@ -1713,7 +1803,10 @@ export function useChat(token: string) {
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: CLOSED OPEN HALF-OPEN / ▲ / CLOSED: Normal operation, r → Service A Service B Service C / Pool: 10 Pool: 20 Pool:
+**Flow:**
+- CLOSED OPEN HALF-OPEN / ▲ / CLOSED: Normal operation, r
+- ↓
+- Service A Service B Service C / Pool: 10 Pool: 20 Pool:
 
 ```mermaid
 flowchart TD
@@ -2229,7 +2322,20 @@ DAILY PRACTICE:
 □ 30 min cloud hands-on
 ```
 
-> **Flow**: YOUR JOURNEY MAP → PHASE 1: DSA FOUNDATION (Month 1-2) | PHASE 1: DSA FOUNDATION (Month 1-2) → Arrays, Strings, Hashing | Arrays, Strings, Hashing → Two Pointers, Sliding Window | Two Pointers, Sliding Window → Trees, Graphs, DP | Trees, Graphs, DP → ✅ See: 26_Ultimate_DataStructures_Algorithms_Guide.md | ✅ See: 26_Ultimate_DataStructures_Algorithms_Guide.md → PHASE 2: SYSTEM DESIGN (Month 2-3) | ...+1 more
+**Flow:**
+- YOUR JOURNEY MAP
+- ↓
+- PHASE 1: DSA FOUNDATION (Month 1-2)
+- ↓
+- Arrays, Strings, Hashing
+- ↓
+- Two Pointers, Sliding Window
+- ↓
+- Trees, Graphs, DP
+- ↓
+- ✅ See: 26_Ultimate_DataStructures_Algorithms_Guide.md
+- ↓
+- PHASE 2: SYSTEM DESIGN (Month 2-3)
 
 ```mermaid
 flowchart TD
@@ -2288,7 +2394,20 @@ READY FOR:
 □ Building your own products
 ```
 
-> **Flow**: TECHNICAL SKILLS: → □ Can solve medium DSA problems in 30 mins | □ Can solve medium DSA problems in 30 mins → □ Can design database schema for any app | □ Can design database schema for any app → □ Can build REST API from scratch | □ Can build REST API from scratch → □ Can containerize and deploy applications | □ Can containerize and deploy applications → □ Can set up CI/CD pipeline | □ Can set up CI/CD pipeline → □ Can debug distributed systems | ...+1 more
+**Flow:**
+- TECHNICAL SKILLS:
+- ↓
+- □ Can solve medium DSA problems in 30 mins
+- ↓
+- □ Can design database schema for any app
+- ↓
+- □ Can build REST API from scratch
+- ↓
+- □ Can containerize and deploy applications
+- ↓
+- □ Can set up CI/CD pipeline
+- ↓
+- □ Can debug distributed systems
 
 ```mermaid
 flowchart TD

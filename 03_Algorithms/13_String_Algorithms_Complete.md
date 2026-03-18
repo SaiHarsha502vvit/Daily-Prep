@@ -37,7 +37,20 @@
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHERE STRING ALGORITHMS ARE USED → • Text Editors (Find & Replace) | • Text Editors (Find & Replace) → • Search Engines (Pattern matching) | • Search Engines (Pattern matching) → • DNA Sequencing (Substring search) | • DNA Sequencing (Substring search) → • Plagiarism Detection (Similarity) | • Plagiarism Detection (Similarity) → • Antivirus (Signature matching) | • Antivirus (Signature matching) → • Network Intrusion Detection | ...+1 more
+**Flow:**
+- WHERE STRING ALGORITHMS ARE USED
+- ↓
+- • Text Editors (Find & Replace)
+- ↓
+- • Search Engines (Pattern matching)
+- ↓
+- • DNA Sequencing (Substring search)
+- ↓
+- • Plagiarism Detection (Similarity)
+- ↓
+- • Antivirus (Signature matching)
+- ↓
+- • Network Intrusion Detection
 
 ```mermaid
 flowchart TD
@@ -116,7 +129,18 @@ We keep rechecking characters we've already seen!
 KMP/Z-algo avoid this redundant work.
 ```
 
-> **Flow**: Attempt 1: A A A A A vs A A A A B → Mismatch at position 4 | Attempt 2: A A A A A vs A A A A B → Mismatch at position 4 | Attempt 3: A A A A A vs A A A A B → Mismatch at position 4
+**Flow:**
+- Attempt 1: A A A A A vs A A A A B
+- ↓
+- Mismatch at position 4
+- ↓
+- Attempt 2: A A A A A vs A A A A B
+- ↓
+- Mismatch at position 4
+- ↓
+- Attempt 3: A A A A A vs A A A A B
+- ↓
+- Mismatch at position 4
 
 ```mermaid
 flowchart LR
@@ -168,7 +192,24 @@ i=8: "ABABCABAB"→ "ABAB" matches → LPS[8] = 4
 LPS = [0, 0, 1, 2, 0, 1, 2, 3, 4]
 ```
 
-> **Flow**: i=0: 'A' → No proper prefix/suffix | No proper prefix/suffix → LPS[0] = 0 | i=1: 'AB' → Prefixes: {A}, Suffixes: {B} | Prefixes: {A}, Suffixes: {B} → None match | None match → LPS[1] = 0 | i=2: 'ABA' → Prefixes: {A, AB}, Suffixes: {A, BA} | ...+15 more
+**Flow:**
+- i=0: 'A'
+- ↓
+- No proper prefix/suffix
+- ↓
+- LPS[0] = 0
+- ↓
+- i=1: 'AB'
+- ↓
+- Prefixes: {A}, Suffixes: {B}
+- ↓
+- None match
+- ↓
+- LPS[1] = 0
+- ↓
+- i=2: 'ABA'
+- ↓
+- Prefixes: {A, AB}, Suffixes: {A, BA}
 
 ```mermaid
 flowchart TD
@@ -317,7 +358,20 @@ Step 4: Full match found at index 5!
         A B A B D [A B A B C A B A B]
 ```
 
-> **Flow**: TEXT: A B A B D A B A B C A B A B → PATTERN: A B A B C A B A B | PATTERN: A B A B C A B A B → LPS: 0 0 1 2 0 1 2 3 4 | LPS: 0 0 1 2 0 1 2 3 4 → Step 1: Compare from start | Step 1: Compare from start → ↑ Mismatch at index 4! | ↑ Mismatch at index 4! → j = 4, lps[3] = 2 | j = 4, lps[3] = 2 → Skip: Instead of starting over, jump to j = 2 | ...+1 more
+**Flow:**
+- TEXT: A B A B D A B A B C A B A B
+- ↓
+- PATTERN: A B A B C A B A B
+- ↓
+- LPS: 0 0 1 2 0 1 2 3 4
+- ↓
+- Step 1: Compare from start
+- ↓
+- ↑ Mismatch at index 4!
+- ↓
+- j = 4, lps[3] = 2
+- ↓
+- Skip: Instead of starting over, jump to j = 2
 
 ```mermaid
 flowchart TD
@@ -357,7 +411,20 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: KMP COMPLEXITY → LPS Construction: O(m) where m = pattern length | LPS Construction: O(m) where m = pattern length → Search: O(n) where n = text length | Search: O(n) where n = text length → Total: O(n + m) | Total: O(n + m) → Space: O(m) for LPS array | Space: O(m) for LPS array → Why O(n)? | Why O(n)? → - i never decreases (always moves forward in text) | ...+1 more
+**Flow:**
+- KMP COMPLEXITY
+- ↓
+- LPS Construction: O(m) where m = pattern length
+- ↓
+- Search: O(n) where n = text length
+- ↓
+- Total: O(n + m)
+- ↓
+- Space: O(m) for LPS array
+- ↓
+- Why O(n)?
+- ↓
+- - i never decreases (always moves forward in text)
 
 ```mermaid
 flowchart TD
@@ -514,7 +581,24 @@ Continue...
 Final Z = [-, 1, 0, 3, 1, 0, 2, 2, 1]
 ```
 
-> **Flow**: Match: 'a' → Z[1] = 1 | 'b...' vs 'a...' → No match | No match → Z[2] = 0 | Match: 'aab' → Z[3] = 3 | s[1] = 'a', s[5] = 'b' → No extend
+**Flow:**
+- Match: 'a'
+- ↓
+- Z[1] = 1
+- ↓
+- 'b...' vs 'a...'
+- ↓
+- No match
+- ↓
+- Z[2] = 0
+- ↓
+- Match: 'aab'
+- ↓
+- Z[3] = 3
+- ↓
+- s[1] = 'a', s[5] = 'b'
+- ↓
+- No extend
 
 ```mermaid
 flowchart TD
@@ -559,7 +643,20 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Z-ALGORITHM vs KMP → Both: O(n + m) time, O(m) space | Both: O(n + m) time, O(m) space → Z-Algorithm: | Z-Algorithm: → ✓ Conceptually simpler | ✓ Conceptually simpler → ✓ More intuitive (direct prefix matching) | ✓ More intuitive (direct prefix matching) → ✓ Useful for many string problems | ✓ Useful for many string problems → ✗ Requires concatenation (extra space for search) | ...+1 more
+**Flow:**
+- Z-ALGORITHM vs KMP
+- ↓
+- Both: O(n + m) time, O(m) space
+- ↓
+- Z-Algorithm:
+- ↓
+- ✓ Conceptually simpler
+- ↓
+- ✓ More intuitive (direct prefix matching)
+- ↓
+- ✓ Useful for many string problems
+- ↓
+- ✗ Requires concatenation (extra space for search)
 
 ```mermaid
 flowchart TD
@@ -727,7 +824,26 @@ Window 3: "BCD" (slide right)
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: RABIN-KARP USE CASES → ✓ Multiple pattern search (efficient) | ✓ Multiple pattern search (efficient) → Same text, many patterns → compute text hashes once | Same text, many patterns → compute text hashes once → ✓ 2D pattern matching | ✓ 2D pattern matching → Find matrix in larger matrix | Find matrix in larger matrix → ✓ Finding repeated substrings | ✓ Finding repeated substrings → Hash all substrings of length k, find duplicates | ...+1 more
+**Flow:**
+- RABIN-KARP USE CASES
+- ↓
+- ✓ Multiple pattern search (efficient)
+- ↓
+- Same text, many patterns
+- ↓
+- compute text hashes once
+- ↓
+- Same text, many patterns
+- ↓
+- compute text hashes once
+- ↓
+- ✓ 2D pattern matching
+- ↓
+- Find matrix in larger matrix
+- ↓
+- ✓ Finding repeated substrings
+- ↓
+- Hash all substrings of length k, find duplicates
 
 ```mermaid
 flowchart TD
@@ -887,7 +1003,20 @@ The trick: When we know P[center] and we're at position i,
            we can use P[mirror] to initialize P[i].
 ```
 
-> **Flow**: Original: 'abaaba' → Transformed: '#a#b#a#a#b#a#' | Transformed: '#a#b#a#a#b#a#' → Index: 0 1 2 3 4 5 6 7 8 9 10 11 12 | Index: 0 1 2 3 4 5 6 7 8 9 10 11 12 → String: # a # b # a # a # b # a # | String: # a # b # a # a # b # a # → 'aba' 'abaaba' | 'aba' 'abaaba' → P[6] = 6: Center at position 6 (#), radius 6 | P[6] = 6: Center at position 6 (#), radius 6 → In original string: 'abaaba' (length 6) | ...+1 more
+**Flow:**
+- Original: 'abaaba'
+- ↓
+- Transformed: '#a#b#a#a#b#a#'
+- ↓
+- Index: 0 1 2 3 4 5 6 7 8 9 10 11 12
+- ↓
+- String: # a # b # a # a # b # a #
+- ↓
+- 'aba' 'abaaba'
+- ↓
+- P[6] = 6: Center at position 6 (#), radius 6
+- ↓
+- In original string: 'abaaba' (length 6)
 
 ```mermaid
 flowchart TD
@@ -940,7 +1069,20 @@ Each node = character
 ✓ = end of word marker
 ```
 
-> **Flow**: Trie = Prefix Tree → Stores strings efficiently for: | Stores strings efficiently for: → - Prefix search | - Prefix search → - Autocomplete | - Autocomplete → - Spell checking | - Spell checking → - Word games (Boggle, Scrabble) | - Word games (Boggle, Scrabble) → root | ...+1 more
+**Flow:**
+- Trie = Prefix Tree
+- ↓
+- Stores strings efficiently for:
+- ↓
+- - Prefix search
+- ↓
+- - Autocomplete
+- ↓
+- - Spell checking
+- ↓
+- - Word games (Boggle, Scrabble)
+- ↓
+- root
 
 ```mermaid
 flowchart TD
@@ -1380,7 +1522,20 @@ private String findDuplicateOfLength(String s, int len) {
 └──────────────┴────────────┴───────────┴─────────────────────────────┘
 ```
 
-> **Flow**: Algorithm Time Space Best For → Naive O(n*m) O(1) Very short patterns | Naive O(n*m) O(1) Very short patterns → KMP O(n+m) O(m) Single pattern, streaming | KMP O(n+m) O(m) Single pattern, streaming → Z-Algorithm O(n+m) O(n+m) Single pattern, intuitive | Z-Algorithm O(n+m) O(n+m) Single pattern, intuitive → Rabin-Karp O(n+m) avg O(m) Multiple patterns | Rabin-Karp O(n+m) avg O(m) Multiple patterns → Trie O(m) query O(total) Prefix search, autocomplete | Trie O(m) query O(total) Prefix search, autocomplete → Suffix Array O(n log n) O(n) All substring queries | ...+1 more
+**Flow:**
+- Algorithm Time Space Best For
+- ↓
+- Naive O(n*m) O(1) Very short patterns
+- ↓
+- KMP O(n+m) O(m) Single pattern, streaming
+- ↓
+- Z-Algorithm O(n+m) O(n+m) Single pattern, intuitive
+- ↓
+- Rabin-Karp O(n+m) avg O(m) Multiple patterns
+- ↓
+- Trie O(m) query O(total) Prefix search, autocomplete
+- ↓
+- Suffix Array O(n log n) O(n) All substring queries
 
 ```mermaid
 flowchart TD
@@ -1429,7 +1584,20 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: ALGORITHM SELECTION GUIDE → 'Find pattern in text' | 'Find pattern in text' → → KMP or Z-algorithm (single pattern) | → KMP or Z-algorithm (single pattern) → → Rabin-Karp (multiple patterns) | → Rabin-Karp (multiple patterns) → 'Check if prefix exists' / 'Autocomplete' | 'Check if prefix exists' / 'Autocomplete' → → Trie | → Trie → 'Longest palindrome' | ...+1 more
+**Flow:**
+- ALGORITHM SELECTION GUIDE
+- ↓
+- 'Find pattern in text'
+- ↓
+- KMP or Z-algorithm (single pattern)
+- ↓
+- Rabin-Karp (multiple patterns)
+- ↓
+- 'Check if prefix exists' / 'Autocomplete'
+- ↓
+- Trie
+- ↓
+- 'Longest palindrome'
 
 ```mermaid
 flowchart TD
@@ -1520,7 +1688,20 @@ private int[] buildLPS(String pattern) {
 ╚═══════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: STRING ALGORITHMS - MASTER THESE → 1. KMP - Pattern matching in O(n+m) | 1. KMP - Pattern matching in O(n+m) → Key: LPS array, never recheck matched characters | Key: LPS array, never recheck matched characters → 2. RABIN-KARP - Rolling hash for multiple patterns | 2. RABIN-KARP - Rolling hash for multiple patterns → Key: Hash comparison, verify on match | Key: Hash comparison, verify on match → 3. Z-ALGORITHM - Alternative to KMP, more intuitive | 3. Z-ALGORITHM - Alternative to KMP, more intuitive → Key: Z[i] = prefix match length at position i | ...+1 more
+**Flow:**
+- STRING ALGORITHMS - MASTER THESE
+- ↓
+- 1. KMP - Pattern matching in O(n+m)
+- ↓
+- Key: LPS array, never recheck matched characters
+- ↓
+- 2. RABIN-KARP - Rolling hash for multiple patterns
+- ↓
+- Key: Hash comparison, verify on match
+- ↓
+- 3. Z-ALGORITHM - Alternative to KMP, more intuitive
+- ↓
+- Key: Z[i] = prefix match length at position i
 
 ```mermaid
 flowchart TD

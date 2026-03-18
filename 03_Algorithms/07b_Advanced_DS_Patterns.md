@@ -122,7 +122,20 @@ class FenwickTree {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: SEGMENT TREE — THEORY & CODE → A Segment Tree allows: | A Segment Tree allows: → • Range Query (sum/min/max/gcd) in O(log n) | • Range Query (sum/min/max/gcd) in O(log n) → • Point Update in O(log n) | • Point Update in O(log n) → • Range Update with Lazy Propagation in O(log n) | • Range Update with Lazy Propagation in O(log n) → • Uses O(4n) space (built as complete binary tree in ar | • Uses O(4n) space (built as complete binary tree in ar → WHEN TO USE vs BIT/FENWICK: | ...+1 more
+**Flow:**
+- SEGMENT TREE — THEORY & CODE
+- ↓
+- A Segment Tree allows:
+- ↓
+- • Range Query (sum/min/max/gcd) in O(log n)
+- ↓
+- • Point Update in O(log n)
+- ↓
+- • Range Update with Lazy Propagation in O(log n)
+- ↓
+- • Uses O(4n) space (built as complete binary tree in ar
+- ↓
+- WHEN TO USE vs BIT/FENWICK:
 
 ```mermaid
 flowchart TD
@@ -443,7 +456,14 @@ Search for 6:
 Path: 1→9 (overshoot) ↓ 1→4→7 (overshoot) ↓ 4→6 ✓
 ```
 
-> **Flow**: Path: 1 → 9 (overshoot) ↓ 1 | 7 (overshoot) ↓ 4 → 6 ✓
+**Flow:**
+- Path: 1
+- ↓
+- 9 (overshoot) ↓ 1
+- ↓
+- 7 (overshoot) ↓ 4
+- ↓
+- 6 ✓
 
 ```mermaid
 flowchart LR
@@ -684,7 +704,20 @@ Access B → Move B to front:
 HEAD ←→ B ←→ A ←→ C ←→ TAIL
 ```
 
-> **Flow**: LRU (Least Recently Used) CACHE: → Operations needed: | Operations needed: → - GET: O(1) - HashMap | - GET: O(1) - HashMap → - PUT: O(1) - HashMap + update order | - PUT: O(1) - HashMap + update order → - EVICT: O(1) - Doubly Linked List | - EVICT: O(1) - Doubly Linked List → Structure: HashMap + Doubly Linked List | Structure: HashMap + Doubly Linked List → HashMap Doubly Linked List | ...+1 more
+**Flow:**
+- LRU (Least Recently Used) CACHE:
+- ↓
+- Operations needed:
+- ↓
+- - GET: O(1) - HashMap
+- ↓
+- - PUT: O(1) - HashMap + update order
+- ↓
+- - EVICT: O(1) - Doubly Linked List
+- ↓
+- Structure: HashMap + Doubly Linked List
+- ↓
+- HashMap Doubly Linked List
 
 ```mermaid
 flowchart TD
@@ -832,7 +865,26 @@ WHY B+ TREE for DATABASES?
 3. More keys per node → shallower tree → fewer disk reads
 ```
 
-> **Flow**: [5,7] → [10,15,17] | [10,15,17] → [20,25,30] | [20,25,30] → null | 1. All data at leaves → consistent access time | 2. Linked leaves → efficient range queries | 3. More keys per node → shallower tree | ...+1 more
+**Flow:**
+- [5,7]
+- ↓
+- [10,15,17]
+- ↓
+- [20,25,30]
+- ↓
+- null
+- ↓
+- 1. All data at leaves
+- ↓
+- consistent access time
+- ↓
+- 2. Linked leaves
+- ↓
+- efficient range queries
+- ↓
+- 3. More keys per node
+- ↓
+- shallower tree
 
 ```mermaid
 flowchart TD
@@ -880,7 +932,20 @@ k = number of hash functions for Bloom Filter
 α = inverse Ackermann function (practically constant)
 ```
 
-> **Flow**: Data Structure Search Insert Space → Trie O(m) O(m) O(ALPHABET × m × n) | Trie O(m) O(m) O(ALPHABET × m × n) → Segment Tree O(log n) O(log n) O(4n) | Segment Tree O(log n) O(log n) O(4n) → Fenwick Tree O(log n) O(log n) O(n) | Fenwick Tree O(log n) O(log n) O(n) → Skip List O(log n)* O(log n)* O(n)* | Skip List O(log n)* O(log n)* O(n)* → Bloom Filter O(k) O(k) O(m) bits | Bloom Filter O(k) O(k) O(m) bits → LRU Cache O(1) O(1) O(n) | ...+1 more
+**Flow:**
+- Data Structure Search Insert Space
+- ↓
+- Trie O(m) O(m) O(ALPHABET × m × n)
+- ↓
+- Segment Tree O(log n) O(log n) O(4n)
+- ↓
+- Fenwick Tree O(log n) O(log n) O(n)
+- ↓
+- Skip List O(log n)* O(log n)* O(n)*
+- ↓
+- Bloom Filter O(k) O(k) O(m) bits
+- ↓
+- LRU Cache O(1) O(1) O(n)
 
 ```mermaid
 flowchart TD
@@ -931,7 +996,20 @@ Query(2, 6): min(sparse[2][2], sparse[3][2]) = min(1, 2) = 1
              Using k=2 (length 4), overlapping ranges [2-5] and [3-6]
 ```
 
-> **Flow**: SPARSE TABLE: Precompute answers for all power-of-2 ran → Perfect for STATIC arrays with repeated queries | Perfect for STATIC arrays with repeated queries → Array: [3, 1, 4, 1, 5, 9, 2, 6] | Array: [3, 1, 4, 1, 5, 9, 2, 6] → Sparse Table (for MIN): | Sparse Table (for MIN): → k=0 (2^0=1): [3, 1, 4, 1, 5, 9, 2, 6] (each element its | k=0 (2^0=1): [3, 1, 4, 1, 5, 9, 2, 6] (each element its → k=1 (2^1=2): [1, 1, 1, 1, 5, 2, 2, -] (min of 2) | k=1 (2^1=2): [1, 1, 1, 1, 5, 2, 2, -] (min of 2) → k=2 (2^2=4): [1, 1, 1, 1, 2, 2, -, -] (min of 4) | ...+1 more
+**Flow:**
+- SPARSE TABLE: Precompute answers for all power-of-2 ran
+- ↓
+- Perfect for STATIC arrays with repeated queries
+- ↓
+- Array: [3, 1, 4, 1, 5, 9, 2, 6]
+- ↓
+- Sparse Table (for MIN):
+- ↓
+- k=0 (2^0=1): [3, 1, 4, 1, 5, 9, 2, 6] (each element its
+- ↓
+- k=1 (2^1=2): [1, 1, 1, 1, 5, 2, 2, -] (min of 2)
+- ↓
+- k=2 (2^2=4): [1, 1, 1, 1, 2, 2, -, -] (min of 4)
 
 ```mermaid
 flowchart TD
@@ -1031,7 +1109,20 @@ Step by step (decreasing stack, process right to left):
 Result: [5, 10, 10, -1, -1]
 ```
 
-> **Flow**: Reveals relationships between elements → USE CASES: | USE CASES: → Next Greater Element | Next Greater Element → Previous Greater Element | Previous Greater Element → Next Smaller Element | Next Smaller Element → Stock Span Problem | Stock Span Problem → Largest Rectangle in Histogram | ...+1 more
+**Flow:**
+- Reveals relationships between elements
+- ↓
+- USE CASES:
+- ↓
+- Next Greater Element
+- ↓
+- Previous Greater Element
+- ↓
+- Next Smaller Element
+- ↓
+- Stock Span Problem
+- ↓
+- Largest Rectangle in Histogram
 
 ```mermaid
 flowchart TD
@@ -1135,7 +1226,20 @@ Array: [1, 3, -1, -3, 5, 3, 6, 7], k=3
 Result: [3, 3, 5, 5, 6, 7]
 ```
 
-> **Flow**: MONOTONIC DEQUE: Deque that maintains decreasing order → Front always has maximum of current window | Front always has maximum of current window → PROBLEM: Find maximum in each sliding window of size k | PROBLEM: Find maximum in each sliding window of size k → Array: [1, 3, -1, -3, 5, 3, 6, 7], k=3 | Array: [1, 3, -1, -3, 5, 3, 6, 7], k=3 → Window [1,3,-1] Deque: [3,-1] Max: 3 | Window [1,3,-1] Deque: [3,-1] Max: 3 → Window [3,-1,-3] Deque: [3,-1,-3] Max: 3 | Window [3,-1,-3] Deque: [3,-1,-3] Max: 3 → Window [-1,-3,5] Deque: [5] Max: 5 | ...+1 more
+**Flow:**
+- MONOTONIC DEQUE: Deque that maintains decreasing order
+- ↓
+- Front always has maximum of current window
+- ↓
+- PROBLEM: Find maximum in each sliding window of size k
+- ↓
+- Array: [1, 3, -1, -3, 5, 3, 6, 7], k=3
+- ↓
+- Window [1,3,-1] Deque: [3,-1] Max: 3
+- ↓
+- Window [3,-1,-3] Deque: [3,-1,-3] Max: 3
+- ↓
+- Window [-1,-3,5] Deque: [5] Max: 5
 
 ```mermaid
 flowchart TD
@@ -1219,7 +1323,12 @@ STRUCTURE:
 └─────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: A B C D E → A B C D E F G H | A B C D E F G H → I B C D E F G H
+**Flow:**
+- A B C D E
+- ↓
+- A B C D E F G H
+- ↓
+- I B C D E F G H
 
 ```mermaid
 flowchart TD
@@ -1343,7 +1452,10 @@ STRUCTURE:
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: NW NE / SW SE → (3,7) (8,8) / (1,4) / (5,2)
+**Flow:**
+- NW NE / SW SE
+- ↓
+- (3,7) (8,8) / (1,4) / (5,2)
 
 ```mermaid
 flowchart TD
@@ -1470,7 +1582,20 @@ STRUCTURE:
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: MERKLE TREE: Tree where each leaf is hash of data block → and each non-leaf is hash of its children's hashes | and each non-leaf is hash of its children's hashes → STRUCTURE: | STRUCTURE: → [Root Hash: abcd1234] | [Root Hash: abcd1234] → [Hash: ab12] [Hash: cd34] | [Hash: ab12] [Hash: cd34] → Block A Block B Block C Block D | Block A Block B Block C Block D → VERIFICATION: | ...+1 more
+**Flow:**
+- MERKLE TREE: Tree where each leaf is hash of data block
+- ↓
+- and each non-leaf is hash of its children's hashes
+- ↓
+- STRUCTURE:
+- ↓
+- [Root Hash: abcd1234]
+- ↓
+- [Hash: ab12] [Hash: cd34]
+- ↓
+- Block A Block B Block C Block D
+- ↓
+- VERIFICATION:
 
 ```mermaid
 flowchart TD
@@ -1628,7 +1753,30 @@ HEAP/PRIORITY QUEUE:
 └── LC 767: Reorganize String                     ⭐ Medium
 ```
 
-> **Flow**: TRIE: → LC 208: Implement Trie (Prefix Tree) ⭐ Medium | TRIE: → LC 211: Design Add and Search Words ⭐ Medium | TRIE: → LC 212: Word Search II 🔥 Hard | TRIE: → LC 648: Replace Words ⭐ Medium | TRIE: → LC 1268: Search Suggestions System ⭐ Medium | SEGMENT TREE: → LC 307: Range Sum Query - Mutable ⭐ Medium | ...+23 more
+**Flow:**
+- TRIE:
+- ↓
+- LC 208: Implement Trie (Prefix Tree) ⭐ Medium
+- ↓
+- TRIE:
+- ↓
+- LC 211: Design Add and Search Words ⭐ Medium
+- ↓
+- TRIE:
+- ↓
+- LC 212: Word Search II 🔥 Hard
+- ↓
+- TRIE:
+- ↓
+- LC 648: Replace Words ⭐ Medium
+- ↓
+- TRIE:
+- ↓
+- LC 1268: Search Suggestions System ⭐ Medium
+- ↓
+- SEGMENT TREE:
+- ↓
+- LC 307: Range Sum Query - Mutable ⭐ Medium
 
 ```mermaid
 flowchart TD
@@ -1738,7 +1886,20 @@ m = string/key length
 k = number of hash functions
 ```
 
-> **Flow**: COMPLETE COMPLEXITY REFERENCE → DATA STRUCTURE ACCESS SEARCH INSERT DELETE SPACE | DATA STRUCTURE ACCESS SEARCH INSERT DELETE SPACE → Fenwick Tree N/A O(logn) O(logn) N/A O(n) | Fenwick Tree N/A O(logn) O(logn) N/A O(n) → Sparse Table O(1) O(1) N/A N/A O(n log n) | Sparse Table O(1) O(1) N/A N/A O(n log n) → Disjoint Set N/A O(α) O(α) N/A O(n) | Disjoint Set N/A O(α) O(α) N/A O(n) → Bloom Filter N/A O(k) O(k) N/A O(m) bits | Bloom Filter N/A O(k) O(k) N/A O(m) bits → * = amortized or average case | ...+1 more
+**Flow:**
+- COMPLETE COMPLEXITY REFERENCE
+- ↓
+- DATA STRUCTURE ACCESS SEARCH INSERT DELETE SPACE
+- ↓
+- Fenwick Tree N/A O(logn) O(logn) N/A O(n)
+- ↓
+- Sparse Table O(1) O(1) N/A N/A O(n log n)
+- ↓
+- Disjoint Set N/A O(α) O(α) N/A O(n)
+- ↓
+- Bloom Filter N/A O(k) O(k) N/A O(m) bits
+- ↓
+- * = amortized or average case
 
 ```mermaid
 flowchart TD
@@ -1802,7 +1963,38 @@ START: What problem are you solving?
     └── Efficient proof of data? → MERKLE TREE
 ```
 
-> **Flow**: START: What problem are you solving? → Need KEY-VALUE lookup? | START: What problem are you solving? → Keys are strings with prefix search? → TRIE | START: What problem are you solving? → Need O(1) operations? → HASH MAP | START: What problem are you solving? → Need ordered keys? → TREE MAP (Red-Black) | START: What problem are you solving? → Need RANGE operations? | START: What problem are you solving? → Static array, many queries? → SPARSE TABLE | ...+21 more
+**Flow:**
+- START: What problem are you solving?
+- ↓
+- Need KEY-VALUE lookup?
+- ↓
+- START: What problem are you solving?
+- ↓
+- Keys are strings with prefix search?
+- ↓
+- TRIE
+- ↓
+- START: What problem are you solving?
+- ↓
+- Need O(1) operations?
+- ↓
+- HASH MAP
+- ↓
+- START: What problem are you solving?
+- ↓
+- Need ordered keys?
+- ↓
+- TREE MAP (Red-Black)
+- ↓
+- START: What problem are you solving?
+- ↓
+- Need RANGE operations?
+- ↓
+- START: What problem are you solving?
+- ↓
+- Static array, many queries?
+- ↓
+- SPARSE TABLE
 
 ```mermaid
 flowchart TD

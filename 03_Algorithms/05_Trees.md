@@ -81,7 +81,10 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: TreeNode / val: 10 / left: 0x00110000 / right: 0x002200 → val: 15 / left: 0x440000 / right: 0x660000
+**Flow:**
+- TreeNode / val: 10 / left: 0x00110000 / right: 0x002200
+- ↓
+- val: 15 / left: 0x440000 / right: 0x660000
 
 ```mermaid
 flowchart TD
@@ -288,7 +291,10 @@ For SKEWED tree (h = 100,000):
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Address 0x1000 0x1004 0x1008 0x100C 0x1010 0x1014 0x101 → HEAP LAYOUT: / 0x1000: [Node A] left 0x5000: [Node B] /
+**Flow:**
+- Address 0x1000 0x1004 0x1008 0x100C 0x1010 0x1014 0x101
+- ↓
+- HEAP LAYOUT: / 0x1000: [Node A] left 0x5000: [Node B] /
 
 ```mermaid
 flowchart TD
@@ -481,7 +487,20 @@ TERMINOLOGY:
 • Subtree: Any node and its descendants
 ```
 
-> **Flow**: [1] ← Root (level 0) → [2] [3] ← Level 1 | [2] [3] ← Level 1 → [4] [5] [6] ← Level 2 (Leaves: 4, 5, 6) | [4] [5] [6] ← Level 2 (Leaves: 4, 5, 6) → TERMINOLOGY: | TERMINOLOGY: → • Root: Top node (1) | • Root: Top node (1) → • Parent: Node above (2 is parent of 4, 5) | • Parent: Node above (2 is parent of 4, 5) → • Child: Node below (4, 5 are children of 2) | ...+1 more
+**Flow:**
+- [1] ← Root (level 0)
+- ↓
+- [2] [3] ← Level 1
+- ↓
+- [4] [5] [6] ← Level 2 (Leaves: 4, 5, 6)
+- ↓
+- TERMINOLOGY:
+- ↓
+- • Root: Top node (1)
+- ↓
+- • Parent: Node above (2 is parent of 4, 5)
+- ↓
+- • Child: Node below (4, 5 are children of 2)
 
 ```mermaid
 flowchart TD
@@ -1615,7 +1634,44 @@ public class TreeSerializer {
 └──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: TREE PROBLEM RECOGNITION GUIDE → 'Find common ancestor...' → LCA algorithm | 'Find common ancestor...' → LCA algorithm → 'Path between nodes...' → Find LCA, then paths from LCA | 'Path between nodes...' → Find LCA, then paths from LCA → 'Serialize tree...' → Preorder with null markers | 'Serialize tree...' → Preorder with null markers → 'Validate BST...' → Inorder should be sorted | 'Validate BST...' → Inorder should be sorted → TREE ARRAY INDEX FORMULAS (0-indexed): | TREE ARRAY INDEX FORMULAS (0-indexed): → • Parent of i: (i - 1) / 2 | ...+1 more
+**Flow:**
+- TREE PROBLEM RECOGNITION GUIDE
+- ↓
+- 'Find common ancestor...'
+- ↓
+- LCA algorithm
+- ↓
+- 'Find common ancestor...'
+- ↓
+- LCA algorithm
+- ↓
+- 'Path between nodes...'
+- ↓
+- Find LCA, then paths from LCA
+- ↓
+- 'Path between nodes...'
+- ↓
+- Find LCA, then paths from LCA
+- ↓
+- 'Serialize tree...'
+- ↓
+- Preorder with null markers
+- ↓
+- 'Serialize tree...'
+- ↓
+- Preorder with null markers
+- ↓
+- 'Validate BST...'
+- ↓
+- Inorder should be sorted
+- ↓
+- 'Validate BST...'
+- ↓
+- Inorder should be sorted
+- ↓
+- TREE ARRAY INDEX FORMULAS (0-indexed):
+- ↓
+- • Parent of i: (i - 1) / 2
 
 ```mermaid
 flowchart TD

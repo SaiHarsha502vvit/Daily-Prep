@@ -19,7 +19,10 @@
                                          If slow/down, ENTIRE order fails!
 ```
 
-> **Flow**: Order Service --(HTTP)--> Payment Service | Payment Service --(HTTP)--> Email Service
+**Flow:**
+- Order Service --(HTTP)--> Payment Service
+- ↓
+- Payment Service --(HTTP)--> Email Service
 
 ```mermaid
 flowchart LR
@@ -38,7 +41,20 @@ flowchart LR
                     [ MESSAGE QUEUE ] ──→ Analytics Worker
 ```
 
-> **Flow**: Order Service → [ MESSAGE QUEUE ] | [ MESSAGE QUEUE ] → Payment Worker | [ MESSAGE QUEUE ] → Email Worker | [ MESSAGE QUEUE ] → Analytics Worker
+**Flow:**
+- Order Service
+- ↓
+- [ MESSAGE QUEUE ]
+- ↓
+- Payment Worker
+- ↓
+- [ MESSAGE QUEUE ]
+- ↓
+- Email Worker
+- ↓
+- [ MESSAGE QUEUE ]
+- ↓
+- Analytics Worker
 
 ```mermaid
 flowchart LR
@@ -80,7 +96,22 @@ PUB/SUB (Publish-Subscribe):
   Examples: Kafka topics, SNS, Redis Pub/Sub
 ```
 
-> **Flow**: Producer → [Queue] | [Queue] → Consumer A (only ONE consumer gets each message) | Publisher → [Topic] | [Topic] → Subscriber A (ALL subscribers get each message) | Use case: Event broadcasting (order placed → notify warehouse, email, analytics)
+**Flow:**
+- Producer
+- ↓
+- [Queue]
+- ↓
+- Consumer A (only ONE consumer gets each message)
+- ↓
+- Publisher
+- ↓
+- [Topic]
+- ↓
+- Subscriber A (ALL subscribers get each message)
+- ↓
+- Use case: Event broadcasting (order placed
+- ↓
+- notify warehouse, email, analytics)
 
 ```mermaid
 flowchart TD
@@ -124,7 +155,12 @@ flowchart TD
                   Topic: "orders"
 ```
 
-> **Flow**: Producer A / (app 1) → Producer B / (app 2) | Producer B / (app 2) → KAFKA CLUSTER / (Broker Servers)
+**Flow:**
+- Producer A / (app 1)
+- ↓
+- Producer B / (app 2)
+- ↓
+- KAFKA CLUSTER / (Broker Servers)
 
 ```mermaid
 flowchart TD
@@ -149,7 +185,12 @@ flowchart TD
     └──────────────┘  └──────────────┘  └──────────────┘
 ```
 
-> **Flow**: Partition 0 / [0] [1] [2] / ← offset → → Partition 1 / [0][1][2][3] / ← offset → | Partition 1 / [0][1][2][3] / ← offset → → Partition 2 / [0] [1] / ← offset →
+**Flow:**
+- Partition 0 / [0] [1] [2] / ← offset
+- ↓
+- Partition 1 / [0][1][2][3] / ← offset
+- ↓
+- Partition 2 / [0] [1] / ← offset
 
 ```mermaid
 flowchart TD
@@ -178,7 +219,12 @@ flowchart TD
               Each partition → exactly ONE consumer
 ```
 
-> **Flow**: Consumer A → Consumer B | Consumer B → Consumer
+**Flow:**
+- Consumer A
+- ↓
+- Consumer B
+- ↓
+- Consumer
 
 ```mermaid
 flowchart TD
@@ -330,7 +376,14 @@ public class PaymentEventConsumer {
   Current balance = replay events = $100 - $30 + $50 = $120
 ```
 
-> **Flow**: AccountCreated → Deposited($100) | Deposited($100) → Withdrawn($30) | Withdrawn($30) → Deposited($50)
+**Flow:**
+- AccountCreated
+- ↓
+- Deposited($100)
+- ↓
+- Withdrawn($30)
+- ↓
+- Deposited($50)
 
 ```mermaid
 flowchart LR
@@ -365,7 +418,20 @@ flowchart LR
   └─────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: OUTBOX PATTERN — 3 Steps → 1. In SAME DB transaction: | 1. In SAME DB transaction: → UPDATE orders SET status = 'paid' | UPDATE orders SET status = 'paid' → INSERT INTO outbox (event_type, payload, ...) | INSERT INTO outbox (event_type, payload, ...) → 2. Separate process polls the outbox table | 2. Separate process polls the outbox table → → publishes pending events to Kafka | → publishes pending events to Kafka → 3. Mark outbox row as published
+**Flow:**
+- OUTBOX PATTERN — 3 Steps
+- ↓
+- 1. In SAME DB transaction:
+- ↓
+- UPDATE orders SET status = 'paid'
+- ↓
+- INSERT INTO outbox (event_type, payload, ...)
+- ↓
+- 2. Separate process polls the outbox table
+- ↓
+- publishes pending events to Kafka
+- ↓
+- 3. Mark outbox row as published
 
 ```mermaid
 flowchart TD

@@ -70,7 +70,12 @@ KEY DIFFERENCE FROM ARRAY:
   List:   10→20→30      ← scattered memory, sequential access O(n)
 ```
 
-> **Flow**: data / 10 → data / 20 | data / 20 → data null / 30
+**Flow:**
+- data / 10
+- ↓
+- data / 20
+- ↓
+- data null / 30
 
 ```mermaid
 flowchart LR
@@ -95,7 +100,20 @@ Delete at head          O(1)      Just move head forward
 Delete by value         O(n)      Must find it first
 ```
 
-> **Flow**: OPERATION TIME WHY? → Access by index O(n) Must traverse from head | Access by index O(n) Must traverse from head → Search O(n) Must traverse sequentially | Search O(n) Must traverse sequentially → Insert at head O(1) Just update head pointer | Insert at head O(1) Just update head pointer → Insert at tail O(1)* *If you maintain tail pointer | Insert at tail O(1)* *If you maintain tail pointer → Insert at position k O(k) Traverse to k, then O(1) link | Insert at position k O(k) Traverse to k, then O(1) link → Delete at head O(1) Just move head forward | ...+1 more
+**Flow:**
+- OPERATION TIME WHY?
+- ↓
+- Access by index O(n) Must traverse from head
+- ↓
+- Search O(n) Must traverse sequentially
+- ↓
+- Insert at head O(1) Just update head pointer
+- ↓
+- Insert at tail O(1)* *If you maintain tail pointer
+- ↓
+- Insert at position k O(k) Traverse to k, then O(1) link
+- ↓
+- Delete at head O(1) Just move head forward
 
 ```mermaid
 flowchart TD
@@ -231,7 +249,20 @@ public class SinglyLinkedList {
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHY MERGE SORT MATTERS: → • GUARANTEED O(n log n) — no worst case degradation | • GUARANTEED O(n log n) — no worst case degradation → • STABLE sort (equal elements stay in original order) | • STABLE sort (equal elements stay in original order) → • Tim Sort (Java's Arrays.sort for objects) is based on | • Tim Sort (Java's Arrays.sort for objects) is based on → • Teaches the Divide & Conquer paradigm perfectly | • Teaches the Divide & Conquer paradigm perfectly → vs Quick Sort: | vs Quick Sort: → • Quick Sort: avg O(n log n), worst O(n²), in-place | ...+1 more
+**Flow:**
+- WHY MERGE SORT MATTERS:
+- ↓
+- • GUARANTEED O(n log n) — no worst case degradation
+- ↓
+- • STABLE sort (equal elements stay in original order)
+- ↓
+- • Tim Sort (Java's Arrays.sort for objects) is based on
+- ↓
+- • Teaches the Divide & Conquer paradigm perfectly
+- ↓
+- vs Quick Sort:
+- ↓
+- • Quick Sort: avg O(n log n), worst O(n²), in-place
 
 ```mermaid
 flowchart TD
@@ -281,7 +312,24 @@ MERGE STEP DETAIL (merging [27,38] and [3,43]):
   Right remaining   → take 43 → result: [3, 27, 38, 43] ✓
 ```
 
-> **Flow**: Compare 27 vs 3 → take 3 | take 3 → result: [3] | Compare 27 vs 43 → take 27 | take 27 → result: [3, 27] | Compare 38 vs 43 → take 38 | take 38 → result: [3, 27, 38] | ...+2 more
+**Flow:**
+- Compare 27 vs 3
+- ↓
+- take 3
+- ↓
+- result: [3]
+- ↓
+- Compare 27 vs 43
+- ↓
+- take 27
+- ↓
+- result: [3, 27]
+- ↓
+- Compare 38 vs 43
+- ↓
+- take 38
+- ↓
+- result: [3, 27, 38]
 
 ```mermaid
 flowchart TD
@@ -387,7 +435,30 @@ VISUAL:
   Remaining: l2's 4            → result: 1→1→2→3→4→4 ✓
 ```
 
-> **Flow**: Compare 1 vs 1: take l1's 1 → result: 1 | Compare 2 vs 1: take l2's 1 → result: 1 | Compare 2 vs 3: take l1's 2 → result: 1 | Compare 4 vs 3: take l2's 3 → result: 1 | Compare 4 vs 4: take l1's 4 → result: 1 | Remaining: l2's 4 → result: 1
+**Flow:**
+- Compare 1 vs 1: take l1's 1
+- ↓
+- result: 1
+- ↓
+- Compare 2 vs 1: take l2's 1
+- ↓
+- result: 1
+- ↓
+- Compare 2 vs 3: take l1's 2
+- ↓
+- result: 1
+- ↓
+- Compare 4 vs 3: take l2's 3
+- ↓
+- result: 1
+- ↓
+- Compare 4 vs 4: take l1's 4
+- ↓
+- result: 1
+- ↓
+- Remaining: l2's 4
+- ↓
+- result: 1
 
 ```mermaid
 flowchart TD
@@ -453,7 +524,18 @@ Notice: Order(3,"Mouse") comes before Order(3,"Case") — STABILITY matters!
 If sort is unstable, Warehouse A's order might get pushed behind B's.
 ```
 
-> **Flow**: Order(1,'Laptop') → Order(2,'Phone') | Order(2,'Phone') → Order(3,'Mouse') | Order(3,'Case') → Order(5,'Cable') | Order(5,'Cable') → Order(7,'Charger')
+**Flow:**
+- Order(1,'Laptop')
+- ↓
+- Order(2,'Phone')
+- ↓
+- Order(3,'Mouse')
+- ↓
+- Order(3,'Case')
+- ↓
+- Order(5,'Cable')
+- ↓
+- Order(7,'Charger')
 
 ```mermaid
 flowchart LR
@@ -572,7 +654,14 @@ Step 4: prev=4→3→2→1, curr=5       (4 now points to 3)
 Step 5: prev=5→4→3→2→1, curr=null  (5 now points to 4) DONE!
 ```
 
-> **Flow**: Step 2: prev=2 → 1, curr=3 | 1, curr=4 → 5 (3 now points to 2)
+**Flow:**
+- Step 2: prev=2
+- ↓
+- 1, curr=3
+- ↓
+- 1, curr=4
+- ↓
+- 5 (3 now points to 2)
 
 ```mermaid
 flowchart LR
@@ -619,7 +708,14 @@ Step 1: slow=2, fast=3
 Step 2: slow=3, fast=5  → fast.next=null → STOP → slow=3 ✓
 ```
 
-> **Flow**: Step 2: slow=3, fast=5 → fast.next=null | fast.next=null → STOP | STOP → slow=3 ✓
+**Flow:**
+- Step 2: slow=3, fast=5
+- ↓
+- fast.next=null
+- ↓
+- STOP
+- ↓
+- slow=3 ✓
 
 ```mermaid
 flowchart LR

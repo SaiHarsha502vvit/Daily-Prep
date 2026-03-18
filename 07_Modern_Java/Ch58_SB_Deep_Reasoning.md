@@ -67,7 +67,42 @@ DISPATCHER SERVLET = The receptionist inside the building
 → Handles: URL mapping, argument binding, exception handling
 ```
 
-> **Flow**: THE OFFICE BUILDING ANALOGY → HTTP Request arrives at your Spring Boot application: | HTTP Request arrives at your Spring Boot application: → SERVLET CONTAINER (Tomcat) | SERVLET CONTAINER (Tomcat) → [Request] → FILTER 1 → FILTER 2 → FILTER 3 → | [Request] → FILTER 1 → FILTER 2 → FILTER 3 → → DISPATCHER SERVLET | DISPATCHER SERVLET → HandlerMapping → 'Which controller?' | HandlerMapping → 'Which controller?' → HandlerAdapter → 'Call the method' | ...+1 more
+**Flow:**
+- THE OFFICE BUILDING ANALOGY
+- ↓
+- HTTP Request arrives at your Spring Boot application:
+- ↓
+- SERVLET CONTAINER (Tomcat)
+- ↓
+- [Request]
+- ↓
+- FILTER 1
+- ↓
+- FILTER 2
+- ↓
+- FILTER 3
+- ↓
+- [Request]
+- ↓
+- FILTER 1
+- ↓
+- FILTER 2
+- ↓
+- FILTER 3
+- ↓
+- DISPATCHER SERVLET
+- ↓
+- HandlerMapping
+- ↓
+- 'Which controller?'
+- ↓
+- HandlerMapping
+- ↓
+- 'Which controller?'
+- ↓
+- HandlerAdapter
+- ↓
+- 'Call the method'
 
 ```mermaid
 flowchart TD
@@ -140,7 +175,20 @@ Client → Tomcat → Filter1 → Filter2 → Filter3
   → Filter3 → Filter2 → Filter1 → Tomcat → Client
 ```
 
-> **Flow**: Client → Tomcat | Tomcat → Filter1 | Filter1 → Filter2 | Filter2 → Filter3 | Filter3 → Filter2 | Filter2 → Filter1 | ...+2 more
+**Flow:**
+- Client
+- ↓
+- Tomcat
+- ↓
+- Filter1
+- ↓
+- Filter2
+- ↓
+- Filter3
+- ↓
+- Filter2
+- ↓
+- Filter1
 
 ```mermaid
 flowchart TD
@@ -201,7 +249,22 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: @SpringBootApplication = THREE annotations in one: → @Configuration | @Configuration → → Makes main class a source of bean definitions | → Makes main class a source of bean definitions → @EnableAutoConfiguration | @EnableAutoConfiguration → → 'Scan classpath and auto-configure beans based on wha | → 'Scan classpath and auto-configure beans based on wha → on the classpath' | on the classpath' → → Found spring-boot-starter-web? → Configure Tomcat, | ...+1 more
+**Flow:**
+- @SpringBootApplication = THREE annotations in one:
+- ↓
+- @Configuration
+- ↓
+- Makes main class a source of bean definitions
+- ↓
+- @EnableAutoConfiguration
+- ↓
+- 'Scan classpath and auto-configure beans based on wha
+- ↓
+- on the classpath'
+- ↓
+- Found spring-boot-starter-web?
+- ↓
+- Configure Tomcat,
 
 ```mermaid
 flowchart TD
@@ -278,7 +341,20 @@ public class MyApp { ... }
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: THE SMART HOME ANALOGY → 2. Smart home detects it (classpath scanning) | 2. Smart home detects it (classpath scanning) → 3. It auto-configures: connects to HVAC, sets default t | 3. It auto-configures: connects to HVAC, sets default t → 4. You CAN override: set your own temperature (properti | 4. You CAN override: set your own temperature (properti → HOW IT ACTUALLY WORKS: | HOW IT ACTUALLY WORKS: → spring-boot-autoconfigure.jar contains: | spring-boot-autoconfigure.jar contains: → META-INF/spring/org.springframework.boot.autoconfigure. | ...+1 more
+**Flow:**
+- THE SMART HOME ANALOGY
+- ↓
+- 2. Smart home detects it (classpath scanning)
+- ↓
+- 3. It auto-configures: connects to HVAC, sets default t
+- ↓
+- 4. You CAN override: set your own temperature (properti
+- ↓
+- HOW IT ACTUALLY WORKS:
+- ↓
+- spring-boot-autoconfigure.jar contains:
+- ↓
+- META-INF/spring/org.springframework.boot.autoconfigure.
 
 ```mermaid
 flowchart TD
@@ -359,7 +435,26 @@ public class MyConfig {
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: THE BODYGUARD ANALOGY → Spring creates a PROXY (bodyguard) around your bean. | Spring creates a PROXY (bodyguard) around your bean. → All calls from OUTSIDE go through the proxy. | All calls from OUTSIDE go through the proxy. → The proxy adds behavior (transaction, security, caching | The proxy adds behavior (transaction, security, caching → BUT! If your bean calls ITS OWN method: | BUT! If your bean calls ITS OWN method: → [Your Bean] → this.internalMethod() | [Your Bean] → this.internalMethod() → → Bypasses the proxy! No transaction started! | ...+1 more
+**Flow:**
+- THE BODYGUARD ANALOGY
+- ↓
+- Spring creates a PROXY (bodyguard) around your bean.
+- ↓
+- All calls from OUTSIDE go through the proxy.
+- ↓
+- The proxy adds behavior (transaction, security, caching
+- ↓
+- BUT! If your bean calls ITS OWN method:
+- ↓
+- [Your Bean]
+- ↓
+- this.internalMethod()
+- ↓
+- [Your Bean]
+- ↓
+- this.internalMethod()
+- ↓
+- Bypasses the proxy! No transaction started!
 
 ```mermaid
 flowchart TD
@@ -453,7 +548,20 @@ public class NotificationService {
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: THE EMPLOYEE ONBOARDING ANALOGY → 1. INSTANTIATION: Hire the employee (new MyBean()) | 1. INSTANTIATION: Hire the employee (new MyBean()) → 3. AWARE INTERFACES: Tell them company name, their ID | 3. AWARE INTERFACES: Tell them company name, their ID → (BeanNameAware, ApplicationContextAware) | (BeanNameAware, ApplicationContextAware) → 4. @PostConstruct: Employee orientation (run custom ini | 4. @PostConstruct: Employee orientation (run custom ini → 5. InitializingBean.afterPropertiesSet(): Second init h | 5. InitializingBean.afterPropertiesSet(): Second init h → 6. Custom init-method: Third init hook | ...+1 more
+**Flow:**
+- THE EMPLOYEE ONBOARDING ANALOGY
+- ↓
+- 1. INSTANTIATION: Hire the employee (new MyBean())
+- ↓
+- 3. AWARE INTERFACES: Tell them company name, their ID
+- ↓
+- (BeanNameAware, ApplicationContextAware)
+- ↓
+- 4. @PostConstruct: Employee orientation (run custom ini
+- ↓
+- 5. InitializingBean.afterPropertiesSet(): Second init h
+- ↓
+- 6. Custom init-method: Third init hook
 
 ```mermaid
 flowchart TD
@@ -529,7 +637,20 @@ public class CacheService {
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: COOKING AT HOME vs RESTAURANT — The Inversion → WITHOUT IoC (cooking at home): | WITHOUT IoC (cooking at home): → YOU control everything: | YOU control everything: → → You decide what to buy | → You decide what to buy → → You buy ingredients (create dependencies) | → You buy ingredients (create dependencies) → → You cook (main logic) | → You cook (main logic) → → You clean up | ...+1 more
+**Flow:**
+- COOKING AT HOME vs RESTAURANT — The Inversion
+- ↓
+- WITHOUT IoC (cooking at home):
+- ↓
+- YOU control everything:
+- ↓
+- You decide what to buy
+- ↓
+- You buy ingredients (create dependencies)
+- ↓
+- You cook (main logic)
+- ↓
+- You clean up
 
 ```mermaid
 flowchart TD
@@ -607,7 +728,20 @@ public class OrderService {
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: THREE INJECTION STYLES: → FIELD INJECTION (the lazy way): | FIELD INJECTION (the lazy way): → @Autowired private UserRepository repo; | @Autowired private UserRepository repo; → ❌ Can't make fields final (no immutability) | ❌ Can't make fields final (no immutability) → ❌ Hidden dependencies (not visible in constructor) | ❌ Hidden dependencies (not visible in constructor) → ❌ Can't use without Spring (can't new + inject in tests | ❌ Can't use without Spring (can't new + inject in tests → ❌ Allows too many dependencies (no visible bloat signal | ...+1 more
+**Flow:**
+- THREE INJECTION STYLES:
+- ↓
+- FIELD INJECTION (the lazy way):
+- ↓
+- @Autowired private UserRepository repo;
+- ↓
+- ❌ Can't make fields final (no immutability)
+- ↓
+- ❌ Hidden dependencies (not visible in constructor)
+- ↓
+- ❌ Can't use without Spring (can't new + inject in tests
+- ↓
+- ❌ Allows too many dependencies (no visible bloat signal
 
 ```mermaid
 flowchart TD
@@ -682,7 +816,20 @@ UserService service = new UserService(mockRepo, mockEmail, mockCache);
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: THE COFFEE MACHINE ANALOGY → Singleton scope: One coffee machine in the office. Ever | Singleton scope: One coffee machine in the office. Ever → shares it. Created once at startup. | shares it. Created once at startup. → it's requested. | it's requested. → THE PROBLEM: | THE PROBLEM: → Singleton OrderService is created ONCE at startup. | Singleton OrderService is created ONCE at startup. → During creation, Spring injects Prototype ShoppingCart. | ...+1 more
+**Flow:**
+- THE COFFEE MACHINE ANALOGY
+- ↓
+- Singleton scope: One coffee machine in the office. Ever
+- ↓
+- shares it. Created once at startup.
+- ↓
+- it's requested.
+- ↓
+- THE PROBLEM:
+- ↓
+- Singleton OrderService is created ONCE at startup.
+- ↓
+- During creation, Spring injects Prototype ShoppingCart.
 
 ```mermaid
 flowchart TD
@@ -769,7 +916,34 @@ public class ShoppingCart { ... }
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: @Controller = View Returns (traditional MVC web apps) → → Return value is a VIEW NAME (JSP, Thymeleaf template) | → Return value is a VIEW NAME (JSP, Thymeleaf template) → → DispatcherServlet passes to ViewResolver to render HT | → DispatcherServlet passes to ViewResolver to render HT → THE DEEPER UNDERSTANDING: | THE DEEPER UNDERSTANDING: → @Controller + return 'users' → ViewResolver looks for | @Controller + return 'users' → ViewResolver looks for → templates/users.html → renders HTML | templates/users.html → renders HTML → @RestController + return userList → HttpMessageConverte | ...+1 more
+**Flow:**
+- @Controller = View Returns (traditional MVC web apps)
+- ↓
+- Return value is a VIEW NAME (JSP, Thymeleaf template)
+- ↓
+- DispatcherServlet passes to ViewResolver to render HT
+- ↓
+- THE DEEPER UNDERSTANDING:
+- ↓
+- @Controller + return 'users'
+- ↓
+- ViewResolver looks for
+- ↓
+- @Controller + return 'users'
+- ↓
+- ViewResolver looks for
+- ↓
+- templates/users.html
+- ↓
+- renders HTML
+- ↓
+- templates/users.html
+- ↓
+- renders HTML
+- ↓
+- @RestController + return userList
+- ↓
+- HttpMessageConverte
 
 ```mermaid
 flowchart TD
@@ -829,7 +1003,26 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: Spring Security = A CHAIN of Servlet Filters → Request → SecurityFilterChain: | Request → SecurityFilterChain: → 1. SecurityContextPersistenceFilter | 1. SecurityContextPersistenceFilter → → Load existing security context (from session/token) | → Load existing security context (from session/token) → 2. UsernamePasswordAuthenticationFilter | 2. UsernamePasswordAuthenticationFilter → → If login request: extract credentials, authenticate | → If login request: extract credentials, authenticate → → Delegates to AuthenticationManager | ...+1 more
+**Flow:**
+- Spring Security = A CHAIN of Servlet Filters
+- ↓
+- Request
+- ↓
+- SecurityFilterChain:
+- ↓
+- Request
+- ↓
+- SecurityFilterChain:
+- ↓
+- 1. SecurityContextPersistenceFilter
+- ↓
+- Load existing security context (from session/token)
+- ↓
+- 2. UsernamePasswordAuthenticationFilter
+- ↓
+- If login request: extract credentials, authenticate
+- ↓
+- Delegates to AuthenticationManager
 
 ```mermaid
 flowchart TD
@@ -922,7 +1115,20 @@ public class StorageConfig {
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: Same proxy problem as @Transactional (Section 4): → @Async tells Spring: 'Run this in a different thread.' | @Async tells Spring: 'Run this in a different thread.' → But Spring needs to create a PROXY to intercept the cal | But Spring needs to create a PROXY to intercept the cal → and redirect it to a thread pool. | and redirect it to a thread pool. → @EnableAsync tells Spring: 'Create those proxies.' | @EnableAsync tells Spring: 'Create those proxies.' → Without it, @Async is just an annotation — no behavior. | Without it, @Async is just an annotation — no behavior. → SAME GOTCHAS: | ...+1 more
+**Flow:**
+- Same proxy problem as @Transactional (Section 4):
+- ↓
+- @Async tells Spring: 'Run this in a different thread.'
+- ↓
+- But Spring needs to create a PROXY to intercept the cal
+- ↓
+- and redirect it to a thread pool.
+- ↓
+- @EnableAsync tells Spring: 'Create those proxies.'
+- ↓
+- Without it, @Async is just an annotation — no behavior.
+- ↓
+- SAME GOTCHAS:
 
 ```mermaid
 flowchart TD

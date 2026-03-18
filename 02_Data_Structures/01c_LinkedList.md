@@ -108,7 +108,60 @@ CIRCULAR LINKED LIST:
   - Used in: Round-robin scheduling, multiplayer game turns
 ```
 
-> **Flow**: [10|●] → [20|●] | [20|●] → [30|null] | null←[●|10|●]↔[●|20|●]↔[●|30|●] → null | [10|●] → [20|●] | [20|●] → [30|●] | [30|●] → (back to 10)
+**Flow:**
+- [10
+- ↓
+- ●]
+- ↓
+- [20
+- ↓
+- ●]
+- ↓
+- [20
+- ↓
+- ●]
+- ↓
+- [30
+- ↓
+- null]
+- ↓
+- null←[●
+- ↓
+- 10
+- ↓
+- ●]↔[●
+- ↓
+- 20
+- ↓
+- ●]↔[●
+- ↓
+- 30
+- ↓
+- ●]
+- ↓
+- null
+- ↓
+- [10
+- ↓
+- ●]
+- ↓
+- [20
+- ↓
+- ●]
+- ↓
+- [20
+- ↓
+- ●]
+- ↓
+- [30
+- ↓
+- ●]
+- ↓
+- [30
+- ↓
+- ●]
+- ↓
+- (back to 10)
 
 ```mermaid
 flowchart TD
@@ -167,7 +220,30 @@ WHY NON-CONTIGUOUS IS USEFUL:
 - Size can grow infinitely (until memory full)
 ```
 
-> **Flow**: PHYSICAL REALITY: → Nodes scattered across memory, connected by refs | Nodes scattered across memory, connected by refs → 10 ● → 20 ● → 30 null | 10 ● → 20 ● → 30 null → addr: 5000 addr: 2000 addr: 8000 | addr: 5000 addr: 2000 addr: 8000 → NOT CONTIGUOUS = Scattered in memory | NOT CONTIGUOUS = Scattered in memory → WHY NON-CONTIGUOUS IS USEFUL: | WHY NON-CONTIGUOUS IS USEFUL: → - No need for big continuous memory block | ...+1 more
+**Flow:**
+- PHYSICAL REALITY:
+- ↓
+- Nodes scattered across memory, connected by refs
+- ↓
+- 10 ●
+- ↓
+- 20 ●
+- ↓
+- 30 null
+- ↓
+- 10 ●
+- ↓
+- 20 ●
+- ↓
+- 30 null
+- ↓
+- addr: 5000 addr: 2000 addr: 8000
+- ↓
+- NOT CONTIGUOUS = Scattered in memory
+- ↓
+- WHY NON-CONTIGUOUS IS USEFUL:
+- ↓
+- - No need for big continuous memory block
 
 ```mermaid
 flowchart TD
@@ -420,7 +496,22 @@ public class MyLinkedList {
   After 2 steps: slow=3, fast=5 → fast at end → slow IS the middle!
 ```
 
-> **Flow**: [1] → [2] | [2] → [3] | [3] → [4] | [4] → [5] | [5] → null | After 2 steps: slow=3, fast=5 → fast at end | ...+1 more
+**Flow:**
+- [1]
+- ↓
+- [2]
+- ↓
+- [3]
+- ↓
+- [4]
+- ↓
+- [5]
+- ↓
+- null
+- ↓
+- After 2 steps: slow=3, fast=5
+- ↓
+- fast at end
 
 ```mermaid
 flowchart TD
@@ -473,7 +564,14 @@ ListNode nthFromEnd(ListNode head, int n) {
   AFTER:  null ← 1 ← 2 ← 3  →  head = 3
 ```
 
-> **Flow**: Step 2: null ← 1 ← 2 3 → null (reverse 2's pointer) | AFTER: null ← 1 ← 2 ← 3 → head = 3
+**Flow:**
+- Step 2: null ← 1 ← 2 3
+- ↓
+- null (reverse 2's pointer)
+- ↓
+- AFTER: null ← 1 ← 2 ← 3
+- ↓
+- head = 3
 
 ```mermaid
 flowchart LR
@@ -500,7 +598,18 @@ flowchart LR
      Result: 1 → 2 → 3 → 4 → 5 → 6
 ```
 
-> **Flow**: Compare heads: 1 &lt; 2 → take 1 | Compare: 3 &gt; 2 → take 2 | Compare: 3 &lt; 4 → take 3
+**Flow:**
+- Compare heads: 1 < 2
+- ↓
+- take 1
+- ↓
+- Compare: 3 > 2
+- ↓
+- take 2
+- ↓
+- Compare: 3 < 4
+- ↓
+- take 3
 
 ```mermaid
 flowchart LR

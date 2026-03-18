@@ -116,7 +116,20 @@ CREATE TABLE experiments (
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: WHAT IS COHORT ANALYSIS? → A 'cohort' = a group of users who share a common trait | A 'cohort' = a group of users who share a common trait → Usually: 'signed up in the same month' | Usually: 'signed up in the same month' → You track each cohort OVER TIME: | You track each cohort OVER TIME: → Cohort Month 0 Month 1 Month 2 Month 3 | Cohort Month 0 Month 1 Month 2 Month 3 → Jan signup 1000 400 (40%) 250 (25%) 200 (20%) | Jan signup 1000 400 (40%) 250 (25%) 200 (20%) → Feb signup 1200 540 (45%) 360 (30%) | ...+1 more
+**Flow:**
+- WHAT IS COHORT ANALYSIS?
+- ↓
+- A 'cohort' = a group of users who share a common trait
+- ↓
+- Usually: 'signed up in the same month'
+- ↓
+- You track each cohort OVER TIME:
+- ↓
+- Cohort Month 0 Month 1 Month 2 Month 3
+- ↓
+- Jan signup 1000 400 (40%) 250 (25%) 200 (20%)
+- ↓
+- Feb signup 1200 540 (45%) 360 (30%)
 
 ```mermaid
 flowchart TD
@@ -231,7 +244,20 @@ The biggest drop happens Homepage→Product (40% lost).
 Fix THAT step for maximum impact!
 ```
 
-> **Flow**: WHAT IS A FUNNEL? → Users flow through a sequence of steps: | Users flow through a sequence of steps: → Visit Homepage (10,000) 100% | Visit Homepage (10,000) 100% → View Product (6,000) 60% (40% dropped off!) | View Product (6,000) 60% (40% dropped off!) → Add to Cart (2,000) 33% of viewers | Add to Cart (2,000) 33% of viewers → Purchase(800) 40% of add-to-cart | Purchase(800) 40% of add-to-cart → 8% overall conversion! | ...+1 more
+**Flow:**
+- WHAT IS A FUNNEL?
+- ↓
+- Users flow through a sequence of steps:
+- ↓
+- Visit Homepage (10,000) 100%
+- ↓
+- View Product (6,000) 60% (40% dropped off!)
+- ↓
+- Add to Cart (2,000) 33% of viewers
+- ↓
+- Purchase(800) 40% of add-to-cart
+- ↓
+- 8% overall conversion!
 
 ```mermaid
 flowchart TD
@@ -395,7 +421,32 @@ GROUP BY c.cohort_month, cs.cohort_size;
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: A/B TESTING WITH SQL → Goal: 'Did changing the button color increase purchases | Goal: 'Did changing the button color increase purchases → Control (A): Old blue button → 10,000 users | Control (A): Old blue button → 10,000 users → Treatment (B): New green button → 10,000 users | Treatment (B): New green button → 10,000 users → Metrics to compare: | Metrics to compare: → → Conversion rate (% who purchased) | → Conversion rate (% who purchased) → → Revenue per user | ...+1 more
+**Flow:**
+- A/B TESTING WITH SQL
+- ↓
+- Goal: 'Did changing the button color increase purchases
+- ↓
+- Control (A): Old blue button
+- ↓
+- 10,000 users
+- ↓
+- Control (A): Old blue button
+- ↓
+- 10,000 users
+- ↓
+- Treatment (B): New green button
+- ↓
+- 10,000 users
+- ↓
+- Treatment (B): New green button
+- ↓
+- 10,000 users
+- ↓
+- Metrics to compare:
+- ↓
+- Conversion rate (% who purchased)
+- ↓
+- Revenue per user
 
 ```mermaid
 flowchart TD
@@ -506,7 +557,20 @@ ORDER BY u.plan_type, e.variant;
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: RFM = Recency, Frequency, Monetary → Score each customer on 3 dimensions (1-5 each): | Score each customer on 3 dimensions (1-5 each): → Recency: How RECENTLY did they purchase? | Recency: How RECENTLY did they purchase? → (5 = this week, 1 = 6+ months ago) | (5 = this week, 1 = 6+ months ago) → Frequency: How OFTEN do they purchase? | Frequency: How OFTEN do they purchase? → (5 = 50+ orders, 1 = 1 order) | (5 = 50+ orders, 1 = 1 order) → Monetary: How much do they SPEND? | ...+1 more
+**Flow:**
+- RFM = Recency, Frequency, Monetary
+- ↓
+- Score each customer on 3 dimensions (1-5 each):
+- ↓
+- Recency: How RECENTLY did they purchase?
+- ↓
+- (5 = this week, 1 = 6+ months ago)
+- ↓
+- Frequency: How OFTEN do they purchase?
+- ↓
+- (5 = 50+ orders, 1 = 1 order)
+- ↓
+- Monetary: How much do they SPEND?
 
 ```mermaid
 flowchart TD
@@ -754,7 +818,20 @@ ORDER BY order_date;
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: FUNCTION PURPOSE EXAMPLE → ROW_NUMBER() Sequential rank (no ties) Top N | ROW_NUMBER() Sequential rank (no ties) Top N → RANK() Rank with gaps (1,2,2,4) Leaderboard | RANK() Rank with gaps (1,2,2,4) Leaderboard → DENSE_RANK() Rank no gaps (1,2,2,3) Percentile | DENSE_RANK() Rank no gaps (1,2,2,3) Percentile → NTILE(n) Divide into n equal groups Quartiles | NTILE(n) Divide into n equal groups Quartiles → LAG(col, n) Previous row value Change | LAG(col, n) Previous row value Change → LEAD(col, n) Next row value Forecast | ...+1 more
+**Flow:**
+- FUNCTION PURPOSE EXAMPLE
+- ↓
+- ROW_NUMBER() Sequential rank (no ties) Top N
+- ↓
+- RANK() Rank with gaps (1,2,2,4) Leaderboard
+- ↓
+- DENSE_RANK() Rank no gaps (1,2,2,3) Percentile
+- ↓
+- NTILE(n) Divide into n equal groups Quartiles
+- ↓
+- LAG(col, n) Previous row value Change
+- ↓
+- LEAD(col, n) Next row value Forecast
 
 ```mermaid
 flowchart TD

@@ -63,7 +63,12 @@ Array1: [1, 3, 5, 7]     Array2: [2, 3, 6, 8]
  Compare arr1[i] vs arr2[j], move smaller pointer
 ```
 
-> **Flow**: left right → → ← | slow fast → → → → →
+**Flow:**
+- left right
+- ↓
+- ←
+- ↓
+- slow fast
 
 ```mermaid
 flowchart TD
@@ -211,7 +216,14 @@ Step 4: Continue
 Answer: Maximum sum = 9
 ```
 
-> **Flow**: 2 1 5 1 3 2 → 1 5 1 3 | 1 5 1 3 → 5 1 3 2 | 5 1 3 2 → 1 3 2
+**Flow:**
+- 2 1 5 1 3 2
+- ↓
+- 1 5 1 3
+- ↓
+- 5 1 3 2
+- ↓
+- 1 3 2
 
 ```mermaid
 flowchart TD
@@ -327,7 +339,16 @@ Step 5: SHRINK from left until valid
 Answer: Maximum length = 3 ("ece")
 ```
 
-> **Flow**: e c → e c e | e c e → e c e b | e c e b → c e b | c e b → e b
+**Flow:**
+- e c
+- ↓
+- e c e
+- ↓
+- e c e b
+- ↓
+- c e b
+- ↓
+- e b
 
 ```mermaid
 flowchart TD
@@ -491,7 +512,34 @@ public String minWindow(String s, String t) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: BINARY SEARCH VISUALIZATION → Find 7 in sorted array: | Find 7 in sorted array: → low mid high | low mid high → arr[4]=5 &lt; 7 → search right half | arr[4]=5 &lt; 7 → search right half → arr[7]=8 &gt; 7 → search left half | arr[7]=8 &gt; 7 → search left half → low,mid high | low,mid high → arr[5]=6 &lt; 7 → search right half | ...+1 more
+**Flow:**
+- BINARY SEARCH VISUALIZATION
+- ↓
+- Find 7 in sorted array:
+- ↓
+- low mid high
+- ↓
+- arr[4]=5 < 7
+- ↓
+- search right half
+- ↓
+- arr[4]=5 < 7
+- ↓
+- search right half
+- ↓
+- arr[7]=8 > 7
+- ↓
+- search left half
+- ↓
+- arr[7]=8 > 7
+- ↓
+- search left half
+- ↓
+- low,mid high
+- ↓
+- arr[5]=6 < 7
+- ↓
+- search right half
 
 ```mermaid
 flowchart TD
@@ -646,7 +694,12 @@ Example: Sum of arr[2..4] = sum(3,4,5) = 12
           sum = 3+4+5 = 12
 ```
 
-> **Flow**: 1 2 3 4 5 6 → 0 1 3 6 10 15 21 | 0 1 3 6 10 15 21 → 1 2 3 4 5 6
+**Flow:**
+- 1 2 3 4 5 6
+- ↓
+- 0 1 3 6 10 15 21
+- ↓
+- 1 2 3 4 5 6
 
 ```mermaid
 flowchart TD
@@ -770,7 +823,10 @@ for (char c : str.toCharArray()) {
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: 0 0 0 0 1 0 0 1 0 0 0 2 0 0 1 0 0 0 0 0 0 0 0 0 0 0 → Key Value / 'h' 1 / 'e' 1 / 'l' 2 / 'o' 1
+**Flow:**
+- 0 0 0 0 1 0 0 1 0 0 0 2 0 0 1 0 0 0 0 0 0 0 0 0 0 0
+- ↓
+- Key Value / 'h' 1 / 'e' 1 / 'l' 2 / 'o' 1
 
 ```mermaid
 flowchart TD
@@ -899,7 +955,20 @@ public int firstUniqChar(String s) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: STACK PATTERNS → PATTERN 1: Matching/Balancing | PATTERN 1: Matching/Balancing → Input: '({[]})' | Input: '({[]})' → Process '(': Stack: [(] | Process '(': Stack: [(] → Process '{': Stack: [(, {] | Process '{': Stack: [(, {] → Process '[': Stack: [(, {, [] | Process '[': Stack: [(, {, [] → Process ']': Matches '[', Stack: [(, {] | ...+1 more
+**Flow:**
+- STACK PATTERNS
+- ↓
+- PATTERN 1: Matching/Balancing
+- ↓
+- Input: '({[]})'
+- ↓
+- Process '(': Stack: [(]
+- ↓
+- Process '{': Stack: [(, {]
+- ↓
+- Process '[': Stack: [(, {, []
+- ↓
+- Process ']': Matches '[', Stack: [(, {]
 
 ```mermaid
 flowchart TD
@@ -1024,7 +1093,32 @@ WHEN TO USE WHAT:
 └────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: BFS vs DFS VISUALIZATION → Graph: 1 | Graph: 1 → BFS (Level by Level) - Use QUEUE | BFS (Level by Level) - Use QUEUE → Level 0: [1] | Level 0: [1] → Level 1: [2, 3, 4] | Level 1: [2, 3, 4] → Level 2: [5, 6, 7] | Level 2: [5, 6, 7] → Visit order: 1 → 2 → 3 → 4 → 5 → 6 → 7 | ...+1 more
+**Flow:**
+- BFS vs DFS VISUALIZATION
+- ↓
+- Graph: 1
+- ↓
+- BFS (Level by Level) - Use QUEUE
+- ↓
+- Level 0: [1]
+- ↓
+- Level 1: [2, 3, 4]
+- ↓
+- Level 2: [5, 6, 7]
+- ↓
+- Visit order: 1
+- ↓
+- 2
+- ↓
+- 3
+- ↓
+- 4
+- ↓
+- 5
+- ↓
+- 6
+- ↓
+- 7
 
 ```mermaid
 flowchart TD
@@ -1178,7 +1272,20 @@ BACKTRACKING PATTERN:
 └────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: BACKTRACKING VISUALIZATION → Problem: Generate all subsets of [1, 2, 3] | Problem: Generate all subsets of [1, 2, 3] → Decision tree (include or exclude each element): | Decision tree (include or exclude each element): → include 1 exclude 1 | include 1 exclude 1 → Leaf nodes = all 8 subsets! | Leaf nodes = all 8 subsets! → BACKTRACKING PATTERN: | BACKTRACKING PATTERN: → 1. CHOOSE: Make a choice (add element to current path) | ...+1 more
+**Flow:**
+- BACKTRACKING VISUALIZATION
+- ↓
+- Problem: Generate all subsets of [1, 2, 3]
+- ↓
+- Decision tree (include or exclude each element):
+- ↓
+- include 1 exclude 1
+- ↓
+- Leaf nodes = all 8 subsets!
+- ↓
+- BACKTRACKING PATTERN:
+- ↓
+- 1. CHOOSE: Make a choice (add element to current path)
 
 ```mermaid
 flowchart TD
@@ -1319,7 +1426,20 @@ Base:    dp[0] = 1, dp[1] = 1
 Answer: dp[5] = 8 ways to climb 5 stairs
 ```
 
-> **Flow**: DYNAMIC PROGRAMMING → STEP 1: Identify if DP applies | STEP 1: Identify if DP applies → STEP 2: Define state | STEP 2: Define state → dp[i] = 'answer for first i elements' or | dp[i] = 'answer for first i elements' or → dp[i][j] = 'answer for range [i, j]' or | dp[i][j] = 'answer for range [i, j]' or → dp[i][w] = 'answer considering i items with capacity w' | dp[i][w] = 'answer considering i items with capacity w' → STEP 3: Find recurrence (transition) | ...+1 more
+**Flow:**
+- DYNAMIC PROGRAMMING
+- ↓
+- STEP 1: Identify if DP applies
+- ↓
+- STEP 2: Define state
+- ↓
+- dp[i] = 'answer for first i elements' or
+- ↓
+- dp[i][j] = 'answer for range [i, j]' or
+- ↓
+- dp[i][w] = 'answer considering i items with capacity w'
+- ↓
+- STEP 3: Find recurrence (transition)
 
 ```mermaid
 flowchart TD

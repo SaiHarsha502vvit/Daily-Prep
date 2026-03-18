@@ -53,7 +53,30 @@ Which family?
 └── String palindrome → PALINDROME DP
 ```
 
-> **Flow**: 'How many ways?' → COUNTING DP | 'Minimum/Maximum cost?' → OPTIMIZATION DP | 'Can we achieve X?' → FEASIBILITY DP | Involves two sequences → LCS / EDIT DISTANCE family | Involves one sequence → LIS / KADANE family | Items with weights/values → KNAPSACK family | ...+3 more
+**Flow:**
+- 'How many ways?'
+- ↓
+- COUNTING DP
+- ↓
+- 'Minimum/Maximum cost?'
+- ↓
+- OPTIMIZATION DP
+- ↓
+- 'Can we achieve X?'
+- ↓
+- FEASIBILITY DP
+- ↓
+- Involves two sequences
+- ↓
+- LCS / EDIT DISTANCE family
+- ↓
+- Involves one sequence
+- ↓
+- LIS / KADANE family
+- ↓
+- Items with weights/values
+- ↓
+- KNAPSACK family
 
 ```mermaid
 flowchart TD
@@ -199,7 +222,10 @@ Step 4: BUILD (left to right)
 Time: O(n) | Space: O(1) using two variables
 ```
 
-> **Flow**: Answer: dp[4] = 12 ✅ (rob houses 0, 2, 4 → 2+9+1=12)
+**Flow:**
+- Answer: dp[4] = 12 ✅ (rob houses 0, 2, 4
+- ↓
+- 2+9+1=12)
 
 ```mermaid
 flowchart LR
@@ -240,7 +266,30 @@ To recover the actual subsequence: backtrack from dp[m][n].
 Time: O(m×n) | Space: O(m×n), optimizable to O(min(m,n))
 ```
 
-> **Flow**: a 0 1 1 1 ← 'a'=='a' → dp[0][0]+1=1 | b 0 1 1 1 ← 'b'≠'a','c','e' → carry forward | c 0 1 2 2 ← 'c'=='c' → dp[1][1]+1=2 | e 0 1 2 3 ← 'e'=='e' → dp[3][2]+1=3 | If chars match → include it, move diagonal. | Else → move in direction of larger dp value.
+**Flow:**
+- a 0 1 1 1 ← 'a'=='a'
+- ↓
+- dp[0][0]+1=1
+- ↓
+- b 0 1 1 1 ← 'b'≠'a','c','e'
+- ↓
+- carry forward
+- ↓
+- c 0 1 2 2 ← 'c'=='c'
+- ↓
+- dp[1][1]+1=2
+- ↓
+- e 0 1 2 3 ← 'e'=='e'
+- ↓
+- dp[3][2]+1=3
+- ↓
+- If chars match
+- ↓
+- include it, move diagonal.
+- ↓
+- Else
+- ↓
+- move in direction of larger dp value.
 
 ```mermaid
 flowchart TD

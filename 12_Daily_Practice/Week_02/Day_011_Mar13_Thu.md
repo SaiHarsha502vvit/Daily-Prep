@@ -70,7 +70,36 @@ Java:
   Deque methods:  offerFirst(x), offerLast(x), pollFirst(), pollLast()
 ```
 
-> **Flow**: QUEUE (FIFO): DEQUE (Double-Ended): → enqueue(x) → addFirst(x) → ← addLast(x) | enqueue(x) → addFirst(x) → ← addLast(x) → A B C removeFirst()← A B C → removeLast() | A B C removeFirst()← A B C → removeLast() → dequeue() ← | dequeue() ← → (returns A) (can add/remove from BOTH ends) | (returns A) (can add/remove from BOTH ends) → Java: | Java: → Queue methods: offer(x), poll(), peek()
+**Flow:**
+- QUEUE (FIFO): DEQUE (Double-Ended):
+- ↓
+- enqueue(x)
+- ↓
+- addFirst(x)
+- ↓
+- ← addLast(x)
+- ↓
+- enqueue(x)
+- ↓
+- addFirst(x)
+- ↓
+- ← addLast(x)
+- ↓
+- A B C removeFirst()← A B C
+- ↓
+- removeLast()
+- ↓
+- A B C removeFirst()← A B C
+- ↓
+- removeLast()
+- ↓
+- dequeue() ←
+- ↓
+- (returns A) (can add/remove from BOTH ends)
+- ↓
+- Java:
+- ↓
+- Queue methods: offer(x), poll(), peek()
 
 ```mermaid
 flowchart TD
@@ -145,7 +174,16 @@ HashMap converts ANY key into an array index using a hash function.
 RESULT: O(1) average for get/put/contains
 ```
 
-> **Flow**: 'apple' → price? Can't use 'apple' as array index! | hash('apple') → 42 | 42 → store at bucket[42]
+**Flow:**
+- 'apple'
+- ↓
+- price? Can't use 'apple' as array index!
+- ↓
+- hash('apple')
+- ↓
+- 42
+- ↓
+- store at bucket[42]
 
 ```mermaid
 flowchart LR
@@ -190,7 +228,62 @@ flowchart LR
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: HashMap INTERNALS (Java 8+) → 1. Key → hashCode() → index = hash % capacity | 1. Key → hashCode() → index = hash % capacity → 2. Array of buckets: | 2. Array of buckets: → [0] → null | [0] → null → [1] → ('apple',5) → ('kiwi',3) → null ← COLLISION! | [1] → ('apple',5) → ('kiwi',3) → null ← COLLISION! → [2] → ('banana',7) → null | [2] → ('banana',7) → null → [3] → null | ...+1 more
+**Flow:**
+- HashMap INTERNALS (Java 8+)
+- ↓
+- 1. Key
+- ↓
+- hashCode()
+- ↓
+- index = hash % capacity
+- ↓
+- 1. Key
+- ↓
+- hashCode()
+- ↓
+- index = hash % capacity
+- ↓
+- 2. Array of buckets:
+- ↓
+- [0]
+- ↓
+- null
+- ↓
+- [0]
+- ↓
+- null
+- ↓
+- [1]
+- ↓
+- ('apple',5)
+- ↓
+- ('kiwi',3)
+- ↓
+- null ← COLLISION!
+- ↓
+- [1]
+- ↓
+- ('apple',5)
+- ↓
+- ('kiwi',3)
+- ↓
+- null ← COLLISION!
+- ↓
+- [2]
+- ↓
+- ('banana',7)
+- ↓
+- null
+- ↓
+- [2]
+- ↓
+- ('banana',7)
+- ↓
+- null
+- ↓
+- [3]
+- ↓
+- null
 
 ```mermaid
 flowchart TD
@@ -253,7 +346,14 @@ Input:  "loveleetcode" → Output: 2 (first unique = 'v')
 APPROACH: HashMap for frequency + scan for first with count==1
 ```
 
-> **Flow**: Input: 'leetcode' → Output: 0 (first unique = 'l') | Input: 'loveleetcode' → Output: 2 (first unique = 'v')
+**Flow:**
+- Input: 'leetcode'
+- ↓
+- Output: 0 (first unique = 'l')
+- ↓
+- Input: 'loveleetcode'
+- ↓
+- Output: 2 (first unique = 'v')
 
 ```mermaid
 flowchart LR
@@ -305,7 +405,18 @@ WHY Queue? Oldest timestamps naturally at front → easy to clean up.
 WHY HashMap? O(1) lookup of each user's queue.
 ```
 
-> **Flow**: [T-55, T-40, T-30, T-20, T-10, T] ← 6 requests in → OK | HashMap&lt;String, Queue&lt;Long&gt;&gt; : userId → request timestamps | WHY Queue? Oldest timestamps naturally at front → easy to clean up.
+**Flow:**
+- [T-55, T-40, T-30, T-20, T-10, T] ← 6 requests in
+- ↓
+- OK
+- ↓
+- HashMap<String, Queue<Long>> : userId
+- ↓
+- request timestamps
+- ↓
+- WHY Queue? Oldest timestamps naturally at front
+- ↓
+- easy to clean up.
 
 ```mermaid
 flowchart LR
@@ -344,7 +455,10 @@ departments: dept_id | dept_name
 To see "Alice works in Engineering" → you need a JOIN.
 ```
 
-> **Flow**: To see 'Alice works in Engineering' → you need a JOIN.
+**Flow:**
+- To see 'Alice works in Engineering'
+- ↓
+- you need a JOIN.
 
 ```mermaid
 flowchart LR
@@ -459,7 +573,18 @@ pop() → returns 1
   outStack: [3, 2]
 ```
 
-> **Flow**: peek() → need to return 1 (first in) | Transfer: inStack → outStack: [3, 2, 1] | pop() → returns 1
+**Flow:**
+- peek()
+- ↓
+- need to return 1 (first in)
+- ↓
+- Transfer: inStack
+- ↓
+- outStack: [3, 2, 1]
+- ↓
+- pop()
+- ↓
+- returns 1
 
 ```mermaid
 flowchart LR

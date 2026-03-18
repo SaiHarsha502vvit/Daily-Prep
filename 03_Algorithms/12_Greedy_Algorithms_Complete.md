@@ -433,7 +433,28 @@ public int greedySolve(int[][] items) {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: GREEDY PHILOSOPHY → 'At each step, make the choice that looks best RIGHT NO | 'At each step, make the choice that looks best RIGHT NO → LOCAL OPTIMUM → Hopefully → GLOBAL OPTIMUM | LOCAL OPTIMUM → Hopefully → GLOBAL OPTIMUM → Key properties: | Key properties: → 1. Greedy Choice Property: Local choice leads to global | 1. Greedy Choice Property: Local choice leads to global → 2. Optimal Substructure: Optimal contains optimal sub
+**Flow:**
+- GREEDY PHILOSOPHY
+- ↓
+- 'At each step, make the choice that looks best RIGHT NO
+- ↓
+- LOCAL OPTIMUM
+- ↓
+- Hopefully
+- ↓
+- GLOBAL OPTIMUM
+- ↓
+- LOCAL OPTIMUM
+- ↓
+- Hopefully
+- ↓
+- GLOBAL OPTIMUM
+- ↓
+- Key properties:
+- ↓
+- 1. Greedy Choice Property: Local choice leads to global
+- ↓
+- 2. Optimal Substructure: Optimal contains optimal sub
 
 ```mermaid
 flowchart TD
@@ -469,7 +490,30 @@ Result: 25 + 25 + 10 + 1 + 1 + 1 = 6 coins ✓
 This works because US coins have special property!
 ```
 
-> **Flow**: Step 1: Take largest ≤ 63 → 25 (remaining: 38) | Step 2: Take largest ≤ 38 → 25 (remaining: 13) | Step 3: Take largest ≤ 13 → 10 (remaining: 3) | Step 4: Take largest ≤ 3 → 1 (remaining: 2) | Step 5: Take largest ≤ 2 → 1 (remaining: 1) | Step 6: Take largest ≤ 1 → 1 (remaining: 0)
+**Flow:**
+- Step 1: Take largest ≤ 63
+- ↓
+- 25 (remaining: 38)
+- ↓
+- Step 2: Take largest ≤ 38
+- ↓
+- 25 (remaining: 13)
+- ↓
+- Step 3: Take largest ≤ 13
+- ↓
+- 10 (remaining: 3)
+- ↓
+- Step 4: Take largest ≤ 3
+- ↓
+- 1 (remaining: 2)
+- ↓
+- Step 5: Take largest ≤ 2
+- ↓
+- 1 (remaining: 1)
+- ↓
+- Step 6: Take largest ≤ 1
+- ↓
+- 1 (remaining: 0)
 
 ```mermaid
 flowchart TD
@@ -529,7 +573,20 @@ For arbitrary coins, use DP instead.
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: GREEDY WORKS WHEN BOTH ARE TRUE: → 1. GREEDY CHOICE PROPERTY | 1. GREEDY CHOICE PROPERTY → → The locally optimal choice is part of globally optima | → The locally optimal choice is part of globally optima → → 'Taking the best now won't hurt us later' | → 'Taking the best now won't hurt us later' → 2. OPTIMAL SUBSTRUCTURE | 2. OPTIMAL SUBSTRUCTURE → → After making greedy choice, remaining is smaller | → After making greedy choice, remaining is smaller → version of same problem | ...+1 more
+**Flow:**
+- GREEDY WORKS WHEN BOTH ARE TRUE:
+- ↓
+- 1. GREEDY CHOICE PROPERTY
+- ↓
+- The locally optimal choice is part of globally optima
+- ↓
+- 'Taking the best now won't hurt us later'
+- ↓
+- 2. OPTIMAL SUBSTRUCTURE
+- ↓
+- After making greedy choice, remaining is smaller
+- ↓
+- version of same problem
 
 ```mermaid
 flowchart TD
@@ -575,7 +632,20 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: GREEDY PATTERN INDICATORS → Keywords in Problem: | Keywords in Problem: → ✓ 'Minimum/Maximum number of...' | ✓ 'Minimum/Maximum number of...' → ✓ 'Largest/Smallest...' | ✓ 'Largest/Smallest...' → ✓ 'Optimal arrangement/schedule' | ✓ 'Optimal arrangement/schedule' → ✓ 'Non-overlapping intervals' | ✓ 'Non-overlapping intervals' → ✓ 'Select items with constraint' | ...+1 more
+**Flow:**
+- GREEDY PATTERN INDICATORS
+- ↓
+- Keywords in Problem:
+- ↓
+- ✓ 'Minimum/Maximum number of...'
+- ↓
+- ✓ 'Largest/Smallest...'
+- ↓
+- ✓ 'Optimal arrangement/schedule'
+- ↓
+- ✓ 'Non-overlapping intervals'
+- ↓
+- ✓ 'Select items with constraint'
 
 ```mermaid
 flowchart TD
@@ -648,7 +718,18 @@ Different interval problems need different sorting:
 └───────────────────────────────────┴──────────────────────────────┘
 ```
 
-> **Flow**: Different interval problems need different sorting: → PROBLEM SORT BY | PROBLEM SORT BY → Max non-overlapping intervals End time (earliest first) | Max non-overlapping intervals End time (earliest first) → Min intervals to cover range Start time (earliest first | Min intervals to cover range Start time (earliest first → Merge overlapping intervals Start time (earliest first) | Merge overlapping intervals Start time (earliest first) → Meeting rooms needed Start time (process events)
+**Flow:**
+- Different interval problems need different sorting:
+- ↓
+- PROBLEM SORT BY
+- ↓
+- Max non-overlapping intervals End time (earliest first)
+- ↓
+- Min intervals to cover range Start time (earliest first
+- ↓
+- Merge overlapping intervals Start time (earliest first)
+- ↓
+- Meeting rooms needed Start time (process events)
 
 ```mermaid
 flowchart TD
@@ -744,7 +825,20 @@ E [8,9]  ✓  (starts after D ends)
 Result: 3 activities (A, D, E)
 ```
 
-> **Flow**: Activities: → Sorted by end time: A, B, C, D, E | Sorted by end time: A, B, C, D, E → Greedy picks: | Greedy picks: → A [1,4] ✓ (first ending) | A [1,4] ✓ (first ending) → B [3,5] ✗ (overlaps with A) | B [3,5] ✗ (overlaps with A) → C [0,6] ✗ (overlaps with A) | C [0,6] ✗ (overlaps with A) → D [5,7] ✓ (starts after A ends) | ...+1 more
+**Flow:**
+- Activities:
+- ↓
+- Sorted by end time: A, B, C, D, E
+- ↓
+- Greedy picks:
+- ↓
+- A [1,4] ✓ (first ending)
+- ↓
+- B [3,5] ✗ (overlaps with A)
+- ↓
+- C [0,6] ✗ (overlaps with A)
+- ↓
+- D [5,7] ✓ (starts after A ends)
 
 ```mermaid
 flowchart TD
@@ -1614,7 +1708,20 @@ public boolean lemonadeChange(int[] bills) {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: GREEDY vs DYNAMIC PROGRAMMING → GREEDY DYNAMIC PROGRAMMING | GREEDY DYNAMIC PROGRAMMING → Makes ONE choice at each Considers ALL choices at each | Makes ONE choice at each Considers ALL choices at each → step, never reconsiders step, picks best via recursion | step, never reconsiders step, picks best via recursion → Doesn't always work Always gives optimal (if | Doesn't always work Always gives optimal (if → correct recurrence) | correct recurrence) → Examples: Examples: | ...+1 more
+**Flow:**
+- GREEDY vs DYNAMIC PROGRAMMING
+- ↓
+- GREEDY DYNAMIC PROGRAMMING
+- ↓
+- Makes ONE choice at each Considers ALL choices at each
+- ↓
+- step, never reconsiders step, picks best via recursion
+- ↓
+- Doesn't always work Always gives optimal (if
+- ↓
+- correct recurrence)
+- ↓
+- Examples: Examples:
 
 ```mermaid
 flowchart TD
@@ -1740,7 +1847,20 @@ public int dpCoinChange(int[] coins, int amount) {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: COMMON GREEDY STRATEGIES → 1. SORT BY END TIME | 1. SORT BY END TIME → → Max non-overlapping intervals | → Max non-overlapping intervals → → Activity selection | → Activity selection → 2. SORT BY START TIME | 2. SORT BY START TIME → → Merge intervals | → Merge intervals → → Cover range with min intervals | ...+1 more
+**Flow:**
+- COMMON GREEDY STRATEGIES
+- ↓
+- 1. SORT BY END TIME
+- ↓
+- Max non-overlapping intervals
+- ↓
+- Activity selection
+- ↓
+- 2. SORT BY START TIME
+- ↓
+- Merge intervals
+- ↓
+- Cover range with min intervals
 
 ```mermaid
 flowchart TD
@@ -1780,7 +1900,20 @@ flowchart TD
    → Always update end/farthest after making choice
 ```
 
-> **Flow**: ❌ Assuming greedy works without proof → → Test with counterexamples first | → Test with counterexamples first → ❌ Wrong sorting criteria | ❌ Wrong sorting criteria → → End time for selection, start time for merging | → End time for selection, start time for merging → ❌ Not handling edge cases | ❌ Not handling edge cases → → Empty input, single element, all same elements | → Empty input, single element, all same elements → ❌ Integer overflow in comparisons | ...+1 more
+**Flow:**
+- ❌ Assuming greedy works without proof
+- ↓
+- Test with counterexamples first
+- ↓
+- ❌ Wrong sorting criteria
+- ↓
+- End time for selection, start time for merging
+- ↓
+- ❌ Not handling edge cases
+- ↓
+- Empty input, single element, all same elements
+- ↓
+- ❌ Integer overflow in comparisons
 
 ```mermaid
 flowchart TD
@@ -1817,7 +1950,14 @@ flowchart TD
 ╚═══════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: GREEDY ESSENTIALS → 1. INTERVAL SELECTION: Sort by end time, pick earliest | 1. INTERVAL SELECTION: Sort by end time, pick earliest → 2. INTERVAL MERGING: Sort by start time, extend end | 2. INTERVAL MERGING: Sort by start time, extend end → 3. TWO POINTER: Sort both, match greedily
+**Flow:**
+- GREEDY ESSENTIALS
+- ↓
+- 1. INTERVAL SELECTION: Sort by end time, pick earliest
+- ↓
+- 2. INTERVAL MERGING: Sort by start time, extend end
+- ↓
+- 3. TWO POINTER: Sort both, match greedily
 
 ```mermaid
 flowchart TD

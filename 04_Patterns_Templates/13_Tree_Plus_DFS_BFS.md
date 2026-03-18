@@ -122,7 +122,98 @@ DFS (Postorder): 4 → 5 → 2 → 6 → 7 → 3 → 1  (children first)
 BFS (Level):     1 | 2,3 | 4,5,6,7             (level by level)
 ```
 
-> **Flow**: Tree: 1 → DFS (Preorder): 1 → 2 → 4 → 5 → 3 → 6 → 7 (go deep firs | DFS (Preorder): 1 → 2 → 4 → 5 → 3 → 6 → 7 (go deep firs → DFS (Inorder): 4 → 2 → 5 → 1 → 6 → 3 → 7 (left-root-rig | DFS (Inorder): 4 → 2 → 5 → 1 → 6 → 3 → 7 (left-root-rig → DFS (Postorder): 4 → 5 → 2 → 6 → 7 → 3 → 1 (children fi | DFS (Postorder): 4 → 5 → 2 → 6 → 7 → 3 → 1 (children fi → BFS (Level): 1 | 2,3 | 4,5,6,7 (level by level)
+**Flow:**
+- Tree: 1
+- ↓
+- DFS (Preorder): 1
+- ↓
+- 2
+- ↓
+- 4
+- ↓
+- 5
+- ↓
+- 3
+- ↓
+- 6
+- ↓
+- 7 (go deep firs
+- ↓
+- DFS (Preorder): 1
+- ↓
+- 2
+- ↓
+- 4
+- ↓
+- 5
+- ↓
+- 3
+- ↓
+- 6
+- ↓
+- 7 (go deep firs
+- ↓
+- DFS (Inorder): 4
+- ↓
+- 2
+- ↓
+- 5
+- ↓
+- 1
+- ↓
+- 6
+- ↓
+- 3
+- ↓
+- 7 (left-root-rig
+- ↓
+- DFS (Inorder): 4
+- ↓
+- 2
+- ↓
+- 5
+- ↓
+- 1
+- ↓
+- 6
+- ↓
+- 3
+- ↓
+- 7 (left-root-rig
+- ↓
+- DFS (Postorder): 4
+- ↓
+- 5
+- ↓
+- 2
+- ↓
+- 6
+- ↓
+- 7
+- ↓
+- 3
+- ↓
+- 1 (children fi
+- ↓
+- DFS (Postorder): 4
+- ↓
+- 5
+- ↓
+- 2
+- ↓
+- 6
+- ↓
+- 7
+- ↓
+- 3
+- ↓
+- 1 (children fi
+- ↓
+- BFS (Level): 1
+- ↓
+- 2,3
+- ↓
+- 4,5,6,7 (level by level)
 
 ```mermaid
 flowchart TD
@@ -165,7 +256,10 @@ Step-by-step:
 Time: O(n) | Space: O(h)
 ```
 
-> **Flow**: must be &gt; 5. But 3 &lt; 5 → INVALID.
+**Flow:**
+- must be > 5. But 3 < 5
+- ↓
+- INVALID.
 
 ```mermaid
 flowchart LR
@@ -217,7 +311,10 @@ KEY: The "level snapshot" trick = process exactly queue.size() nodes per level.
 Time: O(n) | Space: O(w) where w = max width of tree
 ```
 
-> **Flow**: queue = [] → done!
+**Flow:**
+- queue = []
+- ↓
+- done!
 
 ```mermaid
 flowchart LR
@@ -255,7 +352,20 @@ COMMON MISTAKES:
 5. Using == instead of .equals() for TreeNode values (rare but tricky)
 ```
 
-> **Flow**: EDGE CASES: → Edge Case Handling | Edge Case Handling → Null root Return empty list / false / 0 | Null root Return empty list / false / 0 → Single node (leaf) Height=0, depth=0, is balanced | Single node (leaf) Height=0, depth=0, is balanced → Skewed tree (like linked list) Height = n, BFS space = | Skewed tree (like linked list) Height = n, BFS space = → Complete binary tree BFS space = O(n/2) for last level | Complete binary tree BFS space = O(n/2) for last level → Duplicate values in BST Convention: left &lt; root ≤ ri | ...+1 more
+**Flow:**
+- EDGE CASES:
+- ↓
+- Edge Case Handling
+- ↓
+- Null root Return empty list / false / 0
+- ↓
+- Single node (leaf) Height=0, depth=0, is balanced
+- ↓
+- Skewed tree (like linked list) Height = n, BFS space =
+- ↓
+- Complete binary tree BFS space = O(n/2) for last level
+- ↓
+- Duplicate values in BST Convention: left < root ≤ ri
 
 ```mermaid
 flowchart TD

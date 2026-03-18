@@ -224,7 +224,18 @@ MERGE SORT - GOOD BUT USES MORE MEMORY:
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Cache Line 1 [0-15] Cache Line 2 [16-31] → Cache Line 1 [0-15] Cache Line 2 [16-31] / ↔ ↔ | Cache Line 1 [0-15] Cache Line 2 [16-31] / ↔ ↔ → Cache Line 1 [0-15] Cache Line 2 [16-31] / ▼ ▼ ▼ ▼ ▼▼▼▼ | Cache Line 1 [0-15] Cache Line 2 [16-31] / ▼ ▼ ▼ ▼ ▼▼▼▼ → Left half | Left half → Right half | Right half → Temp array
+**Flow:**
+- Cache Line 1 [0-15] Cache Line 2 [16-31]
+- ↓
+- Cache Line 1 [0-15] Cache Line 2 [16-31] / ↔ ↔
+- ↓
+- Cache Line 1 [0-15] Cache Line 2 [16-31] / ▼ ▼ ▼ ▼ ▼▼▼▼
+- ↓
+- Left half
+- ↓
+- Right half
+- ↓
+- Temp array
 
 ```mermaid
 flowchart TD
@@ -380,7 +391,12 @@ COMPARISON TABLE (n=1000):
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Algorithm n=100 n=1,000 n=10,000 n=100,000 n=1,000,000  → Algorithm Time (n=10,000) Notes / Insertion Sort 0.3 ms | Algorithm Time (n=10,000) Notes / Insertion Sort 0.3 ms → Algorithm Time (n=20) Notes / Insertion Sort 50 ns Fast
+**Flow:**
+- Algorithm n=100 n=1,000 n=10,000 n=100,000 n=1,000,000
+- ↓
+- Algorithm Time (n=10,000) Notes / Insertion Sort 0.3 ms
+- ↓
+- Algorithm Time (n=20) Notes / Insertion Sort 50 ns Fast
 
 ```mermaid
 flowchart TD
@@ -576,7 +592,30 @@ PASS 4:
 [1, 2, 5, 8, 9]  SORTED! ✓
 ```
 
-> **Flow**: [5, 2, 8, 1, 9] Compare 5, 2 → Swap | [2, 5, 8, 1, 9] Compare 5, 8 → OK | [2, 5, 8, 1, 9] Compare 8, 1 → Swap | [2, 5, 1, 8, 9] Compare 8, 9 → OK | [2, 5, 1, 8, 9] Compare 2, 5 → OK | [2, 5, 1, 8, 9] Compare 5, 1 → Swap | ...+4 more
+**Flow:**
+- [5, 2, 8, 1, 9] Compare 5, 2
+- ↓
+- Swap
+- ↓
+- [2, 5, 8, 1, 9] Compare 5, 8
+- ↓
+- OK
+- ↓
+- [2, 5, 8, 1, 9] Compare 8, 1
+- ↓
+- Swap
+- ↓
+- [2, 5, 1, 8, 9] Compare 8, 9
+- ↓
+- OK
+- ↓
+- [2, 5, 1, 8, 9] Compare 2, 5
+- ↓
+- OK
+- ↓
+- [2, 5, 1, 8, 9] Compare 5, 1
+- ↓
+- Swap
 
 ```mermaid
 flowchart TD
@@ -647,7 +686,14 @@ Find second smallest → put at position 1
 ... continue
 ```
 
-> **Flow**: Find smallest → put at position 0 | Find second smallest → put at position 1
+**Flow:**
+- Find smallest
+- ↓
+- put at position 0
+- ↓
+- Find second smallest
+- ↓
+- put at position 1
 
 ```mermaid
 flowchart LR
@@ -681,7 +727,22 @@ PASS 4: Find min in [8,9] → min is 8 at index 3
         [1, 2, 5, 8, 9] SORTED! ✓
 ```
 
-> **Flow**: PASS 1: Find min in [5,2,8,1,9] → min is 1 at index 3 | PASS 2: Find min in [2,8,5,9] → min is 2 at index 1 | PASS 3: Find min in [8,5,9] → min is 5 at index 3 | PASS 4: Find min in [8,9] → min is 8 at index 3
+**Flow:**
+- PASS 1: Find min in [5,2,8,1,9]
+- ↓
+- min is 1 at index 3
+- ↓
+- PASS 2: Find min in [2,8,5,9]
+- ↓
+- min is 2 at index 1
+- ↓
+- PASS 3: Find min in [8,5,9]
+- ↓
+- min is 5 at index 3
+- ↓
+- PASS 4: Find min in [8,9]
+- ↓
+- min is 8 at index 3
 
 ```mermaid
 flowchart LR
@@ -761,7 +822,46 @@ Array: [5, 2, 8, 1, 9]
 [1, 2, 5, 8, 9]   SORTED! ✓
 ```
 
-> **Flow**: Array: [5, 2, 8, 1, 9] → ↑ sorted part starts with just first element | ↑ sorted part starts with just first element → [5 | 2, 8, 1, 9] Insert 2: Compare with 5, shift 5 righ | [5 | 2, 8, 1, 9] Insert 2: Compare with 5, shift 5 righ → [2, 5 | 8, 1, 9] 2 inserted | [2, 5 | 8, 1, 9] 2 inserted → [2, 5 | 8, 1, 9] Insert 8: Compare with 5, 8 &gt; 5, st | [2, 5 | 8, 1, 9] Insert 8: Compare with 5, 8 &gt; 5, st → [2, 5, 8 | 1, 9] 8 in place | [2, 5, 8 | 1, 9] 8 in place → [2, 5, 8 | 1, 9] Insert 1: Compare with 8, shift 8 | ...+1 more
+**Flow:**
+- Array: [5, 2, 8, 1, 9]
+- ↓
+- ↑ sorted part starts with just first element
+- ↓
+- [5
+- ↓
+- 2, 8, 1, 9] Insert 2: Compare with 5, shift 5 righ
+- ↓
+- [5
+- ↓
+- 2, 8, 1, 9] Insert 2: Compare with 5, shift 5 righ
+- ↓
+- [2, 5
+- ↓
+- 8, 1, 9] 2 inserted
+- ↓
+- [2, 5
+- ↓
+- 8, 1, 9] 2 inserted
+- ↓
+- [2, 5
+- ↓
+- 8, 1, 9] Insert 8: Compare with 5, 8 > 5, st
+- ↓
+- [2, 5
+- ↓
+- 8, 1, 9] Insert 8: Compare with 5, 8 > 5, st
+- ↓
+- [2, 5, 8
+- ↓
+- 1, 9] 8 in place
+- ↓
+- [2, 5, 8
+- ↓
+- 1, 9] 8 in place
+- ↓
+- [2, 5, 8
+- ↓
+- 1, 9] Insert 1: Compare with 8, shift 8
 
 ```mermaid
 flowchart TD
@@ -872,7 +972,20 @@ Left exhausted, copy remaining from right
 Result: [1, 2, 5, 8] ✓
 ```
 
-> **Flow**: Array: [5, 2, 8, 1] → DIVIDE: | DIVIDE: → MERGE (bottom up): | MERGE (bottom up): → [2, 5] [1, 8] ← Merge pairs in order | [2, 5] [1, 8] ← Merge pairs in order → [1, 2, 5, 8] ← Final merge | [1, 2, 5, 8] ← Final merge → DETAILED MERGE of [2,5] and [1,8]: | DETAILED MERGE of [2,5] and [1,8]: → Left: [2, 5] pointer at 2 | ...+1 more
+**Flow:**
+- Array: [5, 2, 8, 1]
+- ↓
+- DIVIDE:
+- ↓
+- MERGE (bottom up):
+- ↓
+- [2, 5] [1, 8] ← Merge pairs in order
+- ↓
+- [1, 2, 5, 8] ← Final merge
+- ↓
+- DETAILED MERGE of [2,5] and [1,8]:
+- ↓
+- Left: [2, 5] pointer at 2
 
 ```mermaid
 flowchart TD
@@ -1001,7 +1114,20 @@ STEP 2: Recursively sort [2, 1] and [5, 9, 8]
 FINAL: [1, 2, 3, 5, 8, 9] ✓
 ```
 
-> **Flow**: Array: [5, 2, 8, 1, 9, 3] → STEP 1: Choose pivot (last element) = 3 | STEP 1: Choose pivot (last element) = 3 → Partition around 3 | Partition around 3 → i starts at -1, j scans array | i starts at -1, j scans array → j=0: 5 &gt; 3, skip | j=0: 5 &gt; 3, skip → j=1: 2 &lt; 3, i++, swap arr[0] and arr[1] | j=1: 2 &lt; 3, i++, swap arr[0] and arr[1] → j=2: 8 &gt; 3, skip | ...+1 more
+**Flow:**
+- Array: [5, 2, 8, 1, 9, 3]
+- ↓
+- STEP 1: Choose pivot (last element) = 3
+- ↓
+- Partition around 3
+- ↓
+- i starts at -1, j scans array
+- ↓
+- j=0: 5 > 3, skip
+- ↓
+- j=1: 2 < 3, i++, swap arr[0] and arr[1]
+- ↓
+- j=2: 8 > 3, skip
 
 ```mermaid
 flowchart TD

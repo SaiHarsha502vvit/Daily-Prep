@@ -107,7 +107,20 @@ function isUser(obj: unknown): obj is User {
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: The REAL differences (not 'they're basically the same') → interface: | interface: → → DECLARATION MERGING (can be extended across files) | → DECLARATION MERGING (can be extended across files) → → extends keyword for inheritance | → extends keyword for inheritance → → Better error messages (shows interface name) | → Better error messages (shows interface name) → → Best for: object shapes, public APIs, library types | → Best for: object shapes, public APIs, library types → type: | ...+1 more
+**Flow:**
+- The REAL differences (not 'they're basically the same')
+- ↓
+- interface:
+- ↓
+- DECLARATION MERGING (can be extended across files)
+- ↓
+- extends keyword for inheritance
+- ↓
+- Better error messages (shows interface name)
+- ↓
+- Best for: object shapes, public APIs, library types
+- ↓
+- type:
 
 ```mermaid
 flowchart TD
@@ -187,7 +200,20 @@ interface Employee extends Person { employeeId: string }
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: THE SECURITY CLEARANCE ANALOGY → any = NO security (VIP badge — go anywhere, do anything | any = NO security (VIP badge — go anywhere, do anything → Disables ALL type checking. Defeats purpose of TS. | Disables ALL type checking. Defeats purpose of TS. → Use: legacy code migration, truly dynamic values | Use: legacy code migration, truly dynamic values → Can hold any value, but MUST narrow before using. | Can hold any value, but MUST narrow before using. → Use: API responses, user input, unknown JSON | Use: API responses, user input, unknown JSON → never = IMPOSSIBLE (the locked room nobody can enter) | ...+1 more
+**Flow:**
+- THE SECURITY CLEARANCE ANALOGY
+- ↓
+- any = NO security (VIP badge — go anywhere, do anything
+- ↓
+- Disables ALL type checking. Defeats purpose of TS.
+- ↓
+- Use: legacy code migration, truly dynamic values
+- ↓
+- Can hold any value, but MUST narrow before using.
+- ↓
+- Use: API responses, user input, unknown JSON
+- ↓
+- never = IMPOSSIBLE (the locked room nobody can enter)
 
 ```mermaid
 flowchart TD
@@ -275,7 +301,20 @@ const dog: Dog = cat; // No error?!
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: STRUCTURAL vs NOMINAL TYPING → Java/C# (Nominal): 'Are you wearing the RIGHT uniform?' | Java/C# (Nominal): 'Are you wearing the RIGHT uniform?' → → Cat and Dog must explicitly implement the same interf | → Cat and Dog must explicitly implement the same interf → → Same shape ≠ same type | → Same shape ≠ same type → TypeScript (Structural): 'Can you do the JOB?' | TypeScript (Structural): 'Can you do the JOB?' → → If it has name:string and meow():void, it's compatibl | → If it has name:string and meow():void, it's compatibl → This is WHY: | ...+1 more
+**Flow:**
+- STRUCTURAL vs NOMINAL TYPING
+- ↓
+- Java/C# (Nominal): 'Are you wearing the RIGHT uniform?'
+- ↓
+- Cat and Dog must explicitly implement the same interf
+- ↓
+- Same shape ≠ same type
+- ↓
+- TypeScript (Structural): 'Can you do the JOB?'
+- ↓
+- If it has name:string and meow():void, it's compatibl
+- ↓
+- This is WHY:
 
 ```mermaid
 flowchart TD
@@ -351,7 +390,28 @@ const eur: Euros = usd; // ❌ Error! Different brands.
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: strict: true = Seatbelt + Airbag + ABS + Lane Assist → It enables 8 individual flags: | It enables 8 individual flags: → strictNullChecks → null/undefined aren't assignable to | strictNullChecks → null/undefined aren't assignable to → other types. MOST IMPORTANT. Catches | other types. MOST IMPORTANT. Catches → 'Cannot read property of null' at | 'Cannot read property of null' at → compile time instead of runtime. | compile time instead of runtime. → noImplicitAny → Must explicitly type when TS can't infe | ...+1 more
+**Flow:**
+- strict: true = Seatbelt + Airbag + ABS + Lane Assist
+- ↓
+- It enables 8 individual flags:
+- ↓
+- strictNullChecks
+- ↓
+- null/undefined aren't assignable to
+- ↓
+- strictNullChecks
+- ↓
+- null/undefined aren't assignable to
+- ↓
+- other types. MOST IMPORTANT. Catches
+- ↓
+- 'Cannot read property of null' at
+- ↓
+- compile time instead of runtime.
+- ↓
+- noImplicitAny
+- ↓
+- Must explicitly type when TS can't infe
 
 ```mermaid
 flowchart TD
@@ -397,7 +457,28 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: GENERICS = A Function for Types → Regular function: takes VALUE, returns VALUE | Regular function: takes VALUE, returns VALUE → function double(n: number): number { return n * 2; } | function double(n: number): number { return n * 2; } → Generic: takes TYPE, returns TYPE | Generic: takes TYPE, returns TYPE → type Wrapper&lt;T&gt; = { value: T; timestamp: Date }; | type Wrapper&lt;T&gt; = { value: T; timestamp: Date }; → Wrapper&lt;string&gt; → { value: string; timestamp: Dat | Wrapper&lt;string&gt; → { value: string; timestamp: Dat → Wrapper&lt;number&gt; → { value: number; timestamp: Dat | ...+1 more
+**Flow:**
+- GENERICS = A Function for Types
+- ↓
+- Regular function: takes VALUE, returns VALUE
+- ↓
+- function double(n: number): number { return n * 2; }
+- ↓
+- Generic: takes TYPE, returns TYPE
+- ↓
+- type Wrapper<T> = { value: T; timestamp: Date };
+- ↓
+- Wrapper<string>
+- ↓
+- { value: string; timestamp: Dat
+- ↓
+- Wrapper<string>
+- ↓
+- { value: string; timestamp: Dat
+- ↓
+- Wrapper<number>
+- ↓
+- { value: number; timestamp: Dat
 
 ```mermaid
 flowchart TD
@@ -471,7 +552,22 @@ type B = IsString<number>;  // "no"
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: ENUM PROBLEMS → 1. They generate RUNTIME code (unlike most TS features) | 1. They generate RUNTIME code (unlike most TS features) → enum Color { Red, Green, Blue } | enum Color { Red, Green, Blue } → compiles to: | compiles to: → var Color; (function(Color) { | var Color; (function(Color) { → Color[Color['Red'] = 0] = 'Red'; ... | Color[Color['Red'] = 0] = 'Red'; ... → })(Color || (Color = {})); | ...+1 more
+**Flow:**
+- ENUM PROBLEMS
+- ↓
+- 1. They generate RUNTIME code (unlike most TS features)
+- ↓
+- enum Color { Red, Green, Blue }
+- ↓
+- compiles to:
+- ↓
+- var Color; (function(Color) {
+- ↓
+- Color[Color['Red'] = 0] = 'Red'; ...
+- ↓
+- })(Color
+- ↓
+- (Color = {}));
 
 ```mermaid
 flowchart TD

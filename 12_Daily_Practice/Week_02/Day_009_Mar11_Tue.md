@@ -63,7 +63,14 @@ TRADE-OFF:
     prev data next       prev data next       prev data next
 ```
 
-> **Flow**: null 10 → ← 20 | ← 30 null → ← 20
+**Flow:**
+- null 10
+- ↓
+- ← 20
+- ↓
+- ← 30 null
+- ↓
+- ← 20
 
 ```mermaid
 flowchart LR
@@ -154,7 +161,14 @@ public class DoublyLinkedList {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: COMPARISON OF SORTING ALGORITHMS (what you know so far) → Algorithm Best Average Worst Space Stable | Algorithm Best Average Worst Space Stable → Quick Sort wins: in-place (O(log n) stack) + cache-frie | Quick Sort wins: in-place (O(log n) stack) + cache-frie → Java's Arrays.sort(int[]) uses Dual-Pivot Quick Sort
+**Flow:**
+- COMPARISON OF SORTING ALGORITHMS (what you know so far)
+- ↓
+- Algorithm Best Average Worst Space Stable
+- ↓
+- Quick Sort wins: in-place (O(log n) stack) + cache-frie
+- ↓
+- Java's Arrays.sort(int[]) uses Dual-Pivot Quick Sort
 
 ```mermaid
 flowchart TD
@@ -183,7 +197,24 @@ IDEA: Pick a "pivot". Put smaller elements LEFT, larger RIGHT. Repeat.
     Now recursively sort [1, 2, 1] and [6, 8, 10]
 ```
 
-> **Flow**: [3, 6, 8, 10, 1, 2, 1] pivot = 3 → PARTITION: | PARTITION: → Elements ≤ 3: [1, 2, 1] | Elements &gt; 3: [6, 8, 10] | Elements ≤ 3: [1, 2, 1] | Elements &gt; 3: [6, 8, 10] → Result: [1, 2, 1, 3, 6, 8, 10] | Result: [1, 2, 1, 3, 6, 8, 10] → ↑ pivot is in its FINAL position! | ↑ pivot is in its FINAL position! → Now recursively sort [1, 2, 1] and [6, 8, 10]
+**Flow:**
+- [3, 6, 8, 10, 1, 2, 1] pivot = 3
+- ↓
+- PARTITION:
+- ↓
+- Elements ≤ 3: [1, 2, 1]
+- ↓
+- Elements > 3: [6, 8, 10]
+- ↓
+- Elements ≤ 3: [1, 2, 1]
+- ↓
+- Elements > 3: [6, 8, 10]
+- ↓
+- Result: [1, 2, 1, 3, 6, 8, 10]
+- ↓
+- ↑ pivot is in its FINAL position!
+- ↓
+- Now recursively sort [1, 2, 1] and [6, 8, 10]
 
 ```mermaid
 flowchart TD
@@ -305,7 +336,30 @@ WHY DOUBLY LINKED LIST?
 This is LeetCode 146 (Medium) — implement it as a bonus challenge!
 ```
 
-> **Flow**: access('home') → Cache: [home] | access('about') → Cache: [about, home] | access('products') → Cache: [products, about, home] | access('home') → Cache: [home, products, about] ← home moves to fro | access('blog') → Cache: [blog, home, products] ← about evicted (LRU | • HashMap for O(1) lookup: key → node reference
+**Flow:**
+- access('home')
+- ↓
+- Cache: [home]
+- ↓
+- access('about')
+- ↓
+- Cache: [about, home]
+- ↓
+- access('products')
+- ↓
+- Cache: [products, about, home]
+- ↓
+- access('home')
+- ↓
+- Cache: [home, products, about] ← home moves to fro
+- ↓
+- access('blog')
+- ↓
+- Cache: [blog, home, products] ← about evicted (LRU
+- ↓
+- • HashMap for O(1) lookup: key
+- ↓
+- node reference
 
 ```mermaid
 flowchart TD
@@ -412,7 +466,18 @@ WHY does it work?
   Eventually fast "laps" slow → they meet inside the cycle.
 ```
 
-> **Flow**: If they MEET → cycle exists | If fast reaches null → no cycle | Eventually fast 'laps' slow → they meet inside the cycle.
+**Flow:**
+- If they MEET
+- ↓
+- cycle exists
+- ↓
+- If fast reaches null
+- ↓
+- no cycle
+- ↓
+- Eventually fast 'laps' slow
+- ↓
+- they meet inside the cycle.
 
 ```mermaid
 flowchart LR
@@ -464,7 +529,14 @@ TRICK: Two-pointer with gap of n
     slow.next = slow.next.next → removes node 4 ✓
 ```
 
-> **Flow**: 3. slow is now at the node BEFORE the target → remove it | slow.next = slow.next.next → removes node 4 ✓
+**Flow:**
+- 3. slow is now at the node BEFORE the target
+- ↓
+- remove it
+- ↓
+- slow.next = slow.next.next
+- ↓
+- removes node 4 ✓
 
 ```mermaid
 flowchart LR

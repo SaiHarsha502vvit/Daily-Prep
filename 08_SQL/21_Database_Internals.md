@@ -48,7 +48,30 @@
      → If parent is full → split again (cascades up)
 ```
 
-> **Flow**: Root: 55 &gt; 30, 55 &lt; 70 → go middle child | Internal: 55 &gt; 50, 55 &lt; 60 → go third child | Leaf: Found 55! → return row data | 2. If page has space → insert in sorted order | 3. If page is full → SPLIT into two half-full pages | If parent is full → split again (cascades up)
+**Flow:**
+- Root: 55 > 30, 55 < 70
+- ↓
+- go middle child
+- ↓
+- Internal: 55 > 50, 55 < 60
+- ↓
+- go third child
+- ↓
+- Leaf: Found 55!
+- ↓
+- return row data
+- ↓
+- 2. If page has space
+- ↓
+- insert in sorted order
+- ↓
+- 3. If page is full
+- ↓
+- SPLIT into two half-full pages
+- ↓
+- If parent is full
+- ↓
+- split again (cascades up)
 
 ```mermaid
 flowchart TD
@@ -122,7 +145,22 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: THE PROBLEM: Crash during write → data corruption → THE SOLUTION: Write-Ahead Logging | THE SOLUTION: Write-Ahead Logging → UPDATE accounts SET balance = 500 WHERE id = 1; | UPDATE accounts SET balance = 500 WHERE id = 1; → Step 2: Modify page in memory (buffer pool) | Step 2: Modify page in memory (buffer pool) → Step 3: Acknowledge to client: 'COMMIT OK' | Step 3: Acknowledge to client: 'COMMIT OK' → Step 4: Eventually flush dirty pages to disk (checkpoin | Step 4: Eventually flush dirty pages to disk (checkpoin → If crash after step 1, before step 4: | ...+1 more
+**Flow:**
+- THE PROBLEM: Crash during write
+- ↓
+- data corruption
+- ↓
+- THE SOLUTION: Write-Ahead Logging
+- ↓
+- UPDATE accounts SET balance = 500 WHERE id = 1;
+- ↓
+- Step 2: Modify page in memory (buffer pool)
+- ↓
+- Step 3: Acknowledge to client: 'COMMIT OK'
+- ↓
+- Step 4: Eventually flush dirty pages to disk (checkpoin
+- ↓
+- If crash after step 1, before step 4:
 
 ```mermaid
 flowchart TD
@@ -185,7 +223,10 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Page 1 Page 5 Page 12 Page 3 ... / (clean) (dirty) (cle → Data files / (tables, / indexes)
+**Flow:**
+- Page 1 Page 5 Page 12 Page 3 ... / (clean) (dirty) (cle
+- ↓
+- Data files / (tables, / indexes)
 
 ```mermaid
 flowchart TD
@@ -233,7 +274,26 @@ A: Run EXPLAIN ANALYZE. Common causes:
    5. Lock contention → check for long-running transactions
 ```
 
-> **Flow**: 1. Missing index → sequential scan on large table | 2. Bad join order → optimizer chose wrong plan | 3. Outdated statistics → ANALYZE/UPDATE STATISTICS | 4. Too many rows returned → check WHERE predicates | 5. Lock contention → check for long-running transactions
+**Flow:**
+- 1. Missing index
+- ↓
+- sequential scan on large table
+- ↓
+- 2. Bad join order
+- ↓
+- optimizer chose wrong plan
+- ↓
+- 3. Outdated statistics
+- ↓
+- ANALYZE/UPDATE STATISTICS
+- ↓
+- 4. Too many rows returned
+- ↓
+- check WHERE predicates
+- ↓
+- 5. Lock contention
+- ↓
+- check for long-running transactions
 
 ```mermaid
 flowchart TD

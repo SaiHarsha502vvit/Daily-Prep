@@ -154,7 +154,14 @@ FORMALIZATION:
 - Used in every search engine
 ```
 
-> **Flow**: 2. 'W' comes after 'M' → go to second half | 4. 'W' comes after 'T' → go to second half
+**Flow:**
+- 2. 'W' comes after 'M'
+- ↓
+- go to second half
+- ↓
+- 4. 'W' comes after 'T'
+- ↓
+- go to second half
 
 ```mermaid
 flowchart LR
@@ -238,7 +245,18 @@ A: [1, 3, 5]    B: [2, 4, 6]    Result: [1, 2]
 Time: O(n + m) - Much better!
 ```
 
-> **Flow**: 1 &lt; 2 → take 1, move i | 3 &gt; 2 → take 2, move j | 3 &lt; 4 → take 3, move i
+**Flow:**
+- 1 < 2
+- ↓
+- take 1, move i
+- ↓
+- 3 > 2
+- ↓
+- take 2, move j
+- ↓
+- 3 < 4
+- ↓
+- take 3, move i
 
 ```mermaid
 flowchart LR
@@ -327,7 +345,20 @@ IMPACT:
 - THIS IS LITERALLY HOW INTERNET WORKS
 ```
 
-> **Flow**: SETTING: ARPANET (Precursor to Internet) → PROBLEM: | PROBLEM: → - Computer A sending data to Computer B | - Computer A sending data to Computer B → - Network is unreliable | - Network is unreliable → - Some packets get lost | - Some packets get lost → - Need to resend lost packets | - Need to resend lost packets → NAIVE APPROACH: | ...+1 more
+**Flow:**
+- SETTING: ARPANET (Precursor to Internet)
+- ↓
+- PROBLEM:
+- ↓
+- - Computer A sending data to Computer B
+- ↓
+- - Network is unreliable
+- ↓
+- - Some packets get lost
+- ↓
+- - Need to resend lost packets
+- ↓
+- NAIVE APPROACH:
 
 ```mermaid
 flowchart TD
@@ -428,7 +459,12 @@ WHY IT WORKS:
 - MUCH better than O(n²) bubble sort!
 ```
 
-> **Flow**: SETTING: EDVAC Computer Project / PROBLEM: / - Need to → [3, 8] [1, 5] [2, 9] [4, 7] ← Merge (sorted) | [3, 8] [1, 5] [2, 9] [4, 7] ← Merge (sorted) → WHY IT WORKS: / - Each level: n comparisons / - Number
+**Flow:**
+- SETTING: EDVAC Computer Project / PROBLEM: / - Need to
+- ↓
+- [3, 8] [1, 5] [2, 9] [4, 7] ← Merge (sorted)
+- ↓
+- WHY IT WORKS: / - Each level: n comparisons / - Number
 
 ```mermaid
 flowchart TD
@@ -497,7 +533,20 @@ WHY IT CAN BE SLOW:
 - Solution: Random pivot selection
 ```
 
-> **Flow**: SETTING: Machine translation project, Moscow → PROBLEM: | PROBLEM: → - Sorting Russian words for dictionary | - Sorting Russian words for dictionary → - Merge sort needs extra memory | - Merge sort needs extra memory → - Can we sort 'in place'? | - Can we sort 'in place'? → THE INSIGHT: | THE INSIGHT: → 'Pick a word. Put all words &lt; it on left, &gt; it on | ...+1 more
+**Flow:**
+- SETTING: Machine translation project, Moscow
+- ↓
+- PROBLEM:
+- ↓
+- - Sorting Russian words for dictionary
+- ↓
+- - Merge sort needs extra memory
+- ↓
+- - Can we sort 'in place'?
+- ↓
+- THE INSIGHT:
+- ↓
+- 'Pick a word. Put all words < it on left, > it on
 
 ```mermaid
 flowchart TD
@@ -586,7 +635,24 @@ Bellman chose the name to hide his research from politicians!
 "Dynamic" sounded impressive but vague.
 ```
 
-> **Flow**: fib(5) → fib(4) | fib(4) → fib(3) | fib(3) → fib(2) | fib(2) → return 1 | fib(1) → return 1 | fib(2) → CACHED! return 1 | ...+3 more
+**Flow:**
+- fib(5)
+- ↓
+- fib(4)
+- ↓
+- fib(3)
+- ↓
+- fib(2)
+- ↓
+- return 1
+- ↓
+- fib(1)
+- ↓
+- return 1
+- ↓
+- fib(2)
+- ↓
+- CACHED! return 1
 
 ```mermaid
 flowchart TD
@@ -775,7 +841,20 @@ THIS IS HOW:
 - Web scrapers work
 ```
 
-> **Flow**: Page A → follows link | follows link → Page B | Page B → follows link | follows link → Page C | Page C → no new links | no new links → backtrack | ...+2 more
+**Flow:**
+- Page A
+- ↓
+- follows link
+- ↓
+- Page B
+- ↓
+- follows link
+- ↓
+- Page C
+- ↓
+- no new links
+- ↓
+- backtrack
 
 ```mermaid
 flowchart TD
@@ -835,7 +914,14 @@ Starting from A:
 Result: Shortest paths from A to all nodes
 ```
 
-> **Flow**: A ---- → B ---- | C ---- → E -----
+**Flow:**
+- A ----
+- ↓
+- B ----
+- ↓
+- C ----
+- ↓
+- E -----
 
 ```mermaid
 flowchart LR
@@ -965,7 +1051,12 @@ Chaining: Simpler, uses extra memory
 Open Addressing: Cache-friendly, more complex
 ```
 
-> **Flow**: Index 5: alice → bob | bob → null
+**Flow:**
+- Index 5: alice
+- ↓
+- bob
+- ↓
+- null
 
 ```mermaid
 flowchart LR
@@ -1089,7 +1180,16 @@ THIS IS NOW:
 - In your browser!
 ```
 
-> **Flow**: HashMap: key → Node in LinkedList | LinkedList: Most Recent ← → ... ← | ... ← → Least Recent
+**Flow:**
+- HashMap: key
+- ↓
+- Node in LinkedList
+- ↓
+- LinkedList: Most Recent ←
+- ↓
+- ... ←
+- ↓
+- Least Recent
 
 ```mermaid
 flowchart LR
@@ -1141,7 +1241,14 @@ THIS IS:
 - How JSON parsers work
 ```
 
-> **Flow**: - See '(' → expect ')' later | - See '{' → expect '}' later
+**Flow:**
+- - See '('
+- ↓
+- expect ')' later
+- ↓
+- - See '{'
+- ↓
+- expect '}' later
 
 ```mermaid
 flowchart LR

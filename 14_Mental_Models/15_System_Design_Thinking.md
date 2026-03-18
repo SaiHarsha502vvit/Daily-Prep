@@ -41,7 +41,14 @@ STEP 4: NOW design the storage to support those queries.
 └──────────┘    └──────────┘    └──────────┘    └──────────┘
 ```
 
-> **Flow**: Users → Actions | Actions → Views | Views → Storage
+**Flow:**
+- Users
+- ↓
+- Actions
+- ↓
+- Views
+- ↓
+- Storage
 
 ```mermaid
 flowchart LR
@@ -87,7 +94,20 @@ Storage/year:  3 GB × 365 ≈ 1 TB
 Insight: Read-heavy (100:1 ratio) → need caching + CDN
 ```
 
-> **Flow**: BACK-OF-THE-ENVELOPE ESTIMATION → Before designing, ESTIMATE the scale: | Before designing, ESTIMATE the scale: → NUMBERS TO MEMORIZE: | NUMBERS TO MEMORIZE: → 1 day = 86,400 seconds ≈ 100K seconds | 1 day = 86,400 seconds ≈ 100K seconds → 1 month = 2.5 million seconds | 1 month = 2.5 million seconds → 1 year = 30 million seconds | 1 year = 30 million seconds → 1 char = 1 byte (ASCII) / 2 bytes (UTF) | ...+1 more
+**Flow:**
+- BACK-OF-THE-ENVELOPE ESTIMATION
+- ↓
+- Before designing, ESTIMATE the scale:
+- ↓
+- NUMBERS TO MEMORIZE:
+- ↓
+- 1 day = 86,400 seconds ≈ 100K seconds
+- ↓
+- 1 month = 2.5 million seconds
+- ↓
+- 1 year = 30 million seconds
+- ↓
+- 1 char = 1 byte (ASCII) / 2 bytes (UTF)
 
 ```mermaid
 flowchart TD
@@ -163,7 +183,16 @@ KEY INSIGHT: Over-engineering at Stage 1 is worse than
 under-engineering. Build for 10x your current scale, not 1000x.
 ```
 
-> **Flow**: App / Server → Database / (separate) | App / Server → Cache / (Redis) | Cache / (Redis) → DB
+**Flow:**
+- App / Server
+- ↓
+- Database / (separate)
+- ↓
+- App / Server
+- ↓
+- Cache / (Redis)
+- ↓
+- DB
 
 ```mermaid
 flowchart TD

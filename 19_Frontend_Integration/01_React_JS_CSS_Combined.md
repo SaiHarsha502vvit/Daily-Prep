@@ -57,7 +57,20 @@ EVERY COMPONENT = DATA + STRUCTURE + STYLE + BEHAVIOR
 └──────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: EVERY COMPONENT = DATA + STRUCTURE + STYLE + BEHAVIOR → UserCard Component | UserCard Component → DATA (Props + State): | DATA (Props + State): → user: { name, avatar, role, isOnline } | user: { name, avatar, role, isOnline } → isExpanded: boolean (local state) | isExpanded: boolean (local state) → STRUCTURE (JSX): | STRUCTURE (JSX): → &lt;div className='card'&gt; | ...+1 more
+**Flow:**
+- EVERY COMPONENT = DATA + STRUCTURE + STYLE + BEHAVIOR
+- ↓
+- UserCard Component
+- ↓
+- DATA (Props + State):
+- ↓
+- user: { name, avatar, role, isOnline }
+- ↓
+- isExpanded: boolean (local state)
+- ↓
+- STRUCTURE (JSX):
+- ↓
+- <div className='card'>
 
 ```mermaid
 flowchart TD
@@ -602,7 +615,30 @@ If it's UI state (open/closed, selected item), use useState.
 If it's complex UI state, use useReducer.
 ```
 
-> **Flow**: useState: → Simple values (toggle, counter, input) | useState: → State used by ONE component only | useState: → Beginner-friendly | useReducer: → Complex state logic (multiple related updates) | useReducer: → State transitions depend on previous state | useReducer: → Like a mini Redux inside a component | ...+9 more
+**Flow:**
+- useState:
+- ↓
+- Simple values (toggle, counter, input)
+- ↓
+- useState:
+- ↓
+- State used by ONE component only
+- ↓
+- useState:
+- ↓
+- Beginner-friendly
+- ↓
+- useReducer:
+- ↓
+- Complex state logic (multiple related updates)
+- ↓
+- useReducer:
+- ↓
+- State transitions depend on previous state
+- ↓
+- useReducer:
+- ↓
+- Like a mini Redux inside a component
 
 ```mermaid
 flowchart TD
@@ -814,7 +850,14 @@ Q: Server state vs client state?
   Use useState/useReducer — lives only in browser.
 ```
 
-> **Flow**: Types first → atomic components | atomic components → composite components | composite components → page.
+**Flow:**
+- Types first
+- ↓
+- atomic components
+- ↓
+- composite components
+- ↓
+- page.
 
 ```mermaid
 flowchart LR

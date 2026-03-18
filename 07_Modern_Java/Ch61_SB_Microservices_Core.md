@@ -54,7 +54,14 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHY: Why Microservices? / • Scale independently: Scale  → HOW: How Do Microservices Communicate? / • Service Disc | HOW: How Do Microservices Communicate? / • Service Disc → WHEN: When to Use Microservices? / USE MICROSERVICES: / | WHEN: When to Use Microservices? / USE MICROSERVICES: / → WHICH: Which Patterns to Master? / ESSENTIAL: API Gatew
+**Flow:**
+- WHY: Why Microservices? / • Scale independently: Scale
+- ↓
+- HOW: How Do Microservices Communicate? / • Service Disc
+- ↓
+- WHEN: When to Use Microservices? / USE MICROSERVICES: /
+- ↓
+- WHICH: Which Patterns to Master? / ESSENTIAL: API Gatew
 
 ```mermaid
 flowchart TD
@@ -127,7 +134,30 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Load Balancer / Reverse Proxy → Order / Service | Load Balancer / Reverse Proxy → Payment / Service | User / Service → User DB / (Postgres) | User / Service → Order DB / (Mongo) | Order / Service → User DB / (Postgres) | Order / Service → Order DB / (Mongo) | ...+6 more
+**Flow:**
+- Load Balancer / Reverse Proxy
+- ↓
+- Order / Service
+- ↓
+- Load Balancer / Reverse Proxy
+- ↓
+- Payment / Service
+- ↓
+- User / Service
+- ↓
+- User DB / (Postgres)
+- ↓
+- User / Service
+- ↓
+- Order DB / (Mongo)
+- ↓
+- Order / Service
+- ↓
+- User DB / (Postgres)
+- ↓
+- Order / Service
+- ↓
+- Order DB / (Mongo)
 
 ```mermaid
 flowchart TD
@@ -190,7 +220,20 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Service / Discovery / (Eureka) → API Gateway / (Gateway) | API Gateway / (Gateway) → Config Server / (Config) | Config Server / (Config) → Circuit / Breaker / (Resilience4j) | Circuit / Breaker / (Resilience4j) → Distributed / Tracing / (Sleuth) | Distributed / Tracing / (Sleuth) → Load / Balancing / (LoadBalancer) | Load / Balancing / (LoadBalancer) → Message / Broker / (Stream) | ...+2 more
+**Flow:**
+- Service / Discovery / (Eureka)
+- ↓
+- API Gateway / (Gateway)
+- ↓
+- Config Server / (Config)
+- ↓
+- Circuit / Breaker / (Resilience4j)
+- ↓
+- Distributed / Tracing / (Sleuth)
+- ↓
+- Load / Balancing / (LoadBalancer)
+- ↓
+- Message / Broker / (Stream)
 
 ```mermaid
 flowchart TD
@@ -237,7 +280,10 @@ With Service Discovery:
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Service A needs to call Service B / ❌ Hard-coded URLs:  → Service A calls 'order-service' (logical name) / ✅ Serv
+**Flow:**
+- Service A needs to call Service B / ❌ Hard-coded URLs:
+- ↓
+- Service A calls 'order-service' (logical name) / ✅ Serv
 
 ```mermaid
 flowchart TD
@@ -536,7 +582,18 @@ With API Gateway:
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Client → User Service (port 8081) / Client → Order Serv → Client → API Gateway (port 8080) / Gateway → User/Order
+**Flow:**
+- Client
+- ↓
+- User Service (port 8081) / Client
+- ↓
+- Order Serv
+- ↓
+- Client
+- ↓
+- API Gateway (port 8080) / Gateway
+- ↓
+- User/Order
 
 ```mermaid
 flowchart TD
@@ -934,7 +991,12 @@ With Circuit Breaker:
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: CLOSED / (Requests / pass through) → OPEN / (Requests / fail fast) | OPEN / (Requests / fail fast) → HALF-OPEN / (Limited / requests)
+**Flow:**
+- CLOSED / (Requests / pass through)
+- ↓
+- OPEN / (Requests / fail fast)
+- ↓
+- HALF-OPEN / (Limited / requests)
 
 ```mermaid
 flowchart TD

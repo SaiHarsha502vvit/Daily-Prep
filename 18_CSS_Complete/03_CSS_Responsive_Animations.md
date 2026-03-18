@@ -117,7 +117,20 @@
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: STANDARD BREAKPOINTS (Tailwind-inspired): → Name Min-Width Typical Device | Name Min-Width Typical Device → sm 640px Large phone (landscape) | sm 640px Large phone (landscape) → md 768px Tablet | md 768px Tablet → lg 1024px Small laptop / Tablet landscape | lg 1024px Small laptop / Tablet landscape → xl 1280px Desktop | xl 1280px Desktop → 2xl 1536px Large desktop | ...+1 more
+**Flow:**
+- STANDARD BREAKPOINTS (Tailwind-inspired):
+- ↓
+- Name Min-Width Typical Device
+- ↓
+- sm 640px Large phone (landscape)
+- ↓
+- md 768px Tablet
+- ↓
+- lg 1024px Small laptop / Tablet landscape
+- ↓
+- xl 1280px Desktop
+- ↓
+- 2xl 1536px Large desktop
 
 ```mermaid
 flowchart TD
@@ -285,7 +298,26 @@ SLOW (triggers reflow):        FAST (GPU, no reflow):
 RULE: Animate ONLY transform and opacity for 60fps.
 ```
 
-> **Flow**: SLOW (triggers reflow): FAST (GPU, no reflow): → left, top, right, bottom transform: translate() | SLOW (triggers reflow): FAST (GPU, no reflow): → width, height transform: scale() | SLOW (triggers reflow): FAST (GPU, no reflow): → margin, padding transform: rotate() | SLOW (triggers reflow): FAST (GPU, no reflow): → font-size opacity | SLOW (triggers reflow): FAST (GPU, no reflow): → filter
+**Flow:**
+- SLOW (triggers reflow): FAST (GPU, no reflow):
+- ↓
+- left, top, right, bottom transform: translate()
+- ↓
+- SLOW (triggers reflow): FAST (GPU, no reflow):
+- ↓
+- width, height transform: scale()
+- ↓
+- SLOW (triggers reflow): FAST (GPU, no reflow):
+- ↓
+- margin, padding transform: rotate()
+- ↓
+- SLOW (triggers reflow): FAST (GPU, no reflow):
+- ↓
+- font-size opacity
+- ↓
+- SLOW (triggers reflow): FAST (GPU, no reflow):
+- ↓
+- filter
 
 ```mermaid
 flowchart TD
@@ -368,7 +400,52 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: TIMING FUNCTION: Controls acceleration of animation → ease (default): slow → fast → slow | ease (default): slow → fast → slow → ease-in: slow → fast (accelerate) | ease-in: slow → fast (accelerate) → ease-out: fast → slow (decelerate) | ease-out: fast → slow (decelerate) → ease-in-out: slow → fast → slow | ease-in-out: slow → fast → slow → linear: constant speed | linear: constant speed → CUSTOM: cubic-bezier(x1, y1, x2, y2) | ...+1 more
+**Flow:**
+- TIMING FUNCTION: Controls acceleration of animation
+- ↓
+- ease (default): slow
+- ↓
+- fast
+- ↓
+- slow
+- ↓
+- ease (default): slow
+- ↓
+- fast
+- ↓
+- slow
+- ↓
+- ease-in: slow
+- ↓
+- fast (accelerate)
+- ↓
+- ease-in: slow
+- ↓
+- fast (accelerate)
+- ↓
+- ease-out: fast
+- ↓
+- slow (decelerate)
+- ↓
+- ease-out: fast
+- ↓
+- slow (decelerate)
+- ↓
+- ease-in-out: slow
+- ↓
+- fast
+- ↓
+- slow
+- ↓
+- ease-in-out: slow
+- ↓
+- fast
+- ↓
+- slow
+- ↓
+- linear: constant speed
+- ↓
+- CUSTOM: cubic-bezier(x1, y1, x2, y2)
 
 ```mermaid
 flowchart TD
@@ -523,7 +600,54 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: animation-fill-mode: → Before → [Animation runs...] → After (back to original) | Before → [Animation runs...] → After (back to original) → forwards: Element STAYS at the final keyframe | forwards: Element STAYS at the final keyframe → Before → [Animation runs...] → Stays at 100% state | Before → [Animation runs...] → Stays at 100% state → backwards: Element takes 0% state during delay | backwards: Element takes 0% state during delay → At 0% state → [delay...] → [Animation runs...] → Origin | At 0% state → [delay...] → [Animation runs...] → Origin → both: Combines forwards + backwards | ...+1 more
+**Flow:**
+- animation-fill-mode:
+- ↓
+- Before
+- ↓
+- [Animation runs...]
+- ↓
+- After (back to original)
+- ↓
+- Before
+- ↓
+- [Animation runs...]
+- ↓
+- After (back to original)
+- ↓
+- forwards: Element STAYS at the final keyframe
+- ↓
+- Before
+- ↓
+- [Animation runs...]
+- ↓
+- Stays at 100% state
+- ↓
+- Before
+- ↓
+- [Animation runs...]
+- ↓
+- Stays at 100% state
+- ↓
+- backwards: Element takes 0% state during delay
+- ↓
+- At 0% state
+- ↓
+- [delay...]
+- ↓
+- [Animation runs...]
+- ↓
+- Origin
+- ↓
+- At 0% state
+- ↓
+- [delay...]
+- ↓
+- [Animation runs...]
+- ↓
+- Origin
+- ↓
+- both: Combines forwards + backwards
 
 ```mermaid
 flowchart TD
@@ -691,7 +815,20 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: 60 FPS ANIMATION RULES: → ✅ DO animate: | ✅ DO animate: → • transform (translate, scale, rotate) ← GPU accelerate | • transform (translate, scale, rotate) ← GPU accelerate → • opacity ← GPU accelerated | • opacity ← GPU accelerated → • filter (blur, brightness) ← GPU accelerated | • filter (blur, brightness) ← GPU accelerated → ❌ AVOID animating: | ❌ AVOID animating: → • width, height ← Triggers layout + paint + composite | ...+1 more
+**Flow:**
+- 60 FPS ANIMATION RULES:
+- ↓
+- ✅ DO animate:
+- ↓
+- • transform (translate, scale, rotate) ← GPU accelerate
+- ↓
+- • opacity ← GPU accelerated
+- ↓
+- • filter (blur, brightness) ← GPU accelerated
+- ↓
+- ❌ AVOID animating:
+- ↓
+- • width, height ← Triggers layout + paint + composite
 
 ```mermaid
 flowchart TD
@@ -805,7 +942,10 @@ Q: What is animation-fill-mode: forwards?
   Without it, element snaps back to its original state.
 ```
 
-> **Flow**: Transition: A → B state change triggered by event (hover, class to
+**Flow:**
+- Transition: A
+- ↓
+- B state change triggered by event (hover, class to
 
 ```mermaid
 flowchart LR

@@ -76,7 +76,20 @@ Let's go DEEP into how computers actually work!
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: CPU CORE → REGISTERS (64 bytes) / Access: 0.5 nanoseconds | REGISTERS (64 bytes) / Access: 0.5 nanoseconds → L1 CACHE (32KB per core) / Access: 1 nanosecond | L1 CACHE (32KB per core) / Access: 1 nanosecond → L2 CACHE (256KB per core) / Access: 4 nanoseconds | L2 CACHE (256KB per core) / Access: 4 nanoseconds → L3 CACHE (8MB shared) / Access: 15 nanoseconds | L3 CACHE (8MB shared) / Access: 15 nanoseconds → MAIN MEMORY / RAM (16GB) / Access: 100 nanoseconds | MAIN MEMORY / RAM (16GB) / Access: 100 nanoseconds → SSD / DISK (1TB) / Access: 100,000 nanoseconds
+**Flow:**
+- CPU CORE
+- ↓
+- REGISTERS (64 bytes) / Access: 0.5 nanoseconds
+- ↓
+- L1 CACHE (32KB per core) / Access: 1 nanosecond
+- ↓
+- L2 CACHE (256KB per core) / Access: 4 nanoseconds
+- ↓
+- L3 CACHE (8MB shared) / Access: 15 nanoseconds
+- ↓
+- MAIN MEMORY / RAM (16GB) / Access: 100 nanoseconds
+- ↓
+- SSD / DISK (1TB) / Access: 100,000 nanoseconds
 
 ```mermaid
 flowchart TD
@@ -167,7 +180,10 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Address 0x1000 0x1001 0x1002 0x1003 / Content 0x2A 0x00 → Address 0x1000 0x1001 0x1002 0x1003 / Content 0x00 0x00
+**Flow:**
+- Address 0x1000 0x1001 0x1002 0x1003 / Content 0x2A 0x00
+- ↓
+- Address 0x1000 0x1001 0x1002 0x1003 / Content 0x00 0x00
 
 ```mermaid
 flowchart TD
@@ -387,7 +403,16 @@ sum += arr[i];  // Most accesses are cache hits!
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Node / value: 10 / next: 0x5F00 / prev: null → Node / value: 20 / next: 0x2A00 / prev: 0x1000 | Node / value: 20 / next: 0x2A00 / prev: 0x1000 → Node / value: 30 / next: 0x8B00 / prev: 0x5F00 | Node / value: 40 / next: 0x3C00 / prev: 0x2A00 → Node / value: 50 / next: null / prev: 0x8B00
+**Flow:**
+- Node / value: 10 / next: 0x5F00 / prev: null
+- ↓
+- Node / value: 20 / next: 0x2A00 / prev: 0x1000
+- ↓
+- Node / value: 30 / next: 0x8B00 / prev: 0x5F00
+- ↓
+- Node / value: 40 / next: 0x3C00 / prev: 0x2A00
+- ↓
+- Node / value: 50 / next: null / prev: 0x8B00
 
 ```mermaid
 flowchart TD

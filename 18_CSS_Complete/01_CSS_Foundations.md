@@ -82,7 +82,26 @@ SELECTOR              │ WHAT IT TARGETS
 .parent ~ p           │ ALL <p> siblings after .parent
 ```
 
-> **Flow**: &lt;div class='parent'&gt; → &lt;p&gt;Direct child&lt;/p&gt; ← child (&gt;) | &lt;div class='parent'&gt; → &lt;section&gt; | &lt;div class='parent'&gt; → &lt;p&gt;Nested&lt;/p&gt; ← descendant (space) | &lt;div class='parent'&gt; → &lt;p&gt;Another child&lt;/p&gt; ← child (&gt;) | &lt;div class='parent'&gt; → &lt;p&gt;Yet another&lt;/p&gt; ← child (&gt;)
+**Flow:**
+- <div class='parent'>
+- ↓
+- <p>Direct child</p> ← child (>)
+- ↓
+- <div class='parent'>
+- ↓
+- <section>
+- ↓
+- <div class='parent'>
+- ↓
+- <p>Nested</p> ← descendant (space)
+- ↓
+- <div class='parent'>
+- ↓
+- <p>Another child</p> ← child (>)
+- ↓
+- <div class='parent'>
+- ↓
+- <p>Yet another</p> ← child (>)
 
 ```mermaid
 flowchart TD
@@ -167,7 +186,20 @@ The CASCADE resolves in this ORDER (highest to lowest priority):
 If SPECIFICITY is EQUAL → LAST rule in source order wins.
 ```
 
-> **Flow**: WHEN MULTIPLE RULES TARGET THE SAME ELEMENT, WHO WINS? → 1. !important declarations (AVOID!) | 1. !important declarations (AVOID!) → 2. Inline styles (style='...') (RARE) | 2. Inline styles (style='...') (RARE) → 3. ID selectors (#id) (HIGHEST specificity) | 3. ID selectors (#id) (HIGHEST specificity) → 4. Class/attribute/pseudo-class (.class, [attr]) | 4. Class/attribute/pseudo-class (.class, [attr]) → 5. Element/pseudo-element (p, ::before) | 5. Element/pseudo-element (p, ::before) → 6. Universal (*) (LOWEST specificity) | ...+1 more
+**Flow:**
+- WHEN MULTIPLE RULES TARGET THE SAME ELEMENT, WHO WINS?
+- ↓
+- 1. !important declarations (AVOID!)
+- ↓
+- 2. Inline styles (style='...') (RARE)
+- ↓
+- 3. ID selectors (#id) (HIGHEST specificity)
+- ↓
+- 4. Class/attribute/pseudo-class (.class, [attr])
+- ↓
+- 5. Element/pseudo-element (p, ::before)
+- ↓
+- 6. Universal (*) (LOWEST specificity)
 
 ```mermaid
 flowchart TD
@@ -217,7 +249,20 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: SPECIFICITY = (Inline, IDs, Classes, Elements) → Selector Specificity Score | Selector Specificity Score → p.intro (0,0,1,1) 11 | p.intro (0,0,1,1) 11 → .nav .link (0,0,2,0) 20 | .nav .link (0,0,2,0) 20 → #header (0,1,0,0) 100 | #header (0,1,0,0) 100 → #header .nav .link (0,1,2,0) 120 | #header .nav .link (0,1,2,0) 120 → #header .nav a:hover (0,1,2,1) 121 | ...+1 more
+**Flow:**
+- SPECIFICITY = (Inline, IDs, Classes, Elements)
+- ↓
+- Selector Specificity Score
+- ↓
+- p.intro (0,0,1,1) 11
+- ↓
+- .nav .link (0,0,2,0) 20
+- ↓
+- #header (0,1,0,0) 100
+- ↓
+- #header .nav .link (0,1,2,0) 120
+- ↓
+- #header .nav a:hover (0,1,2,1) 121
 
 ```mermaid
 flowchart TD
@@ -292,7 +337,20 @@ BORDER-BOX (what you want):
   Content shrinks to fit. WHAT YOU SET IS WHAT YOU GET.
 ```
 
-> **Flow**: THE CSS BOX MODEL (Every element is a box): → MARGIN | MARGIN → BORDER | BORDER → PADDING | PADDING → CONTENT | CONTENT → (width × height) | (width × height) → CONTENT-BOX (default): | ...+1 more
+**Flow:**
+- THE CSS BOX MODEL (Every element is a box):
+- ↓
+- MARGIN
+- ↓
+- BORDER
+- ↓
+- PADDING
+- ↓
+- CONTENT
+- ↓
+- (width × height)
+- ↓
+- CONTENT-BOX (default):
 
 ```mermaid
 flowchart TD
@@ -382,7 +440,10 @@ FIX/PREVENT:
 • Use overflow: hidden on parent
 ```
 
-> **Flow**: Element A / margin-bottom: / 20px → Element B / margin-top: / 30px
+**Flow:**
+- Element A / margin-bottom: / 20px
+- ↓
+- Element B / margin-top: / 30px
 
 ```mermaid
 flowchart TD
@@ -420,7 +481,20 @@ contents       │ Element box disappears, children act as if
                │ they're direct children of grandparent.
 ```
 
-> **Flow**: display VALUE BEHAVIOR → block Takes full width. New line before/after. | block Takes full width. New line before/after. → Can set width/height. &lt;div&gt;, &lt;p&gt;, &lt;h1&gt | Can set width/height. &lt;div&gt;, &lt;p&gt;, &lt;h1&gt → inline Only as wide as content. NO width/height. | inline Only as wide as content. NO width/height. → Same line as neighbors. &lt;span&gt;, &lt;a&gt;, &lt;st | Same line as neighbors. &lt;span&gt;, &lt;a&gt;, &lt;st → inline-block Inline flow BUT allows width/height. | inline-block Inline flow BUT allows width/height. → Best of both worlds. &lt;img&gt;, &lt;button&gt; | ...+1 more
+**Flow:**
+- display VALUE BEHAVIOR
+- ↓
+- block Takes full width. New line before/after.
+- ↓
+- Can set width/height. <div>, <p>, <h1&gt
+- ↓
+- inline Only as wide as content. NO width/height.
+- ↓
+- Same line as neighbors. <span>, <a>, <st
+- ↓
+- inline-block Inline flow BUT allows width/height.
+- ↓
+- Best of both worlds. <img>, <button>
 
 ```mermaid
 flowchart TD
@@ -525,7 +599,20 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: UNIT RELATIVE TO USE CASE → px Absolute (1/96') Borders, shadows, fine details | px Absolute (1/96') Borders, shadows, fine details → rem Root font-size Font sizes, spacing, MOST things | rem Root font-size Font sizes, spacing, MOST things → em Parent font-size Relative to current text size | em Parent font-size Relative to current text size → % Parent element Widths, heights, layout | % Parent element Widths, heights, layout → vw Viewport width Full-width sections, fluid text | vw Viewport width Full-width sections, fluid text → vh Viewport height Full-height sections, hero banners | ...+1 more
+**Flow:**
+- UNIT RELATIVE TO USE CASE
+- ↓
+- px Absolute (1/96') Borders, shadows, fine details
+- ↓
+- rem Root font-size Font sizes, spacing, MOST things
+- ↓
+- em Parent font-size Relative to current text size
+- ↓
+- % Parent element Widths, heights, layout
+- ↓
+- vw Viewport width Full-width sections, fluid text
+- ↓
+- vh Viewport height Full-height sections, hero banners
 
 ```mermaid
 flowchart TD
@@ -662,7 +749,20 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: POSITION RELATIVE TO IN FLOW? USE CASE → static Normal document flow YES Default (no offset) | static Normal document flow YES Default (no offset) → relative Its normal position YES Offset + context | relative Its normal position YES Offset + context → absolute Nearest positioned NO Overlays, tooltips | absolute Nearest positioned NO Overlays, tooltips → ancestor | ancestor → fixed Viewport NO Sticky nav, modals | fixed Viewport NO Sticky nav, modals → sticky Scroll threshold YES* Sticky headers
+**Flow:**
+- POSITION RELATIVE TO IN FLOW? USE CASE
+- ↓
+- static Normal document flow YES Default (no offset)
+- ↓
+- relative Its normal position YES Offset + context
+- ↓
+- absolute Nearest positioned NO Overlays, tooltips
+- ↓
+- ancestor
+- ↓
+- fixed Viewport NO Sticky nav, modals
+- ↓
+- sticky Scroll threshold YES* Sticky headers
 
 ```mermaid
 flowchart TD
@@ -746,7 +846,20 @@ Children of z-index:5 can NEVER be above a sibling with z:10.
 This is why z-index "doesn't work" sometimes!
 ```
 
-> **Flow**: Z-INDEX GUIDE: → z-index only works on POSITIONED elements (not static). | z-index only works on POSITIONED elements (not static). → LAYER SYSTEM (use consistent values): | LAYER SYSTEM (use consistent values): → z-index: 9999 MODAL OVERLAY ← On top of everything | z-index: 9999 MODAL OVERLAY ← On top of everything → z-index: 1000 NAVIGATION | z-index: 1000 NAVIGATION → z-index: 100 DROPDOWN/POPUP | z-index: 100 DROPDOWN/POPUP → z-index: 50 STICKY ELEMENTS | ...+1 more
+**Flow:**
+- Z-INDEX GUIDE:
+- ↓
+- z-index only works on POSITIONED elements (not static).
+- ↓
+- LAYER SYSTEM (use consistent values):
+- ↓
+- z-index: 9999 MODAL OVERLAY ← On top of everything
+- ↓
+- z-index: 1000 NAVIGATION
+- ↓
+- z-index: 100 DROPDOWN/POPUP
+- ↓
+- z-index: 50 STICKY ELEMENTS
 
 ```mermaid
 flowchart TD
@@ -856,7 +969,18 @@ Q: What is the cascade?
   these priority levels to determine final applied styles.
 ```
 
-> **Flow**: Every element is a box: Content → Padding | Padding → Border | Border → Margin. | CSS applies rules in order: importance (!important → specificity
+**Flow:**
+- Every element is a box: Content
+- ↓
+- Padding
+- ↓
+- Border
+- ↓
+- Margin.
+- ↓
+- CSS applies rules in order: importance (!important
+- ↓
+- specificity
 
 ```mermaid
 flowchart LR

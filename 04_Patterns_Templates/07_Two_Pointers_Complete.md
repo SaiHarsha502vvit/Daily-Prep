@@ -54,7 +54,12 @@ Brute: Check all 15 pairs
 Two Pointers: At most 6 moves
 ```
 
-> **Flow**: for i = 0 to n: / for j = i+1 to n: / check(i,j) → left → ... ... ← right / Move based on sum: / sum &lt; 
+**Flow:**
+- for i = 0 to n: / for j = i+1 to n: / check(i,j)
+- ↓
+- left
+- ↓
+- ... ... ← right / Move based on sum: / sum <
 
 ```mermaid
 flowchart TD
@@ -141,7 +146,14 @@ Step 3: left=0, right=1
 Answer: [1, 2]
 ```
 
-> **Flow**: sum = 2 + 15 = 17 &gt; 9 → right-- | sum = 2 + 11 = 13 &gt; 9 → right--
+**Flow:**
+- sum = 2 + 15 = 17 > 9
+- ↓
+- right--
+- ↓
+- sum = 2 + 11 = 13 > 9
+- ↓
+- right--
 
 ```mermaid
 flowchart LR
@@ -288,7 +300,14 @@ Step 2: Move shorter (left=0 has height 1)
           width = 7, height = min(8,7) = 7, area = 49 ←── Best!
 ```
 
-> **Flow**: height = [1,8,6,2,5,4,8,3,7] → Step 1: left=0, right=8 | Step 1: left=0, right=8 → Step 2: Move shorter (left=0 has height 1) | Step 2: Move shorter (left=0 has height 1) → left=1, right=8
+**Flow:**
+- height = [1,8,6,2,5,4,8,3,7]
+- ↓
+- Step 1: left=0, right=8
+- ↓
+- Step 2: Move shorter (left=0 has height 1)
+- ↓
+- left=1, right=8
 
 ```mermaid
 flowchart TD
@@ -427,7 +446,14 @@ Step 2: writer=1, reader=2
         Return 5
 ```
 
-> **Flow**: nums[1] == nums[0] → skip | nums[2] != nums[1] → write!
+**Flow:**
+- nums[1] == nums[0]
+- ↓
+- skip
+- ↓
+- nums[2] != nums[1]
+- ↓
+- write!
 
 ```mermaid
 flowchart LR
@@ -580,7 +606,20 @@ Step 8: S=5, F=4
 Step 9: S=6, F=6 ✓ MEET!
 ```
 
-> **Flow**: List with cycle: → Step 0: S=1, F=1 | Step 0: S=1, F=1 → Step 1: S=2, F=3 | Step 1: S=2, F=3 → Step 2: S=3, F=5 | Step 2: S=3, F=5 → Step 3: S=4, F=6 | Step 3: S=4, F=6 → Step 4: S=5, F=8 | Step 4: S=5, F=8 → Step 5: S=6, F=4 | ...+1 more
+**Flow:**
+- List with cycle:
+- ↓
+- Step 0: S=1, F=1
+- ↓
+- Step 1: S=2, F=3
+- ↓
+- Step 2: S=3, F=5
+- ↓
+- Step 3: S=4, F=6
+- ↓
+- Step 4: S=5, F=8
+- ↓
+- Step 5: S=6, F=4
 
 ```mermaid
 flowchart TD
@@ -751,7 +790,20 @@ public int findDuplicate(int[] nums) {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: SLIDING WINDOW = TWO POINTERS + WINDOW STATE → Sliding Window Template: | Sliding Window Template: → left = 0 | left = 0 → # Expand: add element at right to window | # Expand: add element at right to window → window.add(arr[right]) | window.add(arr[right]) → # Shrink: while window is invalid/too large | # Shrink: while window is invalid/too large → window.remove(arr[left]) | ...+1 more
+**Flow:**
+- SLIDING WINDOW = TWO POINTERS + WINDOW STATE
+- ↓
+- Sliding Window Template:
+- ↓
+- left = 0
+- ↓
+- # Expand: add element at right to window
+- ↓
+- window.add(arr[right])
+- ↓
+- # Shrink: while window is invalid/too large
+- ↓
+- window.remove(arr[left])
 
 ```mermaid
 flowchart TD
@@ -1126,7 +1178,20 @@ public int numRescueBoats(int[] people, int limit) {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: TWO POINTER PROBLEM MAP → PAIR FINDING (Opposite Direction): | PAIR FINDING (Opposite Direction): → • Two Sum II, 3Sum, 4Sum, 3Sum Closest | • Two Sum II, 3Sum, 4Sum, 3Sum Closest → • Container With Most Water | • Container With Most Water → PALINDROME/REVERSE: | PALINDROME/REVERSE: → • Valid Palindrome I/II, Reverse String | • Valid Palindrome I/II, Reverse String → ARRAY MODIFICATION (Same Direction): | ...+1 more
+**Flow:**
+- TWO POINTER PROBLEM MAP
+- ↓
+- PAIR FINDING (Opposite Direction):
+- ↓
+- • Two Sum II, 3Sum, 4Sum, 3Sum Closest
+- ↓
+- • Container With Most Water
+- ↓
+- PALINDROME/REVERSE:
+- ↓
+- • Valid Palindrome I/II, Reverse String
+- ↓
+- ARRAY MODIFICATION (Same Direction):
 
 ```mermaid
 flowchart TD
@@ -1281,7 +1346,20 @@ private int getNextValidIndex(String str, int index) {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHICH TWO POINTER PATTERN? → 'Find pair/triplet with sum' | 'Find pair/triplet with sum' → → Opposite direction (sorted array) | → Opposite direction (sorted array) → 'Remove/Move elements in-place' | 'Remove/Move elements in-place' → → Same direction (reader-writer) | → Same direction (reader-writer) → 'Detect cycle' or 'Find middle' | 'Detect cycle' or 'Find middle' → → Fast & slow pointers | ...+1 more
+**Flow:**
+- WHICH TWO POINTER PATTERN?
+- ↓
+- 'Find pair/triplet with sum'
+- ↓
+- Opposite direction (sorted array)
+- ↓
+- 'Remove/Move elements in-place'
+- ↓
+- Same direction (reader-writer)
+- ↓
+- 'Detect cycle' or 'Find middle'
+- ↓
+- Fast & slow pointers
 
 ```mermaid
 flowchart TD
@@ -1361,7 +1439,20 @@ while (p1 < m && p2 < n) {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: TWO POINTER COMPLEXITIES → Two Sum II (sorted): O(n) time, O(1) space | Two Sum II (sorted): O(n) time, O(1) space → 3Sum: O(n²) time, O(1) space | 3Sum: O(n²) time, O(1) space → 4Sum: O(n³) time, O(1) space | 4Sum: O(n³) time, O(1) space → Container With Most Water: O(n) time, O(1) space | Container With Most Water: O(n) time, O(1) space → Trapping Rain Water: O(n) time, O(1) space | Trapping Rain Water: O(n) time, O(1) space → Remove Duplicates: O(n) time, O(1) space | ...+1 more
+**Flow:**
+- TWO POINTER COMPLEXITIES
+- ↓
+- Two Sum II (sorted): O(n) time, O(1) space
+- ↓
+- 3Sum: O(n²) time, O(1) space
+- ↓
+- 4Sum: O(n³) time, O(1) space
+- ↓
+- Container With Most Water: O(n) time, O(1) space
+- ↓
+- Trapping Rain Water: O(n) time, O(1) space
+- ↓
+- Remove Duplicates: O(n) time, O(1) space
 
 ```mermaid
 flowchart TD
@@ -1416,7 +1507,44 @@ flowchart TD
 ╚═══════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: TWO POINTERS - MASTER CHECKLIST → 1. IDENTIFY THE PATTERN | 1. IDENTIFY THE PATTERN → - Pair with sum → Opposite direction | - Pair with sum → Opposite direction → - In-place modify → Same direction (reader-writer) | - In-place modify → Same direction (reader-writer) → - Cycle/Middle → Fast & slow | - Cycle/Middle → Fast & slow → - Merge/Compare → Multi-array | - Merge/Compare → Multi-array → 2. KEY INSIGHTS | ...+1 more
+**Flow:**
+- TWO POINTERS - MASTER CHECKLIST
+- ↓
+- 1. IDENTIFY THE PATTERN
+- ↓
+- - Pair with sum
+- ↓
+- Opposite direction
+- ↓
+- - Pair with sum
+- ↓
+- Opposite direction
+- ↓
+- - In-place modify
+- ↓
+- Same direction (reader-writer)
+- ↓
+- - In-place modify
+- ↓
+- Same direction (reader-writer)
+- ↓
+- - Cycle/Middle
+- ↓
+- Fast & slow
+- ↓
+- - Cycle/Middle
+- ↓
+- Fast & slow
+- ↓
+- - Merge/Compare
+- ↓
+- Multi-array
+- ↓
+- - Merge/Compare
+- ↓
+- Multi-array
+- ↓
+- 2. KEY INSIGHTS
 
 ```mermaid
 flowchart TD

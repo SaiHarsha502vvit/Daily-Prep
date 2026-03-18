@@ -25,7 +25,10 @@
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: 3 / 2 / 1 → 1 2 3 4
+**Flow:**
+- 3 / 2 / 1
+- ↓
+- 1 2 3 4
 
 ```mermaid
 flowchart TD
@@ -262,7 +265,20 @@ flowchart TD
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: VALID PARENTHESES - Check if brackets are balanced → Input: '({[]})' | Input: '({[]})' → Processing with Stack: | Processing with Stack: → Char Action Stack State | Char Action Stack State → ( push ) [)] | ( push ) [)] → { push } [), }] | { push } [), }] → [ push ] [), }, ]] | ...+1 more
+**Flow:**
+- VALID PARENTHESES - Check if brackets are balanced
+- ↓
+- Input: '({[]})'
+- ↓
+- Processing with Stack:
+- ↓
+- Char Action Stack State
+- ↓
+- ( push ) [)]
+- ↓
+- { push } [), }]
+- ↓
+- [ push ] [), }, ]]
 
 ```mermaid
 flowchart TD
@@ -345,7 +361,30 @@ public boolean isValid(String s) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: MIN STACK - Stack that supports getMin() in O(1) → Approach 1: Two Stacks | Approach 1: Two Stacks → Main Stack Min Stack | Main Stack Min Stack → 1 1 ← top | 1 1 ← top → getMin() → peek min stack → 1 | getMin() → peek min stack → 1 → Approach 2: Single Stack with Pairs | Approach 2: Single Stack with Pairs → (val, minSoFar)
+**Flow:**
+- MIN STACK - Stack that supports getMin() in O(1)
+- ↓
+- Approach 1: Two Stacks
+- ↓
+- Main Stack Min Stack
+- ↓
+- 1 1 ← top
+- ↓
+- getMin()
+- ↓
+- peek min stack
+- ↓
+- 1
+- ↓
+- getMin()
+- ↓
+- peek min stack
+- ↓
+- 1
+- ↓
+- Approach 2: Single Stack with Pairs
+- ↓
+- (val, minSoFar)
 
 ```mermaid
 flowchart TD
@@ -434,7 +473,20 @@ class MinStack {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: MAX STACK - Stack with popMax() operation → Design a max stack that supports: | Design a max stack that supports: → - push(x): Push x onto stack | - push(x): Push x onto stack → - pop(): Remove top element | - pop(): Remove top element → - top(): Get top element | - top(): Get top element → - peekMax(): Retrieve maximum element | - peekMax(): Retrieve maximum element → - popMax(): Remove maximum element (topmost if tie) | ...+1 more
+**Flow:**
+- MAX STACK - Stack with popMax() operation
+- ↓
+- Design a max stack that supports:
+- ↓
+- - push(x): Push x onto stack
+- ↓
+- - pop(): Remove top element
+- ↓
+- - top(): Get top element
+- ↓
+- - peekMax(): Retrieve maximum element
+- ↓
+- - popMax(): Remove maximum element (topmost if tie)
 
 ```mermaid
 flowchart TD
@@ -565,7 +617,20 @@ class MaxStack {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: DECODE STRING - Expand encoded string → Input: '3[a2[c]]' | Input: '3[a2[c]]' → Process with Stack: | Process with Stack: → Char Action Stack / Result | Char Action Stack / Result → 3 build num num=3 | 3 build num num=3 → [ push [(3, '')] | [ push [(3, '')] → a build str currentStr='a' | ...+1 more
+**Flow:**
+- DECODE STRING - Expand encoded string
+- ↓
+- Input: '3[a2[c]]'
+- ↓
+- Process with Stack:
+- ↓
+- Char Action Stack / Result
+- ↓
+- 3 build num num=3
+- ↓
+- [ push [(3, '')]
+- ↓
+- a build str currentStr='a'
 
 ```mermaid
 flowchart TD
@@ -654,7 +719,20 @@ public String decodeString(String s) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: REVERSE POLISH NOTATION (Postfix Expression) → Input: ['2','1','+','3','*'] | Input: ['2','1','+','3','*'] → Infix equivalent: ((2 + 1) * 3) = 9 | Infix equivalent: ((2 + 1) * 3) = 9 → Stack Processing: | Stack Processing: → Token Action Stack | Token Action Stack → 2 push [2] | 2 push [2] → 1 push [2, 1] | ...+1 more
+**Flow:**
+- REVERSE POLISH NOTATION (Postfix Expression)
+- ↓
+- Input: ['2','1','+','3','*']
+- ↓
+- Infix equivalent: ((2 + 1) * 3) = 9
+- ↓
+- Stack Processing:
+- ↓
+- Token Action Stack
+- ↓
+- 2 push [2]
+- ↓
+- 1 push [2, 1]
 
 ```mermaid
 flowchart TD
@@ -734,7 +812,28 @@ public int evalRPN(String[] tokens) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: BASIC CALCULATOR III - Evaluate expression with +,-,*,/ → string. The expression string contains only non-negativ | string. The expression string contains only non-negativ → integers, +, -, *, / operators, open ( and closing ) | integers, +, -, *, / operators, open ( and closing ) → parentheses, and empty spaces. | parentheses, and empty spaces. → Examples: | Examples: → Input: '1+1' → Output: 2 | Input: '1+1' → Output: 2 → Input: '6-4/2' → Output: 4 | ...+1 more
+**Flow:**
+- BASIC CALCULATOR III - Evaluate expression with +,-,*,/
+- ↓
+- string. The expression string contains only non-negativ
+- ↓
+- integers, +, -, *, / operators, open ( and closing )
+- ↓
+- parentheses, and empty spaces.
+- ↓
+- Examples:
+- ↓
+- Input: '1+1'
+- ↓
+- Output: 2
+- ↓
+- Input: '1+1'
+- ↓
+- Output: 2
+- ↓
+- Input: '6-4/2'
+- ↓
+- Output: 4
 
 ```mermaid
 flowchart TD
@@ -828,7 +927,20 @@ private int helper(Queue<Character> queue) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: MONOTONIC STACK - Elements in sorted order → DECREASING Stack (for Next Greater Element): | DECREASING Stack (for Next Greater Element): → Array: [2, 1, 2, 4, 3] | Array: [2, 1, 2, 4, 3] → i=0: stack=[2] | i=0: stack=[2] → i=1: 1 &lt; 2, stack=[2,1] | i=1: 1 &lt; 2, stack=[2,1] → i=4: 3 &lt; 4, stack=[4,3] | i=4: 3 &lt; 4, stack=[4,3] → NGE = [4, 2, 4, -1, -1] | ...+1 more
+**Flow:**
+- MONOTONIC STACK - Elements in sorted order
+- ↓
+- DECREASING Stack (for Next Greater Element):
+- ↓
+- Array: [2, 1, 2, 4, 3]
+- ↓
+- i=0: stack=[2]
+- ↓
+- i=1: 1 < 2, stack=[2,1]
+- ↓
+- i=4: 3 < 4, stack=[4,3]
+- ↓
+- NGE = [4, 2, 4, -1, -1]
 
 ```mermaid
 flowchart TD
@@ -879,7 +991,20 @@ flowchart TD
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: DAILY TEMPERATURES - Days until warmer temperature → temperatures = [73, 74, 75, 71, 69, 72, 76, 73] | temperatures = [73, 74, 75, 71, 69, 72, 76, 73] → Visual Process (Monotonic Decreasing Stack by index): | Visual Process (Monotonic Decreasing Stack by index): → i temp Stack (indices) Result | i temp Stack (indices) Result → 1 74 74&gt;73, pop, [1] [1,_,_,_,_,_,_,_] | 1 74 74&gt;73, pop, [1] [1,_,_,_,_,_,_,_] → 2 75 75&gt;74, pop, [2] [1,1,_,_,_,_,_,_] | 2 75 75&gt;74, pop, [2] [1,1,_,_,_,_,_,_] → 5 72 72&gt;69,71 pop×2 [2,5] [1,1,_,2,1,_,_,_] | ...+1 more
+**Flow:**
+- DAILY TEMPERATURES - Days until warmer temperature
+- ↓
+- temperatures = [73, 74, 75, 71, 69, 72, 76, 73]
+- ↓
+- Visual Process (Monotonic Decreasing Stack by index):
+- ↓
+- i temp Stack (indices) Result
+- ↓
+- 1 74 74>73, pop, [1] [1,_,_,_,_,_,_,_]
+- ↓
+- 2 75 75>74, pop, [2] [1,1,_,_,_,_,_,_]
+- ↓
+- 5 72 72>69,71 pop×2 [2,5] [1,1,_,2,1,_,_,_]
 
 ```mermaid
 flowchart TD
@@ -948,7 +1073,20 @@ public int[] dailyTemperatures(int[] temperatures) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: NEXT GREATER ELEMENT I → nums1 = [4, 1, 2] (subset of nums2) | nums1 = [4, 1, 2] (subset of nums2) → nums2 = [1, 3, 4, 2] | nums2 = [1, 3, 4, 2] → Find NGE in nums2 for each element in nums1: | Find NGE in nums2 for each element in nums1: → nums2: [1, 3, 4, 2] | nums2: [1, 3, 4, 2] → NGE: [3, 4, -1, -1] | NGE: [3, 4, -1, -1] → For nums1 = [4, 1, 2]: | ...+1 more
+**Flow:**
+- NEXT GREATER ELEMENT I
+- ↓
+- nums1 = [4, 1, 2] (subset of nums2)
+- ↓
+- nums2 = [1, 3, 4, 2]
+- ↓
+- Find NGE in nums2 for each element in nums1:
+- ↓
+- nums2: [1, 3, 4, 2]
+- ↓
+- NGE: [3, 4, -1, -1]
+- ↓
+- For nums1 = [4, 1, 2]:
 
 ```mermaid
 flowchart TD
@@ -1026,7 +1164,24 @@ public int[] nextGreaterElement(int[] nums1, int[] nums2) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: NEXT GREATER ELEMENT II - Circular Array → nums = [1, 2, 1] (circular: ...1, 2, 1, 1, 2, 1...) | nums = [1, 2, 1] (circular: ...1, 2, 1, 1, 2, 1...) → For each element, search circularly: | For each element, search circularly: → Index Element → Search NGE | Index Element → Search NGE → Trick: Iterate 2n times, use i % n | Trick: Iterate 2n times, use i % n → Output: [2, -1, 2]
+**Flow:**
+- NEXT GREATER ELEMENT II - Circular Array
+- ↓
+- nums = [1, 2, 1] (circular: ...1, 2, 1, 1, 2, 1...)
+- ↓
+- For each element, search circularly:
+- ↓
+- Index Element
+- ↓
+- Search NGE
+- ↓
+- Index Element
+- ↓
+- Search NGE
+- ↓
+- Trick: Iterate 2n times, use i % n
+- ↓
+- Output: [2, -1, 2]
 
 ```mermaid
 flowchart TD
@@ -1103,7 +1258,14 @@ public int[] nextGreaterElements(int[] nums) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: LARGEST RECTANGLE IN HISTOGRAM → heights = [2, 1, 5, 6, 2, 3] | heights = [2, 1, 5, 6, 2, 3] → Largest rectangle = 10 (5×2 using heights 5,6) | Largest rectangle = 10 (5×2 using heights 5,6) → ██████████ ← Area = 5 × 2 = 10
+**Flow:**
+- LARGEST RECTANGLE IN HISTOGRAM
+- ↓
+- heights = [2, 1, 5, 6, 2, 3]
+- ↓
+- Largest rectangle = 10 (5×2 using heights 5,6)
+- ↓
+- ██████████ ← Area = 5 × 2 = 10
 
 ```mermaid
 flowchart TD
@@ -1191,7 +1353,44 @@ public int largestRectangleArea(int[] heights) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: matrix = [ → Convert each row to histogram heights: | Convert each row to histogram heights: → Row 0: heights = [1, 0, 1, 0, 0] → maxRect in hist | Row 0: heights = [1, 0, 1, 0, 0] → maxRect in hist → Row 1: heights = [2, 0, 2, 1, 1] → maxRect in hist | Row 1: heights = [2, 0, 2, 1, 1] → maxRect in hist → Row 2: heights = [3, 1, 3, 2, 2] → maxRect in hist = 6 | Row 2: heights = [3, 1, 3, 2, 2] → maxRect in hist = 6 → Row 3: heights = [4, 0, 0, 3, 0] → maxRect in hist | Row 3: heights = [4, 0, 0, 3, 0] → maxRect in hist → The maximum rectangle of 6 comes from row 2: | ...+1 more
+**Flow:**
+- matrix = [
+- ↓
+- Convert each row to histogram heights:
+- ↓
+- Row 0: heights = [1, 0, 1, 0, 0]
+- ↓
+- maxRect in hist
+- ↓
+- Row 0: heights = [1, 0, 1, 0, 0]
+- ↓
+- maxRect in hist
+- ↓
+- Row 1: heights = [2, 0, 2, 1, 1]
+- ↓
+- maxRect in hist
+- ↓
+- Row 1: heights = [2, 0, 2, 1, 1]
+- ↓
+- maxRect in hist
+- ↓
+- Row 2: heights = [3, 1, 3, 2, 2]
+- ↓
+- maxRect in hist = 6
+- ↓
+- Row 2: heights = [3, 1, 3, 2, 2]
+- ↓
+- maxRect in hist = 6
+- ↓
+- Row 3: heights = [4, 0, 0, 3, 0]
+- ↓
+- maxRect in hist
+- ↓
+- Row 3: heights = [4, 0, 0, 3, 0]
+- ↓
+- maxRect in hist
+- ↓
+- The maximum rectangle of 6 comes from row 2:
 
 ```mermaid
 flowchart TD
@@ -1281,7 +1480,16 @@ private int largestRectangleArea(int[] heights) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: TRAPPING RAIN WATER → height = [0,1,0,2,1,0,1,3,2,1,2,1] | height = [0,1,0,2,1,0,1,3,2,1,2,1] → ░ = Trapped water = 6 units | ░ = Trapped water = 6 units → For each position i: | For each position i: → water[i] = min(maxLeft[i], maxRight[i]) - height[i]
+**Flow:**
+- TRAPPING RAIN WATER
+- ↓
+- height = [0,1,0,2,1,0,1,3,2,1,2,1]
+- ↓
+- ░ = Trapped water = 6 units
+- ↓
+- For each position i:
+- ↓
+- water[i] = min(maxLeft[i], maxRight[i]) - height[i]
 
 ```mermaid
 flowchart TD
@@ -1385,7 +1593,14 @@ public int trapStack(int[] height) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: inputStack / [1,2,3] → outputStack / [] | outputStack / [] → inputStack / [] | inputStack / [] → outputStack / [3,2,1]
+**Flow:**
+- inputStack / [1,2,3]
+- ↓
+- outputStack / []
+- ↓
+- inputStack / []
+- ↓
+- outputStack / [3,2,1]
 
 ```mermaid
 flowchart TD
@@ -1458,7 +1673,30 @@ class MyQueue {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: IMPLEMENT STACK USING QUEUES → Approach: Make push O(n) to keep LIFO order | Approach: Make push O(n) to keep LIFO order → push(1): queue = [1] | push(1): queue = [1] → push(2): add 2, rotate 1 time | push(2): add 2, rotate 1 time → [1,2] → poll 1, add 1 → [2,1] | [1,2] → poll 1, add 1 → [2,1] → push(3): add 3, rotate 2 times | push(3): add 3, rotate 2 times → Now front of queue is top of stack! | ...+1 more
+**Flow:**
+- IMPLEMENT STACK USING QUEUES
+- ↓
+- Approach: Make push O(n) to keep LIFO order
+- ↓
+- push(1): queue = [1]
+- ↓
+- push(2): add 2, rotate 1 time
+- ↓
+- [1,2]
+- ↓
+- poll 1, add 1
+- ↓
+- [2,1]
+- ↓
+- [1,2]
+- ↓
+- poll 1, add 1
+- ↓
+- [2,1]
+- ↓
+- push(3): add 3, rotate 2 times
+- ↓
+- Now front of queue is top of stack!
 
 ```mermaid
 flowchart TD
@@ -1544,7 +1782,26 @@ class MyStack {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: SLIDING WINDOW MAXIMUM - Max in each window of size k → nums = [1, 3, -1, -3, 5, 3, 6, 7], k = 3 | nums = [1, 3, -1, -3, 5, 3, 6, 7], k = 3 → Use Monotonic Decreasing Deque (store indices): | Use Monotonic Decreasing Deque (store indices): → Window Deque (indices) Max | Window Deque (indices) Max → [1,3,-1] [1,2]→vals[3,-1] 3 | [1,3,-1] [1,2]→vals[3,-1] 3 → Output: [3, 3, 5, 5, 6, 7] | Output: [3, 3, 5, 5, 6, 7] → Why Monotonic Decreasing? | ...+1 more
+**Flow:**
+- SLIDING WINDOW MAXIMUM - Max in each window of size k
+- ↓
+- nums = [1, 3, -1, -3, 5, 3, 6, 7], k = 3
+- ↓
+- Use Monotonic Decreasing Deque (store indices):
+- ↓
+- Window Deque (indices) Max
+- ↓
+- [1,3,-1] [1,2]
+- ↓
+- vals[3,-1] 3
+- ↓
+- [1,3,-1] [1,2]
+- ↓
+- vals[3,-1] 3
+- ↓
+- Output: [3, 3, 5, 5, 6, 7]
+- ↓
+- Why Monotonic Decreasing?
 
 ```mermaid
 flowchart TD
@@ -1623,7 +1880,28 @@ public int[] maxSlidingWindow(int[] nums, int k) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: SHORTEST SUBARRAY WITH SUM AT LEAST K → Return the length of the shortest non-empty subarray wi | Return the length of the shortest non-empty subarray wi → sum at least k. If no such subarray exists, return -1. | sum at least k. If no such subarray exists, return -1. → Note: Array can have NEGATIVE numbers! | Note: Array can have NEGATIVE numbers! → Examples: | Examples: → Input: nums = [1], k = 1 → Output: 1 | Input: nums = [1], k = 1 → Output: 1 → Input: nums = [1,2], k = 4 → Output: -1 | ...+1 more
+**Flow:**
+- SHORTEST SUBARRAY WITH SUM AT LEAST K
+- ↓
+- Return the length of the shortest non-empty subarray wi
+- ↓
+- sum at least k. If no such subarray exists, return -1.
+- ↓
+- Note: Array can have NEGATIVE numbers!
+- ↓
+- Examples:
+- ↓
+- Input: nums = [1], k = 1
+- ↓
+- Output: 1
+- ↓
+- Input: nums = [1], k = 1
+- ↓
+- Output: 1
+- ↓
+- Input: nums = [1,2], k = 4
+- ↓
+- Output: -1
 
 ```mermaid
 flowchart TD
@@ -1720,7 +1998,12 @@ public int shortestSubarray(int[] nums, int k) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: 1 2 3 → 1 2 3 4 5 | 1 2 3 4 5 → 6 3 4 5
+**Flow:**
+- 1 2 3
+- ↓
+- 1 2 3 4 5
+- ↓
+- 6 3 4 5
 
 ```mermaid
 flowchart TD
@@ -1818,7 +2101,20 @@ class MyCircularQueue {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: DESIGN CIRCULAR DEQUE (Double-ended Queue) → Design a circular deque with these operations: | Design a circular deque with these operations: → - insertFront(): Add at front | - insertFront(): Add at front → - insertLast(): Add at rear | - insertLast(): Add at rear → - deleteFront(): Remove from front | - deleteFront(): Remove from front → - deleteLast(): Remove from rear | - deleteLast(): Remove from rear → - getFront(): Get front element | ...+1 more
+**Flow:**
+- DESIGN CIRCULAR DEQUE (Double-ended Queue)
+- ↓
+- Design a circular deque with these operations:
+- ↓
+- - insertFront(): Add at front
+- ↓
+- - insertLast(): Add at rear
+- ↓
+- - deleteFront(): Remove from front
+- ↓
+- - deleteLast(): Remove from rear
+- ↓
+- - getFront(): Get front element
 
 ```mermaid
 flowchart TD
@@ -1941,7 +2237,20 @@ class MyCircularDeque {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: REMOVE K DIGITS - Make smallest number by removing k di → num = '1432219', k = 3 | num = '1432219', k = 3 → Use monotonic increasing stack: | Use monotonic increasing stack: → Digit Stack k | Digit Stack k → 3 [1,3] (pop 4) 2 | 3 [1,3] (pop 4) 2 → 2 [1,2] (pop 3) 1 | 2 [1,2] (pop 3) 1 → 1 [1,2,1] (pop 2) 0 | ...+1 more
+**Flow:**
+- REMOVE K DIGITS - Make smallest number by removing k di
+- ↓
+- num = '1432219', k = 3
+- ↓
+- Use monotonic increasing stack:
+- ↓
+- Digit Stack k
+- ↓
+- 3 [1,3] (pop 4) 2
+- ↓
+- 2 [1,2] (pop 3) 1
+- ↓
+- 1 [1,2,1] (pop 2) 0
 
 ```mermaid
 flowchart TD
@@ -2030,7 +2339,20 @@ public String removeKdigits(String num, int k) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: REMOVE DUPLICATE LETTERS - Smallest lexicographic resul → s = 'cbacdcbc' | s = 'cbacdcbc' → Goal: Remove duplicates, keep smallest lex order | Goal: Remove duplicates, keep smallest lex order → Each letter appears exactly once in result | Each letter appears exactly once in result → Process: | Process: → Char Stack Reason | Char Stack Reason → c [c] push | ...+1 more
+**Flow:**
+- REMOVE DUPLICATE LETTERS - Smallest lexicographic resul
+- ↓
+- s = 'cbacdcbc'
+- ↓
+- Goal: Remove duplicates, keep smallest lex order
+- ↓
+- Each letter appears exactly once in result
+- ↓
+- Process:
+- ↓
+- Char Stack Reason
+- ↓
+- c [c] push
 
 ```mermaid
 flowchart TD
@@ -2119,7 +2441,16 @@ public String removeDuplicateLetters(String s) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: 132 PATTERN - Find i &lt; j &lt; k where a[i] &lt; a[k] → Example: [3, 1, 4, 2] | Example: [3, 1, 4, 2] → Pattern Visualization: | Pattern Visualization: → Approach: Iterate from right, track 'a[k]' candidates | Approach: Iterate from right, track 'a[k]' candidates → using monotonic decreasing stack
+**Flow:**
+- 132 PATTERN - Find i < j < k where a[i] < a[k]
+- ↓
+- Example: [3, 1, 4, 2]
+- ↓
+- Pattern Visualization:
+- ↓
+- Approach: Iterate from right, track 'a[k]' candidates
+- ↓
+- using monotonic decreasing stack
 
 ```mermaid
 flowchart TD
@@ -2192,7 +2523,20 @@ public boolean find132pattern(int[] nums) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: ONLINE STOCK SPAN - Days before with price &lt;= today → Prices: [100, 80, 60, 70, 60, 75, 85] | Prices: [100, 80, 60, 70, 60, 75, 85] → where price &lt;= today's price: | where price &lt;= today's price: → Day Price Explanation Span | Day Price Explanation Span → 0 100 Just today 1 | 0 100 Just today 1 → 1 80 Just today (100&gt;80) 1 | 1 80 Just today (100&gt;80) 1 → 2 60 Just today (80&gt;60) 1 | ...+1 more
+**Flow:**
+- ONLINE STOCK SPAN - Days before with price <= today
+- ↓
+- Prices: [100, 80, 60, 70, 60, 75, 85]
+- ↓
+- where price <= today's price:
+- ↓
+- Day Price Explanation Span
+- ↓
+- 0 100 Just today 1
+- ↓
+- 1 80 Just today (100>80) 1
+- ↓
+- 2 60 Just today (80>60) 1
 
 ```mermaid
 flowchart TD
@@ -2264,7 +2608,28 @@ class StockSpanner {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: BALANCED BRACKETS - Extended validation → Given a string containing brackets and other characters | Given a string containing brackets and other characters → determine if the brackets are balanced. | determine if the brackets are balanced. → Invalid: '{[}]', '(()', 'a{b(c]d}e' | Invalid: '{[}]', '(()', 'a{b(c]d}e' → Examples: | Examples: → Input: '{[a+b]*[c-d]}' → Output: 'YES' | Input: '{[a+b]*[c-d]}' → Output: 'YES' → Input: '({[}])' → Output: 'NO' (mismatched) | ...+1 more
+**Flow:**
+- BALANCED BRACKETS - Extended validation
+- ↓
+- Given a string containing brackets and other characters
+- ↓
+- determine if the brackets are balanced.
+- ↓
+- Invalid: '{[}]', '(()', 'a{b(c]d}e'
+- ↓
+- Examples:
+- ↓
+- Input: '{[a+b]*[c-d]}'
+- ↓
+- Output: 'YES'
+- ↓
+- Input: '{[a+b]*[c-d]}'
+- ↓
+- Output: 'YES'
+- ↓
+- Input: '({[}])'
+- ↓
+- Output: 'NO' (mismatched)
 
 ```mermaid
 flowchart TD
@@ -2344,7 +2709,20 @@ public String isBalanced(String s) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: MAXIMUM ELEMENT - Stack with max queries → Support these operations: | Support these operations: → 1 x : Push x onto the stack | 1 x : Push x onto the stack → 2 : Pop the top element | 2 : Pop the top element → 3 : Print the maximum element in the stack | 3 : Print the maximum element in the stack → Example: | Example: → Operations: 1 97, 2, 1 20, 2, 1 26, 1 20, 2, 3, 1 91, 3 | ...+1 more
+**Flow:**
+- MAXIMUM ELEMENT - Stack with max queries
+- ↓
+- Support these operations:
+- ↓
+- 1 x : Push x onto the stack
+- ↓
+- 2 : Pop the top element
+- ↓
+- 3 : Print the maximum element in the stack
+- ↓
+- Example:
+- ↓
+- Operations: 1 97, 2, 1 20, 2, 1 26, 1 20, 2, 3, 1 91, 3
 
 ```mermaid
 flowchart TD
@@ -2422,7 +2800,20 @@ public void processQueries(int[][] queries) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: NEAREST SMALLER ELEMENT → For each element, find the nearest smaller element to i | For each element, find the nearest smaller element to i → left. If none exists, output -1. | left. If none exists, output -1. → Input: [4, 5, 2, 10, 8] | Input: [4, 5, 2, 10, 8] → Index Element Elements to Left Answer | Index Element Elements to Left Answer → 0 4 none -1 | 0 4 none -1 → 2 2 4,5 (none smaller) -1 | ...+1 more
+**Flow:**
+- NEAREST SMALLER ELEMENT
+- ↓
+- For each element, find the nearest smaller element to i
+- ↓
+- left. If none exists, output -1.
+- ↓
+- Input: [4, 5, 2, 10, 8]
+- ↓
+- Index Element Elements to Left Answer
+- ↓
+- 0 4 none -1
+- ↓
+- 2 2 4,5 (none smaller) -1
 
 ```mermaid
 flowchart TD
@@ -2495,7 +2886,20 @@ public int[] nearestSmallerElement(int[] arr) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: PREFIX TO POSTFIX CONVERSION → Convert prefix expression to postfix using stack | Convert prefix expression to postfix using stack → Prefix: *+AB-CD (operator before operands) | Prefix: *+AB-CD (operator before operands) → Postfix: AB+CD-* (operator after operands) | Postfix: AB+CD-* (operator after operands) → Algorithm: Read from RIGHT to LEFT | Algorithm: Read from RIGHT to LEFT → Char Action Stack | Char Action Stack → D push [D] | ...+1 more
+**Flow:**
+- PREFIX TO POSTFIX CONVERSION
+- ↓
+- Convert prefix expression to postfix using stack
+- ↓
+- Prefix: *+AB-CD (operator before operands)
+- ↓
+- Postfix: AB+CD-* (operator after operands)
+- ↓
+- Algorithm: Read from RIGHT to LEFT
+- ↓
+- Char Action Stack
+- ↓
+- D push [D]
 
 ```mermaid
 flowchart TD

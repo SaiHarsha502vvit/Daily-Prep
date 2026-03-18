@@ -88,7 +88,30 @@ HIGH ADDRESSES
   LOW ADDRESSES
 ```
 
-> **Flow**: Local variables of main / Return address (to JVM/OS) /  → [FP+16] Return address → main+42 (8 bytes) / [FP+8] Pre | [FP+16] Return address → main+42 (8 bytes) / [FP+8] Pre → Return address → sum+15 (return point in sum(4)) / Prev | Return address → sum+15 (return point in sum(4)) / Prev → ... same structure ... / Parameter n = 2 | ... same structure ... / Parameter n = 2 → Parameter n = 1 | Parameter n = 1 → Parameter n = 0 / BASE CASE! Returns 0, no more recursi
+**Flow:**
+- Local variables of main / Return address (to JVM/OS) /
+- ↓
+- [FP+16] Return address
+- ↓
+- main+42 (8 bytes) / [FP+8] Pre
+- ↓
+- [FP+16] Return address
+- ↓
+- main+42 (8 bytes) / [FP+8] Pre
+- ↓
+- Return address
+- ↓
+- sum+15 (return point in sum(4)) / Prev
+- ↓
+- Return address
+- ↓
+- sum+15 (return point in sum(4)) / Prev
+- ↓
+- ... same structure ... / Parameter n = 2
+- ↓
+- Parameter n = 1
+- ↓
+- Parameter n = 0 / BASE CASE! Returns 0, no more recursi
 
 ```mermaid
 flowchart TD
@@ -125,7 +148,20 @@ flowchart TD
 14: ireturn       // Return sum
 ```
 
-> **Flow**: 0: iload_1 // Load n onto operand stack → 1: ifgt 6 // If n &gt; 0, jump to line 6 | 1: ifgt 6 // If n &gt; 0, jump to line 6 → 4: iconst_0 // Push 0 | 4: iconst_0 // Push 0 → 5: ireturn // Return 0 (base case) | 5: ireturn // Return 0 (base case) → 6: iload_1 // Load n | 6: iload_1 // Load n → 7: iload_1 // Load n again | 7: iload_1 // Load n again → 8: iconst_1 // Push 1 | ...+1 more
+**Flow:**
+- 0: iload_1 // Load n onto operand stack
+- ↓
+- 1: ifgt 6 // If n > 0, jump to line 6
+- ↓
+- 4: iconst_0 // Push 0
+- ↓
+- 5: ireturn // Return 0 (base case)
+- ↓
+- 6: iload_1 // Load n
+- ↓
+- 7: iload_1 // Load n again
+- ↓
+- 8: iconst_1 // Push 1
 
 ```mermaid
 flowchart TD
@@ -176,7 +212,20 @@ sum:
     ret                          ; Return to caller
 ```
 
-> **Flow**: sum: → push rbp ; Save old frame pointer | push rbp ; Save old frame pointer → mov rbp, rsp ; Set new frame pointer | mov rbp, rsp ; Set new frame pointer → sub rsp, 16 ; Allocate stack space | sub rsp, 16 ; Allocate stack space → mov [rbp-4], edi ; Store parameter n | mov [rbp-4], edi ; Store parameter n → cmp dword [rbp-4], 0 ; Compare n with 0 | cmp dword [rbp-4], 0 ; Compare n with 0 → jle .base_case ; If n &lt;= 0, jump to base case | ...+1 more
+**Flow:**
+- sum:
+- ↓
+- push rbp ; Save old frame pointer
+- ↓
+- mov rbp, rsp ; Set new frame pointer
+- ↓
+- sub rsp, 16 ; Allocate stack space
+- ↓
+- mov [rbp-4], edi ; Store parameter n
+- ↓
+- cmp dword [rbp-4], 0 ; Compare n with 0
+- ↓
+- jle .base_case ; If n <= 0, jump to base case
 
 ```mermaid
 flowchart TD
@@ -257,7 +306,20 @@ Here's what it looks like when the stack is about to overflow:
   Stack Limit:   0x7ffe0000 (bottom/low)
 ```
 
-> **Flow**: Stack Memory: 0x7fff0000 (top/high) → Thread local storage, etc. | Thread local storage, etc. → main() frame | main() frame → sum(10000) frame | sum(10000) frame → sum(9999) frame | sum(9999) frame → (9998 more frames) | (9998 more frames) → sum(1) frame | ...+1 more
+**Flow:**
+- Stack Memory: 0x7fff0000 (top/high)
+- ↓
+- Thread local storage, etc.
+- ↓
+- main() frame
+- ↓
+- sum(10000) frame
+- ↓
+- sum(9999) frame
+- ↓
+- (9998 more frames)
+- ↓
+- sum(1) frame
 
 ```mermaid
 flowchart TD
@@ -400,7 +462,16 @@ sumTail(1, 9):     Frame: n=1, acc=9   (reused!)
 sumTail(0, 10):    return 10
 ```
 
-> **Flow**: sumTail(4, 0): Frame: n=4, acc=0 → sumTail(3, 4): Frame: n=3, acc=4 (reused!) | sumTail(3, 4): Frame: n=3, acc=4 (reused!) → sumTail(2, 7): Frame: n=2, acc=7 (reused!) | sumTail(2, 7): Frame: n=2, acc=7 (reused!) → sumTail(1, 9): Frame: n=1, acc=9 (reused!) | sumTail(1, 9): Frame: n=1, acc=9 (reused!) → sumTail(0, 10): return 10
+**Flow:**
+- sumTail(4, 0): Frame: n=4, acc=0
+- ↓
+- sumTail(3, 4): Frame: n=3, acc=4 (reused!)
+- ↓
+- sumTail(2, 7): Frame: n=2, acc=7 (reused!)
+- ↓
+- sumTail(1, 9): Frame: n=1, acc=9 (reused!)
+- ↓
+- sumTail(0, 10): return 10
 
 ```mermaid
 flowchart TD
@@ -537,7 +608,16 @@ fib(2)   fib(1)
 fib(1)  fib(0)
 ```
 
-> **Flow**: fib(5) → fib(4) fib(3) ← Cache hit! | fib(4) fib(3) ← Cache hit! → fib(3) fib(2) ← Cache hit! | fib(3) fib(2) ← Cache hit! → fib(2) fib(1) | fib(2) fib(1) → fib(1) fib(0)
+**Flow:**
+- fib(5)
+- ↓
+- fib(4) fib(3) ← Cache hit!
+- ↓
+- fib(3) fib(2) ← Cache hit!
+- ↓
+- fib(2) fib(1)
+- ↓
+- fib(1) fib(0)
 
 ```mermaid
 flowchart TD
@@ -568,7 +648,18 @@ STACK (much shorter!):
   Only goes 6 levels deep, not exponentially branching!
 ```
 
-> **Flow**: fib(5) → fib(4) | fib(4) → fib(3) | fib(3) → fib(2) | fib(2) → fib(1) | fib(1) → fib(0)
+**Flow:**
+- fib(5)
+- ↓
+- fib(4)
+- ↓
+- fib(3)
+- ↓
+- fib(2)
+- ↓
+- fib(1)
+- ↓
+- fib(0)
 
 ```mermaid
 flowchart TD

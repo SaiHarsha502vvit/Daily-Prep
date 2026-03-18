@@ -246,7 +246,10 @@ int max = Math.max(a, b);  // Modern JIT uses cmov instruction
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: ArrayList Object: / Header (16 bytes) / Object[] elemen → Structure Memory for 10 ints Memory per element / int[]
+**Flow:**
+- ArrayList Object: / Header (16 bytes) / Object[] elemen
+- ↓
+- Structure Memory for 10 ints Memory per element / int[]
 
 ```mermaid
 flowchart TD
@@ -321,7 +324,14 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Operation Cycles Notes / Integer add/sub 1 Can do 4+ pe → Operation Cycles Notes / L1 cache hit 4 Best case for m | Operation Cycles Notes / L1 cache hit 4 Best case for m → Operation Cycles Notes / Static method call 5-10 Direct | Operation Cycles Notes / Static method call 5-10 Direct → Operation Cycles Notes / Object allocation 10-20 Bump p
+**Flow:**
+- Operation Cycles Notes / Integer add/sub 1 Can do 4+ pe
+- ↓
+- Operation Cycles Notes / L1 cache hit 4 Best case for m
+- ↓
+- Operation Cycles Notes / Static method call 5-10 Direct
+- ↓
+- Operation Cycles Notes / Object allocation 10-20 Bump p
 
 ```mermaid
 flowchart TD
@@ -391,7 +401,20 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHEN BIG-O DOESN'T TELL THE FULL STORY → CASE 1: O(n) can beat O(log n) for small n | CASE 1: O(n) can beat O(log n) for small n → Crossover: Around n = 100-500 elements | Crossover: Around n = 100-500 elements → For n &lt; 100: Linear search often faster! | For n &lt; 100: Linear search often faster! → CASE 2: O(n) can beat O(1) amortized | CASE 2: O(n) can beat O(1) amortized → ArrayList.add(): O(1) amortized, but occasional O(n) re | ArrayList.add(): O(1) amortized, but occasional O(n) re → LinkedList.addFirst(): O(1) always, but cache-unfriendl | ...+1 more
+**Flow:**
+- WHEN BIG-O DOESN'T TELL THE FULL STORY
+- ↓
+- CASE 1: O(n) can beat O(log n) for small n
+- ↓
+- Crossover: Around n = 100-500 elements
+- ↓
+- For n < 100: Linear search often faster!
+- ↓
+- CASE 2: O(n) can beat O(1) amortized
+- ↓
+- ArrayList.add(): O(1) amortized, but occasional O(n) re
+- ↓
+- LinkedList.addFirst(): O(1) always, but cache-unfriendl
 
 ```mermaid
 flowchart TD
@@ -471,7 +494,20 @@ flowchart TD
 └─────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: LEARNING FRAMEWORK → WHY does this exist? | WHY does this exist? → What problem does it solve? | What problem does it solve? → What limitations of other structures does it address? | What limitations of other structures does it address? → HOW does it work internally? | HOW does it work internally? → Memory layout | Memory layout → Operations implementation | ...+1 more
+**Flow:**
+- LEARNING FRAMEWORK
+- ↓
+- WHY does this exist?
+- ↓
+- What problem does it solve?
+- ↓
+- What limitations of other structures does it address?
+- ↓
+- HOW does it work internally?
+- ↓
+- Memory layout
+- ↓
+- Operations implementation
 
 ```mermaid
 flowchart TD
@@ -734,7 +770,30 @@ class SparseArray<T> {
    └── Use: Max sum subarray and variants
 ```
 
-> **Flow**: 1. TWO POINTERS → Start/End pointers moving toward middle | 1. TWO POINTERS → Fast/Slow pointers | 1. TWO POINTERS → Use: Sorted arrays, palindrome, pair sum | 2. SLIDING WINDOW → Fixed or variable window | 2. SLIDING WINDOW → Use: Subarrays, continuous sequences | 3. PREFIX SUM → Precompute cumulative sums | ...+5 more
+**Flow:**
+- 1. TWO POINTERS
+- ↓
+- Start/End pointers moving toward middle
+- ↓
+- 1. TWO POINTERS
+- ↓
+- Fast/Slow pointers
+- ↓
+- 1. TWO POINTERS
+- ↓
+- Use: Sorted arrays, palindrome, pair sum
+- ↓
+- 2. SLIDING WINDOW
+- ↓
+- Fixed or variable window
+- ↓
+- 2. SLIDING WINDOW
+- ↓
+- Use: Subarrays, continuous sequences
+- ↓
+- 3. PREFIX SUM
+- ↓
+- Precompute cumulative sums
 
 ```mermaid
 flowchart TD
@@ -807,7 +866,30 @@ flowchart TD
    └── Order Books: Arrays sorted by price
 ```
 
-> **Flow**: 1. DATABASE SYSTEMS → Buffer Pool: Fixed array of page frames | 1. DATABASE SYSTEMS → Query Results: Dynamic arrays for result sets | 2. OPERATING SYSTEMS → Process Table: Array of PCB pointers | 2. OPERATING SYSTEMS → Page Tables: Arrays mapping virtual to physical | 3. GRAPHICS/GAMING → Pixel Buffers: 2D arrays for frame data | 3. GRAPHICS/GAMING → Vertex Arrays: Mesh geometry storage | ...+6 more
+**Flow:**
+- 1. DATABASE SYSTEMS
+- ↓
+- Buffer Pool: Fixed array of page frames
+- ↓
+- 1. DATABASE SYSTEMS
+- ↓
+- Query Results: Dynamic arrays for result sets
+- ↓
+- 2. OPERATING SYSTEMS
+- ↓
+- Process Table: Array of PCB pointers
+- ↓
+- 2. OPERATING SYSTEMS
+- ↓
+- Page Tables: Arrays mapping virtual to physical
+- ↓
+- 3. GRAPHICS/GAMING
+- ↓
+- Pixel Buffers: 2D arrays for frame data
+- ↓
+- 3. GRAPHICS/GAMING
+- ↓
+- Vertex Arrays: Mesh geometry storage
 
 ```mermaid
 flowchart TD
@@ -884,7 +966,14 @@ Each node knows ONLY where the next node is.
 No formula to calculate position - must traverse.
 ```
 
-> **Flow**: Data: 10 / Next:2048 → Data: 20 / Next:1524 | Data: 20 / Next:1524 → Data: 30 / Next:3000 | Data: 30 / Next:3000 → Data: 40 / Next:null
+**Flow:**
+- Data: 10 / Next:2048
+- ↓
+- Data: 20 / Next:1524
+- ↓
+- Data: 30 / Next:3000
+- ↓
+- Data: 40 / Next:null
 
 ```mermaid
 flowchart TD
@@ -1147,7 +1236,30 @@ class UnrolledNode {
    └── Combine lists
 ```
 
-> **Flow**: 1. FAST-SLOW POINTERS (Floyd's Algorithm) → Cycle detection | 1. FAST-SLOW POINTERS (Floyd's Algorithm) → Find middle element | 1. FAST-SLOW POINTERS (Floyd's Algorithm) → Find nth from end | 2. DUMMY HEAD → Simplify edge cases | 2. DUMMY HEAD → Uniform handling of operations | 3. REVERSAL → Reverse entire/part of list | ...+5 more
+**Flow:**
+- 1. FAST-SLOW POINTERS (Floyd's Algorithm)
+- ↓
+- Cycle detection
+- ↓
+- 1. FAST-SLOW POINTERS (Floyd's Algorithm)
+- ↓
+- Find middle element
+- ↓
+- 1. FAST-SLOW POINTERS (Floyd's Algorithm)
+- ↓
+- Find nth from end
+- ↓
+- 2. DUMMY HEAD
+- ↓
+- Simplify edge cases
+- ↓
+- 2. DUMMY HEAD
+- ↓
+- Uniform handling of operations
+- ↓
+- 3. REVERSAL
+- ↓
+- Reverse entire/part of list
 
 ```mermaid
 flowchart TD
@@ -1222,7 +1334,30 @@ flowchart TD
    └── Version control (Git commits)
 ```
 
-> **Flow**: 1. OPERATING SYSTEMS → Process scheduling queues | 1. OPERATING SYSTEMS → Memory allocation (free list) | 1. OPERATING SYSTEMS → File system (FAT - File Allocation Table) | 2. BROWSERS → Back/Forward navigation (Doubly LL) | 2. BROWSERS → Tab management | 3. MUSIC PLAYERS → Playlist (next/previous) | ...+8 more
+**Flow:**
+- 1. OPERATING SYSTEMS
+- ↓
+- Process scheduling queues
+- ↓
+- 1. OPERATING SYSTEMS
+- ↓
+- Memory allocation (free list)
+- ↓
+- 1. OPERATING SYSTEMS
+- ↓
+- File system (FAT - File Allocation Table)
+- ↓
+- 2. BROWSERS
+- ↓
+- Back/Forward navigation (Doubly LL)
+- ↓
+- 2. BROWSERS
+- ↓
+- Tab management
+- ↓
+- 3. MUSIC PLAYERS
+- ↓
+- Playlist (next/previous)
 
 ```mermaid
 flowchart TD
@@ -1300,7 +1435,20 @@ PEEK: View top element without removing
 All operations: O(1)
 ```
 
-> **Flow**: Problem: Need to access data in reverse order of arriva → (Last In, First Out - LIFO) | (Last In, First Out - LIFO) → Real-World Analogy: | Real-World Analogy: → Stack of plates (take from top) | Stack of plates (take from top) → Undo in text editor (last action first) | Undo in text editor (last action first) → Browser back button (last page first) | Browser back button (last page first) → Function calls (last called, first returned) | ...+1 more
+**Flow:**
+- Problem: Need to access data in reverse order of arriva
+- ↓
+- (Last In, First Out - LIFO)
+- ↓
+- Real-World Analogy:
+- ↓
+- Stack of plates (take from top)
+- ↓
+- Undo in text editor (last action first)
+- ↓
+- Browser back button (last page first)
+- ↓
+- Function calls (last called, first returned)
 
 ```mermaid
 flowchart TD
@@ -1589,7 +1737,30 @@ class StackWithMiddle {
    └── Local variable storage
 ```
 
-> **Flow**: 1. COMPILERS & INTERPRETERS → Syntax parsing | 1. COMPILERS & INTERPRETERS → Expression evaluation | 1. COMPILERS & INTERPRETERS → Symbol table management | 2. RUNTIME SYSTEMS → Call stack (function calls) | 2. RUNTIME SYSTEMS → Stack frame management | 2. RUNTIME SYSTEMS → Exception handling | ...+12 more
+**Flow:**
+- 1. COMPILERS & INTERPRETERS
+- ↓
+- Syntax parsing
+- ↓
+- 1. COMPILERS & INTERPRETERS
+- ↓
+- Expression evaluation
+- ↓
+- 1. COMPILERS & INTERPRETERS
+- ↓
+- Symbol table management
+- ↓
+- 2. RUNTIME SYSTEMS
+- ↓
+- Call stack (function calls)
+- ↓
+- 2. RUNTIME SYSTEMS
+- ↓
+- Stack frame management
+- ↓
+- 2. RUNTIME SYSTEMS
+- ↓
+- Exception handling
 
 ```mermaid
 flowchart TD
@@ -1658,7 +1829,22 @@ Queues ensure FAIRNESS - first request gets served first.
 Essential for ordering and buffering in systems.
 ```
 
-> **Flow**: Real-World Analogy: → Line at a ticket counter | Real-World Analogy: → Print job queue | Real-World Analogy: → Message queue | Real-World Analogy: → Task scheduling
+**Flow:**
+- Real-World Analogy:
+- ↓
+- Line at a ticket counter
+- ↓
+- Real-World Analogy:
+- ↓
+- Print job queue
+- ↓
+- Real-World Analogy:
+- ↓
+- Message queue
+- ↓
+- Real-World Analogy:
+- ↓
+- Task scheduling
 
 ```mermaid
 flowchart TD
@@ -1941,7 +2127,30 @@ Use Case: Sliding Window Maximum in O(n) instead of O(n*k)
    └── Interrupt handling
 ```
 
-> **Flow**: 1. MESSAGE QUEUES (Kafka, RabbitMQ, SQS) → Decoupling services | 1. MESSAGE QUEUES (Kafka, RabbitMQ, SQS) → Load leveling | 1. MESSAGE QUEUES (Kafka, RabbitMQ, SQS) → Event streaming | 1. MESSAGE QUEUES (Kafka, RabbitMQ, SQS) → Async processing | 2. OPERATING SYSTEMS → Process scheduling (ready queue) | 2. OPERATING SYSTEMS → I/O request queues | ...+13 more
+**Flow:**
+- 1. MESSAGE QUEUES (Kafka, RabbitMQ, SQS)
+- ↓
+- Decoupling services
+- ↓
+- 1. MESSAGE QUEUES (Kafka, RabbitMQ, SQS)
+- ↓
+- Load leveling
+- ↓
+- 1. MESSAGE QUEUES (Kafka, RabbitMQ, SQS)
+- ↓
+- Event streaming
+- ↓
+- 1. MESSAGE QUEUES (Kafka, RabbitMQ, SQS)
+- ↓
+- Async processing
+- ↓
+- 2. OPERATING SYSTEMS
+- ↓
+- Process scheduling (ready queue)
+- ↓
+- 2. OPERATING SYSTEMS
+- ↓
+- I/O request queues
 
 ```mermaid
 flowchart TD
@@ -2034,7 +2243,14 @@ Hash Function converts key to index:
 └────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Problem: Fast lookup by key / Array: O(n) search by val → Hash h('apple') = 97 × 31^4 + ... = 93029210 / Function | Hash h('apple') = 97 × 31^4 + ... = 93029210 / Function → 93029210 % 16 = 10 (Index in array of size 16) | 93029210 % 16 = 10 (Index in array of size 16) → Array[10] ← Store ('apple', value)
+**Flow:**
+- Problem: Fast lookup by key / Array: O(n) search by val
+- ↓
+- Hash h('apple') = 97 × 31^4 + ... = 93029210 / Function
+- ↓
+- 93029210 % 16 = 10 (Index in array of size 16)
+- ↓
+- Array[10] ← Store ('apple', value)
 
 ```mermaid
 flowchart TD

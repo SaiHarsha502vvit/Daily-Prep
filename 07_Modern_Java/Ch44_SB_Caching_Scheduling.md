@@ -51,7 +51,14 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHY: Why These 'Essential Missing' Topics? / • Producti → HOW: How to Implement Each Feature? / • @Cacheable: Ann | HOW: How to Implement Each Feature? / • @Cacheable: Ann → WHEN: When to Use Each Feature? / • Caching: Expensive  | WHEN: When to Use Each Feature? / • Caching: Expensive  → WHICH: Which Topics to Prioritize? / ESSENTIAL: Caching
+**Flow:**
+- WHY: Why These 'Essential Missing' Topics? / • Producti
+- ↓
+- HOW: How to Implement Each Feature? / • @Cacheable: Ann
+- ↓
+- WHEN: When to Use Each Feature? / • Caching: Expensive
+- ↓
+- WHICH: Which Topics to Prioritize? / ESSENTIAL: Caching
 
 ```mermaid
 flowchart TD
@@ -89,7 +96,20 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHAT THIS PART COVERS → 1. Caching (@Cacheable, @CacheEvict, Redis) | 1. Caching (@Cacheable, @CacheEvict, Redis) → 2. Async Processing (@Async, @EnableAsync) | 2. Async Processing (@Async, @EnableAsync) → 3. Scheduling (@Scheduled, @EnableScheduling) | 3. Scheduling (@Scheduled, @EnableScheduling) → 4. Spring Boot Actuator (Health, Metrics, Info) | 4. Spring Boot Actuator (Health, Metrics, Info) → 5. API Documentation (Swagger/OpenAPI) | 5. API Documentation (Swagger/OpenAPI) → 6. File Upload/Download (Multipart) | ...+1 more
+**Flow:**
+- WHAT THIS PART COVERS
+- ↓
+- 1. Caching (@Cacheable, @CacheEvict, Redis)
+- ↓
+- 2. Async Processing (@Async, @EnableAsync)
+- ↓
+- 3. Scheduling (@Scheduled, @EnableScheduling)
+- ↓
+- 4. Spring Boot Actuator (Health, Metrics, Info)
+- ↓
+- 5. API Documentation (Swagger/OpenAPI)
+- ↓
+- 6. File Upload/Download (Multipart)
 
 ```mermaid
 flowchart TD
@@ -426,7 +446,38 @@ public class RedisCacheConfig {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: ASYNC PROCESSING FLOW → SYNCHRONOUS (Default): | SYNCHRONOUS (Default): → Request → processA() → processB() → sendEmail() → Respo | Request → processA() → processB() → sendEmail() → Respo → Total time: 100ms + 50ms + 2000ms = 2150ms | Total time: 100ms + 50ms + 2000ms = 2150ms → ASYNCHRONOUS (With @Async): | ASYNCHRONOUS (With @Async): → Total time: 100ms + 50ms = 150ms (email sends in parall | Total time: 100ms + 50ms = 150ms (email sends in parall → USE CASES: | ...+1 more
+**Flow:**
+- ASYNC PROCESSING FLOW
+- ↓
+- SYNCHRONOUS (Default):
+- ↓
+- Request
+- ↓
+- processA()
+- ↓
+- processB()
+- ↓
+- sendEmail()
+- ↓
+- Respo
+- ↓
+- Request
+- ↓
+- processA()
+- ↓
+- processB()
+- ↓
+- sendEmail()
+- ↓
+- Respo
+- ↓
+- Total time: 100ms + 50ms + 2000ms = 2150ms
+- ↓
+- ASYNCHRONOUS (With @Async):
+- ↓
+- Total time: 100ms + 50ms = 150ms (email sends in parall
+- ↓
+- USE CASES:
 
 ```mermaid
 flowchart TD
@@ -816,7 +867,20 @@ public class ScheduledTasks {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: ACTUATOR - PRODUCTION MONITORING → WHAT ACTUATOR PROVIDES: | WHAT ACTUATOR PROVIDES: → • /actuator/health - Is app healthy? | • /actuator/health - Is app healthy? → • /actuator/info - App version, git info | • /actuator/info - App version, git info → • /actuator/metrics - CPU, memory, requests | • /actuator/metrics - CPU, memory, requests → • /actuator/env - Environment properties | • /actuator/env - Environment properties → • /actuator/loggers - View/change log levels | ...+1 more
+**Flow:**
+- ACTUATOR - PRODUCTION MONITORING
+- ↓
+- WHAT ACTUATOR PROVIDES:
+- ↓
+- • /actuator/health - Is app healthy?
+- ↓
+- • /actuator/info - App version, git info
+- ↓
+- • /actuator/metrics - CPU, memory, requests
+- ↓
+- • /actuator/env - Environment properties
+- ↓
+- • /actuator/loggers - View/change log levels
 
 ```mermaid
 flowchart TD

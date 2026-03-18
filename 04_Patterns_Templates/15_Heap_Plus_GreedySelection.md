@@ -41,7 +41,10 @@ IF the problem says:
 THEN → Heap (Priority Queue) + Greedy
 ```
 
-> **Flow**: THEN → Heap (Priority Queue) + Greedy
+**Flow:**
+- THEN
+- ↓
+- Heap (Priority Queue) + Greedy
 
 ```mermaid
 flowchart LR
@@ -62,7 +65,10 @@ Use for: K largest              Use for: K smallest
  gets popped)                    gets popped)
 ```
 
-> **Flow**: Top element: smallest → Top element: largest
+**Flow:**
+- Top element: smallest
+- ↓
+- Top element: largest
 
 ```mermaid
 flowchart LR
@@ -155,7 +161,22 @@ Time: O(n log k) | Space: O(k)
 Why not sort? Sorting is O(n log n). Heap is O(n log k) — better when k << n.
 ```
 
-> **Flow**: Process 1: 1 &lt; heap.peek()=2 → skip (too small) | Process 5: 5 &gt; heap.peek()=2 → poll 2, add 5 | Process 6: 6 &gt; heap.peek()=3 → poll 3, add 6 | Process 4: 4 &lt; heap.peek()=5 → skip
+**Flow:**
+- Process 1: 1 < heap.peek()=2
+- ↓
+- skip (too small)
+- ↓
+- Process 5: 5 > heap.peek()=2
+- ↓
+- poll 2, add 5
+- ↓
+- Process 6: 6 > heap.peek()=3
+- ↓
+- poll 3, add 6
+- ↓
+- Process 4: 4 < heap.peek()=5
+- ↓
+- skip
 
 ```mermaid
 flowchart LR
@@ -210,7 +231,30 @@ Step-by-step:
 Time: addNum O(log n), findMedian O(1) | Space: O(n)
 ```
 
-> **Flow**: Stream: addNum(1), addNum(2), findMedian() → 1.5, addNum(3), findMedian() | Sizes: 1, 0 → OK (left can be 1 bigger) | Sizes: 1, 1 → OK | findMedian(): Both same size → (maxHeap.peek() + minHeap.peek()) / 2 | 3 &gt; minHeap.peek(2) → move 3 to minHeap. | maxHeap=[1], minHeap=[2,3]. Sizes: 1, 2 → rebalance! | ...+2 more
+**Flow:**
+- Stream: addNum(1), addNum(2), findMedian()
+- ↓
+- 1.5, addNum(3), findMedian()
+- ↓
+- Sizes: 1, 0
+- ↓
+- OK (left can be 1 bigger)
+- ↓
+- Sizes: 1, 1
+- ↓
+- OK
+- ↓
+- findMedian(): Both same size
+- ↓
+- (maxHeap.peek() + minHeap.peek()) / 2
+- ↓
+- 3 > minHeap.peek(2)
+- ↓
+- move 3 to minHeap.
+- ↓
+- maxHeap=[1], minHeap=[2,3]. Sizes: 1, 2
+- ↓
+- rebalance!
 
 ```mermaid
 flowchart TD
@@ -267,7 +311,26 @@ COMMON MISTAKES:
    Deque = O(n) total. Heap = O(n log n). Big difference!
 ```
 
-> **Flow**: EDGE CASES: → Edge Case Handling | Edge Case Handling → k = 1 Heap of size 1 = max element | k = 1 Heap of size 1 = max element → k = n Heap of size n → just min of all | k = n Heap of size n → just min of all → All same values [3,3,3,3] Works correctly, peek always | All same values [3,3,3,3] Works correctly, peek always → Negative numbers PQ handles naturally | Negative numbers PQ handles naturally → Single element stream Median = that element | ...+1 more
+**Flow:**
+- EDGE CASES:
+- ↓
+- Edge Case Handling
+- ↓
+- k = 1 Heap of size 1 = max element
+- ↓
+- k = n Heap of size n
+- ↓
+- just min of all
+- ↓
+- k = n Heap of size n
+- ↓
+- just min of all
+- ↓
+- All same values [3,3,3,3] Works correctly, peek always
+- ↓
+- Negative numbers PQ handles naturally
+- ↓
+- Single element stream Median = that element
 
 ```mermaid
 flowchart TD

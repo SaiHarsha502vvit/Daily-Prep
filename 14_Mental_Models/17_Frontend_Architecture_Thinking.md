@@ -65,7 +65,14 @@ DECISION: Ask "Where does this data COME FROM?"
 → Should be in the URL? Use router state.
 ```
 
-> **Flow**: SERVER STATE / (lives on the server, Frontend has a COP → GLOBAL CLIENT STATE / (shared across many components) / | GLOBAL CLIENT STATE / (shared across many components) / → LOCAL COMPONENT STATE / (belongs to ONE component or a  | LOCAL COMPONENT STATE / (belongs to ONE component or a  → URL STATE / (encoded in the URL — shareable, bookmarkab
+**Flow:**
+- SERVER STATE / (lives on the server, Frontend has a COP
+- ↓
+- GLOBAL CLIENT STATE / (shared across many components) /
+- ↓
+- LOCAL COMPONENT STATE / (belongs to ONE component or a
+- ↓
+- URL STATE / (encoded in the URL — shareable, bookmarkab
 
 ```mermaid
 flowchart TD
@@ -118,7 +125,10 @@ DON'T optimize until you MEASURE a problem.
 Premature optimization = the root of all evil (Knuth)
 ```
 
-> **Flow**: Header → Content / List / Item 1 / Item 2 / Item 3
+**Flow:**
+- Header
+- ↓
+- Content / List / Item 1 / Item 2 / Item 3
 
 ```mermaid
 flowchart TD
@@ -234,7 +244,12 @@ SKELETON SCREENS (perceived performance):
 └────────────────────────────────┘
 ```
 
-> **Flow**: IDLE / (initial) → LOADING / (pending) | LOADING / (pending) → SUCCESS / (data!)
+**Flow:**
+- IDLE / (initial)
+- ↓
+- LOADING / (pending)
+- ↓
+- SUCCESS / (data!)
 
 ```mermaid
 flowchart TD

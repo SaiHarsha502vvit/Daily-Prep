@@ -46,7 +46,10 @@
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: THE REALITY OF SOFTWARE INDUSTRY / 70% of enterprise so → WHAT YOU'LL LEARN / 1. How to convert BUSINESS RULES in
+**Flow:**
+- THE REALITY OF SOFTWARE INDUSTRY / 70% of enterprise so
+- ↓
+- WHAT YOU'LL LEARN / 1. How to convert BUSINESS RULES in
 
 ```mermaid
 flowchart TD
@@ -252,7 +255,12 @@ NOUNS in the scenario → CLASSES
 └─────────────────┘
 ```
 
-> **Flow**: Employee / - id / - name / - email / - designation / -  → Department / - id / - name / - head_id / - budget | Department / - id / - name / - head_id / - budget → Designation / - id / - title / - level / - min_salary /
+**Flow:**
+- Employee / - id / - name / - email / - designation / -
+- ↓
+- Department / - id / - name / - head_id / - budget
+- ↓
+- Designation / - id / - title / - level / - min_salary /
 
 ```mermaid
 flowchart TD
@@ -685,7 +693,20 @@ SCENARIO (Amazon):
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: THE TRACKING ID / ORDER NUMBER PROBLEM → SCENARIO (Amazon): | SCENARIO (Amazon): → You order a phone on Amazon | You order a phone on Amazon → Order ID: 402-1234567-8901234 | Order ID: 402-1234567-8901234 → Tracking ID: AMZN1234567890 | Tracking ID: AMZN1234567890 → QUESTIONS: | QUESTIONS: → 1. How do they generate UNIQUE IDs? | ...+1 more
+**Flow:**
+- THE TRACKING ID / ORDER NUMBER PROBLEM
+- ↓
+- SCENARIO (Amazon):
+- ↓
+- You order a phone on Amazon
+- ↓
+- Order ID: 402-1234567-8901234
+- ↓
+- Tracking ID: AMZN1234567890
+- ↓
+- QUESTIONS:
+- ↓
+- 1. How do they generate UNIQUE IDs?
 
 ```mermaid
 flowchart TD
@@ -1211,7 +1232,10 @@ Explanation:
 - Both sides equal → Books are balanced!
 ```
 
-> **Flow**: For every DEBIT, there must be an equal CREDIT / Assets → JOURNAL ENTRY: / Account Type Debit (₹) Credit (₹) / Eq
+**Flow:**
+- For every DEBIT, there must be an equal CREDIT / Assets
+- ↓
+- JOURNAL ENTRY: / Account Type Debit (₹) Credit (₹) / Eq
 
 ```mermaid
 flowchart TD

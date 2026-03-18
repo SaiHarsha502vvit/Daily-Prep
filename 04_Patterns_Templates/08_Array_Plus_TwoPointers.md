@@ -44,7 +44,10 @@ IF input is:
 THEN → Two Pointers on Array
 ```
 
-> **Flow**: THEN → Two Pointers on Array
+**Flow:**
+- THEN
+- ↓
+- Two Pointers on Array
 
 ```mermaid
 flowchart LR
@@ -67,7 +70,34 @@ Problem involves array?
     └── OPPOSITE DIRECTION pointers
 ```
 
-> **Flow**: Problem involves array? → Need pair with target sum? | Problem involves array? → Array sorted? → OPPOSITE DIRECTION pointers | Problem involves array? → Array unsorted? → HashMap (not two pointers) | Problem involves array? → Remove/move elements in-place? | Problem involves array? → SAME DIRECTION (reader-writer) pointers | Problem involves array? → Partition into groups (0s, 1s, 2s)? | ...+3 more
+**Flow:**
+- Problem involves array?
+- ↓
+- Need pair with target sum?
+- ↓
+- Problem involves array?
+- ↓
+- Array sorted?
+- ↓
+- OPPOSITE DIRECTION pointers
+- ↓
+- Problem involves array?
+- ↓
+- Array unsorted?
+- ↓
+- HashMap (not two pointers)
+- ↓
+- Problem involves array?
+- ↓
+- Remove/move elements in-place?
+- ↓
+- Problem involves array?
+- ↓
+- SAME DIRECTION (reader-writer) pointers
+- ↓
+- Problem involves array?
+- ↓
+- Partition into groups (0s, 1s, 2s)?
 
 ```mermaid
 flowchart TD
@@ -168,7 +198,24 @@ WHY it works: Each step eliminates an entire row or column
 of the n×n search matrix → O(n) instead of O(n²)
 ```
 
-> **Flow**: Step 1: L=0, R=6 → 1+15=16 &gt; 14 | 1+15=16 &gt; 14 → R-- | Step 2: L=0, R=5 → 1+10=11 &lt; 14 | 1+10=11 &lt; 14 → L++ | Step 3: L=1, R=5 → 2+10=12 &lt; 14 | 2+10=12 &lt; 14 → L++ | ...+2 more
+**Flow:**
+- Step 1: L=0, R=6
+- ↓
+- 1+15=16 > 14
+- ↓
+- R--
+- ↓
+- Step 2: L=0, R=5
+- ↓
+- 1+10=11 < 14
+- ↓
+- L++
+- ↓
+- Step 3: L=1, R=5
+- ↓
+- 2+10=12 < 14
+- ↓
+- L++
 
 ```mermaid
 flowchart TD
@@ -232,7 +279,26 @@ DUPLICATE HANDLING (critical!):
 Time: O(n²) | Space: O(1) (excluding output)
 ```
 
-> **Flow**: Step 0: SORT → [-4, -1, -1, 0, 1, 2] | L=1, R=5 → -1+2=1 &lt; 4 | -1+2=1 &lt; 4 → L++ | L=2, R=5 → -1+2=1 &lt; 4 | -1+2=1 &lt; 4 → L++ | L=3, R=5 → 0+2=2 &lt; 4 | ...+10 more
+**Flow:**
+- Step 0: SORT
+- ↓
+- [-4, -1, -1, 0, 1, 2]
+- ↓
+- L=1, R=5
+- ↓
+- -1+2=1 < 4
+- ↓
+- L++
+- ↓
+- L=2, R=5
+- ↓
+- -1+2=1 < 4
+- ↓
+- L++
+- ↓
+- L=3, R=5
+- ↓
+- 0+2=2 < 4
 
 ```mermaid
 flowchart TD
@@ -306,7 +372,30 @@ is correctly computed without needing the full array.
 Time: O(n) | Space: O(1) — better than prefix array O(n) space
 ```
 
-> **Flow**: h[L]=0 ≤ h[R]=1 → maxL=max(0,0)=0, water+=0-0=0, L++ | h[L]=1 ≤ h[R]=1 → maxL=max(0,1)=1, water+=1-1=0, L++ | h[L]=0 ≤ h[R]=1 → maxL=1, water+=1-0=1, L++ 💧+1 | h[L]=2 &gt; h[R]=1 → maxR=max(0,1)=1, water+=1-1=0, R-- | h[L]=2 &gt; h[R]=2 → maxR=max(1,2)=2, water+=2-2=0, R-- | h[L]=2 &gt; h[R]=1 → maxR=2, water+=2-1=1, R-- 💧+1 | ...+1 more
+**Flow:**
+- h[L]=0 ≤ h[R]=1
+- ↓
+- maxL=max(0,0)=0, water+=0-0=0, L++
+- ↓
+- h[L]=1 ≤ h[R]=1
+- ↓
+- maxL=max(0,1)=1, water+=1-1=0, L++
+- ↓
+- h[L]=0 ≤ h[R]=1
+- ↓
+- maxL=1, water+=1-0=1, L++ 💧+1
+- ↓
+- h[L]=2 > h[R]=1
+- ↓
+- maxR=max(0,1)=1, water+=1-1=0, R--
+- ↓
+- h[L]=2 > h[R]=2
+- ↓
+- maxR=max(1,2)=2, water+=2-2=0, R--
+- ↓
+- h[L]=2 > h[R]=1
+- ↓
+- maxR=2, water+=2-1=1, R-- 💧+1
 
 ```mermaid
 flowchart TD
@@ -349,7 +438,22 @@ flowchart TD
 └────────────────────────┴───────────────────────────────────────────┘
 ```
 
-> **Flow**: Edge Case What Happens → Empty array [] Return immediately, no pointers to set | Empty array [] Return immediately, no pointers to set → Single element [5] No pair exists, return -1 / false | Single element [5] No pair exists, return -1 / false → Two elements [1,5] Only one pair to check | Two elements [1,5] Only one pair to check → All same values [3,3,3] All sums equal, handle duplicat | All same values [3,3,3] All sums equal, handle duplicat → Already sorted Two pointer works perfectly | Already sorted Two pointer works perfectly → Target impossible L crosses R without finding → return | ...+1 more
+**Flow:**
+- Edge Case What Happens
+- ↓
+- Empty array [] Return immediately, no pointers to set
+- ↓
+- Single element [5] No pair exists, return -1 / false
+- ↓
+- Two elements [1,5] Only one pair to check
+- ↓
+- All same values [3,3,3] All sums equal, handle duplicat
+- ↓
+- Already sorted Two pointer works perfectly
+- ↓
+- Target impossible L crosses R without finding
+- ↓
+- return
 
 ```mermaid
 flowchart TD

@@ -42,7 +42,20 @@
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: COMPLETE PROJECT LIFECYCLE → 1. CLIENT DISCOVERY 2. REQUIREMENTS | 1. CLIENT DISCOVERY 2. REQUIREMENTS → First meeting Feature list | First meeting Feature list → Understanding need User stories | Understanding need User stories → Budget/Timeline Acceptance criteria | Budget/Timeline Acceptance criteria → 3. DESIGN PHASE 4. ARCHITECTURE | 3. DESIGN PHASE 4. ARCHITECTURE → UI/UX Design System design | ...+1 more
+**Flow:**
+- COMPLETE PROJECT LIFECYCLE
+- ↓
+- 1. CLIENT DISCOVERY 2. REQUIREMENTS
+- ↓
+- First meeting Feature list
+- ↓
+- Understanding need User stories
+- ↓
+- Budget/Timeline Acceptance criteria
+- ↓
+- 3. DESIGN PHASE 4. ARCHITECTURE
+- ↓
+- UI/UX Design System design
 
 ```mermaid
 flowchart TD
@@ -78,7 +91,26 @@ BEFORE THE MEETING:
 └── Set up note-taking system
 ```
 
-> **Flow**: BEFORE THE MEETING: → Research the client's business | BEFORE THE MEETING: → Understand their industry | BEFORE THE MEETING: → Look at competitors | BEFORE THE MEETING: → Prepare question list | BEFORE THE MEETING: → Set up note-taking system
+**Flow:**
+- BEFORE THE MEETING:
+- ↓
+- Research the client's business
+- ↓
+- BEFORE THE MEETING:
+- ↓
+- Understand their industry
+- ↓
+- BEFORE THE MEETING:
+- ↓
+- Look at competitors
+- ↓
+- BEFORE THE MEETING:
+- ↓
+- Prepare question list
+- ↓
+- BEFORE THE MEETING:
+- ↓
+- Set up note-taking system
 
 ```mermaid
 flowchart TD
@@ -253,7 +285,22 @@ ACCEPTANCE CRITERIA:
 - Then [expected result]
 ```
 
-> **Flow**: 'Users should login' → Auth system (OAuth/JWT/Session) | 'Show dashboard' → Real-time or cached data? | 'Process payments' → Payment gateway integration | 'Send notifications' → Email/SMS/Push/In-app?
+**Flow:**
+- 'Users should login'
+- ↓
+- Auth system (OAuth/JWT/Session)
+- ↓
+- 'Show dashboard'
+- ↓
+- Real-time or cached data?
+- ↓
+- 'Process payments'
+- ↓
+- Payment gateway integration
+- ↓
+- 'Send notifications'
+- ↓
+- Email/SMS/Push/In-app?
 
 ```mermaid
 flowchart LR
@@ -352,7 +399,20 @@ Date: [Date]
    - Technology: [Specified stack]
 ```
 
-> **Flow**: USER STORY: Account Balance View → AS A bank customer | AS A bank customer → I WANT TO see my account balance | I WANT TO see my account balance → SO THAT I can track my finances | SO THAT I can track my finances → ACCEPTANCE CRITERIA: | ACCEPTANCE CRITERIA: → - Given I am logged in | - Given I am logged in → - When I open the dashboard | ...+1 more
+**Flow:**
+- USER STORY: Account Balance View
+- ↓
+- AS A bank customer
+- ↓
+- I WANT TO see my account balance
+- ↓
+- SO THAT I can track my finances
+- ↓
+- ACCEPTANCE CRITERIA:
+- ↓
+- - Given I am logged in
+- ↓
+- - When I open the dashboard
 
 ```mermaid
 flowchart TD
@@ -408,7 +468,20 @@ KEY INSIGHT: Even a command-line tool has UX!
 - Good documentation
 ```
 
-> **Flow**: UX (User Experience) UI (User Interface) → How it WORKS How it LOOKS | How it WORKS How it LOOKS → User journey Colors, fonts | User journey Colors, fonts → Information architecture Buttons, icons | Information architecture Buttons, icons → Interaction design Visual hierarchy | Interaction design Visual hierarchy → Usability Aesthetics | Usability Aesthetics → APPLIES TO: APPLIES TO: | ...+1 more
+**Flow:**
+- UX (User Experience) UI (User Interface)
+- ↓
+- How it WORKS How it LOOKS
+- ↓
+- User journey Colors, fonts
+- ↓
+- Information architecture Buttons, icons
+- ↓
+- Interaction design Visual hierarchy
+- ↓
+- Usability Aesthetics
+- ↓
+- APPLIES TO: APPLIES TO:
 
 ```mermaid
 flowchart TD
@@ -681,7 +754,30 @@ ENTITIES FOR A FINANCE APPLICATION:
    - Security and compliance tracking
 ```
 
-> **Flow**: 1. IDENTIFY ENTITIES → What 'things' exist in the system? | 2. DEFINE ATTRIBUTES → What information about each thing? | 3. ESTABLISH RELATIONSHIPS → How do things relate to each other? | 4. NORMALIZE → Reduce redundancy, ensure integrity | 5. DENORMALIZE (if needed) → Optimize for read performance | 6. INDEX → Speed up frequent queries | ...+1 more
+**Flow:**
+- 1. IDENTIFY ENTITIES
+- ↓
+- What 'things' exist in the system?
+- ↓
+- 2. DEFINE ATTRIBUTES
+- ↓
+- What information about each thing?
+- ↓
+- 3. ESTABLISH RELATIONSHIPS
+- ↓
+- How do things relate to each other?
+- ↓
+- 4. NORMALIZE
+- ↓
+- Reduce redundancy, ensure integrity
+- ↓
+- 5. DENORMALIZE (if needed)
+- ↓
+- Optimize for read performance
+- ↓
+- 6. INDEX
+- ↓
+- Speed up frequent queries
 
 ```mermaid
 flowchart TD

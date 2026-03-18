@@ -31,7 +31,20 @@
 │  ──────────────────────────────────────                                         │
 ```
 
-> **Flow**: STRING ALGORITHMS HIERARCHY → PATTERN MATCHING ALGORITHMS: | PATTERN MATCHING ALGORITHMS: → Algorithm Time Space Best For | Algorithm Time Space Best For → Naive O(nm) O(1) Short patterns, simple cases | Naive O(nm) O(1) Short patterns, simple cases → KMP O(n+m) O(m) Single pattern, streaming | KMP O(n+m) O(m) Single pattern, streaming → Rabin-Karp O(n+m)† O(1) Multiple patterns same length | Rabin-Karp O(n+m)† O(1) Multiple patterns same length → Z-Algorithm O(n+m) O(n) All occurrences, string analysi | ...+1 more
+**Flow:**
+- STRING ALGORITHMS HIERARCHY
+- ↓
+- PATTERN MATCHING ALGORITHMS:
+- ↓
+- Algorithm Time Space Best For
+- ↓
+- Naive O(nm) O(1) Short patterns, simple cases
+- ↓
+- KMP O(n+m) O(m) Single pattern, streaming
+- ↓
+- Rabin-Karp O(n+m)† O(1) Multiple patterns same length
+- ↓
+- Z-Algorithm O(n+m) O(n) All occurrences, string analysi
 
 ```mermaid
 flowchart TD
@@ -188,7 +201,18 @@ class AhoCorasick {
 │ ──────────────────────────────────────────                                      │
 ```
 
-> **Flow**: RANDOMIZED ALGORITHMS - POWER OF RANDOMNESS → WHY RANDOMIZATION? | WHY RANDOMIZATION? → • Simpler algorithms with good expected performance | • Simpler algorithms with good expected performance → • Avoid adversarial worst cases | • Avoid adversarial worst cases → • Handle uncertain or dynamic data | • Handle uncertain or dynamic data → QUICKSELECT (Find k-th smallest element):
+**Flow:**
+- RANDOMIZED ALGORITHMS - POWER OF RANDOMNESS
+- ↓
+- WHY RANDOMIZATION?
+- ↓
+- • Simpler algorithms with good expected performance
+- ↓
+- • Avoid adversarial worst cases
+- ↓
+- • Handle uncertain or dynamic data
+- ↓
+- QUICKSELECT (Find k-th smallest element):
 
 ```mermaid
 flowchart TD
@@ -345,7 +369,10 @@ int[] reservoirSample(Iterator<Integer> stream, int k) {
 │ ─────────────────────────────────                                               │
 ```
 
-> **Flow**: APPROXIMATION ALGORITHMS FOR NP-HARD PROBLEMS → VERTEX COVER - 2-APPROXIMATION:
+**Flow:**
+- APPROXIMATION ALGORITHMS FOR NP-HARD PROBLEMS
+- ↓
+- VERTEX COVER - 2-APPROXIMATION:
 
 ```mermaid
 flowchart TD
@@ -493,7 +520,10 @@ List<Integer> tspApprox(int[][] dist, int n) {
 │ ──────────────────────────────────────────────────                              │
 ```
 
-> **Flow**: PRODUCTION-GRADE DATA STRUCTURES → COUNT-MIN SKETCH (Approximate frequency counting):
+**Flow:**
+- PRODUCTION-GRADE DATA STRUCTURES
+- ↓
+- COUNT-MIN SKETCH (Approximate frequency counting):
 
 ```mermaid
 flowchart TD
@@ -700,7 +730,10 @@ class CuckooFilter {
 │ ─────────────────────────────────────────                                       │
 ```
 
-> **Flow**: ADVANCED INTERVIEW PATTERNS → PATTERN 1: MONOTONIC STACK VARIATIONS
+**Flow:**
+- ADVANCED INTERVIEW PATTERNS
+- ↓
+- PATTERN 1: MONOTONIC STACK VARIATIONS
 
 ```mermaid
 flowchart TD
@@ -974,7 +1007,20 @@ int closestSum(int[] nums, int target) {
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: DSA MASTERY CHECKLIST → FUNDAMENTALS (Must master completely): | FUNDAMENTALS (Must master completely): → □ Arrays: Access, insertion, deletion, resizing | □ Arrays: Access, insertion, deletion, resizing → □ Linked Lists: Singly, doubly, circular, operations | □ Linked Lists: Singly, doubly, circular, operations → □ Queues: Regular, circular, deque, priority queue | □ Queues: Regular, circular, deque, priority queue → □ Hash Tables: Collision handling, load factor, rehashi | □ Hash Tables: Collision handling, load factor, rehashi → □ Heaps: Build, insert, extract, heapify | ...+1 more
+**Flow:**
+- DSA MASTERY CHECKLIST
+- ↓
+- FUNDAMENTALS (Must master completely):
+- ↓
+- □ Arrays: Access, insertion, deletion, resizing
+- ↓
+- □ Linked Lists: Singly, doubly, circular, operations
+- ↓
+- □ Queues: Regular, circular, deque, priority queue
+- ↓
+- □ Hash Tables: Collision handling, load factor, rehashi
+- ↓
+- □ Heaps: Build, insert, extract, heapify
 
 ```mermaid
 flowchart TD
@@ -1019,7 +1065,20 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: JVM INTERNALS - THE COMPLETE GUIDE FOR BUILDING FRAMEWO → Why JVM knowledge matters: | Why JVM knowledge matters: → • Understand WHY your code performs the way it does | • Understand WHY your code performs the way it does → • Debug memory issues (leaks, OOM errors) | • Debug memory issues (leaks, OOM errors) → • Build frameworks like Spring, Hibernate, Mockito | • Build frameworks like Spring, Hibernate, Mockito → • Optimize applications for production | • Optimize applications for production → • Ace senior-level Java interviews
+**Flow:**
+- JVM INTERNALS - THE COMPLETE GUIDE FOR BUILDING FRAMEWO
+- ↓
+- Why JVM knowledge matters:
+- ↓
+- • Understand WHY your code performs the way it does
+- ↓
+- • Debug memory issues (leaks, OOM errors)
+- ↓
+- • Build frameworks like Spring, Hibernate, Mockito
+- ↓
+- • Optimize applications for production
+- ↓
+- • Ace senior-level Java interviews
 
 ```mermaid
 flowchart TD

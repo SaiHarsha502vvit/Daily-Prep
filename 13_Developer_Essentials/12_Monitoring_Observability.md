@@ -80,7 +80,10 @@ Spring Boot + Micrometer (auto-exposes Prometheus metrics):
   }
 ```
 
-> **Flow**: Prometheus / (stores / time-serie → Alertmanager / (Slack/Page)
+**Flow:**
+- Prometheus / (stores / time-serie
+- ↓
+- Alertmanager / (Slack/Page)
 
 ```mermaid
 flowchart TD
@@ -110,7 +113,16 @@ flowchart TD
 Modern alternative: Grafana Loki (lighter, labels-based, pairs with Grafana)
 ```
 
-> **Flow**: App Logs / (JSON to / stdout) → Filebeat/ / Fluentd / (ship logs) | Filebeat/ / Fluentd / (ship logs) → → Logstash / (parse, / transform, / enrich) | → Elastic / search / (index, / search) → Kibana / (search, / visualize)
+**Flow:**
+- App Logs / (JSON to / stdout)
+- ↓
+- Filebeat/ / Fluentd / (ship logs)
+- ↓
+- Logstash / (parse, / transform, / enrich)
+- ↓
+- Elastic / search / (index, / search)
+- ↓
+- Kibana / (search, / visualize)
 
 ```mermaid
 flowchart TD
@@ -149,7 +161,16 @@ Trace ID: abc-123 (same across ALL services for this request)
 OpenTelemetry (standard): auto-instruments Spring Boot, propagates trace IDs
 ```
 
-> **Flow**: API Gateway (Span 1) → Order Service (Span 2) | Order Service (Span 2) → DB Query (Span 3) | DB Query (Span 3) → Payment Service (Span 4) | Payment Service (Span 4) → Stripe API (Span 5)
+**Flow:**
+- API Gateway (Span 1)
+- ↓
+- Order Service (Span 2)
+- ↓
+- DB Query (Span 3)
+- ↓
+- Payment Service (Span 4)
+- ↓
+- Stripe API (Span 5)
 
 ```mermaid
 flowchart TD
@@ -190,7 +211,44 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: GOOD ALERTS: → ✅ Error rate &gt; 5% for 5 minutes → Page on-call | ✅ Error rate &gt; 5% for 5 minutes → Page on-call → ✅ P99 latency &gt; 2s for 10 minutes → Warn in Slack | ✅ P99 latency &gt; 2s for 10 minutes → Warn in Slack → ✅ Disk usage &gt; 85% → Ticket | ✅ Disk usage &gt; 85% → Ticket → ✅ Zero orders in last 30 min (business hours) → Investi | ✅ Zero orders in last 30 min (business hours) → Investi → BAD ALERTS (alert fatigue): | BAD ALERTS (alert fatigue): → ❌ CPU &gt; 80% (spikes are normal, care about sustained | ...+1 more
+**Flow:**
+- GOOD ALERTS:
+- ↓
+- ✅ Error rate > 5% for 5 minutes
+- ↓
+- Page on-call
+- ↓
+- ✅ Error rate > 5% for 5 minutes
+- ↓
+- Page on-call
+- ↓
+- ✅ P99 latency > 2s for 10 minutes
+- ↓
+- Warn in Slack
+- ↓
+- ✅ P99 latency > 2s for 10 minutes
+- ↓
+- Warn in Slack
+- ↓
+- ✅ Disk usage > 85%
+- ↓
+- Ticket
+- ↓
+- ✅ Disk usage > 85%
+- ↓
+- Ticket
+- ↓
+- ✅ Zero orders in last 30 min (business hours)
+- ↓
+- Investi
+- ↓
+- ✅ Zero orders in last 30 min (business hours)
+- ↓
+- Investi
+- ↓
+- BAD ALERTS (alert fatigue):
+- ↓
+- ❌ CPU > 80% (spikes are normal, care about sustained
 
 ```mermaid
 flowchart TD

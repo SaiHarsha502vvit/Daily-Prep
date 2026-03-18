@@ -839,7 +839,20 @@ EXAMPLES:
 └───────────────────────────────────┴─────────────────┘
 ```
 
-> **Flow**: MASTER THEOREM: → For T(n) = aT(n/b) + f(n) where a ≥ 1, b &gt; 1 | For T(n) = aT(n/b) + f(n) where a ≥ 1, b &gt; 1 → AND af(n/b) ≤ cf(n) for some c &lt; 1 | AND af(n/b) ≤ cf(n) for some c &lt; 1 → EXAMPLES: | EXAMPLES: → Recurrence Solution | Recurrence Solution → T(n) = 2T(n/2) + n O(n log n) | T(n) = 2T(n/2) + n O(n log n) → T(n) = T(n/2) + 1 O(log n) | ...+1 more
+**Flow:**
+- MASTER THEOREM:
+- ↓
+- For T(n) = aT(n/b) + f(n) where a ≥ 1, b > 1
+- ↓
+- AND af(n/b) ≤ cf(n) for some c < 1
+- ↓
+- EXAMPLES:
+- ↓
+- Recurrence Solution
+- ↓
+- T(n) = 2T(n/2) + n O(n log n)
+- ↓
+- T(n) = T(n/2) + 1 O(log n)
 
 ```mermaid
 flowchart TD

@@ -38,7 +38,10 @@ IF the problem says:
 THEN → HashMap + Counting
 ```
 
-> **Flow**: THEN → HashMap + Counting
+**Flow:**
+- THEN
+- ↓
+- HashMap + Counting
 
 ```mermaid
 flowchart LR
@@ -129,7 +132,30 @@ i=4: prefix=7, need 7-4=3,  IN MAP(1)! → count=2, map={.., 7:1}
 Answer: 2
 ```
 
-> **Flow**: i=0: prefix=1, need 1-4=-3, not in map → count=0, map={0:1, 1:1} | i=1: prefix=3, need 3-4=-1, not in map → count=0, map={0:1, 1:1, 3:1} | i=2: prefix=6, need 6-4=2, not in map → count=0, map={0:1, 1:1, 3:1, 6:1} | i=3: prefix=5, need 5-4=1, IN MAP(1)! → count=1, map={.., 5:1} | subarray from index 1 → 3: [2,3,-1] sum=4 ✅ | i=4: prefix=7, need 7-4=3, IN MAP(1)! → count=2, map={.., 7:1} | ...+1 more
+**Flow:**
+- i=0: prefix=1, need 1-4=-3, not in map
+- ↓
+- count=0, map={0:1, 1:1}
+- ↓
+- i=1: prefix=3, need 3-4=-1, not in map
+- ↓
+- count=0, map={0:1, 1:1, 3:1}
+- ↓
+- i=2: prefix=6, need 6-4=2, not in map
+- ↓
+- count=0, map={0:1, 1:1, 3:1, 6:1}
+- ↓
+- i=3: prefix=5, need 5-4=1, IN MAP(1)!
+- ↓
+- count=1, map={.., 5:1}
+- ↓
+- subarray from index 1
+- ↓
+- 3: [2,3,-1] sum=4 ✅
+- ↓
+- i=4: prefix=7, need 7-4=3, IN MAP(1)!
+- ↓
+- count=2, map={.., 7:1}
 
 ```mermaid
 flowchart TD
@@ -195,7 +221,10 @@ The KEY pattern (use for many problems):
 Time: O(n) | Space: O(n)
 ```
 
-> **Flow**: HashMap stores seen numbers, so lookup is O(1) per → O(n) total.
+**Flow:**
+- HashMap stores seen numbers, so lookup is O(1) per
+- ↓
+- O(n) total.
 
 ```mermaid
 flowchart LR
@@ -243,7 +272,20 @@ Time: O(n) | Space: O(n)
 CRITICAL: Always initialize map with {0: 1}!
 ```
 
-> **Flow**: Problem: Count subarrays whose sum equals k=7. → nums = [3, 4, 7, 2, -3, 1, 4, 2] | nums = [3, 4, 7, 2, -3, 1, 4, 2] → Step-by-step: | Step-by-step: → sum = 0, count = 0 | sum = 0, count = 0 → map={0:1, 3:1, 7:1} | map={0:1, 3:1, 7:1} → map={0:1, 3:1, 7:1, 14:1} | map={0:1, 3:1, 7:1, 14:1} → map={..., 14:2} (14 now appears twice!) | ...+1 more
+**Flow:**
+- Problem: Count subarrays whose sum equals k=7.
+- ↓
+- nums = [3, 4, 7, 2, -3, 1, 4, 2]
+- ↓
+- Step-by-step:
+- ↓
+- sum = 0, count = 0
+- ↓
+- map={0:1, 3:1, 7:1}
+- ↓
+- map={0:1, 3:1, 7:1, 14:1}
+- ↓
+- map={..., 14:2} (14 now appears twice!)
 
 ```mermaid
 flowchart TD
@@ -283,7 +325,20 @@ flowchart TD
 └─────────────────────────────┴──────────────────────────────────────────┘
 ```
 
-> **Flow**: Edge Case Handling → Single element = target Subarray of length 1 is valid | Single element = target Subarray of length 1 is valid → Negative numbers Prefix Sum + HashMap (NOT sliding wind | Negative numbers Prefix Sum + HashMap (NOT sliding wind → All zeros, target=0 Every subarray of any length sums t | All zeros, target=0 Every subarray of any length sums t → Empty array Return 0 / empty | Empty array Return 0 / empty → Large values (overflow) Use long for prefix sums if nee | Large values (overflow) Use long for prefix sums if nee → is faster for lowercase-only problems
+**Flow:**
+- Edge Case Handling
+- ↓
+- Single element = target Subarray of length 1 is valid
+- ↓
+- Negative numbers Prefix Sum + HashMap (NOT sliding wind
+- ↓
+- All zeros, target=0 Every subarray of any length sums t
+- ↓
+- Empty array Return 0 / empty
+- ↓
+- Large values (overflow) Use long for prefix sums if nee
+- ↓
+- is faster for lowercase-only problems
 
 ```mermaid
 flowchart TD

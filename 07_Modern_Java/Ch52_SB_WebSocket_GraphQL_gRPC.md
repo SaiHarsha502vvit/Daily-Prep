@@ -49,7 +49,18 @@ Client: "Any new messages?" → Server: "No"       (wasted request)
 Client: "Any new messages?" → Server: "Yes! Here" (finally useful)
 ```
 
-> **Flow**: Client: 'Any new messages?' → Server: 'No' (wasted request) | Client: 'Any new messages?' → Server: 'No' (wasted request) | Client: 'Any new messages?' → Server: 'Yes! Here' (finally useful)
+**Flow:**
+- Client: 'Any new messages?'
+- ↓
+- Server: 'No' (wasted request)
+- ↓
+- Client: 'Any new messages?'
+- ↓
+- Server: 'No' (wasted request)
+- ↓
+- Client: 'Any new messages?'
+- ↓
+- Server: 'Yes! Here' (finally useful)
 
 ```mermaid
 flowchart LR
@@ -68,7 +79,18 @@ Server: "Hey, new message!" → Client gets it INSTANTLY
 Client: "I'm typing..."     → Server knows INSTANTLY
 ```
 
-> **Flow**: Client ← → Server (always connected) | Server: 'Hey, new message!' → Client gets it INSTANTLY | Client: 'I'm typing...' → Server knows INSTANTLY
+**Flow:**
+- Client ←
+- ↓
+- Server (always connected)
+- ↓
+- Server: 'Hey, new message!'
+- ↓
+- Client gets it INSTANTLY
+- ↓
+- Client: 'I'm typing...'
+- ↓
+- Server knows INSTANTLY
 
 ```mermaid
 flowchart LR
@@ -266,7 +288,18 @@ REST GET /api/orders/5/items → gets items
 → 3 API calls for 1 page (UNDER-FETCHING)
 ```
 
-> **Flow**: REST GET /api/users/1 → gets user | REST GET /api/users/1/orders → gets orders | REST GET /api/orders/5/items → gets items
+**Flow:**
+- REST GET /api/users/1
+- ↓
+- gets user
+- ↓
+- REST GET /api/users/1/orders
+- ↓
+- gets orders
+- ↓
+- REST GET /api/orders/5/items
+- ↓
+- gets items
 
 ```mermaid
 flowchart LR
@@ -592,7 +625,22 @@ public class UserGrpcClient {
 4. Bidirectional:   Client ↔ N messages ↔ Server (like WebSocket)
 ```
 
-> **Flow**: 1. Unary: Client → 1 request | 1 request → Server | Server → 1 response | 2. Server Stream: Client → 1 request | 1 request → Server | Server → N responses (streaming) | ...+3 more
+**Flow:**
+- 1. Unary: Client
+- ↓
+- 1 request
+- ↓
+- Server
+- ↓
+- 1 response
+- ↓
+- 2. Server Stream: Client
+- ↓
+- 1 request
+- ↓
+- Server
+- ↓
+- N responses (streaming)
 
 ```mermaid
 flowchart TD
@@ -646,7 +694,24 @@ Each Step has:
   ItemWriter  → writes in chunks (e.g., 100 at a time)
 ```
 
-> **Flow**: Step 1: Read CSV → Process | Process → Write to DB | ItemReader → reads one item at a time | ItemProcessor → transforms/validates | ItemWriter → writes in chunks (e.g., 100 at a time)
+**Flow:**
+- Step 1: Read CSV
+- ↓
+- Process
+- ↓
+- Write to DB
+- ↓
+- ItemReader
+- ↓
+- reads one item at a time
+- ↓
+- ItemProcessor
+- ↓
+- transforms/validates
+- ↓
+- ItemWriter
+- ↓
+- writes in chunks (e.g., 100 at a time)
 
 ```mermaid
 flowchart TD
@@ -807,7 +872,14 @@ WHY Chunks?
 - Restartable (resume from last successful chunk)
 ```
 
-> **Flow**: Chunk 1: Records 1-100 → INSERT 100 rows (1 transaction) | Chunk 2: Records 101-200 → INSERT 100 rows (1 transaction)
+**Flow:**
+- Chunk 1: Records 1-100
+- ↓
+- INSERT 100 rows (1 transaction)
+- ↓
+- Chunk 2: Records 101-200
+- ↓
+- INSERT 100 rows (1 transaction)
 
 ```mermaid
 flowchart LR
@@ -1022,7 +1094,22 @@ src/main/resources/
 └── messages_te.properties           # Telugu
 ```
 
-> **Flow**: src/main/resources/ → messages.properties # Default (English) | src/main/resources/ → messages_hi.properties # Hindi | src/main/resources/ → messages_ja.properties # Japanese | src/main/resources/ → messages_te.properties # Telugu
+**Flow:**
+- src/main/resources/
+- ↓
+- messages.properties # Default (English)
+- ↓
+- src/main/resources/
+- ↓
+- messages_hi.properties # Hindi
+- ↓
+- src/main/resources/
+- ↓
+- messages_ja.properties # Japanese
+- ↓
+- src/main/resources/
+- ↓
+- messages_te.properties # Telugu
 
 ```mermaid
 flowchart TD
@@ -1102,7 +1189,14 @@ Accept-Language: hi     → responds in Hindi
 Accept-Language: en     → responds in English
 ```
 
-> **Flow**: Accept-Language: hi → responds in Hindi | Accept-Language: en → responds in English
+**Flow:**
+- Accept-Language: hi
+- ↓
+- responds in Hindi
+- ↓
+- Accept-Language: en
+- ↓
+- responds in English
 
 ```mermaid
 flowchart LR
@@ -1142,7 +1236,14 @@ Tenant B → database_company_b
 ❌ Expensive, ❌ Hard to manage 100+ databases
 ```
 
-> **Flow**: Tenant A → database_company_a | Tenant B → database_company_b
+**Flow:**
+- Tenant A
+- ↓
+- database_company_a
+- ↓
+- Tenant B
+- ↓
+- database_company_b
 
 ```mermaid
 flowchart LR
@@ -1164,7 +1265,14 @@ Tenant B → schema_b.users, schema_b.orders
 ❌ Schema migrations must run for each tenant
 ```
 
-> **Flow**: Tenant A → schema_a.users, schema_a.orders | Tenant B → schema_b.users, schema_b.orders
+**Flow:**
+- Tenant A
+- ↓
+- schema_a.users, schema_a.orders
+- ↓
+- Tenant B
+- ↓
+- schema_b.users, schema_b.orders
 
 ```mermaid
 flowchart LR

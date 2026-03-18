@@ -193,7 +193,14 @@ Batch, HATEOAS, i18n, GraalVM
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: LEARNING PHILOSOPHY → EACH PHASE BUILDS ON THE PREVIOUS ONE | EACH PHASE BUILDS ON THE PREVIOUS ONE → Don't skip phases unless you're already proficient! | Don't skip phases unless you're already proficient! → ⏱️ ESTIMATED TOTAL TIME: 10-14 weeks (2-3 hours/day)
+**Flow:**
+- LEARNING PHILOSOPHY
+- ↓
+- EACH PHASE BUILDS ON THE PREVIOUS ONE
+- ↓
+- Don't skip phases unless you're already proficient!
+- ↓
+- ⏱️ ESTIMATED TOTAL TIME: 10-14 weeks (2-3 hours/day)
 
 ```mermaid
 flowchart TD
@@ -248,7 +255,20 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: 📄 FUNCTIONAL PROGRAMMING IN JAVA → File: Ch06_Functional_Programming.md | File: Ch06_Functional_Programming.md → TOPICS COVERED: | TOPICS COVERED: → C. Stream API filter, map, reduce, collect | C. Stream API filter, map, reduce, collect → D. Method References Class::method shorthand | D. Method References Class::method shorthand → E. Optional Null-safe value handling | E. Optional Null-safe value handling → G. Java Records Immutable data carriers: record User(.. | ...+1 more
+**Flow:**
+- 📄 FUNCTIONAL PROGRAMMING IN JAVA
+- ↓
+- File: Ch06_Functional_Programming.md
+- ↓
+- TOPICS COVERED:
+- ↓
+- C. Stream API filter, map, reduce, collect
+- ↓
+- D. Method References Class::method shorthand
+- ↓
+- E. Optional Null-safe value handling
+- ↓
+- G. Java Records Immutable data carriers: record User(..
 
 ```mermaid
 flowchart TD
@@ -302,7 +322,20 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: 📄 PART 0: THE HIDDEN FOUNDATIONS → File: Ch26_Pre_Spring_Part1.md | File: Ch26_Pre_Spring_Part1.md → TOPICS COVERED: | TOPICS COVERED: → A. Java Reflection How Spring reads @Autowired, @Compon | A. Java Reflection How Spring reads @Autowired, @Compon → D. Servlet API What Spring Boot hides from you | D. Servlet API What Spring Boot hides from you → E. Jackson Serialization How JSON ↔ Java conversion wor | E. Jackson Serialization How JSON ↔ Java conversion wor → F. Connection Pooling Why HikariCP matters | ...+1 more
+**Flow:**
+- 📄 PART 0: THE HIDDEN FOUNDATIONS
+- ↓
+- File: Ch26_Pre_Spring_Part1.md
+- ↓
+- TOPICS COVERED:
+- ↓
+- A. Java Reflection How Spring reads @Autowired, @Compon
+- ↓
+- D. Servlet API What Spring Boot hides from you
+- ↓
+- E. Jackson Serialization How JSON ↔ Java conversion wor
+- ↓
+- F. Connection Pooling Why HikariCP matters
 
 ```mermaid
 flowchart TD
@@ -357,7 +390,24 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: PART 1 → PART 2 → PART 3 → 📄 PART 1 📄 PART 2 📄 PART 3 | 📄 PART 1 📄 PART 2 📄 PART 3 → Java Spring Core AOP & | Java Spring Core AOP & → Foundations (IoC & DI) Auto-Config | Foundations (IoC & DI) Auto-Config → File: Ch31_SB_Core_Part1.md | File: Ch31_SB_Core_Part1.md → File: Ch32_SB_Data_Part2.md | File: Ch32_SB_Data_Part2.md → File: Ch33_SB_Web_Part3.md
+**Flow:**
+- PART 1
+- ↓
+- PART 2
+- ↓
+- PART 3
+- ↓
+- 📄 PART 1 📄 PART 2 📄 PART 3
+- ↓
+- Java Spring Core AOP &
+- ↓
+- Foundations (IoC & DI) Auto-Config
+- ↓
+- File: Ch31_SB_Core_Part1.md
+- ↓
+- File: Ch32_SB_Data_Part2.md
+- ↓
+- File: Ch33_SB_Web_Part3.md
 
 ```mermaid
 flowchart TD
@@ -459,7 +509,24 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: PART 5 → PART 10 → PART 4 (Overview) → 📄 PART 5 📄 PART 10 📄 PART 4 | 📄 PART 5 📄 PART 10 📄 PART 4 → Lombok & HTTP Deep Quick Overview | Lombok & HTTP Deep Quick Overview → DTOs Dive (Optional) | DTOs Dive (Optional) → File: Ch35_SB_Lombok_DTOs.md | File: Ch35_SB_Lombok_DTOs.md → File: Ch42_SB_HTTP_Deep_Dive.md | File: Ch42_SB_HTTP_Deep_Dive.md → File: Ch34_SB_Security_Part4.md (Optional overvi
+**Flow:**
+- PART 5
+- ↓
+- PART 10
+- ↓
+- PART 4 (Overview)
+- ↓
+- 📄 PART 5 📄 PART 10 📄 PART 4
+- ↓
+- Lombok & HTTP Deep Quick Overview
+- ↓
+- DTOs Dive (Optional)
+- ↓
+- File: Ch35_SB_Lombok_DTOs.md
+- ↓
+- File: Ch42_SB_HTTP_Deep_Dive.md
+- ↓
+- File: Ch34_SB_Security_Part4.md (Optional overvi
 
 ```mermaid
 flowchart TD
@@ -536,7 +603,24 @@ _High-level overview of JPA, Web, Security, Testing. Read for context, but detai
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: PART 7 → PART 6 → PART 8 → 📄 PART 7 📄 PART 6 📄 PART 8 | 📄 PART 7 📄 PART 6 📄 PART 8 → Controllers Service & JPA Deep | Controllers Service & JPA Deep → & REST API Repository Dive | & REST API Repository Dive → File: Ch37_SB_Controllers_REST.md | File: Ch37_SB_Controllers_REST.md → File: Ch36_SB_Service_Repository.md | File: Ch36_SB_Service_Repository.md → File: Ch40_SB_JPA_Deep_Dive.md
+**Flow:**
+- PART 7
+- ↓
+- PART 6
+- ↓
+- PART 8
+- ↓
+- 📄 PART 7 📄 PART 6 📄 PART 8
+- ↓
+- Controllers Service & JPA Deep
+- ↓
+- & REST API Repository Dive
+- ↓
+- File: Ch37_SB_Controllers_REST.md
+- ↓
+- File: Ch36_SB_Service_Repository.md
+- ↓
+- File: Ch40_SB_JPA_Deep_Dive.md
 
 ```mermaid
 flowchart TD
@@ -628,7 +712,20 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: PART 14 → PART 11 → 📄 PART 14 📄 PART 11 | 📄 PART 14 📄 PART 11 → Essential Authentication | Essential Authentication → Topics & Security | Topics & Security → File: Ch44_SB_Caching_Scheduling.md | File: Ch44_SB_Caching_Scheduling.md → File: Ch43_SB_Auth_Security.md
+**Flow:**
+- PART 14
+- ↓
+- PART 11
+- ↓
+- 📄 PART 14 📄 PART 11
+- ↓
+- Essential Authentication
+- ↓
+- Topics & Security
+- ↓
+- File: Ch44_SB_Caching_Scheduling.md
+- ↓
+- File: Ch43_SB_Auth_Security.md
 
 ```mermaid
 flowchart TD
@@ -701,7 +798,24 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: PART 9 → PART 12 → PART 13 → 📄 PART 9 📄 PART 12 📄 PART 13 | 📄 PART 9 📄 PART 12 📄 PART 13 → Clean DSA in Industry | Clean DSA in Industry → Architecture Spring Boot Projects | Architecture Spring Boot Projects → File: Ch41_SB_Architecture_Quality.md | File: Ch41_SB_Architecture_Quality.md → File: Ch50_SB_DSA_Applications.md | File: Ch50_SB_DSA_Applications.md → File: Ch51_SB_Industry_Projects.md
+**Flow:**
+- PART 9
+- ↓
+- PART 12
+- ↓
+- PART 13
+- ↓
+- 📄 PART 9 📄 PART 12 📄 PART 13
+- ↓
+- Clean DSA in Industry
+- ↓
+- Architecture Spring Boot Projects
+- ↓
+- File: Ch41_SB_Architecture_Quality.md
+- ↓
+- File: Ch50_SB_DSA_Applications.md
+- ↓
+- File: Ch51_SB_Industry_Projects.md
 
 ```mermaid
 flowchart TD
@@ -797,7 +911,28 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: PART 15 / WebFlux / Reactive → PART 16 / SOLID / Principles | PART 16 / SOLID / Principles → PART 17 / Database / Security | PART 16 / SOLID / Principles → PART 20 PART 21 / Microservices Cloud / Patterns Deploy | PART 17 / Database / Security → PART 18 / Distrib. / Tracing | PART 17 / Database / Security → PART 20 PART 21 / Microservices Cloud / Patterns Deploy | PART 18 / Distrib. / Tracing → PART 19 / Testing / Complete | ...+1 more
+**Flow:**
+- PART 15 / WebFlux / Reactive
+- ↓
+- PART 16 / SOLID / Principles
+- ↓
+- PART 17 / Database / Security
+- ↓
+- PART 16 / SOLID / Principles
+- ↓
+- PART 20 PART 21 / Microservices Cloud / Patterns Deploy
+- ↓
+- PART 17 / Database / Security
+- ↓
+- PART 18 / Distrib. / Tracing
+- ↓
+- PART 17 / Database / Security
+- ↓
+- PART 20 PART 21 / Microservices Cloud / Patterns Deploy
+- ↓
+- PART 18 / Distrib. / Tracing
+- ↓
+- PART 19 / Testing / Complete
 
 ```mermaid
 flowchart TD
@@ -962,7 +1097,20 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: PART 22: ANNOTATIONS COMPLETE REFERENCE → • Security: @PreAuthorize, @PostAuthorize, @Secured | • Security: @PreAuthorize, @PostAuthorize, @Secured → • Caching: @Cacheable, @CacheEvict, @CachePut | • Caching: @Cacheable, @CacheEvict, @CachePut → • Async: @Async, @Scheduled | • Async: @Async, @Scheduled → • Testing: @SpringBootTest, @MockBean, @DataJpaTest | • Testing: @SpringBootTest, @MockBean, @DataJpaTest → • Lombok: @Data, @Builder, @Slf4j, @Value | • Lombok: @Data, @Builder, @Slf4j, @Value → • Hibernate: @Formula, @Where, @BatchSize, @DynamicUpda | ...+1 more
+**Flow:**
+- PART 22: ANNOTATIONS COMPLETE REFERENCE
+- ↓
+- • Security: @PreAuthorize, @PostAuthorize, @Secured
+- ↓
+- • Caching: @Cacheable, @CacheEvict, @CachePut
+- ↓
+- • Async: @Async, @Scheduled
+- ↓
+- • Testing: @SpringBootTest, @MockBean, @DataJpaTest
+- ↓
+- • Lombok: @Data, @Builder, @Slf4j, @Value
+- ↓
+- • Hibernate: @Formula, @Where, @BatchSize, @DynamicUpda
 
 ```mermaid
 flowchart TD
@@ -1038,7 +1186,38 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: COMPLETE FILE LIST (IN LEARNING ORDER) → PHASE 0: HIDDEN FOUNDATIONS (Read First!) | PHASE 0: HIDDEN FOUNDATIONS (Read First!) → PHASE 1: FOUNDATIONS | PHASE 1: FOUNDATIONS → 📄 Ch31_SB_Core_Part1.md → Java Foundations | 📄 Ch31_SB_Core_Part1.md → Java Foundations → 📄 Ch32_SB_Data_Part2.md → IoC & DI | 📄 Ch32_SB_Data_Part2.md → IoC & DI → 📄 Ch33_SB_Web_Part3.md → AOP & Auto-Config | 📄 Ch33_SB_Web_Part3.md → AOP & Auto-Config → PHASE 2: TOOLING & WEB BASICS | ...+1 more
+**Flow:**
+- COMPLETE FILE LIST (IN LEARNING ORDER)
+- ↓
+- PHASE 0: HIDDEN FOUNDATIONS (Read First!)
+- ↓
+- PHASE 1: FOUNDATIONS
+- ↓
+- 📄 Ch31_SB_Core_Part1.md
+- ↓
+- Java Foundations
+- ↓
+- 📄 Ch31_SB_Core_Part1.md
+- ↓
+- Java Foundations
+- ↓
+- 📄 Ch32_SB_Data_Part2.md
+- ↓
+- IoC & DI
+- ↓
+- 📄 Ch32_SB_Data_Part2.md
+- ↓
+- IoC & DI
+- ↓
+- 📄 Ch33_SB_Web_Part3.md
+- ↓
+- AOP & Auto-Config
+- ↓
+- 📄 Ch33_SB_Web_Part3.md
+- ↓
+- AOP & Auto-Config
+- ↓
+- PHASE 2: TOOLING & WEB BASICS
 
 ```mermaid
 flowchart TD

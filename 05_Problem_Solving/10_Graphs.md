@@ -42,7 +42,10 @@
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: 0 1 1 0 / 1 0 1 1 / 1 1 0 0 / 0 1 0 0 → DFS (Stack/Recursion) BFS (Queue) / - Go deep first - G
+**Flow:**
+- 0 1 1 0 / 1 0 1 1 / 1 1 0 0 / 0 1 0 0
+- ↓
+- DFS (Stack/Recursion) BFS (Queue) / - Go deep first - G
 
 ```mermaid
 flowchart TD
@@ -109,7 +112,10 @@ flowchart TD
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Problem Node = Edge = / Number of Islands Cell (r,c) Ad → 1 1 0 / 1 0 0 / 0 0 1
+**Flow:**
+- Problem Node = Edge = / Number of Islands Cell (r,c) Ad
+- ↓
+- 1 1 0 / 1 0 0 / 0 0 1
 
 ```mermaid
 flowchart TD
@@ -323,7 +329,20 @@ void dfs(int[][] grid, int r, int c, boolean[][] visited) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: NUMBER OF ISLANDS - Count connected components of '1's → grid = [ | grid = [ → ['1','1','0','0','0'], Island 1: top-left 1s | ['1','1','0','0','0'], Island 1: top-left 1s → ['0','0','1','0','0'], Island 2: middle 1 | ['0','0','1','0','0'], Island 2: middle 1 → ['0','0','0','1','1'] Island 3: bottom-right 1s | ['0','0','0','1','1'] Island 3: bottom-right 1s → Visual: | Visual: → 1 1 0 0 0 🏝️ Island 1 | ...+1 more
+**Flow:**
+- NUMBER OF ISLANDS - Count connected components of '1's
+- ↓
+- grid = [
+- ↓
+- ['1','1','0','0','0'], Island 1: top-left 1s
+- ↓
+- ['0','0','1','0','0'], Island 2: middle 1
+- ↓
+- ['0','0','0','1','1'] Island 3: bottom-right 1s
+- ↓
+- Visual:
+- ↓
+- 1 1 0 0 0 🏝️ Island 1
 
 ```mermaid
 flowchart TD
@@ -448,7 +467,12 @@ public int numIslandsBFS(char[][] grid) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: MAX AREA OF ISLAND → grid = [ | grid = [ → Maximum area = 6 (the island in middle-right)
+**Flow:**
+- MAX AREA OF ISLAND
+- ↓
+- grid = [
+- ↓
+- Maximum area = 6 (the island in middle-right)
 
 ```mermaid
 flowchart TD
@@ -512,7 +536,22 @@ private int dfs(int[][] grid, int i, int j) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: CLONE GRAPH - Deep copy of undirected graph → Input: Output (Clone): | Input: Output (Clone): → Each node has: val, List&lt;Node&gt; neighbors | Each node has: val, List&lt;Node&gt; neighbors → Key: Use HashMap to track original → clone mapping | Key: Use HashMap to track original → clone mapping → Prevents infinite loop when graph has cycles
+**Flow:**
+- CLONE GRAPH - Deep copy of undirected graph
+- ↓
+- Input: Output (Clone):
+- ↓
+- Each node has: val, List<Node> neighbors
+- ↓
+- Key: Use HashMap to track original
+- ↓
+- clone mapping
+- ↓
+- Key: Use HashMap to track original
+- ↓
+- clone mapping
+- ↓
+- Prevents infinite loop when graph has cycles
 
 ```mermaid
 flowchart TD
@@ -580,7 +619,10 @@ public Node cloneGraph(Node node) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: 1 1 1 / 1 1 0 / 1 0 1 → 2 2 2 / 2 2 0 / 2 0 1
+**Flow:**
+- 1 1 1 / 1 1 0 / 1 0 1
+- ↓
+- 2 2 2 / 2 2 0 / 2 0 1
 
 ```mermaid
 flowchart LR
@@ -648,7 +690,16 @@ private void dfs(int[][] image, int r, int c, int original, int newColor) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: 2 1 1 / 1 1 0 / 0 1 1 → 2 2 1 / 2 1 0 / 0 1 1 | 2 2 1 / 2 1 0 / 0 1 1 → 2 2 2 / 2 2 0 / 0 1 1 | 2 2 2 / 2 2 0 / 0 1 1 → 2 2 2 / 2 2 0 / 0 2 1 | 2 2 2 / 2 2 0 / 0 2 1 → 2 2 2 / 2 2 0 / 0 2 2
+**Flow:**
+- 2 1 1 / 1 1 0 / 0 1 1
+- ↓
+- 2 2 1 / 2 1 0 / 0 1 1
+- ↓
+- 2 2 2 / 2 2 0 / 0 1 1
+- ↓
+- 2 2 2 / 2 2 0 / 0 2 1
+- ↓
+- 2 2 2 / 2 2 0 / 0 2 2
 
 ```mermaid
 flowchart TD
@@ -746,7 +797,10 @@ public int orangesRotting(int[][] grid) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: INF -1 0 INF / INF INF INF -1 / INF -1 INF -1 / 0 -1 IN → 3 -1 0 1 / 2 2 1 -1 / 1 -1 2 -1 / 0 -1 3 4
+**Flow:**
+- INF -1 0 INF / INF INF INF -1 / INF -1 INF -1 / 0 -1 IN
+- ↓
+- 3 -1 0 1 / 2 2 1 -1 / 1 -1 2 -1 / 0 -1 3 4
 
 ```mermaid
 flowchart LR
@@ -826,7 +880,20 @@ public void wallsAndGates(int[][] rooms) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: COURSE SCHEDULE - Detect cycle in directed graph / numC → 1 2 No cycle → Can finish all courses ✓ | 1 2 No cycle → Can finish all courses ✓ → With cycle: [[1,0], [0,1]] / 0 ↔ 1 Cycle! → Cannot fini
+**Flow:**
+- COURSE SCHEDULE - Detect cycle in directed graph / numC
+- ↓
+- 1 2 No cycle
+- ↓
+- Can finish all courses ✓
+- ↓
+- 1 2 No cycle
+- ↓
+- Can finish all courses ✓
+- ↓
+- With cycle: [[1,0], [0,1]] / 0 ↔ 1 Cycle!
+- ↓
+- Cannot fini
 
 ```mermaid
 flowchart TD
@@ -905,7 +972,20 @@ private boolean hasCycle(List<List<Integer>> graph, int node, int[] state) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: COURSE SCHEDULE II - Return valid course order → numCourses = 4 | numCourses = 4 → prerequisites = [[1,0], [2,0], [3,1], [3,2]] | prerequisites = [[1,0], [2,0], [3,1], [3,2]] → Valid orders: | Valid orders: → Topological Sort: Order where all prerequisites come fi | Topological Sort: Order where all prerequisites come fi → Using Kahn's Algorithm (BFS): | Using Kahn's Algorithm (BFS): → 1. Calculate in-degree for each node | ...+1 more
+**Flow:**
+- COURSE SCHEDULE II - Return valid course order
+- ↓
+- numCourses = 4
+- ↓
+- prerequisites = [[1,0], [2,0], [3,1], [3,2]]
+- ↓
+- Valid orders:
+- ↓
+- Topological Sort: Order where all prerequisites come fi
+- ↓
+- Using Kahn's Algorithm (BFS):
+- ↓
+- 1. Calculate in-degree for each node
 
 ```mermaid
 flowchart TD
@@ -1001,7 +1081,20 @@ public int[] findOrder(int numCourses, int[][] prerequisites) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: GRAPH VALID TREE → A valid tree has: | A valid tree has: → 1. No cycles | 1. No cycles → 2. All nodes connected (single connected component) | 2. All nodes connected (single connected component) → 3. Exactly n-1 edges for n nodes | 3. Exactly n-1 edges for n nodes → Example 1: n=5, edges=[[0,1],[0,2],[0,3],[1,4]] | Example 1: n=5, edges=[[0,1],[0,2],[0,3],[1,4]] → 1 2 3 Valid tree ✓ | ...+1 more
+**Flow:**
+- GRAPH VALID TREE
+- ↓
+- A valid tree has:
+- ↓
+- 1. No cycles
+- ↓
+- 2. All nodes connected (single connected component)
+- ↓
+- 3. Exactly n-1 edges for n nodes
+- ↓
+- Example 1: n=5, edges=[[0,1],[0,2],[0,3],[1,4]]
+- ↓
+- 1 2 3 Valid tree ✓
 
 ```mermaid
 flowchart TD
@@ -1085,7 +1178,12 @@ private int find(int[] parent, int x) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: 01 MATRIX - Distance to nearest 0 for each cell → Input: Output: | Input: Output: → Multi-source BFS from all 0s simultaneously
+**Flow:**
+- 01 MATRIX - Distance to nearest 0 for each cell
+- ↓
+- Input: Output:
+- ↓
+- Multi-source BFS from all 0s simultaneously
 
 ```mermaid
 flowchart TD
@@ -1164,7 +1262,18 @@ public int[][] updateMatrix(int[][] mat) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: SHORTEST PATH IN BINARY MATRIX → Find shortest clear path from top-left to bottom-right | Find shortest clear path from top-left to bottom-right → Can move in 8 directions (including diagonals) | Can move in 8 directions (including diagonals) → 0 = clear, 1 = blocked | 0 = clear, 1 = blocked → grid = [[0,0,0], | grid = [[0,0,0], → Length = 4
+**Flow:**
+- SHORTEST PATH IN BINARY MATRIX
+- ↓
+- Find shortest clear path from top-left to bottom-right
+- ↓
+- Can move in 8 directions (including diagonals)
+- ↓
+- 0 = clear, 1 = blocked
+- ↓
+- grid = [[0,0,0],
+- ↓
+- Length = 4
 
 ```mermaid
 flowchart TD
@@ -1246,7 +1355,42 @@ public int shortestPathBinaryMatrix(int[][] grid) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: NETWORK DELAY TIME - Dijkstra's Algorithm → Start from node 2: | Start from node 2: → - Node 2: time 0 | - Node 2: time 0 → - Node 1: time 1 (via 2→1) | - Node 1: time 1 (via 2→1) → - Node 3: time 1 (via 2→3) | - Node 3: time 1 (via 2→3) → - Node 4: time 2 (via 2→3→4) | - Node 4: time 2 (via 2→3→4) → All nodes reached, max time = 2
+**Flow:**
+- NETWORK DELAY TIME - Dijkstra's Algorithm
+- ↓
+- Start from node 2:
+- ↓
+- - Node 2: time 0
+- ↓
+- - Node 1: time 1 (via 2
+- ↓
+- 1)
+- ↓
+- - Node 1: time 1 (via 2
+- ↓
+- 1)
+- ↓
+- - Node 3: time 1 (via 2
+- ↓
+- 3)
+- ↓
+- - Node 3: time 1 (via 2
+- ↓
+- 3)
+- ↓
+- - Node 4: time 2 (via 2
+- ↓
+- 3
+- ↓
+- 4)
+- ↓
+- - Node 4: time 2 (via 2
+- ↓
+- 3
+- ↓
+- 4)
+- ↓
+- All nodes reached, max time = 2
 
 ```mermaid
 flowchart TD
@@ -1347,7 +1491,42 @@ public int networkDelayTime(int[][] times, int n, int k) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: CHEAPEST FLIGHTS WITHIN K STOPS → n = 4, flights = [[0,1,100],[1,2,100],[2,0,100],[1,3,60 | n = 4, flights = [[0,1,100],[1,2,100],[2,0,100],[1,3,60 → With at most 1 stop: | With at most 1 stop: → - 0→1→3 = 700 (1 stop) | - 0→1→3 = 700 (1 stop) → - 0→1→2→3 = 400 but has 2 stops ✗ | - 0→1→2→3 = 400 but has 2 stops ✗ → Output: 700
+**Flow:**
+- CHEAPEST FLIGHTS WITHIN K STOPS
+- ↓
+- n = 4, flights = [[0,1,100],[1,2,100],[2,0,100],[1,3,60
+- ↓
+- With at most 1 stop:
+- ↓
+- - 0
+- ↓
+- 1
+- ↓
+- 3 = 700 (1 stop)
+- ↓
+- - 0
+- ↓
+- 1
+- ↓
+- 3 = 700 (1 stop)
+- ↓
+- - 0
+- ↓
+- 1
+- ↓
+- 2
+- ↓
+- 3 = 400 but has 2 stops ✗
+- ↓
+- - 0
+- ↓
+- 1
+- ↓
+- 2
+- ↓
+- 3 = 400 but has 2 stops ✗
+- ↓
+- Output: 700
 
 ```mermaid
 flowchart TD
@@ -1437,7 +1616,20 @@ public int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: UNION-FIND DATA STRUCTURE → Operations: | Operations: → - find(x): Find root/representative of x's set | - find(x): Find root/representative of x's set → - union(x, y): Merge sets containing x and y | - union(x, y): Merge sets containing x and y → Optimizations: | Optimizations: → 1. Path Compression: Flatten tree during find | 1. Path Compression: Flatten tree during find → 2. Union by Rank: Attach smaller tree under larger | ...+1 more
+**Flow:**
+- UNION-FIND DATA STRUCTURE
+- ↓
+- Operations:
+- ↓
+- - find(x): Find root/representative of x's set
+- ↓
+- - union(x, y): Merge sets containing x and y
+- ↓
+- Optimizations:
+- ↓
+- 1. Path Compression: Flatten tree during find
+- ↓
+- 2. Union by Rank: Attach smaller tree under larger
 
 ```mermaid
 flowchart TD
@@ -1484,7 +1676,20 @@ flowchart TD
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: NUMBER OF CONNECTED COMPONENTS → n = 5, edges = [[0,1], [1,2], [3,4]] | n = 5, edges = [[0,1], [1,2], [3,4]] → Component 1: {0,1,2} | Component 1: {0,1,2} → Component 2: {3,4} | Component 2: {3,4} → Output: 2 | Output: 2 → Constraints: | Constraints: → - 0 &lt;= edges.length &lt;= 5000 | ...+1 more
+**Flow:**
+- NUMBER OF CONNECTED COMPONENTS
+- ↓
+- n = 5, edges = [[0,1], [1,2], [3,4]]
+- ↓
+- Component 1: {0,1,2}
+- ↓
+- Component 2: {3,4}
+- ↓
+- Output: 2
+- ↓
+- Constraints:
+- ↓
+- - 0 <= edges.length <= 5000
 
 ```mermaid
 flowchart TD
@@ -1573,7 +1778,16 @@ private boolean union(int[] parent, int[] rank, int x, int y) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: REDUNDANT CONNECTION - Find edge that creates cycle → edges = [[1,2], [1,3], [2,3]] | edges = [[1,2], [1,3], [2,3]] → 2 3 Edge [2,3] creates the cycle | 2 3 Edge [2,3] creates the cycle → Return the last edge that creates a cycle | Return the last edge that creates a cycle → Output: [2, 3]
+**Flow:**
+- REDUNDANT CONNECTION - Find edge that creates cycle
+- ↓
+- edges = [[1,2], [1,3], [2,3]]
+- ↓
+- 2 3 Edge [2,3] creates the cycle
+- ↓
+- Return the last edge that creates a cycle
+- ↓
+- Output: [2, 3]
 
 ```mermaid
 flowchart TD
@@ -1648,7 +1862,20 @@ private int find(int[] parent, int x) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: ACCOUNTS MERGE - Merge accounts with same email → accounts = [ | accounts = [ → ['John', 'john@mail.com', 'john_work@mail.com'], | ['John', 'john@mail.com', 'john_work@mail.com'], → ['John', 'john@mail.com', 'john_home@mail.com'], | ['John', 'john@mail.com', 'john_home@mail.com'], → ['Mary', 'mary@mail.com'], | ['Mary', 'mary@mail.com'], → ['John', 'johnny@mail.com'] | ['John', 'johnny@mail.com'] → John (account 0) and John (account 1) share 'john@mail. | ...+1 more
+**Flow:**
+- ACCOUNTS MERGE - Merge accounts with same email
+- ↓
+- accounts = [
+- ↓
+- ['John', 'john@mail.com', 'john_work@mail.com'],
+- ↓
+- ['John', 'john@mail.com', 'john_home@mail.com'],
+- ↓
+- ['Mary', 'mary@mail.com'],
+- ↓
+- ['John', 'johnny@mail.com']
+- ↓
+- John (account 0) and John (account 1) share 'john@mail.
 
 ```mermaid
 flowchart TD
@@ -1761,7 +1988,38 @@ private void union(Map<String, String> parent, String x, String y) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WORD LADDER - Shortest transformation sequence → beginWord = 'hit', endWord = 'cog' | beginWord = 'hit', endWord = 'cog' → wordList = ['hot','dot','dog','lot','log','cog'] | wordList = ['hot','dot','dog','lot','log','cog'] → Transformation: Change one letter at a time | Transformation: Change one letter at a time → Each intermediate word must be in wordList | Each intermediate word must be in wordList → hit → hot → dot → dog → cog | hit → hot → dot → dog → cog → → 5 words | ...+1 more
+**Flow:**
+- WORD LADDER - Shortest transformation sequence
+- ↓
+- beginWord = 'hit', endWord = 'cog'
+- ↓
+- wordList = ['hot','dot','dog','lot','log','cog']
+- ↓
+- Transformation: Change one letter at a time
+- ↓
+- Each intermediate word must be in wordList
+- ↓
+- hit
+- ↓
+- hot
+- ↓
+- dot
+- ↓
+- dog
+- ↓
+- cog
+- ↓
+- hit
+- ↓
+- hot
+- ↓
+- dot
+- ↓
+- dog
+- ↓
+- cog
+- ↓
+- 5 words
 
 ```mermaid
 flowchart TD
@@ -1860,7 +2118,34 @@ public int ladderLength(String beginWord, String endWord, List<String> wordList)
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: ALIEN DICTIONARY - Find character order from sorted wor → words = ['wrt', 'wrf', 'er', 'ett', 'rftt'] | words = ['wrt', 'wrf', 'er', 'ett', 'rftt'] → These words are sorted in alien language order | These words are sorted in alien language order → Compare adjacent words to find relationships: | Compare adjacent words to find relationships: → 'wrt' vs 'wrf' → t comes before f (t &lt; f) | 'wrt' vs 'wrf' → t comes before f (t &lt; f) → 'wrf' vs 'er' → w comes before e (w &lt; e) | 'wrf' vs 'er' → w comes before e (w &lt; e) → 'er' vs 'ett' → r comes before t (r &lt; t) | ...+1 more
+**Flow:**
+- ALIEN DICTIONARY - Find character order from sorted wor
+- ↓
+- words = ['wrt', 'wrf', 'er', 'ett', 'rftt']
+- ↓
+- These words are sorted in alien language order
+- ↓
+- Compare adjacent words to find relationships:
+- ↓
+- 'wrt' vs 'wrf'
+- ↓
+- t comes before f (t < f)
+- ↓
+- 'wrt' vs 'wrf'
+- ↓
+- t comes before f (t < f)
+- ↓
+- 'wrf' vs 'er'
+- ↓
+- w comes before e (w < e)
+- ↓
+- 'wrf' vs 'er'
+- ↓
+- w comes before e (w < e)
+- ↓
+- 'er' vs 'ett'
+- ↓
+- r comes before t (r < t)
 
 ```mermaid
 flowchart TD
@@ -1961,7 +2246,16 @@ public String alienOrder(String[] words) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: IS GRAPH BIPARTITE - Can nodes be divided into 2 sets? → A graph is bipartite if we can color nodes with 2 color | A graph is bipartite if we can color nodes with 2 color → such that no two adjacent nodes have the same color. | such that no two adjacent nodes have the same color. → Bipartite: Not Bipartite: | Bipartite: Not Bipartite: → Colors: 0,2=RED, 1,3=BLUE Triangle can't be 2-colored
+**Flow:**
+- IS GRAPH BIPARTITE - Can nodes be divided into 2 sets?
+- ↓
+- A graph is bipartite if we can color nodes with 2 color
+- ↓
+- such that no two adjacent nodes have the same color.
+- ↓
+- Bipartite: Not Bipartite:
+- ↓
+- Colors: 0,2=RED, 1,3=BLUE Triangle can't be 2-colored
 
 ```mermaid
 flowchart TD
@@ -2043,7 +2337,20 @@ private boolean bfs(int[][] graph, int[] colors, int start) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: FIND THE TOWN JUDGE → In a town of n people, one might be the judge. | In a town of n people, one might be the judge. → The judge: | The judge: → 1. Trusts nobody | 1. Trusts nobody → 2. Everybody else trusts the judge | 2. Everybody else trusts the judge → trust = [[1,2], [3,2]] (a trusts b) | trust = [[1,2], [3,2]] (a trusts b) → Person 2: in-degree = 2 (n-1), out-degree = 0 | ...+1 more
+**Flow:**
+- FIND THE TOWN JUDGE
+- ↓
+- In a town of n people, one might be the judge.
+- ↓
+- The judge:
+- ↓
+- 1. Trusts nobody
+- ↓
+- 2. Everybody else trusts the judge
+- ↓
+- trust = [[1,2], [3,2]] (a trusts b)
+- ↓
+- Person 2: in-degree = 2 (n-1), out-degree = 0
 
 ```mermaid
 flowchart TD
@@ -2113,7 +2420,18 @@ public int findJudge(int n, int[][] trust) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: MINIMUM SPANNING TREE - Kruskal's Algorithm → Connect all nodes with minimum total edge weight | Connect all nodes with minimum total edge weight → n = 4, edges = [[1,2,1], [1,3,4], [2,3,2], [3,4,3]] | n = 4, edges = [[1,2,1], [1,3,4], [2,3,2], [3,4,3]] → MST edges: [1,2,1], [2,3,2], [3,4,3] | MST edges: [1,2,1], [2,3,2], [3,4,3] → Total weight = 1 + 2 + 3 = 6 | Total weight = 1 + 2 + 3 = 6 → Kruskal's: Sort edges, add if doesn't create cycle
+**Flow:**
+- MINIMUM SPANNING TREE - Kruskal's Algorithm
+- ↓
+- Connect all nodes with minimum total edge weight
+- ↓
+- n = 4, edges = [[1,2,1], [1,3,4], [2,3,2], [3,4,3]]
+- ↓
+- MST edges: [1,2,1], [2,3,2], [3,4,3]
+- ↓
+- Total weight = 1 + 2 + 3 = 6
+- ↓
+- Kruskal's: Sort edges, add if doesn't create cycle
 
 ```mermaid
 flowchart TD
@@ -2188,7 +2506,16 @@ private int find(int[] parent, int x) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: DETECT CYCLE IN UNDIRECTED GRAPH → Has Cycle: No Cycle: | Has Cycle: No Cycle: → DFS: If we visit a node that's already visited and | DFS: If we visit a node that's already visited and → it's not the parent → cycle detected
+**Flow:**
+- DETECT CYCLE IN UNDIRECTED GRAPH
+- ↓
+- Has Cycle: No Cycle:
+- ↓
+- DFS: If we visit a node that's already visited and
+- ↓
+- it's not the parent
+- ↓
+- cycle detected
 
 ```mermaid
 flowchart TD
@@ -2275,7 +2602,20 @@ private boolean dfs(List<List<Integer>> graph, boolean[] visited,
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: STRONGLY CONNECTED COMPONENTS (Kosaraju's Algorithm) → A directed graph's SCC is a maximal set of vertices whe | A directed graph's SCC is a maximal set of vertices whe → every vertex is reachable from every other vertex. | every vertex is reachable from every other vertex. → SCC 1: {0, 1, 2} (form a cycle) | SCC 1: {0, 1, 2} (form a cycle) → SCC 2: {3, 4} (form a cycle) | SCC 2: {3, 4} (form a cycle) → Kosaraju's Algorithm: | Kosaraju's Algorithm: → 1. DFS to get finish order | ...+1 more
+**Flow:**
+- STRONGLY CONNECTED COMPONENTS (Kosaraju's Algorithm)
+- ↓
+- A directed graph's SCC is a maximal set of vertices whe
+- ↓
+- every vertex is reachable from every other vertex.
+- ↓
+- SCC 1: {0, 1, 2} (form a cycle)
+- ↓
+- SCC 2: {3, 4} (form a cycle)
+- ↓
+- Kosaraju's Algorithm:
+- ↓
+- 1. DFS to get finish order
 
 ```mermaid
 flowchart TD

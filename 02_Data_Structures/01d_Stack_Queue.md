@@ -72,7 +72,18 @@ PHYSICAL REALITY - Like a stack of plates:
 └────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: PHYSICAL REALITY - Like a stack of plates: → TOP → | TOP → → 5 ← Last In, First Out (LIFO) | 5 ← Last In, First Out (LIFO) → PUSH: Add to top | PUSH: Add to top → POP: Remove from top | POP: Remove from top → PEEK: Look at top without removing
+**Flow:**
+- PHYSICAL REALITY - Like a stack of plates:
+- ↓
+- TOP
+- ↓
+- 5 ← Last In, First Out (LIFO)
+- ↓
+- PUSH: Add to top
+- ↓
+- POP: Remove from top
+- ↓
+- PEEK: Look at top without removing
 
 ```mermaid
 flowchart TD
@@ -122,7 +133,14 @@ flowchart TD
 └─────────────┘
 ```
 
-> **Flow**: C() addr ← Top (current) → B() addr | B() addr → A() addr | A() addr → main() addr
+**Flow:**
+- C() addr ← Top (current)
+- ↓
+- B() addr
+- ↓
+- A() addr
+- ↓
+- main() addr
 
 ```mermaid
 flowchart TD
@@ -264,7 +282,18 @@ NOW USED IN:
 - JSON parsers
 ```
 
-> **Flow**: - See '(' → push ')' | - See '{' → push '}' | - See ')' → pop, check if matches
+**Flow:**
+- - See '('
+- ↓
+- push ')'
+- ↓
+- - See '{'
+- ↓
+- push '}'
+- ↓
+- - See ')'
+- ↓
+- pop, check if matches
 
 ```mermaid
 flowchart LR
@@ -306,7 +335,18 @@ PHYSICAL REALITY - Like a line at a store:
 └────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: PHYSICAL REALITY - Like a line at a store: → FRONT BACK | FRONT BACK → Dequeue Enqueue | Dequeue Enqueue → (Remove) (Add) | (Remove) (Add) → FIFO = First In, First Out | FIFO = First In, First Out → 'First come, first served'
+**Flow:**
+- PHYSICAL REALITY - Like a line at a store:
+- ↓
+- FRONT BACK
+- ↓
+- Dequeue Enqueue
+- ↓
+- (Remove) (Add)
+- ↓
+- FIFO = First In, First Out
+- ↓
+- 'First come, first served'
 
 ```mermaid
 flowchart TD
@@ -350,7 +390,28 @@ PRINT QUEUE:
 └────────────────────────────────────────┘
 ```
 
-> **Flow**: PRINT QUEUE: → Front Back | Front Back → [Job1] → [Job2] → [Job3] → [Job4] | [Job1] → [Job2] → [Job3] → [Job4] → Printing New jobs
+**Flow:**
+- PRINT QUEUE:
+- ↓
+- Front Back
+- ↓
+- [Job1]
+- ↓
+- [Job2]
+- ↓
+- [Job3]
+- ↓
+- [Job4]
+- ↓
+- [Job1]
+- ↓
+- [Job2]
+- ↓
+- [Job3]
+- ↓
+- [Job4]
+- ↓
+- Printing New jobs
 
 ```mermaid
 flowchart TD

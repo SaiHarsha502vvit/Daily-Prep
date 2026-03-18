@@ -48,7 +48,10 @@ Trie = Tree where each edge is a CHARACTER
        Path from root = PREFIX
 ```
 
-> **Flow**: HashMap approach: Check ALL 1M words → O(N * L)
+**Flow:**
+- HashMap approach: Check ALL 1M words
+- ↓
+- O(N * L)
 
 ```mermaid
 flowchart LR
@@ -227,7 +230,16 @@ Finding 'Smith': root → R (go right) → S is in R-U → leaf → found!
 Only 3 levels checked instead of 1M rows
 ```
 
-> **Flow**: Finding 'Smith': root → R (go right) | R (go right) → S is in R-U | S is in R-U → leaf | leaf → found!
+**Flow:**
+- Finding 'Smith': root
+- ↓
+- R (go right)
+- ↓
+- S is in R-U
+- ↓
+- leaf
+- ↓
+- found!
 
 ```mermaid
 flowchart LR

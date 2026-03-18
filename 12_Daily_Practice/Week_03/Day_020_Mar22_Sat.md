@@ -54,7 +54,20 @@ CLIENT (Browser/Mobile/Postman)
 └───────────────────────────────────────┘
 ```
 
-> **Flow**: CLIENT (Browser/Mobile/Postman) → ↓ HTTP Request | ↓ HTTP Request → @RestController ← Handles HTTP, validates input | @RestController ← Handles HTTP, validates input → ProductController Returns JSON responses | ProductController Returns JSON responses → @Service ← Business logic | @Service ← Business logic → ProductService Validation rules, calculations | ProductService Validation rules, calculations → @Repository ← Data access | ...+1 more
+**Flow:**
+- CLIENT (Browser/Mobile/Postman)
+- ↓
+- ↓ HTTP Request
+- ↓
+- @RestController ← Handles HTTP, validates input
+- ↓
+- ProductController Returns JSON responses
+- ↓
+- @Service ← Business logic
+- ↓
+- ProductService Validation rules, calculations
+- ↓
+- @Repository ← Data access
 
 ```mermaid
 flowchart TD
@@ -155,7 +168,20 @@ public class ProductController {
 └─────────┴────────────┴──────────────┴──────────────────┘
 ```
 
-> **Flow**: HTTP CRUD URL Response Code → GET Read /products 200 OK | GET Read /products 200 OK → GET Read one /products/1 200 or 404 | GET Read one /products/1 200 or 404 → POST Create /products 201 Created | POST Create /products 201 Created → PUT Full update /products/1 200 OK | PUT Full update /products/1 200 OK → PATCH Partial /products/1 200 OK | PATCH Partial /products/1 200 OK → DELETE Delete /products/1 204 No Content
+**Flow:**
+- HTTP CRUD URL Response Code
+- ↓
+- GET Read /products 200 OK
+- ↓
+- GET Read one /products/1 200 or 404
+- ↓
+- POST Create /products 201 Created
+- ↓
+- PUT Full update /products/1 200 OK
+- ↓
+- PATCH Partial /products/1 200 OK
+- ↓
+- DELETE Delete /products/1 204 No Content
 
 ```mermaid
 flowchart TD
@@ -469,7 +495,20 @@ Spring Boot:
   @Valid + @RestControllerAdvice = clean error handling
 ```
 
-> **Flow**: UNION/CASE → Window Functions | Window Functions → LAG/LEAD | LAG/LEAD → CTEs | Controller → Service | Service → Repository layers
+**Flow:**
+- UNION/CASE
+- ↓
+- Window Functions
+- ↓
+- LAG/LEAD
+- ↓
+- CTEs
+- ↓
+- Controller
+- ↓
+- Service
+- ↓
+- Repository layers
 
 ```mermaid
 flowchart TD

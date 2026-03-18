@@ -46,7 +46,14 @@ RIGHT ROTATE by 2:
     Step 3: Reverse remaining elements: [4, 5, 1, 2, 3]
 ```
 
-> **Flow**: [1, 2, 3, 4, 5] → [3, 4, 5, 1, 2] | [1, 2, 3, 4, 5] → [4, 5, 1, 2, 3]
+**Flow:**
+- [1, 2, 3, 4, 5]
+- ↓
+- [3, 4, 5, 1, 2]
+- ↓
+- [1, 2, 3, 4, 5]
+- ↓
+- [4, 5, 1, 2, 3]
 
 ```mermaid
 flowchart LR
@@ -162,7 +169,20 @@ WHY THIS MATTERS:
   - Real example: Excel multi-column sort depends on stability
 ```
 
-> **Flow**: STABLE SORT: Equal elements maintain their original ord → Example: Sort students by grade (ignore name): | Example: Sort students by grade (ignore name): → STABLE sort by grade: | STABLE sort by grade: → ↑ A's keep original order: Bob before Diana | ↑ A's keep original order: Bob before Diana → ↑ B's keep original order: Alice before Charlie | ↑ B's keep original order: Alice before Charlie → UNSTABLE sort by grade (could produce): | UNSTABLE sort by grade (could produce): → ↑ Order among equals is NOT guaranteed | ...+1 more
+**Flow:**
+- STABLE SORT: Equal elements maintain their original ord
+- ↓
+- Example: Sort students by grade (ignore name):
+- ↓
+- STABLE sort by grade:
+- ↓
+- ↑ A's keep original order: Bob before Diana
+- ↓
+- ↑ B's keep original order: Alice before Charlie
+- ↓
+- UNSTABLE sort by grade (could produce):
+- ↓
+- ↑ Order among equals is NOT guaranteed
 
 ```mermaid
 flowchart TD
@@ -223,7 +243,20 @@ SURPRISE: Insertion Sort is OPTIMAL for:
   4. Stable sorting needed with O(1) space
 ```
 
-> **Flow**: SURPRISE: Insertion Sort is OPTIMAL for: → 1. Small arrays (n &lt; 10-15): Less overhead than quic | 1. Small arrays (n &lt; 10-15): Less overhead than quic → → Java's Arrays.sort() uses insertion sort for n &lt; 4 | → Java's Arrays.sort() uses insertion sort for n &lt; 4 → 2. Nearly sorted arrays: O(n) best case | 2. Nearly sorted arrays: O(n) best case → → If only 1-2 elements are out of place, it's LINEAR | → If only 1-2 elements are out of place, it's LINEAR → 3. Online sorting: Can sort as data arrives (streaming) | 3. Online sorting: Can sort as data arrives (streaming) → 4. Stable sorting needed with O(1) space
+**Flow:**
+- SURPRISE: Insertion Sort is OPTIMAL for:
+- ↓
+- 1. Small arrays (n < 10-15): Less overhead than quic
+- ↓
+- Java's Arrays.sort() uses insertion sort for n < 4
+- ↓
+- 2. Nearly sorted arrays: O(n) best case
+- ↓
+- If only 1-2 elements are out of place, it's LINEAR
+- ↓
+- 3. Online sorting: Can sort as data arrives (streaming)
+- ↓
+- 4. Stable sorting needed with O(1) space
 
 ```mermaid
 flowchart TD
@@ -266,7 +299,28 @@ KEY INSIGHT: Merge from the END to avoid overwriting!
   Result: [1, 2, 2, 3, 5, 6] ✓
 ```
 
-> **Flow**: i=2( → 3), j=2( | 3), j=2( → 6), k=5 | Compare 3 vs 6: 6 is bigger → nums1[5]=6, j--, k-- | Compare 3 vs 5: 5 is bigger → nums1[4]=5, j--, k-- | Compare 3 vs 2: 3 is bigger → nums1[3]=3, i--, k-- | Compare 2 vs 2: equal → nums1[2]=2, j--, k--
+**Flow:**
+- i=2(
+- ↓
+- 3), j=2(
+- ↓
+- 6), k=5
+- ↓
+- Compare 3 vs 6: 6 is bigger
+- ↓
+- nums1[5]=6, j--, k--
+- ↓
+- Compare 3 vs 5: 5 is bigger
+- ↓
+- nums1[4]=5, j--, k--
+- ↓
+- Compare 3 vs 2: 3 is bigger
+- ↓
+- nums1[3]=3, i--, k--
+- ↓
+- Compare 2 vs 2: equal
+- ↓
+- nums1[2]=2, j--, k--
 
 ```mermaid
 flowchart TD
@@ -378,7 +432,30 @@ CHOOSING THE RIGHT TYPE:
   Storing true/false?  → BOOLEAN — stored as TINYINT(1)
 ```
 
-> **Flow**: Storing ages? → TINYINT (0-255, 1 byte) — NOT INT (wastes 3 bytes) | Storing money? → DECIMAL(10,2) — NEVER FLOAT (precision errors!) | Storing a name? → VARCHAR(100) — NOT CHAR (wastes space on short nam | Storing a password? → CHAR(60) — bcrypt hash is always 60 chars | Storing a country? → CHAR(2) — ISO codes are always 2 chars (IN, US, UK | Storing created_at? → TIMESTAMP — auto timezone conversion, 4 bytes | ...+2 more
+**Flow:**
+- Storing ages?
+- ↓
+- TINYINT (0-255, 1 byte) — NOT INT (wastes 3 bytes)
+- ↓
+- Storing money?
+- ↓
+- DECIMAL(10,2) — NEVER FLOAT (precision errors!)
+- ↓
+- Storing a name?
+- ↓
+- VARCHAR(100) — NOT CHAR (wastes space on short nam
+- ↓
+- Storing a password?
+- ↓
+- CHAR(60) — bcrypt hash is always 60 chars
+- ↓
+- Storing a country?
+- ↓
+- CHAR(2) — ISO codes are always 2 chars (IN, US, UK
+- ↓
+- Storing created_at?
+- ↓
+- TIMESTAMP — auto timezone conversion, 4 bytes
 
 ```mermaid
 flowchart TD

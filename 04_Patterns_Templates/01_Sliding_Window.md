@@ -305,7 +305,12 @@ _, _, [5, 1, 3] | _
 Count = j - i + 1 = 4 - 2 + 1 = 3 ✅
 ```
 
-> **Flow**: Window at i=0, j=2: → Window at i=1, j=3: | Window at i=1, j=3: → Window at i=2, j=4:
+**Flow:**
+- Window at i=0, j=2:
+- ↓
+- Window at i=1, j=3:
+- ↓
+- Window at i=2, j=4:
 
 ```mermaid
 flowchart TD
@@ -360,7 +365,20 @@ The first form is a QUESTION, not a FORMULA.
 Questions are easier to remember than formulas!
 ```
 
-> **Flow**: THE EQUIVALENCE CHAIN - WHY j-i+1=k WORKS → These THREE expressions are MATHEMATICALLY EQUIVALENT: | These THREE expressions are MATHEMATICALLY EQUIVALENT: → j - i + 1 = k ← 'Window has K elements' ⭐ BEST! | j - i + 1 = k ← 'Window has K elements' ⭐ BEST! → j = i + k - 1 ← 'j is at last valid position' | j = i + k - 1 ← 'j is at last valid position' → j &lt; i + k ← 'j hasn't crossed boundary' | j &lt; i + k ← 'j hasn't crossed boundary' → Mathematical Proof: | Mathematical Proof: → Start with: j - i + 1 = k | ...+1 more
+**Flow:**
+- THE EQUIVALENCE CHAIN - WHY j-i+1=k WORKS
+- ↓
+- These THREE expressions are MATHEMATICALLY EQUIVALENT:
+- ↓
+- j - i + 1 = k ← 'Window has K elements' ⭐ BEST!
+- ↓
+- j = i + k - 1 ← 'j is at last valid position'
+- ↓
+- j < i + k ← 'j hasn't crossed boundary'
+- ↓
+- Mathematical Proof:
+- ↓
+- Start with: j - i + 1 = k
 
 ```mermaid
 flowchart TD
@@ -391,7 +409,12 @@ j = i + k - 1          ← "j is at last valid position"
 j < i + k              ← "j hasn't crossed boundary"
 ```
 
-> **Flow**: j - i + 1 = k ← 'Window has K elements' (BEST!) → j = i + k - 1 ← 'j is at last valid position' | j = i + k - 1 ← 'j is at last valid position' → j &lt; i + k ← 'j hasn't crossed boundary'
+**Flow:**
+- j - i + 1 = k ← 'Window has K elements' (BEST!)
+- ↓
+- j = i + k - 1 ← 'j is at last valid position'
+- ↓
+- j < i + k ← 'j hasn't crossed boundary'
 
 ```mermaid
 flowchart TD
@@ -446,7 +469,12 @@ CONCLUSION: Only "j < i + k" works, but it's HARD to remember!
 SOLUTION: Use "j - i + 1 == k" and NEVER think about it again!
 ```
 
-> **Flow**: USING j &lt; i + k: / j &lt; 0 + 3 / j &lt; 3 / Valid j → USING j &lt;= i + k: ❌ WRONG / j &lt;= 0 + 3 / j &lt;=  | USING j &lt;= i + k: ❌ WRONG / j &lt;= 0 + 3 / j &lt;=  → USING j &lt; k: ❌ WRONG (after first window) / After i 
+**Flow:**
+- USING j < i + k: / j < 0 + 3 / j < 3 / Valid j
+- ↓
+- USING j <= i + k: ❌ WRONG / j <= 0 + 3 / j <=
+- ↓
+- USING j < k: ❌ WRONG (after first window) / After i
 
 ```mermaid
 flowchart TD
@@ -572,7 +600,22 @@ j=4: i=3, window=[-2,5], count=4-3+1=2 ✅ PROCESS → i becomes 4
 Total windows processed: 4 = n - k + 1 = 5 - 2 + 1 ✅
 ```
 
-> **Flow**: j=1: i=0, window=[10,-1], count=1-0+1=2 ✅ PROCESS → i becomes 1 | j=2: i=1, window=[-1,3], count=2-1+1=2 ✅ PROCESS → i becomes 2 | j=3: i=2, window=[3,-2], count=3-2+1=2 ✅ PROCESS → i becomes 3 | j=4: i=3, window=[-2,5], count=4-3+1=2 ✅ PROCESS → i becomes 4
+**Flow:**
+- j=1: i=0, window=[10,-1], count=1-0+1=2 ✅ PROCESS
+- ↓
+- i becomes 1
+- ↓
+- j=2: i=1, window=[-1,3], count=2-1+1=2 ✅ PROCESS
+- ↓
+- i becomes 2
+- ↓
+- j=3: i=2, window=[3,-2], count=3-2+1=2 ✅ PROCESS
+- ↓
+- i becomes 3
+- ↓
+- j=4: i=3, window=[-2,5], count=4-3+1=2 ✅ PROCESS
+- ↓
+- i becomes 4
 
 ```mermaid
 flowchart LR
@@ -734,7 +777,12 @@ When it equals k, I'm ready."
 → Confidence, clarity, correctness
 ```
 
-> **Flow**: 'How many elements? j - i + 1 → When it equals k, I'm ready.' | When it equals k, I'm ready.' → → Confidence, clarity, correctness
+**Flow:**
+- 'How many elements? j - i + 1
+- ↓
+- When it equals k, I'm ready.'
+- ↓
+- Confidence, clarity, correctness
 
 ```mermaid
 flowchart TD

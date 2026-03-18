@@ -179,7 +179,26 @@ SIMPLE USER FLOW EXAMPLE - LOGIN:
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Visit / Website → Login Page | Login Page → Enter / Credentials | Login Page → Invalid / Credentials | Enter / Credentials → Submit | Submit → Success! / Dashboard | Invalid / Credentials → Show Error / Try Again
+**Flow:**
+- Visit / Website
+- ↓
+- Login Page
+- ↓
+- Enter / Credentials
+- ↓
+- Login Page
+- ↓
+- Invalid / Credentials
+- ↓
+- Enter / Credentials
+- ↓
+- Submit
+- ↓
+- Success! / Dashboard
+- ↓
+- Invalid / Credentials
+- ↓
+- Show Error / Try Again
 
 ```mermaid
 flowchart TD
@@ -234,7 +253,20 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: STANDARD FLOW SYMBOLS → SYMBOL MEANING | SYMBOL MEANING → RECTANGLE: Screen/Page/State | RECTANGLE: Screen/Page/State → A UI screen or application state | A UI screen or application state → ◇ DIAMOND: Decision Point | ◇ DIAMOND: Decision Point → / \ User makes a choice or system checks condition | / \ User makes a choice or system checks condition → ARROW: Flow Direction | ...+1 more
+**Flow:**
+- STANDARD FLOW SYMBOLS
+- ↓
+- SYMBOL MEANING
+- ↓
+- RECTANGLE: Screen/Page/State
+- ↓
+- A UI screen or application state
+- ↓
+- ◇ DIAMOND: Decision Point
+- ↓
+- / \ User makes a choice or system checks condition
+- ↓
+- ARROW: Flow Direction
 
 ```mermaid
 flowchart TD
@@ -328,7 +360,24 @@ flowchart TD
     (End: Order Placed)    Back to Payment
 ```
 
-> **Flow**: Cart Summary Page / - View items / - Update quantities  → Use saved / address | Use saved / address → Shipping Method / - Standard (5 days) / - Express (2 da | Enter shipping / address → Error Message / Retry or change / payment method | Shipping Method / - Standard (5 days) / - Express (2 da → Payment Method / - Credit Card / - PayPal / - Apple Pay | Payment Method / - Credit Card / - PayPal / - Apple Pay → Order Review / - Items summary / - Total with tax / - S | Order Review / - Items summary / - Total with tax / - S → Confirmation / Page / - Order # / - ETA / - Email sent
+**Flow:**
+- Cart Summary Page / - View items / - Update quantities
+- ↓
+- Use saved / address
+- ↓
+- Shipping Method / - Standard (5 days) / - Express (2 da
+- ↓
+- Enter shipping / address
+- ↓
+- Error Message / Retry or change / payment method
+- ↓
+- Shipping Method / - Standard (5 days) / - Express (2 da
+- ↓
+- Payment Method / - Credit Card / - PayPal / - Apple Pay
+- ↓
+- Order Review / - Items summary / - Total with tax / - S
+- ↓
+- Confirmation / Page / - Order # / - ETA / - Email sent
 
 ```mermaid
 flowchart TD
@@ -455,7 +504,14 @@ DATA TRANSFORMATIONS:
 └────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: FRONTEND / (Validation) → STAGE DATA FORMAT TRANSFORMATION / User Input Form fiel | BACKEND / (Process) → STAGE DATA FORMAT TRANSFORMATION / User Input Form fiel
+**Flow:**
+- FRONTEND / (Validation)
+- ↓
+- STAGE DATA FORMAT TRANSFORMATION / User Input Form fiel
+- ↓
+- BACKEND / (Process)
+- ↓
+- STAGE DATA FORMAT TRANSFORMATION / User Input Form fiel
 
 ```mermaid
 flowchart TD
@@ -553,7 +609,24 @@ USER REQUEST: GET /api/products/123
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: USER / Browser → DNS | DNS → CDN | CDN → LOAD BALANCER | LOAD BALANCER → Server 2 | LOAD BALANCER → Server 3 | Server 1 → API GATEWAY / - Auth check / - Rate limit / - Logging | ...+9 more
+**Flow:**
+- USER / Browser
+- ↓
+- DNS
+- ↓
+- CDN
+- ↓
+- LOAD BALANCER
+- ↓
+- Server 2
+- ↓
+- LOAD BALANCER
+- ↓
+- Server 3
+- ↓
+- Server 1
+- ↓
+- API GATEWAY / - Auth check / - Rate limit / - Logging
 
 ```mermaid
 flowchart TD
@@ -654,7 +727,14 @@ STEP 4: IDENTIFY ERROR CASES
 STEP 5: DRAW THE COMPLETE FLOW
 ```
 
-> **Flow**: Ask: 'What is the user trying to achieve?' / Example: ' → Ask: 'Who/What is involved in this flow?' / Example: /  | Ask: 'Who/What is involved in this flow?' / Example: /  → Ask: 'What happens when everything works perfectly?' /  | Ask: 'What happens when everything works perfectly?' /  → Ask: 'What could go wrong?' / Example Error Cases: / • 
+**Flow:**
+- Ask: 'What is the user trying to achieve?' / Example: '
+- ↓
+- Ask: 'Who/What is involved in this flow?' / Example: /
+- ↓
+- Ask: 'What happens when everything works perfectly?' /
+- ↓
+- Ask: 'What could go wrong?' / Example Error Cases: / •
 
 ```mermaid
 flowchart TD
@@ -909,7 +989,20 @@ For each exercise:
 6. Consider edge cases
 ```
 
-> **Flow**: FLOW DESIGN EXERCISES → EXERCISE 1: Password Reset Flow | EXERCISE 1: Password Reset Flow → EXERCISE 2: File Upload Flow | EXERCISE 2: File Upload Flow → EXERCISE 3: Real-time Chat Flow | EXERCISE 3: Real-time Chat Flow → EXERCISE 4: Shopping Cart Sync Flow | EXERCISE 4: Shopping Cart Sync Flow → Include: Local storage, server sync, conflict resolutio | Include: Local storage, server sync, conflict resolutio → EXERCISE 5: Two-Factor Authentication Flow | ...+1 more
+**Flow:**
+- FLOW DESIGN EXERCISES
+- ↓
+- EXERCISE 1: Password Reset Flow
+- ↓
+- EXERCISE 2: File Upload Flow
+- ↓
+- EXERCISE 3: Real-time Chat Flow
+- ↓
+- EXERCISE 4: Shopping Cart Sync Flow
+- ↓
+- Include: Local storage, server sync, conflict resolutio
+- ↓
+- EXERCISE 5: Two-Factor Authentication Flow
 
 ```mermaid
 flowchart TD
@@ -953,7 +1046,20 @@ flowchart TD
 □ Logging/monitoring points
 ```
 
-> **Flow**: FLOW DESIGN CHECKLIST → □ Clear START and END points | □ Clear START and END points → □ All decision points marked (diamonds) | □ All decision points marked (diamonds) → □ Happy path clearly visible | □ Happy path clearly visible → □ Error paths included | □ Error paths included → □ All actors/systems identified | □ All actors/systems identified → □ Data formats at each stage | ...+1 more
+**Flow:**
+- FLOW DESIGN CHECKLIST
+- ↓
+- □ Clear START and END points
+- ↓
+- □ All decision points marked (diamonds)
+- ↓
+- □ Happy path clearly visible
+- ↓
+- □ Error paths included
+- ↓
+- □ All actors/systems identified
+- ↓
+- □ Data formats at each stage
 
 ```mermaid
 flowchart TD

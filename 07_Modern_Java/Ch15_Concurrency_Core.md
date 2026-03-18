@@ -71,7 +71,20 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: PROCESS vs THREAD — The Apartment Analogy → PROCESS = An apartment | PROCESS = An apartment → - Isolated from other apartments | - Isolated from other apartments → - Expensive to create (need to allocate entire apartmen | - Expensive to create (need to allocate entire apartmen → THREAD = A person living in the apartment | THREAD = A person living in the apartment → - Shares the apartment's space (heap memory) | - Shares the apartment's space (heap memory) → - Has own bed/desk (stack, program counter, registers) | ...+1 more
+**Flow:**
+- PROCESS vs THREAD — The Apartment Analogy
+- ↓
+- PROCESS = An apartment
+- ↓
+- - Isolated from other apartments
+- ↓
+- - Expensive to create (need to allocate entire apartmen
+- ↓
+- THREAD = A person living in the apartment
+- ↓
+- - Shares the apartment's space (heap memory)
+- ↓
+- - Has own bed/desk (stack, program counter, registers)
 
 ```mermaid
 flowchart TD
@@ -137,7 +150,32 @@ t.start();
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: CRITICAL MISTAKE — start() vs run() → t.start() → Creates NEW thread, runs run() in that thre | t.start() → Creates NEW thread, runs run() in that thre → t.run() → Runs run() in CURRENT thread (no new thread!) | t.run() → Runs run() in CURRENT thread (no new thread!) → This is an interview classic. The JVM: | This is an interview classic. The JVM: → 1. Allocates new stack for the thread | 1. Allocates new stack for the thread → 2. Registers thread with OS scheduler | 2. Registers thread with OS scheduler → 3. OS gives it CPU time | ...+1 more
+**Flow:**
+- CRITICAL MISTAKE — start() vs run()
+- ↓
+- t.start()
+- ↓
+- Creates NEW thread, runs run() in that thre
+- ↓
+- t.start()
+- ↓
+- Creates NEW thread, runs run() in that thre
+- ↓
+- t.run()
+- ↓
+- Runs run() in CURRENT thread (no new thread!)
+- ↓
+- t.run()
+- ↓
+- Runs run() in CURRENT thread (no new thread!)
+- ↓
+- This is an interview classic. The JVM:
+- ↓
+- 1. Allocates new stack for the thread
+- ↓
+- 2. Registers thread with OS scheduler
+- ↓
+- 3. OS gives it CPU time
 
 ```mermaid
 flowchart TD
@@ -194,7 +232,20 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: NEW --(start())--> RUNNABLE | NEW → BLOCKED | RUNNABLE → nized sleep()/ I/O wait / get wait() / ck) / ▼ ▼ ▼ / KE | BLOCKED → TERMINATED
+**Flow:**
+- NEW --(start())--> RUNNABLE
+- ↓
+- NEW
+- ↓
+- BLOCKED
+- ↓
+- RUNNABLE
+- ↓
+- nized sleep()/ I/O wait / get wait() / ck) / ▼ ▼ ▼ / KE
+- ↓
+- BLOCKED
+- ↓
+- TERMINATED
 
 ```mermaid
 flowchart TD
@@ -278,7 +329,10 @@ daemon.start();
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: L1 Cache / flag = true → Main Memory / flag = true
+**Flow:**
+- L1 Cache / flag = true
+- ↓
+- Main Memory / flag = true
 
 ```mermaid
 flowchart TD
@@ -333,7 +387,20 @@ class CorrectStopFlag {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: volatile GUARANTEES: → ✅ Visibility — writes visible to all threads immediatel | ✅ Visibility — writes visible to all threads immediatel → volatile DOES NOT GUARANTEE: | volatile DOES NOT GUARANTEE: → ❌ Atomicity — count++ is STILL broken even with volatil | ❌ Atomicity — count++ is STILL broken even with volatil → (count++ = read + increment + write = 3 operations!) | (count++ = read + increment + write = 3 operations!) → WHEN TO USE volatile: | WHEN TO USE volatile: → ✅ Boolean flags (stop, done, initialized) | ...+1 more
+**Flow:**
+- volatile GUARANTEES:
+- ↓
+- ✅ Visibility — writes visible to all threads immediatel
+- ↓
+- volatile DOES NOT GUARANTEE:
+- ↓
+- ❌ Atomicity — count++ is STILL broken even with volatil
+- ↓
+- (count++ = read + increment + write = 3 operations!)
+- ↓
+- WHEN TO USE volatile:
+- ↓
+- ✅ Boolean flags (stop, done, initialized)
 
 ```mermaid
 flowchart TD
@@ -396,7 +463,20 @@ class BankAccount {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: and there's no synchronization. → Time Thread A Thread B balance | Time Thread A Thread B balance → t1 read balance (1000) 1000 | t1 read balance (1000) 1000 → t2 read balance (1000) 1000 | t2 read balance (1000) 1000 → t3 check: 1000&gt;=800 ✓ 1000 | t3 check: 1000&gt;=800 ✓ 1000 → t4 check: 1000&gt;=500 ✓ 1000 | t4 check: 1000&gt;=500 ✓ 1000 → t5 balance = 1000-800 200 | ...+1 more
+**Flow:**
+- and there's no synchronization.
+- ↓
+- Time Thread A Thread B balance
+- ↓
+- t1 read balance (1000) 1000
+- ↓
+- t2 read balance (1000) 1000
+- ↓
+- t3 check: 1000>=800 ✓ 1000
+- ↓
+- t4 check: 1000>=500 ✓ 1000
+- ↓
+- t5 balance = 1000-800 200
 
 ```mermaid
 flowchart TD
@@ -476,7 +556,26 @@ class SafeBankAccount {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: HOW synchronized WORKS INTERNALLY → Thread A enters synchronized: | Thread A enters synchronized: → 1. Try to acquire the object's monitor | 1. Try to acquire the object's monitor → 2. If free → acquire it, enter critical section | 2. If free → acquire it, enter critical section → Object Monitor | Object Monitor → Owner: Thread A | Owner: Thread A → Entry Set: [B, C] ← Threads waiting to acquire | ...+1 more
+**Flow:**
+- HOW synchronized WORKS INTERNALLY
+- ↓
+- Thread A enters synchronized:
+- ↓
+- 1. Try to acquire the object's monitor
+- ↓
+- 2. If free
+- ↓
+- acquire it, enter critical section
+- ↓
+- 2. If free
+- ↓
+- acquire it, enter critical section
+- ↓
+- Object Monitor
+- ↓
+- Owner: Thread A
+- ↓
+- Entry Set: [B, C] ← Threads waiting to acquire
 
 ```mermaid
 flowchart TD
@@ -549,7 +648,20 @@ class BoundedBuffer<T> {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: wait() vs notify() vs notifyAll() → notify() — Wake ONE random thread from wait set | notify() — Wake ONE random thread from wait set → RULES: | RULES: → • Must be called inside synchronized block (on same obj | • Must be called inside synchronized block (on same obj → The wait() + notify() Pattern: | The wait() + notify() Pattern: → synchronized(lock) { | synchronized(lock) { → lock.wait(); // Release lock and wait
+**Flow:**
+- wait() vs notify() vs notifyAll()
+- ↓
+- notify() — Wake ONE random thread from wait set
+- ↓
+- RULES:
+- ↓
+- • Must be called inside synchronized block (on same obj
+- ↓
+- The wait() + notify() Pattern:
+- ↓
+- synchronized(lock) {
+- ↓
+- lock.wait(); // Release lock and wait
 
 ```mermaid
 flowchart TD
@@ -596,7 +708,20 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: DEADLOCK — Two threads each holding a lock the other ne → Thread A: Thread B: | Thread A: Thread B: → lock(account1) lock(account2) | lock(account1) lock(account2) → lock(account2) ← WAIT lock(account1) ← WAIT | lock(account2) ← WAIT lock(account1) ← WAIT → ... forever ... ... forever ... | ... forever ... ... forever ... → Thread A holds account1, waits for account2 | Thread A holds account1, waits for account2 → Thread B holds account2, waits for account1 | ...+1 more
+**Flow:**
+- DEADLOCK — Two threads each holding a lock the other ne
+- ↓
+- Thread A: Thread B:
+- ↓
+- lock(account1) lock(account2)
+- ↓
+- lock(account2) ← WAIT lock(account1) ← WAIT
+- ↓
+- ... forever ... ... forever ...
+- ↓
+- Thread A holds account1, waits for account2
+- ↓
+- Thread B holds account2, waits for account1
 
 ```mermaid
 flowchart TD
@@ -675,7 +800,20 @@ class SafeTransfer {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: CAS: 'If value == expected, set to new. Otherwise, retr → CPU Instruction (single atomic operation): | CPU Instruction (single atomic operation): → compareAndSwap(memoryLocation, expectedValue, newValue) | compareAndSwap(memoryLocation, expectedValue, newValue) → → Returns true if swapped, false if value changed | → Returns true if swapped, false if value changed → Available Atomic Types: | Available Atomic Types: → AtomicInteger AtomicLong AtomicBoolean | AtomicInteger AtomicLong AtomicBoolean → AtomicReference AtomicArray LongAdder
+**Flow:**
+- CAS: 'If value == expected, set to new. Otherwise, retr
+- ↓
+- CPU Instruction (single atomic operation):
+- ↓
+- compareAndSwap(memoryLocation, expectedValue, newValue)
+- ↓
+- Returns true if swapped, false if value changed
+- ↓
+- Available Atomic Types:
+- ↓
+- AtomicInteger AtomicLong AtomicBoolean
+- ↓
+- AtomicReference AtomicArray LongAdder
 
 ```mermaid
 flowchart TD
@@ -735,7 +873,20 @@ adder.sum();         // Get final count (slightly delayed)
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHEN TO USE WHAT: → Need Use | Need Use → Simple counter AtomicInteger / AtomicLong | Simple counter AtomicInteger / AtomicLong → High-contention counter LongAdder | High-contention counter LongAdder → Boolean flag volatile boolean or AtomicBoolean | Boolean flag volatile boolean or AtomicBoolean → Reference swap AtomicReference | Reference swap AtomicReference → Multiple fields together synchronized or Lock | ...+1 more
+**Flow:**
+- WHEN TO USE WHAT:
+- ↓
+- Need Use
+- ↓
+- Simple counter AtomicInteger / AtomicLong
+- ↓
+- High-contention counter LongAdder
+- ↓
+- Boolean flag volatile boolean or AtomicBoolean
+- ↓
+- Reference swap AtomicReference
+- ↓
+- Multiple fields together synchronized or Lock
 
 ```mermaid
 flowchart TD
@@ -780,7 +931,46 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: THREAD-SAFE COLLECTIONS HIERARCHY → DON'T USE: USE INSTEAD: | DON'T USE: USE INSTEAD: → HashMap → ConcurrentHashMap | HashMap → ConcurrentHashMap → ArrayList → CopyOnWriteArrayList | ArrayList → CopyOnWriteArrayList → TreeMap → ConcurrentSkipListMap | TreeMap → ConcurrentSkipListMap → LinkedList (as queue) → ConcurrentLinkedQueue | LinkedList (as queue) → ConcurrentLinkedQueue → PriorityQueue → PriorityBlockingQueue | ...+1 more
+**Flow:**
+- THREAD-SAFE COLLECTIONS HIERARCHY
+- ↓
+- DON'T USE: USE INSTEAD:
+- ↓
+- HashMap
+- ↓
+- ConcurrentHashMap
+- ↓
+- HashMap
+- ↓
+- ConcurrentHashMap
+- ↓
+- ArrayList
+- ↓
+- CopyOnWriteArrayList
+- ↓
+- ArrayList
+- ↓
+- CopyOnWriteArrayList
+- ↓
+- TreeMap
+- ↓
+- ConcurrentSkipListMap
+- ↓
+- TreeMap
+- ↓
+- ConcurrentSkipListMap
+- ↓
+- LinkedList (as queue)
+- ↓
+- ConcurrentLinkedQueue
+- ↓
+- LinkedList (as queue)
+- ↓
+- ConcurrentLinkedQueue
+- ↓
+- PriorityQueue
+- ↓
+- PriorityBlockingQueue
 
 ```mermaid
 flowchart TD
@@ -862,7 +1052,20 @@ Task t = queue.take(); // Blocks if empty (consumer waits)
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: TOP 10 CONCURRENCY MISTAKES → 1. Using count++ instead of AtomicInteger | 1. Using count++ instead of AtomicInteger → 3. Forgetting volatile on shared boolean flags | 3. Forgetting volatile on shared boolean flags → 4. Using if instead of while with wait() | 4. Using if instead of while with wait() → 5. Calling run() instead of start() | 5. Calling run() instead of start() → 7. Locking on mutable objects ('test'.intern() disaster | 7. Locking on mutable objects ('test'.intern() disaster → 8. Holding locks while doing I/O | ...+1 more
+**Flow:**
+- TOP 10 CONCURRENCY MISTAKES
+- ↓
+- 1. Using count++ instead of AtomicInteger
+- ↓
+- 3. Forgetting volatile on shared boolean flags
+- ↓
+- 4. Using if instead of while with wait()
+- ↓
+- 5. Calling run() instead of start()
+- ↓
+- 7. Locking on mutable objects ('test'.intern() disaster
+- ↓
+- 8. Holding locks while doing I/O
 
 ```mermaid
 flowchart TD

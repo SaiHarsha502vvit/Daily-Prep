@@ -315,7 +315,20 @@ WHEN GREEDY WORKS:
 WHEN GREEDY FAILS:
 ```
 
-> **Flow**: GREEDY APPROACH: → Make the locally optimal choice at each step, | Make the locally optimal choice at each step, → hoping to find a global optimum. | hoping to find a global optimum. → GREEDY STRATEGY | GREEDY STRATEGY → 1. FEASIBILITY: Check if choice valid | 1. FEASIBILITY: Check if choice valid → 2. LOCAL OPTIMUM: Pick best option NOW | 2. LOCAL OPTIMUM: Pick best option NOW → 3. IRREVOCABLE: Never reconsider | ...+1 more
+**Flow:**
+- GREEDY APPROACH:
+- ↓
+- Make the locally optimal choice at each step,
+- ↓
+- hoping to find a global optimum.
+- ↓
+- GREEDY STRATEGY
+- ↓
+- 1. FEASIBILITY: Check if choice valid
+- ↓
+- 2. LOCAL OPTIMUM: Pick best option NOW
+- ↓
+- 3. IRREVOCABLE: Never reconsider
 
 ```mermaid
 flowchart TD

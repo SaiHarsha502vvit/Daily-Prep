@@ -157,7 +157,20 @@
   □ Write clean, readable SQL code
 ```
 
-> **Flow**: □ Database Fundamentals → □ Understand RDBMS architecture | □ Understand RDBMS architecture → □ Know SQL command categories (DDL, DML, DCL, TCL) | □ Know SQL command categories (DDL, DML, DCL, TCL) → □ Understand data types and when to use them | □ Understand data types and when to use them → □ Basic Operations | □ Basic Operations → □ Master SELECT with all clauses | □ Master SELECT with all clauses → □ Use all comparison and logical operators | ...+1 more
+**Flow:**
+- □ Database Fundamentals
+- ↓
+- □ Understand RDBMS architecture
+- ↓
+- □ Know SQL command categories (DDL, DML, DCL, TCL)
+- ↓
+- □ Understand data types and when to use them
+- ↓
+- □ Basic Operations
+- ↓
+- □ Master SELECT with all clauses
+- ↓
+- □ Use all comparison and logical operators
 
 ```mermaid
 flowchart TD

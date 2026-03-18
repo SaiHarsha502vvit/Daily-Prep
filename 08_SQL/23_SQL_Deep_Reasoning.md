@@ -104,7 +104,20 @@ SELECT COALESCE(phone, email, 'No contact') AS contact FROM users;
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: SQL EXECUTION ORDER (not the order you write it!): → 1. FROM / JOIN ← Identify the tables | 1. FROM / JOIN ← Identify the tables → 2. WHERE ← Filter INDIVIDUAL rows | 2. WHERE ← Filter INDIVIDUAL rows → 3. GROUP BY ← Create groups | 3. GROUP BY ← Create groups → 4. HAVING ← Filter GROUPS (after aggregation) | 4. HAVING ← Filter GROUPS (after aggregation) → 5. SELECT ← Choose columns, compute expressions | 5. SELECT ← Choose columns, compute expressions → 6. DISTINCT ← Remove duplicates | ...+1 more
+**Flow:**
+- SQL EXECUTION ORDER (not the order you write it!):
+- ↓
+- 1. FROM / JOIN ← Identify the tables
+- ↓
+- 2. WHERE ← Filter INDIVIDUAL rows
+- ↓
+- 3. GROUP BY ← Create groups
+- ↓
+- 4. HAVING ← Filter GROUPS (after aggregation)
+- ↓
+- 5. SELECT ← Choose columns, compute expressions
+- ↓
+- 6. DISTINCT ← Remove duplicates
 
 ```mermaid
 flowchart TD
@@ -179,7 +192,30 @@ HAVING COUNT(*) > 5;      -- Then filter groups
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: THE SCHOOL DANCE ANALOGY → Students table (left) Lockers table (right) | Students table (left) Lockers table (right) → [Alice, Bob, Charlie] [Locker1→Alice, Locker2→Bob] | [Alice, Bob, Charlie] [Locker1→Alice, Locker2→Bob] → INNER JOIN: Only students WITH lockers dance. | INNER JOIN: Only students WITH lockers dance. → Result: [Alice+Locker1, Bob+Locker2] (Charlie excluded) | Result: [Alice+Locker1, Bob+Locker2] (Charlie excluded) → Result: [Alice+Locker1, Bob+Locker2, Charlie+NULL] | Result: [Alice+Locker1, Bob+Locker2, Charlie+NULL] → RIGHT JOIN: ALL lockers shown. No student? NULL. | ...+1 more
+**Flow:**
+- THE SCHOOL DANCE ANALOGY
+- ↓
+- Students table (left) Lockers table (right)
+- ↓
+- [Alice, Bob, Charlie] [Locker1
+- ↓
+- Alice, Locker2
+- ↓
+- Bob]
+- ↓
+- [Alice, Bob, Charlie] [Locker1
+- ↓
+- Alice, Locker2
+- ↓
+- Bob]
+- ↓
+- INNER JOIN: Only students WITH lockers dance.
+- ↓
+- Result: [Alice+Locker1, Bob+Locker2] (Charlie excluded)
+- ↓
+- Result: [Alice+Locker1, Bob+Locker2, Charlie+NULL]
+- ↓
+- RIGHT JOIN: ALL lockers shown. No student? NULL.
 
 ```mermaid
 flowchart TD
@@ -254,7 +290,26 @@ LEFT JOIN customers c ON o.customer_id = c.id AND c.country = 'US';
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: THE BOOK INDEX ANALOGY (literally!) → An index at the back of a textbook: | An index at the back of a textbook: → 'binary search' → pages 45, 67, 112 | 'binary search' → pages 45, 67, 112 → → Fast to FIND specific terms (O(log n) vs full scan) | → Fast to FIND specific terms (O(log n) vs full scan) → → But the index itself takes SPACE (extra pages) | → But the index itself takes SPACE (extra pages) → → And updating the index when content changes costs TIM | → And updating the index when content changes costs TIM → WHEN INDEXES HELP: | ...+1 more
+**Flow:**
+- THE BOOK INDEX ANALOGY (literally!)
+- ↓
+- An index at the back of a textbook:
+- ↓
+- 'binary search'
+- ↓
+- pages 45, 67, 112
+- ↓
+- 'binary search'
+- ↓
+- pages 45, 67, 112
+- ↓
+- Fast to FIND specific terms (O(log n) vs full scan)
+- ↓
+- But the index itself takes SPACE (extra pages)
+- ↓
+- And updating the index when content changes costs TIM
+- ↓
+- WHEN INDEXES HELP:
 
 ```mermaid
 flowchart TD
@@ -318,7 +373,20 @@ Everyone takes the exam ONE AT A TIME.
 *MySQL InnoDB prevents phantoms at Repeatable Read (gap locks)
 ```
 
-> **Flow**: THE EXAM ROOM ANALOGY → READ UNCOMMITTED (no isolation): | READ UNCOMMITTED (no isolation): → You can read someone's answer sheet WHILE they're writi | You can read someone's answer sheet WHILE they're writi → READ COMMITTED (most common — Postgres default): | READ COMMITTED (most common — Postgres default): → You can only read SUBMITTED answer sheets. | You can only read SUBMITTED answer sheets. → ✅ No dirty reads | ✅ No dirty reads → ❌ Non-repeatable read: You read Bob's score=80. Read ag | ...+1 more
+**Flow:**
+- THE EXAM ROOM ANALOGY
+- ↓
+- READ UNCOMMITTED (no isolation):
+- ↓
+- You can read someone's answer sheet WHILE they're writi
+- ↓
+- READ COMMITTED (most common — Postgres default):
+- ↓
+- You can only read SUBMITTED answer sheets.
+- ↓
+- ✅ No dirty reads
+- ↓
+- ❌ Non-repeatable read: You read Bob's score=80. Read ag
 
 ```mermaid
 flowchart TD
@@ -372,7 +440,26 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: THE NARROW DOORWAY ANALOGY → Transaction A: Locks Row 1, needs Row 2. | Transaction A: Locks Row 1, needs Row 2. → Transaction B: Locks Row 2, needs Row 1. | Transaction B: Locks Row 2, needs Row 1. → A waits for B to release Row 2. | A waits for B to release Row 2. → B waits for A to release Row 1. | B waits for A to release Row 1. → Neither can proceed → DEADLOCK! | Neither can proceed → DEADLOCK! → Like two people in a narrow hallway, each waiting for t | ...+1 more
+**Flow:**
+- THE NARROW DOORWAY ANALOGY
+- ↓
+- Transaction A: Locks Row 1, needs Row 2.
+- ↓
+- Transaction B: Locks Row 2, needs Row 1.
+- ↓
+- A waits for B to release Row 2.
+- ↓
+- B waits for A to release Row 1.
+- ↓
+- Neither can proceed
+- ↓
+- DEADLOCK!
+- ↓
+- Neither can proceed
+- ↓
+- DEADLOCK!
+- ↓
+- Like two people in a narrow hallway, each waiting for t
 
 ```mermaid
 flowchart TD
@@ -414,7 +501,32 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: THE RESTAURANT ORDER ANALOGY → BAD (N+1): Waiter asks kitchen once per customer. | BAD (N+1): Waiter asks kitchen once per customer. → 'What did customer 1 order?' → 1 trip | 'What did customer 1 order?' → 1 trip → 'What did customer 2 order?' → 1 trip | 'What did customer 2 order?' → 1 trip → ... repeat N times. | ... repeat N times. → GOOD: 'Give me ALL orders at once.' → 1 or 2 queries to
+**Flow:**
+- THE RESTAURANT ORDER ANALOGY
+- ↓
+- BAD (N+1): Waiter asks kitchen once per customer.
+- ↓
+- 'What did customer 1 order?'
+- ↓
+- 1 trip
+- ↓
+- 'What did customer 1 order?'
+- ↓
+- 1 trip
+- ↓
+- 'What did customer 2 order?'
+- ↓
+- 1 trip
+- ↓
+- 'What did customer 2 order?'
+- ↓
+- 1 trip
+- ↓
+- ... repeat N times.
+- ↓
+- GOOD: 'Give me ALL orders at once.'
+- ↓
+- 1 or 2 queries to
 
 ```mermaid
 flowchart TD
@@ -486,7 +598,20 @@ private Set<Employee> employees;
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: EXPLAIN shows the database's EXECUTION PLAN: → RED FLAGS to look for: | RED FLAGS to look for: → 🔴 'Seq Scan' / 'Full Table Scan' | 🔴 'Seq Scan' / 'Full Table Scan' → → Reading EVERY row. Missing index? | → Reading EVERY row. Missing index? → 🔴 'rows' is much larger than 'filtered' | 🔴 'rows' is much larger than 'filtered' → → Scanning many rows but keeping few. Index would help. | → Scanning many rows but keeping few. Index would help. → 🔴 'Using filesort' | ...+1 more
+**Flow:**
+- EXPLAIN shows the database's EXECUTION PLAN:
+- ↓
+- RED FLAGS to look for:
+- ↓
+- 🔴 'Seq Scan' / 'Full Table Scan'
+- ↓
+- Reading EVERY row. Missing index?
+- ↓
+- 🔴 'rows' is much larger than 'filtered'
+- ↓
+- Scanning many rows but keeping few. Index would help.
+- ↓
+- 🔴 'Using filesort'
 
 ```mermaid
 flowchart TD
@@ -548,7 +673,26 @@ EXPLAIN ANALYZE SELECT * FROM orders WHERE customer_id = 42;
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: NORMALIZATION = Organizing data to eliminate redundancy → 'Every piece of data lives in ONE place.' | 'Every piece of data lives in ONE place.' → ✅ No update anomalies | ✅ No update anomalies → ✅ Less storage | ✅ Less storage → ❌ More JOINs needed → slower reads for complex queries | ❌ More JOINs needed → slower reads for complex queries → DENORMALIZATION = Intentionally adding redundancy | DENORMALIZATION = Intentionally adding redundancy → 'Store computed/duplicate data for faster reads.' | ...+1 more
+**Flow:**
+- NORMALIZATION = Organizing data to eliminate redundancy
+- ↓
+- 'Every piece of data lives in ONE place.'
+- ↓
+- ✅ No update anomalies
+- ↓
+- ✅ Less storage
+- ↓
+- ❌ More JOINs needed
+- ↓
+- slower reads for complex queries
+- ↓
+- ❌ More JOINs needed
+- ↓
+- slower reads for complex queries
+- ↓
+- DENORMALIZATION = Intentionally adding redundancy
+- ↓
+- 'Store computed/duplicate data for faster reads.'
 
 ```mermaid
 flowchart TD
@@ -592,7 +736,28 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: GROUP BY: 'Summarize and COLLAPSE rows into groups.' → 100 rows → 5 groups → 5 result rows. | 100 rows → 5 groups → 5 result rows. → You LOSE individual row details. | You LOSE individual row details. → You KEEP individual row details AND get aggregate info. | You KEEP individual row details AND get aggregate info. → Analogy: CLASS RANKING | Analogy: CLASS RANKING → GROUP BY = 'What's the average score per class?'
+**Flow:**
+- GROUP BY: 'Summarize and COLLAPSE rows into groups.'
+- ↓
+- 100 rows
+- ↓
+- 5 groups
+- ↓
+- 5 result rows.
+- ↓
+- 100 rows
+- ↓
+- 5 groups
+- ↓
+- 5 result rows.
+- ↓
+- You LOSE individual row details.
+- ↓
+- You KEEP individual row details AND get aggregate info.
+- ↓
+- Analogy: CLASS RANKING
+- ↓
+- GROUP BY = 'What's the average score per class?'
 
 ```mermaid
 flowchart TD

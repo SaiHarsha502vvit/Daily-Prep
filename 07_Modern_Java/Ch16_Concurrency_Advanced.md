@@ -29,7 +29,10 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: [T1] [T2] [T3] [T4] / ↓ ↓ ↓ ↓ / Idle Working Idle Worki → Task5, Task6..
+**Flow:**
+- [T1] [T2] [T3] [T4] / ↓ ↓ ↓ ↓ / Idle Working Idle Worki
+- ↓
+- Task5, Task6..
 
 ```mermaid
 flowchart TD
@@ -88,7 +91,12 @@ ThreadPoolExecutor production = new ThreadPoolExecutor(
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: AbortPolicy (default) — throws RejectedExecutionExcepti → DiscardPolicy — silently drops the task (dangerous!) | DiscardPolicy — silently drops the task (dangerous!) → PRODUCTION RULE: Almost always use CallerRunsPolicy
+**Flow:**
+- AbortPolicy (default) — throws RejectedExecutionExcepti
+- ↓
+- DiscardPolicy — silently drops the task (dangerous!)
+- ↓
+- PRODUCTION RULE: Almost always use CallerRunsPolicy
 
 ```mermaid
 flowchart TD
@@ -147,7 +155,20 @@ executor.awaitTermination(10, TimeUnit.SECONDS);
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Future PROBLEMS: → • get() blocks the calling thread | • get() blocks the calling thread → • Can't chain multiple async operations | • Can't chain multiple async operations → • No way to combine futures | • No way to combine futures → • No callback support | • No callback support → CompletableFuture SOLVES ALL OF THESE. | CompletableFuture SOLVES ALL OF THESE. → It's Java's Promise (like JavaScript Promise).
+**Flow:**
+- Future PROBLEMS:
+- ↓
+- • get() blocks the calling thread
+- ↓
+- • Can't chain multiple async operations
+- ↓
+- • No way to combine futures
+- ↓
+- • No callback support
+- ↓
+- CompletableFuture SOLVES ALL OF THESE.
+- ↓
+- It's Java's Promise (like JavaScript Promise).
 
 ```mermaid
 flowchart TD
@@ -294,7 +315,20 @@ CompletableFuture<String> logged = CompletableFuture
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: COMPLETABLEFUTURE CHEAT SHEET → Operation Description | Operation Description → supplyAsync() Start async with return value | supplyAsync() Start async with return value → runAsync() Start async, no return value | runAsync() Start async, no return value → thenApply() Transform result (sync) | thenApply() Transform result (sync) → thenApplyAsync() Transform result (async, different thr | thenApplyAsync() Transform result (async, different thr → thenCompose() Chain another CF (flatMap) | ...+1 more
+**Flow:**
+- COMPLETABLEFUTURE CHEAT SHEET
+- ↓
+- Operation Description
+- ↓
+- supplyAsync() Start async with return value
+- ↓
+- runAsync() Start async, no return value
+- ↓
+- thenApply() Transform result (sync)
+- ↓
+- thenApplyAsync() Transform result (async, different thr
+- ↓
+- thenCompose() Chain another CF (flatMap)
 
 ```mermaid
 flowchart TD
@@ -388,7 +422,20 @@ if (!sl.validate(stamp)) {    // Check if a write happened
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: synchronized vs ReentrantLock → Feature synchronized ReentrantLock | Feature synchronized ReentrantLock → Auto-release ✅ Yes ❌ Manual (finally) | Auto-release ✅ Yes ❌ Manual (finally) → tryLock ❌ No ✅ Yes | tryLock ❌ No ✅ Yes → Fairness ❌ No ✅ new RL(true) | Fairness ❌ No ✅ new RL(true) → Multiple conditions ❌ 1 wait set ✅ newCondition() | Multiple conditions ❌ 1 wait set ✅ newCondition() → Interruptible ❌ No ✅ lockInterruptibly | ...+1 more
+**Flow:**
+- synchronized vs ReentrantLock
+- ↓
+- Feature synchronized ReentrantLock
+- ↓
+- Auto-release ✅ Yes ❌ Manual (finally)
+- ↓
+- tryLock ❌ No ✅ Yes
+- ↓
+- Fairness ❌ No ✅ new RL(true)
+- ↓
+- Multiple conditions ❌ 1 wait set ✅ newCondition()
+- ↓
+- Interruptible ❌ No ✅ lockInterruptibly
 
 ```mermaid
 flowchart TD
@@ -441,7 +488,30 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: T1 → OS T1 | T1 → OS T2 | T2 → OS T1 | T2 → OS T2 | v1 → OS T2 | v1 → Carrier T1 | ...+9 more
+**Flow:**
+- T1
+- ↓
+- OS T1
+- ↓
+- T1
+- ↓
+- OS T2
+- ↓
+- T2
+- ↓
+- OS T1
+- ↓
+- T2
+- ↓
+- OS T2
+- ↓
+- v1
+- ↓
+- OS T2
+- ↓
+- v1
+- ↓
+- Carrier T1
 
 ```mermaid
 flowchart TD
@@ -534,7 +604,20 @@ try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: VIRTUAL THREADS — WHEN TO USE → ✅ USE for: ❌ DON'T USE for: | ✅ USE for: ❌ DON'T USE for: → • I/O-bound tasks (HTTP, DB, files) • CPU-bound computa | • I/O-bound tasks (HTTP, DB, files) • CPU-bound computa → simpler I/O-bound concurrent code | simpler I/O-bound concurrent code → GOTCHAS: | GOTCHAS: → • Not faster for CPU work — only for I/O waiting | • Not faster for CPU work — only for I/O waiting → STRUCTURED CONCURRENCY (Preview, Java 21+): | ...+1 more
+**Flow:**
+- VIRTUAL THREADS — WHEN TO USE
+- ↓
+- ✅ USE for: ❌ DON'T USE for:
+- ↓
+- • I/O-bound tasks (HTTP, DB, files) • CPU-bound computa
+- ↓
+- simpler I/O-bound concurrent code
+- ↓
+- GOTCHAS:
+- ↓
+- • Not faster for CPU work — only for I/O waiting
+- ↓
+- STRUCTURED CONCURRENCY (Preview, Java 21+):
 
 ```mermaid
 flowchart TD
@@ -636,7 +719,20 @@ for (int i = 0; i < tasks.size(); i++) {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: PRODUCTION CONCURRENCY CHECKLIST → □ Set bounded queues (prevent OOM) | □ Set bounded queues (prevent OOM) → □ Name your threads (ThreadFactory with meaningful name | □ Name your threads (ThreadFactory with meaningful name → □ Always handle InterruptedException properly | □ Always handle InterruptedException properly → □ Use try-finally for lock.unlock() | □ Use try-finally for lock.unlock() → □ Prefer concurrent collections over synchronized wrapp | □ Prefer concurrent collections over synchronized wrapp → □ Use CompletableFuture over raw Future | ...+1 more
+**Flow:**
+- PRODUCTION CONCURRENCY CHECKLIST
+- ↓
+- □ Set bounded queues (prevent OOM)
+- ↓
+- □ Name your threads (ThreadFactory with meaningful name
+- ↓
+- □ Always handle InterruptedException properly
+- ↓
+- □ Use try-finally for lock.unlock()
+- ↓
+- □ Prefer concurrent collections over synchronized wrapp
+- ↓
+- □ Use CompletableFuture over raw Future
 
 ```mermaid
 flowchart TD

@@ -52,7 +52,30 @@ WHO   → Who invented it? Historical context
 HOW   → Step-by-step implementation with diagrams
 ```
 
-> **Flow**: WHY → Why does this exist? What problem does it solve? | WHAT → Core concepts, mental models, theory | WHERE → Where is this used in real companies? | WHEN → When to use vs not use | WHO → Who invented it? Historical context | HOW → Step-by-step implementation with diagrams
+**Flow:**
+- WHY
+- ↓
+- Why does this exist? What problem does it solve?
+- ↓
+- WHAT
+- ↓
+- Core concepts, mental models, theory
+- ↓
+- WHERE
+- ↓
+- Where is this used in real companies?
+- ↓
+- WHEN
+- ↓
+- When to use vs not use
+- ↓
+- WHO
+- ↓
+- Who invented it? Historical context
+- ↓
+- HOW
+- ↓
+- Step-by-step implementation with diagrams
 
 ```mermaid
 flowchart TD

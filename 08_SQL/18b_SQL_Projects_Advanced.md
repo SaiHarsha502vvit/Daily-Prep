@@ -198,7 +198,20 @@ ORDER BY this_year.month;
 □ Can detect gaps and islands in data
 ```
 
-> **Flow**: □ Can write JOINs without looking up syntax → □ Can use GROUP BY with HAVING confidently | □ Can use GROUP BY with HAVING confidently → □ Understand when to use subquery vs JOIN vs CTE | □ Understand when to use subquery vs JOIN vs CTE → □ Can write window functions (ROW_NUMBER, LAG, SUM OVER | □ Can write window functions (ROW_NUMBER, LAG, SUM OVER → □ Can solve problems multiple ways | □ Can solve problems multiple ways → □ Can optimize slow queries (know when to check EXPLAIN | □ Can optimize slow queries (know when to check EXPLAIN → □ Can handle NULL values correctly | ...+1 more
+**Flow:**
+- □ Can write JOINs without looking up syntax
+- ↓
+- □ Can use GROUP BY with HAVING confidently
+- ↓
+- □ Understand when to use subquery vs JOIN vs CTE
+- ↓
+- □ Can write window functions (ROW_NUMBER, LAG, SUM OVER
+- ↓
+- □ Can solve problems multiple ways
+- ↓
+- □ Can optimize slow queries (know when to check EXPLAIN
+- ↓
+- □ Can handle NULL values correctly
 
 ```mermaid
 flowchart TD
@@ -255,7 +268,20 @@ _Practice consistently. Aim for 2-3 problems daily. Review solutions even for pr
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: DATA ENGINEERING SQL REQUIREMENTS → Data Engineers deal with: | Data Engineers deal with: → • VOLUME: Billions of rows daily | • VOLUME: Billions of rows daily → • VELOCITY: Real-time data streams | • VELOCITY: Real-time data streams → • VARIETY: Multiple sources, formats | • VARIETY: Multiple sources, formats → • VERACITY: Data quality issues everywhere | • VERACITY: Data quality issues everywhere → Key SQL Skills Required: | ...+1 more
+**Flow:**
+- DATA ENGINEERING SQL REQUIREMENTS
+- ↓
+- Data Engineers deal with:
+- ↓
+- • VOLUME: Billions of rows daily
+- ↓
+- • VELOCITY: Real-time data streams
+- ↓
+- • VARIETY: Multiple sources, formats
+- ↓
+- • VERACITY: Data quality issues everywhere
+- ↓
+- Key SQL Skills Required:
 
 ```mermaid
 flowchart TD
@@ -506,7 +532,20 @@ TRUNCATE TABLE large_table RESTART IDENTITY CASCADE;  -- Reset sequences, cascad
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: ETL DATA PIPELINE → RAW DATA &gt; STAGING &gt; CLEANED &gt; DATA WAREHOUSE | RAW DATA &gt; STAGING &gt; CLEANED &gt; DATA WAREHOUSE → Source Systems: Landing Zone: Cleaning: Final Tables: | Source Systems: Landing Zone: Cleaning: Final Tables: → • CSV files • raw_sales • Handle NULLs • fact_sales | • CSV files • raw_sales • Handle NULLs • fact_sales → • APIs • raw_users • Fix types • dim_customers | • APIs • raw_users • Fix types • dim_customers → • Databases • raw_products • Deduplicate • dim_products | • Databases • raw_products • Deduplicate • dim_products → • Validate • dim_date
+**Flow:**
+- ETL DATA PIPELINE
+- ↓
+- RAW DATA > STAGING > CLEANED > DATA WAREHOUSE
+- ↓
+- Source Systems: Landing Zone: Cleaning: Final Tables:
+- ↓
+- • CSV files • raw_sales • Handle NULLs • fact_sales
+- ↓
+- • APIs • raw_users • Fix types • dim_customers
+- ↓
+- • Databases • raw_products • Deduplicate • dim_products
+- ↓
+- • Validate • dim_date
 
 ```mermaid
 flowchart TD
@@ -1219,7 +1258,20 @@ VALUES ('fact_sales', @@ROWCOUNT, CURRENT_TIMESTAMP);
 □ Can write recursive CTEs for hierarchies
 ```
 
-> **Flow**: □ Can write efficient bulk INSERT/UPDATE/DELETE → □ Understand COPY vs INSERT performance difference | □ Understand COPY vs INSERT performance difference → □ Can build ETL transformations in pure SQL | □ Can build ETL transformations in pure SQL → □ Know all window function types (RANK, LAG, SUM OVER) | □ Know all window function types (RANK, LAG, SUM OVER) → □ Can implement SCD Type 1 and Type 2 | □ Can implement SCD Type 1 and Type 2 → □ Understand star schema design | □ Understand star schema design → □ Can perform incremental loads | ...+1 more
+**Flow:**
+- □ Can write efficient bulk INSERT/UPDATE/DELETE
+- ↓
+- □ Understand COPY vs INSERT performance difference
+- ↓
+- □ Can build ETL transformations in pure SQL
+- ↓
+- □ Know all window function types (RANK, LAG, SUM OVER)
+- ↓
+- □ Can implement SCD Type 1 and Type 2
+- ↓
+- □ Understand star schema design
+- ↓
+- □ Can perform incremental loads
 
 ```mermaid
 flowchart TD

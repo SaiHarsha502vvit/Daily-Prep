@@ -82,7 +82,20 @@ public int[] twoSum(int[] numbers, int target) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: 3SUM → Find all unique triplets that sum to zero. | Find all unique triplets that sum to zero. → Input: nums = [-1, 0, 1, 2, -1, -4] | Input: nums = [-1, 0, 1, 2, -1, -4] → Output: [[-1, -1, 2], [-1, 0, 1]] | Output: [[-1, -1, 2], [-1, 0, 1]] → Algorithm: | Algorithm: → 1. Sort the array | 1. Sort the array → 2. Fix one element, use two pointers for remaining | ...+1 more
+**Flow:**
+- 3SUM
+- ↓
+- Find all unique triplets that sum to zero.
+- ↓
+- Input: nums = [-1, 0, 1, 2, -1, -4]
+- ↓
+- Output: [[-1, -1, 2], [-1, 0, 1]]
+- ↓
+- Algorithm:
+- ↓
+- 1. Sort the array
+- ↓
+- 2. Fix one element, use two pointers for remaining
 
 ```mermaid
 flowchart TD
@@ -162,7 +175,16 @@ public List<List<Integer>> threeSum(int[] nums) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: 3SUM CLOSEST → Find three integers whose sum is closest to target. | Find three integers whose sum is closest to target. → Input: nums = [-1, 2, 1, -4], target = 1 | Input: nums = [-1, 2, 1, -4], target = 1 → Output: 2 | Output: 2 → Explanation: (-1) + 2 + 1 = 2, closest to target 1
+**Flow:**
+- 3SUM CLOSEST
+- ↓
+- Find three integers whose sum is closest to target.
+- ↓
+- Input: nums = [-1, 2, 1, -4], target = 1
+- ↓
+- Output: 2
+- ↓
+- Explanation: (-1) + 2 + 1 = 2, closest to target 1
 
 ```mermaid
 flowchart TD
@@ -227,7 +249,16 @@ public int threeSumClosest(int[] nums, int target) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: 4SUM → Find all unique quadruplets that sum to target. | Find all unique quadruplets that sum to target. → Input: nums = [1, 0, -1, 0, -2, 2], target = 0 | Input: nums = [1, 0, -1, 0, -2, 2], target = 0 → Output: [[-2,-1,1,2], [-2,0,0,2], [-1,0,0,1]] | Output: [[-2,-1,1,2], [-2,0,0,2], [-1,0,0,1]] → Pattern: Extend 3Sum with one more loop
+**Flow:**
+- 4SUM
+- ↓
+- Find all unique quadruplets that sum to target.
+- ↓
+- Input: nums = [1, 0, -1, 0, -2, 2], target = 0
+- ↓
+- Output: [[-2,-1,1,2], [-2,0,0,2], [-1,0,0,1]]
+- ↓
+- Pattern: Extend 3Sum with one more loop
 
 ```mermaid
 flowchart TD
@@ -331,7 +362,20 @@ public List<List<Integer>> fourSum(int[] nums, int target) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: 3SUM SMALLER → (LeetCode 259 - Premium) | (LeetCode 259 - Premium) → Count triplets with sum LESS than target. | Count triplets with sum LESS than target. → Example 1: | Example 1: → Input: nums = [-2, 0, 1, 3], target = 2 | Input: nums = [-2, 0, 1, 3], target = 2 → Output: 2 | Output: 2 → Explanation: | ...+1 more
+**Flow:**
+- 3SUM SMALLER
+- ↓
+- (LeetCode 259 - Premium)
+- ↓
+- Count triplets with sum LESS than target.
+- ↓
+- Example 1:
+- ↓
+- Input: nums = [-2, 0, 1, 3], target = 2
+- ↓
+- Output: 2
+- ↓
+- Explanation:
 
 ```mermaid
 flowchart TD
@@ -401,7 +445,20 @@ public int threeSumSmaller(int[] nums, int target) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: VALID TRIANGLE NUMBER → Count triplets that can form a valid triangle. | Count triplets that can form a valid triangle. → Triangle rule: sum of any two sides &gt; third side | Triangle rule: sum of any two sides &gt; third side → Input: nums = [2, 2, 3, 4] | Input: nums = [2, 2, 3, 4] → Output: 3 | Output: 3 → Valid: (2,3,4), (2,3,4), (2,2,3) | Valid: (2,3,4), (2,3,4), (2,2,3) → KEY: After sorting, only need to check a + b &gt; c | ...+1 more
+**Flow:**
+- VALID TRIANGLE NUMBER
+- ↓
+- Count triplets that can form a valid triangle.
+- ↓
+- Triangle rule: sum of any two sides > third side
+- ↓
+- Input: nums = [2, 2, 3, 4]
+- ↓
+- Output: 3
+- ↓
+- Valid: (2,3,4), (2,3,4), (2,2,3)
+- ↓
+- KEY: After sorting, only need to check a + b > c
 
 ```mermaid
 flowchart TD
@@ -474,7 +531,20 @@ public int triangleNumber(int[] nums) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: REMOVE DUPLICATES FROM SORTED ARRAY → Remove duplicates in-place. Return new length. | Remove duplicates in-place. Return new length. → Input: nums = [1, 1, 2] | Input: nums = [1, 1, 2] → Output: 2, nums = [1, 2, _] | Output: 2, nums = [1, 2, _] → Visual: | Visual: → ↑ ↑ slow=0, fast=1, same value, skip | ↑ ↑ slow=0, fast=1, same value, skip → ↑ ↑ slow=0, fast=2, different! copy | ...+1 more
+**Flow:**
+- REMOVE DUPLICATES FROM SORTED ARRAY
+- ↓
+- Remove duplicates in-place. Return new length.
+- ↓
+- Input: nums = [1, 1, 2]
+- ↓
+- Output: 2, nums = [1, 2, _]
+- ↓
+- Visual:
+- ↓
+- ↑ ↑ slow=0, fast=1, same value, skip
+- ↓
+- ↑ ↑ slow=0, fast=2, different! copy
 
 ```mermaid
 flowchart TD
@@ -533,7 +603,16 @@ public int removeDuplicates(int[] nums) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: REMOVE DUPLICATES II (Allow at most 2 duplicates) → Each element can appear at most TWICE. | Each element can appear at most TWICE. → Input: nums = [1, 1, 1, 2, 2, 3] | Input: nums = [1, 1, 1, 2, 2, 3] → Output: 5, nums = [1, 1, 2, 2, 3, _] | Output: 5, nums = [1, 1, 2, 2, 3, _] → KEY: Compare with nums[slow - 2] instead of nums[slow -
+**Flow:**
+- REMOVE DUPLICATES II (Allow at most 2 duplicates)
+- ↓
+- Each element can appear at most TWICE.
+- ↓
+- Input: nums = [1, 1, 1, 2, 2, 3]
+- ↓
+- Output: 5, nums = [1, 1, 2, 2, 3, _]
+- ↓
+- KEY: Compare with nums[slow - 2] instead of nums[slow -
 
 ```mermaid
 flowchart TD
@@ -584,7 +663,14 @@ public int removeDuplicates(int[] nums) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: REMOVE ELEMENT → Remove all instances of val in-place. Return new length | Remove all instances of val in-place. Return new length → Input: nums = [3, 2, 2, 3], val = 3 | Input: nums = [3, 2, 2, 3], val = 3 → Output: 2, nums = [2, 2, _, _]
+**Flow:**
+- REMOVE ELEMENT
+- ↓
+- Remove all instances of val in-place. Return new length
+- ↓
+- Input: nums = [3, 2, 2, 3], val = 3
+- ↓
+- Output: 2, nums = [2, 2, _, _]
 
 ```mermaid
 flowchart TD
@@ -642,7 +728,20 @@ public int removeElement(int[] nums, int val) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: SORT COLORS (Dutch National Flag Problem) → Sort array with only 0s, 1s, and 2s in-place. | Sort array with only 0s, 1s, and 2s in-place. → One-pass algorithm with constant space. | One-pass algorithm with constant space. → Input: nums = [2, 0, 2, 1, 1, 0] | Input: nums = [2, 0, 2, 1, 1, 0] → Output: [0, 0, 1, 1, 2, 2] | Output: [0, 0, 1, 1, 2, 2] → Three Pointers: | Three Pointers: → - low: boundary for 0s (everything before low is 0) | ...+1 more
+**Flow:**
+- SORT COLORS (Dutch National Flag Problem)
+- ↓
+- Sort array with only 0s, 1s, and 2s in-place.
+- ↓
+- One-pass algorithm with constant space.
+- ↓
+- Input: nums = [2, 0, 2, 1, 1, 0]
+- ↓
+- Output: [0, 0, 1, 1, 2, 2]
+- ↓
+- Three Pointers:
+- ↓
+- - low: boundary for 0s (everything before low is 0)
 
 ```mermaid
 flowchart TD
@@ -710,7 +809,14 @@ private void swap(int[] nums, int i, int j) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: PARTITION ARRAY ACCORDING TO PIVOT → &gt; pivot at end. Maintain relative order. | &gt; pivot at end. Maintain relative order. → Input: nums = [9, 12, 5, 10, 14, 3, 10], pivot = 10 | Input: nums = [9, 12, 5, 10, 14, 3, 10], pivot = 10 → Output: [9, 5, 3, 10, 10, 12, 14]
+**Flow:**
+- PARTITION ARRAY ACCORDING TO PIVOT
+- ↓
+- > pivot at end. Maintain relative order.
+- ↓
+- Input: nums = [9, 12, 5, 10, 14, 3, 10], pivot = 10
+- ↓
+- Output: [9, 5, 3, 10, 10, 12, 14]
 
 ```mermaid
 flowchart TD
@@ -775,7 +881,20 @@ public int[] pivotArray(int[] nums, int pivot) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: LINKED LIST CYCLE → Detect if linked list has a cycle. | Detect if linked list has a cycle. → Visual (with cycle): | Visual (with cycle): → Floyd's Cycle Detection (Tortoise & Hare): | Floyd's Cycle Detection (Tortoise & Hare): → - Slow pointer moves 1 step | - Slow pointer moves 1 step → - Fast pointer moves 2 steps | - Fast pointer moves 2 steps → - If they meet, there's a cycle
+**Flow:**
+- LINKED LIST CYCLE
+- ↓
+- Detect if linked list has a cycle.
+- ↓
+- Visual (with cycle):
+- ↓
+- Floyd's Cycle Detection (Tortoise & Hare):
+- ↓
+- - Slow pointer moves 1 step
+- ↓
+- - Fast pointer moves 2 steps
+- ↓
+- - If they meet, there's a cycle
 
 ```mermaid
 flowchart TD
@@ -842,7 +961,20 @@ public boolean hasCycle(ListNode head) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: LINKED LIST CYCLE II - Find Start of Cycle → MATHEMATICAL PROOF: | MATHEMATICAL PROOF: → Let: | Let: → - Distance from head to cycle start = a | - Distance from head to cycle start = a → - Distance from cycle start to meeting point = b | - Distance from cycle start to meeting point = b → - Cycle length = c | - Cycle length = c → When they meet: | ...+1 more
+**Flow:**
+- LINKED LIST CYCLE II - Find Start of Cycle
+- ↓
+- MATHEMATICAL PROOF:
+- ↓
+- Let:
+- ↓
+- - Distance from head to cycle start = a
+- ↓
+- - Distance from cycle start to meeting point = b
+- ↓
+- - Cycle length = c
+- ↓
+- When they meet:
 
 ```mermaid
 flowchart TD
@@ -911,7 +1043,44 @@ public ListNode detectCycle(ListNode head) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: MIDDLE OF LINKED LIST → When fast reaches end, slow is at middle. | When fast reaches end, slow is at middle. → For even length, return second middle. | For even length, return second middle. → Odd: 1 → 2 → 3 → 4 → 5 Middle = 3 | Odd: 1 → 2 → 3 → 4 → 5 Middle = 3 → Even: 1 → 2 → 3 → 4 → 5 → 6 Middle = 4 (second)
+**Flow:**
+- MIDDLE OF LINKED LIST
+- ↓
+- When fast reaches end, slow is at middle.
+- ↓
+- For even length, return second middle.
+- ↓
+- Odd: 1
+- ↓
+- 2
+- ↓
+- 3
+- ↓
+- 4
+- ↓
+- 5 Middle = 3
+- ↓
+- Odd: 1
+- ↓
+- 2
+- ↓
+- 3
+- ↓
+- 4
+- ↓
+- 5 Middle = 3
+- ↓
+- Even: 1
+- ↓
+- 2
+- ↓
+- 3
+- ↓
+- 4
+- ↓
+- 5
+- ↓
+- 6 Middle = 4 (second)
 
 ```mermaid
 flowchart TD
@@ -962,7 +1131,52 @@ public ListNode middleNode(ListNode head) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: REMOVE NTH NODE FROM END → Remove the nth node from end of list. | Remove the nth node from end of list. → Input: 1 → 2 → 3 → 4 → 5, n = 2 | Input: 1 → 2 → 3 → 4 → 5, n = 2 → Output: 1 → 2 → 3 → 5 | Output: 1 → 2 → 3 → 5 → Technique: Advance fast pointer n steps first | Technique: Advance fast pointer n steps first → Then move both until fast reaches end | Then move both until fast reaches end → Slow will be at (n+1)th from end
+**Flow:**
+- REMOVE NTH NODE FROM END
+- ↓
+- Remove the nth node from end of list.
+- ↓
+- Input: 1
+- ↓
+- 2
+- ↓
+- 3
+- ↓
+- 4
+- ↓
+- 5, n = 2
+- ↓
+- Input: 1
+- ↓
+- 2
+- ↓
+- 3
+- ↓
+- 4
+- ↓
+- 5, n = 2
+- ↓
+- Output: 1
+- ↓
+- 2
+- ↓
+- 3
+- ↓
+- 5
+- ↓
+- Output: 1
+- ↓
+- 2
+- ↓
+- 3
+- ↓
+- 5
+- ↓
+- Technique: Advance fast pointer n steps first
+- ↓
+- Then move both until fast reaches end
+- ↓
+- Slow will be at (n+1)th from end
 
 ```mermaid
 flowchart TD
@@ -1054,7 +1268,34 @@ public ListNode removeNthFromEnd(ListNode head, int n) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: PLUS ONE LINKED LIST → (LeetCode 369 - Premium) | (LeetCode 369 - Premium) → Linked list represents a number. Add 1 to it. | Linked list represents a number. Add 1 to it. → Most significant digit is at head. | Most significant digit is at head. → Example 1: | Example 1: → Input: 1 → 2 → 3 | Input: 1 → 2 → 3 → Output: 1 → 2 → 4 | ...+1 more
+**Flow:**
+- PLUS ONE LINKED LIST
+- ↓
+- (LeetCode 369 - Premium)
+- ↓
+- Linked list represents a number. Add 1 to it.
+- ↓
+- Most significant digit is at head.
+- ↓
+- Example 1:
+- ↓
+- Input: 1
+- ↓
+- 2
+- ↓
+- 3
+- ↓
+- Input: 1
+- ↓
+- 2
+- ↓
+- 3
+- ↓
+- Output: 1
+- ↓
+- 2
+- ↓
+- 4
 
 ```mermaid
 flowchart TD

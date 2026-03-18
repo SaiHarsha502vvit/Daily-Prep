@@ -19,7 +19,20 @@
   □ Very large input (will my approach TLE?)
 ```
 
-> **Flow**: □ What data structures am I using? (Declared them menta → □ What are my key variables? (Named them meaningfully) | □ What are my key variables? (Named them meaningfully) → □ Did I handle the edge cases in my head? | □ Did I handle the edge cases in my head? → □ Empty input (null, length 0) | □ Empty input (null, length 0) → □ Single element | □ Single element → □ All same values | □ All same values → □ Very large input (will my approach TLE?)
+**Flow:**
+- □ What data structures am I using? (Declared them menta
+- ↓
+- □ What are my key variables? (Named them meaningfully)
+- ↓
+- □ Did I handle the edge cases in my head?
+- ↓
+- □ Empty input (null, length 0)
+- ↓
+- □ Single element
+- ↓
+- □ All same values
+- ↓
+- □ Very large input (will my approach TLE?)
 
 ```mermaid
 flowchart TD
@@ -258,7 +271,20 @@ After writing code, verify:
   → Should I convert to iterative?
 ```
 
-> **Flow**: □ What's my time complexity? _____ → □ What's my space complexity? _____ | □ What's my space complexity? _____ → → Am I using unnecessary extra space? | → Am I using unnecessary extra space? → □ Am I creating objects in a loop? | □ Am I creating objects in a loop? → → Can I reuse them? (StringBuilder, arrays) | → Can I reuse them? (StringBuilder, arrays) → □ Am I using recursion? | □ Am I using recursion? → → Max stack depth? (Java default ~10,000 frames) | ...+1 more
+**Flow:**
+- □ What's my time complexity? _____
+- ↓
+- □ What's my space complexity? _____
+- ↓
+- Am I using unnecessary extra space?
+- ↓
+- □ Am I creating objects in a loop?
+- ↓
+- Can I reuse them? (StringBuilder, arrays)
+- ↓
+- □ Am I using recursion?
+- ↓
+- Max stack depth? (Java default ~10,000 frames)
 
 ```mermaid
 flowchart TD
@@ -296,7 +322,20 @@ flowchart TD
 □ Binary search: used left + (right - left) / 2
 ```
 
-> **Flow**: □ Variable names won't confuse me → □ No leftover debug print statements | □ No leftover debug print statements → □ Edge cases handled (empty, null, single, negative) | □ Edge cases handled (empty, null, single, negative) → □ Correct loop bounds (&lt; vs &lt;=) | □ Correct loop bounds (&lt; vs &lt;=) → □ Used long where overflow is possible | □ Used long where overflow is possible → □ HashMap: used getOrDefault | □ HashMap: used getOrDefault → □ ArrayList: added copies in backtracking | ...+1 more
+**Flow:**
+- □ Variable names won't confuse me
+- ↓
+- □ No leftover debug print statements
+- ↓
+- □ Edge cases handled (empty, null, single, negative)
+- ↓
+- □ Correct loop bounds (< vs <=)
+- ↓
+- □ Used long where overflow is possible
+- ↓
+- □ HashMap: used getOrDefault
+- ↓
+- □ ArrayList: added copies in backtracking
 
 ```mermaid
 flowchart TD

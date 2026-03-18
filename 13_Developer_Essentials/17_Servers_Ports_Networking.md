@@ -56,7 +56,20 @@ TECHNICALLY:
 • "Server" = the software (Tomcat, Nginx), not the hardware.
 ```
 
-> **Flow**: ANALOGY: A Server is a RESTAURANT → RESTAURANT (= Server) | RESTAURANT (= Server) → Has an ADDRESS (IP address = 192.168.1.100) | Has an ADDRESS (IP address = 192.168.1.100) → Is OPEN at certain hours (server process running) | Is OPEN at certain hours (server process running) → Has a MENU (API endpoints) | Has a MENU (API endpoints) → Takes ORDERS (HTTP requests) | Takes ORDERS (HTTP requests) → Cooks FOOD (processes request, queries DB) | ...+1 more
+**Flow:**
+- ANALOGY: A Server is a RESTAURANT
+- ↓
+- RESTAURANT (= Server)
+- ↓
+- Has an ADDRESS (IP address = 192.168.1.100)
+- ↓
+- Is OPEN at certain hours (server process running)
+- ↓
+- Has a MENU (API endpoints)
+- ↓
+- Takes ORDERS (HTTP requests)
+- ↓
+- Cooks FOOD (processes request, queries DB)
 
 ```mermaid
 flowchart TD
@@ -105,7 +118,20 @@ ANALOGY:
 • Public IP = "full postal address reachable by anyone"
 ```
 
-> **Flow**: IP ADDRESS = The mailing address of a computer on a net → IPv4: 192.168.1.100 (4 numbers, 0-255 each) | IPv4: 192.168.1.100 (4 numbers, 0-255 each) → IPv6: 2001:0db8:85a3:0000:0000:8a2e:0370:7334 (longer) | IPv6: 2001:0db8:85a3:0000:0000:8a2e:0370:7334 (longer) → SPECIAL ADDRESSES: | SPECIAL ADDRESSES: → 127.0.0.1 localhost — YOUR machine (loopback) | 127.0.0.1 localhost — YOUR machine (loopback) → 0.0.0.0 'All interfaces' — listen on every | 0.0.0.0 'All interfaces' — listen on every → network adapter the machine has | ...+1 more
+**Flow:**
+- IP ADDRESS = The mailing address of a computer on a net
+- ↓
+- IPv4: 192.168.1.100 (4 numbers, 0-255 each)
+- ↓
+- IPv6: 2001:0db8:85a3:0000:0000:8a2e:0370:7334 (longer)
+- ↓
+- SPECIAL ADDRESSES:
+- ↓
+- 127.0.0.1 localhost — YOUR machine (loopback)
+- ↓
+- 0.0.0.0 'All interfaces' — listen on every
+- ↓
+- network adapter the machine has
 
 ```mermaid
 flowchart TD
@@ -173,7 +199,10 @@ WHY "Port already in use"?
 → Spring Boot: server.port=8081 in application.properties
 ```
 
-> **Flow**: Port Service What It Does / 20 FTP (data) File transfer → 3000 React dev server (Vite), Express.js / 3306 MySQL /
+**Flow:**
+- Port Service What It Does / 20 FTP (data) File transfer
+- ↓
+- 3000 React dev server (Vite), Express.js / 3306 MySQL /
 
 ```mermaid
 flowchart TD
@@ -225,7 +254,20 @@ TCP vs UDP:
 └─────────────┴───────────────────────────────────────────┘
 ```
 
-> **Flow**: PROTOCOL = Agreed-upon language/rules for communication → ANALOGY: Like languages — if you speak English and the | ANALOGY: Like languages — if you speak English and the → other person speaks French, communication fails. | other person speaks French, communication fails. → Both sides must agree on the same protocol. | Both sides must agree on the same protocol. → THE NETWORK LAYER CAKE: | THE NETWORK LAYER CAKE: → APPLICATION LAYER (what you code with) | APPLICATION LAYER (what you code with) → HTTP, HTTPS, WebSocket, gRPC, SMTP, FTP | ...+1 more
+**Flow:**
+- PROTOCOL = Agreed-upon language/rules for communication
+- ↓
+- ANALOGY: Like languages — if you speak English and the
+- ↓
+- other person speaks French, communication fails.
+- ↓
+- Both sides must agree on the same protocol.
+- ↓
+- THE NETWORK LAYER CAKE:
+- ↓
+- APPLICATION LAYER (what you code with)
+- ↓
+- HTTP, HTTPS, WebSocket, gRPC, SMTP, FTP
 
 ```mermaid
 flowchart TD
@@ -295,7 +337,20 @@ HTTPS = HTTP + TLS/SSL encryption
 → MANDATORY for any production site
 ```
 
-> **Flow**: HTTP REQUEST ANATOMY: → Host: api.example.com ← Which server | Host: api.example.com ← Which server → Authorization: Bearer eyJhbGc... ← Auth token | Authorization: Bearer eyJhbGc... ← Auth token → Accept: application/json ← 'I want JSON back' | Accept: application/json ← 'I want JSON back' → Content-Type: application/json ← 'I'm sending JSON' | Content-Type: application/json ← 'I'm sending JSON' → {'name': 'Alice'} ← Body (POST/PUT only) | {'name': 'Alice'} ← Body (POST/PUT only) → HTTP RESPONSE: | ...+1 more
+**Flow:**
+- HTTP REQUEST ANATOMY:
+- ↓
+- Host: api.example.com ← Which server
+- ↓
+- Authorization: Bearer eyJhbGc... ← Auth token
+- ↓
+- Accept: application/json ← 'I want JSON back'
+- ↓
+- Content-Type: application/json ← 'I'm sending JSON'
+- ↓
+- {'name': 'Alice'} ← Body (POST/PUT only)
+- ↓
+- HTTP RESPONSE:
 
 ```mermaid
 flowchart TD
@@ -358,7 +413,20 @@ Low TTL (60s) = changes propagate fast but more DNS queries.
 High TTL (86400s) = fewer queries but changes are slow.
 ```
 
-> **Flow**: DNS = Domain Name System → ANALOGY: DNS is the phone book of the internet. | ANALOGY: DNS is the phone book of the internet. → WHAT HAPPENS when you type google.com: | WHAT HAPPENS when you type google.com: → 1. Browser checks its cache | 1. Browser checks its cache → (Have I looked this up recently?) | (Have I looked this up recently?) → 2. OS checks its cache | 2. OS checks its cache → (Has any app on this machine looked it up?) | ...+1 more
+**Flow:**
+- DNS = Domain Name System
+- ↓
+- ANALOGY: DNS is the phone book of the internet.
+- ↓
+- WHAT HAPPENS when you type google.com:
+- ↓
+- 1. Browser checks its cache
+- ↓
+- (Have I looked this up recently?)
+- ↓
+- 2. OS checks its cache
+- ↓
+- (Has any app on this machine looked it up?)
 
 ```mermaid
 flowchart TD
@@ -438,7 +506,14 @@ Each layer can ONLY talk to the layer it needs.
 Database is NEVER directly accessible from the internet.
 ```
 
-> **Flow**: Port Protocol Source Action / 22 TCP My IP only ALLOW / → Allow port 80, 443 from ANYWHERE (public internet) / Al | Allow port 80, 443 from ANYWHERE (public internet) / Al → Allow port 8080 from Web Server SG ONLY / No public acc | Allow port 8080 from Web Server SG ONLY / No public acc → Allow port 3306 from App Server SG ONLY / No public acc
+**Flow:**
+- Port Protocol Source Action / 22 TCP My IP only ALLOW /
+- ↓
+- Allow port 80, 443 from ANYWHERE (public internet) / Al
+- ↓
+- Allow port 8080 from Web Server SG ONLY / No public acc
+- ↓
+- Allow port 3306 from App Server SG ONLY / No public acc
 
 ```mermaid
 flowchart TD
@@ -491,7 +566,12 @@ Sits in front of your app server. Handles:
 • Compression (gzip/brotli)
 ```
 
-> **Flow**: LOAD BALANCER = Traffic cop that distributes requests / → LOAD BALANCER (Nginx, AWS ALB, Azure LB) / (Single entr | LOAD BALANCER (Nginx, AWS ALB, Azure LB) / (Single entr → [App 1][App 2][App 3] ← Same application, 3 copies / ST
+**Flow:**
+- LOAD BALANCER = Traffic cop that distributes requests /
+- ↓
+- LOAD BALANCER (Nginx, AWS ALB, Azure LB) / (Single entr
+- ↓
+- [App 1][App 2][App 3] ← Same application, 3 copies / ST
 
 ```mermaid
 flowchart TD
@@ -537,7 +617,20 @@ What happens when you type "https://myapp.com/api/users":
 Total time: 100-500ms for a typical API call.
 ```
 
-> **Flow**: 2. BROWSER → PORT 443 at 54.23.100.50 | Spring Boot → Nginx | Nginx → Load Balancer | Load Balancer → Internet | Internet → Browser
+**Flow:**
+- 2. BROWSER
+- ↓
+- PORT 443 at 54.23.100.50
+- ↓
+- Spring Boot
+- ↓
+- Nginx
+- ↓
+- Load Balancer
+- ↓
+- Internet
+- ↓
+- Browser
 
 ```mermaid
 flowchart TD
@@ -618,7 +711,22 @@ Q: Explain what happens when I visit a URL.
   back through entire chain → Browser renders HTML/JSON.
 ```
 
-> **Flow**: DNS lookup → TCP connection | TCP connection → TLS handshake | TLS handshake → HTTP request | Load balancer → App server | App server → Database query | Database query → Response | ...+1 more
+**Flow:**
+- DNS lookup
+- ↓
+- TCP connection
+- ↓
+- TLS handshake
+- ↓
+- HTTP request
+- ↓
+- Load balancer
+- ↓
+- App server
+- ↓
+- Database query
+- ↓
+- Response
 
 ```mermaid
 flowchart TD

@@ -724,7 +724,26 @@ To move n disks from A → C:
   Total moves = 2^n - 1 = 2^3 - 1 = 7 moves
 ```
 
-> **Flow**: - Base case is obvious (1 disk → just move it) | To move n disks from A → C: | 1. Move top n-1 disks from A → B (using C as helper) | 3. Move n-1 disks from B → C (using A as helper) | Step 4: Move disk 3: A → C ← THE BIG MOVE
+**Flow:**
+- - Base case is obvious (1 disk
+- ↓
+- just move it)
+- ↓
+- To move n disks from A
+- ↓
+- C:
+- ↓
+- 1. Move top n-1 disks from A
+- ↓
+- B (using C as helper)
+- ↓
+- 3. Move n-1 disks from B
+- ↓
+- C (using A as helper)
+- ↓
+- Step 4: Move disk 3: A
+- ↓
+- C ← THE BIG MOVE
 
 ```mermaid
 flowchart TD

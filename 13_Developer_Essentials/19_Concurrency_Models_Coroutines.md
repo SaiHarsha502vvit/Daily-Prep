@@ -83,7 +83,12 @@ WITHIN A THREAD:
 └─────────────────────────────────────────┘
 ```
 
-> **Flow**: Code / Data/Heap / Thread Thrd / Stack Stck → Code / Data/Heap / Thread / Stack | Code / Data/Heap / Thread / Stack → Thread (OS-managed, ~1MB stack) / Coroutine1 Coroutine2
+**Flow:**
+- Code / Data/Heap / Thread Thrd / Stack Stck
+- ↓
+- Code / Data/Heap / Thread / Stack
+- ↓
+- Thread (OS-managed, ~1MB stack) / Coroutine1 Coroutine2
 
 ```mermaid
 flowchart TD
@@ -127,7 +132,20 @@ This is called COOPERATIVE multitasking (coroutines cooperate)
 vs PREEMPTIVE multitasking (OS preempts threads).
 ```
 
-> **Flow**: start --(→ runs →)--> → SUSPEND | → SUSPEND --(→ ... →)--> RESUME
+**Flow:**
+- start --(
+- ↓
+- runs
+- ↓
+- )-->
+- ↓
+- SUSPEND
+- ↓
+- SUSPEND --(
+- ↓
+- ...
+- ↓
+- )--> RESUME
 
 ```mermaid
 flowchart TD
@@ -193,7 +211,20 @@ suspend fun fetchUserData(): User {
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: A CONTINUATION = 'The rest of the computation' → THE BOOKMARK ANALOGY | THE BOOKMARK ANALOGY → You're reading a book. At page 50, you place a bookmark | You're reading a book. At page 50, you place a bookmark → what's left to read. | what's left to read. → The CONTINUATION is 'everything from the bookmark forwa | The CONTINUATION is 'everything from the bookmark forwa → In code: | In code: → int x = 5; ← Already done | ...+1 more
+**Flow:**
+- A CONTINUATION = 'The rest of the computation'
+- ↓
+- THE BOOKMARK ANALOGY
+- ↓
+- You're reading a book. At page 50, you place a bookmark
+- ↓
+- what's left to read.
+- ↓
+- The CONTINUATION is 'everything from the bookmark forwa
+- ↓
+- In code:
+- ↓
+- int x = 5; ← Already done
 
 ```mermaid
 flowchart TD
@@ -283,7 +314,20 @@ add(3, 4, function(result) {
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: CONTINUATION = The concept (a snapshot of 'the rest') → COROUTINE = A mechanism that USES continuations | COROUTINE = A mechanism that USES continuations → Analogy: | Analogy: → Continuation = A saved game state | Continuation = A saved game state → Coroutine = A game that can save and load | Coroutine = A game that can save and load → When a coroutine SUSPENDS: | When a coroutine SUSPENDS: → → It captures a CONTINUATION (saves its state) | ...+1 more
+**Flow:**
+- CONTINUATION = The concept (a snapshot of 'the rest')
+- ↓
+- COROUTINE = A mechanism that USES continuations
+- ↓
+- Analogy:
+- ↓
+- Continuation = A saved game state
+- ↓
+- Coroutine = A game that can save and load
+- ↓
+- When a coroutine SUSPENDS:
+- ↓
+- It captures a CONTINUATION (saves its state)
 
 ```mermaid
 flowchart TD
@@ -350,7 +394,20 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: But the UNDERLYING MODEL varies dramatically: → JAVASCRIPT: | JAVASCRIPT: → → Single-threaded event loop | → Single-threaded event loop → → async function returns a Promise | → async function returns a Promise → → NO parallelism (one thread), just concurrency | → NO parallelism (one thread), just concurrency → KOTLIN: | KOTLIN: → → Compiler transforms suspend functions into state mach | ...+1 more
+**Flow:**
+- But the UNDERLYING MODEL varies dramatically:
+- ↓
+- JAVASCRIPT:
+- ↓
+- Single-threaded event loop
+- ↓
+- async function returns a Promise
+- ↓
+- NO parallelism (one thread), just concurrency
+- ↓
+- KOTLIN:
+- ↓
+- Compiler transforms suspend functions into state mach
 
 ```mermaid
 flowchart TD
@@ -403,7 +460,20 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: THE POSTAL SERVICE ANALOGY → Platform Thread (OS Thread) = A dedicated postal truck | Platform Thread (OS Thread) = A dedicated postal truck → → Limited (can only have so many trucks) | → Limited (can only have so many trucks) → Virtual Thread = A package (letter) | Virtual Thread = A package (letter) → → Extremely cheap (just a piece of paper = ~few KB) | → Extremely cheap (just a piece of paper = ~few KB) → → Millions possible | → Millions possible → delivers other packages. When the house opens the door, | ...+1 more
+**Flow:**
+- THE POSTAL SERVICE ANALOGY
+- ↓
+- Platform Thread (OS Thread) = A dedicated postal truck
+- ↓
+- Limited (can only have so many trucks)
+- ↓
+- Virtual Thread = A package (letter)
+- ↓
+- Extremely cheap (just a piece of paper = ~few KB)
+- ↓
+- Millions possible
+- ↓
+- delivers other packages. When the house opens the door,
 
 ```mermaid
 flowchart TD
@@ -478,7 +548,20 @@ executor.submit(() -> {
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: OS THREAD (Platform Thread): → → Managed by the operating system | → Managed by the operating system → → ~1MB stack, expensive context switch | → ~1MB stack, expensive context switch → → OS scheduler decides when to run (preemptive) | → OS scheduler decides when to run (preemptive) → → Used by: Java (traditional), C, C++, Rust | → Used by: Java (traditional), C, C++, Rust → GREEN THREAD: | GREEN THREAD: → → Managed by the RUNTIME/VM, not the OS | ...+1 more
+**Flow:**
+- OS THREAD (Platform Thread):
+- ↓
+- Managed by the operating system
+- ↓
+- ~1MB stack, expensive context switch
+- ↓
+- OS scheduler decides when to run (preemptive)
+- ↓
+- Used by: Java (traditional), C, C++, Rust
+- ↓
+- GREEN THREAD:
+- ↓
+- Managed by the RUNTIME/VM, not the OS
 
 ```mermaid
 flowchart TD
@@ -534,7 +617,20 @@ LIMITATION: CPU-heavy work BLOCKS the single thread.
 Solution: Worker Threads, or offload to microservices.
 ```
 
-> **Flow**: THE SINGLE-THREADED EVENT LOOP → model comparison) | model comparison) → Call Stack (single thread — runs JS code) | Call Stack (single thread — runs JS code) → Currently executing function | Currently executing function → ↓ when stack is empty ↓ | ↓ when stack is empty ↓ → Microtask Queue (Promises, queueM) ← checked FIRST | Microtask Queue (Promises, queueM) ← checked FIRST → Macrotask Queue (setTimeout, IO) ← checked AFTER | ...+1 more
+**Flow:**
+- THE SINGLE-THREADED EVENT LOOP
+- ↓
+- model comparison)
+- ↓
+- Call Stack (single thread — runs JS code)
+- ↓
+- Currently executing function
+- ↓
+- ↓ when stack is empty ↓
+- ↓
+- Microtask Queue (Promises, queueM) ← checked FIRST
+- ↓
+- Macrotask Queue (setTimeout, IO) ← checked AFTER
 
 ```mermaid
 flowchart TD
@@ -589,7 +685,20 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: Go's approach: 'Don't communicate by sharing memory. → Share memory by communicating.' — Go proverb | Share memory by communicating.' — Go proverb → GOROUTINE = Lightweight coroutine (starts at ~2KB stack | GOROUTINE = Lightweight coroutine (starts at ~2KB stack → → M:N scheduling: M goroutines on N OS threads | → M:N scheduling: M goroutines on N OS threads → → go func() { ... } — that's it, it's running | → go func() { ... } — that's it, it's running → → Millions possible (vs thousands of OS threads) | → Millions possible (vs thousands of OS threads) → CHANNEL = Typed pipe for goroutine communication | ...+1 more
+**Flow:**
+- Go's approach: 'Don't communicate by sharing memory.
+- ↓
+- Share memory by communicating.' — Go proverb
+- ↓
+- GOROUTINE = Lightweight coroutine (starts at ~2KB stack
+- ↓
+- M:N scheduling: M goroutines on N OS threads
+- ↓
+- go func() { ... } — that's it, it's running
+- ↓
+- Millions possible (vs thousands of OS threads)
+- ↓
+- CHANNEL = Typed pipe for goroutine communication
 
 ```mermaid
 flowchart TD
@@ -647,7 +756,20 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: THE JUGGLING ANALOGY (Rob Pike's definition): → CONCURRENCY = Dealing with multiple things at once. | CONCURRENCY = Dealing with multiple things at once. → → One juggler with 3 balls — only holds ONE at a time | → One juggler with 3 balls — only holds ONE at a time → → Switches rapidly between them (interleaving) | → Switches rapidly between them (interleaving) → → STRUCTURE of the program | → STRUCTURE of the program → PARALLELISM = Doing multiple things at once. | PARALLELISM = Doing multiple things at once. → → THREE jugglers, each with 1 ball — truly simultaneous | ...+1 more
+**Flow:**
+- THE JUGGLING ANALOGY (Rob Pike's definition):
+- ↓
+- CONCURRENCY = Dealing with multiple things at once.
+- ↓
+- One juggler with 3 balls — only holds ONE at a time
+- ↓
+- Switches rapidly between them (interleaving)
+- ↓
+- STRUCTURE of the program
+- ↓
+- PARALLELISM = Doing multiple things at once.
+- ↓
+- THREE jugglers, each with 1 ball — truly simultaneous
 
 ```mermaid
 flowchart TD
@@ -693,7 +815,16 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: other's to eat. Neither releases. Both starve forever. → → Both STOPPED. No progress. | → Both STOPPED. No progress. → → Fix: Lock ordering, timeout, lock-free algorithms | → Fix: Lock ordering, timeout, lock-free algorithms → → Both MOVING but still no progress. | → Both MOVING but still no progress. → → Fix: Fair locks, priority aging, FIFO scheduling
+**Flow:**
+- other's to eat. Neither releases. Both starve forever.
+- ↓
+- Both STOPPED. No progress.
+- ↓
+- Fix: Lock ordering, timeout, lock-free algorithms
+- ↓
+- Both MOVING but still no progress.
+- ↓
+- Fix: Fair locks, priority aging, FIFO scheduling
 
 ```mermaid
 flowchart TD
@@ -742,7 +873,20 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: DECISION MATRIX → Problem Best Model | Problem Best Model → High-concurrency web Virtual threads (Java 21) or | High-concurrency web Virtual threads (Java 21) or → server (IO-bound) Go goroutines or Node.js event loop | server (IO-bound) Go goroutines or Node.js event loop → CPU-intensive computation OS threads / parallel streams | CPU-intensive computation OS threads / parallel streams → (number crunching) Rust rayon / Java ForkJoinPool | (number crunching) Rust rayon / Java ForkJoinPool → UI responsiveness Event loop (JS) / Main thread + | ...+1 more
+**Flow:**
+- DECISION MATRIX
+- ↓
+- Problem Best Model
+- ↓
+- High-concurrency web Virtual threads (Java 21) or
+- ↓
+- server (IO-bound) Go goroutines or Node.js event loop
+- ↓
+- CPU-intensive computation OS threads / parallel streams
+- ↓
+- (number crunching) Rust rayon / Java ForkJoinPool
+- ↓
+- UI responsiveness Event loop (JS) / Main thread +
 
 ```mermaid
 flowchart TD

@@ -48,7 +48,20 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WINDOW FUNCTIONS - OVERVIEW → Syntax: | Syntax: → function_name() OVER ( | function_name() OVER ( → [PARTITION BY column1, column2] ← Groups for calculatio | [PARTITION BY column1, column2] ← Groups for calculatio → [ORDER BY column3] ← Order within group | [ORDER BY column3] ← Order within group → [ROWS/RANGE frame_clause] ← Which rows to consider | [ROWS/RANGE frame_clause] ← Which rows to consider → WINDOW FUNCTION CATEGORIES: | ...+1 more
+**Flow:**
+- WINDOW FUNCTIONS - OVERVIEW
+- ↓
+- Syntax:
+- ↓
+- function_name() OVER (
+- ↓
+- [PARTITION BY column1, column2] ← Groups for calculatio
+- ↓
+- [ORDER BY column3] ← Order within group
+- ↓
+- [ROWS/RANGE frame_clause] ← Which rows to consider
+- ↓
+- WINDOW FUNCTION CATEGORIES:
 
 ```mermaid
 flowchart TD
@@ -593,7 +606,30 @@ Level 6: ADVANCED ANALYTICS (Week 11-12)
 
 ```
 
-> **Flow**: Level 1: BASIC QUERIES (Week 1-2) → SELECT, WHERE, ORDER BY, LIMIT | Level 1: BASIC QUERIES (Week 1-2) → Comparison & Logical Operators | Level 1: BASIC QUERIES (Week 1-2) → Basic filtering and sorting | Level 2: AGGREGATIONS (Week 3-4) → GROUP BY, HAVING | Level 2: AGGREGATIONS (Week 3-4) → COUNT, SUM, AVG, MIN, MAX | Level 2: AGGREGATIONS (Week 3-4) → Aggregate with conditions | ...+12 more
+**Flow:**
+- Level 1: BASIC QUERIES (Week 1-2)
+- ↓
+- SELECT, WHERE, ORDER BY, LIMIT
+- ↓
+- Level 1: BASIC QUERIES (Week 1-2)
+- ↓
+- Comparison & Logical Operators
+- ↓
+- Level 1: BASIC QUERIES (Week 1-2)
+- ↓
+- Basic filtering and sorting
+- ↓
+- Level 2: AGGREGATIONS (Week 3-4)
+- ↓
+- GROUP BY, HAVING
+- ↓
+- Level 2: AGGREGATIONS (Week 3-4)
+- ↓
+- COUNT, SUM, AVG, MIN, MAX
+- ↓
+- Level 2: AGGREGATIONS (Week 3-4)
+- ↓
+- Aggregate with conditions
 
 ```mermaid
 flowchart TD
@@ -703,7 +739,12 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: order_id customer_name customer_email product_name pric → id name email / 1 John Doe john@ / 2 Jane Smith jane@ | id name email / 1 John Doe john@ / 2 Jane Smith jane@ → id customer_id product_id / 1 1 101 / 2 1 102 / 3 1 103
+**Flow:**
+- order_id customer_name customer_email product_name pric
+- ↓
+- id name email / 1 John Doe john@ / 2 Jane Smith jane@
+- ↓
+- id customer_id product_id / 1 1 101 / 2 1 102 / 3 1 103
 
 ```mermaid
 flowchart TD
@@ -1027,7 +1068,10 @@ WHERE c.customer_id IN (
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: order_id customer_id product_id quantity price order_da → 📊 EXECUTIVE DASHBOARD - January 2024 / Total Revenue: $
+**Flow:**
+- order_id customer_id product_id quantity price order_da
+- ↓
+- 📊 EXECUTIVE DASHBOARD - January 2024 / Total Revenue: $
 
 ```mermaid
 flowchart TD
@@ -1267,7 +1311,10 @@ GROUP BY o.order_id, o.order_date;
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: emp dept salary / A IT 60000 / B IT 70000 / C HR 50000 → dept avg_sal / IT 65000 / HR 50000
+**Flow:**
+- emp dept salary / A IT 60000 / B IT 70000 / C HR 50000
+- ↓
+- dept avg_sal / IT 65000 / HR 50000
 
 ```mermaid
 flowchart TD
@@ -1545,7 +1592,20 @@ SELECT * FROM ranked_customers WHERE percentile >= 0.90;
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHY CTEs EXIST → THE PROBLEM: Nested Subqueries are Hard to Read | THE PROBLEM: Nested Subqueries are Hard to Read → -- Then show their spending rank | -- Then show their spending rank → SELECT customer_id, name, total_spent, rank_num FROM ( | SELECT customer_id, name, total_spent, rank_num FROM ( → SELECT c.customer_id, c.name, total_spent, | SELECT c.customer_id, c.name, total_spent, → RANK() OVER (ORDER BY total_spent DESC) as rank_num | RANK() OVER (ORDER BY total_spent DESC) as rank_num → FROM customers c | ...+1 more
+**Flow:**
+- WHY CTEs EXIST
+- ↓
+- THE PROBLEM: Nested Subqueries are Hard to Read
+- ↓
+- -- Then show their spending rank
+- ↓
+- SELECT customer_id, name, total_spent, rank_num FROM (
+- ↓
+- SELECT c.customer_id, c.name, total_spent,
+- ↓
+- RANK() OVER (ORDER BY total_spent DESC) as rank_num
+- ↓
+- FROM customers c
 
 ```mermaid
 flowchart TD
@@ -2010,7 +2070,20 @@ FROM orders;
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: SQL FOR DATA ANALYSIS - CHEAT SHEET → JOIN TYPES: | JOIN TYPES: → INNER JOIN - Only matching rows | INNER JOIN - Only matching rows → LEFT JOIN - All left + matching right (NULL if no match | LEFT JOIN - All left + matching right (NULL if no match → RIGHT JOIN - All right + matching left | RIGHT JOIN - All right + matching left → FULL JOIN - Everything from both | FULL JOIN - Everything from both → SELF JOIN - Table joined to itself (hierarchies) | ...+1 more
+**Flow:**
+- SQL FOR DATA ANALYSIS - CHEAT SHEET
+- ↓
+- JOIN TYPES:
+- ↓
+- INNER JOIN - Only matching rows
+- ↓
+- LEFT JOIN - All left + matching right (NULL if no match
+- ↓
+- RIGHT JOIN - All right + matching left
+- ↓
+- FULL JOIN - Everything from both
+- ↓
+- SELF JOIN - Table joined to itself (hierarchies)
 
 ```mermaid
 flowchart TD

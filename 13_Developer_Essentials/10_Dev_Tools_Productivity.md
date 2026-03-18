@@ -15,7 +15,18 @@ A developer who masters their tools finishes in 2 hours
 what another takes 2 days to do.
 ```
 
-> **Flow**: Junior Dev: Writes code → clicks buttons | clicks buttons → debugs with println | Senior Dev: Writes code → keyboard shortcuts | keyboard shortcuts → debugs with debugger + profiler
+**Flow:**
+- Junior Dev: Writes code
+- ↓
+- clicks buttons
+- ↓
+- debugs with println
+- ↓
+- Senior Dev: Writes code
+- ↓
+- keyboard shortcuts
+- ↓
+- debugs with debugger + profiler
 
 ```mermaid
 flowchart LR
@@ -50,7 +61,20 @@ Profiling         │ VisualVM / JProfiler  │ Find performance bottlenecks
 Monitoring        │ Prometheus + Grafana  │ Watch production metrics
 ```
 
-> **Flow**: Category Tool Why → IDE/Editor IntelliJ / VS Code Where you live 8 hours/da | IDE/Editor IntelliJ / VS Code Where you live 8 hours/da → Version Control Git + GitHub Track every change | Version Control Git + GitHub Track every change → Terminal Bash/PowerShell Automation, scripts | Terminal Bash/PowerShell Automation, scripts → Build Tool Maven / Gradle Compile, test, package | Build Tool Maven / Gradle Compile, test, package → API Testing Postman / curl Test HTTP endpoints | API Testing Postman / curl Test HTTP endpoints → Containerization Docker Consistent environments | ...+1 more
+**Flow:**
+- Category Tool Why
+- ↓
+- IDE/Editor IntelliJ / VS Code Where you live 8 hours/da
+- ↓
+- Version Control Git + GitHub Track every change
+- ↓
+- Terminal Bash/PowerShell Automation, scripts
+- ↓
+- Build Tool Maven / Gradle Compile, test, package
+- ↓
+- API Testing Postman / curl Test HTTP endpoints
+- ↓
+- Containerization Docker Consistent environments
 
 ```mermaid
 flowchart TD
@@ -93,7 +117,10 @@ File Structure (methods)    │ Ctrl+F12           │ Cmd+F12
 Navigate Back/Forward       │ Ctrl+Alt+←/→       │ Cmd+Opt+←/→
 ```
 
-> **Flow**: Navigate Back/Forward Ctrl+Alt+←/ → Cmd+Opt+←/
+**Flow:**
+- Navigate Back/Forward Ctrl+Alt+←/
+- ↓
+- Cmd+Opt+←/
 
 ```mermaid
 flowchart LR
@@ -121,7 +148,20 @@ Generate (constructor etc)  │ Alt+Insert         │ Cmd+N
 Surround With (try/if)      │ Ctrl+Alt+T         │ Cmd+Opt+T
 ```
 
-> **Flow**: ACTION Windows/Linux Mac → Rename (refactor) Shift+F6 Shift+F6 | Rename (refactor) Shift+F6 Shift+F6 → Extract Variable Ctrl+Alt+V Cmd+Opt+V | Extract Variable Ctrl+Alt+V Cmd+Opt+V → Extract Method Ctrl+Alt+M Cmd+Opt+M | Extract Method Ctrl+Alt+M Cmd+Opt+M → Inline Ctrl+Alt+N Cmd+Opt+N | Inline Ctrl+Alt+N Cmd+Opt+N → Comment Line Ctrl+/ Cmd+/ | Comment Line Ctrl+/ Cmd+/ → Duplicate Line Ctrl+D Cmd+D | ...+1 more
+**Flow:**
+- ACTION Windows/Linux Mac
+- ↓
+- Rename (refactor) Shift+F6 Shift+F6
+- ↓
+- Extract Variable Ctrl+Alt+V Cmd+Opt+V
+- ↓
+- Extract Method Ctrl+Alt+M Cmd+Opt+M
+- ↓
+- Inline Ctrl+Alt+N Cmd+Opt+N
+- ↓
+- Comment Line Ctrl+/ Cmd+/
+- ↓
+- Duplicate Line Ctrl+D Cmd+D
 
 ```mermaid
 flowchart TD
@@ -165,7 +205,28 @@ MULTI-CURSOR:
   Ctrl+G           → Select next occurrence
 ```
 
-> **Flow**: LIVE TEMPLATES: Type abbreviation → Tab | Tab → expands code | sout → System.out.println(); | psvm → public static void main(String[] args) {} | fori → for (int i = 0; i &lt; ; i++) {} | iter → for (Type item : collection) {} | ...+9 more
+**Flow:**
+- LIVE TEMPLATES: Type abbreviation
+- ↓
+- Tab
+- ↓
+- expands code
+- ↓
+- sout
+- ↓
+- System.out.println();
+- ↓
+- psvm
+- ↓
+- public static void main(String[] args) {}
+- ↓
+- fori
+- ↓
+- for (int i = 0; i < ; i++) {}
+- ↓
+- iter
+- ↓
+- for (Type item : collection) {}
 
 ```mermaid
 flowchart TD
@@ -239,7 +300,20 @@ MUST-HAVE Extensions:
   - Live Share (pair programming)
 ```
 
-> **Flow**: ACTION Shortcut → Command Palette Ctrl+Shift+P | Command Palette Ctrl+Shift+P → Quick Open File Ctrl+P | Quick Open File Ctrl+P → Toggle Terminal Ctrl+` | Toggle Terminal Ctrl+` → Search in Files Ctrl+Shift+F | Search in Files Ctrl+Shift+F → Multi-cursor (same word) Ctrl+D (repeat) | Multi-cursor (same word) Ctrl+D (repeat) → Go to Line Ctrl+G | ...+1 more
+**Flow:**
+- ACTION Shortcut
+- ↓
+- Command Palette Ctrl+Shift+P
+- ↓
+- Quick Open File Ctrl+P
+- ↓
+- Toggle Terminal Ctrl+`
+- ↓
+- Search in Files Ctrl+Shift+F
+- ↓
+- Multi-cursor (same word) Ctrl+D (repeat)
+- ↓
+- Go to Line Ctrl+G
 
 ```mermaid
 flowchart TD
@@ -393,7 +467,22 @@ TOOLS:
 QUICK PROFILING with Spring Boot:
 ```
 
-> **Flow**: - /actuator/health → Is app running? | - /actuator/metrics → JVM stats | - /actuator/info → App info | - /actuator/loggers → Change log level at runtime
+**Flow:**
+- - /actuator/health
+- ↓
+- Is app running?
+- ↓
+- - /actuator/metrics
+- ↓
+- JVM stats
+- ↓
+- - /actuator/info
+- ↓
+- App info
+- ↓
+- - /actuator/loggers
+- ↓
+- Change log level at runtime
 
 ```mermaid
 flowchart LR
@@ -471,7 +560,22 @@ public class PerformanceAspect {
 10. REVIEW feedback → fix → merge
 ```
 
-> **Flow**: Write failing test → implement | implement → test passes | Ctrl+Alt+L (IntelliJ) → consistent style | 10. REVIEW feedback → fix | fix → merge
+**Flow:**
+- Write failing test
+- ↓
+- implement
+- ↓
+- test passes
+- ↓
+- Ctrl+Alt+L (IntelliJ)
+- ↓
+- consistent style
+- ↓
+- 10. REVIEW feedback
+- ↓
+- fix
+- ↓
+- merge
 
 ```mermaid
 flowchart TD

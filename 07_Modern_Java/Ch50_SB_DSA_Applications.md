@@ -49,7 +49,14 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHY: Why DSA Knowledge in Spring Boot? / • Performance: → HOW: How DSA Applies in Real Applications? / • Caching: | HOW: How DSA Applies in Real Applications? / • Caching: → WHEN: When to Apply DSA in Spring Boot? / • Custom cach | WHEN: When to Apply DSA in Spring Boot? / • Custom cach → WHICH: Which DSA Topics are Most Relevant? / ESSENTIAL:
+**Flow:**
+- WHY: Why DSA Knowledge in Spring Boot? / • Performance:
+- ↓
+- HOW: How DSA Applies in Real Applications? / • Caching:
+- ↓
+- WHEN: When to Apply DSA in Spring Boot? / • Custom cach
+- ↓
+- WHICH: Which DSA Topics are Most Relevant? / ESSENTIAL:
 
 ```mermaid
 flowchart TD
@@ -1283,7 +1290,20 @@ public class OrganizationController {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: DSA IN SPRING BOOT - QUICK REFERENCE → FEATURE DATA STRUCTURE ALGORITHM | FEATURE DATA STRUCTURE ALGORITHM → Rate Limiting Queue + HashMap Sliding Window | Rate Limiting Queue + HashMap Sliding Window → Auto-Complete Trie DFS Traversal | Auto-Complete Trie DFS Traversal → Caching LinkedHashMap LRU Eviction | Caching LinkedHashMap LRU Eviction → Route Planning Graph Dijkstra's/A* | Route Planning Graph Dijkstra's/A* → Task Scheduling PriorityQueue Heap Operations | ...+1 more
+**Flow:**
+- DSA IN SPRING BOOT - QUICK REFERENCE
+- ↓
+- FEATURE DATA STRUCTURE ALGORITHM
+- ↓
+- Rate Limiting Queue + HashMap Sliding Window
+- ↓
+- Auto-Complete Trie DFS Traversal
+- ↓
+- Caching LinkedHashMap LRU Eviction
+- ↓
+- Route Planning Graph Dijkstra's/A*
+- ↓
+- Task Scheduling PriorityQueue Heap Operations
 
 ```mermaid
 flowchart TD

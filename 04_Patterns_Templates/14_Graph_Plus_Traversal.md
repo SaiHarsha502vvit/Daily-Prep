@@ -55,7 +55,30 @@ Problem type → Algorithm:
 └── "Bipartite check" → BFS/DFS with 2-coloring
 ```
 
-> **Flow**: Problem type → Algorithm: | 'Shortest path' (unweighted) → BFS | 'Shortest path' (weighted, no negative) → Dijkstra | 'Shortest path' (negative edges) → Bellman-Ford | 'All pairs shortest path' → Floyd-Warshall | 'Connected components' → BFS/DFS or Union-Find | ...+4 more
+**Flow:**
+- Problem type
+- ↓
+- Algorithm:
+- ↓
+- 'Shortest path' (unweighted)
+- ↓
+- BFS
+- ↓
+- 'Shortest path' (weighted, no negative)
+- ↓
+- Dijkstra
+- ↓
+- 'Shortest path' (negative edges)
+- ↓
+- Bellman-Ford
+- ↓
+- 'All pairs shortest path'
+- ↓
+- Floyd-Warshall
+- ↓
+- 'Connected components'
+- ↓
+- BFS/DFS or Union-Find
 
 ```mermaid
 flowchart TD
@@ -208,7 +231,18 @@ Step-by-step:
 Time: O(R×C) | Space: O(R×C) recursion stack worst case
 ```
 
-> **Flow**: (0,0)=1 → DFS! Sink (0,0),(0,1),(1,0),(1,1). count=1 | (2,2)=1 → DFS! Sink (2,2). count=2 | (3,3)=1 → DFS! Sink (3,3),(3,4). count=3
+**Flow:**
+- (0,0)=1
+- ↓
+- DFS! Sink (0,0),(0,1),(1,0),(1,1). count=1
+- ↓
+- (2,2)=1
+- ↓
+- DFS! Sink (2,2). count=2
+- ↓
+- (3,3)=1
+- ↓
+- DFS! Sink (3,3),(3,4). count=3
 
 ```mermaid
 flowchart LR
@@ -258,7 +292,24 @@ Step-by-step:
 Time: O(V + E) | Space: O(V + E)
 ```
 
-> **Flow**: Compute indegree: 0 → 0, 1 | 0, 1 → 1, 2 | 1, 2 → 1, 3 | Dequeue 0: order=[0]. Neighbors: 1(indegree 1 → 0), 2(indegree 1 | 0), 2(indegree 1 → 0) | Dequeue 1: order=[0,1]. Neighbors: 3(indegree 2 → 1) | ...+4 more
+**Flow:**
+- Compute indegree: 0
+- ↓
+- 0, 1
+- ↓
+- 1, 2
+- ↓
+- 1, 3
+- ↓
+- Dequeue 0: order=[0]. Neighbors: 1(indegree 1
+- ↓
+- 0), 2(indegree 1
+- ↓
+- 0)
+- ↓
+- Dequeue 1: order=[0,1]. Neighbors: 3(indegree 2
+- ↓
+- 1)
 
 ```mermaid
 flowchart TD
@@ -317,7 +368,20 @@ COMMON MISTAKES:
 5. Grid DFS: Forgetting to mark visited BEFORE recursing into neighbors
 ```
 
-> **Flow**: EDGE CASES: → Edge Case Handling | Edge Case Handling → Disconnected graph BFS/DFS may miss components — loop! | Disconnected graph BFS/DFS may miss components — loop! → Self-loop Cycle detection catches this | Self-loop Cycle detection catches this → Empty graph (no edges) All nodes are valid, indegree=0 | Empty graph (no edges) All nodes are valid, indegree=0 → Grid with all 0s 0 islands | Grid with all 0s 0 islands → Grid with all 1s 1 island | ...+1 more
+**Flow:**
+- EDGE CASES:
+- ↓
+- Edge Case Handling
+- ↓
+- Disconnected graph BFS/DFS may miss components — loop!
+- ↓
+- Self-loop Cycle detection catches this
+- ↓
+- Empty graph (no edges) All nodes are valid, indegree=0
+- ↓
+- Grid with all 0s 0 islands
+- ↓
+- Grid with all 1s 1 island
 
 ```mermaid
 flowchart TD

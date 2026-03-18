@@ -273,7 +273,18 @@ FROM employees;
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: ROW_NUMBER vs RANK vs DENSE_RANK → Salary: 100, 100, 90, 80 | Salary: 100, 100, 90, 80 → ROW_NUMBER: 1, 2, 3, 4 (unique, arbitrary for ties) | ROW_NUMBER: 1, 2, 3, 4 (unique, arbitrary for ties) → RANK: 1, 1, 3, 4 (ties get same rank, gaps after) | RANK: 1, 1, 3, 4 (ties get same rank, gaps after) → DENSE_RANK: 1, 1, 2, 3 (ties get same rank, NO gaps) | DENSE_RANK: 1, 1, 2, 3 (ties get same rank, NO gaps) → Use ROW_NUMBER for pagination, DENSE_RANK for 'Nth high
+**Flow:**
+- ROW_NUMBER vs RANK vs DENSE_RANK
+- ↓
+- Salary: 100, 100, 90, 80
+- ↓
+- ROW_NUMBER: 1, 2, 3, 4 (unique, arbitrary for ties)
+- ↓
+- RANK: 1, 1, 3, 4 (ties get same rank, gaps after)
+- ↓
+- DENSE_RANK: 1, 1, 2, 3 (ties get same rank, NO gaps)
+- ↓
+- Use ROW_NUMBER for pagination, DENSE_RANK for 'Nth high
 
 ```mermaid
 flowchart TD
@@ -671,7 +682,16 @@ COMMIT;
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: Isolation Level Dirty Read Non-Repeatable Phantom → READ UNCOMMITTED Yes Yes Yes | READ UNCOMMITTED Yes Yes Yes → READ COMMITTED No Yes Yes | READ COMMITTED No Yes Yes → REPEATABLE READ No No Yes | REPEATABLE READ No No Yes → SERIALIZABLE No No No
+**Flow:**
+- Isolation Level Dirty Read Non-Repeatable Phantom
+- ↓
+- READ UNCOMMITTED Yes Yes Yes
+- ↓
+- READ COMMITTED No Yes Yes
+- ↓
+- REPEATABLE READ No No Yes
+- ↓
+- SERIALIZABLE No No No
 
 ```mermaid
 flowchart TD
@@ -752,7 +772,44 @@ EXPLAIN SELECT * FROM orders WHERE customer_id = 42 AND status = 'SHIPPED';
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: EXPLAIN type (best → worst): → const → eq_ref → ref → range → index → ALL | const → eq_ref → ref → range → index → ALL → const: WHERE primary_key = 42 | const: WHERE primary_key = 42 → eq_ref: JOIN on primary key (unique match) | eq_ref: JOIN on primary key (unique match) → ref: JOIN on non-unique index | ref: JOIN on non-unique index → range: WHERE price BETWEEN 10 AND 50 | range: WHERE price BETWEEN 10 AND 50 → index: Full index scan (better than ALL but still slow) | ...+1 more
+**Flow:**
+- EXPLAIN type (best
+- ↓
+- worst):
+- ↓
+- const
+- ↓
+- eq_ref
+- ↓
+- ref
+- ↓
+- range
+- ↓
+- index
+- ↓
+- ALL
+- ↓
+- const
+- ↓
+- eq_ref
+- ↓
+- ref
+- ↓
+- range
+- ↓
+- index
+- ↓
+- ALL
+- ↓
+- const: WHERE primary_key = 42
+- ↓
+- eq_ref: JOIN on primary key (unique match)
+- ↓
+- ref: JOIN on non-unique index
+- ↓
+- range: WHERE price BETWEEN 10 AND 50
+- ↓
+- index: Full index scan (better than ALL but still slow)
 
 ```mermaid
 flowchart TD
@@ -899,7 +956,20 @@ CREATE TABLE orders (
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: Query is slow? Follow this checklist: → 1. Run EXPLAIN — is it ALL (full table scan)? | 1. Run EXPLAIN — is it ALL (full table scan)? → 2. Is there an index on the WHERE/JOIN columns? | 2. Is there an index on the WHERE/JOIN columns? → 3. Is a function breaking index usage? | 3. Is a function breaking index usage? → 4. Is the query returning too many rows? (add LIMIT) | 4. Is the query returning too many rows? (add LIMIT) → 5. Is SELECT * fetching unnecessary columns? | 5. Is SELECT * fetching unnecessary columns? → 6. Is there an N+1 query problem in the app code? | ...+1 more
+**Flow:**
+- Query is slow? Follow this checklist:
+- ↓
+- 1. Run EXPLAIN — is it ALL (full table scan)?
+- ↓
+- 2. Is there an index on the WHERE/JOIN columns?
+- ↓
+- 3. Is a function breaking index usage?
+- ↓
+- 4. Is the query returning too many rows? (add LIMIT)
+- ↓
+- 5. Is SELECT * fetching unnecessary columns?
+- ↓
+- 6. Is there an N+1 query problem in the app code?
 
 ```mermaid
 flowchart TD
@@ -1073,7 +1143,20 @@ JOIN logs l3 ON l3.id = l1.id + 2 AND l3.value = l1.value;
 ╚════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: PATTERN SQL TOOL → Nth highest/lowest DENSE_RANK() or LIMIT OFFSET | Nth highest/lowest DENSE_RANK() or LIMIT OFFSET → Top N per group RANK() PARTITION BY | Top N per group RANK() PARTITION BY → Running total SUM() OVER (ORDER BY ...) | Running total SUM() OVER (ORDER BY ...) → Moving average AVG() OVER (ROWS BETWEEN) | Moving average AVG() OVER (ROWS BETWEEN) → Previous/Next row LAG() / LEAD() | Previous/Next row LAG() / LEAD() → Compare with previous period LAG() with date grouping | ...+1 more
+**Flow:**
+- PATTERN SQL TOOL
+- ↓
+- Nth highest/lowest DENSE_RANK() or LIMIT OFFSET
+- ↓
+- Top N per group RANK() PARTITION BY
+- ↓
+- Running total SUM() OVER (ORDER BY ...)
+- ↓
+- Moving average AVG() OVER (ROWS BETWEEN)
+- ↓
+- Previous/Next row LAG() / LEAD()
+- ↓
+- Compare with previous period LAG() with date grouping
 
 ```mermaid
 flowchart TD

@@ -55,7 +55,14 @@ ERA 4: SERVERLESS / PLATFORM (2020+)
  VM > Container > Platform > Serverless
 ```
 
-> **Flow**: 'Works on my machine' → 'Works everywhere.' | More Control → Less Maintenance
+**Flow:**
+- 'Works on my machine'
+- ↓
+- 'Works everywhere.'
+- ↓
+- More Control
+- ↓
+- Less Maintenance
 
 ```mermaid
 flowchart LR
@@ -96,7 +103,20 @@ IaaS vs PaaS vs SaaS — The Pizza Analogy:
 └────────────┴────────────┴────────────┴────────────┘
 ```
 
-> **Flow**: IaaS vs PaaS vs SaaS — The Pizza Analogy: → ON-PREMISE IaaS PaaS SaaS | ON-PREMISE IaaS PaaS SaaS → You manage You manage You manage You manage | You manage You manage You manage You manage → EVERYTHING Apps Apps Nothing | EVERYTHING Apps Apps Nothing → Hardware Data Data (just use) | Hardware Data Data (just use) → OS Runtime | OS Runtime → Middleware Middleware | ...+1 more
+**Flow:**
+- IaaS vs PaaS vs SaaS — The Pizza Analogy:
+- ↓
+- ON-PREMISE IaaS PaaS SaaS
+- ↓
+- You manage You manage You manage You manage
+- ↓
+- EVERYTHING Apps Apps Nothing
+- ↓
+- Hardware Data Data (just use)
+- ↓
+- OS Runtime
+- ↓
+- Middleware Middleware
 
 ```mermaid
 flowchart TD
@@ -172,7 +192,18 @@ MONITORING:
 └───────────────────┴────────────────────────────────────────┘
 ```
 
-> **Flow**: EC2 Virtual server. Full control. / Like renting an emp → RDS Managed SQL (MySQL, PostgreSQL). / Backups, replica | RDS Managed SQL (MySQL, PostgreSQL). / Backups, replica → S3 Object storage. Files, images, backups. / Like Googl | S3 Object storage. Files, images, backups. / Like Googl → VPC Virtual private network. Your servers / live in an  | VPC Virtual private network. Your servers / live in an  → SQS Message queue. Decouple services. / SNS Pub/sub not | SQS Message queue. Decouple services. / SNS Pub/sub not → CloudWatch Metrics, logs, alarms. 'Is it healthy?'
+**Flow:**
+- EC2 Virtual server. Full control. / Like renting an emp
+- ↓
+- RDS Managed SQL (MySQL, PostgreSQL). / Backups, replica
+- ↓
+- S3 Object storage. Files, images, backups. / Like Googl
+- ↓
+- VPC Virtual private network. Your servers / live in an
+- ↓
+- SQS Message queue. Decouple services. / SNS Pub/sub not
+- ↓
+- CloudWatch Metrics, logs, alarms. 'Is it healthy?'
 
 ```mermaid
 flowchart TD
@@ -233,7 +264,26 @@ Also connected:
 └── CloudWatch: logs, metrics, alerts
 ```
 
-> **Flow**: Route 53 → CloudFront | CloudFront → ALB | ALB → SB1 | ALB → SB2 | ALB → SB3 | SB1 → Database / (Primary) | ...+3 more
+**Flow:**
+- Route 53
+- ↓
+- CloudFront
+- ↓
+- ALB
+- ↓
+- SB1
+- ↓
+- ALB
+- ↓
+- SB2
+- ↓
+- ALB
+- ↓
+- SB3
+- ↓
+- SB1
+- ↓
+- Database / (Primary)
 
 ```mermaid
 flowchart TD
@@ -301,7 +351,30 @@ NEVER in code or properties files!
 └── Spring Cloud Config Server
 ```
 
-> **Flow**: LOCAL (developer laptop): → Database: localhost:3306 / H2 in-memory | LOCAL (developer laptop): → Redis: localhost:6379 | LOCAL (developer laptop): → API URL: http://localhost:8080 | LOCAL (developer laptop): → Logs: DEBUG level | DEV (shared development server): → Database: dev-db.internal:3306 | DEV (shared development server): → Redis: dev-redis.internal:6379 | ...+18 more
+**Flow:**
+- LOCAL (developer laptop):
+- ↓
+- Database: localhost:3306 / H2 in-memory
+- ↓
+- LOCAL (developer laptop):
+- ↓
+- Redis: localhost:6379
+- ↓
+- LOCAL (developer laptop):
+- ↓
+- API URL: http://localhost:8080
+- ↓
+- LOCAL (developer laptop):
+- ↓
+- Logs: DEBUG level
+- ↓
+- DEV (shared development server):
+- ↓
+- Database: dev-db.internal:3306
+- ↓
+- DEV (shared development server):
+- ↓
+- Redis: dev-redis.internal:6379
 
 ```mermaid
 flowchart TD
@@ -403,7 +476,22 @@ EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
 ```
 
-> **Flow**: FULL PIPELINE: Code → Production → Developer pushes code to GitHub | Developer pushes code to GitHub → GitHub Actions / Jenkins | GitHub Actions / Jenkins → STAGE 1: BUILD | STAGE 1: BUILD → mvn clean package (compile + test) | mvn clean package (compile + test) → Run unit tests | Run unit tests → Run integration tests | ...+1 more
+**Flow:**
+- FULL PIPELINE: Code
+- ↓
+- Production
+- ↓
+- Developer pushes code to GitHub
+- ↓
+- GitHub Actions / Jenkins
+- ↓
+- STAGE 1: BUILD
+- ↓
+- mvn clean package (compile + test)
+- ↓
+- Run unit tests
+- ↓
+- Run integration tests
 
 ```mermaid
 flowchart TD
@@ -457,7 +545,24 @@ Spring Boot Actuator endpoints for monitoring:
 /actuator/prometheus → metrics in Prometheus format
 ```
 
-> **Flow**: User → API Gateway | API Gateway → Service A | Service A → Service B | Service B → DB | /actuator/health → is the app healthy? | /actuator/metrics → JVM memory, thread count, HTTP stats | ...+2 more
+**Flow:**
+- User
+- ↓
+- API Gateway
+- ↓
+- Service A
+- ↓
+- Service B
+- ↓
+- DB
+- ↓
+- /actuator/health
+- ↓
+- is the app healthy?
+- ↓
+- /actuator/metrics
+- ↓
+- JVM memory, thread count, HTTP stats
 
 ```mermaid
 flowchart TD
@@ -516,7 +621,12 @@ Q: How do you handle database migrations in production?
   a migration that's been deployed.
 ```
 
-> **Flow**: Containerize with Docker → Push to ECR | Push to ECR → Deploy on ECS Fargate
+**Flow:**
+- Containerize with Docker
+- ↓
+- Push to ECR
+- ↓
+- Deploy on ECS Fargate
 
 ```mermaid
 flowchart LR

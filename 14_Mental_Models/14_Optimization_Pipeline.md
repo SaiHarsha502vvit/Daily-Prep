@@ -59,7 +59,20 @@
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: GOAL: A correct but possibly slow solution → WHY START HERE? | WHY START HERE? → • Proves you understand the problem | • Proves you understand the problem → • Gives you a baseline to optimize FROM | • Gives you a baseline to optimize FROM → HOW: | HOW: → 2. For each candidate, check if it satisfies the constr | 2. For each candidate, check if it satisfies the constr → 3. Track the best answer | ...+1 more
+**Flow:**
+- GOAL: A correct but possibly slow solution
+- ↓
+- WHY START HERE?
+- ↓
+- • Proves you understand the problem
+- ↓
+- • Gives you a baseline to optimize FROM
+- ↓
+- HOW:
+- ↓
+- 2. For each candidate, check if it satisfies the constr
+- ↓
+- 3. Track the best answer
 
 ```mermaid
 flowchart TD
@@ -363,7 +376,20 @@ Topological order?     → TOPOLOGICAL SORT     O(V²) → O(V+E)
 └──────────────────────┴──────────────────────┴───────────────────────────────┘
 ```
 
-> **Flow**: OPTIMIZATION CHEAT SHEET → Brute Force Optimization Technique | Brute Force Optimization Technique → O(n²) pairs O(n) HashMap | O(n²) pairs O(n) HashMap → O(n²) pairs O(n) or O(n log n) Sort + Two Pointers | O(n²) pairs O(n) or O(n log n) Sort + Two Pointers → O(n²) subarrays O(n) Sliding Window | O(n²) subarrays O(n) Sliding Window → O(n²) subarrays O(n) Prefix Sum + HashMap | O(n²) subarrays O(n) Prefix Sum + HashMap → O(n³) substrings O(n) Sliding Window + HashSet | ...+1 more
+**Flow:**
+- OPTIMIZATION CHEAT SHEET
+- ↓
+- Brute Force Optimization Technique
+- ↓
+- O(n²) pairs O(n) HashMap
+- ↓
+- O(n²) pairs O(n) or O(n log n) Sort + Two Pointers
+- ↓
+- O(n²) subarrays O(n) Sliding Window
+- ↓
+- O(n²) subarrays O(n) Prefix Sum + HashMap
+- ↓
+- O(n³) substrings O(n) Sliding Window + HashSet
 
 ```mermaid
 flowchart TD
@@ -401,7 +427,10 @@ flowchart TD
 └─────────────────────────────────────┴───────────────────────────────────────┘
 ```
 
-> **Flow**: MISTAKE FIX → Wrong technique for redundancy Use the decision map
+**Flow:**
+- MISTAKE FIX
+- ↓
+- Wrong technique for redundancy Use the decision map
 
 ```mermaid
 flowchart TD

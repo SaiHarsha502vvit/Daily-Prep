@@ -746,7 +746,74 @@ private static TreeNode deserializeHelper(Queue<String> queue) {
 | MapReduce                               | Divide and Conquer          | Parallel processing        |
 ```
 
-> **Flow**: THE TABLE EVERY DEVELOPER SHOULD MEMORIZE → | Real Incident | DSA Used | Why That DSA | | | Real Incident | DSA Used | Why That DSA | → | Database indexing | B+ Tree | Balanced search + range | | Database indexing | B+ Tree | Balanced search + range → | Redis cache eviction | LRU/LFU Cache | Space manageme | | Redis cache eviction | LRU/LFU Cache | Space manageme → | Load balancer | Consistent Hashing | Distribute evenl | | Load balancer | Consistent Hashing | Distribute evenl → | Browser back/forward | Stack | History management | | | Browser back/forward | Stack | History management | → | Connection pooling | Queue (bounded) | Reuse resource | ...+1 more
+**Flow:**
+- THE TABLE EVERY DEVELOPER SHOULD MEMORIZE
+- ↓
+- Real Incident
+- ↓
+- DSA Used
+- ↓
+- Why That DSA
+- ↓
+- Real Incident
+- ↓
+- DSA Used
+- ↓
+- Why That DSA
+- ↓
+- Database indexing
+- ↓
+- B+ Tree
+- ↓
+- Balanced search + range
+- ↓
+- Database indexing
+- ↓
+- B+ Tree
+- ↓
+- Balanced search + range
+- ↓
+- Redis cache eviction
+- ↓
+- LRU/LFU Cache
+- ↓
+- Space manageme
+- ↓
+- Redis cache eviction
+- ↓
+- LRU/LFU Cache
+- ↓
+- Space manageme
+- ↓
+- Load balancer
+- ↓
+- Consistent Hashing
+- ↓
+- Distribute evenl
+- ↓
+- Load balancer
+- ↓
+- Consistent Hashing
+- ↓
+- Distribute evenl
+- ↓
+- Browser back/forward
+- ↓
+- Stack
+- ↓
+- History management
+- ↓
+- Browser back/forward
+- ↓
+- Stack
+- ↓
+- History management
+- ↓
+- Connection pooling
+- ↓
+- Queue (bounded)
+- ↓
+- Reuse resource
 
 ```mermaid
 flowchart TD

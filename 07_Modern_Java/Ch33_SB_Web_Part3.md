@@ -49,7 +49,14 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHY: Why AOP & Auto-Configuration? / • @Transactional m → HOW: How AOP Creates Magic? / • Proxy wrapping: Spring  | HOW: How AOP Creates Magic? / • Proxy wrapping: Spring  → WHEN: When to Use AOP? / • Logging: Log all service met | WHEN: When to Use AOP? / • Logging: Log all service met → WHICH: Which AOP Concepts to Master? / ESSENTIAL: Proxy
+**Flow:**
+- WHY: Why AOP & Auto-Configuration? / • @Transactional m
+- ↓
+- HOW: How AOP Creates Magic? / • Proxy wrapping: Spring
+- ↓
+- WHEN: When to Use AOP? / • Logging: Log all service met
+- ↓
+- WHICH: Which AOP Concepts to Master? / ESSENTIAL: Proxy
 
 ```mermaid
 flowchart TD
@@ -165,7 +172,20 @@ public Object logMethod(ProceedingJoinPoint pjp) {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: AOP VOCABULARY → Term Definition | Term Definition → Advice Action taken (before, after, around a method) | Advice Action taken (before, after, around a method) → Pointcut Expression selecting join points (which method | Pointcut Expression selecting join points (which method → Target Object being advised (original bean) | Target Object being advised (original bean) → Proxy Wrapper object created by Spring (contains advice | Proxy Wrapper object created by Spring (contains advice → Weaving Process of applying aspects to targets | ...+1 more
+**Flow:**
+- AOP VOCABULARY
+- ↓
+- Term Definition
+- ↓
+- Advice Action taken (before, after, around a method)
+- ↓
+- Pointcut Expression selecting join points (which method
+- ↓
+- Target Object being advised (original bean)
+- ↓
+- Proxy Wrapper object created by Spring (contains advice
+- ↓
+- Weaving Process of applying aspects to targets
 
 ```mermaid
 flowchart TD
@@ -363,7 +383,18 @@ public class ComprehensiveAspect {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: ADVICE EXECUTION ORDER / METHOD CALL: userService.findB → @Before | @Before → ACTUAL METHOD EXECUTION | ACTUAL METHOD EXECUTION → @AfterReturning @AfterThrowing | @AfterReturning @AfterThrowing → @After | @After → @Around (after proceed)
+**Flow:**
+- ADVICE EXECUTION ORDER / METHOD CALL: userService.findB
+- ↓
+- @Before
+- ↓
+- ACTUAL METHOD EXECUTION
+- ↓
+- @AfterReturning @AfterThrowing
+- ↓
+- @After
+- ↓
+- @Around (after proceed)
 
 ```mermaid
 flowchart TD
@@ -560,7 +591,14 @@ public class PointcutExamplesAspect {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: findById(Long id) / → Execute @Before advice / → Execut → REAL BEAN / UserService
+**Flow:**
+- findById(Long id) /
+- ↓
+- Execute @Before advice /
+- ↓
+- Execut
+- ↓
+- REAL BEAN / UserService
 
 ```mermaid
 flowchart TD
@@ -1104,7 +1142,50 @@ public class EmailService {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: PROFILE-BASED CONFIGURATION → application.yml → Default (always loaded) | application.yml → Default (always loaded) → application-dev.yml → Development (local) | application-dev.yml → Development (local) → application-test.yml → Testing (CI/CD) | application-test.yml → Testing (CI/CD) → application-staging.yml → Staging (pre-prod) | application-staging.yml → Staging (pre-prod) → application-prod.yml → Production | application-prod.yml → Production → LOADING ORDER (later overrides earlier): | ...+1 more
+**Flow:**
+- PROFILE-BASED CONFIGURATION
+- ↓
+- application.yml
+- ↓
+- Default (always loaded)
+- ↓
+- application.yml
+- ↓
+- Default (always loaded)
+- ↓
+- application-dev.yml
+- ↓
+- Development (local)
+- ↓
+- application-dev.yml
+- ↓
+- Development (local)
+- ↓
+- application-test.yml
+- ↓
+- Testing (CI/CD)
+- ↓
+- application-test.yml
+- ↓
+- Testing (CI/CD)
+- ↓
+- application-staging.yml
+- ↓
+- Staging (pre-prod)
+- ↓
+- application-staging.yml
+- ↓
+- Staging (pre-prod)
+- ↓
+- application-prod.yml
+- ↓
+- Production
+- ↓
+- application-prod.yml
+- ↓
+- Production
+- ↓
+- LOADING ORDER (later overrides earlier):
 
 ```mermaid
 flowchart TD
@@ -1217,7 +1298,20 @@ CONFIGURATION:
 □ Understand externalized configuration
 ```
 
-> **Flow**: AOP CONCEPTS: → □ Can explain cross-cutting concerns | □ Can explain cross-cutting concerns → □ Know all 5 advice types and when to use each | □ Know all 5 advice types and when to use each → □ Understand proxy types (JDK vs CGLIB) | □ Understand proxy types (JDK vs CGLIB) → □ Know the self-invocation problem and solutions | □ Know the self-invocation problem and solutions → SPRING BOOT: | SPRING BOOT: → □ Know what @SpringBootApplication does (3 annotations) | ...+1 more
+**Flow:**
+- AOP CONCEPTS:
+- ↓
+- □ Can explain cross-cutting concerns
+- ↓
+- □ Know all 5 advice types and when to use each
+- ↓
+- □ Understand proxy types (JDK vs CGLIB)
+- ↓
+- □ Know the self-invocation problem and solutions
+- ↓
+- SPRING BOOT:
+- ↓
+- □ Know what @SpringBootApplication does (3 annotations)
 
 ```mermaid
 flowchart TD

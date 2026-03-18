@@ -75,7 +75,20 @@
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Your Scenario Use This → Limit concurrent connections/threads Semaphore | Limit concurrent connections/threads Semaphore → Wait for N tasks to finish, then go CountDownLatch | Wait for N tasks to finish, then go CountDownLatch → N threads meet at barrier, repeat CyclicBarrier | N threads meet at barrier, repeat CyclicBarrier → Threads arrive at phases dynamically Phaser | Threads arrive at phases dynamically Phaser → Two threads exchange data Exchanger | Two threads exchange data Exchanger → Exclusive access (mutual exclusion) ReentrantLock / syn | ...+1 more
+**Flow:**
+- Your Scenario Use This
+- ↓
+- Limit concurrent connections/threads Semaphore
+- ↓
+- Wait for N tasks to finish, then go CountDownLatch
+- ↓
+- N threads meet at barrier, repeat CyclicBarrier
+- ↓
+- Threads arrive at phases dynamically Phaser
+- ↓
+- Two threads exchange data Exchanger
+- ↓
+- Exclusive access (mutual exclusion) ReentrantLock / syn
 
 ```mermaid
 flowchart TD
@@ -193,7 +206,32 @@ public class ConnectionPool {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Semaphore is built on AbstractQueuedSynchronizer (AQS): → AQS.state = number of available permits | AQS.state = number of available permits → acquire(): | acquire(): → 1. CAS: state = state - 1 | 1. CAS: state = state - 1 → 2. If state &gt;= 0 → proceed (got permit) | 2. If state &gt;= 0 → proceed (got permit) → 3. If state &lt; 0 → park thread in CLH queue (wait) | 3. If state &lt; 0 → park thread in CLH queue (wait) → release(): | ...+1 more
+**Flow:**
+- Semaphore is built on AbstractQueuedSynchronizer (AQS):
+- ↓
+- AQS.state = number of available permits
+- ↓
+- acquire():
+- ↓
+- 1. CAS: state = state - 1
+- ↓
+- 2. If state >= 0
+- ↓
+- proceed (got permit)
+- ↓
+- 2. If state >= 0
+- ↓
+- proceed (got permit)
+- ↓
+- 3. If state < 0
+- ↓
+- park thread in CLH queue (wait)
+- ↓
+- 3. If state < 0
+- ↓
+- park thread in CLH queue (wait)
+- ↓
+- release():
 
 ```mermaid
 flowchart TD
@@ -246,7 +284,54 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: THE ROCKET LAUNCH ANALOGY → Mission Control: 'We launch when 5 systems report READY | Mission Control: 'We launch when 5 systems report READY → CountDownLatch(5): | CountDownLatch(5): → Navigation system: 'Ready!' → countDown() → count = 4 | Navigation system: 'Ready!' → countDown() → count = 4 → Fuel system: 'Ready!' → countDown() → count = 3 | Fuel system: 'Ready!' → countDown() → count = 3 → Guidance system: 'Ready!' → countDown() → count = 2 | Guidance system: 'Ready!' → countDown() → count = 2 → Communication: 'Ready!' → countDown() → count = 1 | ...+1 more
+**Flow:**
+- THE ROCKET LAUNCH ANALOGY
+- ↓
+- Mission Control: 'We launch when 5 systems report READY
+- ↓
+- CountDownLatch(5):
+- ↓
+- Navigation system: 'Ready!'
+- ↓
+- countDown()
+- ↓
+- count = 4
+- ↓
+- Navigation system: 'Ready!'
+- ↓
+- countDown()
+- ↓
+- count = 4
+- ↓
+- Fuel system: 'Ready!'
+- ↓
+- countDown()
+- ↓
+- count = 3
+- ↓
+- Fuel system: 'Ready!'
+- ↓
+- countDown()
+- ↓
+- count = 3
+- ↓
+- Guidance system: 'Ready!'
+- ↓
+- countDown()
+- ↓
+- count = 2
+- ↓
+- Guidance system: 'Ready!'
+- ↓
+- countDown()
+- ↓
+- count = 2
+- ↓
+- Communication: 'Ready!'
+- ↓
+- countDown()
+- ↓
+- count = 1
 
 ```mermaid
 flowchart TD
@@ -375,7 +460,34 @@ KEY DIFFERENCES from CountDownLatch:
 └────────────────────┴─────────────────┴───────────────────┘
 ```
 
-> **Flow**: THE HIKING GROUP ANALOGY → 5 hikers agree: 'Nobody moves on until everyone reaches | 5 hikers agree: 'Nobody moves on until everyone reaches → checkpoint.' | checkpoint.' → Checkpoint 1 (valley): | Checkpoint 1 (valley): → Alice arrives → waits... (1/5) | Alice arrives → waits... (1/5) → Bob arrives → waits... (2/5) | Bob arrives → waits... (2/5) → Charlie arrives → waits... (3/5) | ...+1 more
+**Flow:**
+- THE HIKING GROUP ANALOGY
+- ↓
+- 5 hikers agree: 'Nobody moves on until everyone reaches
+- ↓
+- checkpoint.'
+- ↓
+- Checkpoint 1 (valley):
+- ↓
+- Alice arrives
+- ↓
+- waits... (1/5)
+- ↓
+- Alice arrives
+- ↓
+- waits... (1/5)
+- ↓
+- Bob arrives
+- ↓
+- waits... (2/5)
+- ↓
+- Bob arrives
+- ↓
+- waits... (2/5)
+- ↓
+- Charlie arrives
+- ↓
+- waits... (3/5)
 
 ```mermaid
 flowchart TD
@@ -467,7 +579,20 @@ public class ParallelSimulation {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHAT HAPPENS WHEN ONE THREAD FAILS AT A BARRIER? → If Thread 3 throws exception while others await: | If Thread 3 throws exception while others await: → → barrier.await() throws BrokenBarrierException for ALL | → barrier.await() throws BrokenBarrierException for ALL → → The barrier is 'broken' — all waiting threads wake up | → The barrier is 'broken' — all waiting threads wake up → → Future calls to await() also throw BrokenBarrierExcep | → Future calls to await() also throw BrokenBarrierExcep → → Must call barrier.reset() to reuse | → Must call barrier.reset() to reuse → If Thread 3 is interrupted: | ...+1 more
+**Flow:**
+- WHAT HAPPENS WHEN ONE THREAD FAILS AT A BARRIER?
+- ↓
+- If Thread 3 throws exception while others await:
+- ↓
+- barrier.await() throws BrokenBarrierException for ALL
+- ↓
+- The barrier is 'broken' — all waiting threads wake up
+- ↓
+- Future calls to await() also throw BrokenBarrierExcep
+- ↓
+- Must call barrier.reset() to reuse
+- ↓
+- If Thread 3 is interrupted:
 
 ```mermaid
 flowchart TD
@@ -517,7 +642,20 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: THE RELAY RACE ANALOGY → Phaser = A relay race where: | Phaser = A relay race where: → → Runners can JOIN mid-race (register) | → Runners can JOIN mid-race (register) → → Runners can DROP OUT (arriveAndDeregister) | → Runners can DROP OUT (arriveAndDeregister) → → Number of runners changes between legs (phases) | → Number of runners changes between legs (phases) → vs CyclicBarrier: | vs CyclicBarrier: → Phaser = Dynamic. Team adapts. Phase advances normally. | ...+1 more
+**Flow:**
+- THE RELAY RACE ANALOGY
+- ↓
+- Phaser = A relay race where:
+- ↓
+- Runners can JOIN mid-race (register)
+- ↓
+- Runners can DROP OUT (arriveAndDeregister)
+- ↓
+- Number of runners changes between legs (phases)
+- ↓
+- vs CyclicBarrier:
+- ↓
+- Phaser = Dynamic. Team adapts. Phase advances normally.
 
 ```mermaid
 flowchart TD
@@ -626,7 +764,20 @@ phaser.arriveAndAwaitAdvance();  // Waiter proceeds when all arrive
 ╚════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: THE BATON PASS ANALOGY → Two runners meet at a point. Each gives their baton to | Two runners meet at a point. Each gives their baton to → other. Both must arrive before either can leave. | other. Both must arrive before either can leave. → Thread A has: buffer1 (full data) | Thread A has: buffer1 (full data) → Thread B has: buffer2 (empty buffer) | Thread B has: buffer2 (empty buffer) → USE CASE: Double-buffered data pipeline | USE CASE: Double-buffered data pipeline → → Producer fills buffer1, consumer processes buffer2 | ...+1 more
+**Flow:**
+- THE BATON PASS ANALOGY
+- ↓
+- Two runners meet at a point. Each gives their baton to
+- ↓
+- other. Both must arrive before either can leave.
+- ↓
+- Thread A has: buffer1 (full data)
+- ↓
+- Thread B has: buffer2 (empty buffer)
+- ↓
+- USE CASE: Double-buffered data pipeline
+- ↓
+- Producer fills buffer1, consumer processes buffer2
 
 ```mermaid
 flowchart TD
@@ -709,7 +860,20 @@ new Thread(() -> {
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: THE HALLWAY ANALOGIES → DEADLOCK = Two people in a narrow hallway, face to face | DEADLOCK = Two people in a narrow hallway, face to face → → 'You go first!' 'No, YOU go first!' | → 'You go first!' 'No, YOU go first!' → → Neither moves. Both stuck forever. | → Neither moves. Both stuck forever. → → Threads: A holds lock1, wants lock2. | → Threads: A holds lock1, wants lock2. → B holds lock2, wants lock1. | B holds lock2, wants lock1. → Neither can proceed. CPU idle. | ...+1 more
+**Flow:**
+- THE HALLWAY ANALOGIES
+- ↓
+- DEADLOCK = Two people in a narrow hallway, face to face
+- ↓
+- 'You go first!' 'No, YOU go first!'
+- ↓
+- Neither moves. Both stuck forever.
+- ↓
+- Threads: A holds lock1, wants lock2.
+- ↓
+- B holds lock2, wants lock1.
+- ↓
+- Neither can proceed. CPU idle.
 
 ```mermaid
 flowchart TD
@@ -806,7 +970,20 @@ Semaphore fairSemaphore = new Semaphore(5, true);  // Fair = true
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: ALL FOUR must be true simultaneously for deadlock: → 1. Mutual Exclusion — Resource held exclusively | 1. Mutual Exclusion — Resource held exclusively → (only one thread can hold the lock) | (only one thread can hold the lock) → 2. Hold and Wait — Thread holds resource while waiting | 2. Hold and Wait — Thread holds resource while waiting → (Thread A has lock1, waiting for lock2) | (Thread A has lock1, waiting for lock2) → 3. No Preemption — Cannot forcibly take a resource | 3. No Preemption — Cannot forcibly take a resource → (can't steal a lock from another thread) | ...+1 more
+**Flow:**
+- ALL FOUR must be true simultaneously for deadlock:
+- ↓
+- 1. Mutual Exclusion — Resource held exclusively
+- ↓
+- (only one thread can hold the lock)
+- ↓
+- 2. Hold and Wait — Thread holds resource while waiting
+- ↓
+- (Thread A has lock1, waiting for lock2)
+- ↓
+- 3. No Preemption — Cannot forcibly take a resource
+- ↓
+- (can't steal a lock from another thread)
 
 ```mermaid
 flowchart TD
@@ -858,7 +1035,46 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: synchronized vs ReentrantLock → ReentrantLock ADDS: | ReentrantLock ADDS: → 1. tryLock() → Non-blocking attempt | 1. tryLock() → Non-blocking attempt → 2. tryLock(timeout) → Bounded waiting (avoids deadlock) | 2. tryLock(timeout) → Bounded waiting (avoids deadlock) → 3. lockInterruptibly() → Can cancel waiting thread | 3. lockInterruptibly() → Can cancel waiting thread → 4. fairness policy → FIFO ordering to prevent starvatio | 4. fairness policy → FIFO ordering to prevent starvatio → 5. Multiple Conditions → Multiple wait-sets (not just o | ...+1 more
+**Flow:**
+- synchronized vs ReentrantLock
+- ↓
+- ReentrantLock ADDS:
+- ↓
+- 1. tryLock()
+- ↓
+- Non-blocking attempt
+- ↓
+- 1. tryLock()
+- ↓
+- Non-blocking attempt
+- ↓
+- 2. tryLock(timeout)
+- ↓
+- Bounded waiting (avoids deadlock)
+- ↓
+- 2. tryLock(timeout)
+- ↓
+- Bounded waiting (avoids deadlock)
+- ↓
+- 3. lockInterruptibly()
+- ↓
+- Can cancel waiting thread
+- ↓
+- 3. lockInterruptibly()
+- ↓
+- Can cancel waiting thread
+- ↓
+- 4. fairness policy
+- ↓
+- FIFO ordering to prevent starvatio
+- ↓
+- 4. fairness policy
+- ↓
+- FIFO ordering to prevent starvatio
+- ↓
+- 5. Multiple Conditions
+- ↓
+- Multiple wait-sets (not just o
 
 ```mermaid
 flowchart TD

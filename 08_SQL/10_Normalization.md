@@ -37,7 +37,20 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: DATABASE NORMALIZATION → PROBLEMS WITH UN-NORMALIZED DATA: | PROBLEMS WITH UN-NORMALIZED DATA: → orders (denormalized) | orders (denormalized) → ord_id cust_name cust_addr product product_price qty | ord_id cust_name cust_addr product product_price qty → 1 John Delhi Laptop 50000 1 | 1 John Delhi Laptop 50000 1 → 2 John Delhi Mouse 500 2 | 2 John Delhi Mouse 500 2 → 3 John Delhi Keyboard 1500 1 | ...+1 more
+**Flow:**
+- DATABASE NORMALIZATION
+- ↓
+- PROBLEMS WITH UN-NORMALIZED DATA:
+- ↓
+- orders (denormalized)
+- ↓
+- ord_id cust_name cust_addr product product_price qty
+- ↓
+- 1 John Delhi Laptop 50000 1
+- ↓
+- 2 John Delhi Mouse 500 2
+- ↓
+- 3 John Delhi Keyboard 1500 1
 
 ```mermaid
 flowchart TD
@@ -90,7 +103,16 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: BCNF → 3NF | 3NF → 2NF | 2NF → 1NF | 1NF → Unnormalized
+**Flow:**
+- BCNF
+- ↓
+- 3NF
+- ↓
+- 2NF
+- ↓
+- 1NF
+- ↓
+- Unnormalized
 
 ```mermaid
 flowchart TD
@@ -139,7 +161,12 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: emp_id name phone_numbers / 1 Rajesh Kumar 9876543210,  → emp_id name / 1 Rajesh Kumar / 2 Priya Sharma | emp_id name / 1 Rajesh Kumar / 2 Priya Sharma → emp_id phone / 1 9876543210 / 1 9876543211 / 2 91234567
+**Flow:**
+- emp_id name phone_numbers / 1 Rajesh Kumar 9876543210,
+- ↓
+- emp_id name / 1 Rajesh Kumar / 2 Priya Sharma
+- ↓
+- emp_id phone / 1 9876543210 / 1 9876543211 / 2 91234567
 
 ```mermaid
 flowchart TD
@@ -187,7 +214,12 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: order_id product_id product_name qty price / 1 101 Lapt → order_id product_id qty / 1 101 1 / 1 102 2 / 2 101 1 | order_id product_id qty / 1 101 1 / 1 102 2 / 2 101 1 → product_id product_name price / 101 Laptop 50000 / 102 
+**Flow:**
+- order_id product_id product_name qty price / 1 101 Lapt
+- ↓
+- order_id product_id qty / 1 101 1 / 1 102 2 / 2 101 1
+- ↓
+- product_id product_name price / 101 Laptop 50000 / 102
 
 ```mermaid
 flowchart TD
@@ -235,7 +267,12 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: emp_id name dept_id dept_name dept_location / 1 Alice 1 → emp_id name dept_id / 1 Alice 10 / 2 Bob 10 / 3 Carol 2 | emp_id name dept_id / 1 Alice 10 / 2 Bob 10 / 3 Carol 2 → dept_id dept_name location / 10 Engineering Building A 
+**Flow:**
+- emp_id name dept_id dept_name dept_location / 1 Alice 1
+- ↓
+- emp_id name dept_id / 1 Alice 10 / 2 Bob 10 / 3 Carol 2
+- ↓
+- dept_id dept_name location / 10 Engineering Building A
 
 ```mermaid
 flowchart TD
@@ -285,7 +322,12 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: student subject teacher / Alice Math Mr.X / Bob Math Mr → student teacher / Alice Mr.X / Bob Mr.X / Alice Mr.Y /  | student teacher / Alice Mr.X / Bob Mr.X / Alice Mr.Y /  → teacher subject / Mr.X Math / Mr.Y Physics / Mr.Z Math
+**Flow:**
+- student subject teacher / Alice Math Mr.X / Bob Math Mr
+- ↓
+- student teacher / Alice Mr.X / Bob Mr.X / Alice Mr.Y /
+- ↓
+- teacher subject / Mr.X Math / Mr.Y Physics / Mr.Z Math
 
 ```mermaid
 flowchart TD

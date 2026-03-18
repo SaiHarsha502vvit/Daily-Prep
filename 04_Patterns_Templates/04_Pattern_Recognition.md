@@ -84,7 +84,20 @@ Step-by-step:
 Maximum Subarray Sum = 6 (subarray [4, -1, 2, 1])
 ```
 
-> **Flow**: Array: [-2, 1, -3, 4, -1, 2, 1, -5, 4] → Step-by-step: | Step-by-step: → i arr[i] currentMax = max(arr[i], curr+arr[i]) maxSum | i arr[i] currentMax = max(arr[i], curr+arr[i]) maxSum → 0 -2 max(-2, 0+(-2)) = -2 -2 | 0 -2 max(-2, 0+(-2)) = -2 -2 → 1 1 max(1, -2+1) = max(1, -1) = 1 1 | 1 1 max(1, -2+1) = max(1, -1) = 1 1 → 2 -3 max(-3, 1+(-3)) = max(-3, -2) = -2 1 | 2 -3 max(-3, 1+(-3)) = max(-3, -2) = -2 1 → 3 4 max(4, -2+4) = max(4, 2) = 4 4 | ...+1 more
+**Flow:**
+- Array: [-2, 1, -3, 4, -1, 2, 1, -5, 4]
+- ↓
+- Step-by-step:
+- ↓
+- i arr[i] currentMax = max(arr[i], curr+arr[i]) maxSum
+- ↓
+- 0 -2 max(-2, 0+(-2)) = -2 -2
+- ↓
+- 1 1 max(1, -2+1) = max(1, -1) = 1 1
+- ↓
+- 2 -3 max(-3, 1+(-3)) = max(-3, -2) = -2 1
+- ↓
+- 3 4 max(4, -2+4) = max(4, 2) = 4 4
 
 ```mermaid
 flowchart TD
@@ -261,7 +274,14 @@ With Path Compression on find(3):
 Now find(3) = 0 directly!
 ```
 
-> **Flow**: Initial: Each element is its own parent → After union(0, 1): | After union(0, 1): → After union(2, 3): | After union(2, 3): → After union(0, 2): / With Path Compression on find(3):
+**Flow:**
+- Initial: Each element is its own parent
+- ↓
+- After union(0, 1):
+- ↓
+- After union(2, 3):
+- ↓
+- After union(0, 2): / With Path Compression on find(3):
 
 ```mermaid
 flowchart TD
@@ -432,7 +452,10 @@ such that for every edge u→v, u comes before v
 Use Case: Task scheduling, course prerequisites, build systems
 ```
 
-> **Flow**: such that for every edge u → v, u comes before v
+**Flow:**
+- such that for every edge u
+- ↓
+- v, u comes before v
 
 ```mermaid
 flowchart LR
@@ -457,7 +480,12 @@ Valid Topological Orders:
 Not valid: 3, 2, ... (2 must come before 3)
 ```
 
-> **Flow**: Graph: → Valid Topological Orders: | Valid Topological Orders: → Not valid: 3, 2, ... (2 must come before 3)
+**Flow:**
+- Graph:
+- ↓
+- Valid Topological Orders:
+- ↓
+- Not valid: 3, 2, ... (2 must come before 3)
 
 ```mermaid
 flowchart TD
@@ -971,7 +999,38 @@ public List<List<Integer>> subsets(int[] nums) {
 └────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: DECISION TREE → Is array SORTED? | Is array SORTED? → YES → Binary Search / Two Pointers | YES → Binary Search / Two Pointers → NO → Continue... | NO → Continue... → Need CONTIGUOUS subarray? | Need CONTIGUOUS subarray? → YES → Sliding Window / Prefix Sum | YES → Sliding Window / Prefix Sum → Need to find PAIRS/COMPLEMENTS? | ...+1 more
+**Flow:**
+- DECISION TREE
+- ↓
+- Is array SORTED?
+- ↓
+- YES
+- ↓
+- Binary Search / Two Pointers
+- ↓
+- YES
+- ↓
+- Binary Search / Two Pointers
+- ↓
+- NO
+- ↓
+- Continue...
+- ↓
+- NO
+- ↓
+- Continue...
+- ↓
+- Need CONTIGUOUS subarray?
+- ↓
+- YES
+- ↓
+- Sliding Window / Prefix Sum
+- ↓
+- YES
+- ↓
+- Sliding Window / Prefix Sum
+- ↓
+- Need to find PAIRS/COMPLEMENTS?
 
 ```mermaid
 flowchart TD

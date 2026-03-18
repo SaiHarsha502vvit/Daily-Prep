@@ -26,7 +26,20 @@
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: COMPETITIVE PROGRAMMING PATTERNS → WHY PRACTICE THESE PLATFORMS? | WHY PRACTICE THESE PLATFORMS? → - Different problem styles than LeetCode | - Different problem styles than LeetCode → - Focus on mathematical thinking | - Focus on mathematical thinking → - Time complexity matters more | - Time complexity matters more → - Better at handling edge cases | - Better at handling edge cases → COMMON TOPICS: | ...+1 more
+**Flow:**
+- COMPETITIVE PROGRAMMING PATTERNS
+- ↓
+- WHY PRACTICE THESE PLATFORMS?
+- ↓
+- - Different problem styles than LeetCode
+- ↓
+- - Focus on mathematical thinking
+- ↓
+- - Time complexity matters more
+- ↓
+- - Better at handling edge cases
+- ↓
+- COMMON TOPICS:
 
 ```mermaid
 flowchart TD
@@ -71,7 +84,20 @@ flowchart TD
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: SIEVE OF ERATOSTHENES - Find all primes up to N → Initial: 2 3 4 5 6 7 8 9 10 11 12 ... 30 | Initial: 2 3 4 5 6 7 8 9 10 11 12 ... 30 → Mark multiples of 2: ✗4 ✗6 ✗8 ✗10 ✗12... | Mark multiples of 2: ✗4 ✗6 ✗8 ✗10 ✗12... → Mark multiples of 3: ✗9 ✗15 ✗21 ✗27... | Mark multiples of 3: ✗9 ✗15 ✗21 ✗27... → Mark multiples of 5: ✗25... | Mark multiples of 5: ✗25... → Primes: 2, 3, 5, 7, 11, 13, 17, 19, 23, 29 | Primes: 2, 3, 5, 7, 11, 13, 17, 19, 23, 29 → Time: O(n log log n), Space: O(n)
+**Flow:**
+- SIEVE OF ERATOSTHENES - Find all primes up to N
+- ↓
+- Initial: 2 3 4 5 6 7 8 9 10 11 12 ... 30
+- ↓
+- Mark multiples of 2: ✗4 ✗6 ✗8 ✗10 ✗12...
+- ↓
+- Mark multiples of 3: ✗9 ✗15 ✗21 ✗27...
+- ↓
+- Mark multiples of 5: ✗25...
+- ↓
+- Primes: 2, 3, 5, 7, 11, 13, 17, 19, 23, 29
+- ↓
+- Time: O(n log log n), Space: O(n)
 
 ```mermaid
 flowchart TD
@@ -135,7 +161,10 @@ public List<Integer> sieveOfEratosthenes(int n) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: PRIME FACTORIZATION - Find all prime factors → Output: {2: 2, 3: 1, 7: 1}
+**Flow:**
+- PRIME FACTORIZATION - Find all prime factors
+- ↓
+- Output: {2: 2, 3: 1, 7: 1}
 
 ```mermaid
 flowchart TD
@@ -198,7 +227,32 @@ public Map<Integer, Integer> primeFactors(int n) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: MODULAR EXPONENTIATION - Calculate (base^exp) % mod → Naive: 2^10 = 1024 → 1024 % 1000 = 24 | Naive: 2^10 = 1024 → 1024 % 1000 = 24 → Fast (Binary Exponentiation): | Fast (Binary Exponentiation): → 10 in binary = 1010 | 10 in binary = 1010 → 2^1 = 2 (bit 1: skip) | 2^1 = 2 (bit 1: skip) → 2^2 = 4 (bit 2: use) → result = 4 | 2^2 = 4 (bit 2: use) → result = 4 → 2^4 = 16 (bit 3: skip) | ...+1 more
+**Flow:**
+- MODULAR EXPONENTIATION - Calculate (base^exp) % mod
+- ↓
+- Naive: 2^10 = 1024
+- ↓
+- 1024 % 1000 = 24
+- ↓
+- Naive: 2^10 = 1024
+- ↓
+- 1024 % 1000 = 24
+- ↓
+- Fast (Binary Exponentiation):
+- ↓
+- 10 in binary = 1010
+- ↓
+- 2^1 = 2 (bit 1: skip)
+- ↓
+- 2^2 = 4 (bit 2: use)
+- ↓
+- result = 4
+- ↓
+- 2^2 = 4 (bit 2: use)
+- ↓
+- result = 4
+- ↓
+- 2^4 = 16 (bit 3: skip)
 
 ```mermaid
 flowchart TD
@@ -262,7 +316,14 @@ public long modPow(long base, long exp, long mod) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: GCD (Greatest Common Divisor) using Euclidean Algorithm → GCD(48, 18) = 6 | GCD(48, 18) = 6 → LCM(a, b) = (a × b) / GCD(a, b) | LCM(a, b) = (a × b) / GCD(a, b) → LCM(48, 18) = 864 / 6 = 144
+**Flow:**
+- GCD (Greatest Common Divisor) using Euclidean Algorithm
+- ↓
+- GCD(48, 18) = 6
+- ↓
+- LCM(a, b) = (a × b) / GCD(a, b)
+- ↓
+- LCM(48, 18) = 864 / 6 = 144
 
 ```mermaid
 flowchart TD
@@ -326,7 +387,28 @@ public int gcdOfArray(int[] arr) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: COUNT SET BITS - Number of 1s in binary representation → Binary: 1101 | Binary: 1101 → Set bits: 3 | Set bits: 3 → Brian Kernighan's Algorithm: | Brian Kernighan's Algorithm: → n & (n-1) removes rightmost set bit | n & (n-1) removes rightmost set bit → 13 & 12 = 1100 (12) → count = 1 | 13 & 12 = 1100 (12) → count = 1 → 12 & 11 = 1000 (8) → count = 2 | ...+1 more
+**Flow:**
+- COUNT SET BITS - Number of 1s in binary representation
+- ↓
+- Binary: 1101
+- ↓
+- Set bits: 3
+- ↓
+- Brian Kernighan's Algorithm:
+- ↓
+- n & (n-1) removes rightmost set bit
+- ↓
+- 13 & 12 = 1100 (12)
+- ↓
+- count = 1
+- ↓
+- 13 & 12 = 1100 (12)
+- ↓
+- count = 1
+- ↓
+- 12 & 11 = 1000 (8)
+- ↓
+- count = 2
 
 ```mermaid
 flowchart TD
@@ -394,7 +476,24 @@ public int countSetBitsRange(int n) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: POWER OF TWO - Check if n is power of 2 → Powers of 2 have exactly ONE set bit: | Powers of 2 have exactly ONE set bit: → Trick: n & (n-1) == 0 for powers of 2 | Trick: n & (n-1) == 0 for powers of 2 → 8 & 7 = 0000 → True | 8 & 7 = 0000 → True → 6 & 5 = 0100 → False
+**Flow:**
+- POWER OF TWO - Check if n is power of 2
+- ↓
+- Powers of 2 have exactly ONE set bit:
+- ↓
+- Trick: n & (n-1) == 0 for powers of 2
+- ↓
+- 8 & 7 = 0000
+- ↓
+- True
+- ↓
+- 8 & 7 = 0000
+- ↓
+- True
+- ↓
+- 6 & 5 = 0100
+- ↓
+- False
 
 ```mermaid
 flowchart TD
@@ -451,7 +550,20 @@ public int highestPowerOf2(int n) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: XOR QUERIES - XOR of range [L, R] → arr = [1, 3, 4, 8], queries = [[0,1], [1,2], [0,3]] | arr = [1, 3, 4, 8], queries = [[0,1], [1,2], [0,3]] → XOR properties: | XOR properties: → - Associative and commutative | - Associative and commutative → Prefix XOR: [1, 1⊕3, 1⊕3⊕4, 1⊕3⊕4⊕8] | Prefix XOR: [1, 1⊕3, 1⊕3⊕4, 1⊕3⊕4⊕8] → XOR[L,R] = prefix[R] ⊕ prefix[L-1] | XOR[L,R] = prefix[R] ⊕ prefix[L-1] → Check: 3 ⊕ 4 = 7 ✓
+**Flow:**
+- XOR QUERIES - XOR of range [L, R]
+- ↓
+- arr = [1, 3, 4, 8], queries = [[0,1], [1,2], [0,3]]
+- ↓
+- XOR properties:
+- ↓
+- - Associative and commutative
+- ↓
+- Prefix XOR: [1, 1⊕3, 1⊕3⊕4, 1⊕3⊕4⊕8]
+- ↓
+- XOR[L,R] = prefix[R] ⊕ prefix[L-1]
+- ↓
+- Check: 3 ⊕ 4 = 7 ✓
 
 ```mermaid
 flowchart TD
@@ -519,7 +631,12 @@ public int[] xorQueries(int[] arr, int[][] queries) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: SPIRAL MATRIX - Print matrix in spiral order → matrix = [[1,2,3], | matrix = [[1,2,3], → Output: [1,2,3,6,9,8,7,4,5]
+**Flow:**
+- SPIRAL MATRIX - Print matrix in spiral order
+- ↓
+- matrix = [[1,2,3],
+- ↓
+- Output: [1,2,3,6,9,8,7,4,5]
 
 ```mermaid
 flowchart TD
@@ -595,7 +712,20 @@ public List<Integer> spiralOrder(int[][] matrix) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: ROTATE ARRAY - Rotate by k positions → nums = [1,2,3,4,5,6,7], k = 3 | nums = [1,2,3,4,5,6,7], k = 3 → Method: Reverse three times | Method: Reverse three times → Original: [1,2,3,4,5,6,7] | Original: [1,2,3,4,5,6,7] → Reverse all: [7,6,5,4,3,2,1] | Reverse all: [7,6,5,4,3,2,1] → Reverse 0..k-1:[5,6,7,4,3,2,1] | Reverse 0..k-1:[5,6,7,4,3,2,1] → Reverse k..n-1:[5,6,7,1,2,3,4] | ...+1 more
+**Flow:**
+- ROTATE ARRAY - Rotate by k positions
+- ↓
+- nums = [1,2,3,4,5,6,7], k = 3
+- ↓
+- Method: Reverse three times
+- ↓
+- Original: [1,2,3,4,5,6,7]
+- ↓
+- Reverse all: [7,6,5,4,3,2,1]
+- ↓
+- Reverse 0..k-1:[5,6,7,4,3,2,1]
+- ↓
+- Reverse k..n-1:[5,6,7,1,2,3,4]
 
 ```mermaid
 flowchart TD
@@ -664,7 +794,38 @@ private void reverse(int[] nums, int start, int end) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: NEXT PERMUTATION - Next lexicographically greater → nums = [1,2,3] → [1,3,2] | nums = [1,2,3] → [1,3,2] → nums = [3,2,1] → [1,2,3] (wrap around) | nums = [3,2,1] → [1,2,3] (wrap around) → nums = [1,1,5] → [1,5,1] | nums = [1,1,5] → [1,5,1] → Algorithm: | Algorithm: → 1. Find largest i where nums[i] &lt; nums[i+1] | 1. Find largest i where nums[i] &lt; nums[i+1] → 2. Find largest j where nums[j] &gt; nums[i] | ...+1 more
+**Flow:**
+- NEXT PERMUTATION - Next lexicographically greater
+- ↓
+- nums = [1,2,3]
+- ↓
+- [1,3,2]
+- ↓
+- nums = [1,2,3]
+- ↓
+- [1,3,2]
+- ↓
+- nums = [3,2,1]
+- ↓
+- [1,2,3] (wrap around)
+- ↓
+- nums = [3,2,1]
+- ↓
+- [1,2,3] (wrap around)
+- ↓
+- nums = [1,1,5]
+- ↓
+- [1,5,1]
+- ↓
+- nums = [1,1,5]
+- ↓
+- [1,5,1]
+- ↓
+- Algorithm:
+- ↓
+- 1. Find largest i where nums[i] < nums[i+1]
+- ↓
+- 2. Find largest j where nums[j] > nums[i]
 
 ```mermaid
 flowchart TD
@@ -747,7 +908,18 @@ private void reverse(int[] nums, int start, int end) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: COUNT INVERSIONS - Pairs where i &lt; j but arr[i] &gt; → arr = [2, 4, 1, 3, 5] | arr = [2, 4, 1, 3, 5] → Inversions: | Inversions: → Total: 3 inversions | Total: 3 inversions → Approach: Modified Merge Sort | Approach: Modified Merge Sort → During merge, count inversions when right element chose
+**Flow:**
+- COUNT INVERSIONS - Pairs where i < j but arr[i] >
+- ↓
+- arr = [2, 4, 1, 3, 5]
+- ↓
+- Inversions:
+- ↓
+- Total: 3 inversions
+- ↓
+- Approach: Modified Merge Sort
+- ↓
+- During merge, count inversions when right element chose
 
 ```mermaid
 flowchart TD
@@ -827,7 +999,20 @@ private void merge(int[] arr, int left, int mid, int right) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: AGGRESSIVE COWS - Max minimum distance between cows → stalls = [1, 2, 4, 8, 9], cows = 3 | stalls = [1, 2, 4, 8, 9], cows = 3 → Place 3 cows to maximize minimum distance | Place 3 cows to maximize minimum distance → Try placing at 1, 4, 9: min distance = 3 | Try placing at 1, 4, 9: min distance = 3 → Try placing at 1, 4, 8: min distance = 3 | Try placing at 1, 4, 8: min distance = 3 → Try placing at 1, 8, 9: min distance = 1 | Try placing at 1, 8, 9: min distance = 1 → Binary search on answer: | ...+1 more
+**Flow:**
+- AGGRESSIVE COWS - Max minimum distance between cows
+- ↓
+- stalls = [1, 2, 4, 8, 9], cows = 3
+- ↓
+- Place 3 cows to maximize minimum distance
+- ↓
+- Try placing at 1, 4, 9: min distance = 3
+- ↓
+- Try placing at 1, 4, 8: min distance = 3
+- ↓
+- Try placing at 1, 8, 9: min distance = 1
+- ↓
+- Binary search on answer:
 
 ```mermaid
 flowchart TD
@@ -910,7 +1095,22 @@ private boolean canPlace(int[] stalls, int cows, int minDist) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: LONGEST CONSECUTIVE SEQUENCE → nums = [100, 4, 200, 1, 3, 2] | nums = [100, 4, 200, 1, 3, 2] → Sequences: [1,2,3,4], [100], [200] | Sequences: [1,2,3,4], [100], [200] → Longest: [1,2,3,4] → length 4 | Longest: [1,2,3,4] → length 4 → Approach: Use HashSet
+**Flow:**
+- LONGEST CONSECUTIVE SEQUENCE
+- ↓
+- nums = [100, 4, 200, 1, 3, 2]
+- ↓
+- Sequences: [1,2,3,4], [100], [200]
+- ↓
+- Longest: [1,2,3,4]
+- ↓
+- length 4
+- ↓
+- Longest: [1,2,3,4]
+- ↓
+- length 4
+- ↓
+- Approach: Use HashSet
 
 ```mermaid
 flowchart TD
@@ -975,7 +1175,20 @@ public int longestConsecutive(int[] nums) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: SUBARRAY SUM EQUALS K - Count subarrays with sum k → nums = [1, 1, 1], k = 2 | nums = [1, 1, 1], k = 2 → Subarrays with sum 2: | Subarrays with sum 2: → [1,1] at index 0-1 | [1,1] at index 0-1 → [1,1] at index 1-2 | [1,1] at index 1-2 → Output: 2 | Output: 2 → Prefix sum trick: | ...+1 more
+**Flow:**
+- SUBARRAY SUM EQUALS K - Count subarrays with sum k
+- ↓
+- nums = [1, 1, 1], k = 2
+- ↓
+- Subarrays with sum 2:
+- ↓
+- [1,1] at index 0-1
+- ↓
+- [1,1] at index 1-2
+- ↓
+- Output: 2
+- ↓
+- Prefix sum trick:
 
 ```mermaid
 flowchart TD
@@ -1055,7 +1268,20 @@ public int subarraySum(int[] nums, int k) {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: 📊 PRACTICE PROBLEMS SUMMARY → SECTION 1-3: Basic Math, Strings, Arrays (~30 problems) | SECTION 1-3: Basic Math, Strings, Arrays (~30 problems) → SECTION 4: Sliding Window Patterns (12 problems) | SECTION 4: Sliding Window Patterns (12 problems) → SECTION 5: Two Pointers Advanced (17 problems) | SECTION 5: Two Pointers Advanced (17 problems) → SECTION 6: Binary Search Patterns (13 problems) | SECTION 6: Binary Search Patterns (13 problems) → SECTION 7: Stack & Queue Problems (26 problems) | SECTION 7: Stack & Queue Problems (26 problems) → SECTION 8: Tree Problems (BFS/DFS) (32 problems) | ...+1 more
+**Flow:**
+- 📊 PRACTICE PROBLEMS SUMMARY
+- ↓
+- SECTION 1-3: Basic Math, Strings, Arrays (~30 problems)
+- ↓
+- SECTION 4: Sliding Window Patterns (12 problems)
+- ↓
+- SECTION 5: Two Pointers Advanced (17 problems)
+- ↓
+- SECTION 6: Binary Search Patterns (13 problems)
+- ↓
+- SECTION 7: Stack & Queue Problems (26 problems)
+- ↓
+- SECTION 8: Tree Problems (BFS/DFS) (32 problems)
 
 ```mermaid
 flowchart TD

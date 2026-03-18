@@ -60,7 +60,16 @@ KEY RULE: MITIGATE first, DIAGNOSE second.
 Users don't care about root cause — they want the service BACK.
 ```
 
-> **Flow**: 1. DETECT (0-5 min) / Alert fires. PagerDuty/Slack noti → 2. MITIGATE (5-15 min) / STOP THE BLEEDING before findi | 2. MITIGATE (5-15 min) / STOP THE BLEEDING before findi → 3. DIAGNOSE (15 min - hours) / NOW find the root cause. | 3. DIAGNOSE (15 min - hours) / NOW find the root cause. → 4. FIX (hours - days) / Implement proper fix. Write tes | 4. FIX (hours - days) / Implement proper fix. Write tes → 5. POSTMORTEM (next day) / Blameless analysis. What hap
+**Flow:**
+- 1. DETECT (0-5 min) / Alert fires. PagerDuty/Slack noti
+- ↓
+- 2. MITIGATE (5-15 min) / STOP THE BLEEDING before findi
+- ↓
+- 3. DIAGNOSE (15 min - hours) / NOW find the root cause.
+- ↓
+- 4. FIX (hours - days) / Implement proper fix. Write tes
+- ↓
+- 5. POSTMORTEM (next day) / Blameless analysis. What hap
 
 ```mermaid
 flowchart TD
@@ -153,7 +162,22 @@ Traces → "The error happens when calling Inventory Service"
 Fix → Inventory Service returns null for new products
 ```
 
-> **Flow**: METRICS — The 'Vital Signs' / → Answer: 'IS something w → LOGS — The 'Medical Records' / → Answer: 'WHAT went wro | LOGS — The 'Medical Records' / → Answer: 'WHAT went wro → TRACES — The 'CT Scan' / → Answer: 'WHERE is it slow/br
+**Flow:**
+- METRICS — The 'Vital Signs' /
+- ↓
+- Answer: 'IS something w
+- ↓
+- LOGS — The 'Medical Records' /
+- ↓
+- Answer: 'WHAT went wro
+- ↓
+- LOGS — The 'Medical Records' /
+- ↓
+- Answer: 'WHAT went wro
+- ↓
+- TRACES — The 'CT Scan' /
+- ↓
+- Answer: 'WHERE is it slow/br
 
 ```mermaid
 flowchart TD
@@ -320,7 +344,20 @@ POSTMORTEM TEMPLATE:
 The goal: LEARN from incidents, don't just survive them.
 ```
 
-> **Flow**: AFTER EVERY INCIDENT — Write a Postmortem → ❌ 'John deployed without testing' | ❌ 'John deployed without testing' → ✅ 'Our deploy process doesn't require testing sign-off' | ✅ 'Our deploy process doesn't require testing sign-off' → POSTMORTEM TEMPLATE: | POSTMORTEM TEMPLATE: → Title: [Service] outage on [date] | Title: [Service] outage on [date] → Summary: What happened in 2-3 sentences. | Summary: What happened in 2-3 sentences. → Impact: | ...+1 more
+**Flow:**
+- AFTER EVERY INCIDENT — Write a Postmortem
+- ↓
+- ❌ 'John deployed without testing'
+- ↓
+- ✅ 'Our deploy process doesn't require testing sign-off'
+- ↓
+- POSTMORTEM TEMPLATE:
+- ↓
+- Title: [Service] outage on [date]
+- ↓
+- Summary: What happened in 2-3 sentences.
+- ↓
+- Impact:
 
 ```mermaid
 flowchart TD
@@ -376,7 +413,20 @@ STRUCTURED LOGGING — search-friendly:
 → Now you can query: event=order_placed AND amount>100
 ```
 
-> **Flow**: LOGGING BEST PRACTICES FOR PRODUCTION DEBUGGING → WHAT TO LOG: | WHAT TO LOG: → ✅ Request start + end (with duration) | ✅ Request start + end (with duration) → ✅ External calls (before + after + status) | ✅ External calls (before + after + status) → ✅ Errors with FULL context (input, state, stack trace) | ✅ Errors with FULL context (input, state, stack trace) → ✅ Business events ('Order #456 placed, total: $99.50') | ✅ Business events ('Order #456 placed, total: $99.50') → WHAT NOT TO LOG: | ...+1 more
+**Flow:**
+- LOGGING BEST PRACTICES FOR PRODUCTION DEBUGGING
+- ↓
+- WHAT TO LOG:
+- ↓
+- ✅ Request start + end (with duration)
+- ↓
+- ✅ External calls (before + after + status)
+- ↓
+- ✅ Errors with FULL context (input, state, stack trace)
+- ↓
+- ✅ Business events ('Order #456 placed, total: $99.50')
+- ↓
+- WHAT NOT TO LOG:
 
 ```mermaid
 flowchart TD
@@ -424,7 +474,18 @@ REMEMBER:
 • Document everything as you go (timeline for postmortem)
 ```
 
-> **Flow**: ALERT FIRES → What do I do? | YES → Can we rollback? | YES → Treat as 'affecting users'
+**Flow:**
+- ALERT FIRES
+- ↓
+- What do I do?
+- ↓
+- YES
+- ↓
+- Can we rollback?
+- ↓
+- YES
+- ↓
+- Treat as 'affecting users'
 
 ```mermaid
 flowchart LR
@@ -460,7 +521,12 @@ Q: "How would you design a system to be observable?"
   Plus: correlation IDs, health checks, dashboards, alerts
 ```
 
-> **Flow**: (metrics → logs | logs → traces), the root cause, and how you
+**Flow:**
+- (metrics
+- ↓
+- logs
+- ↓
+- traces), the root cause, and how you
 
 ```mermaid
 flowchart LR

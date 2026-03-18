@@ -66,7 +66,16 @@ contains(x)     O(1)      set.contains("apple")
 size()          O(1)      set.size()
 ```
 
-> **Flow**: OPERATIONS: TIME EXAMPLE → add(x) O(1) set.add('apple') | add(x) O(1) set.add('apple') → remove(x) O(1) set.remove('apple') | remove(x) O(1) set.remove('apple') → contains(x) O(1) set.contains('apple') | contains(x) O(1) set.contains('apple') → size() O(1) set.size()
+**Flow:**
+- OPERATIONS: TIME EXAMPLE
+- ↓
+- add(x) O(1) set.add('apple')
+- ↓
+- remove(x) O(1) set.remove('apple')
+- ↓
+- contains(x) O(1) set.contains('apple')
+- ↓
+- size() O(1) set.size()
 
 ```mermaid
 flowchart TD
@@ -144,7 +153,10 @@ TWO VARIANTS:
 └──────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: OPPOSITE DIRECTION EXAMPLE: Two Sum II (sorted array) / → SAME DIRECTION EXAMPLE: Remove Duplicates (sorted) / [1
+**Flow:**
+- OPPOSITE DIRECTION EXAMPLE: Two Sum II (sorted array) /
+- ↓
+- SAME DIRECTION EXAMPLE: Remove Duplicates (sorted) / [1
 
 ```mermaid
 flowchart TD
@@ -250,7 +262,14 @@ WHY HashMap + HashSet?
   LinkedHashMap can auto-evict old entries (removeEldestEntry)
 ```
 
-> **Flow**: HashMap&lt;String, Long&gt;: key → last timestamp | O(1) per transaction → can handle millions in real-time
+**Flow:**
+- HashMap<String, Long>: key
+- ↓
+- last timestamp
+- ↓
+- O(1) per transaction
+- ↓
+- can handle millions in real-time
 
 ```mermaid
 flowchart LR

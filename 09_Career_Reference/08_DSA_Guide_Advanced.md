@@ -8,7 +8,18 @@
 └── Weakly consistent iterators
 ```
 
-> **Flow**: Root → Lock-free reads | Root → Better throughput than synchronized HashMap | Root → Weakly consistent iterators
+**Flow:**
+- Root
+- ↓
+- Lock-free reads
+- ↓
+- Root
+- ↓
+- Better throughput than synchronized HashMap
+- ↓
+- Root
+- ↓
+- Weakly consistent iterators
 
 ```mermaid
 flowchart TD
@@ -29,7 +40,18 @@ flowchart TD
 └── More complex implementation
 ```
 
-> **Flow**: Root → Use CAS (Compare-and-Swap) operations | Root → Higher throughput under contention | Root → More complex implementation
+**Flow:**
+- Root
+- ↓
+- Use CAS (Compare-and-Swap) operations
+- ↓
+- Root
+- ↓
+- Higher throughput under contention
+- ↓
+- Root
+- ↓
+- More complex implementation
 
 ```mermaid
 flowchart TD
@@ -187,7 +209,30 @@ Use Cases:
    └── Content-addressable storage
 ```
 
-> **Flow**: 1. DATABASES → Index structures | 1. DATABASES → Join operations (hash join) | 1. DATABASES → Query result caching | 1. DATABASES → Partition routing | 2. CACHING SYSTEMS (Redis, Memcached) → Key-value storage | 2. CACHING SYSTEMS (Redis, Memcached) → Session management | ...+13 more
+**Flow:**
+- 1. DATABASES
+- ↓
+- Index structures
+- ↓
+- 1. DATABASES
+- ↓
+- Join operations (hash join)
+- ↓
+- 1. DATABASES
+- ↓
+- Query result caching
+- ↓
+- 1. DATABASES
+- ↓
+- Partition routing
+- ↓
+- 2. CACHING SYSTEMS (Redis, Memcached)
+- ↓
+- Key-value storage
+- ↓
+- 2. CACHING SYSTEMS (Redis, Memcached)
+- ↓
+- Session management
 
 ```mermaid
 flowchart TD
@@ -679,7 +724,30 @@ Modern Alternative: Suffix Array + LCP Array (less space)
    └── Device trees
 ```
 
-> **Flow**: 1. DATABASES → B+ Tree indexes | 1. DATABASES → Query execution plans (tree structure) | 1. DATABASES → Parse trees for SQL | 2. FILE SYSTEMS → Directory structure (N-ary tree) | 2. FILE SYSTEMS → B-Tree for file allocation | 2. FILE SYSTEMS → Merkle trees for integrity | ...+12 more
+**Flow:**
+- 1. DATABASES
+- ↓
+- B+ Tree indexes
+- ↓
+- 1. DATABASES
+- ↓
+- Query execution plans (tree structure)
+- ↓
+- 1. DATABASES
+- ↓
+- Parse trees for SQL
+- ↓
+- 2. FILE SYSTEMS
+- ↓
+- Directory structure (N-ary tree)
+- ↓
+- 2. FILE SYSTEMS
+- ↓
+- B-Tree for file allocation
+- ↓
+- 2. FILE SYSTEMS
+- ↓
+- Merkle trees for integrity
 
 ```mermaid
 flowchart TD
@@ -777,7 +845,30 @@ LeftChild(i) = 2*i + 1
 RightChild(i) = 2*i + 2
 ```
 
-> **Flow**: Sorted Array: → Find min/max: O(1) | Sorted Array: → Insert: O(n) - shift elements | Sorted Array: → Delete min/max: O(n) | Heap: → Find min/max: O(1) | Heap: → Insert: O(log n) | Heap: → Delete min/max: O(log n)
+**Flow:**
+- Sorted Array:
+- ↓
+- Find min/max: O(1)
+- ↓
+- Sorted Array:
+- ↓
+- Insert: O(n) - shift elements
+- ↓
+- Sorted Array:
+- ↓
+- Delete min/max: O(n)
+- ↓
+- Heap:
+- ↓
+- Find min/max: O(1)
+- ↓
+- Heap:
+- ↓
+- Insert: O(log n)
+- ↓
+- Heap:
+- ↓
+- Delete min/max: O(log n)
 
 ```mermaid
 flowchart TD
@@ -1037,7 +1128,30 @@ Median = (5 + 6) / 2 = 5.5
    └── Top-K queries
 ```
 
-> **Flow**: 1. OPERATING SYSTEMS → Process scheduling (priority) | 1. OPERATING SYSTEMS → Timer management | 1. OPERATING SYSTEMS → Memory management | 2. GRAPH ALGORITHMS → Dijkstra's shortest path | 2. GRAPH ALGORITHMS → Prim's MST | 2. GRAPH ALGORITHMS → A* search | ...+7 more
+**Flow:**
+- 1. OPERATING SYSTEMS
+- ↓
+- Process scheduling (priority)
+- ↓
+- 1. OPERATING SYSTEMS
+- ↓
+- Timer management
+- ↓
+- 1. OPERATING SYSTEMS
+- ↓
+- Memory management
+- ↓
+- 2. GRAPH ALGORITHMS
+- ↓
+- Dijkstra's shortest path
+- ↓
+- 2. GRAPH ALGORITHMS
+- ↓
+- Prim's MST
+- ↓
+- 2. GRAPH ALGORITHMS
+- ↓
+- A* search
 
 ```mermaid
 flowchart TD
@@ -1095,7 +1209,26 @@ Real-World Modeled by Graphs:
 └── Molecules (atoms, bonds)
 ```
 
-> **Flow**: Real-World Modeled by Graphs: → Social networks (friends) | Real-World Modeled by Graphs: → Road networks (cities, distances) | Real-World Modeled by Graphs: → Internet (web pages, links) | Real-World Modeled by Graphs: → Dependencies (tasks, prerequisites) | Real-World Modeled by Graphs: → Molecules (atoms, bonds)
+**Flow:**
+- Real-World Modeled by Graphs:
+- ↓
+- Social networks (friends)
+- ↓
+- Real-World Modeled by Graphs:
+- ↓
+- Road networks (cities, distances)
+- ↓
+- Real-World Modeled by Graphs:
+- ↓
+- Internet (web pages, links)
+- ↓
+- Real-World Modeled by Graphs:
+- ↓
+- Dependencies (tasks, prerequisites)
+- ↓
+- Real-World Modeled by Graphs:
+- ↓
+- Molecules (atoms, bonds)
 
 ```mermaid
 flowchart TD
@@ -1562,7 +1695,30 @@ Use Cases: Network design, clustering
    └── Drug discovery
 ```
 
-> **Flow**: 1. SOCIAL NETWORKS → Friend recommendations (BFS) | 1. SOCIAL NETWORKS → Influence analysis (PageRank) | 1. SOCIAL NETWORKS → Community detection | 2. NAVIGATION → GPS routing (Dijkstra, A*) | 2. NAVIGATION → Flight booking (shortest path) | 2. NAVIGATION → Traffic optimization | ...+12 more
+**Flow:**
+- 1. SOCIAL NETWORKS
+- ↓
+- Friend recommendations (BFS)
+- ↓
+- 1. SOCIAL NETWORKS
+- ↓
+- Influence analysis (PageRank)
+- ↓
+- 1. SOCIAL NETWORKS
+- ↓
+- Community detection
+- ↓
+- 2. NAVIGATION
+- ↓
+- GPS routing (Dijkstra, A*)
+- ↓
+- 2. NAVIGATION
+- ↓
+- Flight booking (shortest path)
+- ↓
+- 2. NAVIGATION
+- ↓
+- Traffic optimization
 
 ```mermaid
 flowchart TD
@@ -1971,7 +2127,30 @@ Kubernetes:
 └── ConfigMaps (hash maps)
 ```
 
-> **Flow**: MySQL/PostgreSQL: → B+ Tree indexes (primary, secondary) | MySQL/PostgreSQL: → Hash indexes (equality queries) | MySQL/PostgreSQL: → Heap files (table data) | MySQL/PostgreSQL: → Buffer pool (LRU cache) | MySQL/PostgreSQL: → WAL (write-ahead log as queue) | Redis: → Skip List (sorted sets) | ...+30 more
+**Flow:**
+- MySQL/PostgreSQL:
+- ↓
+- B+ Tree indexes (primary, secondary)
+- ↓
+- MySQL/PostgreSQL:
+- ↓
+- Hash indexes (equality queries)
+- ↓
+- MySQL/PostgreSQL:
+- ↓
+- Heap files (table data)
+- ↓
+- MySQL/PostgreSQL:
+- ↓
+- Buffer pool (LRU cache)
+- ↓
+- MySQL/PostgreSQL:
+- ↓
+- WAL (write-ahead log as queue)
+- ↓
+- Redis:
+- ↓
+- Skip List (sorted sets)
 
 ```mermaid
 flowchart TD
@@ -2096,7 +2275,30 @@ Weekly:
 ├── Review and revise weak areas
 ```
 
-> **Flow**: Daily: → 2-3 LeetCode problems | Daily: → Review one data structure's internals | Daily: → Implement one operation from scratch | Weekly: → One mock interview | Weekly: → One system design discussion | Weekly: → Review and revise weak areas
+**Flow:**
+- Daily:
+- ↓
+- 2-3 LeetCode problems
+- ↓
+- Daily:
+- ↓
+- Review one data structure's internals
+- ↓
+- Daily:
+- ↓
+- Implement one operation from scratch
+- ↓
+- Weekly:
+- ↓
+- One mock interview
+- ↓
+- Weekly:
+- ↓
+- One system design discussion
+- ↓
+- Weekly:
+- ↓
+- Review and revise weak areas
 
 ```mermaid
 flowchart TD
@@ -2150,7 +2352,18 @@ _"Data structures + Algorithms = Programs. Master both, master programming."_
 ╚═══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: ADVANCED DSA - FROM BASICS TO CUTTING EDGE → • String matching algorithms (beyond basic search) | • String matching algorithms (beyond basic search) → • Randomized algorithms and their applications | • Randomized algorithms and their applications → • Approximate algorithms for NP-hard problems | • Approximate algorithms for NP-hard problems → • Modern data structures used in production systems | • Modern data structures used in production systems → • Interview-level advanced patterns
+**Flow:**
+- ADVANCED DSA - FROM BASICS TO CUTTING EDGE
+- ↓
+- • String matching algorithms (beyond basic search)
+- ↓
+- • Randomized algorithms and their applications
+- ↓
+- • Approximate algorithms for NP-hard problems
+- ↓
+- • Modern data structures used in production systems
+- ↓
+- • Interview-level advanced patterns
 
 ```mermaid
 flowchart TD

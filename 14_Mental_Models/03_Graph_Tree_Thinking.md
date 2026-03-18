@@ -23,7 +23,30 @@ Problem says:                          → Model as:
 "Maze from start to end"             → Grid graph (BFS = shortest)
 ```
 
-> **Flow**: Problem says: → Model as: | 'Dependencies between tasks' → Directed graph (topological sort) | 'Can person A reach person B?' → Undirected graph (BFS/DFS) | 'Convert word A to word B' → Graph where words are nodes | '2D grid with obstacles' → Grid graph (4-directional) | 'Network of computers' → Undirected graph | ...+5 more
+**Flow:**
+- Problem says:
+- ↓
+- Model as:
+- ↓
+- 'Dependencies between tasks'
+- ↓
+- Directed graph (topological sort)
+- ↓
+- 'Can person A reach person B?'
+- ↓
+- Undirected graph (BFS/DFS)
+- ↓
+- 'Convert word A to word B'
+- ↓
+- Graph where words are nodes
+- ↓
+- '2D grid with obstacles'
+- ↓
+- Grid graph (4-directional)
+- ↓
+- 'Network of computers'
+- ↓
+- Undirected graph
 
 ```mermaid
 flowchart TD
@@ -77,7 +100,12 @@ Mental model: BFS = "Ripple in a pond"
 Drop a stone → it expands in CIRCLES → nearest first
 ```
 
-> **Flow**: Drop a stone → it expands in CIRCLES | it expands in CIRCLES → nearest first
+**Flow:**
+- Drop a stone
+- ↓
+- it expands in CIRCLES
+- ↓
+- nearest first
 
 ```mermaid
 flowchart LR
@@ -101,7 +129,14 @@ Mental model: DFS = "Exploring a maze"
 Go as DEEP as possible → hit dead end → BACKTRACK → try next path
 ```
 
-> **Flow**: Go as DEEP as possible → hit dead end | hit dead end → BACKTRACK | BACKTRACK → try next path
+**Flow:**
+- Go as DEEP as possible
+- ↓
+- hit dead end
+- ↓
+- BACKTRACK
+- ↓
+- try next path
 
 ```mermaid
 flowchart LR
@@ -134,7 +169,14 @@ Mental model: Union-Find = "Clubs merging"
 Each person belongs to a club → when two people connect, their clubs merge
 ```
 
-> **Flow**: ✅ Cycle detection in undirected graph (if union re → cycle) | Each person belongs to a club → when two people connect, their clubs merge
+**Flow:**
+- ✅ Cycle detection in undirected graph (if union re
+- ↓
+- cycle)
+- ↓
+- Each person belongs to a club
+- ↓
+- when two people connect, their clubs merge
 
 ```mermaid
 flowchart LR
@@ -171,7 +213,14 @@ Graph problem?
     └── LCA? → DFS with parent tracking
 ```
 
-> **Flow**: Root-to-leaf? → DFS | Level-order? → BFS
+**Flow:**
+- Root-to-leaf?
+- ↓
+- DFS
+- ↓
+- Level-order?
+- ↓
+- BFS
 
 ```mermaid
 flowchart LR
@@ -224,7 +273,20 @@ Category 4: "FIND something in the tree"
 → Example: LCA = if both sides return non-null, current is LCA
 ```
 
-> **Flow**: Category 1: 'RETURN something about the tree' → → DFS that returns a value (height, sum, boolean) | → DFS that returns a value (height, sum, boolean) → → Example: max depth = 1 + max(leftDepth, rightDepth) | → Example: max depth = 1 + max(leftDepth, rightDepth) → Category 2: 'UPDATE a global answer during traversal' | Category 2: 'UPDATE a global answer during traversal' → → DFS with a class variable | → DFS with a class variable → Category 3: 'BUILD or TRANSFORM the tree' | Category 3: 'BUILD or TRANSFORM the tree' → → DFS that returns new nodes | ...+1 more
+**Flow:**
+- Category 1: 'RETURN something about the tree'
+- ↓
+- DFS that returns a value (height, sum, boolean)
+- ↓
+- Example: max depth = 1 + max(leftDepth, rightDepth)
+- ↓
+- Category 2: 'UPDATE a global answer during traversal'
+- ↓
+- DFS with a class variable
+- ↓
+- Category 3: 'BUILD or TRANSFORM the tree'
+- ↓
+- DFS that returns new nodes
 
 ```mermaid
 flowchart TD
@@ -256,7 +318,28 @@ BST = sorted structure → INORDER traversal gives sorted array
 "Delete?" → Three cases: leaf, one child, two children (find successor)
 ```
 
-> **Flow**: BST = sorted structure → INORDER traversal gives sorted array | 'Kth smallest?' → Inorder, count to k | 'Validate BST?' → Every node has a valid range [min, max] | 'Search?' → Go left if smaller, right if larger | Go left if smaller, right if larger → O(log n) | 'Insert?' → Find the right spot like binary search | ...+1 more
+**Flow:**
+- BST = sorted structure
+- ↓
+- INORDER traversal gives sorted array
+- ↓
+- 'Kth smallest?'
+- ↓
+- Inorder, count to k
+- ↓
+- 'Validate BST?'
+- ↓
+- Every node has a valid range [min, max]
+- ↓
+- 'Search?'
+- ↓
+- Go left if smaller, right if larger
+- ↓
+- O(log n)
+- ↓
+- 'Insert?'
+- ↓
+- Find the right spot like binary search
 
 ```mermaid
 flowchart TD
@@ -323,7 +406,30 @@ boolean[][] visited;  // When you can't mutate the grid
 "Rotting oranges?" → Multi-source BFS with time tracking
 ```
 
-> **Flow**: 'How many islands?' → Count DFS/BFS starts on unvisited land | 'Shortest path to exit?' → BFS from start | 'Distance from all 1s?' → MULTI-SOURCE BFS (enqueue ALL 1s first) | 'Can we escape?' → DFS/BFS to check connectivity | 'Surrounded regions?' → DFS from BORDERS first, then fill rest | 'Rotting oranges?' → Multi-source BFS with time tracking
+**Flow:**
+- 'How many islands?'
+- ↓
+- Count DFS/BFS starts on unvisited land
+- ↓
+- 'Shortest path to exit?'
+- ↓
+- BFS from start
+- ↓
+- 'Distance from all 1s?'
+- ↓
+- MULTI-SOURCE BFS (enqueue ALL 1s first)
+- ↓
+- 'Can we escape?'
+- ↓
+- DFS/BFS to check connectivity
+- ↓
+- 'Surrounded regions?'
+- ↓
+- DFS from BORDERS first, then fill rest
+- ↓
+- 'Rotting oranges?'
+- ↓
+- Multi-source BFS with time tracking
 
 ```mermaid
 flowchart TD
@@ -369,7 +475,10 @@ If conflict found → not bipartite
 Mental model: "Color neighbors with opposite color. Contradiction = not bipartite."
 ```
 
-> **Flow**: If conflict found → not bipartite
+**Flow:**
+- If conflict found
+- ↓
+- not bipartite
 
 ```mermaid
 flowchart LR
@@ -387,7 +496,10 @@ If low[child] > disc[parent] → bridge edge
 Mental model: "Can child reach higher than parent without this edge?"
 ```
 
-> **Flow**: If low[child] &gt; disc[parent] → bridge edge
+**Flow:**
+- If low[child] > disc[parent]
+- ↓
+- bridge edge
 
 ```mermaid
 flowchart LR
@@ -412,7 +524,14 @@ flowchart LR
 □ Weighted graph: Am I using PQ correctly? (skip outdated entries in Dijkstra)
 ```
 
-> **Flow**: Wrong: mark when poll → may enqueue duplicates | Right: mark when offer → each node enqueued once
+**Flow:**
+- Wrong: mark when poll
+- ↓
+- may enqueue duplicates
+- ↓
+- Right: mark when offer
+- ↓
+- each node enqueued once
 
 ```mermaid
 flowchart LR

@@ -48,7 +48,26 @@ TypeError (cannot read property of undefined) — #1 JS error
 ReferenceError (variable is not defined)
 ```
 
-> **Flow**: BUILT-IN ERROR TYPES: → Type When It Occurs | Type When It Occurs → SyntaxError Invalid code: if ( { → parsing fails | SyntaxError Invalid code: if ( { → parsing fails → ReferenceError Accessing undefined variable | ReferenceError Accessing undefined variable → TypeError Wrong type operation: null.map() | TypeError Wrong type operation: null.map() → RangeError Number out of range: new Array(-1) | RangeError Number out of range: new Array(-1) → URIError Bad URI: decodeURI('%') | ...+1 more
+**Flow:**
+- BUILT-IN ERROR TYPES:
+- ↓
+- Type When It Occurs
+- ↓
+- SyntaxError Invalid code: if ( {
+- ↓
+- parsing fails
+- ↓
+- SyntaxError Invalid code: if ( {
+- ↓
+- parsing fails
+- ↓
+- ReferenceError Accessing undefined variable
+- ↓
+- TypeError Wrong type operation: null.map()
+- ↓
+- RangeError Number out of range: new Array(-1)
+- ↓
+- URIError Bad URI: decodeURI('%')
 
 ```mermaid
 flowchart TD
@@ -347,7 +366,38 @@ CONSOLE TAB:
 • console.dir()    — show object as expandable tree
 ```
 
-> **Flow**: OPENING DEVTOOLS: F12 or Ctrl+Shift+I (Cmd+Opt+I on Mac → CONSOLE | SOURCES | NETWORK | PERFORMANCE | MEMORY | CONSOLE | SOURCES | NETWORK | PERFORMANCE | MEMORY → CONSOLE TAB: | CONSOLE TAB: → • console.log() — general output | • console.log() — general output → • console.error() — red, with stack trace | • console.error() — red, with stack trace → • console.warn() — yellow warning | • console.warn() — yellow warning → • console.table() — display arrays/objects as TABLE | ...+1 more
+**Flow:**
+- OPENING DEVTOOLS: F12 or Ctrl+Shift+I (Cmd+Opt+I on Mac
+- ↓
+- CONSOLE
+- ↓
+- SOURCES
+- ↓
+- NETWORK
+- ↓
+- PERFORMANCE
+- ↓
+- MEMORY
+- ↓
+- CONSOLE
+- ↓
+- SOURCES
+- ↓
+- NETWORK
+- ↓
+- PERFORMANCE
+- ↓
+- MEMORY
+- ↓
+- CONSOLE TAB:
+- ↓
+- • console.log() — general output
+- ↓
+- • console.error() — red, with stack trace
+- ↓
+- • console.warn() — yellow warning
+- ↓
+- • console.table() — display arrays/objects as TABLE
 
 ```mermaid
 flowchart TD
@@ -431,7 +481,32 @@ WATCH PANEL: Add expressions to monitor.
 CALL STACK: See the chain of function calls.
 ```
 
-> **Flow**: SOURCES TAB — Step through code line by line: → BREAKPOINT TYPES: | BREAKPOINT TYPES: → 1. Click line number in Sources tab → line breakpoint | 1. Click line number in Sources tab → line breakpoint → 2. debugger; statement in code → programmatic breakpoin | 2. debugger; statement in code → programmatic breakpoin → 5. XHR/fetch breakpoint (break when URL matches) | 5. XHR/fetch breakpoint (break when URL matches) → 6. Event listener breakpoint (break on specific events) | 6. Event listener breakpoint (break on specific events) → STEPPING CONTROLS: | ...+1 more
+**Flow:**
+- SOURCES TAB — Step through code line by line:
+- ↓
+- BREAKPOINT TYPES:
+- ↓
+- 1. Click line number in Sources tab
+- ↓
+- line breakpoint
+- ↓
+- 1. Click line number in Sources tab
+- ↓
+- line breakpoint
+- ↓
+- 2. debugger; statement in code
+- ↓
+- programmatic breakpoin
+- ↓
+- 2. debugger; statement in code
+- ↓
+- programmatic breakpoin
+- ↓
+- 5. XHR/fetch breakpoint (break when URL matches)
+- ↓
+- 6. Event listener breakpoint (break on specific events)
+- ↓
+- STEPPING CONTROLS:
 
 ```mermaid
 flowchart TD
@@ -500,7 +575,20 @@ if (process.env.NODE_ENV === "development") {
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: STRATEGY 1: 'BINARY SEARCH' DEBUGGING → • Put a console.log halfway through the suspect code. | • Put a console.log halfway through the suspect code. → • Is the data correct at that point? | • Is the data correct at that point? → STRATEGY 2: 'RUBBER DUCK' DEBUGGING | STRATEGY 2: 'RUBBER DUCK' DEBUGGING → STRATEGY 3: 'WHAT CHANGED?' DEBUGGING | STRATEGY 3: 'WHAT CHANGED?' DEBUGGING → • It was working before. What changed? | • It was working before. What changed? → • git diff to see recent changes. | ...+1 more
+**Flow:**
+- STRATEGY 1: 'BINARY SEARCH' DEBUGGING
+- ↓
+- • Put a console.log halfway through the suspect code.
+- ↓
+- • Is the data correct at that point?
+- ↓
+- STRATEGY 2: 'RUBBER DUCK' DEBUGGING
+- ↓
+- STRATEGY 3: 'WHAT CHANGED?' DEBUGGING
+- ↓
+- • It was working before. What changed?
+- ↓
+- • git diff to see recent changes.
 
 ```mermaid
 flowchart TD
@@ -611,7 +699,20 @@ class ErrorBoundary extends React.Component {
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: ✅ ALWAYS handle promise rejections (.catch or try/catch → ✅ NEVER swallow errors silently (catch(e) { /* empty */ | ✅ NEVER swallow errors silently (catch(e) { /* empty */ → ✅ Use specific error types (ValidationError, NotFoundEr | ✅ Use specific error types (ValidationError, NotFoundEr → ✅ Validate inputs at module boundaries (API, user input | ✅ Validate inputs at module boundaries (API, user input → ✅ Add global error handlers as safety nets | ✅ Add global error handlers as safety nets → ✅ Use Error.cause to chain errors (preserve original) | ✅ Use Error.cause to chain errors (preserve original) → ✅ Have an error monitoring service in production | ...+1 more
+**Flow:**
+- ✅ ALWAYS handle promise rejections (.catch or try/catch
+- ↓
+- ✅ NEVER swallow errors silently (catch(e) { /* empty */
+- ↓
+- ✅ Use specific error types (ValidationError, NotFoundEr
+- ↓
+- ✅ Validate inputs at module boundaries (API, user input
+- ↓
+- ✅ Add global error handlers as safety nets
+- ↓
+- ✅ Use Error.cause to chain errors (preserve original)
+- ↓
+- ✅ Have an error monitoring service in production
 
 ```mermaid
 flowchart TD
@@ -661,7 +762,20 @@ Q: Custom Error classes — when and why?
   caught selectively with instanceof.
 ```
 
-> **Flow**: Q: How do you handle errors in async/await? → Q: What is the difference between throw and return? | Q: What is the difference between throw and return? → return just exits the current function with a value. | return just exits the current function with a value. → Q: What is an Error Boundary in React? | Q: What is an Error Boundary in React? → → A class component with getDerivedStateFromError and/o | → A class component with getDerivedStateFromError and/o → componentDidCatch. Catches errors in child component tr | componentDidCatch. Catches errors in child component tr → during rendering. Can't catch: events, async, server-si | ...+1 more
+**Flow:**
+- Q: How do you handle errors in async/await?
+- ↓
+- Q: What is the difference between throw and return?
+- ↓
+- return just exits the current function with a value.
+- ↓
+- Q: What is an Error Boundary in React?
+- ↓
+- A class component with getDerivedStateFromError and/o
+- ↓
+- componentDidCatch. Catches errors in child component tr
+- ↓
+- during rendering. Can't catch: events, async, server-si
 
 ```mermaid
 flowchart TD

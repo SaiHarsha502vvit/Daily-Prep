@@ -43,7 +43,44 @@ Iteration | left | right | mid | arr[mid] | Action
   3       |  5   |   5   |  5  |   23     | 23 == 23 → return 5 ✅
 ```
 
-> **Flow**: 1 | 0 | 8 | 4 | 16 | 16 &lt; 23 → left = 5 | 2 | 5 | 8 | 6 | 38 | 38 &gt; 23 → right = 5 | 3 | 5 | 5 | 5 | 23 | 23 == 23 → return 5 ✅
+**Flow:**
+- 1
+- ↓
+- 0
+- ↓
+- 8
+- ↓
+- 4
+- ↓
+- 16
+- ↓
+- 16 < 23
+- ↓
+- left = 5
+- ↓
+- 2
+- ↓
+- 5
+- ↓
+- 8
+- ↓
+- 6
+- ↓
+- 38
+- ↓
+- 38 > 23
+- ↓
+- right = 5
+- ↓
+- 3
+- ↓
+- 5
+- ↓
+- 23
+- ↓
+- 23 == 23
+- ↓
+- return 5 ✅
 
 ```mermaid
 flowchart LR
@@ -75,7 +112,10 @@ fibonacci(4)
 return 2 + 1 = 3 ✅
 ```
 
-> **Flow**: fibonacci(1) → return 1
+**Flow:**
+- fibonacci(1)
+- ↓
+- return 1
 
 ```mermaid
 flowchart LR
@@ -101,7 +141,18 @@ Example: "My sorting fails for [3, 1, 2, 1]"
 The smaller the failing input, the easier to trace.
 ```
 
-> **Flow**: □ What input causes the bug? → □ What output do I get vs what I expect? | □ What output do I get vs what I expect? → □ Can I create the SMALLEST input that still bugs? | □ Can I create the SMALLEST input that still bugs? → Example: 'My sorting fails for [3, 1, 2, 1]' | Example: 'My sorting fails for [3, 1, 2, 1]' → → Try: [2, 1] — does it fail? If yes, even simpler! | → Try: [2, 1] — does it fail? If yes, even simpler! → The smaller the failing input, the easier to trace.
+**Flow:**
+- □ What input causes the bug?
+- ↓
+- □ What output do I get vs what I expect?
+- ↓
+- □ Can I create the SMALLEST input that still bugs?
+- ↓
+- Example: 'My sorting fails for [3, 1, 2, 1]'
+- ↓
+- Try: [2, 1] — does it fail? If yes, even simpler!
+- ↓
+- The smaller the failing input, the easier to trace.
 
 ```mermaid
 flowchart TD
@@ -136,7 +187,14 @@ Strategy C: "Simplest failing case"
   → The last input that bugs = exact trigger
 ```
 
-> **Flow**: YES → Bug is in second half | NO → Bug is in first half
+**Flow:**
+- YES
+- ↓
+- Bug is in second half
+- ↓
+- NO
+- ↓
+- Bug is in first half
 
 ```mermaid
 flowchart LR
@@ -171,7 +229,14 @@ Rules for fixing:
 □ Understand WHY the fix works (not just that it works)
 ```
 
-> **Flow**: Rules for fixing: → □ Fix ONLY the identified root cause | □ Fix ONLY the identified root cause → □ Don't change other things 'while you're at it' | □ Don't change other things 'while you're at it' → □ Understand WHY the fix works (not just that it works)
+**Flow:**
+- Rules for fixing:
+- ↓
+- □ Fix ONLY the identified root cause
+- ↓
+- □ Don't change other things 'while you're at it'
+- ↓
+- □ Understand WHY the fix works (not just that it works)
 
 ```mermaid
 flowchart TD
@@ -192,7 +257,14 @@ flowchart TD
 □ No new bugs introduced
 ```
 
-> **Flow**: □ Original failing input now passes → □ All previously passing inputs still pass | □ All previously passing inputs still pass → □ Edge cases still work | □ Edge cases still work → □ No new bugs introduced
+**Flow:**
+- □ Original failing input now passes
+- ↓
+- □ All previously passing inputs still pass
+- ↓
+- □ Edge cases still work
+- ↓
+- □ No new bugs introduced
 
 ```mermaid
 flowchart TD
@@ -244,7 +316,14 @@ Fix: Use long for large sums/products
      Check if n * n > Integer.MAX_VALUE
 ```
 
-> **Flow**: - Integer overflow (int → long) | - Algorithm complexity too high (TLE → wrong approach, not bug)
+**Flow:**
+- - Integer overflow (int
+- ↓
+- long)
+- ↓
+- - Algorithm complexity too high (TLE
+- ↓
+- wrong approach, not bug)
 
 ```mermaid
 flowchart LR
@@ -355,7 +434,20 @@ Bug 4: Wrong answer extraction
 → Check what dp[i] REPRESENTS
 ```
 
-> **Flow**: Bug 1: Wrong base case → → Print dp[0], dp[1] — do they match expected base valu | → Print dp[0], dp[1] — do they match expected base valu → Bug 2: Wrong recurrence | Bug 2: Wrong recurrence → Bug 3: Wrong fill order | Bug 3: Wrong fill order → → Bottom-up: fill smaller indices first | → Bottom-up: fill smaller indices first → Bug 4: Wrong answer extraction | Bug 4: Wrong answer extraction → → Is the answer dp[n]? dp[n-1]? max of all dp[i]? | ...+1 more
+**Flow:**
+- Bug 1: Wrong base case
+- ↓
+- Print dp[0], dp[1] — do they match expected base valu
+- ↓
+- Bug 2: Wrong recurrence
+- ↓
+- Bug 3: Wrong fill order
+- ↓
+- Bottom-up: fill smaller indices first
+- ↓
+- Bug 4: Wrong answer extraction
+- ↓
+- Is the answer dp[n]? dp[n-1]? max of all dp[i]?
 
 ```mermaid
 flowchart TD
@@ -411,7 +503,24 @@ Bug 4: Directed vs undirected confusion
 → Directed: add edge ONE way only
 ```
 
-> **Flow**: Bug 1: Not marking visited → infinite loop | Bug 2: Marking visited too late (BFS) → duplicates in queue | Bug 3: Wrong adjacency list → missing or extra edges | Undirected: add edge BOTH ways (a → b AND b | b AND b → a)
+**Flow:**
+- Bug 1: Not marking visited
+- ↓
+- infinite loop
+- ↓
+- Bug 2: Marking visited too late (BFS)
+- ↓
+- duplicates in queue
+- ↓
+- Bug 3: Wrong adjacency list
+- ↓
+- missing or extra edges
+- ↓
+- Undirected: add edge BOTH ways (a
+- ↓
+- b AND b
+- ↓
+- a)
 
 ```mermaid
 flowchart TD
@@ -474,7 +583,20 @@ When your code fails:
 □ Remove debug prints before submitting
 ```
 
-> **Flow**: When your code fails: → □ Create the smallest failing test case | □ Create the smallest failing test case → □ Dry run with that test case on paper | □ Dry run with that test case on paper → □ Check the Big 10 bugs (off-by-one, null, overflow, et | □ Check the Big 10 bugs (off-by-one, null, overflow, et → □ Add strategic prints at decision points | □ Add strategic prints at decision points → □ Compare your trace with expected behavior | □ Compare your trace with expected behavior → □ Fix ONE thing at a time | ...+1 more
+**Flow:**
+- When your code fails:
+- ↓
+- □ Create the smallest failing test case
+- ↓
+- □ Dry run with that test case on paper
+- ↓
+- □ Check the Big 10 bugs (off-by-one, null, overflow, et
+- ↓
+- □ Add strategic prints at decision points
+- ↓
+- □ Compare your trace with expected behavior
+- ↓
+- □ Fix ONE thing at a time
 
 ```mermaid
 flowchart TD

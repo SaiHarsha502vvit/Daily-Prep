@@ -119,7 +119,22 @@ YOUR TASK:
 Write a function that calculates final price applying all applicable discounts
 ```
 
-> **Flow**: 1. If cart total &gt; ₹5000 → 10% discount | 2. If cart has 5+ items → extra 5% discount | 3. Coupon code 'SAVE200' → flat ₹200 off (if total &gt; ₹1000) | 4. First order → extra ₹100 off
+**Flow:**
+- 1. If cart total > ₹5000
+- ↓
+- 10% discount
+- ↓
+- 2. If cart has 5+ items
+- ↓
+- extra 5% discount
+- ↓
+- 3. Coupon code 'SAVE200'
+- ↓
+- flat ₹200 off (if total > ₹1000)
+- ↓
+- 4. First order
+- ↓
+- extra ₹100 off
 
 ```mermaid
 flowchart LR
@@ -252,7 +267,10 @@ YOUR TASK:
 Build autocomplete that returns top 5 suggestions for a prefix
 ```
 
-> **Flow**: User types 'sam' → Show: 'samsung phone', 'samsung tv', 'samsonite ba
+**Flow:**
+- User types 'sam'
+- ↓
+- Show: 'samsung phone', 'samsung tv', 'samsonite ba
 
 ```mermaid
 flowchart LR
@@ -366,7 +384,18 @@ YOUR TASK:
 Given transaction stream, flag suspicious activity in real-time
 ```
 
-> **Flow**: 1. More than 3 transactions in 5 minutes → SUSPICIOUS | 2. Total amount &gt; ₹50,000 in 10 minutes → SUSPICIOUS | 3. Transactions from 2+ cities in 30 minutes → SUSPICIOUS
+**Flow:**
+- 1. More than 3 transactions in 5 minutes
+- ↓
+- SUSPICIOUS
+- ↓
+- 2. Total amount > ₹50,000 in 10 minutes
+- ↓
+- SUSPICIOUS
+- ↓
+- 3. Transactions from 2+ cities in 30 minutes
+- ↓
+- SUSPICIOUS
 
 ```mermaid
 flowchart LR
@@ -469,7 +498,18 @@ REQUIREMENTS:
 3. Handle prepayment scenarios
 ```
 
-> **Flow**: COMPANY: HDFC / ICICI / Any Bank → SYSTEM: Loan Management | SYSTEM: Loan Management → FEATURE: Calculate EMI and generate amortization schedu | FEATURE: Calculate EMI and generate amortization schedu → REQUIREMENTS: | REQUIREMENTS: → 1. Calculate monthly EMI | 1. Calculate monthly EMI → 3. Handle prepayment scenarios
+**Flow:**
+- COMPANY: HDFC / ICICI / Any Bank
+- ↓
+- SYSTEM: Loan Management
+- ↓
+- FEATURE: Calculate EMI and generate amortization schedu
+- ↓
+- REQUIREMENTS:
+- ↓
+- 1. Calculate monthly EMI
+- ↓
+- 3. Handle prepayment scenarios
 
 ```mermaid
 flowchart TD
@@ -596,7 +636,12 @@ YOUR TASK:
 Make transfer operation thread-safe
 ```
 
-> **Flow**: Both read balance as ₹10,000 → Both think transfer is valid | Both think transfer is valid → ₹12,000 sent!
+**Flow:**
+- Both read balance as ₹10,000
+- ↓
+- Both think transfer is valid
+- ↓
+- ₹12,000 sent!
 
 ```mermaid
 flowchart LR
@@ -731,7 +776,20 @@ REQUIREMENTS:
 - Calculate estimated time based on distance
 ```
 
-> **Flow**: COMPANY: Swiggy / Zomato → SYSTEM: Partner Assignment | SYSTEM: Partner Assignment → FEATURE: Find 3 nearest available delivery partners | FEATURE: Find 3 nearest available delivery partners → REQUIREMENTS: | REQUIREMENTS: → - Customer places order at location (lat, lng) | - Customer places order at location (lat, lng) → - Find 3 nearest available delivery partners | - Find 3 nearest available delivery partners → - Must be available (not on another delivery) | ...+1 more
+**Flow:**
+- COMPANY: Swiggy / Zomato
+- ↓
+- SYSTEM: Partner Assignment
+- ↓
+- FEATURE: Find 3 nearest available delivery partners
+- ↓
+- REQUIREMENTS:
+- ↓
+- - Customer places order at location (lat, lng)
+- ↓
+- - Find 3 nearest available delivery partners
+- ↓
+- - Must be available (not on another delivery)
 
 ```mermaid
 flowchart TD
@@ -878,7 +936,18 @@ REQUIREMENTS:
 - Recent reviews should matter more
 ```
 
-> **Flow**: COMPANY: Zomato / Google Maps → SYSTEM: Rating & Reviews | SYSTEM: Rating & Reviews → established restaurant with 4.8 from 500 reviews | established restaurant with 4.8 from 500 reviews → REQUIREMENTS: | REQUIREMENTS: → - Need weighted score considering number of reviews | - Need weighted score considering number of reviews → - Recent reviews should matter more
+**Flow:**
+- COMPANY: Zomato / Google Maps
+- ↓
+- SYSTEM: Rating & Reviews
+- ↓
+- established restaurant with 4.8 from 500 reviews
+- ↓
+- REQUIREMENTS:
+- ↓
+- - Need weighted score considering number of reviews
+- ↓
+- - Recent reviews should matter more
 
 ```mermaid
 flowchart TD
@@ -999,7 +1068,12 @@ public class RatingCalculator {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: COMPANY: Facebook / LinkedIn → SYSTEM: Friend Suggestions | SYSTEM: Friend Suggestions → FEATURE: 'You have 15 mutual friends with John'
+**Flow:**
+- COMPANY: Facebook / LinkedIn
+- ↓
+- SYSTEM: Friend Suggestions
+- ↓
+- FEATURE: 'You have 15 mutual friends with John'
 
 ```mermaid
 flowchart TD
@@ -1113,7 +1187,10 @@ public class MutualFriendsFinder {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: COMPANY: Twitter / Instagram / Facebook → SYSTEM: Feed Generation
+**Flow:**
+- COMPANY: Twitter / Instagram / Facebook
+- ↓
+- SYSTEM: Feed Generation
 
 ```mermaid
 flowchart TD
@@ -1207,7 +1284,12 @@ public class NewsFeedGenerator {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: COMPANY: Uber / Ola → SYSTEM: Dynamic Pricing | SYSTEM: Dynamic Pricing → FEATURE: Increase price when demand &gt; supply
+**Flow:**
+- COMPANY: Uber / Ola
+- ↓
+- SYSTEM: Dynamic Pricing
+- ↓
+- FEATURE: Increase price when demand > supply
 
 ```mermaid
 flowchart TD
@@ -1321,7 +1403,12 @@ public class SurgePricingCalculator {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: COMPANY: Uber / Ola → SYSTEM: Dispatch | SYSTEM: Dispatch → CHALLENGE: Match N riders with M drivers optimally
+**Flow:**
+- COMPANY: Uber / Ola
+- ↓
+- SYSTEM: Dispatch
+- ↓
+- CHALLENGE: Match N riders with M drivers optimally
 
 ```mermaid
 flowchart TD

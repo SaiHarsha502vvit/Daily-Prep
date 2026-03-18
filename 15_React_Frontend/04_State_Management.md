@@ -231,7 +231,20 @@ function CartButton() {
 └──────────────────┴────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Solution When to Use → useState Local component state (default) | useState Local component state (default) → useReducer Complex local state with many transitions | useReducer Complex local state with many transitions → Context Theme, auth, locale (infrequent updates) | Context Theme, auth, locale (infrequent updates) → Zustand Simple global state, minimal boilerplate | Zustand Simple global state, minimal boilerplate → React Query Server state (API data, caching, sync) | React Query Server state (API data, caching, sync) → Jotai/Recoil Atomic state, fine-grained reactivity
+**Flow:**
+- Solution When to Use
+- ↓
+- useState Local component state (default)
+- ↓
+- useReducer Complex local state with many transitions
+- ↓
+- Context Theme, auth, locale (infrequent updates)
+- ↓
+- Zustand Simple global state, minimal boilerplate
+- ↓
+- React Query Server state (API data, caching, sync)
+- ↓
+- Jotai/Recoil Atomic state, fine-grained reactivity
 
 ```mermaid
 flowchart TD

@@ -43,7 +43,36 @@ Column-major (Fortran, MATLAB, Julia):
            ↑ col 0     ↑ col 1      ↑ col 2     ↑ col 3
 ```
 
-> **Flow**: Logical view: Memory layout (row-major): → 1 2 3 4 row 0 [1][2][3][4] [5][6][7][8] [9][10][11][12] | 1 2 3 4 row 0 [1][2][3][4] [5][6][7][8] [9][10][11][12] → ← row 0 → ← row 1 → ← row 2 → | ← row 0 → ← row 1 → ← row 2 → → 5 6 7 8 row 1 | 5 6 7 8 row 1 → Accessing grid[r][c] → memory offset = r * numCols + c | Accessing grid[r][c] → memory offset = r * numCols + c → 9 10 11 12 row 2 | 9 10 11 12 row 2 → Column-major (Fortran, MATLAB, Julia): | ...+1 more
+**Flow:**
+- Logical view: Memory layout (row-major):
+- ↓
+- 1 2 3 4 row 0 [1][2][3][4] [5][6][7][8] [9][10][11][12]
+- ↓
+- ← row 0
+- ↓
+- ← row 1
+- ↓
+- ← row 2
+- ↓
+- ← row 0
+- ↓
+- ← row 1
+- ↓
+- ← row 2
+- ↓
+- 5 6 7 8 row 1
+- ↓
+- Accessing grid[r][c]
+- ↓
+- memory offset = r * numCols + c
+- ↓
+- Accessing grid[r][c]
+- ↓
+- memory offset = r * numCols + c
+- ↓
+- 9 10 11 12 row 2
+- ↓
+- Column-major (Fortran, MATLAB, Julia):
 
 ```mermaid
 flowchart TD
@@ -92,7 +121,10 @@ Alternative 4-dir (compact):
 int[][] dirs = {{-1,0},{1,0},{0,-1},{0,1}};
 ```
 
-> **Flow**: (0,-1)← ● →(0,+1) (0,-1) ← --(●)--> (0,+1)
+**Flow:**
+- (0,-1)← ●
+- ↓
+- (0,+1) (0,-1) ← --(●)--> (0,+1)
 
 ```mermaid
 flowchart LR
@@ -167,7 +199,16 @@ void dfs(int[][] grid, int r, int c) {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: VISITED MARKING STRATEGIES → 1. Separate boolean[][] visited — safest, uses O(m*n) s | 1. Separate boolean[][] visited — safest, uses O(m*n) s → 2. Modify grid in-place — set grid[r][c] = '#' or -1 or | 2. Modify grid in-place — set grid[r][c] = '#' or -1 or → (destroys input, but O(1) extra space) | (destroys input, but O(1) extra space) → 3. State encoding — use unused bits (Game of Life trick
+**Flow:**
+- VISITED MARKING STRATEGIES
+- ↓
+- 1. Separate boolean[][] visited — safest, uses O(m*n) s
+- ↓
+- 2. Modify grid in-place — set grid[r][c] = '#' or -1 or
+- ↓
+- (destroys input, but O(1) extra space)
+- ↓
+- 3. State encoding — use unused bits (Game of Life trick
 
 ```mermaid
 flowchart TD
@@ -203,7 +244,20 @@ Boundaries: top, bottom, left, right
 Terminate when top > bottom or left > right.
 ```
 
-> **Flow**: Layer 0 (outermost): Layer 1 (inner): → → → → → → ↓ Only process what remains | → → → → → ↓ Only process what remains → ↑ ↓ inside the shrunk boundaries | ↑ ↓ inside the shrunk boundaries → Boundaries: top, bottom, left, right | Boundaries: top, bottom, left, right → After top row: top++ | After top row: top++ → After right col: right-- | After right col: right-- → After bottom row: bottom-- | ...+1 more
+**Flow:**
+- Layer 0 (outermost): Layer 1 (inner):
+- ↓
+- ↓ Only process what remains
+- ↓
+- ↑ ↓ inside the shrunk boundaries
+- ↓
+- Boundaries: top, bottom, left, right
+- ↓
+- After top row: top++
+- ↓
+- After right col: right--
+- ↓
+- After bottom row: bottom--
 
 ```mermaid
 flowchart TD
@@ -249,7 +303,12 @@ VARIANTS:
 • 180°:    reverse each row + reverse each column
 ```
 
-> **Flow**: 1 2 3 / 4 5 6 / 7 8 9 → 1 4 7 / 2 5 8 / 3 6 9 | 1 4 7 / 2 5 8 / 3 6 9 → 7 4 1 / 8 5 2 / 9 6 3
+**Flow:**
+- 1 2 3 / 4 5 6 / 7 8 9
+- ↓
+- 1 4 7 / 2 5 8 / 3 6 9
+- ↓
+- 7 4 1 / 8 5 2 / 9 6 3
 
 ```mermaid
 flowchart LR
@@ -301,7 +360,44 @@ flowchart LR
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: MISTAKE #1: Off-By-One in Boundaries → MISTAKE #2: Forgetting Diagonal Movement | MISTAKE #2: Forgetting Diagonal Movement → MISTAKE #3: Not Marking Visited BEFORE Enqueueing in BF | MISTAKE #3: Not Marking Visited BEFORE Enqueueing in BF → WRONG: enqueue → poll → mark visited (duplicate enqueue | WRONG: enqueue → poll → mark visited (duplicate enqueue → RIGHT: mark visited → enqueue → poll → process | RIGHT: mark visited → enqueue → poll → process → MISTAKE #4: Confusing row/col with x/y | MISTAKE #4: Confusing row/col with x/y → When problem gives (x, y), translate: row = y, col = x. | ...+1 more
+**Flow:**
+- MISTAKE #1: Off-By-One in Boundaries
+- ↓
+- MISTAKE #2: Forgetting Diagonal Movement
+- ↓
+- MISTAKE #3: Not Marking Visited BEFORE Enqueueing in BF
+- ↓
+- WRONG: enqueue
+- ↓
+- poll
+- ↓
+- mark visited (duplicate enqueue
+- ↓
+- WRONG: enqueue
+- ↓
+- poll
+- ↓
+- mark visited (duplicate enqueue
+- ↓
+- RIGHT: mark visited
+- ↓
+- enqueue
+- ↓
+- poll
+- ↓
+- process
+- ↓
+- RIGHT: mark visited
+- ↓
+- enqueue
+- ↓
+- poll
+- ↓
+- process
+- ↓
+- MISTAKE #4: Confusing row/col with x/y
+- ↓
+- When problem gives (x, y), translate: row = y, col = x.
 
 ```mermaid
 flowchart TD
@@ -333,7 +429,10 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: EASY — 4 PROBLEMS → Build intuition: basic traversals, simple transformatio
+**Flow:**
+- EASY — 4 PROBLEMS
+- ↓
+- Build intuition: basic traversals, simple transformatio
 
 ```mermaid
 flowchart TD
@@ -415,7 +514,12 @@ class Solution {
 └───┴───┴───┴───┘
 ```
 
-> **Flow**: 0 1 0 0 Land cells: 7 → Each land cell contributes 4 edges | Each land cell contributes 4 edges → 0 1 0 0 Perimeter = 4 * landCells - 2 * internalEdges
+**Flow:**
+- 0 1 0 0 Land cells: 7
+- ↓
+- Each land cell contributes 4 edges
+- ↓
+- 0 1 0 0 Perimeter = 4 * landCells - 2 * internalEdges
 
 ```mermaid
 flowchart TD
@@ -482,7 +586,10 @@ Original (2×4):        Reshaped (4×2):
 Map 1D index i → 2D: (i / numCols, i % numCols)
 ```
 
-> **Flow**: 1 2 3 4 / 5 6 7 8 → 1 2 / 3 4 / 5 6 / 7 8
+**Flow:**
+- 1 2 3 4 / 5 6 7 8
+- ↓
+- 1 2 / 3 4 / 5 6 / 7 8
 
 ```mermaid
 flowchart TD
@@ -538,7 +645,10 @@ Original (2×3):        Transposed (3×2):
 (i,j) in original → (j,i) in transpose
 ```
 
-> **Flow**: 1 2 3 / 4 5 6 → 1 4 / 2 5 / 3 6
+**Flow:**
+- 1 2 3 / 4 5 6
+- ↓
+- 1 4 / 2 5 / 3 6
 
 ```mermaid
 flowchart LR
@@ -603,7 +713,14 @@ Grid:                          Islands = 3
 └───┴───┴───┴───┴───┘
 ```
 
-> **Flow**: Grid: Islands = 3 → 1 1 0 0 0 Island 1: top-left 1,1 | 1 1 0 0 0 Island 1: top-left 1,1 → Island 2: top-right 1 | Island 2: top-right 1 → 1 1 0 0 0 Island 3: bottom-right 1
+**Flow:**
+- Grid: Islands = 3
+- ↓
+- 1 1 0 0 0 Island 1: top-left 1,1
+- ↓
+- Island 2: top-right 1
+- ↓
+- 1 1 0 0 0 Island 3: bottom-right 1
 
 ```mermaid
 flowchart TD
@@ -678,7 +795,16 @@ Minute 0:         Minute 1:         Minute 2:         Minute 3:         Minute 4
                                                                        Answer = 4
 ```
 
-> **Flow**: 2 1 1 / 1 1 0 / 0 1 1 → 2 2 1 / 2 1 0 / 0 1 1 | 2 2 1 / 2 1 0 / 0 1 1 → 2 2 2 / 2 2 0 / 0 1 1 | 2 2 2 / 2 2 0 / 0 1 1 → 2 2 2 / 2 2 0 / 0 2 1 | 2 2 2 / 2 2 0 / 0 2 1 → 2 2 2 / 2 2 0 / 0 2 2
+**Flow:**
+- 2 1 1 / 1 1 0 / 0 1 1
+- ↓
+- 2 2 1 / 2 1 0 / 0 1 1
+- ↓
+- 2 2 2 / 2 2 0 / 0 1 1
+- ↓
+- 2 2 2 / 2 2 0 / 0 2 1
+- ↓
+- 2 2 2 / 2 2 0 / 0 2 2
 
 ```mermaid
 flowchart LR
@@ -769,7 +895,10 @@ Input:           Output:
 └───┴───┴───┘   └───┴───┴───┘
 ```
 
-> **Flow**: 0 0 0 / 0 1 0 / 1 1 1 → 0 0 0 / 0 1 0 / 1 2 1
+**Flow:**
+- 0 0 0 / 0 1 0 / 1 1 1
+- ↓
+- 0 0 0 / 0 1 0 / 1 2 1
 
 ```mermaid
 flowchart TD
@@ -920,7 +1049,12 @@ Original:        Step 1 - Transpose:   Step 2 - Reverse rows:
                                        90° CW ✓
 ```
 
-> **Flow**: 1 2 3 / 4 5 6 / 7 8 9 → 1 4 7 / 2 5 8 / 3 6 9 | 1 4 7 / 2 5 8 / 3 6 9 → 7 4 1 / 8 5 2 / 9 6 3
+**Flow:**
+- 1 2 3 / 4 5 6 / 7 8 9
+- ↓
+- 1 4 7 / 2 5 8 / 3 6 9
+- ↓
+- 7 4 1 / 8 5 2 / 9 6 3
 
 ```mermaid
 flowchart LR
@@ -990,7 +1124,10 @@ Input:           Output:
 └───┴───┴───┘   └───┴───┴───┘
 ```
 
-> **Flow**: 1 1 1 / 1 0 1 / 1 1 1 → 1 0 1 / 0 0 0 / 1 0 1
+**Flow:**
+- 1 1 1 / 1 0 1 / 1 1 1
+- ↓
+- 1 0 1 / 0 0 0 / 1 0 1
 
 ```mermaid
 flowchart TD
@@ -1071,7 +1208,28 @@ Board:                  word = "ABCCED" → true
 └───┴───┴───┴───┘            (0,0)A→(0,1)B→(0,2)C→(1,2)C→(2,2)E→(2,1)D ✓
 ```
 
-> **Flow**: Board: word = 'ABCCED' → true → C ← E → D (nope, 'ABCCED'): | C ← E → D (nope, 'ABCCED'): → S F C S actually: A→B→C→C→E→D
+**Flow:**
+- Board: word = 'ABCCED'
+- ↓
+- true
+- ↓
+- C ← E
+- ↓
+- D (nope, 'ABCCED'):
+- ↓
+- C ← E
+- ↓
+- D (nope, 'ABCCED'):
+- ↓
+- S F C S actually: A
+- ↓
+- B
+- ↓
+- C
+- ↓
+- E
+- ↓
+- D
 
 ```mermaid
 flowchart TD
@@ -1149,7 +1307,10 @@ Input:                   Output:
 └───┴───┴───┴───┘      └───┴───┴───┴───┘
 ```
 
-> **Flow**: X X X X / X O O X / X X O X / X O X X → X X X X / X X X X / X X X X / X O X X
+**Flow:**
+- X X X X / X O O X / X X O X / X O X X
+- ↓
+- X X X X / X X X X / X X X X / X O X X
 
 ```mermaid
 flowchart LR
@@ -1313,7 +1474,10 @@ Input:           Output:
 └───┴───┴───┘   └───┴───┴───┘
 ```
 
-> **Flow**: 0 1 0 / 0 0 1 / 1 1 1 / 0 0 0 → 0 0 0 / 1 0 1 / 0 1 1 / 0 1 0
+**Flow:**
+- 0 1 0 / 0 0 1 / 1 1 1 / 0 0 0
+- ↓
+- 0 0 0 / 1 0 1 / 0 1 1 / 0 1 0
 
 ```mermaid
 flowchart TD
@@ -1398,7 +1562,10 @@ class Solution {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: HARD — 4 PROBLEMS → Advanced BFS, Dijkstra on grid, Union-Find, 3D heap BFS
+**Flow:**
+- HARD — 4 PROBLEMS
+- ↓
+- Advanced BFS, Dijkstra on grid, Union-Find, 3D heap BFS
 
 ```mermaid
 flowchart TD
@@ -1423,7 +1590,18 @@ flowchart TD
 └───┴───┴───┘
 ```
 
-> **Flow**: 0 0 0 Shortest path: (0,0) → (1,1) → (2,2) → Length = 3 (count cells, not edges) | Length = 3 (count cells, not edges) → The diagonal shortcut through center | The diagonal shortcut through center → 1 1 0 is faster than going around.
+**Flow:**
+- 0 0 0 Shortest path: (0,0)
+- ↓
+- (1,1)
+- ↓
+- (2,2)
+- ↓
+- Length = 3 (count cells, not edges)
+- ↓
+- The diagonal shortcut through center
+- ↓
+- 1 1 0 is faster than going around.
 
 ```mermaid
 flowchart TD
@@ -1508,7 +1686,12 @@ class Solution {
 └───┴───┴───┘   Flip (1,0) to 1: connects id=2 (1) + id=4 (3) + 1 = 5 ← answer
 ```
 
-> **Flow**: bottom (size 3, id=4) → Flip (0,1) to 1: connects id=2 (size 1) + id=3 (size 1) | Flip (0,1) to 1: connects id=2 (size 1) + id=3 (size 1) → 1 1 1 + 1 (the flipped cell) = 3
+**Flow:**
+- bottom (size 3, id=4)
+- ↓
+- Flip (0,1) to 1: connects id=2 (size 1) + id=3 (size 1)
+- ↓
+- 1 1 1 + 1 (the flipped cell) = 3
 
 ```mermaid
 flowchart TD
@@ -1610,7 +1793,16 @@ class Solution {
 └───┴───┴───┘   = minimax path problem!
 ```
 
-> **Flow**: 0 1 2 At t=0: only (0,0) accessible → 3 8 4 max elevation on path = 3+... wait | 3 8 4 max elevation on path = 3+... wait → Answer = max elevation on the path we choose, | Answer = max elevation on the path we choose, → 5 6 7 minimized over all possible paths. | 5 6 7 minimized over all possible paths. → = minimax path problem!
+**Flow:**
+- 0 1 2 At t=0: only (0,0) accessible
+- ↓
+- 3 8 4 max elevation on path = 3+... wait
+- ↓
+- Answer = max elevation on the path we choose,
+- ↓
+- 5 6 7 minimized over all possible paths.
+- ↓
+- = minimax path problem!
 
 ```mermaid
 flowchart TD
@@ -1738,7 +1930,20 @@ Elevation map:               Water trapped:
                              ...
 ```
 
-> **Flow**: Elevation map: Water trapped: → The border forms a 'wall'. | The border forms a 'wall'. → 1 4 3 1 3 Water fills up to the minimum | 1 4 3 1 3 Water fills up to the minimum → border height, then overflows. | border height, then overflows. → 3 2 1 3 2 Total water = 4 | 3 2 1 3 2 Total water = 4 → 2 3 3 2 3 Cell (1,1)h=2: water to level 3, traps 1 | 2 3 3 2 3 Cell (1,1)h=2: water to level 3, traps 1 → Cell (1,2)h=1: water to level 3, traps 2 | ...+1 more
+**Flow:**
+- Elevation map: Water trapped:
+- ↓
+- The border forms a 'wall'.
+- ↓
+- 1 4 3 1 3 Water fills up to the minimum
+- ↓
+- border height, then overflows.
+- ↓
+- 3 2 1 3 2 Total water = 4
+- ↓
+- 2 3 3 2 3 Cell (1,1)h=2: water to level 3, traps 1
+- ↓
+- Cell (1,2)h=1: water to level 3, traps 2
 
 ```mermaid
 flowchart TD
@@ -1871,7 +2076,22 @@ class Solution {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: GRID TRAVERSAL PATTERNS — CHEAT SHEET → PATTERN WHEN TO USE KEY TEMPLATE | PATTERN WHEN TO USE KEY TEMPLATE → DFS Flood Fill Connected components, Recursive DFS with | DFS Flood Fill Connected components, Recursive DFS with → island counting in-place marking | island counting in-place marking → Multi-source BFS Simultaneous spread, Enqueue ALL sourc | Multi-source BFS Simultaneous spread, Enqueue ALL sourc → shortest from any source BFS level-by-level | shortest from any source BFS level-by-level → Backtracking DFS Path finding with Mark → recurse → | ...+1 more
+**Flow:**
+- GRID TRAVERSAL PATTERNS — CHEAT SHEET
+- ↓
+- PATTERN WHEN TO USE KEY TEMPLATE
+- ↓
+- DFS Flood Fill Connected components, Recursive DFS with
+- ↓
+- island counting in-place marking
+- ↓
+- Multi-source BFS Simultaneous spread, Enqueue ALL sourc
+- ↓
+- shortest from any source BFS level-by-level
+- ↓
+- Backtracking DFS Path finding with Mark
+- ↓
+- recurse
 
 ```mermaid
 flowchart TD
@@ -1943,7 +2163,20 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: DIRECTION ARRAYS — QUICK REFERENCE → 4-DIRECTIONAL (Up, Down, Left, Right): | 4-DIRECTIONAL (Up, Down, Left, Right): → int[] dr = {-1, 1, 0, 0}; | int[] dr = {-1, 1, 0, 0}; → int[] dc = {0, 0, -1, 1}; | int[] dc = {0, 0, -1, 1}; → Alternative (array of pairs): | Alternative (array of pairs): → int[][] dirs = {{-1,0},{1,0},{0,-1},{0,1}}; | int[][] dirs = {{-1,0},{1,0},{0,-1},{0,1}}; → 8-DIRECTIONAL (Including diagonals): | ...+1 more
+**Flow:**
+- DIRECTION ARRAYS — QUICK REFERENCE
+- ↓
+- 4-DIRECTIONAL (Up, Down, Left, Right):
+- ↓
+- int[] dr = {-1, 1, 0, 0};
+- ↓
+- int[] dc = {0, 0, -1, 1};
+- ↓
+- Alternative (array of pairs):
+- ↓
+- int[][] dirs = {{-1,0},{1,0},{0,-1},{0,1}};
+- ↓
+- 8-DIRECTIONAL (Including diagonals):
 
 ```mermaid
 flowchart TD
@@ -1988,7 +2221,54 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: PROBLEM → PATTERN DECISION TREE → 'Count connected components' → DFS/BFS flood fill (LC 2 | 'Count connected components' → DFS/BFS flood fill (LC 2 → 'Shortest path, unweighted grid' → BFS (LC 1091, LC 542 | 'Shortest path, unweighted grid' → BFS (LC 1091, LC 542 → 'Path exists with constraint?' → Backtracking DFS (LC 7 | 'Path exists with constraint?' → Backtracking DFS (LC 7 → 'Output in spiral order' → Boundary simulation (LC 54) | 'Output in spiral order' → Boundary simulation (LC 54) → 'Rotate matrix' → Transpose + Reverse (LC 48) | 'Rotate matrix' → Transpose + Reverse (LC 48) → 'Simultaneous state update' → State encoding (LC 289) | ...+1 more
+**Flow:**
+- PROBLEM
+- ↓
+- PATTERN DECISION TREE
+- ↓
+- 'Count connected components'
+- ↓
+- DFS/BFS flood fill (LC 2
+- ↓
+- 'Count connected components'
+- ↓
+- DFS/BFS flood fill (LC 2
+- ↓
+- 'Shortest path, unweighted grid'
+- ↓
+- BFS (LC 1091, LC 542
+- ↓
+- 'Shortest path, unweighted grid'
+- ↓
+- BFS (LC 1091, LC 542
+- ↓
+- 'Path exists with constraint?'
+- ↓
+- Backtracking DFS (LC 7
+- ↓
+- 'Path exists with constraint?'
+- ↓
+- Backtracking DFS (LC 7
+- ↓
+- 'Output in spiral order'
+- ↓
+- Boundary simulation (LC 54)
+- ↓
+- 'Output in spiral order'
+- ↓
+- Boundary simulation (LC 54)
+- ↓
+- 'Rotate matrix'
+- ↓
+- Transpose + Reverse (LC 48)
+- ↓
+- 'Rotate matrix'
+- ↓
+- Transpose + Reverse (LC 48)
+- ↓
+- 'Simultaneous state update'
+- ↓
+- State encoding (LC 289)
 
 ```mermaid
 flowchart TD
@@ -2050,7 +2330,20 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: BFS TEMPLATE FOR GRIDS → int bfs(int[][] grid, int startR, int startC) { | int bfs(int[][] grid, int startR, int startC) { → int m = grid.length, n = grid[0].length; | int m = grid.length, n = grid[0].length; → boolean[][] visited = new boolean[m][n]; | boolean[][] visited = new boolean[m][n]; → Queue&lt;int[]&gt; queue = new LinkedList&lt;&gt;(); | Queue&lt;int[]&gt; queue = new LinkedList&lt;&gt;(); → queue.offer(new int[]{startR, startC}); | queue.offer(new int[]{startR, startC}); → visited[startR][startC] = true; // ← MARK BEFORE ENQUEU | ...+1 more
+**Flow:**
+- BFS TEMPLATE FOR GRIDS
+- ↓
+- int bfs(int[][] grid, int startR, int startC) {
+- ↓
+- int m = grid.length, n = grid[0].length;
+- ↓
+- boolean[][] visited = new boolean[m][n];
+- ↓
+- Queue<int[]> queue = new LinkedList<>();
+- ↓
+- queue.offer(new int[]{startR, startC});
+- ↓
+- visited[startR][startC] = true; // ← MARK BEFORE ENQUEU
 
 ```mermaid
 flowchart TD
@@ -2115,7 +2408,26 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: DFS TEMPLATE FOR GRIDS → void dfs(int[][] grid, int r, int c) { | void dfs(int[][] grid, int r, int c) { → c &lt; 0 || c &gt;= grid[0].length) return; // Out of b | c &lt; 0 || c &gt;= grid[0].length) return; // Out of b → grid[r][c] = VISITED; // Mark (in-place) | grid[r][c] = VISITED; // Mark (in-place) → dfs(grid, r - 1, c); // Up | dfs(grid, r - 1, c); // Up → dfs(grid, r + 1, c); // Down | dfs(grid, r + 1, c); // Down → dfs(grid, r, c - 1); // Left | ...+1 more
+**Flow:**
+- DFS TEMPLATE FOR GRIDS
+- ↓
+- void dfs(int[][] grid, int r, int c) {
+- ↓
+- c < 0
+- ↓
+- c >= grid[0].length) return; // Out of b
+- ↓
+- c < 0
+- ↓
+- c >= grid[0].length) return; // Out of b
+- ↓
+- grid[r][c] = VISITED; // Mark (in-place)
+- ↓
+- dfs(grid, r - 1, c); // Up
+- ↓
+- dfs(grid, r + 1, c); // Down
+- ↓
+- dfs(grid, r, c - 1); // Left
 
 ```mermaid
 flowchart TD
@@ -2164,7 +2476,20 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: COMPLEXITY SUMMARY — ALL 18 PROBLEMS → # Problem Time Space Pattern | # Problem Time Space Pattern → E1 Flood Fill (733) O(m·n) O(m·n) DFS fill | E1 Flood Fill (733) O(m·n) O(m·n) DFS fill → E2 Island Perimeter (463) O(m·n) O(1) Count | E2 Island Perimeter (463) O(m·n) O(1) Count → E3 Reshape Matrix (566) O(m·n) O(m·n) Index map | E3 Reshape Matrix (566) O(m·n) O(m·n) Index map → E4 Transpose Matrix (867) O(m·n) O(m·n) Transform | E4 Transpose Matrix (867) O(m·n) O(m·n) Transform → M1 Number of Islands (200) O(m·n) O(m·n) DFS flood | ...+1 more
+**Flow:**
+- COMPLEXITY SUMMARY — ALL 18 PROBLEMS
+- ↓
+- # Problem Time Space Pattern
+- ↓
+- E1 Flood Fill (733) O(m·n) O(m·n) DFS fill
+- ↓
+- E2 Island Perimeter (463) O(m·n) O(1) Count
+- ↓
+- E3 Reshape Matrix (566) O(m·n) O(m·n) Index map
+- ↓
+- E4 Transpose Matrix (867) O(m·n) O(m·n) Transform
+- ↓
+- M1 Number of Islands (200) O(m·n) O(m·n) DFS flood
 
 ```mermaid
 flowchart TD

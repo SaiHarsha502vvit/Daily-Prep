@@ -219,7 +219,12 @@ Translate logic to code
                                          HashMap
 ```
 
-> **Flow**: Is data SORTED? → Need OPTIMAL / substructure? | Need OPTIMAL / substructure? → Searching/ / Traversing?
+**Flow:**
+- Is data SORTED?
+- ↓
+- Need OPTIMAL / substructure?
+- ↓
+- Searching/ / Traversing?
 
 ```mermaid
 flowchart TD
@@ -276,7 +281,20 @@ MENTAL MODEL:
 └─────────────────────────────────────────┘
 ```
 
-> **Flow**: SIGNAL PHRASES: → - 'Find two elements that...' | - 'Find two elements that...' → - 'Sorted array' | - 'Sorted array' → - 'Remove duplicates' | - 'Remove duplicates' → - 'Reverse' | - 'Reverse' → - 'Palindrome' | - 'Palindrome' → MENTAL MODEL: | ...+1 more
+**Flow:**
+- SIGNAL PHRASES:
+- ↓
+- - 'Find two elements that...'
+- ↓
+- - 'Sorted array'
+- ↓
+- - 'Remove duplicates'
+- ↓
+- - 'Reverse'
+- ↓
+- - 'Palindrome'
+- ↓
+- MENTAL MODEL:
 
 ```mermaid
 flowchart TD
@@ -362,7 +380,20 @@ MENTAL MODEL:
 └─────────────────────────────────────────┘
 ```
 
-> **Flow**: SIGNAL PHRASES: → - 'Subarray/substring of size K' | - 'Subarray/substring of size K' → - 'Longest/shortest subarray with condition' | - 'Longest/shortest subarray with condition' → - 'Consecutive elements' | - 'Consecutive elements' → - 'Sum of K elements' | - 'Sum of K elements' → MENTAL MODEL: | MENTAL MODEL: → Instead of recalculating for each | ...+1 more
+**Flow:**
+- SIGNAL PHRASES:
+- ↓
+- - 'Subarray/substring of size K'
+- ↓
+- - 'Longest/shortest subarray with condition'
+- ↓
+- - 'Consecutive elements'
+- ↓
+- - 'Sum of K elements'
+- ↓
+- MENTAL MODEL:
+- ↓
+- Instead of recalculating for each
 
 ```mermaid
 flowchart TD
@@ -449,7 +480,12 @@ for right in range(n):
 Time: O(n) ✓
 ```
 
-> **Flow**: Window: 'abc' → add 'a' | add 'a' → repeat found!
+**Flow:**
+- Window: 'abc'
+- ↓
+- add 'a'
+- ↓
+- repeat found!
 
 ```mermaid
 flowchart LR
@@ -490,7 +526,20 @@ MENTAL MODEL:
 └─────────────────────────────────────────┘
 ```
 
-> **Flow**: SIGNAL PHRASES: → - 'Sorted array' | - 'Sorted array' → - 'Find target' | - 'Find target' → - 'Search in O(log n)' | - 'Search in O(log n)' → - 'Find first/last occurrence' | - 'Find first/last occurrence' → - 'Find minimum/maximum that satisfies condition' | - 'Find minimum/maximum that satisfies condition' → MENTAL MODEL: | ...+1 more
+**Flow:**
+- SIGNAL PHRASES:
+- ↓
+- - 'Sorted array'
+- ↓
+- - 'Find target'
+- ↓
+- - 'Search in O(log n)'
+- ↓
+- - 'Find first/last occurrence'
+- ↓
+- - 'Find minimum/maximum that satisfies condition'
+- ↓
+- MENTAL MODEL:
 
 ```mermaid
 flowchart TD
@@ -531,7 +580,20 @@ VARIANT 4: Search on Answer
 → Binary search on K values, not array!
 ```
 
-> **Flow**: VARIANT 1: Exact Match → 'Find element equal to target' | 'Find element equal to target' → → Standard binary search | → Standard binary search → VARIANT 2: First Occurrence | VARIANT 2: First Occurrence → 'Find first element &gt;= target' | 'Find first element &gt;= target' → → When found, DON'T STOP! Search left for earlier | → When found, DON'T STOP! Search left for earlier → VARIANT 3: Last Occurrence | ...+1 more
+**Flow:**
+- VARIANT 1: Exact Match
+- ↓
+- 'Find element equal to target'
+- ↓
+- Standard binary search
+- ↓
+- VARIANT 2: First Occurrence
+- ↓
+- 'Find first element >= target'
+- ↓
+- When found, DON'T STOP! Search left for earlier
+- ↓
+- VARIANT 3: Last Occurrence
 
 ```mermaid
 flowchart TD
@@ -589,7 +651,20 @@ return left  # left == right, found peak
 Time: O(log n) ✓
 ```
 
-> **Flow**: PROBLEM: → nums = [1, 2, 3, 1] | nums = [1, 2, 3, 1] → Find any peak element (greater than neighbors). | Find any peak element (greater than neighbors). → LINEAR THINKING: | LINEAR THINKING: → 'Check each element against neighbors' | 'Check each element against neighbors' → return i | return i → Time: O(n) - but can we do better? | ...+1 more
+**Flow:**
+- PROBLEM:
+- ↓
+- nums = [1, 2, 3, 1]
+- ↓
+- Find any peak element (greater than neighbors).
+- ↓
+- LINEAR THINKING:
+- ↓
+- 'Check each element against neighbors'
+- ↓
+- return i
+- ↓
+- Time: O(n) - but can we do better?
 
 ```mermaid
 flowchart TD
@@ -633,7 +708,10 @@ DP DETECTION:
 If BOTH yes → DP!
 ```
 
-> **Flow**: If BOTH yes → DP!
+**Flow:**
+- If BOTH yes
+- ↓
+- DP!
 
 ```mermaid
 flowchart LR
@@ -708,7 +786,10 @@ dp[4] = max(11, 11+1) = 12
 ANSWER: dp[4] = 12 ✓
 ```
 
-> **Flow**: 2^n combinations → O(2ⁿ) ❌
+**Flow:**
+- 2^n combinations
+- ↓
+- O(2ⁿ) ❌
 
 ```mermaid
 flowchart LR
@@ -819,7 +900,22 @@ See problem → Understand → Examples → Brute force → Optimize → Code
 "10 minutes of planning saves 1 hour of debugging"
 ```
 
-> **Flow**: See problem → Start typing code | See problem → Understand | Understand → Examples | Examples → Brute force | Brute force → Optimize | Optimize → Code
+**Flow:**
+- See problem
+- ↓
+- Start typing code
+- ↓
+- See problem
+- ↓
+- Understand
+- ↓
+- Examples
+- ↓
+- Brute force
+- ↓
+- Optimize
+- ↓
+- Code
 
 ```mermaid
 flowchart TD
@@ -983,7 +1079,20 @@ That looks correct. Time is O(n), space is O(n).
 Let me code this up..."
 ```
 
-> **Flow**: PROBLEM: Two Sum → that would be O(n²). Not great for large inputs. | that would be O(n²). Not great for large inputs. → So my plan is: | So my plan is: → 1. Create an empty HashMap | 1. Create an empty HashMap → 3. If yes, return the indices | 3. If yes, return the indices → 4. If no, add current number to map | 4. If no, add current number to map → Let me trace through [2, 7, 11, 15] with target 9: | ...+1 more
+**Flow:**
+- PROBLEM: Two Sum
+- ↓
+- that would be O(n²). Not great for large inputs.
+- ↓
+- So my plan is:
+- ↓
+- 1. Create an empty HashMap
+- ↓
+- 3. If yes, return the indices
+- ↓
+- 4. If no, add current number to map
+- ↓
+- Let me trace through [2, 7, 11, 15] with target 9:
 
 ```mermaid
 flowchart TD

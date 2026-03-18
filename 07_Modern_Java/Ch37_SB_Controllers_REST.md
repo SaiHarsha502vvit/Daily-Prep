@@ -49,7 +49,14 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHY: Why REST Controllers? / • REST is the standard: We → HOW: How Controllers Handle Requests? / • @GetMapping:  | HOW: How Controllers Handle Requests? / • @GetMapping:  → WHEN: When to Use Which Parameter Type? / • @PathVariab | WHEN: When to Use Which Parameter Type? / • @PathVariab → WHICH: Which Controller Patterns to Use? / ESSENTIAL: @
+**Flow:**
+- WHY: Why REST Controllers? / • REST is the standard: We
+- ↓
+- HOW: How Controllers Handle Requests? / • @GetMapping:
+- ↓
+- WHEN: When to Use Which Parameter Type? / • @PathVariab
+- ↓
+- WHICH: Which Controller Patterns to Use? / ESSENTIAL: @
 
 ```mermaid
 flowchart TD
@@ -171,7 +178,20 @@ public class UserController {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: HTTP METHODS & SPRING MAPPINGS → HTTP Method Annotation Purpose Idempotent Safe | HTTP Method Annotation Purpose Idempotent Safe → GET @GetMapping Read resource ✅ ✅ | GET @GetMapping Read resource ✅ ✅ → POST @PostMapping Create resource ❌ ❌ | POST @PostMapping Create resource ❌ ❌ → PUT @PutMapping Replace resource ✅ ❌ | PUT @PutMapping Replace resource ✅ ❌ → PATCH @PatchMapping Partial update ❌* ❌ | PATCH @PatchMapping Partial update ❌* ❌ → DELETE @DeleteMapping Delete resource ✅ ❌ | ...+1 more
+**Flow:**
+- HTTP METHODS & SPRING MAPPINGS
+- ↓
+- HTTP Method Annotation Purpose Idempotent Safe
+- ↓
+- GET @GetMapping Read resource ✅ ✅
+- ↓
+- POST @PostMapping Create resource ❌ ❌
+- ↓
+- PUT @PutMapping Replace resource ✅ ❌
+- ↓
+- PATCH @PatchMapping Partial update ❌* ❌
+- ↓
+- DELETE @DeleteMapping Delete resource ✅ ❌
 
 ```mermaid
 flowchart TD
@@ -1104,7 +1124,20 @@ public class UserController {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: CONTROLLER BEST PRACTICES → 1. THIN CONTROLLERS | 1. THIN CONTROLLERS → Controllers should: | Controllers should: → ✅ Receive request | ✅ Receive request → ✅ Validate (via @Valid) | ✅ Validate (via @Valid) → ✅ Delegate to service | ✅ Delegate to service → ✅ Return response | ...+1 more
+**Flow:**
+- CONTROLLER BEST PRACTICES
+- ↓
+- 1. THIN CONTROLLERS
+- ↓
+- Controllers should:
+- ↓
+- ✅ Receive request
+- ↓
+- ✅ Validate (via @Valid)
+- ↓
+- ✅ Delegate to service
+- ↓
+- ✅ Return response
 
 ```mermaid
 flowchart TD
@@ -1302,7 +1335,20 @@ public class UserController {
 □ Thin controllers - delegate to services
 ```
 
-> **Flow**: □ @RequiredArgsConstructor for DI → □ @Validated for method-level validation | □ @Validated for method-level validation → □ @Valid on @RequestBody DTOs | □ @Valid on @RequestBody DTOs → □ Appropriate HTTP methods (GET, POST, PUT, PATCH, DELE | □ Appropriate HTTP methods (GET, POST, PUT, PATCH, DELE → □ Correct status codes (200, 201, 204, 400, 404, etc.) | □ Correct status codes (200, 201, 204, 400, 404, etc.) → □ ResponseEntity for explicit control | □ ResponseEntity for explicit control → □ POST returns 201 with Location header | ...+1 more
+**Flow:**
+- □ @RequiredArgsConstructor for DI
+- ↓
+- □ @Validated for method-level validation
+- ↓
+- □ @Valid on @RequestBody DTOs
+- ↓
+- □ Appropriate HTTP methods (GET, POST, PUT, PATCH, DELE
+- ↓
+- □ Correct status codes (200, 201, 204, 400, 404, etc.)
+- ↓
+- □ ResponseEntity for explicit control
+- ↓
+- □ POST returns 201 with Location header
 
 ```mermaid
 flowchart TD

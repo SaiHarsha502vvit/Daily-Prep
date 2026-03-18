@@ -51,7 +51,14 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHY: Why Learn SOLID Principles? / • Reduces bugs: Chan → HOW: How to Apply SOLID? / • S: One class = One respons | HOW: How to Apply SOLID? / • S: One class = One respons → WHEN: When to Apply Each Principle? / • SRP: Class has  | WHEN: When to Apply Each Principle? / • SRP: Class has  → WHICH: Which Principles are Most Critical in Spring? / 
+**Flow:**
+- WHY: Why Learn SOLID Principles? / • Reduces bugs: Chan
+- ↓
+- HOW: How to Apply SOLID? / • S: One class = One respons
+- ↓
+- WHEN: When to Apply Each Principle? / • SRP: Class has
+- ↓
+- WHICH: Which Principles are Most Critical in Spring? /
 
 ```mermaid
 flowchart TD
@@ -85,7 +92,20 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHAT THIS PART COVERS → 1. S - Single Responsibility Principle (SRP) | 1. S - Single Responsibility Principle (SRP) → 2. O - Open/Closed Principle (OCP) | 2. O - Open/Closed Principle (OCP) → 3. L - Liskov Substitution Principle (LSP) | 3. L - Liskov Substitution Principle (LSP) → 4. I - Interface Segregation Principle (ISP) | 4. I - Interface Segregation Principle (ISP) → 5. D - Dependency Inversion Principle (DIP) | 5. D - Dependency Inversion Principle (DIP) → 6. Complete Spring Boot Project Example | ...+1 more
+**Flow:**
+- WHAT THIS PART COVERS
+- ↓
+- 1. S - Single Responsibility Principle (SRP)
+- ↓
+- 2. O - Open/Closed Principle (OCP)
+- ↓
+- 3. L - Liskov Substitution Principle (LSP)
+- ↓
+- 4. I - Interface Segregation Principle (ISP)
+- ↓
+- 5. D - Dependency Inversion Principle (DIP)
+- ↓
+- 6. Complete Spring Boot Project Example
 
 ```mermaid
 flowchart TD
@@ -132,7 +152,20 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: THE COST OF VIOLATING SOLID → WITHOUT SOLID: | WITHOUT SOLID: → • Adding features breaks existing code | • Adding features breaks existing code → • Testing requires complex setup | • Testing requires complex setup → • Changes ripple through the codebase | • Changes ripple through the codebase → • Code becomes 'fragile' - fix one bug, create three | • Code becomes 'fragile' - fix one bug, create three → • New team members struggle to understand | ...+1 more
+**Flow:**
+- THE COST OF VIOLATING SOLID
+- ↓
+- WITHOUT SOLID:
+- ↓
+- • Adding features breaks existing code
+- ↓
+- • Testing requires complex setup
+- ↓
+- • Changes ripple through the codebase
+- ↓
+- • Code becomes 'fragile' - fix one bug, create three
+- ↓
+- • New team members struggle to understand
 
 ```mermaid
 flowchart TD
@@ -178,7 +211,36 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: SINGLE RESPONSIBILITY PRINCIPLE → If your class changes because: | If your class changes because: → • Business rules change → One responsibility | • Business rules change → One responsibility → • Database schema changes → Another responsibility | • Database schema changes → Another responsibility → • UI requirements change → Another responsibility | • UI requirements change → Another responsibility → Then your class has MULTIPLE responsibilities!
+**Flow:**
+- SINGLE RESPONSIBILITY PRINCIPLE
+- ↓
+- If your class changes because:
+- ↓
+- • Business rules change
+- ↓
+- One responsibility
+- ↓
+- • Business rules change
+- ↓
+- One responsibility
+- ↓
+- • Database schema changes
+- ↓
+- Another responsibility
+- ↓
+- • Database schema changes
+- ↓
+- Another responsibility
+- ↓
+- • UI requirements change
+- ↓
+- Another responsibility
+- ↓
+- • UI requirements change
+- ↓
+- Another responsibility
+- ↓
+- Then your class has MULTIPLE responsibilities!
 
 ```mermaid
 flowchart TD
@@ -511,7 +573,20 @@ public class ReportService {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: OPEN/CLOSED PRINCIPLE → 'Open for extension' = You can add new functionality | 'Open for extension' = You can add new functionality → 'Closed for modification' = Without changing existing c | 'Closed for modification' = Without changing existing c → ACHIEVED THROUGH: | ACHIEVED THROUGH: → • Abstraction (interfaces/abstract classes) | • Abstraction (interfaces/abstract classes) → • Composition over inheritance | • Composition over inheritance → • Strategy pattern | ...+1 more
+**Flow:**
+- OPEN/CLOSED PRINCIPLE
+- ↓
+- 'Open for extension' = You can add new functionality
+- ↓
+- 'Closed for modification' = Without changing existing c
+- ↓
+- ACHIEVED THROUGH:
+- ↓
+- • Abstraction (interfaces/abstract classes)
+- ↓
+- • Composition over inheritance
+- ↓
+- • Strategy pattern
 
 ```mermaid
 flowchart TD
@@ -883,7 +958,20 @@ public class RetryableNotificationDecorator implements NotificationSender {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: LISKOV SUBSTITUTION PRINCIPLE → with objects of type S without breaking the program. | with objects of type S without breaking the program. → IN PRACTICE: | IN PRACTICE: → • Subclass methods should not throw new exceptions | • Subclass methods should not throw new exceptions → • Subclass methods should accept same or broader input | • Subclass methods should accept same or broader input → • Subclass methods should return same or narrower outpu | • Subclass methods should return same or narrower outpu → THE CLASSIC VIOLATION: Rectangle/Square problem
+**Flow:**
+- LISKOV SUBSTITUTION PRINCIPLE
+- ↓
+- with objects of type S without breaking the program.
+- ↓
+- IN PRACTICE:
+- ↓
+- • Subclass methods should not throw new exceptions
+- ↓
+- • Subclass methods should accept same or broader input
+- ↓
+- • Subclass methods should return same or narrower outpu
+- ↓
+- THE CLASSIC VIOLATION: Rectangle/Square problem
 
 ```mermaid
 flowchart TD

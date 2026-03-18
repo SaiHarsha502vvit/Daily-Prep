@@ -206,7 +206,14 @@ class QueryBuilder<T> {
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: TS provides 15+ built-in utility types. These transform → existing types into new ones WITHOUT rewriting. | existing types into new ones WITHOUT rewriting. → WHY: Avoid duplicating type definitions. If User change | WHY: Avoid duplicating type definitions. If User change → all derived types (PartialUser, UserSummary) update too
+**Flow:**
+- TS provides 15+ built-in utility types. These transform
+- ↓
+- existing types into new ones WITHOUT rewriting.
+- ↓
+- WHY: Avoid duplicating type definitions. If User change
+- ↓
+- all derived types (PartialUser, UserSummary) update too
 
 ```mermaid
 flowchart TD
@@ -340,7 +347,22 @@ type CreateUserParams = Parameters<typeof createUser>;
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: Utility Type What It Does Use Case → Partial&lt;T&gt; All props optional Update/patch APIs | Partial&lt;T&gt; All props optional Update/patch APIs → Required&lt;T&gt; All props required Config defaults | Required&lt;T&gt; All props required Config defaults → Readonly&lt;T&gt; All props readonly Immutable data | Readonly&lt;T&gt; All props readonly Immutable data → Pick&lt;T, K&gt; Keep only K props API responses | Pick&lt;T, K&gt; Keep only K props API responses → Omit&lt;T, K&gt; Remove K props Create DTOs | Omit&lt;T, K&gt; Remove K props Create DTOs → Record&lt;K, V&gt; Object K→V mapping Dictionaries | ...+1 more
+**Flow:**
+- Utility Type What It Does Use Case
+- ↓
+- Partial<T> All props optional Update/patch APIs
+- ↓
+- Required<T> All props required Config defaults
+- ↓
+- Readonly<T> All props readonly Immutable data
+- ↓
+- Pick<T, K> Keep only K props API responses
+- ↓
+- Omit<T, K> Remove K props Create DTOs
+- ↓
+- Record<K, V> Object K
+- ↓
+- V mapping Dictionaries
 
 ```mermaid
 flowchart TD
@@ -664,7 +686,38 @@ Q: Explain conditional types distribution?
   over each member. string | number → IsString<string> | IsString<number>.
 ```
 
-> **Flow**: Pick&lt;User, 'name'|'email'&gt; → {name, email} | Omit&lt;User, 'id'&gt; → everything except id. | 'sm' | 'md' + 'red' | 'blue' → 'sm-red' | 'sm-blue' | 'md-red' | 'md-blue' | over each member. string | number → IsString&lt;string&gt; | IsString&lt;number&gt;.
+**Flow:**
+- Pick<User, 'name'
+- ↓
+- 'email'>
+- ↓
+- {name, email}
+- ↓
+- Omit<User, 'id'>
+- ↓
+- everything except id.
+- ↓
+- 'sm'
+- ↓
+- 'md' + 'red'
+- ↓
+- 'blue'
+- ↓
+- 'sm-red'
+- ↓
+- 'sm-blue'
+- ↓
+- 'md-red'
+- ↓
+- 'md-blue'
+- ↓
+- over each member. string
+- ↓
+- number
+- ↓
+- IsString<string>
+- ↓
+- IsString<number>.
 
 ```mermaid
 flowchart LR

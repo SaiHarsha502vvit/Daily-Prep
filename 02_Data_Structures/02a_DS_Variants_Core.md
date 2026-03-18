@@ -91,7 +91,20 @@ SPECIALIZED:
 └── Bloom Filter
 ```
 
-> **Flow**: COMPLETE DATA STRUCTURE VARIANT HIERARCHY → DATA STRUCTURES | DATA STRUCTURES → LINEAR NON-LINEAR HASH-BASED SPECIALIZED PROBABILISTIC | LINEAR NON-LINEAR HASH-BASED SPECIALIZED PROBABILISTIC → LINEAR DATA STRUCTURES: | LINEAR DATA STRUCTURES: → ARRAYS | ARRAYS → Static Array | Static Array → Dynamic Array (ArrayList) | ...+1 more
+**Flow:**
+- COMPLETE DATA STRUCTURE VARIANT HIERARCHY
+- ↓
+- DATA STRUCTURES
+- ↓
+- LINEAR NON-LINEAR HASH-BASED SPECIALIZED PROBABILISTIC
+- ↓
+- LINEAR DATA STRUCTURES:
+- ↓
+- ARRAYS
+- ↓
+- Static Array
+- ↓
+- Dynamic Array (ArrayList)
 
 ```mermaid
 flowchart TD
@@ -173,7 +186,12 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHAT IS IT? / A linear data structure where each elemen → TIME COMPLEXITY / Operation Time Explanation / Access b | TIME COMPLEXITY / Operation Time Explanation / Access b → WHEN TO USE? / ✅ Frequent insertions/deletions at begin
+**Flow:**
+- WHAT IS IT? / A linear data structure where each elemen
+- ↓
+- TIME COMPLEXITY / Operation Time Explanation / Access b
+- ↓
+- WHEN TO USE? / ✅ Frequent insertions/deletions at begin
 
 ```mermaid
 flowchart TD
@@ -212,7 +230,22 @@ REAL-WORLD APPLICATIONS:
    └── Each car connects to next
 ```
 
-> **Flow**: Action1 → Action2 | Action2 → Action3 | Action3 → null | Page1 → Page2 | Page2 → Page3 | Page3 → null | ...+7 more
+**Flow:**
+- Action1
+- ↓
+- Action2
+- ↓
+- Action3
+- ↓
+- null
+- ↓
+- Page1
+- ↓
+- Page2
+- ↓
+- Page3
+- ↓
+- null
 
 ```mermaid
 flowchart TD
@@ -579,7 +612,10 @@ public class SinglyLinkedList<T> {
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: prev 20 nex → prev 10 next
+**Flow:**
+- prev 20 nex
+- ↓
+- prev 10 next
 
 ```mermaid
 flowchart TD
@@ -621,7 +657,26 @@ REAL-WORLD APPLICATIONS:
    null ← Img1 ↔ Img2 ↔ Img3 → null
 ```
 
-> **Flow**: null ← Page1 ↔ Page2 ↔ Page3 → null | null ← Song1 ↔ Song2 ↔ Song3 → null | null ← Edit1 ↔ Edit2 ↔ Edit3 → null | head ↔ Recent1 ↔ Recent2 ↔ LeastRecent → tail | null ← Img1 ↔ Img2 ↔ Img3 → null
+**Flow:**
+- null ← Page1 ↔ Page2 ↔ Page3
+- ↓
+- null
+- ↓
+- null ← Song1 ↔ Song2 ↔ Song3
+- ↓
+- null
+- ↓
+- null ← Edit1 ↔ Edit2 ↔ Edit3
+- ↓
+- null
+- ↓
+- head ↔ Recent1 ↔ Recent2 ↔ LeastRecent
+- ↓
+- tail
+- ↓
+- null ← Img1 ↔ Img2 ↔ Img3
+- ↓
+- null
 
 ```mermaid
 flowchart TD
@@ -994,7 +1049,20 @@ public class DoublyLinkedList<T> {
    → Handle edge cases (head/tail)
 ```
 
-> **Flow**: 🧠 INTERVIEW KEY POINTS - DOUBLY LINKED LIST: → 1. 'Why use doubly over singly?' | 1. 'Why use doubly over singly?' → → Delete at tail: O(1) vs O(n) | → Delete at tail: O(1) vs O(n) → → Bidirectional traversal | → Bidirectional traversal → → Delete given node: O(1) vs O(n) | → Delete given node: O(1) vs O(n) → 2. 'What's the main disadvantage?' | 2. 'What's the main disadvantage?' → → Extra memory for prev pointer | ...+1 more
+**Flow:**
+- 🧠 INTERVIEW KEY POINTS - DOUBLY LINKED LIST:
+- ↓
+- 1. 'Why use doubly over singly?'
+- ↓
+- Delete at tail: O(1) vs O(n)
+- ↓
+- Bidirectional traversal
+- ↓
+- Delete given node: O(1) vs O(n)
+- ↓
+- 2. 'What's the main disadvantage?'
+- ↓
+- Extra memory for prev pointer
 
 ```mermaid
 flowchart TD
@@ -1081,7 +1149,28 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: 10 ● → 20 ● | 10 ● → ● 10 ● | 20 ● → 30 ● | 20 ● → ● 10 ● | 30 ● → 40 ● | 40 ● → ● 30 ● | ...+2 more
+**Flow:**
+- 10 ●
+- ↓
+- 20 ●
+- ↓
+- 10 ●
+- ↓
+- ● 10 ●
+- ↓
+- 20 ●
+- ↓
+- 30 ●
+- ↓
+- 20 ●
+- ↓
+- ● 10 ●
+- ↓
+- 30 ●
+- ↓
+- 40 ●
+- ↓
+- ● 30 ●
 
 ```mermaid
 flowchart TD
@@ -1142,7 +1231,34 @@ REAL-WORLD APPLICATIONS:
    Who survives? (Famous interview problem!)
 ```
 
-> **Flow**: Process1 → Process2 → Process3 / ▲ → Alice → Bob → Charlie → Diana / ▲ | Alice → Bob → Charlie → Diana / ▲ → Song1 → Song2 → Song3 / ▲
+**Flow:**
+- Process1
+- ↓
+- Process2
+- ↓
+- Process3 / ▲
+- ↓
+- Alice
+- ↓
+- Bob
+- ↓
+- Charlie
+- ↓
+- Diana / ▲
+- ↓
+- Alice
+- ↓
+- Bob
+- ↓
+- Charlie
+- ↓
+- Diana / ▲
+- ↓
+- Song1
+- ↓
+- Song2
+- ↓
+- Song3 / ▲
 
 ```mermaid
 flowchart TD
@@ -1359,7 +1475,10 @@ public class CircularLinkedList<T> {
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: ▼ ▼ / ev A next prev B next prev C next / ▲ → prev A next
+**Flow:**
+- ▼ ▼ / ev A next prev B next prev C next / ▲
+- ↓
+- prev A next
 
 ```mermaid
 flowchart TD
@@ -1591,7 +1710,20 @@ public class CircularDoublyLinkedList<T> {
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: SKIP LIST - COMPLETE GUIDE → WHAT IS IT? | WHAT IS IT? → INVENTED: 1989 by William Pugh | INVENTED: 1989 by William Pugh → VISUAL - MULTIPLE LAYERS OF LINKED LISTS: | VISUAL - MULTIPLE LAYERS OF LINKED LISTS: → Level 3: HEAD &gt; 50 &gt; NIL | Level 3: HEAD &gt; 50 &gt; NIL → Level 2: HEAD &gt; 25 &gt; 50 &gt; NIL | Level 2: HEAD &gt; 25 &gt; 50 &gt; NIL → Level 1: HEAD &gt; 10 &gt; 25 &gt; 35 &gt; 50 &gt; NIL | ...+1 more
+**Flow:**
+- SKIP LIST - COMPLETE GUIDE
+- ↓
+- WHAT IS IT?
+- ↓
+- INVENTED: 1989 by William Pugh
+- ↓
+- VISUAL - MULTIPLE LAYERS OF LINKED LISTS:
+- ↓
+- Level 3: HEAD > 50 > NIL
+- ↓
+- Level 2: HEAD > 25 > 50 > NIL
+- ↓
+- Level 1: HEAD > 10 > 25 > 35 > 50 > NIL
 
 ```mermaid
 flowchart TD

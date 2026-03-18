@@ -35,7 +35,20 @@
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: SORTING PROBLEMS FUNDAMENTALS → WHY SORTING MATTERS: | WHY SORTING MATTERS: → THE 4 SORTING FAMILIES: | THE 4 SORTING FAMILIES: → Comparison D&C Non-Compare Hybrid | Comparison D&C Non-Compare Hybrid → Bubble O(n²) Merge O(nlogn) Counting TimSort | Bubble O(n²) Merge O(nlogn) Counting TimSort → Selection Quick O(nlogn) Radix IntroSort | Selection Quick O(nlogn) Radix IntroSort → Insertion Heap O(nlogn) Bucket BlockSort | ...+1 more
+**Flow:**
+- SORTING PROBLEMS FUNDAMENTALS
+- ↓
+- WHY SORTING MATTERS:
+- ↓
+- THE 4 SORTING FAMILIES:
+- ↓
+- Comparison D&C Non-Compare Hybrid
+- ↓
+- Bubble O(n²) Merge O(nlogn) Counting TimSort
+- ↓
+- Selection Quick O(nlogn) Radix IntroSort
+- ↓
+- Insertion Heap O(nlogn) Bucket BlockSort
 
 ```mermaid
 flowchart TD
@@ -194,7 +207,10 @@ WHY MERGE SORT? (MIT 6.006 Reasoning)
 SOLUTION:
 ```
 
-> **Flow**: then merge back up → entire array sorted in O(n log n).
+**Flow:**
+- then merge back up
+- ↓
+- entire array sorted in O(n log n).
 
 ```mermaid
 flowchart LR
@@ -272,7 +288,20 @@ ALGORITHM (Lomuto Partition):
 SOLUTION:
 ```
 
-> **Flow**: DIFFICULTY: Medium → PATTERN: Divide and Conquer, Randomization | PATTERN: Divide and Conquer, Randomization → WHY QUICK SORT? | WHY QUICK SORT? → 1. Better cache locality (in-place, sequential access) | 1. Better cache locality (in-place, sequential access) → 2. No extra O(n) memory allocation | 2. No extra O(n) memory allocation → 3. Inner loop is simpler (fewer comparisons per element | 3. Inner loop is simpler (fewer comparisons per element → BUT: Worst case O(n²) if pivot is always min/max. | ...+1 more
+**Flow:**
+- DIFFICULTY: Medium
+- ↓
+- PATTERN: Divide and Conquer, Randomization
+- ↓
+- WHY QUICK SORT?
+- ↓
+- 1. Better cache locality (in-place, sequential access)
+- ↓
+- 2. No extra O(n) memory allocation
+- ↓
+- 3. Inner loop is simpler (fewer comparisons per element
+- ↓
+- BUT: Worst case O(n²) if pivot is always min/max.
 
 ```mermaid
 flowchart TD
@@ -364,7 +393,18 @@ WHY QUICKSELECT? (KTH Royal Institute Style)
 SOLUTION (QuickSelect):
 ```
 
-> **Flow**: 1. Sort → O(n log n) — works but overkill | 2. Min-Heap of size k → O(n log k) — good | 3. QuickSelect → O(n) average — OPTIMAL ✓
+**Flow:**
+- 1. Sort
+- ↓
+- O(n log n) — works but overkill
+- ↓
+- 2. Min-Heap of size k
+- ↓
+- O(n log k) — good
+- ↓
+- 3. QuickSelect
+- ↓
+- O(n) average — OPTIMAL ✓
 
 ```mermaid
 flowchart LR
@@ -442,7 +482,24 @@ APPROACH (MIT 6.006 Style):
 SOLUTION:
 ```
 
-> **Flow**: Step 1: Sort by start → [1,3] [2,6] [8,10] [15,18] | [1,3] + [2,6] → 3 &gt;= 2 | 3 &gt;= 2 → merge | merge → [1,6] | [1,6] + [8,10] → 6 &lt; 8 | 6 &lt; 8 → no merge | ...+2 more
+**Flow:**
+- Step 1: Sort by start
+- ↓
+- [1,3] [2,6] [8,10] [15,18]
+- ↓
+- [1,3] + [2,6]
+- ↓
+- 3 >= 2
+- ↓
+- merge
+- ↓
+- [1,6]
+- ↓
+- [1,6] + [8,10]
+- ↓
+- 6 < 8
+- ↓
+- no merge
 
 ```mermaid
 flowchart TD
@@ -493,7 +550,14 @@ EDGE CASE: All overlapping → returns single interval
 VARIANT: Insert Interval (LC 57) — same idea, but insert first then merge
 ```
 
-> **Flow**: EDGE CASE: Single interval → return as-is | EDGE CASE: All overlapping → returns single interval
+**Flow:**
+- EDGE CASE: Single interval
+- ↓
+- return as-is
+- ↓
+- EDGE CASE: All overlapping
+- ↓
+- returns single interval
 
 ```mermaid
 flowchart LR
@@ -547,7 +611,26 @@ TRACE for [2, 0, 2, 1, 1, 0]:
 SOLUTION:
 ```
 
-> **Flow**: lo=0 mid=0 hi=5: nums[0]=2 → swap(0,5) | swap(0,5) → [0,0,2,1,1,2] hi=4 | lo=0 mid=0 hi=4: nums[0]=0 → lo=1 mid=1 | lo=1 mid=1 hi=4: nums[1]=0 → lo=2 mid=2 | lo=2 mid=2 hi=4: nums[2]=2 → swap(2,4) | swap(2,4) → [0,0,1,1,2,2] hi=3 | ...+3 more
+**Flow:**
+- lo=0 mid=0 hi=5: nums[0]=2
+- ↓
+- swap(0,5)
+- ↓
+- [0,0,2,1,1,2] hi=4
+- ↓
+- lo=0 mid=0 hi=4: nums[0]=0
+- ↓
+- lo=1 mid=1
+- ↓
+- lo=1 mid=1 hi=4: nums[1]=0
+- ↓
+- lo=2 mid=2
+- ↓
+- lo=2 mid=2 hi=4: nums[2]=2
+- ↓
+- swap(2,4)
+- ↓
+- [0,0,1,1,2,2] hi=3
 
 ```mermaid
 flowchart TD
@@ -625,7 +708,14 @@ INSIGHT:
 SOLUTION:
 ```
 
-> **Flow**: For 3 vs 30: '330' &gt; '303' → 3 comes first | For 3 vs 34: '334' &lt; '343' → 34 comes first
+**Flow:**
+- For 3 vs 30: '330' > '303'
+- ↓
+- 3 comes first
+- ↓
+- For 3 vs 34: '334' < '343'
+- ↓
+- 34 comes first
 
 ```mermaid
 flowchart LR
@@ -659,7 +749,10 @@ PROOF OF CORRECTNESS: The comparator defines a total order.
   If a○b > b○a and b○c > c○b, then a○c > c○a (transitivity).
 ```
 
-> **Flow**: PROOF OF CORRECTNESS: The comparator defines a total or → If a○b &gt; b○a and b○c &gt; c○b, then a○c &gt; c○a (tr
+**Flow:**
+- PROOF OF CORRECTNESS: The comparator defines a total or
+- ↓
+- If a○b > b○a and b○c > c○b, then a○c > c○a (tr
 
 ```mermaid
 flowchart TD
@@ -689,7 +782,20 @@ WHY MERGE SORT FOR LINKED LISTS?
 SOLUTION:
 ```
 
-> **Flow**: DIFFICULTY: Medium → COMPANIES: Amazon, Microsoft, Adobe | COMPANIES: Amazon, Microsoft, Adobe → PATTERN: Merge Sort on Linked List | PATTERN: Merge Sort on Linked List → WHY MERGE SORT FOR LINKED LISTS? | WHY MERGE SORT FOR LINKED LISTS? → - QuickSort needs random access (bad for linked lists) | - QuickSort needs random access (bad for linked lists) → - Merge Sort only needs sequential access ✓ | - Merge Sort only needs sequential access ✓ → - Splitting: use slow/fast pointer to find middle | ...+1 more
+**Flow:**
+- DIFFICULTY: Medium
+- ↓
+- COMPANIES: Amazon, Microsoft, Adobe
+- ↓
+- PATTERN: Merge Sort on Linked List
+- ↓
+- WHY MERGE SORT FOR LINKED LISTS?
+- ↓
+- - QuickSort needs random access (bad for linked lists)
+- ↓
+- - Merge Sort only needs sequential access ✓
+- ↓
+- - Splitting: use slow/fast pointer to find middle
 
 ```mermaid
 flowchart TD
@@ -788,7 +894,22 @@ THREE APPROACHES:
 SOLUTION:
 ```
 
-> **Flow**: 1. HashMap + Sort → O(n log n) | 2. HashMap + MinHeap → O(n log k) | 3. HashMap + BucketSort → O(n) ✓ OPTIMAL | Walk from right: bucket[3]=[1], bucket[2]=[2] → result = [1, 2]
+**Flow:**
+- 1. HashMap + Sort
+- ↓
+- O(n log n)
+- ↓
+- 2. HashMap + MinHeap
+- ↓
+- O(n log k)
+- ↓
+- 3. HashMap + BucketSort
+- ↓
+- O(n) ✓ OPTIMAL
+- ↓
+- Walk from right: bucket[3]=[1], bucket[2]=[2]
+- ↓
+- result = [1, 2]
 
 ```mermaid
 flowchart LR
@@ -859,7 +980,14 @@ TWO APPROACHES:
 SOLUTION:
 ```
 
-> **Flow**: 1. Sort both strings, compare → O(n log n) | 2. Frequency count → O(n) ✓
+**Flow:**
+- 1. Sort both strings, compare
+- ↓
+- O(n log n)
+- ↓
+- 2. Frequency count
+- ↓
+- O(n) ✓
 
 ```mermaid
 flowchart LR
@@ -998,7 +1126,10 @@ APPROACH:
 SOLUTION:
 ```
 
-> **Flow**: 1. Find median using QuickSelect → O(n)
+**Flow:**
+- 1. Find median using QuickSelect
+- ↓
+- O(n)
 
 ```mermaid
 flowchart LR

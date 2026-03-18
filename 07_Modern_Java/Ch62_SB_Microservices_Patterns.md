@@ -664,7 +664,16 @@ public class OrderAggregate {
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Command / Handler → Write DB / (PostgreSQL) / Normalized | Query / Handler → Read DB / (MongoDB) / Denormalized | Write DB / (PostgreSQL) / Normalized --(events)--> Read DB / (MongoDB) / Denormalized
+**Flow:**
+- Command / Handler
+- ↓
+- Write DB / (PostgreSQL) / Normalized
+- ↓
+- Query / Handler
+- ↓
+- Read DB / (MongoDB) / Denormalized
+- ↓
+- Write DB / (PostgreSQL) / Normalized --(events)--> Read DB / (MongoDB) / Denormalized
 
 ```mermaid
 flowchart TD
@@ -880,7 +889,14 @@ public class OrderReadModelUpdater {
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Service A → Sidecar / Proxy | Service B → Sidecar / Proxy
+**Flow:**
+- Service A
+- ↓
+- Sidecar / Proxy
+- ↓
+- Service B
+- ↓
+- Sidecar / Proxy
 
 ```mermaid
 flowchart TD
@@ -976,7 +992,14 @@ spec:
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Client → Auth / Server | Auth / Server → Gateway | Gateway → Service
+**Flow:**
+- Client
+- ↓
+- Auth / Server
+- ↓
+- Gateway
+- ↓
+- Service
 
 ```mermaid
 flowchart LR
@@ -1070,7 +1093,12 @@ public class GatewaySecurityConfig {
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: METRICS / What? / Quantitative / measurements / Tools:  → LOGGING / What? / Event data / & context / Tools: / ELK | LOGGING / What? / Event data / & context / Tools: / ELK → TRACING / What? / Request / journey / Tools: / Jaeger /
+**Flow:**
+- METRICS / What? / Quantitative / measurements / Tools:
+- ↓
+- LOGGING / What? / Event data / & context / Tools: / ELK
+- ↓
+- TRACING / What? / Request / journey / Tools: / Jaeger /
 
 ```mermaid
 flowchart TD
@@ -1154,7 +1182,20 @@ public class OrderService {
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: BLUE-GREEN DEPLOYMENT → Before: | Before: → Load Balancer Blue (v1.0) ✅ Active | Load Balancer Blue (v1.0) ✅ Active → Green (v1.1) 🔳 Staged | Green (v1.1) 🔳 Staged → After: | After: → Load Balancer Blue (v1.0) 🔳 Standby | Load Balancer Blue (v1.0) 🔳 Standby → Green (v1.1) ✅ Active | ...+1 more
+**Flow:**
+- BLUE-GREEN DEPLOYMENT
+- ↓
+- Before:
+- ↓
+- Load Balancer Blue (v1.0) ✅ Active
+- ↓
+- Green (v1.1) 🔳 Staged
+- ↓
+- After:
+- ↓
+- Load Balancer Blue (v1.0) 🔳 Standby
+- ↓
+- Green (v1.1) ✅ Active
 
 ```mermaid
 flowchart TD
@@ -1207,7 +1248,12 @@ flowchart TD
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: v1.0: ██████████████████████████████████████ 95% / v1.1 → v1.0: ████████████████████████████████ 75% / v1.1: ████ | v1.0: ████████████████████████████████ 75% / v1.1: ████ → v1.0: 0% / v1.1: ██████████████████████████████████████
+**Flow:**
+- v1.0: ██████████████████████████████████████ 95% / v1.1
+- ↓
+- v1.0: ████████████████████████████████ 75% / v1.1: ████
+- ↓
+- v1.0: 0% / v1.1: ██████████████████████████████████████
 
 ```mermaid
 flowchart TD
@@ -1345,7 +1391,20 @@ Best practices:
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: MICROSERVICES PATTERNS CHEAT SHEET → COMMUNICATION PATTERNS | COMMUNICATION PATTERNS → Synchronous REST, gRPC, GraphQL | Synchronous REST, gRPC, GraphQL → Asynchronous Message queues (Kafka, RabbitMQ) | Asynchronous Message queues (Kafka, RabbitMQ) → Event-driven Events/Event Sourcing | Event-driven Events/Event Sourcing → RESILIENCE PATTERNS | RESILIENCE PATTERNS → Circuit Breaker Fail fast when service down | ...+1 more
+**Flow:**
+- MICROSERVICES PATTERNS CHEAT SHEET
+- ↓
+- COMMUNICATION PATTERNS
+- ↓
+- Synchronous REST, gRPC, GraphQL
+- ↓
+- Asynchronous Message queues (Kafka, RabbitMQ)
+- ↓
+- Event-driven Events/Event Sourcing
+- ↓
+- RESILIENCE PATTERNS
+- ↓
+- Circuit Breaker Fail fast when service down
 
 ```mermaid
 flowchart TD

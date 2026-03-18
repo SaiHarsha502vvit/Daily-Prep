@@ -237,7 +237,20 @@ public int maxNonOverlapping(int[][] intervals) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: MEETING ROOMS - Can attend all meetings? → intervals = [[0,30], [5,10], [15,20]] | intervals = [[0,30], [5,10], [15,20]] → Timeline: | Timeline: → 0 30 Meeting 1 | 0 30 Meeting 1 → 5 10 Meeting 2 (overlaps!) | 5 10 Meeting 2 (overlaps!) → 15 20 Meeting 3 (overlaps!) | 15 20 Meeting 3 (overlaps!) → Output: false (meetings overlap) | ...+1 more
+**Flow:**
+- MEETING ROOMS - Can attend all meetings?
+- ↓
+- intervals = [[0,30], [5,10], [15,20]]
+- ↓
+- Timeline:
+- ↓
+- 0 30 Meeting 1
+- ↓
+- 5 10 Meeting 2 (overlaps!)
+- ↓
+- 15 20 Meeting 3 (overlaps!)
+- ↓
+- Output: false (meetings overlap)
 
 ```mermaid
 flowchart TD
@@ -298,7 +311,32 @@ public boolean canAttendMeetings(int[][] intervals) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: MEETING ROOMS II - Minimum rooms needed → intervals = [[0,30], [5,10], [15,20]] | intervals = [[0,30], [5,10], [15,20]] → Room 1: | | [0,30] | Room 1: | | [0,30] → Room 2: | | | | [5,10], [15,20] | Room 2: | | | | [5,10], [15,20] → Output: 2 rooms needed | Output: 2 rooms needed → Approach: Track concurrent meetings using min-heap | Approach: Track concurrent meetings using min-heap → Heap stores end times of ongoing meetings
+**Flow:**
+- MEETING ROOMS II - Minimum rooms needed
+- ↓
+- intervals = [[0,30], [5,10], [15,20]]
+- ↓
+- Room 1:
+- ↓
+- [0,30]
+- ↓
+- Room 1:
+- ↓
+- [0,30]
+- ↓
+- Room 2:
+- ↓
+- [5,10], [15,20]
+- ↓
+- Room 2:
+- ↓
+- [5,10], [15,20]
+- ↓
+- Output: 2 rooms needed
+- ↓
+- Approach: Track concurrent meetings using min-heap
+- ↓
+- Heap stores end times of ongoing meetings
 
 ```mermaid
 flowchart TD
@@ -364,7 +402,24 @@ public int minMeetingRooms(int[][] intervals) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: NON-OVERLAPPING INTERVALS - Min removals for no overlap → intervals = [[1,2], [2,3], [3,4], [1,3]] | intervals = [[1,2], [2,3], [3,4], [1,3]] → 1 3 (overlaps with both above) | 1 3 (overlaps with both above) → Remove [1,3] → No overlaps | Remove [1,3] → No overlaps → Output: 1 | Output: 1 → Greedy: Sort by end time, keep non-overlapping
+**Flow:**
+- NON-OVERLAPPING INTERVALS - Min removals for no overlap
+- ↓
+- intervals = [[1,2], [2,3], [3,4], [1,3]]
+- ↓
+- 1 3 (overlaps with both above)
+- ↓
+- Remove [1,3]
+- ↓
+- No overlaps
+- ↓
+- Remove [1,3]
+- ↓
+- No overlaps
+- ↓
+- Output: 1
+- ↓
+- Greedy: Sort by end time, keep non-overlapping
 
 ```mermaid
 flowchart TD
@@ -429,7 +484,14 @@ public int eraseOverlapIntervals(int[][] intervals) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: MERGE INTERVALS → intervals = [[1,3], [2,6], [8,10], [15,18]] | intervals = [[1,3], [2,6], [8,10], [15,18]] → Merged: [1,6] | Merged: [1,6] → Output: [[1,6], [8,10], [15,18]]
+**Flow:**
+- MERGE INTERVALS
+- ↓
+- intervals = [[1,3], [2,6], [8,10], [15,18]]
+- ↓
+- Merged: [1,6]
+- ↓
+- Output: [[1,6], [8,10], [15,18]]
 
 ```mermaid
 flowchart TD
@@ -491,7 +553,20 @@ public int[][] merge(int[][] intervals) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: INSERT INTERVAL → intervals = [[1,3], [6,9]], newInterval = [2,5] | intervals = [[1,3], [6,9]], newInterval = [2,5] → Merge [1,3] and [2,5] → [1,5] | Merge [1,3] and [2,5] → [1,5] → Output: [[1,5], [6,9]]
+**Flow:**
+- INSERT INTERVAL
+- ↓
+- intervals = [[1,3], [6,9]], newInterval = [2,5]
+- ↓
+- Merge [1,3] and [2,5]
+- ↓
+- [1,5]
+- ↓
+- Merge [1,3] and [2,5]
+- ↓
+- [1,5]
+- ↓
+- Output: [[1,5], [6,9]]
 
 ```mermaid
 flowchart TD
@@ -562,7 +637,20 @@ public int[][] insert(int[][] intervals, int[] newInterval) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: JUMP GAME - Can reach last index? → nums = [2, 3, 1, 1, 4] | nums = [2, 3, 1, 1, 4] → Index: 0 1 2 3 4 | Index: 0 1 2 3 4 → Value: 2 3 1 1 4 | Value: 2 3 1 1 4 → From 0, can jump to 1 or 2 | From 0, can jump to 1 or 2 → From 1, can reach 4! | From 1, can reach 4! → Output: true | ...+1 more
+**Flow:**
+- JUMP GAME - Can reach last index?
+- ↓
+- nums = [2, 3, 1, 1, 4]
+- ↓
+- Index: 0 1 2 3 4
+- ↓
+- Value: 2 3 1 1 4
+- ↓
+- From 0, can jump to 1 or 2
+- ↓
+- From 1, can reach 4!
+- ↓
+- Output: true
 
 ```mermaid
 flowchart TD
@@ -620,7 +708,30 @@ public boolean canJump(int[] nums) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: JUMP GAME II - Minimum jumps to reach end → nums = [2, 3, 1, 1, 4] | nums = [2, 3, 1, 1, 4] → Jump 1: 0 → 1 (jump to index 1) | Jump 1: 0 → 1 (jump to index 1) → Jump 2: 1 → 4 (jump to index 4) | Jump 2: 1 → 4 (jump to index 4) → Output: 2 jumps | Output: 2 jumps → Greedy: BFS-like level traversal
+**Flow:**
+- JUMP GAME II - Minimum jumps to reach end
+- ↓
+- nums = [2, 3, 1, 1, 4]
+- ↓
+- Jump 1: 0
+- ↓
+- 1 (jump to index 1)
+- ↓
+- Jump 1: 0
+- ↓
+- 1 (jump to index 1)
+- ↓
+- Jump 2: 1
+- ↓
+- 4 (jump to index 4)
+- ↓
+- Jump 2: 1
+- ↓
+- 4 (jump to index 4)
+- ↓
+- Output: 2 jumps
+- ↓
+- Greedy: BFS-like level traversal
 
 ```mermaid
 flowchart TD
@@ -685,7 +796,22 @@ public int jump(int[] nums) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: GAS STATION - Find starting station for circular trip → gas = [1, 2, 3, 4, 5] | gas = [1, 2, 3, 4, 5] → cost = [3, 4, 5, 1, 2] | cost = [3, 4, 5, 1, 2] → Station: 0 1 2 3 4 | Station: 0 1 2 3 4 → net: -2 -2 -2 +3 +3 | net: -2 -2 -2 +3 +3 → Start at station 3: | Start at station 3: → 3→4: tank = 4-1 = 3 | ...+1 more
+**Flow:**
+- GAS STATION - Find starting station for circular trip
+- ↓
+- gas = [1, 2, 3, 4, 5]
+- ↓
+- cost = [3, 4, 5, 1, 2]
+- ↓
+- Station: 0 1 2 3 4
+- ↓
+- net: -2 -2 -2 +3 +3
+- ↓
+- Start at station 3:
+- ↓
+- 3
+- ↓
+- 4: tank = 4-1 = 3
 
 ```mermaid
 flowchart TD
@@ -755,7 +881,26 @@ public int canCompleteCircuit(int[] gas, int[] cost) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: CANDY - Min candies for ratings → ratings = [1, 0, 2] | ratings = [1, 0, 2] → Rules: | Rules: → - Each child gets at least 1 candy | - Each child gets at least 1 candy → - Higher rating than neighbor → more candies than neigh | - Higher rating than neighbor → more candies than neigh → Candies: [2, 1, 2] | Candies: [2, 1, 2] → Child 0: rating 1 &gt; rating 0, gets 2 | ...+1 more
+**Flow:**
+- CANDY - Min candies for ratings
+- ↓
+- ratings = [1, 0, 2]
+- ↓
+- Rules:
+- ↓
+- - Each child gets at least 1 candy
+- ↓
+- - Higher rating than neighbor
+- ↓
+- more candies than neigh
+- ↓
+- - Higher rating than neighbor
+- ↓
+- more candies than neigh
+- ↓
+- Candies: [2, 1, 2]
+- ↓
+- Child 0: rating 1 > rating 0, gets 2
 
 ```mermaid
 flowchart TD
@@ -832,7 +977,26 @@ public int candy(int[] ratings) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: PARTITION LABELS - Max partitions with unique chars → s = 'ababcbacadefegdehijhklij' | s = 'ababcbacadefegdehijhklij' → 'ababcbaca' | 'defegde' | 'hijhklij' | 'ababcbaca' | 'defegde' | 'hijhklij' → Output: [9, 7, 8] | Output: [9, 7, 8] → Greedy: Track last occurrence of each char
+**Flow:**
+- PARTITION LABELS - Max partitions with unique chars
+- ↓
+- s = 'ababcbacadefegdehijhklij'
+- ↓
+- 'ababcbaca'
+- ↓
+- 'defegde'
+- ↓
+- 'hijhklij'
+- ↓
+- 'ababcbaca'
+- ↓
+- 'defegde'
+- ↓
+- 'hijhklij'
+- ↓
+- Output: [9, 7, 8]
+- ↓
+- Greedy: Track last occurrence of each char
 
 ```mermaid
 flowchart TD
@@ -897,7 +1061,48 @@ public List<Integer> partitionLabels(String s) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: TASK SCHEDULER - Min time with cooldown → tasks = ['A','A','A','B','B','B'], n = 2 | tasks = ['A','A','A','B','B','B'], n = 2 → Must wait n intervals before same task again | Must wait n intervals before same task again → A → B → idle → A → B → idle → A → B | A → B → idle → A → B → idle → A → B → Output: 8 intervals | Output: 8 intervals → Formula: (maxFreq - 1) * (n + 1) + countMaxFreq
+**Flow:**
+- TASK SCHEDULER - Min time with cooldown
+- ↓
+- tasks = ['A','A','A','B','B','B'], n = 2
+- ↓
+- Must wait n intervals before same task again
+- ↓
+- A
+- ↓
+- B
+- ↓
+- idle
+- ↓
+- A
+- ↓
+- B
+- ↓
+- idle
+- ↓
+- A
+- ↓
+- B
+- ↓
+- A
+- ↓
+- B
+- ↓
+- idle
+- ↓
+- A
+- ↓
+- B
+- ↓
+- idle
+- ↓
+- A
+- ↓
+- B
+- ↓
+- Output: 8 intervals
+- ↓
+- Formula: (maxFreq - 1) * (n + 1) + countMaxFreq
 
 ```mermaid
 flowchart TD
@@ -966,7 +1171,20 @@ public int leastInterval(char[] tasks, int n) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: MAXIMUM SUBARRAY - Kadane's as Greedy → nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4] | nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4] → Greedy choice: At each position, decide to: | Greedy choice: At each position, decide to: → - Extend previous subarray, OR | - Extend previous subarray, OR → - Start fresh from current element | - Start fresh from current element → If previous sum is negative, start fresh! | If previous sum is negative, start fresh! → Max subarray: [4, -1, 2, 1] = 6
+**Flow:**
+- MAXIMUM SUBARRAY - Kadane's as Greedy
+- ↓
+- nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4]
+- ↓
+- Greedy choice: At each position, decide to:
+- ↓
+- - Extend previous subarray, OR
+- ↓
+- - Start fresh from current element
+- ↓
+- If previous sum is negative, start fresh!
+- ↓
+- Max subarray: [4, -1, 2, 1] = 6
 
 ```mermaid
 flowchart TD
@@ -1028,7 +1246,18 @@ public int maxSubArray(int[] nums) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: STOCK II - Multiple transactions allowed → prices = [7, 1, 5, 3, 6, 4] | prices = [7, 1, 5, 3, 6, 4] → Buy at 1, sell at 5: profit = 4 | Buy at 1, sell at 5: profit = 4 → Buy at 3, sell at 6: profit = 3 | Buy at 3, sell at 6: profit = 3 → Total: 7 | Total: 7 → Greedy: Collect ALL positive differences
+**Flow:**
+- STOCK II - Multiple transactions allowed
+- ↓
+- prices = [7, 1, 5, 3, 6, 4]
+- ↓
+- Buy at 1, sell at 5: profit = 4
+- ↓
+- Buy at 3, sell at 6: profit = 3
+- ↓
+- Total: 7
+- ↓
+- Greedy: Collect ALL positive differences
 
 ```mermaid
 flowchart TD

@@ -47,7 +47,20 @@ This container runs IDENTICALLY on:
   ✅ Kubernetes cluster
 ```
 
-> **Flow**: Container = Your application + ALL its dependencies → packaged into ONE portable unit | packaged into ONE portable unit → Container | Container → Your Java MySQL | Your Java MySQL → App 17 8.0 | App 17 8.0 → Ubuntu 22.04 (base) | Ubuntu 22.04 (base) → This container runs IDENTICALLY on: | ...+1 more
+**Flow:**
+- Container = Your application + ALL its dependencies
+- ↓
+- packaged into ONE portable unit
+- ↓
+- Container
+- ↓
+- Your Java MySQL
+- ↓
+- App 17 8.0
+- ↓
+- Ubuntu 22.04 (base)
+- ↓
+- This container runs IDENTICALLY on:
 
 ```mermaid
 flowchart TD
@@ -90,7 +103,10 @@ Analogy:
   Container = APARTMENTS (shared building, private units)
 ```
 
-> **Flow**: App A App B App C / Bins/Libs Bins/Libs B/L / Guest OS  → App A App B App C / Bins/Libs Bins/Libs B/L / Docker En
+**Flow:**
+- App A App B App C / Bins/Libs Bins/Libs B/L / Guest OS
+- ↓
+- App A App B App C / Bins/Libs Bins/Libs B/L / Docker En
 
 ```mermaid
 flowchart TD
@@ -110,7 +126,10 @@ Based on: Linux cgroups + namespaces (existed since 2008)
 Docker's genius = Made containers EASY to use
 ```
 
-> **Flow**: Open-sourced it → Revolutionized deployment
+**Flow:**
+- Open-sourced it
+- ↓
+- Revolutionized deployment
 
 ```mermaid
 flowchart LR
@@ -143,7 +162,10 @@ One image → Many containers:
     → Container 3 (port 8082)
 ```
 
-> **Flow**: One image → Many containers:
+**Flow:**
+- One image
+- ↓
+- Many containers:
 
 ```mermaid
 flowchart LR
@@ -166,7 +188,40 @@ Key insight: Layers are CACHED and SHARED
   - Change only your code? → Only Layer 3 rebuilds
 ```
 
-> **Flow**: Dockerfile: Image Layers: → FROM ubuntu:22.04 → Layer 1: Ubuntu (shared!) | FROM ubuntu:22.04 → Layer 1: Ubuntu (shared!) → RUN apt install java → Layer 2: Java | RUN apt install java → Layer 2: Java → COPY app.jar /app/ → Layer 3: Your JAR | COPY app.jar /app/ → Layer 3: Your JAR → CMD ['java','-jar'] → | CMD ['java','-jar'] → → Key insight: Layers are CACHED and SHARED | Key insight: Layers are CACHED and SHARED → - 10 apps using Java 17? → Java layer downloaded ONCE | ...+1 more
+**Flow:**
+- Dockerfile: Image Layers:
+- ↓
+- FROM ubuntu:22.04
+- ↓
+- Layer 1: Ubuntu (shared!)
+- ↓
+- FROM ubuntu:22.04
+- ↓
+- Layer 1: Ubuntu (shared!)
+- ↓
+- RUN apt install java
+- ↓
+- Layer 2: Java
+- ↓
+- RUN apt install java
+- ↓
+- Layer 2: Java
+- ↓
+- COPY app.jar /app/
+- ↓
+- Layer 3: Your JAR
+- ↓
+- COPY app.jar /app/
+- ↓
+- Layer 3: Your JAR
+- ↓
+- CMD ['java','-jar']
+- ↓
+- Key insight: Layers are CACHED and SHARED
+- ↓
+- - 10 apps using Java 17?
+- ↓
+- Java layer downloaded ONCE
 
 ```mermaid
 flowchart TD
@@ -411,7 +466,18 @@ This is WHY your Spring Boot connects to "db:5432"
 instead of "localhost:5432" inside Docker
 ```
 
-> **Flow**: app ← → db ← communicate by SERVICE NAME | app ← → cache ← no need for IP addresses! | nginx ← → internet ← only nginx exposed to outside
+**Flow:**
+- app ←
+- ↓
+- db ← communicate by SERVICE NAME
+- ↓
+- app ←
+- ↓
+- cache ← no need for IP addresses!
+- ↓
+- nginx ←
+- ↓
+- internet ← only nginx exposed to outside
 
 ```mermaid
 flowchart LR

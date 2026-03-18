@@ -48,7 +48,14 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHY: Why Build Real-World Projects? / • Portfolio: TODO → HOW: How Top Companies Structure Spring Boot Apps? / •  | HOW: How Top Companies Structure Spring Boot Apps? / •  → WHEN: When to Build Which Type of Project? / • Beginner | WHEN: When to Build Which Type of Project? / • Beginner → WHICH: Which Projects Stand Out in Interviews? / IMPRES
+**Flow:**
+- WHY: Why Build Real-World Projects? / • Portfolio: TODO
+- ↓
+- HOW: How Top Companies Structure Spring Boot Apps? / •
+- ↓
+- WHEN: When to Build Which Type of Project? / • Beginner
+- ↓
+- WHICH: Which Projects Stand Out in Interviews? / IMPRES
 
 ```mermaid
 flowchart TD
@@ -161,7 +168,30 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Client / Services → Notification / API | Client / Services → Email Worker / (SMTP/SES) | Notification / API → Message / Queue | Notification / API → Email Worker / (SMTP/SES) | Message / Queue → SMS Worker / (Twilio) | Message / Queue → Push / Worker
+**Flow:**
+- Client / Services
+- ↓
+- Notification / API
+- ↓
+- Client / Services
+- ↓
+- Email Worker / (SMTP/SES)
+- ↓
+- Notification / API
+- ↓
+- Message / Queue
+- ↓
+- Notification / API
+- ↓
+- Email Worker / (SMTP/SES)
+- ↓
+- Message / Queue
+- ↓
+- SMS Worker / (Twilio)
+- ↓
+- Message / Queue
+- ↓
+- Push / Worker
 
 ```mermaid
 flowchart TD
@@ -393,7 +423,20 @@ public class SlackNotificationSender implements NotificationSender {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: PROJECT: FEATURE FLAG MANAGEMENT SYSTEM → WHAT IT IS: | WHAT IT IS: → and gradually roll out new features to users. | and gradually roll out new features to users. → REAL-WORLD USAGE: | REAL-WORLD USAGE: → • Netflix: Testing new UI features on % of users | • Netflix: Testing new UI features on % of users → • Facebook: Gradual feature rollouts | • Facebook: Gradual feature rollouts → • Amazon: A/B testing checkout flows | ...+1 more
+**Flow:**
+- PROJECT: FEATURE FLAG MANAGEMENT SYSTEM
+- ↓
+- WHAT IT IS:
+- ↓
+- and gradually roll out new features to users.
+- ↓
+- REAL-WORLD USAGE:
+- ↓
+- • Netflix: Testing new UI features on % of users
+- ↓
+- • Facebook: Gradual feature rollouts
+- ↓
+- • Amazon: A/B testing checkout flows
 
 ```mermaid
 flowchart TD
@@ -690,7 +733,20 @@ public class CheckoutController {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: PROJECT: REAL-TIME ANALYTICS & METRICS PLATFORM → WHAT IT IS: | WHAT IT IS: → Every enterprise needs this for monitoring. | Every enterprise needs this for monitoring. → REAL-WORLD USAGE: | REAL-WORLD USAGE: → • All companies: Application performance monitoring | • All companies: Application performance monitoring → • E-commerce: Real-time sales dashboards | • E-commerce: Real-time sales dashboards → • Social media: Engagement metrics | ...+1 more
+**Flow:**
+- PROJECT: REAL-TIME ANALYTICS & METRICS PLATFORM
+- ↓
+- WHAT IT IS:
+- ↓
+- Every enterprise needs this for monitoring.
+- ↓
+- REAL-WORLD USAGE:
+- ↓
+- • All companies: Application performance monitoring
+- ↓
+- • E-commerce: Real-time sales dashboards
+- ↓
+- • Social media: Engagement metrics
 
 ```mermaid
 flowchart TD
@@ -1008,7 +1064,20 @@ public class AnalyticsController {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: PROJECT: WORKFLOW/APPROVAL ENGINE → WHAT IT IS: | WHAT IT IS: → conditions, and automated actions. | conditions, and automated actions. → REAL-WORLD USAGE: | REAL-WORLD USAGE: → • HR: Leave approval, onboarding workflows | • HR: Leave approval, onboarding workflows → • Finance: Expense approval, purchase orders | • Finance: Expense approval, purchase orders → • IT: Change management, access requests | ...+1 more
+**Flow:**
+- PROJECT: WORKFLOW/APPROVAL ENGINE
+- ↓
+- WHAT IT IS:
+- ↓
+- conditions, and automated actions.
+- ↓
+- REAL-WORLD USAGE:
+- ↓
+- • HR: Leave approval, onboarding workflows
+- ↓
+- • Finance: Expense approval, purchase orders
+- ↓
+- • IT: Change management, access requests
 
 ```mermaid
 flowchart TD
@@ -1388,7 +1457,20 @@ public class WorkflowEngine {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: PROJECT: RESOURCE BOOKING & SCHEDULING SYSTEM → WHAT IT IS: | WHAT IT IS: → vehicles, employees' time, etc. | vehicles, employees' time, etc. → REAL-WORLD USAGE: | REAL-WORLD USAGE: → • Google/Microsoft: Meeting room booking | • Google/Microsoft: Meeting room booking → • Hospitals: Doctor appointments, equipment scheduling | • Hospitals: Doctor appointments, equipment scheduling → • Car rentals: Vehicle availability | ...+1 more
+**Flow:**
+- PROJECT: RESOURCE BOOKING & SCHEDULING SYSTEM
+- ↓
+- WHAT IT IS:
+- ↓
+- vehicles, employees' time, etc.
+- ↓
+- REAL-WORLD USAGE:
+- ↓
+- • Google/Microsoft: Meeting room booking
+- ↓
+- • Hospitals: Doctor appointments, equipment scheduling
+- ↓
+- • Car rentals: Vehicle availability
 
 ```mermaid
 flowchart TD
@@ -1727,7 +1809,20 @@ public record BookingResult(Long bookingId, BookingStatus status, Long waitlistI
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: MORE INDUSTRY-LEVEL PROJECT IDEAS → 6. 📝 AUDIT LOG & COMPLIANCE SYSTEM | 6. 📝 AUDIT LOG & COMPLIANCE SYSTEM → Track all changes to data, who changed what, when | Track all changes to data, who changed what, when → DSA: Append-only log, Merkle trees for integrity | DSA: Append-only log, Merkle trees for integrity → Used by: Every regulated industry (finance, healthcare) | Used by: Every regulated industry (finance, healthcare) → 7. 🔍 FULL-TEXT SEARCH SERVICE | 7. 🔍 FULL-TEXT SEARCH SERVICE → Build your own search with inverted index | ...+1 more
+**Flow:**
+- MORE INDUSTRY-LEVEL PROJECT IDEAS
+- ↓
+- 6. 📝 AUDIT LOG & COMPLIANCE SYSTEM
+- ↓
+- Track all changes to data, who changed what, when
+- ↓
+- DSA: Append-only log, Merkle trees for integrity
+- ↓
+- Used by: Every regulated industry (finance, healthcare)
+- ↓
+- 7. 🔍 FULL-TEXT SEARCH SERVICE
+- ↓
+- Build your own search with inverted index
 
 ```mermaid
 flowchart TD
@@ -1797,7 +1892,20 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: PORTFOLIO STRATEGY FOR JOB INTERVIEWS → BUILD 2-3 OF THESE PROJECTS TO STAND OUT: | BUILD 2-3 OF THESE PROJECTS TO STAND OUT: → BEGINNER LEVEL (Start Here): | BEGINNER LEVEL (Start Here): → • Feature Flag System - Shows architectural thinking | • Feature Flag System - Shows architectural thinking → INTERMEDIATE LEVEL: | INTERMEDIATE LEVEL: → • Booking System - Shows conflict handling, business lo | • Booking System - Shows conflict handling, business lo → ADVANCED LEVEL: | ...+1 more
+**Flow:**
+- PORTFOLIO STRATEGY FOR JOB INTERVIEWS
+- ↓
+- BUILD 2-3 OF THESE PROJECTS TO STAND OUT:
+- ↓
+- BEGINNER LEVEL (Start Here):
+- ↓
+- • Feature Flag System - Shows architectural thinking
+- ↓
+- INTERMEDIATE LEVEL:
+- ↓
+- • Booking System - Shows conflict handling, business lo
+- ↓
+- ADVANCED LEVEL:
 
 ```mermaid
 flowchart TD

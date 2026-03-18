@@ -126,7 +126,30 @@ EXAMPLE: Phone Book
 └────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: CONCEPT: → - Transform key into array index using hash function | - Transform key into array index using hash function → - Store value at that index | - Store value at that index → - Retrieve in O(1) average time | - Retrieve in O(1) average time → EXAMPLE: Phone Book | EXAMPLE: Phone Book → Name 'Alice' → hash('Alice') → 3 | Name 'Alice' → hash('Alice') → 3 → Index: 0 1 2 3 4 5 | ...+1 more
+**Flow:**
+- CONCEPT:
+- ↓
+- - Transform key into array index using hash function
+- ↓
+- - Store value at that index
+- ↓
+- - Retrieve in O(1) average time
+- ↓
+- EXAMPLE: Phone Book
+- ↓
+- Name 'Alice'
+- ↓
+- hash('Alice')
+- ↓
+- 3
+- ↓
+- Name 'Alice'
+- ↓
+- hash('Alice')
+- ↓
+- 3
+- ↓
+- Index: 0 1 2 3 4 5
 
 ```mermaid
 flowchart TD
@@ -176,7 +199,12 @@ variables = [
 lookup("x") → search all 10,000 → O(n)
 ```
 
-> **Flow**: lookup('x') → search all 10,000 | search all 10,000 → O(n)
+**Flow:**
+- lookup('x')
+- ↓
+- search all 10,000
+- ↓
+- O(n)
 
 ```mermaid
 flowchart LR
@@ -194,7 +222,14 @@ variables[42] = {name: "x", type: "int"}
 lookup("x") → O(1)!
 ```
 
-> **Flow**: hash('x') = some_formula('x') → index 42 | lookup('x') → O(1)!
+**Flow:**
+- hash('x') = some_formula('x')
+- ↓
+- index 42
+- ↓
+- lookup('x')
+- ↓
+- O(1)!
 
 ```mermaid
 flowchart LR
@@ -362,7 +397,20 @@ IMPACT:
 - Redis, Memcached are based on this
 ```
 
-> **Flow**: REAL-WORLD ORIGIN: Web Browser Cache (1990s) → PROBLEM AT NETSCAPE (1994): | PROBLEM AT NETSCAPE (1994): → - Browser loads images from internet | - Browser loads images from internet → - Loading same image again = slow | - Loading same image again = slow → - Store recently viewed images in memory | - Store recently viewed images in memory → - Memory is limited (16MB in 1994!) | - Memory is limited (16MB in 1994!) → QUESTIONS: | ...+1 more
+**Flow:**
+- REAL-WORLD ORIGIN: Web Browser Cache (1990s)
+- ↓
+- PROBLEM AT NETSCAPE (1994):
+- ↓
+- - Browser loads images from internet
+- ↓
+- - Loading same image again = slow
+- ↓
+- - Store recently viewed images in memory
+- ↓
+- - Memory is limited (16MB in 1994!)
+- ↓
+- QUESTIONS:
 
 ```mermaid
 flowchart TD

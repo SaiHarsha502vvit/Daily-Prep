@@ -64,7 +64,14 @@ Source Code
 └─────────────┘
 ```
 
-> **Flow**: TypeScript / Compiler → Babel / / SWC | Babel / / SWC → Webpack / / Vite | Webpack / / Vite → Output: / dist/
+**Flow:**
+- TypeScript / Compiler
+- ↓
+- Babel / / SWC
+- ↓
+- Webpack / / Vite
+- ↓
+- Output: / dist/
 
 ```mermaid
 flowchart TD
@@ -158,7 +165,30 @@ npm run dev          → Execute the "dev" script
 npx create-vite      → Run a package without installing
 ```
 
-> **Flow**: '^18.3.1' → caret: allows 18.x.x updates (minor + patch) | '~18.3.1' → tilde: allows 18.3.x updates (patch only) | '18.3.1' → exact: only this version | npm install → Install all dependencies from lock file | npm install react → Add to dependencies | npm install -D vite → Add to devDependencies | ...+3 more
+**Flow:**
+- '^18.3.1'
+- ↓
+- caret: allows 18.x.x updates (minor + patch)
+- ↓
+- '~18.3.1'
+- ↓
+- tilde: allows 18.3.x updates (patch only)
+- ↓
+- '18.3.1'
+- ↓
+- exact: only this version
+- ↓
+- npm install
+- ↓
+- Install all dependencies from lock file
+- ↓
+- npm install react
+- ↓
+- Add to dependencies
+- ↓
+- npm install -D vite
+- ↓
+- Add to devDependencies
 
 ```mermaid
 flowchart TD
@@ -220,7 +250,20 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: WHAT BABEL DOES — Translate modern JS to older JS: → YOUR CODE: BABEL OUTPUT: | YOUR CODE: BABEL OUTPUT: → `Hello, ${name}!`; return 'Hello, ' + name | `Hello, ${name}!`; return 'Hello, ' + name → const user = data?.user; var _data; | const user = data?.user; var _data; → var user = (_data = data) | var user = (_data = data) → void 0 ? _data.user | void 0 ? _data.user → : void 0; | ...+1 more
+**Flow:**
+- WHAT BABEL DOES — Translate modern JS to older JS:
+- ↓
+- YOUR CODE: BABEL OUTPUT:
+- ↓
+- `Hello, ${name}!`; return 'Hello, ' + name
+- ↓
+- const user = data?.user; var _data;
+- ↓
+- var user = (_data = data)
+- ↓
+- void 0 ? _data.user
+- ↓
+- : void 0;
 
 ```mermaid
 flowchart TD
@@ -265,7 +308,26 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: JSX IS NOT JAVASCRIPT. Browsers cannot run it. → Babel (or SWC) transforms JSX → function calls: | Babel (or SWC) transforms JSX → function calls: → WHAT YOU WRITE: | WHAT YOU WRITE: → &lt;div className='card'&gt; | &lt;div className='card'&gt; → &lt;h1&gt;{title}&lt;/h1&gt; | &lt;h1&gt;{title}&lt;/h1&gt; → &lt;p&gt;Hello&lt;/p&gt; | &lt;p&gt;Hello&lt;/p&gt; → &lt;/div&gt; | ...+1 more
+**Flow:**
+- JSX IS NOT JAVASCRIPT. Browsers cannot run it.
+- ↓
+- Babel (or SWC) transforms JSX
+- ↓
+- function calls:
+- ↓
+- Babel (or SWC) transforms JSX
+- ↓
+- function calls:
+- ↓
+- WHAT YOU WRITE:
+- ↓
+- <div className='card'>
+- ↓
+- <h1>{title}</h1>
+- ↓
+- <p>Hello</p>
+- ↓
+- </div>
 
 ```mermaid
 flowchart TD
@@ -321,7 +383,30 @@ dist/
 └── images/ (optimized)
 ```
 
-> **Flow**: src/ → App.tsx (imports Header, Router, Context) | src/ → components/ | src/ → Header.tsx (imports Button, Logo, useAuth) | src/ → Button.tsx (imports styles) | src/ → UserCard.tsx (imports Badge, Avatar, date-fns) | src/ → hooks/ | ...+9 more
+**Flow:**
+- src/
+- ↓
+- App.tsx (imports Header, Router, Context)
+- ↓
+- src/
+- ↓
+- components/
+- ↓
+- src/
+- ↓
+- Header.tsx (imports Button, Logo, useAuth)
+- ↓
+- src/
+- ↓
+- Button.tsx (imports styles)
+- ↓
+- src/
+- ↓
+- UserCard.tsx (imports Badge, Avatar, date-fns)
+- ↓
+- src/
+- ↓
+- hooks/
 
 ```mermaid
 flowchart TD
@@ -385,7 +470,14 @@ PROS:                         CONS:
 └── Works with anything      └── Steep learning curve
 ```
 
-> **Flow**: 2. Follow every import/require → build dependency graph | babel-loader: .tsx/.jsx → JavaScript
+**Flow:**
+- 2. Follow every import/require
+- ↓
+- build dependency graph
+- ↓
+- babel-loader: .tsx/.jsx
+- ↓
+- JavaScript
 
 ```mermaid
 flowchart LR
@@ -430,7 +522,20 @@ RESULT:
 └── Production builds are fully optimized
 ```
 
-> **Flow**: Source → Bundle ALL files → Serve → You see page / ^^^^ → Source → Start server immediately → Transform / on requ
+**Flow:**
+- Source
+- ↓
+- Bundle ALL files
+- ↓
+- Serve
+- ↓
+- You see page / ^^^^
+- ↓
+- Source
+- ↓
+- Start server immediately
+- ↓
+- Transform / on requ
 
 ```mermaid
 flowchart TD
@@ -458,7 +563,20 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: Feature Webpack Vite → Dev startup Slow (bundles) Instant (native ESM) | Dev startup Slow (bundles) Instant (native ESM) → HMR speed Seconds Milliseconds | HMR speed Seconds Milliseconds → Config Complex Minimal | Config Complex Minimal → Production Battle-tested Uses Rollup (also solid) | Production Battle-tested Uses Rollup (also solid) → Plugin ecosystem Huge Growing fast, Rollup compat | Plugin ecosystem Huge Growing fast, Rollup compat → Learning curve Steep Low | ...+1 more
+**Flow:**
+- Feature Webpack Vite
+- ↓
+- Dev startup Slow (bundles) Instant (native ESM)
+- ↓
+- HMR speed Seconds Milliseconds
+- ↓
+- Config Complex Minimal
+- ↓
+- Production Battle-tested Uses Rollup (also solid)
+- ↓
+- Plugin ecosystem Huge Growing fast, Rollup compat
+- ↓
+- Learning curve Steep Low
 
 ```mermaid
 flowchart TD
@@ -508,7 +626,20 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: TREE SHAKING — Remove unused code from bundles → Tree shaking tears out the unused chapters before shipp | Tree shaking tears out the unused chapters before shipp → export function add(a, b) { return a + b; } | export function add(a, b) { return a + b; } → export function subtract(a, b) { return a - b; } // unu | export function subtract(a, b) { return a - b; } // unu → export function multiply(a, b) { return a * b; } // unu | export function multiply(a, b) { return a * b; } // unu → import { add } from './utils'; | import { add } from './utils'; → REQUIRES: ES Module syntax (import/export, NOT require) | ...+1 more
+**Flow:**
+- TREE SHAKING — Remove unused code from bundles
+- ↓
+- Tree shaking tears out the unused chapters before shipp
+- ↓
+- export function add(a, b) { return a + b; }
+- ↓
+- export function subtract(a, b) { return a - b; } // unu
+- ↓
+- export function multiply(a, b) { return a * b; } // unu
+- ↓
+- import { add } from './utils';
+- ↓
+- REQUIRES: ES Module syntax (import/export, NOT require)
 
 ```mermaid
 flowchart TD
@@ -560,7 +691,32 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: CODE SPLITTING — Load only what's needed, when needed → WITHOUT Splitting: | WITHOUT Splitting: → User visits login page → downloads ENTIRE app (5MB) | User visits login page → downloads ENTIRE app (5MB) → WITH Splitting: | WITH Splitting: → User visits login page → downloads login chunk (50KB) | User visits login page → downloads login chunk (50KB) → Admin page? Only loaded if user is admin | Admin page? Only loaded if user is admin → HOW IN REACT: | ...+1 more
+**Flow:**
+- CODE SPLITTING — Load only what's needed, when needed
+- ↓
+- WITHOUT Splitting:
+- ↓
+- User visits login page
+- ↓
+- downloads ENTIRE app (5MB)
+- ↓
+- User visits login page
+- ↓
+- downloads ENTIRE app (5MB)
+- ↓
+- WITH Splitting:
+- ↓
+- User visits login page
+- ↓
+- downloads login chunk (50KB)
+- ↓
+- User visits login page
+- ↓
+- downloads login chunk (50KB)
+- ↓
+- Admin page? Only loaded if user is admin
+- ↓
+- HOW IN REACT:
 
 ```mermaid
 flowchart TD
@@ -602,7 +758,20 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: SOURCE MAPS — Bridge between minified and original code → Production bundle: (minified, unreadable) | Production bundle: (minified, unreadable) → var a=function(t){return t.map(function(e){return e*2}) | var a=function(t){return t.map(function(e){return e*2}) → Your original: | Your original: → const doubleAll = (numbers: number[]) =&gt; | const doubleAll = (numbers: number[]) =&gt; → numbers.map(n =&gt; n * 2); | numbers.map(n =&gt; n * 2); → Source map (.js.map) contains the MAPPING between them. | ...+1 more
+**Flow:**
+- SOURCE MAPS — Bridge between minified and original code
+- ↓
+- Production bundle: (minified, unreadable)
+- ↓
+- var a=function(t){return t.map(function(e){return e*2})
+- ↓
+- Your original:
+- ↓
+- const doubleAll = (numbers: number[]) =>
+- ↓
+- numbers.map(n => n * 2);
+- ↓
+- Source map (.js.map) contains the MAPPING between them.
 
 ```mermaid
 flowchart TD
@@ -695,7 +864,14 @@ Q: What's the difference between Babel and TypeScript compiler?
   Vite uses esbuild/SWC for speed + TSC for type checking separately.
 ```
 
-> **Flow**: Babel: transforms syntax (JSX, ES2024+ → ES5). No type checking. | TSC: transforms TS → JS AND does type checking. Slower but safer.
+**Flow:**
+- Babel: transforms syntax (JSX, ES2024+
+- ↓
+- ES5). No type checking.
+- ↓
+- TSC: transforms TS
+- ↓
+- JS AND does type checking. Slower but safer.
 
 ```mermaid
 flowchart LR

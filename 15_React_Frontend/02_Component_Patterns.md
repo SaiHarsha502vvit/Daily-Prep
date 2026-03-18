@@ -136,7 +136,20 @@ Inline styles     │ Simple, dynamic          │ No pseudo-classes, media quer
 (style={{}})      │ No tooling               │ Not recommended for production
 ```
 
-> **Flow**: APPROACH PROS CONS → CSS Modules Scoped, no conflicts Still CSS files | CSS Modules Scoped, no conflicts Still CSS files → Tailwind CSS Utility-first, fast Long class strings | Tailwind CSS Utility-first, fast Long class strings → No naming, consistent Learning curve | No naming, consistent Learning curve → styled-components CSS-in-JS, dynamic props Runtime over | styled-components CSS-in-JS, dynamic props Runtime over → Full JS power Bundle size | Full JS power Bundle size → (style={{}}) No tooling Not recommended for production
+**Flow:**
+- APPROACH PROS CONS
+- ↓
+- CSS Modules Scoped, no conflicts Still CSS files
+- ↓
+- Tailwind CSS Utility-first, fast Long class strings
+- ↓
+- No naming, consistent Learning curve
+- ↓
+- styled-components CSS-in-JS, dynamic props Runtime over
+- ↓
+- Full JS power Bundle size
+- ↓
+- (style={{}}) No tooling Not recommended for production
 
 ```mermaid
 flowchart TD

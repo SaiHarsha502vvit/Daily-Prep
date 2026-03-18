@@ -43,7 +43,10 @@ IF the problem says:
 THEN → Bit Manipulation
 ```
 
-> **Flow**: THEN → Bit Manipulation
+**Flow:**
+- THEN
+- ↓
+- Bit Manipulation
 
 ```mermaid
 flowchart LR
@@ -70,7 +73,30 @@ Is power of 2?         n > 0 && (n & (n-1)) == 0
 Count set bits         Integer.bitCount(n)     bitCount(1100) = 2
 ```
 
-> **Flow**: Operation Code Example (n=12 = 1100) → Check if bit i set (n &gt;&gt; i) & 1 bit 2: (1100&gt;& | Check if bit i set (n &gt;&gt; i) & 1 bit 2: (1100&gt;& → Set bit i n | (1 &lt;&lt; i) set bit 0: 1100|0001 = 110 | Set bit i n | (1 &lt;&lt; i) set bit 0: 1100|0001 = 110 → Clear bit i n & ~(1 &lt;&lt; i) clear bit 2: 1100&1011  | Clear bit i n & ~(1 &lt;&lt; i) clear bit 2: 1100&1011  → Toggle bit i n ^ (1 &lt;&lt; i) toggle bit 3: 1100^1000 | Toggle bit i n ^ (1 &lt;&lt; i) toggle bit 3: 1100^1000 → Lowest set bit n & (-n) 1100 & 0100 = 0100 (rightmost 1 | Lowest set bit n & (-n) 1100 & 0100 = 0100 (rightmost 1 → Clear lowest set bit n & (n-1) 1100 & 1011 = 1000 | ...+1 more
+**Flow:**
+- Operation Code Example (n=12 = 1100)
+- ↓
+- Check if bit i set (n >> i) & 1 bit 2: (1100>&
+- ↓
+- Set bit i n
+- ↓
+- (1 << i) set bit 0: 1100
+- ↓
+- 0001 = 110
+- ↓
+- Set bit i n
+- ↓
+- (1 << i) set bit 0: 1100
+- ↓
+- 0001 = 110
+- ↓
+- Clear bit i n & ~(1 << i) clear bit 2: 1100&1011
+- ↓
+- Toggle bit i n ^ (1 << i) toggle bit 3: 1100^1000
+- ↓
+- Lowest set bit n & (-n) 1100 & 0100 = 0100 (rightmost 1
+- ↓
+- Clear lowest set bit n & (n-1) 1100 & 1011 = 1000
 
 ```mermaid
 flowchart TD
@@ -136,7 +162,20 @@ Time: O(n) | Space: O(1)
 Why not HashMap? HashMap works but uses O(n) space. XOR uses O(1).
 ```
 
-> **Flow**: Problem: Every element appears twice EXCEPT one. Find i → nums = [4, 1, 2, 1, 2] | nums = [4, 1, 2, 1, 2] → WHY it works: | WHY it works: → Step-by-step: | Step-by-step: → result = 0 | result = 0 → 0 ^ 4 = 4 (binary: 000 ^ 100 = 100) | 0 ^ 4 = 4 (binary: 000 ^ 100 = 100) → 4 ^ 1 = 5 (binary: 100 ^ 001 = 101) | ...+1 more
+**Flow:**
+- Problem: Every element appears twice EXCEPT one. Find i
+- ↓
+- nums = [4, 1, 2, 1, 2]
+- ↓
+- WHY it works:
+- ↓
+- Step-by-step:
+- ↓
+- result = 0
+- ↓
+- 0 ^ 4 = 4 (binary: 000 ^ 100 = 100)
+- ↓
+- 4 ^ 1 = 5 (binary: 100 ^ 001 = 101)
 
 ```mermaid
 flowchart TD
@@ -193,7 +232,30 @@ Time: O(n × 2ⁿ) | Space: O(n × 2ⁿ) for output
 WARNING: Only works for n ≤ 20-25. Beyond that, 2ⁿ explodes.
 ```
 
-> **Flow**: mask=000 (0): no bits set → [] | mask=001 (1): bit 0 set → [a] | mask=010 (2): bit 1 set → [b] | mask=011 (3): bits 0,1 set → [a, b] | mask=100 (4): bit 2 set → [c] | mask=101 (5): bits 0,2 set → [a, c] | ...+2 more
+**Flow:**
+- mask=000 (0): no bits set
+- ↓
+- []
+- ↓
+- mask=001 (1): bit 0 set
+- ↓
+- [a]
+- ↓
+- mask=010 (2): bit 1 set
+- ↓
+- [b]
+- ↓
+- mask=011 (3): bits 0,1 set
+- ↓
+- [a, b]
+- ↓
+- mask=100 (4): bit 2 set
+- ↓
+- [c]
+- ↓
+- mask=101 (5): bits 0,2 set
+- ↓
+- [a, c]
 
 ```mermaid
 flowchart TD
@@ -241,7 +303,14 @@ COMMON MISTAKES:
    Be careful with right shift on negative numbers
 ```
 
-> **Flow**: WRONG: if (mask & (1&lt;&lt;i) != 0) → this checks mask & (result of !=) | RIGHT: if ((mask & (1&lt;&lt;i)) != 0) → parentheses are ESSENTIAL!
+**Flow:**
+- WRONG: if (mask & (1<<i) != 0)
+- ↓
+- this checks mask & (result of !=)
+- ↓
+- RIGHT: if ((mask & (1<<i)) != 0)
+- ↓
+- parentheses are ESSENTIAL!
 
 ```mermaid
 flowchart LR

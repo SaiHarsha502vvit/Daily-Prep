@@ -164,7 +164,20 @@ WHY BEM: Flat specificity (all single class), self-documenting,
 no nesting conflicts, easy to understand relationship.
 ```
 
-> **Flow**: BEM: Block__Element--Modifier → Block: Independent component .card | Block: Independent component .card → Element: Part of a block .card__title | Element: Part of a block .card__title → Modifier: Variation/state .card--featured | Modifier: Variation/state .card--featured → VISUAL: | VISUAL: → .card ← Block | .card ← Block → .card__image ← Element | ...+1 more
+**Flow:**
+- BEM: Block__Element--Modifier
+- ↓
+- Block: Independent component .card
+- ↓
+- Element: Part of a block .card__title
+- ↓
+- Modifier: Variation/state .card--featured
+- ↓
+- VISUAL:
+- ↓
+- .card ← Block
+- ↓
+- .card__image ← Element
 
 ```mermaid
 flowchart TD
@@ -606,7 +619,20 @@ form:has(:invalid) {
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: CSS APPROACH WHEN TO USE TRADE-OFFS → Plain CSS Small projects Global scope issues | Plain CSS Small projects Global scope issues → CSS Modules React projects Best scoping (✅) | CSS Modules React projects Best scoping (✅) → Tailwind CSS Rapid prototyping Verbose HTML, learn | Tailwind CSS Rapid prototyping Verbose HTML, learn → styled-components Dynamic styling Runtime cost, bundle | styled-components Dynamic styling Runtime cost, bundle → CSS-in-JS (Panda) Design system libs Zero-runtime (✅) | CSS-in-JS (Panda) Design system libs Zero-runtime (✅) → INDUSTRY TREND (2024): | ...+1 more
+**Flow:**
+- CSS APPROACH WHEN TO USE TRADE-OFFS
+- ↓
+- Plain CSS Small projects Global scope issues
+- ↓
+- CSS Modules React projects Best scoping (✅)
+- ↓
+- Tailwind CSS Rapid prototyping Verbose HTML, learn
+- ↓
+- styled-components Dynamic styling Runtime cost, bundle
+- ↓
+- CSS-in-JS (Panda) Design system libs Zero-runtime (✅)
+- ↓
+- INDUSTRY TREND (2024):
 
 ```mermaid
 flowchart TD
@@ -691,7 +717,10 @@ Q: What is a design system?
   a product. Implemented as CSS variables + component library.
 ```
 
-> **Flow**: Components use var(--color-bg) → automatically switch.
+**Flow:**
+- Components use var(--color-bg)
+- ↓
+- automatically switch.
 
 ```mermaid
 flowchart LR

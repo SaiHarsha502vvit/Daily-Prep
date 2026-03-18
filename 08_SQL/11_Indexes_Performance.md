@@ -105,7 +105,12 @@ This is called the **leftmost prefix rule** and is one of the most commonly misu
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: SELECT * FROM employees WHERE last_name = 'Kumar'; / 1  → [K-P] ← Root: Is 'Kumar' &lt; 'K' or &gt; 'P'? / ▼ ▼ ▼  | [K-P] ← Root: Is 'Kumar' &lt; 'K' or &gt; 'P'? / ▼ ▼ ▼  → Type Description Use Case / B-Tree Balanced tree, defau
+**Flow:**
+- SELECT * FROM employees WHERE last_name = 'Kumar'; / 1
+- ↓
+- [K-P] ← Root: Is 'Kumar' < 'K' or > 'P'? / ▼ ▼ ▼
+- ↓
+- Type Description Use Case / B-Tree Balanced tree, defau
 
 ```mermaid
 flowchart TD

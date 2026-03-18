@@ -71,7 +71,20 @@ NOT Idem:   POST /payments         (might charge twice!)
 FIX:        POST /payments + idempotency_key=abc123
 ```
 
-> **Flow**: When Service A calls Service B, there are ONLY 3 outcom → 1. SUCCESS — B processed the request and responded | 1. SUCCESS — B processed the request and responded → 2. FAILURE — B responded with an error | 2. FAILURE — B responded with an error → (At least you KNOW it failed) | (At least you KNOW it failed) → 3. TIMEOUT — No response at all ⚠️ | 3. TIMEOUT — No response at all ⚠️ → This is the WORST case. You DON'T KNOW: | This is the WORST case. You DON'T KNOW: → - Did B receive the request? | ...+1 more
+**Flow:**
+- When Service A calls Service B, there are ONLY 3 outcom
+- ↓
+- 1. SUCCESS — B processed the request and responded
+- ↓
+- 2. FAILURE — B responded with an error
+- ↓
+- (At least you KNOW it failed)
+- ↓
+- 3. TIMEOUT — No response at all ⚠️
+- ↓
+- This is the WORST case. You DON'T KNOW:
+- ↓
+- - Did B receive the request?
 
 ```mermaid
 flowchart TD
@@ -129,7 +142,26 @@ Post likes? Eventual is fine.
 Money transfer? Strong consistency is mandatory.
 ```
 
-> **Flow**: STRICT → Strong (Linearizable) | Example: Bank balance → Sequential | 'Operations from each client are in order' → Causal | Example: Reply appears after the original comment → Read-Your-Writes | Example: Edit your profile, you see it updated → Eventual
+**Flow:**
+- STRICT
+- ↓
+- Strong (Linearizable)
+- ↓
+- Example: Bank balance
+- ↓
+- Sequential
+- ↓
+- 'Operations from each client are in order'
+- ↓
+- Causal
+- ↓
+- Example: Reply appears after the original comment
+- ↓
+- Read-Your-Writes
+- ↓
+- Example: Edit your profile, you see it updated
+- ↓
+- Eventual
 
 ```mermaid
 flowchart TD
@@ -278,7 +310,10 @@ Async: User doesn't need immediate response (email, analytics)
 Hybrid: Acknowledge immediately, process in background
 ```
 
-> **Flow**: Event / Queue → B / C / D
+**Flow:**
+- Event / Queue
+- ↓
+- B / C / D
 
 ```mermaid
 flowchart LR
@@ -317,7 +352,14 @@ TECHNIQUES TO REDUCE BLAST RADIUS:
 • Cell Architecture: Independent copies serving different users
 ```
 
-> **Flow**: Monolith: if payment module / has a memory leak, the EN → User Svc / ✓ | User Svc / ✓ → Payment Svc / ✗ | Payment Svc / ✗ → Notify Svc / ✓
+**Flow:**
+- Monolith: if payment module / has a memory leak, the EN
+- ↓
+- User Svc / ✓
+- ↓
+- Payment Svc / ✗
+- ↓
+- Notify Svc / ✓
 
 ```mermaid
 flowchart TD

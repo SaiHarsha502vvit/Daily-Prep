@@ -39,7 +39,16 @@ As software grows, complexity grows **exponentially**. Procedural programming sc
                   More functions ◄──────► Even more data
 ```
 
-> **Flow**: Data here → Functions there | Functions there → More data somewhere | More functions → Even more data
+**Flow:**
+- Data here
+- ↓
+- Functions there
+- ↓
+- More data somewhere
+- ↓
+- More functions
+- ↓
+- Even more data
 
 ```mermaid
 flowchart LR
@@ -71,7 +80,10 @@ flowchart LR
      └─────────────┘       └─────────────┘
 ```
 
-> **Flow**: Object B / data / methods → Object A / data / methods
+**Flow:**
+- Object B / data / methods
+- ↓
+- Object A / data / methods
 
 ```mermaid
 flowchart LR

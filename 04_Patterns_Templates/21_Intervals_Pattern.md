@@ -45,7 +45,20 @@
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: INTERVALS FUNDAMENTALS → AN INTERVAL = [start, end] representing a continuous ra | AN INTERVAL = [start, end] representing a continuous ra → WHY A DEDICATED PATTERN? | WHY A DEDICATED PATTERN? → Intervals appear in scheduling, calendars, bandwidth, | Intervals appear in scheduling, calendars, bandwidth, → resource allocation, genomics ... ~15 LC problems form | resource allocation, genomics ... ~15 LC problems form → tight family where ONE core technique solves them all. | tight family where ONE core technique solves them all. → THE 6 INTERVAL RELATIONSHIPS between [a,b] and [c,d]: | ...+1 more
+**Flow:**
+- INTERVALS FUNDAMENTALS
+- ↓
+- AN INTERVAL = [start, end] representing a continuous ra
+- ↓
+- WHY A DEDICATED PATTERN?
+- ↓
+- Intervals appear in scheduling, calendars, bandwidth,
+- ↓
+- resource allocation, genomics ... ~15 LC problems form
+- ↓
+- tight family where ONE core technique solves them all.
+- ↓
+- THE 6 INTERVAL RELATIONSHIPS between [a,b] and [c,d]:
 
 ```mermaid
 flowchart TD
@@ -154,7 +167,24 @@ VISUAL:
 SOLUTION:
 ```
 
-> **Flow**: [1,3] + [2,6]: 2 ≤ 3 → overlap | overlap → merge | merge → [1, max(3,6)] = [1,6] | [1,6] + [8,10]: 8 &gt; 6 → no overlap | no overlap → add [8,10] | [8,10] + [15,18]: 15 &gt; 10 → no overlap | ...+1 more
+**Flow:**
+- [1,3] + [2,6]: 2 ≤ 3
+- ↓
+- overlap
+- ↓
+- merge
+- ↓
+- [1, max(3,6)] = [1,6]
+- ↓
+- [1,6] + [8,10]: 8 > 6
+- ↓
+- no overlap
+- ↓
+- add [8,10]
+- ↓
+- [8,10] + [15,18]: 15 > 10
+- ↓
+- no overlap
 
 ```mermaid
 flowchart TD
@@ -308,7 +338,24 @@ APPROACH 2: Sweep Line
 SOLUTION (Min-Heap):
 ```
 
-> **Flow**: For each meeting: if start &gt;= heap.peek(), a room → pop. | [5,10]: 5 &lt; 30 → can't reuse | can't reuse → heap = [10, 30], rooms = 2 | [15,20]: 15 &gt;= 10 → reuse room | reuse room → pop 10, push 20 | pop 10, push 20 → heap = [20, 30], rooms = 2
+**Flow:**
+- For each meeting: if start >= heap.peek(), a room
+- ↓
+- pop.
+- ↓
+- [5,10]: 5 < 30
+- ↓
+- can't reuse
+- ↓
+- heap = [10, 30], rooms = 2
+- ↓
+- [15,20]: 15 >= 10
+- ↓
+- reuse room
+- ↓
+- pop 10, push 20
+- ↓
+- heap = [20, 30], rooms = 2
 
 ```mermaid
 flowchart TD
@@ -400,7 +447,18 @@ GREEDY INSIGHT:
 SOLUTION:
 ```
 
-> **Flow**: Keep [1,2]. [2,3]: 2 &gt;= 2 → keep. [1,3]: 1 &lt; 3 | keep. [1,3]: 1 &lt; 3 → OVERLAP | OVERLAP → remove! | [3,4]: 3 &gt;= 3 → keep. Removed 1.
+**Flow:**
+- Keep [1,2]. [2,3]: 2 >= 2
+- ↓
+- keep. [1,3]: 1 < 3
+- ↓
+- OVERLAP
+- ↓
+- remove!
+- ↓
+- [3,4]: 3 >= 3
+- ↓
+- keep. Removed 1.
 
 ```mermaid
 flowchart LR
@@ -548,7 +606,20 @@ COMPLEXITY: Time O(n log n) | Space O(1)
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: INTERVAL PROBLEMS CHEATSHEET → PROBLEM TYPE SORT BY TECHNIQUE LC# | PROBLEM TYPE SORT BY TECHNIQUE LC# → Merge overlapping START Linear scan 56 | Merge overlapping START Linear scan 56 → Insert + merge (sorted) 3-phase scan 57 | Insert + merge (sorted) 3-phase scan 57 → Can attend all? START Adjacent check 252 | Can attend all? START Adjacent check 252 → Min rooms needed START Min-Heap / Sweep 253 | Min rooms needed START Min-Heap / Sweep 253 → Min removals END Greedy keep early 435 | ...+1 more
+**Flow:**
+- INTERVAL PROBLEMS CHEATSHEET
+- ↓
+- PROBLEM TYPE SORT BY TECHNIQUE LC#
+- ↓
+- Merge overlapping START Linear scan 56
+- ↓
+- Insert + merge (sorted) 3-phase scan 57
+- ↓
+- Can attend all? START Adjacent check 252
+- ↓
+- Min rooms needed START Min-Heap / Sweep 253
+- ↓
+- Min removals END Greedy keep early 435
 
 ```mermaid
 flowchart TD

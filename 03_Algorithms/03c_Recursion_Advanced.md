@@ -564,7 +564,20 @@ SPACE COMPLEXITY:
 - Plus any data structures passed/returned
 ```
 
-> **Flow**: RECURSION TYPE RECURRENCE TIME → Tree traversal T(n) = 2T(n/2)+1 O(n) | Tree traversal T(n) = 2T(n/2)+1 O(n) → Subsets T(n) = 2T(n-1)+1 O(2^n) | Subsets T(n) = 2T(n-1)+1 O(2^n) → Permutations T(n) = n*T(n-1) O(n!) | Permutations T(n) = n*T(n-1) O(n!) → SPACE COMPLEXITY: | SPACE COMPLEXITY: → - Usually O(max recursion depth) | - Usually O(max recursion depth) → - For trees: O(height) = O(log n) balanced, O(n) skewed | ...+1 more
+**Flow:**
+- RECURSION TYPE RECURRENCE TIME
+- ↓
+- Tree traversal T(n) = 2T(n/2)+1 O(n)
+- ↓
+- Subsets T(n) = 2T(n-1)+1 O(2^n)
+- ↓
+- Permutations T(n) = n*T(n-1) O(n!)
+- ↓
+- SPACE COMPLEXITY:
+- ↓
+- - Usually O(max recursion depth)
+- ↓
+- - For trees: O(height) = O(log n) balanced, O(n) skewed
 
 ```mermaid
 flowchart TD
@@ -625,7 +638,10 @@ You don't care HOW factorial(4) got 24.
 You just trust that it did its job correctly.
 ```
 
-> **Flow**: YOU (CEO) → Don't do all the work yourself!
+**Flow:**
+- YOU (CEO)
+- ↓
+- Don't do all the work yourself!
 
 ```mermaid
 flowchart LR
@@ -650,7 +666,10 @@ Sort smaller: Sort [8, 1, 9]
 Then combine results back up.
 ```
 
-> **Flow**: ... eventually sort [9] → trivially sorted!
+**Flow:**
+- ... eventually sort [9]
+- ↓
+- trivially sorted!
 
 ```mermaid
 flowchart LR
@@ -677,7 +696,82 @@ Don't trace through every call!
 Just trust the smaller call works.
 ```
 
-> **Flow**: TRUST that your recursive call works correctly. → Example: Reverse a linked list | Example: Reverse a linked list → reverseList(1 → 2 → 3 → 4 → null) | reverseList(1 → 2 → 3 → 4 → null) → TRUST: reverseList(2 → 3 → 4 → null) = 4 → 3 → 2 → null | TRUST: reverseList(2 → 3 → 4 → null) = 4 → 3 → 2 → null → Now just attach node 1: | Now just attach node 1: → 4 → 3 → 2 → 1 → null | 4 → 3 → 2 → 1 → null → Don't trace through every call! | ...+1 more
+**Flow:**
+- TRUST that your recursive call works correctly.
+- ↓
+- Example: Reverse a linked list
+- ↓
+- reverseList(1
+- ↓
+- 2
+- ↓
+- 3
+- ↓
+- 4
+- ↓
+- null)
+- ↓
+- reverseList(1
+- ↓
+- 2
+- ↓
+- 3
+- ↓
+- 4
+- ↓
+- null)
+- ↓
+- TRUST: reverseList(2
+- ↓
+- 3
+- ↓
+- 4
+- ↓
+- null) = 4
+- ↓
+- 3
+- ↓
+- 2
+- ↓
+- null
+- ↓
+- TRUST: reverseList(2
+- ↓
+- 3
+- ↓
+- 4
+- ↓
+- null) = 4
+- ↓
+- 3
+- ↓
+- 2
+- ↓
+- null
+- ↓
+- Now just attach node 1:
+- ↓
+- 4
+- ↓
+- 3
+- ↓
+- 2
+- ↓
+- 1
+- ↓
+- null
+- ↓
+- 4
+- ↓
+- 3
+- ↓
+- 2
+- ↓
+- 1
+- ↓
+- null
+- ↓
+- Don't trace through every call!
 
 ```mermaid
 flowchart TD
@@ -840,7 +934,20 @@ public long factorial(int n) {
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: ADVANCED RECURSION - BEYOND THE BASICS → system-level programming: | system-level programming: → • Mutual recursion | • Mutual recursion → • Indirect recursion | • Indirect recursion → • Continuation Passing Style (CPS) | • Continuation Passing Style (CPS) → • Y-Combinator (anonymous recursion) | • Y-Combinator (anonymous recursion) → • Recursion with immutable state | ...+1 more
+**Flow:**
+- ADVANCED RECURSION - BEYOND THE BASICS
+- ↓
+- system-level programming:
+- ↓
+- • Mutual recursion
+- ↓
+- • Indirect recursion
+- ↓
+- • Continuation Passing Style (CPS)
+- ↓
+- • Y-Combinator (anonymous recursion)
+- ↓
+- • Recursion with immutable state
 
 ```mermaid
 flowchart TD
@@ -881,7 +988,10 @@ flowchart TD
 │  ────────────────────────────────────────────────────────                       │
 ```
 
-> **Flow**: isEven → isOdd
+**Flow:**
+- isEven
+- ↓
+- isOdd
 
 ```mermaid
 flowchart LR
@@ -976,7 +1086,28 @@ class Parser {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: CALL GRAPH for parsing '(2+3)*4': → parseExpr() | parseExpr() → → parseTerm() | → parseTerm() → → parseFactor() [sees '('] | → parseFactor() [sees '('] → → parseExpr() ← MUTUAL CALL | → parseExpr() ← MUTUAL CALL → → parseFactor() → 2 | → parseFactor() → 2 → → parseFactor() → 3 | ...+1 more
+**Flow:**
+- CALL GRAPH for parsing '(2+3)*4':
+- ↓
+- parseExpr()
+- ↓
+- parseTerm()
+- ↓
+- parseFactor() [sees '(']
+- ↓
+- parseExpr() ← MUTUAL CALL
+- ↓
+- parseFactor()
+- ↓
+- 2
+- ↓
+- parseFactor()
+- ↓
+- 2
+- ↓
+- parseFactor()
+- ↓
+- 3
 
 ```mermaid
 flowchart TD
@@ -1016,7 +1147,22 @@ flowchart TD
 │ ───────────────────────────                                                     │
 ```
 
-> **Flow**: CONTINUATION PASSING STYLE (CPS) → result. Every call becomes a tail call! | result. Every call becomes a tail call! → TRADITIONAL: CPS: | TRADITIONAL: CPS: → return value ← caller continuation(value) → no return | return value ← caller continuation(value) → no return → EXAMPLE: Factorial in CPS
+**Flow:**
+- CONTINUATION PASSING STYLE (CPS)
+- ↓
+- result. Every call becomes a tail call!
+- ↓
+- TRADITIONAL: CPS:
+- ↓
+- return value ← caller continuation(value)
+- ↓
+- no return
+- ↓
+- return value ← caller continuation(value)
+- ↓
+- no return
+- ↓
+- EXAMPLE: Factorial in CPS
 
 ```mermaid
 flowchart TD
@@ -1077,7 +1223,38 @@ factorialCPS(5, result -> System.out.println(result));  // Prints 120
 │  ─────────────────                                                              │
 ```
 
-> **Flow**: TRACE OF factorialCPS(4, print): → factorialCPS(4, k₀) where k₀ = print | factorialCPS(4, k₀) where k₀ = print → → factorialCPS(3, k₁) where k₁ = r → k₀(4 * r) | → factorialCPS(3, k₁) where k₁ = r → k₀(4 * r) → → factorialCPS(2, k₂) where k₂ = r → k₁(3 * r) | → factorialCPS(2, k₂) where k₂ = r → k₁(3 * r) → → factorialCPS(1, k₃) where k₃ = r → k₂(2 * r) | → factorialCPS(1, k₃) where k₃ = r → k₂(2 * r) → → k₃.accept(1) | → k₃.accept(1) → → k₂.accept(2) // 2 * 1 | ...+1 more
+**Flow:**
+- TRACE OF factorialCPS(4, print):
+- ↓
+- factorialCPS(4, k₀) where k₀ = print
+- ↓
+- factorialCPS(3, k₁) where k₁ = r
+- ↓
+- k₀(4 * r)
+- ↓
+- factorialCPS(3, k₁) where k₁ = r
+- ↓
+- k₀(4 * r)
+- ↓
+- factorialCPS(2, k₂) where k₂ = r
+- ↓
+- k₁(3 * r)
+- ↓
+- factorialCPS(2, k₂) where k₂ = r
+- ↓
+- k₁(3 * r)
+- ↓
+- factorialCPS(1, k₃) where k₃ = r
+- ↓
+- k₂(2 * r)
+- ↓
+- factorialCPS(1, k₃) where k₃ = r
+- ↓
+- k₂(2 * r)
+- ↓
+- k₃.accept(1)
+- ↓
+- k₂.accept(2) // 2 * 1
 
 ```mermaid
 flowchart TD
@@ -1122,7 +1299,18 @@ void fibCPS(int n, Continuation<Integer> k) {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHY USE CPS? → • Explicit control flow → useful for async programming | • Explicit control flow → useful for async programming → • Foundation of async/await patterns
+**Flow:**
+- WHY USE CPS?
+- ↓
+- • Explicit control flow
+- ↓
+- useful for async programming
+- ↓
+- • Explicit control flow
+- ↓
+- useful for async programming
+- ↓
+- • Foundation of async/await patterns
 
 ```mermaid
 flowchart TD
@@ -1152,7 +1340,14 @@ flowchart TD
 │ ─────────────────────                                                           │
 ```
 
-> **Flow**: Y-COMBINATOR - RECURSION WITHOUT NAMING → (Lambda calculus has no assignment!) | (Lambda calculus has no assignment!) → MATHEMATICAL DEFINITION: | MATHEMATICAL DEFINITION: → JAVA IMPLEMENTATION:
+**Flow:**
+- Y-COMBINATOR - RECURSION WITHOUT NAMING
+- ↓
+- (Lambda calculus has no assignment!)
+- ↓
+- MATHEMATICAL DEFINITION:
+- ↓
+- JAVA IMPLEMENTATION:
 
 ```mermaid
 flowchart TD
@@ -1221,7 +1416,14 @@ Function<Integer, Integer> factorial = new Function<>() {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHY CARE ABOUT Y-COMBINATOR? → • Foundation of lambda calculus and functional programm | • Foundation of lambda calculus and functional programm → • Proves recursion can be derived from simpler construc | • Proves recursion can be derived from simpler construc → • Asked in advanced interviews about programming theory
+**Flow:**
+- WHY CARE ABOUT Y-COMBINATOR?
+- ↓
+- • Foundation of lambda calculus and functional programm
+- ↓
+- • Proves recursion can be derived from simpler construc
+- ↓
+- • Asked in advanced interviews about programming theory
 
 ```mermaid
 flowchart TD
@@ -1450,7 +1652,10 @@ class SudokuSolver {
 
 ```
 
-> **Flow**: ADVANCED DIVIDE AND CONQUER PATTERNS → PATTERN 1: CLOSEST PAIR OF POINTS (2D)
+**Flow:**
+- ADVANCED DIVIDE AND CONQUER PATTERNS
+- ↓
+- PATTERN 1: CLOSEST PAIR OF POINTS (2D)
 
 ```mermaid
 flowchart TD
@@ -1617,7 +1822,12 @@ int[][] strassen(int[][] A, int[][] B) {
 
 ```
 
-> **Flow**: IMMUTABLE STATE IN RECURSION → SOLUTION: Pass state as parameters, return new state | SOLUTION: Pass state as parameters, return new state → MUTABLE (hard to reason): IMMUTABLE (easier to reason):
+**Flow:**
+- IMMUTABLE STATE IN RECURSION
+- ↓
+- SOLUTION: Pass state as parameters, return new state
+- ↓
+- MUTABLE (hard to reason): IMMUTABLE (easier to reason):
 
 ```mermaid
 flowchart TD
@@ -1753,7 +1963,10 @@ List<Integer> vals = foldTree(root, new ArrayList<>(), (list, val) -> {
 
 ```
 
-> **Flow**: Problem Recursive (ns) Iterative (ns) Ratio / Factorial → Problem Recursive Iterative / Factorial(1000) 32 KB sta
+**Flow:**
+- Problem Recursive (ns) Iterative (ns) Ratio / Factorial
+- ↓
+- Problem Recursive Iterative / Factorial(1000) 32 KB sta
 
 ```mermaid
 flowchart TD
@@ -1820,7 +2033,20 @@ flowchart TD
 
 ```
 
-> **Flow**: RECURSION PROBLEM CLASSIFICATION → RECURSION PROBLEM TYPES | RECURSION PROBLEM TYPES → LINEAR Only ONE recursive call per invocation | LINEAR Only ONE recursive call per invocation → RECURSION • Factorial, Sum, Array traversal | RECURSION • Factorial, Sum, Array traversal → O(n) calls • Can always convert to simple iteration | O(n) calls • Can always convert to simple iteration → BINARY TWO recursive calls per invocation | BINARY TWO recursive calls per invocation → RECURSION • Fibonacci, Merge Sort, Binary Tree traversa | ...+1 more
+**Flow:**
+- RECURSION PROBLEM CLASSIFICATION
+- ↓
+- RECURSION PROBLEM TYPES
+- ↓
+- LINEAR Only ONE recursive call per invocation
+- ↓
+- RECURSION • Factorial, Sum, Array traversal
+- ↓
+- O(n) calls • Can always convert to simple iteration
+- ↓
+- BINARY TWO recursive calls per invocation
+- ↓
+- RECURSION • Fibonacci, Merge Sort, Binary Tree traversa
 
 ```mermaid
 flowchart TD
@@ -1887,7 +2113,20 @@ flowchart TD
 
 ```
 
-> **Flow**: RECURSION WRITING CHECKLIST ✓ → BEFORE CODING: | BEFORE CODING: → □ Identify the subproblem - what's the 'smaller version | □ Identify the subproblem - what's the 'smaller version → □ Identify base case(s) - when can you answer directly? | □ Identify base case(s) - when can you answer directly? → □ Identify what each call returns (or modifies) | □ Identify what each call returns (or modifies) → □ Estimate max depth - will stack overflow? | □ Estimate max depth - will stack overflow? → □ Check for overlapping subproblems - need memoization? | ...+1 more
+**Flow:**
+- RECURSION WRITING CHECKLIST ✓
+- ↓
+- BEFORE CODING:
+- ↓
+- □ Identify the subproblem - what's the 'smaller version
+- ↓
+- □ Identify base case(s) - when can you answer directly?
+- ↓
+- □ Identify what each call returns (or modifies)
+- ↓
+- □ Estimate max depth - will stack overflow?
+- ↓
+- □ Check for overlapping subproblems - need memoization?
 
 ```mermaid
 flowchart TD
@@ -1953,7 +2192,20 @@ _Recursion is not about memorizing - it's about TRUSTING!_ 🔄
 
 ```
 
-> **Flow**: RECURSION QUICK REFERENCE → TEMPLATE: | TEMPLATE: → returnType solve(input) { | returnType solve(input) { → return combine(solve(smallerInput)); | return combine(solve(smallerInput)); → COMPLEXITY RULES: | COMPLEXITY RULES: → BACKTRACKING TEMPLATE: | BACKTRACKING TEMPLATE: → void backtrack(state, choices) { | ...+1 more
+**Flow:**
+- RECURSION QUICK REFERENCE
+- ↓
+- TEMPLATE:
+- ↓
+- returnType solve(input) {
+- ↓
+- return combine(solve(smallerInput));
+- ↓
+- COMPLEXITY RULES:
+- ↓
+- BACKTRACKING TEMPLATE:
+- ↓
+- void backtrack(state, choices) {
 
 ```mermaid
 flowchart TD

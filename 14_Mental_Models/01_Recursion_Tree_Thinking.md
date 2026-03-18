@@ -31,7 +31,10 @@ RIGHT thinking: "Assume sum() works for smaller lists.
                  Answer = 1 + 9 = 10 ✅"
 ```
 
-> **Flow**: 4) which calls sum(3 → 4)...'
+**Flow:**
+- 4) which calls sum(3
+- ↓
+- 4)...'
 
 ```mermaid
 flowchart LR
@@ -54,7 +57,20 @@ Q3: How do I COMBINE the sub-result with current data?
     → That's your return statement.
 ```
 
-> **Flow**: Q1: What is the SMALLEST INPUT I can answer directly? → → That's your base case. | → That's your base case. → Q2: If my function MAGICALLY WORKS for smaller inputs, | Q2: If my function MAGICALLY WORKS for smaller inputs, → how do I use that? | how do I use that? → → That's your recursive call. | → That's your recursive call. → Q3: How do I COMBINE the sub-result with current data? | Q3: How do I COMBINE the sub-result with current data? → → That's your return statement.
+**Flow:**
+- Q1: What is the SMALLEST INPUT I can answer directly?
+- ↓
+- That's your base case.
+- ↓
+- Q2: If my function MAGICALLY WORKS for smaller inputs,
+- ↓
+- how do I use that?
+- ↓
+- That's your recursive call.
+- ↓
+- Q3: How do I COMBINE the sub-result with current data?
+- ↓
+- That's your return statement.
 
 ```mermaid
 flowchart TD
@@ -146,7 +162,18 @@ Node count ≈ 2^n → Time: O(2^n) without memo
 Unique subproblems = n → Time: O(n) WITH memo
 ```
 
-> **Flow**: OVERLAPPING SUBPROBLEMS → Use Memoization! | Node count ≈ 2^n → Time: O(2^n) without memo | Unique subproblems = n → Time: O(n) WITH memo
+**Flow:**
+- OVERLAPPING SUBPROBLEMS
+- ↓
+- Use Memoization!
+- ↓
+- Node count ≈ 2^n
+- ↓
+- Time: O(2^n) without memo
+- ↓
+- Unique subproblems = n
+- ↓
+- Time: O(n) WITH memo
 
 ```mermaid
 flowchart LR
@@ -171,7 +198,18 @@ factorial(4) → factorial(3) → factorial(2) → factorial(1)
 Total calls: n → O(n) time and O(n) space (call stack)
 ```
 
-> **Flow**: factorial(4) → factorial(3) | factorial(3) → factorial(2) | factorial(2) → factorial(1) | Total calls: n → O(n) time and O(n) space (call stack)
+**Flow:**
+- factorial(4)
+- ↓
+- factorial(3)
+- ↓
+- factorial(2)
+- ↓
+- factorial(1)
+- ↓
+- Total calls: n
+- ↓
+- O(n) time and O(n) space (call stack)
 
 ```mermaid
 flowchart LR
@@ -196,7 +234,14 @@ flowchart LR
 Height: n, Branching: 2 → O(2^n) total calls
 ```
 
-> **Flow**: f(n-1) f(n-2) → Fibonacci, Tower of Hanoi | Height: n, Branching: 2 → O(2^n) total calls
+**Flow:**
+- f(n-1) f(n-2)
+- ↓
+- Fibonacci, Tower of Hanoi
+- ↓
+- Height: n, Branching: 2
+- ↓
+- O(2^n) total calls
 
 ```mermaid
 flowchart LR
@@ -217,7 +262,14 @@ flowchart LR
 Height: n, Branching: k → O(k^n) total calls
 ```
 
-> **Flow**: f(n-1,a) f(n-1,b) f(n-1,c) → Permutations, Combinations | Height: n, Branching: k → O(k^n) total calls
+**Flow:**
+- f(n-1,a) f(n-1,b) f(n-1,c)
+- ↓
+- Permutations, Combinations
+- ↓
+- Height: n, Branching: k
+- ↓
+- O(k^n) total calls
 
 ```mermaid
 flowchart LR
@@ -240,7 +292,10 @@ flowchart LR
 Height: log(n), Work per level: O(n) → Total: O(n log n)
 ```
 
-> **Flow**: Height: log(n), Work per level: O(n) → Total: O(n log n)
+**Flow:**
+- Height: log(n), Work per level: O(n)
+- ↓
+- Total: O(n log n)
 
 ```mermaid
 flowchart LR
@@ -283,7 +338,10 @@ Draw the tree:
      ...     ...
 ```
 
-> **Flow**: ways(5) → ways(4) ways(3) ← overlapping!
+**Flow:**
+- ways(5)
+- ↓
+- ways(4) ways(3) ← overlapping!
 
 ```mermaid
 flowchart TD
@@ -386,7 +444,12 @@ void subsets(int[] nums, int start, List<Integer> current, List<List<Integer>> r
 When a branch ends, we BACKTRACK (remove last choice) and try the next branch.
 ```
 
-> **Flow**: [1] [2] [3] ← choose 1, 2, or 3 → [1,2] [1,3] [2,3] ← choose next | [1,2] [1,3] [2,3] ← choose next → [1,2,3] ← choose next
+**Flow:**
+- [1] [2] [3] ← choose 1, 2, or 3
+- ↓
+- [1,2] [1,3] [2,3] ← choose next
+- ↓
+- [1,2,3] ← choose next
 
 ```mermaid
 flowchart TD
@@ -411,7 +474,18 @@ PRUNE when you KNOW a branch won't lead to a valid answer:
    if (!isValid(board, row, col)) continue;  // N-Queens
 ```
 
-> **Flow**: 1. Sum exceeds target? → Don't explore further | 2. Duplicate element at same level? → Skip it | 3. Constraint violated? → Abort path
+**Flow:**
+- 1. Sum exceeds target?
+- ↓
+- Don't explore further
+- ↓
+- 2. Duplicate element at same level?
+- ↓
+- Skip it
+- ↓
+- 3. Constraint violated?
+- ↓
+- Abort path
 
 ```mermaid
 flowchart LR
@@ -437,7 +511,10 @@ O O O ...               O ✂
                         → 10x fewer calls!
 ```
 
-> **Flow**: Without pruning: With pruning: → → 10x fewer calls!
+**Flow:**
+- Without pruning: With pruning:
+- ↓
+- 10x fewer calls!
 
 ```mermaid
 flowchart TD
@@ -464,7 +541,24 @@ Before writing ANY recursive function, answer these:
 □ Can I reduce space? (Only need last row/variable?)
 ```
 
-> **Flow**: □ What is my recursive relation? (how smaller → current) | □ Am I making the problem smaller? (n → n-1 or n | n-1 or n → n/2?) | □ Are there overlapping subproblems? (Draw tree → check for repeats) | □ If overlapping → Add memo array/map
+**Flow:**
+- □ What is my recursive relation? (how smaller
+- ↓
+- current)
+- ↓
+- □ Am I making the problem smaller? (n
+- ↓
+- n-1 or n
+- ↓
+- n/2?)
+- ↓
+- □ Are there overlapping subproblems? (Draw tree
+- ↓
+- check for repeats)
+- ↓
+- □ If overlapping
+- ↓
+- Add memo array/map
 
 ```mermaid
 flowchart TD
@@ -516,7 +610,102 @@ Permutations         | n!    | O(n) copy | O(n · n!)
 Binary Search        | log n | O(1)      | O(log n)
 ```
 
-> **Flow**: Pattern | Nodes | Work/Node | Total → Linear (factorial) | n | O(1) | O(n) | Linear (factorial) | n | O(1) | O(n) → Binary (fibonacci) | 2^n | O(1) | O(2^n) | Binary (fibonacci) | 2^n | O(1) | O(2^n) → MergeSort | 2n-1 | O(n/level)| O(n log n) | MergeSort | 2n-1 | O(n/level)| O(n log n) → Subsets | 2^n | O(n) copy | O(n · 2^n) | Subsets | 2^n | O(n) copy | O(n · 2^n) → Permutations | n! | O(n) copy | O(n · n!) | Permutations | n! | O(n) copy | O(n · n!) → Binary Search | log n | O(1) | O(log n)
+**Flow:**
+- Pattern
+- ↓
+- Nodes
+- ↓
+- Work/Node
+- ↓
+- Total
+- ↓
+- Linear (factorial)
+- ↓
+- n
+- ↓
+- O(1)
+- ↓
+- O(n)
+- ↓
+- Linear (factorial)
+- ↓
+- n
+- ↓
+- O(1)
+- ↓
+- O(n)
+- ↓
+- Binary (fibonacci)
+- ↓
+- 2^n
+- ↓
+- O(1)
+- ↓
+- O(2^n)
+- ↓
+- Binary (fibonacci)
+- ↓
+- 2^n
+- ↓
+- O(1)
+- ↓
+- O(2^n)
+- ↓
+- MergeSort
+- ↓
+- 2n-1
+- ↓
+- O(n/level)
+- ↓
+- O(n log n)
+- ↓
+- MergeSort
+- ↓
+- 2n-1
+- ↓
+- O(n/level)
+- ↓
+- O(n log n)
+- ↓
+- Subsets
+- ↓
+- 2^n
+- ↓
+- O(n) copy
+- ↓
+- O(n · 2^n)
+- ↓
+- Subsets
+- ↓
+- 2^n
+- ↓
+- O(n) copy
+- ↓
+- O(n · 2^n)
+- ↓
+- Permutations
+- ↓
+- n!
+- ↓
+- O(n) copy
+- ↓
+- O(n · n!)
+- ↓
+- Permutations
+- ↓
+- n!
+- ↓
+- O(n) copy
+- ↓
+- O(n · n!)
+- ↓
+- Binary Search
+- ↓
+- log n
+- ↓
+- O(1)
+- ↓
+- O(log n)
 
 ```mermaid
 flowchart TD
@@ -546,7 +735,24 @@ Fibonacci: h=n, b=2 → 2^n nodes → O(2^n)
 Subsets:   h=n, b=2 → 2^n leaves → O(2^n)
 ```
 
-> **Flow**: MergeSort: h=log n, b=2 → 2^(log n) = n nodes per level, log n levels | 2^(log n) = n nodes per level, log n levels → O(n log n) | Fibonacci: h=n, b=2 → 2^n nodes | 2^n nodes → O(2^n) | Subsets: h=n, b=2 → 2^n leaves | 2^n leaves → O(2^n)
+**Flow:**
+- MergeSort: h=log n, b=2
+- ↓
+- 2^(log n) = n nodes per level, log n levels
+- ↓
+- O(n log n)
+- ↓
+- Fibonacci: h=n, b=2
+- ↓
+- 2^n nodes
+- ↓
+- O(2^n)
+- ↓
+- Subsets: h=n, b=2
+- ↓
+- 2^n leaves
+- ↓
+- O(2^n)
 
 ```mermaid
 flowchart TD

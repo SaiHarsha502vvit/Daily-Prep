@@ -100,7 +100,20 @@ function UserDetail() {
 }
 ```
 
-> **Flow**: 1. useEffect + fetch (basic, no caching) → React Router v6.4 Loader (fetch before component render | React Router v6.4 Loader (fetch before component render → const router = createBrowserRouter([ | const router = createBrowserRouter([ → path: '/users/:id', | path: '/users/:id', → element: &lt;UserDetail /&gt;, | element: &lt;UserDetail /&gt;, → loader: async ({ params }) =&gt; { | loader: async ({ params }) =&gt; { → const res = await fetch('/api/users/' + params.id); | ...+1 more
+**Flow:**
+- 1. useEffect + fetch (basic, no caching)
+- ↓
+- React Router v6.4 Loader (fetch before component render
+- ↓
+- const router = createBrowserRouter([
+- ↓
+- path: '/users/:id',
+- ↓
+- element: <UserDetail />,
+- ↓
+- loader: async ({ params }) => {
+- ↓
+- const res = await fetch('/api/users/' + params.id);
 
 ```mermaid
 flowchart TD

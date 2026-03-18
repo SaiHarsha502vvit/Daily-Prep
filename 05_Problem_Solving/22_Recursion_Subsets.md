@@ -37,7 +37,24 @@
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: RECURSION & SUBSETS FUNDAMENTALS → THE SUBSET UNIVERSE: | THE SUBSET UNIVERSE: → Generate Power Set, Combinations, Permutations | Generate Power Set, Combinations, Permutations → Count Count subsets with sum K, Target Sum | Count Count subsets with sum K, Target Sum → Optimize Partition Equal Subset, Min Diff Partition | Optimize Partition Equal Subset, Min Diff Partition → Constrain Subsets without duplicates, K-size subsets | Constrain Subsets without duplicates, K-size subsets → RECURSION → MEMOIZATION → DP PIPELINE: | ...+1 more
+**Flow:**
+- RECURSION & SUBSETS FUNDAMENTALS
+- ↓
+- THE SUBSET UNIVERSE:
+- ↓
+- Generate Power Set, Combinations, Permutations
+- ↓
+- Count Count subsets with sum K, Target Sum
+- ↓
+- Optimize Partition Equal Subset, Min Diff Partition
+- ↓
+- Constrain Subsets without duplicates, K-size subsets
+- ↓
+- RECURSION
+- ↓
+- MEMOIZATION
+- ↓
+- DP PIPELINE:
 
 ```mermaid
 flowchart TD
@@ -187,7 +204,18 @@ RECURSION TREE:
 SOLUTION:
 ```
 
-> **Flow**: Index 0 (1): Include → [1] | Exclude | [1] | Exclude → []
+**Flow:**
+- Index 0 (1): Include
+- ↓
+- [1]
+- ↓
+- Exclude
+- ↓
+- [1]
+- ↓
+- Exclude
+- ↓
+- []
 
 ```mermaid
 flowchart LR
@@ -257,7 +285,20 @@ THE DUPLICATE HANDLING TRICK:
 SOLUTION:
 ```
 
-> **Flow**: DIFFICULTY: Medium → COMPANIES: Amazon, Facebook, Bloomberg | COMPANIES: Amazon, Facebook, Bloomberg → PATTERN: Backtracking + Skip Duplicates | PATTERN: Backtracking + Skip Duplicates → Input: [1, 2, 2] | Input: [1, 2, 2] → Output: [[], [1], [1,2], [1,2,2], [2], [2,2]] | Output: [[], [1], [1,2], [1,2,2], [2], [2,2]] → THE DUPLICATE HANDLING TRICK: | THE DUPLICATE HANDLING TRICK: → 1. SORT the array first | ...+1 more
+**Flow:**
+- DIFFICULTY: Medium
+- ↓
+- COMPANIES: Amazon, Facebook, Bloomberg
+- ↓
+- PATTERN: Backtracking + Skip Duplicates
+- ↓
+- Input: [1, 2, 2]
+- ↓
+- Output: [[], [1], [1,2], [1,2,2], [2], [2,2]]
+- ↓
+- THE DUPLICATE HANDLING TRICK:
+- ↓
+- 1. SORT the array first
 
 ```mermaid
 flowchart TD
@@ -336,7 +377,22 @@ RECURSION TREE for target=7, candidates=[2,3,6,7]:
 SOLUTION:
 ```
 
-> **Flow**: Pick 2: sum=2 → Pick 2: sum=4 | Pick 2: sum=4 → Pick 2: sum=6 | Pick 2: sum=6 → Pick 2: sum=8 ✗ (over) | Pick 3: sum=7 ✓ → found [2,2,3] | Pick 7: sum=7 ✓ → found [7]
+**Flow:**
+- Pick 2: sum=2
+- ↓
+- Pick 2: sum=4
+- ↓
+- Pick 2: sum=6
+- ↓
+- Pick 2: sum=8 ✗ (over)
+- ↓
+- Pick 3: sum=7 ✓
+- ↓
+- found [2,2,3]
+- ↓
+- Pick 7: sum=7 ✓
+- ↓
+- found [7]
 
 ```mermaid
 flowchart TD
@@ -400,7 +456,14 @@ COMBINING TWO TRICKS:
 SOLUTION:
 ```
 
-> **Flow**: 1. Use element once → recurse with i+1 | 2. Skip duplicates → if (i &gt; start && nums[i] == nums[i-1]) continue
+**Flow:**
+- 1. Use element once
+- ↓
+- recurse with i+1
+- ↓
+- 2. Skip duplicates
+- ↓
+- if (i > start && nums[i] == nums[i-1]) continue
 
 ```mermaid
 flowchart LR
@@ -449,7 +512,20 @@ COMPARISON TABLE:
 └───────────────────┴──────────────┴──────────────────┴─────────────┘
 ```
 
-> **Flow**: COMPARISON TABLE: → Problem Reuse? Recurse at Skip dups? | Problem Reuse? Recurse at Skip dups? → Combination Sum Unlimited i (same index) No | Combination Sum Unlimited i (same index) No → Combination Sum II Once each i+1 Yes (sort!) | Combination Sum II Once each i+1 Yes (sort!) → Subsets Once each i+1 No | Subsets Once each i+1 No → Subsets II Once each i+1 Yes (sort!) | Subsets II Once each i+1 Yes (sort!) → Permutations Once each 0 (use visited[]) No | ...+1 more
+**Flow:**
+- COMPARISON TABLE:
+- ↓
+- Problem Reuse? Recurse at Skip dups?
+- ↓
+- Combination Sum Unlimited i (same index) No
+- ↓
+- Combination Sum II Once each i+1 Yes (sort!)
+- ↓
+- Subsets Once each i+1 No
+- ↓
+- Subsets II Once each i+1 Yes (sort!)
+- ↓
+- Permutations Once each 0 (use visited[]) No
 
 ```mermaid
 flowchart TD
@@ -490,7 +566,12 @@ THE FULL PIPELINE:
 STEP 1 — PURE RECURSION:
 ```
 
-> **Flow**: PATTERN: Recursion → Memoization | Memoization → DP
+**Flow:**
+- PATTERN: Recursion
+- ↓
+- Memoization
+- ↓
+- DP
 
 ```mermaid
 flowchart LR
@@ -603,7 +684,14 @@ KEY INSIGHT:
 SOLUTION:
 ```
 
-> **Flow**: Output: true → {1, 5, 5} and {11} | If total is odd → immediately false.
+**Flow:**
+- Output: true
+- ↓
+- {1, 5, 5} and {11}
+- ↓
+- If total is odd
+- ↓
+- immediately false.
 
 ```mermaid
 flowchart LR
@@ -642,7 +730,18 @@ EDGE CASES:
   - Sum is odd → false immediately
 ```
 
-> **Flow**: - Single element → false | - All same elements, even count → true | - Sum is odd → false immediately
+**Flow:**
+- - Single element
+- ↓
+- false
+- ↓
+- - All same elements, even count
+- ↓
+- true
+- ↓
+- - Sum is odd
+- ↓
+- false immediately
 
 ```mermaid
 flowchart LR
@@ -684,7 +783,20 @@ MATHEMATICAL TRANSFORMATION:
 SOLUTION:
 ```
 
-> **Flow**: DIFFICULTY: Medium → COMPANIES: Facebook, Google, Amazon | COMPANIES: Facebook, Google, Amazon → PATTERN: Subset Sum variant / Count partitions | PATTERN: Subset Sum variant / Count partitions → PROBLEM: Assign + or - to each number to reach target s | PROBLEM: Assign + or - to each number to reach target s → Input: nums = [1, 1, 1, 1, 1], target = 3 | Input: nums = [1, 1, 1, 1, 1], target = 3 → MATHEMATICAL TRANSFORMATION: | MATHEMATICAL TRANSFORMATION: → sum(P) - sum(N) = target | ...+1 more
+**Flow:**
+- DIFFICULTY: Medium
+- ↓
+- COMPANIES: Facebook, Google, Amazon
+- ↓
+- PATTERN: Subset Sum variant / Count partitions
+- ↓
+- PROBLEM: Assign + or - to each number to reach target s
+- ↓
+- Input: nums = [1, 1, 1, 1, 1], target = 3
+- ↓
+- MATHEMATICAL TRANSFORMATION:
+- ↓
+- sum(P) - sum(N) = target
 
 ```mermaid
 flowchart TD
@@ -750,7 +862,20 @@ PROBLEM: Given digit string, return all letter combinations.
 SOLUTION:
 ```
 
-> **Flow**: abc, 3 → def, 4 | def, 4 → ghi, 5 | ghi, 5 → jkl, 6 | jkl, 6 → mno, 7 | mno, 7 → pqrs, 8 | pqrs, 8 → tuv, 9 | ...+1 more
+**Flow:**
+- abc, 3
+- ↓
+- def, 4
+- ↓
+- ghi, 5
+- ↓
+- jkl, 6
+- ↓
+- mno, 7
+- ↓
+- pqrs, 8
+- ↓
+- tuv, 9
 
 ```mermaid
 flowchart TD
@@ -1026,7 +1151,22 @@ The nth Catalan number C(n) = (2n)! / ((n+1)! × n!)
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: PALINDROME PARTITIONING (LeetCode 131 - Medium) → Partition string s so every substring is a palindrome. | Partition string s so every substring is a palindrome. → Return all possible partitions. | Return all possible partitions. → Example: s = 'aab' | Example: s = 'aab' → Output: [['a','a','b'], ['aa','b']] | Output: [['a','a','b'], ['aa','b']] → on remaining suffix. | on remaining suffix. → TIME: O(n × 2^n) | SPACE: O(n) recursion depth
+**Flow:**
+- PALINDROME PARTITIONING (LeetCode 131 - Medium)
+- ↓
+- Partition string s so every substring is a palindrome.
+- ↓
+- Return all possible partitions.
+- ↓
+- Example: s = 'aab'
+- ↓
+- Output: [['a','a','b'], ['aa','b']]
+- ↓
+- on remaining suffix.
+- ↓
+- TIME: O(n × 2^n)
+- ↓
+- SPACE: O(n) recursion depth
 
 ```mermaid
 flowchart TD
@@ -1099,7 +1239,20 @@ private boolean isPalindrome(String s) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: COMBINATIONS (LeetCode 77 - Medium) → chosen from range [1, n]. | chosen from range [1, n]. → Example: n = 4, k = 2 | Example: n = 4, k = 2 → Output: [[1,2],[1,3],[1,4],[2,3],[2,4],[3,4]] | Output: [[1,2],[1,3],[1,4],[2,3],[2,4],[3,4]] → KEY: Standard backtracking. Prune when remaining &lt; n | KEY: Standard backtracking. Prune when remaining &lt; n → TIME: O(C(n,k) × k) | SPACE: O(k)
+**Flow:**
+- COMBINATIONS (LeetCode 77 - Medium)
+- ↓
+- chosen from range [1, n].
+- ↓
+- Example: n = 4, k = 2
+- ↓
+- Output: [[1,2],[1,3],[1,4],[2,3],[2,4],[3,4]]
+- ↓
+- KEY: Standard backtracking. Prune when remaining < n
+- ↓
+- TIME: O(C(n,k) × k)
+- ↓
+- SPACE: O(k)
 
 ```mermaid
 flowchart TD
@@ -1161,7 +1314,18 @@ private void backtrack(int n, int k, int start, List<Integer> path,
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: N-QUEENS (LeetCode 51 - Hard) → Return all distinct solutions. | Return all distinct solutions. → Example: n = 4 | Example: n = 4 → Output: [['.Q..','...Q','Q...','..Q.'], | Output: [['.Q..','...Q','Q...','..Q.'], → TIME: O(n!) | SPACE: O(n²)
+**Flow:**
+- N-QUEENS (LeetCode 51 - Hard)
+- ↓
+- Return all distinct solutions.
+- ↓
+- Example: n = 4
+- ↓
+- Output: [['.Q..','...Q','Q...','..Q.'],
+- ↓
+- TIME: O(n!)
+- ↓
+- SPACE: O(n²)
 
 ```mermaid
 flowchart TD

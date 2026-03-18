@@ -48,7 +48,14 @@ This is pure arithmetic — no pointers, no `node.left`/`node.right`. Cache-frie
       40  50 100  40         Children of index 1 = 2*1+1=3, 2*1+2=4 → 40, 50 ✓
 ```
 
-> **Flow**: / \ / \ Parent of index 4 = (4-1)/2 = 1 → value 15 ✓ | 40 50 100 40 Children of index 1 = 2*1+1=3, 2*1+2= → 40, 50 ✓
+**Flow:**
+- / \ / \ Parent of index 4 = (4-1)/2 = 1
+- ↓
+- value 15 ✓
+- ↓
+- 40 50 100 40 Children of index 1 = 2*1+1=3, 2*1+2=
+- ↓
+- 40, 50 ✓
 
 ```mermaid
 flowchart LR
@@ -76,7 +83,12 @@ Step 1: Place at end          Step 2: 5 < 30? Swap        Step 3: 5 < 10? Swap
 Array: [10,15,30,40,50,5]   [10,15,5,40,50,30]          [5,15,10,40,50,30]
 ```
 
-> **Flow**: 15 30 → 15 5 | 15 5 → 15 10
+**Flow:**
+- 15 30
+- ↓
+- 15 5
+- ↓
+- 15 10
 
 ```mermaid
 flowchart LR
@@ -101,7 +113,10 @@ Step 1: Replace root with last    Step 2: 30 > min(15,10)? Swap with 10
 Array: [30,15,10,40,50]            [10,15,30,40,50]    ✓ Heap restored!
 ```
 
-> **Flow**: 15 10 → 15 30
+**Flow:**
+- 15 10
+- ↓
+- 15 30
 
 ```mermaid
 flowchart LR
@@ -176,7 +191,20 @@ minHeap.contains(obj);   // O(n)
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: ⚠️ COMMON HEAP MISTAKES ⚠️ → 1. Java PQ is MIN-HEAP by default | 1. Java PQ is MIN-HEAP by default → 2. Forgetting custom comparator for max-heap objects | 2. Forgetting custom comparator for max-heap objects → 3. PQ.remove(obj) is O(n), not O(log n)! | 3. PQ.remove(obj) is O(n), not O(log n)! → → It does a linear scan to find the element first | → It does a linear scan to find the element first → 4. Iterator order is NOT sorted! | 4. Iterator order is NOT sorted! → → for (int x : pq) does NOT give elements in heap order | ...+1 more
+**Flow:**
+- ⚠️ COMMON HEAP MISTAKES ⚠️
+- ↓
+- 1. Java PQ is MIN-HEAP by default
+- ↓
+- 2. Forgetting custom comparator for max-heap objects
+- ↓
+- 3. PQ.remove(obj) is O(n), not O(log n)!
+- ↓
+- It does a linear scan to find the element first
+- ↓
+- 4. Iterator order is NOT sorted!
+- ↓
+- for (int x : pq) does NOT give elements in heap order
 
 ```mermaid
 flowchart TD
@@ -208,7 +236,10 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: EASY — 5 PROBLEMS → Build intuition: direct heap usage, simple simulations
+**Flow:**
+- EASY — 5 PROBLEMS
+- ↓
+- Build intuition: direct heap usage, simple simulations
 
 ```mermaid
 flowchart TD
@@ -439,7 +470,10 @@ class Solution {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: MEDIUM — 10 PROBLEMS → Core patterns: Top-K, Two Heaps, Merge K, Greedy + Heap
+**Flow:**
+- MEDIUM — 10 PROBLEMS
+- ↓
+- Core patterns: Top-K, Two Heaps, Merge K, Greedy + Heap
 
 ```mermaid
 flowchart TD
@@ -983,7 +1017,10 @@ class Solution {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: HARD — 5 PROBLEMS → Advanced patterns: monotonic deque, two-heap greedy, 3D
+**Flow:**
+- HARD — 5 PROBLEMS
+- ↓
+- Advanced patterns: monotonic deque, two-heap greedy, 3D
 
 ```mermaid
 flowchart TD
@@ -1340,7 +1377,20 @@ Sort via heap (heapsort)       │ O(n log n)     │ O(1) in-place
 
 ```
 
-> **Flow**: HEAP COMPLEXITY CHEAT SHEET → Operation Binary Heap Java PriorityQueue Notes | Operation Binary Heap Java PriorityQueue Notes → insert / offer O(log n) O(log n) Sift-up | insert / offer O(log n) O(log n) Sift-up → extractMin / poll O(log n) O(log n) Sift-down | extractMin / poll O(log n) O(log n) Sift-down → peek O(1) O(1) Root access | peek O(1) O(1) Root access → remove(object) O(n) O(n) Linear search! | remove(object) O(n) O(n) Linear search! → contains O(n) O(n) Linear search! | ...+1 more
+**Flow:**
+- HEAP COMPLEXITY CHEAT SHEET
+- ↓
+- Operation Binary Heap Java PriorityQueue Notes
+- ↓
+- insert / offer O(log n) O(log n) Sift-up
+- ↓
+- extractMin / poll O(log n) O(log n) Sift-down
+- ↓
+- peek O(1) O(1) Root access
+- ↓
+- remove(object) O(n) O(n) Linear search!
+- ↓
+- contains O(n) O(n) Linear search!
 
 ```mermaid
 flowchart TD
@@ -1396,7 +1446,10 @@ Need to repeatedly find min/max of a dynamic collection?
 
 ```
 
-> **Flow**: YES → Use a Heap (PriorityQueue)
+**Flow:**
+- YES
+- ↓
+- Use a Heap (PriorityQueue)
 
 ```mermaid
 flowchart LR
@@ -1451,7 +1504,38 @@ flowchart LR
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: INTERVIEW TIPS → 1. Always clarify: 'Do I need min or max?' before codin | 1. Always clarify: 'Do I need min or max?' before codin → 2. Java PQ is MIN heap — say this out loud in interview | 2. Java PQ is MIN heap — say this out loud in interview → 4. For 'median' → think TWO heaps immediately | 4. For 'median' → think TWO heaps immediately → 5. For 'merge K sorted' → think min-heap of K heads | 5. For 'merge K sorted' → think min-heap of K heads → 6. For 'greedy + dynamic choices' → think heap | 6. For 'greedy + dynamic choices' → think heap → 7. Don't use heap when sorting once suffices | ...+1 more
+**Flow:**
+- INTERVIEW TIPS
+- ↓
+- 1. Always clarify: 'Do I need min or max?' before codin
+- ↓
+- 2. Java PQ is MIN heap — say this out loud in interview
+- ↓
+- 4. For 'median'
+- ↓
+- think TWO heaps immediately
+- ↓
+- 4. For 'median'
+- ↓
+- think TWO heaps immediately
+- ↓
+- 5. For 'merge K sorted'
+- ↓
+- think min-heap of K heads
+- ↓
+- 5. For 'merge K sorted'
+- ↓
+- think min-heap of K heads
+- ↓
+- 6. For 'greedy + dynamic choices'
+- ↓
+- think heap
+- ↓
+- 6. For 'greedy + dynamic choices'
+- ↓
+- think heap
+- ↓
+- 7. Don't use heap when sorting once suffices
 
 ```mermaid
 flowchart TD

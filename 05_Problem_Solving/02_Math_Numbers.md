@@ -86,7 +86,20 @@ public boolean isPrime(int n) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: COUNT PRIMES → Count the number of prime numbers less than n. | Count the number of prime numbers less than n. → Input: n = 10 | Input: n = 10 → Output: 4 | Output: 4 → Explanation: Primes less than 10 are 2, 3, 5, 7 | Explanation: Primes less than 10 are 2, 3, 5, 7 → Input: n = 0 | Input: n = 0 → Output: 0 | ...+1 more
+**Flow:**
+- COUNT PRIMES
+- ↓
+- Count the number of prime numbers less than n.
+- ↓
+- Input: n = 10
+- ↓
+- Output: 4
+- ↓
+- Explanation: Primes less than 10 are 2, 3, 5, 7
+- ↓
+- Input: n = 0
+- ↓
+- Output: 0
 
 ```mermaid
 flowchart TD
@@ -156,7 +169,20 @@ public int countPrimes(int n) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: FIND THE NTH PRIME NUMBER → Given n, find the nth prime number. | Given n, find the nth prime number. → Input: n = 1 | Input: n = 1 → Output: 2 (1st prime) | Output: 2 (1st prime) → Input: n = 5 | Input: n = 5 → Output: 11 (5th prime: 2, 3, 5, 7, 11) | Output: 11 (5th prime: 2, 3, 5, 7, 11) → Input: n = 10 | ...+1 more
+**Flow:**
+- FIND THE NTH PRIME NUMBER
+- ↓
+- Given n, find the nth prime number.
+- ↓
+- Input: n = 1
+- ↓
+- Output: 2 (1st prime)
+- ↓
+- Input: n = 5
+- ↓
+- Output: 11 (5th prime: 2, 3, 5, 7, 11)
+- ↓
+- Input: n = 10
 
 ```mermaid
 flowchart TD
@@ -233,7 +259,20 @@ private boolean isPrime(int n) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: FIND PREVIOUS AND NEXT PRIME → and nearest prime greater than n (next prime). | and nearest prime greater than n (next prime). → Input: n = 10 | Input: n = 10 → Output: Previous = 7, Next = 11 | Output: Previous = 7, Next = 11 → Input: n = 14 | Input: n = 14 → Output: Previous = 13, Next = 17 | Output: Previous = 13, Next = 17 → Input: n = 7 (n is prime) | ...+1 more
+**Flow:**
+- FIND PREVIOUS AND NEXT PRIME
+- ↓
+- and nearest prime greater than n (next prime).
+- ↓
+- Input: n = 10
+- ↓
+- Output: Previous = 7, Next = 11
+- ↓
+- Input: n = 14
+- ↓
+- Output: Previous = 13, Next = 17
+- ↓
+- Input: n = 7 (n is prime)
 
 ```mermaid
 flowchart TD
@@ -311,7 +350,20 @@ private int findNextPrime(int n) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: FIND ALL PRIME FACTORS → Given a number n, find all its prime factors. | Given a number n, find all its prime factors. → Input: n = 12 | Input: n = 12 → Output: [2, 2, 3] | Output: [2, 2, 3] → Explanation: 12 = 2 × 2 × 3 | Explanation: 12 = 2 × 2 × 3 → Input: n = 100 | Input: n = 100 → Output: [2, 2, 5, 5] | ...+1 more
+**Flow:**
+- FIND ALL PRIME FACTORS
+- ↓
+- Given a number n, find all its prime factors.
+- ↓
+- Input: n = 12
+- ↓
+- Output: [2, 2, 3]
+- ↓
+- Explanation: 12 = 2 × 2 × 3
+- ↓
+- Input: n = 100
+- ↓
+- Output: [2, 2, 5, 5]
 
 ```mermaid
 flowchart TD
@@ -410,7 +462,20 @@ public List<Integer> primeFactors(int n) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: CLOSEST PRIME NUMBERS IN RANGE → (LeetCode Premium - Full Problem Description) | (LeetCode Premium - Full Problem Description) → and num2 such that: | and num2 such that: → - left &lt;= num1 &lt; num2 &lt;= right | - left &lt;= num1 &lt; num2 &lt;= right → - Both num1 and num2 are prime numbers | - Both num1 and num2 are prime numbers → - num2 - num1 is the minimum amongst all other pairs | - num2 - num1 is the minimum amongst all other pairs → such pair exists, return [-1, -1]. | ...+1 more
+**Flow:**
+- CLOSEST PRIME NUMBERS IN RANGE
+- ↓
+- (LeetCode Premium - Full Problem Description)
+- ↓
+- and num2 such that:
+- ↓
+- - left <= num1 < num2 <= right
+- ↓
+- - Both num1 and num2 are prime numbers
+- ↓
+- - num2 - num1 is the minimum amongst all other pairs
+- ↓
+- such pair exists, return [-1, -1].
 
 ```mermaid
 flowchart TD
@@ -495,7 +560,20 @@ public int[] closestPrimes(int left, int right) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: NTH FIBONACCI NUMBER → Fibonacci Sequence: 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, .. | Fibonacci Sequence: 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, .. → F(n) = F(n-1) + F(n-2) for n &gt; 1 | F(n) = F(n-1) + F(n-2) for n &gt; 1 → Input: n = 4 | Input: n = 4 → Output: 3 | Output: 3 → Input: n = 10 | Input: n = 10 → Output: 55 | ...+1 more
+**Flow:**
+- NTH FIBONACCI NUMBER
+- ↓
+- Fibonacci Sequence: 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, ..
+- ↓
+- F(n) = F(n-1) + F(n-2) for n > 1
+- ↓
+- Input: n = 4
+- ↓
+- Output: 3
+- ↓
+- Input: n = 10
+- ↓
+- Output: 55
 
 ```mermaid
 flowchart TD
@@ -577,7 +655,20 @@ private int fibHelper(int n, int[] memo) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: SUM OF FIRST N FIBONACCI NUMBERS → Find the sum of first n Fibonacci numbers. | Find the sum of first n Fibonacci numbers. → Input: n = 5 | Input: n = 5 → Output: 7 | Output: 7 → Input: n = 10 | Input: n = 10 → Output: 88 | Output: 88 → Explanation: 0+1+1+2+3+5+8+13+21+34 = 88 | ...+1 more
+**Flow:**
+- SUM OF FIRST N FIBONACCI NUMBERS
+- ↓
+- Find the sum of first n Fibonacci numbers.
+- ↓
+- Input: n = 5
+- ↓
+- Output: 7
+- ↓
+- Input: n = 10
+- ↓
+- Output: 88
+- ↓
+- Explanation: 0+1+1+2+3+5+8+13+21+34 = 88
 
 ```mermaid
 flowchart TD
@@ -648,7 +739,20 @@ public int sumFibonacciFormula(int n) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: CHECK IF NUMBER IS A FIBONACCI NUMBER → Given a number, check if it belongs to Fibonacci sequen | Given a number, check if it belongs to Fibonacci sequen → Input: n = 8 | Input: n = 8 → Output: true (8 is F(6)) | Output: true (8 is F(6)) → Input: n = 10 | Input: n = 10 → Output: false | Output: false → PROPERTY: A number is Fibonacci if and only if one of | ...+1 more
+**Flow:**
+- CHECK IF NUMBER IS A FIBONACCI NUMBER
+- ↓
+- Given a number, check if it belongs to Fibonacci sequen
+- ↓
+- Input: n = 8
+- ↓
+- Output: true (8 is F(6))
+- ↓
+- Input: n = 10
+- ↓
+- Output: false
+- ↓
+- PROPERTY: A number is Fibonacci if and only if one of
 
 ```mermaid
 flowchart TD
@@ -718,7 +822,14 @@ public boolean isFibonacciIterative(int n) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: N-TH TRIBONACCI NUMBER → Sequence: 0, 1, 1, 2, 4, 7, 13, 24, 44, 81, ... | Sequence: 0, 1, 1, 2, 4, 7, 13, 24, 44, 81, ... → Input: n = 4 | Input: n = 4 → Output: 4
+**Flow:**
+- N-TH TRIBONACCI NUMBER
+- ↓
+- Sequence: 0, 1, 1, 2, 4, 7, 13, 24, 44, 81, ...
+- ↓
+- Input: n = 4
+- ↓
+- Output: 4
 
 ```mermaid
 flowchart TD
@@ -779,7 +890,20 @@ public int tribonacci(int n) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: CLIMBING STAIRS → You can climb 1 or 2 steps at a time. | You can climb 1 or 2 steps at a time. → How many distinct ways to climb n stairs? | How many distinct ways to climb n stairs? → Input: n = 3 | Input: n = 3 → Output: 3 | Output: 3 → Ways: [1,1,1], [1,2], [2,1] | Ways: [1,1,1], [1,2], [2,1] → Input: n = 5 | ...+1 more
+**Flow:**
+- CLIMBING STAIRS
+- ↓
+- You can climb 1 or 2 steps at a time.
+- ↓
+- How many distinct ways to climb n stairs?
+- ↓
+- Input: n = 3
+- ↓
+- Output: 3
+- ↓
+- Ways: [1,1,1], [1,2], [2,1]
+- ↓
+- Input: n = 5
 
 ```mermaid
 flowchart TD
@@ -839,7 +963,20 @@ public int climbStairs(int n) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: SUM OF DIGITS → Find the sum of all digits of a given number. | Find the sum of all digits of a given number. → Input: n = 12345 | Input: n = 12345 → Output: 15 | Output: 15 → Explanation: 1 + 2 + 3 + 4 + 5 = 15 | Explanation: 1 + 2 + 3 + 4 + 5 = 15 → Input: n = 9999 | Input: n = 9999 → Output: 36
+**Flow:**
+- SUM OF DIGITS
+- ↓
+- Find the sum of all digits of a given number.
+- ↓
+- Input: n = 12345
+- ↓
+- Output: 15
+- ↓
+- Explanation: 1 + 2 + 3 + 4 + 5 = 15
+- ↓
+- Input: n = 9999
+- ↓
+- Output: 36
 
 ```mermaid
 flowchart TD
@@ -903,7 +1040,20 @@ public int sumOfDigitsRecursive(int n) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: ADD DIGITS (DIGITAL ROOT) → Repeatedly add digits until single digit remains. | Repeatedly add digits until single digit remains. → Input: num = 38 | Input: num = 38 → Output: 2 | Output: 2 → Explanation: 3 + 8 = 11, 1 + 1 = 2 | Explanation: 3 + 8 = 11, 1 + 1 = 2 → Input: num = 9999 | Input: num = 9999 → Output: 9 | ...+1 more
+**Flow:**
+- ADD DIGITS (DIGITAL ROOT)
+- ↓
+- Repeatedly add digits until single digit remains.
+- ↓
+- Input: num = 38
+- ↓
+- Output: 2
+- ↓
+- Explanation: 3 + 8 = 11, 1 + 1 = 2
+- ↓
+- Input: num = 9999
+- ↓
+- Output: 9
 
 ```mermaid
 flowchart TD
@@ -972,7 +1122,20 @@ public int addDigitsIterative(int num) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: REVERSE INTEGER → Reverse digits of a 32-bit signed integer. | Reverse digits of a 32-bit signed integer. → Return 0 if result overflows. | Return 0 if result overflows. → Input: x = 123 | Input: x = 123 → Output: 321 | Output: 321 → Input: x = -123 | Input: x = -123 → Output: -321 | ...+1 more
+**Flow:**
+- REVERSE INTEGER
+- ↓
+- Reverse digits of a 32-bit signed integer.
+- ↓
+- Return 0 if result overflows.
+- ↓
+- Input: x = 123
+- ↓
+- Output: 321
+- ↓
+- Input: x = -123
+- ↓
+- Output: -321
 
 ```mermaid
 flowchart TD
@@ -1043,7 +1206,20 @@ public int reverse(int x) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: PALINDROME NUMBER → Input: x = 121 | Input: x = 121 → Output: true | Output: true → Input: x = -121 | Input: x = -121 → Output: false (reads as 121-) | Output: false (reads as 121-) → Input: x = 10 | Input: x = 10 → Output: false (reads as 01)
+**Flow:**
+- PALINDROME NUMBER
+- ↓
+- Input: x = 121
+- ↓
+- Output: true
+- ↓
+- Input: x = -121
+- ↓
+- Output: false (reads as 121-)
+- ↓
+- Input: x = 10
+- ↓
+- Output: false (reads as 01)
 
 ```mermaid
 flowchart TD
@@ -1112,7 +1288,20 @@ public boolean isPalindrome(int x) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: HAPPY NUMBER → endlessly in a cycle (not happy). | endlessly in a cycle (not happy). → Input: n = 19 | Input: n = 19 → Output: true | Output: true → Explanation: | Explanation: → Input: n = 2 | Input: n = 2 → Output: false (enters cycle)
+**Flow:**
+- HAPPY NUMBER
+- ↓
+- endlessly in a cycle (not happy).
+- ↓
+- Input: n = 19
+- ↓
+- Output: true
+- ↓
+- Explanation:
+- ↓
+- Input: n = 2
+- ↓
+- Output: false (enters cycle)
 
 ```mermaid
 flowchart TD
@@ -1185,7 +1374,22 @@ private int sumSquareDigits(int n) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: GCD - GREATEST COMMON DIVISOR → Find the largest number that divides both a and b. | Find the largest number that divides both a and b. → Input: a = 48, b = 18 | Input: a = 48, b = 18 → Output: 6 | Output: 6 → Explanation: Divisors of 48: 1,2,3,4,6,8,12,16,24,48 | Explanation: Divisors of 48: 1,2,3,4,6,8,12,16,24,48 → Divisors of 18: 1,2,3,6,9,18 | Divisors of 18: 1,2,3,6,9,18 → Common: 1,2,3,6 → GCD = 6 | ...+1 more
+**Flow:**
+- GCD - GREATEST COMMON DIVISOR
+- ↓
+- Find the largest number that divides both a and b.
+- ↓
+- Input: a = 48, b = 18
+- ↓
+- Output: 6
+- ↓
+- Explanation: Divisors of 48: 1,2,3,4,6,8,12,16,24,48
+- ↓
+- Divisors of 18: 1,2,3,6,9,18
+- ↓
+- Common: 1,2,3,6
+- ↓
+- GCD = 6
 
 ```mermaid
 flowchart TD
@@ -1279,7 +1483,20 @@ public int lcm(int a, int b) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: FIND GREATEST COMMON DIVISOR OF ARRAY → (LeetCode Premium - Full Problem Description) | (LeetCode Premium - Full Problem Description) → smallest number and largest number in nums. | smallest number and largest number in nums. → divides both numbers. | divides both numbers. → Example 1: | Example 1: → Input: nums = [2, 5, 6, 9, 10] | Input: nums = [2, 5, 6, 9, 10] → Output: 2 | ...+1 more
+**Flow:**
+- FIND GREATEST COMMON DIVISOR OF ARRAY
+- ↓
+- (LeetCode Premium - Full Problem Description)
+- ↓
+- smallest number and largest number in nums.
+- ↓
+- divides both numbers.
+- ↓
+- Example 1:
+- ↓
+- Input: nums = [2, 5, 6, 9, 10]
+- ↓
+- Output: 2
 
 ```mermaid
 flowchart TD

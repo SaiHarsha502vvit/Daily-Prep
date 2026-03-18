@@ -26,7 +26,20 @@
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: DP FUNDAMENTALS → KEY PATTERNS: | KEY PATTERNS: → 1. 1D DP: Single array/sequence | 1. 1D DP: Single array/sequence → 2. 2D DP: Two sequences or grid | 2. 2D DP: Two sequences or grid → 3. Interval DP: Subarray/substring problems | 3. Interval DP: Subarray/substring problems → 4. State Machine DP: Multiple states | 4. State Machine DP: Multiple states → 5. Knapsack: Selection problems | ...+1 more
+**Flow:**
+- DP FUNDAMENTALS
+- ↓
+- KEY PATTERNS:
+- ↓
+- 1. 1D DP: Single array/sequence
+- ↓
+- 2. 2D DP: Two sequences or grid
+- ↓
+- 3. Interval DP: Subarray/substring problems
+- ↓
+- 4. State Machine DP: Multiple states
+- ↓
+- 5. Knapsack: Selection problems
 
 ```mermaid
 flowchart TD
@@ -365,7 +378,20 @@ int coinChangeBottomUp(int[] coins, int amount) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: CLIMBING STAIRS - Ways to reach top (1 or 2 steps) → n = 4 stairs | n = 4 stairs → Ways: | Ways: → 1+1+1+1 4 ← Goal | 1+1+1+1 4 ← Goal → 0 ← Start | 0 ← Start → dp[i] = dp[i-1] + dp[i-2] (Fibonacci!) | dp[i] = dp[i-1] + dp[i-2] (Fibonacci!) → Output: 5 ways
+**Flow:**
+- CLIMBING STAIRS - Ways to reach top (1 or 2 steps)
+- ↓
+- n = 4 stairs
+- ↓
+- Ways:
+- ↓
+- 1+1+1+1 4 ← Goal
+- ↓
+- 0 ← Start
+- ↓
+- dp[i] = dp[i-1] + dp[i-2] (Fibonacci!)
+- ↓
+- Output: 5 ways
 
 ```mermaid
 flowchart TD
@@ -426,7 +452,20 @@ public int climbStairs(int n) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: HOUSE ROBBER - Max money without robbing adjacent house → nums = [2, 7, 9, 3, 1] | nums = [2, 7, 9, 3, 1] → Houses: [2] [7] [9] [3] [1] | Houses: [2] [7] [9] [3] [1] → Rob house 0, 2, 4: 2 + 9 + 1 = 12 ✓ | Rob house 0, 2, 4: 2 + 9 + 1 = 12 ✓ → Rob house 1, 3: 7 + 3 = 10 | Rob house 1, 3: 7 + 3 = 10 → dp[i] = max(dp[i-1], dp[i-2] + nums[i]) | dp[i] = max(dp[i-1], dp[i-2] + nums[i]) → 'Skip current' or 'Rob current + skip previous'
+**Flow:**
+- HOUSE ROBBER - Max money without robbing adjacent house
+- ↓
+- nums = [2, 7, 9, 3, 1]
+- ↓
+- Houses: [2] [7] [9] [3] [1]
+- ↓
+- Rob house 0, 2, 4: 2 + 9 + 1 = 12 ✓
+- ↓
+- Rob house 1, 3: 7 + 3 = 10
+- ↓
+- dp[i] = max(dp[i-1], dp[i-2] + nums[i])
+- ↓
+- 'Skip current' or 'Rob current + skip previous'
 
 ```mermaid
 flowchart TD
@@ -488,7 +527,18 @@ public int rob(int[] nums) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: HOUSE ROBBER II - Houses in circle → nums = [2, 3, 2] | nums = [2, 3, 2] → 2 ○ 3 First and last are adjacent! | 2 ○ 3 First and last are adjacent! → Can't rob both first and last house. | Can't rob both first and last house. → Solution: max(rob[0..n-2], rob[1..n-1]) | Solution: max(rob[0..n-2], rob[1..n-1]) → Output: 3 (rob house 1 only)
+**Flow:**
+- HOUSE ROBBER II - Houses in circle
+- ↓
+- nums = [2, 3, 2]
+- ↓
+- 2 ○ 3 First and last are adjacent!
+- ↓
+- Can't rob both first and last house.
+- ↓
+- Solution: max(rob[0..n-2], rob[1..n-1])
+- ↓
+- Output: 3 (rob house 1 only)
 
 ```mermaid
 flowchart TD
@@ -556,7 +606,20 @@ private int robRange(int[] nums, int start, int end) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: MAXIMUM SUBARRAY - Kadane's Algorithm → nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4] | nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4] → At each position, decide: | At each position, decide: → - Start new subarray here? | - Start new subarray here? → - Or extend previous subarray? | - Or extend previous subarray? → dp[i] = max(nums[i], dp[i-1] + nums[i]) | dp[i] = max(nums[i], dp[i-1] + nums[i]) → Index: 0 1 2 3 4 5 6 7 8 | ...+1 more
+**Flow:**
+- MAXIMUM SUBARRAY - Kadane's Algorithm
+- ↓
+- nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4]
+- ↓
+- At each position, decide:
+- ↓
+- - Start new subarray here?
+- ↓
+- - Or extend previous subarray?
+- ↓
+- dp[i] = max(nums[i], dp[i-1] + nums[i])
+- ↓
+- Index: 0 1 2 3 4 5 6 7 8
 
 ```mermaid
 flowchart TD
@@ -624,7 +687,20 @@ public int maxSubArray(int[] nums) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: COIN CHANGE - Minimum coins to make amount → coins = [1, 2, 5], amount = 11 | coins = [1, 2, 5], amount = 11 → dp[i] = min coins to make amount i | dp[i] = min coins to make amount i → Amount: 0 1 2 3 4 5 6 7 8 9 10 11 | Amount: 0 1 2 3 4 5 6 7 8 9 10 11 → For amount 11: | For amount 11: → - Use coin 5: dp[11-5] + 1 = dp[6] + 1 = 3 | - Use coin 5: dp[11-5] + 1 = dp[6] + 1 = 3 → - Use coin 2: dp[11-2] + 1 = dp[9] + 1 = 4 | ...+1 more
+**Flow:**
+- COIN CHANGE - Minimum coins to make amount
+- ↓
+- coins = [1, 2, 5], amount = 11
+- ↓
+- dp[i] = min coins to make amount i
+- ↓
+- Amount: 0 1 2 3 4 5 6 7 8 9 10 11
+- ↓
+- For amount 11:
+- ↓
+- - Use coin 5: dp[11-5] + 1 = dp[6] + 1 = 3
+- ↓
+- - Use coin 2: dp[11-2] + 1 = dp[9] + 1 = 4
 
 ```mermaid
 flowchart TD
@@ -696,7 +772,12 @@ public int coinChange(int[] coins, int amount) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: UNIQUE PATHS - Count paths from top-left to bottom-righ → m = 3, n = 7 (3 rows, 7 cols) | m = 3, n = 7 (3 rows, 7 cols) → Output: 28 paths
+**Flow:**
+- UNIQUE PATHS - Count paths from top-left to bottom-righ
+- ↓
+- m = 3, n = 7 (3 rows, 7 cols)
+- ↓
+- Output: 28 paths
 
 ```mermaid
 flowchart TD
@@ -750,7 +831,16 @@ public int uniquePaths(int m, int n) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: UNIQUE PATHS II - Grid with obstacles → grid = [[0,0,0], | grid = [[0,0,0], → [0,1,0], 1 = obstacle | [0,1,0], 1 = obstacle → 1 X 1 X = blocked | 1 X 1 X = blocked → Output: 2 paths
+**Flow:**
+- UNIQUE PATHS II - Grid with obstacles
+- ↓
+- grid = [[0,0,0],
+- ↓
+- [0,1,0], 1 = obstacle
+- ↓
+- 1 X 1 X = blocked
+- ↓
+- Output: 2 paths
 
 ```mermaid
 flowchart TD
@@ -816,7 +906,10 @@ public int uniquePathsWithObstacles(int[][] grid) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: 1 3 1 / 1 5 1 / 4 2 1 → 1 4 5 / 2 7 6 / 6 8 7
+**Flow:**
+- 1 3 1 / 1 5 1 / 4 2 1
+- ↓
+- 1 4 5 / 2 7 6 / 6 8 7
 
 ```mermaid
 flowchart LR
@@ -868,7 +961,16 @@ public int minPathSum(int[][] grid) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: LONGEST COMMON SUBSEQUENCE → text1 = 'abcde', text2 = 'ace' | text1 = 'abcde', text2 = 'ace' → a 0 1 1 1 If match: dp[i][j] = dp[i-1][j-1] + 1 | a 0 1 1 1 If match: dp[i][j] = dp[i-1][j-1] + 1 → b 0 1 1 1 Else: dp[i][j] = max(dp[i-1][j], | b 0 1 1 1 Else: dp[i][j] = max(dp[i-1][j], → LCS = 'ace', length = 3
+**Flow:**
+- LONGEST COMMON SUBSEQUENCE
+- ↓
+- text1 = 'abcde', text2 = 'ace'
+- ↓
+- a 0 1 1 1 If match: dp[i][j] = dp[i-1][j-1] + 1
+- ↓
+- b 0 1 1 1 Else: dp[i][j] = max(dp[i-1][j],
+- ↓
+- LCS = 'ace', length = 3
 
 ```mermaid
 flowchart TD
@@ -935,7 +1037,20 @@ public int longestCommonSubsequence(String text1, String text2) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: EDIT DISTANCE - Min operations to convert word1 to word → word1 = 'horse', word2 = 'ros' | word1 = 'horse', word2 = 'ros' → Operations: Insert, Delete, Replace | Operations: Insert, Delete, Replace → h 1 1 2 3 If match: dp[i][j] = dp[i-1][j-1] | h 1 1 2 3 If match: dp[i][j] = dp[i-1][j-1] → o 2 2 1 2 Else: 1 + min(dp[i-1][j], // delete | o 2 2 1 2 Else: 1 + min(dp[i-1][j], // delete → r 3 2 2 2 dp[i][j-1], // insert | r 3 2 2 2 dp[i][j-1], // insert → s 4 3 3 2 dp[i-1][j-1]) // replace | ...+1 more
+**Flow:**
+- EDIT DISTANCE - Min operations to convert word1 to word
+- ↓
+- word1 = 'horse', word2 = 'ros'
+- ↓
+- Operations: Insert, Delete, Replace
+- ↓
+- h 1 1 2 3 If match: dp[i][j] = dp[i-1][j-1]
+- ↓
+- o 2 2 1 2 Else: 1 + min(dp[i-1][j], // delete
+- ↓
+- r 3 2 2 2 dp[i][j-1], // insert
+- ↓
+- s 4 3 3 2 dp[i-1][j-1]) // replace
 
 ```mermaid
 flowchart TD
@@ -1014,7 +1129,20 @@ public int minDistance(String word1, String word2) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: 0/1 KNAPSACK - Max value with weight limit → Item 0: weight=1, value=6 | Item 0: weight=1, value=6 → Item 1: weight=2, value=10 | Item 1: weight=2, value=10 → Item 2: weight=3, value=12 | Item 2: weight=3, value=12 → Take items 1 and 2: weight=5, value=22 ✓ | Take items 1 and 2: weight=5, value=22 ✓ → Cap: 0 1 2 3 4 5 | Cap: 0 1 2 3 4 5 → Item 0: 0 6 6 6 6 6 | ...+1 more
+**Flow:**
+- 0/1 KNAPSACK - Max value with weight limit
+- ↓
+- Item 0: weight=1, value=6
+- ↓
+- Item 1: weight=2, value=10
+- ↓
+- Item 2: weight=3, value=12
+- ↓
+- Take items 1 and 2: weight=5, value=22 ✓
+- ↓
+- Cap: 0 1 2 3 4 5
+- ↓
+- Item 0: 0 6 6 6 6 6
 
 ```mermaid
 flowchart TD
@@ -1075,7 +1203,20 @@ public int knapsack(int[] weights, int[] values, int capacity) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: PARTITION EQUAL SUBSET SUM → nums = [1, 5, 11, 5] | nums = [1, 5, 11, 5] → Total = 22, Target = 11 | Total = 22, Target = 11 → Can we find subset with sum = 11? | Can we find subset with sum = 11? → Yes! [1, 5, 5] and [11] | Yes! [1, 5, 5] and [11] → This is 0/1 Knapsack with target = sum/2 | This is 0/1 Knapsack with target = sum/2 → dp[i] = true if sum i is achievable
+**Flow:**
+- PARTITION EQUAL SUBSET SUM
+- ↓
+- nums = [1, 5, 11, 5]
+- ↓
+- Total = 22, Target = 11
+- ↓
+- Can we find subset with sum = 11?
+- ↓
+- Yes! [1, 5, 5] and [11]
+- ↓
+- This is 0/1 Knapsack with target = sum/2
+- ↓
+- dp[i] = true if sum i is achievable
 
 ```mermaid
 flowchart TD
@@ -1145,7 +1286,20 @@ public boolean canPartition(int[] nums) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: TARGET SUM - Assign + or - to reach target → nums = [1, 1, 1, 1, 1], target = 3 | nums = [1, 1, 1, 1, 1], target = 3 → Ways to get 3: | Ways to get 3: → Output: 5 ways | Output: 5 ways → Let P = sum of positives, N = sum of negatives | Let P = sum of positives, N = sum of negatives → P - N = target, P + N = sum | P - N = target, P + N = sum → P = (target + sum) / 2 | ...+1 more
+**Flow:**
+- TARGET SUM - Assign + or - to reach target
+- ↓
+- nums = [1, 1, 1, 1, 1], target = 3
+- ↓
+- Ways to get 3:
+- ↓
+- Output: 5 ways
+- ↓
+- Let P = sum of positives, N = sum of negatives
+- ↓
+- P - N = target, P + N = sum
+- ↓
+- P = (target + sum) / 2
 
 ```mermaid
 flowchart TD
@@ -1220,7 +1374,20 @@ public int findTargetSumWays(int[] nums, int target) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: LONGEST INCREASING SUBSEQUENCE → nums = [10, 9, 2, 5, 3, 7, 101, 18] | nums = [10, 9, 2, 5, 3, 7, 101, 18] → LIS: [2, 3, 7, 101] or [2, 5, 7, 101] | LIS: [2, 3, 7, 101] or [2, 5, 7, 101] → Length = 4 | Length = 4 → O(n²) DP: dp[i] = max length ending at i | O(n²) DP: dp[i] = max length ending at i → Index: 0 1 2 3 4 5 6 7 | Index: 0 1 2 3 4 5 6 7 → nums: 10 9 2 5 3 7 101 18 | ...+1 more
+**Flow:**
+- LONGEST INCREASING SUBSEQUENCE
+- ↓
+- nums = [10, 9, 2, 5, 3, 7, 101, 18]
+- ↓
+- LIS: [2, 3, 7, 101] or [2, 5, 7, 101]
+- ↓
+- Length = 4
+- ↓
+- O(n²) DP: dp[i] = max length ending at i
+- ↓
+- Index: 0 1 2 3 4 5 6 7
+- ↓
+- nums: 10 9 2 5 3 7 101 18
 
 ```mermaid
 flowchart TD
@@ -1296,7 +1463,18 @@ private int binarySearch(List<Integer> tails, int target) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WORD BREAK - Can string be segmented into dictionary wo → s = 'leetcode', wordDict = ['leet', 'code'] | s = 'leetcode', wordDict = ['leet', 'code'] → 'leetcode' = 'leet' + 'code' ✓ | 'leetcode' = 'leet' + 'code' ✓ → dp[i] = true if s[0..i) can be segmented | dp[i] = true if s[0..i) can be segmented → Index: 0 1 2 3 4 5 6 7 8 | Index: 0 1 2 3 4 5 6 7 8 → 'leet'↗ 'code'↗
+**Flow:**
+- WORD BREAK - Can string be segmented into dictionary wo
+- ↓
+- s = 'leetcode', wordDict = ['leet', 'code']
+- ↓
+- 'leetcode' = 'leet' + 'code' ✓
+- ↓
+- dp[i] = true if s[0..i) can be segmented
+- ↓
+- Index: 0 1 2 3 4 5 6 7 8
+- ↓
+- 'leet'↗ 'code'↗
 
 ```mermaid
 flowchart TD
@@ -1362,7 +1540,16 @@ public boolean wordBreak(String s, List<String> wordDict) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: LONGEST PALINDROMIC SUBSEQUENCE → s = 'bbbab' | s = 'bbbab' → LPS = 'bbbb', length = 4 | LPS = 'bbbb', length = 4 → dp[i][j] = LPS length in s[i..j] | dp[i][j] = LPS length in s[i..j] → Else: dp[i][j] = max(dp[i+1][j], dp[i][j-1])
+**Flow:**
+- LONGEST PALINDROMIC SUBSEQUENCE
+- ↓
+- s = 'bbbab'
+- ↓
+- LPS = 'bbbb', length = 4
+- ↓
+- dp[i][j] = LPS length in s[i..j]
+- ↓
+- Else: dp[i][j] = max(dp[i+1][j], dp[i][j-1])
 
 ```mermaid
 flowchart TD
@@ -1440,7 +1627,16 @@ public int longestPalindromeSubseq(String s) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: REST --(buy)--> HOLD | REST → COOLDOWN | HOLD → COOLDOWN
+**Flow:**
+- REST --(buy)--> HOLD
+- ↓
+- REST
+- ↓
+- COOLDOWN
+- ↓
+- HOLD
+- ↓
+- COOLDOWN
 
 ```mermaid
 flowchart TD

@@ -51,7 +51,14 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHY: Why Cloud Deployment? / • Scalability: Auto-scale  → HOW: How to Deploy to Cloud? / • Containerize: Docker m | HOW: How to Deploy to Cloud? / • Containerize: Docker m → WHEN: When to Use Each Cloud Service? / • Docker: Every | WHEN: When to Use Each Cloud Service? / • Docker: Every → WHICH: Which Cloud Provider? / AWS: Market leader, most
+**Flow:**
+- WHY: Why Cloud Deployment? / • Scalability: Auto-scale
+- ↓
+- HOW: How to Deploy to Cloud? / • Containerize: Docker m
+- ↓
+- WHEN: When to Use Each Cloud Service? / • Docker: Every
+- ↓
+- WHICH: Which Cloud Provider? / AWS: Market leader, most
 
 ```mermaid
 flowchart TD
@@ -108,7 +115,20 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: 12-FACTOR APP PRINCIPLES → 1. Codebase One codebase, many deploys | 1. Codebase One codebase, many deploys → 2. Dependencies Explicitly declare and isolate | 2. Dependencies Explicitly declare and isolate → 3. Config Store in environment | 3. Config Store in environment → 4. Backing Svcs Treat as attached resources | 4. Backing Svcs Treat as attached resources → 5. Build/Release Strictly separate stages | 5. Build/Release Strictly separate stages → 6. Processes Execute as stateless processes | ...+1 more
+**Flow:**
+- 12-FACTOR APP PRINCIPLES
+- ↓
+- 1. Codebase One codebase, many deploys
+- ↓
+- 2. Dependencies Explicitly declare and isolate
+- ↓
+- 3. Config Store in environment
+- ↓
+- 4. Backing Svcs Treat as attached resources
+- ↓
+- 5. Build/Release Strictly separate stages
+- ↓
+- 6. Processes Execute as stateless processes
 
 ```mermaid
 flowchart TD
@@ -354,7 +374,10 @@ volumes:
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: CONTROL PLANE / API Server Controller Scheduler etcd → WORKER NODES / Node 1 Node 2 / Pod Pod Pod Pod / kubele
+**Flow:**
+- CONTROL PLANE / API Server Controller Scheduler etcd
+- ↓
+- WORKER NODES / Node 1 Node 2 / Pod Pod Pod Pod / kubele
 
 ```mermaid
 flowchart TD
@@ -671,7 +694,16 @@ spec:
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Route 53 (DNS) → CloudFront (CDN) + WAF + Shield | CloudFront (CDN) + WAF + Shield → Application Load Balancer (ALB) | Application Load Balancer (ALB) → EKS / ECS Cluster / AZ-1 (us-east) AZ-2 (us-east) / Pod | EKS / ECS Cluster / AZ-1 (us-east) AZ-2 (us-east) / Pod → Data Layer / RDS ElastiCache S3 DynamoDB / (Multi-AZ (R
+**Flow:**
+- Route 53 (DNS)
+- ↓
+- CloudFront (CDN) + WAF + Shield
+- ↓
+- Application Load Balancer (ALB)
+- ↓
+- EKS / ECS Cluster / AZ-1 (us-east) AZ-2 (us-east) / Pod
+- ↓
+- Data Layer / RDS ElastiCache S3 DynamoDB / (Multi-AZ (R
 
 ```mermaid
 flowchart TD
@@ -1088,7 +1120,14 @@ cloudWatch:
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Azure Front Door + WAF → Application Gateway | Application Gateway → AKS Cluster / Node Pool 1 Node Pool 2 / (System Nodes)  | AKS Cluster / Node Pool 1 Node Pool 2 / (System Nodes)  → Managed Services / Azure SQL Redis Blob Key Vault / Dat
+**Flow:**
+- Azure Front Door + WAF
+- ↓
+- Application Gateway
+- ↓
+- AKS Cluster / Node Pool 1 Node Pool 2 / (System Nodes)
+- ↓
+- Managed Services / Azure SQL Redis Blob Key Vault / Dat
 
 ```mermaid
 flowchart TD

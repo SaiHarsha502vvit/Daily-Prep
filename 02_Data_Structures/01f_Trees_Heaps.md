@@ -67,7 +67,12 @@ HIERARCHICAL STRUCTURE:
 └────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: ▼ ▼ / C / ▼ ▼ / E F → ▼ ▼ / D E | ▼ ▼ / D E → ▼ ▼ / F G
+**Flow:**
+- ▼ ▼ / C / ▼ ▼ / E F
+- ↓
+- ▼ ▼ / D E
+- ↓
+- ▼ ▼ / F G
 
 ```mermaid
 flowchart TD
@@ -107,7 +112,14 @@ Search for 6:
 Time: O(log n) for balanced tree
 ```
 
-> **Flow**: ▼ ▼ / 10 / ▼ / 6 14 → 10 | 10 → ▼ ▼ / 1 6 | ▼ ▼ / 1 6 → 14
+**Flow:**
+- ▼ ▼ / 10 / ▼ / 6 14
+- ↓
+- 10
+- ↓
+- ▼ ▼ / 1 6
+- ↓
+- 14
 
 ```mermaid
 flowchart TD
@@ -138,7 +150,30 @@ flowchart TD
 └── etc/
 ```
 
-> **Flow**: Root → home/ | Root → alice/ | Root → documents/ | Root → photos/ | Root → bob/ | Root → usr/ | ...+3 more
+**Flow:**
+- Root
+- ↓
+- home/
+- ↓
+- Root
+- ↓
+- alice/
+- ↓
+- Root
+- ↓
+- documents/
+- ↓
+- Root
+- ↓
+- photos/
+- ↓
+- Root
+- ↓
+- bob/
+- ↓
+- Root
+- ↓
+- usr/
 
 ```mermaid
 flowchart TD
@@ -348,7 +383,20 @@ Left child of i: 2*i + 1
 Right child of i: 2*i + 2
 ```
 
-> **Flow**: 100 → ▼ ▼ / 90 8 | ▼ ▼ / 90 8 → 90 | 90 → 80 | 80 → ▼ ▼ / 0 60 | ▼ ▼ / 0 60 → 70 | 70 → 60 | ...+1 more
+**Flow:**
+- 100
+- ↓
+- ▼ ▼ / 90 8
+- ↓
+- 90
+- ↓
+- 80
+- ↓
+- ▼ ▼ / 0 60
+- ↓
+- 70
+- ↓
+- 60
 
 ```mermaid
 flowchart TD

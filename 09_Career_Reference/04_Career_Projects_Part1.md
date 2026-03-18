@@ -50,7 +50,12 @@
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: FRONTEND / React Angular Vue Svelte / ▼ / State Mgmt Re → BACKEND / Node.js Java Python Go / Express Spring FastA | BACKEND / Node.js Java Python Go / Express Spring FastA → DATA LAYER / PostgreSQL MongoDB Redis Elastic
+**Flow:**
+- FRONTEND / React Angular Vue Svelte / ▼ / State Mgmt Re
+- ↓
+- BACKEND / Node.js Java Python Go / Express Spring FastA
+- ↓
+- DATA LAYER / PostgreSQL MongoDB Redis Elastic
 
 ```mermaid
 flowchart TD
@@ -136,7 +141,30 @@ my-react-app/
 └── package.json
 ```
 
-> **Flow**: my-react-app/ → public/ | my-react-app/ → index.html | my-react-app/ → favicon.ico | my-react-app/ → assets/ | my-react-app/ → src/ | my-react-app/ → components/ # Reusable UI components | ...+61 more
+**Flow:**
+- my-react-app/
+- ↓
+- public/
+- ↓
+- my-react-app/
+- ↓
+- index.html
+- ↓
+- my-react-app/
+- ↓
+- favicon.ico
+- ↓
+- my-react-app/
+- ↓
+- assets/
+- ↓
+- my-react-app/
+- ↓
+- src/
+- ↓
+- my-react-app/
+- ↓
+- components/ # Reusable UI components
 
 ```mermaid
 flowchart TD
@@ -670,7 +698,30 @@ my-spring-app/
 └── Dockerfile
 ```
 
-> **Flow**: my-spring-app/ → src/ | my-spring-app/ → main/ | my-spring-app/ → java/com/example/app/ | my-spring-app/ → config/ # Configuration classes | my-spring-app/ → SecurityConfig.java | my-spring-app/ → CorsConfig.java | ...+49 more
+**Flow:**
+- my-spring-app/
+- ↓
+- src/
+- ↓
+- my-spring-app/
+- ↓
+- main/
+- ↓
+- my-spring-app/
+- ↓
+- java/com/example/app/
+- ↓
+- my-spring-app/
+- ↓
+- config/ # Configuration classes
+- ↓
+- my-spring-app/
+- ↓
+- SecurityConfig.java
+- ↓
+- my-spring-app/
+- ↓
+- CorsConfig.java
 
 ```mermaid
 flowchart TD
@@ -2312,7 +2363,34 @@ _Stage 3 Complete! Ready for Stage 4: DevOps & Networking Deep Dive_
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: DEVOPS INFINITY LOOP → PLAN → CODE → BUILD → TEST | PLAN → CODE → BUILD → TEST → MONITOR RELEASE | MONITOR RELEASE → OPERATE ← DEPLOY ← RELEASE | OPERATE ← DEPLOY ← RELEASE → DEV SIDE (Left): OPS SIDE (Right): | DEV SIDE (Left): OPS SIDE (Right): → Plan Release | Plan Release → Code Deploy | ...+1 more
+**Flow:**
+- DEVOPS INFINITY LOOP
+- ↓
+- PLAN
+- ↓
+- CODE
+- ↓
+- BUILD
+- ↓
+- TEST
+- ↓
+- PLAN
+- ↓
+- CODE
+- ↓
+- BUILD
+- ↓
+- TEST
+- ↓
+- MONITOR RELEASE
+- ↓
+- OPERATE ← DEPLOY ← RELEASE
+- ↓
+- DEV SIDE (Left): OPS SIDE (Right):
+- ↓
+- Plan Release
+- ↓
+- Code Deploy
 
 ```mermaid
 flowchart TD
@@ -2379,7 +2457,10 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Cloud / Controller / Manager / (Optional) → NODE 1 NODE 2 / Kubelet Kubelet / Kube-Proxy Kube-Proxy
+**Flow:**
+- Cloud / Controller / Manager / (Optional)
+- ↓
+- NODE 1 NODE 2 / Kubelet Kubelet / Kube-Proxy Kube-Proxy
 
 ```mermaid
 flowchart TD

@@ -111,7 +111,20 @@ springdoc-openapi             │ @Tag, @Operation
                               │ @Schema
 ```
 
-> **Flow**: DEPENDENCY WHAT IT UNLOCKS → spring-boot-starter @SpringBootApplication | spring-boot-starter @SpringBootApplication → (core, always included) @Component, @Service, @Reposito | (core, always included) @Component, @Service, @Reposito → @Bean, @Configuration | @Bean, @Configuration → @Autowired, @Value | @Autowired, @Value → @Qualifier, @Primary | @Qualifier, @Primary → @Profile, @Conditional* | ...+1 more
+**Flow:**
+- DEPENDENCY WHAT IT UNLOCKS
+- ↓
+- spring-boot-starter @SpringBootApplication
+- ↓
+- (core, always included) @Component, @Service, @Reposito
+- ↓
+- @Bean, @Configuration
+- ↓
+- @Autowired, @Value
+- ↓
+- @Qualifier, @Primary
+- ↓
+- @Profile, @Conditional*
 
 ```mermaid
 flowchart TD
@@ -523,7 +536,20 @@ Q: Why is my @Autowired field null?
   constructor injection with @RequiredArgsConstructor (Lombok).
 ```
 
-> **Flow**: Q: Where does @Data come from? → IDE plugin, and annotation processing enabled. It gener | IDE plugin, and annotation processing enabled. It gener → Q: Why doesn't @Valid work in my Spring Boot 3 project? | Q: Why doesn't @Valid work in my Spring Boot 3 project? → → Since SB 2.3+, validation is NOT included in web star | → Since SB 2.3+, validation is NOT included in web star → Add spring-boot-starter-validation separately. | Add spring-boot-starter-validation separately. → @Service = business logic, @Repository = data access (a | @Service = business logic, @Repository = data access (a → Q: Why is my @Autowired field null? | ...+1 more
+**Flow:**
+- Q: Where does @Data come from?
+- ↓
+- IDE plugin, and annotation processing enabled. It gener
+- ↓
+- Q: Why doesn't @Valid work in my Spring Boot 3 project?
+- ↓
+- Since SB 2.3+, validation is NOT included in web star
+- ↓
+- Add spring-boot-starter-validation separately.
+- ↓
+- @Service = business logic, @Repository = data access (a
+- ↓
+- Q: Why is my @Autowired field null?
 
 ```mermaid
 flowchart TD

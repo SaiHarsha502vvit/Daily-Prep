@@ -114,7 +114,20 @@ public Set<Integer> vertexCover2Approx(int n, int[][] edges) {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: EXAMPLE 2: SET COVER (log n - Approximation) → that cover all elements | that cover all elements → Greedy Algorithm: | Greedy Algorithm: → 1. While uncovered elements exist: | 1. While uncovered elements exist: → a. Pick set Sᵢ that covers most uncovered elements | a. Pick set Sᵢ that covers most uncovered elements → b. Add Sᵢ to solution | b. Add Sᵢ to solution → c. Mark covered elements | ...+1 more
+**Flow:**
+- EXAMPLE 2: SET COVER (log n - Approximation)
+- ↓
+- that cover all elements
+- ↓
+- Greedy Algorithm:
+- ↓
+- 1. While uncovered elements exist:
+- ↓
+- a. Pick set Sᵢ that covers most uncovered elements
+- ↓
+- b. Add Sᵢ to solution
+- ↓
+- c. Mark covered elements
 
 ```mermaid
 flowchart TD
@@ -158,7 +171,18 @@ flowchart TD
 │ ─────────────────────                                                           │
 ```
 
-> **Flow**: RANDOMIZED ALGORITHMS - DEEP DIVE → TWO TYPES: | TWO TYPES: → 1. Las Vegas: Always correct, expected polynomial time | 1. Las Vegas: Always correct, expected polynomial time → Example: Randomized QuickSort | Example: Randomized QuickSort → Example: Primality testing, Min-Cut | Example: Primality testing, Min-Cut → RANDOMIZED QUICKSORT:
+**Flow:**
+- RANDOMIZED ALGORITHMS - DEEP DIVE
+- ↓
+- TWO TYPES:
+- ↓
+- 1. Las Vegas: Always correct, expected polynomial time
+- ↓
+- Example: Randomized QuickSort
+- ↓
+- Example: Primality testing, Min-Cut
+- ↓
+- RANDOMIZED QUICKSORT:
 
 ```mermaid
 flowchart TD
@@ -216,7 +240,20 @@ void randomizedQuickSort(int[] arr, int low, int high) {
 │ ───────────────────────────── │
 ```
 
-> **Flow**: KARGER'S MIN-CUT ALGORITHM: → Find minimum cut in undirected graph | Find minimum cut in undirected graph → Algorithm: | Algorithm: → 1. While more than 2 vertices: | 1. While more than 2 vertices: → a. Pick random edge (u, v) | a. Pick random edge (u, v) → b. Contract u and v into single vertex | b. Contract u and v into single vertex → c. Remove self-loops | ...+1 more
+**Flow:**
+- KARGER'S MIN-CUT ALGORITHM:
+- ↓
+- Find minimum cut in undirected graph
+- ↓
+- Algorithm:
+- ↓
+- 1. While more than 2 vertices:
+- ↓
+- a. Pick random edge (u, v)
+- ↓
+- b. Contract u and v into single vertex
+- ↓
+- c. Remove self-loops
 
 ```mermaid
 flowchart TD
@@ -313,7 +350,20 @@ private boolean millerRabinTest(long n, long d, int r, long a) {
 │                                                                                 │
 ```
 
-> **Flow**: STRING MATCHING ALGORITHMS - COMPLETE COMPARISON → ALGORITHM COMPARISON: | ALGORITHM COMPARISON: → Algorithm Preprocessing Search Time Space | Algorithm Preprocessing Search Time Space → Naive O(1) O(nm) O(1) | Naive O(1) O(nm) O(1) → KMP O(m) O(n) O(m) | KMP O(m) O(n) O(m) → Boyer-Moore O(m + σ) O(nm) worst O(m + σ) | Boyer-Moore O(m + σ) O(nm) worst O(m + σ) → O(n/m) best | ...+1 more
+**Flow:**
+- STRING MATCHING ALGORITHMS - COMPLETE COMPARISON
+- ↓
+- ALGORITHM COMPARISON:
+- ↓
+- Algorithm Preprocessing Search Time Space
+- ↓
+- Naive O(1) O(nm) O(1)
+- ↓
+- KMP O(m) O(n) O(m)
+- ↓
+- Boyer-Moore O(m + σ) O(nm) worst O(m + σ)
+- ↓
+- O(n/m) best
 
 ```mermaid
 flowchart TD
@@ -470,7 +520,20 @@ class AhoCorasick {
 │                                                                                 │
 ```
 
-> **Flow**: MAXIMUM FLOW - COMPLETE GUIDE → with edge capacities | with edge capacities → ALGORITHM COMPARISON: | ALGORITHM COMPARISON: → Algorithm Time Complexity Notes | Algorithm Time Complexity Notes → Ford-Fulkerson O(E × maxFlow) Uses DFS, may not termina | Ford-Fulkerson O(E × maxFlow) Uses DFS, may not termina → Edmonds-Karp O(V × E²) Uses BFS for augmenting | Edmonds-Karp O(V × E²) Uses BFS for augmenting → Dinic O(V² × E) Level graph + blocking flow | ...+1 more
+**Flow:**
+- MAXIMUM FLOW - COMPLETE GUIDE
+- ↓
+- with edge capacities
+- ↓
+- ALGORITHM COMPARISON:
+- ↓
+- Algorithm Time Complexity Notes
+- ↓
+- Ford-Fulkerson O(E × maxFlow) Uses DFS, may not termina
+- ↓
+- Edmonds-Karp O(V × E²) Uses BFS for augmenting
+- ↓
+- Dinic O(V² × E) Level graph + blocking flow
 
 ```mermaid
 flowchart TD
@@ -724,7 +787,20 @@ boolean onSegment(int[] a, int[] b, int[] c) {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHEN TO USE WHICH PARADIGM → DIVIDE AND CONQUER: | DIVIDE AND CONQUER: → • Problem can be split into independent subproblems | • Problem can be split into independent subproblems → • Subproblems are similar to original | • Subproblems are similar to original → DYNAMIC PROGRAMMING: | DYNAMIC PROGRAMMING: → GREEDY: | GREEDY: → • Local optimal choice leads to global optimal | ...+1 more
+**Flow:**
+- WHEN TO USE WHICH PARADIGM
+- ↓
+- DIVIDE AND CONQUER:
+- ↓
+- • Problem can be split into independent subproblems
+- ↓
+- • Subproblems are similar to original
+- ↓
+- DYNAMIC PROGRAMMING:
+- ↓
+- GREEDY:
+- ↓
+- • Local optimal choice leads to global optimal
 
 ```mermaid
 flowchart TD

@@ -98,7 +98,20 @@ int[] bellmanFord(int n, int[][] edges, int source) {
 └───────────────────┴──────────────────┴────────────────────┘
 ```
 
-> **Flow**: Property Dijkstra Bellman-Ford → Time O((V+E) log V) O(V * E) | Time O((V+E) log V) O(V * E) → Negative weights NO YES | Negative weights NO YES → Negative cycles Can't detect CAN detect | Negative cycles Can't detect CAN detect → Space O(V) O(V) | Space O(V) O(V) → Use when Non-neg weights Neg weights or K | Use when Non-neg weights Neg weights or K → stops constraint
+**Flow:**
+- Property Dijkstra Bellman-Ford
+- ↓
+- Time O((V+E) log V) O(V * E)
+- ↓
+- Negative weights NO YES
+- ↓
+- Negative cycles Can't detect CAN detect
+- ↓
+- Space O(V) O(V)
+- ↓
+- Use when Non-neg weights Neg weights or K
+- ↓
+- stops constraint
 
 ```mermaid
 flowchart TD
@@ -137,7 +150,14 @@ Bipartite = can split nodes into 2 sets such that
         2     3          Edge 0-2: Red-Red ✗ → NOT BIPARTITE
 ```
 
-> **Flow**: 3 --- 2 → BIPARTITE | 2 3 Edge 0-2: Red-Red ✗ → NOT BIPARTITE
+**Flow:**
+- 3 --- 2
+- ↓
+- BIPARTITE
+- ↓
+- 2 3 Edge 0-2: Red-Red ✗
+- ↓
+- NOT BIPARTITE
 
 ```mermaid
 flowchart LR
@@ -203,7 +223,22 @@ Problems:
 • Skills in one column → can't easily query "who knows Java?" 
 ```
 
-> **Flow**: UNNORMALIZED (one table): → ID Name Dept DeptPhone Skills | ID Name Dept DeptPhone Skills → 1 Alice Eng 555-0100 Java,SQL | 1 Alice Eng 555-0100 Java,SQL → 2 Bob Eng 555-0100 Python | 2 Bob Eng 555-0100 Python → 3 Carol HR 555-0200 Java,React | 3 Carol HR 555-0200 Java,React → Problems: | Problems: → • 'Eng' phone changes → update EVERY row (Update Anomal
+**Flow:**
+- UNNORMALIZED (one table):
+- ↓
+- ID Name Dept DeptPhone Skills
+- ↓
+- 1 Alice Eng 555-0100 Java,SQL
+- ↓
+- 2 Bob Eng 555-0100 Python
+- ↓
+- 3 Carol HR 555-0200 Java,React
+- ↓
+- Problems:
+- ↓
+- • 'Eng' phone changes
+- ↓
+- update EVERY row (Update Anomal
 
 ```mermaid
 flowchart TD
@@ -241,7 +276,18 @@ flowchart TD
   → DeptPhone depends on Dept, not on emp_id → move to departments table
 ```
 
-> **Flow**: If composite key (emp_id, skill), dept depends onl → move to separate table | ✓ No transitive dependencies (non-key → non-key) | DeptPhone depends on Dept, not on emp_id → move to departments table
+**Flow:**
+- If composite key (emp_id, skill), dept depends onl
+- ↓
+- move to separate table
+- ↓
+- ✓ No transitive dependencies (non-key
+- ↓
+- non-key)
+- ↓
+- DeptPhone depends on Dept, not on emp_id
+- ↓
+- move to departments table
 
 ```mermaid
 flowchart LR
@@ -301,7 +347,16 @@ Input: n=4, flights=[[0,1,100],[1,2,100],[2,0,100],[1,3,600],[2,3,200]],
 Output: 700 (0→1→3)
 ```
 
-> **Flow**: n cities, flights[i] = [from, to, price]. → Find cheapest price from src to dst with at most k stop | Find cheapest price from src to dst with at most k stop → Output: 700 (0→1→3)
+**Flow:**
+- n cities, flights[i] = [from, to, price].
+- ↓
+- Find cheapest price from src to dst with at most k stop
+- ↓
+- Output: 700 (0
+- ↓
+- 1
+- ↓
+- 3)
 
 ```mermaid
 flowchart TD

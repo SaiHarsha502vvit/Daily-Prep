@@ -49,7 +49,14 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHY: Why IoC & DI are Foundation of Spring? / • IoC IS  → HOW: How DI Works in Spring? / • IoC Container: Applica | HOW: How DI Works in Spring? / • IoC Container: Applica → WHEN: When to Use Each Bean Scope? / • Singleton (defau | WHEN: When to Use Each Bean Scope? / • Singleton (defau → WHICH: Which DI Concepts to Master? / ESSENTIAL: Constr
+**Flow:**
+- WHY: Why IoC & DI are Foundation of Spring? / • IoC IS
+- ↓
+- HOW: How DI Works in Spring? / • IoC Container: Applica
+- ↓
+- WHEN: When to Use Each Bean Scope? / • Singleton (defau
+- ↓
+- WHICH: Which DI Concepts to Master? / ESSENTIAL: Constr
 
 ```mermaid
 flowchart TD
@@ -156,7 +163,12 @@ this.payment = payment;
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: OrderService → SPRING IoC CONTAINER / 1. Creates OrderService / 2. Cre | SPRING IoC CONTAINER / 1. Creates OrderService / 2. Cre → OrderService
+**Flow:**
+- OrderService
+- ↓
+- SPRING IoC CONTAINER / 1. Creates OrderService / 2. Cre
+- ↓
+- OrderService
 
 ```mermaid
 flowchart TD
@@ -231,7 +243,20 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: IoC CONTAINER BEAN RESOLUTION PROCESS / PHASE 1: COMPON → PHASE 2: BeanDefinition CREATION / Each class → BeanDef | PHASE 2: BeanDefinition CREATION / Each class → BeanDef → OrderRepo NotificationService | OrderRepo NotificationService → DataSource EmailClient / PHASE 4: CREATION ORDER (Topol
+**Flow:**
+- IoC CONTAINER BEAN RESOLUTION PROCESS / PHASE 1: COMPON
+- ↓
+- PHASE 2: BeanDefinition CREATION / Each class
+- ↓
+- BeanDef
+- ↓
+- PHASE 2: BeanDefinition CREATION / Each class
+- ↓
+- BeanDef
+- ↓
+- OrderRepo NotificationService
+- ↓
+- DataSource EmailClient / PHASE 4: CREATION ORDER (Topol
 
 ```mermaid
 flowchart TD
@@ -372,7 +397,16 @@ public class AppConfig { }
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: DEPENDENCY INJECTION TYPES COMPARISON → Type Recommended? Use Case | Type Recommended? Use Case → Constructor ✅ YES (Default) Required dependencies | Constructor ✅ YES (Default) Required dependencies → Setter ⚠️ Sometimes Optional dependencies | Setter ⚠️ Sometimes Optional dependencies → Field ❌ NO Tests only (convenient but bad)
+**Flow:**
+- DEPENDENCY INJECTION TYPES COMPARISON
+- ↓
+- Type Recommended? Use Case
+- ↓
+- Constructor ✅ YES (Default) Required dependencies
+- ↓
+- Setter ⚠️ Sometimes Optional dependencies
+- ↓
+- Field ❌ NO Tests only (convenient but bad)
 
 ```mermaid
 flowchart TD
@@ -658,7 +692,20 @@ public class UserService {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: BEAN SCOPE COMPARISON → Scope Description | Scope Description → singleton One instance per container (DEFAULT) | singleton One instance per container (DEFAULT) → prototype New instance every time bean is requested | prototype New instance every time bean is requested → request One instance per HTTP request (Web only) | request One instance per HTTP request (Web only) → session One instance per HTTP session (Web only) | session One instance per HTTP session (Web only) → application One instance per ServletContext (Web only) | ...+1 more
+**Flow:**
+- BEAN SCOPE COMPARISON
+- ↓
+- Scope Description
+- ↓
+- singleton One instance per container (DEFAULT)
+- ↓
+- prototype New instance every time bean is requested
+- ↓
+- request One instance per HTTP request (Web only)
+- ↓
+- session One instance per HTTP session (Web only)
+- ↓
+- application One instance per ServletContext (Web only)
 
 ```mermaid
 flowchart TD
@@ -867,7 +914,20 @@ public class OrderService {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: COMPLETE BEAN LIFECYCLE / 1. INSTANTIATE: Bean instance → 2. POPULATE PROPERTIES: Dependencies injected | 2. POPULATE PROPERTIES: Dependencies injected → 3. BEAN NAME AWARE: setBeanName() called if implements | 3. BEAN NAME AWARE: setBeanName() called if implements → 4. BEAN FACTORY AWARE: setBeanFactory() if implements B | 4. BEAN FACTORY AWARE: setBeanFactory() if implements B → 5. APPLICATION CONTEXT AWARE: setApplicationContext() i | 5. APPLICATION CONTEXT AWARE: setApplicationContext() i → 6. PRE-INITIALIZATION: BeanPostProcessor.postProcessBef | 6. PRE-INITIALIZATION: BeanPostProcessor.postProcessBef → 7. INITIALIZATION: @PostConstruct or InitializingBean.a | ...+3 more
+**Flow:**
+- COMPLETE BEAN LIFECYCLE / 1. INSTANTIATE: Bean instance
+- ↓
+- 2. POPULATE PROPERTIES: Dependencies injected
+- ↓
+- 3. BEAN NAME AWARE: setBeanName() called if implements
+- ↓
+- 4. BEAN FACTORY AWARE: setBeanFactory() if implements B
+- ↓
+- 5. APPLICATION CONTEXT AWARE: setApplicationContext() i
+- ↓
+- 6. PRE-INITIALIZATION: BeanPostProcessor.postProcessBef
+- ↓
+- 7. INITIALIZATION: @PostConstruct or InitializingBean.a
 
 ```mermaid
 flowchart TD
@@ -1604,7 +1664,20 @@ EVENTS:
 □ Understand when to use events vs direct calls
 ```
 
-> **Flow**: IoC & DI CONCEPTS: → □ Can explain Inversion of Control vs traditional contr | □ Can explain Inversion of Control vs traditional contr → □ Know the difference: BeanFactory vs ApplicationContex | □ Know the difference: BeanFactory vs ApplicationContex → □ Understand the Hollywood Principle | □ Understand the Hollywood Principle → BEAN DEFINITION: | BEAN DEFINITION: → □ Understand @Component stereotype hierarchy | □ Understand @Component stereotype hierarchy → □ Can configure third-party classes as beans | ...+1 more
+**Flow:**
+- IoC & DI CONCEPTS:
+- ↓
+- □ Can explain Inversion of Control vs traditional contr
+- ↓
+- □ Know the difference: BeanFactory vs ApplicationContex
+- ↓
+- □ Understand the Hollywood Principle
+- ↓
+- BEAN DEFINITION:
+- ↓
+- □ Understand @Component stereotype hierarchy
+- ↓
+- □ Can configure third-party classes as beans
 
 ```mermaid
 flowchart TD

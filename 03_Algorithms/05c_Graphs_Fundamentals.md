@@ -263,7 +263,10 @@ CONNECTED: All nodes reachable from any node
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: BFS (Breadth-First Search) / STRATEGY: Visit all neighb → Problem Type Use / Shortest path (unweighted) BFS / Sho
+**Flow:**
+- BFS (Breadth-First Search) / STRATEGY: Visit all neighb
+- ↓
+- Problem Type Use / Shortest path (unweighted) BFS / Sho
 
 ```mermaid
 flowchart TD
@@ -293,7 +296,34 @@ USES:
 - Connected components
 ```
 
-> **Flow**: GO DEEP first, then backtrack! → Start at node, visit neighbor, visit neighbor's neighbo | Start at node, visit neighbor, visit neighbor's neighbo → Until dead end, then backtrack. | Until dead end, then backtrack. → DFS from 0: 0 → 1 → 2 → 3 (one possible order) | DFS from 0: 0 → 1 → 2 → 3 (one possible order) → USES: | USES: → - Path finding | - Path finding → - Cycle detection | ...+1 more
+**Flow:**
+- GO DEEP first, then backtrack!
+- ↓
+- Start at node, visit neighbor, visit neighbor's neighbo
+- ↓
+- Until dead end, then backtrack.
+- ↓
+- DFS from 0: 0
+- ↓
+- 1
+- ↓
+- 2
+- ↓
+- 3 (one possible order)
+- ↓
+- DFS from 0: 0
+- ↓
+- 1
+- ↓
+- 2
+- ↓
+- 3 (one possible order)
+- ↓
+- USES:
+- ↓
+- - Path finding
+- ↓
+- - Cycle detection
 
 ```mermaid
 flowchart TD
@@ -376,7 +406,34 @@ USES:
 - Finding nearest neighbor
 ```
 
-> **Flow**: GO WIDE first! Visit all neighbors before going deeper. → BFS from 0: | BFS from 0: → Level 0: 0 | Level 0: 0 → Level 1: 1, 3 | Level 1: 1, 3 → Level 2: 2 | Level 2: 2 → BFS order: 0 → 1 → 3 → 2 | BFS order: 0 → 1 → 3 → 2 → USES: | ...+1 more
+**Flow:**
+- GO WIDE first! Visit all neighbors before going deeper.
+- ↓
+- BFS from 0:
+- ↓
+- Level 0: 0
+- ↓
+- Level 1: 1, 3
+- ↓
+- Level 2: 2
+- ↓
+- BFS order: 0
+- ↓
+- 1
+- ↓
+- 3
+- ↓
+- 2
+- ↓
+- BFS order: 0
+- ↓
+- 1
+- ↓
+- 3
+- ↓
+- 2
+- ↓
+- USES:
 
 ```mermaid
 flowchart TD
@@ -535,7 +592,12 @@ Course 1 → Course 2 → Course 3
 Valid orders: [1, 2, 4, 3] or [1, 4, 2, 3]
 ```
 
-> **Flow**: Course 1 → Course 2 | Course 2 → Course 3
+**Flow:**
+- Course 1
+- ↓
+- Course 2
+- ↓
+- Course 3
 
 ```mermaid
 flowchart LR

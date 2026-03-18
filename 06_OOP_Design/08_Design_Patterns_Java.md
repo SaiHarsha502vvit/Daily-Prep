@@ -299,7 +299,10 @@ processor.charge("cust_123", 49.99);
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: decorator wrapping the base coffee. → USE: Java I/O streams, logging, caching, validation lay
+**Flow:**
+- decorator wrapping the base coffee.
+- ↓
+- USE: Java I/O streams, logging, caching, validation lay
 
 ```mermaid
 flowchart TD
@@ -392,7 +395,10 @@ source.write("sensitive data");  // compressed → encrypted → file
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: ANALOGY: A hotel concierge — one person handles restaur → taxi, and room service instead of you calling each.
+**Flow:**
+- ANALOGY: A hotel concierge — one person handles restaur
+- ↓
+- taxi, and room service instead of you calling each.
 
 ```mermaid
 flowchart TD
@@ -454,7 +460,12 @@ OrderResult result = orderFacade.placeOrder(order);
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: an object without changing it. → ANALOGY: A security guard (proxy) controlling access to | ANALOGY: A security guard (proxy) controlling access to → building (real object).
+**Flow:**
+- an object without changing it.
+- ↓
+- ANALOGY: A security guard (proxy) controlling access to
+- ↓
+- building (real object).
 
 ```mermaid
 flowchart TD
@@ -577,7 +588,12 @@ cart.setDiscountStrategy(price -> price * 0.9); // 10% off inline
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: PROBLEM: Object changes → multiple others need to know. → notified (along with all other subscribers).
+**Flow:**
+- PROBLEM: Object changes
+- ↓
+- multiple others need to know.
+- ↓
+- notified (along with all other subscribers).
 
 ```mermaid
 flowchart TD
@@ -653,7 +669,10 @@ orderService.placeOrder(new Order(/*...*/));
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: ANALOGY: A recipe — same steps (prep, cook, serve) but → ingredients/method differ for each dish.
+**Flow:**
+- ANALOGY: A recipe — same steps (prep, cook, serve) but
+- ↓
+- ingredients/method differ for each dish.
 
 ```mermaid
 flowchart TD
@@ -813,7 +832,20 @@ chain.handle(request);
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: PATTERN WHERE IT APPEARS IN SPRING → Singleton @Component, @Service, @Bean (default) | Singleton @Component, @Service, @Bean (default) → Factory BeanFactory, FactoryBean | Factory BeanFactory, FactoryBean → Builder ResponseEntity.ok().body(data).build() | Builder ResponseEntity.ok().body(data).build() → Proxy @Transactional, @Cacheable, @Async | Proxy @Transactional, @Cacheable, @Async → Template Method JdbcTemplate, RestTemplate | Template Method JdbcTemplate, RestTemplate → Observer ApplicationEvent + @EventListener | ...+1 more
+**Flow:**
+- PATTERN WHERE IT APPEARS IN SPRING
+- ↓
+- Singleton @Component, @Service, @Bean (default)
+- ↓
+- Factory BeanFactory, FactoryBean
+- ↓
+- Builder ResponseEntity.ok().body(data).build()
+- ↓
+- Proxy @Transactional, @Cacheable, @Async
+- ↓
+- Template Method JdbcTemplate, RestTemplate
+- ↓
+- Observer ApplicationEvent + @EventListener
 
 ```mermaid
 flowchart TD
@@ -858,7 +890,20 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: WHEN YOU NEED TO... USE THIS PATTERN → Create objects flexibly Factory / Abstract Factory | Create objects flexibly Factory / Abstract Factory → Build complex objects step by Builder | Build complex objects step by Builder → step | step → Ensure one instance Singleton | Ensure one instance Singleton → Make incompatible code work Adapter | Make incompatible code work Adapter → Add behavior without modifying Decorator | ...+1 more
+**Flow:**
+- WHEN YOU NEED TO... USE THIS PATTERN
+- ↓
+- Create objects flexibly Factory / Abstract Factory
+- ↓
+- Build complex objects step by Builder
+- ↓
+- step
+- ↓
+- Ensure one instance Singleton
+- ↓
+- Make incompatible code work Adapter
+- ↓
+- Add behavior without modifying Decorator
 
 ```mermaid
 flowchart TD
@@ -930,7 +975,20 @@ A: Global state, hard to test (use DI instead), hides dependencies,
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: Design patterns are a SHARED VOCABULARY between develop → Without patterns: | Without patterns: → 'I made a class that wraps another class and adds loggi | 'I made a class that wraps another class and adds loggi → before calling the original method and...' | before calling the original method and...' → With patterns: | With patterns: → 'I used a Decorator for logging.' | 'I used a Decorator for logging.' → → Everyone immediately understands the architecture. | ...+1 more
+**Flow:**
+- Design patterns are a SHARED VOCABULARY between develop
+- ↓
+- Without patterns:
+- ↓
+- 'I made a class that wraps another class and adds loggi
+- ↓
+- before calling the original method and...'
+- ↓
+- With patterns:
+- ↓
+- 'I used a Decorator for logging.'
+- ↓
+- Everyone immediately understands the architecture.
 
 ```mermaid
 flowchart TD

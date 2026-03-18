@@ -150,7 +150,16 @@ SELECT * FROM <cte_name>;
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: SELECT * FROM employees / WHERE salary &gt; (SELECT AVG → SELECT * FROM employees / WHERE (dept_id, job_title) =  | SELECT * FROM employees / WHERE (dept_id, job_title) =  → SELECT * FROM employees / WHERE dept_id IN (SELECT dept | SELECT * FROM employees / WHERE dept_id IN (SELECT dept → SELECT d.dept_name, sub.avg_salary / FROM departments d | SELECT d.dept_name, sub.avg_salary / FROM departments d → SELECT * FROM employees e / WHERE salary &gt; (SELECT A
+**Flow:**
+- SELECT * FROM employees / WHERE salary > (SELECT AVG
+- ↓
+- SELECT * FROM employees / WHERE (dept_id, job_title) =
+- ↓
+- SELECT * FROM employees / WHERE dept_id IN (SELECT dept
+- ↓
+- SELECT d.dept_name, sub.avg_salary / FROM departments d
+- ↓
+- SELECT * FROM employees e / WHERE salary > (SELECT A
 
 ```mermaid
 flowchart TD

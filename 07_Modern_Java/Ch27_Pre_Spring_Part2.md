@@ -1294,7 +1294,20 @@ public class RequestLoggingFilter implements Filter {
 └──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Answer: TYPE ERASURE → Generics are a COMPILE-TIME feature only! | Generics are a COMPILE-TIME feature only! → At runtime, generic type information is ERASED | At runtime, generic type information is ERASED → This affects: | This affects: → - How Jackson deserializes generic types | - How Jackson deserializes generic types → - How Spring resolves generic beans | - How Spring resolves generic beans → - Why you need TypeReference&lt;T&gt;
+**Flow:**
+- Answer: TYPE ERASURE
+- ↓
+- Generics are a COMPILE-TIME feature only!
+- ↓
+- At runtime, generic type information is ERASED
+- ↓
+- This affects:
+- ↓
+- - How Jackson deserializes generic types
+- ↓
+- - How Spring resolves generic beans
+- ↓
+- - Why you need TypeReference<T>
 
 ```mermaid
 flowchart TD
@@ -1427,7 +1440,20 @@ Class<?> entityClass = listType.resolve();  // User.class
 └──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: ADVANCED: How Tools Modify Your Code at Runtime → These tools use bytecode manipulation: | These tools use bytecode manipulation: → - Spring Data: Generates repository implementations | - Spring Data: Generates repository implementations → - Hibernate: Adds lazy loading logic to entities | - Hibernate: Adds lazy loading logic to entities → - Mockito: Creates mock objects | - Mockito: Creates mock objects → - CGLIB: Proxies for @Transactional | - CGLIB: Proxies for @Transactional → - JaCoCo: Code coverage | ...+1 more
+**Flow:**
+- ADVANCED: How Tools Modify Your Code at Runtime
+- ↓
+- These tools use bytecode manipulation:
+- ↓
+- - Spring Data: Generates repository implementations
+- ↓
+- - Hibernate: Adds lazy loading logic to entities
+- ↓
+- - Mockito: Creates mock objects
+- ↓
+- - CGLIB: Proxies for @Transactional
+- ↓
+- - JaCoCo: Code coverage
 
 ```mermaid
 flowchart TD
@@ -1609,7 +1635,20 @@ public class MyAgent {
 └──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHAT YOU SHOULD REMEMBER → REFLECTION | REFLECTION → • Spring uses reflection for EVERYTHING | • Spring uses reflection for EVERYTHING → • setAccessible(true) bypasses private | • setAccessible(true) bypasses private → • Reflection is slow but cached | • Reflection is slow but cached → ANNOTATIONS | ANNOTATIONS → • RUNTIME retention = Spring can read it | ...+1 more
+**Flow:**
+- WHAT YOU SHOULD REMEMBER
+- ↓
+- REFLECTION
+- ↓
+- • Spring uses reflection for EVERYTHING
+- ↓
+- • setAccessible(true) bypasses private
+- ↓
+- • Reflection is slow but cached
+- ↓
+- ANNOTATIONS
+- ↓
+- • RUNTIME retention = Spring can read it
 
 ```mermaid
 flowchart TD

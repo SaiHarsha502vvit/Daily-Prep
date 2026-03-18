@@ -45,7 +45,30 @@ String problem?
 └── "Justify/format" → Simulation
 ```
 
-> **Flow**: 'Parentheses' → Stack | 'Anagram/permutation' → HashMap frequency / sorted key | 'Substring with condition' → Sliding Window + HashMap | 'Palindrome' → Two Pointers (expand from center) or DP | 'Pattern matching' → KMP / Rabin-Karp / Z-algorithm | 'Transform A to B' → DP (Edit Distance) | ...+2 more
+**Flow:**
+- 'Parentheses'
+- ↓
+- Stack
+- ↓
+- 'Anagram/permutation'
+- ↓
+- HashMap frequency / sorted key
+- ↓
+- 'Substring with condition'
+- ↓
+- Sliding Window + HashMap
+- ↓
+- 'Palindrome'
+- ↓
+- Two Pointers (expand from center) or DP
+- ↓
+- 'Pattern matching'
+- ↓
+- KMP / Rabin-Karp / Z-algorithm
+- ↓
+- 'Transform A to B'
+- ↓
+- DP (Edit Distance)
 
 ```mermaid
 flowchart TD
@@ -147,7 +170,24 @@ Time: O(n · k log k) where k = max word length | Space: O(nk)
 Optimization: Use int[26] frequency as key instead of sorting → O(nk)
 ```
 
-> **Flow**: Approach: Sort each word → use as HashMap key | use as HashMap key → group by key. | Sorted form: 'eat' → 'aet', 'tea' | 'aet', 'tea' → 'aet', 'ate' | 'aet', 'ate' → 'aet' — all same key! | 'eat' → sort | ...+18 more
+**Flow:**
+- Approach: Sort each word
+- ↓
+- use as HashMap key
+- ↓
+- group by key.
+- ↓
+- Sorted form: 'eat'
+- ↓
+- 'aet', 'tea'
+- ↓
+- 'aet', 'ate'
+- ↓
+- 'aet' — all same key!
+- ↓
+- 'eat'
+- ↓
+- sort
 
 ```mermaid
 flowchart TD
@@ -229,7 +269,26 @@ Time: O(n²) | Space: O(1)
 NOTE: Manacher's algorithm does this in O(n) but is rarely asked.
 ```
 
-> **Flow**: Center at 'b'(0): 'b' → expand | expand → 'b' (length 1) | Center at 'a'(1): 'a' → expand | expand → s[0]='b' ≠ s[2]='b'? Wait... | Actually: s[0]='b', s[2]='b' → 'bab' (length 3) ✅ | Expand more: s[-1] out of bounds → stop. | ...+8 more
+**Flow:**
+- Center at 'b'(0): 'b'
+- ↓
+- expand
+- ↓
+- 'b' (length 1)
+- ↓
+- Center at 'a'(1): 'a'
+- ↓
+- expand
+- ↓
+- s[0]='b' ≠ s[2]='b'? Wait...
+- ↓
+- Actually: s[0]='b', s[2]='b'
+- ↓
+- 'bab' (length 3) ✅
+- ↓
+- Expand more: s[-1] out of bounds
+- ↓
+- stop.
 
 ```mermaid
 flowchart TD

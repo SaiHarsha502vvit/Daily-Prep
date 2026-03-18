@@ -138,7 +138,10 @@ COLUMN-MAJOR ORDER (Fortran, MATLAB):
 arr[0][0], arr[1][0], arr[2][0], arr[0][1], arr[1][1]...
 ```
 
-> **Flow**: 1 2 3 4 / 5 6 7 8 / 9 10 11 12 → 1 2 3 4 5 6 7 8 9 10 11 12
+**Flow:**
+- 1 2 3 4 / 5 6 7 8 / 9 10 11 12
+- ↓
+- 1 2 3 4 5 6 7 8 9 10 11 12
 
 ```mermaid
 flowchart TD
@@ -1081,7 +1084,44 @@ private static void dfsIsland(int[][] grid, int r, int c,
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: MATRIX PROBLEM RECOGNITION GUIDE → 'Find shortest distance...' → BFS | 'Find shortest distance...' → BFS → 'Count distinct shapes...' → DFS + normalize coordinate | 'Count distinct shapes...' → DFS + normalize coordinate → 'Path from A to B...' → BFS (shortest) or DFS (any path | 'Path from A to B...' → BFS (shortest) or DFS (any path → 'Rotate matrix...' → Formula: new[j][n-1-i] = old[i][j] | 'Rotate matrix...' → Formula: new[j][n-1-i] = old[i][j] → COMMON EDGE CASES: | COMMON EDGE CASES: → • Empty matrix • Single cell | ...+1 more
+**Flow:**
+- MATRIX PROBLEM RECOGNITION GUIDE
+- ↓
+- 'Find shortest distance...'
+- ↓
+- BFS
+- ↓
+- 'Find shortest distance...'
+- ↓
+- BFS
+- ↓
+- 'Count distinct shapes...'
+- ↓
+- DFS + normalize coordinate
+- ↓
+- 'Count distinct shapes...'
+- ↓
+- DFS + normalize coordinate
+- ↓
+- 'Path from A to B...'
+- ↓
+- BFS (shortest) or DFS (any path
+- ↓
+- 'Path from A to B...'
+- ↓
+- BFS (shortest) or DFS (any path
+- ↓
+- 'Rotate matrix...'
+- ↓
+- Formula: new[j][n-1-i] = old[i][j]
+- ↓
+- 'Rotate matrix...'
+- ↓
+- Formula: new[j][n-1-i] = old[i][j]
+- ↓
+- COMMON EDGE CASES:
+- ↓
+- • Empty matrix • Single cell
 
 ```mermaid
 flowchart TD

@@ -653,7 +653,20 @@ DURING INTERVIEW:
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: EDGE CASE QUICK CHECK → Arrays: | Arrays: → □ Empty array □ Single element □ Two elements | □ Empty array □ Single element □ Two elements → □ All same □ Sorted □ Reverse sorted | □ All same □ Sorted □ Reverse sorted → □ Negatives □ Zeros □ Large values | □ Negatives □ Zeros □ Large values → Strings: | Strings: → □ Empty '' □ Single char □ All spaces | ...+1 more
+**Flow:**
+- EDGE CASE QUICK CHECK
+- ↓
+- Arrays:
+- ↓
+- □ Empty array □ Single element □ Two elements
+- ↓
+- □ All same □ Sorted □ Reverse sorted
+- ↓
+- □ Negatives □ Zeros □ Large values
+- ↓
+- Strings:
+- ↓
+- □ Empty '' □ Single char □ All spaces
 
 ```mermaid
 flowchart TD

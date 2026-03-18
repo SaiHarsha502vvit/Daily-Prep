@@ -49,7 +49,14 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHY: Why Understand HTTP Deeply? / • Debug network issu → HOW: How HTTP Request/Response Cycle Works? / • DNS loo | HOW: How HTTP Request/Response Cycle Works? / • DNS loo → WHEN: When to Use Each HTTP Method? / • GET: Retrieve d | WHEN: When to Use Each HTTP Method? / • GET: Retrieve d → WHICH: Which HTTP Concepts to Master? / ESSENTIAL: Stat
+**Flow:**
+- WHY: Why Understand HTTP Deeply? / • Debug network issu
+- ↓
+- HOW: How HTTP Request/Response Cycle Works? / • DNS loo
+- ↓
+- WHEN: When to Use Each HTTP Method? / • GET: Retrieve d
+- ↓
+- WHICH: Which HTTP Concepts to Master? / ESSENTIAL: Stat
 
 ```mermaid
 flowchart TD
@@ -321,7 +328,20 @@ RESPONSE BODY
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: URL STRUCTURE BREAKDOWN → SCHEME HOST PORT PATH QUERY STRING | SCHEME HOST PORT PATH QUERY STRING → BREAKING DOWN THE PATH: | BREAKING DOWN THE PATH: → /api/v1/users/123/orders | /api/v1/users/123/orders → Resource: orders | Resource: orders → PATH VARIABLE: 123 (user ID) | PATH VARIABLE: 123 (user ID) → Resource: users | ...+1 more
+**Flow:**
+- URL STRUCTURE BREAKDOWN
+- ↓
+- SCHEME HOST PORT PATH QUERY STRING
+- ↓
+- BREAKING DOWN THE PATH:
+- ↓
+- /api/v1/users/123/orders
+- ↓
+- Resource: orders
+- ↓
+- PATH VARIABLE: 123 (user ID)
+- ↓
+- Resource: users
 
 ```mermaid
 flowchart TD
@@ -774,7 +794,20 @@ public class RequestParamExamplesController {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: @PathVariable vs @RequestParam DECISION GUIDE → @PathVariable @RequestParam | @PathVariable @RequestParam → /users/123 /users?name=John | /users/123 /users?name=John → /orders/abc-def-123 /orders?status=pending | /orders/abc-def-123 /orders?status=pending → /products/electronics/laptops /products?page=2&size=10 | /products/electronics/laptops /products?page=2&size=10 → IDENTIFIES a resource FILTERS or MODIFIES the request | IDENTIFIES a resource FILTERS or MODIFIES the request → Required (part of URL) Usually optional | ...+1 more
+**Flow:**
+- @PathVariable vs @RequestParam DECISION GUIDE
+- ↓
+- @PathVariable @RequestParam
+- ↓
+- /users/123 /users?name=John
+- ↓
+- /orders/abc-def-123 /orders?status=pending
+- ↓
+- /products/electronics/laptops /products?page=2&size=10
+- ↓
+- IDENTIFIES a resource FILTERS or MODIFIES the request
+- ↓
+- Required (part of URL) Usually optional
 
 ```mermaid
 flowchart TD
@@ -977,7 +1010,20 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: POSTMAN PRO TIPS → ENVIRONMENT VARIABLES | ENVIRONMENT VARIABLES → Create environments: Development, Staging, Production | Create environments: Development, Staging, Production → Variables: | Variables: → Variable Value | Variable Value → baseUrl http://localhost:8080 ← Dev | baseUrl http://localhost:8080 ← Dev → baseUrl https://api.staging.myapp.com ← Staging | ...+1 more
+**Flow:**
+- POSTMAN PRO TIPS
+- ↓
+- ENVIRONMENT VARIABLES
+- ↓
+- Create environments: Development, Staging, Production
+- ↓
+- Variables:
+- ↓
+- Variable Value
+- ↓
+- baseUrl http://localhost:8080 ← Dev
+- ↓
+- baseUrl https://api.staging.myapp.com ← Staging
 
 ```mermaid
 flowchart TD
@@ -1065,7 +1111,20 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: NETWORK PROTOCOLS OVERVIEW → OSI MODEL LAYERS: | OSI MODEL LAYERS: → Layer 6: PRESENTATION SSL/TLS, JPEG, ASCII | Layer 6: PRESENTATION SSL/TLS, JPEG, ASCII → Layer 5: SESSION NetBIOS, PPTP | Layer 5: SESSION NetBIOS, PPTP → Layer 4: TRANSPORT TCP, UDP | Layer 4: TRANSPORT TCP, UDP → Layer 3: NETWORK IP, ICMP | Layer 3: NETWORK IP, ICMP → Layer 2: DATA LINK Ethernet, WiFi | ...+1 more
+**Flow:**
+- NETWORK PROTOCOLS OVERVIEW
+- ↓
+- OSI MODEL LAYERS:
+- ↓
+- Layer 6: PRESENTATION SSL/TLS, JPEG, ASCII
+- ↓
+- Layer 5: SESSION NetBIOS, PPTP
+- ↓
+- Layer 4: TRANSPORT TCP, UDP
+- ↓
+- Layer 3: NETWORK IP, ICMP
+- ↓
+- Layer 2: DATA LINK Ethernet, WiFi
 
 ```mermaid
 flowchart TD

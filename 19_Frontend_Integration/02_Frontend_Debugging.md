@@ -121,7 +121,30 @@ Exception Breakpoint:
 └── Code pauses the moment an error is thrown
 ```
 
-> **Flow**: Right-click line → 'Add conditional breakpoint' | Right-click line → 'Add logpoint' | 'Break on' → subtree modifications / attribute changes | Sources tab → Event Listener Breakpoints panel | Check 'Mouse' → 'click' to pause on ANY click handler | ⏸ button → check 'Pause on exceptions'
+**Flow:**
+- Right-click line
+- ↓
+- 'Add conditional breakpoint'
+- ↓
+- Right-click line
+- ↓
+- 'Add logpoint'
+- ↓
+- 'Break on'
+- ↓
+- subtree modifications / attribute changes
+- ↓
+- Sources tab
+- ↓
+- Event Listener Breakpoints panel
+- ↓
+- Check 'Mouse'
+- ↓
+- 'click' to pause on ANY click handler
+- ↓
+- ⏸ button
+- ↓
+- check 'Pause on exceptions'
 
 ```mermaid
 flowchart TD
@@ -169,7 +192,20 @@ KEY THINGS TO CHECK:
 • CORS errors: look for preflight OPTIONS request failing
 ```
 
-> **Flow**: NETWORK TAB — Debug API Calls, Loading Issues, CORS → Filter: [All] [Fetch/XHR] [JS] [CSS] [Img] [Media] | Filter: [All] [Fetch/XHR] [JS] [CSS] [Img] [Media] → Name Status Type Size Time Waterfall | Name Status Type Size Time Waterfall → /api/users 200 fetch 2.4kB 140ms ████ | /api/users 200 fetch 2.4kB 140ms ████ → /api/stats 500 fetch 0.1kB 250ms █████████ | /api/stats 500 fetch 0.1kB 250ms █████████ → bundle.js 200 script 450kB 1.2s ██████ | bundle.js 200 script 450kB 1.2s ██████ → style.css 200 stylesheet 22kB 85ms ██ | ...+1 more
+**Flow:**
+- NETWORK TAB — Debug API Calls, Loading Issues, CORS
+- ↓
+- Filter: [All] [Fetch/XHR] [JS] [CSS] [Img] [Media]
+- ↓
+- Name Status Type Size Time Waterfall
+- ↓
+- /api/users 200 fetch 2.4kB 140ms ████
+- ↓
+- /api/stats 500 fetch 0.1kB 250ms █████████
+- ↓
+- bundle.js 200 script 450kB 1.2s ██████
+- ↓
+- style.css 200 stylesheet 22kB 85ms ██
 
 ```mermaid
 flowchart TD
@@ -229,7 +265,26 @@ REACT DEVTOOLS (Browser Extension — Components + Profiler Tab)
 └─────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Components Tab → WHAT YOU CAN SEE: | WHAT YOU CAN SEE: → Component tree (parent → child hierarchy) | Component tree (parent → child hierarchy) → Props passed to each component | Props passed to each component → State values (useState, useReducer) | State values (useState, useReducer) → Context values consumed | Context values consumed → Hooks list (with current values!) | ...+1 more
+**Flow:**
+- Components Tab
+- ↓
+- WHAT YOU CAN SEE:
+- ↓
+- Component tree (parent
+- ↓
+- child hierarchy)
+- ↓
+- Component tree (parent
+- ↓
+- child hierarchy)
+- ↓
+- Props passed to each component
+- ↓
+- State values (useState, useReducer)
+- ↓
+- Context values consumed
+- ↓
+- Hooks list (with current values!)
 
 ```mermaid
 flowchart TD
@@ -363,7 +418,30 @@ COMMON CSS BUGS:
 • "Grid gap not showing"    → Check if container has display:grid
 ```
 
-> **Flow**: Right-click → Inspect | Computed tab → visual box model diagram | Styles panel → strikethrough = overridden | • 'Why doesn't this center?' → Check display/position/parent | • 'Why is text cut off?' → Check overflow, line-height | • 'Z-index not working' → Parent needs position:relative | ...+2 more
+**Flow:**
+- Right-click
+- ↓
+- Inspect
+- ↓
+- Computed tab
+- ↓
+- visual box model diagram
+- ↓
+- Styles panel
+- ↓
+- strikethrough = overridden
+- ↓
+- • 'Why doesn't this center?'
+- ↓
+- Check display/position/parent
+- ↓
+- • 'Why is text cut off?'
+- ↓
+- Check overflow, line-height
+- ↓
+- • 'Z-index not working'
+- ↓
+- Parent needs position:relative
 
 ```mermaid
 flowchart TD
@@ -424,7 +502,18 @@ Problem: Bundle too large (slow initial load)
 └── Tool: Webpack Bundle Analyzer to see what's big
 ```
 
-> **Flow**: 1. Open Performance tab → Record | Record → interact | interact → Stop | Tool: React Profiler → 'Why did this render?'
+**Flow:**
+- 1. Open Performance tab
+- ↓
+- Record
+- ↓
+- interact
+- ↓
+- Stop
+- ↓
+- Tool: React Profiler
+- ↓
+- 'Why did this render?'
 
 ```mermaid
 flowchart LR
@@ -477,7 +566,20 @@ flowchart LR
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: WHAT IS CORS? → Browser Security Rule: | Browser Security Rule: → 'A page from origin A cannot fetch data from origin B | 'A page from origin A cannot fetch data from origin B → unless origin B explicitly allows it.' | unless origin B explicitly allows it.' → Origin = Protocol + Domain + Port | Origin = Protocol + Domain + Port → WHAT HAPPENS: | WHAT HAPPENS: → Browser Server | ...+1 more
+**Flow:**
+- WHAT IS CORS?
+- ↓
+- Browser Security Rule:
+- ↓
+- 'A page from origin A cannot fetch data from origin B
+- ↓
+- unless origin B explicitly allows it.'
+- ↓
+- Origin = Protocol + Domain + Port
+- ↓
+- WHAT HAPPENS:
+- ↓
+- Browser Server
 
 ```mermaid
 flowchart TD
@@ -538,7 +640,24 @@ flowchart TD
 ╚═══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: SYMPTOM → WHERE TO LOOK → TOOL TO USE → 'Blank page' | 'Blank page' → → Console tab for JS errors | → Console tab for JS errors → → Network tab: is bundle loading? | → Network tab: is bundle loading? → → Check root element exists in HTML | → Check root element exists in HTML → 'Data not showing' | 'Data not showing' → → Network tab: is API returning data? | ...+1 more
+**Flow:**
+- SYMPTOM
+- ↓
+- WHERE TO LOOK
+- ↓
+- TOOL TO USE
+- ↓
+- 'Blank page'
+- ↓
+- Console tab for JS errors
+- ↓
+- Network tab: is bundle loading?
+- ↓
+- Check root element exists in HTML
+- ↓
+- 'Data not showing'
+- ↓
+- Network tab: is API returning data?
 
 ```mermaid
 flowchart TD
@@ -585,7 +704,16 @@ Q: How do you debug a CORS error?
   use a Vite/webpack proxy to avoid CORS entirely.
 ```
 
-> **Flow**: React DevTools → check props/state values | check props/state values → trace up the | component tree → find where the wrong value originates
+**Flow:**
+- React DevTools
+- ↓
+- check props/state values
+- ↓
+- trace up the
+- ↓
+- component tree
+- ↓
+- find where the wrong value originates
 
 ```mermaid
 flowchart LR

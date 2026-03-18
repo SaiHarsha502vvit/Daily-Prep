@@ -60,7 +60,16 @@ var entry = Map.entry("key", 42);       // Map.Entry<String, Integer>
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHEN TO USE var: → ✅ Long generic types: var map = service.getComplexMap() | ✅ Long generic types: var map = service.getComplexMap() → WHEN NOT TO USE: | WHEN NOT TO USE: → ❌ Numeric literals: var count = 0 // int? long? byte? | ❌ Numeric literals: var count = 0 // int? long? byte? → ❌ When it hurts readability
+**Flow:**
+- WHEN TO USE var:
+- ↓
+- ✅ Long generic types: var map = service.getComplexMap()
+- ↓
+- WHEN NOT TO USE:
+- ↓
+- ❌ Numeric literals: var count = 0 // int? long? byte?
+- ↓
+- ❌ When it hurts readability
 
 ```mermaid
 flowchart TD
@@ -155,7 +164,16 @@ public record User(String name, int age) {
 └──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHEN TO USE RECORDS: → ✅ API responses record ApiResponse&lt;T&gt;(T data, int | ✅ API responses record ApiResponse&lt;T&gt;(T data, int → ✅ Compound map keys record CacheKey(String type, long i | ✅ Compound map keys record CacheKey(String type, long i → DON'T USE WHEN: | DON'T USE WHEN: → ❌ Complex inheritance needed
+**Flow:**
+- WHEN TO USE RECORDS:
+- ↓
+- ✅ API responses record ApiResponse<T>(T data, int
+- ↓
+- ✅ Compound map keys record CacheKey(String type, long i
+- ↓
+- DON'T USE WHEN:
+- ↓
+- ❌ Complex inheritance needed
 
 ```mermaid
 flowchart TD
@@ -222,7 +240,20 @@ public record Crypto(double amount, String wallet) implements Payment {}
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHY SEALED CLASSES? → 2. DOMAIN MODELING — exactly represents business rules | 2. DOMAIN MODELING — exactly represents business rules → 'A payment can ONLY be CreditCard, BankTransfer, or Cry | 'A payment can ONLY be CreditCard, BankTransfer, or Cry → 3. LIB DESIGN — allow extension by known types only | 3. LIB DESIGN — allow extension by known types only → sealed = 'these classes and NO others can extend me' | sealed = 'these classes and NO others can extend me' → final = 'nobody can extend me' | final = 'nobody can extend me' → non-sealed = 'anyone can extend me' (escape hatch)
+**Flow:**
+- WHY SEALED CLASSES?
+- ↓
+- 2. DOMAIN MODELING — exactly represents business rules
+- ↓
+- 'A payment can ONLY be CreditCard, BankTransfer, or Cry
+- ↓
+- 3. LIB DESIGN — allow extension by known types only
+- ↓
+- sealed = 'these classes and NO others can extend me'
+- ↓
+- final = 'nobody can extend me'
+- ↓
+- non-sealed = 'anyone can extend me' (escape hatch)
 
 ```mermaid
 flowchart TD
@@ -543,7 +574,20 @@ user.getAddress().getCity().toUpperCase();
 └──────────────┴────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Java Version Key Features → dropWhile, Optional.or/ifPresentOrElse, private interfa | dropWhile, Optional.or/ifPresentOrElse, private interfa → methods, compact Strings internally | methods, compact Strings internally → Java 10 var (local variable type inference), List.copyO | Java 10 var (local variable type inference), List.copyO → Collectors.toUnmodifiable*, G1 GC improvements | Collectors.toUnmodifiable*, G1 GC improvements → Java 11 LTS HttpClient, String strip/isBlank/lines/repe | Java 11 LTS HttpClient, String strip/isBlank/lines/repe → Files.readString/writeString, Optional.isEmpty | ...+1 more
+**Flow:**
+- Java Version Key Features
+- ↓
+- dropWhile, Optional.or/ifPresentOrElse, private interfa
+- ↓
+- methods, compact Strings internally
+- ↓
+- Java 10 var (local variable type inference), List.copyO
+- ↓
+- Collectors.toUnmodifiable*, G1 GC improvements
+- ↓
+- Java 11 LTS HttpClient, String strip/isBlank/lines/repe
+- ↓
+- Files.readString/writeString, Optional.isEmpty
 
 ```mermaid
 flowchart TD
@@ -585,7 +629,20 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: INTERVIEW MUST-KNOWS: → Q: 'What Java version do you use?' | Q: 'What Java version do you use?' → Q: 'Records vs Lombok @Value?' | Q: 'Records vs Lombok @Value?' → Q: 'When would you use sealed classes?' | Q: 'When would you use sealed classes?' → state machines. Enables exhaustive switch without defau | state machines. Enables exhaustive switch without defau → Q: 'var vs explicit types — your preference?' | Q: 'var vs explicit types — your preference?' → Never in public API signatures.'
+**Flow:**
+- INTERVIEW MUST-KNOWS:
+- ↓
+- Q: 'What Java version do you use?'
+- ↓
+- Q: 'Records vs Lombok @Value?'
+- ↓
+- Q: 'When would you use sealed classes?'
+- ↓
+- state machines. Enables exhaustive switch without defau
+- ↓
+- Q: 'var vs explicit types — your preference?'
+- ↓
+- Never in public API signatures.'
 
 ```mermaid
 flowchart TD

@@ -122,7 +122,20 @@ Index 6: arr[6] = 1
 Continue... Final Answer: 6 (subarray [4, -1, 2, 1])
 ```
 
-> **Flow**: KADANE'S ALGORITHM → Array: [-2, 1, -3, 4, -1, 2, 1, -5, 4] | Array: [-2, 1, -3, 4, -1, 2, 1, -5, 4] → KEY IDEA: At each position, decide: | KEY IDEA: At each position, decide: → 'Should I start fresh here, or extend previous subarray | 'Should I start fresh here, or extend previous subarray → Index 0: arr[0] = -2 | Index 0: arr[0] = -2 → maxSum = -2 | maxSum = -2 → Index 1: arr[1] = 1 | ...+1 more
+**Flow:**
+- KADANE'S ALGORITHM
+- ↓
+- Array: [-2, 1, -3, 4, -1, 2, 1, -5, 4]
+- ↓
+- KEY IDEA: At each position, decide:
+- ↓
+- 'Should I start fresh here, or extend previous subarray
+- ↓
+- Index 0: arr[0] = -2
+- ↓
+- maxSum = -2
+- ↓
+- Index 1: arr[1] = 1
 
 ```mermaid
 flowchart TD
@@ -201,7 +214,12 @@ mid > high → DONE! ✓
 Result: [0, 0, 1, 1, 2, 2]
 ```
 
-> **Flow**: 2 0 2 1 1 0 → 0 0 2 1 1 2 | 0 0 2 1 1 2 → 0 0 2 1 1 2 | 0 0 2 1 1 2 → 0 0 2 1 1 2 | 0 0 2 1 1 2 → 0 0 1 1 2 2 | 0 0 1 1 2 2 → 0 0 1 1 2 2
+**Flow:**
+- 2 0 2 1 1 0
+- ↓
+- 0 0 2 1 1 2
+- ↓
+- 0 0 1 1 2 2
 
 ```mermaid
 flowchart TD
@@ -256,7 +274,14 @@ Process "silent": -1 for each char
 All zeros → ANAGRAM ✓
 ```
 
-> **Flow**: l 1 / i 1 / s 1 / t 1 / e 1 / n 1 → s 1 / i 1 / l 1 / e 1 / n 1 / t 1 | s 1 / i 1 / l 1 / e 1 / n 1 / t 1 → 0 0 0 0 1 0 0 0 1 0 0 1 0 1 0 0 0 0 1 1 0 0 0 0 0 0 | 0 0 0 0 1 0 0 0 1 0 0 1 0 1 0 0 0 0 1 1 0 0 0 0 0 0 → 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+**Flow:**
+- l 1 / i 1 / s 1 / t 1 / e 1 / n 1
+- ↓
+- s 1 / i 1 / l 1 / e 1 / n 1 / t 1
+- ↓
+- 0 0 0 0 1 0 0 0 1 0 0 1 0 1 0 0 0 0 1 1 0 0 0 0 0 0
+- ↓
+- 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
 
 ```mermaid
 flowchart TD
@@ -395,7 +420,10 @@ Time: O(N + K) where K = range of values
 Best when: K is small (like sorting ages 0-100)
 ```
 
-> **Flow**: 0 1 2 1 1 0 0 0 1 0 → 0 1 3 4 5 5 5 5 6 6
+**Flow:**
+- 0 1 2 1 1 0 0 0 1 0
+- ↓
+- 0 1 3 4 5 5 5 5 6 6
 
 ```mermaid
 flowchart TD
@@ -542,7 +570,12 @@ removeFirst    removeLast
 Use cases: Sliding window max, BFS variations
 ```
 
-> **Flow**: 3 / 2 / 1 → 1 2 3 | 1 2 3 → 1 2 3 | 1 2 3 → A B C D E
+**Flow:**
+- 3 / 2 / 1
+- ↓
+- 1 2 3
+- ↓
+- A B C D E
 
 ```mermaid
 flowchart TD
@@ -707,7 +740,20 @@ Answer: 5
 Time: O(N), Space: O(1) 🎉
 ```
 
-> **Flow**: FIBONACCI - DP VISUALIZATION → WITHOUT MEMOIZATION (Exponential time): | WITHOUT MEMOIZATION (Exponential time): → fib(5) | fib(5) → fib(4) fib(3) | fib(4) fib(3) → fib(2) fib(1) | fib(2) fib(1) → Notice: fib(3) calculated twice, fib(2) calculated 3 ti | Notice: fib(3) calculated twice, fib(2) calculated 3 ti → Time: O(2^N) 😱 | ...+1 more
+**Flow:**
+- FIBONACCI - DP VISUALIZATION
+- ↓
+- WITHOUT MEMOIZATION (Exponential time):
+- ↓
+- fib(5)
+- ↓
+- fib(4) fib(3)
+- ↓
+- fib(2) fib(1)
+- ↓
+- Notice: fib(3) calculated twice, fib(2) calculated 3 ti
+- ↓
+- Time: O(2^N) 😱
 
 ```mermaid
 flowchart TD
@@ -763,7 +809,20 @@ Backtrack to find actual subsequence:
 Start at dp[6][6]=3, trace back through matches
 ```
 
-> **Flow**: LONGEST COMMON SUBSEQUENCE → String X = 'ABCDGH' | String X = 'ABCDGH' → String Y = 'AEDFHR' | String Y = 'AEDFHR' → DP Table: dp[i][j] = LCS length of X[0..i-1] and Y[0..j | DP Table: dp[i][j] = LCS length of X[0..i-1] and Y[0..j → D 0 1 1 2 2 2 2 ← D matches! | D 0 1 1 2 2 2 2 ← D matches! → H 0 1 1 2 2 3 3 ← H matches! | H 0 1 1 2 2 3 3 ← H matches! → Recurrence: | ...+1 more
+**Flow:**
+- LONGEST COMMON SUBSEQUENCE
+- ↓
+- String X = 'ABCDGH'
+- ↓
+- String Y = 'AEDFHR'
+- ↓
+- DP Table: dp[i][j] = LCS length of X[0..i-1] and Y[0..j
+- ↓
+- D 0 1 1 2 2 2 2 ← D matches!
+- ↓
+- H 0 1 1 2 2 3 3 ← H matches!
+- ↓
+- Recurrence:
 
 ```mermaid
 flowchart TD
@@ -899,7 +958,16 @@ int gcd(int a, int b) {
 Time Complexity: O(log(min(a, b)))
 ```
 
-> **Flow**: GCD - EUCLIDEAN ALGORITHM / Find GCD(48, 18): / Step 1: → GCD(18, 48 % 18) = GCD(18, 12) | GCD(18, 48 % 18) = GCD(18, 12) → GCD(12, 18 % 12) = GCD(12, 6) | GCD(12, 18 % 12) = GCD(12, 6) → GCD(6, 12 % 6) = GCD(6, 0) | GCD(6, 12 % 6) = GCD(6, 0) → return 6 ← When b becomes 0, a is the GCD / Code: / int
+**Flow:**
+- GCD - EUCLIDEAN ALGORITHM / Find GCD(48, 18): / Step 1:
+- ↓
+- GCD(18, 48 % 18) = GCD(18, 12)
+- ↓
+- GCD(12, 18 % 12) = GCD(12, 6)
+- ↓
+- GCD(6, 12 % 6) = GCD(6, 0)
+- ↓
+- return 6 ← When b becomes 0, a is the GCD / Code: / int
 
 ```mermaid
 flowchart TD
@@ -958,7 +1026,12 @@ DATA STRUCTURES
 └──────────────────┴─────────┴─────────┴─────────┴────────────────────┘
 ```
 
-> **Flow**: Algorithm Best Average Worst When to Use / Quick Sort O → Algorithm Time When to Use / Linear Search O(N) Unsorte | Algorithm Time When to Use / Linear Search O(N) Unsorte → Structure Access Search Insert Delete / Array O(1) O(N)
+**Flow:**
+- Algorithm Best Average Worst When to Use / Quick Sort O
+- ↓
+- Algorithm Time When to Use / Linear Search O(N) Unsorte
+- ↓
+- Structure Access Search Insert Delete / Array O(1) O(N)
 
 ```mermaid
 flowchart TD

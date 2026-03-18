@@ -94,7 +94,20 @@ GROUP BY CUBE (<column1>, <column2>);            -- Subtotals for col1, col2, co
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: AGGREGATE FUNCTIONS - SUMMARY → a SINGLE value. They ignore NULL values (except COUNT(* | a SINGLE value. They ignore NULL values (except COUNT(* → Function Description Example | Function Description Example → COUNT(*) Count all rows COUNT(*) | COUNT(*) Count all rows COUNT(*) → COUNT(column) Count non-NULL values COUNT(email) | COUNT(column) Count non-NULL values COUNT(email) → COUNT(DISTINCT) Count unique values COUNT(DISTINCT d) | COUNT(DISTINCT) Count unique values COUNT(DISTINCT d) → SUM(column) Sum of all values SUM(salary) | ...+1 more
+**Flow:**
+- AGGREGATE FUNCTIONS - SUMMARY
+- ↓
+- a SINGLE value. They ignore NULL values (except COUNT(*
+- ↓
+- Function Description Example
+- ↓
+- COUNT(*) Count all rows COUNT(*)
+- ↓
+- COUNT(column) Count non-NULL values COUNT(email)
+- ↓
+- COUNT(DISTINCT) Count unique values COUNT(DISTINCT d)
+- ↓
+- SUM(column) Sum of all values SUM(salary)
 
 ```mermaid
 flowchart TD
@@ -187,7 +200,10 @@ FROM employees WHERE dept_id = 1;
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: emp_id dept salary / 1 1 100000 / 2 1 80000 / 3 1 10000 → dept count sum_sal avg_sal / 1 3 280000 93333.33 / 2 2 
+**Flow:**
+- emp_id dept salary / 1 1 100000 / 2 1 80000 / 3 1 10000
+- ↓
+- dept count sum_sal avg_sal / 1 3 280000 93333.33 / 2 2
 
 ```mermaid
 flowchart TD

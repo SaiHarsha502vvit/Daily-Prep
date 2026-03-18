@@ -83,7 +83,12 @@ STEP 3 — IDENTIFY DATA FLOW:
 • Reviews → separate API call, lazy loaded in tab
 ```
 
-> **Flow**: IMAGE / GALLERY / ○ ○ ● ○ → Product Title / ★★★★☆ (42 reviews) / $129.99 ~$159.99~  | Product Title / ★★★★☆ (42 reviews) / $129.99 ~$159.99~  → Tab content here...
+**Flow:**
+- IMAGE / GALLERY / ○ ○ ● ○
+- ↓
+- Product Title / ★★★★☆ (42 reviews) / $129.99 ~$159.99~
+- ↓
+- Tab content here...
 
 ```mermaid
 flowchart TD
@@ -125,7 +130,26 @@ BEFORE WRITING ANY JSX, ANSWER:
 THEN: Write JSX structure → Style with CSS → Add interactions
 ```
 
-> **Flow**: selectedColor → changes on click | changes on click → useState | cartItems → changes across pages | changes across pages → Zustand/context | Click 'Add to Cart' → update cart state | Click thumbnail → change main image | ...+3 more
+**Flow:**
+- selectedColor
+- ↓
+- changes on click
+- ↓
+- useState
+- ↓
+- cartItems
+- ↓
+- changes across pages
+- ↓
+- Zustand/context
+- ↓
+- Click 'Add to Cart'
+- ↓
+- update cart state
+- ↓
+- Click thumbnail
+- ↓
+- change main image
 
 ```mermaid
 flowchart TD
@@ -183,7 +207,10 @@ IF PROP DRILLING > 3 LEVELS DEEP → Consider:
 └── Composition pattern (pass components as children)
 ```
 
-> **Flow**: IF PROP DRILLING &gt; 3 LEVELS DEEP → Consider:
+**Flow:**
+- IF PROP DRILLING > 3 LEVELS DEEP
+- ↓
+- Consider:
 
 ```mermaid
 flowchart LR
@@ -224,7 +251,22 @@ GOLDEN RULES:
 5. Position absolute ONLY for overlays/tooltips/badges
 ```
 
-> **Flow**: YES → CSS Grid (header, sidebar, main, footer) | YES → Flexbox | YES → CSS Grid with auto-fit | YES → Normal flow (no special CSS)
+**Flow:**
+- YES
+- ↓
+- CSS Grid (header, sidebar, main, footer)
+- ↓
+- YES
+- ↓
+- Flexbox
+- ↓
+- YES
+- ↓
+- CSS Grid with auto-fit
+- ↓
+- YES
+- ↓
+- Normal flow (no special CSS)
 
 ```mermaid
 flowchart LR
@@ -399,7 +441,34 @@ function ProductList() {
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: FORM WIZARD ARCHITECTURE: → Step 1 Step 2 Step 3 Step 4 | Step 1 Step 2 Step 3 Step 4 → [Personal] → [Address] → [Payment] → [Review] | [Personal] → [Address] → [Payment] → [Review] → State Shape: | State Shape: → currentStep: 2, | currentStep: 2, → formData: { | formData: { → personal: { name, email, phone }, // validated | ...+1 more
+**Flow:**
+- FORM WIZARD ARCHITECTURE:
+- ↓
+- Step 1 Step 2 Step 3 Step 4
+- ↓
+- [Personal]
+- ↓
+- [Address]
+- ↓
+- [Payment]
+- ↓
+- [Review]
+- ↓
+- [Personal]
+- ↓
+- [Address]
+- ↓
+- [Payment]
+- ↓
+- [Review]
+- ↓
+- State Shape:
+- ↓
+- currentStep: 2,
+- ↓
+- formData: {
+- ↓
+- personal: { name, email, phone }, // validated
 
 ```mermaid
 flowchart TD
@@ -512,7 +581,20 @@ function FormWizard() {
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: BEFORE you write code for any new feature: → □ 1. UNDERSTAND the requirement | □ 1. UNDERSTAND the requirement → What exactly should happen? List every behavior. | What exactly should happen? List every behavior. → □ 2. DECOMPOSE into components | □ 2. DECOMPOSE into components → Draw the component tree on paper/whiteboard. | Draw the component tree on paper/whiteboard. → □ 3. DEFINE types/interfaces | □ 3. DEFINE types/interfaces → What data flows through? What can change? | ...+1 more
+**Flow:**
+- BEFORE you write code for any new feature:
+- ↓
+- □ 1. UNDERSTAND the requirement
+- ↓
+- What exactly should happen? List every behavior.
+- ↓
+- □ 2. DECOMPOSE into components
+- ↓
+- Draw the component tree on paper/whiteboard.
+- ↓
+- □ 3. DEFINE types/interfaces
+- ↓
+- What data flows through? What can change?
 
 ```mermaid
 flowchart TD
@@ -566,7 +648,20 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: THINK IN FLUID RANGES, NOT FIXED BREAKPOINTS: → OLD WAY (Bad): | OLD WAY (Bad): → 'At 768px, switch to 2 columns. At 1024px, switch to 3. | 'At 768px, switch to 2 columns. At 1024px, switch to 3. → → Brittle. What about 767px? 769px? | → Brittle. What about 767px? 769px? → NEW WAY (Good): | NEW WAY (Good): → 'Each card should be 280-400px wide. As many as fit.' | 'Each card should be 280-400px wide. As many as fit.' → → Works at EVERY screen size. No breakpoints needed. | ...+1 more
+**Flow:**
+- THINK IN FLUID RANGES, NOT FIXED BREAKPOINTS:
+- ↓
+- OLD WAY (Bad):
+- ↓
+- 'At 768px, switch to 2 columns. At 1024px, switch to 3.
+- ↓
+- Brittle. What about 767px? 769px?
+- ↓
+- NEW WAY (Good):
+- ↓
+- 'Each card should be 280-400px wide. As many as fit.'
+- ↓
+- Works at EVERY screen size. No breakpoints needed.
 
 ```mermaid
 flowchart TD
@@ -619,7 +714,26 @@ Q: What makes a good component API (props)?
   Avoid boolean overload: use variant="primary" not isPrimary, isSecondary.
 ```
 
-> **Flow**: 5. Build bottom-up: atoms → molecules | molecules → organisms | organisms → page. | If yes to any → extract into its own component. | Categorize: Server state → TanStack Query. | UI state (open/closed, selected) → useState. | ...+2 more
+**Flow:**
+- 5. Build bottom-up: atoms
+- ↓
+- molecules
+- ↓
+- organisms
+- ↓
+- page.
+- ↓
+- If yes to any
+- ↓
+- extract into its own component.
+- ↓
+- Categorize: Server state
+- ↓
+- TanStack Query.
+- ↓
+- UI state (open/closed, selected)
+- ↓
+- useState.
 
 ```mermaid
 flowchart TD

@@ -54,7 +54,20 @@ Binary Search on 1,000,000 elements:
 └────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Worst case: 1,000,000 comparisons / Average: 500,000 co → 1,000,000 → 500,000 → 250,000 → 125,000 → / 62,500 → 31
+**Flow:**
+- Worst case: 1,000,000 comparisons / Average: 500,000 co
+- ↓
+- 1,000,000
+- ↓
+- 500,000
+- ↓
+- 250,000
+- ↓
+- 125,000
+- ↓
+- / 62,500
+- ↓
+- 31
 
 ```mermaid
 flowchart TD
@@ -87,7 +100,20 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: BINARY SEARCH APPLICABILITY → You need ONE of these properties: | You need ONE of these properties: → 1. SORTED ARRAY | 1. SORTED ARRAY → - Ascending or descending | - Ascending or descending → - Search for specific value or boundary | - Search for specific value or boundary → 2. MONOTONIC FUNCTION | 2. MONOTONIC FUNCTION → - f(x) is always increasing or always decreasing | ...+1 more
+**Flow:**
+- BINARY SEARCH APPLICABILITY
+- ↓
+- You need ONE of these properties:
+- ↓
+- 1. SORTED ARRAY
+- ↓
+- - Ascending or descending
+- ↓
+- - Search for specific value or boundary
+- ↓
+- 2. MONOTONIC FUNCTION
+- ↓
+- - f(x) is always increasing or always decreasing
 
 ```mermaid
 flowchart TD
@@ -202,7 +228,18 @@ Uses:
 - Insert position for 2.5: lowerBound(2.5) → 4
 ```
 
-> **Flow**: Template 1 (Exact): Returns any 2 → index 1, 2, or 3 | Template 2 (Lower): First &gt;= 2 → index 1 | Template 3 (Upper): First &gt; 2 → index 4
+**Flow:**
+- Template 1 (Exact): Returns any 2
+- ↓
+- index 1, 2, or 3
+- ↓
+- Template 2 (Lower): First >= 2
+- ↓
+- index 1
+- ↓
+- Template 3 (Upper): First > 2
+- ↓
+- index 4
 
 ```mermaid
 flowchart LR
@@ -244,7 +281,20 @@ flowchart LR
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: TEMPLATE QUICK REFERENCE → TEMPLATE 1: left &lt;= right, left/right = mid ± 1 | TEMPLATE 1: left &lt;= right, left/right = mid ± 1 → Use for: Exact match | Use for: Exact match → Returns: Index of element or -1 | Returns: Index of element or -1 → TEMPLATE 2: left &lt; right, right = mid | TEMPLATE 2: left &lt; right, right = mid → Use for: First position &gt;= target | Use for: First position &gt;= target → Returns: Insert position (0 to n) | ...+1 more
+**Flow:**
+- TEMPLATE QUICK REFERENCE
+- ↓
+- TEMPLATE 1: left <= right, left/right = mid ± 1
+- ↓
+- Use for: Exact match
+- ↓
+- Returns: Index of element or -1
+- ↓
+- TEMPLATE 2: left < right, right = mid
+- ↓
+- Use for: First position >= target
+- ↓
+- Returns: Insert position (0 to n)
 
 ```mermaid
 flowchart TD
@@ -311,7 +361,20 @@ Range: [3, 6-1] = [3, 5]
 Count: 6 - 3 = 3 occurrences
 ```
 
-> **Flow**: Array: [5, 7, 7, 8, 8, 8, 10], target = 8 → lowerBound(8): First &gt;= 8 | lowerBound(8): First &gt;= 8 → Index: 0 1 2 3 4 5 6 | Index: 0 1 2 3 4 5 6 → Value: 5 7 7 8 8 8 10 | Value: 5 7 7 8 8 8 10 → Returns 3 | Returns 3 → upperBound(8): First &gt; 8 | upperBound(8): First &gt; 8 → Returns 6 | ...+1 more
+**Flow:**
+- Array: [5, 7, 7, 8, 8, 8, 10], target = 8
+- ↓
+- lowerBound(8): First >= 8
+- ↓
+- Index: 0 1 2 3 4 5 6
+- ↓
+- Value: 5 7 7 8 8 8 10
+- ↓
+- Returns 3
+- ↓
+- upperBound(8): First > 8
+- ↓
+- Returns 6
 
 ```mermaid
 flowchart TD
@@ -378,7 +441,20 @@ Left half [4,5,6,7] is sorted (nums[left] <= nums[mid])
 Right half [0,1,2] is NOT sorted in normal order
 ```
 
-> **Flow**: Original Sorted: [0, 1, 2, 4, 5, 6, 7] → Rotated by 3: [4, 5, 6, 7, 0, 1, 2] | Rotated by 3: [4, 5, 6, 7, 0, 1, 2] → Pivot point | Pivot point → Key insight: One half is ALWAYS sorted! | Key insight: One half is ALWAYS sorted! → [4, 5, 6, 7, 0, 1, 2], mid = 3 (value 7) | [4, 5, 6, 7, 0, 1, 2], mid = 3 (value 7) → left mid right | left mid right → Left half [4,5,6,7] is sorted (nums[left] &lt;= nums[mi | ...+1 more
+**Flow:**
+- Original Sorted: [0, 1, 2, 4, 5, 6, 7]
+- ↓
+- Rotated by 3: [4, 5, 6, 7, 0, 1, 2]
+- ↓
+- Pivot point
+- ↓
+- Key insight: One half is ALWAYS sorted!
+- ↓
+- [4, 5, 6, 7, 0, 1, 2], mid = 3 (value 7)
+- ↓
+- left mid right
+- ↓
+- Left half [4,5,6,7] is sorted (nums[left] <= nums[mi
 
 ```mermaid
 flowchart TD
@@ -579,7 +655,14 @@ Multiple peaks exist: index 1 (value 2) and index 5 (value 6)
 Binary search finds ONE of them.
 ```
 
-> **Flow**: 2 &lt; 3: Ascending → move right | 3 &gt; 1: Descending → peak at mid or left
+**Flow:**
+- 2 < 3: Ascending
+- ↓
+- move right
+- ↓
+- 3 > 1: Descending
+- ↓
+- peak at mid or left
 
 ```mermaid
 flowchart LR
@@ -642,7 +725,20 @@ public int peakIndexInMountainArray(int[] arr) {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: BINARY SEARCH ON ANSWER PATTERN → When: You're not searching IN an array, but searching F | When: You're not searching IN an array, but searching F → an optimal value in a range. | an optimal value in a range. → Pattern: | Pattern: → 1. Define search space: [min_possible, max_possible] | 1. Define search space: [min_possible, max_possible] → 2. Define feasibility function: canAchieve(answer) | 2. Define feasibility function: canAchieve(answer) → 3. Binary search for boundary where answer becomes feas | ...+1 more
+**Flow:**
+- BINARY SEARCH ON ANSWER PATTERN
+- ↓
+- When: You're not searching IN an array, but searching F
+- ↓
+- an optimal value in a range.
+- ↓
+- Pattern:
+- ↓
+- 1. Define search space: [min_possible, max_possible]
+- ↓
+- 2. Define feasibility function: canAchieve(answer)
+- ↓
+- 3. Binary search for boundary where answer becomes feas
 
 ```mermaid
 flowchart TD
@@ -1188,7 +1284,20 @@ if (nums[left] <= nums[mid])  // ✓
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: BINARY SEARCH PROBLEM TYPES → BASIC (Template 1): | BASIC (Template 1): → - Binary Search, Search Insert Position | - Binary Search, Search Insert Position → BOUNDARY FINDING (Template 2/3): | BOUNDARY FINDING (Template 2/3): → - First/Last Position of Element | - First/Last Position of Element → - First Bad Version, Find Smallest Letter | - First Bad Version, Find Smallest Letter → ROTATED ARRAY: | ...+1 more
+**Flow:**
+- BINARY SEARCH PROBLEM TYPES
+- ↓
+- BASIC (Template 1):
+- ↓
+- - Binary Search, Search Insert Position
+- ↓
+- BOUNDARY FINDING (Template 2/3):
+- ↓
+- - First/Last Position of Element
+- ↓
+- - First Bad Version, Find Smallest Letter
+- ↓
+- ROTATED ARRAY:
 
 ```mermaid
 flowchart TD
@@ -1298,7 +1407,20 @@ public char nextGreatestLetter(char[] letters, char target) {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHICH TEMPLATE TO USE? → 'Find exact element' | 'Find exact element' → → Template 1: left &lt;= right | → Template 1: left &lt;= right → 'Find first position where condition is true' | 'Find first position where condition is true' → → Template 2: left &lt; right, right = mid | → Template 2: left &lt; right, right = mid → 'Find last position where condition is true' | 'Find last position where condition is true' → → Template 3: left &lt; right, left = mid, upper mid | ...+1 more
+**Flow:**
+- WHICH TEMPLATE TO USE?
+- ↓
+- 'Find exact element'
+- ↓
+- Template 1: left <= right
+- ↓
+- 'Find first position where condition is true'
+- ↓
+- Template 2: left < right, right = mid
+- ↓
+- 'Find last position where condition is true'
+- ↓
+- Template 3: left < right, left = mid, upper mid
 
 ```mermaid
 flowchart TD
@@ -1340,7 +1462,20 @@ After coding:
 □ Test with duplicates (if applicable)
 ```
 
-> **Flow**: Before coding: → □ Is the search space monotonic/sorted? | □ Is the search space monotonic/sorted? → □ What are the boundaries? (inclusive/exclusive?) | □ What are the boundaries? (inclusive/exclusive?) → □ What should be returned if not found? | □ What should be returned if not found? → While coding: | While coding: → □ Use left + (right - left) / 2 to avoid overflow | □ Use left + (right - left) / 2 to avoid overflow → □ Match while condition with boundary updates | ...+1 more
+**Flow:**
+- Before coding:
+- ↓
+- □ Is the search space monotonic/sorted?
+- ↓
+- □ What are the boundaries? (inclusive/exclusive?)
+- ↓
+- □ What should be returned if not found?
+- ↓
+- While coding:
+- ↓
+- □ Use left + (right - left) / 2 to avoid overflow
+- ↓
+- □ Match while condition with boundary updates
 
 ```mermaid
 flowchart TD
@@ -1379,7 +1514,20 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: BINARY SEARCH COMPLEXITIES → Basic Binary Search: O(log n) time, O(1) space | Basic Binary Search: O(log n) time, O(1) space → Rotated Array Search: O(log n) time, O(1) space | Rotated Array Search: O(log n) time, O(1) space → Rotated Array w/ Dups: O(n) worst, O(log n) average | Rotated Array w/ Dups: O(n) worst, O(log n) average → Binary Search on Answer: O(log R × f(n)) where R = rang | Binary Search on Answer: O(log R × f(n)) where R = rang → 2D Matrix (sorted): O(log(m×n)) | 2D Matrix (sorted): O(log(m×n)) → 2D Matrix (row/col sorted): O(m + n) | ...+1 more
+**Flow:**
+- BINARY SEARCH COMPLEXITIES
+- ↓
+- Basic Binary Search: O(log n) time, O(1) space
+- ↓
+- Rotated Array Search: O(log n) time, O(1) space
+- ↓
+- Rotated Array w/ Dups: O(n) worst, O(log n) average
+- ↓
+- Binary Search on Answer: O(log R × f(n)) where R = rang
+- ↓
+- 2D Matrix (sorted): O(log(m×n))
+- ↓
+- 2D Matrix (row/col sorted): O(m + n)
 
 ```mermaid
 flowchart TD
@@ -1431,7 +1579,20 @@ flowchart TD
 ╚═══════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: BINARY SEARCH - MASTER CHECKLIST → 1. MEMORIZE THE 3 TEMPLATES | 1. MEMORIZE THE 3 TEMPLATES → - T1: Exact match (left &lt;= right) | - T1: Exact match (left &lt;= right) → - T2: First true (left &lt; right, right = mid) | - T2: First true (left &lt; right, right = mid) → - T3: Last true (left &lt; right, left = mid, upper mid | - T3: Last true (left &lt; right, left = mid, upper mid → 2. BINARY SEARCH ON ANSWER | 2. BINARY SEARCH ON ANSWER → - Define search space [min, max] | ...+1 more
+**Flow:**
+- BINARY SEARCH - MASTER CHECKLIST
+- ↓
+- 1. MEMORIZE THE 3 TEMPLATES
+- ↓
+- - T1: Exact match (left <= right)
+- ↓
+- - T2: First true (left < right, right = mid)
+- ↓
+- - T3: Last true (left < right, left = mid, upper mid
+- ↓
+- 2. BINARY SEARCH ON ANSWER
+- ↓
+- - Define search space [min, max]
 
 ```mermaid
 flowchart TD

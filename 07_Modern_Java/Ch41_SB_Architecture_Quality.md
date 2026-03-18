@@ -49,7 +49,14 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHY: Why Clean Architecture? / • Technical debt: Bad ar → HOW: How to Structure a Spring Boot Project? / • Layere | HOW: How to Structure a Spring Boot Project? / • Layere → WHEN: When to Use Each Architecture Style? / • Simple l | WHEN: When to Use Each Architecture Style? / • Simple l → WHICH: Which Quality Practices to Follow? / ESSENTIAL: 
+**Flow:**
+- WHY: Why Clean Architecture? / • Technical debt: Bad ar
+- ↓
+- HOW: How to Structure a Spring Boot Project? / • Layere
+- ↓
+- WHEN: When to Use Each Architecture Style? / • Simple l
+- ↓
+- WHICH: Which Quality Practices to Follow? / ESSENTIAL:
 
 ```mermaid
 flowchart TD
@@ -125,7 +132,16 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: CLIENT / (Browser/App) → CONTROLLER LAYER / • @RestController, @Controller / • R | CONTROLLER LAYER / • @RestController, @Controller / • R → SERVICE LAYER / • @Service / • Business logic / • Trans | SERVICE LAYER / • @Service / • Business logic / • Trans → REPOSITORY LAYER / • @Repository / • Data access (JpaRe | REPOSITORY LAYER / • @Repository / • Data access (JpaRe → DATABASE
+**Flow:**
+- CLIENT / (Browser/App)
+- ↓
+- CONTROLLER LAYER / • @RestController, @Controller / • R
+- ↓
+- SERVICE LAYER / • @Service / • Business logic / • Trans
+- ↓
+- REPOSITORY LAYER / • @Repository / • Data access (JpaRe
+- ↓
+- DATABASE
 
 ```mermaid
 flowchart TD
@@ -222,7 +238,20 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: RECOMMENDED PACKAGE STRUCTURE → OPTION 1: LAYER-BASED (Traditional) | OPTION 1: LAYER-BASED (Traditional) → com.company.myapp/ | com.company.myapp/ → MyApplication.java | MyApplication.java → controller/ | controller/ → UserController.java | UserController.java → OrderController.java | ...+1 more
+**Flow:**
+- RECOMMENDED PACKAGE STRUCTURE
+- ↓
+- OPTION 1: LAYER-BASED (Traditional)
+- ↓
+- com.company.myapp/
+- ↓
+- MyApplication.java
+- ↓
+- controller/
+- ↓
+- UserController.java
+- ↓
+- OrderController.java
 
 ```mermaid
 flowchart TD
@@ -1213,7 +1242,30 @@ class UserApiIntegrationTest {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: SPRING BOOT MASTERY CHECKLIST → ARCHITECTURE: | ARCHITECTURE: → □ Clear separation: Controller → Service → Repository | □ Clear separation: Controller → Service → Repository → □ DTOs for API contracts, Entities for persistence | □ DTOs for API contracts, Entities for persistence → □ Single Responsibility in each class | □ Single Responsibility in each class → □ Dependency injection via constructor (final fields) | □ Dependency injection via constructor (final fields) → CONTROLLERS: | ...+1 more
+**Flow:**
+- SPRING BOOT MASTERY CHECKLIST
+- ↓
+- ARCHITECTURE:
+- ↓
+- □ Clear separation: Controller
+- ↓
+- Service
+- ↓
+- Repository
+- ↓
+- □ Clear separation: Controller
+- ↓
+- Service
+- ↓
+- Repository
+- ↓
+- □ DTOs for API contracts, Entities for persistence
+- ↓
+- □ Single Responsibility in each class
+- ↓
+- □ Dependency injection via constructor (final fields)
+- ↓
+- CONTROLLERS:
 
 ```mermaid
 flowchart TD
@@ -1266,7 +1318,20 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: You've completed the Spring Boot Mastery Guide covering → Part 1: Java Foundations (JVM, Memory, GC, Threading) | Part 1: Java Foundations (JVM, Memory, GC, Threading) → Part 2: Spring Core (IoC, DI, Beans, Lifecycle) | Part 2: Spring Core (IoC, DI, Beans, Lifecycle) → Part 3: AOP & Spring Boot Auto-Configuration | Part 3: AOP & Spring Boot Auto-Configuration → Part 4: Data Access, Web, Security, Testing | Part 4: Data Access, Web, Security, Testing → Part 5: Lombok & DTOs | Part 5: Lombok & DTOs → Part 6: Service & Repository Best Practices | ...+1 more
+**Flow:**
+- You've completed the Spring Boot Mastery Guide covering
+- ↓
+- Part 1: Java Foundations (JVM, Memory, GC, Threading)
+- ↓
+- Part 2: Spring Core (IoC, DI, Beans, Lifecycle)
+- ↓
+- Part 3: AOP & Spring Boot Auto-Configuration
+- ↓
+- Part 4: Data Access, Web, Security, Testing
+- ↓
+- Part 5: Lombok & DTOs
+- ↓
+- Part 6: Service & Repository Best Practices
 
 ```mermaid
 flowchart TD

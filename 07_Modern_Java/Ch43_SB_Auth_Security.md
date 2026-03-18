@@ -49,7 +49,14 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHY: Why Security is Critical? / • Data breaches cost m → HOW: How Spring Security Works? / • Filter chain: Reque | HOW: How Spring Security Works? / • Filter chain: Reque → WHEN: When to Use Each Auth Strategy? / • Session-based | WHEN: When to Use Each Auth Strategy? / • Session-based → WHICH: Which Security Concepts to Master? / ESSENTIAL: 
+**Flow:**
+- WHY: Why Security is Critical? / • Data breaches cost m
+- ↓
+- HOW: How Spring Security Works? / • Filter chain: Reque
+- ↓
+- WHEN: When to Use Each Auth Strategy? / • Session-based
+- ↓
+- WHICH: Which Security Concepts to Master? / ESSENTIAL:
 
 ```mermaid
 flowchart TD
@@ -173,7 +180,52 @@ System checks: Does this user have ADMIN role? No → 403 Forbidden
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: 1. SecurityContextPersistenceFilter / → Loads SecurityC → 2. LogoutFilter / → Handles /logout URL | 2. LogoutFilter / → Handles /logout URL → 3. UsernamePasswordAuthenticationFilter / → Handles for | 3. UsernamePasswordAuthenticationFilter / → Handles for → 4. BasicAuthenticationFilter / → Handles HTTP Basic Aut | 4. BasicAuthenticationFilter / → Handles HTTP Basic Aut → 5. BearerTokenAuthenticationFilter (for JWT) / → Valida | 5. BearerTokenAuthenticationFilter (for JWT) / → Valida → 6. ExceptionTranslationFilter / → Converts security exc | 6. ExceptionTranslationFilter / → Converts security exc → 7. FilterSecurityInterceptor / AuthorizationFilter / → 
+**Flow:**
+- 1. SecurityContextPersistenceFilter /
+- ↓
+- Loads SecurityC
+- ↓
+- 2. LogoutFilter /
+- ↓
+- Handles /logout URL
+- ↓
+- 2. LogoutFilter /
+- ↓
+- Handles /logout URL
+- ↓
+- 3. UsernamePasswordAuthenticationFilter /
+- ↓
+- Handles for
+- ↓
+- 3. UsernamePasswordAuthenticationFilter /
+- ↓
+- Handles for
+- ↓
+- 4. BasicAuthenticationFilter /
+- ↓
+- Handles HTTP Basic Aut
+- ↓
+- 4. BasicAuthenticationFilter /
+- ↓
+- Handles HTTP Basic Aut
+- ↓
+- 5. BearerTokenAuthenticationFilter (for JWT) /
+- ↓
+- Valida
+- ↓
+- 5. BearerTokenAuthenticationFilter (for JWT) /
+- ↓
+- Valida
+- ↓
+- 6. ExceptionTranslationFilter /
+- ↓
+- Converts security exc
+- ↓
+- 6. ExceptionTranslationFilter /
+- ↓
+- Converts security exc
+- ↓
+- 7. FilterSecurityInterceptor / AuthorizationFilter /
 
 ```mermaid
 flowchart TD
@@ -324,7 +376,20 @@ WHY JWT?
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: JWT AUTHENTICATION FLOW → STEP 1: LOGIN | STEP 1: LOGIN → Client Server | Client Server → POST /api/auth/login | POST /api/auth/login → 'email': 'john@test.com', | 'email': 'john@test.com', → 'password': 'secret123' | 'password': 'secret123' → 1. Find user by email | ...+1 more
+**Flow:**
+- JWT AUTHENTICATION FLOW
+- ↓
+- STEP 1: LOGIN
+- ↓
+- Client Server
+- ↓
+- POST /api/auth/login
+- ↓
+- 'email': 'john@test.com',
+- ↓
+- 'password': 'secret123'
+- ↓
+- 1. Find user by email
 
 ```mermaid
 flowchart TD
@@ -1250,7 +1315,20 @@ public class ProjectController {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: OAUTH2 AUTHORIZATION CODE FLOW → (Most common & most secure for web apps) | (Most common & most secure for web apps) → User Your App Auth Server Resource Server | User Your App Auth Server Resource Server → Click | Click → 'Login with | 'Login with → Google' | Google' → STEP 1: Redirect to Auth Server | ...+1 more
+**Flow:**
+- OAUTH2 AUTHORIZATION CODE FLOW
+- ↓
+- (Most common & most secure for web apps)
+- ↓
+- User Your App Auth Server Resource Server
+- ↓
+- Click
+- ↓
+- 'Login with
+- ↓
+- Google'
+- ↓
+- STEP 1: Redirect to Auth Server
 
 ```mermaid
 flowchart TD
@@ -1590,7 +1668,20 @@ public class BasicAuthSecurityConfig {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: SECURITY CHECKLIST → AUTHENTICATION: | AUTHENTICATION: → □ Implement rate limiting on login endpoints | □ Implement rate limiting on login endpoints → □ Use short-lived access tokens (15-60 min) | □ Use short-lived access tokens (15-60 min) → □ Use longer-lived refresh tokens (7-30 days) | □ Use longer-lived refresh tokens (7-30 days) → □ Implement token blacklisting for logout | □ Implement token blacklisting for logout → □ Use HTTPS everywhere in production | ...+1 more
+**Flow:**
+- SECURITY CHECKLIST
+- ↓
+- AUTHENTICATION:
+- ↓
+- □ Implement rate limiting on login endpoints
+- ↓
+- □ Use short-lived access tokens (15-60 min)
+- ↓
+- □ Use longer-lived refresh tokens (7-30 days)
+- ↓
+- □ Implement token blacklisting for logout
+- ↓
+- □ Use HTTPS everywhere in production
 
 ```mermaid
 flowchart TD

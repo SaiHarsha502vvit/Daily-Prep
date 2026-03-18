@@ -17,7 +17,12 @@ INTERVIEW BREAKDOWN (Most Tech Companies)
 Behavioral = The HIRE/NO-HIRE tiebreaker when coding is equal
 ```
 
-> **Flow**: Coding / 2-3 rounds / 40% → System / Design / 1-2 rounds / 20-30% | System / Design / 1-2 rounds / 20-30% → Behavioral / 1-2 rounds / 20-30%
+**Flow:**
+- Coding / 2-3 rounds / 40%
+- ↓
+- System / Design / 1-2 rounds / 20-30%
+- ↓
+- Behavioral / 1-2 rounds / 20-30%
 
 ```mermaid
 flowchart TD
@@ -60,7 +65,14 @@ S.T.A.R. FRAMEWORK
 
 ```
 
-> **Flow**: S ituation / (15%) → T ask / (15%) | T ask / (15%) → A ction / (50%) | A ction / (50%) → R esult / (20%)
+**Flow:**
+- S ituation / (15%)
+- ↓
+- T ask / (15%)
+- ↓
+- A ction / (50%)
+- ↓
+- R esult / (20%)
 
 ```mermaid
 flowchart TD
@@ -180,7 +192,14 @@ THE FAILURE ANSWER FORMULA
 └──────────────────┘
 ```
 
-> **Flow**: Real failure / (not humble brag) → Impact | Impact → Root cause | Root cause → Fix + Prevention
+**Flow:**
+- Real failure / (not humble brag)
+- ↓
+- Impact
+- ↓
+- Root cause
+- ↓
+- Fix + Prevention
 
 ```mermaid
 flowchart TD
@@ -232,7 +251,10 @@ RESULT: Production stable within 1 hour, feature delivered next day,
   colleague unblocked. PM appreciated proactive communication.
 ```
 
-> **Flow**: 1. Assessed impact: Production bug → P0, everything else waits
+**Flow:**
+- 1. Assessed impact: Production bug
+- ↓
+- P0, everything else waits
 
 ```mermaid
 flowchart LR
@@ -481,7 +503,20 @@ Before every behavioral interview, research:
 □ Open-source contributions by the company
 ```
 
-> **Flow**: Before every behavioral interview, research: → □ Company's recent news / product launches | □ Company's recent news / product launches → □ Tech blog posts (shows you care about their engineeri | □ Tech blog posts (shows you care about their engineeri → □ Glassdoor reviews (understand culture) | □ Glassdoor reviews (understand culture) → □ LinkedIn — interviewer's background | □ LinkedIn — interviewer's background → □ Company values / mission statement | □ Company values / mission statement → □ Tech stack (from job listing or StackShare) | ...+1 more
+**Flow:**
+- Before every behavioral interview, research:
+- ↓
+- □ Company's recent news / product launches
+- ↓
+- □ Tech blog posts (shows you care about their engineeri
+- ↓
+- □ Glassdoor reviews (understand culture)
+- ↓
+- □ LinkedIn — interviewer's background
+- ↓
+- □ Company values / mission statement
+- ↓
+- □ Tech stack (from job listing or StackShare)
 
 ```mermaid
 flowchart TD
@@ -602,7 +637,20 @@ they need to fill. They're rooting for you to be great.
 PREPARATION = CONFIDENCE = PERFORMANCE
 ```
 
-> **Flow**: Think of the interview as a CONVERSATION, not an EXAM → You're evaluating THEM as much as they're evaluating YO | You're evaluating THEM as much as they're evaluating YO → they need to fill. They're rooting for you to be great. | they need to fill. They're rooting for you to be great. → MINDSET SHIFT: | MINDSET SHIFT: → From: 'Please hire me, I'll do anything' | From: 'Please hire me, I'll do anything' → To: 'Let's see if we're a good fit for | To: 'Let's see if we're a good fit for → each other' | ...+1 more
+**Flow:**
+- Think of the interview as a CONVERSATION, not an EXAM
+- ↓
+- You're evaluating THEM as much as they're evaluating YO
+- ↓
+- they need to fill. They're rooting for you to be great.
+- ↓
+- MINDSET SHIFT:
+- ↓
+- From: 'Please hire me, I'll do anything'
+- ↓
+- To: 'Let's see if we're a good fit for
+- ↓
+- each other'
 
 ```mermaid
 flowchart TD

@@ -31,7 +31,18 @@ Your job:
     E   [ 0  1  2  3 ]    ← answer: dp[4][3] = 3
 ```
 
-> **Flow**: A [ 0 1 1 1 ] dp[1][1] = they match! → dp[0][0] + 1 | B [ 0 1 1 1 ] dp[2][1] = don't match → max(left, top) | C [ 0 1 2 2 ] dp[3][2] = match! → dp[2][1] + 1
+**Flow:**
+- A [ 0 1 1 1 ] dp[1][1] = they match!
+- ↓
+- dp[0][0] + 1
+- ↓
+- B [ 0 1 1 1 ] dp[2][1] = don't match
+- ↓
+- max(left, top)
+- ↓
+- C [ 0 1 2 2 ] dp[3][2] = match!
+- ↓
+- dp[2][1] + 1
 
 ```mermaid
 flowchart LR
@@ -79,7 +90,22 @@ For each choice, the state changes:
 - Don't match → dp[i][j] depends on dp[i-1][j] or dp[i][j-1]
 ```
 
-> **Flow**: - Include item i → dp[i][w] depends on dp[i-1][w - weight[i]] | - Exclude item i → dp[i][w] depends on dp[i-1][w] | - Match chars → dp[i][j] depends on dp[i-1][j-1] | - Don't match → dp[i][j] depends on dp[i-1][j] or dp[i][j-1]
+**Flow:**
+- - Include item i
+- ↓
+- dp[i][w] depends on dp[i-1][w - weight[i]]
+- ↓
+- - Exclude item i
+- ↓
+- dp[i][w] depends on dp[i-1][w]
+- ↓
+- - Match chars
+- ↓
+- dp[i][j] depends on dp[i-1][j-1]
+- ↓
+- - Don't match
+- ↓
+- dp[i][j] depends on dp[i-1][j] or dp[i][j-1]
 
 ```mermaid
 flowchart LR
@@ -118,7 +144,12 @@ Common orders:
 - Tree: post-order (children before parent)
 ```
 
-> **Flow**: Ask: 'Does dp[i] need dp[i-1] (fill left → right) or dp[i+1] (fill right | right) or dp[i+1] (fill right → left)?'
+**Flow:**
+- Ask: 'Does dp[i] need dp[i-1] (fill left
+- ↓
+- right) or dp[i+1] (fill right
+- ↓
+- left)?'
 
 ```mermaid
 flowchart LR
@@ -168,7 +199,26 @@ What are you optimizing?
     └── Multiple states per position (Buy/Sell Stock with cooldown)
 ```
 
-> **Flow**: 'How many ways?' → COUNTING | 'Min/Max cost?' → OPTIMIZATION | 'Is it possible?' → FEASIBILITY | Two sequences → TWO-SEQUENCE | Single sequence → SINGLE-SEQUENCE
+**Flow:**
+- 'How many ways?'
+- ↓
+- COUNTING
+- ↓
+- 'Min/Max cost?'
+- ↓
+- OPTIMIZATION
+- ↓
+- 'Is it possible?'
+- ↓
+- FEASIBILITY
+- ↓
+- Two sequences
+- ↓
+- TWO-SEQUENCE
+- ↓
+- Single sequence
+- ↓
+- SINGLE-SEQUENCE
 
 ```mermaid
 flowchart TD
@@ -210,7 +260,14 @@ Transition:
 dp[e][f] = 1 + min over x of max(dp[e-1][x-1], dp[e][f-x])
 ```
 
-> **Flow**: If egg breaks → test below: dp[e-1][x-1] | If survives → test above: dp[e][f-x]
+**Flow:**
+- If egg breaks
+- ↓
+- test below: dp[e-1][x-1]
+- ↓
+- If survives
+- ↓
+- test above: dp[e][f-x]
 
 ```mermaid
 flowchart LR
@@ -239,7 +296,20 @@ notHold[i] = max(notHold[i-1], cool[i-1])              // stay or finish cooldow
 cool[i]    = hold[i-1] + price[i]                       // sell today
 ```
 
-> **Flow**: 'What do I need to know at day i?' → - Am I holding a stock or not? | - Am I holding a stock or not? → - Am I in cooldown or not? | - Am I in cooldown or not? → → THREE states at each day: | → THREE states at each day: → hold[i] = max profit on day i if I'm holding stock | hold[i] = max profit on day i if I'm holding stock → Transitions: | Transitions: → cool[i] = hold[i-1] + price[i] // sell today
+**Flow:**
+- 'What do I need to know at day i?'
+- ↓
+- - Am I holding a stock or not?
+- ↓
+- - Am I in cooldown or not?
+- ↓
+- THREE states at each day:
+- ↓
+- hold[i] = max profit on day i if I'm holding stock
+- ↓
+- Transitions:
+- ↓
+- cool[i] = hold[i-1] + price[i] // sell today
 
 ```mermaid
 flowchart TD
@@ -273,7 +343,10 @@ If items unlimited (Unbounded):
   ↑ no need for item dimension, just process in right order
 ```
 
-> **Flow**: ↑ need to track which item we're considering → add dimension i
+**Flow:**
+- ↑ need to track which item we're considering
+- ↓
+- add dimension i
 
 ```mermaid
 flowchart LR
@@ -293,7 +366,12 @@ dp[i] = max(dp[i-1], dp[i-2] + value[i])
 Examples: House Robber, Sticker Collection
 ```
 
-> **Flow**: dp[i] = max(dp[i-1], dp[i-2] + value[i]) → ↑ skip i ↑ take i (can't take i-1) | ↑ skip i ↑ take i (can't take i-1) → Examples: House Robber, Sticker Collection
+**Flow:**
+- dp[i] = max(dp[i-1], dp[i-2] + value[i])
+- ↓
+- ↑ skip i ↑ take i (can't take i-1)
+- ↓
+- Examples: House Robber, Sticker Collection
 
 ```mermaid
 flowchart TD
@@ -351,7 +429,20 @@ Direction matters:
    Unbounded Knapsack: process LEFT TO RIGHT (allow reuse)
 ```
 
-> **Flow**: If dp[i] only depends on dp[i-1] (previous row): → → Use two arrays: prev[] and curr[] | → Use two arrays: prev[] and curr[] → → Or single array processed in right direction | → Or single array processed in right direction → If dp[i] only depends on dp[i-1] and dp[i-2]: | If dp[i] only depends on dp[i-1] and dp[i-2]: → → Use 2-3 variables | → Use 2-3 variables → Direction matters: | Direction matters: → Unbounded Knapsack: process LEFT TO RIGHT (allow reuse)
+**Flow:**
+- If dp[i] only depends on dp[i-1] (previous row):
+- ↓
+- Use two arrays: prev[] and curr[]
+- ↓
+- Or single array processed in right direction
+- ↓
+- If dp[i] only depends on dp[i-1] and dp[i-2]:
+- ↓
+- Use 2-3 variables
+- ↓
+- Direction matters:
+- ↓
+- Unbounded Knapsack: process LEFT TO RIGHT (allow reuse)
 
 ```mermaid
 flowchart TD
@@ -379,7 +470,10 @@ dp[2]: [...]
 dp[3]: [...]
 ```
 
-> **Flow**: dp[1]: [...] → curr: [...] (swap after each row)
+**Flow:**
+- dp[1]: [...]
+- ↓
+- curr: [...] (swap after each row)
 
 ```mermaid
 flowchart LR
@@ -402,7 +496,10 @@ flowchart LR
 □ Edge cases: empty input? single element? all same values?
 ```
 
-> **Flow**: □ Off-by-one: dp[n] or dp[n-1]? (Check indexing) → □ Edge cases: empty input? single element? all same val
+**Flow:**
+- □ Off-by-one: dp[n] or dp[n-1]? (Check indexing)
+- ↓
+- □ Edge cases: empty input? single element? all same val
 
 ```mermaid
 flowchart TD

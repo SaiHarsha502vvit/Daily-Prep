@@ -313,7 +313,20 @@ AFTER git rebase main (from feature branch):
 Result: Linear, clean history
 ```
 
-> **Flow**: BEFORE rebase: → main: A B C D | main: A B C D → feature: E F G | feature: E F G → AFTER git rebase main (from feature branch): | AFTER git rebase main (from feature branch): → feature: E' F' G' | feature: E' F' G' → (E', F', G' are COPIES with new parent = D) | (E', F', G' are COPIES with new parent = D) → Result: Linear, clean history
+**Flow:**
+- BEFORE rebase:
+- ↓
+- main: A B C D
+- ↓
+- feature: E F G
+- ↓
+- AFTER git rebase main (from feature branch):
+- ↓
+- feature: E' F' G'
+- ↓
+- (E', F', G' are COPIES with new parent = D)
+- ↓
+- Result: Linear, clean history
 
 ```mermaid
 flowchart TD
@@ -512,7 +525,10 @@ node_modules/
 4. Try to merge the second → resolve conflict
 ```
 
-> **Flow**: 4. Try to merge the second → resolve conflict
+**Flow:**
+- 4. Try to merge the second
+- ↓
+- resolve conflict
 
 ```mermaid
 flowchart LR

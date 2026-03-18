@@ -82,7 +82,20 @@ public int search(int[] nums, int target) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: SEARCH INSERT POSITION → Input: nums = [1, 3, 5, 6], target = 5 | Input: nums = [1, 3, 5, 6], target = 5 → Output: 2 | Output: 2 → Input: nums = [1, 3, 5, 6], target = 2 | Input: nums = [1, 3, 5, 6], target = 2 → Output: 1 | Output: 1 → Input: nums = [1, 3, 5, 6], target = 7 | Input: nums = [1, 3, 5, 6], target = 7 → Output: 4
+**Flow:**
+- SEARCH INSERT POSITION
+- ↓
+- Input: nums = [1, 3, 5, 6], target = 5
+- ↓
+- Output: 2
+- ↓
+- Input: nums = [1, 3, 5, 6], target = 2
+- ↓
+- Output: 1
+- ↓
+- Input: nums = [1, 3, 5, 6], target = 7
+- ↓
+- Output: 4
 
 ```mermaid
 flowchart TD
@@ -145,7 +158,18 @@ public int searchInsert(int[] nums, int target) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: FIRST BAD VERSION → Find the first bad version. | Find the first bad version. → Input: n = 5, bad = 4 | Input: n = 5, bad = 4 → Versions: [G, G, G, B, B] | Versions: [G, G, G, B, B] → Output: 4 | Output: 4 → Pattern: Find leftmost true (first bad)
+**Flow:**
+- FIRST BAD VERSION
+- ↓
+- Find the first bad version.
+- ↓
+- Input: n = 5, bad = 4
+- ↓
+- Versions: [G, G, G, B, B]
+- ↓
+- Output: 4
+- ↓
+- Pattern: Find leftmost true (first bad)
 
 ```mermaid
 flowchart TD
@@ -206,7 +230,18 @@ public int firstBadVersion(int n) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: FIND FIRST AND LAST POSITION → Input: nums = [5, 7, 7, 8, 8, 10], target = 8 | Input: nums = [5, 7, 7, 8, 8, 10], target = 8 → Output: [3, 4] | Output: [3, 4] → Input: nums = [5, 7, 7, 8, 8, 10], target = 6 | Input: nums = [5, 7, 7, 8, 8, 10], target = 6 → Output: [-1, -1] | Output: [-1, -1] → Two binary searches: Find leftmost, find rightmost
+**Flow:**
+- FIND FIRST AND LAST POSITION
+- ↓
+- Input: nums = [5, 7, 7, 8, 8, 10], target = 8
+- ↓
+- Output: [3, 4]
+- ↓
+- Input: nums = [5, 7, 7, 8, 8, 10], target = 6
+- ↓
+- Output: [-1, -1]
+- ↓
+- Two binary searches: Find leftmost, find rightmost
 
 ```mermaid
 flowchart TD
@@ -296,7 +331,20 @@ private int findLast(int[] nums, int target) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: FIND SMALLEST LETTER GREATER THAN TARGET → Letters wrap around (if none greater, return first lett | Letters wrap around (if none greater, return first lett → Input: letters = ['c','f','j'], target = 'a' | Input: letters = ['c','f','j'], target = 'a' → Output: 'c' | Output: 'c' → Input: letters = ['c','f','j'], target = 'c' | Input: letters = ['c','f','j'], target = 'c' → Output: 'f' | Output: 'f' → Input: letters = ['c','f','j'], target = 'k' | ...+1 more
+**Flow:**
+- FIND SMALLEST LETTER GREATER THAN TARGET
+- ↓
+- Letters wrap around (if none greater, return first lett
+- ↓
+- Input: letters = ['c','f','j'], target = 'a'
+- ↓
+- Output: 'c'
+- ↓
+- Input: letters = ['c','f','j'], target = 'c'
+- ↓
+- Output: 'f'
+- ↓
+- Input: letters = ['c','f','j'], target = 'k'
 
 ```mermaid
 flowchart TD
@@ -366,7 +414,20 @@ public char nextGreatestLetter(char[] letters, char target) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: SEARCH IN ROTATED SORTED ARRAY → Array was sorted then rotated at unknown pivot. | Array was sorted then rotated at unknown pivot. → No duplicates. Search for target. | No duplicates. Search for target. → Input: nums = [4, 5, 6, 7, 0, 1, 2], target = 0 | Input: nums = [4, 5, 6, 7, 0, 1, 2], target = 0 → Output: 4 | Output: 4 → Visual: | Visual: → Original: [0, 1, 2, 4, 5, 6, 7] | ...+1 more
+**Flow:**
+- SEARCH IN ROTATED SORTED ARRAY
+- ↓
+- Array was sorted then rotated at unknown pivot.
+- ↓
+- No duplicates. Search for target.
+- ↓
+- Input: nums = [4, 5, 6, 7, 0, 1, 2], target = 0
+- ↓
+- Output: 4
+- ↓
+- Visual:
+- ↓
+- Original: [0, 1, 2, 4, 5, 6, 7]
 
 ```mermaid
 flowchart TD
@@ -441,7 +502,16 @@ public int search(int[] nums, int target) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: SEARCH IN ROTATED SORTED ARRAY II (WITH DUPLICATES) → Same as above but array may have duplicates. | Same as above but array may have duplicates. → Input: nums = [2, 5, 6, 0, 0, 1, 2], target = 0 | Input: nums = [2, 5, 6, 0, 0, 1, 2], target = 0 → Output: true | Output: true → Solution: Skip duplicates by left++, right--
+**Flow:**
+- SEARCH IN ROTATED SORTED ARRAY II (WITH DUPLICATES)
+- ↓
+- Same as above but array may have duplicates.
+- ↓
+- Input: nums = [2, 5, 6, 0, 0, 1, 2], target = 0
+- ↓
+- Output: true
+- ↓
+- Solution: Skip duplicates by left++, right--
 
 ```mermaid
 flowchart TD
@@ -520,7 +590,20 @@ public boolean search(int[] nums, int target) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: FIND MINIMUM IN ROTATED SORTED ARRAY → Input: nums = [3, 4, 5, 1, 2] | Input: nums = [3, 4, 5, 1, 2] → Output: 1 | Output: 1 → Visual: | Visual: → 1 ← minimum | 1 ← minimum → KEY: Compare mid with right | KEY: Compare mid with right → - If mid &gt; right: min is in right half | ...+1 more
+**Flow:**
+- FIND MINIMUM IN ROTATED SORTED ARRAY
+- ↓
+- Input: nums = [3, 4, 5, 1, 2]
+- ↓
+- Output: 1
+- ↓
+- Visual:
+- ↓
+- 1 ← minimum
+- ↓
+- KEY: Compare mid with right
+- ↓
+- - If mid > right: min is in right half
 
 ```mermaid
 flowchart TD
@@ -585,7 +668,18 @@ public int findMin(int[] nums) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: SQRT(X) - Binary Search on Answer → Find integer square root (truncate decimals). | Find integer square root (truncate decimals). → Input: x = 8 | Input: x = 8 → Output: 2 (√8 = 2.828..., truncated to 2) | Output: 2 (√8 = 2.828..., truncated to 2) → Binary search range: [1, x] | Binary search range: [1, x] → Find largest n where n*n &lt;= x
+**Flow:**
+- SQRT(X) - Binary Search on Answer
+- ↓
+- Find integer square root (truncate decimals).
+- ↓
+- Input: x = 8
+- ↓
+- Output: 2 (√8 = 2.828..., truncated to 2)
+- ↓
+- Binary search range: [1, x]
+- ↓
+- Find largest n where n*n <= x
 
 ```mermaid
 flowchart TD
@@ -653,7 +747,20 @@ public int mySqrt(int x) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: KOKO EATING BANANAS → Koko eats k bananas/hour. Guard returns in h hours. | Koko eats k bananas/hour. Guard returns in h hours. → Find minimum k to eat all bananas before guard returns. | Find minimum k to eat all bananas before guard returns. → Input: piles = [3, 6, 7, 11], h = 8 | Input: piles = [3, 6, 7, 11], h = 8 → Output: 4 | Output: 4 → Explanation: At k=4, time needed: | Explanation: At k=4, time needed: → pile 3: ceil(3/4) = 1 hour | ...+1 more
+**Flow:**
+- KOKO EATING BANANAS
+- ↓
+- Koko eats k bananas/hour. Guard returns in h hours.
+- ↓
+- Find minimum k to eat all bananas before guard returns.
+- ↓
+- Input: piles = [3, 6, 7, 11], h = 8
+- ↓
+- Output: 4
+- ↓
+- Explanation: At k=4, time needed:
+- ↓
+- pile 3: ceil(3/4) = 1 hour
 
 ```mermaid
 flowchart TD
@@ -729,7 +836,20 @@ private boolean canFinish(int[] piles, int h, int k) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: CAPACITY TO SHIP PACKAGES → Packages must be shipped IN ORDER. | Packages must be shipped IN ORDER. → Input: weights = [1,2,3,4,5,6,7,8,9,10], days = 5 | Input: weights = [1,2,3,4,5,6,7,8,9,10], days = 5 → Output: 15 | Output: 15 → Explanation: | Explanation: → Day 1: 1,2,3,4,5 (sum=15) | Day 1: 1,2,3,4,5 (sum=15) → Day 2: 6,7 (sum=13) | ...+1 more
+**Flow:**
+- CAPACITY TO SHIP PACKAGES
+- ↓
+- Packages must be shipped IN ORDER.
+- ↓
+- Input: weights = [1,2,3,4,5,6,7,8,9,10], days = 5
+- ↓
+- Output: 15
+- ↓
+- Explanation:
+- ↓
+- Day 1: 1,2,3,4,5 (sum=15)
+- ↓
+- Day 2: 6,7 (sum=13)
 
 ```mermaid
 flowchart TD
@@ -809,7 +929,20 @@ private boolean canShip(int[] weights, int days, int capacity) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: SPLIT ARRAY LARGEST SUM → Input: nums = [7,2,5,10,8], k = 2 | Input: nums = [7,2,5,10,8], k = 2 → Output: 18 | Output: 18 → Explanation: | Explanation: → Split: [7,2,5] and [10,8] | Split: [7,2,5] and [10,8] → Sums: 14 and 18 | Sums: 14 and 18 → Largest sum = 18 (minimized) | ...+1 more
+**Flow:**
+- SPLIT ARRAY LARGEST SUM
+- ↓
+- Input: nums = [7,2,5,10,8], k = 2
+- ↓
+- Output: 18
+- ↓
+- Explanation:
+- ↓
+- Split: [7,2,5] and [10,8]
+- ↓
+- Sums: 14 and 18
+- ↓
+- Largest sum = 18 (minimized)
 
 ```mermaid
 flowchart TD
@@ -911,7 +1044,20 @@ private boolean canSplit(int[] nums, int k, int maxSum) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: FIND K-TH SMALLEST PAIR DISTANCE → (LeetCode 719 - Hard) | (LeetCode 719 - Hard) → Find the k-th smallest distance among all pairs. | Find the k-th smallest distance among all pairs. → Example 1: | Example 1: → Input: nums = [1, 3, 1], k = 1 | Input: nums = [1, 3, 1], k = 1 → Output: 0 | Output: 0 → Explanation: | ...+1 more
+**Flow:**
+- FIND K-TH SMALLEST PAIR DISTANCE
+- ↓
+- (LeetCode 719 - Hard)
+- ↓
+- Find the k-th smallest distance among all pairs.
+- ↓
+- Example 1:
+- ↓
+- Input: nums = [1, 3, 1], k = 1
+- ↓
+- Output: 0
+- ↓
+- Explanation:
 
 ```mermaid
 flowchart TD
@@ -990,7 +1136,24 @@ private int countPairs(int[] nums, int maxDist) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: FIND PEAK ELEMENT (LeetCode 162 - Medium) → A peak element is strictly greater than its neighbors. | A peak element is strictly greater than its neighbors. → Return index of ANY peak. nums[-1] = nums[n] = -∞. | Return index of ANY peak. nums[-1] = nums[n] = -∞. → Example: nums = [1,2,3,1] → Output: 2 (nums[2]=3 is pea | Example: nums = [1,2,3,1] → Output: 2 (nums[2]=3 is pea → TIME: O(log n) | SPACE: O(1)
+**Flow:**
+- FIND PEAK ELEMENT (LeetCode 162 - Medium)
+- ↓
+- A peak element is strictly greater than its neighbors.
+- ↓
+- Return index of ANY peak. nums[-1] = nums[n] = -∞.
+- ↓
+- Example: nums = [1,2,3,1]
+- ↓
+- Output: 2 (nums[2]=3 is pea
+- ↓
+- Example: nums = [1,2,3,1]
+- ↓
+- Output: 2 (nums[2]=3 is pea
+- ↓
+- TIME: O(log n)
+- ↓
+- SPACE: O(1)
 
 ```mermaid
 flowchart TD
@@ -1042,7 +1205,18 @@ public int findPeakElement(int[] nums) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: SEARCH A 2D MATRIX (LeetCode 74 - Medium) → Determine if target exists in matrix. | Determine if target exists in matrix. → Example: | Example: → Output: true | Output: true → TIME: O(log(m*n)) | SPACE: O(1)
+**Flow:**
+- SEARCH A 2D MATRIX (LeetCode 74 - Medium)
+- ↓
+- Determine if target exists in matrix.
+- ↓
+- Example:
+- ↓
+- Output: true
+- ↓
+- TIME: O(log(m*n))
+- ↓
+- SPACE: O(1)
 
 ```mermaid
 flowchart TD
@@ -1097,7 +1271,26 @@ public boolean searchMatrix(int[][] matrix, int target) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: TIME BASED KEY-VALUE STORE (LeetCode 981 - Medium) → set(key, value, timestamp) — store key-value with times | set(key, value, timestamp) — store key-value with times → Example: | Example: → set('foo','bar',1), get('foo',1) → 'bar' | set('foo','bar',1), get('foo',1) → 'bar' → KEY: Binary search on timestamps for each key. | KEY: Binary search on timestamps for each key. → TIME: set O(1), get O(log n) | SPACE: O(n)
+**Flow:**
+- TIME BASED KEY-VALUE STORE (LeetCode 981 - Medium)
+- ↓
+- set(key, value, timestamp) — store key-value with times
+- ↓
+- Example:
+- ↓
+- set('foo','bar',1), get('foo',1)
+- ↓
+- 'bar'
+- ↓
+- set('foo','bar',1), get('foo',1)
+- ↓
+- 'bar'
+- ↓
+- KEY: Binary search on timestamps for each key.
+- ↓
+- TIME: set O(1), get O(log n)
+- ↓
+- SPACE: O(n)
 
 ```mermaid
 flowchart TD
@@ -1163,7 +1356,32 @@ class TimeMap {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: MEDIAN OF TWO SORTED ARRAYS (LeetCode 4 - Hard) → Given two sorted arrays nums1 and nums2, return the med | Given two sorted arrays nums1 and nums2, return the med → Overall runtime must be O(log(m+n)). | Overall runtime must be O(log(m+n)). → Example: | Example: → nums1 = [1,3], nums2 = [2] → Output: 2.0 | nums1 = [1,3], nums2 = [2] → Output: 2.0 → nums1 = [1,2], nums2 = [3,4] → Output: 2.5 | nums1 = [1,2], nums2 = [3,4] → Output: 2.5 → KEY: Binary search on partition of shorter array. | ...+1 more
+**Flow:**
+- MEDIAN OF TWO SORTED ARRAYS (LeetCode 4 - Hard)
+- ↓
+- Given two sorted arrays nums1 and nums2, return the med
+- ↓
+- Overall runtime must be O(log(m+n)).
+- ↓
+- Example:
+- ↓
+- nums1 = [1,3], nums2 = [2]
+- ↓
+- Output: 2.0
+- ↓
+- nums1 = [1,3], nums2 = [2]
+- ↓
+- Output: 2.0
+- ↓
+- nums1 = [1,2], nums2 = [3,4]
+- ↓
+- Output: 2.5
+- ↓
+- nums1 = [1,2], nums2 = [3,4]
+- ↓
+- Output: 2.5
+- ↓
+- KEY: Binary search on partition of shorter array.
 
 ```mermaid
 flowchart TD
@@ -1242,7 +1460,32 @@ public double findMedianSortedArrays(int[] nums1, int[] nums2) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: MAGNETIC FORCE BETWEEN TWO BALLS (LeetCode 1552 - Mediu → (distance) between any two balls. | (distance) between any two balls. → Example: | Example: → position = [1,2,3,4,7], m = 3 → Output: 3 | position = [1,2,3,4,7], m = 3 → Output: 3 → Place at positions 1, 4, 7 → min distance = 3 | Place at positions 1, 4, 7 → min distance = 3 → KEY: Binary search on answer (minimum distance). | KEY: Binary search on answer (minimum distance). → For each candidate distance, greedily check if m balls | ...+1 more
+**Flow:**
+- MAGNETIC FORCE BETWEEN TWO BALLS (LeetCode 1552 - Mediu
+- ↓
+- (distance) between any two balls.
+- ↓
+- Example:
+- ↓
+- position = [1,2,3,4,7], m = 3
+- ↓
+- Output: 3
+- ↓
+- position = [1,2,3,4,7], m = 3
+- ↓
+- Output: 3
+- ↓
+- Place at positions 1, 4, 7
+- ↓
+- min distance = 3
+- ↓
+- Place at positions 1, 4, 7
+- ↓
+- min distance = 3
+- ↓
+- KEY: Binary search on answer (minimum distance).
+- ↓
+- For each candidate distance, greedily check if m balls
 
 ```mermaid
 flowchart TD

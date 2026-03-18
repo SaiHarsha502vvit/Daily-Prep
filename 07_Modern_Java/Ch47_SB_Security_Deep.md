@@ -1023,7 +1023,20 @@ public class CredentialRotationService {
 └──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: DATABASE SECURITY CHECKLIST → AUTHENTICATION & AUTHORIZATION | AUTHENTICATION & AUTHORIZATION → □ Implement RBAC (Role-Based Access Control) | □ Implement RBAC (Role-Based Access Control) → □ Use fine-grained permissions | □ Use fine-grained permissions → □ Implement method-level security (@PreAuthorize) | □ Implement method-level security (@PreAuthorize) → □ Apply row-level security where needed | □ Apply row-level security where needed → PASSWORD SECURITY | ...+1 more
+**Flow:**
+- DATABASE SECURITY CHECKLIST
+- ↓
+- AUTHENTICATION & AUTHORIZATION
+- ↓
+- □ Implement RBAC (Role-Based Access Control)
+- ↓
+- □ Use fine-grained permissions
+- ↓
+- □ Implement method-level security (@PreAuthorize)
+- ↓
+- □ Apply row-level security where needed
+- ↓
+- PASSWORD SECURITY
 
 ```mermaid
 flowchart TD

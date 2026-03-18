@@ -323,7 +323,18 @@ GREAT ENGINEER:
 3. SYSTEMS THINKING: Understand interactions and trade-offs
 ```
 
-> **Flow**: FIRST PRINCIPLES → PATTERN SYSTEMS | PATTERN SYSTEMS → RECOGNITION THINKING | RECOGNITION THINKING → 1. FIRST PRINCIPLES: Break problem to fundamental truth | 1. FIRST PRINCIPLES: Break problem to fundamental truth → 2. PATTERN RECOGNITION: See structures across domains | 2. PATTERN RECOGNITION: See structures across domains → 3. SYSTEMS THINKING: Understand interactions and trade-
+**Flow:**
+- FIRST PRINCIPLES
+- ↓
+- PATTERN SYSTEMS
+- ↓
+- RECOGNITION THINKING
+- ↓
+- 1. FIRST PRINCIPLES: Break problem to fundamental truth
+- ↓
+- 2. PATTERN RECOGNITION: See structures across domains
+- ↓
+- 3. SYSTEMS THINKING: Understand interactions and trade-
 
 ```mermaid
 flowchart TD
@@ -368,7 +379,20 @@ AHA! The REAL problem is inventory tracking, not duplicate finding!
 LESSON: Solve the ROOT problem, not the SYMPTOM.
 ```
 
-> **Flow**: PROBLEM: 'I need to find if array has duplicates' → WHY do I need to find duplicates? | WHY do I need to find duplicates? → → To ensure data integrity | → To ensure data integrity → WHY does data need integrity? | WHY does data need integrity? → → Because duplicates cause incorrect calculations | → Because duplicates cause incorrect calculations → WHY are calculations incorrect? | WHY are calculations incorrect? → → Because we're counting unique items | ...+1 more
+**Flow:**
+- PROBLEM: 'I need to find if array has duplicates'
+- ↓
+- WHY do I need to find duplicates?
+- ↓
+- To ensure data integrity
+- ↓
+- WHY does data need integrity?
+- ↓
+- Because duplicates cause incorrect calculations
+- ↓
+- WHY are calculations incorrect?
+- ↓
+- Because we're counting unique items
 
 ```mermaid
 flowchart TD
@@ -410,7 +434,20 @@ Then ask:
 4. CAN I trade space for time? (or vice versa)
 ```
 
-> **Flow**: ANY PROBLEM can be broken into: → THE PROBLEM | THE PROBLEM → INPUT What data do I have? What's its structure? | INPUT What data do I have? What's its structure? → OUTPUT What do I need to produce? Exact format? | OUTPUT What do I need to produce? Exact format? → CONSTRAINTS Size limits? Time limits? Space limits? | CONSTRAINTS Size limits? Time limits? Space limits? → EDGE CASES Empty? Single? Max? Negative? Duplicates? | EDGE CASES Empty? Single? Max? Negative? Duplicates? → Then ask: | ...+1 more
+**Flow:**
+- ANY PROBLEM can be broken into:
+- ↓
+- THE PROBLEM
+- ↓
+- INPUT What data do I have? What's its structure?
+- ↓
+- OUTPUT What do I need to produce? Exact format?
+- ↓
+- CONSTRAINTS Size limits? Time limits? Space limits?
+- ↓
+- EDGE CASES Empty? Single? Max? Negative? Duplicates?
+- ↓
+- Then ask:
 
 ```mermaid
 flowchart TD
@@ -458,7 +495,20 @@ COMMON COMBINATIONS:
 └───────────────────┴────────────────────┴──────────────────────────────┘
 ```
 
-> **Flow**: SINGLE PATTERNS are Level 1. → COMBINED PATTERNS are Level 2-3. | COMBINED PATTERNS are Level 2-3. → CREATED PATTERNS are Level 4. | CREATED PATTERNS are Level 4. → COMMON COMBINATIONS: | COMMON COMBINATIONS: → Pattern 1 Pattern 2 Creates | Pattern 1 Pattern 2 Creates → Binary Search Greedy Optimization problems | Binary Search Greedy Optimization problems → Two Pointers Sorting 3Sum, Container problems | ...+1 more
+**Flow:**
+- SINGLE PATTERNS are Level 1.
+- ↓
+- COMBINED PATTERNS are Level 2-3.
+- ↓
+- CREATED PATTERNS are Level 4.
+- ↓
+- COMMON COMBINATIONS:
+- ↓
+- Pattern 1 Pattern 2 Creates
+- ↓
+- Binary Search Greedy Optimization problems
+- ↓
+- Two Pointers Sorting 3Sum, Container problems
 
 ```mermaid
 flowchart TD
@@ -497,7 +547,20 @@ STEP 2: COMBINE
 STEP 3: IMPLEMENT COMBINATION
 ```
 
-> **Flow**: - 'Substring' → Sliding Window | - 'At most k' → Counting | Counting → HashMap | - 'Longest' → Track maximum
+**Flow:**
+- - 'Substring'
+- ↓
+- Sliding Window
+- ↓
+- - 'At most k'
+- ↓
+- Counting
+- ↓
+- HashMap
+- ↓
+- - 'Longest'
+- ↓
+- Track maximum
 
 ```mermaid
 flowchart LR
@@ -573,7 +636,12 @@ PATTERN: Interval Merging
 YOUR JOB: Make observations → Extract insights → Create patterns
 ```
 
-> **Flow**: YOUR JOB: Make observations → Extract insights | Extract insights → Create patterns
+**Flow:**
+- YOUR JOB: Make observations
+- ↓
+- Extract insights
+- ↓
+- Create patterns
 
 ```mermaid
 flowchart LR
@@ -670,7 +738,30 @@ Is it about ORDERING?
 └── Need k-th element? → Heap / Quick Select
 ```
 
-> **Flow**: Sorted data? → Binary Search | Graph/Tree? → BFS/DFS | Can build solution greedily? → Greedy | Overlapping subproblems? → DP | Fixed window? → Array/Map | Variable window? → Sliding Window + Map | ...+2 more
+**Flow:**
+- Sorted data?
+- ↓
+- Binary Search
+- ↓
+- Graph/Tree?
+- ↓
+- BFS/DFS
+- ↓
+- Can build solution greedily?
+- ↓
+- Greedy
+- ↓
+- Overlapping subproblems?
+- ↓
+- DP
+- ↓
+- Fixed window?
+- ↓
+- Array/Map
+- ↓
+- Variable window?
+- ↓
+- Sliding Window + Map
 
 ```mermaid
 flowchart TD
@@ -897,7 +988,10 @@ A: DFS is O(4^(m*n)) worst case, but with pruning much better
 L: Use DFS with visited marking and backtracking
 ```
 
-> **Flow**: I: This is a 'find all paths' problem → likely DFS/backtracking
+**Flow:**
+- I: This is a 'find all paths' problem
+- ↓
+- likely DFS/backtracking
 
 ```mermaid
 flowchart LR
@@ -922,7 +1016,30 @@ n ≤ 10^8:      O(log n) or O(1) required → Math formula, Binary search
 USE THIS TO ELIMINATE APPROACHES QUICKLY!
 ```
 
-> **Flow**: n ≤ 10: O(n!), O(2^n) ok → Brute force, backtracking | n ≤ 20: O(2^n) ok → Bitmask DP, backtracking with pruning | n ≤ 100: O(n³) ok → Floyd-Warshall, 3D DP | n ≤ 1000: O(n²) ok → Simple DP, nested loops | n ≤ 10^5: O(n log n) ok → Sorting, Binary search, Heap | n ≤ 10^6: O(n) required → Linear scan, Two pointers | ...+1 more
+**Flow:**
+- n ≤ 10: O(n!), O(2^n) ok
+- ↓
+- Brute force, backtracking
+- ↓
+- n ≤ 20: O(2^n) ok
+- ↓
+- Bitmask DP, backtracking with pruning
+- ↓
+- n ≤ 100: O(n³) ok
+- ↓
+- Floyd-Warshall, 3D DP
+- ↓
+- n ≤ 1000: O(n²) ok
+- ↓
+- Simple DP, nested loops
+- ↓
+- n ≤ 10^5: O(n log n) ok
+- ↓
+- Sorting, Binary search, Heap
+- ↓
+- n ≤ 10^6: O(n) required
+- ↓
+- Linear scan, Two pointers
 
 ```mermaid
 flowchart TD
@@ -970,7 +1087,18 @@ EXAMPLE: Recursion problems
 - RESULT: Termination condition clear
 ```
 
-> **Flow**: - Window moves → Add new element, remove old element | - State changes → Track what's different | - Subproblem changes → What's reduced?
+**Flow:**
+- - Window moves
+- ↓
+- Add new element, remove old element
+- ↓
+- - State changes
+- ↓
+- Track what's different
+- ↓
+- - Subproblem changes
+- ↓
+- What's reduced?
 
 ```mermaid
 flowchart LR
@@ -1056,7 +1184,20 @@ STEP 5: REFINE
 - Only need dp[i-1] and dp[i-2] → O(1) space!
 ```
 
-> **Flow**: - Edge: Empty array → 0, single element | 0, single element → that element | - Negative numbers → handled by max operation | - Only need dp[i-1] and dp[i-2] → O(1) space!
+**Flow:**
+- - Edge: Empty array
+- ↓
+- 0, single element
+- ↓
+- that element
+- ↓
+- - Negative numbers
+- ↓
+- handled by max operation
+- ↓
+- - Only need dp[i-1] and dp[i-2]
+- ↓
+- O(1) space!
 
 ```mermaid
 flowchart LR
@@ -1118,7 +1259,20 @@ AFTER CODING:
 □ Can I explain this to someone?
 ```
 
-> **Flow**: BEFORE CODING: → □ Do I truly understand the problem? | □ Do I truly understand the problem? → □ What are the constraints? | □ What are the constraints? → □ What patterns might apply? | □ What patterns might apply? → □ What data structure fits best? | □ What data structure fits best? → □ What's my approach in plain English? | □ What's my approach in plain English? → WHILE CODING: | ...+1 more
+**Flow:**
+- BEFORE CODING:
+- ↓
+- □ Do I truly understand the problem?
+- ↓
+- □ What are the constraints?
+- ↓
+- □ What patterns might apply?
+- ↓
+- □ What data structure fits best?
+- ↓
+- □ What's my approach in plain English?
+- ↓
+- WHILE CODING:
 
 ```mermaid
 flowchart TD
@@ -1226,7 +1380,30 @@ Solve → Process events, track max height at each point
 THE SKILL: See the UNDERLYING structure
 ```
 
-> **Flow**: Transform → 'Maximum overlapping intervals at any point' | Transform → 'Start = +1, End = -1, find max running sum' | Transform → Graph problem! Words are nodes, edge if differ by | Solve → BFS for shortest path | Transform → Events: building start = +height, end = -height | Solve → Process events, track max height at each point
+**Flow:**
+- Transform
+- ↓
+- 'Maximum overlapping intervals at any point'
+- ↓
+- Transform
+- ↓
+- 'Start = +1, End = -1, find max running sum'
+- ↓
+- Transform
+- ↓
+- Graph problem! Words are nodes, edge if differ by
+- ↓
+- Solve
+- ↓
+- BFS for shortest path
+- ↓
+- Transform
+- ↓
+- Events: building start = +height, end = -height
+- ↓
+- Solve
+- ↓
+- Process events, track max height at each point
 
 ```mermaid
 flowchart TD

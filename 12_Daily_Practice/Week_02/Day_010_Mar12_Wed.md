@@ -53,7 +53,18 @@ MEMORY INSIGHT: The program call stack IS a stack.
   foo() returns → stack: [main]
 ```
 
-> **Flow**: main() calls foo() calls bar() → stack: [main, foo, bar] | bar() returns → stack: [main, foo] | foo() returns → stack: [main]
+**Flow:**
+- main() calls foo() calls bar()
+- ↓
+- stack: [main, foo, bar]
+- ↓
+- bar() returns
+- ↓
+- stack: [main, foo]
+- ↓
+- foo() returns
+- ↓
+- stack: [main]
 
 ```mermaid
 flowchart LR
@@ -99,7 +110,12 @@ push(40):    pop():       peek():
 └─────┘
 ```
 
-> **Flow**: 30 / 20 / 10 → 40 / 30 / 20 / 10 | 40 / 30 / 20 / 10 → 20 / 10
+**Flow:**
+- 30 / 20 / 10
+- ↓
+- 40 / 30 / 20 / 10
+- ↓
+- 20 / 10
 
 ```mermaid
 flowchart TD
@@ -176,7 +192,30 @@ HOW IT WORKS:
   3 steps instead of 6 (linear would need to check indices 0-5)
 ```
 
-> **Flow**: Linear search: check every element → O(n) | Array of 1 billion elements → 1 billion comparisons | Binary search: eliminate half each step → O(log n) | Array of 1 billion elements → ~30 comparisons! | Step 1: mid = arr[4] = 16. 16 &lt; 23 → search right half | Step 2: mid = arr[7] = 56. 56 &gt; 23 → search left half | ...+1 more
+**Flow:**
+- Linear search: check every element
+- ↓
+- O(n)
+- ↓
+- Array of 1 billion elements
+- ↓
+- 1 billion comparisons
+- ↓
+- Binary search: eliminate half each step
+- ↓
+- O(log n)
+- ↓
+- Array of 1 billion elements
+- ↓
+- ~30 comparisons!
+- ↓
+- Step 1: mid = arr[4] = 16. 16 < 23
+- ↓
+- search right half
+- ↓
+- Step 2: mid = arr[7] = 56. 56 > 23
+- ↓
+- search left half
 
 ```mermaid
 flowchart TD
@@ -262,7 +301,18 @@ ALGORITHM:
   At end: stack must be empty
 ```
 
-> **Flow**: Input: '({[]})' → true | Input: '({[}])' → false | Input: '(((' → false
+**Flow:**
+- Input: '({[]})'
+- ↓
+- true
+- ↓
+- Input: '({[}])'
+- ↓
+- false
+- ↓
+- Input: '((('
+- ↓
+- false
 
 ```mermaid
 flowchart LR
@@ -320,7 +370,30 @@ SCENARIO: Text editor undo/redo — two stacks!
   (Same as git: checkout old commit + make new commit = old branch abandoned)
 ```
 
-> **Flow**: Type 'Hello' → undo: [Hello] redo: [] | Type ' World' → undo: [Hello, World] redo: [] | Press Ctrl+Z → undo: [Hello] redo: [World] ← pop undo, push redo | Press Ctrl+Z → undo: [] redo: [World, Hello] | Press Ctrl+Y → undo: [Hello] redo: [World] ← pop redo, push undo | Type ' Java' → undo: [Hello, Java] redo: [] ← new action CLEARS r | ...+1 more
+**Flow:**
+- Type 'Hello'
+- ↓
+- undo: [Hello] redo: []
+- ↓
+- Type ' World'
+- ↓
+- undo: [Hello, World] redo: []
+- ↓
+- Press Ctrl+Z
+- ↓
+- undo: [Hello] redo: [World] ← pop undo, push redo
+- ↓
+- Press Ctrl+Z
+- ↓
+- undo: [] redo: [World, Hello]
+- ↓
+- Press Ctrl+Y
+- ↓
+- undo: [Hello] redo: [World] ← pop redo, push undo
+- ↓
+- Type ' Java'
+- ↓
+- undo: [Hello, Java] redo: [] ← new action CLEARS r
 
 ```mermaid
 flowchart TD
@@ -422,7 +495,14 @@ Input:  [1, 3, 5, 6], target = 2  → Output: 1 (would insert at index 1)
 This is exactly the LOWER BOUND template from today!
 ```
 
-> **Flow**: Input: [1, 3, 5, 6], target = 5 → Output: 2 (found at index 2) | Input: [1, 3, 5, 6], target = 2 → Output: 1 (would insert at index 1)
+**Flow:**
+- Input: [1, 3, 5, 6], target = 5
+- ↓
+- Output: 2 (found at index 2)
+- ↓
+- Input: [1, 3, 5, 6], target = 2
+- ↓
+- Output: 1 (would insert at index 1)
 
 ```mermaid
 flowchart LR
@@ -460,7 +540,16 @@ pop():    main: [5,3]     min: [5,3]
 getMin(): return min.peek() = 3 ✓
 ```
 
-> **Flow**: push(5): main: [5] min: [5] → push(3): main: [5,3] min: [5,3] ← new min: 3 | push(3): main: [5,3] min: [5,3] ← new min: 3 → push(7): main: [5,3,7] min: [5,3,3] ← min still 3 | push(7): main: [5,3,7] min: [5,3,3] ← min still 3 → pop(): main: [5,3] min: [5,3] | pop(): main: [5,3] min: [5,3] → getMin(): return min.peek() = 3 ✓
+**Flow:**
+- push(5): main: [5] min: [5]
+- ↓
+- push(3): main: [5,3] min: [5,3] ← new min: 3
+- ↓
+- push(7): main: [5,3,7] min: [5,3,3] ← min still 3
+- ↓
+- pop(): main: [5,3] min: [5,3]
+- ↓
+- getMin(): return min.peek() = 3 ✓
 
 ```mermaid
 flowchart TD

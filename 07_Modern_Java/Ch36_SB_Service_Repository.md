@@ -49,7 +49,14 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHY: Why Service Layer Pattern? / • Fat controller anti → HOW: How to Structure Service Layer? / • Interface + Im | HOW: How to Structure Service Layer? / • Interface + Im → WHEN: When to Use Service vs Repository? / SERVICE: Bus | WHEN: When to Use Service vs Repository? / SERVICE: Bus → WHICH: Which Patterns to Use? / ESSENTIAL: @Service, @R
+**Flow:**
+- WHY: Why Service Layer Pattern? / • Fat controller anti
+- ↓
+- HOW: How to Structure Service Layer? / • Interface + Im
+- ↓
+- WHEN: When to Use Service vs Repository? / SERVICE: Bus
+- ↓
+- WHICH: Which Patterns to Use? / ESSENTIAL: @Service, @R
 
 ```mermaid
 flowchart TD
@@ -137,7 +144,20 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: THE SERVICE LAYER PURPOSE → WITHOUT SERVICE LAYER (Fat Controller Anti-Pattern): | WITHOUT SERVICE LAYER (Fat Controller Anti-Pattern): → @RestController | @RestController → public class OrderController { | public class OrderController { → @PostMapping('/orders') | @PostMapping('/orders') → public Order createOrder(@RequestBody OrderRequest req) | public Order createOrder(@RequestBody OrderRequest req) → double total = 0; | ...+1 more
+**Flow:**
+- THE SERVICE LAYER PURPOSE
+- ↓
+- WITHOUT SERVICE LAYER (Fat Controller Anti-Pattern):
+- ↓
+- @RestController
+- ↓
+- public class OrderController {
+- ↓
+- @PostMapping('/orders')
+- ↓
+- public Order createOrder(@RequestBody OrderRequest req)
+- ↓
+- double total = 0;
 
 ```mermaid
 flowchart TD
@@ -708,7 +728,18 @@ public interface OrderSpecification {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: SPRING DATA JPA REPOSITORY HIERARCHY / Repository&lt;T, → CrudRepository&lt;T, ID&gt; ← Basic CRUD operations / • | CrudRepository&lt;T, ID&gt; ← Basic CRUD operations / • → ListCrudRepository&lt;T, ID&gt; ← Returns List instead  | ListCrudRepository&lt;T, ID&gt; ← Returns List instead  → PagingAndSortingRepository&lt;T, ID&gt; ← + Pagination  | PagingAndSortingRepository&lt;T, ID&gt; ← + Pagination  → JpaRepository&lt;T, ID&gt; ← + JPA specific features /  | JpaRepository&lt;T, ID&gt; ← + JPA specific features /  → JpaSpecificationExecutor&lt;T&gt; ← + Dynamic queries /
+**Flow:**
+- SPRING DATA JPA REPOSITORY HIERARCHY / Repository<T,
+- ↓
+- CrudRepository<T, ID> ← Basic CRUD operations / •
+- ↓
+- ListCrudRepository<T, ID> ← Returns List instead
+- ↓
+- PagingAndSortingRepository<T, ID> ← + Pagination
+- ↓
+- JpaRepository<T, ID> ← + JPA specific features /
+- ↓
+- JpaSpecificationExecutor<T> ← + Dynamic queries /
 
 ```mermaid
 flowchart TD
@@ -979,7 +1010,46 @@ public interface UserRepository extends JpaRepository<User, Long> {
 └───────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: QUERY METHOD KEYWORDS → SUBJECT KEYWORDS (Start of method name): | SUBJECT KEYWORDS (Start of method name): → find...By → Query returning result(s) | find...By → Query returning result(s) → read...By → Same as find | read...By → Same as find → query...By → Same as find | query...By → Same as find → get...By → Same as find | get...By → Same as find → search...By → Same as find | ...+1 more
+**Flow:**
+- QUERY METHOD KEYWORDS
+- ↓
+- SUBJECT KEYWORDS (Start of method name):
+- ↓
+- find...By
+- ↓
+- Query returning result(s)
+- ↓
+- find...By
+- ↓
+- Query returning result(s)
+- ↓
+- read...By
+- ↓
+- Same as find
+- ↓
+- read...By
+- ↓
+- Same as find
+- ↓
+- query...By
+- ↓
+- Same as find
+- ↓
+- query...By
+- ↓
+- Same as find
+- ↓
+- get...By
+- ↓
+- Same as find
+- ↓
+- get...By
+- ↓
+- Same as find
+- ↓
+- search...By
+- ↓
+- Same as find
 
 ```mermaid
 flowchart TD
@@ -1338,7 +1408,20 @@ public class UserSearchCriteria {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: REPOSITORY BEST PRACTICES → 1. USE OPTIONAL FOR SINGLE RESULTS | 1. USE OPTIONAL FOR SINGLE RESULTS → ✅ Optional&lt;User&gt; findByEmail(String email); | ✅ Optional&lt;User&gt; findByEmail(String email); → 2. PREFER DERIVED QUERIES FOR SIMPLE CASES | 2. PREFER DERIVED QUERIES FOR SIMPLE CASES → ✅ List&lt;User&gt; findByActiveTrue(); // Clear, type-s | ✅ List&lt;User&gt; findByActiveTrue(); // Clear, type-s → 3. USE @Query FOR COMPLEX QUERIES | 3. USE @Query FOR COMPLEX QUERIES → ✅ @Query('SELECT u FROM User u WHERE u.active = true ' | ...+1 more
+**Flow:**
+- REPOSITORY BEST PRACTICES
+- ↓
+- 1. USE OPTIONAL FOR SINGLE RESULTS
+- ↓
+- ✅ Optional<User> findByEmail(String email);
+- ↓
+- 2. PREFER DERIVED QUERIES FOR SIMPLE CASES
+- ↓
+- ✅ List<User> findByActiveTrue(); // Clear, type-s
+- ↓
+- 3. USE @Query FOR COMPLEX QUERIES
+- ↓
+- ✅ @Query('SELECT u FROM User u WHERE u.active = true '
 
 ```mermaid
 flowchart TD
@@ -1452,7 +1535,20 @@ REPOSITORY LAYER:
 □ Consider custom repository for complex logic
 ```
 
-> **Flow**: SERVICE LAYER: → □ @Service + @RequiredArgsConstructor + @Slf4j | □ @Service + @RequiredArgsConstructor + @Slf4j → □ All dependencies are final (immutable) | □ All dependencies are final (immutable) → □ Return DTOs, not entities | □ Return DTOs, not entities → □ Log important operations | □ Log important operations → □ Throw meaningful exceptions (not generic Exception) | □ Throw meaningful exceptions (not generic Exception) → □ Private helper methods for complex logic | ...+1 more
+**Flow:**
+- SERVICE LAYER:
+- ↓
+- □ @Service + @RequiredArgsConstructor + @Slf4j
+- ↓
+- □ All dependencies are final (immutable)
+- ↓
+- □ Return DTOs, not entities
+- ↓
+- □ Log important operations
+- ↓
+- □ Throw meaningful exceptions (not generic Exception)
+- ↓
+- □ Private helper methods for complex logic
 
 ```mermaid
 flowchart TD

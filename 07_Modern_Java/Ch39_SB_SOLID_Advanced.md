@@ -26,7 +26,20 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: INTERFACE SEGREGATION PRINCIPLE → FAT INTERFACE PROBLEMS: | FAT INTERFACE PROBLEMS: → • Changes to unused methods affect implementers | • Changes to unused methods affect implementers → • Hard to understand what's actually needed | • Hard to understand what's actually needed → SOLUTION: Small, focused interfaces | SOLUTION: Small, focused interfaces → • Each interface represents one capability | • Each interface represents one capability → • Classes implement only what they need | ...+1 more
+**Flow:**
+- INTERFACE SEGREGATION PRINCIPLE
+- ↓
+- FAT INTERFACE PROBLEMS:
+- ↓
+- • Changes to unused methods affect implementers
+- ↓
+- • Hard to understand what's actually needed
+- ↓
+- SOLUTION: Small, focused interfaces
+- ↓
+- • Each interface represents one capability
+- ↓
+- • Classes implement only what they need
 
 ```mermaid
 flowchart TD
@@ -308,7 +321,16 @@ public interface OrderRepository extends JpaRepository<Order, Long> {}
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: OrderService / (High-level) → MySQLRepository / (Low-level) | OrderService / (High-level) → Repository / (Abstraction) | Repository / (Abstraction) → MySQLRepository / (Low-level)
+**Flow:**
+- OrderService / (High-level)
+- ↓
+- MySQLRepository / (Low-level)
+- ↓
+- OrderService / (High-level)
+- ↓
+- Repository / (Abstraction)
+- ↓
+- MySQLRepository / (Low-level)
 
 ```mermaid
 flowchart TD
@@ -1065,7 +1087,20 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: SOLID VIOLATION CODE SMELLS → SRP VIOLATIONS: | SRP VIOLATIONS: → • Class name contains 'And' or 'Manager' | • Class name contains 'And' or 'Manager' → • Class has &gt; 500 lines of code | • Class has &gt; 500 lines of code → • Multiple @Autowired fields (&gt; 5-7) | • Multiple @Autowired fields (&gt; 5-7) → • Methods using completely different sets of fields | • Methods using completely different sets of fields → OCP VIOLATIONS: | ...+1 more
+**Flow:**
+- SOLID VIOLATION CODE SMELLS
+- ↓
+- SRP VIOLATIONS:
+- ↓
+- • Class name contains 'And' or 'Manager'
+- ↓
+- • Class has > 500 lines of code
+- ↓
+- • Multiple @Autowired fields (> 5-7)
+- ↓
+- • Methods using completely different sets of fields
+- ↓
+- OCP VIOLATIONS:
 
 ```mermaid
 flowchart TD

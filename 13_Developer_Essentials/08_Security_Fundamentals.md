@@ -22,7 +22,20 @@ LESSON: Security is not a feature to add later.
         It's a MINDSET from line 1 of code.
 ```
 
-> **Flow**: Equifax Breach (2017) → 147 million records leaked | 147 million records leaked → $700M+ settlement | Log4Shell (2021) → Affected MILLIONS of servers worldwide | SolarWinds (2020) → 18,000 organizations compromised
+**Flow:**
+- Equifax Breach (2017)
+- ↓
+- 147 million records leaked
+- ↓
+- $700M+ settlement
+- ↓
+- Log4Shell (2021)
+- ↓
+- Affected MILLIONS of servers worldwide
+- ↓
+- SolarWinds (2020)
+- ↓
+- 18,000 organizations compromised
 
 ```mermaid
 flowchart LR
@@ -61,7 +74,14 @@ Flow:
   4. Server AUTHORIZES → checks role/permissions for that endpoint
 ```
 
-> **Flow**: 2. Server AUTHENTICATES → issues token (JWT) | 4. Server AUTHORIZES → checks role/permissions for that endpoint
+**Flow:**
+- 2. Server AUTHENTICATES
+- ↓
+- issues token (JWT)
+- ↓
+- 4. Server AUTHORIZES
+- ↓
+- checks role/permissions for that endpoint
 
 ```mermaid
 flowchart LR
@@ -91,7 +111,10 @@ flowchart LR
    │                            │ chooses                          │
 ```
 
-> **Flow**: # Vulnerability What It Means Prevention → chooses
+**Flow:**
+- # Vulnerability What It Means Prevention
+- ↓
+- chooses
 
 ```mermaid
 flowchart TD
@@ -177,7 +200,8 @@ Flow:
   └────────┘                            └────────┘
 ```
 
-> **Flow**: Client --(POST /login &gt;)--> Server
+**Flow:**
+- Client --(POST /login >)--> Server
 
 ```mermaid
 flowchart LR
@@ -247,7 +271,14 @@ Encryption Types:
   HASHING:    One-way function, no decryption (BCrypt, SHA-256)
 ```
 
-> **Flow**: 1. Client → Server: 'Hello, I support these ciphers' | 2. Server → Client: 'Let's use this cipher + here's my certifi
+**Flow:**
+- 1. Client
+- ↓
+- Server: 'Hello, I support these ciphers'
+- ↓
+- 2. Server
+- ↓
+- Client: 'Let's use this cipher + here's my certifi
 
 ```mermaid
 flowchart LR
@@ -311,7 +342,10 @@ DEPENDENCIES:
   ☐ Remove unused dependencies
 ```
 
-> **Flow**: ☐ HTTPS everywhere (redirect HTTP → HTTPS)
+**Flow:**
+- ☐ HTTPS everywhere (redirect HTTP
+- ↓
+- HTTPS)
 
 ```mermaid
 flowchart LR
@@ -335,7 +369,30 @@ Secrets          → Environment variables, vault
 Dependencies     → Dependabot + regular updates
 ```
 
-> **Flow**: SQL Injection → Parameterized queries | XSS → Escape output, CSP headers | CSRF → Anti-CSRF tokens (or stateless JWT) | Password Storage → BCrypt (never MD5/SHA) | Auth → JWT + refresh token | Transport → HTTPS + HSTS | ...+2 more
+**Flow:**
+- SQL Injection
+- ↓
+- Parameterized queries
+- ↓
+- XSS
+- ↓
+- Escape output, CSP headers
+- ↓
+- CSRF
+- ↓
+- Anti-CSRF tokens (or stateless JWT)
+- ↓
+- Password Storage
+- ↓
+- BCrypt (never MD5/SHA)
+- ↓
+- Auth
+- ↓
+- JWT + refresh token
+- ↓
+- Transport
+- ↓
+- HTTPS + HSTS
 
 ```mermaid
 flowchart TD

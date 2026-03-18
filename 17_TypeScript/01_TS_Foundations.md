@@ -92,7 +92,20 @@ npx tsc --watch              # Watch mode (auto-recompile)
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: WHY strict: true IS NON-NEGOTIABLE: → strict: true enables 7 flags at once: | strict: true enables 7 flags at once: → • noImplicitAny — no guessing types | • noImplicitAny — no guessing types → • strictNullChecks — null is NOT assignable to string | • strictNullChecks — null is NOT assignable to string → • strictFunctionTypes — function parameter variance che | • strictFunctionTypes — function parameter variance che → • strictBindCallApply — type-safe bind/call/apply | • strictBindCallApply — type-safe bind/call/apply → • noImplicitThis — error if `this` type is unknown | ...+1 more
+**Flow:**
+- WHY strict: true IS NON-NEGOTIABLE:
+- ↓
+- strict: true enables 7 flags at once:
+- ↓
+- • noImplicitAny — no guessing types
+- ↓
+- • strictNullChecks — null is NOT assignable to string
+- ↓
+- • strictFunctionTypes — function parameter variance che
+- ↓
+- • strictBindCallApply — type-safe bind/call/apply
+- ↓
+- • noImplicitThis — error if `this` type is unknown
 
 ```mermaid
 flowchart TD
@@ -205,7 +218,30 @@ any = "I don't care, let me do whatever" (dangerous)
 never = "This can never happen" (exhaustive checks)
 ```
 
-> **Flow**: unknown ← TOP type (anything assignable TO it) → string | unknown ← TOP type (anything assignable TO it) → number | unknown ← TOP type (anything assignable TO it) → boolean | unknown ← TOP type (anything assignable TO it) → object | unknown ← TOP type (anything assignable TO it) → Array | unknown ← TOP type (anything assignable TO it) → Function | ...+5 more
+**Flow:**
+- unknown ← TOP type (anything assignable TO it)
+- ↓
+- string
+- ↓
+- unknown ← TOP type (anything assignable TO it)
+- ↓
+- number
+- ↓
+- unknown ← TOP type (anything assignable TO it)
+- ↓
+- boolean
+- ↓
+- unknown ← TOP type (anything assignable TO it)
+- ↓
+- object
+- ↓
+- unknown ← TOP type (anything assignable TO it)
+- ↓
+- Array
+- ↓
+- unknown ← TOP type (anything assignable TO it)
+- ↓
+- Function
 
 ```mermaid
 flowchart TD
@@ -576,7 +612,10 @@ It doesn't change what you write — it helps you write correctly.
 The final document (JS) is the same, but with fewer mistakes.
 ```
 
-> **Flow**: Team project (2+ devs) / Large codebase (&gt;1000 LOC)  → Quick prototype / script / Simple automation tasks / Le
+**Flow:**
+- Team project (2+ devs) / Large codebase (>1000 LOC)
+- ↓
+- Quick prototype / script / Simple automation tasks / Le
 
 ```mermaid
 flowchart TD
@@ -619,7 +658,10 @@ Q: What is `as const`?
   { x: "hello" } as const → { readonly x: "hello" } instead of { x: string }.
 ```
 
-> **Flow**: { x: 'hello' } as const → { readonly x: 'hello' } instead of { x: string }.
+**Flow:**
+- { x: 'hello' } as const
+- ↓
+- { readonly x: 'hello' } instead of { x: string }.
 
 ```mermaid
 flowchart LR

@@ -50,7 +50,14 @@ Distributed tracing tracks requests across multiple services, helping debug and 
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHY: Why Distributed Tracing? / • Debug microservices:  → HOW: How Does Tracing Work? / • Trace ID: Unique ID for | HOW: How Does Tracing Work? / • Trace ID: Unique ID for → WHEN: When to Use Distributed Tracing? / • Microservice | WHEN: When to Use Distributed Tracing? / • Microservice → WHICH: Which Tools to Use? / SPRING BOOT 2.x: Spring Cl
+**Flow:**
+- WHY: Why Distributed Tracing? / • Debug microservices:
+- ↓
+- HOW: How Does Tracing Work? / • Trace ID: Unique ID for
+- ↓
+- WHEN: When to Use Distributed Tracing? / • Microservice
+- ↓
+- WHICH: Which Tools to Use? / SPRING BOOT 2.x: Spring Cl
 
 ```mermaid
 flowchart TD
@@ -84,7 +91,26 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: TRACE → Trace ID: abc123 (unique per request journey) | Trace ID: abc123 (unique per request journey) → SPAN 1 SPAN 2 SPAN 3 SPAN 4 | SPAN 1 SPAN 2 SPAN 3 SPAN 4 → Gateway Service A Service B Database | Gateway Service A Service B Database → span-001 span-002 span-003 span-004 | span-001 span-002 span-003 span-004 → Parent-Child Relationships: | Parent-Child Relationships: → span-001 (root) → span-002 → span-003 → span-004
+**Flow:**
+- TRACE
+- ↓
+- Trace ID: abc123 (unique per request journey)
+- ↓
+- SPAN 1 SPAN 2 SPAN 3 SPAN 4
+- ↓
+- Gateway Service A Service B Database
+- ↓
+- span-001 span-002 span-003 span-004
+- ↓
+- Parent-Child Relationships:
+- ↓
+- span-001 (root)
+- ↓
+- span-002
+- ↓
+- span-003
+- ↓
+- span-004
 
 ```mermaid
 flowchart TD
@@ -907,7 +933,30 @@ distributed-tracing-demo/
 └── docker-compose.yml
 ```
 
-> **Flow**: distributed-tracing-demo/ → api-gateway/ | distributed-tracing-demo/ → order-service/ | distributed-tracing-demo/ → inventory-service/ | distributed-tracing-demo/ → payment-service/ | distributed-tracing-demo/ → notification-service/ | distributed-tracing-demo/ → docker-compose.yml
+**Flow:**
+- distributed-tracing-demo/
+- ↓
+- api-gateway/
+- ↓
+- distributed-tracing-demo/
+- ↓
+- order-service/
+- ↓
+- distributed-tracing-demo/
+- ↓
+- inventory-service/
+- ↓
+- distributed-tracing-demo/
+- ↓
+- payment-service/
+- ↓
+- distributed-tracing-demo/
+- ↓
+- notification-service/
+- ↓
+- distributed-tracing-demo/
+- ↓
+- docker-compose.yml
 
 ```mermaid
 flowchart TD
@@ -1438,7 +1487,20 @@ Common Issues Identified:
 └────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Zipkin UI (http://localhost:9411): → 1. Search by trace ID from logs | 1. Search by trace ID from logs → 2. Find slow spans (duration &gt; threshold) | 2. Find slow spans (duration &gt; threshold) → 3. Look for error tags | 3. Look for error tags → 4. Analyze service dependencies | 4. Analyze service dependencies → Common Issues Identified: | Common Issues Identified: → Trace: abc123def456 Duration: 2.5s | ...+1 more
+**Flow:**
+- Zipkin UI (http://localhost:9411):
+- ↓
+- 1. Search by trace ID from logs
+- ↓
+- 2. Find slow spans (duration > threshold)
+- ↓
+- 3. Look for error tags
+- ↓
+- 4. Analyze service dependencies
+- ↓
+- Common Issues Identified:
+- ↓
+- Trace: abc123def456 Duration: 2.5s
 
 ```mermaid
 flowchart TD

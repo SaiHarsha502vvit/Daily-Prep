@@ -18,7 +18,24 @@ Try all subsets:              → 2ⁿ subsets → O(2ⁿ)
 Try all permutations:         → n! orderings → O(n!)
 ```
 
-> **Flow**: Single loop 0 to n: → n times | n times → O(n) | Nested loop n × n: → n² times | n² times → O(n²) | Loop that halves each time: → log n times | log n times → O(log n) | ...+6 more
+**Flow:**
+- Single loop 0 to n:
+- ↓
+- n times
+- ↓
+- O(n)
+- ↓
+- Nested loop n × n:
+- ↓
+- n² times
+- ↓
+- O(n²)
+- ↓
+- Loop that halves each time:
+- ↓
+- log n times
+- ↓
+- O(log n)
 
 ```mermaid
 flowchart TD
@@ -80,7 +97,30 @@ O(n!)      →  Factorial: even worse
                Everything × everything × everything...
 ```
 
-> **Flow**: O(1) → Constant: same work regardless of input size | O(log n) → Binary search: halving each step | O(n) → Single pass: touch each element once | O(n log n) → Sort + process: sorting dominates | O(n²) → Nested loops: each pair | O(2ⁿ) → Exponential: doubles each step | ...+3 more
+**Flow:**
+- O(1)
+- ↓
+- Constant: same work regardless of input size
+- ↓
+- O(log n)
+- ↓
+- Binary search: halving each step
+- ↓
+- O(n)
+- ↓
+- Single pass: touch each element once
+- ↓
+- O(n log n)
+- ↓
+- Sort + process: sorting dominates
+- ↓
+- O(n²)
+- ↓
+- Nested loops: each pair
+- ↓
+- O(2ⁿ)
+- ↓
+- Exponential: doubles each step
 
 ```mermaid
 flowchart TD
@@ -135,7 +175,20 @@ DP with 1D table                                O(n)
 DP with 2D table                                O(n × m) or O(n²)
 ```
 
-> **Flow**: CODE PATTERN COMPLEXITY → Single for loop (0 to n) O(n) | Single for loop (0 to n) O(n) → Nested for loops (both 0 to n) O(n²) | Nested for loops (both 0 to n) O(n²) → Three nested loops O(n³) | Three nested loops O(n³) → Sort array + single pass O(n log n) | Sort array + single pass O(n log n) → Loop that halves (i /= 2 or i *= 2) O(log n) | Loop that halves (i /= 2 or i *= 2) O(log n) → Recursion with 2 branches, depth n O(2ⁿ) | ...+1 more
+**Flow:**
+- CODE PATTERN COMPLEXITY
+- ↓
+- Single for loop (0 to n) O(n)
+- ↓
+- Nested for loops (both 0 to n) O(n²)
+- ↓
+- Three nested loops O(n³)
+- ↓
+- Sort array + single pass O(n log n)
+- ↓
+- Loop that halves (i /= 2 or i *= 2) O(log n)
+- ↓
+- Recursion with 2 branches, depth n O(2ⁿ)
 
 ```mermaid
 flowchart TD
@@ -205,7 +258,22 @@ Work per level: O(n)
 TOTAL: O(n) × log₂(n) = O(n log n)  ✅
 ```
 
-> **Flow**: mergeSort(n) → merge work: n | mergeSort(n/2) mergeSort(n/2) → merge work: n/2 + n/2 = n | ms(n/4) ms(n/4) ms(n/4) ms(n/4) → merge work: 4 × n/4 = n | ... → each level does O(n) total work
+**Flow:**
+- mergeSort(n)
+- ↓
+- merge work: n
+- ↓
+- mergeSort(n/2) mergeSort(n/2)
+- ↓
+- merge work: n/2 + n/2 = n
+- ↓
+- ms(n/4) ms(n/4) ms(n/4) ms(n/4)
+- ↓
+- merge work: 4 × n/4 = n
+- ↓
+- ...
+- ↓
+- each level does O(n) total work
 
 ```mermaid
 flowchart LR
@@ -245,7 +313,20 @@ Work per state: O(1)
 TOTAL: O(n)  ✅ Huge improvement!
 ```
 
-> **Flow**: Example: Fibonacci(n) — naive recursion → fib(5) | fib(5) → fib(4) fib(3) | fib(4) fib(3) → fib(2) fib(1) | fib(2) fib(1) → Branching factor: 2 | Branching factor: 2 → Depth: n | Depth: n → Total nodes: ~2ⁿ (each level doubles) | ...+1 more
+**Flow:**
+- Example: Fibonacci(n) — naive recursion
+- ↓
+- fib(5)
+- ↓
+- fib(4) fib(3)
+- ↓
+- fib(2) fib(1)
+- ↓
+- Branching factor: 2
+- ↓
+- Depth: n
+- ↓
+- Total nodes: ~2ⁿ (each level doubles)
 
 ```mermaid
 flowchart TD
@@ -284,7 +365,30 @@ Examples:
   Karatsuba:     T(n) = 3·T(n/2) + O(n) → O(n^1.58)
 ```
 
-> **Flow**: - If splitting work is cheap → O(n^(log_b(a))) [leaves dominate] | - If splitting work matches → O(nᶜ · log n) [balanced] | - If splitting work is expensive → O(nᶜ) [root dominates] | Binary Search: T(n) = 1·T(n/2) + O(1) → O(log n) | Merge Sort: T(n) = 2·T(n/2) + O(n) → O(n log n) | Karatsuba: T(n) = 3·T(n/2) + O(n) → O(n^1.58)
+**Flow:**
+- - If splitting work is cheap
+- ↓
+- O(n^(log_b(a))) [leaves dominate]
+- ↓
+- - If splitting work matches
+- ↓
+- O(nᶜ · log n) [balanced]
+- ↓
+- - If splitting work is expensive
+- ↓
+- O(nᶜ) [root dominates]
+- ↓
+- Binary Search: T(n) = 1·T(n/2) + O(1)
+- ↓
+- O(log n)
+- ↓
+- Merge Sort: T(n) = 2·T(n/2) + O(n)
+- ↓
+- O(n log n)
+- ↓
+- Karatsuba: T(n) = 3·T(n/2) + O(n)
+- ↓
+- O(n^1.58)
 
 ```mermaid
 flowchart TD
@@ -337,7 +441,10 @@ Adjacency list                    O(V + E)
 Sorting (merge sort)              O(n) extra; quicksort O(log n) stack
 ```
 
-> **Flow**: 2D DP table O(n²) → can often reduce to O(n)
+**Flow:**
+- 2D DP table O(n²)
+- ↓
+- can often reduce to O(n)
 
 ```mermaid
 flowchart LR
@@ -354,7 +461,18 @@ When DP row i only depends on row i-1:
   Even better: dp[m] → O(m) (overwrite in-place if direction allows)
 ```
 
-> **Flow**: Original: dp[n][m] → O(n × m) space | Optimized: dp[2][m] → O(m) space (alternate between rows) | Even better: dp[m] → O(m) (overwrite in-place if direction allows)
+**Flow:**
+- Original: dp[n][m]
+- ↓
+- O(n × m) space
+- ↓
+- Optimized: dp[2][m]
+- ↓
+- O(m) space (alternate between rows)
+- ↓
+- Even better: dp[m]
+- ↓
+- O(m) (overwrite in-place if direction allows)
 
 ```mermaid
 flowchart LR
@@ -409,7 +527,38 @@ Total cost for n inserts:
   Amortized cost per insert = 2n / n = O(1) ✓
 ```
 
-> **Flow**: Insert # Capacity Cost What Happens → 1 1 1 Insert | 1 1 1 Insert → 2 1→2 1+1 = 2 Resize (copy 1) + Insert | 2 1→2 1+1 = 2 Resize (copy 1) + Insert → 3 2→4 2+1 = 3 Resize (copy 2) + Insert | 3 2→4 2+1 = 3 Resize (copy 2) + Insert → 4 4 1 Insert (still room) | 4 4 1 Insert (still room) → 5 4→8 4+1 = 5 Resize (copy 4) + Insert | 5 4→8 4+1 = 5 Resize (copy 4) + Insert → 6–8 8 1 each Insert (still room) | ...+1 more
+**Flow:**
+- Insert # Capacity Cost What Happens
+- ↓
+- 1 1 1 Insert
+- ↓
+- 2 1
+- ↓
+- 2 1+1 = 2 Resize (copy 1) + Insert
+- ↓
+- 2 1
+- ↓
+- 2 1+1 = 2 Resize (copy 1) + Insert
+- ↓
+- 3 2
+- ↓
+- 4 2+1 = 3 Resize (copy 2) + Insert
+- ↓
+- 3 2
+- ↓
+- 4 2+1 = 3 Resize (copy 2) + Insert
+- ↓
+- 4 4 1 Insert (still room)
+- ↓
+- 5 4
+- ↓
+- 8 4+1 = 5 Resize (copy 4) + Insert
+- ↓
+- 5 4
+- ↓
+- 8 4+1 = 5 Resize (copy 4) + Insert
+- ↓
+- 6–8 8 1 each Insert (still room)
 
 ```mermaid
 flowchart TD
@@ -455,7 +604,20 @@ flowchart TD
 ╚═══════════════════════════════════════════════════════════ ╝
 ```
 
-> **Flow**: AGGREGATE METHOD: Count total work, divide by n → Total cost of n operations = T(n) | Total cost of n operations = T(n) → Amortized cost per op = T(n) / n | Amortized cost per op = T(n) / n → Dynamic Array Example: | Dynamic Array Example: → Amortized = 3n / n = O(1) | Amortized = 3n / n = O(1) → Stack with multipop(k) Example: | Stack with multipop(k) Example: → Each element pushed at most once, popped at most once | ...+1 more
+**Flow:**
+- AGGREGATE METHOD: Count total work, divide by n
+- ↓
+- Total cost of n operations = T(n)
+- ↓
+- Amortized cost per op = T(n) / n
+- ↓
+- Dynamic Array Example:
+- ↓
+- Amortized = 3n / n = O(1)
+- ↓
+- Stack with multipop(k) Example:
+- ↓
+- Each element pushed at most once, popped at most once
 
 ```mermaid
 flowchart TD
@@ -501,7 +663,32 @@ We charged $3 per operation → amortized cost = O(3) = O(1)
 └─────────────────────────────────────┘
 ```
 
-> **Flow**: ACCOUNTING: Charge EXTRA on cheap ops, save for expensi → Rule: Credit balance must NEVER go negative | Rule: Credit balance must NEVER go negative → Dynamic Array — Charge 3 per insert: | Dynamic Array — Charge 3 per insert: → $1 → pays for the insert itself | $1 → pays for the insert itself → $2 → saved as credit (stored on the element) | $2 → saved as credit (stored on the element) → When resize happens (double from m to 2m): | When resize happens (double from m to 2m): → Need to copy m elements | ...+1 more
+**Flow:**
+- ACCOUNTING: Charge EXTRA on cheap ops, save for expensi
+- ↓
+- Rule: Credit balance must NEVER go negative
+- ↓
+- Dynamic Array — Charge 3 per insert:
+- ↓
+- $1
+- ↓
+- pays for the insert itself
+- ↓
+- $1
+- ↓
+- pays for the insert itself
+- ↓
+- $2
+- ↓
+- saved as credit (stored on the element)
+- ↓
+- $2
+- ↓
+- saved as credit (stored on the element)
+- ↓
+- When resize happens (double from m to 2m):
+- ↓
+- Need to copy m elements
 
 ```mermaid
 flowchart TD
@@ -550,7 +737,20 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: POTENTIAL: Define Φ (potential energy of data structure → Amortized cost ĉᵢ = cᵢ + Φ(Dᵢ) − Φ(Dᵢ₋₁) | Amortized cost ĉᵢ = cᵢ + Φ(Dᵢ) − Φ(Dᵢ₋₁) → = actual cost + change in potential | = actual cost + change in potential → Requirement: Φ(Dₙ) ≥ Φ(D₀) (potential doesn't drop belo | Requirement: Φ(Dₙ) ≥ Φ(D₀) (potential doesn't drop belo → starting value over entire sequence) | starting value over entire sequence) → Dynamic Array — Choose Φ = 2·size − capacity | Dynamic Array — Choose Φ = 2·size − capacity → Normal insert (no resize): | ...+1 more
+**Flow:**
+- POTENTIAL: Define Φ (potential energy of data structure
+- ↓
+- Amortized cost ĉᵢ = cᵢ + Φ(Dᵢ) − Φ(Dᵢ₋₁)
+- ↓
+- = actual cost + change in potential
+- ↓
+- Requirement: Φ(Dₙ) ≥ Φ(D₀) (potential doesn't drop belo
+- ↓
+- starting value over entire sequence)
+- ↓
+- Dynamic Array — Choose Φ = 2·size − capacity
+- ↓
+- Normal insert (no resize):
 
 ```mermaid
 flowchart TD
@@ -584,7 +784,18 @@ flowchart TD
 ╚═══════════════════╩══════════════════════════════════════════╝
 ```
 
-> **Flow**: Method Best When → Aggregate Simple count — all ops cost the same | Aggregate Simple count — all ops cost the same → Accounting Different ops cost differently, want | Accounting Different ops cost differently, want → intuitive 'prepay' explanation | intuitive 'prepay' explanation → Potential Need a formal proof, complex structure | Potential Need a formal proof, complex structure → (e.g., splay trees, Fibonacci heaps)
+**Flow:**
+- Method Best When
+- ↓
+- Aggregate Simple count — all ops cost the same
+- ↓
+- Accounting Different ops cost differently, want
+- ↓
+- intuitive 'prepay' explanation
+- ↓
+- Potential Need a formal proof, complex structure
+- ↓
+- (e.g., splay trees, Fibonacci heaps)
 
 ```mermaid
 flowchart TD
@@ -616,7 +827,16 @@ flowchart TD
 ╚══════════════════════════╩═══════════════════╩═══════════════════════════╝
 ```
 
-> **Flow**: Operation Worst Case Single Amortized → Stack multipop O(n) O(1) per op | Stack multipop O(n) O(1) per op → Monotonic stack (total) O(n) per push O(1) per element | Monotonic stack (total) O(n) per push O(1) per element → Splay tree operations O(n) O(log n) | Splay tree operations O(n) O(log n) → Fibonacci heap decrease O(1) O(1) (with cascading cut)
+**Flow:**
+- Operation Worst Case Single Amortized
+- ↓
+- Stack multipop O(n) O(1) per op
+- ↓
+- Monotonic stack (total) O(n) per push O(1) per element
+- ↓
+- Splay tree operations O(n) O(log n)
+- ↓
+- Fibonacci heap decrease O(1) O(1) (with cascading cut)
 
 ```mermaid
 flowchart TD
@@ -643,7 +863,14 @@ Example:
   Amortized is STRONGER than average — no randomness needed!
 ```
 
-> **Flow**: QuickSort average = O(n log n) → bad luck gives O(n²) | ArrayList.add() amortized O(1) → ALWAYS O(1) per op over n ops
+**Flow:**
+- QuickSort average = O(n log n)
+- ↓
+- bad luck gives O(n²)
+- ↓
+- ArrayList.add() amortized O(1)
+- ↓
+- ALWAYS O(1) per op over n ops
 
 ```mermaid
 flowchart LR
@@ -675,7 +902,30 @@ n ≤ 10⁸     → O(n) only
 n > 10⁸     → O(log n), O(√n), or O(1)
 ```
 
-> **Flow**: n ≤ 10 → Anything goes: O(n!), O(2ⁿ), O(n⁴) | n ≤ 20 → O(2ⁿ), O(n² · 2ⁿ) | n ≤ 100 → O(n³) | n ≤ 500 → O(n³) with small constant | n ≤ 1,000 → O(n²) | n ≤ 5,000 → O(n²) comfortably | ...+6 more
+**Flow:**
+- n ≤ 10
+- ↓
+- Anything goes: O(n!), O(2ⁿ), O(n⁴)
+- ↓
+- n ≤ 20
+- ↓
+- O(2ⁿ), O(n² · 2ⁿ)
+- ↓
+- n ≤ 100
+- ↓
+- O(n³)
+- ↓
+- n ≤ 500
+- ↓
+- O(n³) with small constant
+- ↓
+- n ≤ 1,000
+- ↓
+- O(n²)
+- ↓
+- n ≤ 5,000
+- ↓
+- O(n²) comfortably
 
 ```mermaid
 flowchart TD
@@ -729,7 +979,26 @@ O(2ⁿ)      with n = 25    → ~33 million → ~0.3 seconds
 O(n!)      with n = 11    → ~40 million → ~0.4 seconds
 ```
 
-> **Flow**: O(n) with n = 10⁸ → ~1 second | O(n log n) with n = 10⁶ → ~20 million ops | ~20 million ops → ~0.2 seconds | O(n²) with n = 10⁴ → 10⁸ | 10⁸ → ~1 second | O(n³) with n = 500 → 1.25 × 10⁸ | ...+5 more
+**Flow:**
+- O(n) with n = 10⁸
+- ↓
+- ~1 second
+- ↓
+- O(n log n) with n = 10⁶
+- ↓
+- ~20 million ops
+- ↓
+- ~0.2 seconds
+- ↓
+- O(n²) with n = 10⁴
+- ↓
+- 10⁸
+- ↓
+- ~1 second
+- ↓
+- O(n³) with n = 500
+- ↓
+- 1.25 × 10⁸
 
 ```mermaid
 flowchart TD
@@ -783,7 +1052,30 @@ For SPACE complexity:
 □ Can I do it in-place?
 ```
 
-> **Flow**: □ Count nested loop depth → O(n^depth) | □ Does any loop halve? → Multiply by log n | □ Recursion? → Draw tree, count total calls | □ Using sorting? → At least O(n log n) | □ HashMap operations → O(1) each | □ Recursion? → Stack depth = O(depth) | ...+1 more
+**Flow:**
+- □ Count nested loop depth
+- ↓
+- O(n^depth)
+- ↓
+- □ Does any loop halve?
+- ↓
+- Multiply by log n
+- ↓
+- □ Recursion?
+- ↓
+- Draw tree, count total calls
+- ↓
+- □ Using sorting?
+- ↓
+- At least O(n log n)
+- ↓
+- □ HashMap operations
+- ↓
+- O(1) each
+- ↓
+- □ Recursion?
+- ↓
+- Stack depth = O(depth)
 
 ```mermaid
 flowchart TD

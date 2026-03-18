@@ -51,7 +51,14 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHY: Why Learn Hidden Foundations? / • Spring is 90% re → HOW: How These Foundations Power Spring? / • Reflection | HOW: How These Foundations Power Spring? / • Reflection → WHEN: When to Study These Topics? / • Before Spring Boo | WHEN: When to Study These Topics? / • Before Spring Boo → WHICH: Which Foundations are Most Critical? / ESSENTIAL
+**Flow:**
+- WHY: Why Learn Hidden Foundations? / • Spring is 90% re
+- ↓
+- HOW: How These Foundations Power Spring? / • Reflection
+- ↓
+- WHEN: When to Study These Topics? / • Before Spring Boo
+- ↓
+- WHICH: Which Foundations are Most Critical? / ESSENTIAL
 
 ```mermaid
 flowchart TD
@@ -131,7 +138,46 @@ If you study each section by asking "what metadata is read", "what boundary is i
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: SPRING IS 90% REFLECTION → Spring Boot does ALL of this using Reflection: | Spring Boot does ALL of this using Reflection: → @Autowired → Reflection finds field, injects bean | @Autowired → Reflection finds field, injects bean → @Component scan → Reflection discovers classes | @Component scan → Reflection discovers classes → @RequestMapping → Reflection reads annotation metadata | @RequestMapping → Reflection reads annotation metadata → @Value('${prop}') → Reflection sets field values | @Value('${prop}') → Reflection sets field values → @Transactional → Reflection creates proxy at runtime | ...+1 more
+**Flow:**
+- SPRING IS 90% REFLECTION
+- ↓
+- Spring Boot does ALL of this using Reflection:
+- ↓
+- @Autowired
+- ↓
+- Reflection finds field, injects bean
+- ↓
+- @Autowired
+- ↓
+- Reflection finds field, injects bean
+- ↓
+- @Component scan
+- ↓
+- Reflection discovers classes
+- ↓
+- @Component scan
+- ↓
+- Reflection discovers classes
+- ↓
+- @RequestMapping
+- ↓
+- Reflection reads annotation metadata
+- ↓
+- @RequestMapping
+- ↓
+- Reflection reads annotation metadata
+- ↓
+- @Value('${prop}')
+- ↓
+- Reflection sets field values
+- ↓
+- @Value('${prop}')
+- ↓
+- Reflection sets field values
+- ↓
+- @Transactional
+- ↓
+- Reflection creates proxy at runtime
 
 ```mermaid
 flowchart TD
@@ -591,7 +637,42 @@ public class CachedDispatcher {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: YOU USE ANNOTATIONS DAILY BUT NEVER ASK: HOW DO THEY WO → @Override → Checked at COMPILE time (compiler magic) | @Override → Checked at COMPILE time (compiler magic) → @Deprecated → Warning at COMPILE time | @Deprecated → Warning at COMPILE time → @Autowired → Processed at RUNTIME (Spring reflection) | @Autowired → Processed at RUNTIME (Spring reflection) → @Entity → Processed at RUNTIME (Hibernate reflection) | @Entity → Processed at RUNTIME (Hibernate reflection) → THREE different mechanisms! Do you know which is which?
+**Flow:**
+- YOU USE ANNOTATIONS DAILY BUT NEVER ASK: HOW DO THEY WO
+- ↓
+- @Override
+- ↓
+- Checked at COMPILE time (compiler magic)
+- ↓
+- @Override
+- ↓
+- Checked at COMPILE time (compiler magic)
+- ↓
+- @Deprecated
+- ↓
+- Warning at COMPILE time
+- ↓
+- @Deprecated
+- ↓
+- Warning at COMPILE time
+- ↓
+- @Autowired
+- ↓
+- Processed at RUNTIME (Spring reflection)
+- ↓
+- @Autowired
+- ↓
+- Processed at RUNTIME (Spring reflection)
+- ↓
+- @Entity
+- ↓
+- Processed at RUNTIME (Hibernate reflection)
+- ↓
+- @Entity
+- ↓
+- Processed at RUNTIME (Hibernate reflection)
+- ↓
+- THREE different mechanisms! Do you know which is which?
 
 ```mermaid
 flowchart TD
@@ -679,7 +760,16 @@ public @interface RuntimeAvailable { }
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: RETENTION POLICY COMPARISON → Policy In Source In .class At Runtime Example | Policy In Source In .class At Runtime Example → SOURCE ✅ ❌ ❌ @Override, @SuppressWarnings | SOURCE ✅ ❌ ❌ @Override, @SuppressWarnings → CLASS ✅ ✅ ❌ Default, bytecode tools | CLASS ✅ ✅ ❌ Default, bytecode tools → RUNTIME ✅ ✅ ✅ @Autowired, @Entity
+**Flow:**
+- RETENTION POLICY COMPARISON
+- ↓
+- Policy In Source In .class At Runtime Example
+- ↓
+- SOURCE ✅ ❌ ❌ @Override, @SuppressWarnings
+- ↓
+- CLASS ✅ ✅ ❌ Default, bytecode tools
+- ↓
+- RUNTIME ✅ ✅ ✅ @Autowired, @Entity
 
 ```mermaid
 flowchart TD
@@ -901,7 +991,20 @@ public class BuilderProcessor extends AbstractProcessor {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Your Code: What Spring Creates: → @Service @Service | @Service @Service → class UserService { class UserService$Proxy extends ... | class UserService { class UserService$Proxy extends ... → @Transactional private UserService target; | @Transactional private UserService target; → void save(User u) { | void save(User u) { → repo.save(u); void save(User u) { | repo.save(u); void save(User u) { → } beginTransaction(); | ...+1 more
+**Flow:**
+- Your Code: What Spring Creates:
+- ↓
+- @Service @Service
+- ↓
+- class UserService { class UserService$Proxy extends ...
+- ↓
+- @Transactional private UserService target;
+- ↓
+- void save(User u) {
+- ↓
+- repo.save(u); void save(User u) {
+- ↓
+- } beginTransaction();
 
 ```mermaid
 flowchart TD
@@ -1225,7 +1328,20 @@ RESULT: Private methods bypass the proxy entirely
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: SPRING MVC IS BUILT ON SERVLETS - YOU JUST DON'T SEE TH → When you write: Behind the scenes: | When you write: Behind the scenes: → @GetMapping('/users') HttpServletRequest request | @GetMapping('/users') HttpServletRequest request → public List&lt;User&gt; getUsers() { HttpServletRespons | public List&lt;User&gt; getUsers() { HttpServletRespons → return userService.findAll(); FilterChain chain | return userService.findAll(); FilterChain chain → } DispatcherServlet | } DispatcherServlet → RequestMapping handler | ...+1 more
+**Flow:**
+- SPRING MVC IS BUILT ON SERVLETS - YOU JUST DON'T SEE TH
+- ↓
+- When you write: Behind the scenes:
+- ↓
+- @GetMapping('/users') HttpServletRequest request
+- ↓
+- public List<User> getUsers() { HttpServletRespons
+- ↓
+- return userService.findAll(); FilterChain chain
+- ↓
+- } DispatcherServlet
+- ↓
+- RequestMapping handler
 
 ```mermaid
 flowchart TD
@@ -1551,7 +1667,20 @@ public class DispatcherServlet extends FrameworkServlet {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: EVERY @RestController USES JACKSON - DO YOU KNOW HOW? → @GetMapping('/user') | @GetMapping('/user') → public User getUser() { | public User getUser() { → return new User('John', 25); | return new User('John', 25); → @PostMapping('/user') | @PostMapping('/user') → public void create(@RequestBody User user) { | public void create(@RequestBody User user) { → WHO CONVERTS JAVA ↔ JSON? JACKSON!
+**Flow:**
+- EVERY @RestController USES JACKSON - DO YOU KNOW HOW?
+- ↓
+- @GetMapping('/user')
+- ↓
+- public User getUser() {
+- ↓
+- return new User('John', 25);
+- ↓
+- @PostMapping('/user')
+- ↓
+- public void create(@RequestBody User user) {
+- ↓
+- WHO CONVERTS JAVA ↔ JSON? JACKSON!
 
 ```mermaid
 flowchart TD

@@ -51,7 +51,14 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHY: Why Learn All These Annotations? / • Annotations A → HOW: How Annotations Work? / • Metadata: Annotations ar | HOW: How Annotations Work? / • Metadata: Annotations ar → WHEN: When to Use Each Annotation Category? / • JPA Lif | WHEN: When to Use Each Annotation Category? / • JPA Lif → WHICH: Which Annotations are Most Critical? / ESSENTIAL
+**Flow:**
+- WHY: Why Learn All These Annotations? / • Annotations A
+- ↓
+- HOW: How Annotations Work? / • Metadata: Annotations ar
+- ↓
+- WHEN: When to Use Each Annotation Category? / • JPA Lif
+- ↓
+- WHICH: Which Annotations are Most Critical? / ESSENTIAL
 
 ```mermaid
 flowchart TD
@@ -135,7 +142,18 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: @PrePersist → @PostPersist | @PostPersist → @PreUpdate | @PreUpdate → @PostUpdate | @PreRemove → @PostRemove
+**Flow:**
+- @PrePersist
+- ↓
+- @PostPersist
+- ↓
+- @PreUpdate
+- ↓
+- @PostUpdate
+- ↓
+- @PreRemove
+- ↓
+- @PostRemove
 
 ```mermaid
 flowchart TD

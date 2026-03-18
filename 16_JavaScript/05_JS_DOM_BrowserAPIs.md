@@ -50,7 +50,20 @@ KEY INSIGHT: The DOM is NOT your HTML file. It's a LIVE object
 tree in memory. When JS modifies it, the page updates visually.
 ```
 
-> **Flow**: HTML FILE: DOM TREE (in memory): → &lt;html&gt; document | &lt;html&gt; document → &lt;head&gt; | &lt;head&gt; → &lt;title&gt;Page&lt;/title&gt; | &lt;title&gt;Page&lt;/title&gt; → &lt;/head&gt; html (doctype) | &lt;/head&gt; html (doctype) → &lt;body&gt; | &lt;body&gt; → &lt;h1&gt;Hello&lt;/h1&gt; head body | ...+1 more
+**Flow:**
+- HTML FILE: DOM TREE (in memory):
+- ↓
+- <html> document
+- ↓
+- <head>
+- ↓
+- <title>Page</title>
+- ↓
+- </head> html (doctype)
+- ↓
+- <body>
+- ↓
+- <h1>Hello</h1> head body
 
 ```mermaid
 flowchart TD
@@ -146,7 +159,28 @@ cardsArray.filter(card => card.classList.contains("active"));
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: GIVEN THIS DOM: → &lt;ul id='list'&gt; ul#list | &lt;ul id='list'&gt; ul#list → &lt;li&gt;First&lt;/li&gt; | &lt;li&gt;First&lt;/li&gt; → &lt;li&gt;Second&lt;/li&gt; li li li | &lt;li&gt;Second&lt;/li&gt; li li li → &lt;li&gt;Third&lt;/li&gt; | &lt;li&gt;Third&lt;/li&gt; → PARENT: li.parentElement → ul | PARENT: li.parentElement → ul → CHILDREN: ul.children → [li, li, li] (elements) | ...+1 more
+**Flow:**
+- GIVEN THIS DOM:
+- ↓
+- <ul id='list'> ul#list
+- ↓
+- <li>First</li>
+- ↓
+- <li>Second</li> li li li
+- ↓
+- <li>Third</li>
+- ↓
+- PARENT: li.parentElement
+- ↓
+- ul
+- ↓
+- PARENT: li.parentElement
+- ↓
+- ul
+- ↓
+- CHILDREN: ul.children
+- ↓
+- [li, li, li] (elements)
 
 ```mermaid
 flowchart TD
@@ -293,7 +327,44 @@ list.appendChild(fragment); // ONE DOM update!
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: scroll, load, resize, etc. Event listeners react to the → WHY: This is the bridge between user actions and your c | WHY: This is the bridge between user actions and your c → Every interactive web page uses events. | Every interactive web page uses events. → HOW: Events PROPAGATE through the DOM in 3 phases: | HOW: Events PROPAGATE through the DOM in 3 phases: → Phase 1: CAPTURING (top → target) | Phase 1: CAPTURING (top → target) → document → html → body → div → button | document → html → body → div → button → Phase 2: TARGET (the element that was clicked) | ...+1 more
+**Flow:**
+- scroll, load, resize, etc. Event listeners react to the
+- ↓
+- WHY: This is the bridge between user actions and your c
+- ↓
+- Every interactive web page uses events.
+- ↓
+- HOW: Events PROPAGATE through the DOM in 3 phases:
+- ↓
+- Phase 1: CAPTURING (top
+- ↓
+- target)
+- ↓
+- Phase 1: CAPTURING (top
+- ↓
+- target)
+- ↓
+- document
+- ↓
+- html
+- ↓
+- body
+- ↓
+- div
+- ↓
+- button
+- ↓
+- document
+- ↓
+- html
+- ↓
+- body
+- ↓
+- div
+- ↓
+- button
+- ↓
+- Phase 2: TARGET (the element that was clicked)
 
 ```mermaid
 flowchart TD
@@ -333,7 +404,14 @@ EVENT PROPAGATION VISUAL:
 └───────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: EVENT PROPAGATION VISUAL: / document → body | body → div.container | div.container → button / ② TARGET — event fires here
+**Flow:**
+- EVENT PROPAGATION VISUAL: / document
+- ↓
+- body
+- ↓
+- div.container
+- ↓
+- button / ② TARGET — event fires here
 
 ```mermaid
 flowchart TD
@@ -425,7 +503,20 @@ document.querySelector("#todo-list").addEventListener("click", (e) => {
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: MOUSE: click, dblclick, mouseenter, mouseleave, mousemo → KEYBOARD: keydown, keyup, keypress (deprecated) | KEYBOARD: keydown, keyup, keypress (deprecated) → FORM: submit, change, input, focus, blur, reset | FORM: submit, change, input, focus, blur, reset → TOUCH: touchstart, touchmove, touchend | TOUCH: touchstart, touchmove, touchend → DRAG: dragstart, drag, dragover, drop, dragend | DRAG: dragstart, drag, dragover, drop, dragend → CLIPBOARD: copy, cut, paste | CLIPBOARD: copy, cut, paste → input vs change: | ...+1 more
+**Flow:**
+- MOUSE: click, dblclick, mouseenter, mouseleave, mousemo
+- ↓
+- KEYBOARD: keydown, keyup, keypress (deprecated)
+- ↓
+- FORM: submit, change, input, focus, blur, reset
+- ↓
+- TOUCH: touchstart, touchmove, touchend
+- ↓
+- DRAG: dragstart, drag, dragover, drop, dragend
+- ↓
+- CLIPBOARD: copy, cut, paste
+- ↓
+- input vs change:
 
 ```mermaid
 flowchart TD
@@ -515,7 +606,20 @@ USE CASES:
 • IndexedDB: offline apps, large data, file caching
 ```
 
-> **Flow**: Feature localStorage session Cookies IndexedDB → Capacity ~5-10 MB ~5 MB ~4 KB Large | Capacity ~5-10 MB ~5 MB ~4 KB Large → Persistence Forever Tab close Expires Forever | Persistence Forever Tab close Expires Forever → Sent to server No No Yes (!) No | Sent to server No No Yes (!) No → Scope Origin Tab+origin Domain Origin | Scope Origin Tab+origin Domain Origin → API Simple Simple Complex Complex | API Simple Simple Complex Complex → Data type String only String String Any | ...+1 more
+**Flow:**
+- Feature localStorage session Cookies IndexedDB
+- ↓
+- Capacity ~5-10 MB ~5 MB ~4 KB Large
+- ↓
+- Persistence Forever Tab close Expires Forever
+- ↓
+- Sent to server No No Yes (!) No
+- ↓
+- Scope Origin Tab+origin Domain Origin
+- ↓
+- API Simple Simple Complex Complex
+- ↓
+- Data type String only String String Any
 
 ```mermaid
 flowchart TD
@@ -691,7 +795,26 @@ navigator.geolocation.getCurrentPosition(
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: THE PROBLEM WITH MANUAL DOM MANIPULATION: → 1. Imperative: You tell the DOM WHAT to do, step by ste | 1. Imperative: You tell the DOM WHAT to do, step by ste → 'Find this element, change its text, add this class...' | 'Find this element, change its text, add this class...' → → Complex apps become spaghetti code. | → Complex apps become spaghetti code. → 2. State Sync: Your data (state) and the DOM can get ou | 2. State Sync: Your data (state) and the DOM can get ou → sync. Update one, forget the other → bugs. | sync. Update one, forget the other → bugs. → 3. Performance: Each DOM change = reflow + repaint. | ...+1 more
+**Flow:**
+- THE PROBLEM WITH MANUAL DOM MANIPULATION:
+- ↓
+- 1. Imperative: You tell the DOM WHAT to do, step by ste
+- ↓
+- 'Find this element, change its text, add this class...'
+- ↓
+- Complex apps become spaghetti code.
+- ↓
+- 2. State Sync: Your data (state) and the DOM can get ou
+- ↓
+- sync. Update one, forget the other
+- ↓
+- bugs.
+- ↓
+- sync. Update one, forget the other
+- ↓
+- bugs.
+- ↓
+- 3. Performance: Each DOM change = reflow + repaint.
 
 ```mermaid
 flowchart TD
@@ -746,7 +869,16 @@ Q: How does React's Virtual DOM relate to the real DOM?
   then applies only those to the real DOM (reconciliation).
 ```
 
-> **Flow**: button → div | div → body | body → html | html → document.
+**Flow:**
+- button
+- ↓
+- div
+- ↓
+- body
+- ↓
+- html
+- ↓
+- document.
 
 ```mermaid
 flowchart LR

@@ -80,7 +80,32 @@ It interprets first (fast startup) then optimizes hot paths
 (fast execution). Best of both worlds.
 ```
 
-> **Flow**: Your JS code → Engine (V8 in Chrome/Node) → Machine cod → PARSER → Abstract Syntax Tree (AST) | PARSER → Abstract Syntax Tree (AST) → INTERPRETER (Ignition) → Bytecode (runs immediately) | INTERPRETER (Ignition) → Bytecode (runs immediately) → JIT COMPILER (TurboFan) → Optimized machine code / This
+**Flow:**
+- Your JS code
+- ↓
+- Engine (V8 in Chrome/Node)
+- ↓
+- Machine cod
+- ↓
+- PARSER
+- ↓
+- Abstract Syntax Tree (AST)
+- ↓
+- PARSER
+- ↓
+- Abstract Syntax Tree (AST)
+- ↓
+- INTERPRETER (Ignition)
+- ↓
+- Bytecode (runs immediately)
+- ↓
+- INTERPRETER (Ignition)
+- ↓
+- Bytecode (runs immediately)
+- ↓
+- JIT COMPILER (TurboFan)
+- ↓
+- Optimized machine code / This
 
 ```mermaid
 flowchart TD
@@ -124,7 +149,10 @@ NON-PRIMITIVE (mutable, stored by REFERENCE):
    number type. Use Number.isNaN() to check.
 ```
 
-> **Flow**: Type Example typeof / number 42, 3.14, NaN, Infinity 'n → object {}, [], function, Date, RegExp, Map, / Set, Weak
+**Flow:**
+- Type Example typeof / number 42, 3.14, NaN, Infinity 'n
+- ↓
+- object {}, [], function, Date, RegExp, Map, / Set, Weak
 
 ```mermaid
 flowchart TD
@@ -173,7 +201,10 @@ Objects can be large → stored on heap, stack holds a pointer.
 Assignment copies what's on the stack (value OR pointer).
 ```
 
-> **Flow**: a: 10 / b: 20 / obj1: 0x1A / obj2: 0x1A → { name: 'Harsha' }
+**Flow:**
+- a: 10 / b: 20 / obj1: 0x1A / obj2: 0x1A
+- ↓
+- { name: 'Harsha' }
 
 ```mermaid
 flowchart TD
@@ -198,7 +229,12 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: WHY: Brendan Eich designed JS in 10 days for beginners. → He wanted '5' + 3 to 'just work' instead of crashing. | He wanted '5' + 3 to 'just work' instead of crashing. → HOW: Internal algorithms: ToPrimitive, ToNumber, ToStri
+**Flow:**
+- WHY: Brendan Eich designed JS in 10 days for beginners.
+- ↓
+- He wanted '5' + 3 to 'just work' instead of crashing.
+- ↓
+- HOW: Internal algorithms: ToPrimitive, ToNumber, ToStri
 
 ```mermaid
 flowchart TD
@@ -259,7 +295,14 @@ if ([]) console.log("truthy!");  // PRINTS! empty array is truthy
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: == (loose equality): Converts types THEN compares → REASONING: == has 22 type conversion rules in the spec. | REASONING: == has 22 type conversion rules in the spec. → Predictable code &gt; clever code. | Predictable code &gt; clever code. → The ONLY acceptable == use:
+**Flow:**
+- == (loose equality): Converts types THEN compares
+- ↓
+- REASONING: == has 22 type conversion rules in the spec.
+- ↓
+- Predictable code > clever code.
+- ↓
+- The ONLY acceptable == use:
 
 ```mermaid
 flowchart TD
@@ -291,7 +334,20 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: WHAT: var (1995), let (2015/ES6), const (2015/ES6) → were added to FIX those bugs while keeping var for back | were added to FIX those bugs while keeping var for back → compatibility. | compatibility. → WHEN to use each: | WHEN to use each: → • const: DEFAULT choice. ~90% of variables. | • const: DEFAULT choice. ~90% of variables. → • let: When you NEED to reassign (loops, accumulators). | • let: When you NEED to reassign (loops, accumulators). → • var: NEVER in modern code. Legacy only.
+**Flow:**
+- WHAT: var (1995), let (2015/ES6), const (2015/ES6)
+- ↓
+- were added to FIX those bugs while keeping var for back
+- ↓
+- compatibility.
+- ↓
+- WHEN to use each:
+- ↓
+- • const: DEFAULT choice. ~90% of variables.
+- ↓
+- • let: When you NEED to reassign (loops, accumulators).
+- ↓
+- • var: NEVER in modern code. Legacy only.
 
 ```mermaid
 flowchart TD
@@ -357,7 +413,20 @@ TDZ = Temporal Dead Zone (the time between hoisting and
 declaration where accessing the variable throws an error)
 ```
 
-> **Flow**: COMPARISON TABLE: → Feature var let const | Feature var let const → Scope function block block | Scope function block block → Hoisting yes(undef) yes(TDZ) yes(TDZ) | Hoisting yes(undef) yes(TDZ) yes(TDZ) → Reassign yes yes NO | Reassign yes yes NO → Redeclare yes no no | Redeclare yes no no → Use in never ~10% ~90% | ...+1 more
+**Flow:**
+- COMPARISON TABLE:
+- ↓
+- Feature var let const
+- ↓
+- Scope function block block
+- ↓
+- Hoisting yes(undef) yes(TDZ) yes(TDZ)
+- ↓
+- Reassign yes yes NO
+- ↓
+- Redeclare yes no no
+- ↓
+- Use in never ~10% ~90%
 
 ```mermaid
 flowchart TD
@@ -393,7 +462,20 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: WHAT: Scope determines WHERE a variable is accessible. → WHY: Without scope, all variables would be global → cha | WHY: Without scope, all variables would be global → cha → HOW: JS uses LEXICAL (static) scoping — scope is determ | HOW: JS uses LEXICAL (static) scoping — scope is determ → by WHERE you WRITE the code, not where you call it.
+**Flow:**
+- WHAT: Scope determines WHERE a variable is accessible.
+- ↓
+- WHY: Without scope, all variables would be global
+- ↓
+- cha
+- ↓
+- WHY: Without scope, all variables would be global
+- ↓
+- cha
+- ↓
+- HOW: JS uses LEXICAL (static) scoping — scope is determ
+- ↓
+- by WHERE you WRITE the code, not where you call it.
 
 ```mermaid
 flowchart TD
@@ -437,7 +519,20 @@ Outer scopes CANNOT access inner scopes.
 This is the foundation of CLOSURES (next chapter).
 ```
 
-> **Flow**: THREE TYPES OF SCOPE: → GLOBAL SCOPE | GLOBAL SCOPE → const API_URL = 'https://api.example.com'; | const API_URL = 'https://api.example.com'; → FUNCTION SCOPE | FUNCTION SCOPE → function greet(name) { | function greet(name) { → const msg = 'Hello ' + name; | const msg = 'Hello ' + name; → BLOCK SCOPE | ...+1 more
+**Flow:**
+- THREE TYPES OF SCOPE:
+- ↓
+- GLOBAL SCOPE
+- ↓
+- const API_URL = 'https://api.example.com';
+- ↓
+- FUNCTION SCOPE
+- ↓
+- function greet(name) {
+- ↓
+- const msg = 'Hello ' + name;
+- ↓
+- BLOCK SCOPE
 
 ```mermaid
 flowchart TD
@@ -509,7 +604,18 @@ function outer() {
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: executing any code. (Technically, it's about creation → phase vs execution phase — nothing physically moves.) | phase vs execution phase — nothing physically moves.) → WHY: The JS engine makes TWO passes: | WHY: The JS engine makes TWO passes: → Pass 1 (Creation): Find all declarations, allocate memo | Pass 1 (Creation): Find all declarations, allocate memo → Pass 2 (Execution): Run code line by line. | Pass 2 (Execution): Run code line by line. → But BEHAVIOR differs between them.
+**Flow:**
+- executing any code. (Technically, it's about creation
+- ↓
+- phase vs execution phase — nothing physically moves.)
+- ↓
+- WHY: The JS engine makes TWO passes:
+- ↓
+- Pass 1 (Creation): Find all declarations, allocate memo
+- ↓
+- Pass 2 (Execution): Run code line by line.
+- ↓
+- But BEHAVIOR differs between them.
 
 ```mermaid
 flowchart TD
@@ -578,7 +684,20 @@ before declaring it, that's almost certainly a mistake.
 let/const throw immediately instead of silently being undefined.
 ```
 
-> **Flow**: HOISTING SUMMARY: → Declaration Hoisted? Value before line? | Declaration Hoisted? Value before line? → var x = 5 Yes undefined | var x = 5 Yes undefined → let x = 5 Yes (TDZ) ReferenceError | let x = 5 Yes (TDZ) ReferenceError → const x = 5 Yes (TDZ) ReferenceError | const x = 5 Yes (TDZ) ReferenceError → function f() {} Yes (full) The function itself | function f() {} Yes (full) The function itself → var f = () =&gt; {} Yes undefined | ...+1 more
+**Flow:**
+- HOISTING SUMMARY:
+- ↓
+- Declaration Hoisted? Value before line?
+- ↓
+- var x = 5 Yes undefined
+- ↓
+- let x = 5 Yes (TDZ) ReferenceError
+- ↓
+- const x = 5 Yes (TDZ) ReferenceError
+- ↓
+- function f() {} Yes (full) The function itself
+- ↓
+- var f = () => {} Yes undefined
 
 ```mermaid
 flowchart TD
@@ -684,7 +803,10 @@ Functions are PUSHED when called, POPPED when they return.
 Stack Overflow = too many pushes without pops (infinite recursion)
 ```
 
-> **Flow**: EXECUTION CONTEXT contains: / 1. Variable Environment ( → inner() / outer() / Global
+**Flow:**
+- EXECUTION CONTEXT contains: / 1. Variable Environment (
+- ↓
+- inner() / outer() / Global
 
 ```mermaid
 flowchart TD
@@ -750,7 +872,16 @@ Q: "5" + 3 vs "5" - 3?
   2 (- only does math, converts "5" to 5)
 ```
 
-> **Flow**: var → hoisted as undefined. let/const | hoisted as undefined. let/const → hoisted but in TDZ. | function declarations → fully hoisted.
+**Flow:**
+- var
+- ↓
+- hoisted as undefined. let/const
+- ↓
+- hoisted but in TDZ.
+- ↓
+- function declarations
+- ↓
+- fully hoisted.
 
 ```mermaid
 flowchart LR

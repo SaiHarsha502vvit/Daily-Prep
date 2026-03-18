@@ -49,7 +49,14 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHY: Why Lombok & DTOs? / • Java verbosity: 80 lines of → HOW: How Does Lombok Work? / • Annotation processing: G | HOW: How Does Lombok Work? / • Annotation processing: G → WHEN: When to Use DTOs? / • ALWAYS for APIs: Never expo | WHEN: When to Use DTOs? / • ALWAYS for APIs: Never expo → WHICH: Which Lombok Annotations to Use? / ENTITIES: @Ge
+**Flow:**
+- WHY: Why Lombok & DTOs? / • Java verbosity: 80 lines of
+- ↓
+- HOW: How Does Lombok Work? / • Annotation processing: G
+- ↓
+- WHEN: When to Use DTOs? / • ALWAYS for APIs: Never expo
+- ↓
+- WHICH: Which Lombok Annotations to Use? / ENTITIES: @Ge
 
 ```mermaid
 flowchart TD
@@ -228,7 +235,10 @@ public class User {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: User.java / @Data / class User { / String name; / } → User.class / getName() / setName() / equals() / hashCod
+**Flow:**
+- User.java / @Data / class User { / String name; / }
+- ↓
+- User.class / getName() / setName() / equals() / hashCod
 
 ```mermaid
 flowchart TD
@@ -803,7 +813,20 @@ public class Counter {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: LOMBOK BEST PRACTICES → • Use @RequiredArgsConstructor for Spring DI | • Use @RequiredArgsConstructor for Spring DI → • Use @Builder for complex object creation | • Use @Builder for complex object creation → • Use @Value for immutable DTOs | • Use @Value for immutable DTOs → • Use @Slf4j for logging | • Use @Slf4j for logging → • Exclude sensitive fields from @ToString | • Exclude sensitive fields from @ToString → • Use onlyExplicitlyIncluded for @EqualsAndHashCode in | ...+1 more
+**Flow:**
+- LOMBOK BEST PRACTICES
+- ↓
+- • Use @RequiredArgsConstructor for Spring DI
+- ↓
+- • Use @Builder for complex object creation
+- ↓
+- • Use @Value for immutable DTOs
+- ↓
+- • Use @Slf4j for logging
+- ↓
+- • Exclude sensitive fields from @ToString
+- ↓
+- • Use onlyExplicitlyIncluded for @EqualsAndHashCode in
 
 ```mermaid
 flowchart TD
@@ -904,7 +927,20 @@ lombok.experimental.flagUsage = warning
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: THE DTO PROBLEM → WITHOUT DTOs (Exposing Entity Directly): | WITHOUT DTOs (Exposing Entity Directly): → @Entity | @Entity → public class User { | public class User { → private Long id; | private Long id; → private String email; | private String email; → private String passwordHash; // 🔴 EXPOSED TO CLIENT! | ...+1 more
+**Flow:**
+- THE DTO PROBLEM
+- ↓
+- WITHOUT DTOs (Exposing Entity Directly):
+- ↓
+- @Entity
+- ↓
+- public class User {
+- ↓
+- private Long id;
+- ↓
+- private String email;
+- ↓
+- private String passwordHash; // 🔴 EXPOSED TO CLIENT!
 
 ```mermaid
 flowchart TD
@@ -1285,7 +1321,20 @@ public class UserService {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: DTO ARCHITECTURE → PACKAGE STRUCTURE: | PACKAGE STRUCTURE: → com.example.myapp/ | com.example.myapp/ → controller/ | controller/ → UserController.java | UserController.java → service/ | service/ → UserService.java | ...+1 more
+**Flow:**
+- DTO ARCHITECTURE
+- ↓
+- PACKAGE STRUCTURE:
+- ↓
+- com.example.myapp/
+- ↓
+- controller/
+- ↓
+- UserController.java
+- ↓
+- service/
+- ↓
+- UserService.java
 
 ```mermaid
 flowchart TD
@@ -1553,7 +1602,20 @@ DTOs:
 □ Understand API response wrapper pattern
 ```
 
-> **Flow**: LOMBOK: → □ Know all core annotations (@Data, @Value, @Builder, e | □ Know all core annotations (@Data, @Value, @Builder, e → □ Understand @RequiredArgsConstructor for Spring DI | □ Understand @RequiredArgsConstructor for Spring DI → □ Can configure Lombok for JPA entities properly | □ Can configure Lombok for JPA entities properly → □ Know when to use @Value vs @Data | □ Know when to use @Value vs @Data → □ Can use @Builder with defaults and toBuilder | □ Can use @Builder with defaults and toBuilder → DTOs: | ...+1 more
+**Flow:**
+- LOMBOK:
+- ↓
+- □ Know all core annotations (@Data, @Value, @Builder, e
+- ↓
+- □ Understand @RequiredArgsConstructor for Spring DI
+- ↓
+- □ Can configure Lombok for JPA entities properly
+- ↓
+- □ Know when to use @Value vs @Data
+- ↓
+- □ Can use @Builder with defaults and toBuilder
+- ↓
+- DTOs:
 
 ```mermaid
 flowchart TD

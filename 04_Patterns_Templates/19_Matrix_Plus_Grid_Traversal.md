@@ -36,7 +36,10 @@ IF the problem has:
 THEN → Matrix + BFS/DFS/Math
 ```
 
-> **Flow**: THEN → Matrix + BFS/DFS/Math
+**Flow:**
+- THEN
+- ↓
+- Matrix + BFS/DFS/Math
 
 ```mermaid
 flowchart LR
@@ -159,7 +162,28 @@ Each boundary shrinks inward after processing that side.
 Time: O(R×C) | Space: O(1) extra (output doesn't count)
 ```
 
-> **Flow**: Round 1: → top row: 1,2,3 (top++ | top row: 1,2,3 (top++ → 1) | ↓ right col: 6,9 (right-- → 1) | ← bottom row: 8,7 (bottom-- → 1) | ↑ left col: 4 (left++ → 1) | Round 2: → top row: 5 (top=1, left=1, right=1)
+**Flow:**
+- Round 1:
+- ↓
+- top row: 1,2,3 (top++
+- ↓
+- 1)
+- ↓
+- ↓ right col: 6,9 (right--
+- ↓
+- 1)
+- ↓
+- ← bottom row: 8,7 (bottom--
+- ↓
+- 1)
+- ↓
+- ↑ left col: 4 (left++
+- ↓
+- 1)
+- ↓
+- Round 2:
+- ↓
+- top row: 5 (top=1, left=1, right=1)
 
 ```mermaid
 flowchart TD
@@ -218,7 +242,10 @@ KEY: BFS guarantees shortest path in unweighted grids.
 Time: O(R×C) | Space: O(R×C)
 ```
 
-> **Flow**: Neighbors: (2,2)✅ → TARGET REACHED!
+**Flow:**
+- Neighbors: (2,2)✅
+- ↓
+- TARGET REACHED!
 
 ```mermaid
 flowchart LR
@@ -257,7 +284,20 @@ COMMON MISTAKES:
    Mark first, then zero in a second pass!
 ```
 
-> **Flow**: EDGE CASES: → Edge Case Handling | Edge Case Handling → 1×1 matrix Spiral = [matrix[0][0]], path = 0 steps | 1×1 matrix Spiral = [matrix[0][0]], path = 0 steps → Single row [1,2,3] Spiral = [1,2,3], no up/down movemen | Single row [1,2,3] Spiral = [1,2,3], no up/down movemen → Start/end blocked Return -1 (no path exists) | Start/end blocked Return -1 (no path exists) → All walls Return -1 | All walls Return -1 → 8-directional movement Use 8-dir array instead of 4 | ...+1 more
+**Flow:**
+- EDGE CASES:
+- ↓
+- Edge Case Handling
+- ↓
+- 1×1 matrix Spiral = [matrix[0][0]], path = 0 steps
+- ↓
+- Single row [1,2,3] Spiral = [1,2,3], no up/down movemen
+- ↓
+- Start/end blocked Return -1 (no path exists)
+- ↓
+- All walls Return -1
+- ↓
+- 8-directional movement Use 8-dir array instead of 4
 
 ```mermaid
 flowchart TD

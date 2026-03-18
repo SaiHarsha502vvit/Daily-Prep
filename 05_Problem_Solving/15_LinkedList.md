@@ -30,7 +30,96 @@
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: LINKED LIST PATTERNS → SINGLY LINKED LIST: | SINGLY LINKED LIST: → head → [1|•] → [2|•] → [3|•] → [4|•] → null | head → [1|•] → [2|•] → [3|•] → [4|•] → null → val next val next val next val next | val next val next val next val next → DOUBLY LINKED LIST: | DOUBLY LINKED LIST: → null ← [•|1|•] ⇄ [•|2|•] ⇄ [•|3|•] ⇄ [•|4|•] → null | null ← [•|1|•] ⇄ [•|2|•] ⇄ [•|3|•] ⇄ [•|4|•] → null → prev val next | ...+1 more
+**Flow:**
+- LINKED LIST PATTERNS
+- ↓
+- SINGLY LINKED LIST:
+- ↓
+- head
+- ↓
+- [1
+- ↓
+- •]
+- ↓
+- [2
+- ↓
+- •]
+- ↓
+- [3
+- ↓
+- •]
+- ↓
+- [4
+- ↓
+- •]
+- ↓
+- null
+- ↓
+- head
+- ↓
+- [1
+- ↓
+- •]
+- ↓
+- [2
+- ↓
+- •]
+- ↓
+- [3
+- ↓
+- •]
+- ↓
+- [4
+- ↓
+- •]
+- ↓
+- null
+- ↓
+- val next val next val next val next
+- ↓
+- DOUBLY LINKED LIST:
+- ↓
+- null ← [•
+- ↓
+- 1
+- ↓
+- •] ⇄ [•
+- ↓
+- 2
+- ↓
+- •] ⇄ [•
+- ↓
+- 3
+- ↓
+- •] ⇄ [•
+- ↓
+- 4
+- ↓
+- •]
+- ↓
+- null
+- ↓
+- null ← [•
+- ↓
+- 1
+- ↓
+- •] ⇄ [•
+- ↓
+- 2
+- ↓
+- •] ⇄ [•
+- ↓
+- 3
+- ↓
+- •] ⇄ [•
+- ↓
+- 4
+- ↓
+- •]
+- ↓
+- null
+- ↓
+- prev val next
 
 ```mermaid
 flowchart TD
@@ -268,7 +357,22 @@ EXAMPLES:
   Input: head = []           →  Output: []
 ```
 
-> **Flow**: [1] → [2] | [2] → [3] | [3] → [4] | [4] → [5] | [5] → null | [5] → [4] | ...+7 more
+**Flow:**
+- [1]
+- ↓
+- [2]
+- ↓
+- [3]
+- ↓
+- [4]
+- ↓
+- [5]
+- ↓
+- null
+- ↓
+- [5]
+- ↓
+- [4]
 
 ```mermaid
 flowchart TD
@@ -414,7 +518,14 @@ EXAMPLES:
   Input: [1,2,3,4,5,6] → Output: node 4 (second middle)
 ```
 
-> **Flow**: Input: [1,2,3,4,5] → Output: node 3 | Input: [1,2,3,4,5,6] → Output: node 4 (second middle)
+**Flow:**
+- Input: [1,2,3,4,5]
+- ↓
+- Output: node 3
+- ↓
+- Input: [1,2,3,4,5,6]
+- ↓
+- Output: node 4 (second middle)
 
 ```mermaid
 flowchart LR
@@ -499,7 +610,22 @@ EXAMPLES:
   Out: [1] → [1] → [2] → [3] → [4] → [4] → null
 ```
 
-> **Flow**: L₁: [1] → [2] | [2] → [4] | [4] → null | L₂: [1] → [3] | [3] → [4] | [4] → null | ...+6 more
+**Flow:**
+- L₁: [1]
+- ↓
+- [2]
+- ↓
+- [4]
+- ↓
+- null
+- ↓
+- L₂: [1]
+- ↓
+- [3]
+- ↓
+- [4]
+- ↓
+- null
 
 ```mermaid
 flowchart TD
@@ -614,7 +740,20 @@ EXAMPLES:
                                       Output: false
 ```
 
-> **Flow**: [3] → [2] | [2] → [0] | [0] → [-4] Input: head = [3,2,0,-4], pos = 1 | [1] → [2] | [2] → null Input: head = [1,2], pos = -1
+**Flow:**
+- [3]
+- ↓
+- [2]
+- ↓
+- [0]
+- ↓
+- [-4] Input: head = [3,2,0,-4], pos = 1
+- ↓
+- [1]
+- ↓
+- [2]
+- ↓
+- null Input: head = [1,2], pos = -1
 
 ```mermaid
 flowchart TD
@@ -645,7 +784,10 @@ Step 2: While fast ≠ null AND fast.next ≠ null:
 Step 3: Return false  (fast reached end → no cycle)
 ```
 
-> **Flow**: Step 3: Return false (fast reached end → no cycle)
+**Flow:**
+- Step 3: Return false (fast reached end
+- ↓
+- no cycle)
 
 ```mermaid
 flowchart LR
@@ -685,7 +827,16 @@ Why? When they first meet:
   Moving t steps from head also reaches cycle start. They meet there. ∎
 ```
 
-> **Flow**: • After (c - g) steps, the gap becomes 0 mod c → they meet. | Since fast = 2 × slow: t + a + kc = 2(t + a) → kc = t + a | kc = t + a → t = kc - a
+**Flow:**
+- • After (c - g) steps, the gap becomes 0 mod c
+- ↓
+- they meet.
+- ↓
+- Since fast = 2 × slow: t + a + kc = 2(t + a)
+- ↓
+- kc = t + a
+- ↓
+- t = kc - a
 
 ```mermaid
 flowchart LR
@@ -907,7 +1058,10 @@ APPROACH:
 TEMPLATE: Single-pass accumulation.
 ```
 
-> **Flow**: This is Horner's method for binary → decimal conversion.
+**Flow:**
+- This is Horner's method for binary
+- ↓
+- decimal conversion.
 
 ```mermaid
 flowchart LR
@@ -956,7 +1110,14 @@ EXAMPLES:
   Input: [1], n = 1           →  Output: []           (removed head)
 ```
 
-> **Flow**: Input: [1,2,3,4,5], n = 2 → Output: [1,2,3,5] (removed 4) | Input: [1], n = 1 → Output: [] (removed head)
+**Flow:**
+- Input: [1,2,3,4,5], n = 2
+- ↓
+- Output: [1,2,3,5] (removed 4)
+- ↓
+- Input: [1], n = 1
+- ↓
+- Output: [] (removed head)
 
 ```mermaid
 flowchart LR
@@ -981,7 +1142,10 @@ Step 4: slow.next = slow.next.next  (skip the target node)
 Step 5: Return dummy.next
 ```
 
-> **Flow**: Step 1: Create dummy → head. Set fast = dummy, slow = dummy.
+**Flow:**
+- Step 1: Create dummy
+- ↓
+- head. Set fast = dummy, slow = dummy.
 
 ```mermaid
 flowchart LR
@@ -1059,7 +1223,20 @@ EXAMPLES:
        After:  1 → 4 → 3 → 2 → 5
 ```
 
-> **Flow**: PROBLEM (formal): → only the sublist from position left to right inclusive. | only the sublist from position left to right inclusive. → INPUT: head, left, right (1 ≤ left ≤ right ≤ n) | INPUT: head, left, right (1 ≤ left ≤ right ≤ n) → OUTPUT: head of modified list | OUTPUT: head of modified list → EXAMPLES: | EXAMPLES: → Input: [1,2,3,4,5], left=2, right=4 | Input: [1,2,3,4,5], left=2, right=4 → Output: [1,4,3,2,5] | ...+1 more
+**Flow:**
+- PROBLEM (formal):
+- ↓
+- only the sublist from position left to right inclusive.
+- ↓
+- INPUT: head, left, right (1 ≤ left ≤ right ≤ n)
+- ↓
+- OUTPUT: head of modified list
+- ↓
+- EXAMPLES:
+- ↓
+- Input: [1,2,3,4,5], left=2, right=4
+- ↓
+- Output: [1,4,3,2,5]
 
 ```mermaid
 flowchart TD
@@ -1093,7 +1270,10 @@ Step 3: For i = 0 to (right - left - 1):
 Step 4: Return dummy.next.
 ```
 
-> **Flow**: Step 1: Create dummy → head. Navigate prev to position (left - 1).
+**Flow:**
+- Step 1: Create dummy
+- ↓
+- head. Navigate prev to position (left - 1).
 
 ```mermaid
 flowchart LR
@@ -1160,7 +1340,24 @@ EXAMPLES:
   out: [7] → [8] → [0] → [7]    (7243 + 564 = 7807)
 ```
 
-> **Flow**: l1: [7] → [2] | [2] → [4] | [4] → [3] (represents 7243) | l2: [5] → [6] | [6] → [4] (represents 564) | out: [7] → [8] | ...+2 more
+**Flow:**
+- l1: [7]
+- ↓
+- [2]
+- ↓
+- [4]
+- ↓
+- [3] (represents 7243)
+- ↓
+- l2: [5]
+- ↓
+- [6]
+- ↓
+- [4] (represents 564)
+- ↓
+- out: [7]
+- ↓
+- [8]
 
 ```mermaid
 flowchart TD
@@ -1268,7 +1465,10 @@ Pass 3 — Separate: Extract cloned nodes into their own list.
   Restore original list.
 ```
 
-> **Flow**: C becomes A → A'
+**Flow:**
+- C becomes A
+- ↓
+- A'
 
 ```mermaid
 flowchart LR
@@ -1324,7 +1524,10 @@ Space: O(1) extra (cloned nodes are part of the output, not extra space)
 Alternative (HashMap): O(n) time, O(n) space — map original → clone
 ```
 
-> **Flow**: Alternative (HashMap): O(n) time, O(n) space — map → clone
+**Flow:**
+- Alternative (HashMap): O(n) time, O(n) space — map
+- ↓
+- clone
 
 ```mermaid
 flowchart LR
@@ -1348,7 +1551,10 @@ APPROACH:
 TEMPLATE: Two dummy heads + single pass.
 ```
 
-> **Flow**: Connect less.tail → greaterOrEqual.head. Set greaterOrEqual.tail.next
+**Flow:**
+- Connect less.tail
+- ↓
+- greaterOrEqual.head. Set greaterOrEqual.tail.next
 
 ```mermaid
 flowchart LR
@@ -1393,7 +1599,10 @@ APPROACH:
 TEMPLATE: DFS flattening.
 ```
 
-> **Flow**: Stack approach: push next, then push child → DFS order.
+**Flow:**
+- Stack approach: push next, then push child
+- ↓
+- DFS order.
 
 ```mermaid
 flowchart LR
@@ -1459,7 +1668,10 @@ APPROACH:
 TEMPLATE: Two dummy heads.
 ```
 
-> **Flow**: Traverse and distribute, then connect even → odd.
+**Flow:**
+- Traverse and distribute, then connect even
+- ↓
+- odd.
 
 ```mermaid
 flowchart LR
@@ -1488,7 +1700,12 @@ APPROACH (Dutch National Flag adaptation):
 TEMPLATE: Three dummy heads + single pass.
 ```
 
-> **Flow**: Connect: zero.tail → one.head | one.head → two.head. Set two.tail.next = null.
+**Flow:**
+- Connect: zero.tail
+- ↓
+- one.head
+- ↓
+- two.head. Set two.tail.next = null.
 
 ```mermaid
 flowchart LR
@@ -1628,7 +1845,14 @@ EXAMPLES:
   Input: [1,2,3,4,5], k=3  →  Output: [3,2,1,4,5]
 ```
 
-> **Flow**: Input: [1,2,3,4,5], k=2 → Output: [2,1,4,3,5] | Input: [1,2,3,4,5], k=3 → Output: [3,2,1,4,5]
+**Flow:**
+- Input: [1,2,3,4,5], k=2
+- ↓
+- Output: [2,1,4,3,5]
+- ↓
+- Input: [1,2,3,4,5], k=3
+- ↓
+- Output: [3,2,1,4,5]
 
 ```mermaid
 flowchart LR
@@ -1652,7 +1876,16 @@ Step 3: If yes, reverse the next k nodes.
 Step 4: Repeat from Step 2.
 ```
 
-> **Flow**: Step 1: Create dummy → head, groupPrev = dummy. | Connect: groupPrev → reversed group | reversed group → rest.
+**Flow:**
+- Step 1: Create dummy
+- ↓
+- head, groupPrev = dummy.
+- ↓
+- Connect: groupPrev
+- ↓
+- reversed group
+- ↓
+- rest.
 
 ```mermaid
 flowchart LR
@@ -1993,7 +2226,20 @@ TEMPLATE: Two-pointer on sorted DLL.
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: ✅ LINKED LIST MASTERY — TRACK YOUR PROGRESS → FUNDAMENTALS: | FUNDAMENTALS: → - [ ] Can find the middle using slow/fast runner | - [ ] Can find the middle using slow/fast runner → - [ ] Can merge two sorted lists with dummy head | - [ ] Can merge two sorted lists with dummy head → - [ ] Can remove nth from end using two-pointer gap | - [ ] Can remove nth from end using two-pointer gap → INTERMEDIATE: | INTERMEDIATE: → - [ ] Can reverse a sublist (positions left to right) | ...+1 more
+**Flow:**
+- ✅ LINKED LIST MASTERY — TRACK YOUR PROGRESS
+- ↓
+- FUNDAMENTALS:
+- ↓
+- - [ ] Can find the middle using slow/fast runner
+- ↓
+- - [ ] Can merge two sorted lists with dummy head
+- ↓
+- - [ ] Can remove nth from end using two-pointer gap
+- ↓
+- INTERMEDIATE:
+- ↓
+- - [ ] Can reverse a sublist (positions left to right)
 
 ```mermaid
 flowchart TD

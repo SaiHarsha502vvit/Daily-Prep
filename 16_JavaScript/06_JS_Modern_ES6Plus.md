@@ -116,7 +116,20 @@ const merged = { ...defaults, ...prefs };
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: WHAT: ES Modules let you split code into separate files → import/export between them. | import/export between them. → WHY: Before modules, all JS shared one global scope. | WHY: Before modules, all JS shared one global scope. → → Variable collisions, dependency chaos, huge files. | → Variable collisions, dependency chaos, huge files. → Modules give each file its own scope + explicit deps. | Modules give each file its own scope + explicit deps. → HOW: Two module systems exist: | HOW: Two module systems exist: → • ES Modules (ESM): import/export — standard, browser+N | ...+1 more
+**Flow:**
+- WHAT: ES Modules let you split code into separate files
+- ↓
+- import/export between them.
+- ↓
+- WHY: Before modules, all JS shared one global scope.
+- ↓
+- Variable collisions, dependency chaos, huge files.
+- ↓
+- Modules give each file its own scope + explicit deps.
+- ↓
+- HOW: Two module systems exist:
+- ↓
+- • ES Modules (ESM): import/export — standard, browser+N
 
 ```mermaid
 flowchart TD
@@ -203,7 +216,20 @@ Bundlers (Webpack/Vite) can remove unused exports (dead code).
 CommonJS is dynamic — bundler can't know what's used.
 ```
 
-> **Flow**: ESM vs CommonJS: → Feature ESM CommonJS | Feature ESM CommonJS → Syntax import/export require/module. | Syntax import/export require/module. → exports | exports → Loading Async (parallel) Sync (blocking) | Loading Async (parallel) Sync (blocking) → Tree-shaking Yes (static) No (dynamic) | Tree-shaking Yes (static) No (dynamic) → Top-level await Yes No | ...+1 more
+**Flow:**
+- ESM vs CommonJS:
+- ↓
+- Feature ESM CommonJS
+- ↓
+- Syntax import/export require/module.
+- ↓
+- exports
+- ↓
+- Loading Async (parallel) Sync (blocking)
+- ↓
+- Tree-shaking Yes (static) No (dynamic)
+- ↓
+- Top-level await Yes No
 
 ```mermaid
 flowchart TD
@@ -535,7 +561,20 @@ ES15  │ Map.groupBy, Promise.withResolvers, well-formed
 2024  │ Unicode strings, Atomics.waitAsync, RegExp v flag
 ```
 
-> **Flow**: YEAR KEY FEATURES → ES6 let/const, arrow fn, class, template lit, destructu | ES6 let/const, arrow fn, class, template lit, destructu → 2015 modules, Promise, Map/Set, Symbol, generators, for | 2015 modules, Promise, Map/Set, Symbol, generators, for → ES7 Array.includes(), ** (exponent) | ES7 Array.includes(), ** (exponent) → ES8 async/await, Object.entries/values, string padding | ES8 async/await, Object.entries/values, string padding → ES9 rest/spread for objects, for await...of, finally | ES9 rest/spread for objects, for await...of, finally → ES10 flat/flatMap, Object.fromEntries, trimStart/End | ...+1 more
+**Flow:**
+- YEAR KEY FEATURES
+- ↓
+- ES6 let/const, arrow fn, class, template lit, destructu
+- ↓
+- 2015 modules, Promise, Map/Set, Symbol, generators, for
+- ↓
+- ES7 Array.includes(), ** (exponent)
+- ↓
+- ES8 async/await, Object.entries/values, string padding
+- ↓
+- ES9 rest/spread for objects, for await...of, finally
+- ↓
+- ES10 flat/flatMap, Object.fromEntries, trimStart/End
 
 ```mermaid
 flowchart TD
@@ -584,7 +623,20 @@ Q: What is the Proxy object?
   Used for validation, reactivity (Vue), logging, dynamic APIs.
 ```
 
-> **Flow**: Q: What is tree-shaking? → imports are static and can be analyzed at build time. | imports are static and can be analyzed at build time. → Q: Difference between Map and Object? | Q: Difference between Map and Object? → Q: What is a Symbol? | Q: What is a Symbol? → Used for non-colliding property keys and internal proto | Used for non-colliding property keys and internal proto → (Symbol.iterator, Symbol.toPrimitive). | (Symbol.iterator, Symbol.toPrimitive). → Q: Explain ES6 modules. | ...+1 more
+**Flow:**
+- Q: What is tree-shaking?
+- ↓
+- imports are static and can be analyzed at build time.
+- ↓
+- Q: Difference between Map and Object?
+- ↓
+- Q: What is a Symbol?
+- ↓
+- Used for non-colliding property keys and internal proto
+- ↓
+- (Symbol.iterator, Symbol.toPrimitive).
+- ↓
+- Q: Explain ES6 modules.
 
 ```mermaid
 flowchart TD

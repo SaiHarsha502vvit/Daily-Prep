@@ -56,7 +56,10 @@ BST INVARIANT: For every node N:
   ALWAYS SORTED! That's the magic.
 ```
 
-> **Flow**: Inorder traversal → 1, 3, 4, 6, 7, 8, 10, 13, 14
+**Flow:**
+- Inorder traversal
+- ↓
+- 1, 3, 4, 6, 7, 8, 10, 13, 14
 
 ```mermaid
 flowchart LR
@@ -134,7 +137,12 @@ Step 2: Copy 4's value to 3's position
 Step 3: Delete 4 from right subtree (it's a leaf, easy)
 ```
 
-> **Flow**: / \ → / \ | Step 1: Find inorder successor of 3 → smallest in right subtree
+**Flow:**
+- / \
+- ↓
+- Step 1: Find inorder successor of 3
+- ↓
+- smallest in right subtree
 
 ```mermaid
 flowchart LR
@@ -173,7 +181,26 @@ Queue trace:
 Output: [[3], [9, 20], [15, 7]]
 ```
 
-> **Flow**: Step 1: Dequeue 3, enqueue 9,20 → Q = [9, 20] | Step 2: Dequeue 9, no children → Q = [20] | Step 3: Dequeue 20, enqueue 15,7 → Q = [15, 7] | Step 4: Dequeue 15, no children → Q = [7] | Step 5: Dequeue 7, no children → Q = []
+**Flow:**
+- Step 1: Dequeue 3, enqueue 9,20
+- ↓
+- Q = [9, 20]
+- ↓
+- Step 2: Dequeue 9, no children
+- ↓
+- Q = [20]
+- ↓
+- Step 3: Dequeue 20, enqueue 15,7
+- ↓
+- Q = [15, 7]
+- ↓
+- Step 4: Dequeue 15, no children
+- ↓
+- Q = [7]
+- ↓
+- Step 5: Dequeue 7, no children
+- ↓
+- Q = []
 
 ```mermaid
 flowchart TD
@@ -243,7 +270,20 @@ CRITICAL PATTERN:
 └──────────────┴────────────────┴────────────────┘
 ```
 
-> **Flow**: DFS BFS → Data Struct Stack/Recursion Queue | Data Struct Stack/Recursion Queue → Memory O(h) height O(w) width | Memory O(h) height O(w) width → Deep tree Uses less mem Uses more mem | Deep tree Uses less mem Uses more mem → Wide tree Uses more mem Uses less mem | Wide tree Uses more mem Uses less mem → Shortest path Not guaranteed YES (unweight) | Shortest path Not guaranteed YES (unweight) → Use case Path finding, Level-order, | ...+1 more
+**Flow:**
+- DFS BFS
+- ↓
+- Data Struct Stack/Recursion Queue
+- ↓
+- Memory O(h) height O(w) width
+- ↓
+- Deep tree Uses less mem Uses more mem
+- ↓
+- Wide tree Uses more mem Uses less mem
+- ↓
+- Shortest path Not guaranteed YES (unweight)
+- ↓
+- Use case Path finding, Level-order,
 
 ```mermaid
 flowchart TD
@@ -287,7 +327,10 @@ GROUP BY collapses rows:         Window functions KEEP rows:
                                   (kept all rows + added rank!)
 ```
 
-> **Flow**: dept COUNT(*) avg / IT 3 80k / HR 2 60k → name salary dept rank / Alice 90k IT 1 / Bob 80k IT 2 /
+**Flow:**
+- dept COUNT(*) avg / IT 3 80k / HR 2 60k
+- ↓
+- name salary dept rank / Alice 90k IT 1 / Bob 80k IT 2 /
 
 ```mermaid
 flowchart TD
@@ -331,7 +374,34 @@ DIFFERENCE:
   70k    │     4      │  4   │    3    ← RANK skips 3, DENSE doesn't
 ```
 
-> **Flow**: DIFFERENCE: → If two people tie at position 2: | If two people tie at position 2: → ROW_NUMBER: 1, 2, 3, 4 (always unique, arbitrary tie-br | ROW_NUMBER: 1, 2, 3, 4 (always unique, arbitrary tie-br → RANK: 1, 2, 2, 4 (skip next rank after tie) | RANK: 1, 2, 2, 4 (skip next rank after tie) → DENSE_RANK: 1, 2, 2, 3 (no gap after tie) | DENSE_RANK: 1, 2, 2, 3 (no gap after tie) → salary | ROW_NUMBER | RANK | DENSE_RANK | salary | ROW_NUMBER | RANK | DENSE_RANK → 70k 4 4 3 ← RANK skips 3, DENSE doesn't
+**Flow:**
+- DIFFERENCE:
+- ↓
+- If two people tie at position 2:
+- ↓
+- ROW_NUMBER: 1, 2, 3, 4 (always unique, arbitrary tie-br
+- ↓
+- RANK: 1, 2, 2, 4 (skip next rank after tie)
+- ↓
+- DENSE_RANK: 1, 2, 2, 3 (no gap after tie)
+- ↓
+- salary
+- ↓
+- ROW_NUMBER
+- ↓
+- RANK
+- ↓
+- DENSE_RANK
+- ↓
+- salary
+- ↓
+- ROW_NUMBER
+- ↓
+- RANK
+- ↓
+- DENSE_RANK
+- ↓
+- 70k 4 4 3 ← RANK skips 3, DENSE doesn't
 
 ```mermaid
 flowchart TD
@@ -437,7 +507,18 @@ Level 2: queue=[15,7]  → process 15, 7
 Output: [[3], [9,20], [15,7]]
 ```
 
-> **Flow**: Level 0: queue=[3] → process 3, enqueue 9,20 | Level 1: queue=[9,20] → process 9(no kids), 20(enqueue 15,7) | Level 2: queue=[15,7] → process 15, 7
+**Flow:**
+- Level 0: queue=[3]
+- ↓
+- process 3, enqueue 9,20
+- ↓
+- Level 1: queue=[9,20]
+- ↓
+- process 9(no kids), 20(enqueue 15,7)
+- ↓
+- Level 2: queue=[15,7]
+- ↓
+- process 15, 7
 
 ```mermaid
 flowchart LR
@@ -498,7 +579,14 @@ BFS POWERS:
   Network broadcast = BFS from source
 ```
 
-> **Flow**: TreeMap&lt;K,V&gt; in Java = Red-Black BST → O(log n) sorted map | TreeSet&lt;K&gt; in Java = Red-Black BST → O(log n) sorted set
+**Flow:**
+- TreeMap<K,V> in Java = Red-Black BST
+- ↓
+- O(log n) sorted map
+- ↓
+- TreeSet<K> in Java = Red-Black BST
+- ↓
+- O(log n) sorted set
 
 ```mermaid
 flowchart LR

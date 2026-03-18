@@ -573,7 +573,16 @@ public int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: LCA ALGORITHMS - COMPLETE COMPARISON → Tree: 3 | Tree: 3 → LCA(5, 1) = 3 | LCA(5, 1) = 3 → LCA(5, 4) = 5 | LCA(5, 4) = 5 → LCA(6, 4) = 5
+**Flow:**
+- LCA ALGORITHMS - COMPLETE COMPARISON
+- ↓
+- Tree: 3
+- ↓
+- LCA(5, 1) = 3
+- ↓
+- LCA(5, 4) = 5
+- ↓
+- LCA(6, 4) = 5
 
 ```mermaid
 flowchart TD
@@ -1084,7 +1093,12 @@ reachable from EVERY other vertex in the set
 TIME: O(V + E)   SPACE: O(V)
 ```
 
-> **Flow**: SCC: Maximal set of vertices where EVERY vertex is / re → 0 3 WHY IT MATTERS: | 0 3 WHY IT MATTERS: → 4 ← - Dead code elimination / - Social network clusters
+**Flow:**
+- SCC: Maximal set of vertices where EVERY vertex is / re
+- ↓
+- 0 3 WHY IT MATTERS:
+- ↓
+- 4 ← - Dead code elimination / - Social network clusters
 
 ```mermaid
 flowchart TD
@@ -1102,7 +1116,14 @@ IDEA: If we reverse ALL edges, the SCCs remain the same.
 2. DFS on REVERSED graph in reverse finish order → each DFS tree = one SCC
 ```
 
-> **Flow**: 1. DFS on original graph → record finish order | 2. DFS on REVERSED graph in reverse finish order → each DFS tree = one SCC
+**Flow:**
+- 1. DFS on original graph
+- ↓
+- record finish order
+- ↓
+- 2. DFS on REVERSED graph in reverse finish order
+- ↓
+- each DFS tree = one SCC
 
 ```mermaid
 flowchart LR
@@ -1219,7 +1240,14 @@ public class TarjanSCC {
 ╚══════════════╩══════════════════════════════╩═══════════════════════════════╝
 ```
 
-> **Flow**: Kosaraju Tarjan → Passes 2 DFS passes 1 DFS pass | Passes 2 DFS passes 1 DFS pass → Simpler code ✓ (two simple DFS) ✗ (low-link logic trick | Simpler code ✓ (two simple DFS) ✗ (low-link logic trick → 2-SAT Commonly used Also works
+**Flow:**
+- Kosaraju Tarjan
+- ↓
+- Passes 2 DFS passes 1 DFS pass
+- ↓
+- Simpler code ✓ (two simple DFS) ✗ (low-link logic trick
+- ↓
+- 2-SAT Commonly used Also works
 
 ```mermaid
 flowchart TD
@@ -1245,7 +1273,20 @@ If xᵢ and ¬xᵢ are in SAME SCC → UNSATISFIABLE
 Otherwise: xᵢ = true if SCC(xᵢ) has higher topological order than SCC(¬xᵢ)
 ```
 
-> **Flow**: (a OR b) ≡ (¬a → b) AND (¬b | b) AND (¬b → a) | Build implication graph → Find SCCs | If xᵢ and ¬xᵢ are in SAME SCC → UNSATISFIABLE
+**Flow:**
+- (a OR b) ≡ (¬a
+- ↓
+- b) AND (¬b
+- ↓
+- a)
+- ↓
+- Build implication graph
+- ↓
+- Find SCCs
+- ↓
+- If xᵢ and ¬xᵢ are in SAME SCC
+- ↓
+- UNSATISFIABLE
 
 ```mermaid
 flowchart LR
@@ -1287,7 +1328,20 @@ flowchart LR
 ╚════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: A*: Best-first search with heuristic guidance → actual cost heuristic (estimated cost to goal) | actual cost heuristic (estimated cost to goal) → from start | from start → GUARANTEE: If h(n) is admissible (never overestimates) | GUARANTEE: If h(n) is admissible (never overestimates) → → A* finds the OPTIMAL path | → A* finds the OPTIMAL path → TIME: O(E) in best case, O(b^d) worst case | TIME: O(E) in best case, O(b^d) worst case → SPACE: O(V) | ...+1 more
+**Flow:**
+- A*: Best-first search with heuristic guidance
+- ↓
+- actual cost heuristic (estimated cost to goal)
+- ↓
+- from start
+- ↓
+- GUARANTEE: If h(n) is admissible (never overestimates)
+- ↓
+- A* finds the OPTIMAL path
+- ↓
+- TIME: O(E) in best case, O(b^d) worst case
+- ↓
+- SPACE: O(V)
 
 ```mermaid
 flowchart TD
@@ -1327,7 +1381,14 @@ A* uses heuristic to focus toward goal (expanding cone):
 Same result, fewer expansions → FASTER in practice
 ```
 
-> **Flow**: . . * → . A* focuses toward G | Same result, fewer expansions → FASTER in practice
+**Flow:**
+- . . *
+- ↓
+- . A* focuses toward G
+- ↓
+- Same result, fewer expansions
+- ↓
+- FASTER in practice
 
 ```mermaid
 flowchart LR
@@ -1403,7 +1464,36 @@ public class AStar {
 ╚════════════════════╩══════════════════════════════════════════╝
 ```
 
-> **Flow**: Heuristic When to Use → Manhattan distance 4-directional grid (up/down/left/rig | Manhattan distance 4-directional grid (up/down/left/rig → Euclidean distance 8-directional or free movement | Euclidean distance 8-directional or free movement → Chebyshev distance 8-directional grid (king moves) | Chebyshev distance 8-directional grid (king moves) → max(|x₁-x₂|,|y₁-y₂|) | max(|x₁-x₂|,|y₁-y₂|) → h(n) = 0 Degenerates to Dijkstra (always safe)
+**Flow:**
+- Heuristic When to Use
+- ↓
+- Manhattan distance 4-directional grid (up/down/left/rig
+- ↓
+- Euclidean distance 8-directional or free movement
+- ↓
+- Chebyshev distance 8-directional grid (king moves)
+- ↓
+- max(
+- ↓
+- x₁-x₂
+- ↓
+- ,
+- ↓
+- y₁-y₂
+- ↓
+- )
+- ↓
+- max(
+- ↓
+- x₁-x₂
+- ↓
+- ,
+- ↓
+- y₁-y₂
+- ↓
+- )
+- ↓
+- h(n) = 0 Degenerates to Dijkstra (always safe)
 
 ```mermaid
 flowchart TD
@@ -1457,7 +1547,20 @@ flowchart TD
 ╚════╩══════════════════════════════════════════════════════════════╩═══════════════════════════════════════════════╝
 ```
 
-> **Flow**: # Problem Diff. → 1 Critical Connections (LC 1192) Hard | 1 Critical Connections (LC 1192) Hard → 2 Shortest Path in Binary Matrix (LC 1091) Medium | 2 Shortest Path in Binary Matrix (LC 1091) Medium → 3 Network Delay Time (LC 743) Medium | 3 Network Delay Time (LC 743) Medium → https://leetcode.com/problems/network-delay-time/ | https://leetcode.com/problems/network-delay-time/ → 4 Cheapest Flights Within K Stops (LC 787) Medium | 4 Cheapest Flights Within K Stops (LC 787) Medium → 5 Course Schedule II (LC 210) — Topo Sort Medium | ...+1 more
+**Flow:**
+- # Problem Diff.
+- ↓
+- 1 Critical Connections (LC 1192) Hard
+- ↓
+- 2 Shortest Path in Binary Matrix (LC 1091) Medium
+- ↓
+- 3 Network Delay Time (LC 743) Medium
+- ↓
+- https://leetcode.com/problems/network-delay-time/
+- ↓
+- 4 Cheapest Flights Within K Stops (LC 787) Medium
+- ↓
+- 5 Course Schedule II (LC 210) — Topo Sort Medium
 
 ```mermaid
 flowchart TD

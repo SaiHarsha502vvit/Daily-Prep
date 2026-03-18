@@ -28,7 +28,22 @@ Every developer will face these decisions.
 System design isn't just for interviews — it's your daily reality.
 ```
 
-> **Flow**: 10-100 users → one server handles everything | 1,000 users → bigger CPU, more RAM, faster disk | 100,000 users → multiple servers behind a load balancer | 1,000,000+ users → microservices, caching, CDN, message queues
+**Flow:**
+- 10-100 users
+- ↓
+- one server handles everything
+- ↓
+- 1,000 users
+- ↓
+- bigger CPU, more RAM, faster disk
+- ↓
+- 100,000 users
+- ↓
+- multiple servers behind a load balancer
+- ↓
+- 1,000,000+ users
+- ↓
+- microservices, caching, CDN, message queues
 
 ```mermaid
 flowchart LR
@@ -72,7 +87,12 @@ Algorithms:
 Tools: NGINX, HAProxy, AWS ALB, Kubernetes Ingress
 ```
 
-> **Flow**: Client → Load Balancer / (distributes) | Load Balancer / (distributes) → Server 1 / Server 2 / Server 3
+**Flow:**
+- Client
+- ↓
+- Load Balancer / (distributes)
+- ↓
+- Server 1 / Server 2 / Server 3
 
 ```mermaid
 flowchart LR
@@ -111,7 +131,14 @@ Eviction Policies:
   TTL  → Time To Live (expire after N seconds)
 ```
 
-> **Flow**: Browser / Cache / (local) → CDN / Cache / (edge) | CDN / Cache / (edge) → App / Cache / (Redis) | App / Cache / (Redis) → Database
+**Flow:**
+- Browser / Cache / (local)
+- ↓
+- CDN / Cache / (edge)
+- ↓
+- App / Cache / (Redis)
+- ↓
+- Database
 
 ```mermaid
 flowchart LR
@@ -169,7 +196,10 @@ SQL vs NoSQL Decision:
   NoSQL (MongoDB, DynamoDB) → Flexible schema, high throughput, horizontal scale
 ```
 
-> **Flow**: Master / (writes) → Read Replica / (reads only)
+**Flow:**
+- Master / (writes)
+- ↓
+- Read Replica / (reads only)
 
 ```mermaid
 flowchart TD
@@ -202,7 +232,12 @@ Use Cases:
 Tools: Apache Kafka, RabbitMQ, AWS SQS, Redis Streams
 ```
 
-> **Flow**: API / Server → Queue / (Kafka/ / RabbitMQ | Queue / (Kafka/ / RabbitMQ → Worker / Process
+**Flow:**
+- API / Server
+- ↓
+- Queue / (Kafka/ / RabbitMQ
+- ↓
+- Worker / Process
 
 ```mermaid
 flowchart LR
@@ -236,7 +271,12 @@ Cache: HTML, CSS, JS, images, videos, fonts
 Tools: Cloudflare, AWS CloudFront, Akamai
 ```
 
-> **Flow**: User / India → CDN / Mumbai | CDN / Mumbai → Origin / US-East
+**Flow:**
+- User / India
+- ↓
+- CDN / Mumbai
+- ↓
+- Origin / US-East
 
 ```mermaid
 flowchart TD
@@ -280,7 +320,16 @@ MICROSERVICES:
 RULE: Start with monolith, extract microservices WHEN NEEDED
 ```
 
-> **Flow**: ONE BIG APPLICATION / Users + Orders + Pay + / Inventor → Users / Service | Users / Service → Orders / Service | Orders / Service → Payment / Service | Payment / Service → Inventory / Service
+**Flow:**
+- ONE BIG APPLICATION / Users + Orders + Pay + / Inventor
+- ↓
+- Users / Service
+- ↓
+- Orders / Service
+- ↓
+- Payment / Service
+- ↓
+- Inventory / Service
 
 ```mermaid
 flowchart TD
@@ -316,7 +365,20 @@ So you choose: CP or AP.
     → Tools: Cassandra, DynamoDB, CouchDB
 ```
 
-> **Flow**: You can only have 2 of 3: → C — Consistency: Every read gets the most recent write | C — Consistency: Every read gets the most recent write → So you choose: CP or AP. | So you choose: CP or AP. → CP (Consistency + Partition Tolerance): | CP (Consistency + Partition Tolerance): → → Banking: Balance MUST be correct, even if slow | → Banking: Balance MUST be correct, even if slow → → Tools: PostgreSQL, MongoDB (default), Redis Cluster | → Tools: PostgreSQL, MongoDB (default), Redis Cluster → AP (Availability + Partition Tolerance): | ...+1 more
+**Flow:**
+- You can only have 2 of 3:
+- ↓
+- C — Consistency: Every read gets the most recent write
+- ↓
+- So you choose: CP or AP.
+- ↓
+- CP (Consistency + Partition Tolerance):
+- ↓
+- Banking: Balance MUST be correct, even if slow
+- ↓
+- Tools: PostgreSQL, MongoDB (default), Redis Cluster
+- ↓
+- AP (Availability + Partition Tolerance):
 
 ```mermaid
 flowchart TD
@@ -382,7 +444,14 @@ flowchart TD
    - Monitoring and alerting?
 ```
 
-> **Flow**: - Draw boxes: Client → LB | LB → API | API → DB
+**Flow:**
+- - Draw boxes: Client
+- ↓
+- LB
+- ↓
+- API
+- ↓
+- DB
 
 ```mermaid
 flowchart LR
@@ -416,7 +485,26 @@ Useful numbers to memorize:
   1 PB  → 1B photos
 ```
 
-> **Flow**: 1 KB → a short email | 1 MB → a photo | 1 GB → a movie | 1 TB → 1M photos | 1 PB → 1B photos
+**Flow:**
+- 1 KB
+- ↓
+- a short email
+- ↓
+- 1 MB
+- ↓
+- a photo
+- ↓
+- 1 GB
+- ↓
+- a movie
+- ↓
+- 1 TB
+- ↓
+- 1M photos
+- ↓
+- 1 PB
+- ↓
+- 1B photos
 
 ```mermaid
 flowchart TD
@@ -453,7 +541,30 @@ Rate limit    → Token Bucket / API Gateway
 Monitor       → Prometheus + Grafana + ELK Stack
 ```
 
-> **Flow**: Scale reads → Caching (Redis) + Read Replicas + CDN | Scale writes → Sharding + Message Queues + Async processing | High avail → Load Balancer + Multiple servers + Health checks | Low latency → CDN + Cache + Database indexing | Decouple → Message Queue (Kafka/RabbitMQ) | Search → Elasticsearch | ...+3 more
+**Flow:**
+- Scale reads
+- ↓
+- Caching (Redis) + Read Replicas + CDN
+- ↓
+- Scale writes
+- ↓
+- Sharding + Message Queues + Async processing
+- ↓
+- High avail
+- ↓
+- Load Balancer + Multiple servers + Health checks
+- ↓
+- Low latency
+- ↓
+- CDN + Cache + Database indexing
+- ↓
+- Decouple
+- ↓
+- Message Queue (Kafka/RabbitMQ)
+- ↓
+- Search
+- ↓
+- Elasticsearch
 
 ```mermaid
 flowchart TD
@@ -504,7 +615,14 @@ Think about:
   - Analytics (click count)?
 ```
 
-> **Flow**: - POST /shorten → returns short URL | - GET /{shortCode} → redirects to original
+**Flow:**
+- - POST /shorten
+- ↓
+- returns short URL
+- ↓
+- - GET /{shortCode}
+- ↓
+- redirects to original
 
 ```mermaid
 flowchart LR

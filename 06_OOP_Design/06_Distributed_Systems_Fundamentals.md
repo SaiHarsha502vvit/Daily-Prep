@@ -66,7 +66,14 @@
     Use when: Social media feeds, product catalog, shopping cart
 ```
 
-> **Flow**: When partition happens → system blocks/errors rather than return stale data | When partition happens → system returns potentially stale data
+**Flow:**
+- When partition happens
+- ↓
+- system blocks/errors rather than return stale data
+- ↓
+- When partition happens
+- ↓
+- system returns potentially stale data
 
 ```mermaid
 flowchart LR
@@ -135,7 +142,22 @@ flowchart LR
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: SPECTRUM: Strong ← → Weak → 1. STRONG CONSISTENCY (Linearizability) | 1. STRONG CONSISTENCY (Linearizability) → → Every read returns the most recent write | → Every read returns the most recent write → → As if there's only one copy of data | → As if there's only one copy of data → → Cost: High latency (must coordinate all replicas) | → Cost: High latency (must coordinate all replicas) → → Example: Single PostgreSQL instance, Google Spanner | → Example: Single PostgreSQL instance, Google Spanner → 2. SEQUENTIAL CONSISTENCY | ...+1 more
+**Flow:**
+- SPECTRUM: Strong ←
+- ↓
+- Weak
+- ↓
+- 1. STRONG CONSISTENCY (Linearizability)
+- ↓
+- Every read returns the most recent write
+- ↓
+- As if there's only one copy of data
+- ↓
+- Cost: High latency (must coordinate all replicas)
+- ↓
+- Example: Single PostgreSQL instance, Google Spanner
+- ↓
+- 2. SEQUENTIAL CONSISTENCY
 
 ```mermaid
 flowchart TD
@@ -195,7 +217,10 @@ flowchart TD
    Examples: Cassandra, DynamoDB, Riak
 ```
 
-> **Flow**: Client --(writes)--> → Leader
+**Flow:**
+- Client --(writes)-->
+- ↓
+- Leader
 
 ```mermaid
 flowchart LR
@@ -248,7 +273,20 @@ flowchart LR
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: STRATEGY 1: Range-Based Partitioning → Shard 1: Users A-F Shard 2: Users G-M Shard 3: Users N- | Shard 1: Users A-F Shard 2: Users G-M Shard 3: Users N- → STRATEGY 2: Hash-Based Partitioning | STRATEGY 2: Hash-Based Partitioning → shard = hash(userId) % num_shards | shard = hash(userId) % num_shards → ✅ Even distribution (no hot spots for simple partition | ✅ Even distribution (no hot spots for simple partition → ❌ Range queries require scatter-gather (hit all shards) | ❌ Range queries require scatter-gather (hit all shards) → ❌ Adding/removing shard requires massive data movement | ...+1 more
+**Flow:**
+- STRATEGY 1: Range-Based Partitioning
+- ↓
+- Shard 1: Users A-F Shard 2: Users G-M Shard 3: Users N-
+- ↓
+- STRATEGY 2: Hash-Based Partitioning
+- ↓
+- shard = hash(userId) % num_shards
+- ↓
+- ✅ Even distribution (no hot spots for simple partition
+- ↓
+- ❌ Range queries require scatter-gather (hit all shards)
+- ↓
+- ❌ Adding/removing shard requires massive data movement
 
 ```mermaid
 flowchart TD
@@ -335,7 +373,30 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: PATTERN WHAT USED IN → to prevent cascade failures Resilience4J | to prevent cascade failures Resilience4J → Bulkhead Isolate failures to one Thread pool per servic | Bulkhead Isolate failures to one Thread pool per servic → component, protect others | component, protect others → Saga Distributed transaction as Order → Pay → Ship | Saga Distributed transaction as Order → Pay → Ship → sequence of local txns + with compensation | sequence of local txns + with compensation → compensations | ...+1 more
+**Flow:**
+- PATTERN WHAT USED IN
+- ↓
+- to prevent cascade failures Resilience4J
+- ↓
+- Bulkhead Isolate failures to one Thread pool per servic
+- ↓
+- component, protect others
+- ↓
+- Saga Distributed transaction as Order
+- ↓
+- Pay
+- ↓
+- Ship
+- ↓
+- Saga Distributed transaction as Order
+- ↓
+- Pay
+- ↓
+- Ship
+- ↓
+- sequence of local txns + with compensation
+- ↓
+- compensations
 
 ```mermaid
 flowchart TD
@@ -383,7 +444,14 @@ A: Vertical: bigger machine (more CPU/RAM). Simple but has ceiling.
    Horizontal needs: load balancing, data partitioning, state management.
 ```
 
-> **Flow**: Banking → CP (refuse stale reads, accept downtime). | Social media → AP (serve stale data, stay available).
+**Flow:**
+- Banking
+- ↓
+- CP (refuse stale reads, accept downtime).
+- ↓
+- Social media
+- ↓
+- AP (serve stale data, stay available).
 
 ```mermaid
 flowchart LR

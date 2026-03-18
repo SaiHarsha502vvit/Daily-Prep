@@ -19,7 +19,10 @@ If you can't use Linux CLI → you can't deploy, debug, or
 manage ANY production application.
 ```
 
-> **Flow**: If you can't use Linux CLI → you can't deploy, debug, or
+**Flow:**
+- If you can't use Linux CLI
+- ↓
+- you can't deploy, debug, or
 
 ```mermaid
 flowchart LR
@@ -45,7 +48,20 @@ Linux = GNU tools + Linux kernel = FREE complete OS
 Today: Powers everything from your phone to Mars rovers
 ```
 
-> **Flow**: 1991: Linus Torvalds (Finnish CS student, age 21) → 'I'm doing a free operating system (just a hobby)' | 'I'm doing a free operating system (just a hobby)' → Inspired by: UNIX (1969, Bell Labs) | Inspired by: UNIX (1969, Bell Labs) → → Expensive, proprietary | → Expensive, proprietary → GNU Project (1983, Richard Stallman) | GNU Project (1983, Richard Stallman) → → Free tools but NO KERNEL | → Free tools but NO KERNEL → Linux = GNU tools + Linux kernel = FREE complete OS | ...+1 more
+**Flow:**
+- 1991: Linus Torvalds (Finnish CS student, age 21)
+- ↓
+- 'I'm doing a free operating system (just a hobby)'
+- ↓
+- Inspired by: UNIX (1969, Bell Labs)
+- ↓
+- Expensive, proprietary
+- ↓
+- GNU Project (1983, Richard Stallman)
+- ↓
+- Free tools but NO KERNEL
+- ↓
+- Linux = GNU tools + Linux kernel = FREE complete OS
 
 ```mermaid
 flowchart TD
@@ -105,7 +121,10 @@ Shell = text-based interface to the operating system
         Your superpower for automation
 ```
 
-> **Flow**: SHELL / (Interpreter) / Translates / commands to / kern → KERNEL / Controls: / - CPU / - Memory / - Disk / - Netw
+**Flow:**
+- SHELL / (Interpreter) / Translates / commands to / kern
+- ↓
+- KERNEL / Controls: / - CPU / - Memory / - Disk / - Netw
 
 ```mermaid
 flowchart TD
@@ -145,7 +164,30 @@ KEY INSIGHT: Everything in Linux is a FILE
   - Network sockets → files
 ```
 
-> **Flow**: /bin/ → Essential commands (ls, cp, cat) | /sbin/ → System admin commands (iptables, mount) | /etc/ → Configuration files (ALL config lives here) | /home/ → User home directories | /var/ → Variable data (logs, databases) | /tmp/ → Temporary files (cleared on reboot) | ...+8 more
+**Flow:**
+- /bin/
+- ↓
+- Essential commands (ls, cp, cat)
+- ↓
+- /sbin/
+- ↓
+- System admin commands (iptables, mount)
+- ↓
+- /etc/
+- ↓
+- Configuration files (ALL config lives here)
+- ↓
+- /home/
+- ↓
+- User home directories
+- ↓
+- /var/
+- ↓
+- Variable data (logs, databases)
+- ↓
+- /tmp/
+- ↓
+- Temporary files (cleared on reboot)
 
 ```mermaid
 flowchart TD

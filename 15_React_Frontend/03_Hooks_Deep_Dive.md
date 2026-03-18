@@ -554,7 +554,20 @@ THE INTERNAL REASON:
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: RULE 1: Only call hooks at the TOP LEVEL → ❌ if (condition) { useState(...) } | ❌ if (condition) { useState(...) } → ❌ for (let i...) { useEffect(...) } | ❌ for (let i...) { useEffect(...) } → ✅ Always same hooks in same order every render | ✅ Always same hooks in same order every render → RULE 2: Only call hooks from React FUNCTIONS | RULE 2: Only call hooks from React FUNCTIONS → ✅ Function components | ✅ Function components → ✅ Custom hooks (useXxx) | ...+1 more
+**Flow:**
+- RULE 1: Only call hooks at the TOP LEVEL
+- ↓
+- ❌ if (condition) { useState(...) }
+- ↓
+- ❌ for (let i...) { useEffect(...) }
+- ↓
+- ✅ Always same hooks in same order every render
+- ↓
+- RULE 2: Only call hooks from React FUNCTIONS
+- ↓
+- ✅ Function components
+- ↓
+- ✅ Custom hooks (useXxx)
 
 ```mermaid
 flowchart TD

@@ -48,7 +48,18 @@ STEP 5: EDGE CASES (At the very end)
 └───────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: 'This is _______ pattern' / (Sliding Window / Two Point → public static void solve(int[] arr) { / for (int j = 0; | public static void solve(int[] arr) { / for (int j = 0; → // window size = j - i + 1 / // OR: sum of window = cur | // window size = j - i + 1 / // OR: sum of window = cur → First: Add the core operation / Then: Add the condition | First: Add the core operation / Then: Add the condition → if (arr == null || arr.length == 0) return; / if (n &lt
+**Flow:**
+- 'This is _______ pattern' / (Sliding Window / Two Point
+- ↓
+- public static void solve(int[] arr) { / for (int j = 0;
+- ↓
+- // window size = j - i + 1 / // OR: sum of window = cur
+- ↓
+- First: Add the core operation / Then: Add the condition
+- ↓
+- if (arr == null
+- ↓
+- arr.length == 0) return; / if (n &lt
 
 ```mermaid
 flowchart TD
@@ -98,7 +109,38 @@ flowchart TD
 └─ "GCD/prime/bits"? ─────→ MATH / BIT MANIPULATION
 ```
 
-> **Flow**: WHICH PATTERN DO I USE? (Decision Tree) → Does problem involve ARRAY/STRING? | Does problem involve ARRAY/STRING? → ▼ YES ▼ NO | ▼ YES ▼ NO → 'window of size K'? → SLIDING WINDOW | 'window of size K'? → SLIDING WINDOW → 'tree structure'? | 'tree structure'? → 'two elements sum'? → TWO POINTERS → BFS/DFS | 'two elements sum'? → TWO POINTERS → BFS/DFS → 'count frequency'? → HASHMAP 'graph/nodes'? | ...+1 more
+**Flow:**
+- WHICH PATTERN DO I USE? (Decision Tree)
+- ↓
+- Does problem involve ARRAY/STRING?
+- ↓
+- ▼ YES ▼ NO
+- ↓
+- 'window of size K'?
+- ↓
+- SLIDING WINDOW
+- ↓
+- 'window of size K'?
+- ↓
+- SLIDING WINDOW
+- ↓
+- 'tree structure'?
+- ↓
+- 'two elements sum'?
+- ↓
+- TWO POINTERS
+- ↓
+- BFS/DFS
+- ↓
+- 'two elements sum'?
+- ↓
+- TWO POINTERS
+- ↓
+- BFS/DFS
+- ↓
+- 'count frequency'?
+- ↓
+- HASHMAP 'graph/nodes'?
 
 ```mermaid
 flowchart TD
@@ -146,7 +188,10 @@ User Input: n = ?
 
 ```
 
-> **Flow**: n == 0 ? → n &lt; 0 ?
+**Flow:**
+- n == 0 ?
+- ↓
+- n < 0 ?
 
 ```mermaid
 flowchart TD
@@ -245,7 +290,10 @@ slow fast
   └───────── moves only when condition met
 ```
 
-> **Flow**: r a c e c a r → 1 1 2 2 2 3 4
+**Flow:**
+- r a c e c a r
+- ↓
+- 1 1 2 2 2 3 4
 
 ```mermaid
 flowchart TD
@@ -297,7 +345,18 @@ If arr[mid] < target:  lo = mid + 1  (search right)
 If arr[mid] > target:  hi = mid - 1  (search left)
 ```
 
-> **Flow**: BINARY SEARCH VISUALIZATION → Array: [1, 3, 5, 7, 9, 11, 13, 15] Target: 7 | Array: [1, 3, 5, 7, 9, 11, 13, 15] Target: 7 → Iteration 1: | Iteration 1: → lo mid hi | lo mid hi → If arr[mid] &lt; target: lo = mid + 1 (search right) | If arr[mid] &lt; target: lo = mid + 1 (search right) → If arr[mid] &gt; target: hi = mid - 1 (search left)
+**Flow:**
+- BINARY SEARCH VISUALIZATION
+- ↓
+- Array: [1, 3, 5, 7, 9, 11, 13, 15] Target: 7
+- ↓
+- Iteration 1:
+- ↓
+- lo mid hi
+- ↓
+- If arr[mid] < target: lo = mid + 1 (search right)
+- ↓
+- If arr[mid] > target: hi = mid - 1 (search left)
 
 ```mermaid
 flowchart TD
@@ -357,7 +416,12 @@ Step 5: ']' → pop        Step 6: ')' → pop
 Final: Stack empty → BALANCED ✓
 ```
 
-> **Flow**: [ / ( → { / [ / ( | { / [ / ( → [ / (
+**Flow:**
+- [ / (
+- ↓
+- { / [ / (
+- ↓
+- [ / (
 
 ```mermaid
 flowchart TD
@@ -430,7 +494,20 @@ public static boolean isBalanced(String s) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: COMMON MISTAKES VISUAL GUIDE → MISTAKE #1: Sliding Window Index Confusion | MISTAKE #1: Sliding Window Index Confusion → ❌ WRONG: for (j = i; j &lt; i + k) ← 'Is it &lt; or &lt | ❌ WRONG: for (j = i; j &lt; i + k) ← 'Is it &lt; or &lt → MISTAKE #2: Off-by-One in Range | MISTAKE #2: Off-by-One in Range → Range [3, 7] means: 3, 4, 5, 6, 7 (5 numbers) | Range [3, 7] means: 3, 4, 5, 6, 7 (5 numbers) → ❌ WRONG: for (i = 3; i &lt; 7) ← misses 7! | ❌ WRONG: for (i = 3; i &lt; 7) ← misses 7! → ✅ RIGHT: for (i = 3; i &lt;= 7) ← includes 7 ✓ | ...+1 more
+**Flow:**
+- COMMON MISTAKES VISUAL GUIDE
+- ↓
+- MISTAKE #1: Sliding Window Index Confusion
+- ↓
+- ❌ WRONG: for (j = i; j < i + k) ← 'Is it < or &lt
+- ↓
+- MISTAKE #2: Off-by-One in Range
+- ↓
+- Range [3, 7] means: 3, 4, 5, 6, 7 (5 numbers)
+- ↓
+- ❌ WRONG: for (i = 3; i < 7) ← misses 7!
+- ↓
+- ✅ RIGHT: for (i = 3; i <= 7) ← includes 7 ✓
 
 ```mermaid
 flowchart TD

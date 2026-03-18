@@ -65,7 +65,20 @@ constructors and don't have their own `this`. Declarations are
 hoisted, which some teams consider cleaner for readability.
 ```
 
-> **Flow**: WHEN TO USE WHICH: → Type Best For | Type Best For → Declaration Main functions, utility functions | Declaration Main functions, utility functions → Arrow (const) Callbacks, array methods, short fns | Arrow (const) Callbacks, array methods, short fns → Expression Conditional function assignment | Expression Conditional function assignment → REASONING: Arrow functions are shorter but can't be use | REASONING: Arrow functions are shorter but can't be use → hoisted, which some teams consider cleaner for readabil
+**Flow:**
+- WHEN TO USE WHICH:
+- ↓
+- Type Best For
+- ↓
+- Declaration Main functions, utility functions
+- ↓
+- Arrow (const) Callbacks, array methods, short fns
+- ↓
+- Expression Conditional function assignment
+- ↓
+- REASONING: Arrow functions are shorter but can't be use
+- ↓
+- hoisted, which some teams consider cleaner for readabil
 
 ```mermaid
 flowchart TD
@@ -139,7 +152,14 @@ createComponent({ tag: "h1", className: "title", children: ["Hello"] });
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: function. But WHICH object depends on HOW the function → called, not where it's written. | called, not where it's written. → In JS, `this` changes based on CALL SITE — 4 rules + ar | In JS, `this` changes based on CALL SITE — 4 rules + ar → 'I', it refers to you. When I say 'I', it refers to me.
+**Flow:**
+- function. But WHICH object depends on HOW the function
+- ↓
+- called, not where it's written.
+- ↓
+- In JS, `this` changes based on CALL SITE — 4 rules + ar
+- ↓
+- 'I', it refers to you. When I say 'I', it refers to me.
 
 ```mermaid
 flowchart TD
@@ -228,7 +248,22 @@ Called as object.method()?
 Default: `this` = window (or undefined in strict mode)
 ```
 
-> **Flow**: YES → `this` = enclosing lexical scope's `this` | YES → `this` = newly created object | YES → `this` = specified object | YES → `this` = object before the dot
+**Flow:**
+- YES
+- ↓
+- `this` = enclosing lexical scope's `this`
+- ↓
+- YES
+- ↓
+- `this` = newly created object
+- ↓
+- YES
+- ↓
+- `this` = specified object
+- ↓
+- YES
+- ↓
+- `this` = object before the dot
 
 ```mermaid
 flowchart LR
@@ -269,7 +304,18 @@ flowchart LR
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: its outer (enclosing) scope even AFTER the outer functi → has returned. | has returned. → application, memoization, and React hooks (useState). | application, memoization, and React hooks (useState). → surrounding scope (not a copy). This reference persists | surrounding scope (not a copy). This reference persists → even after the outer function finishes executing. | even after the outer function finishes executing. → house), the inner function still carries those variable
+**Flow:**
+- its outer (enclosing) scope even AFTER the outer functi
+- ↓
+- has returned.
+- ↓
+- application, memoization, and React hooks (useState).
+- ↓
+- surrounding scope (not a copy). This reference persists
+- ↓
+- even after the outer function finishes executing.
+- ↓
+- house), the inner function still carries those variable
 
 ```mermaid
 flowchart TD
@@ -327,7 +373,26 @@ outer()'s execution context is gone, but the closure keeps
 count alive because inner still references it.
 ```
 
-> **Flow**: CLOSURE MEMORY VISUALIZATION: → After outer() returns: | After outer() returns: → counter variable | counter variable → Points to inner function | Points to inner function → inner function carries a 'backpack': | inner function carries a 'backpack': → Closure Scope | Closure Scope → count: 0 → 1 → 2 → 3 (persists!) | ...+1 more
+**Flow:**
+- CLOSURE MEMORY VISUALIZATION:
+- ↓
+- After outer() returns:
+- ↓
+- counter variable
+- ↓
+- Points to inner function
+- ↓
+- inner function carries a 'backpack':
+- ↓
+- Closure Scope
+- ↓
+- count: 0
+- ↓
+- 1
+- ↓
+- 2
+- ↓
+- 3 (persists!)
 
 ```mermaid
 flowchart TD
@@ -486,7 +551,12 @@ for (var i = 0; i < 3; i++) {
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: WHAT: A function that takes another function as argumen → returns a function. | returns a function. → middleware, React components.
+**Flow:**
+- WHAT: A function that takes another function as argumen
+- ↓
+- returns a function.
+- ↓
+- middleware, React components.
 
 ```mermaid
 flowchart TD
@@ -714,7 +784,20 @@ Q: What is a higher-order function?
   Examples: map, filter, reduce, addEventListener.
 ```
 
-> **Flow**: Q: What is a closure? → after the outer function has returned. | after the outer function has returned. → Q: Give a practical use of closures. | Q: Give a practical use of closures. → React hooks (useState), factory functions. | React hooks (useState), factory functions. → Q: What does `this` refer to in an arrow function? | Q: What does `this` refer to in an arrow function? → don't have their own `this`. | don't have their own `this`. → Q: What's the difference between call, apply, and bind? | ...+1 more
+**Flow:**
+- Q: What is a closure?
+- ↓
+- after the outer function has returned.
+- ↓
+- Q: Give a practical use of closures.
+- ↓
+- React hooks (useState), factory functions.
+- ↓
+- Q: What does `this` refer to in an arrow function?
+- ↓
+- don't have their own `this`.
+- ↓
+- Q: What's the difference between call, apply, and bind?
 
 ```mermaid
 flowchart TD

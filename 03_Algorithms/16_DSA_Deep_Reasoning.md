@@ -172,7 +172,30 @@ Maze solving                  → DFS + backtracking ✅
 Word ladder (min transforms)  → BFS ✅
 ```
 
-> **Flow**: USE CASE → ALGORITHM MAP: | Shortest path (unweighted) → BFS ✅ | Shortest path (weighted) → Dijkstra (modified BFS with priority queue) | Detect cycle → DFS ✅ | Topological sort → DFS ✅ (or Kahn's BFS) | Connected components → Either (DFS simpler) | ...+4 more
+**Flow:**
+- USE CASE
+- ↓
+- ALGORITHM MAP:
+- ↓
+- Shortest path (unweighted)
+- ↓
+- BFS ✅
+- ↓
+- Shortest path (weighted)
+- ↓
+- Dijkstra (modified BFS with priority queue)
+- ↓
+- Detect cycle
+- ↓
+- DFS ✅
+- ↓
+- Topological sort
+- ↓
+- DFS ✅ (or Kahn's BFS)
+- ↓
+- Connected components
+- ↓
+- Either (DFS simpler)
 
 ```mermaid
 flowchart TD
@@ -329,7 +352,20 @@ int fib(int n) {
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: Stable: Equal elements keep their ORIGINAL order. → Unstable: Equal elements can be rearranged. | Unstable: Equal elements can be rearranged. → THE SPREADSHEET ANALOGY: | THE SPREADSHEET ANALOGY: → You have records sorted by NAME: | You have records sorted by NAME: → [Alice-A, Alice-B, Bob-A, Charlie-A] | [Alice-A, Alice-B, Bob-A, Charlie-A] → Now sort by DEPARTMENT (all Alice entries same dept): | Now sort by DEPARTMENT (all Alice entries same dept): → Stable: [Alice-A, Alice-B, Bob-A, Charlie-A] | ...+1 more
+**Flow:**
+- Stable: Equal elements keep their ORIGINAL order.
+- ↓
+- Unstable: Equal elements can be rearranged.
+- ↓
+- THE SPREADSHEET ANALOGY:
+- ↓
+- You have records sorted by NAME:
+- ↓
+- [Alice-A, Alice-B, Bob-A, Charlie-A]
+- ↓
+- Now sort by DEPARTMENT (all Alice entries same dept):
+- ↓
+- Stable: [Alice-A, Alice-B, Bob-A, Charlie-A]
 
 ```mermaid
 flowchart TD
@@ -384,7 +420,20 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: THREE PATTERNS of Two Pointers: → PATTERN 1: Opposite ends (sorted array) | PATTERN 1: Opposite ends (sorted array) → Use: Two Sum (sorted), Container With Most Water, Valid | Use: Two Sum (sorted), Container With Most Water, Valid → Palindrome, 3Sum | Palindrome, 3Sum → PATTERN 2: Same direction (fast & slow) | PATTERN 2: Same direction (fast & slow) → Move zeroes, Remove element | Move zeroes, Remove element → PATTERN 3: Two arrays / merge | ...+1 more
+**Flow:**
+- THREE PATTERNS of Two Pointers:
+- ↓
+- PATTERN 1: Opposite ends (sorted array)
+- ↓
+- Use: Two Sum (sorted), Container With Most Water, Valid
+- ↓
+- Palindrome, 3Sum
+- ↓
+- PATTERN 2: Same direction (fast & slow)
+- ↓
+- Move zeroes, Remove element
+- ↓
+- PATTERN 3: Two arrays / merge
 
 ```mermaid
 flowchart TD
@@ -440,7 +489,32 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: HashMap: O(1) average but GIVES UP ordering. → TreeMap/BST: O(log n) but KEEPS elements sorted. | TreeMap/BST: O(log n) but KEEPS elements sorted. → Things TreeMap can do that HashMap CANNOT: | Things TreeMap can do that HashMap CANNOT: → 1. 'Give me all keys between 50 and 100' | 1. 'Give me all keys between 50 and 100' → treeMap.subMap(50, 100) → O(log n + k) | treeMap.subMap(50, 100) → O(log n + k) → HashMap: must scan ALL entries → O(n) | HashMap: must scan ALL entries → O(n) → 2. 'What's the smallest key greater than 75?' | ...+1 more
+**Flow:**
+- HashMap: O(1) average but GIVES UP ordering.
+- ↓
+- TreeMap/BST: O(log n) but KEEPS elements sorted.
+- ↓
+- Things TreeMap can do that HashMap CANNOT:
+- ↓
+- 1. 'Give me all keys between 50 and 100'
+- ↓
+- treeMap.subMap(50, 100)
+- ↓
+- O(log n + k)
+- ↓
+- treeMap.subMap(50, 100)
+- ↓
+- O(log n + k)
+- ↓
+- HashMap: must scan ALL entries
+- ↓
+- O(n)
+- ↓
+- HashMap: must scan ALL entries
+- ↓
+- O(n)
+- ↓
+- 2. 'What's the smallest key greater than 75?'
 
 ```mermaid
 flowchart TD
@@ -503,7 +577,20 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: TEXTBOOK vs REALITY → Textbook: | Textbook: → LinkedList insert at known position: O(1) | LinkedList insert at known position: O(1) → ArrayList insert in middle: O(n) (shift elements) | ArrayList insert in middle: O(n) (shift elements) → 'LinkedList wins for insertions!' | 'LinkedList wins for insertions!' → Reality: | Reality: → LinkedList insert: O(1) for the insert, but O(n) to FIN | ...+1 more
+**Flow:**
+- TEXTBOOK vs REALITY
+- ↓
+- Textbook:
+- ↓
+- LinkedList insert at known position: O(1)
+- ↓
+- ArrayList insert in middle: O(n) (shift elements)
+- ↓
+- 'LinkedList wins for insertions!'
+- ↓
+- Reality:
+- ↓
+- LinkedList insert: O(1) for the insert, but O(n) to FIN
 
 ```mermaid
 flowchart TD

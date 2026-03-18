@@ -791,7 +791,20 @@ MISTAKE 6: Redundant states
 │  ───────────                                                                    │
 ```
 
-> **Flow**: This section covers advanced DP patterns used in: → • Competitive programming (Codeforces, ICPC, IOI) | • Competitive programming (Codeforces, ICPC, IOI) → • Technical interviews at top companies | • Technical interviews at top companies → • Real-world optimization problems | • Real-world optimization problems → ## DIGIT DP - COUNTING NUMBERS WITH PROPERTIES | ## DIGIT DP - COUNTING NUMBERS WITH PROPERTIES → DIGIT DP - THE PATTERN | DIGIT DP - THE PATTERN → Examples: | ...+1 more
+**Flow:**
+- This section covers advanced DP patterns used in:
+- ↓
+- • Competitive programming (Codeforces, ICPC, IOI)
+- ↓
+- • Technical interviews at top companies
+- ↓
+- • Real-world optimization problems
+- ↓
+- ## DIGIT DP - COUNTING NUMBERS WITH PROPERTIES
+- ↓
+- DIGIT DP - THE PATTERN
+- ↓
+- Examples:
 
 ```mermaid
 flowchart TD
@@ -919,7 +932,30 @@ long solve(String N, int pos, int prev, boolean tight) {
 │ ──────────────────────────────────                                              │
 ```
 
-> **Flow**: BITMASK DP - COMPLETE GUIDE → BITMASK OPERATIONS: | BITMASK OPERATIONS: → Operation Code Example | Operation Code Example → Check if bit i is set (mask &gt;&gt; i) & 1 mask=5: bit | Check if bit i is set (mask &gt;&gt; i) & 1 mask=5: bit → Set bit i mask | (1 &lt;&lt; i) 5|2=7 (set bit 1) | Set bit i mask | (1 &lt;&lt; i) 5|2=7 (set bit 1) → Clear bit i mask & ~(1 &lt;&lt; i) 7&~2=5 (clear bit 1) | Clear bit i mask & ~(1 &lt;&lt; i) 7&~2=5 (clear bit 1) → Toggle bit i mask ^ (1 &lt;&lt; i) 5^4=1 (toggle bit 2) | ...+1 more
+**Flow:**
+- BITMASK DP - COMPLETE GUIDE
+- ↓
+- BITMASK OPERATIONS:
+- ↓
+- Operation Code Example
+- ↓
+- Check if bit i is set (mask >> i) & 1 mask=5: bit
+- ↓
+- Set bit i mask
+- ↓
+- (1 << i) 5
+- ↓
+- 2=7 (set bit 1)
+- ↓
+- Set bit i mask
+- ↓
+- (1 << i) 5
+- ↓
+- 2=7 (set bit 1)
+- ↓
+- Clear bit i mask & ~(1 << i) 7&~2=5 (clear bit 1)
+- ↓
+- Toggle bit i mask ^ (1 << i) 5^4=1 (toggle bit 2)
 
 ```mermaid
 flowchart TD
@@ -1060,7 +1096,20 @@ int assignmentProblem(int[][] cost) {
 │ ───────────                                                                     │
 ```
 
-> **Flow**: INTERVAL DP - THE PATTERN → CLASSIC PROBLEMS: | CLASSIC PROBLEMS: → • Matrix chain multiplication | • Matrix chain multiplication → • Optimal BST | • Optimal BST → • Palindrome partitioning | • Palindrome partitioning → • Burst balloons | • Burst balloons → • Stone game | ...+1 more
+**Flow:**
+- INTERVAL DP - THE PATTERN
+- ↓
+- CLASSIC PROBLEMS:
+- ↓
+- • Matrix chain multiplication
+- ↓
+- • Optimal BST
+- ↓
+- • Palindrome partitioning
+- ↓
+- • Burst balloons
+- ↓
+- • Stone game
 
 ```mermaid
 flowchart TD
@@ -1266,7 +1315,20 @@ int minCost(int n, int[] cuts) {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: INTERVAL DP DECISION GUIDE: → Signal It's Interval DP | Signal It's Interval DP → 'Merge' or 'split' Matrix chain, cut a stick | 'Merge' or 'split' Matrix chain, cut a stick → 'Remove from ends' Stone game, burst balloons | 'Remove from ends' Stone game, burst balloons → 'Optimal over range' Any [i..j] optimization | 'Optimal over range' Any [i..j] optimization → Answer for [i,j] uses O(n³) — try all split points k | Answer for [i,j] uses O(n³) — try all split points k → answers for sub-ranges | ...+1 more
+**Flow:**
+- INTERVAL DP DECISION GUIDE:
+- ↓
+- Signal It's Interval DP
+- ↓
+- 'Merge' or 'split' Matrix chain, cut a stick
+- ↓
+- 'Remove from ends' Stone game, burst balloons
+- ↓
+- 'Optimal over range' Any [i..j] optimization
+- ↓
+- Answer for [i,j] uses O(n³) — try all split points k
+- ↓
+- answers for sub-ranges
 
 ```mermaid
 flowchart TD
@@ -1306,7 +1368,12 @@ flowchart TD
 │ ─────────────────────────────────────────                                       │
 ```
 
-> **Flow**: TREE DP - THE PATTERN → WHEN TO USE: Compute optimal values on tree structures | WHEN TO USE: Compute optimal values on tree structures → BASIC TREE DP - MAXIMUM INDEPENDENT SET:
+**Flow:**
+- TREE DP - THE PATTERN
+- ↓
+- WHEN TO USE: Compute optimal values on tree structures
+- ↓
+- BASIC TREE DP - MAXIMUM INDEPENDENT SET:
 
 ```mermaid
 flowchart TD
@@ -1483,7 +1550,20 @@ void dfs2(int v, int parent) {
 │ ─────────────────────────────────────────────                                   │
 ```
 
-> **Flow**: CONVEX HULL TRICK (CHT) → Reduces O(n²) to O(n) or O(n log n) | Reduces O(n²) to O(n) or O(n log n) → CONDITIONS: | CONDITIONS: → • Slopes b[j] are monotonic | • Slopes b[j] are monotonic → • Query values a[i] are monotonic | • Query values a[i] are monotonic → • Want minimum (or can convert to minimum) | • Want minimum (or can convert to minimum) → INTUITION: | ...+1 more
+**Flow:**
+- CONVEX HULL TRICK (CHT)
+- ↓
+- Reduces O(n²) to O(n) or O(n log n)
+- ↓
+- CONDITIONS:
+- ↓
+- • Slopes b[j] are monotonic
+- ↓
+- • Query values a[i] are monotonic
+- ↓
+- • Want minimum (or can convert to minimum)
+- ↓
+- INTUITION:
 
 ```mermaid
 flowchart TD
@@ -1577,7 +1657,16 @@ for (int i = 1; i < n; i++) {
 │ ───────────────                                                                 │
 ```
 
-> **Flow**: DIVIDE AND CONQUER DP → And: optimal k for j₁ ≤ optimal k for j₂ when j₁ &lt; j | And: optimal k for j₁ ≤ optimal k for j₂ when j₁ &lt; j → (This is the 'monotonicity of optimal splits' property) | (This is the 'monotonicity of optimal splits' property) → Reduces O(n × m × n) to O(n × m × log n) | Reduces O(n × m × n) to O(n × m × log n) → IMPLEMENTATION:
+**Flow:**
+- DIVIDE AND CONQUER DP
+- ↓
+- And: optimal k for j₁ ≤ optimal k for j₂ when j₁ < j
+- ↓
+- (This is the 'monotonicity of optimal splits' property)
+- ↓
+- Reduces O(n × m × n) to O(n × m × log n)
+- ↓
+- IMPLEMENTATION:
 
 ```mermaid
 flowchart TD
@@ -1693,7 +1782,10 @@ long cost(int l, int r) {
 │ ──────────────────────────────────────────────────────────────                  │
 ```
 
-> **Flow**: ✓ ✓ ✓ / ✓ ✓ ▐▌ ← → ✓ ✓ ✓ / here ✓ ✓ ?
+**Flow:**
+- ✓ ✓ ✓ / ✓ ✓ ▐▌ ←
+- ↓
+- ✓ ✓ ✓ / here ✓ ✓ ?
 
 ```mermaid
 flowchart TD
@@ -1761,7 +1853,12 @@ long dominoTiling(int n, int m) {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Time: O(m × n × 2^n) → Space: O(2^n) | Space: O(2^n) → Practical for n ≤ 15-20
+**Flow:**
+- Time: O(m × n × 2^n)
+- ↓
+- Space: O(2^n)
+- ↓
+- Practical for n ≤ 15-20
 
 ```mermaid
 flowchart TD
@@ -1798,7 +1895,14 @@ flowchart TD
 _DP is not about memorizing solutions - it's about SEEING the substructure!_
 ```
 
-> **Flow**: | Knuth Optimization|Quadratic → near-linear | O(n²) | O(n²) |
+**Flow:**
+- Knuth Optimization
+- ↓
+- Quadratic
+- ↓
+- near-linear
+- ↓
+- O(n²)
 
 ```mermaid
 flowchart LR

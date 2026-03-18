@@ -154,7 +154,12 @@ public class WatchHistoryService {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: COMPANY: Netflix / YouTube → SYSTEM: Recommendation Engine | SYSTEM: Recommendation Engine → FEATURE: 'Because you watched X, you might like Y'
+**Flow:**
+- COMPANY: Netflix / YouTube
+- ↓
+- SYSTEM: Recommendation Engine
+- ↓
+- FEATURE: 'Because you watched X, you might like Y'
 
 ```mermaid
 flowchart TD
@@ -268,7 +273,12 @@ public class VideoRecommender {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: COMPANY: YouTube / Netflix → SYSTEM: Video Player | SYSTEM: Video Player → CHALLENGE: Adjust video quality based on network speed
+**Flow:**
+- COMPANY: YouTube / Netflix
+- ↓
+- SYSTEM: Video Player
+- ↓
+- CHALLENGE: Adjust video quality based on network speed
 
 ```mermaid
 flowchart TD
@@ -381,7 +391,12 @@ public class AdaptiveBitrateController {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: COMPANY: Practo / Apollo247 → SYSTEM: Appointment Booking | SYSTEM: Appointment Booking → CHALLENGE: Find available slots, prevent double booking
+**Flow:**
+- COMPANY: Practo / Apollo247
+- ↓
+- SYSTEM: Appointment Booking
+- ↓
+- CHALLENGE: Find available slots, prevent double booking
 
 ```mermaid
 flowchart TD
@@ -530,7 +545,10 @@ public class AppointmentScheduler {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: COMPANY: Any Healthcare App → SYSTEM: Prescription Safety
+**Flow:**
+- COMPANY: Any Healthcare App
+- ↓
+- SYSTEM: Prescription Safety
 
 ```mermaid
 flowchart TD
@@ -643,7 +661,12 @@ public class MedicineInteractionChecker {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: COMPANY: MakeMyTrip / Cleartrip → SYSTEM: Flight Search | SYSTEM: Flight Search → FEATURE: Find cheapest flight route (with connections)
+**Flow:**
+- COMPANY: MakeMyTrip / Cleartrip
+- ↓
+- SYSTEM: Flight Search
+- ↓
+- FEATURE: Find cheapest flight route (with connections)
 
 ```mermaid
 flowchart TD
@@ -786,7 +809,10 @@ public class FlightSearchEngine {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: COMPANY: OYO / Booking.com → SYSTEM: Inventory Management
+**Flow:**
+- COMPANY: OYO / Booking.com
+- ↓
+- SYSTEM: Inventory Management
 
 ```mermaid
 flowchart TD
@@ -929,7 +955,10 @@ public class HotelRoomInventory {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: COMPANY: Delhivery / Amazon Logistics → SYSTEM: Route Planning
+**Flow:**
+- COMPANY: Delhivery / Amazon Logistics
+- ↓
+- SYSTEM: Route Planning
 
 ```mermaid
 flowchart TD
@@ -1078,7 +1107,10 @@ public class DeliveryRouteOptimizer {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: COMPANY: Any Logistics → SYSTEM: Shipment Tracking
+**Flow:**
+- COMPANY: Any Logistics
+- ↓
+- SYSTEM: Shipment Tracking
 
 ```mermaid
 flowchart TD
@@ -1232,7 +1264,20 @@ Network latency causes:
 Without proper ordering, conversation looks wrong!
 ```
 
-> **Flow**: COMPANY: WhatsApp / Slack → SYSTEM: Messaging | SYSTEM: Messaging → THE PROBLEM: | THE PROBLEM: → User A sends 'Hi' at 10:00:00.001 | User A sends 'Hi' at 10:00:00.001 → User B sends 'Hello' at 10:00:00.002 | User B sends 'Hello' at 10:00:00.002 → Network latency causes: | Network latency causes: → - Server receives 'Hello' first | ...+1 more
+**Flow:**
+- COMPANY: WhatsApp / Slack
+- ↓
+- SYSTEM: Messaging
+- ↓
+- THE PROBLEM:
+- ↓
+- User A sends 'Hi' at 10:00:00.001
+- ↓
+- User B sends 'Hello' at 10:00:00.002
+- ↓
+- Network latency causes:
+- ↓
+- - Server receives 'Hello' first
 
 ```mermaid
 flowchart TD

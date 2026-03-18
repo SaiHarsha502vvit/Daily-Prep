@@ -65,7 +65,22 @@ PATTERN 3: ACCUMULATOR RECURSION (Tail Recursion)
   int sum(int n, int acc) { return n == 0 ? acc : sum(n-1, acc+n); }
 ```
 
-> **Flow**: factorial(5) → 5 * factorial(4) | 5 * factorial(4) → 4 * factorial(3) | 4 * factorial(3) → ... | fib(4) → fib(3) + fib(2) | Carry result as parameter → no work after recursive call
+**Flow:**
+- factorial(5)
+- ↓
+- 5 * factorial(4)
+- ↓
+- 4 * factorial(3)
+- ↓
+- ...
+- ↓
+- fib(4)
+- ↓
+- fib(3) + fib(2)
+- ↓
+- Carry result as parameter
+- ↓
+- no work after recursive call
 
 ```mermaid
 flowchart TD
@@ -100,7 +115,10 @@ Example: Max depth of binary tree
   4. Combine: 1 + max(left, right)
 ```
 
-> **Flow**: 1. Base case: node == null → return 0
+**Flow:**
+- 1. Base case: node == null
+- ↓
+- return 0
 
 ```mermaid
 flowchart LR
@@ -130,7 +148,36 @@ maxDepth([3])
 return 1 + max(1,2) = 3
 ```
 
-> **Flow**: maxDepth([3]) → maxDepth([9]) | maxDepth([3]) → maxDepth(null) → 0 | maxDepth([3]) → maxDepth(null) → 0 | return 1 + max(0,0) = 1 → maxDepth([20]) | return 1 + max(0,0) = 1 → maxDepth([15]) | return 1 + max(0,0) = 1 → maxDepth(null) → 0 | ...+4 more
+**Flow:**
+- maxDepth([3])
+- ↓
+- maxDepth([9])
+- ↓
+- maxDepth([3])
+- ↓
+- maxDepth(null)
+- ↓
+- 0
+- ↓
+- maxDepth([3])
+- ↓
+- maxDepth(null)
+- ↓
+- 0
+- ↓
+- return 1 + max(0,0) = 1
+- ↓
+- maxDepth([20])
+- ↓
+- return 1 + max(0,0) = 1
+- ↓
+- maxDepth([15])
+- ↓
+- return 1 + max(0,0) = 1
+- ↓
+- maxDepth(null)
+- ↓
+- 0
 
 ```mermaid
 flowchart TD
@@ -204,7 +251,18 @@ At each node:
   → Undo (backtrack) after exploring
 ```
 
-> **Flow**: Input: [1, 2, 3] → Result: [], [1], [1,2], [1,2,3], [1,3], [2], [2,3], [3] | Result: [], [1], [1,2], [1,2,3], [1,3], [2], [2,3], [3] → At each node: | At each node: → → Add current to result | → Add current to result → → Try adding each remaining element | → Try adding each remaining element → → Undo (backtrack) after exploring
+**Flow:**
+- Input: [1, 2, 3]
+- ↓
+- Result: [], [1], [1,2], [1,2,3], [1,3], [2], [2,3], [3]
+- ↓
+- At each node:
+- ↓
+- Add current to result
+- ↓
+- Try adding each remaining element
+- ↓
+- Undo (backtrack) after exploring
 
 ```mermaid
 flowchart TD
@@ -268,7 +326,10 @@ SELF-JOIN MENTAL MODEL:
   └────┴───────┴────────┘   └────┴───────┴────────┘
 ```
 
-> **Flow**: id name mgr_id / 1 Alice NULL / 2 Bob 1 / 3 Carol 1 → id name salary / 1 Alice 90k / 1 Alice 90k / 1 Alice 90
+**Flow:**
+- id name mgr_id / 1 Alice NULL / 2 Bob 1 / 3 Carol 1
+- ↓
+- id name salary / 1 Alice 90k / 1 Alice 90k / 1 Alice 90
 
 ```mermaid
 flowchart LR
@@ -297,7 +358,18 @@ EXECUTION ORDER:
               rows are grouped     groups are filtered
 ```
 
-> **Flow**: FROM → WHERE | WHERE → GROUP BY | GROUP BY → HAVING | HAVING → SELECT | SELECT → ORDER BY
+**Flow:**
+- FROM
+- ↓
+- WHERE
+- ↓
+- GROUP BY
+- ↓
+- HAVING
+- ↓
+- SELECT
+- ↓
+- ORDER BY
 
 ```mermaid
 flowchart TD
@@ -399,7 +471,30 @@ TRACE for [1,2,3]:
     backtrack([3], 3) → add [3], return
 ```
 
-> **Flow**: backtrack([], 0) → add [] | backtrack([1], 1) → add [1] | backtrack([1,2], 2) → add [1,2] | backtrack([1,2,3], 3) → add [1,2,3], return | backtrack([1,3], 3) → add [1,3], return | backtrack([2], 2) → add [2] | ...+2 more
+**Flow:**
+- backtrack([], 0)
+- ↓
+- add []
+- ↓
+- backtrack([1], 1)
+- ↓
+- add [1]
+- ↓
+- backtrack([1,2], 2)
+- ↓
+- add [1,2]
+- ↓
+- backtrack([1,2,3], 3)
+- ↓
+- add [1,2,3], return
+- ↓
+- backtrack([1,3], 3)
+- ↓
+- add [1,3], return
+- ↓
+- backtrack([2], 2)
+- ↓
+- add [2]
 
 ```mermaid
 flowchart TD

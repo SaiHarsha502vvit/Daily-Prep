@@ -180,7 +180,10 @@ VISUAL (3 items, W=4):
   Correction: dp[3][4] = max(dp[2][4], dp[2][1]+12) = max(16, 18) = 18
 ```
 
-> **Flow**: Answer: dp[3][4] = 22 (take items 2 and 3: weight= → items 1+3: 1+3=4, 6+12=18?
+**Flow:**
+- Answer: dp[3][4] = 22 (take items 2 and 3: weight=
+- ↓
+- items 1+3: 1+3=4, 6+12=18?
 
 ```mermaid
 flowchart LR
@@ -241,7 +244,10 @@ TRANSFORMATION:
 SOLUTION:
 ```
 
-> **Flow**: PATTERN: 0/1 Knapsack → Subset Sum with target = totalSum/2
+**Flow:**
+- PATTERN: 0/1 Knapsack
+- ↓
+- Subset Sum with target = totalSum/2
 
 ```mermaid
 flowchart LR
@@ -292,7 +298,10 @@ TRANSFORMATION (the clever part):
 SOLUTION:
 ```
 
-> **Flow**: PATTERN: 0/1 Knapsack → count ways
+**Flow:**
+- PATTERN: 0/1 Knapsack
+- ↓
+- count ways
 
 ```mermaid
 flowchart LR
@@ -340,7 +349,14 @@ PROBLEM: Coins of given denominations, find min coins to make amount.
 SOLUTION:
 ```
 
-> **Flow**: PATTERN: Unbounded Knapsack → minimize count | Input: coins = [1,5,11], amount = 15 → Output: 3 (5+5+5)
+**Flow:**
+- PATTERN: Unbounded Knapsack
+- ↓
+- minimize count
+- ↓
+- Input: coins = [1,5,11], amount = 15
+- ↓
+- Output: 3 (5+5+5)
 
 ```mermaid
 flowchart LR
@@ -392,7 +408,18 @@ CRITICAL DISTINCTION:
 SOLUTION:
 ```
 
-> **Flow**: PATTERN: Unbounded Knapsack → count combinations | Input: coins = [1,2,5], amount = 5 → Output: 4 | This problem asks COMBINATIONS → coins as outer loop.
+**Flow:**
+- PATTERN: Unbounded Knapsack
+- ↓
+- count combinations
+- ↓
+- Input: coins = [1,2,5], amount = 5
+- ↓
+- Output: 4
+- ↓
+- This problem asks COMBINATIONS
+- ↓
+- coins as outer loop.
 
 ```mermaid
 flowchart LR
@@ -520,7 +547,20 @@ COMPLEXITY: Time O(strs × m × n) | Space O(m × n)
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHY LOOP DIRECTION MATTERS → 0/1 KNAPSACK (RIGHT → LEFT): | 0/1 KNAPSACK (RIGHT → LEFT): → UNBOUNDED KNAPSACK (LEFT → RIGHT):
+**Flow:**
+- WHY LOOP DIRECTION MATTERS
+- ↓
+- 0/1 KNAPSACK (RIGHT
+- ↓
+- LEFT):
+- ↓
+- 0/1 KNAPSACK (RIGHT
+- ↓
+- LEFT):
+- ↓
+- UNBOUNDED KNAPSACK (LEFT
+- ↓
+- RIGHT):
 
 ```mermaid
 flowchart TD

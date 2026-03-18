@@ -39,7 +39,14 @@ BRUTE FORCE would try everything → for 8 queens: 64^8 = 281 trillion positions
 BACKTRACKING prunes early → only explore VALID partial solutions
 ```
 
-> **Flow**: BRUTE FORCE would try everything → for 8 queens: 64^8 = 281 trillion positions | BACKTRACKING prunes early → only explore VALID partial solutions
+**Flow:**
+- BRUTE FORCE would try everything
+- ↓
+- for 8 queens: 64^8 = 281 trillion positions
+- ↓
+- BACKTRACKING prunes early
+- ↓
+- only explore VALID partial solutions
 
 ```mermaid
 flowchart LR
@@ -72,7 +79,22 @@ BACKTRACKING = DFS through this tree, BUT:
   - If dead end → UNDO last choice (backtrack) → try next option
 ```
 
-> **Flow**: - Before going deeper → CHECK if this partial solution CAN lead to a valid | - If NO → PRUNE this branch (don't explore further) | PRUNE this branch (don't explore further) → HUGE time savings | - If dead end → UNDO last choice (backtrack) | UNDO last choice (backtrack) → try next option
+**Flow:**
+- - Before going deeper
+- ↓
+- CHECK if this partial solution CAN lead to a valid
+- ↓
+- - If NO
+- ↓
+- PRUNE this branch (don't explore further)
+- ↓
+- HUGE time savings
+- ↓
+- - If dead end
+- ↓
+- UNDO last choice (backtrack)
+- ↓
+- try next option
 
 ```mermaid
 flowchart TD
@@ -105,7 +127,14 @@ you go down a trail, hit a dead end, walk BACK to the fork,
 then try the other trail.
 ```
 
-> **Flow**: 1. CHOOSE: Make a choice (add to current path) → 2. EXPLORE: Recurse to next position | 2. EXPLORE: Recurse to next position → you go down a trail, hit a dead end, walk BACK to the f | you go down a trail, hit a dead end, walk BACK to the f → then try the other trail.
+**Flow:**
+- 1. CHOOSE: Make a choice (add to current path)
+- ↓
+- 2. EXPLORE: Recurse to next position
+- ↓
+- you go down a trail, hit a dead end, walk BACK to the f
+- ↓
+- then try the other trail.
 
 ```mermaid
 flowchart TD
@@ -138,7 +167,14 @@ flowchart TD
   GREEDY = "I can make local choices that are globally optimal"
 ```
 
-> **Flow**: - You only need the COUNT (not the actual solution → Use DP instead | - You need the OPTIMAL solution → Use DP or Greedy
+**Flow:**
+- - You only need the COUNT (not the actual solution
+- ↓
+- Use DP instead
+- ↓
+- - You need the OPTIMAL solution
+- ↓
+- Use DP or Greedy
 
 ```mermaid
 flowchart LR
@@ -189,7 +225,30 @@ When you hit a dead end, GO BACK and try a different path.
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Backtracking = DFS + Undo → Explore all possible paths. | Explore all possible paths. → When you hit a dead end, GO BACK and try a different pa | When you hit a dead end, GO BACK and try a different pa → BACKTRACKING FLOW | BACKTRACKING FLOW → 1. CHOOSE → 2. EXPLORE → 3. UNCHOOSE | 1. CHOOSE → 2. EXPLORE → 3. UNCHOOSE → Make a Recursively Undo the | Make a Recursively Undo the → decision explore with decision | ...+1 more
+**Flow:**
+- Backtracking = DFS + Undo
+- ↓
+- Explore all possible paths.
+- ↓
+- When you hit a dead end, GO BACK and try a different pa
+- ↓
+- BACKTRACKING FLOW
+- ↓
+- 1. CHOOSE
+- ↓
+- 2. EXPLORE
+- ↓
+- 3. UNCHOOSE
+- ↓
+- 1. CHOOSE
+- ↓
+- 2. EXPLORE
+- ↓
+- 3. UNCHOOSE
+- ↓
+- Make a Recursively Undo the
+- ↓
+- decision explore with decision
 
 ```mermaid
 flowchart TD
@@ -247,7 +306,20 @@ Time Complexity usually: O(2^n) or O(n!) - exponential
 That's OK! Problem asks for ALL solutions.
 ```
 
-> **Flow**: USE BACKTRACKING WHEN YOU SEE: → ✓ 'Generate all...' | ✓ 'Generate all...' → ✓ 'Find all possible...' | ✓ 'Find all possible...' → ✓ 'Print all combinations/permutations/subsets' | ✓ 'Print all combinations/permutations/subsets' → ✓ 'All ways to...' | ✓ 'All ways to...' → ✓ Constraint satisfaction (Sudoku, N-Queens) | ✓ Constraint satisfaction (Sudoku, N-Queens) → ✓ Path finding with constraints | ...+1 more
+**Flow:**
+- USE BACKTRACKING WHEN YOU SEE:
+- ↓
+- ✓ 'Generate all...'
+- ↓
+- ✓ 'Find all possible...'
+- ↓
+- ✓ 'Print all combinations/permutations/subsets'
+- ↓
+- ✓ 'All ways to...'
+- ↓
+- ✓ Constraint satisfaction (Sudoku, N-Queens)
+- ↓
+- ✓ Path finding with constraints
 
 ```mermaid
 flowchart TD
@@ -359,7 +431,20 @@ public class BacktrackingTemplate {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: CRITICAL IMPLEMENTATION NOTES → 1. ALWAYS COPY before adding to result: | 1. ALWAYS COPY before adding to result: → result.add(new ArrayList&lt;&gt;(current)); ✓ | result.add(new ArrayList&lt;&gt;(current)); ✓ → result.add(current); ✗ (adds reference, will be modifie | result.add(current); ✗ (adds reference, will be modifie → 2. REMOVE from END (last element): | 2. REMOVE from END (last element): → current.remove(current.size() - 1); ✓ | current.remove(current.size() - 1); ✓ → current.remove(element); ✗ (removes by value, slower) | ...+1 more
+**Flow:**
+- CRITICAL IMPLEMENTATION NOTES
+- ↓
+- 1. ALWAYS COPY before adding to result:
+- ↓
+- result.add(new ArrayList<>(current)); ✓
+- ↓
+- result.add(current); ✗ (adds reference, will be modifie
+- ↓
+- 2. REMOVE from END (last element):
+- ↓
+- current.remove(current.size() - 1); ✓
+- ↓
+- current.remove(element); ✗ (removes by value, slower)
 
 ```mermaid
 flowchart TD
@@ -393,7 +478,10 @@ Output: [[], [1], [2], [3], [1,2], [1,3], [2,3], [1,2,3]]
 Each element: include OR exclude → 2^n subsets
 ```
 
-> **Flow**: Each element: include OR exclude → 2^n subsets
+**Flow:**
+- Each element: include OR exclude
+- ↓
+- 2^n subsets
 
 ```mermaid
 flowchart LR
@@ -464,7 +552,30 @@ backtrack(start=0, current=[])
 Result: [[], [1], [1,2], [1,2,3], [1,3], [2], [2,3], [3]]
 ```
 
-> **Flow**: backtrack(start=0, current=[]) → Add [] | backtrack(start=0, current=[]) → i=0: Choose 1 | backtrack(start=0, current=[]) → backtrack(start=1, current=[1]) | backtrack(start=0, current=[]) → Add [1] | backtrack(start=0, current=[]) → i=1: Choose 2 | backtrack(start=0, current=[]) → backtrack(start=2, current=[1,2]) | ...+25 more
+**Flow:**
+- backtrack(start=0, current=[])
+- ↓
+- Add []
+- ↓
+- backtrack(start=0, current=[])
+- ↓
+- i=0: Choose 1
+- ↓
+- backtrack(start=0, current=[])
+- ↓
+- backtrack(start=1, current=[1])
+- ↓
+- backtrack(start=0, current=[])
+- ↓
+- Add [1]
+- ↓
+- backtrack(start=0, current=[])
+- ↓
+- i=1: Choose 2
+- ↓
+- backtrack(start=0, current=[])
+- ↓
+- backtrack(start=2, current=[1,2])
 
 ```mermaid
 flowchart TD
@@ -653,7 +764,32 @@ Level 0: Fix position 0
         → Add [3,2,1], [3,1,2]
 ```
 
-> **Flow**: Level 0: Fix position 0 → swap(0,0): [1, 2, 3] | Level 0: Fix position 0 → Level 1: Fix position 1 | Level 0: Fix position 0 → swap(1,1): [1, 2, 3] | Level 0: Fix position 0 → Level 2: Fix position 2 | Level 0: Fix position 0 → swap(2,2): [1, 2, 3] → Add [1,2,3] | Level 0: Fix position 0 → swap(1,2): [1, 3, 2] | ...+6 more
+**Flow:**
+- Level 0: Fix position 0
+- ↓
+- swap(0,0): [1, 2, 3]
+- ↓
+- Level 0: Fix position 0
+- ↓
+- Level 1: Fix position 1
+- ↓
+- Level 0: Fix position 0
+- ↓
+- swap(1,1): [1, 2, 3]
+- ↓
+- Level 0: Fix position 0
+- ↓
+- Level 2: Fix position 2
+- ↓
+- Level 0: Fix position 0
+- ↓
+- swap(2,2): [1, 2, 3]
+- ↓
+- Add [1,2,3]
+- ↓
+- Level 0: Fix position 0
+- ↓
+- swap(1,2): [1, 3, 2]
 
 ```mermaid
 flowchart TD
@@ -962,7 +1098,14 @@ Anti-diagonal (r + c is constant):
     . . ↙ . .   (2,2): r+c = 4
 ```
 
-> **Flow**: Queen at (row, col) attacks: → Same column: col | Same column: col → Main diagonal (r - c is constant): | Main diagonal (r - c is constant): → Anti-diagonal (r + c is constant):
+**Flow:**
+- Queen at (row, col) attacks:
+- ↓
+- Same column: col
+- ↓
+- Main diagonal (r - c is constant):
+- ↓
+- Anti-diagonal (r + c is constant):
 
 ```mermaid
 flowchart TD
@@ -1289,7 +1432,20 @@ for (int end = 0; end < n; end++) {
 └───────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: BACKTRACKING PROBLEM TYPES → SUBSETS: PERMUTATIONS: | SUBSETS: PERMUTATIONS: → - Subsets I, II - Permutations I, II | - Subsets I, II - Permutations I, II → - Combination Sum 1-3 - Next Permutation | - Combination Sum 1-3 - Next Permutation → - Palindrome Partitioning - Permutation Sequence | - Palindrome Partitioning - Permutation Sequence → COMBINATIONS: GRID/MATRIX: | COMBINATIONS: GRID/MATRIX: → - Combinations (n,k) - N-Queens | ...+1 more
+**Flow:**
+- BACKTRACKING PROBLEM TYPES
+- ↓
+- SUBSETS: PERMUTATIONS:
+- ↓
+- - Subsets I, II - Permutations I, II
+- ↓
+- - Combination Sum 1-3 - Next Permutation
+- ↓
+- - Palindrome Partitioning - Permutation Sequence
+- ↓
+- COMBINATIONS: GRID/MATRIX:
+- ↓
+- - Combinations (n,k) - N-Queens
 
 ```mermaid
 flowchart TD
@@ -1443,7 +1599,38 @@ private List<String> backtrack(String s, int start,
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHICH PATTERN TO USE? → 'Generate all subsets' → SUBSETS PATTERN | 'Generate all subsets' → SUBSETS PATTERN → start = i + 1, every state valid | start = i + 1, every state valid → 'Generate all permutations' → PERMUTATIONS PATTERN | 'Generate all permutations' → PERMUTATIONS PATTERN → Use visited[], iterate from 0 | Use visited[], iterate from 0 → 'Find k numbers that sum to n' → COMBINATIONS PATTERN | 'Find k numbers that sum to n' → COMBINATIONS PATTERN → start = i + 1, size = k is base case | ...+1 more
+**Flow:**
+- WHICH PATTERN TO USE?
+- ↓
+- 'Generate all subsets'
+- ↓
+- SUBSETS PATTERN
+- ↓
+- 'Generate all subsets'
+- ↓
+- SUBSETS PATTERN
+- ↓
+- start = i + 1, every state valid
+- ↓
+- 'Generate all permutations'
+- ↓
+- PERMUTATIONS PATTERN
+- ↓
+- 'Generate all permutations'
+- ↓
+- PERMUTATIONS PATTERN
+- ↓
+- Use visited[], iterate from 0
+- ↓
+- 'Find k numbers that sum to n'
+- ↓
+- COMBINATIONS PATTERN
+- ↓
+- 'Find k numbers that sum to n'
+- ↓
+- COMBINATIONS PATTERN
+- ↓
+- start = i + 1, size = k is base case
 
 ```mermaid
 flowchart TD
@@ -1493,7 +1680,20 @@ Arrays.sort(nums);
 Space: O(n) for recursion stack (excluding output)
 ```
 
-> **Flow**: TIME COMPLEXITIES → Subsets: O(n × 2^n) - 2^n subsets, O(n) to copy | Subsets: O(n × 2^n) - 2^n subsets, O(n) to copy → Permutations: O(n × n!) - n! permutations, O(n) copy | Permutations: O(n × n!) - n! permutations, O(n) copy → Combinations (k): O(k × C(n,k)) | Combinations (k): O(k × C(n,k)) → N-Queens: O(n!) - roughly | N-Queens: O(n!) - roughly → Sudoku: O(9^m) - m = empty cells | Sudoku: O(9^m) - m = empty cells → Space: O(n) for recursion stack (excluding output)
+**Flow:**
+- TIME COMPLEXITIES
+- ↓
+- Subsets: O(n × 2^n) - 2^n subsets, O(n) to copy
+- ↓
+- Permutations: O(n × n!) - n! permutations, O(n) copy
+- ↓
+- Combinations (k): O(k × C(n,k))
+- ↓
+- N-Queens: O(n!) - roughly
+- ↓
+- Sudoku: O(9^m) - m = empty cells
+- ↓
+- Space: O(n) for recursion stack (excluding output)
 
 ```mermaid
 flowchart TD
@@ -1560,7 +1760,12 @@ flowchart TD
 All three share: CHOOSE → EXPLORE → UNCHOOSE
 ```
 
-> **Flow**: All three share: CHOOSE → EXPLORE | EXPLORE → UNCHOOSE
+**Flow:**
+- All three share: CHOOSE
+- ↓
+- EXPLORE
+- ↓
+- UNCHOOSE
 
 ```mermaid
 flowchart LR

@@ -61,7 +61,14 @@ This repository is organized as a **progressive textbook** — each folder is a 
   └─────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: PART 1: Getting Started / [01_Getting_Started/02_Study_ → PART 2: Data Structures I — Linear Structures / [02_Dat | PART 2: Data Structures I — Linear Structures / [02_Dat → PART 3: Algorithms I — Thinking & Sorting / [03_Algorit | PART 3: Algorithms I — Thinking & Sorting / [03_Algorit → PART 4: SQL I — Foundations / [08_SQL/01_Foundations_Da
+**Flow:**
+- PART 1: Getting Started / [01_Getting_Started/02_Study_
+- ↓
+- PART 2: Data Structures I — Linear Structures / [02_Dat
+- ↓
+- PART 3: Algorithms I — Thinking & Sorting / [03_Algorit
+- ↓
+- PART 4: SQL I — Foundations / [08_SQL/01_Foundations_Da
 
 ```mermaid
 flowchart TD
@@ -111,7 +118,14 @@ flowchart TD
   └─────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: PART 5: Coding Patterns / [04_Patterns_Templates/01_Sli → PART 6: Algorithms II — Recursion & Trees / [03_Algorit | PART 6: Algorithms II — Recursion & Trees / [03_Algorit → PART 7: SQL II — Intermediate / [08_SQL/06_Aggregations | PART 7: SQL II — Intermediate / [08_SQL/06_Aggregations → PART 8: Spring Boot I — Core (weekends) / [07_Modern_Ja
+**Flow:**
+- PART 5: Coding Patterns / [04_Patterns_Templates/01_Sli
+- ↓
+- PART 6: Algorithms II — Recursion & Trees / [03_Algorit
+- ↓
+- PART 7: SQL II — Intermediate / [08_SQL/06_Aggregations
+- ↓
+- PART 8: Spring Boot I — Core (weekends) / [07_Modern_Ja
 
 ```mermaid
 flowchart TD
@@ -159,7 +173,14 @@ flowchart TD
   └─────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: PART 9: Algorithms III — Advanced Techniques / [03_Algo → PART 10: Advanced Data Structures / [03_Algorithms/07a_ | PART 10: Advanced Data Structures / [03_Algorithms/07a_ → PART 11: SQL III — Expert / [08_SQL/10_Normalization.md | PART 11: SQL III — Expert / [08_SQL/10_Normalization.md → PART 12: Spring Boot II — Production (weekends) / [10_S
+**Flow:**
+- PART 9: Algorithms III — Advanced Techniques / [03_Algo
+- ↓
+- PART 10: Advanced Data Structures / [03_Algorithms/07a_
+- ↓
+- PART 11: SQL III — Expert / [08_SQL/10_Normalization.md
+- ↓
+- PART 12: Spring Boot II — Production (weekends) / [10_S
 
 ```mermaid
 flowchart TD
@@ -209,7 +230,14 @@ flowchart TD
   └─────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: PART 13: System Design & OOP / [06_OOP_Design/01_OOPS_P → PART 14: Enterprise & Real-World / [10_Enterprise_Syste | PART 14: Enterprise & Real-World / [10_Enterprise_Syste → PART 15: Developer Essentials (READ ALONGSIDE!) / [13_D | PART 15: Developer Essentials (READ ALONGSIDE!) / [13_D → PART 16: Career & Interview Prep / [09_Career_Reference
+**Flow:**
+- PART 13: System Design & OOP / [06_OOP_Design/01_OOPS_P
+- ↓
+- PART 14: Enterprise & Real-World / [10_Enterprise_Syste
+- ↓
+- PART 15: Developer Essentials (READ ALONGSIDE!) / [13_D
+- ↓
+- PART 16: Career & Interview Prep / [09_Career_Reference
 
 ```mermaid
 flowchart TD
@@ -291,7 +319,14 @@ flowchart TD
   └─────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: PART 17: JavaScript & TypeScript / [16_JavaScript/01_JS → PART 18: React & CSS / [15_React_Frontend/01_React_Fund | PART 18: React & CSS / [15_React_Frontend/01_React_Fund → PART 19: Frontend Integration / [19_Frontend_Integratio | PART 19: Frontend Integration / [19_Frontend_Integratio → PART 21: Concurrency & Async Models / [13_Developer_Ess
+**Flow:**
+- PART 17: JavaScript & TypeScript / [16_JavaScript/01_JS
+- ↓
+- PART 18: React & CSS / [15_React_Frontend/01_React_Fund
+- ↓
+- PART 19: Frontend Integration / [19_Frontend_Integratio
+- ↓
+- PART 21: Concurrency & Async Models / [13_Developer_Ess
 
 ```mermaid
 flowchart TD
@@ -346,7 +381,28 @@ Concurrency Track:
   Java Threads → Virtual Threads → Coroutines → Event Loop → Goroutines
 ```
 
-> **Flow**: DEPENDENCY GRAPH (read left → right): | Arrays → Sorting | Sorting → Binary Search | Strings Merge Sort Two Pointers → Sliding Window | LinkedList Recursion → Backtracking | Stack/Queue Trees → DFS/BFS Graphs | ...+26 more
+**Flow:**
+- DEPENDENCY GRAPH (read left
+- ↓
+- right):
+- ↓
+- Arrays
+- ↓
+- Sorting
+- ↓
+- Binary Search
+- ↓
+- Strings Merge Sort Two Pointers
+- ↓
+- Sliding Window
+- ↓
+- LinkedList Recursion
+- ↓
+- Backtracking
+- ↓
+- Stack/Queue Trees
+- ↓
+- DFS/BFS Graphs
 
 ```mermaid
 flowchart TD
@@ -450,7 +506,12 @@ flowchart TD
                     "Each week builds on the last"
 ```
 
-> **Flow**: Weeks 1-3 / • Arrays / • Strings / • Basic Sort / • Lin → Weeks 4-6 / • Hash Maps / • Trees/BST / • Binary Search | Weeks 4-6 / • Hash Maps / • Trees/BST / • Binary Search → Weeks 7-11 / • DP / • Graphs (adv) / • Backtracking / •
+**Flow:**
+- Weeks 1-3 / • Arrays / • Strings / • Basic Sort / • Lin
+- ↓
+- Weeks 4-6 / • Hash Maps / • Trees/BST / • Binary Search
+- ↓
+- Weeks 7-11 / • DP / • Graphs (adv) / • Backtracking / •
 
 ```mermaid
 flowchart TD

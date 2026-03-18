@@ -47,7 +47,10 @@ z-index only competes WITHIN the same stacking context
 (same building). You can't jump between buildings.
 ```
 
-> **Flow**: Floor 9999 / (your element → Floor 1
+**Flow:**
+- Floor 9999 / (your element
+- ↓
+- Floor 1
 
 ```mermaid
 flowchart TD
@@ -112,7 +115,20 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: THE CASCADE — Priority Order (highest to lowest): → 1. ORIGIN & IMPORTANCE | 1. ORIGIN & IMPORTANCE → !important in user-agent stylesheet (highest) | !important in user-agent stylesheet (highest) → !important in user stylesheet | !important in user stylesheet → !important in author stylesheet | !important in author stylesheet → Normal author stylesheet | Normal author stylesheet → Normal user stylesheet | ...+1 more
+**Flow:**
+- THE CASCADE — Priority Order (highest to lowest):
+- ↓
+- 1. ORIGIN & IMPORTANCE
+- ↓
+- !important in user-agent stylesheet (highest)
+- ↓
+- !important in user stylesheet
+- ↓
+- !important in author stylesheet
+- ↓
+- Normal author stylesheet
+- ↓
+- Normal user stylesheet
 
 ```mermaid
 flowchart TD
@@ -169,7 +185,20 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: SPECIFICITY = A scoring system with 3 columns: → (IDs) (Classes) (Elements) | (IDs) (Classes) (Elements) → .nav ul li a:hover | .nav ul li a:hover → Score: (0, 2, 3) | Score: (0, 2, 3) → #main a | #main a → Score: (1, 0, 1) | Score: (1, 0, 1) → (1,0,1) BEATS (0,2,3) because A column wins first. | ...+1 more
+**Flow:**
+- SPECIFICITY = A scoring system with 3 columns:
+- ↓
+- (IDs) (Classes) (Elements)
+- ↓
+- .nav ul li a:hover
+- ↓
+- Score: (0, 2, 3)
+- ↓
+- #main a
+- ↓
+- Score: (1, 0, 1)
+- ↓
+- (1,0,1) BEATS (0,2,3) because A column wins first.
 
 ```mermaid
 flowchart TD
@@ -217,7 +246,20 @@ Content shrinks to fit: 200 - 20 - 20 - 5 - 5 = 150px
 "200px means 200px" — what you'd expect.
 ```
 
-> **Flow**: content-box (default, but counterintuitive): → margin | margin → border | border → padding | padding → content (200px) | content (200px) → Total width = 200 + 20+20 + 5+5 = 250px | Total width = 200 + 20+20 + 5+5 = 250px → You said 200px... but the box is 250px. Confusing! | ...+1 more
+**Flow:**
+- content-box (default, but counterintuitive):
+- ↓
+- margin
+- ↓
+- border
+- ↓
+- padding
+- ↓
+- content (200px)
+- ↓
+- Total width = 200 + 20+20 + 5+5 = 250px
+- ↓
+- You said 200px... but the box is 250px. Confusing!
 
 ```mermaid
 flowchart TD
@@ -277,7 +319,20 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: BFC = An Invisible Boundary — The Aquarium Analogy → A BFC is like an aquarium. Everything inside floats/flo | A BFC is like an aquarium. Everything inside floats/flo → according to its own rules. The water (layout) inside | according to its own rules. The water (layout) inside → can't leak out, and water outside can't leak in. | can't leak out, and water outside can't leak in. → With BFC: Parent contains floated children properly | With BFC: Parent contains floated children properly → WHAT CREATES a BFC: | WHAT CREATES a BFC: → • overflow: hidden/auto/scroll (not visible) | ...+1 more
+**Flow:**
+- BFC = An Invisible Boundary — The Aquarium Analogy
+- ↓
+- A BFC is like an aquarium. Everything inside floats/flo
+- ↓
+- according to its own rules. The water (layout) inside
+- ↓
+- can't leak out, and water outside can't leak in.
+- ↓
+- With BFC: Parent contains floated children properly
+- ↓
+- WHAT CREATES a BFC:
+- ↓
+- • overflow: hidden/auto/scroll (not visible)
 
 ```mermaid
 flowchart TD
@@ -342,7 +397,10 @@ WHEN IT DOESN'T:
 ❌ Inline-block elements
 ```
 
-> **Flow**: Box A → Box B
+**Flow:**
+- Box A
+- ↓
+- Box B
 
 ```mermaid
 flowchart TD
@@ -381,7 +439,20 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: ONE-DIMENSIONAL vs TWO-DIMENSIONAL → Flexbox = A clothesline (1D) | Flexbox = A clothesline (1D) → Items hang in a LINE — they can wrap, but each line is | Items hang in a LINE — they can wrap, but each line is → independent. Items can grow/shrink flexibly. | independent. Items can grow/shrink flexibly. → Use for: Navbars, button groups, card rows, centering | Use for: Navbars, button groups, card rows, centering → Grid = A chess board (2D) | Grid = A chess board (2D) → You define ROWS and COLUMNS simultaneously. | ...+1 more
+**Flow:**
+- ONE-DIMENSIONAL vs TWO-DIMENSIONAL
+- ↓
+- Flexbox = A clothesline (1D)
+- ↓
+- Items hang in a LINE — they can wrap, but each line is
+- ↓
+- independent. Items can grow/shrink flexibly.
+- ↓
+- Use for: Navbars, button groups, card rows, centering
+- ↓
+- Grid = A chess board (2D)
+- ↓
+- You define ROWS and COLUMNS simultaneously.
 
 ```mermaid
 flowchart TD
@@ -439,7 +510,20 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: STICKY = relative UNTIL scroll threshold, THEN fixed → The 5 reasons sticky 'fails': | The 5 reasons sticky 'fails': → 1. PARENT HAS overflow: hidden/auto/scroll | 1. PARENT HAS overflow: hidden/auto/scroll → sticky only sticks within its scroll container. | sticky only sticks within its scroll container. → If parent has overflow ≠ visible, parent IS the | If parent has overflow ≠ visible, parent IS the → scroll container — and if parent doesn't scroll, sticky | scroll container — and if parent doesn't scroll, sticky → has nowhere to stick. | ...+1 more
+**Flow:**
+- STICKY = relative UNTIL scroll threshold, THEN fixed
+- ↓
+- The 5 reasons sticky 'fails':
+- ↓
+- 1. PARENT HAS overflow: hidden/auto/scroll
+- ↓
+- sticky only sticks within its scroll container.
+- ↓
+- If parent has overflow ≠ visible, parent IS the
+- ↓
+- scroll container — and if parent doesn't scroll, sticky
+- ↓
+- has nowhere to stick.
 
 ```mermaid
 flowchart TD
@@ -502,7 +586,20 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: UNIT RELATIVE TO BEST FOR → px Nothing (absolute) Borders, shadows, | px Nothing (absolute) Borders, shadows, → fine-tuned spacing | fine-tuned spacing → rem Root font-size (html) Font sizes, spacing, | rem Root font-size (html) Font sizes, spacing, → Usually 16px padding, margins. | Usually 16px padding, margins. → Scales with user prefs. | Scales with user prefs. → em Parent's font-size Spacing relative to | ...+1 more
+**Flow:**
+- UNIT RELATIVE TO BEST FOR
+- ↓
+- px Nothing (absolute) Borders, shadows,
+- ↓
+- fine-tuned spacing
+- ↓
+- rem Root font-size (html) Font sizes, spacing,
+- ↓
+- Usually 16px padding, margins.
+- ↓
+- Scales with user prefs.
+- ↓
+- em Parent's font-size Spacing relative to
 
 ```mermaid
 flowchart TD
@@ -561,7 +658,40 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: HOW THE BROWSER RENDERS (Pipeline): → Style → Layout → Paint → Composite | Style → Layout → Paint → Composite → REFLOW (Layout): | REFLOW (Layout): → → Browser must recalculate position of EVERY element | → Browser must recalculate position of EVERY element → → Then repaint → Then composite | → Then repaint → Then composite → → EXPENSIVE (triggers full pipeline) | → EXPENSIVE (triggers full pipeline) → REPAINT: | ...+1 more
+**Flow:**
+- HOW THE BROWSER RENDERS (Pipeline):
+- ↓
+- Style
+- ↓
+- Layout
+- ↓
+- Paint
+- ↓
+- Composite
+- ↓
+- Style
+- ↓
+- Layout
+- ↓
+- Paint
+- ↓
+- Composite
+- ↓
+- REFLOW (Layout):
+- ↓
+- Browser must recalculate position of EVERY element
+- ↓
+- Then repaint
+- ↓
+- Then composite
+- ↓
+- Then repaint
+- ↓
+- Then composite
+- ↓
+- EXPENSIVE (triggers full pipeline)
+- ↓
+- REPAINT:
 
 ```mermaid
 flowchart TD

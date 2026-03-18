@@ -183,7 +183,10 @@
 
 ```
 
-> **Flow**: CLASS LOADING MECHANISM / THE THREE PHASES OF CLASS LOA → • Execute static initializers and static blocks / • Ass
+**Flow:**
+- CLASS LOADING MECHANISM / THE THREE PHASES OF CLASS LOA
+- ↓
+- • Execute static initializers and static blocks / • Ass
 
 ```mermaid
 flowchart TD
@@ -395,7 +398,10 @@ public class HotReloadClassLoader extends ClassLoader {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: YOUNG GENERATION (-Xmn) / EDEN Survivor 0 Survivor 1 /  → OLD GENERATION (Tenured) / Long-lived objects / Major G
+**Flow:**
+- YOUNG GENERATION (-Xmn) / EDEN Survivor 0 Survivor 1 /
+- ↓
+- OLD GENERATION (Tenured) / Long-lived objects / Major G
 
 ```mermaid
 flowchart TD
@@ -455,7 +461,10 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Slot 0: this (for instance methods) / Slot 1: param1 /  → Used for: arithmetic, method params, return values / Ex
+**Flow:**
+- Slot 0: this (for instance methods) / Slot 1: param1 /
+- ↓
+- Used for: arithmetic, method params, return values / Ex
 
 ```mermaid
 flowchart TD
@@ -540,7 +549,12 @@ public int calculate(int a, int b) {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: GARBAGE COLLECTION FUNDAMENTALS / REACHABILITY ANALYSIS → A B ← REACHABLE (will NOT be collected) | A B ← REACHABLE (will NOT be collected) → C D E ← REACHABLE / X Y ← UNREACHABLE (will be collecte
+**Flow:**
+- GARBAGE COLLECTION FUNDAMENTALS / REACHABILITY ANALYSIS
+- ↓
+- A B ← REACHABLE (will NOT be collected)
+- ↓
+- C D E ← REACHABLE / X Y ← UNREACHABLE (will be collecte
 
 ```mermaid
 flowchart TD
@@ -617,7 +631,12 @@ public static void memoryInfo() {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: JUST-IN-TIME (JIT) COMPILATION / TIERED COMPILATION (De → Level 1-3: C1 Compiler (Client) / • Quick compilation / | Level 1-3: C1 Compiler (Client) / • Quick compilation / → Level 4: C2 Compiler (Server) / • Aggressive optimizati
+**Flow:**
+- JUST-IN-TIME (JIT) COMPILATION / TIERED COMPILATION (De
+- ↓
+- Level 1-3: C1 Compiler (Client) / • Quick compilation /
+- ↓
+- Level 4: C2 Compiler (Server) / • Aggressive optimizati
 
 ```mermaid
 flowchart TD
@@ -956,7 +975,20 @@ User user = service.getUser(123);
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: JVM TUNING QUICK REFERENCE → MEMORY SETTINGS: | MEMORY SETTINGS: → -Xms&lt;size&gt; Initial heap size -Xms2g | -Xms&lt;size&gt; Initial heap size -Xms2g → -Xmx&lt;size&gt; Maximum heap size -Xmx8g | -Xmx&lt;size&gt; Maximum heap size -Xmx8g → -Xmn&lt;size&gt; Young generation size -Xmn2g | -Xmn&lt;size&gt; Young generation size -Xmn2g → -Xss&lt;size&gt; Thread stack size -Xss512k | -Xss&lt;size&gt; Thread stack size -Xss512k → -XX:MetaspaceSize=&lt;size&gt; -XX:MetaspaceSize=256m | ...+1 more
+**Flow:**
+- JVM TUNING QUICK REFERENCE
+- ↓
+- MEMORY SETTINGS:
+- ↓
+- -Xms<size> Initial heap size -Xms2g
+- ↓
+- -Xmx<size> Maximum heap size -Xmx8g
+- ↓
+- -Xmn<size> Young generation size -Xmn2g
+- ↓
+- -Xss<size> Thread stack size -Xss512k
+- ↓
+- -XX:MetaspaceSize=<size> -XX:MetaspaceSize=256m
 
 ```mermaid
 flowchart TD
@@ -1029,7 +1061,30 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: JVM INTERNALS MASTERY CHECKLIST → CLASS LOADING: | CLASS LOADING: → □ Know parent delegation model and why it exists | □ Know parent delegation model and why it exists → □ Can implement custom ClassLoader for hot-reload/plugi | □ Can implement custom ClassLoader for hot-reload/plugi → □ Understand Loading → Linking → Initialization phases | □ Understand Loading → Linking → Initialization phases → MEMORY MODEL: | MEMORY MODEL: → □ Know Heap structure: Eden, Survivor, Old Generation | ...+1 more
+**Flow:**
+- JVM INTERNALS MASTERY CHECKLIST
+- ↓
+- CLASS LOADING:
+- ↓
+- □ Know parent delegation model and why it exists
+- ↓
+- □ Can implement custom ClassLoader for hot-reload/plugi
+- ↓
+- □ Understand Loading
+- ↓
+- Linking
+- ↓
+- Initialization phases
+- ↓
+- □ Understand Loading
+- ↓
+- Linking
+- ↓
+- Initialization phases
+- ↓
+- MEMORY MODEL:
+- ↓
+- □ Know Heap structure: Eden, Survivor, Old Generation
 
 ```mermaid
 flowchart TD

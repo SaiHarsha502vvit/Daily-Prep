@@ -49,7 +49,10 @@ STEP 2: Extract max and heapify
         Done!            [1, 3, 4, 5, 10] ✓
 ```
 
-> **Flow**: 10 3 → 5 3
+**Flow:**
+- 10 3
+- ↓
+- 5 3
 
 ```mermaid
 flowchart LR
@@ -990,7 +993,20 @@ _Understanding sorting algorithms teaches you how to think about efficiency!_ �
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: TIMSORT - USED BY JAVA, PYTHON, ANDROID → Created by Tim Peters for Python in 2002 | Created by Tim Peters for Python in 2002 → KEY INSIGHT: Real-world data is often partially sorted! | KEY INSIGHT: Real-world data is often partially sorted! → Examples of 'natural runs': | Examples of 'natural runs': → • Log files (sorted by timestamp, new entries appended) | • Log files (sorted by timestamp, new entries appended) → • Database results (often sorted by ID) | • Database results (often sorted by ID) → • User actions (recent activity lists) | ...+1 more
+**Flow:**
+- TIMSORT - USED BY JAVA, PYTHON, ANDROID
+- ↓
+- Created by Tim Peters for Python in 2002
+- ↓
+- KEY INSIGHT: Real-world data is often partially sorted!
+- ↓
+- Examples of 'natural runs':
+- ↓
+- • Log files (sorted by timestamp, new entries appended)
+- ↓
+- • Database results (often sorted by ID)
+- ↓
+- • User actions (recent activity lists)
 
 ```mermaid
 flowchart TD
@@ -1071,7 +1087,20 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: EXTERNAL MERGE SORT - SORTING 1TB OF DATA → PROBLEM: Need to sort 1 TB of data, but only have 8 GB | PROBLEM: Need to sort 1 TB of data, but only have 8 GB → SOLUTION: External Merge Sort | SOLUTION: External Merge Sort → PHASE 1: CREATE SORTED RUNS | PHASE 1: CREATE SORTED RUNS → 1. Read 8 GB chunk from disk | 1. Read 8 GB chunk from disk → 2. Sort in memory (QuickSort) | 2. Sort in memory (QuickSort) → 3. Write sorted chunk to temp file | ...+1 more
+**Flow:**
+- EXTERNAL MERGE SORT - SORTING 1TB OF DATA
+- ↓
+- PROBLEM: Need to sort 1 TB of data, but only have 8 GB
+- ↓
+- SOLUTION: External Merge Sort
+- ↓
+- PHASE 1: CREATE SORTED RUNS
+- ↓
+- 1. Read 8 GB chunk from disk
+- ↓
+- 2. Sort in memory (QuickSort)
+- ↓
+- 3. Write sorted chunk to temp file
 
 ```mermaid
 flowchart TD
@@ -1152,7 +1181,10 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Original Array: [##############################] / Spli → Method Time Speedup / Arrays.sort() 950 ms 1x (baseline
+**Flow:**
+- Original Array: [##############################] / Spli
+- ↓
+- Method Time Speedup / Arrays.sort() 950 ms 1x (baseline
 
 ```mermaid
 flowchart TD
@@ -1228,7 +1260,20 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: STABILITY - WHY IT MATTERS IN REAL APPLICATIONS → EXAMPLE: | EXAMPLE: → Input: [(Alice, 25), (Bob, 30), (Charlie, 25)] | Input: [(Alice, 25), (Bob, 30), (Charlie, 25)] → Sort by age: | Sort by age: → STABLE: [(Alice, 25), (Charlie, 25), (Bob, 30)] | STABLE: [(Alice, 25), (Charlie, 25), (Bob, 30)] → Alice still before Charlie (original order preserved) | Alice still before Charlie (original order preserved) → UNSTABLE: [(Charlie, 25), (Alice, 25), (Bob, 30)] | ...+1 more
+**Flow:**
+- STABILITY - WHY IT MATTERS IN REAL APPLICATIONS
+- ↓
+- EXAMPLE:
+- ↓
+- Input: [(Alice, 25), (Bob, 30), (Charlie, 25)]
+- ↓
+- Sort by age:
+- ↓
+- STABLE: [(Alice, 25), (Charlie, 25), (Bob, 30)]
+- ↓
+- Alice still before Charlie (original order preserved)
+- ↓
+- UNSTABLE: [(Charlie, 25), (Alice, 25), (Bob, 30)]
 
 ```mermaid
 flowchart TD
@@ -1334,7 +1379,20 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: COMPETITIVE PROGRAMMING SORTING TRICKS → TRICK 1: COORDINATE COMPRESSION | TRICK 1: COORDINATE COMPRESSION → Solution: Map values to 0 to n-1 | Solution: Map values to 0 to n-1 → int[] arr = {1000000000, 1, 50000}; | int[] arr = {1000000000, 1, 50000}; → int[][] sorted = new int[n][2]; | int[][] sorted = new int[n][2]; → sorted[i] = new int[]{arr[i], i}; | sorted[i] = new int[]{arr[i], i}; → Arrays.sort(sorted, (a, b) -&gt; a[0] - b[0]); | ...+1 more
+**Flow:**
+- COMPETITIVE PROGRAMMING SORTING TRICKS
+- ↓
+- TRICK 1: COORDINATE COMPRESSION
+- ↓
+- Solution: Map values to 0 to n-1
+- ↓
+- int[] arr = {1000000000, 1, 50000};
+- ↓
+- int[][] sorted = new int[n][2];
+- ↓
+- sorted[i] = new int[]{arr[i], i};
+- ↓
+- Arrays.sort(sorted, (a, b) -> a[0] - b[0]);
 
 ```mermaid
 flowchart TD

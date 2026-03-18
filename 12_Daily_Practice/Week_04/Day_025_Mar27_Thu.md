@@ -52,7 +52,22 @@ Only works on DAG (Directed Acyclic Graph)
 If cycle exists → NO valid ordering (detect: not all nodes processed)
 ```
 
-> **Flow**: Valid order: CS101 → CS201 | CS201 → CS301 | CS301 → CS202 | CS101 → CS202 | CS202 → CS201 | CS201 → CS301 | ...+2 more
+**Flow:**
+- Valid order: CS101
+- ↓
+- CS201
+- ↓
+- CS301
+- ↓
+- CS202
+- ↓
+- CS101
+- ↓
+- CS202
+- ↓
+- CS201
+- ↓
+- CS301
 
 ```mermaid
 flowchart TD
@@ -229,7 +244,20 @@ Input: numCourses = 2, prerequisites = [[1,0],[0,1]]
 Output: false (cycle: 0→1→0)
 ```
 
-> **Flow**: numCourses = 2, prerequisites = [[1,0]] → Means: to take course 1, you must first take course 0 | Means: to take course 1, you must first take course 0 → Return true if you can finish all courses. | Return true if you can finish all courses. → Input: numCourses = 2, prerequisites = [[1,0],[0,1]] | Input: numCourses = 2, prerequisites = [[1,0],[0,1]] → Output: false (cycle: 0→1→0)
+**Flow:**
+- numCourses = 2, prerequisites = [[1,0]]
+- ↓
+- Means: to take course 1, you must first take course 0
+- ↓
+- Return true if you can finish all courses.
+- ↓
+- Input: numCourses = 2, prerequisites = [[1,0],[0,1]]
+- ↓
+- Output: false (cycle: 0
+- ↓
+- 1
+- ↓
+- 0)
 
 ```mermaid
 flowchart TD

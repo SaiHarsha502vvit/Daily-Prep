@@ -310,7 +310,26 @@ USER FLOW SYMBOLS:
                 └─────────┘
 ```
 
-> **Flow**: Login Page → Email + Password | Login Page → Social Login | Email + Password → Dashboard | Social Login → Dashboard | Error / Message → Forgot / Password
+**Flow:**
+- Login Page
+- ↓
+- Email + Password
+- ↓
+- Login Page
+- ↓
+- Social Login
+- ↓
+- Email + Password
+- ↓
+- Dashboard
+- ↓
+- Social Login
+- ↓
+- Dashboard
+- ↓
+- Error / Message
+- ↓
+- Forgot / Password
 
 ```mermaid
 flowchart TD
@@ -722,7 +741,14 @@ KEY DECISIONS:
 4. Async analytics logging
 ```
 
-> **Flow**: URL Service / - Generate ID / - Store mapping → Database / (Cassandra) | Redirect Svc / - Lookup URL / - Log analytics → Cache / (Redis)
+**Flow:**
+- URL Service / - Generate ID / - Store mapping
+- ↓
+- Database / (Cassandra)
+- ↓
+- Redirect Svc / - Lookup URL / - Log analytics
+- ↓
+- Cache / (Redis)
 
 ```mermaid
 flowchart TD
@@ -788,7 +814,28 @@ MESSAGE FLOW:
 9. Delivery receipt sent back to A
 ```
 
-> **Flow**: Load Balancer → ocket WebSocket WebSo / ver 1 Server 2 Serv | ocket WebSocket WebSo / ver 1 Server 2 Serv → Message Broker / (Kafka) | WebSocket / Server 1 → Message / Service | WebSocket / Server N → Push / Service | Message Broker / (Kafka) → Presence / Service | Message / Service → Cassandra / (Messages) | ...+2 more
+**Flow:**
+- Load Balancer
+- ↓
+- ocket WebSocket WebSo / ver 1 Server 2 Serv
+- ↓
+- Message Broker / (Kafka)
+- ↓
+- WebSocket / Server 1
+- ↓
+- Message / Service
+- ↓
+- WebSocket / Server N
+- ↓
+- Push / Service
+- ↓
+- Message Broker / (Kafka)
+- ↓
+- Presence / Service
+- ↓
+- Message / Service
+- ↓
+- Cassandra / (Messages)
 
 ```mermaid
 flowchart TD

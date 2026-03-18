@@ -47,7 +47,20 @@ Each group must have equal number of shards
 Maximum groups possible? GCD helps!
 ```
 
-> **Flow**: REAL LIFE: → You have 12 chocolates and 18 toffees. | You have 12 chocolates and 18 toffees. → You want to distribute equally in boxes with NO leftove | You want to distribute equally in boxes with NO leftove → What's the LARGEST number of boxes you can make? | What's the LARGEST number of boxes you can make? → GCD(12, 18) = 6 boxes | GCD(12, 18) = 6 boxes → Each box: 2 chocolates + 3 toffees | Each box: 2 chocolates + 3 toffees → PRODUCTION SYSTEM: | ...+1 more
+**Flow:**
+- REAL LIFE:
+- ↓
+- You have 12 chocolates and 18 toffees.
+- ↓
+- You want to distribute equally in boxes with NO leftove
+- ↓
+- What's the LARGEST number of boxes you can make?
+- ↓
+- GCD(12, 18) = 6 boxes
+- ↓
+- Each box: 2 chocolates + 3 toffees
+- ↓
+- PRODUCTION SYSTEM:
 
 ```mermaid
 flowchart TD
@@ -698,7 +711,10 @@ WHY MODULAR ARITHMETIC?
 5. Clock arithmetic (14:00 → 2:00 PM = 14 % 12)
 ```
 
-> **Flow**: 5. Clock arithmetic (14:00 → 2:00 PM = 14 % 12)
+**Flow:**
+- 5. Clock arithmetic (14:00
+- ↓
+- 2:00 PM = 14 % 12)
 
 ```mermaid
 flowchart LR
@@ -813,7 +829,28 @@ public class ModularArithmetic {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: WHY PATTERN PROGRAMS? → They teach: | They teach: → 1. Nested loop thinking → Essential for 2D arrays, matr | 1. Nested loop thinking → Essential for 2D arrays, matr → 3. Space management → Teaches precision with boundaries | 3. Space management → Teaches precision with boundaries → 4. How to convert visual output to code logic
+**Flow:**
+- WHY PATTERN PROGRAMS?
+- ↓
+- They teach:
+- ↓
+- 1. Nested loop thinking
+- ↓
+- Essential for 2D arrays, matr
+- ↓
+- 1. Nested loop thinking
+- ↓
+- Essential for 2D arrays, matr
+- ↓
+- 3. Space management
+- ↓
+- Teaches precision with boundaries
+- ↓
+- 3. Space management
+- ↓
+- Teaches precision with boundaries
+- ↓
+- 4. How to convert visual output to code logic
 
 ```mermaid
 flowchart TD

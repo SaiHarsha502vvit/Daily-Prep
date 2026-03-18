@@ -49,7 +49,20 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: DATABASE FUNDAMENTALS → DATABASE = Organized collection of structured data | DATABASE = Organized collection of structured data → REAL-WORLD ANALOGY: | REAL-WORLD ANALOGY: → Database = Library | Database = Library → Tables = Sections (Fiction, Science, History) | Tables = Sections (Fiction, Science, History) → Rows = Individual Books | Rows = Individual Books → Columns = Book attributes (Title, Author, ISBN, Year) | ...+1 more
+**Flow:**
+- DATABASE FUNDAMENTALS
+- ↓
+- DATABASE = Organized collection of structured data
+- ↓
+- REAL-WORLD ANALOGY:
+- ↓
+- Database = Library
+- ↓
+- Tables = Sections (Fiction, Science, History)
+- ↓
+- Rows = Individual Books
+- ↓
+- Columns = Book attributes (Title, Author, ISBN, Year)
 
 ```mermaid
 flowchart TD
@@ -121,7 +134,14 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: APPLICATION / (Your Java/Python / code) → DBMS ENGINE / Query Parser / Query / Optimizer / Execut | DBMS ENGINE / Query Parser / Query / Optimizer / Execut → STORAGE ENGINE / Buffer Pool / Transaction / Manager /  | STORAGE ENGINE / Buffer Pool / Transaction / Manager /  → DISK STORAGE / (Data files, / Index files, / Log files)
+**Flow:**
+- APPLICATION / (Your Java/Python / code)
+- ↓
+- DBMS ENGINE / Query Parser / Query / Optimizer / Execut
+- ↓
+- STORAGE ENGINE / Buffer Pool / Transaction / Manager /
+- ↓
+- DISK STORAGE / (Data files, / Index files, / Log files)
 
 ```mermaid
 flowchart TD
@@ -175,7 +195,14 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: CREATE - Create database objects (tables, views, indexe → SELECT - Retrieve data / INSERT - Add new data / UPDATE | SELECT - Retrieve data / INSERT - Add new data / UPDATE → GRANT - Give permissions / REVOKE - Remove permissions | GRANT - Give permissions / REVOKE - Remove permissions → COMMIT - Save changes permanently / ROLLBACK - Undo cha
+**Flow:**
+- CREATE - Create database objects (tables, views, indexe
+- ↓
+- SELECT - Retrieve data / INSERT - Add new data / UPDATE
+- ↓
+- GRANT - Give permissions / REVOKE - Remove permissions
+- ↓
+- COMMIT - Save changes permanently / ROLLBACK - Undo cha
 
 ```mermaid
 flowchart TD
@@ -230,7 +257,30 @@ For every SQL concept, we answer:
 
 ```
 
-> **Flow**: 🔵 WHY does this exist? → What real-world problem does it solve? | 🔵 WHY does this exist? → What would happen without it? | 🔵 WHY does this exist? → Which companies use this? When? | 🟢 HOW does it work? → Core syntax and mechanics | 🟢 HOW does it work? → Step-by-step execution | 🟢 HOW does it work? → Visual representation | ...+5 more
+**Flow:**
+- 🔵 WHY does this exist?
+- ↓
+- What real-world problem does it solve?
+- ↓
+- 🔵 WHY does this exist?
+- ↓
+- What would happen without it?
+- ↓
+- 🔵 WHY does this exist?
+- ↓
+- Which companies use this? When?
+- ↓
+- 🟢 HOW does it work?
+- ↓
+- Core syntax and mechanics
+- ↓
+- 🟢 HOW does it work?
+- ↓
+- Step-by-step execution
+- ↓
+- 🟢 HOW does it work?
+- ↓
+- Visual representation
 
 ```mermaid
 flowchart TD
@@ -573,7 +623,14 @@ CREATE TABLE order_items (
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: CUSTOMERS / PK: customer_id / email / first_name / last → ORDERS / PK: order_id / FK: customer_id / order_number  | PRODUCTS / PK: product_id / name / price / stock → ORDER_ITEMS / PK: item_id / FK: order_id / FK: product_
+**Flow:**
+- CUSTOMERS / PK: customer_id / email / first_name / last
+- ↓
+- ORDERS / PK: order_id / FK: customer_id / order_number
+- ↓
+- PRODUCTS / PK: product_id / name / price / stock
+- ↓
+- ORDER_ITEMS / PK: item_id / FK: order_id / FK: product_
 
 ```mermaid
 flowchart TD
@@ -637,7 +694,20 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHY SCHEMAS EVOLVE → BUSINESS REASONS: | BUSINESS REASONS: → 1. NEW FEATURES | 1. NEW FEATURES → - 'We need to store user's profile photo' | - 'We need to store user's profile photo' → → ALTER TABLE users ADD COLUMN profile_url VARCHAR(500) | → ALTER TABLE users ADD COLUMN profile_url VARCHAR(500) → 2. REGULATORY COMPLIANCE | 2. REGULATORY COMPLIANCE → - 'GDPR requires consent tracking' | ...+1 more
+**Flow:**
+- WHY SCHEMAS EVOLVE
+- ↓
+- BUSINESS REASONS:
+- ↓
+- 1. NEW FEATURES
+- ↓
+- - 'We need to store user's profile photo'
+- ↓
+- ALTER TABLE users ADD COLUMN profile_url VARCHAR(500)
+- ↓
+- 2. REGULATORY COMPLIANCE
+- ↓
+- - 'GDPR requires consent tracking'
 
 ```mermaid
 flowchart TD
@@ -815,7 +885,14 @@ ALTER TABLE products CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: • ADD COLUMN with DEFAULT (MySQL 8.0+, PostgreSQL) / •  → • ADD INDEX on large table (locks table in MySQL &lt; 8 | • ADD INDEX on large table (locks table in MySQL &lt; 8 → • DROP COLUMN (irreversible, may break app) / • Change  | • DROP COLUMN (irreversible, may break app) / • Change  → □ Test on staging with production-size data / □ Measure
+**Flow:**
+- • ADD COLUMN with DEFAULT (MySQL 8.0+, PostgreSQL) / •
+- ↓
+- • ADD INDEX on large table (locks table in MySQL < 8
+- ↓
+- • DROP COLUMN (irreversible, may break app) / • Change
+- ↓
+- □ Test on staging with production-size data / □ Measure
 
 ```mermaid
 flowchart TD
@@ -887,7 +964,16 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: CREATE → INSERT / READ → SELECT / UPDATE → UPDATE / DEL → HTTP Method SQL Operation Example / POST INSERT Create 
+**Flow:**
+- CREATE
+- ↓
+- INSERT / READ
+- ↓
+- SELECT / UPDATE
+- ↓
+- UPDATE / DEL
+- ↓
+- HTTP Method SQL Operation Example / POST INSERT Create
 
 ```mermaid
 flowchart TD
@@ -1212,7 +1298,20 @@ DELETE FROM temp_import_data WHERE import_date < '2024-01-01';
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHY DCL EXISTS → PRINCIPLE OF LEAST PRIVILEGE: | PRINCIPLE OF LEAST PRIVILEGE: → 'Every user should have only the minimum permissions | 'Every user should have only the minimum permissions → necessary to perform their job function' | necessary to perform their job function' → WHY THIS MATTERS: | WHY THIS MATTERS: → Developer needs: Read production logs | Developer needs: Read production logs → Developer gets: SELECT on logs table only | ...+1 more
+**Flow:**
+- WHY DCL EXISTS
+- ↓
+- PRINCIPLE OF LEAST PRIVILEGE:
+- ↓
+- 'Every user should have only the minimum permissions
+- ↓
+- necessary to perform their job function'
+- ↓
+- WHY THIS MATTERS:
+- ↓
+- Developer needs: Read production logs
+- ↓
+- Developer gets: SELECT on logs table only
 
 ```mermaid
 flowchart TD
@@ -1379,7 +1478,10 @@ SHOW GRANTS;
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Step 1: UPDATE accounts SET balance = balance - 10000 / → START TRANSACTION; / UPDATE accounts SET balance = bala
+**Flow:**
+- Step 1: UPDATE accounts SET balance = balance - 10000 /
+- ↓
+- START TRANSACTION; / UPDATE accounts SET balance = bala
 
 ```mermaid
 flowchart TD
@@ -1459,7 +1561,14 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Like an ATOM - indivisible unit / Transaction with 5 SQ → Database rules (constraints) ALWAYS enforced / Example: | Database rules (constraints) ALWAYS enforced / Example: → Two transactions running simultaneously: / T1: Read bal | Two transactions running simultaneously: / T1: Read bal → After COMMIT, data survives: / - Power failure / - Serv
+**Flow:**
+- Like an ATOM - indivisible unit / Transaction with 5 SQ
+- ↓
+- Database rules (constraints) ALWAYS enforced / Example:
+- ↓
+- Two transactions running simultaneously: / T1: Read bal
+- ↓
+- After COMMIT, data survives: / - Power failure / - Serv
 
 ```mermaid
 flowchart TD
@@ -1695,7 +1804,20 @@ TRADE-OFF: Higher isolation = Slower performance (more locking)
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: SQL FOUNDATIONS - QUICK REFERENCE → DDL (Structure): | DDL (Structure): → DML (Data): | DML (Data): → INSERT, SELECT, UPDATE, DELETE, MERGE | INSERT, SELECT, UPDATE, DELETE, MERGE → DCL (Permissions): | DCL (Permissions): → GRANT, REVOKE, CREATE USER, CREATE ROLE | GRANT, REVOKE, CREATE USER, CREATE ROLE → TCL (Transactions): | ...+1 more
+**Flow:**
+- SQL FOUNDATIONS - QUICK REFERENCE
+- ↓
+- DDL (Structure):
+- ↓
+- DML (Data):
+- ↓
+- INSERT, SELECT, UPDATE, DELETE, MERGE
+- ↓
+- DCL (Permissions):
+- ↓
+- GRANT, REVOKE, CREATE USER, CREATE ROLE
+- ↓
+- TCL (Transactions):
 
 ```mermaid
 flowchart TD

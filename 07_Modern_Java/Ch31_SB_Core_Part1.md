@@ -49,7 +49,14 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHY: Why Java Foundations Before Spring? / • JVM memory → HOW: How JVM Manages Your Spring Application? / • Heap: | HOW: How JVM Manages Your Spring Application? / • Heap: → WHEN: When to Deep Dive into JVM Internals? / • Memory  | WHEN: When to Deep Dive into JVM Internals? / • Memory  → WHICH: Which JVM Topics to Focus On? / ESSENTIAL: Memor
+**Flow:**
+- WHY: Why Java Foundations Before Spring? / • JVM memory
+- ↓
+- HOW: How JVM Manages Your Spring Application? / • Heap:
+- ↓
+- WHEN: When to Deep Dive into JVM Internals? / • Memory
+- ↓
+- WHICH: Which JVM Topics to Focus On? / ESSENTIAL: Memor
 
 ```mermaid
 flowchart TD
@@ -95,7 +102,20 @@ flowchart TD
 
 ```
 
-> **Flow**: THE SPRING LEARNING HIERARCHY → TIER 9: Testing (Professional's Mark) | TIER 9: Testing (Professional's Mark) → TIER 8: Microservices & Cloud Native | TIER 8: Microservices & Cloud Native → TIER 7: Spring Security | TIER 7: Spring Security → TIER 6: Web & REST API | TIER 6: Web & REST API → TIER 5: Data Access (JPA & Hibernate) | TIER 5: Data Access (JPA & Hibernate) → TIER 4: Spring Boot (Auto-Pilot) | ...+1 more
+**Flow:**
+- THE SPRING LEARNING HIERARCHY
+- ↓
+- TIER 9: Testing (Professional's Mark)
+- ↓
+- TIER 8: Microservices & Cloud Native
+- ↓
+- TIER 7: Spring Security
+- ↓
+- TIER 6: Web & REST API
+- ↓
+- TIER 5: Data Access (JPA & Hibernate)
+- ↓
+- TIER 4: Spring Boot (Auto-Pilot)
 
 ```mermaid
 flowchart TD
@@ -201,7 +221,16 @@ classes from reflection never got garbage collected.
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: HEAP (Shared - GC Managed) / Young Generation Old Gener → METASPACE (Native Memory - No GC by default!) / • Class | METASPACE (Native Memory - No GC by default!) / • Class → Frame 3 / Frame 2 / Frame 1 | Frame 3 / Frame 2 / Frame 1 → Frame 2 / Frame 1 | Frame 2 / Frame 1 → Frame 1
+**Flow:**
+- HEAP (Shared - GC Managed) / Young Generation Old Gener
+- ↓
+- METASPACE (Native Memory - No GC by default!) / • Class
+- ↓
+- Frame 3 / Frame 2 / Frame 1
+- ↓
+- Frame 2 / Frame 1
+- ↓
+- Frame 1
 
 ```mermaid
 flowchart TD
@@ -346,7 +375,20 @@ public class StringPoolDemo {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHY REFERENCE TYPES MATTER → SCENARIO: Building a cache in Spring | SCENARIO: Building a cache in Spring → WITHOUT KNOWLEDGE: | WITHOUT KNOWLEDGE: → Map&lt;String, User&gt; cache = new HashMap&lt;&gt;();  | Map&lt;String, User&gt; cache = new HashMap&lt;&gt;();  → WITH KNOWLEDGE: | WITH KNOWLEDGE: → SPRING USES THESE: | SPRING USES THESE: → • WeakHashMap for internal caches | ...+1 more
+**Flow:**
+- WHY REFERENCE TYPES MATTER
+- ↓
+- SCENARIO: Building a cache in Spring
+- ↓
+- WITHOUT KNOWLEDGE:
+- ↓
+- Map<String, User> cache = new HashMap<>();
+- ↓
+- WITH KNOWLEDGE:
+- ↓
+- SPRING USES THESE:
+- ↓
+- • WeakHashMap for internal caches
 
 ```mermaid
 flowchart TD
@@ -501,7 +543,14 @@ public class ReferenceTypesDemo {
 └────────────────┴───────────────────────┴────────────────────────────────────────┘
 ```
 
-> **Flow**: Type When Collected? Use Case → Strong Never (while exists) Normal variables | Strong Never (while exists) Normal variables → Soft Memory pressure only Memory-sensitive caches | Soft Memory pressure only Memory-sensitive caches → Weak Next GC cycle Canonical mappings, WeakHashMap
+**Flow:**
+- Type When Collected? Use Case
+- ↓
+- Strong Never (while exists) Normal variables
+- ↓
+- Soft Memory pressure only Memory-sensitive caches
+- ↓
+- Weak Next GC cycle Canonical mappings, WeakHashMap
 
 ```mermaid
 flowchart TD
@@ -550,7 +599,10 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Request 1: 50ms ✓ / Request 2: 60ms ✓ / Request 3: 45ms → Request 1: 50ms ✓ / Request 2: 60ms ✓ / Request 3: 55ms
+**Flow:**
+- Request 1: 50ms ✓ / Request 2: 60ms ✓ / Request 3: 45ms
+- ↓
+- Request 1: 50ms ✓ / Request 2: 60ms ✓ / Request 3: 55ms
 
 ```mermaid
 flowchart TD
@@ -610,7 +662,12 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Application Threads: ████████░░░░░░░░░░░░██████████████ → Application Threads: ██████████░░░░░░░░░░░█████████████ | Application Threads: ██████████░░░░░░░░░░░█████████████ → Application Threads: ██████████████████████████████████ | Application Threads: ██████████████████████████████████ → Application Threads: ██████████████████████████████████
+**Flow:**
+- Application Threads: ████████░░░░░░░░░░░░██████████████
+- ↓
+- Application Threads: ██████████░░░░░░░░░░░█████████████
+- ↓
+- Application Threads: ██████████████████████████████████
 
 ```mermaid
 flowchart TD
@@ -689,7 +746,20 @@ java -Xms8g -Xmx8g \
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: CLASS LOADING ERRORS - THE CRITICAL DIFFERENCE → ClassNotFoundException | ClassNotFoundException → WHEN: Class.forName('com.example.MyClass') fails | WHEN: Class.forName('com.example.MyClass') fails → WHY: .class file not in classpath | WHY: .class file not in classpath → FIX: Add missing JAR/dependency | FIX: Add missing JAR/dependency → NoClassDefFoundError | NoClassDefFoundError → WHEN: Class was found at compile time but not at runtim | ...+1 more
+**Flow:**
+- CLASS LOADING ERRORS - THE CRITICAL DIFFERENCE
+- ↓
+- ClassNotFoundException
+- ↓
+- WHEN: Class.forName('com.example.MyClass') fails
+- ↓
+- WHY: .class file not in classpath
+- ↓
+- FIX: Add missing JAR/dependency
+- ↓
+- NoClassDefFoundError
+- ↓
+- WHEN: Class was found at compile time but not at runtim
 
 ```mermaid
 flowchart TD
@@ -753,7 +823,14 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: Bootstrap ClassLoader / (Native code - JVM) / Loads: ja → Platform ClassLoader / (Java 9+, was Extension) / Loads | Platform ClassLoader / (Java 9+, was Extension) / Loads → Application ClassLoader / (System ClassLoader) / Loads: | Application ClassLoader / (System ClassLoader) / Loads: → Custom ClassLoaders / (Spring Boot uses this!) / Loads:
+**Flow:**
+- Bootstrap ClassLoader / (Native code - JVM) / Loads: ja
+- ↓
+- Platform ClassLoader / (Java 9+, was Extension) / Loads
+- ↓
+- Application ClassLoader / (System ClassLoader) / Loads:
+- ↓
+- Custom ClassLoaders / (Spring Boot uses this!) / Loads:
 
 ```mermaid
 flowchart TD
@@ -825,7 +902,20 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: WHY THREADING MATTERS IN SPRING → HTTP Request Flow in Spring Boot: | HTTP Request Flow in Spring Boot: → Request 1 Thread-1 Controller Service Repository | Request 1 Thread-1 Controller Service Repository → Request 2 Thread-2 Controller Service Repository | Request 2 Thread-2 Controller Service Repository → Request 3 Thread-3 Controller Service Repository | Request 3 Thread-3 Controller Service Repository → ⚠️ 3 threads accessing the SAME Singleton bean! | ⚠️ 3 threads accessing the SAME Singleton bean! → DANGEROUS CODE: | ...+1 more
+**Flow:**
+- WHY THREADING MATTERS IN SPRING
+- ↓
+- HTTP Request Flow in Spring Boot:
+- ↓
+- Request 1 Thread-1 Controller Service Repository
+- ↓
+- Request 2 Thread-2 Controller Service Repository
+- ↓
+- Request 3 Thread-3 Controller Service Repository
+- ↓
+- ⚠️ 3 threads accessing the SAME Singleton bean!
+- ↓
+- DANGEROUS CODE:
 
 ```mermaid
 flowchart TD
@@ -1129,7 +1219,20 @@ public class CompletableFutureDemo {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: FUNCTIONAL JAVA IN SPRING → Spring WebFlux (Reactive): | Spring WebFlux (Reactive): → Flux.fromIterable(users) | Flux.fromIterable(users) → .filter(u -&gt; u.isActive()) | .filter(u -&gt; u.isActive()) → .map(u -&gt; u.getEmail()) | .map(u -&gt; u.getEmail()) → .subscribe(email -&gt; sendNewsletter(email)); | .subscribe(email -&gt; sendNewsletter(email)); → Spring Data JPA: | ...+1 more
+**Flow:**
+- FUNCTIONAL JAVA IN SPRING
+- ↓
+- Spring WebFlux (Reactive):
+- ↓
+- Flux.fromIterable(users)
+- ↓
+- .filter(u -> u.isActive())
+- ↓
+- .map(u -> u.getEmail())
+- ↓
+- .subscribe(email -> sendNewsletter(email));
+- ↓
+- Spring Data JPA:
 
 ```mermaid
 flowchart TD
@@ -1340,7 +1443,20 @@ FUNCTIONAL JAVA:
 □ Can explain effectively final variables
 ```
 
-> **Flow**: MEMORY & JVM: → □ Can explain Stack vs Heap with diagram | □ Can explain Stack vs Heap with diagram → □ Understand String Pool and immutability | □ Understand String Pool and immutability → □ Know all 4 reference types and their GC behavior | □ Know all 4 reference types and their GC behavior → □ Can choose appropriate GC for workload | □ Can choose appropriate GC for workload → □ Understand Metaspace and class metadata | □ Understand Metaspace and class metadata → CLASS LOADING: | ...+1 more
+**Flow:**
+- MEMORY & JVM:
+- ↓
+- □ Can explain Stack vs Heap with diagram
+- ↓
+- □ Understand String Pool and immutability
+- ↓
+- □ Know all 4 reference types and their GC behavior
+- ↓
+- □ Can choose appropriate GC for workload
+- ↓
+- □ Understand Metaspace and class metadata
+- ↓
+- CLASS LOADING:
 
 ```mermaid
 flowchart TD

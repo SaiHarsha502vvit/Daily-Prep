@@ -218,7 +218,22 @@ search(".ad") → true
 search("b..") → true
 ```
 
-> **Flow**: search('pad') → false | search('bad') → true | search('.ad') → true | search('b..') → true
+**Flow:**
+- search('pad')
+- ↓
+- false
+- ↓
+- search('bad')
+- ↓
+- true
+- ↓
+- search('.ad')
+- ↓
+- true
+- ↓
+- search('b..')
+- ↓
+- true
 
 ```mermaid
 flowchart LR

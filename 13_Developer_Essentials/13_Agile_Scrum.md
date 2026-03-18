@@ -111,7 +111,12 @@ SCRUM TEAM (Typically 5-9 People)
 └──────────────────────────────────────────────────┘
 ```
 
-> **Flow**: PRODUCT OWNER (1 person) / • Owns the Product Backlog / → SCRUM MASTER (1 person, servant-leader) / • Facilitates | SCRUM MASTER (1 person, servant-leader) / • Facilitates → DEVELOPMENT TEAM (3-7 people) / • Cross-functional (fro
+**Flow:**
+- PRODUCT OWNER (1 person) / • Owns the Product Backlog /
+- ↓
+- SCRUM MASTER (1 person, servant-leader) / • Facilitates
+- ↓
+- DEVELOPMENT TEAM (3-7 people) / • Cross-functional (fro
 
 ```mermaid
 flowchart TD
@@ -144,7 +149,20 @@ KEY RULE: Sprint scope is FIXED once planning is done.
 No adding work mid-sprint (unless truly urgent).
 ```
 
-> **Flow**: Sprint / Planning / (4 hrs) → Development / Daily Standups / (15 min each) | Development / Daily Standups / (15 min each) → Sprint Review / → (Demo to PO) / (2 hrs) | Sprint Review / → (Demo to PO) / (2 hrs) → Retrospective / (What to improve) / (1.5 hrs)
+**Flow:**
+- Sprint / Planning / (4 hrs)
+- ↓
+- Development / Daily Standups / (15 min each)
+- ↓
+- Sprint Review /
+- ↓
+- (Demo to PO) / (2 hrs)
+- ↓
+- Sprint Review /
+- ↓
+- (Demo to PO) / (2 hrs)
+- ↓
+- Retrospective / (What to improve) / (1.5 hrs)
 
 ```mermaid
 flowchart TD
@@ -417,7 +435,16 @@ Remaining
   ╲_ Actual Burndown (healthy — roughly follows ideal)
 ```
 
-> **Flow**: Story Points → Remaining | Remaining → Day 1 5 10 | Day 1 5 10 → Ideal Burndown (straight line) | Ideal Burndown (straight line) → ╲_ Actual Burndown (healthy — roughly follows ideal)
+**Flow:**
+- Story Points
+- ↓
+- Remaining
+- ↓
+- Day 1 5 10
+- ↓
+- Ideal Burndown (straight line)
+- ↓
+- ╲_ Actual Burndown (healthy — roughly follows ideal)
 
 ```mermaid
 flowchart TD

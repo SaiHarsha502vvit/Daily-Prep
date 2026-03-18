@@ -136,7 +136,20 @@ WITH SPACED REPETITION + UNDERSTANDING:
 - You keep 90%+ forever
 ```
 
-> **Flow**: THE FORGETTING CURVE (Ebbinghaus): → Day1 Day2 Day7 Day30 | Day1 Day2 Day7 Day30 → Without review: | Without review: → - After 1 day: 50-80% forgotten | - After 1 day: 50-80% forgotten → - After 1 week: 90% forgotten | - After 1 week: 90% forgotten → - After 1 month: Almost everything gone | - After 1 month: Almost everything gone → WITH SPACED REPETITION + UNDERSTANDING: | ...+1 more
+**Flow:**
+- THE FORGETTING CURVE (Ebbinghaus):
+- ↓
+- Day1 Day2 Day7 Day30
+- ↓
+- Without review:
+- ↓
+- - After 1 day: 50-80% forgotten
+- ↓
+- - After 1 week: 90% forgotten
+- ↓
+- - After 1 month: Almost everything gone
+- ↓
+- WITH SPACED REPETITION + UNDERSTANDING:
 
 ```mermaid
 flowchart TD
@@ -180,7 +193,10 @@ NOW YOU UNDERSTAND:
 - How to adapt it
 ```
 
-> **Flow**: - No context → No recall trigger
+**Flow:**
+- - No context
+- ↓
+- No recall trigger
 
 ```mermaid
 flowchart LR
@@ -239,7 +255,20 @@ When something goes wrong (collision, rehashing),
 you know WHY because you understand the mechanism.
 ```
 
-> **Flow**: SURFACE: 'Use HashMap for O(1) lookup' → WHY does HashMap give O(1)? | WHY does HashMap give O(1)? → → Because it uses hash function to compute index direct | → Because it uses hash function to compute index direct → WHY does that give O(1)? | WHY does that give O(1)? → → Because array access by index is O(1) | → Because array access by index is O(1) → WHY is array access O(1)? | WHY is array access O(1)? → → Because memory is contiguous, address = base + offset | ...+1 more
+**Flow:**
+- SURFACE: 'Use HashMap for O(1) lookup'
+- ↓
+- WHY does HashMap give O(1)?
+- ↓
+- Because it uses hash function to compute index direct
+- ↓
+- WHY does that give O(1)?
+- ↓
+- Because array access by index is O(1)
+- ↓
+- WHY is array access O(1)?
+- ↓
+- Because memory is contiguous, address = base + offset
 
 ```mermaid
 flowchart TD
@@ -348,7 +377,20 @@ STEP 3: ADAPT TO THIS PROBLEM
 so when I find target, I continue searching left"
 ```
 
-> **Flow**: STEP 1: IDENTIFY THE CATEGORY → 'This is about finding something in a sorted array' | 'This is about finding something in a sorted array' → → Probably Binary Search | → Probably Binary Search → 'This involves making optimal choices' | 'This involves making optimal choices' → → Probably Greedy or DP | → Probably Greedy or DP → 'This needs to track frequency of elements' | 'This needs to track frequency of elements' → → Probably HashMap | ...+1 more
+**Flow:**
+- STEP 1: IDENTIFY THE CATEGORY
+- ↓
+- 'This is about finding something in a sorted array'
+- ↓
+- Probably Binary Search
+- ↓
+- 'This involves making optimal choices'
+- ↓
+- Probably Greedy or DP
+- ↓
+- 'This needs to track frequency of elements'
+- ↓
+- Probably HashMap
 
 ```mermaid
 flowchart TD
@@ -507,7 +549,28 @@ Can't do it? You don't truly understand!
                 └────────────────┘
 ```
 
-> **Flow**: PROBLEM → STRUGGLE / (15-30 min) | STRUGGLE / (15-30 min) → ▼ ▼ / ED! STUCK / ze & Study s / ariants UNDERST | STRUGGLE / (15-30 min) → SOLVED! / Optimize & / find variants | STRUGGLE / (15-30 min) → STUCK / Study soln / UNDERSTAND it | ▼ ▼ / ED! STUCK / ze & Study s / ariants UNDERST → REFLECTION / What pattern? / What learned? / Similar pr | SOLVED! / Optimize & / find variants → REFLECTION / What pattern? / What learned? / Similar pr | ...+2 more
+**Flow:**
+- PROBLEM
+- ↓
+- STRUGGLE / (15-30 min)
+- ↓
+- ▼ ▼ / ED! STUCK / ze & Study s / ariants UNDERST
+- ↓
+- STRUGGLE / (15-30 min)
+- ↓
+- SOLVED! / Optimize & / find variants
+- ↓
+- STRUGGLE / (15-30 min)
+- ↓
+- STUCK / Study soln / UNDERSTAND it
+- ↓
+- ▼ ▼ / ED! STUCK / ze & Study s / ariants UNDERST
+- ↓
+- REFLECTION / What pattern? / What learned? / Similar pr
+- ↓
+- SOLVED! / Optimize & / find variants
+- ↓
+- REFLECTION / What pattern? / What learned? / Similar pr
 
 ```mermaid
 flowchart TD
@@ -580,7 +643,10 @@ Instead of linear notes, create concept maps:
                    • Range? → Two Binary Searches
 ```
 
-> **Flow**: ARRAY SEARCH → SORTED / 1D
+**Flow:**
+- ARRAY SEARCH
+- ↓
+- SORTED / 1D
 
 ```mermaid
 flowchart TD
@@ -615,7 +681,20 @@ flowchart TD
     └────────────────────────┴────────────────────────┘
 ```
 
-> **Flow**: SLIDING WINDOW → FIXED SIZE VARIABLE SIZE | FIXED SIZE VARIABLE SIZE → • Max sum of k • Longest substring | • Max sum of k • Longest substring → • Max avg of k without repeating | • Max avg of k without repeating → • Contains duplicate • Min window substring | • Contains duplicate • Min window substring → within k • Longest repeating | within k • Longest repeating → char replacement | ...+1 more
+**Flow:**
+- SLIDING WINDOW
+- ↓
+- FIXED SIZE VARIABLE SIZE
+- ↓
+- • Max sum of k • Longest substring
+- ↓
+- • Max avg of k without repeating
+- ↓
+- • Contains duplicate • Min window substring
+- ↓
+- within k • Longest repeating
+- ↓
+- char replacement
 
 ```mermaid
 flowchart TD
@@ -739,7 +818,22 @@ Eventually solve without help
 Result: Actually retained!
 ```
 
-> **Flow**: Watch solution video → 'I understand!' | 'I understand!' → Move to next problem | Struggle with problem → Watch video | Watch video → Close video | Solve from scratch → Struggle again next day
+**Flow:**
+- Watch solution video
+- ↓
+- 'I understand!'
+- ↓
+- Move to next problem
+- ↓
+- Struggle with problem
+- ↓
+- Watch video
+- ↓
+- Close video
+- ↓
+- Solve from scratch
+- ↓
+- Struggle again next day
 
 ```mermaid
 flowchart TD
@@ -785,7 +879,14 @@ Return to medium →
 Success!
 ```
 
-> **Flow**: Can't solve medium → Jump to hard | Jump to hard → Frustrated | Frustrated → Give up
+**Flow:**
+- Can't solve medium
+- ↓
+- Jump to hard
+- ↓
+- Frustrated
+- ↓
+- Give up
 
 ```mermaid
 flowchart LR
@@ -963,7 +1064,10 @@ Keep your blurt papers - they become revision sheets!
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: 'Spaced repetition BEATS last-minute cramming.' / Each  → Topic Day 1 Day 2 Day 3 Day 7 / Two Pointers ✓ Mon ✓ Tu
+**Flow:**
+- 'Spaced repetition BEATS last-minute cramming.' / Each
+- ↓
+- Topic Day 1 Day 2 Day 3 Day 7 / Two Pointers ✓ Mon ✓ Tu
 
 ```mermaid
 flowchart TD
@@ -1111,7 +1215,20 @@ WEEKLY SCHEDULE (2-3-7 Rule):
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: THE ULTIMATE DAILY LEARNING WORKFLOW → MORNING SESSION (45-15-45-15): | MORNING SESSION (45-15-45-15): → [09:00-09:45] Deep Work Block 1: | [09:00-09:45] Deep Work Block 1: → • Look at problems FIRST (Question First Approach) | • Look at problems FIRST (Question First Approach) → • Try to solve, note gaps | • Try to solve, note gaps → [09:45-10:00] Break (walk, no phone!) | [09:45-10:00] Break (walk, no phone!) → [10:00-10:45] Deep Work Block 2: | ...+1 more
+**Flow:**
+- THE ULTIMATE DAILY LEARNING WORKFLOW
+- ↓
+- MORNING SESSION (45-15-45-15):
+- ↓
+- [09:00-09:45] Deep Work Block 1:
+- ↓
+- • Look at problems FIRST (Question First Approach)
+- ↓
+- • Try to solve, note gaps
+- ↓
+- [09:45-10:00] Break (walk, no phone!)
+- ↓
+- [10:00-10:45] Deep Work Block 2:
 
 ```mermaid
 flowchart TD

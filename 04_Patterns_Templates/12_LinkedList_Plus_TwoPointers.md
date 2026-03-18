@@ -44,7 +44,10 @@ IF the problem involves:
 THEN → LinkedList + Two Pointers
 ```
 
-> **Flow**: THEN → LinkedList + Two Pointers
+**Flow:**
+- THEN
+- ↓
+- LinkedList + Two Pointers
 
 ```mermaid
 flowchart LR
@@ -148,7 +151,10 @@ Find cycle start:
   Both at 3! → Cycle starts at 3 ✅
 ```
 
-> **Flow**: Both at 3! → Cycle starts at 3 ✅
+**Flow:**
+- Both at 3!
+- ↓
+- Cycle starts at 3 ✅
 
 ```mermaid
 flowchart LR
@@ -192,7 +198,58 @@ WHY 3 pointers? You need `next` because once you reverse curr.next,
 you lose the reference to the rest of the list.
 ```
 
-> **Flow**: Problem: Reverse 1→2→3→4→5→null to 5→4→3→2→1→null → Approach: Three pointers: prev, curr, next. | Approach: Three pointers: prev, curr, next. → At each step: save next, reverse the link, advance. | At each step: save next, reverse the link, advance. → Step-by-step: | Step-by-step: → prev=null, curr=1 | prev=null, curr=1 → null ← 1 2 → 3 → 4 → 5 | null ← 1 2 → 3 → 4 → 5 → null ← 1 ← 2 3 → 4 → 5 | ...+1 more
+**Flow:**
+- Problem: Reverse 1
+- ↓
+- 2
+- ↓
+- 3
+- ↓
+- 4
+- ↓
+- 5
+- ↓
+- null to 5
+- ↓
+- 4
+- ↓
+- 3
+- ↓
+- 2
+- ↓
+- 1
+- ↓
+- null
+- ↓
+- Approach: Three pointers: prev, curr, next.
+- ↓
+- At each step: save next, reverse the link, advance.
+- ↓
+- Step-by-step:
+- ↓
+- prev=null, curr=1
+- ↓
+- null ← 1 2
+- ↓
+- 3
+- ↓
+- 4
+- ↓
+- 5
+- ↓
+- null ← 1 2
+- ↓
+- 3
+- ↓
+- 4
+- ↓
+- 5
+- ↓
+- null ← 1 ← 2 3
+- ↓
+- 4
+- ↓
+- 5
 
 ```mermaid
 flowchart TD
@@ -249,7 +306,18 @@ WHY does the math work?
 Time: O(n) | Space: O(1)
 ```
 
-> **Flow**: Step 3: slow=4, fast=4 → MEET! Cycle exists. | Step 2: ptr1=3, ptr2=3 → MEET at node 3 = cycle start! ✅ | Fast is 2× slow: 2(a + b) = a + b + c → a = c - b
+**Flow:**
+- Step 3: slow=4, fast=4
+- ↓
+- MEET! Cycle exists.
+- ↓
+- Step 2: ptr1=3, ptr2=3
+- ↓
+- MEET at node 3 = cycle start! ✅
+- ↓
+- Fast is 2× slow: 2(a + b) = a + b + c
+- ↓
+- a = c - b
 
 ```mermaid
 flowchart LR
@@ -292,7 +360,32 @@ COMMON MISTAKES:
    Palindrome check: reverse second half, check, then REVERSE BACK
 ```
 
-> **Flow**: EDGE CASES: → Edge Case Handling | Edge Case Handling → Empty list (null) Return immediately | Empty list (null) Return immediately → Single node, no cycle fast.next is null → no cycle | Single node, no cycle fast.next is null → no cycle → Single node, self-cycle 1 → 1. fast == slow after 1 ste | Single node, self-cycle 1 → 1. fast == slow after 1 ste → Cycle at head a = 0, cycle start = head | Cycle at head a = 0, cycle start = head → Cycle at tail Long path before cycle | ...+1 more
+**Flow:**
+- EDGE CASES:
+- ↓
+- Edge Case Handling
+- ↓
+- Empty list (null) Return immediately
+- ↓
+- Single node, no cycle fast.next is null
+- ↓
+- no cycle
+- ↓
+- Single node, no cycle fast.next is null
+- ↓
+- no cycle
+- ↓
+- Single node, self-cycle 1
+- ↓
+- 1. fast == slow after 1 ste
+- ↓
+- Single node, self-cycle 1
+- ↓
+- 1. fast == slow after 1 ste
+- ↓
+- Cycle at head a = 0, cycle start = head
+- ↓
+- Cycle at tail Long path before cycle
 
 ```mermaid
 flowchart TD

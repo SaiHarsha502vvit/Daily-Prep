@@ -29,7 +29,12 @@
 Your API = a CONTRACT. Once published, breaking changes = TRUST broken.
 ```
 
-> **Flow**: Frontend / (React/ / Angular) --(HTTP Request)--> Backend / (Spring / Boot) | Mobile / App --(HTTP Request)--> Your API | Partner / Company --(HTTP Request)--> Your API
+**Flow:**
+- Frontend / (React/ / Angular) --(HTTP Request)--> Backend / (Spring / Boot)
+- ↓
+- Mobile / App --(HTTP Request)--> Your API
+- ↓
+- Partner / Company --(HTTP Request)--> Your API
 
 ```mermaid
 flowchart TD
@@ -79,7 +84,18 @@ Example:
   POST /users         → Creates new user (calling twice = TWO users!)
 ```
 
-> **Flow**: GET /users/42 → Returns user 42 (no change) | DELETE /users/42 → Deletes user 42 (calling again = same state) | POST /users → Creates new user (calling twice = TWO users!)
+**Flow:**
+- GET /users/42
+- ↓
+- Returns user 42 (no change)
+- ↓
+- DELETE /users/42
+- ↓
+- Deletes user 42 (calling again = same state)
+- ↓
+- POST /users
+- ↓
+- Creates new user (calling twice = TWO users!)
 
 ```mermaid
 flowchart LR
@@ -121,7 +137,30 @@ flowchart LR
   503 Service Unavailable → Server overloaded, try later
 ```
 
-> **Flow**: 200 OK → GET/PUT/PATCH succeeded | 201 Created → POST succeeded, new resource created | 204 No Content → DELETE succeeded, nothing to return | 301 Moved Permanently → Resource has new URL forever | 304 Not Modified → Cached version is still valid | 400 Bad Request → Malformed JSON, missing required field | ...+9 more
+**Flow:**
+- 200 OK
+- ↓
+- GET/PUT/PATCH succeeded
+- ↓
+- 201 Created
+- ↓
+- POST succeeded, new resource created
+- ↓
+- 204 No Content
+- ↓
+- DELETE succeeded, nothing to return
+- ↓
+- 301 Moved Permanently
+- ↓
+- Resource has new URL forever
+- ↓
+- 304 Not Modified
+- ↓
+- Cached version is still valid
+- ↓
+- 400 Bad Request
+- ↓
+- Malformed JSON, missing required field
 
 ```mermaid
 flowchart TD
@@ -206,7 +245,30 @@ PATH rules:
   - Version in URL: /api/v1/users
 ```
 
-> **Flow**: GET /api/users → List all users | GET /api/users/42 → Get user 42 | POST /api/users → Create user | PUT /api/users/42 → Update user 42 | DELETE /api/users/42 → Delete user 42 | GET /api/users/42/orders → All orders for user 42 | ...+2 more
+**Flow:**
+- GET /api/users
+- ↓
+- List all users
+- ↓
+- GET /api/users/42
+- ↓
+- Get user 42
+- ↓
+- POST /api/users
+- ↓
+- Create user
+- ↓
+- PUT /api/users/42
+- ↓
+- Update user 42
+- ↓
+- DELETE /api/users/42
+- ↓
+- Delete user 42
+- ↓
+- GET /api/users/42/orders
+- ↓
+- All orders for user 42
 
 ```mermaid
 flowchart TD
@@ -357,7 +419,24 @@ CHANGING types    → BREAKING change (string → int)
 CHANGING URL      → BREAKING change (new version)
 ```
 
-> **Flow**: ADDING fields → NOT a breaking change (backward compatible) | REMOVING fields → BREAKING change (must version) | CHANGING types → BREAKING change (string | BREAKING change (string → int) | CHANGING URL → BREAKING change (new version)
+**Flow:**
+- ADDING fields
+- ↓
+- NOT a breaking change (backward compatible)
+- ↓
+- REMOVING fields
+- ↓
+- BREAKING change (must version)
+- ↓
+- CHANGING types
+- ↓
+- BREAKING change (string
+- ↓
+- int)
+- ↓
+- CHANGING URL
+- ↓
+- BREAKING change (new version)
 
 ```mermaid
 flowchart TD

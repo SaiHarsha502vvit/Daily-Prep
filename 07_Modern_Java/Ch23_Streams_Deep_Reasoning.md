@@ -116,7 +116,20 @@ List<String> result = names.stream()
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: SHORT-CIRCUITING OPERATIONS: → Terminal: findFirst(), findAny(), anyMatch(), | Terminal: findFirst(), findAny(), anyMatch(), → allMatch(), noneMatch() | allMatch(), noneMatch() → Intermediate: limit(), takeWhile() (Java 9+) | Intermediate: limit(), takeWhile() (Java 9+) → These can STOP the entire pipeline early: | These can STOP the entire pipeline early: → users.stream() | users.stream() → .filter(u -&gt; u.getAge() &gt; 65) | ...+1 more
+**Flow:**
+- SHORT-CIRCUITING OPERATIONS:
+- ↓
+- Terminal: findFirst(), findAny(), anyMatch(),
+- ↓
+- allMatch(), noneMatch()
+- ↓
+- Intermediate: limit(), takeWhile() (Java 9+)
+- ↓
+- These can STOP the entire pipeline early:
+- ↓
+- users.stream()
+- ↓
+- .filter(u -> u.getAge() > 65)
 
 ```mermaid
 flowchart TD
@@ -186,7 +199,20 @@ names.stream()
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: THE DVD vs NETFLIX ANALOGY → Collection = DVD collection on your shelf | Collection = DVD collection on your shelf → → All data IN MEMORY right now | → All data IN MEMORY right now → → You can pick any DVD (random access) | → You can pick any DVD (random access) → → You can count them (size) | → You can count them (size) → → You can add/remove DVDs (mutable) | → You can add/remove DVDs (mutable) → → Same DVDs, watch as many times as you want (reusable) | ...+1 more
+**Flow:**
+- THE DVD vs NETFLIX ANALOGY
+- ↓
+- Collection = DVD collection on your shelf
+- ↓
+- All data IN MEMORY right now
+- ↓
+- You can pick any DVD (random access)
+- ↓
+- You can count them (size)
+- ↓
+- You can add/remove DVDs (mutable)
+- ↓
+- Same DVDs, watch as many times as you want (reusable)
 
 ```mermaid
 flowchart TD
@@ -241,7 +267,20 @@ stream.forEach(System.out::println);
 └────────────────────┴───────────────────────┴──────────────────────┘
 ```
 
-> **Flow**: Feature Collection Stream → When computed Eagerly (all at once) Lazily (on demand) | When computed Eagerly (all at once) Lazily (on demand) → Reusable ✅ Yes ❌ Once only | Reusable ✅ Yes ❌ Once only → Mutable ✅ add/remove ❌ Immutable pipe | Mutable ✅ add/remove ❌ Immutable pipe → Size Known (.size()) May be infinite | Size Known (.size()) May be infinite → Random access ✅ list.get(i) ❌ Sequential only | Random access ✅ list.get(i) ❌ Sequential only → Can store data ✅ Primary purpose ❌ Passes through | ...+1 more
+**Flow:**
+- Feature Collection Stream
+- ↓
+- When computed Eagerly (all at once) Lazily (on demand)
+- ↓
+- Reusable ✅ Yes ❌ Once only
+- ↓
+- Mutable ✅ add/remove ❌ Immutable pipe
+- ↓
+- Size Known (.size()) May be infinite
+- ↓
+- Random access ✅ list.get(i) ❌ Sequential only
+- ↓
+- Can store data ✅ Primary purpose ❌ Passes through
 
 ```mermaid
 flowchart TD
@@ -289,7 +328,20 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: THE RESTAURANT ORDER ANALOGY → Intermediate Operations = Adding items to your order | Intermediate Operations = Adding items to your order → → 'I'd like the salad...' (filter) | → 'I'd like the salad...' (filter) → → '...with dressing on the side...' (map) | → '...with dressing on the side...' (map) → → '...and only the first 3...' (limit) | → '...and only the first 3...' (limit) → → Nothing is being prepared yet! | → Nothing is being prepared yet! → Terminal Operation = Saying 'That's my order' (submit) | ...+1 more
+**Flow:**
+- THE RESTAURANT ORDER ANALOGY
+- ↓
+- Intermediate Operations = Adding items to your order
+- ↓
+- 'I'd like the salad...' (filter)
+- ↓
+- '...with dressing on the side...' (map)
+- ↓
+- '...and only the first 3...' (limit)
+- ↓
+- Nothing is being prepared yet!
+- ↓
+- Terminal Operation = Saying 'That's my order' (submit)
 
 ```mermaid
 flowchart TD
@@ -334,7 +386,20 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: INTERMEDIATE (returns Stream — lazy, chainable): → Stateless (no memory between elements): | Stateless (no memory between elements): → Stateful (must see all/some elements first): | Stateful (must see all/some elements first): → sorted() ← must see ALL elements to sort | sorted() ← must see ALL elements to sort → distinct() ← must remember what it's seen (HashSet) | distinct() ← must remember what it's seen (HashSet) → skip(n) ← must count n elements to skip | skip(n) ← must count n elements to skip → limit(n) ← must count (but short-circuits) | ...+1 more
+**Flow:**
+- INTERMEDIATE (returns Stream — lazy, chainable):
+- ↓
+- Stateless (no memory between elements):
+- ↓
+- Stateful (must see all/some elements first):
+- ↓
+- sorted() ← must see ALL elements to sort
+- ↓
+- distinct() ← must remember what it's seen (HashSet)
+- ↓
+- skip(n) ← must count n elements to skip
+- ↓
+- limit(n) ← must count (but short-circuits)
 
 ```mermaid
 flowchart TD
@@ -401,7 +466,38 @@ list.stream().findFirst();              // No buffering needed
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: THE GIFT BOX ANALOGY → You have 3 gift boxes, each containing smaller boxes: | You have 3 gift boxes, each containing smaller boxes: → Box1 → [candy, toy] | Box1 → [candy, toy] → Box2 → [book] | Box2 → [book] → Box3 → [pen, eraser, ruler] | Box3 → [pen, eraser, ruler] → map() = 'Open each box and look inside' | map() = 'Open each box and look inside' → Result: [ [candy,toy], [book], [pen,eraser,ruler] ] | ...+1 more
+**Flow:**
+- THE GIFT BOX ANALOGY
+- ↓
+- You have 3 gift boxes, each containing smaller boxes:
+- ↓
+- Box1
+- ↓
+- [candy, toy]
+- ↓
+- Box1
+- ↓
+- [candy, toy]
+- ↓
+- Box2
+- ↓
+- [book]
+- ↓
+- Box2
+- ↓
+- [book]
+- ↓
+- Box3
+- ↓
+- [pen, eraser, ruler]
+- ↓
+- Box3
+- ↓
+- [pen, eraser, ruler]
+- ↓
+- map() = 'Open each box and look inside'
+- ↓
+- Result: [ [candy,toy], [book], [pen,eraser,ruler] ]
 
 ```mermaid
 flowchart TD
@@ -473,7 +569,66 @@ customers.stream()
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: DECISION: → Your function returns ONE thing? → map() | Your function returns ONE thing? → map() → name → name.toUpperCase() (String → String) | name → name.toUpperCase() (String → String) → user → user.getAge() (User → Integer) | user → user.getAge() (User → Integer) → Your function returns a COLLECTION? → flatMap() | Your function returns a COLLECTION? → flatMap() → user → user.getOrders() (User → List&lt;Order&gt;) | user → user.getOrders() (User → List&lt;Order&gt;) → line → Arrays.asList(line.split(' ')) (String → List) | ...+1 more
+**Flow:**
+- DECISION:
+- ↓
+- Your function returns ONE thing?
+- ↓
+- map()
+- ↓
+- Your function returns ONE thing?
+- ↓
+- map()
+- ↓
+- name
+- ↓
+- name.toUpperCase() (String
+- ↓
+- String)
+- ↓
+- name
+- ↓
+- name.toUpperCase() (String
+- ↓
+- String)
+- ↓
+- user
+- ↓
+- user.getAge() (User
+- ↓
+- Integer)
+- ↓
+- user
+- ↓
+- user.getAge() (User
+- ↓
+- Integer)
+- ↓
+- Your function returns a COLLECTION?
+- ↓
+- flatMap()
+- ↓
+- Your function returns a COLLECTION?
+- ↓
+- flatMap()
+- ↓
+- user
+- ↓
+- user.getOrders() (User
+- ↓
+- List<Order>)
+- ↓
+- user
+- ↓
+- user.getOrders() (User
+- ↓
+- List<Order>)
+- ↓
+- line
+- ↓
+- Arrays.asList(line.split(' ')) (String
+- ↓
+- List)
 
 ```mermaid
 flowchart TD
@@ -528,7 +683,34 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: THE SNOWBALL ROLLING DOWNHILL ANALOGY → reduce() is like rolling a snowball downhill: | reduce() is like rolling a snowball downhill: → identity (starting snowball) = 0 | identity (starting snowball) = 0 → Elements: [3, 7, 2, 5] | Elements: [3, 7, 2, 5] → Step 1: snowball=0, pick up 3 → snowball=3 | Step 1: snowball=0, pick up 3 → snowball=3 → Step 2: snowball=3, pick up 7 → snowball=10 | Step 2: snowball=3, pick up 7 → snowball=10 → Step 3: snowball=10, pick up 2 → snowball=12 | ...+1 more
+**Flow:**
+- THE SNOWBALL ROLLING DOWNHILL ANALOGY
+- ↓
+- reduce() is like rolling a snowball downhill:
+- ↓
+- identity (starting snowball) = 0
+- ↓
+- Elements: [3, 7, 2, 5]
+- ↓
+- Step 1: snowball=0, pick up 3
+- ↓
+- snowball=3
+- ↓
+- Step 1: snowball=0, pick up 3
+- ↓
+- snowball=3
+- ↓
+- Step 2: snowball=3, pick up 7
+- ↓
+- snowball=10
+- ↓
+- Step 2: snowball=3, pick up 7
+- ↓
+- snowball=10
+- ↓
+- Step 3: snowball=10, pick up 2
+- ↓
+- snowball=12
 
 ```mermaid
 flowchart TD
@@ -601,7 +783,20 @@ int totalLength = words.stream()
 └────────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: reduce() = combine all into ONE value → Sum, product, min, max, concatenation | Sum, product, min, max, concatenation → → Creates NEW object each step (immutable accumulation) | → Creates NEW object each step (immutable accumulation) → collect() = pour all into a MUTABLE CONTAINER | collect() = pour all into a MUTABLE CONTAINER → List, Map, Set, StringBuilder, custom object | List, Map, Set, StringBuilder, custom object → → MUTATES the container (mutable accumulation) | → MUTATES the container (mutable accumulation) → WHY THE DISTINCTION? | ...+1 more
+**Flow:**
+- reduce() = combine all into ONE value
+- ↓
+- Sum, product, min, max, concatenation
+- ↓
+- Creates NEW object each step (immutable accumulation)
+- ↓
+- collect() = pour all into a MUTABLE CONTAINER
+- ↓
+- List, Map, Set, StringBuilder, custom object
+- ↓
+- MUTATES the container (mutable accumulation)
+- ↓
+- WHY THE DISTINCTION?
 
 ```mermaid
 flowchart TD
@@ -653,7 +848,34 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: THE ASSEMBLY LINE WORKER ANALOGY → A Collector has 4 jobs (like 4 assembly line workers): | A Collector has 4 jobs (like 4 assembly line workers): → 1. supplier() → 'Bring an empty box' | 1. supplier() → 'Bring an empty box' → () -&gt; new ArrayList&lt;&gt;() | () -&gt; new ArrayList&lt;&gt;() → 2. accumulator() → 'Put each item in the box' | 2. accumulator() → 'Put each item in the box' → (list, item) -&gt; list.add(item) | (list, item) -&gt; list.add(item) → 3. combiner() → 'Merge two boxes into one' (for paralle | ...+1 more
+**Flow:**
+- THE ASSEMBLY LINE WORKER ANALOGY
+- ↓
+- A Collector has 4 jobs (like 4 assembly line workers):
+- ↓
+- 1. supplier()
+- ↓
+- 'Bring an empty box'
+- ↓
+- 1. supplier()
+- ↓
+- 'Bring an empty box'
+- ↓
+- () -> new ArrayList<>()
+- ↓
+- 2. accumulator()
+- ↓
+- 'Put each item in the box'
+- ↓
+- 2. accumulator()
+- ↓
+- 'Put each item in the box'
+- ↓
+- (list, item) -> list.add(item)
+- ↓
+- 3. combiner()
+- ↓
+- 'Merge two boxes into one' (for paralle
 
 ```mermaid
 flowchart TD
@@ -766,7 +988,20 @@ Map<String, Long> countByDept = employees.stream()
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: THE COOKING ANALOGY — When More Chefs HURT → Sequential: 1 chef makes 100 dishes — predictable, orde | Sequential: 1 chef makes 100 dishes — predictable, orde → Parallel: 10 chefs share 1 kitchen — CHAOS potential! | Parallel: 10 chefs share 1 kitchen — CHAOS potential! → WHEN 10 CHEFS HELP: | WHEN 10 CHEFS HELP: → → Independent tasks (each chef has own station) | → Independent tasks (each chef has own station) → → CPU-heavy work (chopping, mixing — not waiting) | → CPU-heavy work (chopping, mixing — not waiting) → → Large dataset (100+ dishes, not 5) | ...+1 more
+**Flow:**
+- THE COOKING ANALOGY — When More Chefs HURT
+- ↓
+- Sequential: 1 chef makes 100 dishes — predictable, orde
+- ↓
+- Parallel: 10 chefs share 1 kitchen — CHAOS potential!
+- ↓
+- WHEN 10 CHEFS HELP:
+- ↓
+- Independent tasks (each chef has own station)
+- ↓
+- CPU-heavy work (chopping, mixing — not waiting)
+- ↓
+- Large dataset (100+ dishes, not 5)
 
 ```mermaid
 flowchart TD
@@ -852,7 +1087,20 @@ list.parallelStream()
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> **Flow**: USE parallelStream() WHEN ALL ARE TRUE: → ✅ Dataset &gt; 10,000 elements (overhead worth it) | ✅ Dataset &gt; 10,000 elements (overhead worth it) → ✅ CPU-intensive computation per element | ✅ CPU-intensive computation per element → ✅ Data source splits cheaply (ArrayList, array, IntStre | ✅ Data source splits cheaply (ArrayList, array, IntStre → ✅ No shared mutable state | ✅ No shared mutable state → ✅ Order doesn't matter (or you accept ordering overhead | ✅ Order doesn't matter (or you accept ordering overhead → ✅ No blocking IO | ...+1 more
+**Flow:**
+- USE parallelStream() WHEN ALL ARE TRUE:
+- ↓
+- ✅ Dataset > 10,000 elements (overhead worth it)
+- ↓
+- ✅ CPU-intensive computation per element
+- ↓
+- ✅ Data source splits cheaply (ArrayList, array, IntStre
+- ↓
+- ✅ No shared mutable state
+- ↓
+- ✅ Order doesn't matter (or you accept ordering overhead
+- ↓
+- ✅ No blocking IO
 
 ```mermaid
 flowchart TD
@@ -909,7 +1157,38 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: HOW THE JVM FUSES OPERATIONS → Your code: | Your code: → Naive execution (3 loops): | Naive execution (3 loops): → Loop 1: filter all → temp list | Loop 1: filter all → temp list → Loop 2: map all → temp list | Loop 2: map all → temp list → Loop 3: collect → result | Loop 3: collect → result → Actual execution (FUSED into 1 loop): | ...+1 more
+**Flow:**
+- HOW THE JVM FUSES OPERATIONS
+- ↓
+- Your code:
+- ↓
+- Naive execution (3 loops):
+- ↓
+- Loop 1: filter all
+- ↓
+- temp list
+- ↓
+- Loop 1: filter all
+- ↓
+- temp list
+- ↓
+- Loop 2: map all
+- ↓
+- temp list
+- ↓
+- Loop 2: map all
+- ↓
+- temp list
+- ↓
+- Loop 3: collect
+- ↓
+- result
+- ↓
+- Loop 3: collect
+- ↓
+- result
+- ↓
+- Actual execution (FUSED into 1 loop):
 
 ```mermaid
 flowchart TD
@@ -957,7 +1236,26 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: THE GIFT BOX vs EMPTY BOX ANALOGY → null = Someone handed you NOTHING and said 'here's a th | null = Someone handed you NOTHING and said 'here's a th → You reach for the thing → NPE (you grabbed air) | You reach for the thing → NPE (you grabbed air) → Optional = Someone hands you a box. | Optional = Someone hands you a box. → → Box might contain a value (Optional.of(value)) | → Box might contain a value (Optional.of(value)) → → Box might be empty (Optional.empty()) | → Box might be empty (Optional.empty()) → → The BOX ITSELF is never null | ...+1 more
+**Flow:**
+- THE GIFT BOX vs EMPTY BOX ANALOGY
+- ↓
+- null = Someone handed you NOTHING and said 'here's a th
+- ↓
+- You reach for the thing
+- ↓
+- NPE (you grabbed air)
+- ↓
+- You reach for the thing
+- ↓
+- NPE (you grabbed air)
+- ↓
+- Optional = Someone hands you a box.
+- ↓
+- Box might contain a value (Optional.of(value))
+- ↓
+- Box might be empty (Optional.empty())
+- ↓
+- The BOX ITSELF is never null
 
 ```mermaid
 flowchart TD
@@ -1049,7 +1347,20 @@ return optional.map(transform).orElseThrow();
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-> **Flow**: THE 4 TYPES — And Why Each Exists → 1. Static method: ClassName::staticMethod | 1. Static method: ClassName::staticMethod → Lambda: x -&gt; Math.abs(x) | Lambda: x -&gt; Math.abs(x) → Reference: Math::abs | Reference: Math::abs → Think: 'Call this class's static function' | Think: 'Call this class's static function' → 2. Instance method (bound): instance::method | 2. Instance method (bound): instance::method → Lambda: x -&gt; System.out.println(x) | ...+1 more
+**Flow:**
+- THE 4 TYPES — And Why Each Exists
+- ↓
+- 1. Static method: ClassName::staticMethod
+- ↓
+- Lambda: x -> Math.abs(x)
+- ↓
+- Reference: Math::abs
+- ↓
+- Think: 'Call this class's static function'
+- ↓
+- 2. Instance method (bound): instance::method
+- ↓
+- Lambda: x -> System.out.println(x)
 
 ```mermaid
 flowchart TD
