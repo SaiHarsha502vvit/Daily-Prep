@@ -482,7 +482,7 @@ Daily-Prep/
 - **Variants**: [Core Variants](02_Data_Structures/02a_DS_Variants_Core.md) | [Advanced Variants](02_Data_Structures/02b_DS_Variants_Advanced.md)
 - **Reference**: [Java Collections](02_Data_Structures/03_Collections_Java.md) | [2D Arrays / Matrix](02_Data_Structures/04_2D_Arrays_Matrix.md)
 
-### Algorithms (26 chapters)
+### Algorithms (29 chapters)
 - **Thinking**: [Algorithm Thinking & Big O](03_Algorithms/01_Algorithm_Thinking.md)
 - **Sorting**: [Fundamentals](03_Algorithms/02a_Sorting_Fundamentals.md) → [Advanced](03_Algorithms/02b_Sorting_Advanced.md) → [Divide & Conquer](03_Algorithms/02c_Divide_And_Conquer.md)
 - **Recursion**: [Internals](03_Algorithms/03a_Recursion_Internals.md) → [Fundamentals](03_Algorithms/03b_Recursion_Fundamentals.md) → [Advanced](03_Algorithms/03c_Recursion_Advanced.md)
@@ -495,6 +495,9 @@ Daily-Prep/
 - **Specialized**: [Pattern Programs](03_Algorithms/09_Pattern_Programs_Complete.md) | [Bit Manipulation](03_Algorithms/10_Bit_Manipulation_Complete.md) | [Backtracking](03_Algorithms/11_Backtracking_Complete.md) | [Greedy](03_Algorithms/12_Greedy_Algorithms_Complete.md) | [String Algos](03_Algorithms/13_String_Algorithms_Complete.md) | [Union-Find](03_Algorithms/14_Union_Find_DSU_Complete.md) | [Monotonic Stack](03_Algorithms/15_Monotonic_Stack_Queue_Complete.md)
 - **⚡ Deep Reasoning**: [DSA Deep Reasoning](03_Algorithms/16_DSA_Deep_Reasoning.md) — 10 interview "freeze moments" with senior-level reasoning
 - **⚡ Java DSA Mastery**: [DSA Java Implementation](03_Algorithms/17_DSA_Java_Implementation_Mastery.md) — Java Collections for DSA, PQ gotchas, TreeMap, Comparator traps, sort internals
+- **🆕 Java Bitwise Trie**: [Bitwise Trie Java Complete](03_Algorithms/18_Bitwise_Trie_Java_Complete.md) — Max/Min XOR, constrained queries, counting variants
+- **🆕 Java Prefix Family**: [Prefix Sum/XOR/2D Prefix Java Complete](03_Algorithms/19_Prefix_Sum_Prefix_XOR_2D_Prefix_Java_Complete.md) — Range queries, hashmap variants, 2D inclusion-exclusion
+- **🆕 Java Revision Map**: [DSA Patterns PDF to Java Coverage Map](03_Algorithms/20_DSA_Patterns_PDF_Java_Coverage_Map.md) — Topic routing + 21-day revision flow
 
 ### Coding Patterns (20 files — 7 original + 13 combined DS+Algo)
 - [Sliding Window](04_Patterns_Templates/01_Sliding_Window.md) | [Code Templates](04_Patterns_Templates/02_Code_Templates.md) | [Visual Diagrams](04_Patterns_Templates/03_Visual_Diagrams.md)
@@ -807,7 +810,7 @@ Open [07_Modern_Java/Ch25_Spring_Boot_50Day_Plan.md](07_Modern_Java/Ch25_Spring_
 | Root (indexes) | 2 | Master index + Textbook preface |
 | 01_Getting_Started | 3 | Start here + Study plan + Feb 10 plan |
 | 02_Data_Structures | 4 | DS Complete, Variants, Collections, 2D Arrays |
-| 03_Algorithms | 9 | Sorting, Recursion, DP, Trees/Graphs, Advanced, Number Theory, Patterns |
+| 03_Algorithms | 29 | Full algorithms track: foundations, recursion/DP, trees/graphs, complete guides, Java deep additions |
 | 04_Patterns_Templates | 5 | Sliding Window, Templates, Visual Diagrams, Pattern Recognition, LeetCode Map |
 | 05_Problem_Solving | 25 | 22 topic chapters + Edge Cases, Common Mistakes, Problem Origins |
 | 06_OOP_Design | 4 | OOP, Design Patterns, System Design, User Flows |
