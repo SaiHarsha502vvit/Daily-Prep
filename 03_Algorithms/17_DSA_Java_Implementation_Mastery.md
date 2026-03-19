@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](16_DSA_Deep_Reasoning.md) | [Back to Index](../00_MASTER_INDEX.md)
+> **Navigation**: [< Previous](16_DSA_Deep_Reasoning.md) | [Back to Index](00_INDEX.md) | [Next >](18_Bitwise_Trie_Java_Complete.md)
 
 # Chapter 17 — DSA Java Implementation Mastery: The Language-Specific Reasoning
 
@@ -1040,4 +1040,4 @@ Map<String, Integer> map = new HashMap<>(capacity, 0.75f);  // Avoid rehashing
 
 ---
 
-> **Navigation**: [< DSA Deep Reasoning](16_DSA_Deep_Reasoning.md) | [Back to Index](../00_MASTER_INDEX.md) | [Sliding Window >](../04_Patterns_Templates/01_Sliding_Window.md)
+> **Navigation**: [< Previous](16_DSA_Deep_Reasoning.md) | [Back to Index](00_INDEX.md) | [Next >](18_Bitwise_Trie_Java_Complete.md)

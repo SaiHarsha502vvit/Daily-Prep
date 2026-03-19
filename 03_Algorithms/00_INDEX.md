@@ -48,11 +48,16 @@
 | 31 | [DSA Deep Reasoning](16_DSA_Deep_Reasoning.md) | Why algorithms work — proofs & intuition |
 | 32 | [Java Implementation](17_DSA_Java_Implementation_Mastery.md) | Java-specific DSA implementation |
 
+### Java Deep Additions
+| 33 | [Bitwise Trie Java Complete](18_Bitwise_Trie_Java_Complete.md) | Maximum/minimum XOR, offline queries, counting variants |
+| 34 | [Prefix Family Java Complete](19_Prefix_Sum_Prefix_XOR_2D_Prefix_Java_Complete.md) | Prefix sum, prefix xor, 2D prefix, difference arrays |
+| 35 | [PDF Coverage Map (Java)](20_DSA_Patterns_PDF_Java_Coverage_Map.md) | DSA patterns to Java chapter mapping + revision route |
+
 ## Roadmap
 ```
 Thinking → Sorting → Divide&Conquer → Recursion → DP → Trees → Graphs
     ↓
-Greedy → Strings → Advanced DS → Number Theory → Complete Guides → Deep Reasoning
+Greedy → Strings → Advanced DS → Number Theory → Complete Guides → Java Deep Additions
 ```
 
 ---

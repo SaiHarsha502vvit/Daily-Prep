@@ -1,4 +1,4 @@
-> **Navigation**: [⬅ SQL Foundations from Notes](18_SQL_Foundations_Commands_Operators_Functions.md) | [📚 Index](00_INDEX.md) | [Back to Start ➡](10_DSA_Problems_Arrays_Strings_Hashing.md)
+> **Navigation**: [⬅ SQL Foundations from Notes](18_SQL_Foundations_Commands_Operators_Functions.md) | [📚 Index](00_INDEX.md) | [Next: Bitwise Trie Interview Guide ➡](20_Bitwise_Trie_Interview_Guide.md)
 
 # File 19 — DSA Permutations & Combinations: Math-First Logic, Interview Narration, Then Coding
 
@@ -367,4 +367,4 @@ When only counts are needed (not full generated sets), avoid recursive generatio
 
 ---
 
-> **Navigation**: [⬅ SQL Foundations from Notes](18_SQL_Foundations_Commands_Operators_Functions.md) | [📚 Index](00_INDEX.md) | [Back to Start ➡](10_DSA_Problems_Arrays_Strings_Hashing.md)
+> **Navigation**: [⬅ SQL Foundations from Notes](18_SQL_Foundations_Commands_Operators_Functions.md) | [📚 Index](00_INDEX.md) | [Next: Bitwise Trie Interview Guide ➡](20_Bitwise_Trie_Interview_Guide.md)

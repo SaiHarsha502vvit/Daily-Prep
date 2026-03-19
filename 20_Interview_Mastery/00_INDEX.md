@@ -36,6 +36,9 @@
 | 17 | [SQL: Analytics, Real-World, Design](17_SQL_Problems_Analytics_RealWorld_Design.md) | Retention, Funnel, Cohort, DAU/MAU, Friend Recs, Login Streaks, Schema Design, +10 more |
 | 18 | [SQL: Foundations from Notes (Commands, Operators, Functions)](18_SQL_Foundations_Commands_Operators_Functions.md) | DDL/DML/DCL/TCL, ALTER/MODIFY/RENAME, DROP vs TRUNCATE vs DELETE, operators, joins, constraints, indexes, CTE/window bridge |
 | 19 | [DSA: Permutations & Combinations (Math-First Interview Style)](19_DSA_Permutations_Combinations_Interview_Math.md) | nPr/nCr logic, order-vs-selection decision tree, pruning rules, real-world mapping, interview narration templates |
+| 20 | [DSA: Bitwise Trie Interview Guide](20_Bitwise_Trie_Interview_Guide.md) | Bitwise trie logic, max XOR strategy, constrained XOR queries, prefix-XOR trie variants, communication scripts |
+| 21 | [DSA: Prefix, Prefix XOR, 2D Prefix Cheat Sheet](21_Prefix_PrefixXOR_2DPrefix_CheatSheet.md) | Unified formulas, decision guide, range query logic, difference array, interview narration templates |
+| 22 | [DSA: PDF Topic to Workspace Map](22_DSA_PDF_Topic_to_Workspace_Map.md) | One-page mapping of DSA Patterns PDF topics to workspace files with quick revision routes |
 
 ---
 
@@ -96,8 +99,11 @@
 | Day 15 | SQL problem practice | File 17 (Analytics, Real-World, Schema Design) |
 | Day 16 | SQL fundamentals deep dive | File 18 (commands, operators, functions, constraints, indexes, alternatives) |
 | Day 17 | DSA combinatorics deep dive | File 19 (permutations/combinations in math-first interview style) |
+| Day 18 | DSA advanced bit patterns | File 20 (Bitwise Trie interview logic + variants) |
+| Day 19 | DSA range-query essentials | File 21 (Prefix Sum, Prefix XOR, 2D Prefix unified) |
+| Day 20 | Coverage audit + final revision | File 22 (PDF topic map + quick revision routes) |
 
-> **After Day 17**: Follow the 30-day mock interview schedule in File 09 for continued practice.
+> **After Day 20**: Follow the 30-day mock interview schedule in File 09 for continued practice.
 
 ---
 

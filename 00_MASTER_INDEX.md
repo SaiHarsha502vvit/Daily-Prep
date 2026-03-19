@@ -2,7 +2,7 @@
 
 # MASTER INDEX — Complete DSA, SQL, Spring Boot & Career Preparation
 
-**Last Updated: March 2026 | 330+ files | 19 folders**
+**Last Updated: March 2026 | 336+ files | 19 folders**
 
 ---
 
@@ -24,7 +24,7 @@
 | **TypeScript (3 chapters)** | [17_TypeScript/](#typescript-3-chapters) |
 | **CSS Complete (6 chapters)** | [18_CSS_Complete/](#css-complete-6-chapters) |
 | **Frontend Integration (7 chapters)** | [19_Frontend_Integration/](#frontend-integration-7-chapters) |
-| **🏆 Interview Mastery (19 capstone files)** | [20_Interview_Mastery/](#interview-mastery-capstone-19-files--new) |
+| **🏆 Interview Mastery (22 capstone files)** | [20_Interview_Mastery/](#interview-mastery-capstone-22-files--new) |
 | **⚡ Deep Reasoning — Stop Freezing!** | [All 14 Deep Reasoning files](#deep-reasoning--senior-engineer-thinking-new) |
 | **Concurrency & Coroutines** | [13_Developer_Essentials/19_Concurrency_Models_Coroutines.md](13_Developer_Essentials/19_Concurrency_Models_Coroutines.md) |
 | Java Concurrency + Modern Java | [07_Modern_Java/](#modern-java--spring-boot) |
@@ -59,7 +59,7 @@ Daily-Prep/
 │   ├── 03_Collections_Java.md          → Java Collections Framework
 │   └── 04_2D_Arrays_Matrix.md          → Matrix traversal, rotation, spiral
 │
-├── 03_Algorithms/                       (26 chapter files)
+├── 03_Algorithms/                       (29 chapter files)
 │   ├── 01_Algorithm_Thinking.md         → Problem-solving mindset & Big O
 │   ├── 02a_Sorting_Fundamentals.md      → Bubble, Selection, Insertion, Merge Sort
 │   ├── 02b_Sorting_Advanced.md          → Quick, Heap, Counting, Radix, Binary Search
@@ -91,7 +91,10 @@ Daily-Prep/
 │   ├── 14_Union_Find_DSU_Complete.md    → Disjoint Set Union, path compression, rank
 │   ├── 15_Monotonic_Stack_Queue_Complete.md → NGE, histogram, trapping rain water
 │   ├── 16_DSA_Deep_Reasoning.md         → 🆕 10 DSA "freeze moments" with deep reasoning & analogies
-│   └── 17_DSA_Java_Implementation_Mastery.md → 🆕 Java-specific DSA: Collections, PQ gotchas, TreeMap, Comparator, sort internals
+│   ├── 17_DSA_Java_Implementation_Mastery.md → 🆕 Java-specific DSA: Collections, PQ gotchas, TreeMap, Comparator, sort internals
+│   ├── 18_Bitwise_Trie_Java_Complete.md → 🆕 Bitwise Trie in Java: max/min XOR, offline queries, counting variants
+│   ├── 19_Prefix_Sum_Prefix_XOR_2D_Prefix_Java_Complete.md → 🆕 Prefix Sum/XOR/2D Prefix + difference arrays in Java
+│   └── 20_DSA_Patterns_PDF_Java_Coverage_Map.md → 🆕 PDF pattern-to-chapter mapping + 21-day Java revision route
 │
 ├── 04_Patterns_Templates/              (23 files)
 │   ├── 01_Sliding_Window.md             → Fixed & variable window techniques
@@ -715,7 +718,7 @@ Daily-Prep/
 - **🆕** [Web Performance & Core Web Vitals](19_Frontend_Integration/06_Web_Performance_CoreWebVitals.md) — LCP/INP/CLS optimization, resource hints, image/font optimization, bundle splitting
 - **🆕** [Web Accessibility (a11y)](19_Frontend_Integration/07_Web_Accessibility_A11y.md) — ARIA, semantic HTML, keyboard navigation, focus management, color contrast, live regions
 
-### Interview Mastery — Capstone (19 files — NEW!)
+### Interview Mastery — Capstone (22 files — NEW!)
 - **🏆 Start Here**: [Index & Reading Order](20_Interview_Mastery/00_INDEX.md)
 - [The Interview Brain](20_Interview_Mastery/01_The_Interview_Brain.md) — Master mindset, first 60 seconds protocol, parameter recognition, decision engine, communication framework
 - [Constraint → Algorithm Map](20_Interview_Mastery/02_Constraint_to_Algorithm_Map.md) — 50+ algorithms by input size, operations budget (10⁸ rule), SQL & system design constraints
@@ -736,6 +739,9 @@ Daily-Prep/
 - **🆕** [SQL Problems: Analytics, Real-World, Design](20_Interview_Mastery/17_SQL_Problems_Analytics_RealWorld_Design.md) — 17 problems with schema design patterns
 - **🆕** [SQL Foundations from Notes](20_Interview_Mastery/18_SQL_Foundations_Commands_Operators_Functions.md) — Command families, operators, joins, constraints, indexes, syntax alternatives, and interview communication scripts
 - **🆕** [DSA Permutations & Combinations (Math-First)](20_Interview_Mastery/19_DSA_Permutations_Combinations_Interview_Math.md) — nPr/nCr logic, pruning strategy, real-world mapping, and plain-language interview narration
+- **🆕** [Bitwise Trie Interview Guide](20_Interview_Mastery/20_Bitwise_Trie_Interview_Guide.md) — Bit-level trie pattern for max XOR, constrained XOR queries, and communication templates
+- **🆕** [Prefix Sum/XOR/2D Prefix Cheat Sheet](20_Interview_Mastery/21_Prefix_PrefixXOR_2DPrefix_CheatSheet.md) — Unified range-query formulas, decision guide, and interview scripts
+- **🆕** [DSA Patterns PDF to Workspace Map](20_Interview_Mastery/22_DSA_PDF_Topic_to_Workspace_Map.md) — One-page coverage map and quick revision routes
 
 ### Deep Reasoning — Senior Engineer Thinking (NEW!)
 
@@ -817,12 +823,12 @@ Open [07_Modern_Java/Ch25_Spring_Boot_50Day_Plan.md](07_Modern_Java/Ch25_Spring_
 | 17_TypeScript | 4 | TS standalone: Foundations, Advanced Types, Patterns, Deep Reasoning |
 | 18_CSS_Complete | 5 | Visual CSS: Foundations, Layout, Animations, Architecture, Deep Reasoning |
 | 19_Frontend_Integration | 4 | React+JS+CSS combined, Debugging, Build Tools, Mental Models |
-| 20_Interview_Mastery | 20 | Cross-domain capstone: Interview Brain, Patterns, SQL, System Design, Mock Interviews + 10 advanced modules/problem banks |
-| **TOTAL** | **~330** | |
+| 20_Interview_Mastery | 23 | Cross-domain capstone: Interview Brain, Patterns, SQL, System Design, Mock Interviews + 13 advanced modules/problem banks |
+| **TOTAL** | **~336** | |
 
 ---
 
-_Last restructured: March 2026 — Phase 31: Added File 18 (SQL fundamentals from notes: commands/operators/functions/constraints/indexes + alternatives + interview communication) and File 19 (DSA permutations/combinations math-first interview chapter) to 20_Interview_Mastery/. Phase 30: Added 8 problem banks (files 10–17) with 150+ problems using 5W+H logic-first explanations across DSA & SQL topics. Phase 29: Interview Mastery capstone (9 cross-domain files). Phase 25: Full textbook restructure. All files renamed to sequential chapter order. 122 files renamed across 5 folders. 15 per-folder 00_INDEX.md roadmaps created. 08_SQL_Database merged into 08_SQL. Cross-references updated across all 386 .md files. 330+ total files across 19 folders._
+_Last restructured: March 2026 — Phase 33: Added Java-focused chapters in 03_Algorithms: File 18 (Bitwise Trie Java Complete), File 19 (Prefix Sum/XOR/2D Prefix Java Complete), and File 20 (DSA Patterns PDF to Java Coverage Map). Phase 32: Added File 20 (Bitwise Trie interview guide), File 21 (Prefix Sum/XOR/2D Prefix unified cheat sheet), and File 22 (DSA Patterns PDF to workspace map) to 20_Interview_Mastery/. Phase 31: Added File 18 (SQL fundamentals from notes) and File 19 (DSA permutations/combinations math-first). Phase 30: Added 8 problem banks (files 10–17) with 150+ problems using 5W+H logic-first explanations across DSA & SQL topics. Phase 29: Interview Mastery capstone (9 cross-domain files). Phase 25: Full textbook restructure. All files renamed to sequential chapter order. 122 files renamed across 5 folders. 15 per-folder 00_INDEX.md roadmaps created. 08_SQL_Database merged into 08_SQL. 336+ total files across 19 folders._
 
 
 ---
