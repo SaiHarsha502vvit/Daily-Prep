@@ -7,9 +7,9 @@
 ## 📚 Part 0: Complete Understanding
 
 ```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                    SLIDING WINDOW - COMPLETE UNDERSTANDING                   ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                    SLIDING WINDOW - COMPLETE UNDERSTANDING                   │
+└──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ WHAT IS SLIDING WINDOW?                                                      │
@@ -78,7 +78,7 @@
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ WHEN TO USE SLIDING WINDOW?                                                  │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ ✅ USE SLIDING WINDOW WHEN (Signals in problem):                              │
+│ ✅ USE SLIDING WINDOW WHEN (Signals in problem):                             │
 │    • "Contiguous subarray/substring"                                         │
 │    • "Of size k" or "at most k"                                              │
 │    • "Maximum/minimum sum/length"                                            │
@@ -927,6 +927,16 @@ You're ready. 🚀
 _Created: January 24, 2026_  
 _Based on your breakthrough understanding_
 
+
+### 🔗 Cross-References — Navigate the Ecosystem
+
+| Topic | Related Content |
+|---|---|
+| Sliding window practice | [Problem Solving — Sliding Window](../05_Problem_Solving/05_Sliding_Window.md) |
+| Arrays (underlying DS) | [Arrays](../02_Data_Structures/01b_Arrays.md) |
+| Two Pointers (related) | [Two Pointers Patterns](../04_Patterns_Templates/07_TwoPointers.md) |
+| HashMaps in variable window | [HashTable](../02_Data_Structures/01e_HashTable.md) |
+| Sliding window in ML (mini-batch) | [ML Fundamentals](../21_Python_ML_DL_NLP/05_ML_Fundamentals.md) |
 
 ---
 

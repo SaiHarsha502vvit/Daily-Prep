@@ -521,6 +521,218 @@ function take(gen, n) {
     return result;
 }
 take(naturalNumbers(), 5); // [1, 2, 3, 4, 5]
+
+// ASYNC GENERATORS — combine generators + async/await:
+async function* fetchPages(url) {
+    let page = 1;
+    while (true) {
+        const response = await fetch(`${url}?page=${page}`);
+        const data = await response.json();
+        if (data.length === 0) return; // No more pages
+        yield data;
+        page++;
+    }
+}
+
+// Consume with for await...of:
+for await (const pageData of fetchPages("/api/users")) {
+    console.log(`Got ${pageData.length} users`);
+    // Process each page as it arrives — no need to wait for ALL pages!
+}
+
+// GENERATOR DELEGATION (yield*):
+function* letters() { yield* "abc"; }   // yields 'a', 'b', 'c'
+function* numbers() { yield* [1, 2, 3]; } // yields 1, 2, 3
+function* combined() {
+    yield* letters();
+    yield* numbers();
+}
+[...combined()]; // ['a', 'b', 'c', 1, 2, 3]
+// yield* delegates to another iterable/generator
+```
+
+---
+
+## 7b. Symbols — The Hidden Language of JavaScript
+
+> _Content enriched from Educative "Front End Developer" — Symbols & Well-Known Symbols_
+
+```javascript
+// SYMBOL: A unique, immutable primitive. Never collides with anything.
+const s1 = Symbol("description");
+const s2 = Symbol("description");
+s1 === s2; // false! Each Symbol() call creates a UNIQUE value.
+
+// WHY: Create property keys that can't be accidentally overwritten.
+const id = Symbol("id");
+const user = { name: "Harsha", [id]: 42 };
+user[id]; // 42
+user.id;  // undefined — Symbol('id') ≠ string "id"
+
+// Symbol properties are HIDDEN from normal iteration:
+Object.keys(user);                // ["name"] — no Symbol!
+JSON.stringify(user);             // '{"name":"Harsha"}' — no Symbol!
+Object.getOwnPropertySymbols(user); // [Symbol(id)] — explicit access only
+
+// WELL-KNOWN SYMBOLS — JavaScript's internal protocols:
+
+// Symbol.iterator — makes objects iterable (for...of)
+class Range {
+    constructor(start, end) { this.start = start; this.end = end; }
+    [Symbol.iterator]() {
+        let current = this.start;
+        const end = this.end;
+        return {
+            next() {
+                return current <= end
+                    ? { value: current++, done: false }
+                    : { done: true };
+            }
+        };
+    }
+}
+[...new Range(1, 5)]; // [1, 2, 3, 4, 5]
+
+// Symbol.toPrimitive — control type coercion
+class Money {
+    constructor(amount, currency) {
+        this.amount = amount; this.currency = currency;
+    }
+    [Symbol.toPrimitive](hint) {
+        if (hint === "number") return this.amount;
+        if (hint === "string") return `${this.amount} ${this.currency}`;
+        return this.amount; // default
+    }
+}
+const price = new Money(42, "USD");
++price;           // 42 (number hint)
+`${price}`;       // "42 USD" (string hint)
+price + 10;       // 52 (default hint)
+
+// Symbol.hasInstance — customize instanceof behavior
+// Symbol.species — control constructor used for derived objects
+// Symbol.asyncIterator — for await...of support
+```
+
+---
+
+## 7c. WeakRef & FinalizationRegistry — Memory Management
+
+> _Content enriched from Educative "Front End Developer" — Memory Management_
+
+```javascript
+// WEAKREF: A reference that does NOT prevent garbage collection.
+// Regular reference: keeps object alive as long as reference exists.
+// WeakRef: object CAN be garbage collected even while WeakRef exists.
+
+let expensiveObject = { data: new Array(1_000_000).fill("x") };
+const weakRef = new WeakRef(expensiveObject);
+
+// Access the object (might be garbage collected!)
+const obj = weakRef.deref();
+if (obj) {
+    console.log("Object still alive:", obj.data.length);
+} else {
+    console.log("Object was garbage collected");
+}
+
+// Set original reference to null → now GC CAN collect it
+expensiveObject = null;
+// weakRef.deref() will eventually return undefined
+
+// REAL-WORLD USE: cache that auto-cleans itself
+class WeakCache {
+    #cache = new Map();
+    
+    get(key) {
+        const ref = this.#cache.get(key);
+        if (!ref) return undefined;
+        const value = ref.deref();
+        if (!value) this.#cache.delete(key); // clean up dead entry
+        return value;
+    }
+    
+    set(key, value) {
+        this.#cache.set(key, new WeakRef(value));
+    }
+}
+
+// FINALIZATION REGISTRY: callback when object is garbage collected
+const registry = new FinalizationRegistry((heldValue) => {
+    console.log(`Object with key "${heldValue}" was garbage collected`);
+    // Clean up associated resources (close file handle, unsubscribe, etc.)
+});
+
+let resource = { connection: "db://prod" };
+registry.register(resource, "db-connection"); // Register for cleanup
+resource = null; // Eventually: "Object with key "db-connection" was GC'd"
+```
+
+---
+
+## 7d. Advanced Proxy Patterns
+
+> _Content enriched from Educative "Front End Developer" — Reactive Systems_
+
+```javascript
+// REACTIVE STATE (Vue 3 simplified):
+function reactive(target) {
+    const subscribers = new Map(); // property → Set of callbacks
+    
+    return new Proxy(target, {
+        get(obj, prop) {
+            // Track which properties are READ (for dependency tracking)
+            return obj[prop];
+        },
+        set(obj, prop, value) {
+            obj[prop] = value;
+            // Notify subscribers of this property
+            if (subscribers.has(prop)) {
+                subscribers.get(prop).forEach(fn => fn());
+            }
+            return true;
+        }
+    });
+}
+
+// API CLIENT with dynamic methods:
+const api = new Proxy({}, {
+    get(target, method) {
+        return async (params) => {
+            const response = await fetch(`/api/${method}`, {
+                method: 'POST',
+                body: JSON.stringify(params),
+            });
+            return response.json();
+        };
+    }
+});
+
+// Usage: api.users({ limit: 10 }) → POST /api/users
+// Usage: api.products({ category: "electronics" }) → POST /api/products
+// Any method name works — Proxy generates the handler dynamically!
+
+// VALIDATION PROXY:
+function createValidated(rules) {
+    return new Proxy({}, {
+        set(target, prop, value) {
+            const rule = rules[prop];
+            if (rule && !rule.validate(value)) {
+                throw new TypeError(`Invalid value for ${prop}: ${rule.message}`);
+            }
+            target[prop] = value;
+            return true;
+        }
+    });
+}
+
+const form = createValidated({
+    email: { validate: v => v.includes("@"), message: "Must be valid email" },
+    age: { validate: v => v >= 0 && v <= 150, message: "Must be 0-150" },
+});
+
+form.email = "user@test.com"; // OK
+// form.age = -5;             // TypeError: Must be 0-150
 ```
 
 ---

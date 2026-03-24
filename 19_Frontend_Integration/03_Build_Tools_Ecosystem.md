@@ -226,28 +226,28 @@ flowchart TD
 ## 3. Babel — The Translator
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT BABEL DOES — Translate modern JS to older JS:                  ║
-║                                                                      ║
-║  YOUR CODE:                        BABEL OUTPUT:                     ║
-║                                                                      ║
-║  const greet = (name) =>           var greet = function(name) {      ║
-║      `Hello, ${name}!`;               return "Hello, " + name        ║
-║                                            + "!";                    ║
-║                                        };                            ║
-║                                                                      ║
-║  const user = data?.user;          var _data;                        ║
-║                                    var user = (_data = data)         ║
-║                                       !== null && _data !==          ║
-║                                       void 0 ? _data.user            ║
-║                                       : void 0;                      ║
-║                                                                      ║
-║  WHY: Older browsers (and some devices) don't support modern         ║
-║  syntax. Babel ensures your code works everywhere.                   ║
-║                                                                      ║
-║  MODERN ALTERNATIVE: SWC (written in Rust, 20x faster)               ║
-║  → Vite uses SWC/esbuild instead of Babel by default                 ║
-╚══════════════════════════════════════════════════════════════════════╝
+┌──────────────────────────────────────────────────────────────────────┐
+│  WHAT BABEL DOES — Translate modern JS to older JS:                  │
+│                                                                      │
+│  YOUR CODE:                        BABEL OUTPUT:                     │
+│                                                                      │
+│  const greet = (name) =>           var greet = function(name) {      │
+│      `Hello, ${name}!`;               return "Hello, " + name        │
+│                                            + "!";                    │
+│                                        };                            │
+│                                                                      │
+│  const user = data?.user;          var _data;                        │
+│                                    var user = (_data = data)         │
+│                                       !== null && _data !==          │
+│                                       void 0 ? _data.user            │
+│                                       : void 0;                      │
+│                                                                      │
+│  WHY: Older browsers (and some devices) don't support modern         │
+│  syntax. Babel ensures your code works everywhere.                   │
+│                                                                      │
+│  MODERN ALTERNATIVE: SWC (written in Rust, 20x faster)               │
+│  → Vite uses SWC/esbuild instead of Babel by default                 │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 **Flow:**
@@ -287,25 +287,25 @@ flowchart TD
 ### What Babel Does with JSX
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  JSX IS NOT JAVASCRIPT. Browsers cannot run it.                      ║
-║  Babel (or SWC) transforms JSX → function calls:                     ║
-║                                                                      ║
-║  WHAT YOU WRITE:                                                     ║
-║  <div className="card">                                              ║
-║      <h1>{title}</h1>                                                ║
-║      <p>Hello</p>                                                    ║
-║  </div>                                                              ║
-║                                                                      ║
-║  WHAT BROWSER RECEIVES:                                              ║
-║  React.createElement("div", { className: "card" },                   ║
-║      React.createElement("h1", null, title),                         ║
-║      React.createElement("p", null, "Hello")                         ║
-║  );                                                                  ║
-║                                                                      ║
-║  (React 17+ uses jsx() from react/jsx-runtime instead,               ║
-║   but same concept — JSX → function calls)                           ║
-╚══════════════════════════════════════════════════════════════════════╝
+┌──────────────────────────────────────────────────────────────────────┐
+│  JSX IS NOT JAVASCRIPT. Browsers cannot run it.                      │
+│  Babel (or SWC) transforms JSX → function calls:                     │
+│                                                                      │
+│  WHAT YOU WRITE:                                                     │
+│  <div className="card">                                              │
+│      <h1>{title}</h1>                                                │
+│      <p>Hello</p>                                                    │
+│  </div>                                                              │
+│                                                                      │
+│  WHAT BROWSER RECEIVES:                                              │
+│  React.createElement("div", { className: "card" },                   │
+│      React.createElement("h1", null, title),                         │
+│      React.createElement("p", null, "Hello")                         │
+│  );                                                                  │
+│                                                                      │
+│  (React 17+ uses jsx() from react/jsx-runtime instead,               │
+│   but same concept — JSX → function calls)                           │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 **Flow:**
@@ -547,20 +547,20 @@ flowchart TD
 ### Comparison Table
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  Feature           │ Webpack        │ Vite                           ║
-║  ──────────────────┼────────────────┼────────────────────────────    ║
-║  Dev startup       │ Slow (bundles) │ Instant (native ESM)           ║
-║  HMR speed         │ Seconds        │ Milliseconds                   ║
-║  Config            │ Complex        │ Minimal                        ║
-║  Production        │ Battle-tested  │ Uses Rollup (also solid)       ║
-║  Plugin ecosystem  │ Huge           │ Growing fast, Rollup compat    ║
-║  Learning curve    │ Steep          │ Low                            ║
-║  TypeScript        │ Needs loader   │ Built-in                       ║
-║  CSS Modules       │ Needs config   │ Built-in                       ║
-║  When to use       │ Legacy/complex │ New projects (2024+)           ║
-║  Used by           │ CRA, Next(old) │ Remix, Astro, SvelteKit        ║
-╚══════════════════════════════════════════════════════════════════════╝
+┌──────────────────────────────────────────────────────────────────────┐
+│  Feature           │ Webpack        │ Vite                           │
+│  ──────────────────┼────────────────┼────────────────────────────    │
+│  Dev startup       │ Slow (bundles) │ Instant (native ESM)           │
+│  HMR speed         │ Seconds        │ Milliseconds                   │
+│  Config            │ Complex        │ Minimal                        │
+│  Production        │ Battle-tested  │ Uses Rollup (also solid)       │
+│  Plugin ecosystem  │ Huge           │ Growing fast, Rollup compat    │
+│  Learning curve    │ Steep          │ Low                            │
+│  TypeScript        │ Needs loader   │ Built-in                       │
+│  CSS Modules       │ Needs config   │ Built-in                       │
+│  When to use       │ Legacy/complex │ New projects (2024+)           │
+│  Used by           │ CRA, Next(old) │ Remix, Astro, SvelteKit        │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 **Flow:**
@@ -604,26 +604,26 @@ flowchart TD
 ### Tree Shaking
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  TREE SHAKING — Remove unused code from bundles                      ║
-║                                                                      ║
-║  ANALOGY: You ordered a textbook, but you only need Chapter 3.       ║
-║  Tree shaking tears out the unused chapters before shipping.         ║
-║                                                                      ║
-║  // utils.ts — you wrote 3 functions                                 ║
-║  export function add(a, b) { return a + b; }                         ║
-║  export function subtract(a, b) { return a - b; }  // unused!        ║
-║  export function multiply(a, b) { return a * b; }  // unused!        ║
-║                                                                      ║
-║  // App.tsx — you only imported 1                                    ║
-║  import { add } from './utils';                                      ║
-║                                                                      ║
-║  RESULT: subtract and multiply are REMOVED from final bundle.        ║
-║                                                                      ║
-║  REQUIRES: ES Module syntax (import/export, NOT require)             ║
-║  WHY: ES modules are statically analyzable — bundler can see         ║
-║       at build time what's used and what's not.                      ║
-╚══════════════════════════════════════════════════════════════════════╝
+┌──────────────────────────────────────────────────────────────────────┐
+│  TREE SHAKING — Remove unused code from bundles                      │
+│                                                                      │
+│  ANALOGY: You ordered a textbook, but you only need Chapter 3.       │
+│  Tree shaking tears out the unused chapters before shipping.         │
+│                                                                      │
+│  // utils.ts — you wrote 3 functions                                 │
+│  export function add(a, b) { return a + b; }                         │
+│  export function subtract(a, b) { return a - b; }  // unused!        │
+│  export function multiply(a, b) { return a * b; }  // unused!        │
+│                                                                      │
+│  // App.tsx — you only imported 1                                    │
+│  import { add } from './utils';                                      │
+│                                                                      │
+│  RESULT: subtract and multiply are REMOVED from final bundle.        │
+│                                                                      │
+│  REQUIRES: ES Module syntax (import/export, NOT require)             │
+│  WHY: ES modules are statically analyzable — bundler can see         │
+│       at build time what's used and what's not.                      │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 **Flow:**
@@ -663,32 +663,32 @@ flowchart TD
 ### Code Splitting
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  CODE SPLITTING — Load only what's needed, when needed               ║
-║                                                                      ║
-║  WITHOUT Splitting:                                                  ║
-║  User visits login page → downloads ENTIRE app (5MB)                 ║
-║  Including admin dashboard, charts, reports they'll never use        ║
-║                                                                      ║
-║  WITH Splitting:                                                     ║
-║  User visits login page → downloads login chunk (50KB)               ║
-║  User navigates to dashboard → downloads dashboard chunk (200KB)     ║
-║  Admin page? Only loaded if user is admin                            ║
-║                                                                      ║
-║  HOW IN REACT:                                                       ║
-║  const Dashboard = React.lazy(() => import('./pages/Dashboard'));    ║
-║  const AdminPanel = React.lazy(() => import('./pages/Admin'));       ║
-║                                                                      ║
-║  <Suspense fallback={<Spinner />}>                                   ║
-║      <Routes>                                                        ║
-║          <Route path="/dashboard" element={<Dashboard />} />         ║
-║          <Route path="/admin" element={<AdminPanel />} />            ║
-║      </Routes>                                                       ║
-║  </Suspense>                                                         ║
-║                                                                      ║
-║  Each lazy import creates a SEPARATE chunk file.                     ║
-║  Browser downloads it only when that route is visited.               ║
-╚══════════════════════════════════════════════════════════════════════╝
+┌──────────────────────────────────────────────────────────────────────┐
+│  CODE SPLITTING — Load only what's needed, when needed               │
+│                                                                      │
+│  WITHOUT Splitting:                                                  │
+│  User visits login page → downloads ENTIRE app (5MB)                 │
+│  Including admin dashboard, charts, reports they'll never use        │
+│                                                                      │
+│  WITH Splitting:                                                     │
+│  User visits login page → downloads login chunk (50KB)               │
+│  User navigates to dashboard → downloads dashboard chunk (200KB)     │
+│  Admin page? Only loaded if user is admin                            │
+│                                                                      │
+│  HOW IN REACT:                                                       │
+│  const Dashboard = React.lazy(() => import('./pages/Dashboard'));    │
+│  const AdminPanel = React.lazy(() => import('./pages/Admin'));       │
+│                                                                      │
+│  <Suspense fallback={<Spinner />}>                                   │
+│      <Routes>                                                        │
+│          <Route path="/dashboard" element={<Dashboard />} />         │
+│          <Route path="/admin" element={<AdminPanel />} />            │
+│      </Routes>                                                       │
+│  </Suspense>                                                         │
+│                                                                      │
+│  Each lazy import creates a SEPARATE chunk file.                     │
+│  Browser downloads it only when that route is visited.               │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 **Flow:**
@@ -740,22 +740,22 @@ flowchart TD
 ### Source Maps
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  SOURCE MAPS — Bridge between minified and original code             ║
-║                                                                      ║
-║  Production bundle: (minified, unreadable)                           ║
-║  var a=function(t){return t.map(function(e){return e*2})};           ║
-║                                                                      ║
-║  Your original:                                                      ║
-║  const doubleAll = (numbers: number[]) =>                            ║
-║      numbers.map(n => n * 2);                                        ║
-║                                                                      ║
-║  Source map (.js.map) contains the MAPPING between them.             ║
-║  DevTools uses it to show YOUR code in debugging.                    ║
-║                                                                      ║
-║  ⚠ Don't expose source maps in production to users!                  ║
-║  Use: devtool: 'hidden-source-map' (upload to error tracker)         ║
-╚══════════════════════════════════════════════════════════════════════╝
+┌──────────────────────────────────────────────────────────────────────┐
+│  SOURCE MAPS — Bridge between minified and original code             │
+│                                                                      │
+│  Production bundle: (minified, unreadable)                           │
+│  var a=function(t){return t.map(function(e){return e*2})};           │
+│                                                                      │
+│  Your original:                                                      │
+│  const doubleAll = (numbers: number[]) =>                            │
+│      numbers.map(n => n * 2);                                        │
+│                                                                      │
+│  Source map (.js.map) contains the MAPPING between them.             │
+│  DevTools uses it to show YOUR code in debugging.                    │
+│                                                                      │
+│  ⚠ Don't expose source maps in production to users!                  │
+│  Use: devtool: 'hidden-source-map' (upload to error tracker)         │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 **Flow:**

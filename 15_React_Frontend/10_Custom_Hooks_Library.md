@@ -73,7 +73,7 @@ function useLocalStorage(key, initialValue) {
   return [storedValue, setValue, removeValue];
 }
 
-// ═══ USAGE ═══
+// ─── USAGE ───
 function ThemeSelector() {
   const [theme, setTheme] = useLocalStorage('theme', 'light');
 
@@ -148,7 +148,7 @@ function useFetch(url, options = {}) {
   return { data, error, loading };
 }
 
-// ═══ USAGE ═══
+// ─── USAGE ───
 function UserProfile({ userId }) {
   const { data: user, error, loading } = useFetch(`/api/users/${userId}`);
 
@@ -190,7 +190,7 @@ function useDebounce(value, delay = 300) {
   return debouncedValue;
 }
 
-// ═══ USAGE ═══
+// ─── USAGE ───
 function SearchBar() {
   const [query, setQuery] = useState('');
   const debouncedQuery = useDebounce(query, 300);
@@ -213,7 +213,7 @@ function SearchBar() {
 
 ```
   DEBOUNCE vs THROTTLE:
-  ═════════════════════
+  ─────────────────────
   
   Debounce: Wait until user STOPS, then fire.
             ___________fire
@@ -251,7 +251,7 @@ function useThrottle(value, interval = 200) {
   return throttledValue;
 }
 
-// ═══ USAGE ═══
+// ─── USAGE ───
 function ScrollTracker() {
   const [scrollY, setScrollY] = useState(0);
   const throttledScroll = useThrottle(scrollY, 100);
@@ -302,7 +302,7 @@ function useClickOutside(handler) {
   return ref;
 }
 
-// ═══ USAGE ═══
+// ─── USAGE ───
 function Dropdown({ onClose }) {
   const dropdownRef = useClickOutside(() => onClose());
 
@@ -347,7 +347,7 @@ function useMediaQuery(query) {
   return matches;
 }
 
-// ═══ USAGE ═══
+// ─── USAGE ───
 function NavigationBar() {
   const isMobile = useMediaQuery('(max-width: 768px)');
   const prefersDark = useMediaQuery('(prefers-color-scheme: dark)');
@@ -393,7 +393,7 @@ function useWindowSize() {
   return size;
 }
 
-// ═══ USAGE ═══
+// ─── USAGE ───
 function ResponsiveGrid({ items }) {
   const { width } = useWindowSize();
   const columns = width > 1200 ? 4 : width > 768 ? 3 : width > 480 ? 2 : 1;
@@ -450,7 +450,7 @@ function useIntersectionObserver(options = {}) {
   return { ref: setNode, entry, isIntersecting: !!entry?.isIntersecting };
 }
 
-// ═══ USAGE 1: Lazy Load Images ═══
+// ─── USAGE 1: Lazy Load Images ───
 function LazyImage({ src, alt }) {
   const { ref, isIntersecting } = useIntersectionObserver({
     rootMargin: '200px', // Start loading 200px before visible
@@ -470,7 +470,7 @@ function LazyImage({ src, alt }) {
   );
 }
 
-// ═══ USAGE 2: Infinite Scroll ═══
+// ─── USAGE 2: Infinite Scroll ───
 function InfiniteList() {
   const [items, setItems] = useState([]);
   const [page, setPage] = useState(1);
@@ -514,7 +514,7 @@ function usePrevious(value) {
   return ref.current; // Returns value from PREVIOUS render
 }
 
-// ═══ USAGE ═══
+// ─── USAGE ───
 function PriceDisplay({ price }) {
   const previousPrice = usePrevious(price);
 
@@ -562,7 +562,7 @@ function useAsync(asyncFunction) {
   return { ...state, execute };
 }
 
-// ═══ USAGE ═══
+// ─── USAGE ───
 function SubmitForm() {
   const { data, error, loading, execute } = useAsync(async (formData) => {
     const res = await fetch('/api/submit', {
@@ -620,7 +620,7 @@ function useEventListener(eventName, handler, element) {
   }, [eventName, element]);
 }
 
-// ═══ USAGE ═══
+// ─── USAGE ───
 function App() {
   useEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeModal();
@@ -664,7 +664,7 @@ function useKeyPress(targetKey) {
   return isPressed;
 }
 
-// ═══ USAGE ═══
+// ─── USAGE ───
 function Game() {
   const up = useKeyPress('ArrowUp');
   const down = useKeyPress('ArrowDown');
@@ -708,7 +708,7 @@ function useCopyToClipboard() {
   return { copiedText, copy };
 }
 
-// ═══ USAGE ═══
+// ─── USAGE ───
 function CodeBlock({ code }) {
   const { copiedText, copy } = useCopyToClipboard();
 
@@ -740,7 +740,7 @@ function useToggle(initialValue = false) {
   return { value, toggle, setTrue, setFalse };
 }
 
-// ═══ USAGE ═══
+// ─── USAGE ───
 function Sidebar() {
   const { value: isOpen, toggle, setFalse: close } = useToggle(false);
 
@@ -784,7 +784,7 @@ function useOnScreen(ref, rootMargin = '0px') {
   return isVisible;
 }
 
-// ═══ USAGE: Animate on scroll into view ═══
+// ─── USAGE: Animate on scroll into view ───
 function AnimatedSection({ children }) {
   const ref = useRef(null);
   const isVisible = useOnScreen(ref, '-100px');
@@ -856,7 +856,7 @@ function useSearch(endpoint) {
   };
 }
 
-// ═══ USAGE ═══
+// ─── USAGE ───
 function SearchPage() {
   const { query, setQuery, results, loading, recentSearches } = useSearch('/api/products');
 
@@ -874,20 +874,20 @@ function SearchPage() {
 ```
 
 ```
-  ╔══════════════════════════════════════════════════════════════════╗
-  ║  RULES FOR CUSTOM HOOKS:                                        ║
-  ╠══════════════════════════════════════════════════════════════════╣
-  ║                                                                  ║
-  ║  1. Name MUST start with "use" (useXxx)                         ║
-  ║  2. Can call other hooks (useState, useEffect, custom hooks)    ║
-  ║  3. Must follow Rules of Hooks (no conditionals, no loops)      ║
-  ║  4. Each component gets its OWN copy of hook state              ║
-  ║  5. Return only what the consumer needs                         ║
-  ║  6. Accept config as parameters (make it flexible)              ║
-  ║  7. Handle cleanup in useEffect returns                         ║
-  ║  8. Use useCallback/useMemo for stable references               ║
-  ║                                                                  ║
-  ╚══════════════════════════════════════════════════════════════════╝
+  ┌──────────────────────────────────────────────────────────────────┐
+  │  RULES FOR CUSTOM HOOKS:                                        │
+  ├──────────────────────────────────────────────────────────────────┤
+  │                                                                  │
+  │  1. Name MUST start with "use" (useXxx)                         │
+  │  2. Can call other hooks (useState, useEffect, custom hooks)    │
+  │  3. Must follow Rules of Hooks (no conditionals, no loops)      │
+  │  4. Each component gets its OWN copy of hook state              │
+  │  5. Return only what the consumer needs                         │
+  │  6. Accept config as parameters (make it flexible)              │
+  │  7. Handle cleanup in useEffect returns                         │
+  │  8. Use useCallback/useMemo for stable references               │
+  │                                                                  │
+  └──────────────────────────────────────────────────────────────────┘
 ```
 
 ---

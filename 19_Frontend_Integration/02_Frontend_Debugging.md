@@ -534,36 +534,36 @@ flowchart LR
 ## 5. CORS Debugging — The Most Confusing Error
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT IS CORS?                                                       ║
-║                                                                      ║
-║  Browser Security Rule:                                              ║
-║  "A page from origin A cannot fetch data from origin B               ║
-║   unless origin B explicitly allows it."                             ║
-║                                                                      ║
-║  Origin = Protocol + Domain + Port                                   ║
-║  http://localhost:3000 ≠ http://localhost:8080 (different port!)     ║
-║                                                                      ║
-║  WHAT HAPPENS:                                                       ║
-║                                                                      ║
-║  Browser                          Server                             ║
-║    │                                │                                ║
-║    │ ─── OPTIONS (preflight) ────→ │  "Can I send a POST?"           ║
-║    │                                │                                ║
-║    │ ←── Headers: Allowed ────────│  Access-Control-Allow-Origin     ║
-║    │     (or NO headers = CORS     │  Access-Control-Allow-Methods   ║
-║    │      error in console)        │                                 ║
-║    │                                │                                ║
-║    │ ─── Actual POST ────────────→ │  (only if preflight passed)     ║
-║    │                                │                                ║
-║                                                                      ║
-║  FIXES:                                                              ║
-║  1. Backend: Add CORS headers (Access-Control-Allow-Origin: *)       ║
-║     • Spring: @CrossOrigin or WebMvcConfigurer                       ║
-║     • Express: cors() middleware                                     ║
-║  2. Dev: Use Vite proxy → vite.config.ts server.proxy                ║
-║  3. NOT a fix: browser extensions (only works for you)               ║
-╚══════════════════════════════════════════════════════════════════════╝
+┌──────────────────────────────────────────────────────────────────────┐
+│  WHAT IS CORS?                                                       │
+│                                                                      │
+│  Browser Security Rule:                                              │
+│  "A page from origin A cannot fetch data from origin B               │
+│   unless origin B explicitly allows it."                             │
+│                                                                      │
+│  Origin = Protocol + Domain + Port                                   │
+│  http://localhost:3000 ≠ http://localhost:8080 (different port!)     │
+│                                                                      │
+│  WHAT HAPPENS:                                                       │
+│                                                                      │
+│  Browser                          Server                             │
+│    │                                │                                │
+│    │ ─── OPTIONS (preflight) ────→ │  "Can I send a POST?"           │
+│    │                                │                                │
+│    │ ←── Headers: Allowed ────────│  Access-Control-Allow-Origin     │
+│    │     (or NO headers = CORS     │  Access-Control-Allow-Methods   │
+│    │      error in console)        │                                 │
+│    │                                │                                │
+│    │ ─── Actual POST ────────────→ │  (only if preflight passed)     │
+│    │                                │                                │
+│                                                                      │
+│  FIXES:                                                              │
+│  1. Backend: Add CORS headers (Access-Control-Allow-Origin: *)       │
+│     • Spring: @CrossOrigin or WebMvcConfigurer                       │
+│     • Express: cors() middleware                                     │
+│  2. Dev: Use Vite proxy → vite.config.ts server.proxy                │
+│  3. NOT a fix: browser extensions (only works for you)               │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 **Flow:**
@@ -605,39 +605,39 @@ flowchart TD
 ## 6. Debugging Checklist by Symptom
 
 ```
-╔═══════════════════════════════════════════════════════════════════╗
-║  SYMPTOM → WHERE TO LOOK → TOOL TO USE                            ║
-║                                                                   ║
-║  "Blank page"                                                     ║
-║  → Console tab for JS errors                                      ║
-║  → Network tab: is bundle loading?                                ║
-║  → Check root element exists in HTML                              ║
-║                                                                   ║
-║  "Data not showing"                                               ║
-║  → Network tab: is API returning data?                            ║
-║  → React DevTools: is state populated?                            ║
-║  → Console: check response shape vs expected shape                ║
-║                                                                   ║
-║  "Styling broken"                                                 ║
-║  → Elements tab: is CSS class applied?                            ║
-║  → Computed tab: which rule won?                                  ║
-║  → Check: CSS Module import correct? Class name typo?             ║
-║                                                                   ║
-║  "Click not working"                                              ║
-║  → Elements tab: is element covered by another? (z-index/overlay) ║
-║  → Console: errors in handler?                                    ║
-║  → Check: onClick={fn} not onClick={fn()}                         ║
-║                                                                   ║
-║  "Infinite loop / memory leak"                                    ║
-║  → Console: React warning about max update depth                  ║
-║  → Performance tab: see what's looping                            ║
-║  → Check: useEffect dependencies correct? Missing cleanup?        ║
-║                                                                   ║
-║  "Works locally, broken in production"                            ║
-║  → Network: different API URLs? Missing env vars?                 ║
-║  → Console: minified error? Use source maps                       ║
-║  → Check: environment-specific config (.env.production)           ║
-╚═══════════════════════════════════════════════════════════════════╝
+┌───────────────────────────────────────────────────────────────────┐
+│  SYMPTOM → WHERE TO LOOK → TOOL TO USE                            │
+│                                                                   │
+│  "Blank page"                                                     │
+│  → Console tab for JS errors                                      │
+│  → Network tab: is bundle loading?                                │
+│  → Check root element exists in HTML                              │
+│                                                                   │
+│  "Data not showing"                                               │
+│  → Network tab: is API returning data?                            │
+│  → React DevTools: is state populated?                            │
+│  → Console: check response shape vs expected shape                │
+│                                                                   │
+│  "Styling broken"                                                 │
+│  → Elements tab: is CSS class applied?                            │
+│  → Computed tab: which rule won?                                  │
+│  → Check: CSS Module import correct? Class name typo?             │
+│                                                                   │
+│  "Click not working"                                              │
+│  → Elements tab: is element covered by another? (z-index/overlay) │
+│  → Console: errors in handler?                                    │
+│  → Check: onClick={fn} not onClick={fn()}                         │
+│                                                                   │
+│  "Infinite loop / memory leak"                                    │
+│  → Console: React warning about max update depth                  │
+│  → Performance tab: see what's looping                            │
+│  → Check: useEffect dependencies correct? Missing cleanup?        │
+│                                                                   │
+│  "Works locally, broken in production"                            │
+│  → Network: different API URLs? Missing env vars?                 │
+│  → Console: minified error? Use source maps                       │
+│  → Check: environment-specific config (.env.production)           │
+└───────────────────────────────────────────────────────────────────┘
 ```
 
 **Flow:**

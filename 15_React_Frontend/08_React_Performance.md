@@ -260,24 +260,24 @@ const mutation = useMutation({
 ## Part 4: Environment & Deployment
 
 ```
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║  ENVIRONMENT VARIABLES (Vite):                                                   ║
-║  .env                → VITE_API_URL=http://localhost:8080                        ║
-║  .env.production     → VITE_API_URL=https://api.myapp.com                        ║
-║  Access: import.meta.env.VITE_API_URL                                            ║
-║  RULE: Only VITE_ prefixed vars are exposed to client!                           ║
-║                                                                                  ║
-║  BUILD & DEPLOY PIPELINE:                                                        ║
-║  npm run build → dist/ folder (static HTML/CSS/JS)                               ║
-║  Deploy dist/ to: Vercel, Netlify, S3+CloudFront, Nginx                          ║
-║                                                                                  ║
-║  ESSENTIAL TOOLING:                                                              ║
-║  Build: Vite (fast HMR, optimized builds)                                        ║
-║  Lint: ESLint + Prettier (consistent code)                                       ║
-║  Type check: tsc --noEmit (CI check)                                             ║
-║  Test: Vitest (unit/integration) + Playwright (E2E)                              ║
-║  CI: GitHub Actions → lint + type-check + test + build + deploy                  ║
-╚══════════════════════════════════════════════════════════════════════════════════╝
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│  ENVIRONMENT VARIABLES (Vite):                                                   │
+│  .env                → VITE_API_URL=http://localhost:8080                        │
+│  .env.production     → VITE_API_URL=https://api.myapp.com                        │
+│  Access: import.meta.env.VITE_API_URL                                            │
+│  RULE: Only VITE_ prefixed vars are exposed to client!                           │
+│                                                                                  │
+│  BUILD & DEPLOY PIPELINE:                                                        │
+│  npm run build → dist/ folder (static HTML/CSS/JS)                               │
+│  Deploy dist/ to: Vercel, Netlify, S3+CloudFront, Nginx                          │
+│                                                                                  │
+│  ESSENTIAL TOOLING:                                                              │
+│  Build: Vite (fast HMR, optimized builds)                                        │
+│  Lint: ESLint + Prettier (consistent code)                                       │
+│  Type check: tsc --noEmit (CI check)                                             │
+│  Test: Vitest (unit/integration) + Playwright (E2E)                              │
+│  CI: GitHub Actions → lint + type-check + test + build + deploy                  │
+└──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 **Flow:**

@@ -1553,30 +1553,30 @@ flowchart TD
 ## Summary
 
 ```
-╔═══════════════════════════════════════════════════════════════╗
-║            BINARY SEARCH - MASTER CHECKLIST                   ║
-╠═══════════════════════════════════════════════════════════════╣
-║                                                               ║
-║  1. MEMORIZE THE 3 TEMPLATES                                  ║
-║     - T1: Exact match (left <= right)                         ║
-║     - T2: First true (left < right, right = mid)              ║
-║     - T3: Last true (left < right, left = mid, upper mid)     ║
-║                                                               ║
-║  2. BINARY SEARCH ON ANSWER                                   ║
-║     - Define search space [min, max]                          ║
-║     - Define feasibility check                                ║
-║     - Binary search for optimal boundary                      ║
-║                                                               ║
-║  3. ROTATED ARRAY                                             ║
-║     - One half is always sorted                               ║
-║     - Check which half, then decide direction                 ║
-║                                                               ║
-║  4. AVOID COMMON BUGS                                         ║
-║     - Overflow: Use left + (right - left) / 2                 ║
-║     - Infinite loop: Match update with while condition        ║
-║     - Off-by-one: right = length vs length - 1                ║
-║                                                               ║
-╚═══════════════════════════════════════════════════════════════╝
+┌───────────────────────────────────────────────────────────────┐
+│            BINARY SEARCH - MASTER CHECKLIST                   │
+├───────────────────────────────────────────────────────────────┤
+│                                                               │
+│  1. MEMORIZE THE 3 TEMPLATES                                  │
+│     - T1: Exact match (left <= right)                         │
+│     - T2: First true (left < right, right = mid)              │
+│     - T3: Last true (left < right, left = mid, upper mid)     │
+│                                                               │
+│  2. BINARY SEARCH ON ANSWER                                   │
+│     - Define search space [min, max]                          │
+│     - Define feasibility check                                │
+│     - Binary search for optimal boundary                      │
+│                                                               │
+│  3. ROTATED ARRAY                                             │
+│     - One half is always sorted                               │
+│     - Check which half, then decide direction                 │
+│                                                               │
+│  4. AVOID COMMON BUGS                                         │
+│     - Overflow: Use left + (right - left) / 2                 │
+│     - Infinite loop: Match update with while condition        │
+│     - Off-by-one: right = length vs length - 1                │
+│                                                               │
+└───────────────────────────────────────────────────────────────┘
 ```
 
 **Flow:**

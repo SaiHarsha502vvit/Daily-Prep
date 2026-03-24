@@ -446,6 +446,18 @@ Time: **O(n²)** — too slow for real-time trading!
 
 > ✅ **After:** O(n) time complexity → real-time trading possible. This **HashMap complement** pattern is now used in ALL trading systems.
 
+### 🔗 Cross-References — Navigate the Ecosystem
+
+| Topic | Related Content |
+|---|---|
+| Array patterns & templates | [Array + Two Pointers](../04_Patterns_Templates/08_Array_Plus_TwoPointers.md) |
+| Array practice problems | [Problem Solving — Arrays](../05_Problem_Solving/04_Arrays.md) |
+| Sorting algorithms on arrays | [Sorting Fundamentals](../03_Algorithms/02a_Sorting_Fundamentals.md) |
+| Sliding window on arrays | [Sliding Window Mastery](../04_Patterns_Templates/01_Sliding_Window.md) |
+| Binary search on sorted arrays | [Binary Search Patterns](../04_Patterns_Templates/06_Binary_Search_Patterns.md) |
+| 2D arrays / Matrix | [2D Arrays & Matrix](04_2D_Arrays_Matrix.md) |
+| NumPy arrays (Python) | [NumPy & Pandas](../21_Python_ML_DL_NLP/03_NumPy_Pandas_Essentials.md) |
+
 ---
 
 > **Navigation**: [< Previous](01a_Memory_Foundations.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](01c_LinkedList.md)

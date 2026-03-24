@@ -415,30 +415,30 @@ function ProductList() {
 ### Pattern 3: Multi-Step Form Wizard
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  FORM WIZARD ARCHITECTURE:                                           ║
-║                                                                      ║
-║  Step 1         Step 2         Step 3         Step 4                 ║
-║  [Personal] → [Address]  → [Payment]  → [Review]                     ║
-║   ● ○ ○ ○      ● ● ○ ○      ● ● ● ○      ● ● ● ●                     ║
-║                                                                      ║
-║  State Shape:                                                        ║
-║  {                                                                   ║
-║    currentStep: 2,                                                   ║
-║    formData: {                                                       ║
-║      personal: { name, email, phone },     // validated              ║
-║      address: { street, city, zip },       // in progress            ║
-║      payment: { card, expiry, cvv },       // not started            ║
-║    },                                                                ║
-║    completedSteps: [1],                                              ║
-║  }                                                                   ║
-║                                                                      ║
-║  KEY DECISIONS:                                                      ║
-║  • Each step = separate component (code splitting friendly)          ║
-║  • Validate on step change (can't go forward with errors)            ║
-║  • Can go BACK without losing data                                   ║
-║  • useReducer is ideal (complex state transitions)                   ║
-╚══════════════════════════════════════════════════════════════════════╝
+┌──────────────────────────────────────────────────────────────────────┐
+│  FORM WIZARD ARCHITECTURE:                                           │
+│                                                                      │
+│  Step 1         Step 2         Step 3         Step 4                 │
+│  [Personal] → [Address]  → [Payment]  → [Review]                     │
+│   ● ○ ○ ○      ● ● ○ ○      ● ● ● ○      ● ● ● ●                     │
+│                                                                      │
+│  State Shape:                                                        │
+│  {                                                                   │
+│    currentStep: 2,                                                   │
+│    formData: {                                                       │
+│      personal: { name, email, phone },     // validated              │
+│      address: { street, city, zip },       // in progress            │
+│      payment: { card, expiry, cvv },       // not started            │
+│    },                                                                │
+│    completedSteps: [1],                                              │
+│  }                                                                   │
+│                                                                      │
+│  KEY DECISIONS:                                                      │
+│  • Each step = separate component (code splitting friendly)          │
+│  • Validate on step change (can't go forward with errors)            │
+│  • Can go BACK without losing data                                   │
+│  • useReducer is ideal (complex state transitions)                   │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 **Flow:**
@@ -544,41 +544,41 @@ function FormWizard() {
 ## 6. The Feature Implementation Checklist
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  BEFORE you write code for any new feature:                          ║
-║                                                                      ║
-║  □ 1. UNDERSTAND the requirement                                     ║
-║       What exactly should happen? List every behavior.               ║
-║                                                                      ║
-║  □ 2. DECOMPOSE into components                                      ║
-║       Draw the component tree on paper/whiteboard.                   ║
-║                                                                      ║
-║  □ 3. DEFINE types/interfaces                                        ║
-║       What data flows through? What can change?                      ║
-║                                                                      ║
-║  □ 4. IDENTIFY state ownership                                       ║
-║       Where does each piece of state live?                           ║
-║                                                                      ║
-║  □ 5. BUILD bottom-up                                                ║
-║       Start with smallest components (Button, Badge, Input).         ║
-║       Then compose into larger ones. Page component last.            ║
-║                                                                      ║
-║  □ 6. STYLE as you go                                                ║
-║       Each component gets its CSS Module right away.                 ║
-║       Don't "add styling later" — it never looks right.              ║
-║                                                                      ║
-║  □ 7. HANDLE edge cases                                              ║
-║       Loading, error, empty, too much data, mobile.                  ║
-║                                                                      ║
-║  □ 8. ADD accessibility                                              ║
-║       aria-labels, keyboard navigation, focus management.            ║
-║                                                                      ║
-║  □ 9. TEST                                                           ║
-║       Does it work? Does it break anything else?                     ║
-║                                                                      ║
-║  □ 10. REFACTOR                                                      ║
-║       Extract reusable pieces. Remove duplication.                   ║
-╚══════════════════════════════════════════════════════════════════════╝
+┌──────────────────────────────────────────────────────────────────────┐
+│  BEFORE you write code for any new feature:                          │
+│                                                                      │
+│  □ 1. UNDERSTAND the requirement                                     │
+│       What exactly should happen? List every behavior.               │
+│                                                                      │
+│  □ 2. DECOMPOSE into components                                      │
+│       Draw the component tree on paper/whiteboard.                   │
+│                                                                      │
+│  □ 3. DEFINE types/interfaces                                        │
+│       What data flows through? What can change?                      │
+│                                                                      │
+│  □ 4. IDENTIFY state ownership                                       │
+│       Where does each piece of state live?                           │
+│                                                                      │
+│  □ 5. BUILD bottom-up                                                │
+│       Start with smallest components (Button, Badge, Input).         │
+│       Then compose into larger ones. Page component last.            │
+│                                                                      │
+│  □ 6. STYLE as you go                                                │
+│       Each component gets its CSS Module right away.                 │
+│       Don't "add styling later" — it never looks right.              │
+│                                                                      │
+│  □ 7. HANDLE edge cases                                              │
+│       Loading, error, empty, too much data, mobile.                  │
+│                                                                      │
+│  □ 8. ADD accessibility                                              │
+│       aria-labels, keyboard navigation, focus management.            │
+│                                                                      │
+│  □ 9. TEST                                                           │
+│       Does it work? Does it break anything else?                     │
+│                                                                      │
+│  □ 10. REFACTOR                                                      │
+│       Extract reusable pieces. Remove duplication.                   │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 **Flow:**
@@ -620,32 +620,32 @@ flowchart TD
 ## 7. Responsive Design Mental Model
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  THINK IN FLUID RANGES, NOT FIXED BREAKPOINTS:                       ║
-║                                                                      ║
-║  OLD WAY (Bad):                                                      ║
-║  "At 768px, switch to 2 columns. At 1024px, switch to 3."            ║
-║  → Brittle. What about 767px? 769px?                                 ║
-║                                                                      ║
-║  NEW WAY (Good):                                                     ║
-║  "Each card should be 280-400px wide. As many as fit."               ║
-║  → grid-template-columns: repeat(auto-fit, minmax(280px, 1fr))       ║
-║  → Works at EVERY screen size. No breakpoints needed.                ║
-║                                                                      ║
-║  CONTENT-FIRST RESPONSIVE:                                           ║
-║  1. Start with content (text, images, data)                          ║
-║  2. Let content determine the layout                                 ║
-║  3. Add breakpoints only when layout BREAKS (not at device sizes)    ║
-║  4. Use fluid units (rem, %, clamp()) for sizing                     ║
-║  5. Test by resizing browser, not by targeting devices               ║
-║                                                                      ║
-║  MOBILE MENTAL MODEL:                                                ║
-║  On mobile, everything stacks vertically.                            ║
-║  Navigation collapses to hamburger.                                  ║
-║  Tables become cards.                                                ║
-║  Side-by-side becomes top-and-bottom.                                ║
-║  Touch targets ≥ 44px.                                               ║
-╚══════════════════════════════════════════════════════════════════════╝
+┌──────────────────────────────────────────────────────────────────────┐
+│  THINK IN FLUID RANGES, NOT FIXED BREAKPOINTS:                       │
+│                                                                      │
+│  OLD WAY (Bad):                                                      │
+│  "At 768px, switch to 2 columns. At 1024px, switch to 3."            │
+│  → Brittle. What about 767px? 769px?                                 │
+│                                                                      │
+│  NEW WAY (Good):                                                     │
+│  "Each card should be 280-400px wide. As many as fit."               │
+│  → grid-template-columns: repeat(auto-fit, minmax(280px, 1fr))       │
+│  → Works at EVERY screen size. No breakpoints needed.                │
+│                                                                      │
+│  CONTENT-FIRST RESPONSIVE:                                           │
+│  1. Start with content (text, images, data)                          │
+│  2. Let content determine the layout                                 │
+│  3. Add breakpoints only when layout BREAKS (not at device sizes)    │
+│  4. Use fluid units (rem, %, clamp()) for sizing                     │
+│  5. Test by resizing browser, not by targeting devices               │
+│                                                                      │
+│  MOBILE MENTAL MODEL:                                                │
+│  On mobile, everything stacks vertically.                            │
+│  Navigation collapses to hamburger.                                  │
+│  Tables become cards.                                                │
+│  Side-by-side becomes top-and-bottom.                                │
+│  Touch targets ≥ 44px.                                               │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 **Flow:**

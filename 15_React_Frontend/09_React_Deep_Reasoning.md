@@ -88,21 +88,21 @@ function Counter() {
 ### Deep Reasoning: WHY count = 4, not 9
 
 ```
-╔══════════════════════════════════════════════════════════════════╗
-║  THE SNAPSHOT PRINCIPLE                                          ║
-║                                                                  ║
-║  When handleClick runs, `count` is a SNAPSHOT — frozen at 0.     ║
-║  It's like taking a photo: the photo doesn't change when the     ║
-║  subject moves. `count` in this render is ALWAYS 0.              ║
-║                                                                  ║
-║  setCount(count + 2) → setCount(0 + 2) → queue: set to 2         ║
-║  setCount(count + 3) → setCount(0 + 3) → queue: set to 3         ║
-║  setCount(count + 4) → setCount(0 + 4) → queue: set to 4         ║
-║                                                                  ║
-║  React processes queue: 2 → 3 → 4. Final: count = 4              ║
-║  Each call REPLACES the previous, because they all use the       ║
-║  same stale snapshot (0).                                        ║
-╚══════════════════════════════════════════════════════════════════╝
+┌──────────────────────────────────────────────────────────────────┐
+│  THE SNAPSHOT PRINCIPLE                                          │
+│                                                                  │
+│  When handleClick runs, `count` is a SNAPSHOT — frozen at 0.     │
+│  It's like taking a photo: the photo doesn't change when the     │
+│  subject moves. `count` in this render is ALWAYS 0.              │
+│                                                                  │
+│  setCount(count + 2) → setCount(0 + 2) → queue: set to 2         │
+│  setCount(count + 3) → setCount(0 + 3) → queue: set to 3         │
+│  setCount(count + 4) → setCount(0 + 4) → queue: set to 4         │
+│                                                                  │
+│  React processes queue: 2 → 3 → 4. Final: count = 4              │
+│  Each call REPLACES the previous, because they all use the       │
+│  same stale snapshot (0).                                        │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 **Flow:**
@@ -180,17 +180,17 @@ function handleClick() {
 - It's like a relay race — each runner passes the baton (latest value) to the next
 
 ```
-╔══════════════════════════════════════════════════════════════════╗
-║  THE RELAY RACE ANALOGY                                          ║
-║                                                                  ║
-║  setCount(count + 2)     = "Start at the photo (0), add 2"       ║
-║  setCount(count + 3)     = "Start at the photo (0), add 3"       ║
-║  → Both look at the same photo. Last one wins.                   ║
-║                                                                  ║
-║  setCount(prev => prev + 2)  = "Take baton, add 2, pass on"      ║
-║  setCount(prev => prev + 3)  = "Take baton, add 3, pass on"      ║
-║  → Each runner receives what the previous runner passed.         ║
-╚══════════════════════════════════════════════════════════════════╝
+┌──────────────────────────────────────────────────────────────────┐
+│  THE RELAY RACE ANALOGY                                          │
+│                                                                  │
+│  setCount(count + 2)     = "Start at the photo (0), add 2"       │
+│  setCount(count + 3)     = "Start at the photo (0), add 3"       │
+│  → Both look at the same photo. Last one wins.                   │
+│                                                                  │
+│  setCount(prev => prev + 2)  = "Take baton, add 2, pass on"      │
+│  setCount(prev => prev + 3)  = "Take baton, add 3, pass on"      │
+│  → Each runner receives what the previous runner passed.         │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 **Flow:**
@@ -264,24 +264,24 @@ flushSync(() => setFlag(true)); // renders immediately
 ### Deep Reasoning
 
 ```
-╔══════════════════════════════════════════════════════════════════╗
-║  THE 3 RE-RENDER TRIGGERS                                        ║
-║                                                                  ║
-║  1. State change      → useState setter called                   ║
-║  2. Parent re-renders → ALL children re-render by default        ║
-║  3. Context change    → All consumers re-render                  ║
-║                                                                  ║
-║  CRITICAL: "Props changed" is NOT a trigger!                     ║
-║  The parent re-rendering IS the trigger, and it re-creates       ║
-║  the child component, passing new props (even identical ones).   ║
-║                                                                  ║
-║  THE WATERFALL ANALOGY:                                          ║
-║  Parent re-render is like a waterfall — water flows DOWN         ║
-║  through ALL children regardless of whether they "need" it.      ║
-║  React.memo is like putting an umbrella on a child — the         ║
-║  water still falls, but the child checks "are my props the       ║
-║  same?" and skips re-rendering if yes.                           ║
-╚══════════════════════════════════════════════════════════════════╝
+┌──────────────────────────────────────────────────────────────────┐
+│  THE 3 RE-RENDER TRIGGERS                                        │
+│                                                                  │
+│  1. State change      → useState setter called                   │
+│  2. Parent re-renders → ALL children re-render by default        │
+│  3. Context change    → All consumers re-render                  │
+│                                                                  │
+│  CRITICAL: "Props changed" is NOT a trigger!                     │
+│  The parent re-rendering IS the trigger, and it re-creates       │
+│  the child component, passing new props (even identical ones).   │
+│                                                                  │
+│  THE WATERFALL ANALOGY:                                          │
+│  Parent re-render is like a waterfall — water flows DOWN         │
+│  through ALL children regardless of whether they "need" it.      │
+│  React.memo is like putting an umbrella on a child — the         │
+│  water still falls, but the child checks "are my props the       │
+│  same?" and skips re-rendering if yes.                           │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 **Flow:**
@@ -393,24 +393,24 @@ function Parent({ children }) {
 **It's NOT fast. It's fast ENOUGH while being DECLARATIVE.**
 
 ```
-╔══════════════════════════════════════════════════════════════════╗
-║  THE REAL REASON FOR VIRTUAL DOM                                 ║
-║                                                                  ║
-║  Raw DOM manipulation IS faster than VDOM + diff + patch.        ║
-║  (Svelte proves this — no VDOM, compiled to direct DOM updates)  ║
-║                                                                  ║
-║  VDOM exists because:                                            ║
-║  1. DECLARATIVE UI: You describe WHAT the UI should look like    ║
-║     React figures out HOW to get there (diffing)                 ║
-║  2. BATCHING: Multiple state changes → one DOM update            ║
-║  3. PORTABILITY: VDOM can target DOM, Native, Canvas, etc.       ║
-║  4. PREDICTABILITY: Same state → same UI, always                 ║
-║                                                                  ║
-║  Analogy: GPS vs manual directions                               ║
-║  Manual directions (imperative DOM): "Turn left, then right..."  ║
-║  GPS (declarative VDOM): "I want to be HERE" — GPS figures out   ║
-║  the route. Slightly slower, but you never get lost.             ║
-╚══════════════════════════════════════════════════════════════════╝
+┌──────────────────────────────────────────────────────────────────┐
+│  THE REAL REASON FOR VIRTUAL DOM                                 │
+│                                                                  │
+│  Raw DOM manipulation IS faster than VDOM + diff + patch.        │
+│  (Svelte proves this — no VDOM, compiled to direct DOM updates)  │
+│                                                                  │
+│  VDOM exists because:                                            │
+│  1. DECLARATIVE UI: You describe WHAT the UI should look like    │
+│     React figures out HOW to get there (diffing)                 │
+│  2. BATCHING: Multiple state changes → one DOM update            │
+│  3. PORTABILITY: VDOM can target DOM, Native, Canvas, etc.       │
+│  4. PREDICTABILITY: Same state → same UI, always                 │
+│                                                                  │
+│  Analogy: GPS vs manual directions                               │
+│  Manual directions (imperative DOM): "Turn left, then right..."  │
+│  GPS (declarative VDOM): "I want to be HERE" — GPS figures out   │
+│  the route. Slightly slower, but you never get lost.             │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 **Flow:**
@@ -502,24 +502,24 @@ flowchart TD
 ### Deep Reasoning
 
 ```
-╔══════════════════════════════════════════════════════════════════╗
-║  WRONG MENTAL MODEL (lifecycle-based):                           ║
-║  useEffect(fn, [])     = componentDidMount                       ║
-║  useEffect(fn, [dep])  = componentDidUpdate                      ║
-║  useEffect(fn)         = componentDidMount + componentDidUpdate  ║
-║                                                                  ║
-║  RIGHT MENTAL MODEL (synchronization-based):                     ║
-║  useEffect = SYNCHRONIZE with external system                    ║
-║                                                                  ║
-║  "After each render where these dependencies changed,            ║
-║   run this effect to sync with the outside world"                ║
-║                                                                  ║
-║  Analogy: useEffect is like a THERMOSTAT                         ║
-║  - It checks: "Has the target temperature (dependency) changed?" ║
-║  - If yes: turn on/off heater (run effect)                       ║
-║  - Cleanup: turn off old heater before starting new one          ║
-║  - It doesn't care about "mount" or "update" — just sync.        ║
-╚══════════════════════════════════════════════════════════════════╝
+┌──────────────────────────────────────────────────────────────────┐
+│  WRONG MENTAL MODEL (lifecycle-based):                           │
+│  useEffect(fn, [])     = componentDidMount                       │
+│  useEffect(fn, [dep])  = componentDidUpdate                      │
+│  useEffect(fn)         = componentDidMount + componentDidUpdate  │
+│                                                                  │
+│  RIGHT MENTAL MODEL (synchronization-based):                     │
+│  useEffect = SYNCHRONIZE with external system                    │
+│                                                                  │
+│  "After each render where these dependencies changed,            │
+│   run this effect to sync with the outside world"                │
+│                                                                  │
+│  Analogy: useEffect is like a THERMOSTAT                         │
+│  - It checks: "Has the target temperature (dependency) changed?" │
+│  - If yes: turn on/off heater (run effect)                       │
+│  - Cleanup: turn off old heater before starting new one          │
+│  - It doesn't care about "mount" or "update" — just sync.        │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 **Flow:**
@@ -617,24 +617,24 @@ const filteredList = useMemo(
 ### Deep Reasoning
 
 ```
-╔══════════════════════════════════════════════════════════════════╗
-║  KEYS = IDENTITY CARDS for React's Diffing Algorithm             ║
-║                                                                  ║
-║  Without keys (or with index keys), React matches by POSITION:   ║
-║                                                                  ║
-║  Before delete "Bob":    After delete "Bob":                     ║
-║  index 0 → Alice         index 0 → Alice   (same position ✓)     ║
-║  index 1 → Bob           index 1 → Charlie (React thinks this    ║
-║  index 2 → Charlie                         is Bob updated!)      ║
-║                                                                  ║
-║  React: "Item at index 1 changed from Bob to Charlie"            ║
-║  Reality: We DELETED Bob and Charlie should keep its state       ║
-║                                                                  ║
-║  With unique keys, React matches by IDENTITY:                    ║
-║  key="alice" → Alice     key="alice" → Alice  (matched ✓)        ║
-║  key="bob"   → Bob       key="charlie"→ Charlie (matched ✓)      ║
-║  key="charlie"→ Charlie  Bob is GONE (removed from DOM)          ║
-╚══════════════════════════════════════════════════════════════════╝
+┌──────────────────────────────────────────────────────────────────┐
+│  KEYS = IDENTITY CARDS for React's Diffing Algorithm             │
+│                                                                  │
+│  Without keys (or with index keys), React matches by POSITION:   │
+│                                                                  │
+│  Before delete "Bob":    After delete "Bob":                     │
+│  index 0 → Alice         index 0 → Alice   (same position ✓)     │
+│  index 1 → Bob           index 1 → Charlie (React thinks this    │
+│  index 2 → Charlie                         is Bob updated!)      │
+│                                                                  │
+│  React: "Item at index 1 changed from Bob to Charlie"            │
+│  Reality: We DELETED Bob and Charlie should keep its state       │
+│                                                                  │
+│  With unique keys, React matches by IDENTITY:                    │
+│  key="alice" → Alice     key="alice" → Alice  (matched ✓)        │
+│  key="bob"   → Bob       key="charlie"→ Charlie (matched ✓)      │
+│  key="charlie"→ Charlie  Bob is GONE (removed from DOM)          │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 **Flow:**
@@ -723,24 +723,24 @@ flowchart TD
 ### Deep Reasoning
 
 ```
-╔══════════════════════════════════════════════════════════════════╗
-║  useState vs useRef — The Billboard vs Notebook Analogy          ║
-║                                                                  ║
-║  useState:                                                       ║
-║  → Like a BILLBOARD on the highway                               ║
-║  → Everyone (the component) sees the current value               ║
-║  → Changing it (setState) triggers a RE-RENDER (new paint job)   ║
-║  → The re-render shows the new value to users                    ║
-║                                                                  ║
-║  useRef:                                                         ║
-║  → Like a private NOTEBOOK in your pocket                        ║
-║  → You can read/write anytime                                    ║
-║  → Changing it does NOT trigger a re-render                      ║
-║  → Nobody sees the change until next render (if ever)            ║
-║                                                                  ║
-║  RULE: Need UI to update?         → useState                     ║
-║        Need to store without UI?  → useRef                       ║
-╚══════════════════════════════════════════════════════════════════╝
+┌──────────────────────────────────────────────────────────────────┐
+│  useState vs useRef — The Billboard vs Notebook Analogy          │
+│                                                                  │
+│  useState:                                                       │
+│  → Like a BILLBOARD on the highway                               │
+│  → Everyone (the component) sees the current value               │
+│  → Changing it (setState) triggers a RE-RENDER (new paint job)   │
+│  → The re-render shows the new value to users                    │
+│                                                                  │
+│  useRef:                                                         │
+│  → Like a private NOTEBOOK in your pocket                        │
+│  → You can read/write anytime                                    │
+│  → Changing it does NOT trigger a re-render                      │
+│  → Nobody sees the change until next render (if ever)            │
+│                                                                  │
+│  RULE: Need UI to update?         → useState                     │
+│        Need to store without UI?  → useRef                       │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 **Flow:**
@@ -821,22 +821,22 @@ function Component() {
 ### Deep Reasoning
 
 ```
-╔══════════════════════════════════════════════════════════════════╗
-║  THE CACHING TAX                                                 ║
-║                                                                  ║
-║  useMemo/useCallback are NOT free:                               ║
-║    1. Memory to store cached value                               ║
-║    2. CPU to compare dependencies on every render                ║
-║    3. Code complexity (harder to read)                           ║
-║                                                                  ║
-║  If the computation is CHEAP (< 1ms), the memoization overhead   ║
-║  may cost MORE than just recomputing!                            ║
-║                                                                  ║
-║  Analogy: Buying a safe to protect $5                            ║
-║  The safe costs more than what you're protecting.                ║
-║  Only buy a safe (useMemo) when protecting something valuable    ║
-║  (expensive computation or preventing cascade re-renders).       ║
-╚══════════════════════════════════════════════════════════════════╝
+┌──────────────────────────────────────────────────────────────────┐
+│  THE CACHING TAX                                                 │
+│                                                                  │
+│  useMemo/useCallback are NOT free:                               │
+│    1. Memory to store cached value                               │
+│    2. CPU to compare dependencies on every render                │
+│    3. Code complexity (harder to read)                           │
+│                                                                  │
+│  If the computation is CHEAP (< 1ms), the memoization overhead   │
+│  may cost MORE than just recomputing!                            │
+│                                                                  │
+│  Analogy: Buying a safe to protect $5                            │
+│  The safe costs more than what you're protecting.                │
+│  Only buy a safe (useMemo) when protecting something valuable    │
+│  (expensive computation or preventing cascade re-renders).       │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 **Flow:**
@@ -955,23 +955,23 @@ flowchart TD
 ### Deep Reasoning
 
 ```
-╔══════════════════════════════════════════════════════════════════╗
-║  THE RADIO STATION ANALOGY                                       ║
-║                                                                  ║
-║  Context = Radio station broadcasting one signal                 ║
-║  Consumer = Radio tuned to that station                          ║
-║                                                                  ║
-║  Problem: When the station broadcasts (context value changes),   ║
-║  ALL radios tuned to it activate — even if they only care        ║
-║  about a DIFFERENT part of the signal.                           ║
-║                                                                  ║
-║  Context({ user, theme, cart, notifications })                   ║
-║  → Change `notifications` → ALL consumers re-render              ║
-║    Even the UserAvatar that only reads `user`!                   ║
-║                                                                  ║
-║  Redux/Zustand: Each component SELECTS what it cares about.      ║
-║  → Change `notifications` → only NotificationBadge re-renders    ║
-╚══════════════════════════════════════════════════════════════════╝
+┌──────────────────────────────────────────────────────────────────┐
+│  THE RADIO STATION ANALOGY                                       │
+│                                                                  │
+│  Context = Radio station broadcasting one signal                 │
+│  Consumer = Radio tuned to that station                          │
+│                                                                  │
+│  Problem: When the station broadcasts (context value changes),   │
+│  ALL radios tuned to it activate — even if they only care        │
+│  about a DIFFERENT part of the signal.                           │
+│                                                                  │
+│  Context({ user, theme, cart, notifications })                   │
+│  → Change `notifications` → ALL consumers re-render              │
+│    Even the UserAvatar that only reads `user`!                   │
+│                                                                  │
+│  Redux/Zustand: Each component SELECTS what it cares about.      │
+│  → Change `notifications` → only NotificationBadge re-renders    │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 **Flow:**
@@ -1040,19 +1040,19 @@ const CartContext = createContext([]);
 > "What is a controlled component and WHY would I use one?"
 
 ```
-╔══════════════════════════════════════════════════════════════════╗
-║  THE PUPPET vs PET ANALOGY                                       ║
-║                                                                  ║
-║  Controlled = Puppet                                             ║
-║  → React holds the strings. Input shows WHAT REACT TELLS IT.     ║
-║  → value={state} + onChange={setState}                           ║
-║  → Single source of truth: React state                           ║
-║                                                                  ║
-║  Uncontrolled = Pet                                              ║
-║  → The input manages itself. You ask "what's your value?" later. ║
-║  → defaultValue + ref.current.value                              ║
-║  → Source of truth: the DOM                                      ║
-╚══════════════════════════════════════════════════════════════════╝
+┌──────────────────────────────────────────────────────────────────┐
+│  THE PUPPET vs PET ANALOGY                                       │
+│                                                                  │
+│  Controlled = Puppet                                             │
+│  → React holds the strings. Input shows WHAT REACT TELLS IT.     │
+│  → value={state} + onChange={setState}                           │
+│  → Single source of truth: React state                           │
+│                                                                  │
+│  Uncontrolled = Pet                                              │
+│  → The input manages itself. You ask "what's your value?" later. │
+│  → defaultValue + ref.current.value                              │
+│  → Source of truth: the DOM                                      │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 **Flow:**
@@ -1124,31 +1124,31 @@ function Uncontrolled() {
 ### Deep Reasoning
 
 ```
-╔══════════════════════════════════════════════════════════════════╗
-║  REACT FIBER — The Restaurant Kitchen Analogy                    ║
-║                                                                  ║
-║  Old React (Stack Reconciler):                                   ║
-║  → Chef prepares ENTIRE meal before serving (blocking)           ║
-║  → If meal has 100 dishes, nothing gets served until ALL done    ║
-║  → Customer (user) sits frozen waiting                           ║
-║                                                                  ║
-║  New React (Fiber Reconciler):                                   ║
-║  → Chef prepares dishes in small chunks (time-slicing)           ║
-║  → After each dish: "Any urgent VIP orders?" (user input)        ║
-║  → VIP orders (clicks, typing) interrupt and get served first    ║
-║  → Then chef resumes the big meal                                ║
-║                                                                  ║
-║  TWO PHASES:                                                     ║
-║  1. RENDER PHASE (interruptible):                                ║
-║     → Build work-in-progress tree                                ║
-║     → Can be paused, aborted, restarted                          ║
-║     → No side effects allowed (pure computation)                 ║
-║                                                                  ║
-║  2. COMMIT PHASE (synchronous, not interruptible):               ║
-║     → Apply all DOM changes at once                              ║
-║     → Run useEffect/useLayoutEffect                              ║
-║     → Must be atomic (no half-done UI)                           ║
-╚══════════════════════════════════════════════════════════════════╝
+┌──────────────────────────────────────────────────────────────────┐
+│  REACT FIBER — The Restaurant Kitchen Analogy                    │
+│                                                                  │
+│  Old React (Stack Reconciler):                                   │
+│  → Chef prepares ENTIRE meal before serving (blocking)           │
+│  → If meal has 100 dishes, nothing gets served until ALL done    │
+│  → Customer (user) sits frozen waiting                           │
+│                                                                  │
+│  New React (Fiber Reconciler):                                   │
+│  → Chef prepares dishes in small chunks (time-slicing)           │
+│  → After each dish: "Any urgent VIP orders?" (user input)        │
+│  → VIP orders (clicks, typing) interrupt and get served first    │
+│  → Then chef resumes the big meal                                │
+│                                                                  │
+│  TWO PHASES:                                                     │
+│  1. RENDER PHASE (interruptible):                                │
+│     → Build work-in-progress tree                                │
+│     → Can be paused, aborted, restarted                          │
+│     → No side effects allowed (pure computation)                 │
+│                                                                  │
+│  2. COMMIT PHASE (synchronous, not interruptible):               │
+│     → Apply all DOM changes at once                              │
+│     → Run useEffect/useLayoutEffect                              │
+│     → Must be atomic (no half-done UI)                           │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 **Flow:**
@@ -1193,22 +1193,22 @@ flowchart TD
 > "What is Suspense and why does it matter?"
 
 ```
-╔══════════════════════════════════════════════════════════════════╗
-║  SUSPENSE — The Loading Dock Analogy                             ║
-║                                                                  ║
-║  Without Suspense: You manage loading states manually            ║
-║  → if (isLoading) return <Spinner />                             ║
-║  → if (error) return <Error />                                   ║
-║  → return <Data />                                               ║
-║  → Every component has its own loading/error/data logic          ║
-║                                                                  ║
-║  With Suspense: React manages loading states                     ║
-║  → Component "suspends" (throws a Promise)                       ║
-║  → Nearest <Suspense> boundary catches it                        ║
-║  → Shows fallback UI until Promise resolves                      ║
-║  → Like a loading dock: packages (data) arrive when ready,       ║
-║    a sign (fallback) is shown while waiting                      ║
-╚══════════════════════════════════════════════════════════════════╝
+┌──────────────────────────────────────────────────────────────────┐
+│  SUSPENSE — The Loading Dock Analogy                             │
+│                                                                  │
+│  Without Suspense: You manage loading states manually            │
+│  → if (isLoading) return <Spinner />                             │
+│  → if (error) return <Error />                                   │
+│  → return <Data />                                               │
+│  → Every component has its own loading/error/data logic          │
+│                                                                  │
+│  With Suspense: React manages loading states                     │
+│  → Component "suspends" (throws a Promise)                       │
+│  → Nearest <Suspense> boundary catches it                        │
+│  → Shows fallback UI until Promise resolves                      │
+│  → Like a loading dock: packages (data) arrive when ready,       │
+│    a sign (fallback) is shown while waiting                      │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 **Flow:**
@@ -1287,25 +1287,25 @@ function SearchPage() {
 > "Why did React create Server Components?"
 
 ```
-╔══════════════════════════════════════════════════════════════════╗
-║  THE SHIPPING ANALOGY                                            ║
-║                                                                  ║
-║  Client Components = Ship raw materials to customer              ║
-║  → Send JS bundle to browser                                     ║
-║  → Browser downloads, parses, executes, renders                  ║
-║  → Customer builds furniture themselves (hydration)              ║
-║                                                                  ║
-║  Server Components = Ship finished furniture                     ║
-║  → Server renders HTML, sends result                             ║
-║  → No JS shipped for server components                           ║
-║  → Browser just displays it (no hydration needed)                ║
-║                                                                  ║
-║  Benefits:                                                       ║
-║  1. Smaller bundle (no JS for server components)                 ║
-║  2. Direct database access (no API layer needed)                 ║
-║  3. Sensitive logic stays on server (API keys safe)              ║
-║  4. Faster initial load (no JS parsing for static parts)         ║
-╚══════════════════════════════════════════════════════════════════╝
+┌──────────────────────────────────────────────────────────────────┐
+│  THE SHIPPING ANALOGY                                            │
+│                                                                  │
+│  Client Components = Ship raw materials to customer              │
+│  → Send JS bundle to browser                                     │
+│  → Browser downloads, parses, executes, renders                  │
+│  → Customer builds furniture themselves (hydration)              │
+│                                                                  │
+│  Server Components = Ship finished furniture                     │
+│  → Server renders HTML, sends result                             │
+│  → No JS shipped for server components                           │
+│  → Browser just displays it (no hydration needed)                │
+│                                                                  │
+│  Benefits:                                                       │
+│  1. Smaller bundle (no JS for server components)                 │
+│  2. Direct database access (no API layer needed)                 │
+│  3. Sensitive logic stays on server (API keys safe)              │
+│  4. Faster initial load (no JS parsing for static parts)         │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 **Flow:**

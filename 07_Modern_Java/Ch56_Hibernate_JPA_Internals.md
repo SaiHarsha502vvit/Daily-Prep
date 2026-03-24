@@ -6,6 +6,26 @@
 
 ---
 
+## PART 0: The 5W+H Framework
+
+> **Mental Model:** Think of your database as a library of foreign-language books and your Java app as an English speaker. Hibernate is the translator (Object-Relational Mapper) who instantly reads the foreign books and hands you English summaries, saving you from learning the database's specific SQL dialect.
+
+| Question | Hibernate & JPA Context |
+| :--- | :--- |
+| **WHAT** | An Object-Relational Mapping (ORM) framework that maps Java objects (entities) to relational database tables, handling all the underlying SQL generation and JDBC execution. |
+| **WHY** | To eliminate boilerplate JDBC code, prevent SQL injection, cache data for performance, and allow developers to think in objects rather than tables. |
+| **WHEN** | Used in data-driven enterprise applications when you need complex domain models, caching, or database-agnostic code. |
+| **WHERE** | Sits in the persistence layer (Data Access layer), acting as the bridge between your Spring Services/Repositories and the actual RDBMS (PostgreSQL, MySQL). |
+| **WHO** | Originally created by Gavin King in 2001. It became so dominant that it heavily influenced the creation of the official Java Persistence API (JPA) standard. |
+| **HOW** | Works by using a `PersistenceContext` (first-level cache) to track entity states (Transient, Managed, Detached, Removed) and "Dirty Checking" to automatically generate `UPDATE` SQL statements only when fields change. |
+
+### Where It's Used in Real World
+*   **E-commerce Systems**: Managing complex relationships between `User`, `Order`, `Product`, and `Payment` tables without writing hundreds of JOIN queries.
+*   **ERP Systems**: Handling massive enterprise schemas where entities might have dozens of relationships via `@OneToMany` and `@ManyToOne` mappings.
+*   **CMS Applications**: Caching frequently accessed articles and metadata using Second-Level Cache to bypass the database entirely.
+
+---
+
 ## Table of Contents
 
 1. [The Full Stack: From repository.save() to Database Disk](#1-the-full-stack-from-repositorysave-to-database-disk)

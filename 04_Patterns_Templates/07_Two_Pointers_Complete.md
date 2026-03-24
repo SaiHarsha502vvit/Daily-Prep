@@ -1478,33 +1478,33 @@ flowchart TD
 ## Summary
 
 ```
-╔═══════════════════════════════════════════════════════════════╗
-║            TWO POINTERS - MASTER CHECKLIST                    ║
-╠═══════════════════════════════════════════════════════════════╣
-║                                                               ║
-║  1. IDENTIFY THE PATTERN                                      ║
-║     - Pair with sum → Opposite direction                      ║
-║     - In-place modify → Same direction (reader-writer)        ║
-║     - Cycle/Middle → Fast & slow                              ║
-║     - Merge/Compare → Multi-array                             ║
-║                                                               ║
-║  2. KEY INSIGHTS                                              ║
-║     - SORTED array often enables two pointers                 ║
-║     - Move pointer based on current state                     ║
-║     - Think: "Can I eliminate options by moving pointer?"     ║
-║                                                               ║
-║  3. COMMON OPTIMIZATIONS                                      ║
-║     - Skip duplicates after finding match                     ║
-║     - Early termination when impossible                       ║
-║     - Process from END when merging in-place                  ║
-║                                                               ║
-║  4. EDGE CASES                                                ║
-║     - Empty array                                             ║
-║     - Single element                                          ║
-║     - All same elements                                       ║
-║     - No valid answer exists                                  ║
-║                                                               ║
-╚═══════════════════════════════════════════════════════════════╝
+┌───────────────────────────────────────────────────────────────┐
+│            TWO POINTERS - MASTER CHECKLIST                    │
+├───────────────────────────────────────────────────────────────┤
+│                                                               │
+│  1. IDENTIFY THE PATTERN                                      │
+│     - Pair with sum → Opposite direction                      │
+│     - In-place modify → Same direction (reader-writer)        │
+│     - Cycle/Middle → Fast & slow                              │
+│     - Merge/Compare → Multi-array                             │
+│                                                               │
+│  2. KEY INSIGHTS                                              │
+│     - SORTED array often enables two pointers                 │
+│     - Move pointer based on current state                     │
+│     - Think: "Can I eliminate options by moving pointer?"     │
+│                                                               │
+│  3. COMMON OPTIMIZATIONS                                      │
+│     - Skip duplicates after finding match                     │
+│     - Early termination when impossible                       │
+│     - Process from END when merging in-place                  │
+│                                                               │
+│  4. EDGE CASES                                                │
+│     - Empty array                                             │
+│     - Single element                                          │
+│     - All same elements                                       │
+│     - No valid answer exists                                  │
+│                                                               │
+└───────────────────────────────────────────────────────────────┘
 ```
 
 **Flow:**

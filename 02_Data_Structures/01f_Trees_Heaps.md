@@ -554,6 +554,18 @@ public class MyMinHeap {
 }
 ```
 
+### 🔗 Cross-References — Navigate the Ecosystem
+
+| Topic | Related Content |
+|---|---|
+| Tree algorithms (DFS/BFS) | [Tree Algorithms](../03_Algorithms/05_Trees.md) |
+| Tree + DFS/BFS patterns | [Tree Patterns](../04_Patterns_Templates/13_Tree_Plus_DFS_BFS.md) |
+| Tree practice problems | [Problem Solving — Trees](../05_Problem_Solving/09_Trees.md) |
+| Heap / PQ problems | [Problem Solving — Heaps](../05_Problem_Solving/08_Heaps_PQ.md) |
+| Graph algorithms (trees are graphs) | [Graphs Fundamentals](../03_Algorithms/05c_Graphs_Fundamentals.md) |
+| Decision Trees in ML | [ML Algorithms](../21_Python_ML_DL_NLP/06_ML_Algorithms.md) |
+| Virtual DOM tree (React) | [React Fundamentals](../15_React_Frontend/01_React_Fundamentals.md) |
+
 ---
 
 > **Navigation**: [< Previous](01e_HashTable.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](01g_DS_Internals.md)

@@ -12,32 +12,51 @@
 ## 5W1H — Why This Chapter?
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: React is a JavaScript LIBRARY (not framework!) for building   ║
-║        user interfaces using composable components.                  ║
-║                                                                      ║
-║  WHY:  The DOM is SLOW. Updating it directly is error-prone.         ║
-║        jQuery (2006): $("#app").html(newContent) — simple but        ║
-║        chaotic at scale. No structure, no predictability.            ║
-║        React (2013): Introduced a DECLARATIVE model where            ║
-║        UI = f(state). You describe WHAT you want, React figures      ║
-║        out HOW to update the DOM efficiently.                        ║
-║                                                                      ║
-║  WHO:  Facebook (now Meta). Jordan Walke created it in 2013          ║
-║        to solve Facebook's newsfeed rendering problems.              ║
-║        Used by: Facebook, Instagram, Netflix, Airbnb, Uber.          ║
-║                                                                      ║
-║  WHEN: After learning HTML, CSS, and JavaScript (especially          ║
-║        ES6+ features: arrow functions, destructuring, modules).      ║
-║                                                                      ║
-║  WHERE: Runs in the browser (React DOM), on mobile (React Native),   ║
-║         on servers (Next.js SSR), even in terminals (Ink).           ║
-║                                                                      ║
-║  HOW:  Write components → React builds a Virtual DOM tree →          ║
-║        Diffing algorithm compares old vs new tree → Only changed     ║
-║        DOM nodes are updated (reconciliation).                       ║
-╚══════════════════════════════════════════════════════════════════════╝
+┌──────────────────────────────────────────────────────────────────────┐
+│  WHAT: React is a JavaScript LIBRARY (not framework!) for building   │
+│        user interfaces using composable components.                  │
+│                                                                      │
+│  WHY:  The DOM is SLOW. Updating it directly is error-prone.         │
+│        jQuery (2006): $("#app").html(newContent) — simple but        │
+│        chaotic at scale. No structure, no predictability.            │
+│        React (2013): Introduced a DECLARATIVE model where            │
+│        UI = f(state). You describe WHAT you want, React figures      │
+│        out HOW to update the DOM efficiently.                        │
+│                                                                      │
+│  WHO:  Facebook (now Meta). Jordan Walke created it in 2013          │
+│        to solve Facebook's newsfeed rendering problems.              │
+│        Used by: Facebook, Instagram, Netflix, Airbnb, Uber.          │
+│                                                                      │
+│  WHEN: After learning HTML, CSS, and JavaScript (especially          │
+│        ES6+ features: arrow functions, destructuring, modules).      │
+│                                                                      │
+│  WHERE: Runs in the browser (React DOM), on mobile (React Native),   │
+│         on servers (Next.js SSR), even in terminals (Ink).           │
+│                                                                      │
+│  HOW:  Write components → React builds a Virtual DOM tree →          │
+│        Diffing algorithm compares old vs new tree → Only changed     │
+│        DOM nodes are updated (reconciliation).                       │
+└──────────────────────────────────────────────────────────────────────┘
 ```
+
+### Where It's Used in Real World
+- **Facebook/Instagram**: The original use case — React powers the dynamic newsfeeds, stories, and messaging UIs for billions of users.
+- **Netflix**: Uses React for its TV interface and browsing experience, optimized for low-powered smart TV hardware.
+- **Airbnb**: Entire booking flow and search interface built with React, with server-side rendering via Next.js for SEO.
+- **Shopify**: Admin dashboard and storefront editor use React for complex drag-and-drop UI interactions.
+- **Discord**: Real-time chat, voice channels, and server management — all React-powered with custom virtual scrolling.
+
+### 🔗 Cross-References to DSA Concepts
+
+| React Concept | Underlying DSA/Algorithm |
+|---|---|
+| Virtual DOM Diffing | [Tree Algorithms — DFS/BFS](../03_Algorithms/05_Trees.md) |
+| Reconciliation (O(n) heuristic) | [Algorithm Thinking](../03_Algorithms/01_Algorithm_Thinking.md) |
+| useState hooks array | [Arrays](../02_Data_Structures/01b_Arrays.md) |
+| Context API (Provider tree) | [Trees & Heaps](../02_Data_Structures/01f_Trees_Heaps.md) |
+| Event delegation (single listener) | [Design Patterns — Observer](../06_OOP_Design/02_Design_Patterns.md) |
+| useMemo / React.memo (caching) | [DP — Memoization](../03_Algorithms/04b_DP_Fundamentals.md) |
+| Component composition | [OOP — Composition vs Inheritance](../06_OOP_Design/01_OOPS_Principles.md) |
 
 ---
 
@@ -47,7 +66,7 @@
 
 ```
 BEFORE REACT — The DOM Management Problem:
-═══════════════════════════════════════════
+───────────────────────────────────────────
 
 Imagine you're building a chat app. A new message arrives.
 You need to:
@@ -113,26 +132,26 @@ This is why React has such a large ecosystem (Next.js, Redux, etc.)
 ### 5W1H: What is JSX and Why?
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: JSX = JavaScript XML. A syntax extension that lets you       ║
-║        write HTML-like code inside JavaScript.                       ║
-║                                                                      ║
-║  WHY:  Without JSX, creating UI requires React.createElement()      ║
-║        calls — deeply nested and unreadable. JSX makes the          ║
-║        component tree visually obvious, like reading HTML.           ║
-║                                                                      ║
-║  HOW IT WORKS INTERNALLY:                                            ║
-║  Step 1: You write JSX: <h1>Hello</h1>                              ║
-║  Step 2: Babel/SWC COMPILER transforms it at build time:            ║
-║          React.createElement('h1', null, 'Hello')                   ║
-║  Step 3: createElement returns a plain JS object:                    ║
-║          { type: 'h1', props: { children: 'Hello' } }              ║
-║  Step 4: This object is a React Element (the Virtual DOM node)      ║
-║  Step 5: React reads this object and creates the real DOM node      ║
-║                                                                      ║
-║  CRITICAL INSIGHT: JSX is NOT HTML. It's syntactic sugar for        ║
-║  function calls. The browser NEVER sees JSX — only compiled JS.     ║
-╚══════════════════════════════════════════════════════════════════════╝
+┌──────────────────────────────────────────────────────────────────────┐
+│  WHAT: JSX = JavaScript XML. A syntax extension that lets you       │
+│        write HTML-like code inside JavaScript.                       │
+│                                                                      │
+│  WHY:  Without JSX, creating UI requires React.createElement()      │
+│        calls — deeply nested and unreadable. JSX makes the          │
+│        component tree visually obvious, like reading HTML.           │
+│                                                                      │
+│  HOW IT WORKS INTERNALLY:                                            │
+│  Step 1: You write JSX: <h1>Hello</h1>                              │
+│  Step 2: Babel/SWC COMPILER transforms it at build time:            │
+│          React.createElement('h1', null, 'Hello')                   │
+│  Step 3: createElement returns a plain JS object:                    │
+│          { type: 'h1', props: { children: 'Hello' } }              │
+│  Step 4: This object is a React Element (the Virtual DOM node)      │
+│  Step 5: React reads this object and creates the real DOM node      │
+│                                                                      │
+│  CRITICAL INSIGHT: JSX is NOT HTML. It's syntactic sugar for        │
+│  function calls. The browser NEVER sees JSX — only compiled JS.     │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 ```jsx
@@ -542,7 +561,7 @@ function Dashboard({ user, notifications }) {
 
 ```
 5W1H: WHY does the Virtual DOM exist?
-═════════════════════════════════════
+─────────────────────────────────────
 
 PROBLEM: The real DOM is SLOW.
   document.createElement() → creates a full DOM node with 200+ properties
@@ -555,7 +574,7 @@ PROBLEM: The real DOM is SLOW.
   React's Virtual DOM is the BATCHING mechanism.
 
 HOW THE VIRTUAL DOM WORKS:
-═════════════════════════
+─────────────────────────
 
   Step 1: RENDER PHASE (Pure, no side effects)
   Your component function runs and returns JSX.
@@ -592,7 +611,7 @@ HOW THE VIRTUAL DOM WORKS:
 
 
 THE FIBER ARCHITECTURE (React 16+):
-════════════════════════════════════
+────────────────────────────────────
   Before Fiber: Reconciliation was SYNCHRONOUS. A large tree diff
   could block the main thread for 100ms+ → janky animations.
 
@@ -624,28 +643,28 @@ THE FIBER ARCHITECTURE (React 16+):
 ## Part 9: Component Lifecycle Cheat Sheet
 
 ```
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║  FUNCTION COMPONENT LIFECYCLE (via Hooks)                                        ║
-║                                                                                  ║
-║  Mount (component appears):                                                      ║
-║    1. Function called → JSX returned → DOM updated                               ║
-║    2. useEffect(() => { ... }, []) runs ONCE after first render                  ║
-║                                                                                  ║
-║  Update (state/props change):                                                    ║
-║    1. Function re-called → new JSX returned → DOM diffed & updated               ║
-║    2. useEffect(() => { ... }, [dep]) runs if dep changed                        ║
-║                                                                                  ║
-║  Unmount (component removed):                                                    ║
-║    1. Cleanup function from useEffect runs                                       ║
-║    useEffect(() => {                                                             ║
-║      const timer = setInterval(...);                                             ║
-║      return () => clearInterval(timer);  // ← cleanup                            ║
-║    }, []);                                                                       ║
-║                                                                                  ║
-║  RENDER CYCLE:                                                                   ║
-║  Props/State change → React re-renders component → Virtual DOM diff              ║
-║  → Only changed DOM nodes updated (efficient!)                                   ║
-╚══════════════════════════════════════════════════════════════════════════════════╝
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│  FUNCTION COMPONENT LIFECYCLE (via Hooks)                                        │
+│                                                                                  │
+│  Mount (component appears):                                                      │
+│    1. Function called → JSX returned → DOM updated                               │
+│    2. useEffect(() => { ... }, []) runs ONCE after first render                  │
+│                                                                                  │
+│  Update (state/props change):                                                    │
+│    1. Function re-called → new JSX returned → DOM diffed & updated               │
+│    2. useEffect(() => { ... }, [dep]) runs if dep changed                        │
+│                                                                                  │
+│  Unmount (component removed):                                                    │
+│    1. Cleanup function from useEffect runs                                       │
+│    useEffect(() => {                                                             │
+│      const timer = setInterval(...);                                             │
+│      return () => clearInterval(timer);  // ← cleanup                            │
+│    }, []);                                                                       │
+│                                                                                  │
+│  RENDER CYCLE:                                                                   │
+│  Props/State change → React re-renders component → Virtual DOM diff              │
+│  → Only changed DOM nodes updated (efficient!)                                   │
+└──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 **Flow:**
@@ -698,7 +717,7 @@ flowchart TD
 
 ```
 SCENARIO: User clicks "Add to Cart" button in an e-commerce app.
-══════════════════════════════════════════════════════════════════
+──────────────────────────────────────────────────────────────────
 
 Step 1: USER CLICKS
   Browser fires native 'click' event → bubbles to React root.

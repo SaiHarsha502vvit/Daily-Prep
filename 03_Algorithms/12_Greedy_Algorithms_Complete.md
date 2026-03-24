@@ -53,6 +53,12 @@ Huffman Coding ✅                │ General Coin Change ❌
 Kruskal's/Prim's MST ✅         │ Longest Path in Graph ❌
 Dijkstra (non-negative) ✅       │ Dijkstra (negative weights) ❌
 Interval Scheduling ✅           │ Interval Scheduling + Weights ❌
+### Where It's Used in Real World
+*   **Data Compression**: File archiving tools (ZIP, GZIP, JPEG, MP3) use Huffman Coding to build prefix-free variable-length codes based on symbol frequency.
+*   **Networking**: Routing protocols (OSPF uses Dijkstra's) and building network topologies (spanning trees to prevent bridging loops using Kruskal's/Prim's).
+*   **Operating Systems**: CPU scheduling algorithms (like Shortest Job First) and memory allocation strategies (First Fit, Best Fit).
+*   **Financial Systems**: ATMs making exact change using the minimum number of bills (works for standard coin/bill denominations).
+
 ## Real-World Origin Story
 
 1952 — DAVID HUFFMAN'S HOMEWORK ASSIGNMENT:

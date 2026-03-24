@@ -6,6 +6,27 @@
 
 ---
 
+## PART 0: The 5W+H Framework
+
+> **Mental Model:** Think of Spring Security as an airport security system. Authentication (AuthN) is the passport control verifying who you are. Authorization (AuthZ) is the ticket checker deciding if you're allowed to enter the VIP lounge or board a specific flight.
+
+| Question | Spring Security Context |
+| :--- | :--- |
+| **WHAT** | A powerful, highly customizable authentication and access-control framework that protects Java applications from common vulnerabilities (CSRF, session fixation). |
+| **WHY** | To ensure only verified users can access the system (Authentication) and that they can only touch data they are permitted to see (Authorization), while abstracting the immense complexity of modern security protocols. |
+| **WHEN** | Used essentially in *every* production Spring application that handles user data, exposes APIs, or manages internal administrative dashboards. |
+| **WHERE** | Implemented as a chain of highly specialized Servlet Filters (`DelegatingFilterProxy` -> `FilterChainProxy`) that intercept every single HTTP request before it reaches your Controllers. |
+| **WHO** | Maintained by the Spring team, deeply integrated with the Spring ecosystem, but capable of operating independently. |
+| **HOW** | Uses an `AuthenticationManager` to verify credentials, stores the result in a thread-local `SecurityContext`, and uses `AuthorizationManager` (and AOP for `@PreAuthorize`) to enforce access rules. |
+
+### Where It's Used in Real World
+*   **Stateless REST APIs**: Verifying JSON Web Tokens (JWT) for mobile apps or single-page applications (React/Angular) on every request without maintaining sessions.
+*   **SSO & Federated Login**: Allowing users to log in explicitly via "Sign in with Google/GitHub" using OAuth2 and OpenID Connect flows.
+*   **Enterprise Intranets**: Integrating with corporate Active Directory/LDAP servers to manage internal employee access using fine-grained Role-Based Access Control (RBAC).
+*   **Zero-Trust Microservices**: Securing internal service-to-service communication using client credentials and mutual TLS.
+
+---
+
 ## Table of Contents
 
 1. [The Big Picture — What Happens to Every Request](#1-the-big-picture--what-happens-to-every-request)

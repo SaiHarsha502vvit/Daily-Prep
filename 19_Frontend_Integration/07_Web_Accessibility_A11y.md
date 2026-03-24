@@ -25,7 +25,7 @@
 
 ```
   WHO BENEFITS FROM ACCESSIBILITY:
-  ════════════════════════════════
+  ────────────────────────────────
   
   • Blind users           → Screen readers (NVDA, JAWS, VoiceOver)
   • Low vision users      → Screen magnification, high contrast
@@ -90,7 +90,7 @@ User can jump between landmarks, headings, links!
 
 ```
   SEMANTIC ELEMENT CHEAT SHEET:
-  ═════════════════════════════
+  ─────────────────────────────
   
   ┌──────────────┬──────────────────────────────────────────────────┐
   │ Element      │ When to use                                      │
@@ -183,7 +183,7 @@ User can jump between landmarks, headings, links!
 
 ```
   EXPECTED KEYBOARD BEHAVIOR:
-  ═══════════════════════════
+  ───────────────────────────
   
   ┌────────────┬───────────────────────────────────────────────┐
   │ Key        │ Expected behavior                             │
@@ -340,7 +340,7 @@ function App() {
 
 ```
   WCAG CONTRAST REQUIREMENTS:
-  ═══════════════════════════
+  ───────────────────────────
   
   AA (minimum):
   • Normal text (<18px): 4.5:1 contrast ratio
@@ -353,7 +353,7 @@ function App() {
   
   
   COMMON FAILURES:
-  ════════════════
+  ────────────────
   
   ❌ Light gray on white:    #999 on #fff = 2.85:1 (FAILS AA)
   ❌ Placeholder text:       #aaa on #fff = 2.32:1 (FAILS AA)
@@ -362,7 +362,7 @@ function App() {
   
   
   DON'T RELY ON COLOR ALONE:
-  ══════════════════════════
+  ──────────────────────────
   
   ❌ BAD:  Red text for errors (colorblind users can't see red)
   ✅ GOOD: Red text + icon + message: "⚠️ Error: Email is required"
@@ -425,20 +425,20 @@ function App() {
 ```
 
 ```
-  ╔═══════════════════════════════════════════════════════════════╗
-  ║  FORM ACCESSIBILITY CHECKLIST:                                ║
-  ║                                                               ║
-  ║  ✅ Every input has a visible <label>                        ║
-  ║  ✅ Labels are associated (for/id or wrapping)               ║
-  ║  ✅ Required fields marked with aria-required="true"         ║
-  ║  ✅ Error messages use role="alert" (announced immediately)  ║
-  ║  ✅ aria-invalid="true" on invalid fields                    ║
-  ║  ✅ aria-describedby links to error + help text              ║
-  ║  ✅ Don't rely on placeholder as label (disappears on focus) ║
-  ║  ✅ Group related fields with <fieldset> + <legend>          ║
-  ║  ✅ Submit button is a <button type="submit">, not a <div>  ║
-  ║                                                               ║
-  ╚═══════════════════════════════════════════════════════════════╝
+  ┌───────────────────────────────────────────────────────────────┐
+  │  FORM ACCESSIBILITY CHECKLIST:                                │
+  │                                                               │
+  │  ✅ Every input has a visible <label>                        │
+  │  ✅ Labels are associated (for/id or wrapping)               │
+  │  ✅ Required fields marked with aria-required="true"         │
+  │  ✅ Error messages use role="alert" (announced immediately)  │
+  │  ✅ aria-invalid="true" on invalid fields                    │
+  │  ✅ aria-describedby links to error + help text              │
+  │  ✅ Don't rely on placeholder as label (disappears on focus) │
+  │  ✅ Group related fields with <fieldset> + <legend>          │
+  │  ✅ Submit button is a <button type="submit">, not a <div>  │
+  │                                                               │
+  └───────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -543,7 +543,7 @@ function SearchResults({ results, query }) {
 
 ```
   AUTOMATED TESTING (catches ~30% of issues):
-  ══════════════════════════════════════════════
+  ──────────────────────────────────────────────
   
   1. Lighthouse Accessibility Audit (Chrome DevTools)
   2. axe DevTools Extension (most popular)
@@ -551,7 +551,7 @@ function SearchResults({ results, query }) {
   4. eslint-plugin-jsx-a11y (catches issues at build time)
   
   MANUAL TESTING (catches the rest):
-  ═══════════════════════════════════
+  ───────────────────────────────────
   
   1. KEYBOARD TEST:
      • Tab through entire page — can you reach everything?

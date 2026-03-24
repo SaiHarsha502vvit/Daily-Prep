@@ -7,34 +7,34 @@
 ## 5W1H — Why Hooks Exist
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: Hooks are functions that let you "hook into" React state      ║
-║        and lifecycle features from function components.              ║
-║                                                                      ║
-║  WHY:  Before Hooks (pre-2019), only CLASS components had state      ║
-║        and lifecycle. This created 3 problems:                       ║
-║        1. Wrapper Hell: HOCs and render props nested 5+ levels       ║
-║        2. Giant Components: related logic split across lifecycle     ║
-║           methods (componentDidMount + componentDidUpdate +          ║
-║           componentWillUnmount for ONE feature)                      ║
-║        3. Confusing Classes: `this` binding, class boilerplate       ║
-║                                                                      ║
-║  WHO:  React team (Dan Abramov, Sophie Alpert) introduced at         ║
-║        React Conf 2018. Released in React 16.8 (Feb 2019).           ║
-║                                                                      ║
-║  HOW HOOKS WORK INTERNALLY:                                          ║
-║  Each component has a Fiber node. Each Fiber has a linked list       ║
-║  of hooks. When React renders your component, it walks this list:    ║
-║                                                                      ║
-║  ComponentFiber.memoizedState → Hook1 → Hook2 → Hook3 → null         ║
-║                                                                      ║
-║  useState(0)  → reads Hook1 (state = current value)                  ║
-║  useEffect()  → reads Hook2 (effect + deps + cleanup)                ║
-║  useRef()     → reads Hook3 (ref object)                             ║
-║                                                                      ║
-║  CRITICAL: Hooks are identified by POSITION in the linked list,      ║
-║  NOT by name. This is why they MUST be called in the same order.     ║
-╚══════════════════════════════════════════════════════════════════════╝
+┌──────────────────────────────────────────────────────────────────────┐
+│  WHAT: Hooks are functions that let you "hook into" React state      │
+│        and lifecycle features from function components.              │
+│                                                                      │
+│  WHY:  Before Hooks (pre-2019), only CLASS components had state      │
+│        and lifecycle. This created 3 problems:                       │
+│        1. Wrapper Hell: HOCs and render props nested 5+ levels       │
+│        2. Giant Components: related logic split across lifecycle     │
+│           methods (componentDidMount + componentDidUpdate +          │
+│           componentWillUnmount for ONE feature)                      │
+│        3. Confusing Classes: `this` binding, class boilerplate       │
+│                                                                      │
+│  WHO:  React team (Dan Abramov, Sophie Alpert) introduced at         │
+│        React Conf 2018. Released in React 16.8 (Feb 2019).           │
+│                                                                      │
+│  HOW HOOKS WORK INTERNALLY:                                          │
+│  Each component has a Fiber node. Each Fiber has a linked list       │
+│  of hooks. When React renders your component, it walks this list:    │
+│                                                                      │
+│  ComponentFiber.memoizedState → Hook1 → Hook2 → Hook3 → null         │
+│                                                                      │
+│  useState(0)  → reads Hook1 (state = current value)                  │
+│  useEffect()  → reads Hook2 (effect + deps + cleanup)                │
+│  useRef()     → reads Hook3 (ref object)                             │
+│                                                                      │
+│  CRITICAL: Hooks are identified by POSITION in the linked list,      │
+│  NOT by name. This is why they MUST be called in the same order.     │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -520,7 +520,7 @@ function useDebounce(value, delay = 300) {
 
 ```
 THE INTERNAL REASON:
-═════════════════════
+─────────────────────
   React stores hooks in a LINKED LIST on each Fiber node.
   Hooks are identified by POSITION, not by name.
 
@@ -540,18 +540,18 @@ THE INTERNAL REASON:
 ```
 
 ```
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║  RULE 1: Only call hooks at the TOP LEVEL                                        ║
-║    ❌ if (condition) { useState(...) }                                            ║
-║    ❌ for (let i...) { useEffect(...) }                                           ║
-║    ✅ Always same hooks in same order every render                                ║
-║                                                                                  ║
-║  RULE 2: Only call hooks from React FUNCTIONS                                    ║
-║    ✅ Function components                                                         ║
-║    ✅ Custom hooks (useXxx)                                                       ║
-║    ❌ Regular JavaScript functions                                                ║
-║    ❌ Class components                                                            ║
-╚══════════════════════════════════════════════════════════════════════════════════╝
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│  RULE 1: Only call hooks at the TOP LEVEL                                        │
+│    ❌ if (condition) { useState(...) }                                            │
+│    ❌ for (let i...) { useEffect(...) }                                           │
+│    ✅ Always same hooks in same order every render                                │
+│                                                                                  │
+│  RULE 2: Only call hooks from React FUNCTIONS                                    │
+│    ✅ Function components                                                         │
+│    ✅ Custom hooks (useXxx)                                                       │
+│    ❌ Regular JavaScript functions                                                │
+│    ❌ Class components                                                            │
+└──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 **Flow:**
@@ -587,6 +587,17 @@ flowchart TD
     N6 --> N7
     N7 --> N8
 ```
+
+### 🔗 Cross-References to DSA Concepts
+
+| Hooks Concept | Underlying DSA/Algorithm |
+|---|---|
+| Hook linked list (memoizedState → Hook1 → Hook2) | [LinkedList](../02_Data_Structures/01c_LinkedList.md) |
+| useMemo (caching computed values) | [DP — Memoization](../03_Algorithms/04b_DP_Fundamentals.md) |
+| useReducer (state machine pattern) | [Design Patterns — State](../06_OOP_Design/02_Design_Patterns.md) |
+| useCallback (referential equality) | [HashTable — Object identity](../02_Data_Structures/01e_HashTable.md) |
+| useContext (tree traversal to find Provider) | [Tree Algorithms — DFS](../03_Algorithms/05_Trees.md) |
+| Custom Hooks (composition) | [OOP — Strategy Pattern](../06_OOP_Design/02_Design_Patterns.md) |
 
 ---
 

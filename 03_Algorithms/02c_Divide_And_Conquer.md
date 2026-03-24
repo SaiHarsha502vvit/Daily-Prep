@@ -10,6 +10,35 @@
 
 ---
 
+## PART 0: THE MENTAL MODEL — "The Delegation Strategy"
+
+```
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ THE REAL-WORLD ORIGIN                                                        │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ Roman emperor Julius Caesar famously used the strategy "divide et impera"    │
+│ (divide and rule) to defeat large enemy alliances by fighting them one small │
+│ tribe at a time. In computer science, John von Neumann applied this exact    │
+│ principle to sorting in 1945 to create Merge Sort.                           │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+### The 5W+H Framework
+
+*   **WHAT**: A problem-solving paradigm that breaks a complex problem into smaller, independent subproblems of the same type, solves them recursively, and combines their solutions.
+*   **WHY**: Reduces time complexity dramatically. Problems that take $O(n^2)$ using brute force become $O(n \log n)$ because we halve the search space or work exponentially.
+*   **WHEN**: Use when a problem can be broken down into identical, *independent* sub-problems (unlike Dynamic Programming, where subproblems *overlap*).
+*   **WHERE**: Built-in sorting algorithms (`Arrays.sort()` uses a form of D&C), distributed databases (MapReduce), fast Fourier transforms (signal processing), and computational geometry.
+*   **WHO**: John von Neumann (Merge Sort, 1945), Anatolii Karatsuba (Fast Multiplication, 1960), Tony Hoare (Quick Sort, 1959).
+*   **HOW**: 1. **Divide** the problem. 2. **Conquer** the subproblems recursively. 3. **Combine** the results. 
+
+### Where It's Used in Real World
+*   **Distributed Systems**: Hadoop MapReduce framework inherently runs on a divide-and-conquer processing model.
+*   **Database Query Engines**: Parquet and ORC file formats use binary-search-like structures to jump past chunks of irrelevant data.
+*   **Computer Graphics**: Quadtrees and octrees divide spatial coordinate planes into quarters recursively to render visible objects.
+
+---
+
 ## Algorithm Analysis Fundamentals
 
 ### What is an Algorithm?

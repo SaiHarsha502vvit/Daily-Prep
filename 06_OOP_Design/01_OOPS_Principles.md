@@ -6,10 +6,24 @@
 
 ---
 
-# 📚 Part 0: Complete Understanding of OOP
+# 📚 PART 0: The 5W+H Framework
 
+> **Mental Model:** Think of Procedural Programming as a factory floor with tools scattered everywhere. Anyone can pick up any tool and mess with any machine. Object-Oriented Programming (OOP) is like organized workstations where each worker has their own specific tools and materials, and you must ask the worker to perform a task instead of grabbing their tools yourself.
 
-OOP is a programming **paradigm** (way of thinking) where software is organized around **objects** — bundles of related *data* (attributes) and *behavior* (methods) that represent real-world entities or concepts.
+| Question | Object-Oriented Programming Context |
+| :--- | :--- |
+| **WHAT** | A programming paradigm where software is organized around **objects** — bundles of related *data* (attributes) and *behavior* (methods) that represent real-world entities or concepts. |
+| **WHY** | To manage exponential complexity in software. It prevents "spaghetti code" by keeping data and functions tightly coupled (Encapsulation), allowing safe code reuse (Inheritance/Composition), and hiding complex implementation details (Abstraction). |
+| **WHEN** | Used for medium-to-large applications, GUIs, simulations, and enterprise software where business logic models complex real-world relationships. |
+| **WHERE** | At the structural core of modern applications written in Java, C#, Python, C++, and TypeScript. |
+| **WHO** | Conceptualized in the 1960s with Simula and popularized in the 1970s/80s with Smalltalk and C++. |
+| **HOW** | By defining blueprints (`classes`) to instantiate concrete entities (`objects`) that interact with each other by sending messages (calling methods) rather than modifying each other's state directly. |
+
+### Where It's Used in Real World
+*   **Video Games**: Modeling entities like `Player`, `Enemy`, and `Weapon` where each object manages its own health, position, and damage logic.
+*   **Banking Systems**: A `BankAccount` object encapsulating `balance` data, ensuring it can only be modified via controlled `deposit()` and `withdraw()` methods to prevent illegal states (like a negative balance).
+*   **GUI Libraries**: Creating reusable, hierarchical UI components like `Button` inheriting from a base `UIComponent` class.
+*   **E-Commerce**: Modeling the entire shopping flow with `Customer`, `ShoppingCart`, `Order`, and `Payment` objects interacting seamlessly.
 
 > 💡 **Key Insight**: OOP isn't about "classes and objects" — it's about **managing complexity** through organization and abstraction.
 

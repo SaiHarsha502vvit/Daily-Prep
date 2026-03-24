@@ -29,7 +29,7 @@
   ┌──────────────────────────────────────────────────────────────────┐
   │                                                                  │
   │  LCP (Largest Contentful Paint):        LOADING SPEED           │
-  │  ═══════════════════════════════         ═════════════           │
+  │  ───────────────────────────────         ─────────────           │
   │  When does the biggest content appear?                           │
   │  GOOD: < 2.5s  │  NEEDS WORK: 2.5-4s  │  POOR: > 4s           │
   │                                                                  │
@@ -39,7 +39,7 @@
   ├──────────────────────────────────────────────────────────────────┤
   │                                                                  │
   │  INP (Interaction to Next Paint):       RESPONSIVENESS          │
-  │  ═══════════════════════════════         ══════════════          │
+  │  ───────────────────────────────         ──────────────          │
   │  How fast does UI respond to clicks/taps?                        │
   │  GOOD: < 200ms  │  NEEDS WORK: 200-500ms  │  POOR: > 500ms    │
   │                                                                  │
@@ -49,7 +49,7 @@
   ├──────────────────────────────────────────────────────────────────┤
   │                                                                  │
   │  CLS (Cumulative Layout Shift):         VISUAL STABILITY        │
-  │  ═════════════════════════════          ════════════════         │
+  │  ─────────────────────────────          ────────────────         │
   │  How much does content shift around?                             │
   │  GOOD: < 0.1  │  NEEDS WORK: 0.1-0.25  │  POOR: > 0.25       │
   │                                                                  │
@@ -65,7 +65,7 @@
 
 ```
   WHAT COUNTS AS LCP ELEMENT:
-  ═══════════════════════════
+  ───────────────────────────
   
   • <img> elements
   • <video> poster images
@@ -76,7 +76,7 @@
   
   
   LCP OPTIMIZATION CHECKLIST:
-  ═══════════════════════════
+  ───────────────────────────
   
   1. Preload the LCP image:
      <link rel="preload" as="image" href="/hero-image.webp"
@@ -121,7 +121,7 @@
   
   
   HOW TO IMPROVE INP:
-  ═══════════════════
+  ───────────────────
   
   1. Break up long tasks (>50ms blocks the main thread):
   
@@ -163,7 +163,7 @@
   CLS measures unexpected layout shifts.
   
   BAD EXAMPLE:
-  ═══════════
+  ───────────
   
   Page loads:                After ad loads:
   ┌──────────────────┐      ┌──────────────────┐
@@ -180,7 +180,7 @@
   
   
   HOW TO FIX CLS:
-  ═══════════════
+  ───────────────
   
   1. ALWAYS set dimensions on images and videos:
      <img src="photo.webp" width="800" height="600" alt="...">
@@ -242,7 +242,7 @@
 
 ```
   LOADING PRIORITY MENTAL MODEL:
-  ═════════════════════════════
+  ─────────────────────────────
   
   ┌────────────────────────────────────────────────────────────┐
   │  HIGH PRIORITY (blocks rendering):                         │
@@ -275,7 +275,7 @@
   
   
   FORMAT COMPARISON:
-  ══════════════════
+  ──────────────────
   
   ┌──────────┬──────────┬────────────┬───────────────────────┐
   │ Format   │ Size     │ Quality    │ Browser Support       │
@@ -356,18 +356,18 @@ body {
 ```
 
 ```
-  ╔═══════════════════════════════════════════════════════════╗
-  ║  FONT LOADING BEST PRACTICES:                            ║
-  ║                                                           ║
-  ║  1. Use woff2 only (smallest, 97%+ support)              ║
-  ║  2. Self-host fonts (avoid Google Fonts round trip)       ║
-  ║  3. Preload your primary font                            ║
-  ║  4. Use font-display: swap                               ║
-  ║  5. Subset fonts (only chars you need)                    ║
-  ║  6. Limit to 2-3 font families max                       ║
-  ║  7. Use variable fonts (1 file for all weights)           ║
-  ║                                                           ║
-  ╚═══════════════════════════════════════════════════════════╝
+  ┌───────────────────────────────────────────────────────────┐
+  │  FONT LOADING BEST PRACTICES:                            │
+  │                                                           │
+  │  1. Use woff2 only (smallest, 97%+ support)              │
+  │  2. Self-host fonts (avoid Google Fonts round trip)       │
+  │  3. Preload your primary font                            │
+  │  4. Use font-display: swap                               │
+  │  5. Subset fonts (only chars you need)                    │
+  │  6. Limit to 2-3 font families max                       │
+  │  7. Use variable fonts (1 file for all weights)           │
+  │                                                           │
+  └───────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -376,7 +376,7 @@ body {
 
 ```
   ANALYZE BUNDLE SIZE:
-  ════════════════════
+  ────────────────────
   
   # Vite:
   npx vite-bundle-visualizer
@@ -439,7 +439,7 @@ function Dashboard() {
 
 ```
   TREE SHAKING — Dead code elimination:
-  ══════════════════════════════════════
+  ──────────────────────────────────────
   
   // BAD — imports ENTIRE library:
   import _ from 'lodash';          // 72KB
@@ -471,7 +471,7 @@ function Dashboard() {
 
 ```
   CACHE-CONTROL HEADER:
-  ════════════════════
+  ────────────────────
   
   Static assets (JS, CSS, images) with content hash in filename:
   Cache-Control: public, max-age=31536000, immutable
@@ -507,7 +507,7 @@ function Dashboard() {
 ## 10. Measuring Performance in Code
 
 ```javascript
-// ═══ Performance API ═══
+// ─── Performance API ───
 
 // Mark start and end of operations:
 performance.mark('fetch-start');
@@ -520,7 +520,7 @@ const measures = performance.getEntriesByType('measure');
 console.log(measures[0].duration); // → 342.5 (ms)
 
 
-// ═══ PerformanceObserver — Watch for metrics in real-time ═══
+// ─── PerformanceObserver — Watch for metrics in real-time ───
 const observer = new PerformanceObserver((list) => {
   for (const entry of list.getEntries()) {
     // Send to your analytics:
@@ -551,7 +551,7 @@ new PerformanceObserver((list) => {
 }).observe({ type: 'layout-shift', buffered: true });
 
 
-// ═══ Web Vitals Library (recommended) ═══
+// ─── Web Vitals Library (recommended) ───
 // npm install web-vitals
 import { onLCP, onINP, onCLS } from 'web-vitals';
 

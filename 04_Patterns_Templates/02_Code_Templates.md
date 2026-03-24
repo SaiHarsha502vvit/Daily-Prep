@@ -477,9 +477,9 @@ public String minWindow(String s, String t) {
 ### Visual Concept
 
 ```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║                    BINARY SEARCH VISUALIZATION                            ║
-╠═══════════════════════════════════════════════════════════════════════════╣
+┌───────────────────────────────────────────────────────────────────────────┐
+│                    BINARY SEARCH VISUALIZATION                            │
+├───────────────────────────────────────────────────────────────────────────┤
 ║                                                                           ║
 ║  Find 7 in sorted array:                                                  ║
 ║                                                                           ║
@@ -509,7 +509,7 @@ public String minWindow(String s, String t) {
 ║                     ↑                                                     ║
 ║                 low,mid,high                                              ║
 ║  arr[6]=7 == 7 → FOUND! Return 6                                          ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+└───────────────────────────────────────────────────────────────────────────┘
 ```
 
 **Flow:**
@@ -918,41 +918,41 @@ public int firstUniqChar(String s) {
 ### Visual Concept
 
 ```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║                    STACK PATTERNS                                         ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  PATTERN 1: Matching/Balancing                                            ║
-║  ─────────────────────────────                                            ║
-║                                                                           ║
-║  Input: "({[]})"                                                          ║
-║                                                                           ║
-║  Process '(':  Stack: [(]                                                 ║
-║  Process '{':  Stack: [(, {]                                              ║
-║  Process '[':  Stack: [(, {, []                                           ║
-║  Process ']':  Matches '[', Stack: [(, {]                                 ║
-║  Process '}':  Matches '{', Stack: [(]                                    ║
-║  Process ')':  Matches '(', Stack: []                                     ║
-║                                                                           ║
-║  Stack empty at end → BALANCED! ✓                                         ║
-║                                                                           ║
-║  ════════════════════════════════════════════════════════════════════     ║
-║                                                                           ║
-║  PATTERN 2: Monotonic Stack (Next Greater Element)                        ║
-║  ──────────────────────────────────────────────────                       ║
-║                                                                           ║
-║  Input: [2, 1, 2, 4, 3]                                                   ║
-║  Output: [4, 2, 4, -1, -1]  (next greater for each)                       ║
-║                                                                           ║
-║  Process 2: Stack: [2]                                                    ║
-║  Process 1: Stack: [2, 1]  (1 < 2, can't pop)                             ║
-║  Process 2: Pop 1 (next greater of 1 is 2), Stack: [2, 2]                 ║
-║  Process 4: Pop all (4 > everyone), next greater of 2,2 is 4              ║
-║             Stack: [4]                                                    ║
-║  Process 3: Stack: [4, 3]  (3 < 4, can't pop)                             ║
-║                                                                           ║
-║  Stack maintains DECREASING order from bottom to top                      ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+┌───────────────────────────────────────────────────────────────────────────┐
+│                    STACK PATTERNS                                         │
+├───────────────────────────────────────────────────────────────────────────┤
+│                                                                           │
+│  PATTERN 1: Matching/Balancing                                            │
+│  ─────────────────────────────                                            │
+│                                                                           │
+│  Input: "({[]})"                                                          │
+│                                                                           │
+│  Process '(':  Stack: [(]                                                 │
+│  Process '{':  Stack: [(, {]                                              │
+│  Process '[':  Stack: [(, {, []                                           │
+│  Process ']':  Matches '[', Stack: [(, {]                                 │
+│  Process '}':  Matches '{', Stack: [(]                                    │
+│  Process ')':  Matches '(', Stack: []                                     │
+│                                                                           │
+│  Stack empty at end → BALANCED! ✓                                         │
+│                                                                           │
+│  ────────────────────────────────────────────────────────────────────     │
+│                                                                           │
+│  PATTERN 2: Monotonic Stack (Next Greater Element)                        │
+│  ──────────────────────────────────────────────────                       │
+│                                                                           │
+│  Input: [2, 1, 2, 4, 3]                                                   │
+│  Output: [4, 2, 4, -1, -1]  (next greater for each)                       │
+│                                                                           │
+│  Process 2: Stack: [2]                                                    │
+│  Process 1: Stack: [2, 1]  (1 < 2, can't pop)                             │
+│  Process 2: Pop 1 (next greater of 1 is 2), Stack: [2, 2]                 │
+│  Process 4: Pop all (4 > everyone), next greater of 2,2 is 4              │
+│             Stack: [4]                                                    │
+│  Process 3: Stack: [4, 3]  (3 < 4, can't pop)                             │
+│                                                                           │
+│  Stack maintains DECREASING order from bottom to top                      │
+└───────────────────────────────────────────────────────────────────────────┘
 ```
 
 **Flow:**

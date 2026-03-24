@@ -872,6 +872,17 @@ public int lcsOptimized(String s1, String s2) {
 ⬜ Multiple solutions: verify you want min/max/count
 ```
 
+### 🔗 Cross-References — Navigate the Ecosystem
+
+| Topic | Related Content |
+|---|---|
+| DP pattern recognition | [DP Pattern Recognition](../04_Patterns_Templates/16_DP_Pattern_Recognition.md) |
+| DP practice problems | [Problem Solving — DP](../05_Problem_Solving/11_Dynamic_Programming.md) |
+| Knapsack family (DP) | [Knapsack Family](../04_Patterns_Templates/23_Knapsack_Family.md) |
+| Memoization in React (useMemo) | [React Hooks](../15_React_Frontend/03_Hooks_Deep_Dive.md) |
+| Optimization in ML (gradient descent) | [Math for ML](../21_Python_ML_DL_NLP/04_Math_For_ML.md) |
+| Greedy vs DP | [Greedy Algorithms](12_Greedy_Algorithms_Complete.md) |
+
 ---
 
 > **Navigation**: [< Previous](04a_DP_Internals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04c_DP_Advanced.md)

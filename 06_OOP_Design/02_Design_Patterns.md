@@ -6,7 +6,24 @@
 
 ---
 
-# 🎨 Part 0: Complete Understanding of Design Patterns
+# 🎨 PART 0: The 5W+H Framework
+
+> **Mental Model:** Think of Design Patterns as recipes in cooking. A recipe doesn't give you the exact ingredients in your fridge, but it gives you a proven approach to creating a specific dish. Knowing recipes makes you a master chef; you don't have to invent a new way to bake a cake from scratch every time.
+
+| Question | Design Patterns Context |
+| :--- | :--- |
+| **WHAT** | Reusable, language-agnostic solutions to common software design problems. They are templates or blueprints for solving issues that occur repeatedly in software architecture. |
+| **WHY** | To prevent "reinventing the wheel." Patterns provide proven, battle-tested solutions that improve code maintainability, flexibility, and create a common vocabulary for developers (e.g., saying "I used a Singleton" conveys exact meaning instantly). |
+| **WHEN** | Used when you recognize a recurring architectural problem, foresee requirements changing, or need to structure complex interactions between many objects without creating tight coupling. |
+| **WHERE** | Found entirely throughout enterprise codebases, libraries, and frameworks (Spring, React, Android SDK). |
+| **WHO** | Formalized by the "Gang of Four" (GoF) in their famous 1994 book, *Design Patterns: Elements of Reusable Object-Oriented Software*. |
+| **HOW** | By categorizing problems into three groups: **Creational** (how objects are made), **Structural** (how objects are composed together), and **Behavioral** (how objects communicate and delegate responsibility). |
+
+### Where It's Used in Real World
+*   **Frameworks (Spring)**: Extensively relies on the **Singleton** pattern (one instance per bean by default), **Factory** pattern (BeanFactory), and **Proxy** pattern (AOP and transactions).
+*   **UI/Frontend Development**: The DOM event listener system is a pure implementation of the **Observer** pattern.
+*   **Navigation Apps (Google Maps)**: Uses the **Strategy** pattern to swap between routing algorithms (driving, walking, transit) without changing the core map code.
+*   **Text Editors**: Implement the **Command** pattern to encapsulate every keystroke or action as an object, enabling "Undo/Redo" functionality.
 
 ## What Are Design Patterns?
 

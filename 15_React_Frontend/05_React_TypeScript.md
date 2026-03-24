@@ -190,18 +190,18 @@ function CustomButton({ variant, isLoading, children, ...rest }: CustomButtonPro
 ## Quick Reference: Common Types
 
 ```
-╔════════════════════════════════╦══════════════════════════════════════════════╗
-║ What                          ║ Type                                          ║
-╠════════════════════════════════╬══════════════════════════════════════════════╣
-║ Component children            ║ React.ReactNode                               ║
-║ Single element child          ║ React.ReactElement                            ║
-║ Style object                  ║ React.CSSProperties                           ║
-║ Ref to DOM element            ║ React.RefObject<HTMLDivElement>               ║
-║ Set state function            ║ React.Dispatch<SetStateAction<T>>             ║
-║ onChange for input            ║ React.ChangeEvent<HTMLInputElement>           ║
-║ onClick for button            ║ React.MouseEvent<HTMLButtonElement>           ║
-║ onSubmit for form             ║ React.FormEvent<HTMLFormElement>              ║
-╚════════════════════════════════╩══════════════════════════════════════════════╝
+┌────────────────────────────────┬──────────────────────────────────────────────┐
+│ What                          │ Type                                          │
+├────────────────────────────────┼──────────────────────────────────────────────┤
+│ Component children            │ React.ReactNode                               │
+│ Single element child          │ React.ReactElement                            │
+│ Style object                  │ React.CSSProperties                           │
+│ Ref to DOM element            │ React.RefObject<HTMLDivElement>               │
+│ Set state function            │ React.Dispatch<SetStateAction<T>>             │
+│ onChange for input            │ React.ChangeEvent<HTMLInputElement>           │
+│ onClick for button            │ React.MouseEvent<HTMLButtonElement>           │
+│ onSubmit for form             │ React.FormEvent<HTMLFormElement>              │
+└────────────────────────────────┴──────────────────────────────────────────────┘
 ```
 
 **Flow:**
