@@ -248,7 +248,209 @@ function UserForm() {
     </form>
   );
 }
+      <button type="submit" disabled={isSubmitting}>
+        {isSubmitting ? 'Saving...' : 'Create User'}
+      </button>
+    </form>
+  );
+}
 ```
+
+---
+
+## React Router v6.4+ Data APIs (Advanced)
+
+```tsx
+// ── actions, loaders, and forms ──
+// React Router v6.4+ brought Remix features to client-side React.
+// Say goodbye to useEffect for fetching!
+
+import { createBrowserRouter, RouterProvider, Form, useActionData, redirect } from 'react-router-dom';
+
+// 1. Loader (GET)
+const userLoader = async ({ params }) => {
+  const user = await fetch(`/api/users/${params.userId}`);
+  if (!user.ok) throw new Error('User not found');
+  return user.json();
+};
+
+// 2. Action (POST/PUT/DELETE)
+const editUserAction = async ({ request, params }) => {
+  const formData = await request.formData();
+  const updates = Object.fromEntries(formData);
+  
+  const res = await fetch(`/api/users/${params.userId}`, {
+    method: 'PUT',
+    body: JSON.stringify(updates),
+  });
+  
+  if (!res.ok) return { error: "Failed to save" };
+  return redirect(`/users/${params.userId}`);
+};
+
+// 3. Component uses <Form> (prevents default, calls action)
+function EditUser() {
+  const user = useLoaderData();
+  const actionData = useActionData(); // Access action return value (like errors)
+  const navigation = useNavigation(); // Know when we are submitting!
+  
+  const isSubmitting = navigation.state === 'submitting';
+
+  return (
+    <Form method="post">
+      {actionData?.error && <p className="error">{actionData.error}</p>}
+      
+      <input name="firstName" defaultValue={user.firstName} />
+      <input name="lastName" defaultValue={user.lastName} />
+      
+      <button type="submit" disabled={isSubmitting}>
+        {isSubmitting ? 'Saving...' : 'Save'}
+      </button>
+    </Form>
+  );
+}
+
+// 4. Define route with loader AND action
+const router = createBrowserRouter([
+  {
+    path: '/users/:userId/edit',
+    element: <EditUser />,
+    loader: userLoader,
+    action: editUserAction,
+    errorElement: <ErrorBoundary />, // Catches loader AND render errors
+  }
+]);
+```
+
+---
+
+## Defer & Suspense (Streaming Data)
+
+```tsx
+// Wait for critical data, but SHOW UI immediately while slow data loads!
+
+import { defer, Await, useLoaderData } from 'react-router-dom';
+import { Suspense } from 'react';
+
+// 1. Loader uses `defer`
+const dashboardLoader = async () => {
+  // Fast: awaited immediately
+  const user = await fetchUser(); 
+  
+  // Slow: NOT awaited, passed as a promise!
+  const statsPromise = fetchHeavyDashboardStats(); 
+  
+  return defer({
+    user,           // Critical data (blocks navigation)
+    stats: statsPromise // Uncritical data (streams in later)
+  });
+};
+
+// 2. Component uses <Suspense> and <Await>
+function Dashboard() {
+  const data = useLoaderData();
+  
+  return (
+    <div>
+      <h1>Welcome {data.user.name}</h1> {/* Renders immediately */}
+      
+      <Suspense fallback={<Spinner text="Loading heavy stats..." />}>
+        {/* Await handles resolving the promise */}
+        <Await resolve={data.stats} errorElement={<p>Error loading stats!</p>}>
+          {(resolvedStats) => (
+            <StatsChart data={resolvedStats} />
+          )}
+        </Await>
+      </Suspense>
+    </div>
+  );
+}
+```
+
+---
+
+## Advanced Authentication Flow
+
+```tsx
+// Centralized auth state + Route protection + Redirect to origin
+
+// 1. Auth Provider
+function AuthProvider({ children }) {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    checkSession().then(u => {
+      setUser(u);
+      setLoading(false);
+    });
+  }, []);
+
+  if (loading) return <FullScreenLoader />;
+
+  return (
+    <AuthContext.Provider value={{ user, setUser }}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
+
+// 2. Protected Route Wrapper
+function RequireAuth() {
+  const { user } = useAuth();
+  const location = useLocation();
+
+  if (!user) {
+    // Redirect to login, but save the intended destination!
+    return <Navigate to="/login" state={{ from: location.pathname }} replace />;
+  }
+
+  return <Outlet />; // Render child routes
+}
+
+// 3. Login Page
+function LoginPage() {
+  const { setUser } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Where were they trying to go? Default to /dashboard
+  const from = location.state?.from || '/dashboard';
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    const user = await API.login(/* credentials */);
+    setUser(user);
+    // Send them back to where they wanted to go!
+    navigate(from, { replace: true });
+  };
+  
+  return <form onSubmit={handleLogin}>{/* ... */}</form>;
+}
+
+// 4. Usage in Routes
+<Routes>
+  <Route path="/" element={<Home />} />
+  <Route path="/login" element={<LoginPage />} />
+  
+  {/* Wrap all protected routes securely */}
+  <Route element={<RequireAuth />}>
+    <Route path="/dashboard" element={<Dashboard />} />
+    <Route path="/settings" element={<Settings />} />
+  </Route>
+</Routes>
+```
+
+---
+
+## 🔗 Cross-References
+
+| Topic | Related Content |
+|---|---|
+| **Hooks** | [Hooks Deep Dive](03_Hooks_Deep_Dive.md) — useEffect, useContext |
+| **Component Patterns** | [Component Patterns](02_Component_Patterns.md) — Composition |
+| **Testing Routes** | [React Testing](07_React_Testing.md) — Mocking navigation |
+| **API Backend** | [Node.js Express](../13_Node_Backend/01_Express_Basics.md) |
 
 ---
 

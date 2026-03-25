@@ -202,6 +202,232 @@ render(Circle())  # ✅ Works! Circle "implements" Drawable structurally
 
 ---
 
+# PART 5: Decorators — Functions That Modify Functions
+
+---
+
+```python
+import functools, time
+
+# ── BASIC DECORATOR: adds behavior before/after a function ──
+def timer(func):
+    @functools.wraps(func)  # preserves __name__, __doc__ of original
+    def wrapper(*args, **kwargs):
+        start = time.perf_counter()
+        result = func(*args, **kwargs)
+        elapsed = time.perf_counter() - start
+        print(f"{func.__name__} took {elapsed:.4f}s")
+        return result
+    return wrapper
+
+@timer
+def slow_function():
+    time.sleep(1)
+    return "done"
+
+# @timer is syntactic sugar for: slow_function = timer(slow_function)
+
+# ── DECORATOR WITH ARGUMENTS ──
+def retry(max_attempts=3, delay=1):
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            for attempt in range(1, max_attempts + 1):
+                try:
+                    return func(*args, **kwargs)
+                except Exception as e:
+                    if attempt == max_attempts:
+                        raise
+                    print(f"Attempt {attempt} failed: {e}. Retrying in {delay}s...")
+                    time.sleep(delay)
+        return wrapper
+    return decorator
+
+@retry(max_attempts=3, delay=2)
+def fetch_data(url):
+    # might fail, retry up to 3 times
+    pass
+
+# ── CHAINING DECORATORS (applied bottom-up) ──
+@timer               # second: time the cached function
+@functools.lru_cache  # first: add caching
+def fibonacci(n):
+    if n < 2: return n
+    return fibonacci(n-1) + fibonacci(n-2)
+```
+
+---
+
+# PART 6: Context Managers — Resource Safety
+
+---
+
+```python
+from contextlib import contextmanager, asynccontextmanager
+
+# ── THE PROBLEM: resource leaks ──
+# BAD: if process() raises, file stays open!
+f = open("data.txt")
+process(f.read())
+f.close()
+
+# GOOD: `with` guarantees cleanup
+with open("data.txt") as f:
+    process(f.read())
+# f.close() is ALWAYS called, even on exception.
+
+# ── CUSTOM CONTEXT MANAGER (class-based) ──
+class DatabaseConnection:
+    def __enter__(self):
+        self.conn = create_connection()
+        return self.conn
+    
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.conn.close()  # ALWAYS closes, even on exception
+        return False  # don't suppress exceptions
+
+with DatabaseConnection() as conn:
+    conn.execute("SELECT * FROM users")
+
+# ── contextmanager DECORATOR (simpler!) ──
+@contextmanager
+def timer_context(label):
+    start = time.perf_counter()
+    yield  # code in `with` block runs here
+    elapsed = time.perf_counter() - start
+    print(f"{label}: {elapsed:.4f}s")
+
+with timer_context("database query"):
+    results = db.execute("SELECT * FROM large_table")
+
+# ── ASYNC CONTEXT MANAGER ──
+@asynccontextmanager
+async def async_db():
+    conn = await aiopg.connect(dsn)
+    try:
+        yield conn
+    finally:
+        await conn.close()
+
+async with async_db() as conn:
+    await conn.execute("SELECT 1")
+```
+
+---
+
+# PART 7: Dataclasses — Structured Data Without Boilerplate
+
+---
+
+```python
+from dataclasses import dataclass, field
+from typing import List
+
+# ── BASIC DATACLASS ──
+@dataclass
+class User:
+    name: str
+    email: str
+    age: int = 0
+    
+    # Auto-generates: __init__, __repr__, __eq__
+    # No need to write self.name = name boilerplate!
+
+user = User("Alice", "alice@test.com", 30)
+print(user)  # User(name='Alice', email='alice@test.com', age=30)
+
+# ── FROZEN (immutable) ──
+@dataclass(frozen=True)
+class Point:
+    x: float
+    y: float
+    # point.x = 5 → FrozenInstanceError!
+
+# ── WITH SLOTS (memory-efficient) ──
+@dataclass(slots=True)  # Python 3.10+
+class Coordinate:
+    x: float
+    y: float
+    z: float
+    # Uses __slots__ → 40% less memory per instance
+
+# ── POST_INIT VALIDATION ──
+@dataclass
+class Order:
+    item: str
+    quantity: int
+    price: float
+    total: float = field(init=False)
+    
+    def __post_init__(self):
+        if self.quantity <= 0:
+            raise ValueError("Quantity must be positive")
+        self.total = self.quantity * self.price
+
+# ── MUTABLE DEFAULT (use field!) ──
+@dataclass
+class Team:
+    name: str
+    members: List[str] = field(default_factory=list)  # NOT = []!
+```
+
+---
+
+# PART 8: Generators & Iterators — Lazy Evaluation
+
+---
+
+```python
+# ── GENERATOR: produces values one-at-a-time (lazy, memory-efficient) ──
+def fibonacci_gen():
+    a, b = 0, 1
+    while True:
+        yield a  # pause here, return value, resume on next()
+        a, b = b, a + b
+
+fib = fibonacci_gen()
+print(next(fib))  # 0
+print(next(fib))  # 1
+print(next(fib))  # 1
+# Memory: O(1) — only stores a, b. Not the entire sequence!
+
+# ── GENERATOR EXPRESSION (like list comprehension but lazy) ──
+squares_list = [x**2 for x in range(1_000_000)]  # 8MB in memory
+squares_gen  = (x**2 for x in range(1_000_000))  # ~120 bytes!
+
+# ── GENERATOR PIPELINE (Unix-pipe style) ──
+def read_lines(filename):
+    with open(filename) as f:
+        for line in f:
+            yield line.strip()
+
+def filter_errors(lines):
+    for line in lines:
+        if "ERROR" in line:
+            yield line
+
+def extract_timestamps(lines):
+    for line in lines:
+        yield line.split()[0]
+
+# Process 10GB log file with O(1) memory!
+pipeline = extract_timestamps(filter_errors(read_lines("server.log")))
+for timestamp in pipeline:
+    print(timestamp)
+
+# ── YIELD FROM (delegate to sub-generator) ──
+def flatten(nested):
+    for item in nested:
+        if isinstance(item, list):
+            yield from flatten(item)  # recursively yield
+        else:
+            yield item
+
+list(flatten([1, [2, [3, 4]], 5]))  # [1, 2, 3, 4, 5]
+```
+
+---
+
 ## 🔗 Cross-References
 
 | Topic | Related Content |
@@ -209,6 +435,10 @@ render(Circle())  # ✅ Works! Circle "implements" Drawable structurally
 | Threading / Concurrency | [Java Concurrency](../07_Modern_Java/Ch31_SB_Core_Part1.md) |
 | Memory / Heap / GC | [Memory Foundations](../02_Data_Structures/01a_Memory_Foundations.md) |
 | Hash Tables (dict internals) | [HashTable](../02_Data_Structures/01e_HashTable.md) |
+| **Asyncio Deep Dive** | [Asyncio Internals](02b_Python_Asyncio_Internals.md) |
+| **ML with Python** | [ML Fundamentals](05_ML_Fundamentals.md) — generators for data loading |
+| **NumPy (memory-efficient)** | [NumPy/Pandas](03_NumPy_Pandas_Essentials.md) — array vs list comparison |
+| **DevOps (Python in CI)** | [CI/CD](../22_DevOps/19_CICD_Pipelines.md) — Python testing in pipelines |
 
 ---
 

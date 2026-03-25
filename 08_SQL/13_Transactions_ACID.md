@@ -259,13 +259,113 @@ Prevention strategies:
 -- Set lock timeout (MySQL)
 SET innodb_lock_wait_timeout = 10;  -- 10 seconds
 
+-- Set lock timeout (MySQL)
+SET innodb_lock_wait_timeout = 10;  -- 10 seconds
+
 -- PostgreSQL
 SET lock_timeout = '10s';
 ```
 
 ---
 
-## 📝 PRACTICE EXERCISES - PART 3
+## Part 2: Advanced Isolation Anomalies
+
+```sql
+/*
+Beyond the basic 3 anomalies (Dirty Read, Non-Repeatable Read, Phantom Read),
+real-world systems suffer from subtle concurrency bugs that aren't fixed by REPEATABLE READ.
+*/
+
+-- 1. LOST UPDATE (Overwriting uncommitted changes)
+-- Two users read balance=100.
+-- User A adds 50 (writes 150). User B subtracts 20 (writes 80).
+-- Final balance is 80 (User A's 50 was "lost").
+-- FIX: FOR UPDATE locks, or Optimistic Concurrency Control (Version columns)
+
+-- LOST UPDATE PREVENTION (Pessimistic)
+BEGIN;
+SELECT balance FROM accounts WHERE id = 1 FOR UPDATE; -- Blocks other readers!
+UPDATE accounts SET balance = balance + 50 WHERE id = 1;
+COMMIT;
+
+-- LOST UPDATE PREVENTION (Optimistic)
+BEGIN;
+-- Read current version
+SELECT balance, version FROM accounts WHERE id = 1; -- version = 5
+-- Application logic...
+UPDATE accounts SET balance = 150, version = 6 
+WHERE id = 1 AND version = 5; -- Fails if someone else updated it!
+COMMIT;
+
+-- 2. WRITE SKEW
+-- Concept: Two concurrent transactions read a dataset, check a condition, 
+-- and then write to DIFFERENT rows, causing the overall condition to be violated.
+-- Example: Doctors on call. Rule: At least 1 doctor must be on call.
+-- Both Alice and Bob are on call. They both check concurrently.
+-- Alice sees 2 on call → sets herself off call.
+-- Bob sees 2 on call → sets himself off call.
+-- Result: 0 doctors on call! (Violates business rule).
+-- FIX: Only SERIALIZABLE isolation prevents Write Skew!
+```
+
+---
+
+## Part 3: Distributed Transactions (Microservices)
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  When a transaction spans MULTIPLE databases or microservices, standard ACID    │
+│  doesn't work. How do you guarantee atomicity across network boundaries?        │
+│                                                                                 │
+│  1. TWO-PHASE COMMIT (2PC) - The Legacy Approach                                │
+│  → Uses a "Coordinator"                                                         │
+│  → Phase 1 (Prepare): Ask all nodes "Can you commit?"                           │
+│  → Phase 2 (Commit): If all say yes, tell them to commit. If ANY no, abort.     │
+│  → Problem: Blocking! If Coordinator crashes during Phase 2, nodes are STUCK    │
+│    holding locks indefinitely.                                                  │
+│                                                                                 │
+│  2. SAGA PATTERN - The Modern Microservices Approach                            │
+│  → No distributed locks. A sequence of local, independent transactions.         │
+│  → Example: E-Commerce Order                                                    │
+│    1. Order Service: Create Order (Status: Pending)                             │
+│    2. Inventory Service: Deduct Items (Success)                                 │
+│    3. Payment Service: Charge Card (FAILS!)                                     │
+│  → How to rollback? COMPENSATING TRANSACTIONS.                                  │
+│  → Since we can't "rollback" the inventory (it's already committed locally),    │
+│    we run a new transaction: Refund/Add Items Back.                             │
+│                                                                                 │
+│  SAGA TRADE-OFFS:                                                               │
+│  ✅ Highly scalable, no distributed locks                                      │
+│  ❌ Eventual consistency (temporary invalid states exist)                       │
+│  ❌ High application complexity (must write rollback code for everything)       │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Part 4: Concurrency Control Models
+
+```
+There are two fundamental philosophies for handling concurrent database access:
+
+1. PESSIMISTIC CONCURRENCY CONTROL (Locking)
+   "Assume conflicts will happen. Prevent them with locks."
+   - Uses row/table locks (SELECT ... FOR UPDATE).
+   - Pros: Guarantees absolute consistency, no application retry logic needed.
+   - Cons: Slow, creates bottlenecks, high risk of deadlocks.
+   - Best for: Real-time financial trading, high-conflict tables.
+
+2. OPTIMISTIC CONCURRENCY CONTROL (MVCC / Versioning)
+   "Assume conflicts are rare. Let reads/writes happen, check at the end."
+   - Uses version columns, timestamps, or MVCC snapshots.
+   - Pros: Extremely fast reads, highly scalable, no read locks.
+   - Cons: App must handle failures and retry transactions if conflicts occur.
+   - Best for: Most web applications, low-conflict environments.
+```
+
+---
+
+## 📝 PRACTICE EXERCISES - PART 5
 
 ```sql
 -- ═══════════════════════════════════════════════════════════════════════════════
@@ -318,7 +418,7 @@ SET lock_timeout = '10s';
 
 ---
 
-_"Part 3 Complete! You now understand Normalization, Indexes, Views, Stored Procedures, Triggers, and Transactions."_
+_"Part 5 Complete! You now understand Normalization, Indexes, Views, Stored Procedures, Triggers, Transactions, and Distributed Consistency Patterns."_
 
 ---
 

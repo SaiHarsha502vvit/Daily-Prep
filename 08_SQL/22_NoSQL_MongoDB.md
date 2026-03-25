@@ -276,7 +276,170 @@ flowchart LR
 
 ---
 
-## Part 5: Interview Questions
+## Part 4: Advanced Aggregation Framework
+
+```javascript
+/* MongoDB's Aggregation Framework is equivalent to SQL's GROUP BY, 
+   JOIN, and Window Functions all rolled into one massive pipeline. 
+   Data passes through stages sequentially: Stage 1 → Stage 2 → Stage 3 */
+
+// ── 1. The $lookup Stage (MongoDB's LEFT JOIN) ──
+// Though NoSQL discourages joins, sometimes they are unavoidable.
+db.orders.aggregate([
+  {
+    $lookup: {
+      from: "customers",           // Target collection
+      localField: "customerId",    // Field in 'orders'
+      foreignField: "_id",         // Field in 'customers'
+      as: "customerData"           // Output array field name
+    }
+  },
+  // $lookup returns an array. Often we want an object, so we $unwind it:
+  {
+    $unwind: "$customerData"
+  },
+  // Now we can project (SELECT) the exact fields we want:
+  {
+    $project: {
+      orderTotal: 1,
+      "customerData.name": 1,
+      "customerData.email": 1
+    }
+  }
+])
+
+// ── 2. Complex Grouping metrics ($facet) ──
+// $facet allows you to run multiple aggregation pipelines in parallel 
+// within a single stage (e.g., building filters/facets for an e-commerce sidebar)
+db.products.aggregate([
+  {
+    $facet: {
+      "categories": [
+        { $group: { _id: "$category", count: { $sum: 1 } } }
+      ],
+      "priceRanges": [
+        { $bucket: {          // Bucketing! Perfect for price filters
+            groupBy: "$price",
+            boundaries: [0, 50, 100, 500],
+            default: "Other"
+        }}
+      ]
+    }
+  }
+])
+```
+
+---
+
+## Part 5: Indexing Mastery — The ESR Rule
+
+```javascript
+/* Creating indexes in MongoDB isn't random. If you query multiple fields, 
+   the ORDER of fields in your compound index MATTERS IMMENSELY.
+   Use the ESR Rule: Equality, Sort, Range. */
+
+// We want to query: "Find active users, sorted by age, whose score is > 50"
+db.users.find({ status: "active", score: { $gt: 50 } }).sort({ age: 1 })
+
+// ❌ BAD INDEX 1: { score: 1, status: 1, age: 1 }
+// Why? Range field comes first. MongoDB stops using the rest of the index
+// for sorting/equality after hitting a range. It will do an in-memory sort.
+
+// ❌ BAD INDEX 2: { status: 1, score: 1, age: 1 }
+// Why? Range comes before Sort. It will filter quickly, but still sort in memory.
+
+// ✅ GOOD INDEX (The ESR Rule): { status: 1, age: 1, score: 1 }
+db.users.createIndex({ status: 1, age: 1, score: 1 })
+// Why this works:
+// 1. (E) Quality field 'status' instantly narrows down the tree.
+// 2. (S) Sort field 'age' means the results are ALREADY naturally sorted in the B-Tree.
+// 3. (R) Range field 'score' filters the remaining documents perfectly.
+
+// COVERED QUERIES
+// If you only project fields that exist IN THE INDEX, MongoDB never touches the disk!
+db.users.find(
+  { status: "active", age: 30 },
+  { status: 1, age: 1, score: 1, _id: 0 } // Projecting only indexed fields
+) // → Time: 0ms. It found everything in RAM!
+```
+
+---
+
+## Part 6: Distributed Architecture (High Availability)
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  MongoDB scales through two mechanisms: Replica Sets and Sharding.              │
+│                                                                                 │
+│  1. REPLICA SETS (High Availability & Redundancy)                               │
+│  → A cluster of at least 3 nodes containing the exact same data.                │
+│  → Uses consensus (Raft-like algorithm) to elect a PRIMARY node.                │
+│                                                                                 │
+│      [Primary] ← (Writes go here, syncs to Oplog)                               │
+│        ↙   ↘                                                                    │
+│  [Secondary] [Secondary] ← (Reads can go here if eventual consistency is okay)  │
+│                                                                                 │
+│  What happens if the Primary crashes?                                           │
+│  The Secondaries hold an election. The node with the most up-to-date Oplog      │
+│  is elected the new Primary within milliseconds. Zero downtime.                 │
+│                                                                                 │
+│  2. SHARDING (Horizontal Scaling)                                               │
+│  → What happens when your collection hits 5 Terabytes? 1 server isn't enough.   │
+│  → Sharding splits data across multiple servers based on a Shard Key.           │
+│                                                                                 │
+│  If Shard Key = "zipcode":                                                      │
+│  Shard 1 Server holding: Zip 10000 - 30000                                      │
+│  Shard 2 Server holding: Zip 30001 - 60000                                      │
+│  Shard 3 Server holding: Zip 60001 - 99999                                      │
+│                                                                                 │
+│  THE DANGER OF BAD SHARD KEYS:                                                  │
+│  If you use "timestamp" as your shard key, all new inserts (current time)       │
+│  will slam ONE server (the newest shard) while older servers do nothing!        │
+│  This is a "Hot Shard" anti-pattern. Pick a key with high cardinality           │
+│  (e.g., UserId) that distributes writes evenly across the cluster.               │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Part 7: Redis Quick Reference
+
+```
+// ── Data Structures ──
+SET user:1:name "John"            // String
+GET user:1:name                   // → "John"
+
+HSET user:1 name "John" age 30   // Hash (like a mini document)
+HGETALL user:1                    // → name: John, age: 30
+
+LPUSH queue:orders "order123"     // List (queue/stack)
+RPOP queue:orders                 // → "order123"
+
+SADD user:1:tags "premium" "vip"  // Set (unique values)
+SISMEMBER user:1:tags "premium"   // → true
+
+ZADD leaderboard 100 "Alice" 85 "Bob"  // Sorted Set (ranked data)
+ZREVRANGE leaderboard 0 9              // Top 10 by score
+
+// ── Common Use Cases ──
+// Caching: SET + TTL
+SET api:response:key "{json}" EX 300    // cache for 5 minutes
+
+// Rate Limiting
+INCR rate:user:123:minute
+EXPIRE rate:user:123:minute 60
+
+// Session Storage
+HSET session:abc userId "123" role "admin" expiry "1700000000"
+
+// Distributed Lock (Redlock)
+SET lock:order:456 "owner-id" NX EX 30  // acquire lock for 30s
+// NX = only if not exists (atomic)
+```
+
+---
+
+## Part 8: Interview Questions
 
 ```
 Q: "When would you choose MongoDB over PostgreSQL?"

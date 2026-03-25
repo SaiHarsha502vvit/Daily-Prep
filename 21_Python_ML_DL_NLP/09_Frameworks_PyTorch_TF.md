@@ -273,6 +273,234 @@ TensorFlow/Keras:
 
 ---
 
+# PART 4: Advanced PyTorch
+
+---
+
+## 4.1 Custom Autograd Functions
+
+```python
+# Sometimes standard automatic differentiation isn't enough.
+# You can define custom forward/backward passes.
+
+import torch
+
+class ClippedReLU(torch.autograd.Function):
+    @staticmethod
+    def forward(ctx, i):
+        # Save context for backward pass
+        ctx.save_for_backward(i)
+        return i.clamp(min=0, max=10)  # ReLU bounded at 10
+
+    @staticmethod
+    def backward(ctx, grad_output):
+        i, = ctx.saved_tensors
+        # Gradient is 1 where 0 < input < 10, else 0
+        grad_input = grad_output.clone()
+        grad_input[i <= 0] = 0
+        grad_input[i >= 10] = 0
+        return grad_input
+
+# Use it by calling .apply
+clipped_relu = ClippedReLU.apply
+x = torch.tensor([-5.0, 5.0, 15.0], requires_grad=True)
+y = clipped_relu(x)
+y.sum().backward()
+print(x.grad)  # tensor([0., 1., 0.])
+```
+
+## 4.2 DataLoaders & Datasets Deep Dive
+
+```python
+# Handling massive datasets (images, text) that don't fit in RAM
+from torch.utils.data import Dataset, DataLoader
+import os
+from PIL import Image
+
+class ImageDataset(Dataset):
+    def __init__(self, img_dir, transform=None):
+        self.img_dir = img_dir
+        self.img_names = os.listdir(img_dir)
+        self.transform = transform
+        
+    def __len__(self):
+        return len(self.img_names)
+        
+    def __getitem__(self, idx):
+        # LAZY LOADING: Read from disk only when requested
+        img_path = os.path.join(self.img_dir, self.img_names[idx])
+        image = Image.open(img_path).convert("RGB")
+        label = 1 if "cat" in self.img_names[idx] else 0
+        
+        if self.transform:
+            image = self.transform(image)
+            
+        return image, label
+
+# DataLoader handles batching, shuffling, and MULTIPROCESSING
+dataset = ImageDataset("data/train")
+loader = DataLoader(
+    dataset, 
+    batch_size=32, 
+    shuffle=True, 
+    num_workers=4,    # Uses 4 CPU cores to load data in background!
+    pin_memory=True   # Speeds up CPU → GPU transfer
+)
+```
+
+## 4.3 Distributed Data Parallel (DDP)
+
+```python
+# Training on multiple GPUs (Data Parallelism)
+# DDP is the standard, replicating the model on N GPUs and splitting the batch.
+
+import torch.distributed as dist
+import torch.multiprocessing as mp
+from torch.nn.parallel import DistributedDataParallel as DDP
+
+def setup(rank, world_size):
+    dist.init_process_group("nccl", rank=rank, world_size=world_size)
+
+def train_ddp(rank, world_size):
+    setup(rank, world_size)
+    
+    # 1. Move model to specific GPU
+    model = MyModel().to(rank)
+    
+    # 2. Wrap model in DDP
+    ddp_model = DDP(model, device_ids=[rank])
+    
+    # 3. Use DistributedSampler to ensure GPUs don't process the same data
+    sampler = torch.utils.data.distributed.DistributedSampler(dataset)
+    loader = DataLoader(dataset, sampler=sampler, batch_size=32)
+    
+    # ... standard training loop ...
+    
+    dist.destroy_process_group()
+
+# Launch with: torchrun --nproc_per_node=4 train_script.py
+```
+
+---
+
+# PART 5: Advanced TensorFlow / Keras
+
+---
+
+## 5.1 tf.data.Dataset Pipeline
+
+```python
+# TensorFlow's standard for highly optimized data loading pipelines
+import tensorflow as tf
+
+def parse_image(filename, label):
+    image = tf.io.read_file(filename)
+    image = tf.image.decode_jpeg(image, channels=3)
+    image = tf.image.resize(image, [224, 224])
+    image = image / 255.0  # Normalize
+    return image, label
+
+# Create pipeline
+filenames = ["cat.jpg", "dog.jpg"]
+labels = [0, 1]
+
+dataset = tf.data.Dataset.from_tensor_slices((filenames, labels))
+
+dataset = (dataset
+    .shuffle(buffer_size=1000)
+    .map(parse_image, num_parallel_calls=tf.data.AUTOTUNE) # Multi-threading!
+    .batch(32)
+    .prefetch(tf.data.AUTOTUNE)  # Fetch next batch while GPU processes current
+)
+
+# Pass directly to model.fit
+# model.fit(dataset, epochs=10)
+```
+
+## 5.2 tf.function (Graph Execution)
+
+```python
+# TF2 executes eagerly (like PyTorch) by default for debugging.
+# But for production speed, you compile Python to a static C++ Graph.
+
+@tf.function
+def compute_step(x, y):
+    # This entire function is traced and compiled into a static graph!
+    # No Python interpreter overhead during execution.
+    prediction = model(x)
+    loss = loss_fn(y, prediction)
+    return loss
+
+# When should you use @tf.function?
+# 1. Custom training loops (wrapping the training step)
+# 2. Complex mathematical computations
+# 3. Code you intend to export via SavedModel for TF Serving
+```
+
+---
+
+# PART 6: The Modern ML Ecosystem
+
+---
+
+## 6.1 HuggingFace Transformers (The NLP Standard)
+
+```python
+# Neither PyTorch nor TF are used "raw" for modern NLP.
+# You use HuggingFace, which wraps PyTorch/TF.
+
+from transformers import AutoTokenizer, AutoModelForSequenceClassification
+import torch
+
+# 1. Load pre-trained model and tokenizer (Downloads automatically!)
+model_name = "distilbert-base-uncased-finetuned-sst-2-english"
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModelForSequenceClassification.from_pretrained(model_name)
+
+# 2. Prepare text
+text = "This framework guide is incredibly helpful!"
+inputs = tokenizer(text, return_tensors="pt")  # "pt" = return PyTorch tensors
+
+# 3. Inference
+with torch.no_grad():
+    logits = model(**inputs).logits
+    predicted_class = logits.argmax().item()
+    
+print("Positive" if predicted_class == 1 else "Negative")
+```
+
+## 6.2 ONNX (Open Neural Network Exchange)
+
+```python
+# How do you train in PyTorch but deploy without a heavy Python runtime? ONNX.
+# ONNX is a universal format for ML models (supported by MS, Meta, AWS, etc.)
+
+import torch
+import torchvision.models as models
+
+# 1. Load a PyTorch model
+model = models.resnet18(pretrained=True)
+model.eval()
+
+# 2. Create dummy input (matching input dimensions)
+dummy_input = torch.randn(1, 3, 224, 224)
+
+# 3. Export to ONNX
+torch.onnx.export(
+    model, 
+    dummy_input, 
+    "resnet18.onnx",
+    export_params=True,
+    input_names=['input_image'],
+    output_names=['classification']
+)
+
+# The resulting .onnx file can be run in C++, Rust, Node.js, C#, or Java
+# at bare-metal speeds using ONNX Runtime.
+```
+
+---
+
 ## 🔗 Cross-References
 
 | Topic | Related Content |

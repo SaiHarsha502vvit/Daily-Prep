@@ -236,4 +236,126 @@ class ErrorBoundary extends React.Component {
 
 ---
 
+## Pattern 6: Polymorphic Components
+
+```tsx
+// The `as` prop pattern — render as ANY HTML element or component
+// Used by Chakra UI, MUI, Headless UI
+
+interface BoxProps<T extends React.ElementType> {
+  as?: T;
+  children: React.ReactNode;
+}
+
+function Box<T extends React.ElementType = 'div'>({
+  as, children, ...props
+}: BoxProps<T> & React.ComponentPropsWithoutRef<T>) {
+  const Component = as || 'div';
+  return <Component {...props}>{children}</Component>;
+}
+
+// Usage — same component, different HTML elements:
+<Box>Default div</Box>
+<Box as="section">Renders as section</Box>
+<Box as="a" href="/about">Renders as anchor tag</Box>
+<Box as={NavLink} to="/home">Renders as React Router NavLink</Box>
+```
+
+---
+
+## Pattern 7: Controlled vs Uncontrolled
+
+```tsx
+// UNCONTROLLED: DOM holds the state (simple forms)
+function UncontrolledSearch() {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const handleSubmit = () => console.log(inputRef.current?.value);
+  return <input ref={inputRef} defaultValue="" />;
+}
+
+// CONTROLLED: React holds the state (complex forms, validation)
+function ControlledSearch({ onSearch }) {
+  const [query, setQuery] = useState('');
+  const [error, setError] = useState('');
+  
+  const handleChange = (e) => {
+    const value = e.target.value;
+    setQuery(value);
+    setError(value.length < 3 ? 'Min 3 characters' : '');
+  };
+  
+  return (
+    <>
+      <input value={query} onChange={handleChange} />
+      {error && <span className="error">{error}</span>}
+      <button onClick={() => onSearch(query)} disabled={!!error}>Search</button>
+    </>
+  );
+}
+
+// WHEN TO USE:
+// Uncontrolled: simple forms, no validation, no dynamic behavior
+// Controlled: validation, conditional UI, dynamic defaults, form libraries
+```
+
+---
+
+## Pattern 8: Provider + Composition
+
+```tsx
+// ── Problem: Prop Drilling ──
+// App → Layout → Sidebar → UserMenu → Avatar (needs user data!)
+// Passing `user` through 4 components that don't use it = prop drilling.
+
+// ── Solution: Context Provider ──
+const ThemeContext = createContext({ theme: 'light', toggle: () => {} });
+
+function ThemeProvider({ children }) {
+  const [theme, setTheme] = useState('light');
+  const toggle = () => setTheme(t => t === 'light' ? 'dark' : 'light');
+  
+  return (
+    <ThemeContext.Provider value={{ theme, toggle }}>
+      {children}
+    </ThemeContext.Provider>
+  );
+}
+
+// Any deeply nested component can access theme directly:
+function ThemeToggle() {
+  const { theme, toggle } = useContext(ThemeContext);
+  return <button onClick={toggle}>Current: {theme}</button>;
+}
+
+// ── Composition: children as a slot ──
+// Instead of passing data down, compose at the top level
+function App() {
+  const user = useAuth();
+  return (
+    <Layout>
+      <Sidebar>
+        <UserMenu>
+          <Avatar user={user} />  {/* user passed here, not drilled */}
+        </UserMenu>
+      </Sidebar>
+    </Layout>
+  );
+}
+```
+
+---
+
+## 🔗 Cross-References
+
+| Topic | Related Content |
+|---|---|
+| **Hooks Deep Dive** | [Hooks](03_Hooks_Deep_Dive.md) — useState, useContext, useRef |
+| **State Management** | [State](04_State_Management.md) — Redux, Zustand, Context |
+| **Testing components** | [Testing](07_React_Testing.md) — RTL, MSW |
+| **React Performance** | [Performance](08_React_Performance.md) — memoization, lazy loading |
+| **CSS styling** | [CSS Architecture](../18_CSS_Complete/04_CSS_Modern_Architecture.md) |
+| **TypeScript (generic components)** | [React TypeScript](05_React_TypeScript.md) |
+
+---
+
 > **Navigation**: [< Previous](01_React_Fundamentals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_Hooks_Deep_Dive.md)

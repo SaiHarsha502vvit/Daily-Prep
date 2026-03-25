@@ -871,4 +871,277 @@ flowchart TD
 
 ---
 
+## V8 Engine Internals — How JavaScript ACTUALLY Runs
+
+```
+WHAT IS V8?
+  V8 is Google's open-source JavaScript engine — used in Chrome and Node.js.
+  It takes your JavaScript text and executes it as machine code.
+  
+  SpiderMonkey (Firefox), JavaScriptCore (Safari) work similarly.
+  Understanding V8 = understanding how JS performs at CPU level.
+
+THE PIPELINE (Source code → Machine Code):
+  Your JS text
+      ↓
+  PARSER: Read text → Abstract Syntax Tree (AST)
+      [const x = 1 + 2] → {AssignDecl: {id:"x", init:{BinaryExpr:"+", 1, 2}}}
+      ↓
+  IGNITION (Bytecode Interpreter):
+      Fast startup: convert AST → compact bytecode
+      Start executing bytecode immediately
+      → No JIT compilation overhead for code that runs once
+      ↓
+  PROFILER: Which functions run HOT (frequently)?
+      → Mark "hot" functions for optimization
+      ↓
+  TURBOFAN (Optimizing JIT Compiler):
+      Recompile hot functions → native machine code (x86-64, ARM)
+      Speculative optimization based on observed types
+      → MUCH faster than bytecode execution
+      ↓
+  MACHINE CODE EXECUTION
+      If speculative optimization is WRONG (deoptimize!) → back to bytecode
+```
+
+### Hidden Classes — Why `obj.x = 1` After Creation Hurts
+
+```
+PROBLEM TO SOLVE:
+  JavaScript objects are dynamic — you can add properties anytime.
+  How does V8 access properties efficiently without a dictionary lookup?
+  
+  C++/Java: struct layout known at compile time → direct memory offset
+  JS:       properties added dynamically → can't know layout advance
+  
+V8's HIDDEN CLASS (Shape) SOLUTION:
+  Every JS object has an internal "hidden class" (Shape/Map).
+  When you create { x: 1 }, V8 creates hidden class H0: {x: +0 offset}.
+  When you add .y, V8 creates NEW hidden class H1: {x: +0, y: +8 offset}.
+  Objects with same properties in same ORDER share the same hidden class.
+  
+  Properties become DIRECT MEMORY OFFSETS — fast as C++!
+
+SHARING HIDDEN CLASSES — The Fast Path:
+  const a = { x: 1, y: 2 };     // H0 → H1 → H2 (same path)
+  const b = { x: 3, y: 4 };     // reuses H2 (same shape!)
+  
+  V8 knows: "all H2 objects have x at offset 0, y at offset 8."
+  Property access: obj.x → read memory at (obj_addr + 0). One instruction!
+
+BREAKING HIDDEN CLASSES — The Slow Path:
+  const a = { x: 1, y: 2 };   // H2 → x@0, y@8
+  const b = { y: 2, x: 1 };   // DIFFERENT order → different hidden class H3!
+  
+  a.z = 3;                     // new hidden class transition every time
+  delete a.x;                  // make a an "hole" dictionary object → SLOW!
+  
+RULE: Add ALL properties in constructor/initializer. Same order every time.
+  // ❌ SLOW: adding properties dynamically
+  const obj = {};
+  if (condition) obj.x = 1;
+  obj.y = 2;
+  
+  // ✅ FAST: all properties known upfront
+  const obj = { x: condition ? 1 : undefined, y: 2 };
+```
+
+```javascript
+// INLINE CACHES — V8's property access optimization
+
+// V8 tracks what hidden class objects have at each call site.
+// After seeing the same hidden class a few times, it "inlines" the
+// property offset directly — no lookup at all!
+
+function getX(obj) {
+    return obj.x;  // V8 starts monomorphic: only seen H2 objects
+    // After optimization: "this is always H2, x is at offset 0"
+    // Generated machine code: MOV rax, [obj + 0]  ← 1 ns
+}
+
+// POLYMORPHIC (multiple hidden classes) — slower:
+getX({ x: 1 });        // H2 hidden class
+getX({ x: 2, y: 3 }); // H3 hidden class (different!)
+// Now V8 must check which class it is — still fast, but more work
+
+// MEGAMORPHIC (>4 different hidden classes) — slowest:
+// V8 gives up and uses a general dictionary lookup each time.
+// This is why code that works with random object shapes is slow.
+
+// PRACTICAL APPLICATION:
+class Point {
+    constructor(x, y) {
+        this.x = x;  // ✅ Always same order in constructor
+        this.y = y;  // → All Point instances share same hidden class
+    }
+}
+// All instances are monomorphic → V8 generates ultra-fast code!
+```
+
+### The Event Loop — The Heart of Async JavaScript
+
+```
+ANALOGY: A restaurant kitchen.
+  Head Chef (Call Stack): executes one task at a time.
+  Kitchen staff (Web APIs): handle background work (fetch, timers) separately.
+  Order tickets (Callback Queue): completed tasks waiting for the chef.
+  Manager (Event Loop): "Is the chef free? Next order!"
+  VIP orders (Microtask Queue): must be served BEFORE regular orders.
+
+THE COMPONENTS:
+  
+  CALL STACK:
+  Stack of currently executing function calls.
+  Synchronous. Single-threaded. LIFO (Last In First Out).
+  Call function → push frame. Return → pop frame.
+  When stack is empty → Event Loop checks queues.
+  
+  WEB APIs (Browser) / libuv (Node.js):
+  Handles: setTimeout, fetch, DOM events, setInterval, I/O.
+  These run in SEPARATE THREADS (C++ threads in V8).
+  When done → push callback to the appropriate queue.
+  
+  CALLBACK QUEUE (Task Queue / Macrotask Queue):
+  Holds: setTimeout callbacks, setInterval callbacks, I/O callbacks.
+  Event loop takes ONE task, adds to call stack, runs to completion.
+  
+  MICROTASK QUEUE:
+  Holds: Promise .then()/.catch() callbacks, queueMicrotask(), MutationObserver.
+  Runs to COMPLETION before ANY macrotask!
+  After every call stack empty → drain entire microtask queue first.
+
+THE PRIORITY ORDER (critical for interviews):
+  1. Execute synchronous code (Call Stack)
+  2. Drain Microtask Queue completely
+  3. Take ONE macrotask (setTimeout, setInterval, I/O)
+  4. Drain Microtask Queue again (even if new ones were added in step 3!)
+  5. Render (browser only — about every 16.67ms for 60fps)
+  6. Go to step 3
+
+WHY MICROTASKS FIRST?
+  Promises are designed to be "consistent" — a resolved promise
+  always notifies handlers before any other asynchronous events.
+  This prevents Promises from being interrupted by unrelated timers.
+```
+
+```javascript
+// COMPLETE EVENT LOOP WALKTHROUGH — trace through line by line
+
+console.log('1. Script start');             // (sync) → logs immediately
+
+setTimeout(() => console.log('2. setTimeout'), 0);  // (macrotask) → timer queue
+
+Promise.resolve()
+    .then(() => console.log('3. Promise.then'))      // (microtask)
+    .then(() => console.log('4. Promise.then 2'));   // (microtask, chained)
+
+queueMicrotask(() => console.log('5. queueMicrotask'));  // (microtask)
+
+console.log('6. Script end');               // (sync) → logs immediately
+
+// OUTPUT (in order):
+// 1. Script start          ← sync
+// 6. Script end            ← sync
+// 3. Promise.then          ← microtask queue drain
+// 5. queueMicrotask        ← microtask queue (continues draining)
+// 4. Promise.then 2        ← chained microtask (added during drain, still runs!)
+// 2. setTimeout            ← macrotask (only after ALL microtasks done)
+
+// ── ASYNC/AWAIT IS SYNTAX SUGAR OVER PROMISES ──
+async function fetchUser() {
+    const response = await fetch('/api/user');  // suspends here
+    const data = await response.json();
+    return data;
+}
+
+// EXACT EQUIVALENT without async/await:
+function fetchUserEquivalent() {
+    return fetch('/api/user')               // returns Promise
+        .then(response => response.json())  // .then is the "await"
+        .then(data => data);                // final value
+}
+
+// V8 transforms async/await into a state machine (generator-like):
+// Each `await` = ".then(function resumeHere() { ...rest of async fn })"
+// The function is SUSPENDED at each await → added to microtask queue
+// → Call stack is FREE → event loop can handle other work
+
+// PRACTICAL CONSEQUENCE:
+async function example() {
+    console.log('a');               // sync, runs immediately
+    await Promise.resolve('b');     // suspends! "b" handler goes to microtask queue
+    console.log('c');               // runs after microtask resumes
+}
+
+example();
+console.log('d');
+
+// Output: a d c
+// 'a' runs sync. await suspends example(). 'd' runs (sync continues).
+// Microtask queue: resume example → 'c' logs.
+```
+
+### Memory Management — Garbage Collection
+
+```
+ANALOGY: A city's waste management system.
+
+  NEW OBJECTS: Born in the "New City" (Young Generation) — small area.
+  If they survive → move to "Old City" (Old Generation) — large area.
+  Garbage truck (GC) visits "New City" VERY FREQUENTLY (it's small, quick sweep).
+  Visits "Old City" infrequently (large, expensive to clean).
+
+V8 GENERATIONAL GARBAGE COLLECTION:
+  
+  YOUNG GENERATION (Scavenger GC — very fast):
+  Small (~1-8MB). Fast minor GC via "Cheney's algorithm".
+  Most objects are short-lived (created, used, discarded).
+  Scan only young gen. Copy survivors to "old" space.
+  Runs: milliseconds. Frequency: very often.
+  
+  OLD GENERATION (Mark-and-Sweep — full GC):
+  Large (hundreds of MB). Infrequent but expensive.
+  
+  MARK PHASE:
+  Start from "roots" (global, stack, registers).
+  Traverse all reachable objects (depth-first graph traversal).
+  MARK each reachable object as "alive."
+  
+  SWEEP PHASE:
+  Walk all memory. Everything NOT marked = garbage.
+  Add to free-list. (Or compact → defragment.)
+  
+  INCREMENTAL MARKING (V8's optimization):
+  Full mark takes too long → GC pause → janky UI.
+  Solution: do marking in SMALL INCREMENTS between tasks.
+  JavaScript runs, then brief marking pause, JS runs, brief marking...
+  Total mark time spreads over many frames → smooth!
+  
+COMMON MEMORY LEAKS IN JS:
+  1. Forgotten event listeners:
+     element.addEventListener('click', handler);
+     element.remove();  // element gone, but handler still in listener list!
+     Fix: removeEventListener BEFORE removing element.
+  
+  2. Global variables:
+     function leak() { data = largeArray; }  // no let/const → global!
+     Fix: always use let/const/var.
+  
+  3. Closures holding large scope:
+     function createClosure() {
+       const huge = new Array(1000000).fill(0);
+       return () => huge[0];  // closure captures entire `huge`!
+     }
+     Fix: capture only what you need (const first = huge[0]).
+  
+  4. Detached DOM nodes:
+     const btn = document.querySelector('#btn');
+     btn.remove();  // removed from DOM
+     cache.set('btn', btn);  // but still referenced → never GC'd!
+     Fix: null out references when you're done.
+```
+
+---
+
 > [← Previous: DOM & Browser APIs](05_JS_DOM_BrowserAPIs.md) | [Index](../00_MASTER_INDEX.md) | [Next → Error Handling & Debugging](07_JS_Error_Handling_Debugging.md)
+

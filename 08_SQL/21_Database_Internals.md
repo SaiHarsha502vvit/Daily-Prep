@@ -26,10 +26,10 @@
   B-Tree of order 4 (max 3 keys per node):
 
               [     30     |     70     ]             ← Root
-             /              |             \
+             /             |             \
     [10 | 20]          [40 | 50 | 60]      [80 | 90]  ← Internal
-    / |  \            / |   |    \         / |  \
-  [5][15][25]   [35][45][55][65]   [75][85][95]       ← Leaf (data pages)
+    / |  \            / |  |    \         / |  \
+  [5][15][25]      [35][45][55][65]   [75][85][95]       ← Leaf (data pages)
 
   LOOKUP "55":
   Root: 55 > 30, 55 < 70 → go middle child
@@ -244,6 +244,95 @@ flowchart TD
 | Nested Loop      | O(N × M)   | Small tables, or inner has index |
 | Hash Join        | O(N + M)   | Large tables, no useful index |
 | Merge Join       | O(N + M)   | Both inputs already sorted |
+
+---
+
+## Part 6.1: Query Optimizer Cost Models
+
+```
+When you run a SELECT, the database must decide HOW to execute it.
+It does this by calculating a "Cost" for every possible execution plan.
+
+Cost is calculated based on:
+1. Disk I/O cost (fetching pages from disk is slow)
+2. CPU cost (evaluating conditions, sorting, hashing)
+3. Memory cost
+
+HOW IT WORKS:
+1. Parser: SQL → Parse Tree (Validates syntax)
+2. Analyzer: Resolves table/column names, checks permissions
+3. Rewriter: Flattens views, simplifies expressions (e.g., 1=1 is removed)
+4. OPTIMIZER: Generates plans.
+   - Should it use Index A or Index B?
+   - Should it do a Hash Join or Nested Loop Join?
+   - In what order should it join 5 tables? (5! = 120 possible orders)
+
+STATISTICS ARE EVERYTHING:
+The optimizer relies on table statistics:
+- Number of rows
+- Number of distinct values in a column (Cardinality)
+- Data distribution (Histograms)
+
+If statistics are wrong (e.g., you just inserted 10 million rows but didn't run ANALYZE),
+the optimizer might choose a terrible plan (like doing a full table scan instead of using an index).
+```
+
+---
+
+## Part 6.2: Deep Dive into LSM-Trees & Compaction
+
+```
+B-Trees are terrible for pure write workloads (every insert requires random disk I/O to update a specific leaf page).
+NoSQL databases (Cassandra, RocksDB, LevelDB) and some SQL engines use LSM-Trees:
+
+1. THE MEMTABLE (In-Memory)
+All writes go to an in-memory Red-Black tree or Skip List. Very fast!
+Writes are also appended to a WAL for durability.
+
+2. FLUSH TO SSTABLE (Disk)
+When MemTable is full (e.g., 64MB), it is written to disk as a sorted file called an SSTable.
+Once written, SSTables are IMMUTABLE. Never modified again.
+
+3. HOW DO YOU READ?
+Search MemTable first.
+If not found, search the newest SSTable, then the next newest, etc.
+Wait, reading 100 SSTables on disk is slow!
+→ SOLUTION: BLOOM FILTERS. A tiny bitset in RAM that tells us "100% NOT in this file" or "Maybe in this file".
+We only check files where the Bloom Filter says "Maybe".
+
+4. COMPACTION
+Over time, you get thousands of SSTables. Reads get slow.
+Background threads run COMPACTION: take 10 old SSTables, merge-sort them together into 1 new, larger SSTable,
+and delete the old ones. This reclaims space from updated/deleted rows (tombstones).
+```
+
+---
+
+## Part 6.3: Buffer Pool Advanced Architecture
+
+```
+A database isn't just an array of cached pages. The Buffer Pool has complex internal lists:
+
+1. FREE LIST: Empty pages ready to be used.
+2. LRU LIST (Least Recently Used): 
+   - Tracks which pages are hot (frequently accessed) vs cold.
+   - When Free List is empty, evict the coldest page from LRU.
+3. FLUSH LIST: Dirty pages (modified in memory, not yet on disk), sorted by oldest modification.
+
+THE DATABASE CHECKPOINT:
+If the system crashes, we have to replay the WAL. But replaying a 100GB WAL takes hours.
+A Checkpoint is a background thread that wakes up and says:
+"Write all dirty pages from the Flush List to actual disk files."
+Once written, it writes a "Checkpoint Record" to the WAL.
+If a crash happens, we only replay the WAL starting from the LAST CHECKPOINT!
+
+THE DOUBLEWRITE BUFFER (MySQL InnoDB):
+Disk pages are usually 16KB. OS file systems write in 4KB chunks.
+If power fails exactly halfway through writing a 16KB page, the page is CORRUPTED.
+Solution: InnoDB writes the 16KB page to a sequential "Doublewrite Buffer" on disk first.
+Then it writes it to the actual `.ibd` data file. 
+If corruption happens during the data file write, it recovers the clean copy from the doublewrite buffer.
+```
 
 ---
 

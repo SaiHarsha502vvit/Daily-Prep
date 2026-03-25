@@ -601,4 +601,264 @@ flowchart TD
 
 ---
 
-> **Navigation**: [< Previous](02_Component_Patterns.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_State_Management.md)
+## React 18 — Concurrent Features Deep Dive
+
+```
+THE HISTORY OF REACT RENDERING:
+
+React 16 (Fiber, 2017): Rewrote the renderer to allow pausing.
+  React could pause reconciliation and continue later.
+  But it never actually used this capability for users.
+
+React 18 (Concurrent Mode, 2022): Actually ships Concurrent features.
+  The BIG IDEA: React can now INTERRUPT rendering to do something
+  more urgent, then resume where it left off.
+  
+  OLD MODEL (Synchronous):
+    User types → React renders → Browser paints
+    React rendering BLOCKS everything. If render takes 300ms → frozen UI.
+  
+  NEW MODEL (Concurrent):
+    User types → React starts rendering → (interrupt!) paint → continue rendering
+    React can pause, let the browser paint, then continue.
+    Result: UI stays responsive even during expensive renders.
+```
+
+### useTransition — Mark Updates as Non-Urgent
+
+```
+PROBLEM: User types in search box → filter 10,000 items → UI freezes.
+Both "updating the input" and "filtering results" happen synchronously.
+The input feels laggy because filtering blocks input updates.
+
+SOLUTION: Tell React: "Updating the filtered results is LOW PRIORITY.
+Do it when you have time. But please update the input text IMMEDIATELY."
+
+useTransition marks state updates as "non-urgent" (transitions).
+Urgent updates (like typing) can INTERRUPT non-urgent ones.
+```
+
+```jsx
+import { useState, useTransition } from 'react';
+
+function SearchPage() {
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState([]);
+  const [isPending, startTransition] = useTransition();
+  
+  function handleChange(e) {
+    // URGENT: Update input immediately (always responsive)
+    setQuery(e.target.value);
+    
+    // NON-URGENT: Can be interrupted if user types faster
+    startTransition(() => {
+      const filtered = expensiveFilter(items, e.target.value);
+      setResults(filtered);   // deferred — can be interrupted!
+    });
+  }
+  
+  return (
+    <div>
+      <input value={query} onChange={handleChange} />
+      {isPending && <Spinner />}           {/* Shows while transition runs */}
+      <ResultsList results={results} />    {/* Stale while transitioning */}
+    </div>
+  );
+}
+// Input is ALWAYS responsive. Results may lag behind — that's OK.
+```
+
+### useDeferredValue — Defer Specific Values
+
+```
+Similar to useTransition but for RECEIVED values (props/context),
+not dispatched updates. The component "lags behind" intentionally.
+```
+
+```jsx
+import { useDeferredValue, Suspense, memo } from 'react';
+
+function SearchResults({ query }) {
+  // Deferred version of query — updates AFTER urgent updates settle
+  const deferredQuery = useDeferredValue(query);
+  
+  // This component renders TWICE during transition:
+  // 1. With old deferredQuery (stale but visible — not spinners)
+  // 2. With new deferredQuery (fresh results)
+  const isStale = query !== deferredQuery;  // detect stale render
+  
+  return (
+    <div style={{ opacity: isStale ? 0.7 : 1 }}>  {/* dim stale results */}
+      <Suspense fallback={<Spinner />}>
+        <ExpensiveResultsList query={deferredQuery} />
+      </Suspense>
+    </div>
+  );
+}
+// ExpensiveResultsList only re-renders when deferredQuery changes.
+// If user types 5 chars quickly, only renders for the LAST char!
+```
+
+### Suspense — Declarative Loading States
+
+```
+THE EVOLUTION OF LOADING STATES:
+  v1 (class era): componentDidMount → setState({loading, data, error})
+  v2 (hooks era): useEffect → useState for loading/data/error
+  v3 (Suspense):  Declare WHAT to show while waiting — React handles rest.
+  
+ANALOGY: Suspense is like a LOADING DOCK.
+  You place your order (render a component that needs async data).
+  A fallback goes up ("Shipment incoming, please wait...").
+  When the data arrives, React swaps the fallback for the real component.
+  You don't manage loading state at all — React does it.
+
+HOW SUSPENSE WORKS INTERNALLY:
+  When a component is loading data, it THROWS A PROMISE.
+  (This is not an error — React catches it before it propagates.)
+  React sees the thrown promise → suspends the component.
+  Shows the nearest Suspense fallback.
+  When the promise resolves → React retries rendering the component.
+```
+
+```jsx
+// Modern data fetching with React Query (integrates with Suspense)
+import { Suspense } from 'react';
+import { useSuspenseQuery } from '@tanstack/react-query';
+
+// With Suspense-aware data fetching (React Query v5, SWR, etc.)
+function UserProfile({ userId }) {
+  // useSuspenseQuery THROWS a promise while loading!
+  // No loading/error state needed — Suspense handles it.
+  const { data: user } = useSuspenseQuery({
+    queryKey: ['user', userId],
+    queryFn: () => fetch(`/api/users/${userId}`).then(r => r.json())
+  });
+  // If we get here, data is GUARANTEED to exist (no loading check needed)
+  return <div>{user.name} — {user.email}</div>;
+}
+
+// Wrap with Suspense to handle loading, ErrorBoundary for errors
+function App() {
+  return (
+    <ErrorBoundary fallback={<ErrorMessage />}>
+      <Suspense fallback={<ProfileSkeleton />}>
+        <UserProfile userId={1} />
+      </Suspense>
+    </ErrorBoundary>
+  );
+}
+
+// NESTED SUSPENSE — control granularity of loading states:
+function Dashboard() {
+  return (
+    <div>
+      <Suspense fallback={<HeaderSkeleton />}>
+        <DashboardHeader />               {/* loads independently */}
+      </Suspense>
+      <Suspense fallback={<ListSkeleton />}>
+        <RecentActivity />                {/* loads independently */}
+      </Suspense>
+      <Suspense fallback={<ChartSkeleton />}>
+        <AnalyticsChart />                {/* loads independently */}
+      </Suspense>
+    </div>
+  );
+  // All three load in PARALLEL — whichever finishes first, shows first.
+  // No waterfall loading!
+}
+```
+
+### use() — The Universal Async Hook (React 19)
+
+```jsx
+import { use, Suspense } from 'react';
+
+// THE FUTURE: use() works for both Promises AND Contexts anywhere
+// (Even inside loops and conditionals — breaking the hook rules limitation!)
+
+const userPromise = fetch('/api/user').then(r => r.json());
+
+function UserCard() {
+  // use() suspends the component while promise resolves
+  const user = use(userPromise);  // throws promise → Suspense catches
+  return <div>{user.name}</div>;
+}
+
+// use() for Context (same as useContext, but more flexible):
+const theme = use(ThemeContext);  // works inside conditions!
+```
+
+### React Server Components (RSC) — Zero-Bundle Size
+
+```
+THE PARADIGM SHIFT (Next.js App Router, 2023+):
+
+BEFORE RSC:
+  All components run in the BROWSER.
+  Data fetching → API call → parse JSON → render → hydrate.
+  Everything ships as JavaScript bundle.
+
+AFTER RSC:
+  "Server Components" run ONLY on the server.
+  They can directly query databases, read files, use secrets.
+  Their output (JSX) is streamed to the client.
+  ZERO JavaScript shipped for server components!
+
+  Client Components still exist for interactivity (useState, useEffect, events).
+  You mark them with "use client" directive.
+
+ARCHITECTURE:
+  Server Component (no "use client"):
+  • Can async/await directly (await db.query())
+  • Can access server-only secrets (process.env.DB_PASSWORD)
+  • Cannot use useState, useEffect, onClick, etc.
+  • Not included in JS bundle
+  
+  Client Component ("use client" at top):
+  • Runs in browser (hydration)
+  • Can use all hooks
+  • Can handle events
+  • Included in JS bundle
+```
+
+```tsx
+// ── Server Component (Next.js App Router) ──
+// No "use client" directive = server component by default
+
+async function UserProfile({ userId }: { userId: string }) {
+  // Direct DB query! No useEffect, no API endpoint needed.
+  // This runs on the SERVER, never ships to the browser.
+  const user = await db.query('SELECT * FROM users WHERE id = ?', [userId]);
+  const posts = await postsService.getByUser(userId);
+  
+  return (
+    <div>
+      <h1>{user.name}</h1>
+      <p>{user.email}</p>
+      {/* LikeButton needs interactivity → Client Component */}
+      <LikeButton initialLikes={user.likes} />
+      <PostsList posts={posts} />
+    </div>
+  );
+}
+
+// ── Client Component ──
+'use client';  // opt-in to client rendering
+
+import { useState } from 'react';
+
+function LikeButton({ initialLikes }: { initialLikes: number }) {
+  const [likes, setLikes] = useState(initialLikes);
+  return (
+    <button onClick={() => setLikes(l => l + 1)}>
+      ❤️ {likes}
+    </button>
+  );
+  // This small interactive piece ships as JS. The rest? Zero bytes.
+}
+```
+
+---
+
+> **Navigation**: [< Previous](02_Component_Patterns.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_State_Management.md)

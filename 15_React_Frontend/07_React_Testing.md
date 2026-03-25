@@ -200,4 +200,149 @@ test('user can add item to cart', async ({ page }) => {
 
 ---
 
+## Testing State Management (Redux/Zustand)
+
+```tsx
+// ── Testing Redux Toolkit Store ──
+import { configureStore } from '@reduxjs/toolkit';
+import { Provider } from 'react-redux';
+import cartReducer, { addItem, removeItem } from './cartSlice';
+
+// Test the slice directly (unit test)
+test('adds item to cart', () => {
+  const state = cartReducer(undefined, addItem({ id: 1, name: 'Laptop', price: 999 }));
+  expect(state.items).toHaveLength(1);
+  expect(state.total).toBe(999);
+});
+
+// Test component with store (integration test)
+function renderWithStore(component, { preloadedState } = {}) {
+  const store = configureStore({ reducer: { cart: cartReducer }, preloadedState });
+  return render(<Provider store={store}>{component}</Provider>);
+}
+
+test('cart shows correct item count', () => {
+  renderWithStore(<CartIcon />, {
+    preloadedState: { cart: { items: [{ id: 1 }], total: 50 } },
+  });
+  expect(screen.getByText('1')).toBeInTheDocument();
+});
+
+// ── Testing Zustand Store ──
+import { create } from 'zustand';
+
+const useCounterStore = create((set) => ({
+  count: 0,
+  increment: () => set((s) => ({ count: s.count + 1 })),
+}));
+
+test('zustand increment', () => {
+  const { result } = renderHook(() => useCounterStore());
+  act(() => result.current.increment());
+  expect(result.current.count).toBe(1);
+});
+```
+
+---
+
+## Snapshot Testing — When to Use
+
+```tsx
+// Captures rendered output and compares to stored snapshot
+test('renders footer correctly', () => {
+  const { asFragment } = render(<Footer />);
+  expect(asFragment()).toMatchSnapshot();
+});
+
+// WHEN TO USE:
+// ✅ Static UI with known structure (Footer, Header, Error pages)
+// ✅ Catching unexpected rendering changes
+// ❌ NOT for dynamic content (dates, random IDs)
+// ❌ NOT as sole test — always pair with behavioral tests
+
+// INLINE SNAPSHOTS (preferred — visible in test file):
+test('renders greeting', () => {
+  render(<Greeting name="Alice" />);
+  expect(screen.getByRole('heading')).toMatchInlineSnapshot(`
+    <h1>Hello, Alice!</h1>
+  `);
+});
+```
+
+---
+
+## Accessibility Testing (a11y)
+
+```tsx
+import { axe, toHaveNoViolations } from 'jest-axe';
+
+expect.extend(toHaveNoViolations);
+
+test('form has no accessibility violations', async () => {
+  const { container } = render(<LoginForm />);
+  const results = await axe(container);
+  expect(results).toHaveNoViolations();
+});
+
+// COMMON A11Y ISSUES CAUGHT:
+// - Missing form labels
+// - Missing alt text on images
+// - Insufficient color contrast
+// - Missing ARIA attributes
+// - Non-focusable interactive elements
+```
+
+---
+
+## Test Organization Best Practices
+
+```tsx
+// ── Structure: Arrange, Act, Assert (AAA) ──
+test('validates email format', async () => {
+  // ARRANGE: set up the component
+  const user = userEvent.setup();
+  render(<EmailInput />);
+  
+  // ACT: simulate user behavior
+  await user.type(screen.getByRole('textbox'), 'invalid-email');
+  await user.click(screen.getByRole('button', { name: /submit/i }));
+  
+  // ASSERT: verify expected outcome
+  expect(screen.getByText(/invalid email/i)).toBeInTheDocument();
+});
+
+// ── File structure ──
+// src/
+//   components/
+//     Button/
+//       Button.tsx
+//       Button.test.tsx       ← unit + integration tests
+//       Button.module.css
+//   __tests__/
+//     integration/            ← cross-component integration tests
+//   e2e/                      ← Playwright E2E tests
+
+// ── Coverage targets ──
+// Statements: 80%+
+// Branches:   75%+
+// Functions:  80%+
+// Lines:      80%+
+// Critical paths (auth, payments): 95%+
+```
+
+---
+
+## 🔗 Cross-References
+
+| Topic | Related Content |
+|---|---|
+| **React Hooks (testing hooks)** | [Hooks Deep Dive](03_Hooks_Deep_Dive.md) |
+| **State Management (Redux/Zustand)** | [State Management](04_State_Management.md) |
+| **CI/CD (test in pipeline)** | [DevOps CI/CD](../22_DevOps/19_CICD_Pipelines.md) — automated test runs |
+| **Performance testing** | [React Performance](08_React_Performance.md) |
+| **Component Patterns (what to test)** | [Component Patterns](02_Component_Patterns.md) |
+| **JavaScript testing fundamentals** | [JS Error Handling](../16_JavaScript/07_JS_Error_Handling_Debugging.md) |
+
+---
+
 > **Navigation**: [< Previous](06_React_Router.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08_React_Performance.md)
