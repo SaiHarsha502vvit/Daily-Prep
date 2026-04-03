@@ -78,6 +78,8 @@ Week 11:   HARD       (Integration, system thinking)
 
 ## Week Folders
 
+- [15-Day Pattern Sprint Index](15_DAY_PATTERN_SPRINT_INDEX.md) - Focused arrays-to-DP sprint with 4 problems/day and full Java solutions
+
 - [Week 01](Week_01/) - Mar 3-9: Arrays + Sorting + SQL Foundations
 - [Week 02](Week_02/) - Mar 10-16: LinkedList, Stack, Queue, HashMap, HashSet + MergeSort, QuickSort, Binary Search, Two Pointers + SQL WHERE→Subqueries + Spring Boot DI
 - [Week 03](Week_03/) - Mar 17-23: Binary Tree, BST, Heap + DFS, BFS, Backtracking, Sliding Window + SQL Window Functions, CTEs + Spring REST + Error Handling
