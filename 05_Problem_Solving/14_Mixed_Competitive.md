@@ -1076,6 +1076,17 @@ private boolean canPlace(int[] stalls, int cows, int minDist) {
 
 ---
 
+
+
+> 🔬 **Section Challenge — 13.4 Sorting & Searching Variations**
+>
+> **Challenge 1 (Reasoning):** QuickSort average O(N log N) but worst case O(N²). When exactly does the worst case happen and how do you prevent it?
+> <details><summary>Answer</summary>
+>
+> Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced partition). This happens when: (1) always picking first/last element as pivot on already-sorted or reverse-sorted data. (2) Pivot happens to be the minimum or maximum. Prevention: random pivot (randomized quicksort — expected O(N log N) even on adversarial input), or median-of-three (pick median of first/middle/last element as pivot). Java's dual-pivot quicksort uses careful pivot selection to avoid this.
+> </details>
+>
+
 ## 13.5 Ad-hoc & Pattern Recognition
 
 ### Problem 214: Longest Consecutive Sequence (HackerEarth)
@@ -1233,6 +1244,8 @@ public int subarraySum(int[] nums, int k) {
 ```
 
 ---
+
+
 
 # 🎉 CONGRATULATIONS! ALL SECTIONS COMPLETE!
 
@@ -1688,3 +1701,5 @@ flowchart TD
 ---
 
 > **Navigation**: [< Previous](13_Greedy.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](15_LinkedList.md)
+
+

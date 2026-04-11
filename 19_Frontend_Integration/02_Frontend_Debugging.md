@@ -48,6 +48,13 @@
 
 ---
 
+
+
+
+
+
+> 🔬 **Section Challenge — 1. The Debugging Mindset**
+
 ## 2. Chrome DevTools — Beyond Console.log
 
 ### 2.1 Console Power Tools
@@ -602,6 +609,13 @@ flowchart TD
 
 ---
 
+
+
+
+
+
+> 🔬 **Section Challenge — 5. CORS Debugging — The Most Confusing Error**
+
 ## 6. Debugging Checklist by Symptom
 
 ```
@@ -679,6 +693,13 @@ flowchart TD
 ```
 
 ---
+
+
+
+
+
+
+> 🔬 **Section Challenge — 6. Debugging Checklist by Symptom**
 
 ## Interview Quick-Fire
 

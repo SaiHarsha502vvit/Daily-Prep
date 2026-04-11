@@ -6,6 +6,9 @@
 
 ---
 
+
+
+
 # 📚 PART 0: The 5W+H Framework
 
 > **Mental Model:** Think of Procedural Programming as a factory floor with tools scattered everywhere. Anyone can pick up any tool and mess with any machine. Object-Oriented Programming (OOP) is like organized workstations where each worker has their own specific tools and materials, and you must ask the worker to perform a task instead of grabbing their tools yourself.
@@ -163,6 +166,9 @@ flowchart LR
 
 ---
 
+
+
+
 ## How to Think in OOP
 
 | Step | Identify | Becomes | Example |
@@ -177,6 +183,9 @@ flowchart LR
 > - **OOP**: *"What things exist and what can they do?"*
 
 ---
+
+
+
 
 ## Difficulties & Common Mistakes
 
@@ -208,6 +217,23 @@ flowchart LR
 
 
 ---
+
+
+
+> 🔬 **Section Challenge — Signs of Good OOP Design**
+>
+> **Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
+> <details><summary>Answer</summary>
+>
+> Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
+> </details>
+>
+> **Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
+> <details><summary>Answer</summary>
+>
+> 1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
+> </details>
+>
 
 # 🏛️ Part 1: OOP From First Principles
 
@@ -598,6 +624,17 @@ THIS IS DEPENDENCY INJECTION!
 
 ---
 
+
+
+> 🔬 **Section Challenge — The Interior Decorator Analogy**
+>
+> **Challenge 1 (Reasoning):** Why does a decorator without `@functools.wraps` break Flask/FastAPI route registration?
+> <details><summary>Answer</summary>
+>
+> Flask uses function name (`func.__name__`) to register routes. Without `@functools.wraps`, the decorator replaces the original function with a `wrapper` function. All decorated routes have `__name__ = 'wrapper'` → duplicate view function name error. `@functools.wraps(fn)` copies `__name__`, `__doc__`, `__annotations__`  from the wrapped function. Same issue with pytest markers, Celery tasks, and any framework that inspects function attributes.
+> </details>
+>
+
 # 📐 Part 3: SOLID Principles
 
 ## S - Single Responsibility Principle
@@ -632,6 +669,9 @@ class UserValidator {
 // WHY? When email logic changes, you only change EmailService.
 // UserService doesn't need to be retested.
 ```
+
+
+
 
 ## O - Open/Closed Principle
 
@@ -679,6 +719,9 @@ class AreaCalculator {
 }
 ```
 
+
+
+
 ## L - Liskov Substitution Principle
 
 ```java
@@ -723,6 +766,9 @@ class Rectangle implements Shape { /* ... */ }
 class Square implements Shape { /* ... */ }  // Separate class, no inheritance
 ```
 
+
+
+
 ## I - Interface Segregation Principle
 
 ```java
@@ -762,6 +808,9 @@ class Robot implements Workable {
     // Only implements what it needs
 }
 ```
+
+
+
 
 ## D - Dependency Inversion Principle
 
@@ -816,6 +865,9 @@ UserService userService = new UserService(new SMSNotificationService());
 ```
 
 ---
+
+
+
 
 # 🎨 Part 4: Common Design Patterns
 
@@ -940,6 +992,23 @@ User user = new User.Builder("John", "john@email.com")
     .build();
 ```
 
+
+
+> 🔬 **Section Challenge — Creational Patterns**
+>
+> **Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
+> <details><summary>Answer</summary>
+>
+> Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
+> </details>
+>
+> **Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
+> <details><summary>Answer</summary>
+>
+> 1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
+> </details>
+>
+
 ## Structural Patterns
 
 ### Adapter - "Make Incompatible Compatible"
@@ -1024,6 +1093,23 @@ myCoffee = new SugarDecorator(myCoffee);
 System.out.println(myCoffee.getDescription());  // "Simple coffee, milk, sugar"
 System.out.println(myCoffee.getCost());         // 1.7
 ```
+
+
+
+> 🔬 **Section Challenge — Structural Patterns**
+>
+> **Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
+> <details><summary>Answer</summary>
+>
+> Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
+> </details>
+>
+> **Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
+> <details><summary>Answer</summary>
+>
+> 1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
+> </details>
+>
 
 ## Behavioral Patterns
 
@@ -1129,6 +1215,23 @@ agency.publishNews("Breaking: Java 21 released!");
 
 ---
 
+
+
+> 🔬 **Section Challenge — Behavioral Patterns**
+>
+> **Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
+> <details><summary>Answer</summary>
+>
+> Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
+> </details>
+>
+> **Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
+> <details><summary>Answer</summary>
+>
+> 1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
+> </details>
+>
+
 # 📌 Part 5: When to Use What
 
 | Need | Use |
@@ -1200,5 +1303,150 @@ _OOP is about managing complexity through smart organization!_
 
 
 ---
+
+
+---
+
+
+
+
+## 🏋️ Practice & Interview Questions — OOP & Design Patterns
+
+### Predict / Trace
+**Q1.** What design pattern does this code follow?
+```java
+Logger logger = Logger.getInstance();
+```
+<details><summary>Answer</summary>
+
+**Singleton** — ensures only one Logger instance exists globally.
+</details>
+
+**Q2.** What SOLID principle is violated?
+```java
+class User {
+    void login() { ... }
+    void logout() { ... }
+    void sendEmail() { ... }  // ← ?
+    void generateReport() { ... }  // ← ?
+}
+```
+<details><summary>Answer</summary>
+
+**SRP (Single Responsibility)** — User class has 4 responsibilities: authentication, email, reporting. Should be split into: `AuthService`, `EmailService`, `ReportService`.
+</details>
+
+### Design Pattern Problems
+**Q3.** ⭐ Implement Strategy pattern for payment processing.
+<details><summary>Solution</summary>
+
+```java
+interface PaymentStrategy { void pay(int amount); }
+class CreditCard implements PaymentStrategy { public void pay(int amount){ /*...*/ } }
+class PayPal implements PaymentStrategy { public void pay(int amount){ /*...*/ } }
+class UPI implements PaymentStrategy { public void pay(int amount){ /*...*/ } }
+
+class PaymentContext {
+    private PaymentStrategy strategy;
+    void setStrategy(PaymentStrategy s){ this.strategy=s; }
+    void processPayment(int amount){ strategy.pay(amount); }
+}
+// Switch strategy at runtime — open/closed principle!
+```
+</details>
+
+**Q4.** ⭐⭐ Implement Observer pattern for event notification.
+<details><summary>Solution</summary>
+
+```java
+interface Observer { void update(String event); }
+interface Observable {
+    void subscribe(Observer o); void unsubscribe(Observer o); void notify(String event);
+}
+class EventBus implements Observable {
+    List<Observer> observers = new ArrayList<>();
+    public void subscribe(Observer o){ observers.add(o); }
+    public void unsubscribe(Observer o){ observers.remove(o); }
+    public void notify(String event){ observers.forEach(o -> o.update(event)); }
+}
+```
+</details>
+
+**Q5.** ⭐⭐ Builder pattern for a complex configuration object.
+<details><summary>Solution</summary>
+
+```java
+class ServerConfig {
+    private final String host; private final int port; private final int timeout;
+    private ServerConfig(Builder b){ host=b.host; port=b.port; timeout=b.timeout; }
+
+    static class Builder {
+        String host="localhost"; int port=8080; int timeout=30;
+        Builder host(String h){ host=h; return this; }
+        Builder port(int p){ port=p; return this; }
+        Builder timeout(int t){ timeout=t; return this; }
+        ServerConfig build(){ return new ServerConfig(this); }
+    }
+}
+// ServerConfig config = new ServerConfig.Builder().host("prod.com").port(443).build();
+```
+</details>
+
+### MCQ Rapid Fire
+| # | Question | Answer |
+|---|---|---|
+| 1 | SOLID: O stands for | Open/Closed Principle |
+| 2 | Factory vs Abstract Factory | Factory: one product; Abstract Factory: family of products |
+| 3 | Composition over inheritance means | Prefer has-a (field) over is-a (extends) for flexibility |
+| 4 | Decorator pattern purpose | Add behavior dynamically without subclassing |
+| 5 | Facade pattern purpose | Simplified interface to complex subsystem |
+| 6 | Proxy pattern types | Virtual, protective, remote, caching |
+| 7 | Command pattern encapsulates | Request as an object (supports undo/redo) |
+| 8 | Template Method pattern | Defines algorithm skeleton, subclasses fill in steps |
+
+
+
+---
+
+## 🧠 Deep Conceptual Questions — OOP, SOLID & Design Patterns
+
+**C1. What is the difference between an interface and an abstract class — when to use each?**
+<details><summary>Deep Answer</summary>
+
+**Abstract class**: can have fields, constructors, concrete method implementations. Models IS-A with shared state and behavior. Use when: you have partial implementation to share (template method pattern). Single inheritance: if you extend an abstract class, you can't extend another. **Interface**: pure contract, no state (Java 8+: default methods allowed). Models CAN-DO / role capability. A class can implement unlimited interfaces. Use when: defining a capability across unrelated classes (`Comparable`, `Serializable`, `Runnable`). Rule: prefer interfaces for type definitions. Use abstract class when you need to share implementation code AND all subtypes share the same "IS-A" relationship. In practice: interfaces + composition > abstract class + inheritance.
+</details>
+
+**C2. Liskov Substitution Principle: what does it actually mean and how do you violate it?**
+<details><summary>Deep Answer</summary>
+
+LSP: if `S extends P`, anywhere you use `P`, you should be able to use `S` without breaking correctness. Violation example: `Square extends Rectangle`. Rectangle behavior: setWidth and setHeight are independent. Square invariant: width must equal height. `Square s = new Square(5); s.setWidth(10);` — now `s.getHeight() == 10` (Square enforced equality) but Rectangle contract says height should still be 5. Code using Rectangle is surprised. Better: Square and Rectangle as siblings under a Shape hierarchy. Another classic: override a method and throw exception for a case the parent method handled → violates LSP. Test: can you run the parent's test suite against the child and pass?
+</details>
+
+**C3. Strategy pattern vs. if-else chains: the OCP argument.**
+<details><summary>Deep Answer</summary>
+
+```java
+// BAD: add new payment type = modify this method = Open for modification (violates OCP)
+if(type == "credit") { } else if(type == "paypal") { } else if(type == "crypto") { }
+
+// GOOD: add new payment = new class, zero modification of existing code
+interface PaymentStrategy { void pay(int amount); }
+// Add Crypto: new CryptoPayment implements PaymentStrategy — no other file touched
+```
+Open/Closed Principle: open for extension, closed for modification. Each `else if` = a modification to an existing method = risk of breaking existing behavior, requires re-testing the entire method. Strategy = extension by new class = old code untouched = zero regression risk. When if-else is fine: 2-3 fixed cases that never change. When strategy shines: extensible behaviors that vary at runtime.
+</details>
+
+**C4. What is the Dependency Inversion Principle and how does it enable testability?**
+<details><summary>Deep Answer</summary>
+
+DIP: high-level modules should not depend on low-level modules — both should depend on abstractions. Without DIP: `OrderService` directly creates `MySQLOrderRepository`. To test OrderService: must have MySQL running. With DIP: `OrderService` depends on `OrderRepository` interface. In production: inject `MySQLOrderRepository`. In tests: inject `MockOrderRepository`. The high-level business logic (OrderService) has zero knowledge of the database layer. This makes: unit testing trivial (mock the interface), swapping implementations easy (SQLite, PostgreSQL, in-memory), layer boundaries clear. Dependency INJECTION (DI framework like Spring) is the mechanism that enables DIP at runtime.
+</details>
+
+**C5. Observer pattern vs. Event Bus: when does one become the other?**
+<details><summary>Deep Answer</summary>
+
+**Observer**: subject holds direct references to observer objects. Subject explicitly notifies each one. Tightly coupled (subject knows about observers). Fine for: small systems, known observers at compile time. Breaks when: observers span different modules, dynamic subscription needed, observers need to be remote. **Event Bus / Message Queue**: publishers and subscribers decoupled. Publisher sends event with a TYPE to the bus. Subscribers register for event types — publisher doesn't know who's listening. De-facto standard in large systems: Spring ApplicationEventPublisher, Kafka, RabbitMQ are all event buses. Rule: Observer for in-process tightly-coupled notification. Event bus for loose coupling, cross-module, or distributed communication.
+</details>
+
 
 > **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_Design_Patterns.md)

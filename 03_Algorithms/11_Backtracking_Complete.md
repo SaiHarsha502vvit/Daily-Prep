@@ -202,6 +202,9 @@ Today it's the foundation for:
 
 ---
 
+
+
+
 ## What is Backtracking? <a name="what-is-backtracking"></a>
 
 ### The Core Idea
@@ -341,6 +344,9 @@ flowchart TD
 ```
 
 ---
+
+
+
 
 ## The Universal Template <a name="universal-template"></a>
 
@@ -667,6 +673,8 @@ Why i > start (not i > 0)?
 
 ---
 
+
+
 ## Permutations Pattern <a name="permutations-pattern"></a>
 
 ### Problem: Permutations (LeetCode 46)
@@ -870,6 +878,8 @@ Why !visited[i-1]?
 
 ---
 
+
+
 ## Combinations Pattern <a name="combinations-pattern"></a>
 
 ### Problem: Combinations (LeetCode 77)
@@ -1009,6 +1019,9 @@ private void backtrack(int k, int remaining, int start,
 ```
 
 ---
+
+
+
 
 ## Classic Problems <a name="classic-problems"></a>
 
@@ -1782,3 +1795,13 @@ flowchart LR
 ---
 
 > **Navigation**: [< Previous](10_Bit_Manipulation_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](12_Greedy_Algorithms_Complete.md)
+
+> 🔬 **Section Challenge — Summary: Master These 3 Templates**
+>
+> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+> <details><summary>Answer</summary>
+>
+> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+> </details>
+>
+

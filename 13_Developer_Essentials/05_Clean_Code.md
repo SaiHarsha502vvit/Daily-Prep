@@ -134,6 +134,17 @@ void calculateTotal() {}        // verb
 boolean isActive() {}           // boolean = is/has/can
 ```
 
+
+
+> 🔬 **Section Challenge — 1. Naming (The #1 Most Important Skill)**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## 2. Functions / Methods
 
 ### Small & Focused
@@ -223,6 +234,17 @@ record UserRegistrationRequest(
     Address address, int age, String role
 ) {}
 ```
+
+
+
+> 🔬 **Section Challenge — 2. Functions / Methods**
+>>
+> **Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+> <details><summary>Answer</summary>
+>
+> Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+> </details>
+>
 
 ## 3. Comments
 
@@ -317,6 +339,23 @@ class OrderService {
     }
 }
 ```
+
+
+
+> 🔬 **Section Challenge — 4. SOLID Principles**
+>
+> **Challenge 1 (Reasoning):** Open/Closed Principle says 'closed for modification'. Does this mean code can NEVER be changed?
+> <details><summary>Answer</summary>
+>
+> No — it means don't modify existing, tested behavior to add new features. Add new classes/methods instead. In practice: use interfaces + plugins. Adding a new payment type = new class implementing `PaymentStrategy`. Not modifying `PaymentProcessor`. The existing processor is 'closed' (don't touch tested code). The system is 'open' (easily extend by adding new implementations).
+> </details>
+>
+> **Challenge 2 (Design):** A class has 5 public methods but clients only use 1-2. Which SOLID principle is violated and what's the fix?
+> <details><summary>Answer</summary>
+>
+> Interface Segregation Principle (ISP): clients shouldn't depend on methods they don't use. Fix: split the class into smaller, focused interfaces. `Printable`, `Scannable`, `FaxMachine` instead of one `AllInOnePrinter`. Each client implements/uses only the interface it needs.
+> </details>
+>
 
 ## 5. Code Smells (Warning Signs)
 
@@ -416,6 +455,17 @@ public void processPayment(Payment payment) {
     charge(payment);  // logic at top level, easy to read
 }
 ```
+
+
+
+> 🔬 **Section Challenge — 5. Code Smells (Warning Signs)**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
 
 ## 📌 6. Dry, Kiss, Yagni
 

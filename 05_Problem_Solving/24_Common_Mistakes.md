@@ -281,6 +281,13 @@ flowchart TD
 
 ---
 
+
+
+
+
+
+> 🔬 **Section Challenge — 💥 3. Integer Overflow**
+
 ## 📝 4. String Comparison Mistakes
 
 ```
@@ -347,6 +354,13 @@ flowchart TD
 ```
 
 ---
+
+
+
+
+
+
+> 🔬 **Section Challenge — 📝 4. String Comparison Mistakes**
 
 ## 📌 5. Scanner Input Mistakes
 
@@ -448,6 +462,13 @@ flowchart TD
 ```
 
 ---
+
+
+
+
+
+
+> 🔬 **Section Challenge — 📌 5. Scanner Input Mistakes**
 
 ## 🏛️ 6. Loop Mistakes
 
@@ -960,6 +981,13 @@ flowchart TD
 ```
 
 ---
+
+
+
+
+
+
+> 🔬 **Section Challenge — 📌 10. Variable Initialization Mistakes**
 
 ## 📋 PRE-SUBMISSION CHECKLIST
 

@@ -670,6 +670,17 @@ public class OrganizationService {
 
 ---
 
+
+
+> 🔬 **Section Challenge — 🎯 From Problem to Function**
+>>
+> **Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+> <details><summary>Answer</summary>
+>
+> Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+> </details>
+>
+
 # PART 5: JUNIOR DEVELOPER'S LEARNING PATH
 
 ## 🎓 From Theory to Production: The Right Way
@@ -901,6 +912,9 @@ WEEK 4: BUILD MINI-MODULE
 
 ---
 
+
+
+
 # PART 7: 6 POWER LEARNING TECHNIQUES
 
 ## 🧠 HOW TO ACTUALLY LEARN (Not Just Read)
@@ -1102,3 +1116,5 @@ _This document is part of your journey. Come back to it when you need direction.
 ---
 
 > **Navigation**: [< Previous](03_ERP_Finance_Core.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_RealWorld_Problems_DSA.md)
+
+

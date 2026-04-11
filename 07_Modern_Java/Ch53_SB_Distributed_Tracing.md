@@ -141,6 +141,17 @@ flowchart TD
 
 ---
 
+
+
+> 🔬 **Section Challenge — 1. Tracing Fundamentals**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## 2. Spring Cloud Sleuth (Spring Boot 2.x)
 
 ### Dependencies
@@ -172,6 +183,17 @@ flowchart TD
 
 ### Configuration
 ```yaml
+
+
+> 🔬 **Section Challenge — 2. Spring Cloud Sleuth (Spring Boot 2.x)**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 # application.yml
 spring:
   application:
@@ -242,6 +264,17 @@ Sleuth automatically traces:
 
 ### Configuration
 ```yaml
+
+
+> 🔬 **Section Challenge — 3. Micrometer Tracing (Spring Boot 3.x)**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 # application.yml for Spring Boot 3.x
 spring:
   application:
@@ -567,6 +600,17 @@ public class BaggageFilter extends OncePerRequestFilter {
 
 ### Docker Setup
 ```yaml
+
+
+> 🔬 **Section Challenge — 6. Zipkin Integration**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 # docker-compose.yml
 version: '3.8'
 
@@ -816,6 +860,17 @@ public class CustomHeaderPropagation {
 
 ---
 
+
+
+> 🔬 **Section Challenge — 8. Tracing Across Message Queues**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## 9. Sampling Strategies
 
 ### Configuration
@@ -920,6 +975,17 @@ public class ObservationConfiguration {
 
 ---
 
+
+
+> 🔬 **Section Challenge — 9. Sampling Strategies**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## 10. Complete Microservices Example
 
 ### Project Structure
@@ -1007,6 +1073,17 @@ public class GatewayConfig {
 ```
 
 ```yaml
+
+
+> 🔬 **Section Challenge — 10. Complete Microservices Example**
+>
+> **Challenge 1 (Reasoning):** Service A calls Service B which calls Service C. C is slow. How does this cause a cascade failure?
+> <details><summary>Answer</summary>
+>
+> Without circuit breakers: A has a thread pool for B calls. B is slow (waiting for C) → B responses are slow → A's thread pool fills with waiting threads → A's thread pool exhausted → A becomes slow for ALL callers, not just B-related ones. Cascade: C slow → B slow → A slow → entire system degraded. Fix: Resilience4j circuit breaker — after N failures, 'open' the circuit → fail fast with fallback response instead of waiting. Timeouts + bulkhead patterns to isolate failure.
+> </details>
+>
+
 # api-gateway application.yml
 spring:
   application:
@@ -1546,6 +1623,17 @@ public class TracingAnalysisService {
 
 ---
 
+
+
+> 🔬 **Section Challenge — 11. Debugging with Traces**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## 12. Testing Traced Code
 
 ### Unit Testing with Mock Tracer
@@ -1665,6 +1753,17 @@ class ExternalServiceTracingTest {
 
 ---
 
+
+
+> 🔬 **Section Challenge — 12. Testing Traced Code**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## 13. Quick Reference
 
 ### Annotation Cheat Sheet
@@ -1727,3 +1826,7 @@ tracestate: key1=value1,key2=value2
 ---
 
 > **Navigation**: [< Previous](Ch47_SB_Security_Deep.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch59_SB_Testing_Fundamentals.md)
+
+> 🔬 **Section Challenge — Summary**
+>>
+

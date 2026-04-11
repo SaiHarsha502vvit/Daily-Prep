@@ -44,18 +44,6 @@ IF input is:
 THEN → Two Pointers on Array
 ```
 
-**Flow:**
-- THEN
-- ↓
-- Two Pointers on Array
-
-```mermaid
-flowchart LR
-    N1["THEN"]
-    N2["Two Pointers on Array"]
-    N1 --> N2
-```
-
 ### Decision Tree
 ```
 Problem involves array?
@@ -70,59 +58,17 @@ Problem involves array?
     └── OPPOSITE DIRECTION pointers
 ```
 
-**Flow:**
-- Problem involves array?
-- ↓
-- Need pair with target sum?
-- ↓
-- Problem involves array?
-- ↓
-- Array sorted?
-- ↓
-- OPPOSITE DIRECTION pointers
-- ↓
-- Problem involves array?
-- ↓
-- Array unsorted?
-- ↓
-- HashMap (not two pointers)
-- ↓
-- Problem involves array?
-- ↓
-- Remove/move elements in-place?
-- ↓
-- Problem involves array?
-- ↓
-- SAME DIRECTION (reader-writer) pointers
-- ↓
-- Problem involves array?
-- ↓
-- Partition into groups (0s, 1s, 2s)?
-
-```mermaid
-flowchart TD
-    N1["Problem involves array?"]
-    N2["Need pair with target sum?"]
-    N3["Array sorted? → OPPOSITE DIRECTION pointers"]
-    N4["Array unsorted? → HashMap (not two pointers)"]
-    N5["Remove/move elements in-place?"]
-    N6["SAME DIRECTION (reader-writer) pointers"]
-    N7["Partition into groups (0s, 1s, 2s)?"]
-    N8["THREE POINTERS (Dutch National Flag)"]
-    N9["Compare from both ends?"]
-    N10["OPPOSITE DIRECTION pointers"]
-    N1 --> N2
-    N1 --> N3
-    N1 --> N4
-    N1 --> N5
-    N1 --> N6
-    N1 --> N7
-    N1 --> N8
-    N1 --> N9
-    N1 --> N10
-```
-
 ---
+
+
+
+> 🔬 **Section Challenge — 🧠 WHEN TO RECOGNIZE THIS PATTERN**
+>
+> **Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe — and why does it FAIL on unsorted arrays?
+> <details><summary>Answer</summary>
+>
+> The invariant: the sorted order creates a **monotonic relationship** — moving `left` right *always* increases the sum; moving `right` left *always* decreases it. This means every pointer move eliminates an entire row/column of the N×N pair matrix without skipping valid pairs. On an **unsorted array**, this invariant breaks completely: moving left right may increase OR decrease the sum depending on the values, so you could skip valid pairs. That's why unsorted + target sum = HashMap (O(N), no sorting needed, preserves original indices).
+> </details>
 
 ## 📐 CORE TEMPLATES
 
@@ -198,50 +144,17 @@ WHY it works: Each step eliminates an entire row or column
 of the n×n search matrix → O(n) instead of O(n²)
 ```
 
-**Flow:**
-- Step 1: L=0, R=6
-- ↓
-- 1+15=16 > 14
-- ↓
-- R--
-- ↓
-- Step 2: L=0, R=5
-- ↓
-- 1+10=11 < 14
-- ↓
-- L++
-- ↓
-- Step 3: L=1, R=5
-- ↓
-- 2+10=12 < 14
-- ↓
-- L++
-
-```mermaid
-flowchart TD
-    N1["Step 1: L=0, R=6"]
-    N2["1+15=16 &gt; 14"]
-    N3["R--"]
-    N4["Step 2: L=0, R=5"]
-    N5["1+10=11 &lt; 14"]
-    N6["L++"]
-    N7["Step 3: L=1, R=5"]
-    N8["2+10=12 &lt; 14"]
-    N9["Step 4: L=2, R=5"]
-    N10["4+10=14 ✅ FOUND!"]
-    N11["of the n×n search matrix"]
-    N12["O(n) instead of O(n²)"]
-    N1 --> N2
-    N2 --> N3
-    N4 --> N5
-    N5 --> N6
-    N7 --> N8
-    N8 --> N6
-    N9 --> N10
-    N11 --> N12
-```
-
 ---
+
+
+
+> 🔬 **Section Challenge — 🔬 VISUAL: How Two Pointers Shrinks Search Space**
+>
+> **Challenge 1 (Reasoning):** Two pointers check at most O(N) pairs from an N×N pair matrix. Prove no valid pair is ever skipped.
+> <details><summary>Answer</summary>
+>
+> When `arr[L] + arr[R] < target`: we move L right. This is safe because arr[R] is the *largest possible right element*. If `arr[L] + arr[R]` is still too small, then `arr[L] + anything_smaller` is also too small. So no valid pair with arr[L] exists → skip entire row. Symmetric argument for moving R left when sum is too large. Every skipped pair is provably not a solution.
+> </details>
 
 ## 🔬 FULL WALKTHROUGH: 3Sum — Fix One + Two Pointers
 
@@ -279,68 +192,17 @@ DUPLICATE HANDLING (critical!):
 Time: O(n²) | Space: O(1) (excluding output)
 ```
 
-**Flow:**
-- Step 0: SORT
-- ↓
-- [-4, -1, -1, 0, 1, 2]
-- ↓
-- L=1, R=5
-- ↓
-- -1+2=1 < 4
-- ↓
-- L++
-- ↓
-- L=2, R=5
-- ↓
-- -1+2=1 < 4
-- ↓
-- L++
-- ↓
-- L=3, R=5
-- ↓
-- 0+2=2 < 4
-
-```mermaid
-flowchart TD
-    N1["Step 0: SORT"]
-    N2["[-4, -1, -1, 0, 1, 2]"]
-    N3["L=1, R=5"]
-    N4["-1+2=1 &lt; 4"]
-    N5["L++"]
-    N6["L=2, R=5"]
-    N7["L=3, R=5"]
-    N8["0+2=2 &lt; 4"]
-    N9["L=4, R=5"]
-    N10["1+2=3 &lt; 4"]
-    N11["L=5, R=5"]
-    N12["stop. No triplet with -4."]
-    N13["-1+2=1 = 1 ✅ Found [-1, -1, 2]!"]
-    N14["L=3, R=4"]
-    N15["0+1=1 = 1 ✅ Found [-1, 0, 1]!"]
-    N16["L=4, R=3"]
-    N17["stop."]
-    N18["1+2=3 &gt; 0"]
-    N19["R--"]
-    N20["L=4, R=4"]
-    N21["stop. No triplet."]
-    N1 --> N2
-    N3 --> N4
-    N4 --> N5
-    N6 --> N4
-    N7 --> N8
-    N8 --> N5
-    N9 --> N10
-    N10 --> N5
-    N11 --> N12
-    N6 --> N13
-    N14 --> N15
-    N16 --> N17
-    N9 --> N18
-    N18 --> N19
-    N20 --> N21
-```
-
 ---
+
+
+
+> 🔬 **Section Challenge — 🔬 FULL WALKTHROUGH: 3Sum**
+>
+> **Challenge (Design):** 4Sum is O(N³). K-Sum generalizes to O(N^(K-1)). When K is large, what's a better strategy than nested pointers?
+> <details><summary>Answer</summary>
+>
+> Once K > 4, meet-in-the-middle beats nested pointers: split K numbers into two groups of K/2 and use a HashMap to find complementary pairs. This reduces O(N^(K-1)) to O(N^(K/2) × log N). For K=6: naive = O(N⁵), meet-in-middle = O(N³ log N). Classic example of trading problem structure for algorithmic efficiency.
+> </details>
 
 ## 🔬 FULL WALKTHROUGH: Trapping Rain Water — Two Boundary Pointers
 
@@ -372,54 +234,17 @@ is correctly computed without needing the full array.
 Time: O(n) | Space: O(1) — better than prefix array O(n) space
 ```
 
-**Flow:**
-- h[L]=0 ≤ h[R]=1
-- ↓
-- maxL=max(0,0)=0, water+=0-0=0, L++
-- ↓
-- h[L]=1 ≤ h[R]=1
-- ↓
-- maxL=max(0,1)=1, water+=1-1=0, L++
-- ↓
-- h[L]=0 ≤ h[R]=1
-- ↓
-- maxL=1, water+=1-0=1, L++ 💧+1
-- ↓
-- h[L]=2 > h[R]=1
-- ↓
-- maxR=max(0,1)=1, water+=1-1=0, R--
-- ↓
-- h[L]=2 > h[R]=2
-- ↓
-- maxR=max(1,2)=2, water+=2-2=0, R--
-- ↓
-- h[L]=2 > h[R]=1
-- ↓
-- maxR=2, water+=2-1=1, R-- 💧+1
-
-```mermaid
-flowchart TD
-    N1["h[L]=0 ≤ h[R]=1"]
-    N2["maxL=max(0,0)=0, water+=0-0=0, L++"]
-    N3["h[L]=1 ≤ h[R]=1"]
-    N4["maxL=max(0,1)=1, water+=1-1=0, L++"]
-    N5["maxL=1, water+=1-0=1, L++ 💧+1"]
-    N6["h[L]=2 &gt; h[R]=1"]
-    N7["maxR=max(0,1)=1, water+=1-1=0, R--"]
-    N8["h[L]=2 &gt; h[R]=2"]
-    N9["maxR=max(1,2)=2, water+=2-2=0, R--"]
-    N10["maxR=2, water+=2-1=1, R-- 💧+1"]
-    N11["maxR=2, water+=2-2=0, R--"]
-    N1 --> N2
-    N3 --> N4
-    N1 --> N5
-    N6 --> N7
-    N8 --> N9
-    N6 --> N10
-    N8 --> N11
-```
-
 ---
+
+
+
+> 🔬 **Section Challenge — 🔬 FULL WALKTHROUGH: Trapping Rain Water**
+>
+> **Challenge (Reasoning):** The prefix array solution is simpler. Why is the two-pointer solution strictly better in production?
+> <details><summary>Answer</summary>
+>
+> Both are O(N) time, but two-pointer is O(1) space vs prefix array's O(N). In memory-constrained environments (embedded systems, stream processing), allocating two extra arrays of N size can matter significantly. Also, the two-pointer version streams: it can process incoming height data without fully buffering it. The prefix approach requires the full array first. The key insight: "the side with smaller max determines the trapped water" lets us process whichever side is shorter, maintaining correctness without lookahead.
+> </details>
 
 ## 🛡️ EDGE CASES TO WATCH
 
@@ -436,42 +261,6 @@ flowchart TD
 │ Negative numbers       │ Two pointers still works on sorted array  │
 │ Overflow (a[L]+a[R])   │ Use long for sum if values near INT_MAX   │
 └────────────────────────┴───────────────────────────────────────────┘
-```
-
-**Flow:**
-- Edge Case What Happens
-- ↓
-- Empty array [] Return immediately, no pointers to set
-- ↓
-- Single element [5] No pair exists, return -1 / false
-- ↓
-- Two elements [1,5] Only one pair to check
-- ↓
-- All same values [3,3,3] All sums equal, handle duplicat
-- ↓
-- Already sorted Two pointer works perfectly
-- ↓
-- Target impossible L crosses R without finding
-- ↓
-- return
-
-```mermaid
-flowchart TD
-    N1["Edge Case What Happens"]
-    N2["Empty array [] Return immediately, no pointers to set"]
-    N3["Single element [5] No pair exists, return -1 / false"]
-    N4["Two elements [1,5] Only one pair to check"]
-    N5["All same values [3,3,3] All sums equal, handle duplicat"]
-    N6["Already sorted Two pointer works perfectly"]
-    N7["Target impossible L crosses R without finding → return"]
-    N8["Negative numbers Two pointers still works on sorted arr"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
 ```
 
 ---
@@ -513,13 +302,6 @@ flowchart TD
 | # | Problem | Companies | Key Insight |
 |---|---------|-----------|-------------|
 | 12 | [Trapping Rain Water](https://leetcode.com/problems/trapping-rain-water/) | Amazon | Two pointers from both ends, track maxLeft/maxRight |
-
-### Additional from Excel — Two Pointer Section
-| # | Problem | Key Insight |
-|---|---------|-------------|
-| 13 | [Sort Colors](https://leetcode.com/problems/sort-colors/) | Dutch National Flag |
-| 14 | [Longest Repeating Character Replacement](https://leetcode.com/problems/longest-repeating-character-replacement/) | Sliding window + char frequency |
-| 15 | [Maximum Number of Visible Points](https://leetcode.com/problems/maximum-number-of-visible-points/) | Angle sorting + sliding window |
 
 ---
 
@@ -570,9 +352,154 @@ flowchart TD
 - [05_Problem_Solving/06_Two_Pointers.md](../05_Problem_Solving/06_Two_Pointers.md) — More two pointer problems
 
 ---
-[← 07 Two Pointers](07_Two_Pointers_Complete.md) | [09 Array + Sliding Window →](09_Array_Plus_SlidingWindow.md)
 
+## 🏋️ Practice & Interview Questions — Two Pointers
 
----
+> Attempt each before looking at the answer. Time yourself.
+
+### Predict / Trace
+**Q1.** `nums = [1, 2, 4, 6, 8, 10]`, target = 14. Trace the two-pointer steps.
+<details><summary>Answer</summary>
+
+L=0,R=5 → 1+10=11 < 14 → L++. L=1,R=5 → 2+10=12 < 14 → L++. L=2,R=5 → 4+10=14 ✅ Found [4,10].
+</details>
+
+**Q2.** `nums = [0, 0, 1, 1, 1, 2, 2, 3]`. After `remove duplicates in-place`, what does the array prefix look like?
+<details><summary>Answer</summary>
+
+`[0, 1, 2, 3, ...]` — writer pointer stops at index 4. The trailing elements beyond index 3 are garbage but not cleared (caller uses the returned length).
+</details>
+
+**Q3.** Trapping Rain Water — `height = [3, 0, 3]`. Answer?
+<details><summary>Answer</summary>
+
+3 units. The pit at index 1 is bounded by height 3 on both sides. Water = min(3,3) - 0 = 3.
+</details>
+
+### LeetCode / Coding
+**Q4.** ⭐ Move Zeroes — move all 0s to end, preserve relative order, in-place.
+<details><summary>Solution</summary>
+
+```java
+int writer = 0;
+for (int reader = 0; reader < nums.length; reader++) {
+    if (nums[reader] != 0) nums[writer++] = nums[reader];
+}
+while (writer < nums.length) nums[writer++] = 0;
+```
+</details>
+
+**Q5.** ⭐⭐ 3Sum — find all unique triplets summing to 0.
+<details><summary>Solution</summary>
+
+```java
+Arrays.sort(nums);
+for (int i = 0; i < n - 2; i++) {
+    if (i > 0 && nums[i] == nums[i-1]) continue;
+    int l = i + 1, r = n - 1;
+    while (l < r) {
+        int s = nums[i] + nums[l] + nums[r];
+        if (s == 0) {
+            result.add(List.of(nums[i], nums[l++], nums[r--]));
+            while (l < r && nums[l] == nums[l-1]) l++;
+            while (l < r && nums[r] == nums[r+1]) r--;
+        } else if (s < 0) l++; else r--;
+    }
+}
+```
+</details>
+
+**Q6.** ⭐⭐ Container With Most Water — max area O(N).
+<details><summary>Solution</summary>
+
+```java
+int l = 0, r = height.length - 1, max = 0;
+while (l < r) {
+    max = Math.max(max, Math.min(height[l], height[r]) * (r - l));
+    if (height[l] < height[r]) l++; else r--;
+}
+```
+</details>
+
+**Q7.** ⭐⭐ Merge Sorted Array — merge nums2 into nums1 in-place (start from end!).
+<details><summary>Solution</summary>
+
+```java
+int i = m - 1, j = n - 1, k = m + n - 1;
+while (i >= 0 && j >= 0)
+    nums1[k--] = (nums1[i] >= nums2[j]) ? nums1[i--] : nums2[j--];
+while (j >= 0) nums1[k--] = nums2[j--];
+```
+</details>
+
+**Q8.** ⭐⭐⭐ Trapping Rain Water — O(N) time, O(1) space.
+<details><summary>Solution</summary>
+
+```java
+int l = 0, r = n - 1, lMax = 0, rMax = 0, water = 0;
+while (l < r) {
+    if (height[l] <= height[r]) {
+        if (height[l] >= lMax) lMax = height[l];
+        else water += lMax - height[l];
+        l++;
+    } else {
+        if (height[r] >= rMax) rMax = height[r];
+        else water += rMax - height[r];
+        r--;
+    }
+}
+```
+</details>
+
+### Interview Questions
+**Q9.** Why must you sort before using two pointers for pair-sum problems?
+<details><summary>Answer</summary>
+
+Sorted order creates a monotonic relationship: moving `left` right always increases the sum, moving `right` left always decreases it. Without this monotonicity, pointer moves can't safely skip pairs — you'd need to check all O(N²) combinations.
+</details>
+
+**Q10.** Two Sum says "return indices." Can you use two pointers?
+<details><summary>Answer</summary>
+
+Not directly — sorting destroys the original indices. You'd need to track (value, originalIndex) pairs, sort by value, apply two pointers, then return the original indices. But this is more complex than just using HashMap in O(N). Two Pointers is better when: indices don't matter OR the array is already sorted (LC 167).
+</details>
+
+**Q11.** Dutch National Flag — why 3 pointers instead of 2 sorts?
+<details><summary>Answer</summary>
+
+Sorting is O(N log N). DNF is O(N) with O(1) space. Also, DNF is a single pass — critical for streaming data. The three invariants: `[0..lo) = 0`, `[lo..mid) = 1`, `(hi..end] = 2`, with `[mid..hi] = unknown`. Each element is touched at most once.
+</details>
+
+### MCQ Rapid Fire — Two Pointers
+| # | Question | Answer |
+|---|---|---|
+| 1 | Two pointers time on sorted array pair-sum | O(N) |
+| 2 | Two pointers works without sorting? | Only for specific patterns (reader-writer) |
+| 3 | 3Sum time complexity | O(N²) |
+| 4 | Trapping Rain Water — prefix array space | O(N) |
+| 5 | Trapping Rain Water — two pointer space | O(1) |
+| 6 | Dutch National Flag passes over array | 1 pass, O(N) |
+| 7 | Best alternative to Two Pointers for unsorted pair-sum | HashMap O(N) |
+| 8 | Palindrome check with two pointers — time | O(N) |
+
+### 🧠 Deep Conceptual Questions — Two Pointers
+
+**C1. What mathematical property makes two pointers correct?**
+<details><summary>Deep Answer</summary>
+
+**Monotonicity of the constraint function.** For opposite-direction pointers: the sum function `f(L, R) = arr[L] + arr[R]` is monotonically increasing in L (since arr is sorted) and monotonically decreasing in R. This means each pointer move provably moves toward or away from the target in a predictable direction, allowing safe elimination. Without monotonicity, you can't guarantee pointer moves don't skip valid pairs.
+</details>
+
+**C2. Why does same-direction (reader-writer) two pointers not require sorting?**
+<details><summary>Deep Answer</summary>
+
+Reader-writer doesn't use the pair-sum invariant at all. It's simply a compression pattern: `writer` tracks the "output position", `reader` scans input. The key property is that writer ≤ reader always — writer can never outpace reader. So reads and writes never conflict. No ordering is required because we're not eliminating search space — we're filtering elements. The invariant is: elements `[0..writer)` are the correctly filtered result.
+</details>
+
+**C3. When does two-pointer for pair-sum fail on a sorted array?**
+<details><summary>Deep Answer</summary>
+
+When there is no monotonic relationship — specifically with **non-integer targets**, **non-linear combination functions** (e.g., `arr[L]² + arr[R]² = target` — this is NOT monotonic with respect to pointer moves on a sorted array of mixed signs), or **circular arrays without proper index handling**. Always verify: does moving L right always increase and moving R left always decrease the function value? If not, two pointers is unsafe.
+</details>
 
 > **Navigation**: [< Previous](07_Two_Pointers_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](09_Array_Plus_SlidingWindow.md)

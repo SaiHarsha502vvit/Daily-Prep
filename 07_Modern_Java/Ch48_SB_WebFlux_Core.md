@@ -714,6 +714,23 @@ public class ReactorOperators {
 
 ---
 
+
+
+> 🔬 **Section Challenge — Chapter 3: Operators - Transforming Reactive Streams**
+>
+> **Challenge 1 (Reasoning):** `list.stream().filter().map().collect()` — at which point does data actually start flowing through the pipeline?
+> <details><summary>Answer</summary>
+>
+> Not until `collect()` (or any terminal operation). `filter()` and `map()` are LAZY — they build a pipeline description but process nothing. When the terminal operation is called, the pipeline pulls elements through lazily: one element passes through the entire pipeline before the next is processed. This means: early termination with `findFirst()` is O(1) if the first element matches, not O(N).
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** You call `stream.filter(...).collect(...)` twice on the same stream. What happens?
+> <details><summary>Answer</summary>
+>
+> `IllegalStateException: stream has already been operated upon or closed`. Streams are single-use. Once a terminal operation is called, the stream is consumed. Fix: create a new stream from the source each time, or collect to a `List` first and stream the list repeatedly.
+> </details>
+>
+
 # 🌱 Section 3: Spring Webflux
 
 ---
@@ -1024,6 +1041,17 @@ public class UserHandler {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — Chapter 5: Functional Endpoints (RouterFunction)**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
 
 # ⚛️ Section 4: Reactive Data Access (r2dbc)
 

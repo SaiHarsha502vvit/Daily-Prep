@@ -178,6 +178,23 @@ System.out.println(original); // "hello" — unchanged!
 
 ---
 
+
+
+> 🔬 **Section Challenge — 2. String Pool & Immutability: Why Strings Behave Strangely**
+>
+> **Challenge 1 (Reasoning):** `String a = "hello"; String b = "hello"; a == b` — true or false? What about `new String("hello") == "hello"`?
+> <details><summary>Answer</summary>
+>
+> First: `true` — string literals are interned in the string pool; same literal = same reference. Second: `false` — `new String(...)` always creates a new object on the heap, bypassing the pool. Always use `.equals()` for string comparison. `String.intern()` can explicitly add a string to the pool.
+> </details>
+>
+> **Challenge 2 (Design):** Why is `String` immutable in Java and what problems would mutable strings cause?
+> <details><summary>Answer</summary>
+>
+> Security: strings are used as HashMap keys, class names, file paths. If mutable, a key could change after insertion, corrupting the HashMap. Thread safety: immutable objects are inherently thread-safe (no synchronization needed). String pool: only possible because strings don't change — two vars safely share the same interned object. Caching hashCode: `String` caches its hashCode (first call computes, subsequent calls return cached) — only safe because the string never changes.
+> </details>
+>
+
 ## 3. `==` vs `.equals()`: The Identity vs Equality Trap
 
 ### The Freeze Question
@@ -375,6 +392,17 @@ System.out.println(c.equals(d)); // true  — always use this
 
 ---
 
+
+
+> 🔬 **Section Challenge — 4. Integer Cache: Why 127 == 127 But 128 != 128**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## 5. Generics Type Erasure: Why You Can't Do `new T()`
 
 ### The Freeze Question
@@ -478,6 +506,23 @@ Dog dog = create(Dog.class); // Works!
 
 ---
 
+
+
+> 🔬 **Section Challenge — 5. Generics Type Erasure: Why You Can't Do `new T()`**
+>
+> **Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
+> <details><summary>Answer</summary>
+>
+> No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
+> <details><summary>Answer</summary>
+>
+> NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
+> </details>
+>
+
 ## 6. HashMap Internals: Not Just "Key-Value Store"
 
 ### The Freeze Question
@@ -568,6 +613,23 @@ Map<String, Integer> map = new HashMap<>(100); // avoids resizing
 
 ---
 
+
+
+> 🔬 **Section Challenge — 6. HashMap Internals: Not Just "Key-Value Store"**
+>
+> **Challenge 1 (Reasoning):** You insert 1000 entries into a HashMap with default capacity 16. How many resize operations happen?
+> <details><summary>Answer</summary>
+>
+> Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 (64→128), 96 (128→256), 192 (256→512), 384 (512→1024). Total: 6 resizes. Each resize copies all entries to new bucket array. Pre-sizing: `new HashMap<>(1334)` (1000/0.75 ≈ 1334 → next power of 2 = 2048) avoids all resizes.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** Two `Person` objects with same name and age. You override `equals()` to return true but not `hashCode()`. What happens when used as `HashMap` keys?
+> <details><summary>Answer</summary>
+>
+> Both objects land in DIFFERENT buckets (different hashCodes → different bucket index). The HashMap doesn't check `equals()` across buckets — it goes straight to one bucket. So `map.get(person2)` returns NULL even though `person1.equals(person2)`. Overriding `equals` without `hashCode` violates the contract and breaks all hash-based collections. Always override both together.
+> </details>
+>
+
 ## 7. `final` Keyword: Three Different Meanings
 
 ### The Freeze Question
@@ -636,6 +698,17 @@ flowchart TD
 
 ---
 
+
+
+> 🔬 **Section Challenge — 7. `final` Keyword: Three Different Meanings**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## 8. Checked vs Unchecked Exceptions: The Design Philosophy
 
 ### The Freeze Question
@@ -698,6 +771,23 @@ flowchart TD
 
 ---
 
+
+
+> 🔬 **Section Challenge — 8. Checked vs Unchecked Exceptions: The Design Philosophy**
+>
+> **Challenge 1 (Reasoning):** Why does `Error` extend `Throwable` separately from `Exception`? When should you catch `Error`?
+> <details><summary>Answer</summary>
+>
+> `Error` represents JVM-level failures: `OutOfMemoryError`, `StackOverflowError`, `VirtualMachineError`. These indicate unrecoverable states. You should almost NEVER catch `Error` — the JVM state is undefined. Only exception: top-level handlers that log the error before terminating gracefully (`catch(Throwable t)` in shutdown hooks). Never catch `Error` in normal application code.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** `catch(Exception e) { log(e.getMessage()); }` — name 3 things wrong with this.
+> <details><summary>Answer</summary>
+>
+> 1) `e.getMessage()` returns null for some exceptions (NPE, CCE) → NullPointerException in the logger! Use `log(e)` instead to print full stack. 2) Swallowing `Exception` catches runtime bugs (NPE, illegal arg) that should crash/bubble — silent failure is worse than loud failure. 3) No re-throw or meaningful handling — caller has no idea the operation failed.
+> </details>
+>
+
 ## 9. Autoboxing Traps: Where Performance Silently Degrades
 
 ### The Freeze Question
@@ -732,6 +822,17 @@ System.out.println(a == b); // false! (see Section 4 — cache only -128 to 127)
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 9. Autoboxing Traps: Where Performance Silently Degrades**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
 
 ## 10. ConcurrentModificationException: Why Iterating + Modifying Fails
 
@@ -824,6 +925,17 @@ list.removeAll(toRemove);
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 10. ConcurrentModificationException: Why Iterating + Modifying Fails**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
 
 ## 11. `synchronized`, `volatile`, `Atomic`: Three Levels of Thread Safety
 
@@ -971,6 +1083,17 @@ flowchart TD
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 12. Abstract Class vs Interface: The Post-Java-8 Reality**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
 
 ## 13. Garbage Collection: What Actually Happens
 

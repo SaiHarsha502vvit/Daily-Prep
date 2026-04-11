@@ -329,6 +329,9 @@ Documented decisions → Iterated as more info came → Successfully delivered
 
 ---
 
+
+
+
 ## Story Bank Template — Prepare 8-10 Stories
 
 
@@ -488,6 +491,9 @@ EVERY category should have 2+ stories that fit                  ║
 
 ---
 
+
+
+
 ## "Why This Company?" — Research Checklist
 
 ```
@@ -538,6 +544,11 @@ flowchart TD
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — "Why This Company?" — Research Checklist**
+>>>
 
 ## Interview Day Checklist
 

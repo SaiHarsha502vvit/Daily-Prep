@@ -266,6 +266,17 @@ const columns = [
 
 ---
 
+
+
+> 🔬 **Section Challenge — 2. Data Table — Sorting, Filtering, Pagination**
+>
+> **Challenge 1 (Reasoning):** QuickSort average O(N log N) but worst case O(N²). When exactly does the worst case happen and how do you prevent it?
+> <details><summary>Answer</summary>
+>
+> Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced partition). This happens when: (1) always picking first/last element as pivot on already-sorted or reverse-sorted data. (2) Pivot happens to be the minimum or maximum. Prevention: random pivot (randomized quicksort — expected O(N log N) even on adversarial input), or median-of-three (pick median of first/middle/last element as pivot). Java's dual-pivot quicksort uses careful pivot selection to avoid this.
+> </details>
+>
+
 ## 3. Modal System — Stacking, Focus Trap, Animations
 
 ```jsx
@@ -407,6 +418,9 @@ function App() {
 ```
 
 ---
+
+
+
 
 ## 4. Form System — Multi-Step with Validation
 
@@ -571,6 +585,9 @@ function VirtualList({ items, itemHeight, containerHeight }) {
 
 ---
 
+
+
+
 ## 6. Search with Autocomplete & Suggestions
 
 ```jsx
@@ -675,6 +692,11 @@ function highlightMatch(text, query) {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 6. Search with Autocomplete & Suggestions**
+>>>
 
 ## 7. Tabs & Accordion — Content Organization
 
@@ -1024,3 +1046,149 @@ function SidebarLayout({ children }) {
 ---
 
 > **Next Chapter**: [DevTools Debugging Mastery →](../19_Frontend_Integration/05_DevTools_Debugging_Mastery.md)
+
+---
+
+## 🏋️ Practice & Interview Questions — OOP & Design Patterns
+
+### Predict / Trace
+**Q1.** What design pattern does this code follow?
+```java
+Logger logger = Logger.getInstance();
+```
+<details><summary>Answer</summary>
+
+**Singleton** — ensures only one Logger instance exists globally.
+</details>
+
+**Q2.** What SOLID principle is violated?
+```java
+class User {
+    void login() { ... }
+    void logout() { ... }
+    void sendEmail() { ... }  // ← ?
+    void generateReport() { ... }  // ← ?
+}
+```
+<details><summary>Answer</summary>
+
+**SRP (Single Responsibility)** — User class has 4 responsibilities: authentication, email, reporting. Should be split into: `AuthService`, `EmailService`, `ReportService`.
+</details>
+
+### Design Pattern Problems
+**Q3.** ⭐ Implement Strategy pattern for payment processing.
+<details><summary>Solution</summary>
+
+```java
+interface PaymentStrategy { void pay(int amount); }
+class CreditCard implements PaymentStrategy { public void pay(int amount){ /*...*/ } }
+class PayPal implements PaymentStrategy { public void pay(int amount){ /*...*/ } }
+class UPI implements PaymentStrategy { public void pay(int amount){ /*...*/ } }
+
+class PaymentContext {
+    private PaymentStrategy strategy;
+    void setStrategy(PaymentStrategy s){ this.strategy=s; }
+    void processPayment(int amount){ strategy.pay(amount); }
+}
+// Switch strategy at runtime — open/closed principle!
+```
+</details>
+
+**Q4.** ⭐⭐ Implement Observer pattern for event notification.
+<details><summary>Solution</summary>
+
+```java
+interface Observer { void update(String event); }
+interface Observable {
+    void subscribe(Observer o); void unsubscribe(Observer o); void notify(String event);
+}
+class EventBus implements Observable {
+    List<Observer> observers = new ArrayList<>();
+    public void subscribe(Observer o){ observers.add(o); }
+    public void unsubscribe(Observer o){ observers.remove(o); }
+    public void notify(String event){ observers.forEach(o -> o.update(event)); }
+}
+```
+</details>
+
+**Q5.** ⭐⭐ Builder pattern for a complex configuration object.
+<details><summary>Solution</summary>
+
+```java
+class ServerConfig {
+    private final String host; private final int port; private final int timeout;
+    private ServerConfig(Builder b){ host=b.host; port=b.port; timeout=b.timeout; }
+
+    static class Builder {
+        String host="localhost"; int port=8080; int timeout=30;
+        Builder host(String h){ host=h; return this; }
+        Builder port(int p){ port=p; return this; }
+        Builder timeout(int t){ timeout=t; return this; }
+        ServerConfig build(){ return new ServerConfig(this); }
+    }
+}
+// ServerConfig config = new ServerConfig.Builder().host("prod.com").port(443).build();
+```
+</details>
+
+### MCQ Rapid Fire
+| # | Question | Answer |
+|---|---|---|
+| 1 | SOLID: O stands for | Open/Closed Principle |
+| 2 | Factory vs Abstract Factory | Factory: one product; Abstract Factory: family of products |
+| 3 | Composition over inheritance means | Prefer has-a (field) over is-a (extends) for flexibility |
+| 4 | Decorator pattern purpose | Add behavior dynamically without subclassing |
+| 5 | Facade pattern purpose | Simplified interface to complex subsystem |
+| 6 | Proxy pattern types | Virtual, protective, remote, caching |
+| 7 | Command pattern encapsulates | Request as an object (supports undo/redo) |
+| 8 | Template Method pattern | Defines algorithm skeleton, subclasses fill in steps |
+
+---
+
+## 🧠 Deep Conceptual Questions — React Internals & Mental Models
+
+**C1. What is the React reconciliation algorithm and why does the `key` prop matter?**
+<details><summary>Deep Answer</summary>
+
+React maintains a virtual DOM (VNode tree). On state change: React creates a new VNode tree, diffs it against the previous tree (diffing = reconciliation), applies minimal real DOM mutations. Naive tree diff: O(N³). React's heuristics: O(N). Heuristic 1: different element types → destroy and rebuild subtree. Heuristic 2: same type → update props, recurse into children. **`key` prop**: tells React the element's identity across renders. Without keys in lists: React diffs by position — inserting at beginning is O(N) DOM mutations. With stable keys: React identifies which item moved/added/removed → O(1) per change. Keys must be stable+unique per list — using index as key breaks this when list is reordered.
+</details>
+
+**C2. Why does React use a virtual DOM? What performance problem does it solve?**
+<details><summary>Deep Answer</summary>
+
+Direct DOM manipulation is expensive: each `div.style.color = 'red'` forces layout recalculation, style recalculation, repaint — potentially 3-17ms per operation. Doing 50 direct DOM changes = 50 potential reflows. Virtual DOM batches all changes: compute the full desired state in JS (fast, ~ms), diff against current state, apply only the MINIMUM necessary DOM mutations in one batch (one reflow). Net effect: many state changes → few DOM mutations → fewer reflows. In React 18: concurrent rendering further batches setState calls across async boundaries. **Note**: React's VirtualDOM is a means to an end (batching + diffing), not inherently "fast" — SolidJS/Svelte skip it entirely with fine-grained reactivity and are faster for some use cases.
+</details>
+
+**C3. What is React's fiber architecture and how does it enable concurrent features?**
+<details><summary>Deep Answer</summary>
+
+Before Fiber (React 15): reconciliation = synchronous, non-interruptible tree walk. A complex update > 16ms → UI janks (dropped frames). **Fiber** (React 16+): reconciliation reimplemented as a linked list of "fiber nodes." Each fiber = a unit of work that can be paused, resumed, or abandoned. The render phase (building the fiber tree) is **interruptible**: React can pause after any fiber, yield to the browser for frames/user input, then resume. The commit phase (applying DOM changes) remains synchronous (can't be interrupted — DOM must be consistent). This enables: concurrent mode, `useTransition` (lower priority updates), `Suspense`, `useDeferredValue`. The fundamental shift: from "one big synchronous render" to "cooperative multitasking renderer."
+</details>
+
+**C4. useEffect dependency array: what is "stale closure" and how to fix it?**
+<details><summary>Deep Answer</summary>
+
+```jsx
+const [count, setCount] = useState(0);
+useEffect(() => {
+  const id = setInterval(() => console.log(count), 1000); // stale closure!
+  return () => clearInterval(id);
+}, []); // count not in deps
+```
+The interval callback captures `count` from the initial render (= 0). Even after count updates, the closure still sees 0 — it's "stale." **Fix 1**: include count in deps — effect re-runs, interval recreated (wasteful). **Fix 2**: use `useRef` to store latest count. **Fix 3**: functional update `setCount(c => c + 1)` doesn't read stale count. Root cause: JavaScript closures capture variables at creation time. React's fn components close over state at render time. With stale deps, the closure never refreshes. `eslint-plugin-react-hooks` detects missing deps.
+</details>
+
+**C5. When does React batch state updates, and when does it NOT?**
+<details><summary>Deep Answer</summary>
+
+**React 17 and below**: batches only inside React event handlers. `setTimeout`, `Promise.then`, native event listeners → NOT batched (each setState triggers a re-render). **React 18**: **Automatic Batching** — batches all setState calls everywhere (timeouts, Promises, native events). Each React event handler still flushes at end. Opt-out (rare): `flushSync(() => setX(1))` → forces synchronous re-render.
+
+Rule: in React 18, multiple setStates in ANY context = one re-render per batch. No more worrying about whether you're in a React event or not.
+</details>
+
+**C6. What is the purpose of `useReducer` and when is it better than multiple `useState`?**
+<details><summary>Deep Answer</summary>
+
+`useReducer` is `useState` for complex state transitions. Better than multiple `useState` when: (1) next state depends on multiple state values together (reducer receives full state), (2) multiple actions lead to similar state updates (consolidate logic in one place), (3) complex state objects where partial updates have side effects, (4) testing — reducer is a pure function, easily unit-testable in isolation. Think: `useState` = `useReducer(reducer, initialState)` where reducer is `(state, newValue) => newValue`. `useReducer` makes state transitions explicit and traceable (Redux-like). Redux IS just `useReducer` + Context for global sharing.
+</details>
+

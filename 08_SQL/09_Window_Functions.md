@@ -379,6 +379,23 @@ WINDOW w AS (PARTITION BY dept_id ORDER BY salary DESC);
 
 ---
 
+
+
+> 🔬 **Section Challenge — Chapter 9: Window Functions**
+>
+> **Challenge 1 (Reasoning):** Why can't you use a window function in a WHERE clause? How do you filter on window function results?
+> <details><summary>Answer</summary>
+>
+> Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
+> </details>
+>
+> **Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+> <details><summary>Answer</summary>
+>
+> Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+> </details>
+>
+
 ## 📝 PRACTICE EXERCISES - PART 2
 
 ```sql
@@ -1024,6 +1041,23 @@ WHERE c.customer_id IN (
 
 ---
 
+
+
+> 🔬 **Section Challenge — Chapter 1: Understanding JOINs**
+>
+> **Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
+> <details><summary>Answer</summary>
+>
+> When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
+> <details><summary>Answer</summary>
+>
+> It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
+> </details>
+>
+
 # 📌 Part 2: Aggregate Functions & Group By
 
 ---
@@ -1243,6 +1277,9 @@ GROUP BY o.order_id, o.order_date;
 ```
 
 ---
+
+
+
 
 # 🚀 Part 3: Window Functions — Advanced Analytics
 

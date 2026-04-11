@@ -139,6 +139,8 @@ System.out.println(op.getSymbol());  // "+"
 
 ---
 
+
+
 ## 4. Enum as State Machine
 
 ```java
@@ -209,6 +211,17 @@ State Machine:
 
 ---
 
+
+
+> 🔬 **Section Challenge — 4. Enum as State Machine**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## 5. Enum Singleton Pattern — Thread-Safe by JVM Guarantee
 
 ```java
@@ -255,6 +268,17 @@ Why enum singleton is BEST:
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 5. Enum Singleton Pattern — Thread-Safe by JVM Guarantee**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
 
 ## 6. EnumSet and EnumMap — Specialized Collections
 
@@ -337,6 +361,17 @@ public final class Color extends Enum<Color> {
 > ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 7. Enum Internals — What the Compiler Creates**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
 
 ## PART 2: RECORDS — Immutable Data Carriers (Java 16+)
 
@@ -537,9 +572,31 @@ public record UserResponse(Long id, String name) {}
 
 ---
 
+
+
+> 🔬 **Section Challenge — 11. Records with Jackson, JPA, and Spring**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## PART 3: SEALED CLASSES — Controlled Inheritance (Java 17+)
 
 ---
+
+
+
+> 🔬 **Section Challenge — PART 3: SEALED CLASSES — Controlled Inheritance (Java 17+)**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
 
 ## 12. Sealed Classes — The Problem They Solve
 
@@ -641,6 +698,17 @@ public static String classify(Shape shape) {
 
 ---
 
+
+
+> 🔬 **Section Challenge — 13. Pattern Matching with Sealed Classes (Java 21+)**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## 14. Sealed Interfaces + Records = Algebraic Data Types
 
 ```java
@@ -704,6 +772,23 @@ public sealed interface ApiResponse<T> {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 14. Sealed Interfaces + Records = Algebraic Data Types**
+>
+> **Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
+> <details><summary>Answer</summary>
+>
+> No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
+> <details><summary>Answer</summary>
+>
+> NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
+> </details>
+>
 
 ## 15. The Three Keywords Comparison
 
@@ -785,6 +870,17 @@ public class OrderProcessor {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 16. Putting It All Together — Complete Domain Model**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
 
 ## 17. Interview Questions & Answers
 

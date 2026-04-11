@@ -82,6 +82,11 @@ function isUser(obj: unknown): obj is User {
 
 ---
 
+
+
+> 🔬 **Section Challenge — 1. Type Erasure: TypeScript Doesn't Exist at Runtime**
+>>
+
 ## 2. `type` vs `interface`: The REAL Difference
 
 ### The Freeze Question
@@ -167,6 +172,11 @@ interface Employee extends Person { employeeId: string }
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 2. `type` vs `interface`: The REAL Difference**
+>>
 
 ## 3. `any` vs `unknown` vs `never`: The Type Hierarchy
 
@@ -266,6 +276,11 @@ function area(shape: Shape) {
 
 ---
 
+
+
+> 🔬 **Section Challenge — 3. `any` vs `unknown` vs `never`: The Type Hierarchy**
+>>
+
 ## 4. Structural Typing: Why TS Doesn't Care About Names
 
 ### The Freeze Question
@@ -355,6 +370,9 @@ const eur: Euros = usd; // ❌ Error! Different brands.
 ```
 
 ---
+
+
+
 
 ## 5. Why `strict: true` and What Each Flag Does
 
@@ -671,6 +689,9 @@ type State =
 
 ---
 
+
+
+
 ## 10. Why `Object.keys()` Returns `string[]`, Not `keyof T`
 
 ### The Freeze Question
@@ -695,6 +716,9 @@ const keys = Object.keys(user) as (keyof User)[];
 
 ---
 
+
+
+
 ## Interview Quick-Fire: TypeScript Freeze Busters
 
 | Freeze Question | Senior-Level Answer |
@@ -714,5 +738,85 @@ const keys = Object.keys(user) as (keyof User)[];
 
 
 ---
+
+
+---
+
+## 🏋️ Practice & Interview Questions — TypeScript
+
+### Predict / Trace
+**Q1.** What is the difference between `type` and `interface` in TypeScript?
+<details><summary>Answer</summary>
+
+`interface`: can be extended/implemented, supports declaration merging (multiple declarations merge), better for OOP patterns. `type`: can represent unions, intersections, primitives, tuples — more versatile. Both work for object shapes. Prefer `interface` for public API shapes, `type` for complex compositions.
+</details>
+
+**Q2.** Does this compile?
+```typescript
+type A = { a: string } & { a: number };
+const x: A = { a: "hello" }; // ← ?
+```
+<details><summary>Answer</summary>
+
+**Compile error** — the intersection requires `a` to be both `string` AND `number` simultaneously — impossible (`never` type). The type `A` is effectively `{ a: never }`.
+</details>
+
+### Coding Problems
+**Q3.** ⭐ Implement `Readonly<T>` from scratch (mapped type).
+<details><summary>Solution</summary>
+
+```typescript
+type MyReadonly<T> = { readonly [K in keyof T]: T[K] };
+```
+</details>
+
+**Q4.** ⭐ Implement `Partial<T>` from scratch.
+<details><summary>Solution</summary>
+
+```typescript
+type MyPartial<T> = { [K in keyof T]?: T[K] };
+```
+</details>
+
+**Q5.** ⭐⭐ Implement `DeepReadonly<T>` — recursive.
+<details><summary>Solution</summary>
+
+```typescript
+type DeepReadonly<T> = {
+  readonly [K in keyof T]: T[K] extends object ? DeepReadonly<T[K]> : T[K];
+};
+```
+</details>
+
+**Q6.** ⭐⭐ Write a generic `Result<T, E>` type for error handling without exceptions.
+<details><summary>Solution</summary>
+
+```typescript
+type Result<T, E = Error> =
+  | { ok: true; value: T }
+  | { ok: false; error: E };
+
+function divide(a: number, b: number): Result<number, string> {
+  if(b === 0) return { ok: false, error: "Division by zero" };
+  return { ok: true, value: a / b };
+}
+
+const result = divide(10, 2);
+if(result.ok) console.log(result.value); // TypeScript knows it's number
+else console.log(result.error);           // TypeScript knows it's string
+```
+</details>
+
+### MCQ Rapid Fire
+| # | Question | Answer |
+|---|---|---|
+| 1 | `unknown` vs `any` | unknown: type-safe (must narrow before use); any: escape hatch (no checks) |
+| 2 | `never` type means | Value that never occurs (unreachable code, empty union) |
+| 3 | Discriminated union uses | Shared literal property to narrow type |
+| 4 | `keyof T` | Union of T's property names |
+| 5 | `T[K]` where K extends keyof T | Indexed access type — type of property K in T |
+| 6 | `infer` keyword used in | Conditional types to extract nested types |
+| 7 | `satisfies` keyword (TS 4.9) | Checks value satisfies type without widening the type |
+
 
 > **Navigation**: [< Previous](03_TS_Patterns_BestPractices.md) | [Back to Index](../00_MASTER_INDEX.md)

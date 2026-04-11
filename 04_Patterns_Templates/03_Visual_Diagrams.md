@@ -6,6 +6,9 @@
 
 ---
 
+
+
+
 ## 📚 TABLE OF CONTENTS
 
 1. [Array Operations](#array-operations)
@@ -330,6 +333,9 @@ flowchart TD
 
 ---
 
+
+
+
 ## 🔢 SORTING ALGORITHMS
 
 ### Heap Sort Visualization
@@ -434,6 +440,17 @@ flowchart TD
 
 ---
 
+
+
+> 🔬 **Section Challenge — 🔢 SORTING ALGORITHMS**
+>
+> **Challenge 1 (Reasoning):** QuickSort average O(N log N) but worst case O(N²). When exactly does the worst case happen and how do you prevent it?
+> <details><summary>Answer</summary>
+>
+> Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced partition). This happens when: (1) always picking first/last element as pivot on already-sorted or reverse-sorted data. (2) Pivot happens to be the minimum or maximum. Prevention: random pivot (randomized quicksort — expected O(N log N) even on adversarial input), or median-of-three (pick median of first/middle/last element as pivot). Java's dual-pivot quicksort uses careful pivot selection to avoid this.
+> </details>
+>
+
 ## 🔍 SEARCHING ALGORITHMS
 
 ### Binary Search Variants
@@ -502,6 +519,9 @@ Count of 2s = Upper Bound - Lower Bound = 5 - 1 = 4
 ```
 
 ---
+
+
+
 
 ## 📦 DATA STRUCTURES
 
@@ -682,6 +702,23 @@ flowchart TD
 
 ---
 
+
+
+> 🔬 **Section Challenge — 🌐 GRAPH ALGORITHMS**
+>
+> **Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+> <details><summary>Answer</summary>
+>
+> BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
+> </details>
+>
+> **Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
+> <details><summary>Answer</summary>
+>
+> 3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
+> </details>
+>
+
 ## 🧮 DYNAMIC PROGRAMMING
 
 ### Fibonacci with Memoization
@@ -844,6 +881,23 @@ flowchart TD
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 🧮 DYNAMIC PROGRAMMING**
+>
+> **Challenge 1 (Reasoning):** How do you identify that a problem requires DP vs Greedy? What's the key test?
+> <details><summary>Answer</summary>
+>
+> Greedy test: does the locally optimal choice always lead to the globally optimal solution? (Prove via exchange argument.) If yes → greedy. If making a local choice requires knowing future choices → DP. Example: Coin Change with standard coins [1,5,10,25] → greedy works (always pick largest). Coin Change with coins [1,3,4] and amount 6 → greedy picks 4+1+1=3 coins, optimal is 3+3=2 coins. Greedy fails → DP.
+> </details>
+>
+> **Challenge 2 (Design):** You need to find the number of ways to climb N stairs taking 1 or 2 steps at a time. Define the DP state and recurrence.
+> <details><summary>Answer</summary>
+>
+> State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + dp[i-2]` (come from step i-1 via 1 step, or from step i-2 via 2 steps). Base: `dp[0]=1` (one way: don't move), `dp[1]=1`. This is exactly Fibonacci. Space optimization: only need last 2 values → O(1) space.
+> </details>
+>
 
 ## 🔢 MATH & BIT MANIPULATION
 

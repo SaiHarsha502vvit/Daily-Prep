@@ -268,6 +268,17 @@ SET lock_timeout = '10s';
 
 ---
 
+
+
+> 🔬 **Section Challenge — Chapter 15: Transactions & ACID Properties**
+>
+> **Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+> <details><summary>Answer</summary>
+>
+> READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
+> </details>
+>
+
 ## Part 2: Advanced Isolation Anomalies
 
 ```sql
@@ -342,6 +353,17 @@ COMMIT;
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — Part 3: Distributed Transactions (Microservices)**
+>
+> **Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+> <details><summary>Answer</summary>
+>
+> READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
+> </details>
+>
 
 ## Part 4: Concurrency Control Models
 

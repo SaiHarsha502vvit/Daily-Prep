@@ -580,6 +580,9 @@ function Dashboard() {
 
 ---
 
+
+
+
 ## 3. State Management Patterns
 
 ```
@@ -681,6 +684,8 @@ flowchart TD
 
 ---
 
+
+
 ## 4. Conditional Rendering + CSS Patterns
 
 ```tsx
@@ -761,6 +766,9 @@ function UserList({ users }: { users: User[] }) {
 
 ---
 
+
+
+
 ## 5. CSS + JS Animation Integration
 
 ```tsx
@@ -820,6 +828,9 @@ function AnimatedList({ items }: { items: string[] }) {
 
 ---
 
+
+
+
 ## Interview Quick-Fire
 
 ```
@@ -876,5 +887,119 @@ flowchart LR
 
 
 ---
+
+
+---
+
+## 🏋️ Practice & Interview Questions — React
+
+### Predict / Trace
+**Q1.** What is the output order of console logs?
+```jsx
+function App() {
+  console.log('render');
+  useEffect(() => { console.log('effect'); }, []);
+  console.log('render2');
+  return <div/>;
+}
+```
+<details><summary>Answer</summary>
+
+`render` → `render2` → `effect`
+
+`useEffect` runs **after** the component renders and the DOM is committed. Both `console.log`s in the function body run first.
+</details>
+
+**Q2.** Why does this cause an infinite loop?
+```jsx
+useEffect(() => {
+  setCount(count + 1);
+}, [count]);
+```
+<details><summary>Answer</summary>
+
+`setCount(count+1)` → triggers re-render → `count` changes → effect runs again → infinite loop. **Fix**: remove `count` from deps and use functional update: `setCount(prev => prev + 1)` or change dependency logic.
+</details>
+
+### Coding Problems
+**Q3.** ⭐ Implement a custom `useDebounce` hook.
+<details><summary>Solution</summary>
+
+```jsx
+function useDebounce(value, delay) {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+  useEffect(() => {
+    const handler = setTimeout(() => setDebouncedValue(value), delay);
+    return () => clearTimeout(handler); // Cleanup on value/delay change
+  }, [value, delay]);
+  return debouncedValue;
+}
+```
+</details>
+
+**Q4.** ⭐ Implement `useFetch` — generic data fetching hook with loading/error states.
+<details><summary>Solution</summary>
+
+```jsx
+function useFetch(url) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch(url)
+      .then(r => r.json())
+      .then(d => { if(!cancelled) setData(d); })
+      .catch(e => { if(!cancelled) setError(e); })
+      .finally(() => { if(!cancelled) setLoading(false); });
+    return () => { cancelled = true; }; // Cleanup for race conditions
+  }, [url]);
+
+  return { data, loading, error };
+}
+```
+</details>
+
+**Q5.** ⭐⭐ When should you use `useCallback` vs `useMemo`?
+<details><summary>Answer</summary>
+
+`useMemo`: memoizes a **computed value** — run expensive calculation, cache result.
+`useCallback`: memoizes a **function reference** — prevent child re-renders when passing callbacks.
+Both only useful when: (1) the child uses `React.memo`, or (2) the value/function is a dep of another hook. Premature optimization without these conditions = needless complexity.
+</details>
+
+**Q6.** ⭐⭐ Implement a `useLocalStorage` hook.
+<details><summary>Solution</summary>
+
+```jsx
+function useLocalStorage(key, initialValue) {
+  const [value, setValue] = useState(() => {
+    try { return JSON.parse(localStorage.getItem(key)) ?? initialValue; }
+    catch { return initialValue; }
+  });
+
+  const setStoredValue = (newValue) => {
+    setValue(newValue);
+    localStorage.setItem(key, JSON.stringify(newValue));
+  };
+
+  return [value, setStoredValue];
+}
+```
+</details>
+
+### MCQ Rapid Fire
+| # | Question | Answer |
+|---|---|---|
+| 1 | When does useEffect with [] run? | Once after mount |
+| 2 | When does useEffect with no array run? | After every render |
+| 3 | Key prop in lists is used for | Reconciliation (identify changed elements) |
+| 4 | React.memo prevents re-render when | Props haven't changed (shallow comparison) |
+| 5 | useState is synchronous? | ❌ Batched, async in React 18 |
+| 6 | Controlled vs uncontrolled component | Controlled=state managed in React; Uncontrolled=DOM manages it (ref) |
+| 7 | useRef vs useState | useRef: doesn't trigger re-render; useState: does |
+| 8 | StrictMode effect on effects | Runs effects twice (in dev) to detect side effects |
+
 
 > **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_Frontend_Debugging.md)

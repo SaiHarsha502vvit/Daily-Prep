@@ -167,6 +167,9 @@ li::marker { color: #3b82f6; }  /* Bullet/number color */
 
 ---
 
+
+
+
 ## 2. The Cascade — How CSS Resolves Conflicts
 
 ```
@@ -685,6 +688,11 @@ flowchart TD
 
 ---
 
+
+
+> 🔬 **Section Challenge — 5. Colors, Typography & Units**
+>>>
+
 ## 6. Backgrounds, Shadows & Borders
 
 ```css
@@ -881,6 +889,9 @@ flowchart TD
 ```
 
 ---
+
+
+
 
 ## 8. The CSS Reset & Base Styles
 

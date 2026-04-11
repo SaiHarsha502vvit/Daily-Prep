@@ -245,6 +245,13 @@ public static int binaryGCD(int a, int b) {
 
 ---
 
+
+
+
+
+
+> 🔬 **Section Challenge — Algorithm 4: Binary GCD (Stein's Algorithm)**
+
 ## LCM (Least Common Multiple)
 
 ```java
@@ -696,6 +703,13 @@ public static List<Integer> getAllDivisors(int n) {
 ```
 
 ---
+
+
+
+
+
+
+> 🔬 **Section Challenge — Problem P4: Count Divisors Using Prime Factorization**
 
 # ═══════════════════════════════════════════════════════════
 # 📌 Part 3: Modular Arithmetic

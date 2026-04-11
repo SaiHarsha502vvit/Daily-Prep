@@ -543,6 +543,13 @@ public class SinglyLinkedList<T> {
 
 ---
 
+
+
+
+
+
+> 🔬 **Section Challenge — 1.1 Singly Linked List**
+
 ## 1.2 Doubly Linked List
 
 ::: pattern
@@ -1087,6 +1094,13 @@ flowchart TD
 
 ---
 
+
+
+
+
+
+> 🔬 **Section Challenge — 1.2 Doubly Linked List**
+
 ## 1.3 Circular Linked List
 
 ::: pattern
@@ -1421,6 +1435,13 @@ public class CircularLinkedList<T> {
 
 ---
 
+
+
+
+
+
+> 🔬 **Section Challenge — 1.3 Circular Linked List**
+
 ## 1.4 Circular Doubly Linked List
 
 ::: pattern
@@ -1649,6 +1670,13 @@ public class CircularDoublyLinkedList<T> {
 ```
 
 ---
+
+
+
+
+
+
+> 🔬 **Section Challenge — 1.4 Circular Doubly Linked List**
 
 ## 1.5 Skip List
 

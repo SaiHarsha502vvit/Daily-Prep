@@ -34,6 +34,9 @@ This makes "best opposite-bit match" queries fast.
 
 ---
 
+
+
+
 ## 2) Why It Works for Maximum XOR
 
 XOR truth table:
@@ -83,6 +86,9 @@ For each bit from high to low:
 - if child[b] missing, create it
 - move to child[b]
 
+
+
+
 ## 4.2 QueryMaxXor(number)
 
 For each bit from high to low:
@@ -114,6 +120,17 @@ Flow:
 - update global max
 - insert x
 
+
+
+> 🔬 **Section Challenge — Variant A: Maximum XOR of Two Numbers**
+>
+> **Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
+> <details><summary>Answer</summary>
+>
+> The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
+> </details>
+>
+
 ## Variant B: Maximum XOR with Constraint (offline)
 
 Pattern:
@@ -128,12 +145,26 @@ Why offline sort helps:
 - each query answered once
 - total near O((n+q)W + sort cost)
 
+
+
+
 ## Variant C: Prefix XOR + Trie (max subarray XOR)
 
 Logic:
 - subarray XOR i..j = prefixXor[j] XOR prefixXor[i-1]
 - while scanning, store previous prefixXor values in trie
 - for current prefixXor, query max xor partner
+
+
+
+> 🔬 **Section Challenge — Variant C: Prefix XOR + Trie (max subarray XOR)**
+>
+> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+> <details><summary>Answer</summary>
+>
+> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+> </details>
+>
 
 ## Variant D: Counting XOR pairs less than K
 
@@ -147,7 +178,13 @@ This is a classic advanced interview extension.
 
 ---
 
+
+
+
 ## 6) Handling Negatives and Bit Width
+
+
+
 
 ## Option 1: Fixed unsigned view
 
@@ -166,6 +203,17 @@ Interview line:
 "I choose bit width from constraints; for generic int I use 31/32 bits, for bounded values I compress width."
 
 ---
+
+
+
+> 🔬 **Section Challenge — Option 2: Bounded range optimization**
+>
+> **Challenge 1 (Reasoning):** `<T extends Comparable<T>>` vs `<T extends Comparable>` — what's the difference and why does the first form matter?
+> <details><summary>Answer</summary>
+>
+> The raw form `<T extends Comparable>` loses type safety — compares apples to oranges at runtime. `<T extends Comparable<T>>` specifies that T can compare WITH ITSELF: `Integer.compareTo(Integer)`, not `Integer.compareTo(Object)`. This is why `Collections.sort()` uses `<T extends Comparable<? super T>>` — T can be compared using its own or a supertype's compareTo.
+> </details>
+>
 
 ## 7) Common Mistakes
 
@@ -245,6 +293,9 @@ maxXor(x):
 ```
 
 ---
+
+
+
 
 ## 11) Practice Ladder
 

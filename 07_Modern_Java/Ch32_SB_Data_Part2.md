@@ -79,6 +79,17 @@ flowchart TD
 
 ### 🔵 WHY: The Problem IoC Solves
 
+
+
+> 🔬 **Section Challenge — Chapter 1: Inversion of Control (IoC) - The Philosophy**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## The Problem: Tight Coupling
 
 WITHOUT IoC (Traditional approach):
@@ -271,9 +282,31 @@ flowchart TD
 
 ---
 
+
+
+> 🔬 **Section Challenge — The Problem: Tight Coupling**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## Chapter 2: Spring Beans - The Building Blocks
 
 ### 🔵 WHAT: What is a Spring Bean?
+
+
+
+> 🔬 **Section Challenge — Chapter 2: Spring Beans - The Building Blocks**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
 
 ## Spring Bean Definition
 
@@ -376,6 +409,17 @@ public class AppConfig { }
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — Spring Bean Definition**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
 
 ## Chapter 3: Dependency Injection Methods
 
@@ -549,6 +593,17 @@ class GoodServiceTest {
 
 ---
 
+
+
+> 🔬 **Section Challenge — Chapter 3: Dependency Injection Methods**
+>
+> **Challenge 1 (Reasoning):** Constructor injection vs field injection (`@Autowired` on field) — which is better and why?
+> <details><summary>Answer</summary>
+>
+> Constructor injection is better: (1) Dependencies explicit — you can't create object without them. (2) Immutable — field can be `final`. (3) Testable — inject mocks via constructor, no Spring context needed. (4) Detects circular deps at startup, not at first use. Field injection: shorter code but: hidden dependencies, can't be `final`, requires Spring for test setup, circular deps detected late. Spring itself recommends constructor injection since v4.
+> </details>
+>
+
 ## Chapter 4: Resolving Dependencies (@Qualifier, @Primary)
 
 ### 🔵 WHY: When Multiple Beans of Same Type Exist
@@ -666,6 +721,17 @@ public class UserService {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — Chapter 4: Resolving Dependencies (@Qualifier, @Primary)**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
 
 ## Chapter 5: Bean Scopes
 
@@ -1234,6 +1300,17 @@ public class SpringContextHolder implements ApplicationContextAware {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — Chapter 7: ApplicationContext - The IoC Container**
+>
+> **Challenge 1 (Reasoning):** When does React Context cause performance problems and how do you avoid them?
+> <details><summary>Answer</summary>
+>
+> Every context consumer re-renders when ANY context value changes. If you have `{theme, user, cart}` in one context, updating cart re-renders all theme and user consumers. Fixes: (1) Split into separate contexts: `ThemeContext`, `UserContext`, `CartContext`. (2) Memoize components with `React.memo`. (3) For complex state, use a state library (Zustand, Jotai) with selector-based subscriptions — only re-render when the specific piece of state changes.
+> </details>
+>
 
 ## Chapter 8: Profiles and Conditional Beans
 

@@ -66,6 +66,17 @@ IN CODE:
 
 ---
 
+
+
+> 🔬 **Section Challenge — 1. The Mental Model — Events in Real Life**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## 2. How to Understand ANY Event Object
 
 When you see an event object for the first time, ask these 4 questions:
@@ -246,6 +257,17 @@ The Flow:
 
 ---
 
+
+
+> 🔬 **Section Challenge — 3. Building an Event System From Scratch**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## 4. Generic Event System — Production Grade
 
 ```java
@@ -418,6 +440,17 @@ Spring Event Flow:
 
 ---
 
+
+
+> 🔬 **Section Challenge — 5. Spring ApplicationEvent — The Professional Way**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## 6. Spring Built-in Events — What You Can Listen To
 
 ```java
@@ -461,6 +494,17 @@ Spring Boot Startup Event Order:
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 6. Spring Built-in Events — What You Can Listen To**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
 
 ## 7. Observer Pattern — The Design Pattern Behind Events
 
@@ -555,6 +599,8 @@ tesla.updatePrice(195.00);
 ```
 
 ---
+
+
 
 ## 8. Property Change Events — Java Beans Standard
 
@@ -759,6 +805,8 @@ Each step is an "event handler" for the previous step's completion
 
 ---
 
+
+
 ## 12. Reactive Streams — The Ultimate Event Pattern
 
 ```java
@@ -785,6 +833,23 @@ stockPrices
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 12. Reactive Streams — The Ultimate Event Pattern**
+>
+> **Challenge 1 (Reasoning):** `list.stream().filter().map().collect()` — at which point does data actually start flowing through the pipeline?
+> <details><summary>Answer</summary>
+>
+> Not until `collect()` (or any terminal operation). `filter()` and `map()` are LAZY — they build a pipeline description but process nothing. When the terminal operation is called, the pipeline pulls elements through lazily: one element passes through the entire pipeline before the next is processed. This means: early termination with `findFirst()` is O(1) if the first element matches, not O(N).
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** You call `stream.filter(...).collect(...)` twice on the same stream. What happens?
+> <details><summary>Answer</summary>
+>
+> `IllegalStateException: stream has already been operated upon or closed`. Streams are single-use. Once a terminal operation is called, the stream is consumed. Fix: create a new stream from the source each time, or collect to a `List` first and stream the list repeatedly.
+> </details>
+>
 
 ## 13. How to Read/Understand ANY Event System
 
@@ -842,6 +907,8 @@ When you encounter a new event system (in any framework), follow this checklist:
 ```
 
 ---
+
+
 
 ## 15. Interview Questions & Answers
 

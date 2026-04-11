@@ -299,6 +299,17 @@ if (obj instanceof String s && s.length() > 5) {
 // if (obj instanceof String s || s.length() > 5) { }  // COMPILE ERROR
 ```
 
+
+
+> 🔬 **Section Challenge — instanceof Pattern Matching (Java 16)**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## Switch Expressions (Java 14) + Pattern Matching (Java 21)
 
 ```java
@@ -353,6 +364,17 @@ double area(Shape shape) {
 }
 ```
 
+
+
+> 🔬 **Section Challenge — Switch Expressions (Java 14) + Pattern Matching (Java 21)**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## Record Patterns — Destructuring (Java 21)
 
 ```java
@@ -382,6 +404,17 @@ String describe(Object obj) {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — Record Patterns — Destructuring (Java 21)**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
 
 # PART 5: Text Blocks (Java 15) & String Enhancements
 
@@ -500,6 +533,17 @@ List<String> names = optionalList.stream()
     .toList();
 ```
 
+
+
+> 🔬 **Section Challenge — Optional Enhancements (Java 9-11)**
+>
+> **Challenge 1 (Reasoning):** `Optional.get()` without `isPresent()` check — what's the point of Optional then?
+> <details><summary>Answer</summary>
+>
+> `Optional.get()` is a code smell. The right API: `orElse(default)`, `orElseGet(supplier)`, `orElseThrow()`, `map(fn)`, `ifPresent(consumer)`. Optional's value: it makes the ABSENCE of a value explicit in the type signature — callers MUST handle the empty case. Using `get()` defeats this. Rule: never call `get()` unless you've already verified presence through the Optional API.
+> </details>
+>
+
 ## HTTP Client (Java 11)
 
 ```java
@@ -525,6 +569,17 @@ CompletableFuture<HttpResponse<String>> future = client.sendAsync(request,
     HttpResponse.BodyHandlers.ofString());
 ```
 
+
+
+> 🔬 **Section Challenge — HTTP Client (Java 11)**
+>
+> **Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
+> <details><summary>Answer</summary>
+>
+> HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
+> </details>
+>
+
 ## Helpful NullPointerExceptions (Java 14)
 
 ```java
@@ -539,6 +594,17 @@ user.getAddress().getCity().toUpperCase();
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — Helpful NullPointerExceptions (Java 14)**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
 
 # 📋 Part 8: Feature Summary Table
 

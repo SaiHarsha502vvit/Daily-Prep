@@ -582,6 +582,17 @@ _High-level overview of JPA, Web, Security, Testing. Read for context, but detai
 
 ---
 
+
+
+> 🔬 **Section Challenge — PHASE 2: TOOLING & WEB BASICS (Week 2-3) 🟡**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## PHASE 3: APPLICATION LAYERS (Week 3-4) 🔵
 
 > _"Controller → Service → Repository - The layered architecture"_
@@ -1302,6 +1313,17 @@ Part 19 (Testing Complete) → Part 22 (Testing annotations)
 **Topics**: JUnit 5, Mockito, @SpringBootTest, TestContainers, TDD/BDD
 
 ---
+
+
+
+> 🔬 **Section Challenge — Learning Paths By Goal**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
 
 # ✅ PHASE COMPLETION CHECKLIST
 

@@ -247,6 +247,8 @@ h1 {
 
 ---
 
+
+
 ## 2. CSS Transforms — Moving & Reshaping Elements
 
 ```css
@@ -335,6 +337,9 @@ flowchart TD
 ```
 
 ---
+
+
+
 
 ## 3. CSS Transitions — Smooth Property Changes
 

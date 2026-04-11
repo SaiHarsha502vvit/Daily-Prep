@@ -8,6 +8,13 @@
 
 ---
 
+
+
+
+
+
+> 🔬 **Section Challenge — A systematic framework for transforming any naive solution into an efficient one**
+
 ## The 5-Stage Pipeline
 
 
@@ -26,6 +33,13 @@
 
 
 ---
+
+
+
+
+
+
+> 🔬 **Section Challenge — The 5-Stage Pipeline**
 
 ## Stage 1: Write the Brute Force
 
@@ -127,6 +141,13 @@ Fix → BINARY SEARCH ON ANSWER
 
 ---
 
+
+
+
+
+
+> 🔬 **Section Challenge — Goal: Find What Your Brute Force Is Doing Repeatedly That It Shouldn'T**
+
 ## Stage 3: Choose the Right Technique
 
 ## Redundancy → Technique Decision Map
@@ -155,6 +176,13 @@ Topological order?     → TOPOLOGICAL SORT     O(V²) → O(V+E)
 ---
 
 ## Stage 4 & 5: Implement, Verify, Refine
+
+
+
+
+
+
+> 🔬 **Section Challenge — Stage 4 & 5: Implement, Verify, Refine**
 
 ## Implementation Checklist
 

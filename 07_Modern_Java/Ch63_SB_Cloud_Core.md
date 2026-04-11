@@ -9,6 +9,17 @@
 
 ---
 
+
+
+> 🔬 **Section Challenge — AWS, Azure, and GCP Integration Complete Guide**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 # 🎯 WHY-HOW-WHEN-WHICH FRAMEWORK
 
 ```
@@ -162,11 +173,39 @@ flowchart TD
 
 ---
 
+
+
+> 🔬 **Section Challenge — Cloud Native Principles**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## Containerization with Docker
 
 ### Optimized Dockerfile for Spring Boot
 
 ```dockerfile
+
+
+> 🔬 **Section Challenge — Containerization with Docker**
+>
+> **Challenge 1 (Reasoning):** Docker image layers — if you modify a file in layer 3, what happens to layers 4 and 5?
+> <details><summary>Answer</summary>
+>
+> In the overlay filesystem, modifying a file in a lower layer creates a COPY in the write layer (copy-on-write). The original lower layer is unchanged. But in image BUILD: if Dockerfile instruction 3 changes, layers 4 and 5 are INVALIDATED — Docker can't reuse cached layers. Rule: put instructions that change most often LAST in Dockerfile. Dependencies (`npm install`, `mvn package`) before source code copies — this maximizes cache reuse.
+> </details>
+>
+> **Challenge 2 (Design):** What's the difference between `COPY` and `ADD` in Dockerfile? When should you use each?
+> <details><summary>Answer</summary>
+>
+> `COPY`: copies files/directories from build context to image. Simple and explicit. `ADD`: everything COPY does PLUS: auto-extracts tar archives (`.tar.gz`), fetches remote URLs (HTTP/HTTPS). Best practice: always use `COPY` unless you specifically need tar extraction. `ADD`'s URL feature is dangerous (no checksum validation, downloads at build time) and breaks reproducibility. Use `RUN curl | tar xz` instead for remote archives.
+> </details>
+>
+
 # Multi-stage build for optimal image size
 # Stage 1: Build
 FROM eclipse-temurin:21-jdk-alpine AS builder
@@ -389,6 +428,23 @@ flowchart TD
 ### Deployment Manifest
 
 ```yaml
+
+
+> 🔬 **Section Challenge — Kubernetes Deployment**
+>
+> **Challenge 1 (Reasoning):** Your K8s pod is stuck in `CrashLoopBackOff`. How do you diagnose it step by step?
+> <details><summary>Answer</summary>
+>
+> 1) `kubectl describe pod <name>` — check Events section for reasons. 2) `kubectl logs <pod> --previous` — see logs from the CRASHED container (not the current restart). 3) Check: OOMKilled (out of memory → increase memory limit), exit code 1 (app error → check logs), exit code 137 (SIGKILL from OOM or liveness probe). 4) If liveness probe failing: disable temporarily to investigate live state. 5) Check startup probe vs liveness probe config — maybe app needs more init time.
+> </details>
+>
+> **Challenge 2 (Design):** Explain the difference between a liveness probe and a readiness probe. What happens when each fails?
+> <details><summary>Answer</summary>
+>
+> **Liveness**: is the pod healthy? Failure → K8s KILLS and restarts the pod. Use for: hung processes that are running but unresponsive. **Readiness**: is the pod ready to serve traffic? Failure → pod is REMOVED from Service endpoints (no traffic sent), but NOT restarted. Use for: app still initializing, temporarily overloaded, downstream dependency unavailable. Common mistake: using liveness for readiness scenarios → pod gets killed/restarted when it should just be temporarily excluded from load balancing.
+> </details>
+>
+
 # deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -1161,5 +1217,114 @@ flowchart TD
 
 
 ---
+
+
+---
+
+## 🏋️ Practice & Interview Questions — DevOps & Networking
+
+### Predict / Trace
+**Q1.** What happens when you type `https://google.com` in a browser?
+<details><summary>Answer</summary>
+
+1. DNS lookup: resolve `google.com` → IP (recursive resolver → root → TLD → authoritative NS)
+2. TCP connection: 3-way handshake (SYN → SYN-ACK → ACK) to port 443
+3. TLS handshake: ClientHello → ServerHello → certificate verification → key exchange → session keys
+4. HTTP/2 GET request sent
+5. Server responds with HTML (GZIP compressed)
+6. Browser parses HTML → fetches CSS/JS → CSSOM + DOM → render tree → paint
+</details>
+
+**Q2.** `curl -I https://example.com` returns `Connection: keep-alive`. What does this mean?
+<details><summary>Answer</summary>
+
+The TCP connection won't be closed after the response — it stays open for reuse. Avoiding TCP+TLS handshake overhead for subsequent requests. HTTP/1.1 default; HTTP/2 always multiplexes on one connection.
+</details>
+
+### Coding / Commands
+**Q3.** ⭐ Write a Dockerfile for a Java Spring Boot app — multi-stage build.
+<details><summary>Solution</summary>
+
+```dockerfile
+# Stage 1: Build
+FROM eclipse-temurin:21-jdk AS builder
+WORKDIR /app
+COPY gradlew build.gradle settings.gradle ./
+COPY gradle gradle/
+RUN ./gradlew dependencies --no-daemon
+COPY src src/
+RUN ./gradlew bootJar --no-daemon
+
+# Stage 2: Runtime (smaller image)
+FROM eclipse-temurin:21-jre
+WORKDIR /app
+COPY --from=builder /app/build/libs/*.jar app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-XX:+UseContainerSupport", "-XX:MaxRAMPercentage=75", "-jar", "app.jar"]
+```
+</details>
+
+**Q4.** ⭐ Write a Kubernetes deployment with liveness and readiness probes.
+<details><summary>Solution</summary>
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+spec:
+  replicas: 3
+  template:
+    spec:
+      containers:
+      - name: app
+        image: myapp:1.0
+        resources:
+          requests: { memory: "256Mi", cpu: "250m" }
+          limits:   { memory: "512Mi", cpu: "500m" }
+        livenessProbe:
+          httpGet: { path: /actuator/health/liveness, port: 8080 }
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet: { path: /actuator/health/readiness, port: 8080 }
+          initialDelaySeconds: 10
+          periodSeconds: 5
+```
+</details>
+
+**Q5.** ⭐⭐ Design a zero-downtime deployment strategy.
+<details><summary>Answer</summary>
+
+**Blue-Green**: run two identical envs, switch load balancer. Instant rollback. Double the infra cost.
+**Rolling**: replace pods one-by-one. K8s default. Slower, but no extra infra.
+**Canary**: route 5% traffic to new version, monitor errors/latency, gradually increase. Most risk-controlled.
+**Feature flags**: deploy code but disable feature — decouple deployment from release.
+</details>
+
+### Interview Questions
+**Q6.** TCP vs UDP — when to use each?
+<details><summary>Answer</summary>
+
+**TCP**: reliable (acknowledgments, retransmission), ordered, connection-based. Use for: HTTP, databases, SSH, email — anywhere correctness matters more than speed.
+**UDP**: unreliable, unordered, connectionless. Use for: video streaming, gaming, DNS, VoIP — where speed matters more than perfect delivery, or app handles reliability itself.
+</details>
+
+**Q7.** What is a memory limit vs memory request in Kubernetes?
+<details><summary>Answer</summary>
+
+`request`: guaranteed allocation — K8s won't schedule pod on node with less available. `limit`: maximum usage — if exceeded, pod is OOM-killed. Set requests for scheduling accuracy; set limits to prevent noisy neighbor problems. Best practice: requests=expected P50 usage, limits=expected P99 surge.
+</details>
+
+### MCQ Rapid Fire
+| # | Question | Answer |
+|---|---|---|
+| 1 | HTTP status code 429 | Too Many Requests (rate limited) |
+| 2 | HTTP status code 503 | Service Unavailable (server down/overloaded) |
+| 3 | DNS record type for IP address | A record (IPv4), AAAA record (IPv6) |
+| 4 | Load balancer Layer 4 vs 7 | L4: TCP/UDP level; L7: HTTP/application level (content-aware) |
+| 5 | TLS/SSL terminates where | At load balancer (termination), or all the way to pod (passthrough) |
+| 6 | `docker exec -it container bash` does | Opens interactive shell in running container |
+| 7 | Kubernetes etcd stores | Cluster state (all K8s object definitions) |
+| 8 | CI/CD — what triggers a pipeline? | Code push, PR, tag, schedule, or manual trigger |
+
 
 > **Navigation**: [< Previous](Ch62_SB_Microservices_Patterns.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch64_SB_Cloud_Advanced.md)

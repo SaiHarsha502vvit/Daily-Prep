@@ -8,6 +8,17 @@
 
 ---
 
+
+
+> 🔬 **Section Challenge — PART 1: STRING INTERNALS**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## 🎯 The 5W1H
 
 ```
@@ -75,6 +86,23 @@ System.out.println(s1 == s6);       // false — runtime concat, new object
 
 ---
 
+
+
+> 🔬 **Section Challenge — 1. String Pool — How It Works**
+>
+> **Challenge 1 (Reasoning):** `String a = "hello"; String b = "hello"; a == b` — true or false? What about `new String("hello") == "hello"`?
+> <details><summary>Answer</summary>
+>
+> First: `true` — string literals are interned in the string pool; same literal = same reference. Second: `false` — `new String(...)` always creates a new object on the heap, bypassing the pool. Always use `.equals()` for string comparison. `String.intern()` can explicitly add a string to the pool.
+> </details>
+>
+> **Challenge 2 (Design):** Why is `String` immutable in Java and what problems would mutable strings cause?
+> <details><summary>Answer</summary>
+>
+> Security: strings are used as HashMap keys, class names, file paths. If mutable, a key could change after insertion, corrupting the HashMap. Thread safety: immutable objects are inherently thread-safe (no synchronization needed). String pool: only possible because strings don't change — two vars safely share the same interned object. Caching hashCode: `String` caches its hashCode (first call computes, subsequent calls return cached) — only safe because the string never changes.
+> </details>
+>
+
 ## 2. String Immutability — Why and How
 
 ```java
@@ -98,6 +126,17 @@ s = s.toUpperCase(); // NOW s points to the NEW "HELLO" string
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 2. String Immutability — Why and How**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
 
 ## 3. String Concatenation — The Performance Trap
 
@@ -143,6 +182,17 @@ String s = "Name: " + name + " Age: " + age;
 
 ---
 
+
+
+> 🔬 **Section Challenge — 3. String Concatenation — The Performance Trap**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## 4. StringBuilder vs StringBuffer
 
 ```
@@ -175,6 +225,17 @@ StringBuilder sb = new StringBuilder(1000);  // Start with capacity 1000
 
 ---
 
+
+
+> 🔬 **Section Challenge — 4. StringBuilder vs StringBuffer**
+>
+> **Challenge 1 (Reasoning):** Why is `String str = ""; for(int i=0;i<1000;i++) str += i;` O(N²) and how does StringBuilder fix it?
+> <details><summary>Answer</summary>
+>
+> Each `+=` creates a NEW String object: copies all existing chars + appends new char. Iteration 1: copy 1 char. Iteration 2: copy 2 chars. ... Iteration N: copy N chars. Total: 1+2+...+N = N(N+1)/2 = O(N²) character copies. StringBuilder uses a resizable internal array. `append()` adds to the end: O(1) amortized. Final `toString()`: O(N) once. Total: O(N).
+> </details>
+>
+
 ## 5. Compact Strings (Java 9+)
 
 ```java
@@ -193,6 +254,17 @@ StringBuilder sb = new StringBuilder(1000);  // Start with capacity 1000
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 5. Compact Strings (Java 9+)**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
 
 ## 6. Text Blocks (Java 15+)
 
@@ -269,9 +341,22 @@ String.format("Name: %s", name); // Formatted string
 
 ---
 
+
+
+> 🔬 **Section Challenge — 7. Common String Methods — Cheat Sheet**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## PART 2: IMMUTABILITY PATTERNS
 
 ---
+
+
 
 ## 8. What Makes a Class Immutable?
 
@@ -522,6 +607,8 @@ HttpRequest request = new HttpRequest.Builder()
 ```
 
 ---
+
+
 
 ## 13. Interview Questions & Answers
 

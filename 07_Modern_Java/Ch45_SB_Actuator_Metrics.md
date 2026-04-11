@@ -177,6 +177,17 @@ public record CreateUserRequest(
 ## Chapter 6: Multipart File Handling
 
 ```yaml
+
+
+> 🔬 **Section Challenge — Chapter 6: Multipart File Handling**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 # application.yml
 spring:
     servlet:
@@ -486,6 +497,17 @@ public class EmailService {
 ## Chapter 8: Logging Configuration
 
 ```yaml
+
+
+> 🔬 **Section Challenge — Chapter 8: Logging Configuration**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 # application.yml
 logging:
     level:
@@ -672,6 +694,23 @@ R__Insert_reference_data.sql  (Repeatable: runs when checksum changes)
 ## Chapter 10: Dockerizing Spring Boot
 
 ```dockerfile
+
+
+> 🔬 **Section Challenge — Chapter 10: Dockerizing Spring Boot**
+>
+> **Challenge 1 (Reasoning):** Docker image layers — if you modify a file in layer 3, what happens to layers 4 and 5?
+> <details><summary>Answer</summary>
+>
+> In the overlay filesystem, modifying a file in a lower layer creates a COPY in the write layer (copy-on-write). The original lower layer is unchanged. But in image BUILD: if Dockerfile instruction 3 changes, layers 4 and 5 are INVALIDATED — Docker can't reuse cached layers. Rule: put instructions that change most often LAST in Dockerfile. Dependencies (`npm install`, `mvn package`) before source code copies — this maximizes cache reuse.
+> </details>
+>
+> **Challenge 2 (Design):** What's the difference between `COPY` and `ADD` in Dockerfile? When should you use each?
+> <details><summary>Answer</summary>
+>
+> `COPY`: copies files/directories from build context to image. Simple and explicit. `ADD`: everything COPY does PLUS: auto-extracts tar archives (`.tar.gz`), fetches remote URLs (HTTP/HTTPS). Best practice: always use `COPY` unless you specifically need tar extraction. `ADD`'s URL feature is dangerous (no checksum validation, downloads at build time) and breaks reproducibility. Use `RUN curl | tar xz` instead for remote archives.
+> </details>
+>
+
 # Dockerfile - Multi-stage build
 FROM eclipse-temurin:17-jdk-alpine AS builder
 WORKDIR /app

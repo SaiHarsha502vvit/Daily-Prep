@@ -366,6 +366,17 @@ public class UserService {
 
 ---
 
+
+
+> 🔬 **Section Challenge — Security Annotations**
+>
+> **Challenge 1 (Reasoning):** JWT vs session cookies — what are the tradeoffs for a distributed microservices architecture?
+> <details><summary>Answer</summary>
+>
+> JWT: stateless — any service can validate without a DB call (verify signature with public key). No sticky sessions needed. Downside: can't invalidate a token before expiry (no server-side state). Session cookies: stateful — easy to invalidate (delete session). But: need a shared session store (Redis) for multi-instance deployments, or sticky sessions (load balancer routing). Microservices: JWT wins for scalability. Add a token blacklist (Redis) if revocation is needed.
+> </details>
+>
+
 ## Caching Annotations
 
 ### Setup Caching
@@ -456,6 +467,17 @@ public class ProductService {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — Caching Annotations**
+>
+> **Challenge 1 (Design):** Cache-aside vs write-through vs write-behind — when does each cause stale data?
+> <details><summary>Answer</summary>
+>
+> Cache-aside (lazy load): on cache miss, load from DB and populate cache. Stale: if DB updated externally (direct DB write bypassing cache). Write-through: write to cache AND DB simultaneously. Stale: never (cache always reflects writes). Write-behind (write-back): write to cache, async write to DB. Stale: if cache crashes before DB write → data loss. Rule: cache-aside for read-heavy. Write-through for write+read. Write-behind for write-heavy (accept loss risk).
+> </details>
+>
 
 ## Async & Scheduling Annotations
 
@@ -584,6 +606,17 @@ public class ScheduledTasks {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — Async & Scheduling Annotations**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
 
 ## Transaction Annotations
 
@@ -751,6 +784,17 @@ public class OrderService {
 
 ---
 
+
+
+> 🔬 **Section Challenge — Transaction Annotations**
+>
+> **Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+> <details><summary>Answer</summary>
+>
+> READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
+> </details>
+>
+
 ## Testing Annotations
 
 ### Spring Boot Test
@@ -916,6 +960,17 @@ class UserServiceTest {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — Testing Annotations**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
 
 ## Lombok Annotations
 
@@ -1222,6 +1277,30 @@ public class Product {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — Hibernate-Specific Annotations**
+>
+> **Challenge 1 (Reasoning):** N+1 query problem — explain with a concrete JPA example and show the fix.
+> <details><summary>Answer</summary>
+>
+> ```java
+> // N+1: fetches all orders (1 query), then for EACH order fetches customer (N queries)
+> List<Order> orders = orderRepo.findAll(); // 1 query
+> orders.forEach(o -> System.out.println(o.getCustomer().getName())); // N queries!
+>
+> // Fix 1: JOIN FETCH
+> @Query("SELECT o FROM Order o JOIN FETCH o.customer")
+> List<Order> findAllWithCustomer();
+>
+> // Fix 2: EntityGraph
+> @EntityGraph(attributePaths = "customer")
+> List<Order> findAll();
+> ```
+> Both load orders + customers in ONE query (JOIN). Always check Hibernate's SQL log in development.
+> </details>
+>
 
 ## Quick Reference Card
 

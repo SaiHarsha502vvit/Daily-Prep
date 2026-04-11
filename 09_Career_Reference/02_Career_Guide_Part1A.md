@@ -435,6 +435,9 @@ flowchart TD
 
 ---
 
+
+
+
 ## Phase 3: UI/UX Design - Even for Non-UI Apps
 
 ### Understanding UX vs UI
@@ -697,6 +700,8 @@ FOR DEVELOPERS:
 ```
 
 ---
+
+
 
 ## Phase 4: Database Design - Complete Guide
 
@@ -1086,6 +1091,8 @@ CREATE INDEX idx_notif_unread ON notifications(user_id) WHERE is_read = FALSE;
 
 ---
 
+
+
 ## 🔬 Database Deep Internals - How Queries ACTUALLY Execute
 
 ### What Happens When You Run a Query
@@ -1430,3 +1437,5 @@ Transaction: BEGIN; UPDATE accounts SET balance = balance - 100 WHERE id = 1; CO
 ---
 
 > **Navigation**: [< Previous](03_Career_Guide_Part1B.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_Career_Projects_Part1.md)
+
+

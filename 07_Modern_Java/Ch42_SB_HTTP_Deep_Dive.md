@@ -174,6 +174,17 @@ flowchart TD
 
 ## Chapter 2: HTTP Request Structure
 
+
+
+> 🔬 **Section Challenge — Chapter 2: HTTP Request Structure**
+>
+> **Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
+> <details><summary>Answer</summary>
+>
+> HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
+> </details>
+>
+
 ## Anatomy Of An Http Request
 
 REQUEST LINE
@@ -222,7 +233,29 @@ Content-Encoding │ gzip
 
 ---
 
+
+
+> 🔬 **Section Challenge — Anatomy Of An Http Request**
+>
+> **Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
+> <details><summary>Answer</summary>
+>
+> HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
+> </details>
+>
+
 ## Chapter 3: HTTP Response Structure
+
+
+
+> 🔬 **Section Challenge — Chapter 3: HTTP Response Structure**
+>
+> **Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
+> <details><summary>Answer</summary>
+>
+> HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
+> </details>
+>
 
 ## Anatomy Of An Http Response
 
@@ -274,6 +307,17 @@ RESPONSE BODY
 504 Gateway Timeout │ Upstream server timeout
 
 ---
+
+
+
+> 🔬 **Section Challenge — Anatomy Of An Http Response**
+>
+> **Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
+> <details><summary>Answer</summary>
+>
+> HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
+> </details>
+>
 
 # SECTION 2: PATH VARIABLES vs QUERY PARAMETERS
 
@@ -363,6 +407,17 @@ flowchart TD
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — Chapter 4: Understanding URL Structure**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
 
 ## Chapter 5: @PathVariable - Deep Dive
 
@@ -1554,6 +1609,17 @@ public class UserGrpcService extends UserServiceGrpc.UserServiceImplBase {
 
 ---
 
+
+
+> 🔬 **Section Challenge — Chapter 11: Building Protocol Clients in Spring Boot**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## Chapter 12: HTTP Client Implementations
 
 ```java
@@ -1714,3 +1780,13 @@ _Continue to Part 11: Authentication & Authorization_
 ---
 
 > **Navigation**: [< Previous](Ch41_SB_Architecture_Quality.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch43_SB_Auth_Security.md)
+
+> 🔬 **Section Challenge — Chapter 12: HTTP Client Implementations**
+>
+> **Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
+> <details><summary>Answer</summary>
+>
+> HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
+> </details>
+>
+

@@ -219,6 +219,17 @@ flowchart TD
 
 ---
 
+
+
+> 🔬 **Section Challenge — 1. DispatcherServlet vs Filter: The Request Gate vs Security Guard**
+>
+> **Challenge 1 (Reasoning):** JWT vs session cookies — what are the tradeoffs for a distributed microservices architecture?
+> <details><summary>Answer</summary>
+>
+> JWT: stateless — any service can validate without a DB call (verify signature with public key). No sticky sessions needed. Downside: can't invalidate a token before expiry (no server-side state). Session cookies: stateful — easy to invalidate (delete session). But: need a shared session store (Redis) for multi-instance deployments, or sticky sessions (load balancer routing). Microservices: JWT wins for scalability. Add a token blacklist (Redis) if revocation is needed.
+> </details>
+>
+
 ## 2. What @SpringBootApplication Actually Does
 
 ### The Freeze Question
@@ -305,6 +316,17 @@ public class MyApp { ... }
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 2. What @SpringBootApplication Actually Does**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
 
 ## 3. Auto-Configuration: How Spring "Magically" Knows What You Need
 
@@ -409,6 +431,17 @@ public class MyConfig {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 3. Auto-Configuration: How Spring "Magically" Knows What You Need**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
 
 ## 4. The Proxy Pattern: Why @Transactional Fails On Self-Calls
 
@@ -521,6 +554,17 @@ public class NotificationService {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 4. The Proxy Pattern: Why @Transactional Fails On Self-Calls**
+>
+> **Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+> <details><summary>Answer</summary>
+>
+> READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
+> </details>
+>
 
 ## 5. Bean Lifecycle: What Happens Between `new` and "Ready"
 
@@ -696,6 +740,17 @@ public class OrderService {
 
 ---
 
+
+
+> 🔬 **Section Challenge — 6. IoC & DI: Not Just "Injection" — The Inversion Explained**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## 7. @Autowired vs Constructor Injection: Why Seniors Choose Constructor
 
 ### The Freeze Question
@@ -786,6 +841,17 @@ UserService service = new UserService(mockRepo, mockEmail, mockCache);
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 7. @Autowired vs Constructor Injection: Why Seniors Choose Constructor**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
 
 ## 8. Bean Scopes: Why Injecting Prototype Into Singleton Breaks
 
@@ -881,6 +947,17 @@ public class ShoppingCart { ... }
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 8. Bean Scopes: Why Injecting Prototype Into Singleton Breaks**
+>
+> **Challenge 1 (Reasoning):** `Object.create(proto)` vs `new Constructor()` — what's the practical difference?
+> <details><summary>Answer</summary>
+>
+> `new Constructor()`: runs the constructor function (initializes instance properties), sets `__proto__` to `Constructor.prototype`. `Object.create(proto)`: creates an object with `proto` as its prototype, NO constructor called. Use `Object.create(null)` to create a pure dictionary with no inherited properties (no `toString`, `hasOwnProperty`, etc.) — useful for safe maps. `Object.create(SomeClass.prototype)` creates an instance-like object without running the constructor (used in class inheritance setup).
+> </details>
+>
 
 ## 9. @Controller vs @RestController: Not Just "Adds @ResponseBody"
 
@@ -1045,6 +1122,17 @@ flowchart TD
 
 ---
 
+
+
+> 🔬 **Section Challenge — 10. Spring Security Filter Chain: How Authentication Actually Works**
+>
+> **Challenge 1 (Reasoning):** JWT vs session cookies — what are the tradeoffs for a distributed microservices architecture?
+> <details><summary>Answer</summary>
+>
+> JWT: stateless — any service can validate without a DB call (verify signature with public key). No sticky sessions needed. Downside: can't invalidate a token before expiry (no server-side state). Session cookies: stateful — easy to invalidate (delete session). But: need a shared session store (Redis) for multi-instance deployments, or sticky sessions (load balancer routing). Microservices: JWT wins for scalability. Add a token blacklist (Redis) if revocation is needed.
+> </details>
+>
+
 ## 11. Profiles & Conditional Beans: How Spring Switches Environments
 
 ### The Freeze Question
@@ -1089,6 +1177,17 @@ public class StorageConfig {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 11. Profiles & Conditional Beans: How Spring Switches Environments**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
 
 ## 12. Why @Async Doesn't Work Without @EnableAsync
 
@@ -1177,6 +1276,23 @@ public class EmailService {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 12. Why @Async Doesn't Work Without @EnableAsync**
+>
+> **Challenge 1 (Reasoning):** `await Promise.all([fetch(a), fetch(b)])` vs `await fetch(a); await fetch(b)`. What's the performance difference?
+> <details><summary>Answer</summary>
+>
+> `Promise.all`: both fetches START simultaneously (concurrent). Total time = max(timeA, timeB). Sequential awaits: fetch B doesn't start until fetch A completes. Total time = timeA + timeB. For independent requests, ALWAYS use `Promise.all`. Sequential await is only appropriate when B depends on A's result.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** An `async` function has `try { await doWork(); } catch(e) {}`. `doWork()` rejects. Is the rejection handled?
+> <details><summary>Answer</summary>
+>
+> Yes — `await` unwraps the rejected promise and throws the rejection value as a synchronous error, which is caught by the `catch` block. Without `try/catch` around `await`: unhandled rejection. Without `await` (just `doWork()`): the rejection is a separate promise — the `try/catch` CANNOT catch it (it's asynchronous). Always `await` async calls if you want to catch their rejections synchronously.
+> </details>
+>
 
 ## Interview Quick-Fire: Spring Boot Freeze Busters
 

@@ -171,6 +171,30 @@ flowchart TD
 
 ---
 
+
+
+> 🔬 **Section Challenge — Chapter 1: JPA vs Hibernate vs Spring Data JPA**
+>
+> **Challenge 1 (Reasoning):** N+1 query problem — explain with a concrete JPA example and show the fix.
+> <details><summary>Answer</summary>
+>
+> ```java
+> // N+1: fetches all orders (1 query), then for EACH order fetches customer (N queries)
+> List<Order> orders = orderRepo.findAll(); // 1 query
+> orders.forEach(o -> System.out.println(o.getCustomer().getName())); // N queries!
+>
+> // Fix 1: JOIN FETCH
+> @Query("SELECT o FROM Order o JOIN FETCH o.customer")
+> List<Order> findAllWithCustomer();
+>
+> // Fix 2: EntityGraph
+> @EntityGraph(attributePaths = "customer")
+> List<Order> findAll();
+> ```
+> Both load orders + customers in ONE query (JOIN). Always check Hibernate's SQL log in development.
+> </details>
+>
+
 ## Chapter 2: Entity Mapping Deep Dive
 
 ### Basic Entity
@@ -419,6 +443,17 @@ public class Address {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — Chapter 2: Entity Mapping Deep Dive**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
 
 ## Chapter 3: Entity Relationships
 
@@ -1256,6 +1291,17 @@ public class EntityLifecycleDemo {
 
 ---
 
+
+
+> 🔬 **Section Challenge — Chapter 5: Entity Lifecycle & Persistence Context**
+>
+> **Challenge 1 (Reasoning):** When does React Context cause performance problems and how do you avoid them?
+> <details><summary>Answer</summary>
+>
+> Every context consumer re-renders when ANY context value changes. If you have `{theme, user, cart}` in one context, updating cart re-renders all theme and user consumers. Fixes: (1) Split into separate contexts: `ThemeContext`, `UserContext`, `CartContext`. (2) Memoize components with `React.memo`. (3) For complex state, use a state library (Zustand, Jotai) with selector-based subscriptions — only re-render when the specific piece of state changes.
+> </details>
+>
+
 ## Chapter 6: Cascade Types
 
 ```java
@@ -1345,6 +1391,23 @@ public class User {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — Chapter 6: Cascade Types**
+>
+> **Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
+> <details><summary>Answer</summary>
+>
+> No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
+> <details><summary>Answer</summary>
+>
+> NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
+> </details>
+>
 
 ## Chapter 7: Transactions
 
@@ -1531,6 +1594,17 @@ public class BrokenService {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — Chapter 7: Transactions**
+>
+> **Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+> <details><summary>Answer</summary>
+>
+> READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
+> </details>
+>
 
 ## Chapter 8: JPA Best Practices Summary
 

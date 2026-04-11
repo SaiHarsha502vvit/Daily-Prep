@@ -182,6 +182,9 @@ flowchart TD
 
 ---
 
+
+
+
 ## � FULL WALKTHROUGH: Combination Sum with Pruning
 
 ```
@@ -226,6 +229,9 @@ flowchart LR
 ```
 
 ---
+
+
+
 
 ## 🔬 FULL WALKTHROUGH 2: Permutations II — Handling Duplicates
 
@@ -299,6 +305,9 @@ flowchart TD
 ```
 
 ---
+
+
+
 
 ## 🛡️ EDGE CASES & COMMON MISTAKES
 
@@ -376,6 +385,17 @@ flowchart TD
 
 ---
 
+
+
+> 🔬 **Section Challenge — 📊 COMPLEXITY SUMMARY**
+>
+> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+> <details><summary>Answer</summary>
+>
+> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+> </details>
+>
+
 ## 📋 PRACTICE PROBLEMS — From Your Excel Sheet
 | # | Problem | Key Insight |
 |---|---------|-------------|
@@ -421,6 +441,9 @@ flowchart TD
 | **Symmetry breaking** | First element fixed | Eliminates mirror solutions |
 
 ---
+
+
+
 
 ## 🎯 INTERVIEW ARTICULATION — How to Explain Backtracking
 

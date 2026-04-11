@@ -236,6 +236,17 @@ protected Class<?> loadClass(String name, boolean resolve) {
 
 ---
 
+
+
+> 🔬 **Section Challenge — ⚙️ Class Loader Subsystem — Deep Dive**
+>
+> **Challenge 1 (Reasoning):** Round-robin load balancing sends requests to servers 1,2,3,1,2,3. Why does this fail for stateful sessions?
+> <details><summary>Answer</summary>
+>
+> Session data (shopping cart, auth state) is stored on ONE server. Round-robin sends the NEXT request to a different server which has NO session data → user is logged out, cart is empty. Solutions: (1) Sticky sessions (session affinity) — LB routes user to the same server based on cookie. Single point of failure risk. (2) Externalize session to Redis — all servers share one session store. (3) Stateless auth (JWT) — no server-side session needed. Modern preference: stateless design + JWT.
+> </details>
+>
+
 ## 📌 Creating Custom Class Loaders
 
 ```java
@@ -314,6 +325,28 @@ public class HotReloadClassLoader extends ClassLoader {
 - Encryption/decryption of class files
 
 ---
+
+
+
+> 🔬 **Section Challenge — 📌 Creating Custom Class Loaders**
+>
+> **Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
+> <details><summary>Answer</summary>
+>
+> ```java
+> public class PaymentException extends RuntimeException { // unchecked!
+>     private final String errorCode;
+>     private final String transactionId;
+>     public PaymentException(String code, String txId, String msg, Throwable cause) {
+>         super(msg, cause); this.errorCode=code; this.transactionId=txId;
+>     }
+> }
+> public class InsufficientFundsException extends PaymentException { ... }
+> public class PaymentGatewayException extends PaymentException { ... }
+> ```
+> Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
+> </details>
+>
 
 ## 🧠 JVM Memory Model — Complete Deep Dive
 
@@ -504,6 +537,11 @@ public int calculate(int a, int b) {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 📚 Stack Frame Structure**
+>>
 
 ## 📚 Garbage Collection — Complete Guide
 
@@ -840,6 +878,9 @@ public class VarHandlesDemo {
 
 ---
 
+
+
+
 ## 📌 Building a Mini — Framework
 
 ```java
@@ -928,6 +969,9 @@ User user = service.getUser(123);
 
 ---
 
+
+
+
 ## 📋 JVM Tuning Cheat Sheet
 
 ```
@@ -1010,6 +1054,9 @@ flowchart TD
 ```
 
 ---
+
+
+
 
 ## 🔬 JVM Internals Mastery Checklist
 
@@ -1125,3 +1172,5 @@ _"Data structures + Algorithms = Programs. Master both, master programming."_
 ---
 
 > **Navigation**: [< Previous](09_Ultimate_DSA_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](11_Quick_Reference.md)
+
+

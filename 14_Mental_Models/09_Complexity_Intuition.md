@@ -154,6 +154,9 @@ flowchart TD
 
 ---
 
+
+
+
 ## Part 2: Pattern Recognition — See Complexity at a Glance
 
 ### Pattern → Complexity Mapping
@@ -237,6 +240,8 @@ for (int i = 0; i < n; i++) {           // n times
 ```
 
 ---
+
+
 
 ## Part 3: Recursion Complexity — Use the Tree Method
 
@@ -413,6 +418,21 @@ flowchart TD
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — Part 3: Recursion Complexity — Use the Tree Method**
+>>
+> **Challenge 2 (Bug Hunt):** ```java
+void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
+fib(50) // takes forever
+```
+Why and what are the 3 fixes?
+> <details><summary>Answer</summary>
+>
+> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+> </details>
+>
 
 ## Part 4: Space Complexity — What Counts?
 
@@ -1032,6 +1052,9 @@ flowchart TD
 ```
 
 ---
+
+
+
 
 ## Part 7: Quick Complexity Checklist
 

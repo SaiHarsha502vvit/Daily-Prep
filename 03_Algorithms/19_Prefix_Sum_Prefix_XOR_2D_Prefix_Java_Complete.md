@@ -24,7 +24,29 @@ For XOR:
 
 ---
 
+
+
+> 🔬 **Section Challenge — 1. Prefix Family - One Core Idea**
+>
+> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+> <details><summary>Answer</summary>
+>
+> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+> </details>
+>
+
 ## 2. 1D Prefix Sum (Java)
+
+
+
+> 🔬 **Section Challenge — 2. 1D Prefix Sum (Java)**
+>
+> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+> <details><summary>Answer</summary>
+>
+> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+> </details>
+>
 
 ## 2.1 Construction
 
@@ -52,6 +74,8 @@ Why `long`? Prevent integer overflow in cumulative sums.
 4. Partition by balanced sums
 
 ---
+
+
 
 ## 3. Prefix Sum + HashMap
 
@@ -87,7 +111,29 @@ Interview script:
 
 ---
 
+
+
+> 🔬 **Section Challenge — 3. Prefix Sum + HashMap**
+>
+> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+> <details><summary>Answer</summary>
+>
+> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+> </details>
+>
+
 ## 4. Prefix XOR (Java)
+
+
+
+> 🔬 **Section Challenge — 4. Prefix XOR (Java)**
+>
+> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+> <details><summary>Answer</summary>
+>
+> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+> </details>
+>
 
 ## 4.1 Construction and range xor
 
@@ -114,6 +160,23 @@ public static int rangeXor(int[] px, int l, int r) {
 ---
 
 ## 5. Prefix XOR + HashMap Patterns
+
+
+
+> 🔬 **Section Challenge — 5. Prefix XOR + HashMap Patterns**
+>
+> **Challenge 1 (Reasoning):** You insert 1000 entries into a HashMap with default capacity 16. How many resize operations happen?
+> <details><summary>Answer</summary>
+>
+> Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 (64→128), 96 (128→256), 192 (256→512), 384 (512→1024). Total: 6 resizes. Each resize copies all entries to new bucket array. Pre-sizing: `new HashMap<>(1334)` (1000/0.75 ≈ 1334 → next power of 2 = 2048) avoids all resizes.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** Two `Person` objects with same name and age. You override `equals()` to return true but not `hashCode()`. What happens when used as `HashMap` keys?
+> <details><summary>Answer</summary>
+>
+> Both objects land in DIFFERENT buckets (different hashCodes → different bucket index). The HashMap doesn't check `equals()` across buckets — it goes straight to one bucket. So `map.get(person2)` returns NULL even though `person1.equals(person2)`. Overriding `equals` without `hashCode` violates the contract and breaks all hash-based collections. Always override both together.
+> </details>
+>
 
 ## 5.1 Count subarrays with xor = k
 
@@ -178,7 +241,29 @@ public final class SubarraysDivByK {
 
 ---
 
+
+
+> 🔬 **Section Challenge — 6. Prefix with Modulo (Very Important)**
+>
+> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+> <details><summary>Answer</summary>
+>
+> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+> </details>
+>
+
 ## 7. 2D Prefix Sum (Matrix)
+
+
+
+> 🔬 **Section Challenge — 7. 2D Prefix Sum (Matrix)**
+>
+> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+> <details><summary>Answer</summary>
+>
+> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+> </details>
+>
 
 ## 7.1 Build matrix prefix
 
@@ -203,6 +288,17 @@ public static long[][] build2DPrefix(int[][] mat) {
 }
 ```
 
+
+
+> 🔬 **Section Challenge — 7.1 Build matrix prefix**
+>
+> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+> <details><summary>Answer</summary>
+>
+> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+> </details>
+>
+
 ## 7.2 Query rectangle sum in O(1)
 
 Rectangle `(r1,c1)` to `(r2,c2)` inclusive, 0-based inputs:
@@ -216,6 +312,9 @@ public static long rectSum(long[][] pref, int r1, int c1, int r2, int c2) {
 
 ---
 
+
+
+
 ## 8. 2D Prefix Use Cases
 
 1. Fixed or variable window matrix sum
@@ -224,6 +323,17 @@ public static long rectSum(long[][] pref, int r1, int c1, int r2, int c2) {
 4. Fast heatmap or query-region analytics
 
 ---
+
+
+
+> 🔬 **Section Challenge — 8. 2D Prefix Use Cases**
+>
+> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+> <details><summary>Answer</summary>
+>
+> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+> </details>
+>
 
 ## 9. Difference Arrays (Range Update, Then Reconstruct)
 

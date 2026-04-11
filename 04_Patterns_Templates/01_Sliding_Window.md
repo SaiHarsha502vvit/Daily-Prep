@@ -1,5 +1,53 @@
 > **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_Code_Templates.md)
 
+---
+
+## 🗺️ Pattern Recognition Header — Sliding Window
+
+> **How do I know this is a Sliding Window problem?**
+>
+
+| Signal in problem | Sub-pattern | Template |
+|---|---|---|
+| `"subarray/substring of size k"` | **Fixed Window** | `if (j-i+1 == k) { process; i++; }` |
+| `"longest/shortest subarray with condition"` | **Variable Window** | `expand right; while invalid: shrink left` |
+| `"at most K distinct / at most K condition"` | **Variable + Freq Map** | `HashMap + shrink when freq violates` |
+| `"sum equals K"` (positive only) | **Variable Window** | `sum>target → shrink; sum==target → answer` |
+| `"minimum window substring"` | **Variable + 2 counters** | `have/need counters + HashMap` |
+
+>
+> **The rule that never fails:**
+> ```
+> "contiguous" + "optimize length or value" = Sliding Window
+> Each element enters window ONCE and leaves ONCE → O(n)
+>
+> Fixed window:    j - i + 1 == k        ← count elements, not indices!
+> Variable window: expand right, shrink left while invalid
+> ```
+>
+> 🔗 **Practice problems here:** [Sliding Window PS](../05_Problem_Solving/05_Sliding_Window.md)
+> 📖 **Algo connection:** [Sorting (why arrays must be structured)](../03_Algorithms/02a_Sorting_Fundamentals.md)
+> 📋 **All Patterns Hub:** [00_PATTERN_MASTER_GUIDE.md](00_PATTERN_MASTER_GUIDE.md)
+
+---
+
+
+
+> 🔬 **Section Challenge — 🗺️ Pattern Recognition Header — Sliding Window**
+>
+> **Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
+> <details><summary>Answer</summary>
+>
+> Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
+> <details><summary>Answer</summary>
+>
+> Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
+> </details>
+>
+
 # 🎯 SLIDING WINDOW MASTERY - THE COMPLETE MENTAL MODEL
 
 ---
@@ -175,11 +223,17 @@
 
 ---
 
+
+
+
 ## 🔥 THE CRITICAL CONFUSION (And How To Never Have It Again)
 
 **This is the #1 confusion that stops 90% of students from mastering sliding window.**
 
 ---
+
+
+
 
 ## 🧠 THE WRONG WAY (How You Were Thinking Before)
 
@@ -193,6 +247,9 @@
 
 ---
 
+
+
+
 ## ✅ THE RIGHT WAY (How You Think Now)
 
 ```
@@ -202,6 +259,9 @@
 **Solution:** Think in **element counts**, not indices.
 
 ---
+
+
+
 
 ## 🎨 VISUAL PROOF (The Moment It Clicks)
 
@@ -429,6 +489,9 @@ flowchart TD
 
 ---
 
+
+
+
 ## 🧪 WHY THE OTHER FORMS CONFUSE YOU
 
 ```
@@ -586,6 +649,8 @@ for (int j = 0; j < n; j++) {  // j expands window
 
 ---
 
+
+
 ## 🎨 DRY RUN (Do This On Paper)
 
 ```
@@ -674,6 +739,8 @@ for (int i = k; i < n; i++) {
 
 ---
 
+
+
 ## 🎯 EXAMPLE PROBLEMS USING COUNT-BASED THINKING
 
 ### Problem 1: First Negative in Each Window
@@ -760,6 +827,9 @@ public static void countPositivesInWindow(int[] arr, int k) {
 
 ---
 
+
+
+
 ## 🧠 THE MENTAL MODEL (Final Summary)
 
 ### Before Your Breakthrough:
@@ -794,6 +864,9 @@ flowchart TD
 ```
 
 ---
+
+
+
 
 ## 🎓 PRACTICE CHECKLIST
 
@@ -840,6 +913,9 @@ You've truly mastered sliding window when:
 
 ---
 
+
+
+
 ## 🔥 FINAL WISDOM
 
 **The formula `j < i + k` is correct, but it makes you think wrong.**
@@ -849,6 +925,9 @@ You've truly mastered sliding window when:
 **Use the one that keeps your brain calm.**
 
 ---
+
+
+
 
 ## 📚 WHAT'S NEXT?
 
@@ -881,6 +960,23 @@ You're ready. 🚀
 
 ---
 
+
+
+> 🔬 **Section Challenge — Section 1: Fixed-Size Sliding Window**
+>
+> **Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
+> <details><summary>Answer</summary>
+>
+> Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
+> <details><summary>Answer</summary>
+>
+> Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
+> </details>
+>
+
 ## Section 2: Variable-Size Sliding Window
 
 | # | Problem | Platform | Difficulty | Key Technique |
@@ -896,6 +992,23 @@ You're ready. 🚀
 
 ---
 
+
+
+> 🔬 **Section Challenge — Section 2: Variable-Size Sliding Window**
+>
+> **Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
+> <details><summary>Answer</summary>
+>
+> Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
+> <details><summary>Answer</summary>
+>
+> Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
+> </details>
+>
+
 ## Section 3: Two Pointers
 
 | # | Problem | Platform | Difficulty | Key Technique |
@@ -910,6 +1023,17 @@ You're ready. 🚀
 | 8 | Squares of a Sorted Array (LC 977) | LeetCode | Easy | Two pointers from both ends |
 
 ---
+
+
+
+> 🔬 **Section Challenge — Section 3: Two Pointers**
+>
+> **Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
+> <details><summary>Answer</summary>
+>
+> The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
+> </details>
+>
 
 ## HIDDEN GEMS — Sliding Window & Two Pointers
 
@@ -941,3 +1065,13 @@ _Based on your breakthrough understanding_
 ---
 
 > **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_Code_Templates.md)
+
+> 🔬 **Section Challenge — HIDDEN GEMS — Sliding Window & Two Pointers**
+>
+> **Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
+> <details><summary>Answer</summary>
+>
+> The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
+> </details>
+>
+

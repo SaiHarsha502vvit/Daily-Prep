@@ -279,6 +279,9 @@ flowchart TD
 
 ---
 
+
+
+
 ## Part 3: Common Bug Patterns & How to Spot Them
 
 ### Pattern 1: "Works on examples, fails on edge cases"
@@ -363,6 +366,8 @@ Fix: Verify loop variable changes each iteration
 
 ---
 
+
+
 ## Part 4: Strategic Print Debugging
 
 ### What to Print and Where
@@ -413,6 +418,9 @@ System.out.println(map);
 ```
 
 ---
+
+
+
 
 ## Part 5: Debugging DP Problems
 
@@ -482,6 +490,9 @@ dp:   [1] [1] [2] [3] [5] [8]
 ```
 
 ---
+
+
+
 
 ## Part 6: Debugging Graph/Tree Problems
 
@@ -568,6 +579,11 @@ void levelOrder(TreeNode root) {
 
 ---
 
+
+
+> 🔬 **Section Challenge — Part 6: Debugging Graph/Tree Problems**
+>>>
+
 ## Part 7: Debugging Checklist (Quick Reference)
 
 ```
@@ -631,3 +647,5 @@ flowchart TD
 ---
 
 > **Navigation**: [< Previous](07_SQL_Mental_Pipeline.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](09_Complexity_Intuition.md)
+
+

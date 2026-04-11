@@ -201,6 +201,28 @@ public class AppConfig implements Serializable {
 
 ---
 
+
+
+> 🔬 **Section Challenge — 4. Custom Serialization Hooks**
+>
+> **Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
+> <details><summary>Answer</summary>
+>
+> ```java
+> public class PaymentException extends RuntimeException { // unchecked!
+>     private final String errorCode;
+>     private final String transactionId;
+>     public PaymentException(String code, String txId, String msg, Throwable cause) {
+>         super(msg, cause); this.errorCode=code; this.transactionId=txId;
+>     }
+> }
+> public class InsufficientFundsException extends PaymentException { ... }
+> public class PaymentGatewayException extends PaymentException { ... }
+> ```
+> Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
+> </details>
+>
+
 ## 5. Externalizable — Full Control
 
 ```java
@@ -278,6 +300,17 @@ ois.setObjectInputFilter(filter);
 
 ---
 
+
+
+> 🔬 **Section Challenge — 6. Serialization Security Risks**
+>
+> **Challenge 1 (Reasoning):** JWT vs session cookies — what are the tradeoffs for a distributed microservices architecture?
+> <details><summary>Answer</summary>
+>
+> JWT: stateless — any service can validate without a DB call (verify signature with public key). No sticky sessions needed. Downside: can't invalidate a token before expiry (no server-side state). Session cookies: stateful — easy to invalidate (delete session). But: need a shared session store (Redis) for multi-instance deployments, or sticky sessions (load balancer routing). Microservices: JWT wins for scalability. Add a token blacklist (Redis) if revocation is needed.
+> </details>
+>
+
 ## 7. Modern Alternatives — Jackson & Gson
 
 ```java
@@ -317,6 +350,23 @@ User user = gson.fromJson(json, User.class);
 ## PART 2: JAVA I/O STREAMS — The Complete Picture
 
 ---
+
+
+
+> 🔬 **Section Challenge — PART 2: JAVA I/O STREAMS — The Complete Picture**
+>
+> **Challenge 1 (Reasoning):** `list.stream().filter().map().collect()` — at which point does data actually start flowing through the pipeline?
+> <details><summary>Answer</summary>
+>
+> Not until `collect()` (or any terminal operation). `filter()` and `map()` are LAZY — they build a pipeline description but process nothing. When the terminal operation is called, the pipeline pulls elements through lazily: one element passes through the entire pipeline before the next is processed. This means: early termination with `findFirst()` is O(1) if the first element matches, not O(N).
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** You call `stream.filter(...).collect(...)` twice on the same stream. What happens?
+> <details><summary>Answer</summary>
+>
+> `IllegalStateException: stream has already been operated upon or closed`. Streams are single-use. Once a terminal operation is called, the stream is consumed. Fix: create a new stream from the source each time, or collect to a `List` first and stream the list repeatedly.
+> </details>
+>
 
 ## 8. The I/O Stream Hierarchy
 
@@ -361,6 +411,23 @@ RULE: Byte streams for binary data, Character streams for text
 
 ---
 
+
+
+> 🔬 **Section Challenge — 8. The I/O Stream Hierarchy**
+>
+> **Challenge 1 (Reasoning):** `list.stream().filter().map().collect()` — at which point does data actually start flowing through the pipeline?
+> <details><summary>Answer</summary>
+>
+> Not until `collect()` (or any terminal operation). `filter()` and `map()` are LAZY — they build a pipeline description but process nothing. When the terminal operation is called, the pipeline pulls elements through lazily: one element passes through the entire pipeline before the next is processed. This means: early termination with `findFirst()` is O(1) if the first element matches, not O(N).
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** You call `stream.filter(...).collect(...)` twice on the same stream. What happens?
+> <details><summary>Answer</summary>
+>
+> `IllegalStateException: stream has already been operated upon or closed`. Streams are single-use. Once a terminal operation is called, the stream is consumed. Fix: create a new stream from the source each time, or collect to a `List` first and stream the list repeatedly.
+> </details>
+>
+
 ## 9. Byte Streams vs Character Streams
 
 ```java
@@ -389,6 +456,23 @@ try (BufferedReader br = new BufferedReader(
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 9. Byte Streams vs Character Streams**
+>
+> **Challenge 1 (Reasoning):** `list.stream().filter().map().collect()` — at which point does data actually start flowing through the pipeline?
+> <details><summary>Answer</summary>
+>
+> Not until `collect()` (or any terminal operation). `filter()` and `map()` are LAZY — they build a pipeline description but process nothing. When the terminal operation is called, the pipeline pulls elements through lazily: one element passes through the entire pipeline before the next is processed. This means: early termination with `findFirst()` is O(1) if the first element matches, not O(N).
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** You call `stream.filter(...).collect(...)` twice on the same stream. What happens?
+> <details><summary>Answer</summary>
+>
+> `IllegalStateException: stream has already been operated upon or closed`. Streams are single-use. Once a terminal operation is called, the stream is consumed. Fix: create a new stream from the source each time, or collect to a `List` first and stream the list repeatedly.
+> </details>
+>
 
 ## 10. The Decorator Pattern in I/O
 
@@ -436,6 +520,17 @@ Decorator chain visualized:
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 10. The Decorator Pattern in I/O**
+>
+> **Challenge 1 (Reasoning):** Why does a decorator without `@functools.wraps` break Flask/FastAPI route registration?
+> <details><summary>Answer</summary>
+>
+> Flask uses function name (`func.__name__`) to register routes. Without `@functools.wraps`, the decorator replaces the original function with a `wrapper` function. All decorated routes have `__name__ = 'wrapper'` → duplicate view function name error. `@functools.wraps(fn)` copies `__name__`, `__doc__`, `__annotations__`  from the wrapped function. Same issue with pytest markers, Celery tasks, and any framework that inspects function attributes.
+> </details>
+>
 
 ## 11. NIO.2 Files API — The Modern Way (Java 7+)
 
@@ -544,6 +639,17 @@ Common encodings:
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 12. Character Encoding — The Silent Bug Source**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
 
 ## 13. Interview Questions & Answers
 

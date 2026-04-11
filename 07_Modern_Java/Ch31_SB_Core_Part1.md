@@ -146,6 +146,17 @@ flowchart TD
 
 ### 🔵 WHY: Understanding Memory is Understanding Performance
 
+
+
+> 🔬 **Section Challenge — Chapter 1: Memory Model & JVM Internals**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## Why Jvm Memory Model Matters
 
 
@@ -565,6 +576,23 @@ flowchart TD
 
 ---
 
+
+
+> 🔬 **Section Challenge — Chapter 2: Reference Types (Garbage Collection Keys)**
+>
+> **Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
+> <details><summary>Answer</summary>
+>
+> No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
+> <details><summary>Answer</summary>
+>
+> NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
+> </details>
+>
+
 ## Chapter 3: Garbage Collection Algorithms
 
 ### 🔵 WHY: GC Pauses Can Kill Your API Response Times
@@ -869,6 +897,17 @@ flowchart TD
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — Chapter 4: Class Loading Mechanism**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
 
 ## Chapter 5: Advanced Threading (Concurrency)
 
@@ -1189,6 +1228,17 @@ public class CompletableFutureDemo {
 
 ---
 
+
+
+> 🔬 **Section Challenge — Chapter 5: Advanced Threading (Concurrency)**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## Chapter 6: Functional Java (Lambda & Streams)
 
 ### 🔵 WHY: Spring Uses Functional Programming Extensively
@@ -1413,6 +1463,17 @@ public class StreamsDemo {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — Chapter 6: Functional Java (Lambda & Streams)**
+>
+> **Challenge 1 (Reasoning):** A lambda captures a local variable. Why must the variable be effectively final?
+> <details><summary>Answer</summary>
+>
+> Lambdas are closures — they capture the variable's VALUE at creation time (not a reference to the stack slot, which would be dangerous as the stack frame may be gone). If the variable could change after capture, the lambda would see a stale value. Java enforces 'effectively final' (never reassigned) to make the semantics predictable. Workaround: use an array `int[] counter = {0};` (the array reference is final, its contents can change — though this is not thread-safe).
+> </details>
+>
 
 # 📋 TIER 1 CHECKLIST
 

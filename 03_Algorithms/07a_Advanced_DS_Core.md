@@ -182,7 +182,21 @@ i = 4:  BIT[4] += 5,  i += LSB(4) = 4+4 = 8
 i = 8:  BIT[8] += 5,  i += LSB(8) = 8+8 = 16 > n, STOP
 Updates all ranges that include index 3!
 
+
+
+
 ## 📌 Union — Find — Path Compression Visualization
+
+
+
+> 🔬 **Section Challenge — 📌 Union — Find — Path Compression Visualization**
+>
+> **Challenge 1 (Reasoning):** Without path compression in Union-Find, what's the worst-case tree height after N unions? With path compression?
+> <details><summary>Answer</summary>
+>
+> Without path compression + union by rank: O(N) height possible (linear chain). With union by rank only: O(log N). With path compression only: amortized O(log N). With BOTH: amortized O(α(N)) where α is the inverse Ackermann function — practically constant (4 for any N up to 10^80). Union by rank prevents tall trees from forming. Path compression flattens existing trees. Together they're nearly optimal.
+> </details>
+>
 
 ## Union-Find - Path Compression Deep Dive
 
@@ -235,6 +249,17 @@ Now find(7) is O(1)!
 - α(n) = Inverse Ackermann function
 - α(n) ≤ 4 for any practical n (even n = atoms in universe)
 - Effectively O(1) per operation!
+
+
+
+> 🔬 **Section Challenge — Union-Find - Path Compression Deep Dive**
+>
+> **Challenge 1 (Reasoning):** Without path compression in Union-Find, what's the worst-case tree height after N unions? With path compression?
+> <details><summary>Answer</summary>
+>
+> Without path compression + union by rank: O(N) height possible (linear chain). With union by rank only: O(log N). With path compression only: amortized O(log N). With BOTH: amortized O(α(N)) where α is the inverse Ackermann function — practically constant (4 for any N up to 10^80). Union by rank prevents tall trees from forming. Path compression flattens existing trees. Together they're nearly optimal.
+> </details>
+>
 
 ## 🧠 Skip List — Probabilistic Memory Layout
 
@@ -322,6 +347,9 @@ flowchart TD
 
 ## 📊 Bloom Filter — Bit Array Internals
 
+
+
+
 ## Bloom Filter - Probabilistic Membership
 
 
@@ -363,6 +391,9 @@ OPTIMAL k = (m/n) × ln(2) ≈ 0.693 × (m/n)
 **Rule Of Thumb**: 10 bits per element with 7 hash functions → ~1% FP rate
 
 ## 🔗 LRU Cache — Doubly Linked List + Hashmap
+
+
+
 
 ## Lru Cache - O(1) Get And Put
 

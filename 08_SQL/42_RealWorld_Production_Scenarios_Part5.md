@@ -100,6 +100,9 @@ Customer findWithOrdersAndItems(@Param("id") Long id);
 
 ---
 
+
+
+
 ## Scenario 102: @Transactional Not Working — No Rollback
 
 ### 🔴 The Incident
@@ -172,6 +175,17 @@ private void createOrder() { }  // ❌ Spring AOP can't proxy private methods!
 
 ---
 
+
+
+> 🔬 **Section Challenge — Scenario 102: @Transactional Not Working — No Rollback**
+>
+> **Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+> <details><summary>Answer</summary>
+>
+> READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
+> </details>
+>
+
 ## Scenario 103: HikariCP Connection Pool Exhausted
 
 ### 🔴 The Incident
@@ -192,6 +206,23 @@ ORDER BY duration DESC;
 ### Spring Boot Fix
 
 ```yaml
+
+
+> 🔬 **Section Challenge — Scenario 103: HikariCP Connection Pool Exhausted**
+>
+> **Challenge 1 (Reasoning):** `String a = "hello"; String b = "hello"; a == b` — true or false? What about `new String("hello") == "hello"`?
+> <details><summary>Answer</summary>
+>
+> First: `true` — string literals are interned in the string pool; same literal = same reference. Second: `false` — `new String(...)` always creates a new object on the heap, bypassing the pool. Always use `.equals()` for string comparison. `String.intern()` can explicitly add a string to the pool.
+> </details>
+>
+> **Challenge 2 (Design):** Why is `String` immutable in Java and what problems would mutable strings cause?
+> <details><summary>Answer</summary>
+>
+> Security: strings are used as HashMap keys, class names, file paths. If mutable, a key could change after insertion, corrupting the HashMap. Thread safety: immutable objects are inherently thread-safe (no synchronization needed). String pool: only possible because strings don't change — two vars safely share the same interned object. Caching hashCode: `String` caches its hashCode (first call computes, subsequent calls return cached) — only safe because the string never changes.
+> </details>
+>
+
 # application.yml — tune HikariCP
 spring:
   datasource:
@@ -290,6 +321,30 @@ StatelessSession stateless = session.getSessionFactory().openStatelessSession();
 
 ---
 
+
+
+> 🔬 **Section Challenge — Scenario 104: Memory Leak from Hibernate Session Cache**
+>
+> **Challenge 1 (Reasoning):** N+1 query problem — explain with a concrete JPA example and show the fix.
+> <details><summary>Answer</summary>
+>
+> ```java
+> // N+1: fetches all orders (1 query), then for EACH order fetches customer (N queries)
+> List<Order> orders = orderRepo.findAll(); // 1 query
+> orders.forEach(o -> System.out.println(o.getCustomer().getName())); // N queries!
+>
+> // Fix 1: JOIN FETCH
+> @Query("SELECT o FROM Order o JOIN FETCH o.customer")
+> List<Order> findAllWithCustomer();
+>
+> // Fix 2: EntityGraph
+> @EntityGraph(attributePaths = "customer")
+> List<Order> findAll();
+> ```
+> Both load orders + customers in ONE query (JOIN). Always check Hibernate's SQL log in development.
+> </details>
+>
+
 ## Scenario 105: N+1 in REST Controller — 1000 Queries Per Request
 
 ### 🔴 The Incident
@@ -298,6 +353,9 @@ StatelessSession stateless = session.getSessionFactory().openStatelessSession();
 ### Diagnosis
 
 ```yaml
+
+
+
 # Enable query logging to see the problem
 spring:
   jpa:
@@ -435,6 +493,9 @@ public List<Order> getOrdersFallback(Exception e) {
 
 ---
 
+
+
+
 ## Scenario 108: Circuit Breaker for Database Failover
 
 ### Fix: Resilience4j with Spring Boot
@@ -551,6 +612,9 @@ Spring Boot enables OSIV by default. Every REST request holds a DB connection fr
 ### Fix
 
 ```yaml
+
+
+
 # Disable OSIV
 spring:
   jpa:
@@ -617,6 +681,9 @@ public void copyInsert(List<Order> orders) {
 ```
 
 ---
+
+
+
 
 ## Scenario 112: @Cacheable Returns Stale Data After DB Update
 
@@ -693,6 +760,9 @@ public CursorPage<OrderDTO> getOrders(
 ```
 
 ---
+
+
+
 
 ## Scenario 114–125: Quick-Fire Backend Scenarios
 
@@ -1042,6 +1112,9 @@ CREATE INDEX idx_outbox_unpublished ON outbox_events (published) WHERE published
 | Graceful shutdown | **Drain queue** — stop accepting, process remaining |
 
 ---
+
+
+
 
 ## 🎯 Complete Series Navigation
 

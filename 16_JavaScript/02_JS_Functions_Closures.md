@@ -99,6 +99,17 @@ flowchart TD
 
 ---
 
+
+
+> 🔬 **Section Challenge — 1. Function Declarations vs Expressions**
+>>
+> **Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+> <details><summary>Answer</summary>
+>
+> Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+> </details>
+>
+
 ## 2. Parameters — Default, Rest, Destructuring
 
 ```javascript
@@ -132,6 +143,9 @@ createComponent({ tag: "h1", className: "title", children: ["Hello"] });
 ```
 
 ---
+
+
+
 
 ## 3. `this` Keyword — The Most Confusing Part of JS
 
@@ -279,6 +293,9 @@ flowchart LR
 ```
 
 ---
+
+
+
 
 ## 4. Closures — The Most Important Concept
 
@@ -537,6 +554,17 @@ for (var i = 0; i < 3; i++) {
 
 ---
 
+
+
+> 🔬 **Section Challenge — 4. Closures — The Most Important Concept**
+>
+> **Challenge 1 (Reasoning):** What is a closure and why can't garbage collection remove variables that are closed over?
+> <details><summary>Answer</summary>
+>
+> A closure is a function that retains a reference to its lexical environment (the scope where it was created). Variables closed over are kept alive by the closure reference — GC can't collect them because there's still a reference (the closure's internal scope). Memory leak scenario: large data object captured in a closure, closure stored in a long-lived event listener → data stays in memory for the page's lifetime. Fix: explicitly null the large variable after use, or use a WeakRef.
+> </details>
+>
+
 ## 5. Higher-Order Functions
 
 ### 5W1H: WHAT are Higher-Order Functions?
@@ -611,6 +639,17 @@ const result = numbers
 
 ---
 
+
+
+> 🔬 **Section Challenge — 5. Higher-Order Functions**
+>>
+> **Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+> <details><summary>Answer</summary>
+>
+> Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+> </details>
+>
+
 ## 6. IIFE — Immediately Invoked Function Expression
 
 ```javascript
@@ -638,6 +677,9 @@ Calculator.add(10).subtract(3).getResult(); // 7
 ```
 
 ---
+
+
+
 
 ## 7. Currying & Partial Application
 
@@ -695,6 +737,9 @@ curriedSum(1)(2, 3);     // 6
 
 ---
 
+
+
+
 ## 8. Composition & Pipe
 
 ```javascript
@@ -750,6 +795,21 @@ function deepClone(obj) {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 9. Recursion (JS-Specific Notes)**
+>>
+> **Challenge 2 (Bug Hunt):** ```java
+void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
+fib(50) // takes forever
+```
+Why and what are the 3 fixes?
+> <details><summary>Answer</summary>
+>
+> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+> </details>
+>
 
 ## Interview Quick-Fire
 
@@ -821,3 +881,214 @@ flowchart TD
 ---
 
 > [← Previous: Foundations](01_JS_Foundations.md) | [Index](../00_MASTER_INDEX.md) | [Next → Objects & Prototypes](03_JS_Objects_Prototypes.md)
+
+---
+
+## 🏋️ Practice & Interview Questions — JavaScript
+
+### Predict / Trace
+**Q1.** What prints?
+```js
+console.log(typeof null);
+console.log(null instanceof Object);
+```
+<details><summary>Answer</summary>
+
+`"object"` (historical JS bug), `false` (null is not an Object instance). This is a well-known JS quirk.
+</details>
+
+**Q2.** What is the output?
+```js
+console.log(1 + "2");
+console.log("3" - 1);
+console.log(true + false);
+```
+<details><summary>Answer</summary>
+
+`"12"` (string concat), `2` (- coerces to number), `1` (true=1, false=0)
+</details>
+
+**Q3.** What prints and why?
+```js
+for (var i = 0; i < 3; i++) {
+  setTimeout(() => console.log(i), 0);
+}
+```
+<details><summary>Answer</summary>
+
+`3 3 3` — `var` is function-scoped, all closures share same `i`. By the time timeouts run, loop is done, i=3. **Fix**: use `let` (block-scoped) or `setTimeout(() => console.log(i), 0, i)`.
+</details>
+
+### Coding Problems
+**Q4.** ⭐ Implement `debounce(fn, delay)`.
+<details><summary>Solution</summary>
+
+```js
+function debounce(fn, delay) {
+  let timer;
+  return function(...args) {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn.apply(this, args), delay);
+  };
+}
+```
+</details>
+
+**Q5.** ⭐ Implement `Promise.all` from scratch.
+<details><summary>Solution</summary>
+
+```js
+function promiseAll(promises) {
+  return new Promise((resolve, reject) => {
+    const results = [];
+    let count = 0;
+    promises.forEach((p, i) => {
+      Promise.resolve(p)
+        .then(val => { results[i] = val; if(++count === promises.length) resolve(results); })
+        .catch(reject);
+    });
+    if(promises.length === 0) resolve([]);
+  });
+}
+```
+</details>
+
+**Q6.** ⭐ Deep clone an object without `JSON.parse(JSON.stringify(...))`.
+<details><summary>Solution</summary>
+
+```js
+function deepClone(obj) {
+  if(obj === null || typeof obj !== 'object') return obj;
+  if(obj instanceof Date) return new Date(obj);
+  if(obj instanceof Array) return obj.map(deepClone);
+  const clone = {};
+  for(const key in obj) if(obj.hasOwnProperty(key)) clone[key] = deepClone(obj[key]);
+  return clone;
+}
+// Modern: structuredClone(obj) — built-in, handles more types
+```
+</details>
+
+**Q7.** ⭐⭐ Implement `curry` function.
+<details><summary>Solution</summary>
+
+```js
+function curry(fn) {
+  return function curried(...args) {
+    if(args.length >= fn.length) return fn(...args);
+    return function(...more) { return curried(...args, ...more); };
+  };
+}
+const add = curry((a, b, c) => a + b + c);
+add(1)(2)(3); // 6
+add(1, 2)(3); // 6
+```
+</details>
+
+**Q8.** ⭐⭐ Implement `memoize(fn)`.
+<details><summary>Solution</summary>
+
+```js
+function memoize(fn) {
+  const cache = new Map();
+  return function(...args) {
+    const key = JSON.stringify(args);
+    if(cache.has(key)) return cache.get(key);
+    const result = fn.apply(this, args);
+    cache.set(key, result);
+    return result;
+  };
+}
+```
+</details>
+
+### MCQ Rapid Fire
+| # | Question | Answer |
+|---|---|---|
+| 1 | == vs === | == coerces types; === strict (no coercion) |
+| 2 | `typeof undefined` | "undefined" |
+| 3 | `typeof function(){}` | "function" |
+| 4 | Prototype chain end | null |
+| 5 | Event loop: microtasks vs macrotasks | Microtasks (Promises) run before macrotasks (setTimeout) |
+| 6 | `const` prevents | Reassignment, not mutation |
+| 7 | `var` vs `let` hoisting | var: hoisted+initialized to undefined; let: hoisted but in TDZ |
+| 8 | `this` in arrow function | Lexical (inherited from enclosing scope) |
+| 9 | Optional chaining `?.` | Returns undefined instead of throwing on null/undefined |
+| 10 | Nullish coalescing `??` | Returns right side only if left is null/undefined (not 0 or '') |
+
+---
+
+## 🧠 Deep Conceptual Questions — JavaScript Engine & Language
+
+**C1. How does the JavaScript event loop actually work?**
+<details><summary>Deep Answer</summary>
+
+```
+Call Stack → runs synchronous code
+     ↓ (when empty)
+Microtask Queue → Promise callbacks, queueMicrotask, MutationObserver
+     ↓ (when empty)
+Macrotask Queue → setTimeout, setInterval, I/O, requestAnimationFrame
+```
+
+One "tick": (1) Run all synchronous code in call stack until empty, (2) Run ALL microtasks until queue empty (even if new microtasks added!), (3) Run ONE macrotask from the macrotask queue, (4) Repeat.
+
+Critical: microtasks drain COMPLETELY before any macrotask. A microtask that continually enqueues microtasks → infinite loop, browser freezes (no macrotasks can run). `Promise.resolve().then(...)` vs `setTimeout(fn, 0)`: Promise runs BEFORE the timeout even with a 0ms delay.
+</details>
+
+**C2. What is the prototype chain and how does `class` syntax relate to it?**
+<details><summary>Deep Answer</summary>
+
+Every JS object has an internal `[[Prototype]]` link. Property lookup: check own properties → check `[[Prototype]]` → check `[[Prototype]][[Prototype]]` → ... until null. `class` is syntactic sugar over prototype-based inheritance:
+```js
+class Animal { speak() {} }  // same as:
+function Animal() {}
+Animal.prototype.speak = function() {};
+```
+`class extends` sets up the prototype chain: `Dog.prototype.__proto__ = Animal.prototype`. `super` works via `[[HomeObject]]` — a hidden reference to the class where the method was defined. Key: `typeof Dog === 'function'` — classes ARE functions. `instanceof` checks the prototype chain, not the class definition.
+</details>
+
+**C3. Explain closures: why do they exist and what problems do they solve?**
+<details><summary>Deep Answer</summary>
+
+A closure = a function + references to its lexical environment (the variables in scope when the function was created). It solves: **data encapsulation without classes**. Private state in JS (pre-class): use closure.
+```js
+function makeCounter() {
+  let count = 0; // private — inaccessible outside
+  return { increment: () => ++count, get: () => count };
+}
+```
+`count` lives on even after `makeCounter` returns because the returned object's methods close over it. Closures keep the enclosing scope alive in memory as long as any reference to them exists — the classic memory leak: `button.addEventListener('click', heavyFunction)` — even after button is removed from DOM, heavyFunction and all its closed-over variables stay in memory.
+</details>
+
+**C4. What is the difference between `==` and `===` at the engine level?**
+<details><summary>Deep Answer</summary>
+
+`===` (strict equality): checks type first — if types differ, returns false immediately. No coercion. Two objects: only true if same reference. `==` (abstract equality): if types differ, coerces using the "Abstract Equality Comparison Algorithm" (ECMAScript spec §7.2.13). Examples: `null == undefined` → true (special case). `0 == ''` → true ('' → 0). `1 == true` → true (true → 1). `[] == false` → true ([] → '' → 0, false → 0). `[] == ![]` → true (both 0). These coercions are unintuitive and context-dependent. Always use `===` unless specifically relying on null/undefined equivalence.
+</details>
+
+**C5. `this` binding: what determines `this` in JavaScript?**
+<details><summary>Deep Answer</summary>
+
+`this` is determined at CALL TIME, not at definition time (except arrow functions):
+1. **new binding**: `new Foo()` — `this` = new object
+2. **Explicit binding**: `foo.call(obj)` / `foo.apply(obj)` / `foo.bind(obj)` — `this` = obj
+3. **Implicit binding**: `obj.foo()` — `this` = obj (the object before the dot)
+4. **Default binding**: `foo()` — `this` = global (window/global) or `undefined` (strict mode)
+5. **Arrow function**: no own `this` — lexically inherits from enclosing context at DEFINITION time
+
+Priority: new > explicit > implicit > default. Arrow functions use none of these rules — they close over `this` from their lexical scope. Common trap: `obj.method` passed as callback loses its `this` binding (becomes default/undefined-in-strict-mode). Fix: `obj.method.bind(obj)` or arrow function.
+</details>
+
+**C6. What is the Temporal Dead Zone (TDZ) and why does `let` have it?**
+<details><summary>Deep Answer</summary>
+
+All declarations (`var`, `let`, `const`) are hoisted. BUT: `var` is initialized to `undefined` at hoist time. `let`/`const` are hoisted but NOT initialized — they're in the TDZ (temporal dead zone) from block start until the declaration line is reached. Accessing a `let`/`const` variable in its TDZ → `ReferenceError`. WHY it exists: `var`'s behavior (usable before declaration returns undefined) was a source of confusing bugs. TDZ makes it impossible to use a variable before you declared it — forces cleaner code. The declaration IS "seen" by the engine (hence "temporal" — it's available AFTER the declaration, just not before).
+</details>
+
+**C7. What are WeakMap and WeakSet used for, and what makes them "weak"?**
+<details><summary>Deep Answer</summary>
+
+"Weak" = the keys are weakly referenced — they don't prevent garbage collection. If the only reference to an object is a WeakMap key, the GC can collect it, and the WeakMap entry disappears automatically. Normal Map holds strong references: `map.set(node, data)` — `node` can't be GC'd as long as the map exists (memory leak if node removed from DOM). WeakMap: GC can collect `node` when it's no longer referenced elsewhere. Entry disappears. Use cases: (1) private data per instance (WeakMap as private field store), (2) caching computed data per DOM node without memory leaks, (3) tracking active objects without preventing their collection. Cannot iterate WeakMap/WeakSet (indeterminate state due to GC).
+</details>
+

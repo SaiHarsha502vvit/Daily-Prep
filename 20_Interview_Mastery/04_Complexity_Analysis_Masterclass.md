@@ -98,6 +98,9 @@ IN INTERVIEWS:
 
 ---
 
+
+
+
 ## 2. The Counting Method — Deriving Complexity By Hand
 
 ### Method 1: Count the Dominant Operation
@@ -212,6 +215,9 @@ EXAMPLE: Binary search recursion tree
 
 ---
 
+
+
+
 ## 3. Recurrence Relations — When Recursion Gets Mathematical
 
 ### The Master Theorem (Interview-Ready Version)
@@ -297,6 +303,27 @@ YOU (Level 3 — MIT level):
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 3. Recurrence Relations — When Recursion Gets Mathematical**
+>
+> **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+> <details><summary>Answer</summary>
+>
+> An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** ```java
+void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
+fib(50) // takes forever
+```
+Why and what are the 3 fixes?
+> <details><summary>Answer</summary>
+>
+> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+> </details>
+>
 
 ## 4. Amortized Analysis — When Average Matters More
 
@@ -757,3 +784,14 @@ THE CONSTRAINT → COMPLEXITY SHORTCUT:
 ---
 
 [⬅ Pattern Recognition Engine](03_DSA_Pattern_Recognition_Engine.md) | [📚 Index](00_INDEX.md) | [Next: SQL Interview Thinking ➡](05_SQL_Interview_Thinking.md)
+
+
+> 🔬 **Section Challenge — Summary Complexity Cheat Sheet**
+>
+> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+> <details><summary>Answer</summary>
+>
+> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+> </details>
+>
+

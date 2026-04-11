@@ -8,6 +8,9 @@
 
 ::: pattern
 
+
+
+
 ## What Is It?
 
 A stack that supports:
@@ -232,6 +235,17 @@ public class MaxStackSimple {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 2.2 Max Stack**
+>
+> **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+> <details><summary>Answer</summary>
+>
+> In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
+> </details>
+>
 
 # 📬 Part 3: Queue Variants
 
@@ -777,6 +791,17 @@ flowchart TD
 
 ---
 
+
+
+> 🔬 **Section Challenge — 3.3 Monotonic Queue**
+>
+> **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+> <details><summary>Answer</summary>
+>
+> In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
+> </details>
+>
+
 # 🌳 Part 4: Tree Variants
 
 ## 4.1 Binary Tree Types
@@ -877,6 +902,11 @@ flowchart TD
 ```
 
 :::
+
+
+
+> 🔬 **Section Challenge — 4.1 Binary Tree Types**
+>>
 
 ## 4.2 AVL Tree (Self-Balancing BST)
 
@@ -1168,6 +1198,9 @@ public class AVLTree {
 ```
 
 ---
+
+
+
 
 ## 4.3 Red-Black Tree
 
@@ -1821,6 +1854,17 @@ This guide covers ALL major variants of data structures with:
 | 6 | Sliding Window Maximum (LC 239) | LeetCode | Hard | Monotonic deque |
 
 ---
+
+
+
+> 🔬 **Section Challenge — Section 3: Monotonic Stack / Monotonic Queue**
+>
+> **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+> <details><summary>Answer</summary>
+>
+> In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
+> </details>
+>
 
 ## HIDDEN GEMS — DS Variants
 

@@ -161,6 +161,9 @@ public class BackfillRegionMigration {
 
 ---
 
+
+
+
 ## Scenario 78: Column Type Change Breaks Data
 
 ### 🔴 The Incident
@@ -194,6 +197,11 @@ ALTER TABLE users RENAME COLUMN phone_number TO phone;
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — Scenario 78: Column Type Change Breaks Data**
+>>
 
 ## Scenario 79: Dropping Column That Application Still Reads
 
@@ -255,6 +263,9 @@ public class User {
 ```
 
 ---
+
+
+
 
 ## Scenario 80: Foreign Key Added Retroactively — Orphan Data Discovered
 
@@ -330,6 +341,9 @@ ALTER TABLE orders ADD CONSTRAINT chk_status
 
 ---
 
+
+
+
 ## Scenario 82: ENUM Type Extended — Deployment Order Matters
 
 ### 🔴 The Incident
@@ -361,6 +375,11 @@ ALTER TABLE orders ADD CONSTRAINT chk_status
 
 ---
 
+
+
+> 🔬 **Section Challenge — Scenario 82: ENUM Type Extended — Deployment Order Matters**
+>>
+
 ## Scenario 83: Default Value Change Breaks INSERT Logic
 
 ### SQL Solution
@@ -385,6 +404,9 @@ public class Order {
 ```
 
 ---
+
+
+
 
 ## Scenario 84: Migration Runs on Prod Before Code Deploy
 
@@ -577,6 +599,9 @@ public class EmptyToNullConverter implements AttributeConverter<String, String> 
 
 ---
 
+
+
+
 ## Scenario 89: Decimal Precision Loss — $0.01 Becomes $0.00
 
 ### SQL Solution
@@ -679,6 +704,9 @@ SELECT id, email FROM users WHERE email LIKE '%_dup_%';
 
 ---
 
+
+
+
 ## Scenario 91: Circular Foreign Key Preventing Table Drops
 
 ### SQL Solution
@@ -705,6 +733,9 @@ CREATE TABLE a_b_links (
 ```
 
 ---
+
+
+
 
 ## Scenario 92: God Table with 200 Columns
 
@@ -817,6 +848,8 @@ CREATE TABLE products (
 ```
 
 ---
+
+
 
 ## Scenario 94–100: Quick-Fire Schema & Disaster Scenarios
 
@@ -1008,3 +1041,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 ---
 
 [⬅ Previous: 40_RealWorld_Production_Scenarios_Part3](40_RealWorld_Production_Scenarios_Part3.md) | [📚 Index](00_INDEX.md) | [Next: 42_RealWorld_Production_Scenarios_Part5 ➡](42_RealWorld_Production_Scenarios_Part5.md)
+
+
+

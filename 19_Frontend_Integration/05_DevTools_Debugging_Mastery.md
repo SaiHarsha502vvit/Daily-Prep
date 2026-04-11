@@ -282,6 +282,9 @@ getEventListeners($0)
 
 ---
 
+
+
+
 ## 4. Network Tab — Request Waterfall Analysis
 
 ```
@@ -349,6 +352,11 @@ getEventListeners($0)
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 4. Network Tab — Request Waterfall Analysis**
+>>
 
 ## 5. Performance Tab — Finding What Makes Your App Slow
 
@@ -420,6 +428,9 @@ getEventListeners($0)
 ```
 
 ---
+
+
+
 
 ## 6. Memory Tab — Hunting Memory Leaks
 
@@ -523,6 +534,9 @@ getEventListeners($0)
 ```
 
 ---
+
+
+
 
 ## 7. Application Tab — Storage, Service Workers, Cache
 
@@ -682,6 +696,9 @@ getEventListeners($0)
 
 ---
 
+
+
+
 ## 10. Mobile Debugging & Device Emulation
 
 ```
@@ -720,6 +737,9 @@ getEventListeners($0)
 ```
 
 ---
+
+
+
 
 ## 11. Common Debugging Scenarios — Cookbook
 
@@ -793,3 +813,6 @@ getEventListeners($0)
 ---
 
 > **Next Chapter**: [Web Performance & Core Web Vitals →](06_Web_Performance_CoreWebVitals.md)
+
+
+

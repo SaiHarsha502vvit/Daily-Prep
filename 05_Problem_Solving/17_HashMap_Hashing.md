@@ -4,6 +4,42 @@
 
 ---
 
+## 🗺️ Pattern Recognition Header — HashMap & Hashing
+
+> **Which HashMap pattern should I use?**
+>
+
+| Signal / Problem Type | Pattern | Core Idea |
+|---|---|---|
+| `two numbers that sum to target` | **Two-Sum (complement)** | Store `val→idx`; look up `target-num` before inserting |
+| `count occurrences / top-k frequency` | **Frequency Count** | `map.merge(key, 1, Integer::sum)` |
+| `how many subarrays sum to K?` | **Prefix Sum + HashMap** | `prefixCount.get(prefixSum - k)` |
+| `group items by property` | **Grouping** | `map.computeIfAbsent(key, k→new ArrayList<>()).add(val)` |
+| `check if element seen before` | **HashSet visited** | `set.add(x)` → false if already present |
+| `find duplicates in O(n) O(1) space` | **In-place Hashing** | Negate at index `|val|-1` as visited marker |
+
+>
+> **The Golden Rule:**
+> ```
+> "Brute force is O(n²)?  → Inner loop is a SEARCH → Replace with HashMap → O(n)"
+>
+> Key reason:
+>   Brute Two-Sum: for i → for j (search) → O(n²)
+>   HashMap Two-Sum: for i → map.get(target-num) → O(n)
+>
+> ⚠️ Java mod pitfall: -7 % 5 = -2 in Java. Fix: ((n % k) + k) % k
+> ⚠️ Java PQ is MIN-HEAP. Max-heap: new PriorityQueue<>(Comparator.reverseOrder())
+> ```
+>
+> 📖 **Mental Model:** [04_Array_String_Thinking.md](../14_Mental_Models/04_Array_String_Thinking.md)
+> 📖 **Space-Time Tradeoff:** [12_Space_Time_Tradeoffs.md](../14_Mental_Models/12_Space_Time_Tradeoffs.md)
+> 📖 **Full Pattern Guide:** [00_PATTERN_MASTER_GUIDE.md](../04_Patterns_Templates/00_PATTERN_MASTER_GUIDE.md)
+
+---
+
+
+
+
 # 📚 SECTION 15: HASHMAP & HASHING PROBLEMS
 
 ---
@@ -126,6 +162,23 @@
 
 
 ---
+
+
+
+> 🔬 **Section Challenge — PART 0: WHY HashMap — MIT/KTH STYLE**
+>
+> **Challenge 1 (Reasoning):** You insert 1000 entries into a HashMap with default capacity 16. How many resize operations happen?
+> <details><summary>Answer</summary>
+>
+> Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 (64→128), 96 (128→256), 192 (256→512), 384 (512→1024). Total: 6 resizes. Each resize copies all entries to new bucket array. Pre-sizing: `new HashMap<>(1334)` (1000/0.75 ≈ 1334 → next power of 2 = 2048) avoids all resizes.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** Two `Person` objects with same name and age. You override `equals()` to return true but not `hashCode()`. What happens when used as `HashMap` keys?
+> <details><summary>Answer</summary>
+>
+> Both objects land in DIFFERENT buckets (different hashCodes → different bucket index). The HashMap doesn't check `equals()` across buckets — it goes straight to one bucket. So `map.get(person2)` returns NULL even though `person1.equals(person2)`. Overriding `equals` without `hashCode` violates the contract and breaks all hash-based collections. Always override both together.
+> </details>
+>
 
 ## 15.1 FREQUENCY COUNTING (Easy–Medium)
 
@@ -580,6 +633,9 @@ APPROACH: Vertical scan (no HashMap needed)
 
 ---
 
+
+
+
 ## 15.2 PREFIX SUM + HASHMAP (Medium–Hard)
 
 > **This is the single most important pattern in this section.**
@@ -950,6 +1006,11 @@ VARIANTS:
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 15.2 PREFIX SUM + HASHMAP (Medium–Hard)**
+>>
 
 ## #️⃣ 15.3 Design / Advanced Hashmap
 
@@ -1343,6 +1404,23 @@ flowchart LR
 
 ---
 
+
+
+> 🔬 **Section Challenge — ️⃣ 15.3 Design / Advanced Hashmap**
+>
+> **Challenge 1 (Reasoning):** You insert 1000 entries into a HashMap with default capacity 16. How many resize operations happen?
+> <details><summary>Answer</summary>
+>
+> Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 (64→128), 96 (128→256), 192 (256→512), 384 (512→1024). Total: 6 resizes. Each resize copies all entries to new bucket array. Pre-sizing: `new HashMap<>(1334)` (1000/0.75 ≈ 1334 → next power of 2 = 2048) avoids all resizes.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** Two `Person` objects with same name and age. You override `equals()` to return true but not `hashCode()`. What happens when used as `HashMap` keys?
+> <details><summary>Answer</summary>
+>
+> Both objects land in DIFFERENT buckets (different hashCodes → different bucket index). The HashMap doesn't check `equals()` across buckets — it goes straight to one bucket. So `map.get(person2)` returns NULL even though `person1.equals(person2)`. Overriding `equals` without `hashCode` violates the contract and breaks all hash-based collections. Always override both together.
+> </details>
+>
+
 ## 📌 15.4 Hidden Gems
 
 ---
@@ -1550,6 +1628,23 @@ flowchart TD
 
 ---
 
+
+
+> 🔬 **Section Challenge — ️⃣ Hashmap Complexity Cheat Sheet**
+>
+> **Challenge 1 (Reasoning):** You insert 1000 entries into a HashMap with default capacity 16. How many resize operations happen?
+> <details><summary>Answer</summary>
+>
+> Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 (64→128), 96 (128→256), 192 (256→512), 384 (512→1024). Total: 6 resizes. Each resize copies all entries to new bucket array. Pre-sizing: `new HashMap<>(1334)` (1000/0.75 ≈ 1334 → next power of 2 = 2048) avoids all resizes.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** Two `Person` objects with same name and age. You override `equals()` to return true but not `hashCode()`. What happens when used as `HashMap` keys?
+> <details><summary>Answer</summary>
+>
+> Both objects land in DIFFERENT buckets (different hashCodes → different bucket index). The HashMap doesn't check `equals()` across buckets — it goes straight to one bucket. So `map.get(person2)` returns NULL even though `person1.equals(person2)`. Overriding `equals` without `hashCode` violates the contract and breaks all hash-based collections. Always override both together.
+> </details>
+>
+
 ## 📌 Mastery Checklist
 
 ```
@@ -1640,5 +1735,230 @@ flowchart TD
 
 
 ---
+
+---
+
+## 🏆 Competitive Programming — Codeforces Problems
+
+| Problem | Link | Technique | Difficulty |
+|---|---|---|---|
+| Primes or Palindromes | [CF 551B](https://codeforces.com/problemset/problem/551/B) | HashMap + sieve | ⭐ Easy |
+| Berland Sequence | [CF 1015D](https://codeforces.com/problemset/problem/1015/D) | Frequency map | ⭐⭐ Medium |
+| Colorful Graph | [CF 246D](https://codeforces.com/problemset/problem/246/D) | HashMap grouping | ⭐⭐ Medium |
+| New Year and Counting | [CF 750C](https://codeforces.com/problemset/problem/750/C) | HashMap + prefix sum | ⭐⭐ Medium |
+| Ants | [CF 6C](https://codeforces.com/problemset/problem/6/C) | HashMap + sorting | ⭐⭐ Medium |
+| Vanya and Triangles | [CF 552C](https://codeforces.com/problemset/problem/552/C) | HashMap + geometry | ⭐⭐⭐ Hard |
+
+---
+
+
+
+
+## 🌍 Real-World Applications of HashMap & Hashing
+
+| Technique | Real-World System | How It's Used |
+|---|---|---|
+| **Two-Sum complement lookup** | Financial fraud detection | Quickly find if a pair of transactions sums to a laundering target |
+| **Frequency map** | Log analysis (Splunk, ELK) | Count occurrences of error codes across millions of log lines |
+| **Prefix sum + HashMap** | Analytics dashboards | Range sum queries on time-series data without scanning from scratch |
+| **Grouping (anagram-style)** | Duplicate file finder | SHA-256 hash each file → group by hash → identical content detected |
+| **HashSet visited** | Web crawler (Googlebot) | Track already-crawled URLs in O(1) to avoid loops |
+| **Consistent hashing** | Distributed systems (DynamoDB, Cassandra) | Assign data to servers; add/remove servers with minimal reshuffling |
+
+```
+🔥 CONSISTENT HASHING — THE REAL DEAL:
+   Regular modulo hash: server = hash(key) % N
+   Problem: Add a server → 90%+ of keys relocate!
+
+   Consistent hash ring: keys AND servers on circular ring
+   Key goes to nearest server clockwise → only K/N keys move on add/remove
+   "Used by: Amazon DynamoDB, Cassandra, Discord CDN, Redis Cluster"
+```
+
+---
+
+
+---
+
+
+
+
+## 🏋️ Practice & Interview Questions — Hash Tables
+
+### Predict / Trace
+**Q1.** HashMap with capacity 4. Insert keys: "a"(hash=1), "b"(hash=2), "c"(hash=5). Which bucket does "c" go into?
+<details><summary>Answer</summary>
+
+`5 % 4 = 1` → bucket 1. Collision with "a"! Resolved by chaining (Java: linked list / tree at bucket).
+</details>
+
+**Q2.** What's the load factor? If HashMap capacity=16 and size=13, is a resize triggered?
+<details><summary>Answer</summary>
+
+Default load factor = 0.75. Threshold = 16 × 0.75 = 12. Size 13 > 12 → YES, resize to capacity 32 was triggered when 13th element was inserted.
+</details>
+
+### LeetCode / Coding
+**Q3.** ⭐ Two Sum with HashMap.
+<details><summary>Solution</summary>
+
+```java
+Map<Integer,Integer> map=new HashMap<>();
+for(int i=0;i<nums.length;i++){
+    if(map.containsKey(target-nums[i])) return new int[]{map.get(target-nums[i]),i};
+    map.put(nums[i],i);
+}
+```
+</details>
+
+**Q4.** ⭐ Group Anagrams — group strings that are anagrams of each other.
+<details><summary>Solution</summary>
+
+```java
+Map<String,List<String>> map=new HashMap<>();
+for(String s:strs){
+    char[] c=s.toCharArray(); Arrays.sort(c);
+    String key=new String(c);
+    map.computeIfAbsent(key,k->new ArrayList<>()).add(s);
+}
+return new ArrayList<>(map.values());
+```
+</details>
+
+**Q5.** ⭐ Valid Anagram — check if two strings are anagrams.
+<details><summary>Solution</summary>
+
+```java
+if(s.length()!=t.length()) return false;
+int[] count=new int[26];
+for(char c:s.toCharArray()) count[c-'a']++;
+for(char c:t.toCharArray()) if(--count[c-'a']<0) return false;
+return true;
+```
+</details>
+
+**Q6.** ⭐ Longest Consecutive Sequence — O(N).
+<details><summary>Solution</summary>
+
+```java
+Set<Integer> set=new HashSet<>(Arrays.asList(nums));
+int maxLen=0;
+for(int n:set){
+    if(!set.contains(n-1)){ // start of sequence
+        int len=1; while(set.contains(n+len)) len++;
+        maxLen=Math.max(maxLen,len);
+    }
+}
+```
+</details>
+
+**Q7.** ⭐⭐ Top K Frequent Elements.
+<details><summary>Solution</summary>
+
+```java
+Map<Integer,Integer> freq=new HashMap<>();
+for(int n:nums) freq.merge(n,1,Integer::sum);
+PriorityQueue<Integer> pq=new PriorityQueue<>((a,b)->freq.get(a)-freq.get(b));
+for(int n:freq.keySet()){ pq.offer(n); if(pq.size()>k) pq.poll(); }
+int[] res=new int[k]; for(int i=k-1;i>=0;i--) res[i]=pq.poll();
+```
+</details>
+
+**Q8.** ⭐⭐ Subarray Sum Equals K (prefix sum + HashMap).
+<details><summary>Solution</summary>
+
+```java
+Map<Integer,Integer> map=new HashMap<>(); map.put(0,1);
+int sum=0, count=0;
+for(int n:nums){ sum+=n; count+=map.getOrDefault(sum-k,0); map.merge(sum,1,Integer::sum); }
+return count;
+```
+</details>
+
+**Q9.** ⭐⭐ LFU Cache — Least Frequently Used eviction.
+<details><summary>Key insight</summary>
+
+Use: `HashMap<key→value>`, `HashMap<key→freq>`, `HashMap<freq→LinkedHashSet<key>>`, `int minFreq`. On get/put: update freq, move key to higher freq set, update minFreq.
+</details>
+
+### Interview Questions
+**Q10.** How does Java's HashMap handle hash collisions?
+<details><summary>Answer</summary>
+
+Java 8+: Each bucket uses a linked list. If bucket size ≥ 8 AND total capacity ≥ 64: list converts to a Red-Black Tree (O(log N) worst case instead of O(N)).
+</details>
+
+**Q11.** Why must you override both `hashCode()` and `equals()` together?
+<details><summary>Answer</summary>
+
+HashMap first checks `hashCode()` to find the bucket, then `equals()` to find the exact key. If you override only `equals()`: two "equal" objects land in different buckets. If only `hashCode()`: bucket is found but equals() can't identify the right entry. Both must be consistent.
+</details>
+
+**Q12.** `ConcurrentHashMap` vs `Collections.synchronizedMap()` — why is CHM preferred?
+<details><summary>Answer</summary>
+
+`synchronizedMap`: wraps entire map with a single lock — every operation serialized. `ConcurrentHashMap`: segments/lock striping in Java 7, CAS + synchronized per-bucket in Java 8 — concurrent reads don't block at all, writes only lock individual buckets.
+</details>
+
+### MCQ Rapid Fire
+| # | Question | Answer |
+|---|---|---|
+| 1 | Default HashMap capacity | 16 |
+| 2 | Default load factor | 0.75 |
+| 3 | HashMap.get() avg/worst | O(1) avg, O(N) worst (all collide) |
+| 4 | HashMap maintains insertion order? | ❌ No — use LinkedHashMap |
+| 5 | TreeMap ordering | Natural ordering (Red-Black Tree) |
+| 6 | HashSet is backed by | HashMap (key only, value=dummy) |
+| 7 | HashMap allows null key? | ✅ Yes, exactly one null key |
+| 8 | HashMap thread-safe? | ❌ No — use ConcurrentHashMap |
+
+
+
+---
+
+## 🧠 Deep Conceptual Questions — Hash Tables
+
+**C1. What makes a good hash function? Why do bad hash functions destroy performance?**
+<details><summary>Deep Answer</summary>
+
+A good hash function: (1) **uniform distribution** — spreads keys across all buckets evenly, minimizing collisions, (2) **deterministic** — same key always same hash, (3) **fast to compute** — O(1), (4) **avalanche effect** — small change in key → large change in hash. Bad example: `hashCode() { return 1; }` — all keys in one bucket → O(N) list → HashMap becomes a linked list. Java's `String.hashCode()` uses polynomial rolling hash: `s[0]*31^(n-1) + s[1]*31^(n-2) + ...`. The prime 31 exploits hardware optimization: `31*x = (x << 5) - x`. Open addressing vs chaining: Java uses chaining.
+</details>
+
+**C2. Why does Java's HashMap convert a bucket's linked list to a Red-Black Tree?**
+<details><summary>Deep Answer</summary>
+
+Without the tree conversion: if many keys hash to the same bucket (hash collision attack or bad hash), the bucket becomes a long linked list. Lookup in that bucket: O(N). An attacker could craft inputs that all hash to the same bucket → O(N) per lookup → denial of service on any HashMap-based server. Java 8+ converts to Red-Black Tree when bucket size ≥ 8 (and map size ≥ 64): worst-case drops to O(log N). Converts back to list when bucket shrinks below 6 (hysteresis prevents oscillation).
+</details>
+
+**C3. Why must `hashCode()` and `equals()` be consistent?**
+<details><summary>Deep Answer</summary>
+
+HashMap workflow: (1) compute `key.hashCode()` → find bucket index, (2) in that bucket, call `key.equals(candidate)` to find exact match. **Contract**: if `a.equals(b)` then `a.hashCode() == b.hashCode()`. Violation: override `equals()` without `hashCode()`. Two "equal" objects land in different buckets. `map.get(key2)` when `key2.equals(key1)` → goes to wrong bucket → returns null even though key1 is in the map. The reverse isn't required: two unequal objects CAN have the same hashCode (collision) — just hurts performance.
+</details>
+
+**C4. ConcurrentHashMap — how does it achieve thread safety without a global lock?**
+<details><summary>Deep Answer</summary>
+
+Java 8 ConcurrentHashMap: no single lock. Instead: **CAS (Compare-And-Swap)** for empty bucket slots — a single CPU instruction that atomically reads and conditionally writes, no lock needed. **Synchronized per-bucket** for non-empty buckets — only the specific bucket is locked, not the whole map. **Volatile head node** — readers always see the latest bucket head without a lock. Reads are completely lock-free. Result: 16x+ throughput improvement over `Hashtable` under contention.
+</details>
+
+**C5. What is "open addressing" and how does it differ from chaining?**
+<details><summary>Deep Answer</summary>
+
+**Chaining** (Java HashMap): each bucket holds a linked list of all colliding entries. Handles high load factors gracefully. Pointer overhead per entry. **Open addressing**: all entries stored in the array itself. On collision: probe for the next empty slot (linear, quadratic, or double-hashing probe sequence). Better cache performance (no pointer chasing). Degraded badly at high load factors (clustering). Python's dict uses open addressing — which is why Python dicts need deletion markers ("tombstones") to maintain probe sequences.
+</details>
+
+**C6. Why does `LinkedHashMap` maintain insertion order while `HashMap` doesn't?**
+<details><summary>Deep Answer</summary>
+
+`LinkedHashMap` adds a doubly-linked list through all entries in insertion order, on top of the regular HashMap structure. Each Entry node has `before` and `after` pointers. Iteration follows the linked list (insertion order) instead of scanning buckets. The HashMap part still handles O(1) get/put. Extra cost: 2 extra pointers per entry (16 bytes per object). `TreeMap` maintains sorted order via Red-Black Tree — O(log N) for all operations but ordered. Choice: HashMap (no order needed), LinkedHashMap (insertion order), TreeMap (sorted order).
+</details>
+
+**C7. Subarray Sum Equals K — why does the prefix sum + HashMap approach work?**
+<details><summary>Deep Answer</summary>
+
+Prefix sum: `prefix[i]` = sum of elements from index 0 to i. Sum of subarray [l, r] = `prefix[r] - prefix[l-1]`. If we want sum = k: `prefix[r] - prefix[l-1] = k` → `prefix[l-1] = prefix[r] - k`. As we compute prefix sums, we look up whether `current_prefix - k` was seen before. If yes, a subarray summing to k ends here. HashMap stores {prefix_sum → count_of_occurrences} to handle duplicate prefix sums (multiple subarrays). Initialize with `{0: 1}` to handle subarrays starting at index 0.
+</details>
+
 
 > **Navigation**: [< Previous](16_Heap.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](18_BitManipulation.md)

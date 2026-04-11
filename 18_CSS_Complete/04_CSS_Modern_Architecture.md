@@ -132,6 +132,28 @@
 
 ---
 
+
+
+> 🔬 **Section Challenge — 1. CSS Custom Properties (Variables) — Design Tokens**
+>
+> **Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
+> <details><summary>Answer</summary>
+>
+> ```java
+> public class PaymentException extends RuntimeException { // unchecked!
+>     private final String errorCode;
+>     private final String transactionId;
+>     public PaymentException(String code, String txId, String msg, Throwable cause) {
+>         super(msg, cause); this.errorCode=code; this.transactionId=txId;
+>     }
+> }
+> public class InsufficientFundsException extends PaymentException { ... }
+> public class PaymentGatewayException extends PaymentException { ... }
+> ```
+> Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
+> </details>
+>
+
 ## 2. CSS Naming Methodologies
 
 ### BEM (Block Element Modifier)
@@ -260,6 +282,9 @@ function Card({ featured }: { featured?: boolean }) {
 ```
 
 ---
+
+
+
 
 ## 3. Modern CSS Selectors (2023-2024)
 
@@ -535,6 +560,9 @@ form:has(:invalid) {
 
 ---
 
+
+
+
 ## 5. Complete Design System Tokens
 
 ```css
@@ -599,6 +627,8 @@ form:has(:invalid) {
 ```
 
 ---
+
+
 
 ## 6. CSS-in-JS & Tailwind — Beyond Traditional CSS
 
@@ -682,6 +712,9 @@ flowchart TD
 ```
 
 ---
+
+
+
 
 ## Interview Quick-Fire
 
@@ -835,6 +868,9 @@ THE PROBLEM WITH MEDIA QUERIES:
 
 ---
 
+
+
+
 ## 9. Cascade Layers (@layer) — Taking Control of Specificity
 
 ```
@@ -901,6 +937,9 @@ THE SPECIFICITY PROBLEM:
 ```
 
 ---
+
+
+
 
 ## 10. View Transitions API — Smooth Page Navigations (2024)
 
@@ -1044,4 +1083,15 @@ border-left: 1px solid;     /* border-inline-start: 1px solid; */
 
 ---
 
-> **Navigation**: [< Previous](03_CSS_Responsive_Animations.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_CSS_Deep_Reasoning.md)
+> **Navigation**: [< Previous](03_CSS_Responsive_Animations.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_CSS_Deep_Reasoning.md)
+
+
+> 🔬 **Section Challenge — 11. Modern CSS Functions — The Power Tools**
+>>
+> **Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+> <details><summary>Answer</summary>
+>
+> Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+> </details>
+>
+

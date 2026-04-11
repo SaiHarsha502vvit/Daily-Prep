@@ -109,6 +109,11 @@ try {
 
 ---
 
+
+
+> 🔬 **Section Challenge — 1. Error Types in JavaScript**
+>>
+
 ## 2. try/catch/finally
 
 ```javascript
@@ -161,6 +166,9 @@ try {
 ```
 
 ---
+
+
+
 
 ## 3. Custom Error Classes
 
@@ -228,6 +236,28 @@ try {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 3. Custom Error Classes**
+>
+> **Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
+> <details><summary>Answer</summary>
+>
+> ```java
+> public class PaymentException extends RuntimeException { // unchecked!
+>     private final String errorCode;
+>     private final String transactionId;
+>     public PaymentException(String code, String txId, String msg, Throwable cause) {
+>         super(msg, cause); this.errorCode=code; this.transactionId=txId;
+>     }
+> }
+> public class InsufficientFundsException extends PaymentException { ... }
+> public class PaymentGatewayException extends PaymentException { ... }
+> ```
+> Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
+> </details>
+>
 
 ## 4. Error Handling Patterns
 
@@ -302,6 +332,9 @@ process.on("unhandledRejection", (reason) => {
 
 ---
 
+
+
+
 ## 5. Input Validation — Preventing Errors
 
 ```javascript
@@ -342,6 +375,9 @@ const result = UserSchema.safeParse(rawInput); // { success, data/error }
 ```
 
 ---
+
+
+
 
 ## 6. Debugging with Chrome DevTools
 
@@ -545,6 +581,9 @@ if (process.env.NODE_ENV === "development") {
 
 ---
 
+
+
+
 ## 7. Common Debugging Strategies
 
 ```
@@ -610,6 +649,9 @@ flowchart TD
 ```
 
 ---
+
+
+
 
 ## 8. Production Error Monitoring
 
@@ -678,6 +720,9 @@ class ErrorBoundary extends React.Component {
 
 ---
 
+
+
+
 ## 9. Error Handling Checklist
 
 ```
@@ -734,6 +779,9 @@ flowchart TD
 ```
 
 ---
+
+
+
 
 ## Interview Quick-Fire
 
@@ -801,3 +849,140 @@ flowchart TD
 > **End of JavaScript Series** | [← Previous: Modern ES6+](06_JS_Modern_ES6Plus.md) | [Index](../00_MASTER_INDEX.md)
 >
 > **Next Series:** [TypeScript Foundations →](../17_TypeScript/01_TS_Foundations.md)
+
+---
+
+## 🏋️ Practice & Interview Questions — Exceptions & Error Handling
+
+### Predict / Trace
+**Q1.** What prints?
+```java
+try { int x = 1/0; } catch(Exception e) { System.out.println("caught"); } finally { System.out.println("finally"); }
+```
+<details><summary>Answer</summary>
+
+```
+caught
+finally
+```
+`finally` ALWAYS runs (except JVM crash or `System.exit()`).
+</details>
+
+**Q2.** What prints? Does `finally` override the return value?
+```java
+static int test() { try { return 1; } finally { return 2; } }
+System.out.println(test());
+```
+<details><summary>Answer</summary>
+
+`2` — `finally` overrides the `try` block's return. This is an anti-pattern! Avoid returning from finally.
+</details>
+
+**Q3.** What happens when you swallow `InterruptedException`?
+```java
+try { Thread.sleep(1000); } catch(InterruptedException e) { /* ignore */ }
+```
+<details><summary>Answer</summary>
+
+The interrupted flag is **cleared** by catching InterruptedException. The thread has no way to know it was interrupted. Callers that rely on interruption to stop the thread will hang forever. **Fix**: `catch(InterruptedException e) { Thread.currentThread().interrupt(); throw new RuntimeException(e); }`
+</details>
+
+### Coding Problems
+**Q4.** Write a method that reads a file and properly handles multiple exception types.
+<details><summary>Solution</summary>
+
+```java
+public String readFile(Path path) throws IOException {
+    try (BufferedReader reader = Files.newBufferedReader(path)) {
+        return reader.lines().collect(Collectors.joining("
+"));
+    } catch (NoSuchFileException e) {
+        throw new FileNotFoundException("File not found: " + path, e);
+    } catch (AccessDeniedException e) {
+        throw new SecurityException("Cannot read file: " + path, e);
+    }
+    // IOException (parent) propagated as-is
+    // try-with-resources auto-closes reader
+}
+```
+</details>
+
+**Q5.** Design a custom exception hierarchy for an e-commerce system.
+<details><summary>Solution</summary>
+
+```java
+// Base domain exception
+public class ECommerceException extends RuntimeException {
+    private final String errorCode;
+    public ECommerceException(String code, String message) {
+        super(message); this.errorCode=code;
+    }
+    public ECommerceException(String code, String message, Throwable cause) {
+        super(message, cause); this.errorCode=code;
+    }
+}
+public class OrderNotFoundException extends ECommerceException { ... }        // 404
+public class InsufficientInventoryException extends ECommerceException { ... } // 409
+public class PaymentFailedException extends ECommerceException { ... }         // 402
+public class InvalidOrderStateException extends ECommerceException { ... }     // 422
+```
+</details>
+
+**Q6.** What's wrong with this exception handling?
+```java
+try { processOrder(order); }
+catch (Exception e) { log.error(e.getMessage()); }
+```
+<details><summary>Answer</summary>
+
+**3 bugs**: (1) Washes away the exception type — caller has no idea what failed. (2) `e.getMessage()` may be null for some exceptions. (3) Swallowing the exception — processing continues as if nothing failed. **Fix**: log with `e` (not `e.getMessage()`), either rethrow or handle specifically.
+</details>
+
+### MCQ Rapid Fire
+| # | Question | Answer |
+|---|---|---|
+| 1 | Checked vs Unchecked exception | Checked: must catch/declare. Unchecked: RuntimeException subclasses |
+| 2 | Error vs Exception | Error: JVM-level (OOM, StackOverflow) — don't catch. Exception: application-level |
+| 3 | `finally` runs when? | Always, except System.exit() or JVM crash |
+| 4 | Try-with-resources closes in which order? | Reverse order of opening |
+| 5 | `throw` vs `throws` | `throw`: throw instance. `throws`: declare method can throw |
+| 6 | Can constructors throw exceptions? | ✅ Yes |
+| 7 | Multi-catch `catch(A | B e)` — can A and B have parent-child relation? | ❌ No — compile error |
+| 8 | Chaining exceptions preserves what? | Original stack trace via `initCause()` or constructor |
+| 9 | Exception in static initializer → | ExceptionInInitializerError (then NoClassDefFoundError on next access) |
+| 10 | RuntimeException is checked? | ❌ Unchecked |
+
+---
+
+## 🧠 Deep Conceptual Questions — Exception Design & Error Handling
+
+**C1. Why are checked exceptions controversial? What is the "exception tunnel" problem?**
+<details><summary>Deep Answer</summary>
+
+Checked exceptions force callers to handle or declare them — theoretically good for correctness. BUT: **exception tunnel** (aka exception leakage): a low-level `SQLException` propagates up through 5 layers of business logic, each must `throws SQLException` even if they can't handle it. Violates abstraction — business layer shouldn't know about SQL. Solution: wrap at layer boundaries: `catch(SQLException e) { throw new RepositoryException("Failed to load user", e); }`. Checked exceptions in functional interfaces (`Runnable`, `Function`, `Predicate`) don't play well together — lambdas can't throw checked exceptions. This is why most modern Java frameworks (Spring, Quarkus) use unchecked exceptions exclusively.
+</details>
+
+**C2. Whay does `catch(Exception e)` hide bugs and which exceptions does it accidentally catch?**
+<details><summary>Deep Answer</summary>
+
+`Exception` is the parent of all checked AND unchecked exceptions. Catching it can accidentally suppress: `NullPointerException` (programmer error), `ArrayIndexOutOfBoundsException` (programmer error), `ClassCastException` (programmer error), `IllegalArgumentException` (programming contract violated), `StackOverflowError` (wait, that's Error — not caught by Exception). These represent **bugs** — you should FIX them, not catch them. Catching `Exception` silently swallows real bugs, making systems appear to work while doing nothing on error. Rule: catch the most SPECIFIC exception you can handle. If you can't handle it: don't catch it at all (let it propagate).
+</details>
+
+**C3. What is the overhead of creating an exception object, and when does it matter?**
+<details><summary>Deep Answer</summary>
+
+**Stack trace capture**: when an exception is constructed (`new Exception()`), the JVM walks the call stack and captures all frames → String allocation per frame. For a 20-frame stack: ~20 String objects. Total: ~5-10μs (fast in isolation but terrible in a hot path). If you throw exceptions for **control flow** (returning null, end-of-input, validation failure in a tight loop): performance degrades severely. Mitigation: pre-created singleton exceptions for known conditions (no stack trace), or override `fillInStackTrace()` returning `this` for no-cost stack capture. Rule: exceptions are for EXCEPTIONAL conditions, not normal flow. Validation framework (returning error objects) is better than throw-for-validation.
+</details>
+
+**C4. Try-with-resources: what happens when BOTH the body AND close() throw exceptions?**
+<details><summary>Deep Answer</summary>
+
+Without try-with-resources: if body throws e1 and finally-close() throws e2, e2 propagates and e1 is **LOST** (original cause gone — debugging nightmare). Try-with-resources: the close() exception is **suppressed** — e1 propagates, e2 is attached as a `getSuppressed()` exception. Both are preserved. You can inspect: `e1.getSuppressed()` returns array of suppressed exceptions. Multiple closeable resources: closed in REVERSE order of declaration. If multiple close() calls throw: all suppressed on the first exception. This is why try-with-resources is mandatory for any `Closeable` that might throw on close (most I/O streams, DB connections, locks).
+</details>
+
+**C5. How should you handle exceptions in async/reactive code vs synchronous code?**
+<details><summary>Deep Answer</summary>
+
+**Synchronous**: exception propagates up the call stack naturally. Caller can catch. **CompletableFuture**: exception stored in the future, only surfaces on `.get()` or `.join()`. Unhandled: silently swallowed. ALWAYS add `.exceptionally()` or `.handle()`. **ExecutorService.execute()**: uncaught exception → UncaughtExceptionHandler → default: print to stderr and DIE silently. **ExecutorService.submit()**: exception stored in Future — silently swallowed unless `.get()` called. **Reactive (Reactor)**: exception is a signal on the stream — `.onErrorReturn()`, `.onErrorResume()`, `.doOnError()`. Key principle: in async code, exceptions NEVER propagate automatically — you must explicitly handle them at the async boundary.
+</details>
+

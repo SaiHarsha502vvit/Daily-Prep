@@ -78,6 +78,11 @@ REFERENCE COUNTING & GARBAGE COLLECTION:
 ## 1.2 Data Types Deep Dive
 
 ```python
+
+
+> 🔬 **Section Challenge — 1.2 Data Types Deep Dive**
+>>
+
 # ═══════════════════════════════════════════
 # NUMBERS
 # ═══════════════════════════════════════════
@@ -214,6 +219,17 @@ for key, value in user.items():
 ## 2.2 Generators — Lazy Evaluation
 
 ```python
+
+
+> 🔬 **Section Challenge — 2.2 Generators — Lazy Evaluation**
+>
+> **Challenge 1 (Reasoning):** A generator that yields 1,000,000 numbers — what's its memory footprint vs a list?
+> <details><summary>Answer</summary>
+>
+> Generator: O(1) — stores only the current execution state (stack frame: local variables, instruction pointer). ~200-300 bytes total, regardless of N. List: O(N) — stores all 1M integer objects. 1M Python ints ≈ 28MB (small ints cached, but larger ints ~28 bytes each). Generators are essential for: large file processing (yield one line at a time), infinite sequences, streaming pipelines where you process and discard data.
+> </details>
+>
+
 # PROBLEM: Processing 1 billion numbers
 # ❌ List stores ALL in memory: 8GB for 1B integers
 all_squares = [x**2 for x in range(1_000_000_000)]  # MemoryError!
@@ -245,6 +261,17 @@ print(sum(gen))    # Works! Processes one at a time.
 ## 3.1 Functions are Objects
 
 ```python
+
+
+> 🔬 **Section Challenge — 3.1 Functions are Objects**
+>>
+> **Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+> <details><summary>Answer</summary>
+>
+> Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+> </details>
+>
+
 # In Python, functions ARE objects. You can:
 # 1. Assign them to variables
 # 2. Pass them as arguments
@@ -275,6 +302,17 @@ flex(1, 2, 3, name="Alice", age=30)
 ## 3.2 Decorators — Functions that Modify Functions
 
 ```python
+
+
+> 🔬 **Section Challenge — 3.2 Decorators — Functions that Modify Functions**
+>
+> **Challenge 1 (Reasoning):** Why does a decorator without `@functools.wraps` break Flask/FastAPI route registration?
+> <details><summary>Answer</summary>
+>
+> Flask uses function name (`func.__name__`) to register routes. Without `@functools.wraps`, the decorator replaces the original function with a `wrapper` function. All decorated routes have `__name__ = 'wrapper'` → duplicate view function name error. `@functools.wraps(fn)` copies `__name__`, `__doc__`, `__annotations__`  from the wrapped function. Same issue with pytest markers, Celery tasks, and any framework that inspects function attributes.
+> </details>
+>
+
 # A decorator WRAPS a function to add behavior
 
 import time
@@ -309,6 +347,17 @@ train_model(10)  # "train_model took 0.5234s"
 ## 3.3 Closures & Lambda
 
 ```python
+
+
+> 🔬 **Section Challenge — 3.3 Closures & Lambda**
+>
+> **Challenge 1 (Reasoning):** A lambda captures a local variable. Why must the variable be effectively final?
+> <details><summary>Answer</summary>
+>
+> Lambdas are closures — they capture the variable's VALUE at creation time (not a reference to the stack slot, which would be dangerous as the stack frame may be gone). If the variable could change after capture, the lambda would see a stale value. Java enforces 'effectively final' (never reassigned) to make the semantics predictable. Workaround: use an array `int[] counter = {0};` (the array reference is final, its contents can change — though this is not thread-safe).
+> </details>
+>
+
 # CLOSURE: A function that remembers its enclosing scope
 def make_multiplier(factor):
     def multiply(x):
@@ -463,5 +512,132 @@ with timer("Training"):
 | Decorators (design pattern) | [Design Patterns — Decorator](../06_OOP_Design/02_Design_Patterns.md) |
 
 ---
+
+
+---
+
+## 🏋️ Practice & Interview Questions — Python
+
+### Predict / Trace
+**Q1.** What prints?
+```python
+x = [1,2,3]
+y = x
+y.append(4)
+print(x)
+```
+<details><summary>Answer</summary>
+
+`[1, 2, 3, 4]` — `y = x` copies the **reference**, not the list. Both point to the same object. Python lists are mutable. **Fix**: `y = x.copy()` or `y = x[:]` for shallow copy.
+</details>
+
+**Q2.** What is the GIL and how does it affect threading in Python?
+<details><summary>Answer</summary>
+
+**Global Interpreter Lock**: allows only ONE thread to execute Python bytecode at a time per process. CPU-bound threads don't run truly in parallel — only I/O-bound threads benefit (GIL released during I/O). For CPU parallelism: use `multiprocessing` (separate processes, separate GILs) or Go/Java. CPython 3.13 has experimental free-threaded mode (GIL disabled).
+</details>
+
+### Coding Problems
+**Q3.** ⭐ FizzBuzz in Python — most Pythonic way.
+<details><summary>Solution</summary>
+
+```python
+for i in range(1, 101):
+    print("FizzBuzz" if i%15==0 else "Fizz" if i%3==0 else "Buzz" if i%5==0 else i)
+```
+</details>
+
+**Q4.** ⭐ Flatten a nested list recursively.
+<details><summary>Solution</summary>
+
+```python
+def flatten(lst):
+    result = []
+    for item in lst:
+        if isinstance(item, list): result.extend(flatten(item))
+        else: result.append(item)
+    return result
+# or with generator:
+# def flatten(lst): yield from (flatten(x) if isinstance(x,list) else [x] for x in lst)
+```
+</details>
+
+**Q5.** ⭐⭐ Implement LRU Cache using `functools.lru_cache` vs manual implementation.
+<details><summary>Solution</summary>
+
+```python
+# Built-in:
+from functools import lru_cache
+@lru_cache(maxsize=128)
+def fib(n): return n if n<2 else fib(n-1)+fib(n-2)
+
+# Manual with OrderedDict:
+from collections import OrderedDict
+class LRUCache:
+    def __init__(self, cap): self.cap=cap; self.cache=OrderedDict()
+    def get(self, key):
+        if key not in self.cache: return -1
+        self.cache.move_to_end(key); return self.cache[key]
+    def put(self, key, val):
+        self.cache[key]=val; self.cache.move_to_end(key)
+        if len(self.cache)>self.cap: self.cache.popitem(last=False)
+```
+</details>
+
+### MCQ Rapid Fire
+| # | Question | Answer |
+|---|---|---|
+| 1 | List vs Tuple | List: mutable; Tuple: immutable, hashable |
+| 2 | `is` vs `==` | `is`: identity (same object); `==`: equality (same value) |
+| 3 | Python `dict` ordering (3.7+) | Insertion order (guaranteed) |
+| 4 | Generator vs list comprehension | Generator: lazy, O(1) memory; list: eager, O(N) memory |
+| 5 | `*args` vs `**kwargs` | *args: positional varargs tuple; **kwargs: keyword varargs dict |
+| 6 | `__slots__` purpose | Prevents instance `__dict__`, reduces memory per object |
+| 7 | `asyncio` is true parallelism? | ❌ Cooperative concurrency (single thread, yields on await) |
+
+
+
+---
+
+## 🧠 Deep Conceptual Questions — Python Internals
+
+**C1. How does Python's GIL work internally, and why hasn't it been removed?**
+<details><summary>Deep Answer</summary>
+
+GIL = a mutex in CPython's interpreter. Every Python thread must hold the GIL to execute bytecode. Released during: I/O (blocking syscalls), C extensions (NumPy, pandas release it during computation). Acquired every 100 bytecode instructions or yielded to other threads. WHY NOT REMOVED: CPython's memory management (reference counting) is not thread-safe. Without GIL: `ob_refcnt` (object reference count) must be protected by locks everywhere → massive overhead in single-threaded code. Every `del`, every function call return would need a lock. Previous removal attempts degraded single-threaded code by 30-50%. PyPy, Jython don't have GIL. CPython 3.13 enables experimental "no-GIL" mode (`python -X=nogil`) with per-object locks.
+</details>
+
+**C2. What is Python's memory model for integers and why does `is` fail for large ints?**
+<details><summary>Deep Answer</summary>
+
+CPython caches small integers (-5 to 256) as singletons. `a = 5; b = 5; a is b` → True (same object). `a = 1000; b = 1000; a is b` → False (new objects). This is CPython-specific optimization — not guaranteed by the language spec. String interning: short strings/identifiers often interned. NEVER use `is` for value comparison (use `==`). `is` tests identity (same object in memory). The integer cache exists because small ints are used everywhere; caching them saves millions of allocations in a typical program.
+</details>
+
+**C3. Generators: why are they memory-efficient and how does `yield` work internally?**
+<details><summary>Deep Answer</summary>
+
+A generator function returns a generator object. The function body doesn't execute at call time. Each `next()` call: resumes execution from the last `yield` point. Generator saves its stack frame between calls — it's a "suspended stack frame." Memory: generates values one at a time (O(1)) vs list comprehension generating all at once (O(N)). `yield from` (PEP 380): delegates to a sub-generator, chains yields through. Generators ARE the basis of `asyncio`: `async def` functions compile to coroutines which are generators under the hood. `await` ≈ `yield` to the event loop, "I'm waiting for something, run other tasks."
+</details>
+
+**C4. Decorators: what pattern underlies them and how do you preserve the wrapped function's metadata?**
+<details><summary>Deep Answer</summary>
+
+```python
+@decorator
+def func(): pass
+# Same as: func = decorator(func)
+```
+Decorator = higher-order function. Problem: `@decorator` replaces `func` with wrapper — `func.__name__` becomes `"wrapper"`, `func.__doc__` is lost. Fix: `@functools.wraps(original_func)` on the wrapper copies `__name__`, `__doc__`, `__annotations__`, `__module__`. Without wraps: debugging is hell, introspection libraries break, Flask/FastAPI route registration may fail. Parameterized decorator: an outer function returning the actual decorator:
+```python
+def retry(n): return lambda fn: lambda *args: ... # 3 levels!
+```
+</details>
+
+**C5. `asyncio`: why does `async/await` NOT use threads and how is it still concurrent?**
+<details><summary>Deep Answer</summary>
+
+`asyncio` is **cooperative multitasking** on a SINGLE thread. Event loop runs coroutines. A coroutine runs until it hits `await` — this is a VOLUNTARY yield to the event loop. Event loop picks the next ready coroutine. No preemption: if a coroutine runs CPU-bound code without awaiting, it blocks the ENTIRE event loop (other coroutines starve). Concurrency: while coroutine A awaits an HTTP response, coroutine B runs. Both "in flight" simultaneously on one thread. Why no threads: reduce context-switching overhead, simpler shared state (no locks — only one coroutine runs at a time per event loop), better for I/O-bound workloads (10,000 concurrent HTTP requests = 10,000 coroutines, not 10,000 threads).
+</details>
+
 
 > **Navigation**: [Back to Index](00_INDEX.md) | [Next >](02_Python_Advanced.md)

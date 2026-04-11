@@ -136,6 +136,13 @@ ALTER TABLE orders ATTACH PARTITION orders_archive
 
 ---
 
+
+
+
+
+
+> 🔬 **Section Challenge — Part 1 — Table Partitioning**
+
 ## Part 2 — Database Sharding
 
 ### 2.1 What Is Sharding?
@@ -200,6 +207,13 @@ def get_shard_id(user_id: int) -> int:
 def get_connection(user_id: int):
     shard_id = get_shard_id(user_id)
     return create_engine(SHARD_CONFIG[shard_id])
+
+
+
+
+
+
+> 🔬 **Section Challenge — Part 2 — Database Sharding**
 
 # Query a specific user → goes to ONE shard
 def get_user(user_id):
@@ -387,6 +401,13 @@ plt.show()
 ```
 
 ---
+
+
+
+
+
+
+> 🔬 **Section Challenge — Part 4 — Monitoring & Troubleshooting**
 
 ## Decision Matrix
 

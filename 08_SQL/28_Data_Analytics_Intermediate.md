@@ -334,6 +334,9 @@ plt.show()
 
 ---
 
+
+
+
 ## Part 5 — Customer Lifetime Value (CLV)
 
 ### 5.1 What Is CLV?
@@ -393,6 +396,28 @@ ORDER BY total_revenue DESC;
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — Part 5 — Customer Lifetime Value (CLV)**
+>
+> **Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
+> <details><summary>Answer</summary>
+>
+> ```java
+> public class PaymentException extends RuntimeException { // unchecked!
+>     private final String errorCode;
+>     private final String transactionId;
+>     public PaymentException(String code, String txId, String msg, Throwable cause) {
+>         super(msg, cause); this.errorCode=code; this.transactionId=txId;
+>     }
+> }
+> public class InsufficientFundsException extends PaymentException { ... }
+> public class PaymentGatewayException extends PaymentException { ... }
+> ```
+> Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
+> </details>
+>
 
 ## Part 6 — Churn Analysis
 

@@ -10,6 +10,9 @@
 
 ---
 
+
+
+
 ## 📚 TABLE OF CONTENTS
 
 1. [Two Pointers Problems](#two-pointers-problems)
@@ -32,10 +35,12 @@
 > maximum water.
 >
 > Visual:
-> |
-> |     |     |
-> |  |  |  |  |  |
-> |  |  |  |  |  |  |  |
+
+|
+|     |     |
+|  |  |  |  |  |
+|  |  |  |  |  |  |  |
+
 > ─────────────────────
 > 1  8  6  2  5  4  8  3  7
 > ↑                       ↑
@@ -187,6 +192,17 @@ public List<List<Integer>> threeSum(int[] nums) {
 
 ---
 
+
+
+> 🔬 **Section Challenge — 🧩 Two Pointers Problems**
+>
+> **Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
+> <details><summary>Answer</summary>
+>
+> The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
+> </details>
+>
+
 ## 🧩 Sliding Window Problems
 
 ### Problem 3: Longest Substring Without Repeating Characters
@@ -331,6 +347,23 @@ public int maxSumSubarrayK(int[] arr, int k) {
 </details>
 
 ---
+
+
+
+> 🔬 **Section Challenge — 🧩 Sliding Window Problems**
+>
+> **Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
+> <details><summary>Answer</summary>
+>
+> Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
+> <details><summary>Answer</summary>
+>
+> Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
+> </details>
+>
 
 ## 🔍 Binary Search Problems
 
@@ -524,6 +557,23 @@ public int findPeakElement(int[] nums) {
 </details>
 
 ---
+
+
+
+> 🔬 **Section Challenge — 🔍 Binary Search Problems**
+>
+> **Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+> <details><summary>Answer</summary>
+>
+> lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+> </details>
+>
+> **Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+> <details><summary>Answer</summary>
+>
+> Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
+> </details>
+>
 
 ## 📊 Array Problems
 
@@ -913,6 +963,9 @@ public List<List<String>> groupAnagramsV2(String[] strs) {
 
 ---
 
+
+
+
 ## 🧩 Math Problems
 
 ### Problem 11: Missing Number
@@ -1141,3 +1194,5 @@ Here are problem names to search on LeetCode/HackerRank:
 ---
 
 > **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](23_Edge_Cases.md)
+
+

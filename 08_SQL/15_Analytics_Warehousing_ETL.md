@@ -298,6 +298,13 @@ ORDER BY MIN(total);
 
 ---
 
+
+
+
+
+
+> 🔬 **Section Challenge — Chapter 17: Analytics & Reporting Patterns**
+
 ## Chapter 18: Data Warehousing Concepts
 
 ```
@@ -581,6 +588,13 @@ WHERE dd.full_date = '2024-06-15';
 
 ---
 
+
+
+
+
+
+> 🔬 **Section Challenge — Chapter 18: Data Warehousing Concepts**
+
 ## Chapter 19: ETL Patterns in SQL
 
 ```sql
@@ -761,3 +775,9 @@ DO CALL run_daily_etl();
 ---
 
 > **Navigation**: [< Previous](14_Query_Optimization.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](16_RealWorld_CaseStudies.md)
+
+
+
+
+> 🔬 **Section Challenge — Chapter 19: ETL Patterns in SQL**
+

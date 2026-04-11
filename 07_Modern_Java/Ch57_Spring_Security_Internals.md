@@ -154,6 +154,17 @@
 
 ---
 
+
+
+> 🔬 **Section Challenge — 2. The Filter Chain — The Core Architecture**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## 3. Authentication vs Authorization — Two Different Questions
 
 ```
@@ -198,6 +209,11 @@
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 3. Authentication vs Authorization — Two Different Questions**
+>>
 
 ## 4. SecurityContext and ThreadLocal — Where "Current User" Lives
 
@@ -265,6 +281,17 @@
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 4. SecurityContext and ThreadLocal — Where "Current User" Lives**
+>
+> **Challenge 1 (Reasoning):** When does React Context cause performance problems and how do you avoid them?
+> <details><summary>Answer</summary>
+>
+> Every context consumer re-renders when ANY context value changes. If you have `{theme, user, cart}` in one context, updating cart re-renders all theme and user consumers. Fixes: (1) Split into separate contexts: `ThemeContext`, `UserContext`, `CartContext`. (2) Memoize components with `React.memo`. (3) For complex state, use a state library (Zustand, Jotai) with selector-based subscriptions — only re-render when the specific piece of state changes.
+> </details>
+>
 
 ## 5. How Username/Password Authentication Works (All 12 Steps)
 
@@ -674,6 +701,17 @@
 
 ---
 
+
+
+> 🔬 **Section Challenge — 9. CORS and CSRF — Why They Exist and How Spring Handles Them**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## 10. How to Configure Security — Modern Way (Spring Security 6+)
 
 ```java
@@ -737,6 +775,17 @@ public class SecurityConfig {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 10. How to Configure Security — Modern Way (Spring Security 6+)**
+>
+> **Challenge 1 (Reasoning):** JWT vs session cookies — what are the tradeoffs for a distributed microservices architecture?
+> <details><summary>Answer</summary>
+>
+> JWT: stateless — any service can validate without a DB call (verify signature with public key). No sticky sessions needed. Downside: can't invalidate a token before expiry (no server-side state). Session cookies: stateful — easy to invalidate (delete session). But: need a shared session store (Redis) for multi-instance deployments, or sticky sessions (load balancer routing). Microservices: JWT wins for scalability. Add a token blacklist (Redis) if revocation is needed.
+> </details>
+>
 
 ## 11. OAuth2 / OpenID Connect Flow
 
@@ -867,3 +916,14 @@ public class SecurityConfig {
 ---
 
 > **Next Chapter**: [OS Fundamentals for Backend Developers →](Ch65_OS_Fundamentals.md)
+
+
+> 🔬 **Section Challenge — 12. Common Security Mistakes and Fixes**
+>
+> **Challenge 1 (Reasoning):** JWT vs session cookies — what are the tradeoffs for a distributed microservices architecture?
+> <details><summary>Answer</summary>
+>
+> JWT: stateless — any service can validate without a DB call (verify signature with public key). No sticky sessions needed. Downside: can't invalidate a token before expiry (no server-side state). Session cookies: stateful — easy to invalidate (delete session). But: need a shared session store (Redis) for multi-instance deployments, or sticky sessions (load balancer routing). Microservices: JWT wins for scalability. Add a token blacklist (Redis) if revocation is needed.
+> </details>
+>
+

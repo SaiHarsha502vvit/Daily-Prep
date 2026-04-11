@@ -352,6 +352,9 @@ class UnionFind {
 
 ---
 
+
+
+
 ## Union-Find Fundamentals <a name="fundamentals"></a>
 
 ### What is Union-Find?
@@ -504,6 +507,17 @@ flowchart TD
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — Union-Find Fundamentals <a name="fundamentals"></a>**
+>
+> **Challenge 1 (Reasoning):** Without path compression in Union-Find, what's the worst-case tree height after N unions? With path compression?
+> <details><summary>Answer</summary>
+>
+> Without path compression + union by rank: O(N) height possible (linear chain). With union by rank only: O(log N). With path compression only: amortized O(log N). With BOTH: amortized O(α(N)) where α is the inverse Ackermann function — practically constant (4 for any N up to 10^80). Union by rank prevents tall trees from forming. Path compression flattens existing trees. Together they're nearly optimal.
+> </details>
+>
 
 ## Basic Implementation <a name="basic-implementation"></a>
 
@@ -841,6 +855,17 @@ class UnionFindBySize {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — Union by Rank/Size <a name="union-by-rank"></a>**
+>
+> **Challenge 1 (Reasoning):** Without path compression in Union-Find, what's the worst-case tree height after N unions? With path compression?
+> <details><summary>Answer</summary>
+>
+> Without path compression + union by rank: O(N) height possible (linear chain). With union by rank only: O(log N). With path compression only: amortized O(log N). With BOTH: amortized O(α(N)) where α is the inverse Ackermann function — practically constant (4 for any N up to 10^80). Union by rank prevents tall trees from forming. Path compression flattens existing trees. Together they're nearly optimal.
+> </details>
+>
 
 ## Optimized Implementation <a name="optimized"></a>
 
@@ -1225,6 +1250,23 @@ public List<Integer> numIslands2(int m, int n, int[][] positions) {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — Graph Problems <a name="graph-problems"></a>**
+>
+> **Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+> <details><summary>Answer</summary>
+>
+> BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
+> </details>
+>
+> **Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
+> <details><summary>Answer</summary>
+>
+> 3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
+> </details>
+>
 
 ## Advanced Techniques <a name="advanced"></a>
 
@@ -1881,3 +1923,13 @@ flowchart TD
 ---
 
 > **Navigation**: [< Previous](13_String_Algorithms_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](15_Monotonic_Stack_Queue_Complete.md)
+
+> 🔬 **Section Challenge — Summary**
+>
+> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+> <details><summary>Answer</summary>
+>
+> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+> </details>
+>
+

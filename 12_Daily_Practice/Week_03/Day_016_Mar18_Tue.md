@@ -9,8 +9,8 @@
 
 ## Completion Checklist
 
-- [ ] DS Deep Dive: BST — properties, insert, search, delete (30 min)
-- [ ] ALGO Deep Dive: BFS / Level-Order Traversal (30 min)
+- [x] DS Deep Dive: BST — properties, insert, search, delete (30 min)
+- [x] ALGO Deep Dive: BFS / Level-Order Traversal (30 min)
 - [ ] SQL Lesson: Window Functions — ROW_NUMBER, RANK, DENSE_RANK (40 min)
 - [ ] Problem 1: LC 700 — Search in a BST (15 min)
 - [ ] Problem 2: LC 102 — Binary Tree Level Order Traversal (25 min)

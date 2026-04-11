@@ -4,6 +4,36 @@
 
 ---
 
+## 🗺️ Pattern Recognition Header — Stack & Queue
+
+> **When to use Stack vs Queue?**
+>
+
+| Trigger Words | Structure | Sub-type |
+|---|---|---|
+| `match brackets / valid expression` | Stack | Push open, pop close |
+| `next greater / next smaller element` | Monotonic Stack | Decreasing stack |
+| `largest rectangle / area in histogram` | Monotonic Stack | Ascending stack |
+| `evaluate arithmetic expression` | Two Stacks | Nums + operators |
+| `BFS / level-by-level traversal` | Queue | Standard BFS |
+| `sliding window max / min` | Monotonic Deque | Decreasing deque |
+| `design min/max stack` | Stack + tracking | Pair (val, minSoFar) |
+
+>
+> **The Core Mental Models:**
+> ```
+> STACK → "What's the LAST (most recent) unresolved thing?"
+> QUEUE → "What's the OLDEST (arrived first) thing that I need to process?"
+> ```
+>
+> 📖 **Mental Model:** [04_Array_String_Thinking.md](../14_Mental_Models/04_Array_String_Thinking.md)
+> 📖 **Complexity Analysis:** [09_Complexity_Intuition.md](../14_Mental_Models/09_Complexity_Intuition.md)
+> 📖 **Full Pattern Guide:** [00_PATTERN_MASTER_GUIDE.md](../04_Patterns_Templates/00_PATTERN_MASTER_GUIDE.md)
+
+---
+
+
+
 # 📚 SECTION 7: STACK & QUEUE PROBLEMS
 
 ```
@@ -899,6 +929,17 @@ private int helper(Queue<Character> queue) {
 
 ---
 
+
+
+> 🔬 **Section Challenge — 7.1 Basic Stack Problems**
+>
+> **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+> <details><summary>Answer</summary>
+>
+> In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
+> </details>
+>
+
 ## 7.2 Monotonic Stack Problems
 
 > **Pattern:** Maintain stack in increasing/decreasing order. Elements popped have found their NGE/NSE.
@@ -1560,6 +1601,17 @@ public int trapStack(int[] height) {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 7.2 Monotonic Stack Problems**
+>
+> **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+> <details><summary>Answer</summary>
+>
+> In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
+> </details>
+>
 
 ## 7.3 Queue Problems
 
@@ -2583,6 +2635,17 @@ class StockSpanner {
 
 ---
 
+
+
+> 🔬 **Section Challenge — 7.4 Advanced Stack Problems**
+>
+> **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+> <details><summary>Answer</summary>
+>
+> In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
+> </details>
+>
+
 ## 7.5 HackerEarth & Codeforces Stack/Queue Problems
 
 ### Problem 100: Balanced Brackets (HackerEarth)
@@ -2946,5 +3009,230 @@ public String prefixToPostfix(String prefix) {
 ```
 
 ---
+
+---
+
+
+
+> 🔬 **Section Challenge — 7.5 HackerEarth & Codeforces Stack/Queue Problems**
+>
+> **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+> <details><summary>Answer</summary>
+>
+> In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
+> </details>
+>
+
+## 🏆 Competitive Programming — Codeforces Problems
+
+| Problem | Link | Technique | Difficulty |
+|---|---|---|---|
+| Longest Regular Bracket Sequence | [CF 5C](https://codeforces.com/problemset/problem/5/C) | Stack → longest valid bracket span | ⭐⭐ Medium |
+| Queue on Segments | [CF 566E](https://codeforces.com/problemset/problem/566/E) | Deque + segment tree | ⭐⭐⭐ Hard |
+| Constructing Streets | [CF 1264C](https://codeforces.com/problemset/problem/1264/C) | Monotonic stack application | ⭐⭐ Medium |
+| Stock Market | [CF 865C](https://codeforces.com/problemset/problem/865/C) | Stack-based price calculation | ⭐⭐ Medium |
+| Towers | [CF 37B](https://codeforces.com/problemset/problem/37/B) | Priority queue ordering | ⭐ Easy |
+
+---
+
+
+
+
+## 🌍 Real-World Applications of Stack & Queue
+
+| Technique | Real-World System | How It's Used |
+|---|---|---|
+| **Stack (LIFO)** | JVM call stack | Every method call pushes a frame; return pops it — StackOverflowError when limit exceeded |
+| **Stack (undo/redo)** | VS Code / Photoshop | Action stack; undo = pop; redo = push to redo stack |
+| **Monotonic Stack** | Financial systems | "Next day price is higher than today?" = monotonic stack for stock span |
+| **Queue (FIFO)** | Kafka, RabbitMQ | Message queue ensures FIFO delivery between microservices |
+| **Deque (double-ended)** | Browser back/forward | Deque for page history; can push/pop from either end |
+| **Priority Queue** | OS task scheduler | Always run highest-priority ready thread |
+
+```
+🔥 MONOTONIC STACK = MOST UNDERRATED INTERVIEW PATTERN:
+   "Largest Rectangle in Histogram" (LC 84) = monotonic stack
+   This exact algorithm runs in: Apache Kafka (lag monitoring),
+   AWS CloudWatch (threshold breach detection)
+   "When did metric exceed threshold last time?" = next greater element
+```
+
+---
+
+
+---
+
+
+
+> 🔬 **Section Challenge — 🌍 Real-World Applications of Stack & Queue**
+>
+> **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+> <details><summary>Answer</summary>
+>
+> In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
+> </details>
+>
+
+## 🏋️ Practice & Interview Questions — Stack & Queue
+
+### Predict / Trace
+**Q1.** Stack has [1,2,3] (3 is top). After pop(), pop(), push(5) — what's the stack?
+<details><summary>Answer</summary>
+
+[1, 5] — popped 3 and 2, pushed 5 on top of 1.
+</details>
+
+**Q2.** Evaluate postfix `3 4 + 2 *` using a stack — trace each step.
+<details><summary>Answer</summary>
+
+push 3 → [3]; push 4 → [3,4]; + → pop 3,4, push 7 → [7]; push 2 → [7,2]; * → pop 7,2, push 14 → [14]. Result: 14
+</details>
+
+### LeetCode / Coding
+**Q3.** ⭐ Valid Parentheses — O(N).
+<details><summary>Solution</summary>
+
+```java
+Deque<Character> stack = new ArrayDeque<>();
+for(char c : s.toCharArray()){
+    if(c=='('||c=='{'||c=='[') stack.push(c);
+    else {
+        if(stack.isEmpty()) return false;
+        char top = stack.pop();
+        if(c==')'&&top!='('||c=='}'&&top!='{'||c==']'&&top!='[') return false;
+    }
+}
+return stack.isEmpty();
+```
+</details>
+
+**Q4.** ⭐ Min Stack — O(1) getMin().
+<details><summary>Solution</summary>
+
+```java
+Deque<Integer> stack=new ArrayDeque<>(), minStack=new ArrayDeque<>();
+void push(int v){ stack.push(v); if(minStack.isEmpty()||v<=minStack.peek()) minStack.push(v); }
+void pop(){ if(stack.pop().equals(minStack.peek())) minStack.pop(); }
+int getMin(){ return minStack.peek(); }
+```
+</details>
+
+**Q5.** ⭐⭐ Daily Temperatures — next warmer day for each day (monotonic stack).
+<details><summary>Solution</summary>
+
+```java
+int[] res = new int[n]; Deque<Integer> stack = new ArrayDeque<>();
+for(int i=0;i<n;i++){
+    while(!stack.isEmpty()&&temperatures[i]>temperatures[stack.peek()])
+        res[stack.peek()] = i - stack.pop();
+    stack.push(i);
+}
+```
+</details>
+
+**Q6.** ⭐⭐ Largest Rectangle in Histogram (monotonic stack).
+<details><summary>Solution</summary>
+
+```java
+Deque<Integer> stack = new ArrayDeque<>();
+int maxArea = 0;
+for(int i=0;i<=n;i++){
+    int h = (i==n)?0:heights[i];
+    while(!stack.isEmpty()&&h<heights[stack.peek()]){
+        int height=heights[stack.pop()];
+        int width=stack.isEmpty()?i:(i-stack.peek()-1);
+        maxArea=Math.max(maxArea,height*width);
+    }
+    stack.push(i);
+}
+```
+</details>
+
+**Q7.** ⭐⭐ Implement Queue using 2 Stacks.
+<details><summary>Solution</summary>
+
+```java
+// Two stacks: inbox (for push), outbox (for pop)
+// Move inbox→outbox only when outbox is empty
+void push(int x){ inbox.push(x); }
+int pop(){ if(outbox.isEmpty()) while(!inbox.isEmpty()) outbox.push(inbox.pop()); return outbox.pop(); }
+```
+</details>
+
+**Q8.** ⭐⭐ Decode String — `3[a2[bc]]` → `abcbcabcbcabcbc`.
+<details><summary>Solution</summary>
+
+```java
+Deque<Integer> counts=new ArrayDeque<>();
+Deque<StringBuilder> builders=new ArrayDeque<>();
+StringBuilder curr=new StringBuilder(); int k=0;
+for(char c:s.toCharArray()){
+    if(Character.isDigit(c)) k=k*10+(c-'0');
+    else if(c=='['){ counts.push(k); builders.push(curr); curr=new StringBuilder(); k=0; }
+    else if(c==']'){ int times=counts.pop(); StringBuilder prev=builders.pop(); while(times-->0) prev.append(curr); curr=prev; }
+    else curr.append(c);
+}
+return curr.toString();
+```
+</details>
+
+### MCQ Rapid Fire
+| # | Question | Answer |
+|---|---|---|
+| 1 | Stack LIFO/FIFO? | LIFO |
+| 2 | Queue LIFO/FIFO? | FIFO |
+| 3 | Java Stack class — recommended alternative? | Deque / ArrayDeque |
+| 4 | ArrayDeque vs LinkedList for stack/queue | ArrayDeque (no boxing, cache-friendly) |
+| 5 | Monotonic stack usage | Next greater/smaller element problems |
+| 6 | BFS uses which data structure? | Queue |
+| 7 | DFS (iterative) uses which structure? | Stack |
+| 8 | peek() vs poll() on empty queue | peek()=null, poll()=null (no exception) |
+
+
+
+---
+
+## 🧠 Deep Conceptual Questions — Stack & Queue
+
+**C1. Why is a monotonic stack called "monotonic" and what property does it maintain?**
+<details><summary>Deep Answer</summary>
+
+A monotonic stack maintains elements in **strictly increasing or decreasing order** from bottom to top. When a new element arrives that violates the monotonicity (e.g., a larger element in a decreasing stack), elements are popped until the property is restored, THEN the new element is pushed. The pop events are the answer events: when element X is popped because Y is larger, Y is the "next greater element" of X. This processes each element exactly once (each is pushed and popped at most once) → O(N) total.
+</details>
+
+**C2. Why use `ArrayDeque` instead of `Stack` class in Java?**
+<details><summary>Deep Answer</summary>
+
+Java's `Stack` extends `Vector` (legacy, synchronized). Every push/pop acquires a mutex lock — unnecessary for single-threaded stack use. `ArrayDeque` has zero synchronization overhead, pure array-backed, cache-friendly. Also: `Stack`'s interface allows index-based access and `insertElementAt` which shouldn't exist on a stack (breaks the abstraction). `ArrayDeque` implements `Deque` — clean stack interface (`push`, `pop`, `peek`). **Never use `Stack` in modern Java.**
+</details>
+
+**C3. BFS uses a Queue — what property of queues makes BFS work correctly?**
+<details><summary>Deep Answer</summary>
+
+BFS needs to process nodes **level by level** — explore all nodes at distance D before any node at distance D+1. Queue's FIFO property guarantees this: nodes enqueued at distance D are dequeued and processed before nodes at distance D+1 (which are enqueued during processing D). If you used a Stack (DFS): you'd go depth-first — immediately explore children of the first node before its siblings. The FIFO vs LIFO distinction is the entire algorithmic difference between BFS and DFS.
+</details>
+
+**C4. Why is the "largest rectangle in histogram" problem solved with a monotonic stack?**
+<details><summary>Deep Answer</summary>
+
+For each bar, the rectangle it forms extends left/right until a shorter bar is hit. A monotonic increasing stack maintains bars in increasing height. When a shorter bar arrives (say height 3 comes after [2,5,7]):
+- Pop 7: rectangle with height 7, width determined by current index and stack top
+- Pop 5: rectangle with height 5, wider width
+
+The stack tells us: bars still in the stack haven't found their "right boundary" yet (no shorter bar has come). When they're finally popped, we know both their left and right boundaries. This is the key geometric insight: the stack holds "potential rectangles still growing."
+</details>
+
+**C5. Implement a Queue with O(1) amortized enqueue and dequeue — why is amortized important?**
+<details><summary>Deep Answer</summary>
+
+Two-stack queue: transfer from stack1 to stack2 only when stack2 is empty. Individual dequeue can be O(N) (transfer cost). But each element is transferred at most once. Over N operations: total transfer cost = N. Average = O(1). This is amortized O(1). Real-world relevance: Python's `queue.Queue` uses this pattern. Java's `ArrayDeque` achieves true O(1) with a circular array — amortized O(1) when resizing without transfer cost.
+</details>
+
+**C6. What is the call stack and how do recursive algorithms relate to it?**
+<details><summary>Deep Answer</summary>
+
+The **call stack** is a stack of stack frames. Each function call pushes a frame (local variables, return address, parameters). Return pops the frame. Recursive DFS naturally uses the call stack AS its traversal stack. Iterative DFS explicitly manages a stack in heap memory. Iterative is often preferred for: (1) avoiding stack overflow on deep recursion (JVM default: ~500-1000 frames), (2) more control over traversal order, (3) ability to pause/resume traversal.
+</details>
+
 
 > **Navigation**: [< Previous](07_Binary_Search.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](09_Trees.md)

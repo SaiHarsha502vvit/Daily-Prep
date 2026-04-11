@@ -100,6 +100,9 @@ flowchart TD
 
 ---
 
+
+
+
 ## 📐 CORE TEMPLATES
 
 ### Template 1: Character Frequency (int[26] trick)
@@ -328,6 +331,9 @@ flowchart TD
 
 ---
 
+
+
+
 ## 🛡️ EDGE CASES & COMMON MISTAKES
 
 ```
@@ -357,6 +363,17 @@ COMMON MISTAKES:
 | Valid Parentheses | Stack | O(n) | O(n) |
 
 ---
+
+
+
+> 🔬 **Section Challenge — 📊 COMPLEXITY SUMMARY**
+>
+> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+> <details><summary>Answer</summary>
+>
+> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+> </details>
+>
 
 ## 📋 PRACTICE PROBLEMS — From Your Excel Sheet
 | # | Problem | Companies | Key Insight |
@@ -428,3 +445,5 @@ COMMON MISTAKES:
 ---
 
 > **Navigation**: [< Previous](17_Backtracking_Plus_Pruning.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](19_Matrix_Plus_Grid_Traversal.md)
+
+

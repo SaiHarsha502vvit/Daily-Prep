@@ -182,6 +182,23 @@ Binary search on partition1 (0 to m) in smaller array:
 
 ---
 
+
+
+> 🔬 **Section Challenge — BINARY SEARCH**
+>
+> **Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+> <details><summary>Answer</summary>
+>
+> lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+> </details>
+>
+> **Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+> <details><summary>Answer</summary>
+>
+> Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
+> </details>
+>
+
 ## TWO POINTERS
 
 ---
@@ -313,6 +330,17 @@ While mid ≤ hi:
 
 ---
 
+
+
+> 🔬 **Section Challenge — TWO POINTERS**
+>
+> **Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
+> <details><summary>Answer</summary>
+>
+> The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
+> </details>
+>
+
 ## SLIDING WINDOW
 
 ---
@@ -423,6 +451,23 @@ Return atMost(K) - atMost(K-1)
 
 ---
 
+
+
+> 🔬 **Section Challenge — SLIDING WINDOW**
+>
+> **Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
+> <details><summary>Answer</summary>
+>
+> Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
+> <details><summary>Answer</summary>
+>
+> Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
+> </details>
+>
+
 ## INTERVALS (Bonus Section)
 
 ---
@@ -473,6 +518,9 @@ Phase 3: Add remaining intervals
 
 ---
 
+
+
+
 ## MASTER PROBLEM MAP — Binary Search, Two Pointers, Sliding Window
 
 | # | Problem | Core Logic | Pattern | Key Insight |
@@ -496,6 +544,23 @@ Phase 3: Add remaining intervals
 | 17 | Insert Interval | 3-phase: before, merge, after | Interval Merge | Merge phase adjusts new interval |
 
 ---
+
+
+
+> 🔬 **Section Challenge — MASTER PROBLEM MAP — Binary Search, Two Pointers, Sliding Window**
+>
+> **Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+> <details><summary>Answer</summary>
+>
+> lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+> </details>
+>
+> **Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+> <details><summary>Answer</summary>
+>
+> Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
+> </details>
+>
 
 ## The Binary Search Template Zoo
 
@@ -529,5 +594,273 @@ return lo
 **When to use which**: Template 1 for exact search. Template 2 for "first position where X is true." Template 3 for "last position where X is true."
 
 ---
+
+
+---
+
+
+
+> 🔬 **Section Challenge — The Binary Search Template Zoo**
+>
+> **Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+> <details><summary>Answer</summary>
+>
+> lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+> </details>
+>
+> **Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+> <details><summary>Answer</summary>
+>
+> Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
+> </details>
+>
+
+## 🏋️ Practice & Interview Questions — Algorithms
+
+### Sorting
+**Q1.** Which sorting algorithm does Java use for `Arrays.sort(int[])`? Why not MergeSort?
+<details><summary>Answer</summary>
+
+**Dual-Pivot QuickSort** — for primitives. MergeSort requires O(N) extra space. QuickSort is in-place and cache-friendly. Stability doesn't matter for primitives (equal ints are indistinguishable). For objects (`Arrays.sort(Object[])`), Java uses **TimSort** (stable, O(N log N) worst).
+</details>
+
+**Q2.** Trace Merge Sort on `[4,2,7,1]`.
+<details><summary>Answer</summary>
+
+Split: `[4,2]` `[7,1]` → Split: `[4]` `[2]` `[7]` `[1]` → Merge: `[2,4]` `[1,7]` → Merge: `[1,2,4,7]`
+</details>
+
+**Q3.** ⭐⭐ Sort Colors (Dutch National Flag — 3-way partition).
+<details><summary>Solution</summary>
+
+```java
+int lo=0, mid=0, hi=n-1;
+while(mid<=hi){
+    if(nums[mid]==0) swap(nums,lo++,mid++);
+    else if(nums[mid]==1) mid++;
+    else swap(nums,mid,hi--);
+}
+```
+</details>
+
+### Binary Search
+**Q4.** ⭐ Search in Rotated Sorted Array.
+<details><summary>Solution</summary>
+
+```java
+int lo=0, hi=n-1;
+while(lo<=hi){
+    int mid=(lo+hi)/2;
+    if(nums[mid]==target) return mid;
+    if(nums[lo]<=nums[mid]){ // left half sorted
+        if(nums[lo]<=target&&target<nums[mid]) hi=mid-1; else lo=mid+1;
+    } else { // right half sorted
+        if(nums[mid]<target&&target<=nums[hi]) lo=mid+1; else hi=mid-1;
+    }
+}
+return -1;
+```
+</details>
+
+**Q5.** ⭐ Find First and Last Position (binary search twice).
+<details><summary>Solution</summary>
+
+```java
+// First: find leftmost with while(lo<hi){ if arr[mid]>=target hi=mid else lo=mid+1 }
+// Last: find rightmost with while(lo<hi){ if arr[mid]<=target lo=mid+1 else hi=mid } return lo-1
+```
+</details>
+
+**Q6.** ⭐⭐ Koko Eating Bananas — binary search on answer.
+<details><summary>Key insight</summary>
+
+Binary search the eating speed k in range [1, max(piles)]. For each k, calculate hours needed. Find minimum k where hours ≤ H.
+</details>
+
+### Dynamic Programming
+**Q7.** ⭐ Climbing Stairs — n steps, 1 or 2 at a time. How many ways?
+<details><summary>Solution</summary>
+
+```java
+// Fibonacci sequence! dp[i] = dp[i-1] + dp[i-2]
+int a=1, b=1;
+for(int i=2;i<=n;i++){ int c=a+b; a=b; b=c; }
+return b;
+```
+</details>
+
+**Q8.** ⭐ Coin Change — minimum coins for amount.
+<details><summary>Solution</summary>
+
+```java
+int[] dp = new int[amount+1]; Arrays.fill(dp, amount+1);
+dp[0]=0;
+for(int i=1;i<=amount;i++)
+    for(int c:coins) if(c<=i) dp[i]=Math.min(dp[i],dp[i-c]+1);
+return dp[amount]>amount?-1:dp[amount];
+```
+</details>
+
+**Q9.** ⭐⭐ Longest Common Subsequence.
+<details><summary>Solution</summary>
+
+```java
+int[][] dp=new int[m+1][n+1];
+for(int i=1;i<=m;i++) for(int j=1;j<=n;j++){
+    if(text1.charAt(i-1)==text2.charAt(j-1)) dp[i][j]=dp[i-1][j-1]+1;
+    else dp[i][j]=Math.max(dp[i-1][j],dp[i][j-1]);
+}
+return dp[m][n];
+```
+</details>
+
+**Q10.** ⭐⭐ Word Break — can string be segmented using dictionary words?
+<details><summary>Solution</summary>
+
+```java
+boolean[] dp=new boolean[n+1]; dp[0]=true;
+for(int i=1;i<=n;i++) for(String w:wordDict)
+    if(i>=w.length()&&dp[i-w.length()]&&s.substring(i-w.length(),i).equals(w)) dp[i]=true;
+return dp[n];
+```
+</details>
+
+**Q11.** ⭐⭐⭐ Edit Distance (Levenshtein).
+<details><summary>Solution</summary>
+
+```java
+int[][] dp=new int[m+1][n+1];
+for(int i=0;i<=m;i++) dp[i][0]=i;
+for(int j=0;j<=n;j++) dp[0][j]=j;
+for(int i=1;i<=m;i++) for(int j=1;j<=n;j++){
+    if(word1.charAt(i-1)==word2.charAt(j-1)) dp[i][j]=dp[i-1][j-1];
+    else dp[i][j]=1+Math.min(dp[i-1][j-1],Math.min(dp[i-1][j],dp[i][j-1]));
+}
+```
+</details>
+
+### Graph Algorithms
+**Q12.** ⭐ Number of Islands (BFS/DFS grid traversal).
+<details><summary>Solution</summary>
+
+```java
+for each cell (i,j) if grid[i][j]=='1': count++; BFS/DFS to mark all connected land as visited
+```
+</details>
+
+**Q13.** ⭐⭐ Course Schedule — detect cycle in directed graph (Topological sort).
+<details><summary>Solution</summary>
+
+```java
+// Kahn's algorithm: indegree array + BFS queue
+// If result size == numCourses → no cycle → can finish
+```
+</details>
+
+**Q14.** ⭐⭐ Dijkstra's Shortest Path.
+<details><summary>Solution</summary>
+
+```java
+PriorityQueue<int[]> pq=new PriorityQueue<>((a,b)->a[1]-b[1]); // [node, dist]
+pq.offer(new int[]{src,0}); dist[src]=0;
+while(!pq.isEmpty()){
+    int[] curr=pq.poll(); int u=curr[0],d=curr[1];
+    if(d>dist[u]) continue; // stale
+    for(int[] neighbor:graph[u]) if(dist[u]+neighbor[1]<dist[neighbor[0]]){
+        dist[neighbor[0]]=dist[u]+neighbor[1]; pq.offer(new int[]{neighbor[0],dist[neighbor[0]]});
+    }
+}
+```
+</details>
+
+### MCQ Rapid Fire
+| # | Question | Answer |
+|---|---|---|
+| 1 | QuickSort avg/worst | O(N log N) avg, O(N²) worst |
+| 2 | MergeSort space complexity | O(N) |
+| 3 | HeapSort space complexity | O(1) (in-place) |
+| 4 | Binary search precondition | Sorted array |
+| 5 | BFS time complexity on graph | O(V+E) |
+| 6 | DFS space complexity | O(V) (recursion stack) |
+| 7 | Dijkstra fails on | Negative weight edges |
+| 8 | Bellman-Ford handles | Negative weights, detects negative cycles |
+| 9 | Floyd-Warshall use case | All-pairs shortest path, O(V³) |
+| 10 | Topological sort requires | Directed Acyclic Graph (DAG) |
+
+
+
+---
+
+## 🧠 Deep Conceptual Questions — Arrays & Memory
+
+> These questions test your REASONING, not just recall. Think before expanding.
+
+**C1. Why is array access O(1)?**
+<details><summary>Deep Answer</summary>
+
+Arrays store elements at **contiguous memory addresses**. Given base address B and element size S:
+`address(i) = B + (i × S)` — this is a single multiplication and addition (constant time regardless of N).
+The CPU can compute this directly without any traversal. This is why arrays are the fastest data structure for indexed access.
+</details>
+
+**C2. Why does cache performance matter for algorithms, and why do arrays win?**
+<details><summary>Deep Answer</summary>
+
+Modern CPUs fetch memory in **cache lines** (~64 bytes). When you access `array[i]`, the CPU also loads `array[i+1]` through `array[i+7]` into L1 cache automatically (spatial locality). Sequential array access hits cache nearly 100% of the time (~1ns). LinkedList traversal: each node is at a random heap address → each step is a potential **cache miss** (~100ns). For 1M elements: array traversal ≈ 1ms; linked list ≈ 100ms. Same O(N), 100x different in practice.
+</details>
+
+**C3. Why does `Arrays.sort()` use different algorithms for primitives vs objects?**
+<details><summary>Deep Answer</summary>
+
+**Primitives (`int[]`)**: Uses Dual-Pivot QuickSort. No stability needed (equal ints are indistinguishable). QuickSort is in-place (O(1) extra space), cache-friendly (sequential access), fastest in practice. **Objects (`Integer[]`)**: Uses TimSort (hybrid MergeSort + InsertionSort). MUST be stable — equal objects may have different fields that should preserve original order (think: sort by name, then by age — equal names must stay age-ordered). TimSort guarantees O(N log N) worst case; QuickSort can degrade to O(N²) if not careful.
+</details>
+
+**C4. Why is inserting at the beginning of an array O(N) but appending at end is O(1) amortized?**
+<details><summary>Deep Answer</summary>
+
+**Insert at index 0**: must shift every element right → N operations always.
+**Append**: if capacity exists, write at `arr[size]` → O(1). If full, resize (double capacity) → copy all N elements. But resizing happens only after 1, 2, 4, 8... N elements. Total copies over N appends = N/2 + N/4 + ... = N. Average per operation = N/N = O(1) — this is **amortized analysis**. ArrayList uses this strategy.
+</details>
+
+**C5. What is the REAL cost of `ArrayList.remove(0)` in a 1M element list? Why?**
+<details><summary>Deep Answer</summary>
+
+~1 million array element shifts. Java calls `System.arraycopy()` — a native bulk memory move. Even though it's one instruction, it copies 1M references = 4MB-8MB of memory movement. At memory bandwidth ~20GB/s: ~200-400 microseconds actual cost. Not "slow" but definitely O(N) — avoid repeatedly removing from the front of a large ArrayList. Use `ArrayDeque` for front-removal O(1).
+</details>
+
+**C6. Two Sum: why does the HashMap approach work, and what's its actual space tradeoff?**
+<details><summary>Deep Answer</summary>
+
+HashMap approach: as you iterate, store `{value → index}`. For each element, check if `target - current` already seen. This is the **complement pattern**: instead of "find two that sum to target", reframe as "have I seen what I need?". Space: O(N) worst case (all elements unique, no match until last pair). But we trade space for a reduction from O(N²) to O(N) time — classic space-time tradeoff. The 1-pass variant finds the answer in one scan without a second loop.
+</details>
+
+**C7. Sliding Window: what is the INVARIANT being maintained?**
+<details><summary>Deep Answer</summary>
+
+A sliding window maintains a **window [left, right]** where some property (max sum, no duplicates, valid substring) holds. The invariant: the window always satisfies the constraint. When violated: shrink from left until valid again. This avoids re-examining elements already processed — each element enters and leaves the window exactly once → O(N). Mental model: two pointers chasing each other, never crossing, each moving forward-only.
+</details>
+
+**C8. Prefix Sum: why does it reduce range-sum queries from O(N) to O(1)?**
+<details><summary>Deep Answer</summary>
+
+`prefix[i] = arr[0] + arr[1] + ... + arr[i]`. Sum of range [l,r] = `prefix[r] - prefix[l-1]`. Precomputation: O(N). Each query: O(1) subtraction. Without prefix sum: each query scans the range = O(N) per query → O(N×Q) total for Q queries. With prefix sum: O(N) build + O(Q) queries = O(N+Q). Break-even at Q=1; better for Q>1. Classic **precomputation tradeoff**: pay once, query forever.
+</details>
+
+**C9. Why does Kadane's Algorithm work for Maximum Subarray?**
+<details><summary>Deep Answer</summary>
+
+The key insight: at each position i, the maximum subarray ending at i is either:
+1. `arr[i]` alone (start fresh — previous subarray was negative, drags us down)
+2. `arr[i] + best_ending_at[i-1]` (extend the previous best)
+
+`curr = max(arr[i], curr + arr[i])` captures this exactly. If curr becomes negative, it's better to start fresh at next element. We track global max throughout. This is a 1D DP where the "state" is "maximum subarray sum ending here". The recurrence is the key reasoning step.
+</details>
+
+**C10. Binary Search: why does `mid = lo + (hi - lo) / 2` instead of `(lo + hi) / 2`?**
+<details><summary>Deep Answer</summary>
+
+**Integer overflow!** If `lo + hi` exceeds `Integer.MAX_VALUE` (2,147,483,647), the sum wraps to a negative number. For huge arrays (lo=1B, hi=2B), `lo + hi = 3B > 2.1B`. This bug brought down a famous JDK implementation of binary search in 2006 (Joshua Bloch's blog post). `lo + (hi - lo) / 2` can never overflow since `hi - lo` is always positive and smaller than either value alone.
+</details>
+
 
 > **Navigation**: [⬅ DP, Greedy, Backtracking](13_DSA_Problems_DP_Greedy_Backtracking.md) | [📚 Index](00_INDEX.md) | [Next: SQL Foundations & Intermediate ➡](15_SQL_Problems_Foundations_Intermediate.md)

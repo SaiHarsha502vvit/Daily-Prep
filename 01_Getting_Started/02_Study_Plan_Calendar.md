@@ -13,6 +13,8 @@
 
 ---
 
+
+
 ## How Each Day Works
 
 Every day follows this structure:
@@ -175,6 +177,8 @@ Every day follows this structure:
 
 ---
 
+
+
 ## 📆 WEEK 2: Feb 26 - Mar 4 — Strings Deep + Sorting Mastery + Two Pointers
 
 ### Day 8 — Thu, Feb 26 🟢
@@ -282,6 +286,11 @@ Every day follows this structure:
 
 ---
 
+
+
+> 🔬 **Section Challenge — 📆 WEEK 2: Feb 26 - Mar 4 — Strings Deep + Sorting Mastery + Two Pointers**
+>>
+
 ## 📆 WEEK 3: Mar 5-11 — Linked List + Recursion Introduction
 
 ### Day 15 — Thu, Mar 5 🟡
@@ -388,6 +397,21 @@ Every day follows this structure:
 > **Mentor Note:** End of Phase 1. You should now be comfortable with: Arrays, Strings, Matrices, 3 sorting algorithms, Binary Search, Linked Lists, Basic Recursion, GCD/Primes. If any of these feel shaky, STOP and spend 1 extra day before moving to Phase 2.
 
 ---
+
+
+
+> 🔬 **Section Challenge — 📆 WEEK 3: Mar 5-11 — Linked List + Recursion Introduction**
+>>
+> **Challenge 2 (Bug Hunt):** ```java
+void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
+fib(50) // takes forever
+```
+Why and what are the 3 fixes?
+> <details><summary>Answer</summary>
+>
+> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+> </details>
+>
 
 # PHASE 2: CORE PATTERNS (Week 4-6)
 
@@ -500,6 +524,9 @@ Every day follows this structure:
 
 ---
 
+
+
+
 ## 📆 WEEK 5: Mar 19-25 — Hashing Deep + Sliding Window
 
 ### Day 29 — Thu, Mar 19 🟡
@@ -604,6 +631,23 @@ Every day follows this structure:
 
 ---
 
+
+
+> 🔬 **Section Challenge — 📆 WEEK 5: Mar 19-25 — Hashing Deep + Sliding Window**
+>
+> **Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
+> <details><summary>Answer</summary>
+>
+> Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
+> <details><summary>Answer</summary>
+>
+> Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
+> </details>
+>
+
 ## 📆 WEEK 6: Mar 26 - Apr 1 — Trees (Binary Tree + BST)
 
 ### Day 36 — Thu, Mar 26 🟠
@@ -701,6 +745,9 @@ Every day follows this structure:
 > **Mentor Note:** If trees feel hard, that's normal. Re-do Day 36-39 problems. Trees become intuitive after ~20 problems. You're building that 20-problem foundation right now.
 
 ---
+
+
+
 
 # PHASE 3: ADVANCED TOPICS (Week 7-10)
 
@@ -807,6 +854,11 @@ Every day follows this structure:
 
 ---
 
+
+
+> 🔬 **Section Challenge — 📆 WEEK 7: Apr 2-8 — Heaps + Graphs Introduction**
+>>>
+
 ## 📆 WEEK 8: Apr 9-15 — Dynamic Programming Foundations
 
 ### Day 50 — Thu, Apr 9 🟠
@@ -906,6 +958,23 @@ Every day follows this structure:
 > **Mentor Note:** DP mastery comes from pattern recognition. After this week, you should recognize: "This is a knapsack problem" or "This is an LCS problem." If you can't, review the patterns.
 
 ---
+
+
+
+> 🔬 **Section Challenge — 📆 WEEK 8: Apr 9-15 — Dynamic Programming Foundations**
+>
+> **Challenge 1 (Reasoning):** How do you identify that a problem requires DP vs Greedy? What's the key test?
+> <details><summary>Answer</summary>
+>
+> Greedy test: does the locally optimal choice always lead to the globally optimal solution? (Prove via exchange argument.) If yes → greedy. If making a local choice requires knowing future choices → DP. Example: Coin Change with standard coins [1,5,10,25] → greedy works (always pick largest). Coin Change with coins [1,3,4] and amount 6 → greedy picks 4+1+1=3 coins, optimal is 3+3=2 coins. Greedy fails → DP.
+> </details>
+>
+> **Challenge 2 (Design):** You need to find the number of ways to climb N stairs taking 1 or 2 steps at a time. Define the DP state and recurrence.
+> <details><summary>Answer</summary>
+>
+> State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + dp[i-2]` (come from step i-1 via 1 step, or from step i-2 via 2 steps). Base: `dp[0]=1` (one way: don't move), `dp[1]=1`. This is exactly Fibonacci. Space optimization: only need last 2 values → O(1) space.
+> </details>
+>
 
 ## 📆 WEEK 9: Apr 16-22 — Greedy + Backtracking
 
@@ -1008,6 +1077,17 @@ Every day follows this structure:
 | ❓ Q2 | LC 17 — Letter Combinations of a Phone Number |
 
 ---
+
+
+
+> 🔬 **Section Challenge — 📆 WEEK 9: Apr 16-22 — Greedy + Backtracking**
+>
+> **Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
+> <details><summary>Answer</summary>
+>
+> Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
+> </details>
+>
 
 ## 📆 WEEK 10: Apr 23-29 — Advanced Patterns + Remaining Topics
 
@@ -1112,6 +1192,9 @@ Every day follows this structure:
 > **Mentor Note:** End of Phase 3. You now have exposure to EVERY major topic. The goal was never perfection — it's recognition. When you see a problem, you should now think "Oh, this looks like a sliding window problem" or "This needs DP." That recognition is your superpower.
 
 ---
+
+
+
 
 # PHASE 4: INTEGRATION + POLISH (Week 11)
 

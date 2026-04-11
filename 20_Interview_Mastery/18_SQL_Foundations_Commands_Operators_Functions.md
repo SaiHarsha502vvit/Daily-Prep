@@ -123,6 +123,9 @@ SELECT no FROM t1 GROUP BY no;
 
 ---
 
+
+
+
 ## 4) `UPDATE`, `ALTER`, `MODIFY`, `RENAME`, `DROP`, `TRUNCATE`, `DELETE`
 
 ## 4.1 `UPDATE` (change row values)
@@ -158,6 +161,23 @@ PostgreSQL alternative:
 ```sql
 ALTER TABLE t1 ALTER COLUMN marks TYPE NUMERIC(10,2);
 ```
+
+
+
+> 🔬 **Section Challenge — 4.3 Modify datatype**
+>
+> **Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
+> <details><summary>Answer</summary>
+>
+> No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
+> <details><summary>Answer</summary>
+>
+> NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
+> </details>
+>
 
 ## 4.4 Rename column/table
 
@@ -256,6 +276,9 @@ Subquery form:
 SELECT * FROM t1 WHERE marks IN (SELECT cutoff FROM c1);
 ```
 
+
+
+
 ## 5.4 `IS NULL` / `IS NOT NULL`
 
 ```sql
@@ -282,6 +305,28 @@ SELECT * FROM t1 WHERE name LIKE '_h%';
 ```
 
 `%` = any length, `_` = single character.
+
+
+
+> 🔬 **Section Challenge — 5.5 `LIKE` with wildcards**
+>
+> **Challenge 1 (Reasoning):** `void process(List<? extends Number> list)` — can you call `list.add(3.14)`? Why or why not?
+> <details><summary>Answer</summary>
+>
+> No. The compiler doesn't know the actual type — it could be `List<Integer>`, `List<Float>`, or `List<Double>`. Adding a `Double` to a `List<Integer>` would violate type safety. `? extends T` is read-only: you can `get()` as `Number`, but `add()` is forbidden (except null).
+> </details>
+>
+> **Challenge 2 (Design):** Write a method that copies elements from any `List<? extends T>` into any `List<? super T>`. Why is this the correct signature?
+> <details><summary>Answer</summary>
+>
+> ```java
+> <T> void copy(List<? extends T> src, List<? super T> dst) {
+>     for (T item : src) dst.add(item);
+> }
+> ```
+> PECS: `src` is a Producer (we read from it) → `extends`. `dst` is a Consumer (we write to it) → `super`. This is exactly how `Collections.copy()` is implemented in the JDK.
+> </details>
+>
 
 ## 5.6 `EXISTS`
 
@@ -329,6 +374,9 @@ SELECT * FROM t1 WHERE marks > (SELECT MAX(cutoff) FROM c1); -- > ALL
 ## 6) Aggregate Functions + `GROUP BY` + `HAVING`
 
 From your notes: `COUNT`, `SUM`, `MIN`, `MAX`, `AVG`, `COALESCE`, `ROUND`.
+
+
+
 
 ## 6.1 Core aggregate syntax
 
@@ -385,6 +433,9 @@ Interview line:
 "I use WHERE before grouping, HAVING after grouping. Aggregate conditions belong in HAVING."
 
 ---
+
+
+
 
 ## 7) `CASE` Expressions and Aliases
 
@@ -475,6 +526,23 @@ Equivalent (older style):
 SELECT * FROM t1, t2 WHERE t1.no = t2.no;
 ```
 
+
+
+> 🔬 **Section Challenge — 9.1 `INNER JOIN`**
+>
+> **Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
+> <details><summary>Answer</summary>
+>
+> When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
+> <details><summary>Answer</summary>
+>
+> It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
+> </details>
+>
+
 ## 9.2 `LEFT JOIN`
 
 ```sql
@@ -484,6 +552,23 @@ LEFT JOIN t2 ON t1.no = t2.no;
 ```
 
 Use when: keep all left rows even if right missing.
+
+
+
+> 🔬 **Section Challenge — 9.2 `LEFT JOIN`**
+>
+> **Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
+> <details><summary>Answer</summary>
+>
+> When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
+> <details><summary>Answer</summary>
+>
+> It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
+> </details>
+>
 
 ## 9.3 `RIGHT JOIN`
 
@@ -495,6 +580,23 @@ RIGHT JOIN t2 ON t1.no = t2.no;
 
 Equivalent by swapping table order with LEFT JOIN.
 
+
+
+> 🔬 **Section Challenge — 9.3 `RIGHT JOIN`**
+>
+> **Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
+> <details><summary>Answer</summary>
+>
+> When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
+> <details><summary>Answer</summary>
+>
+> It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
+> </details>
+>
+
 ## 9.4 `CROSS JOIN`
 
 ```sql
@@ -502,6 +604,23 @@ SELECT * FROM t1 CROSS JOIN t2;
 ```
 
 Pure Cartesian product (every row with every row).
+
+
+
+> 🔬 **Section Challenge — 9.4 `CROSS JOIN`**
+>
+> **Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
+> <details><summary>Answer</summary>
+>
+> When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
+> <details><summary>Answer</summary>
+>
+> It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
+> </details>
+>
 
 ## 9.5 `NATURAL JOIN` (usually avoid in production)
 
@@ -513,6 +632,23 @@ Interview line:
 
 "I avoid NATURAL JOIN in production because schema changes can silently change join behavior. I prefer explicit ON conditions."
 
+
+
+> 🔬 **Section Challenge — 9.5 `NATURAL JOIN` (usually avoid in production)**
+>
+> **Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
+> <details><summary>Answer</summary>
+>
+> When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
+> <details><summary>Answer</summary>
+>
+> It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
+> </details>
+>
+
 ## 9.6 `SELF JOIN`
 
 ```sql
@@ -522,6 +658,23 @@ LEFT JOIN employee m ON e.manager_id = m.emp_id;
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 9.6 `SELF JOIN`**
+>
+> **Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
+> <details><summary>Answer</summary>
+>
+> When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
+> <details><summary>Answer</summary>
+>
+> It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
+> </details>
+>
 
 ## 10) Set Operators
 
@@ -544,6 +697,9 @@ Interview line:
 ---
 
 ## 11) String, Math, and Date Functions (from your notes)
+
+
+
 
 ## 11.1 String functions
 
@@ -580,6 +736,9 @@ FROM t1
 GROUP BY branch;
 ```
 
+
+
+
 ## 11.2 Math functions
 
 ```sql
@@ -591,6 +750,23 @@ SELECT FLOOR(12.5);
 SELECT ROUND(25.678, 2);
 ```
 
+
+
+> 🔬 **Section Challenge — 11.2 Math functions**
+>
+> **Challenge 1 (Reasoning):** Why can't you use a window function in a WHERE clause? How do you filter on window function results?
+> <details><summary>Answer</summary>
+>
+> Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
+> </details>
+>
+> **Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+> <details><summary>Answer</summary>
+>
+> Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+> </details>
+>
+
 ## 11.3 Date functions
 
 ```sql
@@ -601,6 +777,23 @@ SELECT DATEDIFF('2026-03-13', '2026-03-01');
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 11.3 Date functions**
+>
+> **Challenge 1 (Reasoning):** Why can't you use a window function in a WHERE clause? How do you filter on window function results?
+> <details><summary>Answer</summary>
+>
+> Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
+> </details>
+>
+> **Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+> <details><summary>Answer</summary>
+>
+> Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+> </details>
+>
 
 ## 12) Datatypes and Constraints (Practical Interview View)
 
@@ -620,6 +813,23 @@ Common practical picks:
 Interview line:
 
 "I choose DECIMAL for financial values to avoid floating-point precision errors."
+
+
+
+> 🔬 **Section Challenge — 12.1 Datatypes**
+>
+> **Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
+> <details><summary>Answer</summary>
+>
+> No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
+> <details><summary>Answer</summary>
+>
+> NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
+> </details>
+>
 
 ## 12.2 Constraints
 
@@ -675,6 +885,9 @@ Candidate key note:
 
 ---
 
+
+
+
 ## 13) Indexes: Clustered vs Non-Clustered and Interview Reality
 
 ## 13.1 Core idea
@@ -713,6 +926,23 @@ Avoid when:
 
 ## 14) CTE and Window Functions as Readability + Power Tools
 
+
+
+> 🔬 **Section Challenge — 14) CTE and Window Functions as Readability + Power Tools**
+>
+> **Challenge 1 (Reasoning):** Why can't you use a window function in a WHERE clause? How do you filter on window function results?
+> <details><summary>Answer</summary>
+>
+> Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
+> </details>
+>
+> **Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+> <details><summary>Answer</summary>
+>
+> Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+> </details>
+>
+
 ## 14.1 CTE
 
 ```sql
@@ -749,6 +979,23 @@ SELECT *, ROW_NUMBER() OVER (PARTITION BY branch ORDER BY marks DESC) AS branch_
 FROM t1;
 ```
 
+
+
+> 🔬 **Section Challenge — 14.2 Ranking window functions**
+>
+> **Challenge 1 (Reasoning):** Why can't you use a window function in a WHERE clause? How do you filter on window function results?
+> <details><summary>Answer</summary>
+>
+> Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
+> </details>
+>
+> **Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+> <details><summary>Answer</summary>
+>
+> Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+> </details>
+>
+
 ## 14.3 Value window functions
 
 ```sql
@@ -769,7 +1016,27 @@ FROM t1;
 
 ---
 
+
+
+> 🔬 **Section Challenge — 14.3 Value window functions**
+>
+> **Challenge 1 (Reasoning):** Why can't you use a window function in a WHERE clause? How do you filter on window function results?
+> <details><summary>Answer</summary>
+>
+> Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
+> </details>
+>
+> **Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+> <details><summary>Answer</summary>
+>
+> Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+> </details>
+>
+
 ## 15) Real-World Mini Scenarios with Multiple SQL Styles
+
+
+
 
 ## Scenario A: Restaurant analytics
 
@@ -846,6 +1113,9 @@ FROM revised;
 
 ---
 
+
+
+
 ## 16) Interview Communication Scripts (Use Verbatim)
 
 ### Script 1: Aggregate + filter
@@ -881,5 +1151,215 @@ FROM revised;
 7. Is output ordering/limit consistent with prompt?
 
 ---
+
+
+---
+
+## 🏋️ Practice & Interview Questions — SQL
+
+### Predict / Trace
+**Q1.** What's the difference between WHERE and HAVING?
+<details><summary>Answer</summary>
+
+`WHERE` filters rows **before** grouping. `HAVING` filters groups **after** `GROUP BY`. You can't use aggregate functions in WHERE. `HAVING COUNT(*) > 5` works, `WHERE COUNT(*) > 5` does not.
+</details>
+
+**Q2.** What does this return? `SELECT 1 FROM dual WHERE NULL = NULL`
+<details><summary>Answer</summary>
+
+**No rows returned.** NULL is not equal to NULL — use `IS NULL` or `IS NOT NULL`. `NULL = NULL` evaluates to UNKNOWN, not TRUE.
+</details>
+
+### Coding Problems
+**Q3.** ⭐ Second highest salary — handle the case where it doesn't exist (return NULL).
+<details><summary>Solution</summary>
+
+```sql
+SELECT MAX(salary) AS SecondHighestSalary
+FROM Employee
+WHERE salary < (SELECT MAX(salary) FROM Employee);
+-- or
+SELECT IFNULL((SELECT DISTINCT salary FROM Employee ORDER BY salary DESC LIMIT 1 OFFSET 1), NULL)
+```
+</details>
+
+**Q4.** ⭐ Find employees earning more than their manager.
+<details><summary>Solution</summary>
+
+```sql
+SELECT e.name FROM Employee e
+JOIN Employee m ON e.managerId = m.id
+WHERE e.salary > m.salary;
+```
+</details>
+
+**Q5.** ⭐ Find duplicate emails.
+<details><summary>Solution</summary>
+
+```sql
+SELECT email FROM Person GROUP BY email HAVING COUNT(*) > 1;
+```
+</details>
+
+**Q6.** ⭐⭐ Rank scores without RANK() function.
+<details><summary>Solution</summary>
+
+```sql
+SELECT s.score,
+  (SELECT COUNT(DISTINCT s2.score) FROM Scores s2 WHERE s2.score >= s.score) AS rank
+FROM Scores s ORDER BY score DESC;
+```
+</details>
+
+**Q7.** ⭐⭐ Consecutive numbers — find numbers that appear 3+ times consecutively.
+<details><summary>Solution</summary>
+
+```sql
+SELECT DISTINCT l1.Num AS ConsecutiveNums
+FROM Logs l1, Logs l2, Logs l3
+WHERE l1.Id=l2.Id-1 AND l2.Id=l3.Id-1
+AND l1.Num=l2.Num AND l2.Num=l3.Num;
+-- or use LAG/LEAD window functions
+```
+</details>
+
+**Q8.** ⭐⭐ Department top 3 salaries (dense rank).
+<details><summary>Solution</summary>
+
+```sql
+SELECT d.name AS Department, e.name AS Employee, e.salary AS Salary
+FROM Employee e JOIN Department d ON e.departmentId = d.id
+WHERE (SELECT COUNT(DISTINCT e2.salary) FROM Employee e2
+       WHERE e2.departmentId=e.departmentId AND e2.salary>e.salary) < 3;
+```
+</details>
+
+**Q9.** ⭐⭐ Running total with window function.
+<details><summary>Solution</summary>
+
+```sql
+SELECT date, amount,
+  SUM(amount) OVER (ORDER BY date ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_total
+FROM transactions;
+```
+</details>
+
+**Q10.** ⭐⭐ Pivot rows to columns (conditional aggregation).
+<details><summary>Solution</summary>
+
+```sql
+SELECT year,
+  SUM(CASE WHEN quarter=1 THEN revenue END) AS Q1,
+  SUM(CASE WHEN quarter=2 THEN revenue END) AS Q2,
+  SUM(CASE WHEN quarter=3 THEN revenue END) AS Q3,
+  SUM(CASE WHEN quarter=4 THEN revenue END) AS Q4
+FROM sales GROUP BY year;
+```
+</details>
+
+**Q11.** ⭐⭐⭐ Find the median salary — without MEDIAN() function.
+<details><summary>Solution</summary>
+
+```sql
+SELECT AVG(salary) AS median
+FROM (SELECT salary, ROW_NUMBER() OVER(ORDER BY salary) AS rn, COUNT(*) OVER() AS cnt FROM Employee) t
+WHERE rn IN (FLOOR((cnt+1)/2), CEIL((cnt+1)/2));
+```
+</details>
+
+### Interview Questions
+**Q12.** INNER JOIN vs LEFT JOIN — when does LEFT produce more rows?
+<details><summary>Answer</summary>
+
+LEFT JOIN includes ALL rows from the left table even if no match in right table (fills NULLs). INNER JOIN only includes rows where both sides have a match. If left table has rows with no match in right: LEFT produces more rows.
+</details>
+
+**Q13.** What is a covering index?
+<details><summary>Answer</summary>
+
+An index that contains ALL columns needed by a query — the DB can answer from the index alone without touching the table ("index-only scan"). Faster because it avoids the extra heap fetch.
+</details>
+
+**Q14.** EXPLAIN shows "Full Table Scan" — how do you fix it?
+<details><summary>Answer</summary>
+
+Add an index on the WHERE/JOIN/ORDER BY column. Check if the column has low cardinality (boolean — index may not help). Ensure the query isn't wrapping the column in a function (`WHERE YEAR(date) = 2024` prevents index use — rewrite as `WHERE date BETWEEN '2024-01-01' AND '2024-12-31'`).
+</details>
+
+### MCQ Rapid Fire
+| # | Question | Answer |
+|---|---|---|
+| 1 | NULL = NULL evaluates to? | UNKNOWN (use IS NULL) |
+| 2 | COUNT(*) vs COUNT(col) | COUNT(*) counts all rows, COUNT(col) skips NULLs |
+| 3 | RANK() vs DENSE_RANK() | RANK() skips numbers after ties, DENSE_RANK() doesn't |
+| 4 | CROSS JOIN produces | Cartesian product (m × n rows) |
+| 5 | Can you ORDER BY in a subquery? | Only when using TOP/LIMIT |
+| 6 | TRUNCATE vs DELETE | TRUNCATE: no WHERE, no undo, faster. DELETE: filterable, transactional |
+| 7 | What does COALESCE do? | Returns first non-NULL value from its arguments |
+| 8 | Index on VARCHAR — what to watch out for? | Case sensitivity, collation, function-based searches bypass index |
+
+
+
+---
+
+## 🧠 Deep Conceptual Questions — SQL Internals & Reasoning
+
+**C1. How does a SQL database execute a SELECT query internally?**
+<details><summary>Deep Answer</summary>
+
+1. **Parse**: SQL text → AST (syntax tree)
+2. **Bind**: resolve table names, column names, types
+3. **Optimize**: query planner generates candidate execution plans, estimates costs (based on statistics: row counts, column cardinality, index existence), picks cheapest
+4. **Execute**: follow the plan — scan tables, apply filters, join, sort, project
+
+The optimizer transforms: `SELECT ... WHERE ... JOIN ... ORDER BY` into an operator tree (Volcano model): TableScan → Filter → HashJoin → Sort → Project. Each operator is an iterator: `next()` pulls one row from its child. This pull-based model (lazy evaluation) avoids materializing intermediate results.
+</details>
+
+**C2. B-Tree index: why is it the default index structure in databases?**
+<details><summary>Deep Answer</summary>
+
+B-Tree (not binary tree — B stands for Balanced, not Binary): a self-balancing tree where each node can hold many keys. Properties: (1) height O(log_m N) where m=fan-out (typically 100-1000) → very short tree for millions of rows, (2) all leaf nodes at same depth → guaranteed O(log N) worst case, (3) range scans efficient — leaves linked in sequence, (4) supports equality AND range queries. Hash index: only equality (no range). Sequential scan: no index at all. B+Tree (variant): internal nodes only store keys (no values), leaves store data. All row pointers in leaves → better range scan (follow linked list of leaves).
+</details>
+
+**C3. Why does adding an index sometimes SLOW DOWN a query?**
+<details><summary>Deep Answer</summary>
+
+1. **Low cardinality**: index on a boolean column — if 50% rows have `active=true`, index gives you 50% of rows. Database may choose full table scan (cheaper: sequential I/O) over index (random I/O for 50% of rows). 
+2. **Function on column**: `WHERE YEAR(created_at) = 2024` — index on `created_at` unused. Rewrite: `WHERE created_at >= '2024-01-01' AND created_at < '2025-01-01'`.
+3. **Write overhead**: every INSERT/UPDATE/DELETE must update ALL indexes. 5 indexes × N rows = 5× write amplification.
+4. **Index not covering**: index exists but the SELECT columns aren't in the index → each index match → separate heap fetch → many random I/O. Solution: covering index (include all needed columns in index).
+</details>
+
+**C4. EXPLAIN / query execution plan: what are the key things to look for?**
+<details><summary>Deep Answer</summary>
+
+Red flags: (1) **"Full Table Scan" / "Seq Scan"** on a large table → missing index, (2) **high "rows" estimate** in join conditions → cartesian product risk, (3) **"Using filesort"** → ORDER BY can't use index, (4) **"Using temporary"** → intermediate table materialization, (5) **nested loops on large tables** → should be hash join or merge join. Green flags: "Using index" (covering index), "ref" or "eq_ref" access type (index used). Start fixing: add or fix index on WHERE/JOIN/ORDER BY columns, rewrite function-wrapped columns.
+</details>
+
+**C5. Window functions vs GROUP BY — when must you use window functions?**
+<details><summary>Deep Answer</summary>
+
+`GROUP BY` collapses rows to one per group — individual row data is lost. Window functions compute aggregates but **keep all rows**. Use window when: (1) you need both the aggregate AND the individual row (rank each employee and show their salary), (2) running totals (each row needs sum of all prior rows — GROUP BY can't do this), (3) lag/lead access (compare each row to previous/next — GROUP BY has no row ordering concept), (4) top-N per group (ROW_NUMBER partition — classic GROUP BY can't do this cleanly). Window functions = aggregation without collapsing.
+</details>
+
+**C6. Transaction isolation levels — what anomaly does each prevent?**
+<details><summary>Deep Answer</summary>
+
+| Level | Dirty Read | Non-repeatable Read | Phantom Read |
+|---|---|---|---|
+| READ UNCOMMITTED | Possible | Possible | Possible |
+| READ COMMITTED | ✅ Prevented | Possible | Possible |
+| REPEATABLE READ | ✅ | ✅ | Possible (MySQL InnoDB: prevented!) |
+| SERIALIZABLE | ✅ | ✅ | ✅ |
+
+**Dirty read**: read uncommitted data from another transaction (which may rollback). **Non-repeatable**: same query in same transaction returns different row values (another transaction committed update). **Phantom**: same query returns different row COUNT (another transaction inserted/deleted rows). Higher isolation = fewer anomalies but more lock contention. Most production databases use READ COMMITTED or REPEATABLE READ.
+</details>
+
+**C7. N+1 query problem: what is it, why does it happen, and how to fix?**
+<details><summary>Deep Answer</summary>
+
+**What**: fetching N orders, then for each order making a separate query for the customer = 1 + N queries total. Scales terribly: 1000 orders = 1001 queries. **Why**: ORMs (Hibernate, JPA) with lazy loading — accessing a relationship triggers a new query. **Fix 1**: Eager loading — `JOIN FETCH` or `.fetch()` — load everything in one query. **Fix 2**: Batch loading — fetch all order IDs, then `WHERE customer_id IN (id1, id2, ...)` — 2 queries. **Fix 3**: Projection/DTO query — `SELECT o.id, c.name FROM orders o JOIN customers c` — 1 query. **Detection**: count DB queries in tests (Spring: `@QueryCount`), log slow query warnings.
+</details>
+
 
 > **Navigation**: [⬅ SQL Analytics, Real-World, Design](17_SQL_Problems_Analytics_RealWorld_Design.md) | [📚 Index](00_INDEX.md) | [Next: DSA Permutations & Combinations ➡](19_DSA_Permutations_Combinations_Interview_Math.md)

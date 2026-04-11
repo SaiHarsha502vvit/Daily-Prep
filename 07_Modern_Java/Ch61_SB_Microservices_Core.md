@@ -258,6 +258,17 @@ flowchart TD
 
 ---
 
+
+
+> 🔬 **Section Challenge — Microservices Architecture Overview**
+>
+> **Challenge 1 (Reasoning):** Service A calls Service B which calls Service C. C is slow. How does this cause a cascade failure?
+> <details><summary>Answer</summary>
+>
+> Without circuit breakers: A has a thread pool for B calls. B is slow (waiting for C) → B responses are slow → A's thread pool fills with waiting threads → A's thread pool exhausted → A becomes slow for ALL callers, not just B-related ones. Cascade: C slow → B slow → A slow → entire system degraded. Fix: Resilience4j circuit breaker — after N failures, 'open' the circuit → fail fast with fallback response instead of waiting. Timeouts + bulkhead patterns to isolate failure.
+> </details>
+>
+
 ## Service Discovery
 
 ### Why Service Discovery?
@@ -934,6 +945,8 @@ public class FallbackController {
 
 ---
 
+
+
 ## Circuit Breaker Pattern
 
 ### Why Circuit Breaker?
@@ -1023,6 +1036,8 @@ flowchart TD
 ### Circuit Breaker Configuration
 
 ```yaml
+
+
 # application.yml
 resilience4j:
   circuitbreaker:
@@ -1371,6 +1386,17 @@ public class UserServiceLoadBalancerConfig {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — Load Balancing**
+>
+> **Challenge 1 (Reasoning):** Round-robin load balancing sends requests to servers 1,2,3,1,2,3. Why does this fail for stateful sessions?
+> <details><summary>Answer</summary>
+>
+> Session data (shopping cart, auth state) is stored on ONE server. Round-robin sends the NEXT request to a different server which has NO session data → user is logged out, cart is empty. Solutions: (1) Sticky sessions (session affinity) — LB routes user to the same server based on cookie. Single point of failure risk. (2) Externalize session to Redis — all servers share one session store. (3) Stateless auth (JWT) — no server-side session needed. Modern preference: stateless design + JWT.
+> </details>
+>
 
 ## Configuration Management
 

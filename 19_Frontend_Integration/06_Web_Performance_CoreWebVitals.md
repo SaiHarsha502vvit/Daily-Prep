@@ -104,6 +104,9 @@
 
 ---
 
+
+
+
 ## 3. INP — Interaction to Next Paint
 
 ```
@@ -156,6 +159,9 @@
 ```
 
 ---
+
+
+
 
 ## 4. CLS — Cumulative Layout Shift
 
@@ -267,6 +273,9 @@
 
 ---
 
+
+
+
 ## 6. Image Optimization — The Biggest Win
 
 ```
@@ -315,6 +324,9 @@
 ```
 
 ---
+
+
+
 
 ## 7. Font Loading Strategies
 
@@ -371,6 +383,9 @@ body {
 ```
 
 ---
+
+
+
 
 ## 8. JavaScript Bundle Optimization
 
@@ -504,6 +519,17 @@ function Dashboard() {
 
 ---
 
+
+
+> 🔬 **Section Challenge — 9. Caching Strategies — HTTP Cache Headers**
+>
+> **Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
+> <details><summary>Answer</summary>
+>
+> HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
+> </details>
+>
+
 ## 10. Measuring Performance in Code
 
 ```javascript
@@ -563,3 +589,6 @@ onCLS(({ value }) => sendToAnalytics('CLS', value));
 ---
 
 > **Next Chapter**: [Web Accessibility (a11y) →](07_Web_Accessibility_A11y.md)
+
+
+

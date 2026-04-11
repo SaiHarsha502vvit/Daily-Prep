@@ -258,6 +258,11 @@ flowchart TD
 
 ---
 
+
+
+> 🔬 **Section Challenge — Step 2: CLASSIFY — What Type of Problem Is This?**
+>>
+
 ## Step 3: PLAN — Design Your Approach
 
 ### Planning Template
@@ -353,6 +358,8 @@ flowchart LR
 ```
 
 ---
+
+
 
 ## Step 4: CODE — Translation Rules
 
@@ -671,6 +678,9 @@ flowchart TD
     N15 --> N16
 ```
 
+
+
+
 ## Applying This to System Design
 
 ```
@@ -743,3 +753,5 @@ flowchart TD
 ---
 
 > **Navigation**: [< Previous](04_Array_String_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_Implementation_Checklist.md)
+
+

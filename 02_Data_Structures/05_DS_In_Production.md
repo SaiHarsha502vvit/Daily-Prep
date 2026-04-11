@@ -105,6 +105,13 @@ LSM-TREE            │ • Cassandra, LevelDB, RocksDB, ScyllaDB
 
 ---
 
+
+
+
+
+
+> 🔬 **Section Challenge — The History of DS in Computing**
+
 # Performance Characteristics — The Full Picture
 
 ```

@@ -183,6 +183,13 @@ class AhoCorasick {
 
 
 
+
+
+
+
+
+> 🔬 **Section Challenge — 📝 String Algorithms — the Complete Toolkit**
+
 ## 📌 Randomized Algorithms
 
 
@@ -717,6 +724,13 @@ class CuckooFilter {
 ```
 
 
+
+
+
+
+
+
+> 🔬 **Section Challenge — 📌 Modern Data Structures in Production**
 
 ## 🎨 Interview Patterns — Advanced Level
 

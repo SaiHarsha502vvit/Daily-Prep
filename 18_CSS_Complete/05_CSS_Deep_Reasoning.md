@@ -151,6 +151,9 @@ flowchart TD
 
 ---
 
+
+
+
 ## 3. Specificity: It's NOT Just "ID > Class > Element"
 
 ### The Freeze Question
@@ -363,6 +366,17 @@ flowchart TD
 
 ---
 
+
+
+> 🔬 **Section Challenge — 5. Block Formatting Context (BFC): The Invisible Layout Force**
+>
+> **Challenge 1 (Reasoning):** When does React Context cause performance problems and how do you avoid them?
+> <details><summary>Answer</summary>
+>
+> Every context consumer re-renders when ANY context value changes. If you have `{theme, user, cart}` in one context, updating cart re-renders all theme and user consumers. Fixes: (1) Split into separate contexts: `ThemeContext`, `UserContext`, `CartContext`. (2) Memoize components with `React.memo`. (3) For complex state, use a state library (Zustand, Jotai) with selector-based subscriptions — only re-render when the specific piece of state changes.
+> </details>
+>
+
 ## 6. Margin Collapse: The Behavior That Confuses Everyone
 
 ### The Freeze Question
@@ -410,6 +424,9 @@ flowchart TD
 ```
 
 ---
+
+
+
 
 ## 7. Flexbox vs Grid: Not "Which Is Better" — When Each Shines
 
@@ -474,6 +491,9 @@ flowchart TD
 ```
 
 ---
+
+
+
 
 ## 8. `position: sticky` Gotchas: Why It Randomly Stops Working
 
@@ -545,6 +565,9 @@ flowchart TD
 ```
 
 ---
+
+
+
 
 ## 9. CSS Units: When to Use px, em, rem, %, vh/vw
 
@@ -727,6 +750,9 @@ flowchart TD
 ```
 
 ---
+
+
+
 
 ## Interview Quick-Fire: CSS Freeze Busters
 

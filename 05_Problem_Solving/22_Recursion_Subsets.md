@@ -79,6 +79,27 @@ flowchart TD
 
 ## PART 0: WHY Recursion & Subsets — The Heart of Combinatorial Thinking
 
+
+
+> 🔬 **Section Challenge — PART 0: WHY Recursion & Subsets — The Heart of Combinatorial Thinking**
+>
+> **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+> <details><summary>Answer</summary>
+>
+> An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** ```java
+void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
+fib(50) // takes forever
+```
+Why and what are the 3 fixes?
+> <details><summary>Answer</summary>
+>
+> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+> </details>
+>
+
 ## The Real-World Origin
 
 📖 SUBSETS IN NATURE: The power set of DNA base pairs determines all
@@ -106,6 +127,9 @@ THE RECURSION TREE for {1, 2, 3}:
 / \   / \    / \    / \
 {1,2,3}{1,2}{1,3}{1}{2,3}{2}{3}{}         ← include/exclude 3
 Leaves = all 2^3 = 8 subsets of {1,2,3}
+
+
+
 ## The Mental Model: "Include Or Exclude — That'S All Recursion Is"
 
 
@@ -128,6 +152,27 @@ solve(index + 1, nums, <state>);
 - Count subsets with property → Recursion + Memoization → DP
 - Optimize over subsets → DP (Knapsack family)
 - Enumerate with constraints → Backtracking + Pruning
+
+
+> 🔬 **Section Challenge — The Mental Model: "Include Or Exclude — That'S All Recursion Is"**
+>
+> **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+> <details><summary>Answer</summary>
+>
+> An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** ```java
+void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
+fib(50) // takes forever
+```
+Why and what are the 3 fixes?
+> <details><summary>Answer</summary>
+>
+> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+> </details>
+>
+
 ## The Recursion → Dp Pipeline (Mit 6.006 Framework)
 
 STEP 1: PURE RECURSION (Brute Force)
@@ -165,6 +210,27 @@ STEP 5: SPACE OPTIMIZATION (1D DP)
 Process target RIGHT TO LEFT (so we don't overwrite needed values)
 for each num: for t = target to num: dp[t] += dp[t - num]
 Time: O(n × target), Space: O(target)
+
+
+> 🔬 **Section Challenge — The Recursion → Dp Pipeline (Mit 6.006 Framework)**
+>
+> **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+> <details><summary>Answer</summary>
+>
+> An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** ```java
+void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
+fib(50) // takes forever
+```
+Why and what are the 3 fixes?
+> <details><summary>Answer</summary>
+>
+> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+> </details>
+>
+
 ## Difficulties & Common Mistakes
 
 1. Forgetting to BACKTRACK: after recursing with include, remove the element
@@ -438,6 +504,9 @@ COMPLEXITY: Time O(n^(T/M)) where T=target, M=min candidate | Space O(T/M)
 
 ---
 
+
+
+
 ## PROBLEM 4: Combination Sum II — Each Number Once (LC 40)
 
 ```
@@ -547,6 +616,9 @@ flowchart TD
 ```
 
 ---
+
+
+
 
 ## PROBLEM 5: Subset Sum — Count Subsets with Given Sum
 
@@ -663,6 +735,11 @@ num, causing it to be counted multiple times (unbounded knapsack behavior).
 
 ---
 
+
+
+> 🔬 **Section Challenge — PROBLEM 5: Subset Sum — Count Subsets with Given Sum**
+>>
+
 ## PROBLEM 6: Partition Equal Subset Sum (LC 416)
 
 ```
@@ -758,6 +835,11 @@ flowchart LR
 
 ---
 
+
+
+> 🔬 **Section Challenge — PROBLEM 6: Partition Equal Subset Sum (LC 416)**
+>>
+
 ## PROBLEM 7: Target Sum (LC 494)
 
 ```
@@ -846,6 +928,11 @@ BRILLIANT REDUCTION: +/- assignment → subset partition → subset sum count!
 
 ---
 
+
+
+> 🔬 **Section Challenge — PROBLEM 7: Target Sum (LC 494)**
+>>
+
 ## PROBLEM 8: Letter Combinations of Phone Number (LC 17)
 
 ```
@@ -927,6 +1014,9 @@ WHY 4^n? Some digits map to 4 letters (7→pqrs, 9→wxyz).
 ```
 
 ---
+
+
+
 
 ## PROBLEM 9: Permutations (LC 46)
 
@@ -1079,6 +1169,23 @@ TRICK: Modify board in-place to mark visited (avoid boolean[][] array).
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — PROBLEM 11: Word Search (LC 79)**
+>
+> **Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+> <details><summary>Answer</summary>
+>
+> lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+> </details>
+>
+> **Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+> <details><summary>Answer</summary>
+>
+> Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
+> </details>
+>
 
 ## PROBLEM 12: Generate Parentheses (LC 22)
 

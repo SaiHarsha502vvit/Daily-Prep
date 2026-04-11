@@ -82,6 +82,9 @@ TAG CATEGORY 3: KEY PROPERTIES
 
 ---
 
+
+
+
 ## 2. Pattern 1: Two Pointers
 
 ### 5W+H Analysis
@@ -175,6 +178,17 @@ ADVANCED:
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 2. Pattern 1: Two Pointers**
+>
+> **Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
+> <details><summary>Answer</summary>
+>
+> The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
+> </details>
+>
 
 ## 3. Pattern 2: Sliding Window
 
@@ -285,6 +299,23 @@ VARIABLE WINDOW:
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 3. Pattern 2: Sliding Window**
+>
+> **Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
+> <details><summary>Answer</summary>
+>
+> Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
+> <details><summary>Answer</summary>
+>
+> Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
+> </details>
+>
 
 ## 4. Pattern 3: Binary Search — Beyond Sorted Arrays
 
@@ -425,6 +456,23 @@ boolean canSplit(int[] nums, int k, int maxSum) {
 
 ---
 
+
+
+> 🔬 **Section Challenge — 4. Pattern 3: Binary Search — Beyond Sorted Arrays**
+>
+> **Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+> <details><summary>Answer</summary>
+>
+> lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+> </details>
+>
+> **Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+> <details><summary>Answer</summary>
+>
+> Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
+> </details>
+>
+
 ## 5. Pattern 4: BFS/DFS — Graph and Tree Traversal
 
 ### When to Use BFS vs DFS
@@ -518,6 +566,23 @@ int numIslands(char[][] grid) {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 5. Pattern 4: BFS/DFS — Graph and Tree Traversal**
+>
+> **Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+> <details><summary>Answer</summary>
+>
+> BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
+> </details>
+>
+> **Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
+> <details><summary>Answer</summary>
+>
+> 3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
+> </details>
+>
 
 ## 6. Pattern 5: Dynamic Programming
 
@@ -629,6 +694,23 @@ FAMILY 8: BITMASK DP
 
 ---
 
+
+
+> 🔬 **Section Challenge — 6. Pattern 5: Dynamic Programming**
+>
+> **Challenge 1 (Reasoning):** How do you identify that a problem requires DP vs Greedy? What's the key test?
+> <details><summary>Answer</summary>
+>
+> Greedy test: does the locally optimal choice always lead to the globally optimal solution? (Prove via exchange argument.) If yes → greedy. If making a local choice requires knowing future choices → DP. Example: Coin Change with standard coins [1,5,10,25] → greedy works (always pick largest). Coin Change with coins [1,3,4] and amount 6 → greedy picks 4+1+1=3 coins, optimal is 3+3=2 coins. Greedy fails → DP.
+> </details>
+>
+> **Challenge 2 (Design):** You need to find the number of ways to climb N stairs taking 1 or 2 steps at a time. Define the DP state and recurrence.
+> <details><summary>Answer</summary>
+>
+> State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + dp[i-2]` (come from step i-1 via 1 step, or from step i-2 via 2 steps). Base: `dp[0]=1` (one way: don't move), `dp[1]=1`. This is exactly Fibonacci. Space optimization: only need last 2 values → O(1) space.
+> </details>
+>
+
 ## 7. Pattern 6: Greedy — When Local Optimum = Global Optimum
 
 ### When Greedy Works (and When It Doesn't)
@@ -686,6 +768,17 @@ int jump(int[] nums) {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 7. Pattern 6: Greedy — When Local Optimum = Global Optimum**
+>
+> **Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
+> <details><summary>Answer</summary>
+>
+> Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
+> </details>
+>
 
 ## 8. Pattern 7: Backtracking — Systematic Exploration
 
@@ -779,6 +872,9 @@ void combinationSum(int[] candidates, int target, int start,
 
 ---
 
+
+
+
 ## 9. Pattern 8: Stack/Queue — Order-Dependent Processing
 
 ### Stack Application Map
@@ -839,6 +935,9 @@ int largestRectangleArea(int[] heights) {
 
 ---
 
+
+
+
 ## 10. Pattern 9: Heap — Priority-Based Processing
 
 ### When to Use Heap
@@ -891,6 +990,9 @@ class MedianFinder {
 
 ---
 
+
+
+
 ## 11. Pattern 10: Union-Find — Dynamic Connectivity
 
 ```java
@@ -932,6 +1034,17 @@ class UnionFind {
 
 ---
 
+
+
+> 🔬 **Section Challenge — 11. Pattern 10: Union-Find — Dynamic Connectivity**
+>
+> **Challenge 1 (Reasoning):** Without path compression in Union-Find, what's the worst-case tree height after N unions? With path compression?
+> <details><summary>Answer</summary>
+>
+> Without path compression + union by rank: O(N) height possible (linear chain). With union by rank only: O(log N). With path compression only: amortized O(log N). With BOTH: amortized O(α(N)) where α is the inverse Ackermann function — practically constant (4 for any N up to 10^80). Union by rank prevents tall trees from forming. Path compression flattens existing trees. Together they're nearly optimal.
+> </details>
+>
+
 ## 12. Pattern 11: Prefix Sum — Range Query Magic
 
 ```java
@@ -960,6 +1073,17 @@ int subarraySum(int[] nums, int k) {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 12. Pattern 11: Prefix Sum — Range Query Magic**
+>
+> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+> <details><summary>Answer</summary>
+>
+> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+> </details>
+>
 
 ## 13. Pattern 12: Trie — String Prefix Operations
 
@@ -1008,6 +1132,9 @@ class Trie {
 
 ---
 
+
+
+
 ## 14. The Universal Pattern Matching Flowchart
 
 ```
@@ -1051,6 +1178,9 @@ class Trie {
 
 ---
 
+
+
+
 ## 15. 30 Problems — Identify the Pattern
 
 **Try to identify the pattern BEFORE reading the answer.**
@@ -1091,3 +1221,144 @@ class Trie {
 ---
 
 [⬅ Constraint→Algorithm Map](02_Constraint_to_Algorithm_Map.md) | [📚 Index](00_INDEX.md) | [Next: Complexity Masterclass ➡](04_Complexity_Analysis_Masterclass.md)
+
+---
+
+
+
+## 🏋️ Practice & Interview Questions — OOP & Design Patterns
+
+### Predict / Trace
+**Q1.** What design pattern does this code follow?
+```java
+Logger logger = Logger.getInstance();
+```
+<details><summary>Answer</summary>
+
+**Singleton** — ensures only one Logger instance exists globally.
+</details>
+
+**Q2.** What SOLID principle is violated?
+```java
+class User {
+    void login() { ... }
+    void logout() { ... }
+    void sendEmail() { ... }  // ← ?
+    void generateReport() { ... }  // ← ?
+}
+```
+<details><summary>Answer</summary>
+
+**SRP (Single Responsibility)** — User class has 4 responsibilities: authentication, email, reporting. Should be split into: `AuthService`, `EmailService`, `ReportService`.
+</details>
+
+### Design Pattern Problems
+**Q3.** ⭐ Implement Strategy pattern for payment processing.
+<details><summary>Solution</summary>
+
+```java
+interface PaymentStrategy { void pay(int amount); }
+class CreditCard implements PaymentStrategy { public void pay(int amount){ /*...*/ } }
+class PayPal implements PaymentStrategy { public void pay(int amount){ /*...*/ } }
+class UPI implements PaymentStrategy { public void pay(int amount){ /*...*/ } }
+
+class PaymentContext {
+    private PaymentStrategy strategy;
+    void setStrategy(PaymentStrategy s){ this.strategy=s; }
+    void processPayment(int amount){ strategy.pay(amount); }
+}
+// Switch strategy at runtime — open/closed principle!
+```
+</details>
+
+**Q4.** ⭐⭐ Implement Observer pattern for event notification.
+<details><summary>Solution</summary>
+
+```java
+interface Observer { void update(String event); }
+interface Observable {
+    void subscribe(Observer o); void unsubscribe(Observer o); void notify(String event);
+}
+class EventBus implements Observable {
+    List<Observer> observers = new ArrayList<>();
+    public void subscribe(Observer o){ observers.add(o); }
+    public void unsubscribe(Observer o){ observers.remove(o); }
+    public void notify(String event){ observers.forEach(o -> o.update(event)); }
+}
+```
+</details>
+
+**Q5.** ⭐⭐ Builder pattern for a complex configuration object.
+<details><summary>Solution</summary>
+
+```java
+class ServerConfig {
+    private final String host; private final int port; private final int timeout;
+    private ServerConfig(Builder b){ host=b.host; port=b.port; timeout=b.timeout; }
+
+    static class Builder {
+        String host="localhost"; int port=8080; int timeout=30;
+        Builder host(String h){ host=h; return this; }
+        Builder port(int p){ port=p; return this; }
+        Builder timeout(int t){ timeout=t; return this; }
+        ServerConfig build(){ return new ServerConfig(this); }
+    }
+}
+// ServerConfig config = new ServerConfig.Builder().host("prod.com").port(443).build();
+```
+</details>
+
+### MCQ Rapid Fire
+| # | Question | Answer |
+|---|---|---|
+| 1 | SOLID: O stands for | Open/Closed Principle |
+| 2 | Factory vs Abstract Factory | Factory: one product; Abstract Factory: family of products |
+| 3 | Composition over inheritance means | Prefer has-a (field) over is-a (extends) for flexibility |
+| 4 | Decorator pattern purpose | Add behavior dynamically without subclassing |
+| 5 | Facade pattern purpose | Simplified interface to complex subsystem |
+| 6 | Proxy pattern types | Virtual, protective, remote, caching |
+| 7 | Command pattern encapsulates | Request as an object (supports undo/redo) |
+| 8 | Template Method pattern | Defines algorithm skeleton, subclasses fill in steps |
+
+---
+
+## 🧠 Deep Conceptual Questions — OOP, SOLID & Design Patterns
+
+**C1. What is the difference between an interface and an abstract class — when to use each?**
+<details><summary>Deep Answer</summary>
+
+**Abstract class**: can have fields, constructors, concrete method implementations. Models IS-A with shared state and behavior. Use when: you have partial implementation to share (template method pattern). Single inheritance: if you extend an abstract class, you can't extend another. **Interface**: pure contract, no state (Java 8+: default methods allowed). Models CAN-DO / role capability. A class can implement unlimited interfaces. Use when: defining a capability across unrelated classes (`Comparable`, `Serializable`, `Runnable`). Rule: prefer interfaces for type definitions. Use abstract class when you need to share implementation code AND all subtypes share the same "IS-A" relationship. In practice: interfaces + composition > abstract class + inheritance.
+</details>
+
+**C2. Liskov Substitution Principle: what does it actually mean and how do you violate it?**
+<details><summary>Deep Answer</summary>
+
+LSP: if `S extends P`, anywhere you use `P`, you should be able to use `S` without breaking correctness. Violation example: `Square extends Rectangle`. Rectangle behavior: setWidth and setHeight are independent. Square invariant: width must equal height. `Square s = new Square(5); s.setWidth(10);` — now `s.getHeight() == 10` (Square enforced equality) but Rectangle contract says height should still be 5. Code using Rectangle is surprised. Better: Square and Rectangle as siblings under a Shape hierarchy. Another classic: override a method and throw exception for a case the parent method handled → violates LSP. Test: can you run the parent's test suite against the child and pass?
+</details>
+
+**C3. Strategy pattern vs. if-else chains: the OCP argument.**
+<details><summary>Deep Answer</summary>
+
+```java
+// BAD: add new payment type = modify this method = Open for modification (violates OCP)
+if(type == "credit") { } else if(type == "paypal") { } else if(type == "crypto") { }
+
+// GOOD: add new payment = new class, zero modification of existing code
+interface PaymentStrategy { void pay(int amount); }
+// Add Crypto: new CryptoPayment implements PaymentStrategy — no other file touched
+```
+Open/Closed Principle: open for extension, closed for modification. Each `else if` = a modification to an existing method = risk of breaking existing behavior, requires re-testing the entire method. Strategy = extension by new class = old code untouched = zero regression risk. When if-else is fine: 2-3 fixed cases that never change. When strategy shines: extensible behaviors that vary at runtime.
+</details>
+
+**C4. What is the Dependency Inversion Principle and how does it enable testability?**
+<details><summary>Deep Answer</summary>
+
+DIP: high-level modules should not depend on low-level modules — both should depend on abstractions. Without DIP: `OrderService` directly creates `MySQLOrderRepository`. To test OrderService: must have MySQL running. With DIP: `OrderService` depends on `OrderRepository` interface. In production: inject `MySQLOrderRepository`. In tests: inject `MockOrderRepository`. The high-level business logic (OrderService) has zero knowledge of the database layer. This makes: unit testing trivial (mock the interface), swapping implementations easy (SQLite, PostgreSQL, in-memory), layer boundaries clear. Dependency INJECTION (DI framework like Spring) is the mechanism that enables DIP at runtime.
+</details>
+
+**C5. Observer pattern vs. Event Bus: when does one become the other?**
+<details><summary>Deep Answer</summary>
+
+**Observer**: subject holds direct references to observer objects. Subject explicitly notifies each one. Tightly coupled (subject knows about observers). Fine for: small systems, known observers at compile time. Breaks when: observers span different modules, dynamic subscription needed, observers need to be remote. **Event Bus / Message Queue**: publishers and subscribers decoupled. Publisher sends event with a TYPE to the bus. Subscribers register for event types — publisher doesn't know who's listening. De-facto standard in large systems: Spring ApplicationEventPublisher, Kafka, RabbitMQ are all event buses. Rule: Observer for in-process tightly-coupled notification. Event bus for loose coupling, cross-module, or distributed communication.
+</details>
+

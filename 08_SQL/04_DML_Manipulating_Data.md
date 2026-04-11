@@ -323,3 +323,9 @@ WHERE emp_id = 5;
 ---
 
 > **Navigation**: [< Previous](03_DDL_Creating_Structure.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_Queries_SELECT_WHERE.md)
+
+
+
+
+> 🔬 **Section Challenge — Chapter 4: DML - Manipulating Data**
+

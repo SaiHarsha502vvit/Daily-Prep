@@ -283,6 +283,20 @@ When you read the problem statement, certain **words** should trigger **immediat
 
 ---
 
+
+
+
+
+
+> 🔬 **Section Challenge — 3. Parameter Recognition — Reading the Problem Like Source Code**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## 4. The Decision Engine — DS/Algorithm/Pattern Selection
 
 ### The Master Decision Tree
@@ -413,6 +427,20 @@ PATTERN: DP variants
 
 ---
 
+
+
+
+
+
+> 🔬 **Section Challenge — 4. The Decision Engine — DS/Algorithm/Pattern Selection**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## 5. Complexity Reasoning — Think Before You Code
 
 ### The Complexity Conversation Framework
@@ -533,6 +561,20 @@ ALWAYS SAY:
 ```
 
 ---
+
+
+
+
+
+
+> 🔬 **Section Challenge — 5. Complexity Reasoning — Think Before You Code**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
 
 ## 6. The Interview Communication Protocol
 
@@ -783,6 +825,20 @@ TRAP: Greedy doesn't actually work
 
 ---
 
+
+
+
+
+
+> 🔬 **Section Challenge — 8. The Debugging Brain — When You're Stuck**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## 9. Cross-Domain Thinking — DSA × SQL × System Design × OOP
 
 ### The Universal Problem-Solving Matrix
@@ -860,6 +916,20 @@ but distributed. Snowflake IDs use bit manipulation — epoch time + machine ID
 
 ---
 
+
+
+
+
+
+> 🔬 **Section Challenge — 9. Cross-Domain Thinking — DSA × SQL × System Design × OOP**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## 10. The Growth Mindset Architecture
 
 ### The Learning Ladder
@@ -913,6 +983,20 @@ Level 5: TEACHER (12+ months)
 ### The Weekly Reflection Template
 
 ```markdown
+
+
+
+
+
+> 🔬 **Section Challenge — 10. The Growth Mindset Architecture**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## Week ___ Reflection
 
 ### What I got right:
@@ -1004,3 +1088,17 @@ When you finish:
 ---
 
 [📚 Index](00_INDEX.md) | [Next: Constraint→Algorithm Map ➡](02_Constraint_to_Algorithm_Map.md)
+
+
+
+
+
+> 🔬 **Section Challenge — Cross-References to Existing Guides**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+

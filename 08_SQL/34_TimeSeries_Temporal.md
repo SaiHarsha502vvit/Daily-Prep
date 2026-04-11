@@ -59,6 +59,8 @@ CREATE INDEX idx_metrics_recent ON server_metrics (timestamp DESC)
 
 ---
 
+
+
 ## Part 2 — Essential Time-Series Queries
 
 ### 2.1 Downsampling (Bucketing)
@@ -345,6 +347,9 @@ $$ LANGUAGE plpgsql;
 ```
 
 ---
+
+
+
 
 ## Part 5 — Python Time-Series Visualization
 

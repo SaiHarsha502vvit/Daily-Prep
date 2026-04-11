@@ -362,6 +362,23 @@ public class RateLimiterService {
 
 ---
 
+
+
+> 🔬 **Section Challenge — Problem 24: Rate Limiter (Sliding Window / Token Bucket)**
+>
+> **Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
+> <details><summary>Answer</summary>
+>
+> Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
+> <details><summary>Answer</summary>
+>
+> Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
+> </details>
+>
+
 # PART 12: SEARCH SYSTEMS (Google/Elasticsearch)
 
 ## Problem 25: Implement Autocomplete (Trie + Frequency)
@@ -704,6 +721,9 @@ public class TrendingTopicsService {
 
 ---
 
+
+
+
 # PART 13: DATA PROCESSING (Batch Systems)
 
 ## Problem 27: Process Large CSV File (External Sort / Chunking)
@@ -888,6 +908,9 @@ public class ExternalSort {
 
 ---
 
+
+
+
 ## Problem 28: Find Duplicate Files (Hash-based Deduplication)
 
 ```
@@ -1065,6 +1088,9 @@ public class DuplicateFileFinder {
 ```
 
 ---
+
+
+
 
 # ⚙️ Part 14: Gaming Systems
 
@@ -1431,6 +1457,9 @@ public class MatchmakingService {
 
 ---
 
+
+
+
 ## 🎯 QUICK REFERENCE: Problem → DSA Mapping
 
 | Problem Domain | Problem            | DSA Used             |
@@ -1455,6 +1484,9 @@ public class MatchmakingService {
 | **Gaming**     | Matchmaking        | TreeMap + Queue      |
 
 ---
+
+
+
 
 ## 📚 How to Use These Problems
 

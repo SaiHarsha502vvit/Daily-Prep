@@ -101,6 +101,9 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader, TensorDataset
 
+
+
+
 # ─── Define Model ───
 class MNISTClassifier(nn.Module):
     def __init__(self):
@@ -179,6 +182,9 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
 
+
+
+
 # ─── Sequential API (simple) ───
 model = keras.Sequential([
     layers.Flatten(input_shape=(28, 28)),
@@ -221,6 +227,17 @@ loaded = keras.models.load_model('model.keras')
 ## 2.2 Functional API (complex architectures)
 
 ```python
+
+
+> 🔬 **Section Challenge — 2.2 Functional API (complex architectures)**
+>>
+> **Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+> <details><summary>Answer</summary>
+>
+> Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+> </details>
+>
+
 # For models with multiple inputs/outputs, skip connections, etc.
 
 inputs = keras.Input(shape=(784,))
@@ -280,6 +297,28 @@ TensorFlow/Keras:
 ## 4.1 Custom Autograd Functions
 
 ```python
+
+
+> 🔬 **Section Challenge — 4.1 Custom Autograd Functions**
+>
+> **Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
+> <details><summary>Answer</summary>
+>
+> ```java
+> public class PaymentException extends RuntimeException { // unchecked!
+>     private final String errorCode;
+>     private final String transactionId;
+>     public PaymentException(String code, String txId, String msg, Throwable cause) {
+>         super(msg, cause); this.errorCode=code; this.transactionId=txId;
+>     }
+> }
+> public class InsufficientFundsException extends PaymentException { ... }
+> public class PaymentGatewayException extends PaymentException { ... }
+> ```
+> Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
+> </details>
+>
+
 # Sometimes standard automatic differentiation isn't enough.
 # You can define custom forward/backward passes.
 
@@ -312,6 +351,17 @@ print(x.grad)  # tensor([0., 1., 0.])
 ## 4.2 DataLoaders & Datasets Deep Dive
 
 ```python
+
+
+> 🔬 **Section Challenge — 4.2 DataLoaders & Datasets Deep Dive**
+>
+> **Challenge 1 (Reasoning):** Round-robin load balancing sends requests to servers 1,2,3,1,2,3. Why does this fail for stateful sessions?
+> <details><summary>Answer</summary>
+>
+> Session data (shopping cart, auth state) is stored on ONE server. Round-robin sends the NEXT request to a different server which has NO session data → user is logged out, cart is empty. Solutions: (1) Sticky sessions (session affinity) — LB routes user to the same server based on cookie. Single point of failure risk. (2) Externalize session to Redis — all servers share one session store. (3) Stateless auth (JWT) — no server-side session needed. Modern preference: stateless design + JWT.
+> </details>
+>
+
 # Handling massive datasets (images, text) that don't fit in RAM
 from torch.utils.data import Dataset, DataLoader
 import os
@@ -390,6 +440,9 @@ def train_ddp(rank, world_size):
 ## 5.1 tf.data.Dataset Pipeline
 
 ```python
+
+
+
 # TensorFlow's standard for highly optimized data loading pipelines
 import tensorflow as tf
 
@@ -420,6 +473,11 @@ dataset = (dataset
 ## 5.2 tf.function (Graph Execution)
 
 ```python
+
+
+> 🔬 **Section Challenge — 5.2 tf.function (Graph Execution)**
+>>>
+
 # TF2 executes eagerly (like PyTorch) by default for debugging.
 # But for production speed, you compile Python to a static C++ Graph.
 
@@ -446,6 +504,9 @@ def compute_step(x, y):
 ## 6.1 HuggingFace Transformers (The NLP Standard)
 
 ```python
+
+
+
 # Neither PyTorch nor TF are used "raw" for modern NLP.
 # You use HuggingFace, which wraps PyTorch/TF.
 
@@ -472,6 +533,11 @@ print("Positive" if predicted_class == 1 else "Negative")
 ## 6.2 ONNX (Open Neural Network Exchange)
 
 ```python
+
+
+> 🔬 **Section Challenge — 6.2 ONNX (Open Neural Network Exchange)**
+>>
+
 # How do you train in PyTorch but deploy without a heavy Python runtime? ONNX.
 # ONNX is a universal format for ML models (supported by MS, Meta, AWS, etc.)
 
@@ -511,5 +577,132 @@ torch.onnx.export(
 | Python OOP (nn.Module) | [Python Core](01_Python_Core_Fundamentals.md) |
 
 ---
+
+
+---
+
+## 🏋️ Practice & Interview Questions — Python
+
+### Predict / Trace
+**Q1.** What prints?
+```python
+x = [1,2,3]
+y = x
+y.append(4)
+print(x)
+```
+<details><summary>Answer</summary>
+
+`[1, 2, 3, 4]` — `y = x` copies the **reference**, not the list. Both point to the same object. Python lists are mutable. **Fix**: `y = x.copy()` or `y = x[:]` for shallow copy.
+</details>
+
+**Q2.** What is the GIL and how does it affect threading in Python?
+<details><summary>Answer</summary>
+
+**Global Interpreter Lock**: allows only ONE thread to execute Python bytecode at a time per process. CPU-bound threads don't run truly in parallel — only I/O-bound threads benefit (GIL released during I/O). For CPU parallelism: use `multiprocessing` (separate processes, separate GILs) or Go/Java. CPython 3.13 has experimental free-threaded mode (GIL disabled).
+</details>
+
+### Coding Problems
+**Q3.** ⭐ FizzBuzz in Python — most Pythonic way.
+<details><summary>Solution</summary>
+
+```python
+for i in range(1, 101):
+    print("FizzBuzz" if i%15==0 else "Fizz" if i%3==0 else "Buzz" if i%5==0 else i)
+```
+</details>
+
+**Q4.** ⭐ Flatten a nested list recursively.
+<details><summary>Solution</summary>
+
+```python
+def flatten(lst):
+    result = []
+    for item in lst:
+        if isinstance(item, list): result.extend(flatten(item))
+        else: result.append(item)
+    return result
+# or with generator:
+# def flatten(lst): yield from (flatten(x) if isinstance(x,list) else [x] for x in lst)
+```
+</details>
+
+**Q5.** ⭐⭐ Implement LRU Cache using `functools.lru_cache` vs manual implementation.
+<details><summary>Solution</summary>
+
+```python
+# Built-in:
+from functools import lru_cache
+@lru_cache(maxsize=128)
+def fib(n): return n if n<2 else fib(n-1)+fib(n-2)
+
+# Manual with OrderedDict:
+from collections import OrderedDict
+class LRUCache:
+    def __init__(self, cap): self.cap=cap; self.cache=OrderedDict()
+    def get(self, key):
+        if key not in self.cache: return -1
+        self.cache.move_to_end(key); return self.cache[key]
+    def put(self, key, val):
+        self.cache[key]=val; self.cache.move_to_end(key)
+        if len(self.cache)>self.cap: self.cache.popitem(last=False)
+```
+</details>
+
+### MCQ Rapid Fire
+| # | Question | Answer |
+|---|---|---|
+| 1 | List vs Tuple | List: mutable; Tuple: immutable, hashable |
+| 2 | `is` vs `==` | `is`: identity (same object); `==`: equality (same value) |
+| 3 | Python `dict` ordering (3.7+) | Insertion order (guaranteed) |
+| 4 | Generator vs list comprehension | Generator: lazy, O(1) memory; list: eager, O(N) memory |
+| 5 | `*args` vs `**kwargs` | *args: positional varargs tuple; **kwargs: keyword varargs dict |
+| 6 | `__slots__` purpose | Prevents instance `__dict__`, reduces memory per object |
+| 7 | `asyncio` is true parallelism? | ❌ Cooperative concurrency (single thread, yields on await) |
+
+
+
+---
+
+## 🧠 Deep Conceptual Questions — Python Internals
+
+**C1. How does Python's GIL work internally, and why hasn't it been removed?**
+<details><summary>Deep Answer</summary>
+
+GIL = a mutex in CPython's interpreter. Every Python thread must hold the GIL to execute bytecode. Released during: I/O (blocking syscalls), C extensions (NumPy, pandas release it during computation). Acquired every 100 bytecode instructions or yielded to other threads. WHY NOT REMOVED: CPython's memory management (reference counting) is not thread-safe. Without GIL: `ob_refcnt` (object reference count) must be protected by locks everywhere → massive overhead in single-threaded code. Every `del`, every function call return would need a lock. Previous removal attempts degraded single-threaded code by 30-50%. PyPy, Jython don't have GIL. CPython 3.13 enables experimental "no-GIL" mode (`python -X=nogil`) with per-object locks.
+</details>
+
+**C2. What is Python's memory model for integers and why does `is` fail for large ints?**
+<details><summary>Deep Answer</summary>
+
+CPython caches small integers (-5 to 256) as singletons. `a = 5; b = 5; a is b` → True (same object). `a = 1000; b = 1000; a is b` → False (new objects). This is CPython-specific optimization — not guaranteed by the language spec. String interning: short strings/identifiers often interned. NEVER use `is` for value comparison (use `==`). `is` tests identity (same object in memory). The integer cache exists because small ints are used everywhere; caching them saves millions of allocations in a typical program.
+</details>
+
+**C3. Generators: why are they memory-efficient and how does `yield` work internally?**
+<details><summary>Deep Answer</summary>
+
+A generator function returns a generator object. The function body doesn't execute at call time. Each `next()` call: resumes execution from the last `yield` point. Generator saves its stack frame between calls — it's a "suspended stack frame." Memory: generates values one at a time (O(1)) vs list comprehension generating all at once (O(N)). `yield from` (PEP 380): delegates to a sub-generator, chains yields through. Generators ARE the basis of `asyncio`: `async def` functions compile to coroutines which are generators under the hood. `await` ≈ `yield` to the event loop, "I'm waiting for something, run other tasks."
+</details>
+
+**C4. Decorators: what pattern underlies them and how do you preserve the wrapped function's metadata?**
+<details><summary>Deep Answer</summary>
+
+```python
+@decorator
+def func(): pass
+# Same as: func = decorator(func)
+```
+Decorator = higher-order function. Problem: `@decorator` replaces `func` with wrapper — `func.__name__` becomes `"wrapper"`, `func.__doc__` is lost. Fix: `@functools.wraps(original_func)` on the wrapper copies `__name__`, `__doc__`, `__annotations__`, `__module__`. Without wraps: debugging is hell, introspection libraries break, Flask/FastAPI route registration may fail. Parameterized decorator: an outer function returning the actual decorator:
+```python
+def retry(n): return lambda fn: lambda *args: ... # 3 levels!
+```
+</details>
+
+**C5. `asyncio`: why does `async/await` NOT use threads and how is it still concurrent?**
+<details><summary>Deep Answer</summary>
+
+`asyncio` is **cooperative multitasking** on a SINGLE thread. Event loop runs coroutines. A coroutine runs until it hits `await` — this is a VOLUNTARY yield to the event loop. Event loop picks the next ready coroutine. No preemption: if a coroutine runs CPU-bound code without awaiting, it blocks the ENTIRE event loop (other coroutines starve). Concurrency: while coroutine A awaits an HTTP response, coroutine B runs. Both "in flight" simultaneously on one thread. Why no threads: reduce context-switching overhead, simpler shared state (no locks — only one coroutine runs at a time per event loop), better for I/O-bound workloads (10,000 concurrent HTTP requests = 10,000 coroutines, not 10,000 threads).
+</details>
+
 
 > **Navigation**: [< Previous](08_NLP_Complete.md) | [Back to Index](00_INDEX.md)

@@ -6,6 +6,9 @@
 
 ---
 
+
+
+
 # 🎨 PART 0: The 5W+H Framework
 
 > **Mental Model:** Think of Design Patterns as recipes in cooking. A recipe doesn't give you the exact ingredients in your fridge, but it gives you a proven approach to creating a specific dish. Knowing recipes makes you a master chef; you don't have to invent a new way to bake a cake from scratch every time.
@@ -55,6 +58,23 @@ software design. They are templates, not finished code.
 - 2000s: Enterprise patterns, Web patterns emerged
 - 2010s: Microservices patterns, Cloud patterns
 - Today: Patterns for AI, serverless, reactive systems
+
+
+> 🔬 **Section Challenge — What Are Design Patterns?**
+>
+> **Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
+> <details><summary>Answer</summary>
+>
+> Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
+> </details>
+>
+> **Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
+> <details><summary>Answer</summary>
+>
+> 1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
+> </details>
+>
+
 ## What Problem Do Design Patterns Solve?
 
 **Problem 1 — Reinventing the Wheel**: Developers solve the same problems repeatedly, each solution different and often suboptimal. Patterns provide **proven** solutions.
@@ -69,6 +89,23 @@ software design. They are templates, not finished code.
 
 ---
 
+
+
+> 🔬 **Section Challenge — What Problem Do Design Patterns Solve?**
+>
+> **Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
+> <details><summary>Answer</summary>
+>
+> Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
+> </details>
+>
+> **Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
+> <details><summary>Answer</summary>
+>
+> 1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
+> </details>
+>
+
 ## Why Learn Design Patterns?
 
 1. **Better Code Quality** — Patterns are battle-tested; fewer bugs, easier maintenance
@@ -78,6 +115,23 @@ software design. They are templates, not finished code.
 5. **Framework Understanding** — Spring, Hibernate, React all use patterns under the hood
 6. **Career Growth** — Senior developers **must** know patterns
 - Required for system design and architecture roles
+
+
+> 🔬 **Section Challenge — Why Learn Design Patterns?**
+>
+> **Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
+> <details><summary>Answer</summary>
+>
+> Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
+> </details>
+>
+> **Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
+> <details><summary>Answer</summary>
+>
+> 1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
+> </details>
+>
+
 ## When To Use Design Patterns
 
 
@@ -95,6 +149,23 @@ software design. They are templates, not finished code.
 
 > 💡 **Golden Rule**: *"Use patterns to SOLVE problems, not to SHOW OFF knowledge."*
 > Over-engineering with patterns is as bad as no patterns!
+
+
+> 🔬 **Section Challenge — When To Use Design Patterns**
+>
+> **Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
+> <details><summary>Answer</summary>
+>
+> Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
+> </details>
+>
+> **Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
+> <details><summary>Answer</summary>
+>
+> 1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
+> </details>
+>
+
 ## ⭐ Growth Mindset: From Pattern User To Pattern Creator ⭐
 
 | Level | Stage | Milestone |
@@ -106,6 +177,9 @@ software design. They are templates, not finished code.
 | 5 | **Creator** | *"I can create new patterns for recurring problems in my domain"* |
 
 > 💡 **The Truth**: GoF patterns were CREATED by observing recurring solutions! YOU can observe patterns in your domain and document them too!
+
+
+
 ## Pattern Categories
 
 1. **Creational Patterns** — *Object Creation*
@@ -134,6 +208,23 @@ software design. They are templates, not finished code.
 | Swap algorithms at runtime | **Strategy** |
 | Undo/Redo operations | **Command** |
 | Different behavior based on state | **State** |
+
+
+> 🔬 **Section Challenge — Pattern Categories**
+>
+> **Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
+> <details><summary>Answer</summary>
+>
+> Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
+> </details>
+>
+> **Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
+> <details><summary>Answer</summary>
+>
+> 1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
+> </details>
+>
+
 ## Difficulties & Common Mistakes
 
 1. **"Too Abstract"** — Study with REAL examples, not just UML diagrams
@@ -161,6 +252,9 @@ software design. They are templates, not finished code.
 # 🎨 Part 1: Creational Patterns
 
 ## 1.1 Singleton Pattern
+
+
+
 
 ## What Is It?
 
@@ -229,6 +323,23 @@ FACTORY vs ABSTRACT FACTORY:
 - You order "Pepperoni" → Kitchen creates it (different recipe)
 - You just ask for a type, factory handles the creation
 
+
+
+> 🔬 **Section Challenge — 1.2 Factory Pattern**
+>
+> **Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
+> <details><summary>Answer</summary>
+>
+> Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
+> </details>
+>
+> **Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
+> <details><summary>Answer</summary>
+>
+> 1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
+> </details>
+>
+
 ## 1.3 Builder Pattern
 
 ### 5W1H: Deep Understanding
@@ -284,6 +395,23 @@ BUILDER + IMMUTABILITY:
 
 ---
 
+
+
+> 🔬 **Section Challenge — 1.3 Builder Pattern**
+>
+> **Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
+> <details><summary>Answer</summary>
+>
+> Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
+> </details>
+>
+> **Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
+> <details><summary>Answer</summary>
+>
+> 1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
+> </details>
+>
+
 # 🎨 Part 2: Structural Patterns
 
 ## 2.1 Adapter Pattern
@@ -320,6 +448,23 @@ REAL-WORLD EXAMPLES:
 > 💡 **ANALOGY: Travel Power Adapter**
 - US plug (110V) → Adapter → European socket (220V)
 - The adapter makes incompatible things work together
+
+
+
+> 🔬 **Section Challenge — 2.1 Adapter Pattern**
+>
+> **Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
+> <details><summary>Answer</summary>
+>
+> Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
+> </details>
+>
+> **Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
+> <details><summary>Answer</summary>
+>
+> 1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
+> </details>
+>
 
 ## 2.2 Decorator Pattern
 
@@ -360,6 +505,17 @@ REAL-WORLD:
   • Collections.unmodifiableList() = decorator that throws on modification
 ```
 
+
+
+> 🔬 **Section Challenge — 2.2 Decorator Pattern**
+>
+> **Challenge 1 (Reasoning):** Why does a decorator without `@functools.wraps` break Flask/FastAPI route registration?
+> <details><summary>Answer</summary>
+>
+> Flask uses function name (`func.__name__`) to register routes. Without `@functools.wraps`, the decorator replaces the original function with a `wrapper` function. All decorated routes have `__name__ = 'wrapper'` → duplicate view function name error. `@functools.wraps(fn)` copies `__name__`, `__doc__`, `__annotations__`  from the wrapped function. Same issue with pytest markers, Celery tasks, and any framework that inspects function attributes.
+> </details>
+>
+
 ## 2.3 Facade Pattern
 
 ### 5W1H: Deep Understanding
@@ -393,6 +549,23 @@ REAL-WORLD:
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 2.3 Facade Pattern**
+>
+> **Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
+> <details><summary>Answer</summary>
+>
+> Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
+> </details>
+>
+> **Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
+> <details><summary>Answer</summary>
+>
+> 1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
+> </details>
+>
 
 # 🎨 Part 3: Behavioral Patterns
 
@@ -441,6 +614,23 @@ VARIANTS:
 - You subscribe to a newsletter
 - When new content is published, all subscribers get notified
 - Subscribers can unsubscribe anytime
+
+
+
+> 🔬 **Section Challenge — 3.1 Observer Pattern**
+>
+> **Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
+> <details><summary>Answer</summary>
+>
+> Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
+> </details>
+>
+> **Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
+> <details><summary>Answer</summary>
+>
+> 1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
+> </details>
+>
 
 ## 3.2 Strategy Pattern
 
@@ -491,6 +681,23 @@ REAL-WORLD:
 - You choose the strategy, app calculates route using that strategy
 - Strategies are interchangeable
 
+
+
+> 🔬 **Section Challenge — 3.2 Strategy Pattern**
+>
+> **Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
+> <details><summary>Answer</summary>
+>
+> Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
+> </details>
+>
+> **Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
+> <details><summary>Answer</summary>
+>
+> 1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
+> </details>
+>
+
 ## 3.3 Command Pattern
 
 ### 5W1H: Deep Understanding
@@ -536,6 +743,23 @@ REAL-WORLD:
 - Order can be queued, logged, undone
 
 ---
+
+
+
+> 🔬 **Section Challenge — 3.3 Command Pattern**
+>
+> **Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
+> <details><summary>Answer</summary>
+>
+> Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
+> </details>
+>
+> **Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
+> <details><summary>Answer</summary>
+>
+> 1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
+> </details>
+>
 
 # 🎨 Part 4: Pattern Combinations
 
@@ -702,6 +926,23 @@ order.setStatus(OrderStatus.PAID); // Notifies observers
 
 ---
 
+
+
+> 🔬 **Section Challenge — Section 2: Design Class Problems (Strategy/Observer/Iterator)**
+>
+> **Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
+> <details><summary>Answer</summary>
+>
+> Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
+> </details>
+>
+> **Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
+> <details><summary>Answer</summary>
+>
+> 1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
+> </details>
+>
+
 ## Section 3: Advanced Design
 
 | # | Problem | Platform | Difficulty | Key Technique |
@@ -716,6 +957,23 @@ order.setStatus(OrderStatus.PAID); // Notifies observers
 
 ---
 
+
+
+> 🔬 **Section Challenge — Section 3: Advanced Design**
+>
+> **Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
+> <details><summary>Answer</summary>
+>
+> Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
+> </details>
+>
+> **Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
+> <details><summary>Answer</summary>
+>
+> 1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
+> </details>
+>
+
 ## HIDDEN GEMS — Design Problems
 
 | # | Problem | Platform | Why It's Valuable |
@@ -727,5 +985,164 @@ order.setStatus(OrderStatus.PAID); // Notifies observers
 | 5 | Online Stock Span (LC 901) | LeetCode | Monotonic stack as internal state |
 
 ---
+
+
+---
+
+
+
+> 🔬 **Section Challenge — HIDDEN GEMS — Design Problems**
+>
+> **Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
+> <details><summary>Answer</summary>
+>
+> Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
+> </details>
+>
+> **Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
+> <details><summary>Answer</summary>
+>
+> 1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
+> </details>
+>
+
+## 🏋️ Practice & Interview Questions — OOP & Design Patterns
+
+### Predict / Trace
+**Q1.** What design pattern does this code follow?
+```java
+Logger logger = Logger.getInstance();
+```
+<details><summary>Answer</summary>
+
+**Singleton** — ensures only one Logger instance exists globally.
+</details>
+
+**Q2.** What SOLID principle is violated?
+```java
+class User {
+    void login() { ... }
+    void logout() { ... }
+    void sendEmail() { ... }  // ← ?
+    void generateReport() { ... }  // ← ?
+}
+```
+<details><summary>Answer</summary>
+
+**SRP (Single Responsibility)** — User class has 4 responsibilities: authentication, email, reporting. Should be split into: `AuthService`, `EmailService`, `ReportService`.
+</details>
+
+### Design Pattern Problems
+**Q3.** ⭐ Implement Strategy pattern for payment processing.
+<details><summary>Solution</summary>
+
+```java
+interface PaymentStrategy { void pay(int amount); }
+class CreditCard implements PaymentStrategy { public void pay(int amount){ /*...*/ } }
+class PayPal implements PaymentStrategy { public void pay(int amount){ /*...*/ } }
+class UPI implements PaymentStrategy { public void pay(int amount){ /*...*/ } }
+
+class PaymentContext {
+    private PaymentStrategy strategy;
+    void setStrategy(PaymentStrategy s){ this.strategy=s; }
+    void processPayment(int amount){ strategy.pay(amount); }
+}
+// Switch strategy at runtime — open/closed principle!
+```
+</details>
+
+**Q4.** ⭐⭐ Implement Observer pattern for event notification.
+<details><summary>Solution</summary>
+
+```java
+interface Observer { void update(String event); }
+interface Observable {
+    void subscribe(Observer o); void unsubscribe(Observer o); void notify(String event);
+}
+class EventBus implements Observable {
+    List<Observer> observers = new ArrayList<>();
+    public void subscribe(Observer o){ observers.add(o); }
+    public void unsubscribe(Observer o){ observers.remove(o); }
+    public void notify(String event){ observers.forEach(o -> o.update(event)); }
+}
+```
+</details>
+
+**Q5.** ⭐⭐ Builder pattern for a complex configuration object.
+<details><summary>Solution</summary>
+
+```java
+class ServerConfig {
+    private final String host; private final int port; private final int timeout;
+    private ServerConfig(Builder b){ host=b.host; port=b.port; timeout=b.timeout; }
+
+    static class Builder {
+        String host="localhost"; int port=8080; int timeout=30;
+        Builder host(String h){ host=h; return this; }
+        Builder port(int p){ port=p; return this; }
+        Builder timeout(int t){ timeout=t; return this; }
+        ServerConfig build(){ return new ServerConfig(this); }
+    }
+}
+// ServerConfig config = new ServerConfig.Builder().host("prod.com").port(443).build();
+```
+</details>
+
+### MCQ Rapid Fire
+| # | Question | Answer |
+|---|---|---|
+| 1 | SOLID: O stands for | Open/Closed Principle |
+| 2 | Factory vs Abstract Factory | Factory: one product; Abstract Factory: family of products |
+| 3 | Composition over inheritance means | Prefer has-a (field) over is-a (extends) for flexibility |
+| 4 | Decorator pattern purpose | Add behavior dynamically without subclassing |
+| 5 | Facade pattern purpose | Simplified interface to complex subsystem |
+| 6 | Proxy pattern types | Virtual, protective, remote, caching |
+| 7 | Command pattern encapsulates | Request as an object (supports undo/redo) |
+| 8 | Template Method pattern | Defines algorithm skeleton, subclasses fill in steps |
+
+
+
+---
+
+## 🧠 Deep Conceptual Questions — OOP, SOLID & Design Patterns
+
+**C1. What is the difference between an interface and an abstract class — when to use each?**
+<details><summary>Deep Answer</summary>
+
+**Abstract class**: can have fields, constructors, concrete method implementations. Models IS-A with shared state and behavior. Use when: you have partial implementation to share (template method pattern). Single inheritance: if you extend an abstract class, you can't extend another. **Interface**: pure contract, no state (Java 8+: default methods allowed). Models CAN-DO / role capability. A class can implement unlimited interfaces. Use when: defining a capability across unrelated classes (`Comparable`, `Serializable`, `Runnable`). Rule: prefer interfaces for type definitions. Use abstract class when you need to share implementation code AND all subtypes share the same "IS-A" relationship. In practice: interfaces + composition > abstract class + inheritance.
+</details>
+
+**C2. Liskov Substitution Principle: what does it actually mean and how do you violate it?**
+<details><summary>Deep Answer</summary>
+
+LSP: if `S extends P`, anywhere you use `P`, you should be able to use `S` without breaking correctness. Violation example: `Square extends Rectangle`. Rectangle behavior: setWidth and setHeight are independent. Square invariant: width must equal height. `Square s = new Square(5); s.setWidth(10);` — now `s.getHeight() == 10` (Square enforced equality) but Rectangle contract says height should still be 5. Code using Rectangle is surprised. Better: Square and Rectangle as siblings under a Shape hierarchy. Another classic: override a method and throw exception for a case the parent method handled → violates LSP. Test: can you run the parent's test suite against the child and pass?
+</details>
+
+**C3. Strategy pattern vs. if-else chains: the OCP argument.**
+<details><summary>Deep Answer</summary>
+
+```java
+// BAD: add new payment type = modify this method = Open for modification (violates OCP)
+if(type == "credit") { } else if(type == "paypal") { } else if(type == "crypto") { }
+
+// GOOD: add new payment = new class, zero modification of existing code
+interface PaymentStrategy { void pay(int amount); }
+// Add Crypto: new CryptoPayment implements PaymentStrategy — no other file touched
+```
+Open/Closed Principle: open for extension, closed for modification. Each `else if` = a modification to an existing method = risk of breaking existing behavior, requires re-testing the entire method. Strategy = extension by new class = old code untouched = zero regression risk. When if-else is fine: 2-3 fixed cases that never change. When strategy shines: extensible behaviors that vary at runtime.
+</details>
+
+**C4. What is the Dependency Inversion Principle and how does it enable testability?**
+<details><summary>Deep Answer</summary>
+
+DIP: high-level modules should not depend on low-level modules — both should depend on abstractions. Without DIP: `OrderService` directly creates `MySQLOrderRepository`. To test OrderService: must have MySQL running. With DIP: `OrderService` depends on `OrderRepository` interface. In production: inject `MySQLOrderRepository`. In tests: inject `MockOrderRepository`. The high-level business logic (OrderService) has zero knowledge of the database layer. This makes: unit testing trivial (mock the interface), swapping implementations easy (SQLite, PostgreSQL, in-memory), layer boundaries clear. Dependency INJECTION (DI framework like Spring) is the mechanism that enables DIP at runtime.
+</details>
+
+**C5. Observer pattern vs. Event Bus: when does one become the other?**
+<details><summary>Deep Answer</summary>
+
+**Observer**: subject holds direct references to observer objects. Subject explicitly notifies each one. Tightly coupled (subject knows about observers). Fine for: small systems, known observers at compile time. Breaks when: observers span different modules, dynamic subscription needed, observers need to be remote. **Event Bus / Message Queue**: publishers and subscribers decoupled. Publisher sends event with a TYPE to the bus. Subscribers register for event types — publisher doesn't know who's listening. De-facto standard in large systems: Spring ApplicationEventPublisher, Kafka, RabbitMQ are all event buses. Rule: Observer for in-process tightly-coupled notification. Event bus for loose coupling, cross-module, or distributed communication.
+</details>
+
 
 > **Navigation**: [< Previous](01_OOPS_Principles.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_System_Design.md)

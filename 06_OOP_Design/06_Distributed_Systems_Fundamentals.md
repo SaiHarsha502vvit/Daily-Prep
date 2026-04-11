@@ -309,6 +309,9 @@ flowchart TD
 
 ---
 
+
+
+
 ## Part 6: Consensus Algorithms
 
 
@@ -418,6 +421,23 @@ flowchart TD
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — Part 7: Common Distributed System Patterns**
+>
+> **Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
+> <details><summary>Answer</summary>
+>
+> Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
+> </details>
+>
+> **Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
+> <details><summary>Answer</summary>
+>
+> 1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
+> </details>
+>
 
 ## Part 8: Interview Quick-Fire Questions
 

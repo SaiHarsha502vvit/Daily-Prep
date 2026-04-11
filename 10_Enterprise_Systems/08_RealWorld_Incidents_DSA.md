@@ -193,6 +193,13 @@ flowchart TD
 
 ---
 
+
+
+
+
+
+> 🔬 **Section Challenge — 🔴 Incident 1: Twitter's Fail Whale (2008-2010)**
+
 ## 🔴 Incident 2: Amazon's 2-Second Rule
 
 ### The Discovery
@@ -365,6 +372,13 @@ flowchart TD
 
 ---
 
+
+
+
+
+
+> 🔬 **Section Challenge — 🔴 Incident 2: Amazon's 2-Second Rule**
+
 ## 🔴 Incident 3: LinkedIn's Search Disaster
 
 ### What Happened
@@ -535,6 +549,13 @@ flowchart TD
 
 ---
 
+
+
+
+
+
+> 🔬 **Section Challenge — 🔴 Incident 3: LinkedIn's Search Disaster**
+
 ## 🔴 Incident 4: Cloudflare's Leap Second Bug (2017)
 
 ### What Happened
@@ -651,6 +672,13 @@ flowchart TD
 ```
 
 ---
+
+
+
+
+
+
+> 🔬 **Section Challenge — 🔴 Incident 4: Cloudflare's Leap Second Bug (2017)**
 
 # ═══════════════════════════════════════════════════════════
 
@@ -867,6 +895,13 @@ flowchart TD
 
 ---
 
+
+
+
+
+
+> 🔬 **Section Challenge — 🔴 Incident 5: Knight Capital - $440 Million in 45 Minutes**
+
 ## 🔴 Incident 6: Reddit's "Hug of Death"
 
 ### What Happened
@@ -1039,6 +1074,13 @@ flowchart TD
 
 ---
 
+
+
+
+
+
+> 🔬 **Section Challenge — 🔴 Incident 6: Reddit's "Hug of Death"**
+
 ## 🔴 Incident 7: Spotify's Shuffle Wasn't Random
 
 ### What Happened
@@ -1048,6 +1090,13 @@ Users complained Spotify's shuffle wasn't random—they'd hear songs from the sa
 ### The Problem
 
 ```python
+
+
+
+
+
+> 🔬 **Section Challenge — 🔴 Incident 7: Spotify's Shuffle Wasn't Random**
+
 # True random CAN have clusters
 import random
 playlist = ['A1', 'A2', 'A3', 'B1', 'B2', 'C1', 'D1', 'D2', 'D3', 'D4']
@@ -1413,6 +1462,13 @@ flowchart TD
 
 ---
 
+
+
+
+
+
+> 🔬 **Section Challenge — 🔴 Incident 8: Therac-25 Radiation Machine (1985-1987)**
+
 ## 🔴 Incident 9: Uber's Surge Pricing Bug
 
 ### What Happened
@@ -1584,6 +1640,13 @@ flowchart TD
 ```
 
 ---
+
+
+
+
+
+
+> 🔬 **Section Challenge — 🔴 Incident 9: Uber's Surge Pricing Bug**
 
 # ═══════════════════════════════════════════════════════════
 

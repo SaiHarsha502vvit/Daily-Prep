@@ -90,6 +90,23 @@
 
 ---
 
+
+
+> 🔬 **Section Challenge — 2. Why HashMap Isn't Always O(1)**
+>
+> **Challenge 1 (Reasoning):** You insert 1000 entries into a HashMap with default capacity 16. How many resize operations happen?
+> <details><summary>Answer</summary>
+>
+> Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 (64→128), 96 (128→256), 192 (256→512), 384 (512→1024). Total: 6 resizes. Each resize copies all entries to new bucket array. Pre-sizing: `new HashMap<>(1334)` (1000/0.75 ≈ 1334 → next power of 2 = 2048) avoids all resizes.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** Two `Person` objects with same name and age. You override `equals()` to return true but not `hashCode()`. What happens when used as `HashMap` keys?
+> <details><summary>Answer</summary>
+>
+> Both objects land in DIFFERENT buckets (different hashCodes → different bucket index). The HashMap doesn't check `equals()` across buckets — it goes straight to one bucket. So `map.get(person2)` returns NULL even though `person1.equals(person2)`. Overriding `equals` without `hashCode` violates the contract and breaks all hash-based collections. Always override both together.
+> </details>
+>
+
 ## 3. Quicksort vs Mergesort: Why Quicksort Wins In Practice
 
 ### The Freeze Question
@@ -267,6 +284,23 @@ flowchart TD
 
 ---
 
+
+
+> 🔬 **Section Challenge — 5. Dynamic Programming vs Greedy: How To Know Which One**
+>
+> **Challenge 1 (Reasoning):** How do you identify that a problem requires DP vs Greedy? What's the key test?
+> <details><summary>Answer</summary>
+>
+> Greedy test: does the locally optimal choice always lead to the globally optimal solution? (Prove via exchange argument.) If yes → greedy. If making a local choice requires knowing future choices → DP. Example: Coin Change with standard coins [1,5,10,25] → greedy works (always pick largest). Coin Change with coins [1,3,4] and amount 6 → greedy picks 4+1+1=3 coins, optimal is 3+3=2 coins. Greedy fails → DP.
+> </details>
+>
+> **Challenge 2 (Design):** You need to find the number of ways to climb N stairs taking 1 or 2 steps at a time. Define the DP state and recurrence.
+> <details><summary>Answer</summary>
+>
+> State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + dp[i-2]` (come from step i-1 via 1 step, or from step i-2 via 2 steps). Base: `dp[0]=1` (one way: don't move), `dp[1]=1`. This is exactly Fibonacci. Space optimization: only need last 2 values → O(1) space.
+> </details>
+>
+
 ## 6. Recursion: Why It Overflows and When To Convert To Iteration
 
 ### The Freeze Question
@@ -319,6 +353,27 @@ int fib(int n) {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 6. Recursion: Why It Overflows and When To Convert To Iteration**
+>
+> **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+> <details><summary>Answer</summary>
+>
+> An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** ```java
+void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
+fib(50) // takes forever
+```
+Why and what are the 3 fixes?
+> <details><summary>Answer</summary>
+>
+> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+> </details>
+>
 
 ## 7. Stable vs Unstable Sort: Why It Matters In Real Systems
 
@@ -388,6 +443,9 @@ flowchart TD
 
 ---
 
+
+
+
 ## 8. Two Pointers: Not Just "Left and Right"
 
 ### The Freeze Question
@@ -455,6 +513,17 @@ flowchart TD
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 8. Two Pointers: Not Just "Left and Right"**
+>
+> **Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
+> <details><summary>Answer</summary>
+>
+> The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
+> </details>
+>
 
 ## 9. Why Balanced BST When We Have HashMap
 
@@ -537,6 +606,23 @@ flowchart TD
 
 ---
 
+
+
+> 🔬 **Section Challenge — 9. Why Balanced BST When We Have HashMap**
+>
+> **Challenge 1 (Reasoning):** You insert 1000 entries into a HashMap with default capacity 16. How many resize operations happen?
+> <details><summary>Answer</summary>
+>
+> Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 (64→128), 96 (128→256), 192 (256→512), 384 (512→1024). Total: 6 resizes. Each resize copies all entries to new bucket array. Pre-sizing: `new HashMap<>(1334)` (1000/0.75 ≈ 1334 → next power of 2 = 2048) avoids all resizes.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** Two `Person` objects with same name and age. You override `equals()` to return true but not `hashCode()`. What happens when used as `HashMap` keys?
+> <details><summary>Answer</summary>
+>
+> Both objects land in DIFFERENT buckets (different hashCodes → different bucket index). The HashMap doesn't check `equals()` across buckets — it goes straight to one bucket. So `map.get(person2)` returns NULL even though `person1.equals(person2)`. Overriding `equals` without `hashCode` violates the contract and breaks all hash-based collections. Always override both together.
+> </details>
+>
+
 ## 10. The Array vs LinkedList Reality: Cache Lines Matter
 
 ### The Freeze Question
@@ -612,6 +698,9 @@ flowchart TD
 ```
 
 ---
+
+
+
 
 ## Interview Quick-Fire: DSA Freeze Busters
 
@@ -728,6 +817,9 @@ This question tests whether you can bridge theory to practice. Here's a comprehe
 ```
 
 ---
+
+
+
 
 ## 12. How to Articulate DSA Solutions in Interviews — The Framework
 
@@ -996,6 +1088,9 @@ Don't just say "it's O(n log n)." Explain **why**:
 ```
 
 ---
+
+
+
 
 ## 14. Mathematical Proof Techniques for Interviews
 

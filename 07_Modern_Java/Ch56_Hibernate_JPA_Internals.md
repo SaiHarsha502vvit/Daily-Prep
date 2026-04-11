@@ -140,6 +140,11 @@
 
 ---
 
+
+
+> 🔬 **Section Challenge — 1. The Full Stack: From repository.save() to Database Disk**
+>>
+
 ## 2. Persistence Context — The Most Misunderstood Concept
 
 ### What IS a Persistence Context?
@@ -197,6 +202,17 @@ public void demonstrateIdentity() {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 2. Persistence Context — The Most Misunderstood Concept**
+>
+> **Challenge 1 (Reasoning):** When does React Context cause performance problems and how do you avoid them?
+> <details><summary>Answer</summary>
+>
+> Every context consumer re-renders when ANY context value changes. If you have `{theme, user, cart}` in one context, updating cart re-renders all theme and user consumers. Fixes: (1) Split into separate contexts: `ThemeContext`, `UserContext`, `CartContext`. (2) Memoize components with `React.memo`. (3) For complex state, use a state library (Zustand, Jotai) with selector-based subscriptions — only re-render when the specific piece of state changes.
+> </details>
+>
 
 ## 3. Entity States — The 4-State Machine You MUST Know
 
@@ -282,6 +298,17 @@ public void dangerousMerge(User detachedUser) {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 3. Entity States — The 4-State Machine You MUST Know**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
 
 ## 4. First-Level Cache — Why You Get the Same Object Twice
 
@@ -413,6 +440,17 @@ public void dangerousMerge(User detachedUser) {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 5. Dirty Checking — How Hibernate Knows You Changed Something**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
 
 ## 6. Flush Modes — When SQL Actually Gets Sent
 
@@ -563,6 +601,17 @@ public void dangerousMerge(User detachedUser) {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 7. Lazy Loading — How Proxy Objects Work**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
 
 ## 8. Second-Level Cache — The Cache You Configure
 
@@ -807,6 +856,17 @@ public class Department {
 
 ---
 
+
+
+> 🔬 **Section Challenge — 10. Open Session in View — The Controversial Pattern**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## 11. Connection Pooling — HikariCP Internals
 
 ```
@@ -884,6 +944,17 @@ public class Department {
 
 ---
 
+
+
+> 🔬 **Section Challenge — 11. Connection Pooling — HikariCP Internals**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## 12. How Spring Data JPA Generates Repository Implementations
 
 ```
@@ -960,3 +1031,14 @@ public class Department {
 ---
 
 > **Next Chapter**: [Spring Security Internals →](Ch57_Spring_Security_Internals.md)
+
+
+> 🔬 **Section Challenge — 12. How Spring Data JPA Generates Repository Implementations**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+

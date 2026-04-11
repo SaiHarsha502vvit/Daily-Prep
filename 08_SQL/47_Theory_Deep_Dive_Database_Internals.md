@@ -111,6 +111,9 @@ RULE: B-Tree can use columns left-to-right until it hits a gap or range conditio
 
 ---
 
+
+
+
 ## T2: MVCC — How PostgreSQL Reads Without Locking
 
 ### The Snapshot Mechanism
@@ -194,6 +197,9 @@ Key difference:
 
 ---
 
+
+
+
 ## T3: Lock Hierarchy & Escalation
 
 ### PostgreSQL Lock Types (Simplified)
@@ -248,6 +254,23 @@ COMMIT;
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — T3: Lock Hierarchy & Escalation**
+>
+> **Challenge 1 (Reasoning):** Why does `Error` extend `Throwable` separately from `Exception`? When should you catch `Error`?
+> <details><summary>Answer</summary>
+>
+> `Error` represents JVM-level failures: `OutOfMemoryError`, `StackOverflowError`, `VirtualMachineError`. These indicate unrecoverable states. You should almost NEVER catch `Error` — the JVM state is undefined. Only exception: top-level handlers that log the error before terminating gracefully (`catch(Throwable t)` in shutdown hooks). Never catch `Error` in normal application code.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** `catch(Exception e) { log(e.getMessage()); }` — name 3 things wrong with this.
+> <details><summary>Answer</summary>
+>
+> 1) `e.getMessage()` returns null for some exceptions (NPE, CCE) → NullPointerException in the logger! Use `log(e)` instead to print full stack. 2) Swallowing `Exception` catches runtime bugs (NPE, illegal arg) that should crash/bubble — silent failure is worse than loud failure. 3) No re-throw or meaningful handling — caller has no idea the operation failed.
+> </details>
+>
 
 ## T4: Query Optimizer — Why It Sometimes Ignores Your Index
 
@@ -416,6 +439,23 @@ SIZING:
 
 ---
 
+
+
+> 🔬 **Section Challenge — T6: Buffer Pool & Memory**
+>
+> **Challenge 1 (Reasoning):** `String a = "hello"; String b = "hello"; a == b` — true or false? What about `new String("hello") == "hello"`?
+> <details><summary>Answer</summary>
+>
+> First: `true` — string literals are interned in the string pool; same literal = same reference. Second: `false` — `new String(...)` always creates a new object on the heap, bypassing the pool. Always use `.equals()` for string comparison. `String.intern()` can explicitly add a string to the pool.
+> </details>
+>
+> **Challenge 2 (Design):** Why is `String` immutable in Java and what problems would mutable strings cause?
+> <details><summary>Answer</summary>
+>
+> Security: strings are used as HashMap keys, class names, file paths. If mutable, a key could change after insertion, corrupting the HashMap. Thread safety: immutable objects are inherently thread-safe (no synchronization needed). String pool: only possible because strings don't change — two vars safely share the same interned object. Caching hashCode: `String` caches its hashCode (first call computes, subsequent calls return cached) — only safe because the string never changes.
+> </details>
+>
+
 ## T7: Transaction Internals — Undo/Redo
 
 ### How ACID Actually Works
@@ -456,6 +496,17 @@ THE COMMIT DANCE:
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — T7: Transaction Internals — Undo/Redo**
+>
+> **Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+> <details><summary>Answer</summary>
+>
+> READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
+> </details>
+>
 
 ## T8: Join Algorithms — Reading Execution Plans Like a Senior
 
@@ -554,6 +605,23 @@ RED FLAGS in execution plans:
 
 ---
 
+
+
+> 🔬 **Section Challenge — T8: Join Algorithms — Reading Execution Plans Like a Senior**
+>
+> **Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
+> <details><summary>Answer</summary>
+>
+> When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
+> <details><summary>Answer</summary>
+>
+> It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
+> </details>
+>
+
 ## 🎓 Theory Quick-Reference Card for Interviews
 
 | Concept | One-Line Explanation | Impress With |
@@ -571,3 +639,210 @@ RED FLAGS in execution plans:
 ---
 
 [⬅ Previous: 46_Interview_Scenarios_Part3](46_Interview_Scenarios_Explained_Part3.md) | [📚 Index](00_INDEX.md) | [Next: 48_Problem_Variants_Bank ➡](48_Problem_Variants_Bank.md)
+
+---
+
+## 🏋️ Practice & Interview Questions — SQL
+
+### Predict / Trace
+**Q1.** What's the difference between WHERE and HAVING?
+<details><summary>Answer</summary>
+
+`WHERE` filters rows **before** grouping. `HAVING` filters groups **after** `GROUP BY`. You can't use aggregate functions in WHERE. `HAVING COUNT(*) > 5` works, `WHERE COUNT(*) > 5` does not.
+</details>
+
+**Q2.** What does this return? `SELECT 1 FROM dual WHERE NULL = NULL`
+<details><summary>Answer</summary>
+
+**No rows returned.** NULL is not equal to NULL — use `IS NULL` or `IS NOT NULL`. `NULL = NULL` evaluates to UNKNOWN, not TRUE.
+</details>
+
+### Coding Problems
+**Q3.** ⭐ Second highest salary — handle the case where it doesn't exist (return NULL).
+<details><summary>Solution</summary>
+
+```sql
+SELECT MAX(salary) AS SecondHighestSalary
+FROM Employee
+WHERE salary < (SELECT MAX(salary) FROM Employee);
+-- or
+SELECT IFNULL((SELECT DISTINCT salary FROM Employee ORDER BY salary DESC LIMIT 1 OFFSET 1), NULL)
+```
+</details>
+
+**Q4.** ⭐ Find employees earning more than their manager.
+<details><summary>Solution</summary>
+
+```sql
+SELECT e.name FROM Employee e
+JOIN Employee m ON e.managerId = m.id
+WHERE e.salary > m.salary;
+```
+</details>
+
+**Q5.** ⭐ Find duplicate emails.
+<details><summary>Solution</summary>
+
+```sql
+SELECT email FROM Person GROUP BY email HAVING COUNT(*) > 1;
+```
+</details>
+
+**Q6.** ⭐⭐ Rank scores without RANK() function.
+<details><summary>Solution</summary>
+
+```sql
+SELECT s.score,
+  (SELECT COUNT(DISTINCT s2.score) FROM Scores s2 WHERE s2.score >= s.score) AS rank
+FROM Scores s ORDER BY score DESC;
+```
+</details>
+
+**Q7.** ⭐⭐ Consecutive numbers — find numbers that appear 3+ times consecutively.
+<details><summary>Solution</summary>
+
+```sql
+SELECT DISTINCT l1.Num AS ConsecutiveNums
+FROM Logs l1, Logs l2, Logs l3
+WHERE l1.Id=l2.Id-1 AND l2.Id=l3.Id-1
+AND l1.Num=l2.Num AND l2.Num=l3.Num;
+-- or use LAG/LEAD window functions
+```
+</details>
+
+**Q8.** ⭐⭐ Department top 3 salaries (dense rank).
+<details><summary>Solution</summary>
+
+```sql
+SELECT d.name AS Department, e.name AS Employee, e.salary AS Salary
+FROM Employee e JOIN Department d ON e.departmentId = d.id
+WHERE (SELECT COUNT(DISTINCT e2.salary) FROM Employee e2
+       WHERE e2.departmentId=e.departmentId AND e2.salary>e.salary) < 3;
+```
+</details>
+
+**Q9.** ⭐⭐ Running total with window function.
+<details><summary>Solution</summary>
+
+```sql
+SELECT date, amount,
+  SUM(amount) OVER (ORDER BY date ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_total
+FROM transactions;
+```
+</details>
+
+**Q10.** ⭐⭐ Pivot rows to columns (conditional aggregation).
+<details><summary>Solution</summary>
+
+```sql
+SELECT year,
+  SUM(CASE WHEN quarter=1 THEN revenue END) AS Q1,
+  SUM(CASE WHEN quarter=2 THEN revenue END) AS Q2,
+  SUM(CASE WHEN quarter=3 THEN revenue END) AS Q3,
+  SUM(CASE WHEN quarter=4 THEN revenue END) AS Q4
+FROM sales GROUP BY year;
+```
+</details>
+
+**Q11.** ⭐⭐⭐ Find the median salary — without MEDIAN() function.
+<details><summary>Solution</summary>
+
+```sql
+SELECT AVG(salary) AS median
+FROM (SELECT salary, ROW_NUMBER() OVER(ORDER BY salary) AS rn, COUNT(*) OVER() AS cnt FROM Employee) t
+WHERE rn IN (FLOOR((cnt+1)/2), CEIL((cnt+1)/2));
+```
+</details>
+
+### Interview Questions
+**Q12.** INNER JOIN vs LEFT JOIN — when does LEFT produce more rows?
+<details><summary>Answer</summary>
+
+LEFT JOIN includes ALL rows from the left table even if no match in right table (fills NULLs). INNER JOIN only includes rows where both sides have a match. If left table has rows with no match in right: LEFT produces more rows.
+</details>
+
+**Q13.** What is a covering index?
+<details><summary>Answer</summary>
+
+An index that contains ALL columns needed by a query — the DB can answer from the index alone without touching the table ("index-only scan"). Faster because it avoids the extra heap fetch.
+</details>
+
+**Q14.** EXPLAIN shows "Full Table Scan" — how do you fix it?
+<details><summary>Answer</summary>
+
+Add an index on the WHERE/JOIN/ORDER BY column. Check if the column has low cardinality (boolean — index may not help). Ensure the query isn't wrapping the column in a function (`WHERE YEAR(date) = 2024` prevents index use — rewrite as `WHERE date BETWEEN '2024-01-01' AND '2024-12-31'`).
+</details>
+
+### MCQ Rapid Fire
+| # | Question | Answer |
+|---|---|---|
+| 1 | NULL = NULL evaluates to? | UNKNOWN (use IS NULL) |
+| 2 | COUNT(*) vs COUNT(col) | COUNT(*) counts all rows, COUNT(col) skips NULLs |
+| 3 | RANK() vs DENSE_RANK() | RANK() skips numbers after ties, DENSE_RANK() doesn't |
+| 4 | CROSS JOIN produces | Cartesian product (m × n rows) |
+| 5 | Can you ORDER BY in a subquery? | Only when using TOP/LIMIT |
+| 6 | TRUNCATE vs DELETE | TRUNCATE: no WHERE, no undo, faster. DELETE: filterable, transactional |
+| 7 | What does COALESCE do? | Returns first non-NULL value from its arguments |
+| 8 | Index on VARCHAR — what to watch out for? | Case sensitivity, collation, function-based searches bypass index |
+
+---
+
+## 🧠 Deep Conceptual Questions — SQL Internals & Reasoning
+
+**C1. How does a SQL database execute a SELECT query internally?**
+<details><summary>Deep Answer</summary>
+
+1. **Parse**: SQL text → AST (syntax tree)
+2. **Bind**: resolve table names, column names, types
+3. **Optimize**: query planner generates candidate execution plans, estimates costs (based on statistics: row counts, column cardinality, index existence), picks cheapest
+4. **Execute**: follow the plan — scan tables, apply filters, join, sort, project
+
+The optimizer transforms: `SELECT ... WHERE ... JOIN ... ORDER BY` into an operator tree (Volcano model): TableScan → Filter → HashJoin → Sort → Project. Each operator is an iterator: `next()` pulls one row from its child. This pull-based model (lazy evaluation) avoids materializing intermediate results.
+</details>
+
+**C2. B-Tree index: why is it the default index structure in databases?**
+<details><summary>Deep Answer</summary>
+
+B-Tree (not binary tree — B stands for Balanced, not Binary): a self-balancing tree where each node can hold many keys. Properties: (1) height O(log_m N) where m=fan-out (typically 100-1000) → very short tree for millions of rows, (2) all leaf nodes at same depth → guaranteed O(log N) worst case, (3) range scans efficient — leaves linked in sequence, (4) supports equality AND range queries. Hash index: only equality (no range). Sequential scan: no index at all. B+Tree (variant): internal nodes only store keys (no values), leaves store data. All row pointers in leaves → better range scan (follow linked list of leaves).
+</details>
+
+**C3. Why does adding an index sometimes SLOW DOWN a query?**
+<details><summary>Deep Answer</summary>
+
+1. **Low cardinality**: index on a boolean column — if 50% rows have `active=true`, index gives you 50% of rows. Database may choose full table scan (cheaper: sequential I/O) over index (random I/O for 50% of rows). 
+2. **Function on column**: `WHERE YEAR(created_at) = 2024` — index on `created_at` unused. Rewrite: `WHERE created_at >= '2024-01-01' AND created_at < '2025-01-01'`.
+3. **Write overhead**: every INSERT/UPDATE/DELETE must update ALL indexes. 5 indexes × N rows = 5× write amplification.
+4. **Index not covering**: index exists but the SELECT columns aren't in the index → each index match → separate heap fetch → many random I/O. Solution: covering index (include all needed columns in index).
+</details>
+
+**C4. EXPLAIN / query execution plan: what are the key things to look for?**
+<details><summary>Deep Answer</summary>
+
+Red flags: (1) **"Full Table Scan" / "Seq Scan"** on a large table → missing index, (2) **high "rows" estimate** in join conditions → cartesian product risk, (3) **"Using filesort"** → ORDER BY can't use index, (4) **"Using temporary"** → intermediate table materialization, (5) **nested loops on large tables** → should be hash join or merge join. Green flags: "Using index" (covering index), "ref" or "eq_ref" access type (index used). Start fixing: add or fix index on WHERE/JOIN/ORDER BY columns, rewrite function-wrapped columns.
+</details>
+
+**C5. Window functions vs GROUP BY — when must you use window functions?**
+<details><summary>Deep Answer</summary>
+
+`GROUP BY` collapses rows to one per group — individual row data is lost. Window functions compute aggregates but **keep all rows**. Use window when: (1) you need both the aggregate AND the individual row (rank each employee and show their salary), (2) running totals (each row needs sum of all prior rows — GROUP BY can't do this), (3) lag/lead access (compare each row to previous/next — GROUP BY has no row ordering concept), (4) top-N per group (ROW_NUMBER partition — classic GROUP BY can't do this cleanly). Window functions = aggregation without collapsing.
+</details>
+
+**C6. Transaction isolation levels — what anomaly does each prevent?**
+<details><summary>Deep Answer</summary>
+
+| Level | Dirty Read | Non-repeatable Read | Phantom Read |
+|---|---|---|---|
+| READ UNCOMMITTED | Possible | Possible | Possible |
+| READ COMMITTED | ✅ Prevented | Possible | Possible |
+| REPEATABLE READ | ✅ | ✅ | Possible (MySQL InnoDB: prevented!) |
+| SERIALIZABLE | ✅ | ✅ | ✅ |
+
+**Dirty read**: read uncommitted data from another transaction (which may rollback). **Non-repeatable**: same query in same transaction returns different row values (another transaction committed update). **Phantom**: same query returns different row COUNT (another transaction inserted/deleted rows). Higher isolation = fewer anomalies but more lock contention. Most production databases use READ COMMITTED or REPEATABLE READ.
+</details>
+
+**C7. N+1 query problem: what is it, why does it happen, and how to fix?**
+<details><summary>Deep Answer</summary>
+
+**What**: fetching N orders, then for each order making a separate query for the customer = 1 + N queries total. Scales terribly: 1000 orders = 1001 queries. **Why**: ORMs (Hibernate, JPA) with lazy loading — accessing a relationship triggers a new query. **Fix 1**: Eager loading — `JOIN FETCH` or `.fetch()` — load everything in one query. **Fix 2**: Batch loading — fetch all order IDs, then `WHERE customer_id IN (id1, id2, ...)` — 2 queries. **Fix 3**: Projection/DTO query — `SELECT o.id, c.name FROM orders o JOIN customers c` — 1 query. **Detection**: count DB queries in tests (Spring: `@QueryCount`), log slow query warnings.
+</details>
+

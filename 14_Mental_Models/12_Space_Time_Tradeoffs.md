@@ -72,6 +72,13 @@ EXAMPLE 6: BIT PACKING
 Boolean array visited[10000]: 10KB
 Bitset: 10000/8 = 1.25KB
 → 8× space reduction. Time slightly worse (bit operations).
+
+
+
+
+
+> 🔬 **Section Challenge — Classic Tradeoff Examples In Dsa**
+
 ## The "When Not To Trade" Guide
 
 DON'T trade space for time when:

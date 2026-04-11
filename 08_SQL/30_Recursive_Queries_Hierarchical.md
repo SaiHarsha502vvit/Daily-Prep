@@ -190,6 +190,23 @@ ORDER BY total_budget DESC;
 
 ---
 
+
+
+> 🔬 **Section Challenge — Part 2 — Organizational Hierarchy**
+>
+> **Challenge 1 (Reasoning):** Why does `Error` extend `Throwable` separately from `Exception`? When should you catch `Error`?
+> <details><summary>Answer</summary>
+>
+> `Error` represents JVM-level failures: `OutOfMemoryError`, `StackOverflowError`, `VirtualMachineError`. These indicate unrecoverable states. You should almost NEVER catch `Error` — the JVM state is undefined. Only exception: top-level handlers that log the error before terminating gracefully (`catch(Throwable t)` in shutdown hooks). Never catch `Error` in normal application code.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** `catch(Exception e) { log(e.getMessage()); }` — name 3 things wrong with this.
+> <details><summary>Answer</summary>
+>
+> 1) `e.getMessage()` returns null for some exceptions (NPE, CCE) → NullPointerException in the logger! Use `log(e)` instead to print full stack. 2) Swallowing `Exception` catches runtime bugs (NPE, illegal arg) that should crash/bubble — silent failure is worse than loud failure. 3) No re-throw or meaningful handling — caller has no idea the operation failed.
+> </details>
+>
+
 ## Part 3 — Category Trees (E-commerce)
 
 ### 3.1 Schema
@@ -355,6 +372,9 @@ TOTAL BICYCLE COST:         $515
 
 ---
 
+
+
+
 ## Part 5 — Graph Traversal in SQL
 
 ### 5.1 Social Network: Friend-of-Friend
@@ -436,6 +456,11 @@ LIMIT 1;
 
 ---
 
+
+
+> 🔬 **Section Challenge — Part 5 — Graph Traversal in SQL**
+>>>
+
 ## Part 6 — Python Visualization of Hierarchies
 
 ```python
@@ -502,3 +527,18 @@ plt.show()
 ---
 
 > **Navigation**: [Back to Index](00_INDEX.md) | [< Prev](29_Data_Analytics_Advanced.md) | [Next >](31_JSON_XML_Modern_SQL.md)
+
+
+> 🔬 **Section Challenge — Recursion Safety Checklist**
+>>
+> **Challenge 2 (Bug Hunt):** ```java
+void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
+fib(50) // takes forever
+```
+Why and what are the 3 fixes?
+> <details><summary>Answer</summary>
+>
+> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+> </details>
+>
+

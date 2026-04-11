@@ -606,6 +606,13 @@ flowchart TD
 
 ---
 
+
+
+
+
+
+> 🔬 **Section Challenge — 4. Subgrid — Aligning Nested Grids**
+
 ## 5. Container Queries — The Future of Responsive Components
 
 ```css
@@ -642,6 +649,13 @@ flowchart TD
 ```
 
 ---
+
+
+
+
+
+
+> 🔬 **Section Challenge — 5. Container Queries — The Future of Responsive Components**
 
 ## Interview Quick-Fire
 

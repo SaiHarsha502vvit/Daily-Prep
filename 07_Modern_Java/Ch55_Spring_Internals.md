@@ -187,6 +187,17 @@ public class OrderService {
 
 ---
 
+
+
+> 🔬 **Section Challenge — 1. How Spring Boots Up — The Complete Startup Sequence**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## 2. How Annotations ACTUALLY Work — From @Component to Bean
 
 ### Foundational Truth: Annotations Do NOTHING By Themselves
@@ -502,6 +513,17 @@ protected Object doGetBean(String name) {
 
 ---
 
+
+
+> 🔬 **Section Challenge — 3. The Bean Container — ApplicationContext Internals**
+>
+> **Challenge 1 (Reasoning):** When does React Context cause performance problems and how do you avoid them?
+> <details><summary>Answer</summary>
+>
+> Every context consumer re-renders when ANY context value changes. If you have `{theme, user, cart}` in one context, updating cart re-renders all theme and user consumers. Fixes: (1) Split into separate contexts: `ThemeContext`, `UserContext`, `CartContext`. (2) Memoize components with `React.memo`. (3) For complex state, use a state library (Zustand, Jotai) with selector-based subscriptions — only re-render when the specific piece of state changes.
+> </details>
+>
+
 ## 4. Bean Creation — The 11-Step Lifecycle You Must Know
 
 ```
@@ -758,6 +780,17 @@ public void processOrder(Order order) {
 
 ---
 
+
+
+> 🔬 **Section Challenge — 5. How @Autowired Works — The Full Resolution Chain**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## 6. How Proxies Work — CGLIB vs JDK Dynamic Proxy Internal Mechanics
 
 ### Why Proxies Exist in Spring
@@ -944,6 +977,17 @@ public void processOrder(Order order) {
 
 ---
 
+
+
+> 🔬 **Section Challenge — 6. How Proxies Work — CGLIB vs JDK Dynamic Proxy Internal Mechanics**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## 7. How @Transactional ACTUALLY Works — From Annotation to Commit
 
 ### The Complete Flow (13 Steps)
@@ -1034,6 +1078,17 @@ public void processOrder(Order order) {
 | **NESTED** | Yes → Create SAVEPOINT; No → Create new | Partial rollback | Retry individual items in a batch |
 
 ---
+
+
+
+> 🔬 **Section Challenge — 7. How @Transactional ACTUALLY Works — From Annotation to Commit**
+>
+> **Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+> <details><summary>Answer</summary>
+>
+> READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
+> </details>
+>
 
 ## 8. How Auto-Configuration Works — spring.factories to Bean
 
@@ -1165,6 +1220,17 @@ public class DataSourceAutoConfiguration {
 
 ---
 
+
+
+> 🔬 **Section Challenge — 8. How Auto-Configuration Works — spring.factories to Bean**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## 9. How @ComponentScan Works — Classpath Scanning Algorithm
 
 ```
@@ -1236,6 +1302,17 @@ public class DataSourceAutoConfiguration {
 
 ---
 
+
+
+> 🔬 **Section Challenge — 9. How @ComponentScan Works — Classpath Scanning Algorithm**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## 10. How Profiles & @Conditional Work — The Decision Engine
 
 ### Profile Resolution Order
@@ -1295,6 +1372,17 @@ public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata)
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 10. How Profiles & @Conditional Work — The Decision Engine**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
 
 ## 11. How Spring Resolves Circular Dependencies
 
@@ -1403,6 +1491,17 @@ class B {
 
 ---
 
+
+
+> 🔬 **Section Challenge — 11. How Spring Resolves Circular Dependencies**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## 12. How Spring MVC Processes a Request — All 14 Steps
 
 ```
@@ -1476,6 +1575,17 @@ class B {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 12. How Spring MVC Processes a Request — All 14 Steps**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
 
 ## 13. The Entire Spring Ecosystem — How Pieces Fit Together
 
@@ -1569,3 +1679,14 @@ class B {
 ---
 
 > **Next Chapter**: [Hibernate & JPA Internals →](Ch56_Hibernate_JPA_Internals.md)
+
+
+> 🔬 **Section Challenge — 13. The Entire Spring Ecosystem — How Pieces Fit Together**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+

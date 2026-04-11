@@ -3,6 +3,31 @@
 
 ---
 
+## 🔗 JIT Connection — When You Need This
+
+> **Arrived here from a problem that said "find all..." or involved a tree/graph?**
+>
+
+| Recursion type | When you use it | Jump to PS Problems |
+|---|---|---|
+| **Linear recursion** | Factorial, linked list operations | [LinkedList PS](../05_Problem_Solving/15_LinkedList.md) |
+| **Binary recursion** (no overlap) | Tree height, Merge Sort | [Trees PS](../05_Problem_Solving/09_Trees.md) |
+| **Binary recursion** (with overlap) | Fibonacci → **add memo → DP!** | [DP PS](../05_Problem_Solving/07_DP.md) |
+| **Backtracking** (Choose-Explore-Unchoose) | Subsets, Permutations, N-Queens | [Backtracking PS](../05_Problem_Solving/12_Backtracking.md) |
+| **DFS** on graph | Islands, connected components | [Graphs PS](../05_Problem_Solving/10_Graphs.md) |
+
+>
+> **Signal → Tool mapping:**
+> ```
+> "Find ALL combinations/subsets/paths" → Backtracking (recursion + undo)
+> "Repeated sub-problems in recursion?" → Add memoization → DP
+> "Tree problem?" → Recursion (trust child returns the right answer)
+> ```
+>
+> 📋 **All Patterns Hub:** [00_PATTERN_MASTER_GUIDE.md](../04_Patterns_Templates/00_PATTERN_MASTER_GUIDE.md)
+
+---
+
 # 🔁 Part 1: What is Recursion Really?
 
 ## Complete Understanding
@@ -155,6 +180,9 @@
 └──────────────────────────────────────────────────────────────────────────────┘
 
 
+
+
+
 ## The Mental Model
 
 
@@ -211,6 +239,27 @@ WHY THIS WORKS:
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — The Three Laws of Recursion**
+>
+> **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+> <details><summary>Answer</summary>
+>
+> An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** ```java
+void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
+fib(50) // takes forever
+```
+Why and what are the 3 fixes?
+> <details><summary>Answer</summary>
+>
+> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+> </details>
+>
 
 # 📌 Part 2: Anatomy of a Recursive Function
 
@@ -297,6 +346,27 @@ public int sum(int[] arr, int index) {
 }
 ```
 
+
+
+> 🔬 **Section Challenge — Type 1: Linear Recursion**
+>
+> **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+> <details><summary>Answer</summary>
+>
+> An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** ```java
+void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
+fib(50) // takes forever
+```
+Why and what are the 3 fixes?
+> <details><summary>Answer</summary>
+>
+> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+> </details>
+>
+
 ## Type 2: Binary/Tree Recursion
 
 ```java
@@ -323,6 +393,27 @@ public int fibonacci(int n) {
 // This is why we need MEMOIZATION (see DP guide)
 ```
 
+
+
+> 🔬 **Section Challenge — Type 2: Binary/Tree Recursion**
+>
+> **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+> <details><summary>Answer</summary>
+>
+> An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** ```java
+void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
+fib(50) // takes forever
+```
+Why and what are the 3 fixes?
+> <details><summary>Answer</summary>
+>
+> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+> </details>
+>
+
 ## Type 3: Tail Recursion
 
 ```java
@@ -347,6 +438,27 @@ public int factorialTail(int n, int accumulator) {
 // → factorialTail(2, 60) → factorialTail(1, 120) → returns 120
 ```
 
+
+
+> 🔬 **Section Challenge — Type 3: Tail Recursion**
+>
+> **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+> <details><summary>Answer</summary>
+>
+> An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** ```java
+void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
+fib(50) // takes forever
+```
+Why and what are the 3 fixes?
+> <details><summary>Answer</summary>
+>
+> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+> </details>
+>
+
 ## Type 4: Mutual Recursion
 
 ```java
@@ -368,6 +480,27 @@ public boolean isOdd(int n) {
 
 ---
 
+
+
+> 🔬 **Section Challenge — Type 4: Mutual Recursion**
+>
+> **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+> <details><summary>Answer</summary>
+>
+> An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** ```java
+void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
+fib(50) // takes forever
+```
+Why and what are the 3 fixes?
+> <details><summary>Answer</summary>
+>
+> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+> </details>
+>
+
 # 🔁 Part 4: Recursion Patterns for DSA
 
 ## Pattern 1: Process and Recurse
@@ -381,6 +514,8 @@ public void printArray(int[] arr, int index) {
     printArray(arr, index + 1);        // Recurse on rest
 }
 ```
+
+
 
 ## Pattern 2: Recurse then Process
 
@@ -404,6 +539,8 @@ public void printArrayReverse(int[] arr, int index) {
 // Output: 3, 2, 1
 ```
 
+
+
 ## Pattern 3: Binary Recursion with Divide
 
 ```java
@@ -422,6 +559,27 @@ public int maxElement(int[] arr, int left, int right) {
     return Math.max(leftMax, rightMax);
 }
 ```
+
+
+
+> 🔬 **Section Challenge — Pattern 3: Binary Recursion with Divide**
+>
+> **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+> <details><summary>Answer</summary>
+>
+> An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** ```java
+void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
+fib(50) // takes forever
+```
+Why and what are the 3 fixes?
+> <details><summary>Answer</summary>
+>
+> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+> </details>
+>
 
 ## Pattern 4: Backtracking (Choice, Explore, Unchoose)
 
@@ -455,6 +613,9 @@ public void generateSubsets(int[] nums, int index, List<Integer> current,
 ```
 
 ---
+
+
+
 
 # 🔁 Part 5: Recursion on Data Structures
 
@@ -491,6 +652,27 @@ public ListNode reverseList(ListNode head) {
 // 2.next = 1, 1.next = null → 3→2→1→null
 // Returns 3
 ```
+
+
+
+> 🔬 **Section Challenge — Linked List Recursion**
+>
+> **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+> <details><summary>Answer</summary>
+>
+> An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** ```java
+void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
+fib(50) // takes forever
+```
+Why and what are the 3 fixes?
+> <details><summary>Answer</summary>
+>
+> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+> </details>
+>
 
 ## Tree Recursion
 
@@ -536,6 +718,27 @@ private int checkHeight(TreeNode root) {
 
 ---
 
+
+
+> 🔬 **Section Challenge — Tree Recursion**
+>
+> **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+> <details><summary>Answer</summary>
+>
+> An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** ```java
+void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
+fib(50) // takes forever
+```
+Why and what are the 3 fixes?
+> <details><summary>Answer</summary>
+>
+> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+> </details>
+>
+
 # 🔍 Part 6: Common Mistakes & How to Avoid
 
 ## Mistake 1: No Base Case
@@ -569,6 +772,9 @@ public void print(int n) {
 }
 ```
 
+
+
+
 ## Mistake 3: Off-by-One in Base Case
 
 ```java
@@ -584,6 +790,9 @@ public int sumArray(int[] arr, int i) {
     return arr[i] + sumArray(arr, i + 1);
 }
 ```
+
+
+
 
 ## Mistake 4: Modifying Shared State Without Backtracking
 
@@ -613,6 +822,9 @@ public void explore(int n) {
 ```
 
 ---
+
+
+
 
 # 🔁 Part 7: Recursion to Iteration Conversion
 
@@ -682,6 +894,8 @@ public void inorderIter(TreeNode root) {
 ```
 
 ---
+
+
 
 # PART 7.5: TOWER OF HANOI — The Classic First Recursion Problem
 
@@ -859,6 +1073,8 @@ For each problem, identify:
 1. What is the base case?
 2. How does problem get smaller?
 3. How to combine sub-results?
+
+
 
 ## Exercise 3: Convert
 

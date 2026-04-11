@@ -168,6 +168,23 @@ names.stream()
 
 ---
 
+
+
+> 🔬 **Section Challenge — 1. WHY Are Streams Lazy?**
+>
+> **Challenge 1 (Reasoning):** `list.stream().filter().map().collect()` — at which point does data actually start flowing through the pipeline?
+> <details><summary>Answer</summary>
+>
+> Not until `collect()` (or any terminal operation). `filter()` and `map()` are LAZY — they build a pipeline description but process nothing. When the terminal operation is called, the pipeline pulls elements through lazily: one element passes through the entire pipeline before the next is processed. This means: early termination with `findFirst()` is O(1) if the first element matches, not O(N).
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** You call `stream.filter(...).collect(...)` twice on the same stream. What happens?
+> <details><summary>Answer</summary>
+>
+> `IllegalStateException: stream has already been operated upon or closed`. Streams are single-use. Once a terminal operation is called, the stream is consumed. Fix: create a new stream from the source each time, or collect to a `List` first and stream the list repeatedly.
+> </details>
+>
+
 ## 2. Stream vs Collection: They Are NOT The Same Thing
 
 ### The Freeze Question
@@ -303,6 +320,23 @@ flowchart TD
 
 ---
 
+
+
+> 🔬 **Section Challenge — 2. Stream vs Collection: They Are NOT The Same Thing**
+>
+> **Challenge 1 (Reasoning):** `list.stream().filter().map().collect()` — at which point does data actually start flowing through the pipeline?
+> <details><summary>Answer</summary>
+>
+> Not until `collect()` (or any terminal operation). `filter()` and `map()` are LAZY — they build a pipeline description but process nothing. When the terminal operation is called, the pipeline pulls elements through lazily: one element passes through the entire pipeline before the next is processed. This means: early termination with `findFirst()` is O(1) if the first element matches, not O(N).
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** You call `stream.filter(...).collect(...)` twice on the same stream. What happens?
+> <details><summary>Answer</summary>
+>
+> `IllegalStateException: stream has already been operated upon or closed`. Streams are single-use. Once a terminal operation is called, the stream is consumed. Fix: create a new stream from the source each time, or collect to a `List` first and stream the list repeatedly.
+> </details>
+>
+
 ## 3. Intermediate vs Terminal: When Code Actually Runs
 
 ### Deep Reasoning
@@ -435,6 +469,17 @@ list.stream().findFirst();              // No buffering needed
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 3. Intermediate vs Terminal: When Code Actually Runs**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
 
 ## 4. map() vs flatMap(): The Box-Inside-Box Problem
 
@@ -651,6 +696,17 @@ flowchart TD
 
 ---
 
+
+
+> 🔬 **Section Challenge — 4. map() vs flatMap(): The Box-Inside-Box Problem**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## 5. reduce() Internals: The Accumulator Pattern
 
 ### The Freeze Question
@@ -819,6 +875,17 @@ flowchart TD
 
 ---
 
+
+
+> 🔬 **Section Challenge — 5. reduce() Internals: The Accumulator Pattern**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## 6. Collector Internals: What Collectors.toList() Actually Does
 
 ### The Freeze Question
@@ -959,6 +1026,17 @@ Map<String, Long> countByDept = employees.stream()
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 6. Collector Internals: What Collectors.toList() Actually Does**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
 
 ## 7. parallelStream() Traps: Where It HURTS Performance
 
@@ -1123,6 +1201,23 @@ flowchart TD
 
 ---
 
+
+
+> 🔬 **Section Challenge — 7. parallelStream() Traps: Where It HURTS Performance**
+>
+> **Challenge 1 (Reasoning):** `list.stream().filter().map().collect()` — at which point does data actually start flowing through the pipeline?
+> <details><summary>Answer</summary>
+>
+> Not until `collect()` (or any terminal operation). `filter()` and `map()` are LAZY — they build a pipeline description but process nothing. When the terminal operation is called, the pipeline pulls elements through lazily: one element passes through the entire pipeline before the next is processed. This means: early termination with `findFirst()` is O(1) if the first element matches, not O(N).
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** You call `stream.filter(...).collect(...)` twice on the same stream. What happens?
+> <details><summary>Answer</summary>
+>
+> `IllegalStateException: stream has already been operated upon or closed`. Streams are single-use. Once a terminal operation is called, the stream is consumed. Fix: create a new stream from the source each time, or collect to a `List` first and stream the list repeatedly.
+> </details>
+>
+
 ## 8. Stream Pipeline Fusion: How JVM Optimizes
 
 ### Deep Reasoning
@@ -1210,6 +1305,23 @@ flowchart TD
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 8. Stream Pipeline Fusion: How JVM Optimizes**
+>
+> **Challenge 1 (Reasoning):** `list.stream().filter().map().collect()` — at which point does data actually start flowing through the pipeline?
+> <details><summary>Answer</summary>
+>
+> Not until `collect()` (or any terminal operation). `filter()` and `map()` are LAZY — they build a pipeline description but process nothing. When the terminal operation is called, the pipeline pulls elements through lazily: one element passes through the entire pipeline before the next is processed. This means: early termination with `findFirst()` is O(1) if the first element matches, not O(N).
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** You call `stream.filter(...).collect(...)` twice on the same stream. What happens?
+> <details><summary>Answer</summary>
+>
+> `IllegalStateException: stream has already been operated upon or closed`. Streams are single-use. Once a terminal operation is called, the stream is consumed. Fix: create a new stream from the source each time, or collect to a `List` first and stream the list repeatedly.
+> </details>
+>
 
 ## 9. Optional Deep Reasoning: Why It Exists And When NOT to Use It
 
@@ -1313,6 +1425,17 @@ return optional.map(transform).orElseThrow();
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 9. Optional Deep Reasoning: Why It Exists And When NOT to Use It**
+>
+> **Challenge 1 (Reasoning):** `Optional.get()` without `isPresent()` check — what's the point of Optional then?
+> <details><summary>Answer</summary>
+>
+> `Optional.get()` is a code smell. The right API: `orElse(default)`, `orElseGet(supplier)`, `orElseThrow()`, `map(fn)`, `ifPresent(consumer)`. Optional's value: it makes the ABSENCE of a value explicit in the type signature — callers MUST handle the empty case. Using `get()` defeats this. Rule: never call `get()` unless you've already verified presence through the Optional API.
+> </details>
+>
 
 ## 10. Method References: Not Just Syntactic Sugar
 
@@ -1475,6 +1598,23 @@ users.stream()
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 11. Real-World Stream Patterns: Production Code That Senior Engineers Write**
+>
+> **Challenge 1 (Reasoning):** `list.stream().filter().map().collect()` — at which point does data actually start flowing through the pipeline?
+> <details><summary>Answer</summary>
+>
+> Not until `collect()` (or any terminal operation). `filter()` and `map()` are LAZY — they build a pipeline description but process nothing. When the terminal operation is called, the pipeline pulls elements through lazily: one element passes through the entire pipeline before the next is processed. This means: early termination with `findFirst()` is O(1) if the first element matches, not O(N).
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** You call `stream.filter(...).collect(...)` twice on the same stream. What happens?
+> <details><summary>Answer</summary>
+>
+> `IllegalStateException: stream has already been operated upon or closed`. Streams are single-use. Once a terminal operation is called, the stream is consumed. Fix: create a new stream from the source each time, or collect to a `List` first and stream the list repeatedly.
+> </details>
+>
 
 ## 12. Quick-Fire Table
 

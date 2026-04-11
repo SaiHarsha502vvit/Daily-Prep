@@ -420,6 +420,9 @@ WHERE environment = current_setting('app.environment');
 
 ---
 
+
+
+
 ## 🔴 Case 3: Amazon S3 Outage (2017)
 
 ### What Happened
@@ -646,6 +649,11 @@ WHERE last_login > NOW() - INTERVAL '30 days';
 
 ---
 
+
+
+> 🔬 **Section Challenge — 🟡 Disaster Type 1: The Missing WHERE Clause**
+>>
+
 ## 🟡 Disaster Type 2: The Accidental Cartesian Join
 
 ### Real Story
@@ -693,6 +701,23 @@ SELECT COUNT(*) FROM order_items;      -- 500,000
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 🟡 Disaster Type 2: The Accidental Cartesian Join**
+>
+> **Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
+> <details><summary>Answer</summary>
+>
+> When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
+> <details><summary>Answer</summary>
+>
+> It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
+> </details>
+>
 
 ## 🟡 Disaster Type 3: The N+1 Query Problem
 
@@ -746,6 +771,11 @@ ORDER BY execution_count DESC;
 
 ---
 
+
+
+> 🔬 **Section Challenge — 🟡 Disaster Type 3: The N+1 Query Problem**
+>>
+
 ## 🟡 Disaster Type 4: The Implicit Type Conversion
 
 ### Real Story
@@ -780,6 +810,11 @@ EXPLAIN SELECT * FROM users WHERE phone = 1234567890;
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 🟡 Disaster Type 4: The Implicit Type Conversion**
+>>
 
 ## 🟡 Disaster Type 5: The Timezone Trap
 
@@ -827,6 +862,11 @@ WHERE created_at >= '2024-12-31 00:00:00 UTC'
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 🟡 Disaster Type 5: The Timezone Trap**
+>>
 
 # ⚡ Part 3: Performance Disasters
 
@@ -984,6 +1024,9 @@ WHERE page_number = 500;
 
 ---
 
+
+
+
 ## 🟠 Case 4: The Correlated Subquery Death
 
 ### Real Story
@@ -1122,6 +1165,8 @@ END $$;
 ```
 
 ---
+
+
 
 ## 📝 Interview War Stories
 

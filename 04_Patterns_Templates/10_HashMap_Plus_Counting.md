@@ -52,6 +52,8 @@ flowchart LR
 
 ---
 
+
+
 ## 📐 CORE TEMPLATES
 
 ### Template 1: Complement Lookup (Two Sum Pattern)
@@ -184,6 +186,17 @@ flowchart TD
 
 ---
 
+
+
+> 🔬 **Section Challenge — 🔬 VISUAL: Prefix Sum + HashMap**
+>
+> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+> <details><summary>Answer</summary>
+>
+> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+> </details>
+>
+
 ## 🔥 KEY TRICKS
 
 | Trick | When | Example |
@@ -234,6 +247,17 @@ flowchart LR
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — � FULL WALKTHROUGH: Two Sum (Complement Lookup)**
+>
+> **Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
+> <details><summary>Answer</summary>
+>
+> The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
+> </details>
+>
 
 ## 🔬 FULL WALKTHROUGH 2: Subarray Sum Equals K (Prefix Sum + HashMap)
 
@@ -308,6 +332,17 @@ flowchart TD
 
 ---
 
+
+
+> 🔬 **Section Challenge — 🔬 FULL WALKTHROUGH 2: Subarray Sum Equals K (Prefix Sum + HashMap)**
+>
+> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+> <details><summary>Answer</summary>
+>
+> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+> </details>
+>
+
 ## 🛡️ EDGE CASES
 
 ```
@@ -370,6 +405,17 @@ flowchart TD
 | Modulo + HashMap | O(n) | O(k) | Subarray sum divisible by k |
 
 ---
+
+
+
+> 🔬 **Section Challenge — 📊 COMPLEXITY SUMMARY**
+>
+> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+> <details><summary>Answer</summary>
+>
+> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+> </details>
+>
 
 ## 📋 PRACTICE PROBLEMS — From Your Excel Sheet
 
@@ -446,5 +492,186 @@ flowchart TD
 
 
 ---
+
+
+---
+
+## 🏋️ Practice & Interview Questions — Hash Tables
+
+### Predict / Trace
+**Q1.** HashMap with capacity 4. Insert keys: "a"(hash=1), "b"(hash=2), "c"(hash=5). Which bucket does "c" go into?
+<details><summary>Answer</summary>
+
+`5 % 4 = 1` → bucket 1. Collision with "a"! Resolved by chaining (Java: linked list / tree at bucket).
+</details>
+
+**Q2.** What's the load factor? If HashMap capacity=16 and size=13, is a resize triggered?
+<details><summary>Answer</summary>
+
+Default load factor = 0.75. Threshold = 16 × 0.75 = 12. Size 13 > 12 → YES, resize to capacity 32 was triggered when 13th element was inserted.
+</details>
+
+### LeetCode / Coding
+**Q3.** ⭐ Two Sum with HashMap.
+<details><summary>Solution</summary>
+
+```java
+Map<Integer,Integer> map=new HashMap<>();
+for(int i=0;i<nums.length;i++){
+    if(map.containsKey(target-nums[i])) return new int[]{map.get(target-nums[i]),i};
+    map.put(nums[i],i);
+}
+```
+</details>
+
+**Q4.** ⭐ Group Anagrams — group strings that are anagrams of each other.
+<details><summary>Solution</summary>
+
+```java
+Map<String,List<String>> map=new HashMap<>();
+for(String s:strs){
+    char[] c=s.toCharArray(); Arrays.sort(c);
+    String key=new String(c);
+    map.computeIfAbsent(key,k->new ArrayList<>()).add(s);
+}
+return new ArrayList<>(map.values());
+```
+</details>
+
+**Q5.** ⭐ Valid Anagram — check if two strings are anagrams.
+<details><summary>Solution</summary>
+
+```java
+if(s.length()!=t.length()) return false;
+int[] count=new int[26];
+for(char c:s.toCharArray()) count[c-'a']++;
+for(char c:t.toCharArray()) if(--count[c-'a']<0) return false;
+return true;
+```
+</details>
+
+**Q6.** ⭐ Longest Consecutive Sequence — O(N).
+<details><summary>Solution</summary>
+
+```java
+Set<Integer> set=new HashSet<>(Arrays.asList(nums));
+int maxLen=0;
+for(int n:set){
+    if(!set.contains(n-1)){ // start of sequence
+        int len=1; while(set.contains(n+len)) len++;
+        maxLen=Math.max(maxLen,len);
+    }
+}
+```
+</details>
+
+**Q7.** ⭐⭐ Top K Frequent Elements.
+<details><summary>Solution</summary>
+
+```java
+Map<Integer,Integer> freq=new HashMap<>();
+for(int n:nums) freq.merge(n,1,Integer::sum);
+PriorityQueue<Integer> pq=new PriorityQueue<>((a,b)->freq.get(a)-freq.get(b));
+for(int n:freq.keySet()){ pq.offer(n); if(pq.size()>k) pq.poll(); }
+int[] res=new int[k]; for(int i=k-1;i>=0;i--) res[i]=pq.poll();
+```
+</details>
+
+**Q8.** ⭐⭐ Subarray Sum Equals K (prefix sum + HashMap).
+<details><summary>Solution</summary>
+
+```java
+Map<Integer,Integer> map=new HashMap<>(); map.put(0,1);
+int sum=0, count=0;
+for(int n:nums){ sum+=n; count+=map.getOrDefault(sum-k,0); map.merge(sum,1,Integer::sum); }
+return count;
+```
+</details>
+
+**Q9.** ⭐⭐ LFU Cache — Least Frequently Used eviction.
+<details><summary>Key insight</summary>
+
+Use: `HashMap<key→value>`, `HashMap<key→freq>`, `HashMap<freq→LinkedHashSet<key>>`, `int minFreq`. On get/put: update freq, move key to higher freq set, update minFreq.
+</details>
+
+### Interview Questions
+**Q10.** How does Java's HashMap handle hash collisions?
+<details><summary>Answer</summary>
+
+Java 8+: Each bucket uses a linked list. If bucket size ≥ 8 AND total capacity ≥ 64: list converts to a Red-Black Tree (O(log N) worst case instead of O(N)).
+</details>
+
+**Q11.** Why must you override both `hashCode()` and `equals()` together?
+<details><summary>Answer</summary>
+
+HashMap first checks `hashCode()` to find the bucket, then `equals()` to find the exact key. If you override only `equals()`: two "equal" objects land in different buckets. If only `hashCode()`: bucket is found but equals() can't identify the right entry. Both must be consistent.
+</details>
+
+**Q12.** `ConcurrentHashMap` vs `Collections.synchronizedMap()` — why is CHM preferred?
+<details><summary>Answer</summary>
+
+`synchronizedMap`: wraps entire map with a single lock — every operation serialized. `ConcurrentHashMap`: segments/lock striping in Java 7, CAS + synchronized per-bucket in Java 8 — concurrent reads don't block at all, writes only lock individual buckets.
+</details>
+
+### MCQ Rapid Fire
+| # | Question | Answer |
+|---|---|---|
+| 1 | Default HashMap capacity | 16 |
+| 2 | Default load factor | 0.75 |
+| 3 | HashMap.get() avg/worst | O(1) avg, O(N) worst (all collide) |
+| 4 | HashMap maintains insertion order? | ❌ No — use LinkedHashMap |
+| 5 | TreeMap ordering | Natural ordering (Red-Black Tree) |
+| 6 | HashSet is backed by | HashMap (key only, value=dummy) |
+| 7 | HashMap allows null key? | ✅ Yes, exactly one null key |
+| 8 | HashMap thread-safe? | ❌ No — use ConcurrentHashMap |
+
+
+
+---
+
+## 🧠 Deep Conceptual Questions — Hash Tables
+
+**C1. What makes a good hash function? Why do bad hash functions destroy performance?**
+<details><summary>Deep Answer</summary>
+
+A good hash function: (1) **uniform distribution** — spreads keys across all buckets evenly, minimizing collisions, (2) **deterministic** — same key always same hash, (3) **fast to compute** — O(1), (4) **avalanche effect** — small change in key → large change in hash. Bad example: `hashCode() { return 1; }` — all keys in one bucket → O(N) list → HashMap becomes a linked list. Java's `String.hashCode()` uses polynomial rolling hash: `s[0]*31^(n-1) + s[1]*31^(n-2) + ...`. The prime 31 exploits hardware optimization: `31*x = (x << 5) - x`. Open addressing vs chaining: Java uses chaining.
+</details>
+
+**C2. Why does Java's HashMap convert a bucket's linked list to a Red-Black Tree?**
+<details><summary>Deep Answer</summary>
+
+Without the tree conversion: if many keys hash to the same bucket (hash collision attack or bad hash), the bucket becomes a long linked list. Lookup in that bucket: O(N). An attacker could craft inputs that all hash to the same bucket → O(N) per lookup → denial of service on any HashMap-based server. Java 8+ converts to Red-Black Tree when bucket size ≥ 8 (and map size ≥ 64): worst-case drops to O(log N). Converts back to list when bucket shrinks below 6 (hysteresis prevents oscillation).
+</details>
+
+**C3. Why must `hashCode()` and `equals()` be consistent?**
+<details><summary>Deep Answer</summary>
+
+HashMap workflow: (1) compute `key.hashCode()` → find bucket index, (2) in that bucket, call `key.equals(candidate)` to find exact match. **Contract**: if `a.equals(b)` then `a.hashCode() == b.hashCode()`. Violation: override `equals()` without `hashCode()`. Two "equal" objects land in different buckets. `map.get(key2)` when `key2.equals(key1)` → goes to wrong bucket → returns null even though key1 is in the map. The reverse isn't required: two unequal objects CAN have the same hashCode (collision) — just hurts performance.
+</details>
+
+**C4. ConcurrentHashMap — how does it achieve thread safety without a global lock?**
+<details><summary>Deep Answer</summary>
+
+Java 8 ConcurrentHashMap: no single lock. Instead: **CAS (Compare-And-Swap)** for empty bucket slots — a single CPU instruction that atomically reads and conditionally writes, no lock needed. **Synchronized per-bucket** for non-empty buckets — only the specific bucket is locked, not the whole map. **Volatile head node** — readers always see the latest bucket head without a lock. Reads are completely lock-free. Result: 16x+ throughput improvement over `Hashtable` under contention.
+</details>
+
+**C5. What is "open addressing" and how does it differ from chaining?**
+<details><summary>Deep Answer</summary>
+
+**Chaining** (Java HashMap): each bucket holds a linked list of all colliding entries. Handles high load factors gracefully. Pointer overhead per entry. **Open addressing**: all entries stored in the array itself. On collision: probe for the next empty slot (linear, quadratic, or double-hashing probe sequence). Better cache performance (no pointer chasing). Degraded badly at high load factors (clustering). Python's dict uses open addressing — which is why Python dicts need deletion markers ("tombstones") to maintain probe sequences.
+</details>
+
+**C6. Why does `LinkedHashMap` maintain insertion order while `HashMap` doesn't?**
+<details><summary>Deep Answer</summary>
+
+`LinkedHashMap` adds a doubly-linked list through all entries in insertion order, on top of the regular HashMap structure. Each Entry node has `before` and `after` pointers. Iteration follows the linked list (insertion order) instead of scanning buckets. The HashMap part still handles O(1) get/put. Extra cost: 2 extra pointers per entry (16 bytes per object). `TreeMap` maintains sorted order via Red-Black Tree — O(log N) for all operations but ordered. Choice: HashMap (no order needed), LinkedHashMap (insertion order), TreeMap (sorted order).
+</details>
+
+**C7. Subarray Sum Equals K — why does the prefix sum + HashMap approach work?**
+<details><summary>Deep Answer</summary>
+
+Prefix sum: `prefix[i]` = sum of elements from index 0 to i. Sum of subarray [l, r] = `prefix[r] - prefix[l-1]`. If we want sum = k: `prefix[r] - prefix[l-1] = k` → `prefix[l-1] = prefix[r] - k`. As we compute prefix sums, we look up whether `current_prefix - k` was seen before. If yes, a subarray summing to k ends here. HashMap stores {prefix_sum → count_of_occurrences} to handle duplicate prefix sums (multiple subarrays). Initialize with `{0: 1}` to handle subarrays starting at index 0.
+</details>
+
 
 > **Navigation**: [< Previous](09_Array_Plus_SlidingWindow.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](11_Stack_Plus_MonotonicPattern.md)

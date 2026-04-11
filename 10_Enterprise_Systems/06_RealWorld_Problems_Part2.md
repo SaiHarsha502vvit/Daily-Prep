@@ -6,6 +6,23 @@
 
 ---
 
+
+
+> 🔬 **Section Challenge — Streaming, Healthcare, Travel & More**
+>
+> **Challenge 1 (Reasoning):** `list.stream().filter().map().collect()` — at which point does data actually start flowing through the pipeline?
+> <details><summary>Answer</summary>
+>
+> Not until `collect()` (or any terminal operation). `filter()` and `map()` are LAZY — they build a pipeline description but process nothing. When the terminal operation is called, the pipeline pulls elements through lazily: one element passes through the entire pipeline before the next is processed. This means: early termination with `findFirst()` is O(1) if the first element matches, not O(N).
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** You call `stream.filter(...).collect(...)` twice on the same stream. What happens?
+> <details><summary>Answer</summary>
+>
+> `IllegalStateException: stream has already been operated upon or closed`. Streams are single-use. Once a terminal operation is called, the stream is consumed. Fix: create a new stream from the source each time, or collect to a `List` first and stream the list repeatedly.
+> </details>
+>
+
 # PART 6: STREAMING PLATFORMS (Netflix/Hotstar)
 
 ## Problem 13: Video Watch History - Recently Watched (LRU Cache)
@@ -263,6 +280,9 @@ public class VideoRecommender {
 
 ---
 
+
+
+
 ## Problem 15: Video Buffering - Predict Network Speed (Moving Average)
 
 ```
@@ -378,6 +398,9 @@ public class AdaptiveBitrateController {
 ```
 
 ---
+
+
+
 
 # ⚙️ Part 7: Healthcare Systems
 
@@ -535,6 +558,9 @@ public class AppointmentScheduler {
 
 ---
 
+
+
+
 ## Problem 17: Medicine Interaction Checker (Graph - Cycle Detection)
 
 ```
@@ -648,6 +674,11 @@ public class MedicineInteractionChecker {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — Problem 17: Medicine Interaction Checker (Graph - Cycle Detection)**
+>>>
 
 # PART 8: TRAVEL BOOKING (MakeMyTrip/Goibibo)
 
@@ -799,6 +830,9 @@ public class FlightSearchEngine {
 
 ---
 
+
+
+
 ## Problem 19: Hotel Room Inventory (Segment Tree for Range Queries)
 
 ```
@@ -942,6 +976,9 @@ public class HotelRoomInventory {
 ```
 
 ---
+
+
+
 
 # PART 9: LOGISTICS (Delhivery/Dunzo)
 
@@ -1241,6 +1278,9 @@ public class PackageTracker {
 
 ---
 
+
+
+
 # PART 10: CHAT SYSTEMS (WhatsApp/Telegram)
 
 ## Problem 22: Message Ordering with Eventual Consistency (Vector Clocks)
@@ -1409,3 +1449,5 @@ _Continued in Part 3: Interview Practice Problems_
 ---
 
 > **Navigation**: [< Previous](05_RealWorld_Problems_DSA.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_RealWorld_Problems_Part3.md)
+
+

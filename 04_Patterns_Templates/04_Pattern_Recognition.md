@@ -1,10 +1,93 @@
 > **Navigation**: [< Previous](03_Visual_Diagrams.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_LeetCode_RealWorld_Map.md)
 
+---
+
+## 🗺️ MASTER PATTERN GUIDE — How to Identify Any Pattern From a Problem
+
+> **Read this FIRST. Use this every time you see a new problem.**
+> The fastest skill you can build is: see a problem → immediately know which pattern to use.
+
+### 🔑 Step 1: Read the Problem. Look for These Keywords
+
+| If you see... | First think... | Then verify with... |
+|---|---|---|
+| `subarray`, `contiguous`, `consecutive` | Sliding Window or Prefix Sum | Is it max/min sum? → Kadane's. Count? → Prefix+HashMap |
+| `substring` of size constraints | Sliding Window | Fixed size? Fixed window. Variable? Variable window |
+| `subsequence`, `not necessarily contiguous` | Recursion / DP | LIS? Binary Search. LCS? 2D DP |
+| `pairs`, `two numbers sum to target` | Two Pointers (sorted) or HashMap | Sorted input? Two Pointers. Unsorted? HashMap |
+| `triplets / k-sum` | Sort + Two Pointers | Fix one, two-pointer the rest |
+| `sorted` + `find` / `search` | Binary Search | On data? Classic BS. On answer? BS on answer space |
+| `rotated sorted array` | Modified Binary Search | One half always sorted |
+| `frequency`, `count occurrences` | HashMap | Char? `int[26]`. General? `HashMap` |
+| `group by`, `anagrams`, `bucket` | HashMap groups | Key = sorted string or signature |
+| `k-th largest / smallest` | Heap | Min-Heap of size k O(n log k) |
+| `top K` elements | Heap + Freq | Freq map → Heap |
+| `matching brackets / nesting` | Stack | LIFO maps nesting perfectly |
+| `next greater / smaller element` | Monotonic Stack | Decreasing for NGE, increasing for NSE |
+| `level by level`, `BFS` | Queue | Level-order traversal |
+| `all possible`, `generate all`, `enumerate` | Recursion / Backtracking | Include/Exclude paradigm |
+| `minimum cost / maximum profit` globally | Greedy or DP | Greedy if local optimal = global. DP if overlapping subproblems |
+| `connected components`, `path`, `graph` | BFS/DFS | BFS = shortest path unweighted. DFS = explore all |
+| `cycle detection` | Fast/Slow Pointers (LL) or DFS (graph) | LL? Floyd's. Graph? DFS color |
+| `intervals`, `overlapping ranges` | Sort by start + merge | Sort → scan linearly |
+| `prefix` / `range sum query` | Prefix Sum | Build O(n), query O(1) |
+
+### 🔑 Step 2: Check the Input Type
+
+```
+Input is ARRAY?
+  ├── Sorted? → Binary Search / Two Pointers
+  ├── Unsorted, find pairs? → HashMap O(n) or Sort+TwoPtr O(n log n)
+  ├── Window problem? → Sliding Window
+  └── Max/min subarray? → Kadane's
+
+Input is STRING?
+  ├── Substring constraints? → Sliding Window
+  ├── Frequency? → int[26] or HashMap
+  ├── Prefix/suffix? → String DP
+  └── Pattern matching? → KMP / Rolling Hash
+
+Input is TREE?
+  ├── Path problems? → DFS
+  ├── Level problems? → BFS
+  └── BST + ordered? → Inorder traversal
+
+Input is GRAPH?
+  ├── Shortest path (unweighted)? → BFS
+  ├── All paths / connected? → DFS
+  ├── Shortest path (weighted)? → Dijkstra's (Heap)
+  └── No cycles guaranteed? → Topological Sort
+
+Input is LINKED LIST?
+  ├── Cycle? → Fast/Slow Pointers
+  ├── Nth from end? → Gap of N (Fast/Slow)
+  ├── Middle? → Fast/Slow
+  └── Reverse? → 3-pointer iterative
+```
+
+### 🔑 Step 3: Check the Constraints
+
+```
+n ≤ 20        → O(2ⁿ) or O(n!) OK → Backtracking / Brute Force
+n ≤ 100       → O(n³) OK           → 3 nested loops
+n ≤ 1,000     → O(n²) OK           → 2 nested loops / DP
+n ≤ 100,000   → O(n log n) needed  → Sort / Binary Search / Heap
+n ≤ 1,000,000 → O(n) needed        → HashMap / Sliding Window / Kadane's
+n ≤ 10^9      → O(log n) or O(1)   → Math / Binary Search
+```
+
+---
+
+
+
 # 🔥 Advanced DSA Patterns & Templates
 
 ## Beyond the Basics - Level Up Your Problem Solving
 
 ---
+
+
+
 
 # 🎨 Pattern 1: Prefix Sum
 
@@ -220,6 +303,9 @@ public int largestRectangleArea(int[] heights) {
 ```
 
 ---
+
+
+
 
 # 🎨 Pattern 4: Union — Find (disjoint Set)
 
@@ -618,6 +704,9 @@ public int lowerBound(int[] arr, int target) {
 }
 ```
 
+
+
+
 ## Variant 2: Find Last True (Upper Bound)
 
 ```
@@ -642,6 +731,9 @@ public int lastLessOrEqual(int[] arr, int target) {
     return arr[left] <= target ? left : -1;
 }
 ```
+
+
+
 
 ## Variant 3: Search in Rotated Array
 
@@ -681,6 +773,9 @@ public int searchRotated(int[] arr, int target) {
 }
 ```
 
+
+
+
 ## Variant 4: Binary Search on Answer
 
 ```
@@ -719,6 +814,23 @@ private boolean canShip(int[] weights, int days, int capacity) {
 
 ---
 
+
+
+> 🔬 **Section Challenge — Variant 4: Binary Search on Answer**
+>
+> **Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+> <details><summary>Answer</summary>
+>
+> lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+> </details>
+>
+> **Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+> <details><summary>Answer</summary>
+>
+> Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
+> </details>
+>
+
 # 🧩 Pattern 8: Interval Problems
 
 ## Common Operations
@@ -740,6 +852,9 @@ Merge Logic:
 - If current.start <= prev.end: Overlap! Merge them
 - Else: No overlap, add to result
 ```
+
+
+
 
 ## Template: Merge Intervals
 
@@ -768,6 +883,9 @@ public int[][] merge(int[][] intervals) {
     return result.toArray(new int[result.size()][]);
 }
 ```
+
+
+
 
 ## Template: Meeting Rooms II (Min Rooms Needed)
 
@@ -804,6 +922,9 @@ public int minMeetingRooms(int[][] intervals) {
 ```
 
 ---
+
+
+
 
 # 🕸️ Pattern 9: Graph Algorithms
 
@@ -944,6 +1065,9 @@ public List<List<Integer>> subsets(int[] nums) {
 
 ---
 
+
+
+
 # 📖 Quick Complexity Reference
 
 | Pattern          | Time                    | Space        |
@@ -1083,5 +1207,149 @@ flowchart TD
 
 
 ---
+
+
+---
+
+
+
+## 🏋️ Practice & Interview Questions — OOP & Design Patterns
+
+### Predict / Trace
+**Q1.** What design pattern does this code follow?
+```java
+Logger logger = Logger.getInstance();
+```
+<details><summary>Answer</summary>
+
+**Singleton** — ensures only one Logger instance exists globally.
+</details>
+
+**Q2.** What SOLID principle is violated?
+```java
+class User {
+    void login() { ... }
+    void logout() { ... }
+    void sendEmail() { ... }  // ← ?
+    void generateReport() { ... }  // ← ?
+}
+```
+<details><summary>Answer</summary>
+
+**SRP (Single Responsibility)** — User class has 4 responsibilities: authentication, email, reporting. Should be split into: `AuthService`, `EmailService`, `ReportService`.
+</details>
+
+### Design Pattern Problems
+**Q3.** ⭐ Implement Strategy pattern for payment processing.
+<details><summary>Solution</summary>
+
+```java
+interface PaymentStrategy { void pay(int amount); }
+class CreditCard implements PaymentStrategy { public void pay(int amount){ /*...*/ } }
+class PayPal implements PaymentStrategy { public void pay(int amount){ /*...*/ } }
+class UPI implements PaymentStrategy { public void pay(int amount){ /*...*/ } }
+
+class PaymentContext {
+    private PaymentStrategy strategy;
+    void setStrategy(PaymentStrategy s){ this.strategy=s; }
+    void processPayment(int amount){ strategy.pay(amount); }
+}
+// Switch strategy at runtime — open/closed principle!
+```
+</details>
+
+**Q4.** ⭐⭐ Implement Observer pattern for event notification.
+<details><summary>Solution</summary>
+
+```java
+interface Observer { void update(String event); }
+interface Observable {
+    void subscribe(Observer o); void unsubscribe(Observer o); void notify(String event);
+}
+class EventBus implements Observable {
+    List<Observer> observers = new ArrayList<>();
+    public void subscribe(Observer o){ observers.add(o); }
+    public void unsubscribe(Observer o){ observers.remove(o); }
+    public void notify(String event){ observers.forEach(o -> o.update(event)); }
+}
+```
+</details>
+
+**Q5.** ⭐⭐ Builder pattern for a complex configuration object.
+<details><summary>Solution</summary>
+
+```java
+class ServerConfig {
+    private final String host; private final int port; private final int timeout;
+    private ServerConfig(Builder b){ host=b.host; port=b.port; timeout=b.timeout; }
+
+    static class Builder {
+        String host="localhost"; int port=8080; int timeout=30;
+        Builder host(String h){ host=h; return this; }
+        Builder port(int p){ port=p; return this; }
+        Builder timeout(int t){ timeout=t; return this; }
+        ServerConfig build(){ return new ServerConfig(this); }
+    }
+}
+// ServerConfig config = new ServerConfig.Builder().host("prod.com").port(443).build();
+```
+</details>
+
+### MCQ Rapid Fire
+| # | Question | Answer |
+|---|---|---|
+| 1 | SOLID: O stands for | Open/Closed Principle |
+| 2 | Factory vs Abstract Factory | Factory: one product; Abstract Factory: family of products |
+| 3 | Composition over inheritance means | Prefer has-a (field) over is-a (extends) for flexibility |
+| 4 | Decorator pattern purpose | Add behavior dynamically without subclassing |
+| 5 | Facade pattern purpose | Simplified interface to complex subsystem |
+| 6 | Proxy pattern types | Virtual, protective, remote, caching |
+| 7 | Command pattern encapsulates | Request as an object (supports undo/redo) |
+| 8 | Template Method pattern | Defines algorithm skeleton, subclasses fill in steps |
+
+
+
+---
+
+## 🧠 Deep Conceptual Questions — OOP, SOLID & Design Patterns
+
+**C1. What is the difference between an interface and an abstract class — when to use each?**
+<details><summary>Deep Answer</summary>
+
+**Abstract class**: can have fields, constructors, concrete method implementations. Models IS-A with shared state and behavior. Use when: you have partial implementation to share (template method pattern). Single inheritance: if you extend an abstract class, you can't extend another. **Interface**: pure contract, no state (Java 8+: default methods allowed). Models CAN-DO / role capability. A class can implement unlimited interfaces. Use when: defining a capability across unrelated classes (`Comparable`, `Serializable`, `Runnable`). Rule: prefer interfaces for type definitions. Use abstract class when you need to share implementation code AND all subtypes share the same "IS-A" relationship. In practice: interfaces + composition > abstract class + inheritance.
+</details>
+
+**C2. Liskov Substitution Principle: what does it actually mean and how do you violate it?**
+<details><summary>Deep Answer</summary>
+
+LSP: if `S extends P`, anywhere you use `P`, you should be able to use `S` without breaking correctness. Violation example: `Square extends Rectangle`. Rectangle behavior: setWidth and setHeight are independent. Square invariant: width must equal height. `Square s = new Square(5); s.setWidth(10);` — now `s.getHeight() == 10` (Square enforced equality) but Rectangle contract says height should still be 5. Code using Rectangle is surprised. Better: Square and Rectangle as siblings under a Shape hierarchy. Another classic: override a method and throw exception for a case the parent method handled → violates LSP. Test: can you run the parent's test suite against the child and pass?
+</details>
+
+**C3. Strategy pattern vs. if-else chains: the OCP argument.**
+<details><summary>Deep Answer</summary>
+
+```java
+// BAD: add new payment type = modify this method = Open for modification (violates OCP)
+if(type == "credit") { } else if(type == "paypal") { } else if(type == "crypto") { }
+
+// GOOD: add new payment = new class, zero modification of existing code
+interface PaymentStrategy { void pay(int amount); }
+// Add Crypto: new CryptoPayment implements PaymentStrategy — no other file touched
+```
+Open/Closed Principle: open for extension, closed for modification. Each `else if` = a modification to an existing method = risk of breaking existing behavior, requires re-testing the entire method. Strategy = extension by new class = old code untouched = zero regression risk. When if-else is fine: 2-3 fixed cases that never change. When strategy shines: extensible behaviors that vary at runtime.
+</details>
+
+**C4. What is the Dependency Inversion Principle and how does it enable testability?**
+<details><summary>Deep Answer</summary>
+
+DIP: high-level modules should not depend on low-level modules — both should depend on abstractions. Without DIP: `OrderService` directly creates `MySQLOrderRepository`. To test OrderService: must have MySQL running. With DIP: `OrderService` depends on `OrderRepository` interface. In production: inject `MySQLOrderRepository`. In tests: inject `MockOrderRepository`. The high-level business logic (OrderService) has zero knowledge of the database layer. This makes: unit testing trivial (mock the interface), swapping implementations easy (SQLite, PostgreSQL, in-memory), layer boundaries clear. Dependency INJECTION (DI framework like Spring) is the mechanism that enables DIP at runtime.
+</details>
+
+**C5. Observer pattern vs. Event Bus: when does one become the other?**
+<details><summary>Deep Answer</summary>
+
+**Observer**: subject holds direct references to observer objects. Subject explicitly notifies each one. Tightly coupled (subject knows about observers). Fine for: small systems, known observers at compile time. Breaks when: observers span different modules, dynamic subscription needed, observers need to be remote. **Event Bus / Message Queue**: publishers and subscribers decoupled. Publisher sends event with a TYPE to the bus. Subscribers register for event types — publisher doesn't know who's listening. De-facto standard in large systems: Spring ApplicationEventPublisher, Kafka, RabbitMQ are all event buses. Rule: Observer for in-process tightly-coupled notification. Event bus for loose coupling, cross-module, or distributed communication.
+</details>
+
 
 > **Navigation**: [< Previous](03_Visual_Diagrams.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_LeetCode_RealWorld_Map.md)

@@ -460,6 +460,17 @@ images:
 ### GitHub Actions Pipeline
 
 ```yaml
+
+
+> 🔬 **Section Challenge — CI/CD Pipelines**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 # .github/workflows/deploy.yml
 name: Build and Deploy
 
@@ -743,6 +754,17 @@ flowchart TD
 ### Terraform Kubernetes Module
 
 ```hcl
+
+
+> 🔬 **Section Challenge — Infrastructure as Code**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 # modules/kubernetes/main.tf
 variable "cloud_provider" {
   type = string
@@ -862,6 +884,17 @@ spec:
 ### Prometheus + Grafana Stack
 
 ```yaml
+
+
+> 🔬 **Section Challenge — Monitoring and Logging**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 # prometheus-values.yaml for Helm
 prometheus:
   prometheusSpec:
@@ -1276,5 +1309,119 @@ Cloud deployment requires understanding:
 
 
 ---
+
+
+---
+
+
+
+> 🔬 **Section Challenge — Summary**
+>>
+
+## 🏋️ Practice & Interview Questions — DevOps & Networking
+
+### Predict / Trace
+**Q1.** What happens when you type `https://google.com` in a browser?
+<details><summary>Answer</summary>
+
+1. DNS lookup: resolve `google.com` → IP (recursive resolver → root → TLD → authoritative NS)
+2. TCP connection: 3-way handshake (SYN → SYN-ACK → ACK) to port 443
+3. TLS handshake: ClientHello → ServerHello → certificate verification → key exchange → session keys
+4. HTTP/2 GET request sent
+5. Server responds with HTML (GZIP compressed)
+6. Browser parses HTML → fetches CSS/JS → CSSOM + DOM → render tree → paint
+</details>
+
+**Q2.** `curl -I https://example.com` returns `Connection: keep-alive`. What does this mean?
+<details><summary>Answer</summary>
+
+The TCP connection won't be closed after the response — it stays open for reuse. Avoiding TCP+TLS handshake overhead for subsequent requests. HTTP/1.1 default; HTTP/2 always multiplexes on one connection.
+</details>
+
+### Coding / Commands
+**Q3.** ⭐ Write a Dockerfile for a Java Spring Boot app — multi-stage build.
+<details><summary>Solution</summary>
+
+```dockerfile
+# Stage 1: Build
+FROM eclipse-temurin:21-jdk AS builder
+WORKDIR /app
+COPY gradlew build.gradle settings.gradle ./
+COPY gradle gradle/
+RUN ./gradlew dependencies --no-daemon
+COPY src src/
+RUN ./gradlew bootJar --no-daemon
+
+# Stage 2: Runtime (smaller image)
+FROM eclipse-temurin:21-jre
+WORKDIR /app
+COPY --from=builder /app/build/libs/*.jar app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-XX:+UseContainerSupport", "-XX:MaxRAMPercentage=75", "-jar", "app.jar"]
+```
+</details>
+
+**Q4.** ⭐ Write a Kubernetes deployment with liveness and readiness probes.
+<details><summary>Solution</summary>
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+spec:
+  replicas: 3
+  template:
+    spec:
+      containers:
+      - name: app
+        image: myapp:1.0
+        resources:
+          requests: { memory: "256Mi", cpu: "250m" }
+          limits:   { memory: "512Mi", cpu: "500m" }
+        livenessProbe:
+          httpGet: { path: /actuator/health/liveness, port: 8080 }
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet: { path: /actuator/health/readiness, port: 8080 }
+          initialDelaySeconds: 10
+          periodSeconds: 5
+```
+</details>
+
+**Q5.** ⭐⭐ Design a zero-downtime deployment strategy.
+<details><summary>Answer</summary>
+
+**Blue-Green**: run two identical envs, switch load balancer. Instant rollback. Double the infra cost.
+**Rolling**: replace pods one-by-one. K8s default. Slower, but no extra infra.
+**Canary**: route 5% traffic to new version, monitor errors/latency, gradually increase. Most risk-controlled.
+**Feature flags**: deploy code but disable feature — decouple deployment from release.
+</details>
+
+### Interview Questions
+**Q6.** TCP vs UDP — when to use each?
+<details><summary>Answer</summary>
+
+**TCP**: reliable (acknowledgments, retransmission), ordered, connection-based. Use for: HTTP, databases, SSH, email — anywhere correctness matters more than speed.
+**UDP**: unreliable, unordered, connectionless. Use for: video streaming, gaming, DNS, VoIP — where speed matters more than perfect delivery, or app handles reliability itself.
+</details>
+
+**Q7.** What is a memory limit vs memory request in Kubernetes?
+<details><summary>Answer</summary>
+
+`request`: guaranteed allocation — K8s won't schedule pod on node with less available. `limit`: maximum usage — if exceeded, pod is OOM-killed. Set requests for scheduling accuracy; set limits to prevent noisy neighbor problems. Best practice: requests=expected P50 usage, limits=expected P99 surge.
+</details>
+
+### MCQ Rapid Fire
+| # | Question | Answer |
+|---|---|---|
+| 1 | HTTP status code 429 | Too Many Requests (rate limited) |
+| 2 | HTTP status code 503 | Service Unavailable (server down/overloaded) |
+| 3 | DNS record type for IP address | A record (IPv4), AAAA record (IPv6) |
+| 4 | Load balancer Layer 4 vs 7 | L4: TCP/UDP level; L7: HTTP/application level (content-aware) |
+| 5 | TLS/SSL terminates where | At load balancer (termination), or all the way to pod (passthrough) |
+| 6 | `docker exec -it container bash` does | Opens interactive shell in running container |
+| 7 | Kubernetes etcd stores | Cluster state (all K8s object definitions) |
+| 8 | CI/CD — what triggers a pipeline? | Code push, PR, tag, schedule, or manual trigger |
+
 
 > **Navigation**: [< Previous](Ch63_SB_Cloud_Core.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch28_Annotations_Core.md)

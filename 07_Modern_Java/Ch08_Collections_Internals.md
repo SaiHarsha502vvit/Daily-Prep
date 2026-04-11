@@ -117,6 +117,23 @@ private void grow(int minCapacity) {
 
 ---
 
+
+
+> 🔬 **Section Challenge — 2. ArrayList Internals — Dynamic Array**
+>
+> **Challenge 1 (Reasoning):** `ArrayList.remove(Object o)` vs `ArrayList.remove(int index)` — you call `list.remove(1)`. Which overload is called and why?
+> <details><summary>Answer</summary>
+>
+> `remove(int index)` — `1` is an `int` literal, not an `Integer`. Java resolves to the exact-match primitive overload first. To call `remove(Object)`, use `list.remove(Integer.valueOf(1))` or `list.remove((Integer)1)`. This is a classic Java gotcha that changes behavior silently.
+> </details>
+>
+> **Challenge 2 (Design):** You need to frequently add/remove from both ends of a list AND access by index. Which collection?
+> <details><summary>Answer</summary>
+>
+> None of the standard ones do all three efficiently. Tradeoffs: `ArrayList`: O(1) index access, O(N) front insert/delete. `LinkedList`/`ArrayDeque`: O(1) front/back, O(N) index access. Real solution: if index access can be avoided, use `ArrayDeque`. If all 3 are needed constantly, consider a skip list or re-examine your design.
+> </details>
+>
+
 ## 3. LinkedList Internals — Doubly-Linked Nodes
 
 ```
@@ -158,6 +175,16 @@ private void grow(int minCapacity) {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 3. LinkedList Internals — Doubly-Linked Nodes**
+>
+> **Challenge (Reasoning):** Java's `LinkedList` is almost never used in production Java code. `ArrayList` wins even for use cases that seem to favor LinkedList. Explain why, with concrete performance reasoning.
+> <details><summary>Answer</summary>
+>
+> CPU cache locality: ArrayList stores elements contiguously in memory — sequential reads hit L1/L2 cache almost every time. LinkedList node pointers scatter elements across the heap (random memory locations) — virtually every node access is a cache miss (~100x slower than cache hit). Even ArrayList's O(N) shift (via `System.arraycopy`) is a single `memmove` instruction at native speed, vastly outperforming LinkedList's O(N) pointer traversal. Use `ArrayDeque` instead of `LinkedList` for queue behavior — it's a circular array with O(1) both-ends operations and cache-friendly access.
+> </details>
 
 ## 4. HashMap Internals — The Deep Dive
 
@@ -228,26 +255,39 @@ private void grow(int minCapacity) {
   if (++size > threshold) resize();  // Double capacity: 16→32→64→...
 ```
 
-### 4.3 Treeification (Java 8+)
+### 4.3 Treeification (Java 8+) — and the DoS Attack That Motivated It
+
+> 🔐 **Security Context: Hash Flooding Attack (2011)**
+> Scott A. Crosby and Dan S. Wallach demonstrated that by crafting HTTP POST parameters whose keys all hash to the same bucket, an attacker could turn O(1) HashMap operations into O(N²) — bringing a web server to its knees with just a few requests. Java 7 and below were vulnerable. Java 8's treeification was the fix.
 
 ```
-  WHY TREES?
-  ══════════
-  
-  If all keys hash to same bucket → linked list → O(n) lookup!
-  This is a HashDoS attack vector.
-  
-  Java 8 fix: When bucket has ≥ 8 nodes AND table size ≥ 64:
+  HASH FLOODING DoS:
+  ══════════════════
+  Attacker sends keys that all have hash mod N == 0:
+  → All 10,000 request parameters land in bucket [0]
+  → Linked list of 10,000 nodes
+  → Each containsKey() = O(10,000) instead of O(1)
+  → Server CPU maxes out on a few requests
+
+  Java 8 Treeification Fix:
+  ══════════════════════════
+  When bucket has ≥ 8 nodes AND table size ≥ 64:
     Linked List → Red-Black Tree → O(log n) worst case
+    Even all-same-bucket attack → O(log N) per lookup
   
   When bucket shrinks to ≤ 6 nodes:
-    Tree → Linked List (untreeify)
+    Tree → Linked List (untreeify — save memory)
   
+  WHY 8? (Not 5 or 16?)
+  At load factor 0.75, bucket size follows Poisson distribution (λ=0.75)
+  P(bucket size ≥ 8) ≈ 0.00006% under random hashing.
+  Reaching 8 items in a bucket = almost certainly a DoS attack or
+  a badly broken hashCode().
   
   THRESHOLDS:
   TREEIFY_THRESHOLD = 8    (list → tree)
-  UNTREEIFY_THRESHOLD = 6  (tree → list)
-  MIN_TREEIFY_CAPACITY = 64 (won't treeify if table < 64)
+  UNTREEIFY_THRESHOLD = 6  (tree → list, hysteresis to avoid oscillation)
+  MIN_TREEIFY_CAPACITY = 64 (won't treeify tiny tables — just resize instead)
 ```
 
 ### 4.4 The hashCode/equals Contract
@@ -291,6 +331,23 @@ class Employee {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 4. HashMap Internals — The Deep Dive**
+>
+> **Challenge 1 (Reasoning):** You insert 1000 entries into a HashMap with default capacity 16. How many resize operations happen?
+> <details><summary>Answer</summary>
+>
+> Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 (64→128), 96 (128→256), 192 (256→512), 384 (512→1024). Total: 6 resizes. Each resize copies all entries to new bucket array. Pre-sizing: `new HashMap<>(1334)` (1000/0.75 ≈ 1334 → next power of 2 = 2048) avoids all resizes.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** Two `Person` objects with same name and age. You override `equals()` to return true but not `hashCode()`. What happens when used as `HashMap` keys?
+> <details><summary>Answer</summary>
+>
+> Both objects land in DIFFERENT buckets (different hashCodes → different bucket index). The HashMap doesn't check `equals()` across buckets — it goes straight to one bucket. So `map.get(person2)` returns NULL even though `person1.equals(person2)`. Overriding `equals` without `hashCode` violates the contract and breaks all hash-based collections. Always override both together.
+> </details>
+>
 
 ## 5. TreeMap Internals — Red-Black Tree
 
@@ -342,6 +399,17 @@ map.tailMap(4);           // {4=four, 5=five, 8=eight} (keys ≥ 4)
 
 ---
 
+
+
+> 🔬 **Section Challenge — 5. TreeMap Internals — Red-Black Tree**
+>
+> **Challenge 1 (Reasoning):** When should you use `TreeMap` over `HashMap`? What's the actual performance cost?
+> <details><summary>Answer</summary>
+>
+> `TreeMap` use cases: range queries (`subMap`, `headMap`, `tailMap`), ordered iteration, `floorKey`/`ceilingKey`. Cost: every operation is O(log N) vs O(1) avg for HashMap. For 1M entries: HashMap ~1μs, TreeMap ~20μs per operation. Use TreeMap ONLY when sorted order is required — not as a default.
+> </details>
+>
+
 ## 6. LinkedHashMap — Insertion/Access Order
 
 ```
@@ -392,6 +460,24 @@ cache.put("d", "4");   // Removes "b" (least recently used)
 
 ---
 
+
+
+> 🔬 **Section Challenge — 6. LinkedHashMap — Insertion/Access Order**
+>
+> **Challenge 1 (Design):** Implement a simple LRU cache using `LinkedHashMap` in 5 lines.
+> <details><summary>Answer</summary>
+>
+> ```java
+> Map<K,V> lru = new LinkedHashMap<K,V>(capacity, 0.75f, true) { // accessOrder=true
+>     protected boolean removeEldestEntry(Map.Entry<K,V> eldest) {
+>         return size() > capacity;
+>     }
+> };
+> ```
+> `accessOrder=true` makes iteration order = access order (most recently accessed last). `removeEldestEntry` evicts when over capacity. This is exactly how many simple LRU caches are implemented in production.
+> </details>
+>
+
 ## 7. HashSet — HashMap in Disguise
 
 ```
@@ -420,6 +506,16 @@ cache.put("d", "4");   // Removes "b" (least recently used)
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 7. HashSet — HashMap in Disguise**
+>
+> **Challenge (Reasoning):** `new HashSet<>(list)` removes duplicates. What happens if the objects in the list have a broken `hashCode()` that always returns 42?
+> <details><summary>Answer</summary>
+>
+> All elements hash to the same bucket (42 % capacity). HashSet then uses `equals()` to check within that bucket. Duplicates ARE still removed correctly — but performance degrades from O(N) to O(N²) because every insert searches through the entire bucket chain. A always-same hashCode is legal (all duplicates removed) but destroys the performance guarantee. This is the exact hash flooding pattern that motivated Java 8 treeification.
+> </details>
 
 ## 8. ConcurrentHashMap — Thread-Safe Without Global Locks
 
@@ -473,6 +569,23 @@ map.putIfAbsent("key", value);    // Atomic check-and-put
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 8. ConcurrentHashMap — Thread-Safe Without Global Locks**
+>
+> **Challenge 1 (Reasoning):** You insert 1000 entries into a HashMap with default capacity 16. How many resize operations happen?
+> <details><summary>Answer</summary>
+>
+> Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 (64→128), 96 (128→256), 192 (256→512), 384 (512→1024). Total: 6 resizes. Each resize copies all entries to new bucket array. Pre-sizing: `new HashMap<>(1334)` (1000/0.75 ≈ 1334 → next power of 2 = 2048) avoids all resizes.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** Two `Person` objects with same name and age. You override `equals()` to return true but not `hashCode()`. What happens when used as `HashMap` keys?
+> <details><summary>Answer</summary>
+>
+> Both objects land in DIFFERENT buckets (different hashCodes → different bucket index). The HashMap doesn't check `equals()` across buckets — it goes straight to one bucket. So `map.get(person2)` returns NULL even though `person1.equals(person2)`. Overriding `equals` without `hashCode` violates the contract and breaks all hash-based collections. Always override both together.
+> </details>
+>
 
 ## 9. PriorityQueue — Binary Heap
 
@@ -532,6 +645,16 @@ for (int num : array) {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 9. PriorityQueue — Binary Heap**
+>
+> **Challenge (Design):** PriorityQueue.contains() is O(N) while add/poll are O(log N). You need frequent `contains()` checks alongside priority ordering. How do you solve this?
+> <details><summary>Answer</summary>
+>
+> Maintain a `HashSet<E>` alongside the `PriorityQueue`. Before `offer()`: check `set.contains(e)`. Override `poll()` to also remove from set. This gives you O(1) `contains()` + O(log N) `poll()`. Used in Dijkstra implementations where you need to check if a node is already in the priority queue. Alternative: use a `TreeSet` which provides O(log N) poll + O(log N) contains + sorted order but no duplicate keys.
+> </details>
 
 ## 10. Fail-Fast vs Fail-Safe Iterators
 
@@ -655,3 +778,13 @@ for (String s : safeList) {
 ---
 
 > **Next Chapter**: [Maven & Gradle Build Internals →](Ch14_Maven_Gradle.md)
+
+
+> 🔬 **Section Challenge — 12. Choosing the Right Collection**
+>
+> **Challenge (Design Decision):** You're building a leaderboard: track top-10 players by score, fast score updates, fast top-10 retrieval. Which collection(s)?
+> <details><summary>Answer</summary>
+>
+> Two approaches: (1) `TreeMap<Integer, Set<String>>` keyed by score — O(log N) update, O(log N) top-10 via `tailMap()`. Problem: ties (two players same score). (2) `PriorityQueue<PlayerScore>` of size 10 (min-heap) — O(log 10) = O(1) insert, O(1) top check. But no fast lookup by player name. Production solution: HashMap<playerId, score> for O(1) score lookup PLUS a sorted structure (TreeMap or heap) for ranking. Same dual-structure pattern as LRU cache (HashMap + LinkedList).
+> </details>
+

@@ -138,6 +138,26 @@ executor.awaitTermination(10, TimeUnit.SECONDS);
 
 ---
 
+> 🔬 **Section Challenge — Executor Framework & Thread Pools**
+>
+> **Challenge 1 (Design):** Your service processes 1000 HTTP requests/sec, each taking ~200ms I/O. How many threads do you size your pool to? Show the formula.
+> <details><summary>Answer</summary>
+>
+> Formula: `Threads = CPU cores × (1 + Wait time/Compute time)`. I/O-bound: wait=200ms, compute≈5ms → ratio=40. On a 4-core machine: `4 × (1 + 40) = 164 threads`. Start with this and load-test. Also needs a bounded queue to handle traffic spikes without OOM.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** `Executors.newCachedThreadPool()` is used to submit 50,000 tasks that each make a database call. What disaster happens?
+> <details><summary>Answer</summary>
+>
+> `newCachedThreadPool()` creates a new thread for every task if no idle thread is available (unbounded). 50,000 tasks → potentially 50,000 threads → ~50GB stack memory → `OutOfMemoryError`. Fix: `new ThreadPoolExecutor(50, 200, 60s, LinkedBlockingQueue(10000), CallerRunsPolicy)` — bounded threads + bounded queue + backpressure.
+> </details>
+>
+> **Challenge 3 (Reasoning):** `submit(Runnable)` vs `execute(Runnable)` — when does the choice matter for exception handling?
+> <details><summary>Answer</summary>
+>
+> `execute()`: uncaught exception → `UncaughtExceptionHandler` → then thread dies. `submit()`: exception is captured in the returned `Future` — silently swallowed unless `future.get()` is called. In practice: if you discard the Future from `submit()`, exceptions disappear. Always either: use `execute()` + set UncaughtExceptionHandler, OR use `submit()` + call `future.get()` (possibly in `.whenComplete()`).
+> </details>
+
 # PART 9: COMPLETABLEFUTURE — Async Programming
 
 ```
@@ -257,6 +277,30 @@ CompletableFuture<Object> fastest = CompletableFuture.anyOf(
     fetchFromApiAsync()
 );
 ```
+
+> 🔬 **Section Challenge — CompletableFuture Combining**
+>
+> **Challenge 1 (Reasoning):** `thenApply(fn)` vs `thenApplyAsync(fn)` — you chain 3 `thenApply()` calls. Which thread executes each one?
+> <details><summary>Answer</summary>
+>
+> `thenApply()` runs the function on WHICHEVER thread completed the previous stage (could be the common pool, a custom executor, or the calling thread if the future was already complete). All 3 `thenApply()` calls may run on the SAME thread sequentially. `thenApplyAsync()` always submits to the ForkJoinPool (or specified executor) — guaranteeing async execution even if the previous stage is already complete. Use `async` variants when the transformation is I/O-bound or CPU-heavy.
+> </details>
+>
+> **Challenge 2 (Design):** Load a user profile + order history + recommendations concurrently (3 independent calls), then combine them into a response. Write it with `CompletableFuture`.
+> <details><summary>Answer</summary>
+>
+> ```java
+> CompletableFuture<User> userF = CompletableFuture.supplyAsync(() -> fetchUser(id));
+> CompletableFuture<Orders> ordersF = CompletableFuture.supplyAsync(() -> fetchOrders(id));
+> CompletableFuture<Recs> recsF = CompletableFuture.supplyAsync(() -> fetchRecs(id));
+>
+> CompletableFuture.allOf(userF, ordersF, recsF).thenRun(() -> {
+>     Dashboard d = new Dashboard(userF.join(), ordersF.join(), recsF.join());
+>     sendResponse(d);
+> });
+> ```
+> `allOf()` waits for all 3. `join()` is safe here because we know all futures are complete.
+> </details>
 
 ## Error Handling
 
@@ -458,6 +502,41 @@ flowchart TD
 
 ---
 
+> 🔬 **Section Challenge — ReentrantLock**
+>
+> **Challenge 1 (Bug Hunt):** What's wrong with this `ReentrantLock` usage?
+> ```java
+> lock.lock();
+> processData();
+> lock.unlock();
+> ```
+> <details><summary>Answer</summary>
+>
+> If `processData()` throws an exception, `lock.unlock()` is never called — the lock is held forever, causing all other threads trying to acquire it to block indefinitely. **Always** use try-finally:
+> ```java
+> lock.lock();
+> try { processData(); }
+> finally { lock.unlock(); } // guaranteed regardless of exception
+> ```
+> </details>
+>
+> **Challenge 2 (Design):** A cache that allows unlimited concurrent reads but exclusive writes. Which lock type and which methods?
+> <details><summary>Answer</summary>
+>
+> `ReentrantReadWriteLock`. `readLock().lock()` for reads (multiple simultaneous readers allowed). `writeLock().lock()` for writes (exclusive — waits for all readers to finish and blocks new readers). Pattern:
+> ```java
+> ReadWriteLock rwLock = new ReentrantReadWriteLock();
+> // reads: rwLock.readLock().lock() / unlock()
+> // writes: rwLock.writeLock().lock() / unlock()
+> ```
+> </details>
+>
+> **Challenge 3 (Reasoning):** `tryLock()` returns false. Should you retry immediately, back off, or give up? Design the policy.
+> <details><summary>Answer</summary>
+>
+> Depends on context: (1) **Deadlock prevention**: retry with exponential backoff + jitter (prevents thundering herd). (2) **Best-effort (skip if busy)**: return immediately if `tryLock()` fails — don't block. (3) **Bounded wait**: `tryLock(100, MILLISECONDS)` — throw `TooManyRequestsException` if still fails. Immediate retry without backoff = spin — wastes CPU and increases contention. Always add jitter in distributed retry.
+> </details>
+
 # PART 11: VIRTUAL THREADS (Java 21 — Project Loom)
 
 ```
@@ -640,6 +719,41 @@ flowchart TD
 
 ---
 
+> 🔬 **Section Challenge — Virtual Threads**
+>
+> **Challenge 1 (Reasoning):** You migrate a Spring Boot app to virtual threads. Performance gets WORSE for batch data processing. Why?
+> <details><summary>Answer</summary>
+>
+> Virtual threads only help I/O-bound tasks (where a thread is mostly blocked waiting). CPU-bound batch processing (sorting, transforming millions of records) keeps threads continuously RUNNING — no I/O blocking — so virtual threads provide zero benefit (carrier thread is always occupied). You still need the same number of physical CPU cores. Use `ForkJoinPool` with work-stealing for CPU-bound parallel work instead.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** This code causes virtual thread pinning. Identify and fix:
+> ```java
+> synchronized(dbPool) {
+>     Connection conn = dbPool.borrow();
+>     conn.query("SELECT ..."); // I/O call while holding synchronized lock
+> }
+> ```
+> <details><summary>Answer</summary>
+>
+> `synchronized` block + I/O = **carrier thread is pinned** — the virtual thread cannot be unmounted from the carrier during the I/O wait. This defeats the purpose of virtual threads. Fix:
+> ```java
+> ReentrantLock lock = new ReentrantLock(); // ← not synchronized
+> lock.lock();
+> try {
+>     Connection conn = dbPool.borrow();
+>     conn.query("SELECT ..."); // VT can now unmount during I/O!
+> } finally { lock.unlock(); }
+> ```
+> Always replace `synchronized` with `ReentrantLock` before switching to virtual threads.
+> </details>
+>
+> **Challenge 3 (Design):** Should you use a thread pool with virtual threads? `Executors.newVirtualThreadPerTaskExecutor()` vs `Executors.newFixedThreadPool(200)`?
+> <details><summary>Answer</summary>
+>
+> For I/O-bound: `newVirtualThreadPerTaskExecutor()` — create a new virtual thread per task, no pooling needed (virtual threads are cheap: ~few hundred bytes vs ~1MB for platform threads). The JVM manages carrier thread reuse internally. Thread POOLING of virtual threads is an anti-pattern — it defeats their purpose. Remove any thread-pool size caps from your I/O tasks. For CPU-bound: still use `newFixedThreadPool(N_CPU_CORES)` — more threads won't help.
+> </details>
+
 # 🎨 Part 12: Concurrency Patterns in Production
 
 ```java
@@ -755,9 +869,522 @@ flowchart TD
 
 ---
 
+---
+
+# 🔴 PART 13: THREAD POOL SIZING — The Science Behind the Number
+
+> One of the most common interview questions AND real production mistakes: "How many threads should my pool have?"
+
+```
+╔══════════════════════════════════════════════════════════════════╗
+║  THE RESTAURANT KITCHEN ANALOGY                                  ║
+║                                                                  ║
+║  CPU-bound tasks = A chef who never leaves the kitchen           ║
+║  → The chef is ALWAYS actively cooking (100% CPU busy)           ║
+║  → Having MORE chefs than burners = they just get in each other's║
+║    way (context switching overhead, no extra throughput)         ║
+║  → Optimal: # chefs = # burners (CPU cores)                      ║
+║                                                                  ║
+║  I/O-bound tasks = A chef who frequently leaves to get ingredients║
+║  → Chef is cooking for 5 min, then WAITS 25 min for delivery     ║
+║  → While waiting, the burner is FREE!                            ║
+║  → Fill that idle time: bring in more chefs                      ║
+║  → Optimal: more chefs than burners (more threads than cores)    ║
+╚══════════════════════════════════════════════════════════════════╝
+```
+
+## The Formula
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  OPTIMAL THREAD COUNT FORMULA (Amdahl / Little's Law):                          │
+│                                                                                 │
+│  CPU-BOUND tasks:                                                               │
+│  threads = CPU_CORES + 1                                                        │
+│  (+1 for when a thread is paused by OS preemption or page fault)               │
+│                                                                                 │
+│  I/O-BOUND tasks:                                                               │
+│  threads = CPU_CORES × (1 + wait_time / processing_time)                       │
+│                                                                                 │
+│  EXAMPLE — Database queries:                                                    │
+│  - 8 CPU cores                                                                  │
+│  - DB query: 1ms CPU processing, 9ms waiting for DB response                   │
+│  - wait/process ratio = 9                                                       │
+│  - threads = 8 × (1 + 9) = 8 × 10 = 80 threads                                │
+│                                                                                 │
+│  EXAMPLE — Image compression (CPU-bound):                                       │
+│  - 8 CPU cores                                                                  │
+│  - threads = 8 + 1 = 9 threads                                                 │
+│                                                                                 │
+│  WHY NOT MORE? Beyond optimal: threads compete for CPU → more                  │
+│  context switches → each context switch = ~1-10μs overhead                    │
+│  → Paradox: more threads → LESS throughput                                     │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+```java
+// In code: discover your CPU count and size accordingly
+int cpuCores = Runtime.getRuntime().availableProcessors();
+
+// CPU-bound pool (compression, encryption, computation)
+ExecutorService cpuPool = Executors.newFixedThreadPool(cpuCores + 1);
+
+// I/O-bound pool (DB queries, HTTP calls, file I/O)
+// Assume 90% wait time: ratio = 9, multiply by cores
+int ioThreads = cpuCores * 10;  // Conservative for 90% wait ratio
+ExecutorService ioPool = new ThreadPoolExecutor(
+    ioThreads,          // core
+    ioThreads * 2,      // max (headroom for bursts)
+    60, TimeUnit.SECONDS,
+    new LinkedBlockingQueue<>(1000),    // bounded queue = backpressure
+    new ThreadPoolExecutor.CallerRunsPolicy()
+);
+
+// PRODUCTION INSIGHT:
+// Measure first with profiling tools (JFR, Micrometer, Java Flight Recorder)
+// Start with cpuCores*2 for I/O-bound, adjust based on metrics
+// Watch: CPU utilization, queue depth, rejection rate, latency percentiles
+```
+
+---
+
+# 🔴 PART 14: thenApply vs thenApplyAsync — The Thread Model
+
+> This is a subtle but critical distinction that causes hard-to-reproduce bugs in production.
+
+```
+╔══════════════════════════════════════════════════════════════════╗
+║  THE RELAY RACE ANALOGY                                          ║
+║                                                                  ║
+║  thenApply() = Same runner keeps going                           ║
+║  → Runner A finishes, doesn't hand off baton                     ║
+║  → Runner A themselves sprints the next leg too                  ║
+║  → ONE thread does everything                                    ║
+║                                                                  ║
+║  thenApplyAsync() = New runner takes the baton                   ║
+║  → Runner A finishes, hands off baton to                         ║
+║  → Runner B from ForkJoinPool.commonPool() runs next leg         ║
+║  → DIFFERENT thread handles the transformation                   ║
+║                                                                  ║
+║  WHY DOES IT MATTER?                                             ║
+║  → If step completes before .thenApply() is called:              ║
+║     The thread calling .thenApply() runs the callback! (main?)   ║
+║  → This can accidentally block your main/request thread!         ║
+╚══════════════════════════════════════════════════════════════════╝
+```
+
+```java
+CompletableFuture<String> cf = CompletableFuture
+    .supplyAsync(() -> fetchFromDB())   // Runs in ForkJoinPool thread
+
+    // thenApply: runs in SAME thread that completed the previous stage
+    // Could be: ForkJoinPool thread, your main thread, or ANY thread
+    .thenApply(data -> transform(data))
+
+    // thenApplyAsync: ALWAYS runs in ForkJoinPool.commonPool() (or your executor)
+    // Guarantees async execution — NEVER blocks the completing thread
+    .thenApplyAsync(data -> expensiveTransform(data))
+
+    // thenApplyAsync with custom pool: best for production
+    .thenApplyAsync(data -> dbWrite(data), myDedicatedPool);
+
+// PRODUCTION RULE:
+// thenApply()      → cheap, fast transformations (mapping, string concat)
+// thenApplyAsync() → slow operations (DB calls, HTTP requests, blocking I/O)
+
+// ❌ DANGER — accidentally blocking ForkJoin threads:
+CompletableFuture.supplyAsync(() -> fetchUser())
+    .thenApply(user -> {
+        // This runs in ForkJoinPool thread
+        return repository.save(user);  // ← blocking DB call inside thenApply!
+        // ForkJoinPool thread is now BLOCKED waiting for DB
+        // ForkJoinPool has limited threads — now one is stuck!
+        // Under load: ALL ForkJoinPool threads blocked → app hang
+    });
+
+// ✅ CORRECT:
+CompletableFuture.supplyAsync(() -> fetchUser())
+    .thenApplyAsync(user -> repository.save(user), dbPool);  // Proper async pool
+```
+
+---
+
+# 🔴 PART 15: ForkJoinPool — Work Stealing for Parallel Problems
+
+```
+╔══════════════════════════════════════════════════════════════════╗
+║  THE WAREHOUSE WORK-STEALING ANALOGY                             ║
+║                                                                  ║
+║  Normal thread pool = Each worker has a shared task queue        ║
+║  → All workers fight for tasks from ONE queue                    ║
+║  → Queue contention = bottleneck under high parallelism          ║
+║                                                                  ║
+║  ForkJoinPool = Each worker has their OWN queue                  ║
+║  → Worker finishes their tasks? STEAL from a busy worker's queue ║
+║  → From the BACK of their queue (LIFO) → better cache locality   ║
+║  → No shared queue → no central contention                       ║
+║  → PERFECT for divide-and-conquer (fork = divide, join = merge)  ║
+╚══════════════════════════════════════════════════════════════════╝
+```
+
+```java
+// ForkJoinPool — built for recursive divide-and-conquer
+// Java's Stream.parallel() uses ForkJoinPool.commonPool() internally!
+
+// Example: Parallel merge sort
+class MergeSortTask extends RecursiveAction {
+    int[] array;
+    int left, right;
+
+    MergeSortTask(int[] array, int left, int right) {
+        this.array = array;
+        this.left = left;
+        this.right = right;
+    }
+
+    @Override
+    protected void compute() {
+        if (right - left < 1000) {
+            // Base case: small enough, sort sequentially
+            Arrays.sort(array, left, right + 1);
+            return;
+        }
+        int mid = (left + right) / 2;
+
+        // FORK: Split into two sub-problems
+        MergeSortTask leftTask = new MergeSortTask(array, left, mid);
+        MergeSortTask rightTask = new MergeSortTask(array, mid + 1, right);
+        leftTask.fork();    // Schedule left task (pushed to this worker's deque)
+        rightTask.compute(); // Current thread does right half
+        leftTask.join();    // Wait for left (another worker may steal and do it!)
+
+        // JOIN: Merge results
+        merge(array, left, mid, right);
+    }
+}
+
+// Use it:
+ForkJoinPool pool = new ForkJoinPool();  // Uses availableProcessors() threads
+pool.invoke(new MergeSortTask(array, 0, array.length - 1));
+
+// The commonPool (used by parallelStream and CompletableFuture.supplyAsync):
+ForkJoinPool.commonPool().getParallelism();  // = availableProcessors() - 1
+
+// ✅ PRODUCTION: Don't use commonPool for blocking I/O!
+// Create a dedicated pool for I/O:
+ForkJoinPool ioForkJoinPool = new ForkJoinPool(100);  // 100 worker threads
+```
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  WORK-STEALING MECHANISM                                                         │
+│                                                                                 │
+│  Thread 1 deque: [Task1, Task2, Task3]  ← pushes/pops from LEFT                │
+│  Thread 2 deque: []  (empty, done!)                                             │
+│  Thread 3 deque: [Task4, Task5, Task6, Task7]  (busy!)                          │
+│                                                                                 │
+│  Thread 2 STEALS from Thread 3's RIGHT end:                                    │
+│  Thread 3: [Task4, Task5, Task6]    Thread 2: [Task7]                           │
+│                                                                                 │
+│  STEALING from RIGHT = stealing OLDER tasks (larger sub-problems)               │
+│  WORKING from LEFT = working on NEWER tasks (smaller sub-problems)             │
+│  → This minimizes synchronization between the stealer and the owner            │
+│  → They rarely touch the same end of the deque                                 │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+# 🔴 PART 16: Virtual Thread Pinning — The Critical Gotcha
+
+> Virtual threads are NOT magic. One specific pattern completely breaks them: `synchronized` blocks.
+
+```
+╔══════════════════════════════════════════════════════════════════╗
+║  THE BUS DRIVER ANALOGY                                          ║
+║                                                                  ║
+║  Virtual thread = Passenger on a bus                             ║
+║  Carrier thread = Bus driver                                     ║
+║                                                                  ║
+║  Normal virtual thread I/O wait:                                 ║
+║  → Passenger says "I'll wait at the next stop" (I/O starts)     ║
+║  → Driver drops them off, picks up OTHER passengers              ║
+║  → Driver is NEVER idle (always carrying someone)                ║
+║  → Efficient!                                                    ║
+║                                                                  ║
+║  With synchronized block (PINNING):                              ║
+║  → Passenger handcuffs themselves to the driver's seat           ║
+║  → Driver says "I have to wait for this passenger's I/O too"    ║
+║  → Driver is STUCK until the passenger is done                   ║
+║  → Other passengers wait. This defeats virtual thread benefits!  ║
+╚══════════════════════════════════════════════════════════════════╝
+```
+
+```java
+// ❌ PINNING — synchronized blocks PREVENT virtual thread mounting
+Thread.startVirtualThread(() -> {
+    synchronized (someObject) {        // ← Virtual thread is now PINNED
+        Thread.sleep(1000);            // ← Carrier thread is STUCK too!
+        // This defeats the purpose of virtual threads completely
+        // The OS thread cannot run other virtual threads
+    }
+});
+
+// ✅ FIX: Replace synchronized with ReentrantLock
+Thread.startVirtualThread(() -> {
+    lock.lock();                       // ← Virtual thread acquires lock
+    try {
+        Thread.sleep(1000);            // ← Virtual thread UNMOUNTS from carrier!
+        // Carrier thread picks up another virtual thread during this sleep
+        // Virtual thread remounts when sleep is done
+    } finally {
+        lock.unlock();
+    }
+});
+
+// WHEN PINNING IS A PROBLEM:
+// 1. synchronized block + I/O/sleep inside → destroys scalability
+// 2. synchronized block + native method call → pinned (always)
+
+// DETECT PINNING: JVM flag to log pinning events
+// -Djdk.tracePinnedThreads=full
+
+// POPULAR LIBRARIES AND PINNING:
+// → Most database drivers (JDBC): synchronized internally → PINS virtual threads!
+// → Solution: Use drivers updated for virtual threads (async JDBC, R2DBC)
+//             OR: use Platform threads for DB pool, virtual threads for routing
+
+// STRUCTURED CONCURRENCY (Java 21+ Preview):
+// Groups virtual threads into a "scope" — all succeed or all cancel
+try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
+    Subtask<User>  user  = scope.fork(() -> fetchUser(id));     // Virtual thread 1
+    Subtask<Order> order = scope.fork(() -> fetchOrder(id));    // Virtual thread 2
+
+    scope.join();             // Wait for all
+    scope.throwIfFailed();    // If either failed, throws the exception
+
+    return new Dashboard(user.get(), order.get());
+}
+// If fetchUser fails → fetchOrder is CANCELLED automatically
+// No orphaned threads, no manual cleanup needed
+// This is "structured" — threads don't outlive their scope
+```
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  VIRTUAL THREADS DECISION GUIDE                                                  │
+│                                                                                 │
+│  Scenario                              Recommendation                           │
+│  ──────────────────────────────────── ─────────────────────────────            │
+│  Existing app on Java 21+, I/O bound   Enable spring.threads.virtual.enabled    │
+│  New microservice with HTTP calls      Virtual threads = great fit              │
+│  CPU-bound processing (ML, crypto)     Platform threads (virtual = no gain)     │
+│  Code uses synchronized + I/O inside  Fix to ReentrantLock first, THEN switch  │
+│  Legacy JDBC driver                    Check for pinning, may need async driver  │
+│  Testing: "Will virtual threads help?" Use -Djdk.tracePinnedThreads=full        │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
 > **Previous**: [Part 1 — Thread Fundamentals, synchronized, Atomic, Collections ←](Ch15_Concurrency_Core.md)
 
 
 ---
+
+
+---
+
+## 🏋️ Practice & Interview Questions — Concurrency (Extra)
+
+### Predict / Trace
+**Q1.** Is this code thread-safe?
+```java
+if (!map.containsKey(key)) { map.put(key, compute(key)); }
+```
+<details><summary>Answer</summary>
+
+**No.** Two threads can both pass `containsKey` check simultaneously → both compute and put → race condition, duplicate computation, possible data loss. **Fix**: `map.computeIfAbsent(key, k -> compute(k))` on ConcurrentHashMap — atomic!
+</details>
+
+**Q2.** What's wrong with checking `if(future.isDone())` before `future.get()`?
+<details><summary>Answer</summary>
+
+Nothing wrong functionally, but it's redundant. `future.get()` blocks until done anyway. Only use `isDone()` when you want **non-blocking check** (poll pattern). `isDone()` followed immediately by `get()` has a TOCTOU race — another thread could cancel it between your check and get (though `get()` would throw `CancellationException`).
+</details>
+
+### Coding Problems
+**Q3.** ⭐⭐ Implement a thread-safe bounded blocking queue from scratch with `wait/notify`.
+<details><summary>Solution</summary>
+
+```java
+class BoundedQueue<T> {
+    private final Queue<T> queue = new LinkedList<>();
+    private final int capacity;
+    BoundedQueue(int cap){ this.capacity=cap; }
+
+    synchronized void put(T item) throws InterruptedException {
+        while(queue.size()==capacity) wait(); // Full — wait
+        queue.offer(item);
+        notifyAll(); // Signal waiting consumers
+    }
+
+    synchronized T take() throws InterruptedException {
+        while(queue.isEmpty()) wait(); // Empty — wait
+        T item=queue.poll();
+        notifyAll(); // Signal waiting producers
+        return item;
+    }
+}
+```
+</details>
+
+**Q4.** ⭐⭐ Implement a simple `Future<T>` from scratch.
+<details><summary>Solution</summary>
+
+```java
+class SimpleFuture<T> {
+    private T value; private Throwable error;
+    private boolean done=false;
+
+    synchronized void complete(T val){ value=val; done=true; notifyAll(); }
+    synchronized void completeExceptionally(Throwable t){ error=t; done=true; notifyAll(); }
+
+    synchronized T get() throws Exception {
+        while(!done) wait();
+        if(error!=null) throw new ExecutionException(error);
+        return value;
+    }
+}
+```
+</details>
+
+**Q5.** ⭐⭐⭐ Design a rate limiter (Token Bucket algorithm).
+<details><summary>Solution</summary>
+
+```java
+class TokenBucket {
+    private final long capacity, refillRate;
+    private double tokens;
+    private long lastRefill = System.nanoTime();
+
+    TokenBucket(long capacity, long tokensPerSecond){
+        this.capacity=capacity; this.refillRate=tokensPerSecond; this.tokens=capacity;
+    }
+
+    synchronized boolean tryAcquire(){
+        refill();
+        if(tokens>=1){ tokens--; return true; }
+        return false;
+    }
+
+    private void refill(){
+        long now = System.nanoTime();
+        double added = (now-lastRefill)/1e9 * refillRate;
+        tokens = Math.min(capacity, tokens+added);
+        lastRefill = now;
+    }
+}
+```
+</details>
+
+### Interview Questions
+**Q6.** What is a memory barrier / fence and when does Java insert one?
+<details><summary>Answer</summary>
+
+A memory barrier is a CPU instruction that prevents reordering across it. Java inserts them:
+- **volatile write**: StoreStore + StoreLoad barrier → all prior writes visible before the volatile write
+- **volatile read**: LoadLoad + LoadStore barrier → all subsequent reads see up-to-date values
+- **synchronized exit**: StoreLoad barrier (like volatile write)
+- **synchronized entry**: LoadLoad barrier (like volatile read)
+</details>
+
+**Q7.** What is false sharing and how do you prevent it?
+<details><summary>Answer</summary>
+
+Two threads modify different variables that happen to be on the **same CPU cache line** (64 bytes). When one thread modifies its variable, it invalidates the entire cache line — the other thread's variable (though unchanged) must be re-fetched. **Fix**: `@Contended` annotation (Java 8+) adds padding to isolate variables to separate cache lines.
+
+```java
+@sun.misc.Contended
+class PaddedCounter { volatile long value; }
+```
+</details>
+
+### MCQ Rapid Fire
+| # | Question | Answer |
+|---|---|---|
+| 1 | ExecutorService.shutdown() — does it wait for tasks? | ❌ Initiates shutdown, doesn't wait. Use awaitTermination() |
+| 2 | ExecutorService.shutdownNow() — does it stop running tasks? | Tries to interrupt them, returns list of queued tasks |
+| 3 | Future.cancel(true) — does it stop the task? | Only if task checks isInterrupted() |
+| 4 | CompletableFuture.get() vs join() | get() throws checked exceptions; join() throws unchecked |
+| 5 | Which is faster: AtomicLong or LongAdder? | LongAdder under contention (stripes), AtomicLong for single reads |
+| 6 | Volatile does not guarantee: | Atomicity of compound operations (check-then-act) |
+| 7 | Thread.yield() does what? | Hints scheduler to give up CPU, no guarantee |
+| 8 | Daemon threads — example in JDK | GC threads, JIT compiler threads, finalizer thread |
+
+
+
+---
+
+## 🧠 Deep Conceptual Questions — Concurrency & Thread Safety
+
+**C1. What does "happens-before" actually mean in plain terms?**
+<details><summary>Deep Answer</summary>
+
+"A happens-before B" means: all effects of A (writes to memory) are guaranteed to be visible to B. It's NOT about time ordering — A might literally execute after B in wall-clock time on a different CPU. It's about **visibility guarantees** the JMM provides through specific synchronization actions (volatile, synchronized, join, etc.). Without happens-before: the compiler and CPU are FREE to reorder operations aggressively for performance, and your threads may see stale or absent writes. The JMM doesn't promise any ordering except what's guaranteed via the HB relation.
+</details>
+
+**C2. Why does `volatile` NOT solve the `count++` problem?**
+<details><summary>Deep Answer</summary>
+
+`count++` is three operations: (1) read `count` from main memory, (2) increment in CPU register, (3) write back. `volatile` guarantees each read/write is visible (no caching). But it doesn't prevent two threads from both reading count=5 (each sees 5 via volatile), both incrementing to 6, both writing 6. Count goes 5→6 instead of 5→7. `volatile` adds visibility but no atomicity for compound operations. Solutions: `AtomicInteger.incrementAndGet()` (CAS loop — atomic at hardware level), or `synchronized` (mutual exclusion).
+</details>
+
+**C3. What is CAS (Compare-And-Swap) and why is it "lock-free"?**
+<details><summary>Deep Answer</summary>
+
+CAS: a single CPU instruction `compareAndSwap(addr, expected, newValue)`: if the value at `addr` == `expected`, atomically set it to `newValue` and return true. Otherwise return false. Lock-free: no thread is BLOCKED — if CAS fails, retry in a loop. At least ONE thread always makes progress (the one that succeeds). Contrast with locks: a failed lock acquisition blocks the thread (OS sleep: ~100μs overhead). AtomicInteger.incrementAndGet() = CAS loop: read value, compute +1, CAS. Retry if someone else changed it between read and write. Under low contention: almost always succeeds first try. Under high contention: LongAdder is better (decentralizes to per-thread cells).
+</details>
+
+**C4. Why is `synchronized` using a "monitor" — what is a monitor?**
+<details><summary>Deep Answer</summary>
+
+A monitor is a concurrency construct that combines: (1) a **mutex** (only one thread can enter at a time), (2) a **wait set** (threads can wait for a condition and be notified). In Java: every object has an intrinsic lock (monitor). `synchronized(obj)` acquires the monitor. `obj.wait()` releases the monitor and adds current thread to the wait set. `obj.notify()` picks one thread from the wait set and marks it to re-acquire the monitor. The monitor concept comes from Hoare (1974). Java's implementation: object header contains a mark word that stores the lock state (unlocked → biased locked → thin lock → fat lock with OS mutex).
+</details>
+
+**C5. What is the difference between "thread safety" and "atomicity"?**
+<details><summary>Deep Answer</summary>
+
+**Thread safety**: a class is thread-safe if it behaves correctly when accessed from multiple threads concurrently WITHOUT requiring external synchronization. **Atomicity**: an operation is atomic if it completes entirely or not at all, with no intermediate state visible to other threads. Thread safety can be achieved without per-operation atomicity — you can use locks to protect a sequence of non-atomic operations. `Vector` is thread-safe (every method synchronized) but NOT atomically composable: `if(!v.isEmpty()) v.remove(0)` is not atomic — another thread can remove between the check and the remove. Thread safety at the class level doesn't compose into thread safety at the operation sequence level.
+</details>
+
+**C6. Why is `ThreadLocal` NOT the solution for sharing context between parent and child threads?**
+<details><summary>Deep Answer</summary>
+
+`ThreadLocal` is per-thread. A new thread has NO access to its parent's ThreadLocal values. If main thread sets `requestContext.set(ctx)` then submits a task to a thread pool — the pool thread has an EMPTY ThreadLocal. Solutions: (1) `InheritableThreadLocal`: child thread inherits parent's values at creation time, but pool threads are created ONCE and reused → no re-inheritance on submission. (2) Pass context explicitly to the task constructor. (3) Use `MDCAdapter` (SLF4J's MDC): designed for this, pool-aware. (4) Project Loom's `ScopedValue` (Java 21 preview): designed to replace ThreadLocal for this exact use case.
+</details>
+
+**C7. Deadlock: what are the 4 Coffman conditions and why must ALL 4 hold simultaneously?**
+<details><summary>Deep Answer</summary>
+
+1. **Mutual Exclusion**: resource held exclusively (locks can't be shared)
+2. **Hold and Wait**: thread holds resource while waiting for another
+3. **No Preemption**: resources can't be forcibly taken from a thread
+4. **Circular Wait**: A→B→C→A chain of waiting
+
+These are NECESSARY conditions — ALL four must hold for deadlock to be possible (not sufficient on their own). Breaking ANY ONE prevents deadlock: eliminate mutual exclusion (lock-free algorithms), prevent hold-and-wait (acquire all locks at once), allow preemption (tryLock with timeout), prevent circular wait (global lock ordering). In practice: global lock ordering (breaking #4) is the most common and reliable prevention strategy.
+</details>
+
+**C8. What happens inside the JVM when `synchronized` is acquired?**
+<details><summary>Deep Answer</summary>
+
+JVM uses **lock escalation** based on contention: 
+1. **Biased lock** (no contention): object header records the thread ID. No CAS needed — just check header. Fastest path.
+2. **Thin/lightweight lock**: CAS on object header to change lock state. Stack-allocated lock record. No OS call.
+3. **Heavyweight/fat lock**: when multiple threads contend. OS mutex via `pthread_mutex_lock` — expensive (~μs for context switch). Thread parked by OS.
+
+LockSupport.park() (used by AQS and heavyweight locks) suspends the thread using OS primitives (futex on Linux). When `synchronized` is uncontested (> 95% of real-world cases): nearly free. Under contention: expensive. This is why `synchronized` in modern JVMs is much faster than pre-Java-6.
+</details>
+
 
 > **Navigation**: [< Previous](Ch15_Concurrency_Core.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch07_Modern_Java_9to21.md)

@@ -8,6 +8,9 @@
 
 ---
 
+
+
+
 # 🔬 PART 0A: HOW COMPUTER MEMORY ACTUALLY WORKS (The Foundation)
 
 
@@ -107,6 +110,23 @@ flowchart TD
     N5 --> N6
     N6 --> N7
 ```
+
+
+
+> 🔬 **Section Challenge — THE MEMORY HIERARCHY - Why Some Operations Are Faster**
+>
+> **Challenge 1 (Reasoning):** Why does `Error` extend `Throwable` separately from `Exception`? When should you catch `Error`?
+> <details><summary>Answer</summary>
+>
+> `Error` represents JVM-level failures: `OutOfMemoryError`, `StackOverflowError`, `VirtualMachineError`. These indicate unrecoverable states. You should almost NEVER catch `Error` — the JVM state is undefined. Only exception: top-level handlers that log the error before terminating gracefully (`catch(Throwable t)` in shutdown hooks). Never catch `Error` in normal application code.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** `catch(Exception e) { log(e.getMessage()); }` — name 3 things wrong with this.
+> <details><summary>Answer</summary>
+>
+> 1) `e.getMessage()` returns null for some exceptions (NPE, CCE) → NullPointerException in the logger! Use `log(e)` instead to print full stack. 2) Swallowing `Exception` catches runtime bugs (NPE, illegal arg) that should crash/bubble — silent failure is worse than loud failure. 3) No re-throw or meaningful handling — caller has no idea the operation failed.
+> </details>
+>
 
 ## HOW MEMORY IS ORGANIZED (Addresses & Bytes)
 
@@ -313,7 +333,21 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+
+
+> 🔬 **Section Challenge — JAVA MEMORY MODEL - Stack vs Heap**
+>
+> **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+> <details><summary>Answer</summary>
+>
+> In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
+> </details>
+>
+
 ## WHY ARRAYS ARE FAST - Memory Layout Explained
+
+
+
 
 ## Array Memory Layout - The Speed Secret
 
@@ -426,6 +460,9 @@ flowchart TD
     N4 --> N5
 ```
 
+
+
+
 ## CPU OPERATIONS - What Actually Happens
 
 ## Cpu Instruction Cycle - The Basics
@@ -467,6 +504,9 @@ Use bit masks:  n % 8  →  n & 7
 Cache-friendly code beats clever algorithms
 - Branch misprediction costs ~15 cycles!
 Predictable patterns are faster than random
+
+
+
 
 ## BIT MANIPULATION - The Fastest Operations
 

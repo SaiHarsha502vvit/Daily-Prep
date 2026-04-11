@@ -281,6 +281,17 @@ COMPLEXITY: Time O(n × sum) | Space O(sum)
 
 ---
 
+
+
+> 🔬 **Section Challenge — PROBLEM 2: Partition Equal Subset Sum (LC 416)**
+>
+> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+> <details><summary>Answer</summary>
+>
+> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+> </details>
+>
+
 ## PROBLEM 3: Target Sum (LC 494)
 
 ```
@@ -336,6 +347,17 @@ KEY: The mathematical transformation is the hardest part!
 
 ---
 
+
+
+> 🔬 **Section Challenge — PROBLEM 3: Target Sum (LC 494)**
+>
+> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+> <details><summary>Answer</summary>
+>
+> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+> </details>
+>
+
 ## PROBLEM 4: Coin Change — Minimum Coins (LC 322)
 
 ```
@@ -388,6 +410,9 @@ COMPLEXITY: Time O(coins × amount) | Space O(amount)
 ```
 
 ---
+
+
+
 
 ## PROBLEM 5: Coin Change II — Count Ways (LC 518)
 
@@ -472,6 +497,9 @@ REMEMBER: Outer/inner loop order controls combinations vs permutations!
 ```
 
 ---
+
+
+
 
 ## PROBLEM 6: Ones and Zeroes (LC 474)
 

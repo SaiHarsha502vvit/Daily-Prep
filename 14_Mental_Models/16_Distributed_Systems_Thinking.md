@@ -17,6 +17,9 @@
 
 ---
 
+
+
+
 ## Mental Model 1: The Network Is NOT Reliable
 
 
@@ -39,6 +42,11 @@
 
 
 ---
+
+
+
+> 🔬 **Section Challenge — Mental Model 1: The Network Is NOT Reliable**
+>>
 
 ## Mental Model 2: The Three Possible Outcomes
 
@@ -248,6 +256,9 @@ flowchart TD
 
 ---
 
+
+
+
 ## Mental Model 6: Eventual Consistency Is Not Chaos
 
 
@@ -323,6 +334,9 @@ flowchart LR
 ```
 
 ---
+
+
+
 
 ## Mental Model 8: The Blast Radius
 

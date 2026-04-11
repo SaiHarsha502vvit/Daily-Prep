@@ -68,6 +68,8 @@ Since W is constant, linear in practice.
 
 ## 4. Java Data Structure Design
 
+
+
 ## 4.1 Node
 
 ```java
@@ -204,6 +206,17 @@ public final class MaxXorTwoNumbers {
 
 ---
 
+
+
+> 🔬 **Section Challenge — 5. Classic Problem 1 - Maximum XOR of Two Numbers**
+>
+> **Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
+> <details><summary>Answer</summary>
+>
+> The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
+> </details>
+>
+
 ## 6. Classic Problem 2 - Maximum XOR with Constraint (Offline)
 
 Question style:
@@ -264,6 +277,9 @@ public final class MaxXorWithConstraint {
 ```
 
 ---
+
+
+
 
 ## 7. Classic Problem 3 - Maximum Subarray XOR
 
@@ -366,6 +382,9 @@ public final class CountPairsXorLessThanK {
 
 ---
 
+
+
+
 ## 9. Java-Specific Pitfalls and Fixes
 
 1. Signed shift confusion
@@ -424,3 +443,14 @@ If you remember only one line:
 ---
 
 > **Navigation**: [< Previous](17_DSA_Java_Implementation_Mastery.md) | [Back to Index](00_INDEX.md) | [Next >](19_Prefix_Sum_Prefix_XOR_2D_Prefix_Java_Complete.md)
+
+
+> 🔬 **Section Challenge — 12. Summary**
+>
+> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+> <details><summary>Answer</summary>
+>
+> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+> </details>
+>
+

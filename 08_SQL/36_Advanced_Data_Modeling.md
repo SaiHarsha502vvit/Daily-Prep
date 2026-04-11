@@ -35,6 +35,13 @@ OLAP: "What was revenue by region per month?" → 10M rows, 2-30s
 
 ---
 
+
+
+
+
+
+> 🔬 **Section Challenge — Part 1 — OLTP vs OLAP Modeling**
+
 ## Part 2 — Star Schema
 
 ### 2.1 Concept
@@ -372,6 +379,13 @@ ALTER TABLE fact_sales ADD COLUMN flag_key INT REFERENCES dim_order_flags(flag_k
 ```
 
 ---
+
+
+
+
+
+
+> 🔬 **Section Challenge — Part 5 — Modeling Patterns**
 
 ## Part 6 — Python: Schema Visualization
 

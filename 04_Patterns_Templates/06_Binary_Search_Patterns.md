@@ -1,5 +1,54 @@
 > **Navigation**: [< Previous](05_LeetCode_RealWorld_Map.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_Two_Pointers_Complete.md)
 
+---
+
+## 🗺️ Pattern Recognition Header — Binary Search
+
+> **How do I know this requires Binary Search?**
+>
+
+| Signal in problem | BS Type | Search Space |
+|---|---|---|
+| `sorted array + find value` | **Classic BS** | `[0, n-1]` on data |
+| `first/last occurrence`, `count` | **Lower/Upper Bound** | `[0, n]` on data |
+| `rotated sorted array` | **BS on rotated data** | Determine sorted half |
+| `"minimum possible maximum"` or `"minimum X to achieve Y"` | **BS on Answer** | `[minAns, maxAns]` on answer space |
+| `find peak`, `mountain array` | **BS on slope direction** | Move toward ascending |
+| `Kth smallest in matrix / sorted list` | **BS on value range** | `[min, max]` in value space |
+
+>
+> **The 3 BS Templates — which to use:**
+> ```
+> T1: left <= right, left = mid+1, right = mid-1   → Exact match
+> T2: left <  right, right = mid                    → First pos >= target (Lower Bound)
+> T3: left <  right, left  = mid+1                  → First pos >  target (Upper Bound)
+>
+> ⚠️ MID overflow: ALWAYS use left + (right - left) / 2
+> ⚠️ BS on Answer: think "can I achieve X?" → monotonic Yes/No function
+> ```
+>
+> 🔗 **Practice problems:** [Binary Search PS](../05_Problem_Solving/07_Binary_Search_Patterns.md)
+> 📋 **All Patterns Hub:** [00_PATTERN_MASTER_GUIDE.md](00_PATTERN_MASTER_GUIDE.md)
+
+---
+
+
+
+> 🔬 **Section Challenge — 🗺️ Pattern Recognition Header — Binary Search**
+>
+> **Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+> <details><summary>Answer</summary>
+>
+> lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+> </details>
+>
+> **Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+> <details><summary>Answer</summary>
+>
+> Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
+> </details>
+>
+
 # 🔍 Binary Search Patterns Complete Guide
 
 > Master Every Variation of the Most Powerful Search Technique
@@ -135,6 +184,23 @@ flowchart TD
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — Binary Search Fundamentals <a name="fundamentals"></a>**
+>
+> **Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+> <details><summary>Answer</summary>
+>
+> lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+> </details>
+>
+> **Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+> <details><summary>Answer</summary>
+>
+> Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
+> </details>
+>
 
 ## The 3 Templates (MEMORIZE!) <a name="templates"></a>
 
@@ -603,6 +669,9 @@ public int findMinWithDup(int[] nums) {
 
 ---
 
+
+
+
 ## Peak Finding Patterns <a name="peak-finding"></a>
 
 ### Find Peak Element (LeetCode 162)
@@ -699,6 +768,9 @@ public int peakIndexInMountainArray(int[] arr) {
 ```
 
 ---
+
+
+
 
 ## Binary Search on Answer <a name="binary-answer"></a>
 
@@ -960,6 +1032,23 @@ private boolean canPlace(int[] positions, int minDist, int m) {
 
 ---
 
+
+
+> 🔬 **Section Challenge — Binary Search on Answer <a name="binary-answer"></a>**
+>
+> **Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+> <details><summary>Answer</summary>
+>
+> lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+> </details>
+>
+> **Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+> <details><summary>Answer</summary>
+>
+> Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
+> </details>
+>
+
 ## 2D Binary Search <a name="2d-search"></a>
 
 ### Search 2D Matrix (LeetCode 74)
@@ -1060,6 +1149,23 @@ private int countLessOrEqual(int[][] matrix, int target) {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 2D Binary Search <a name="2d-search"></a>**
+>
+> **Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+> <details><summary>Answer</summary>
+>
+> lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+> </details>
+>
+> **Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+> <details><summary>Answer</summary>
+>
+> Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
+> </details>
+>
 
 ## Advanced Patterns <a name="advanced"></a>
 
@@ -1173,6 +1279,8 @@ public double squareRootFixed(double x) {
 ```
 
 ---
+
+
 
 ## Common Mistakes <a name="mistakes"></a>
 
@@ -1617,5 +1725,236 @@ flowchart TD
 
 
 ---
+
+
+---
+
+
+
+> 🔬 **Section Challenge — Summary**
+>
+> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+> <details><summary>Answer</summary>
+>
+> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+> </details>
+>
+
+## 🏋️ Practice & Interview Questions — Algorithms
+
+### Sorting
+**Q1.** Which sorting algorithm does Java use for `Arrays.sort(int[])`? Why not MergeSort?
+<details><summary>Answer</summary>
+
+**Dual-Pivot QuickSort** — for primitives. MergeSort requires O(N) extra space. QuickSort is in-place and cache-friendly. Stability doesn't matter for primitives (equal ints are indistinguishable). For objects (`Arrays.sort(Object[])`), Java uses **TimSort** (stable, O(N log N) worst).
+</details>
+
+**Q2.** Trace Merge Sort on `[4,2,7,1]`.
+<details><summary>Answer</summary>
+
+Split: `[4,2]` `[7,1]` → Split: `[4]` `[2]` `[7]` `[1]` → Merge: `[2,4]` `[1,7]` → Merge: `[1,2,4,7]`
+</details>
+
+**Q3.** ⭐⭐ Sort Colors (Dutch National Flag — 3-way partition).
+<details><summary>Solution</summary>
+
+```java
+int lo=0, mid=0, hi=n-1;
+while(mid<=hi){
+    if(nums[mid]==0) swap(nums,lo++,mid++);
+    else if(nums[mid]==1) mid++;
+    else swap(nums,mid,hi--);
+}
+```
+</details>
+
+### Binary Search
+**Q4.** ⭐ Search in Rotated Sorted Array.
+<details><summary>Solution</summary>
+
+```java
+int lo=0, hi=n-1;
+while(lo<=hi){
+    int mid=(lo+hi)/2;
+    if(nums[mid]==target) return mid;
+    if(nums[lo]<=nums[mid]){ // left half sorted
+        if(nums[lo]<=target&&target<nums[mid]) hi=mid-1; else lo=mid+1;
+    } else { // right half sorted
+        if(nums[mid]<target&&target<=nums[hi]) lo=mid+1; else hi=mid-1;
+    }
+}
+return -1;
+```
+</details>
+
+**Q5.** ⭐ Find First and Last Position (binary search twice).
+<details><summary>Solution</summary>
+
+```java
+// First: find leftmost with while(lo<hi){ if arr[mid]>=target hi=mid else lo=mid+1 }
+// Last: find rightmost with while(lo<hi){ if arr[mid]<=target lo=mid+1 else hi=mid } return lo-1
+```
+</details>
+
+**Q6.** ⭐⭐ Koko Eating Bananas — binary search on answer.
+<details><summary>Key insight</summary>
+
+Binary search the eating speed k in range [1, max(piles)]. For each k, calculate hours needed. Find minimum k where hours ≤ H.
+</details>
+
+### Dynamic Programming
+**Q7.** ⭐ Climbing Stairs — n steps, 1 or 2 at a time. How many ways?
+<details><summary>Solution</summary>
+
+```java
+// Fibonacci sequence! dp[i] = dp[i-1] + dp[i-2]
+int a=1, b=1;
+for(int i=2;i<=n;i++){ int c=a+b; a=b; b=c; }
+return b;
+```
+</details>
+
+**Q8.** ⭐ Coin Change — minimum coins for amount.
+<details><summary>Solution</summary>
+
+```java
+int[] dp = new int[amount+1]; Arrays.fill(dp, amount+1);
+dp[0]=0;
+for(int i=1;i<=amount;i++)
+    for(int c:coins) if(c<=i) dp[i]=Math.min(dp[i],dp[i-c]+1);
+return dp[amount]>amount?-1:dp[amount];
+```
+</details>
+
+**Q9.** ⭐⭐ Longest Common Subsequence.
+<details><summary>Solution</summary>
+
+```java
+int[][] dp=new int[m+1][n+1];
+for(int i=1;i<=m;i++) for(int j=1;j<=n;j++){
+    if(text1.charAt(i-1)==text2.charAt(j-1)) dp[i][j]=dp[i-1][j-1]+1;
+    else dp[i][j]=Math.max(dp[i-1][j],dp[i][j-1]);
+}
+return dp[m][n];
+```
+</details>
+
+**Q10.** ⭐⭐ Word Break — can string be segmented using dictionary words?
+<details><summary>Solution</summary>
+
+```java
+boolean[] dp=new boolean[n+1]; dp[0]=true;
+for(int i=1;i<=n;i++) for(String w:wordDict)
+    if(i>=w.length()&&dp[i-w.length()]&&s.substring(i-w.length(),i).equals(w)) dp[i]=true;
+return dp[n];
+```
+</details>
+
+**Q11.** ⭐⭐⭐ Edit Distance (Levenshtein).
+<details><summary>Solution</summary>
+
+```java
+int[][] dp=new int[m+1][n+1];
+for(int i=0;i<=m;i++) dp[i][0]=i;
+for(int j=0;j<=n;j++) dp[0][j]=j;
+for(int i=1;i<=m;i++) for(int j=1;j<=n;j++){
+    if(word1.charAt(i-1)==word2.charAt(j-1)) dp[i][j]=dp[i-1][j-1];
+    else dp[i][j]=1+Math.min(dp[i-1][j-1],Math.min(dp[i-1][j],dp[i][j-1]));
+}
+```
+</details>
+
+### Graph Algorithms
+**Q12.** ⭐ Number of Islands (BFS/DFS grid traversal).
+<details><summary>Solution</summary>
+
+```java
+for each cell (i,j) if grid[i][j]=='1': count++; BFS/DFS to mark all connected land as visited
+```
+</details>
+
+**Q13.** ⭐⭐ Course Schedule — detect cycle in directed graph (Topological sort).
+<details><summary>Solution</summary>
+
+```java
+// Kahn's algorithm: indegree array + BFS queue
+// If result size == numCourses → no cycle → can finish
+```
+</details>
+
+**Q14.** ⭐⭐ Dijkstra's Shortest Path.
+<details><summary>Solution</summary>
+
+```java
+PriorityQueue<int[]> pq=new PriorityQueue<>((a,b)->a[1]-b[1]); // [node, dist]
+pq.offer(new int[]{src,0}); dist[src]=0;
+while(!pq.isEmpty()){
+    int[] curr=pq.poll(); int u=curr[0],d=curr[1];
+    if(d>dist[u]) continue; // stale
+    for(int[] neighbor:graph[u]) if(dist[u]+neighbor[1]<dist[neighbor[0]]){
+        dist[neighbor[0]]=dist[u]+neighbor[1]; pq.offer(new int[]{neighbor[0],dist[neighbor[0]]});
+    }
+}
+```
+</details>
+
+### MCQ Rapid Fire
+| # | Question | Answer |
+|---|---|---|
+| 1 | QuickSort avg/worst | O(N log N) avg, O(N²) worst |
+| 2 | MergeSort space complexity | O(N) |
+| 3 | HeapSort space complexity | O(1) (in-place) |
+| 4 | Binary search precondition | Sorted array |
+| 5 | BFS time complexity on graph | O(V+E) |
+| 6 | DFS space complexity | O(V) (recursion stack) |
+| 7 | Dijkstra fails on | Negative weight edges |
+| 8 | Bellman-Ford handles | Negative weights, detects negative cycles |
+| 9 | Floyd-Warshall use case | All-pairs shortest path, O(V³) |
+| 10 | Topological sort requires | Directed Acyclic Graph (DAG) |
+
+
+
+---
+
+## 🧠 Deep Conceptual Questions — OOP, SOLID & Design Patterns
+
+**C1. What is the difference between an interface and an abstract class — when to use each?**
+<details><summary>Deep Answer</summary>
+
+**Abstract class**: can have fields, constructors, concrete method implementations. Models IS-A with shared state and behavior. Use when: you have partial implementation to share (template method pattern). Single inheritance: if you extend an abstract class, you can't extend another. **Interface**: pure contract, no state (Java 8+: default methods allowed). Models CAN-DO / role capability. A class can implement unlimited interfaces. Use when: defining a capability across unrelated classes (`Comparable`, `Serializable`, `Runnable`). Rule: prefer interfaces for type definitions. Use abstract class when you need to share implementation code AND all subtypes share the same "IS-A" relationship. In practice: interfaces + composition > abstract class + inheritance.
+</details>
+
+**C2. Liskov Substitution Principle: what does it actually mean and how do you violate it?**
+<details><summary>Deep Answer</summary>
+
+LSP: if `S extends P`, anywhere you use `P`, you should be able to use `S` without breaking correctness. Violation example: `Square extends Rectangle`. Rectangle behavior: setWidth and setHeight are independent. Square invariant: width must equal height. `Square s = new Square(5); s.setWidth(10);` — now `s.getHeight() == 10` (Square enforced equality) but Rectangle contract says height should still be 5. Code using Rectangle is surprised. Better: Square and Rectangle as siblings under a Shape hierarchy. Another classic: override a method and throw exception for a case the parent method handled → violates LSP. Test: can you run the parent's test suite against the child and pass?
+</details>
+
+**C3. Strategy pattern vs. if-else chains: the OCP argument.**
+<details><summary>Deep Answer</summary>
+
+```java
+// BAD: add new payment type = modify this method = Open for modification (violates OCP)
+if(type == "credit") { } else if(type == "paypal") { } else if(type == "crypto") { }
+
+// GOOD: add new payment = new class, zero modification of existing code
+interface PaymentStrategy { void pay(int amount); }
+// Add Crypto: new CryptoPayment implements PaymentStrategy — no other file touched
+```
+Open/Closed Principle: open for extension, closed for modification. Each `else if` = a modification to an existing method = risk of breaking existing behavior, requires re-testing the entire method. Strategy = extension by new class = old code untouched = zero regression risk. When if-else is fine: 2-3 fixed cases that never change. When strategy shines: extensible behaviors that vary at runtime.
+</details>
+
+**C4. What is the Dependency Inversion Principle and how does it enable testability?**
+<details><summary>Deep Answer</summary>
+
+DIP: high-level modules should not depend on low-level modules — both should depend on abstractions. Without DIP: `OrderService` directly creates `MySQLOrderRepository`. To test OrderService: must have MySQL running. With DIP: `OrderService` depends on `OrderRepository` interface. In production: inject `MySQLOrderRepository`. In tests: inject `MockOrderRepository`. The high-level business logic (OrderService) has zero knowledge of the database layer. This makes: unit testing trivial (mock the interface), swapping implementations easy (SQLite, PostgreSQL, in-memory), layer boundaries clear. Dependency INJECTION (DI framework like Spring) is the mechanism that enables DIP at runtime.
+</details>
+
+**C5. Observer pattern vs. Event Bus: when does one become the other?**
+<details><summary>Deep Answer</summary>
+
+**Observer**: subject holds direct references to observer objects. Subject explicitly notifies each one. Tightly coupled (subject knows about observers). Fine for: small systems, known observers at compile time. Breaks when: observers span different modules, dynamic subscription needed, observers need to be remote. **Event Bus / Message Queue**: publishers and subscribers decoupled. Publisher sends event with a TYPE to the bus. Subscribers register for event types — publisher doesn't know who's listening. De-facto standard in large systems: Spring ApplicationEventPublisher, Kafka, RabbitMQ are all event buses. Rule: Observer for in-process tightly-coupled notification. Event bus for loose coupling, cross-module, or distributed communication.
+</details>
+
 
 > **Navigation**: [< Previous](05_LeetCode_RealWorld_Map.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_Two_Pointers_Complete.md)

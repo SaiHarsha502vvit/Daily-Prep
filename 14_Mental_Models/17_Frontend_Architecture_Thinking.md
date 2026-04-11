@@ -15,6 +15,9 @@
 
 ---
 
+
+
+
 ## Mental Model 1: State Belongs Somewhere
 
 ```
@@ -262,6 +265,9 @@ flowchart TD
 
 ---
 
+
+
+
 ## Mental Model 7: The Boundary Pattern
 
 
@@ -299,6 +305,8 @@ flowchart TD
 
 
 ---
+
+
 
 ## Mental Model 8: Accessibility Is Architecture
 

@@ -78,6 +78,9 @@ flowchart TD
 
 ---
 
+
+
+
 ## 🎨 VISUAL PATTERN RECOGNITION GUIDE
 
 ```
@@ -162,6 +165,8 @@ flowchart TD
 ```
 
 ---
+
+
 
 ## ⚡ COPY-PASTE TEMPLATES (Memorize These!)
 
@@ -539,6 +544,9 @@ flowchart TD
 
 ---
 
+
+
+
 ## 📋 EXAM DAY CHECKLIST (Read This First!)
 
 ### Before Writing ANY Code:
@@ -683,6 +691,8 @@ public static int[] maxSlidingWindow(int[] arr, int k) {
 
 ---
 
+
+
 ## 🎯 PATTERN RECOGNITION KEYWORDS
 
 | Keyword in Problem            | Pattern to Use          | Complexity   |
@@ -700,6 +710,8 @@ public static int[] maxSlidingWindow(int[] arr, int k) {
 | **"spiral", "rotate matrix"** | **Matrix Traversal**    | **O(M×N)**   |
 
 ---
+
+
 
 ## 🔑 JAVA COLLECTIONS QUICK REFERENCE
 
@@ -775,6 +787,9 @@ String result = sb.toString();   // Convert - O(N)
 
 ---
 
+
+
+
 ## 🎯 MINIMUM TO PASS (60% Score)
 
 ### Must Solve Completely:
@@ -791,6 +806,9 @@ String result = sb.toString();   // Convert - O(N)
 - Use brute force if needed (correct > optimal)
 
 ---
+
+
+
 
 ## 📚 MUST KNOW BEFORE EXAM
 
@@ -1168,6 +1186,9 @@ if (n < 0) {
 - Test with 1-2 examples only
 
 ---
+
+
+
 
 # 🚀 YOU'RE READY! GO ACE THAT EXAM! 🚀
 

@@ -128,6 +128,17 @@ Instant back = ldt.atZone(ZoneId.systemDefault()).toInstant();
 
 ---
 
+
+
+> 🔬 **Section Challenge — 3. LocalTime, LocalDateTime, Instant**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## 4. ZonedDateTime — The Real-World Necessity
 
 ```java
@@ -201,6 +212,17 @@ long hoursBetween = ChronoUnit.HOURS.between(startDateTime, endDateTime);
 
 ---
 
+
+
+> 🔬 **Section Challenge — 5. Duration and Period — Measuring Time Gaps**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## 6. DateTimeFormatter — Parsing and Formatting
 
 ```java
@@ -250,6 +272,17 @@ Common Format Patterns:
 
 ---
 
+
+
+> 🔬 **Section Challenge — 6. DateTimeFormatter — Parsing and Formatting**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## 7. Practical Patterns — Real-World Code
 
 ```java
@@ -296,6 +329,8 @@ ZonedDateTime userLocal = storedUtc.atZone(ZoneId.of("Asia/Kolkata"));  // Displ
 ```
 
 ---
+
+
 
 ## PART 2: REGEX MASTERY (java.util.regex)
 
@@ -362,6 +397,17 @@ ANCHORS & GROUPS:
 
 ---
 
+
+
+> 🔬 **Section Challenge — 8. Regex Fundamentals — The Building Blocks**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## 9. Pattern and Matcher — Java's Regex Engine
 
 ```java
@@ -403,6 +449,17 @@ Pattern.compile("\\d+").matcher("hello123world").find() → true (found 123)
 
 ---
 
+
+
+> 🔬 **Section Challenge — 9. Pattern and Matcher — Java's Regex Engine**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## 10. Capturing Groups — Extracting Data
 
 ```java
@@ -441,6 +498,17 @@ if (m.find()) {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 10. Capturing Groups — Extracting Data**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
 
 ## 11. Practical Regex Patterns
 
@@ -501,6 +569,8 @@ Pattern hasDigit = Pattern.compile("(?=.*\\d).{8,}");
 
 ---
 
+
+
 ## 12. String Methods with Regex
 
 ```java
@@ -527,6 +597,17 @@ String text = "<p>Hello <b>World</b></p>".replaceAll("<[^>]+>", "");
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 12. String Methods with Regex**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
 
 ## 13. Performance — Pattern Compilation Matters
 
@@ -563,6 +644,8 @@ Performance Rules:
 ```
 
 ---
+
+
 
 ## 14. Java 9+ Regex Features
 

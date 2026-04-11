@@ -358,3 +358,9 @@ DROP INDEX IF EXISTS idx_emp_lastname;      -- PostgreSQL
 ---
 
 > **Navigation**: [< Previous](02_DataTypes_Constraints.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_DML_Manipulating_Data.md)
+
+
+
+
+> 🔬 **Section Challenge — Chapter 3: DDL - Creating Database Structure**
+

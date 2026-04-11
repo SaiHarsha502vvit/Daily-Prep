@@ -8,6 +8,9 @@
 
 ---
 
+
+
+
 # 🚀 Part 0: Why This Matters for Your Career
 
 ```
@@ -99,6 +102,9 @@ AFTER ERP (Connected):
 │              │    Truth!)            │                       │
 │              └───────────────────────┘                       │
 └──────────────────────────────────────────────────────────────┘
+
+
+
 
 ## 🏗️ Oracle ERP Cloud Modules Overview
 
@@ -192,6 +198,9 @@ Step 5: IDENTIFY THE RELATIONSHIPS
 ↓
 "How do things CONNECT?"
 → These become FOREIGN KEYS and ASSOCIATIONS
+
+
+
 
 ## 📝 Example: Converting "Employee Hierarchy" to Code
 
@@ -667,6 +676,23 @@ public class OrgChartController {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 📝 Example: Converting "Employee Hierarchy" to Code**
+>
+> **Challenge 1 (Reasoning):** Why does `Error` extend `Throwable` separately from `Exception`? When should you catch `Error`?
+> <details><summary>Answer</summary>
+>
+> `Error` represents JVM-level failures: `OutOfMemoryError`, `StackOverflowError`, `VirtualMachineError`. These indicate unrecoverable states. You should almost NEVER catch `Error` — the JVM state is undefined. Only exception: top-level handlers that log the error before terminating gracefully (`catch(Throwable t)` in shutdown hooks). Never catch `Error` in normal application code.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** `catch(Exception e) { log(e.getMessage()); }` — name 3 things wrong with this.
+> <details><summary>Answer</summary>
+>
+> 1) `e.getMessage()` returns null for some exceptions (NPE, CCE) → NullPointerException in the logger! Use `log(e)` instead to print full stack. 2) Swallowing `Exception` catches runtime bugs (NPE, illegal arg) that should crash/bubble — silent failure is worse than loud failure. 3) No re-throw or meaningful handling — caller has no idea the operation failed.
+> </details>
+>
 
 # ⚙️ Part 3: Unique Id Generation Systems
 
@@ -1244,6 +1270,9 @@ flowchart TD
     N1 --> N2
 ```
 
+
+
+
 ## 📊 General Ledger System (The Heart of Finance)
 
 ```java
@@ -1512,6 +1541,9 @@ public class GeneralLedgerService {
     }
 }
 ```
+
+
+
 
 ## 💵 Accounts Payable (AP) - Money You Owe
 

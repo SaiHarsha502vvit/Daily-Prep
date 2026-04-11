@@ -167,6 +167,23 @@ flowchart LR
 
 ---
 
+
+
+> 🔬 **Section Challenge — Class Design**
+>
+> **Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
+> <details><summary>Answer</summary>
+>
+> Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
+> </details>
+>
+> **Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
+> <details><summary>Answer</summary>
+>
+> 1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
+> </details>
+>
+
 # PROBLEM 2: Design BookMyShow (Movie Booking)
 
 ## Key Classes
@@ -538,3 +555,19 @@ class LoggerConfig {
 ---
 
 > **Navigation**: [< Previous](06_Distributed_Systems_Fundamentals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08_Design_Patterns_Java.md)
+
+> 🔬 **Section Challenge — SOLID Principles in Every Solution**
+>
+> **Challenge 1 (Reasoning):** Open/Closed Principle says 'closed for modification'. Does this mean code can NEVER be changed?
+> <details><summary>Answer</summary>
+>
+> No — it means don't modify existing, tested behavior to add new features. Add new classes/methods instead. In practice: use interfaces + plugins. Adding a new payment type = new class implementing `PaymentStrategy`. Not modifying `PaymentProcessor`. The existing processor is 'closed' (don't touch tested code). The system is 'open' (easily extend by adding new implementations).
+> </details>
+>
+> **Challenge 2 (Design):** A class has 5 public methods but clients only use 1-2. Which SOLID principle is violated and what's the fix?
+> <details><summary>Answer</summary>
+>
+> Interface Segregation Principle (ISP): clients shouldn't depend on methods they don't use. Fix: split the class into smaller, focused interfaces. `Printable`, `Scannable`, `FaxMachine` instead of one `AllInOnePrinter`. Each client implements/uses only the interface it needs.
+> </details>
+>
+

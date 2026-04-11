@@ -259,3 +259,7 @@ CREATE TABLE logs (
 ---
 
 > **Navigation**: [< Previous](01_Foundations_Database_Basics.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_DDL_Creating_Structure.md)
+
+> 🔬 **Section Challenge — Chapter 2: Data Types & Constraints**
+>>
+

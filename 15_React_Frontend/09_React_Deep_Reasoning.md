@@ -256,6 +256,23 @@ flushSync(() => setFlag(true)); // renders immediately
 
 ---
 
+
+
+> 🔬 **Section Challenge — 1. useState: Batching, Stale State, and the Updater Pattern**
+>
+> **Challenge 1 (Reasoning):** You call `setState(state.value + 1)` twice in the same event handler. The value increments by 1, not 2. Why?
+> <details><summary>Answer</summary>
+>
+> Both calls use the SAME `state` closure value captured at render time. Both compute `oldValue + 1` and schedule the same update. React batches them into one re-render. Fix: use functional update `setState(prev => prev + 1)`. Each functional update receives the most recent pending state — two calls correctly increment by 2. Always use functional update when new state depends on old state.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** You initialize state as `useState(expensiveComputation())`. The function runs on EVERY render. How do you fix it?
+> <details><summary>Answer</summary>
+>
+> `useState(expensiveComputation)` (pass the function, don't call it). This is 'lazy initialization' — React calls the function once during initial render only. The difference: `useState(fn())` calls `fn` every render but ignores the result after mount. `useState(fn)` calls `fn` only once. Same pattern: `useReducer(reducer, undefined, expensiveInit)`.
+> </details>
+>
+
 ## 2. Why Re-renders Happen (The REAL Trigger)
 
 ### The Freeze Question
@@ -609,6 +626,23 @@ const filteredList = useMemo(
 
 ---
 
+
+
+> 🔬 **Section Challenge — 4. useEffect: The Lifecycle Mental Model is WRONG**
+>
+> **Challenge 1 (Reasoning):** A useEffect with dependency `[user]` runs after every render where `user` changes. But `user` is an object. What subtle bug can occur?
+> <details><summary>Answer</summary>
+>
+> React uses `Object.is()` to compare dependency values (===). A new object reference is ALWAYS different from the previous one even if the content is identical: `{name:'John'} !== {name:'John'}`. If the parent creates a new `user` object each render, the effect runs on every parent render even though the data didn't change. Fix: depend on `user.id` (primitive) instead, or `useMemo` to stabilize the reference.
+> </details>
+>
+> **Challenge 2 (Design):** When does `useEffect` cleanup run? Give a concrete scenario where missing cleanup causes a bug.
+> <details><summary>Answer</summary>
+>
+> Cleanup runs: (1) before the effect runs again (when deps change), (2) when the component unmounts. Bug scenario: effect fetches data and updates state. User navigates away (unmounts) before fetch completes. Fetch completes → tries to `setState` on unmounted component → React warning (memory leak). Fix: `let cancelled = false; return () => { cancelled = true; }` — check `if (!cancelled) setState(data)`.
+> </details>
+>
+
 ## 5. Keys: Why Index as Key Breaks Things
 
 ### The Freeze Question
@@ -812,6 +846,23 @@ function Component() {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 6. useRef vs useState: When to Use Which**
+>
+> **Challenge 1 (Reasoning):** You call `setState(state.value + 1)` twice in the same event handler. The value increments by 1, not 2. Why?
+> <details><summary>Answer</summary>
+>
+> Both calls use the SAME `state` closure value captured at render time. Both compute `oldValue + 1` and schedule the same update. React batches them into one re-render. Fix: use functional update `setState(prev => prev + 1)`. Each functional update receives the most recent pending state — two calls correctly increment by 2. Always use functional update when new state depends on old state.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** You initialize state as `useState(expensiveComputation())`. The function runs on EVERY render. How do you fix it?
+> <details><summary>Answer</summary>
+>
+> `useState(expensiveComputation)` (pass the function, don't call it). This is 'lazy initialization' — React calls the function once during initial render only. The difference: `useState(fn())` calls `fn` every render but ignores the result after mount. `useState(fn)` calls `fn` only once. Same pattern: `useReducer(reducer, undefined, expensiveInit)`.
+> </details>
+>
 
 ## 7. useMemo/useCallback: When They Hurt Performance
 
@@ -1033,6 +1084,17 @@ const CartContext = createContext([]);
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 8. Context: Why It's NOT a State Manager**
+>
+> **Challenge 1 (Reasoning):** When does React Context cause performance problems and how do you avoid them?
+> <details><summary>Answer</summary>
+>
+> Every context consumer re-renders when ANY context value changes. If you have `{theme, user, cart}` in one context, updating cart re-renders all theme and user consumers. Fixes: (1) Split into separate contexts: `ThemeContext`, `UserContext`, `CartContext`. (2) Memoize components with `React.memo`. (3) For complex state, use a state library (Zustand, Jotai) with selector-based subscriptions — only re-render when the specific piece of state changes.
+> </details>
+>
 
 ## 9. Controlled vs Uncontrolled: The Real Difference
 
@@ -1415,6 +1477,9 @@ function handleSubmit() {
 
 ---
 
+
+
+
 ## Interview Quick-Fire: React Freeze Busters
 
 | Freeze Question | Senior-Level Answer |
@@ -1438,5 +1503,170 @@ function handleSubmit() {
 
 
 ---
+
+
+---
+
+## 🏋️ Practice & Interview Questions — React
+
+### Predict / Trace
+**Q1.** What is the output order of console logs?
+```jsx
+function App() {
+  console.log('render');
+  useEffect(() => { console.log('effect'); }, []);
+  console.log('render2');
+  return <div/>;
+}
+```
+<details><summary>Answer</summary>
+
+`render` → `render2` → `effect`
+
+`useEffect` runs **after** the component renders and the DOM is committed. Both `console.log`s in the function body run first.
+</details>
+
+**Q2.** Why does this cause an infinite loop?
+```jsx
+useEffect(() => {
+  setCount(count + 1);
+}, [count]);
+```
+<details><summary>Answer</summary>
+
+`setCount(count+1)` → triggers re-render → `count` changes → effect runs again → infinite loop. **Fix**: remove `count` from deps and use functional update: `setCount(prev => prev + 1)` or change dependency logic.
+</details>
+
+### Coding Problems
+**Q3.** ⭐ Implement a custom `useDebounce` hook.
+<details><summary>Solution</summary>
+
+```jsx
+function useDebounce(value, delay) {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+  useEffect(() => {
+    const handler = setTimeout(() => setDebouncedValue(value), delay);
+    return () => clearTimeout(handler); // Cleanup on value/delay change
+  }, [value, delay]);
+  return debouncedValue;
+}
+```
+</details>
+
+**Q4.** ⭐ Implement `useFetch` — generic data fetching hook with loading/error states.
+<details><summary>Solution</summary>
+
+```jsx
+function useFetch(url) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch(url)
+      .then(r => r.json())
+      .then(d => { if(!cancelled) setData(d); })
+      .catch(e => { if(!cancelled) setError(e); })
+      .finally(() => { if(!cancelled) setLoading(false); });
+    return () => { cancelled = true; }; // Cleanup for race conditions
+  }, [url]);
+
+  return { data, loading, error };
+}
+```
+</details>
+
+**Q5.** ⭐⭐ When should you use `useCallback` vs `useMemo`?
+<details><summary>Answer</summary>
+
+`useMemo`: memoizes a **computed value** — run expensive calculation, cache result.
+`useCallback`: memoizes a **function reference** — prevent child re-renders when passing callbacks.
+Both only useful when: (1) the child uses `React.memo`, or (2) the value/function is a dep of another hook. Premature optimization without these conditions = needless complexity.
+</details>
+
+**Q6.** ⭐⭐ Implement a `useLocalStorage` hook.
+<details><summary>Solution</summary>
+
+```jsx
+function useLocalStorage(key, initialValue) {
+  const [value, setValue] = useState(() => {
+    try { return JSON.parse(localStorage.getItem(key)) ?? initialValue; }
+    catch { return initialValue; }
+  });
+
+  const setStoredValue = (newValue) => {
+    setValue(newValue);
+    localStorage.setItem(key, JSON.stringify(newValue));
+  };
+
+  return [value, setStoredValue];
+}
+```
+</details>
+
+### MCQ Rapid Fire
+| # | Question | Answer |
+|---|---|---|
+| 1 | When does useEffect with [] run? | Once after mount |
+| 2 | When does useEffect with no array run? | After every render |
+| 3 | Key prop in lists is used for | Reconciliation (identify changed elements) |
+| 4 | React.memo prevents re-render when | Props haven't changed (shallow comparison) |
+| 5 | useState is synchronous? | ❌ Batched, async in React 18 |
+| 6 | Controlled vs uncontrolled component | Controlled=state managed in React; Uncontrolled=DOM manages it (ref) |
+| 7 | useRef vs useState | useRef: doesn't trigger re-render; useState: does |
+| 8 | StrictMode effect on effects | Runs effects twice (in dev) to detect side effects |
+
+
+
+---
+
+## 🧠 Deep Conceptual Questions — React Internals & Mental Models
+
+**C1. What is the React reconciliation algorithm and why does the `key` prop matter?**
+<details><summary>Deep Answer</summary>
+
+React maintains a virtual DOM (VNode tree). On state change: React creates a new VNode tree, diffs it against the previous tree (diffing = reconciliation), applies minimal real DOM mutations. Naive tree diff: O(N³). React's heuristics: O(N). Heuristic 1: different element types → destroy and rebuild subtree. Heuristic 2: same type → update props, recurse into children. **`key` prop**: tells React the element's identity across renders. Without keys in lists: React diffs by position — inserting at beginning is O(N) DOM mutations. With stable keys: React identifies which item moved/added/removed → O(1) per change. Keys must be stable+unique per list — using index as key breaks this when list is reordered.
+</details>
+
+**C2. Why does React use a virtual DOM? What performance problem does it solve?**
+<details><summary>Deep Answer</summary>
+
+Direct DOM manipulation is expensive: each `div.style.color = 'red'` forces layout recalculation, style recalculation, repaint — potentially 3-17ms per operation. Doing 50 direct DOM changes = 50 potential reflows. Virtual DOM batches all changes: compute the full desired state in JS (fast, ~ms), diff against current state, apply only the MINIMUM necessary DOM mutations in one batch (one reflow). Net effect: many state changes → few DOM mutations → fewer reflows. In React 18: concurrent rendering further batches setState calls across async boundaries. **Note**: React's VirtualDOM is a means to an end (batching + diffing), not inherently "fast" — SolidJS/Svelte skip it entirely with fine-grained reactivity and are faster for some use cases.
+</details>
+
+**C3. What is React's fiber architecture and how does it enable concurrent features?**
+<details><summary>Deep Answer</summary>
+
+Before Fiber (React 15): reconciliation = synchronous, non-interruptible tree walk. A complex update > 16ms → UI janks (dropped frames). **Fiber** (React 16+): reconciliation reimplemented as a linked list of "fiber nodes." Each fiber = a unit of work that can be paused, resumed, or abandoned. The render phase (building the fiber tree) is **interruptible**: React can pause after any fiber, yield to the browser for frames/user input, then resume. The commit phase (applying DOM changes) remains synchronous (can't be interrupted — DOM must be consistent). This enables: concurrent mode, `useTransition` (lower priority updates), `Suspense`, `useDeferredValue`. The fundamental shift: from "one big synchronous render" to "cooperative multitasking renderer."
+</details>
+
+**C4. useEffect dependency array: what is "stale closure" and how to fix it?**
+<details><summary>Deep Answer</summary>
+
+```jsx
+const [count, setCount] = useState(0);
+useEffect(() => {
+  const id = setInterval(() => console.log(count), 1000); // stale closure!
+  return () => clearInterval(id);
+}, []); // count not in deps
+```
+The interval callback captures `count` from the initial render (= 0). Even after count updates, the closure still sees 0 — it's "stale." **Fix 1**: include count in deps — effect re-runs, interval recreated (wasteful). **Fix 2**: use `useRef` to store latest count. **Fix 3**: functional update `setCount(c => c + 1)` doesn't read stale count. Root cause: JavaScript closures capture variables at creation time. React's fn components close over state at render time. With stale deps, the closure never refreshes. `eslint-plugin-react-hooks` detects missing deps.
+</details>
+
+**C5. When does React batch state updates, and when does it NOT?**
+<details><summary>Deep Answer</summary>
+
+**React 17 and below**: batches only inside React event handlers. `setTimeout`, `Promise.then`, native event listeners → NOT batched (each setState triggers a re-render). **React 18**: **Automatic Batching** — batches all setState calls everywhere (timeouts, Promises, native events). Each React event handler still flushes at end. Opt-out (rare): `flushSync(() => setX(1))` → forces synchronous re-render.
+
+Rule: in React 18, multiple setStates in ANY context = one re-render per batch. No more worrying about whether you're in a React event or not.
+</details>
+
+**C6. What is the purpose of `useReducer` and when is it better than multiple `useState`?**
+<details><summary>Deep Answer</summary>
+
+`useReducer` is `useState` for complex state transitions. Better than multiple `useState` when: (1) next state depends on multiple state values together (reducer receives full state), (2) multiple actions lead to similar state updates (consolidate logic in one place), (3) complex state objects where partial updates have side effects, (4) testing — reducer is a pure function, easily unit-testable in isolation. Think: `useState` = `useReducer(reducer, initialState)` where reducer is `(state, newValue) => newValue`. `useReducer` makes state transitions explicit and traceable (Redux-like). Redux IS just `useReducer` + Context for global sharing.
+</details>
+
 
 > **Navigation**: [< Previous](08_React_Performance.md) | [Back to Index](../00_MASTER_INDEX.md)

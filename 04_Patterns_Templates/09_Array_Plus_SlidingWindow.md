@@ -38,18 +38,6 @@ IF the problem says:
 THEN → Sliding Window on Array
 ```
 
-**Flow:**
-- THEN
-- ↓
-- Sliding Window on Array
-
-```mermaid
-flowchart LR
-    N1["THEN"]
-    N2["Sliding Window on Array"]
-    N1 --> N2
-```
-
 ### Fixed vs Variable Window
 ```
 Fixed Window (size k):          Variable Window:
@@ -60,19 +48,23 @@ Fixed Window (size k):          Variable Window:
 Use when: size is given         Use when: find optimal size
 ```
 
-**Flow:**
-- k=3 --(
-- ↓
-- slide)--> expand
-
-```mermaid
-flowchart LR
-    N1["k=3"]
-    N2["expand →"]
-    N1 -->|"→ slide"| N2
-```
-
 ---
+
+
+
+> 🔬 **Section Challenge — 🧠 WHEN TO RECOGNIZE THIS PATTERN**
+>
+> **Challenge 1 (Reasoning):** A problem says "maximum sum of subarray with sum ≤ K, where array contains negative numbers." Why does sliding window fail here, and what's the correct approach?
+> <details><summary>Answer</summary>
+>
+> Sliding window requires **monotonicity**: expanding the window must increase (or maintain) the sum, shrinking must decrease it. With negatives, expanding by adding a negative element *decreases* the sum — breaking the invariant. The window shrink logic becomes incorrect: if `sum > K`, shrinking from left might not help if there are negatives in the middle. **Correct approach**: Prefix Sum + HashMap. Compute cumulative sums, then for each `prefix[r]`, find the largest `prefix[l]` such that `prefix[r] - prefix[l] ≤ K`. Sort prefix sums or use a TreeMap for O(N log N).
+> </details>
+>
+> **Challenge 2 (Reasoning):** "Sliding window is O(N) because left and right each move at most N times." Prove this rigorously — the inner `while` loop looks like it could make it O(N²).
+> <details><summary>Answer</summary>
+>
+> **Amortized argument**: Count total pointer movements. `right` starts at 0 and moves right N times total (one per outer loop iteration). `left` starts at 0 and can only move right (never left). Since `left ≤ right ≤ N-1` always, `left` moves at most N times *total* across ALL iterations of the inner while loop — not N times per outer iteration. Total operations = right moves + left moves = N + N = 2N = O(N). The inner while loop's iterations are "paid for" by previous outer loop iterations that advanced `right`.
+> </details>
 
 ## 📐 CORE TEMPLATES
 
@@ -164,73 +156,19 @@ Step 9: [1, 3, 2] sum=6 ≤ 7 → len=3 ✅ tied best
 Answer: 3
 ```
 
-**Flow:**
-- Step 1: [2] sum=2 ≤ 7
-- ↓
-- len=1
-- ↓
-- Step 2: [2, 1] sum=3 ≤ 7
-- ↓
-- len=2
-- ↓
-- Step 3: [2, 1, 5] sum=8 > 7
-- ↓
-- SHRINK!
-- ↓
-- Step 4: [1, 5] sum=6 ≤ 7
-- ↓
-- len=2
-- ↓
-- Step 5: [1, 5, 1] sum=7 ≤ 7
-- ↓
-- len=3 ✅ best so far
-- ↓
-- Step 6: [1, 5, 1, 3] sum=10 > 7
-- ↓
-- SHRINK!
-
-```mermaid
-flowchart TD
-    N1["Step 1: [2] sum=2 ≤ 7"]
-    N2["len=1"]
-    N3["Step 2: [2, 1] sum=3 ≤ 7"]
-    N4["len=2"]
-    N5["Step 3: [2, 1, 5] sum=8 &gt; 7"]
-    N6["SHRINK!"]
-    N7["Step 4: [1, 5] sum=6 ≤ 7"]
-    N8["Step 5: [1, 5, 1] sum=7 ≤ 7"]
-    N9["len=3 ✅ best so far"]
-    N10["Step 6: [1, 5, 1, 3] sum=10 &gt; 7"]
-    N11["Step 7: [5, 1, 3] sum=9 &gt; 7"]
-    N12["Step 8: [1, 3] sum=4 ≤ 7"]
-    N13["Step 9: [1, 3, 2] sum=6 ≤ 7"]
-    N14["len=3 ✅ tied best"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N4
-    N8 --> N9
-    N10 --> N6
-    N11 --> N6
-    N12 --> N4
-    N13 --> N14
-```
-
 ---
 
-## 🔥 KEY TRICKS
 
-| Trick | When | Example |
-|-------|------|---------|
-| HashMap in window | Track frequencies | Longest substring without repeating |
-| Deque for min/max | Sliding window max/min | Sliding Window Maximum |
-| Prefix sum alternative | When window has negatives | Subarray Sum Equals K (use HashMap) |
-| Fixed → Variable | When "at most k" | Most k distinct = atMost(k) - atMost(k-1) |
-| Count subarrays | Ending at right | Count += (right - left + 1) at each step |
 
----
+> 🔬 **Section Challenge — 🔬 VISUAL: Variable Window**
+>
+> **Challenge (Design):** Count the number of subarrays with sum exactly K (array has negatives). Why can't you use sliding window? Write the correct approach.
+> <details><summary>Answer</summary>
+>
+> Negatives break monotonicity. Correct approach: **Prefix Sum + HashMap**. `count += prefixMap.getOrDefault(prefix - k, 0)` as you build the running prefix sum. The map stores `{prefixSum → count of times seen}`. When `prefix[r] - prefix[l] == k`, we found a valid subarray `(l, r]`. Time: O(N), Space: O(N). This is LC 560 — the classic harder version after sliding window.
+> </details>
 
-## � FULL WALKTHROUGH: Longest Substring Without Repeating Characters
+## 🔬 FULL WALKTHROUGH: Longest Substring Without Repeating Characters
 
 ```
 Problem: Find length of longest substring without repeating chars.
@@ -308,41 +246,10 @@ WHY fixed window? Size is given (k=3), so just slide it.
 └───────────────────────────────┴──────────────────────────────────────┘
 ```
 
-**Flow:**
-- Edge Case Handling
-- ↓
-- Empty string / array Return 0 immediately
-- ↓
-- k > array length Invalid — return -1 or throw
-- ↓
-- All same characters 'aaaa' Longest unique substring = 1
-- ↓
-- All unique 'abcdef' Entire string is the answer
-- ↓
-- Use Prefix Sum + HashMap instead
-- ↓
-- Single element Window of size 1 = that element
-
-```mermaid
-flowchart TD
-    N1["Edge Case Handling"]
-    N2["Empty string / array Return 0 immediately"]
-    N3["k &gt; array length Invalid — return -1 or throw"]
-    N4["All same characters 'aaaa' Longest unique substring = 1"]
-    N5["All unique 'abcdef' Entire string is the answer"]
-    N6["Use Prefix Sum + HashMap instead"]
-    N7["Single element Window of size 1 = that element"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
-
 ---
 
 ## 📋 PRACTICE PROBLEMS — From Your Excel Sheet
+
 | # | Problem | Companies | Key Insight |
 |---|---------|-----------|-------------|
 | 1 | [Best Time to Buy and Sell Stock](https://leetcode.com/problems/best-time-to-buy-and-sell-stock/) | Amazon | Track min price, expand window |
@@ -413,9 +320,164 @@ flowchart TD
 - [05_Problem_Solving/05_Sliding_Window.md](../05_Problem_Solving/05_Sliding_Window.md) — More window problems
 
 ---
-[← 08 Array+TwoPointers](08_Array_Plus_TwoPointers.md) | [10 HashMap+Counting →](10_HashMap_Plus_Counting.md)
 
+## 🏋️ Practice & Interview Questions — Sliding Window
 
----
+> Attempt each before looking at the answer. Time yourself.
+
+### Predict / Trace
+**Q1.** `arr = [2,1,5,1,3,2]`, k=3. Trace the fixed window — what's the max sum?
+<details><summary>Answer</summary>
+
+Initial: 2+1+5=8. Slide i=3: 8-2+1=7. Slide i=4: 7-1+3=9 ✅. Slide i=5: 9-5+2=6. Max = **9**.
+</details>
+
+**Q2.** `s = "aab"`. Longest substring without repeating characters?
+<details><summary>Answer</summary>
+
+2 — either "ab" (indices 1,2). The first 'a' at index 0 gets evicted when we hit the second 'a' at index 1. Window: "ab".
+</details>
+
+**Q3.** Sliding window with `[1, -1, 5]`, target sum = 3. Does variable window work?
+<details><summary>Answer</summary>
+
+No — negative numbers. When window sum > 3 (e.g. [1,-1,5]=5), shrink removes 1 → [-1,5]=4, still > 3, shrink removes -1 → [5]=5 > 3. We never find [1,-1,5] has elements summing to 3... but it does! Sliding window would miss [1,-1,5... no] actually this subarray sums to 5. But what about `[-1,5]`=4 or `[1,-1]`=0? Sliding window would fail on subarray sum = k type problems here.
+</details>
+
+### LeetCode / Coding
+**Q4.** ⭐ Maximum Average Subarray of Length K.
+<details><summary>Solution</summary>
+
+```java
+double sum = 0;
+for (int i = 0; i < k; i++) sum += nums[i];
+double max = sum;
+for (int i = k; i < nums.length; i++) {
+    sum += nums[i] - nums[i - k];
+    max = Math.max(max, sum);
+}
+return max / k;
+```
+</details>
+
+**Q5.** ⭐⭐ Longest Substring Without Repeating Characters.
+<details><summary>Solution</summary>
+
+```java
+Set<Character> set = new HashSet<>();
+int left = 0, max = 0;
+for (int right = 0; right < s.length(); right++) {
+    while (set.contains(s.charAt(right)))
+        set.remove(s.charAt(left++));
+    set.add(s.charAt(right));
+    max = Math.max(max, right - left + 1);
+}
+return max;
+```
+</details>
+
+**Q6.** ⭐⭐ Subarray Sum Equals K (has negatives — use prefix sum!).
+<details><summary>Solution</summary>
+
+```java
+Map<Integer, Integer> map = new HashMap<>();
+map.put(0, 1);
+int prefix = 0, count = 0;
+for (int num : nums) {
+    prefix += num;
+    count += map.getOrDefault(prefix - k, 0);
+    map.merge(prefix, 1, Integer::sum);
+}
+return count;
+```
+</details>
+
+**Q7.** ⭐⭐ Minimum Window Substring — find smallest window in s containing all chars of t.
+<details><summary>Solution</summary>
+
+```java
+Map<Character,Integer> need = new HashMap<>(), window = new HashMap<>();
+for (char c : t.toCharArray()) need.merge(c, 1, Integer::sum);
+int l=0, valid=0, start=0, minLen=Integer.MAX_VALUE;
+for (int r=0; r<s.length(); r++) {
+    char c = s.charAt(r);
+    if (need.containsKey(c)) {
+        window.merge(c, 1, Integer::sum);
+        if (window.get(c).equals(need.get(c))) valid++;
+    }
+    while (valid == need.size()) {
+        if (r - l + 1 < minLen) { minLen = r - l + 1; start = l; }
+        char d = s.charAt(l++);
+        if (need.containsKey(d)) {
+            if (window.get(d).equals(need.get(d))) valid--;
+            window.merge(d, -1, Integer::sum);
+        }
+    }
+}
+return minLen == Integer.MAX_VALUE ? "" : s.substring(start, start + minLen);
+```
+</details>
+
+**Q8.** ⭐⭐⭐ Sliding Window Maximum — max of each window of size k.
+<details><summary>Solution</summary>
+
+```java
+// Monotonic deque stores indices of useful elements (in decreasing order of value)
+Deque<Integer> dq = new ArrayDeque<>();
+int[] res = new int[nums.length - k + 1];
+for (int i = 0; i < nums.length; i++) {
+    while (!dq.isEmpty() && dq.peekFirst() < i - k + 1) dq.pollFirst(); // remove out-of-window
+    while (!dq.isEmpty() && nums[dq.peekLast()] < nums[i]) dq.pollLast(); // remove smaller
+    dq.addLast(i);
+    if (i >= k - 1) res[i - k + 1] = nums[dq.peekFirst()];
+}
+return res;
+```
+</details>
+
+### Interview Questions
+**Q9.** "At most K distinct" vs "exactly K distinct" — how do you convert between them?
+<details><summary>Answer</summary>
+
+`exact(K) = atMost(K) - atMost(K-1)`. The "at most K" version is easier (variable window is valid). By computing "at most K" minus "at most K-1", you isolate "exactly K". This trick converts many exact-count problems into two easier at-most problems. LC 992 uses this pattern.
+</details>
+
+**Q10.** When should you use a deque inside a sliding window?
+<details><summary>Answer</summary>
+
+When you need the **minimum or maximum** of the current window efficiently. A monotonic deque maintains elements in decreasing (for max) or increasing (for min) order. Adding new element: pop from back while back < new (for max-deque). Removing old element: pop from front if it equals the element leaving the window. Result: front of deque = window max. O(1) amortized per element. Used in: Sliding Window Maximum (LC 239), Longest Subarray with Limit (LC 1438).
+</details>
+
+### MCQ Rapid Fire — Sliding Window
+| # | Question | Answer |
+|---|---|---|
+| 1 | Sliding window time complexity | O(N) |
+| 2 | Sliding window works with negatives for sum? | No — use prefix sum |
+| 3 | Fixed window — when to use? | When k (window size) is given |
+| 4 | Variable window — when to use? | "Longest/shortest with condition" |
+| 5 | Window + deque — what for? | Window min/max in O(1) |
+| 6 | "Subarray sum = K with negatives" — correct approach | Prefix Sum + HashMap |
+| 7 | Both left and right move forward only — true? | Yes — each moves at most N times |
+| 8 | Update answer before or after shrinking? | After shrinking |
+
+### 🧠 Deep Conceptual Questions — Sliding Window
+
+**C1. Why does the "at most K distinct" trick work for counting exact subarrays?**
+<details><summary>Deep Answer</summary>
+
+`atMost(K)` counts all subarrays with AT MOST K distinct characters. `atMost(K) - atMost(K-1)` = subarrays with exactly K. This works because: let A = {subarrays with ≤ K distinct}, B = {subarrays with ≤ K-1 distinct}. A - B = {subarrays with exactly K distinct}. The "at most" version is solvable with standard variable window (monotonic constraint), while "exactly K" is not directly solvable with single window. This is a **counting by complementary sets** technique.
+</details>
+
+**C2. What is the fundamental difference between "shrink while invalid" and "shrink while can improve"?**
+<details><summary>Deep Answer</summary>
+
+**"Shrink while invalid"** (standard): shrink until the window satisfies the constraint again. Used for finding LONGEST valid window — we maximize by expanding and only shrinking when forced. **"Shrink while can improve"** (minimum window): shrink as long as the window is still valid, to find the SHORTEST valid window. The direction matters: longest = expand aggressively, shrink only when violated. Shortest = expand until valid, then shrink as much as possible before recording answer.
+</details>
+
+**C3. Sliding Window Maximum uses a deque. What makes it monotonic, and what invariant does it maintain?**
+<details><summary>Deep Answer</summary>
+
+The deque is **monotonically decreasing** (front = max). Invariant: all elements in the deque are potential future maximums. An element can never be the window max if there's a newer (more right) element that is ≥ it — because the larger element will still be in the window when the smaller one has expired. So we pop from the back whenever we add an element larger than the back. This maintains: `deque[0] ≥ deque[1] ≥ ... ≥ deque[last]`. Elements in the deque are always within the current window (front is evicted when it goes out of range).
+</details>
 
 > **Navigation**: [< Previous](08_Array_Plus_TwoPointers.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](10_HashMap_Plus_Counting.md)

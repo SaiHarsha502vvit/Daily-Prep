@@ -17,6 +17,13 @@
 
 ---
 
+
+
+
+
+
+> 🔬 **Section Challenge — How to Think About Debugging in Production**
+
 ## Mental Model 1: The Incident Timeline
 
 ```
@@ -85,6 +92,13 @@ flowchart TD
 ```
 
 ---
+
+
+
+
+
+
+> 🔬 **Section Challenge — Mental Model 1: The Incident Timeline**
 
 ## Mental Model 2: What Changed?
 
@@ -295,6 +309,13 @@ retry storm, thundering herd
 
 ---
 
+
+
+
+
+
+> 🔬 **Section Challenge — Mental Model 6: The Correlation ID Lifeline**
+
 ## Mental Model 7: The Blameless Postmortem
 
 ```
@@ -449,6 +470,13 @@ flowchart TD
 
 ---
 
+
+
+
+
+
+> 🔬 **Section Challenge — Mental Model 8: Logs Are Your Future Self's Lifeline**
+
 ## Debugging Decision Flowchart
 
 ```
@@ -500,6 +528,13 @@ flowchart LR
 ```
 
 ---
+
+
+
+
+
+
+> 🔬 **Section Challenge — Debugging Decision Flowchart**
 
 ## Interview Relevance
 

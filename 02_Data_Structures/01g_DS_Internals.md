@@ -28,6 +28,23 @@ Before diving into the bytes of lists and trees, you must understand **why** dat
 
 ## 📊 1. Arraylist Deep Internals
 
+
+
+> 🔬 **Section Challenge — 📊 1. Arraylist Deep Internals**
+>
+> **Challenge 1 (Reasoning):** `ArrayList.remove(Object o)` vs `ArrayList.remove(int index)` — you call `list.remove(1)`. Which overload is called and why?
+> <details><summary>Answer</summary>
+>
+> `remove(int index)` — `1` is an `int` literal, not an `Integer`. Java resolves to the exact-match primitive overload first. To call `remove(Object)`, use `list.remove(Integer.valueOf(1))` or `list.remove((Integer)1)`. This is a classic Java gotcha that changes behavior silently.
+> </details>
+>
+> **Challenge 2 (Design):** You need to frequently add/remove from both ends of a list AND access by index. Which collection?
+> <details><summary>Answer</summary>
+>
+> None of the standard ones do all three efficiently. Tradeoffs: `ArrayList`: O(1) index access, O(N) front insert/delete. `LinkedList`/`ArrayDeque`: O(1) front/back, O(N) index access. Real solution: if index access can be avoided, use `ArrayDeque`. If all 3 are needed constantly, consider a skip list or re-examine your design.
+> </details>
+>
+
 ## Arraylist - Complete Internal View
 
 ArrayList<Integer> list = new ArrayList<>();
@@ -81,6 +98,23 @@ TOTAL MEMORY FOR 3 INTEGERS:
 Compare to:
 int[] arr = {42, 99, 15}; → 28 bytes (12 header + 4 length + 3×4 values)
 ArrayList uses 4.8x MORE memory than primitive array!
+
+
+> 🔬 **Section Challenge — Arraylist - Complete Internal View**
+>
+> **Challenge 1 (Reasoning):** `ArrayList.remove(Object o)` vs `ArrayList.remove(int index)` — you call `list.remove(1)`. Which overload is called and why?
+> <details><summary>Answer</summary>
+>
+> `remove(int index)` — `1` is an `int` literal, not an `Integer`. Java resolves to the exact-match primitive overload first. To call `remove(Object)`, use `list.remove(Integer.valueOf(1))` or `list.remove((Integer)1)`. This is a classic Java gotcha that changes behavior silently.
+> </details>
+>
+> **Challenge 2 (Design):** You need to frequently add/remove from both ends of a list AND access by index. Which collection?
+> <details><summary>Answer</summary>
+>
+> None of the standard ones do all three efficiently. Tradeoffs: `ArrayList`: O(1) index access, O(N) front insert/delete. `LinkedList`/`ArrayDeque`: O(1) front/back, O(N) index access. Real solution: if index access can be avoided, use `ArrayDeque`. If all 3 are needed constantly, consider a skip list or re-examine your design.
+> </details>
+>
+
 ## Arraylist.Get() - What Actually Happens
 
 int value = list.get(1);  // Get element at index 1
@@ -135,6 +169,23 @@ Cache Line (64 bytes) loaded for array:
 Integer  Integer  Integer  Integer   ← SCATTERED IN HEAP!        │
 @0x1000  @0x5000  @0x8000  @0x2000   ← EACH IS CACHE MISS!       │
 │
+
+
+> 🔬 **Section Challenge — Arraylist.Get() - What Actually Happens**
+>
+> **Challenge 1 (Reasoning):** `ArrayList.remove(Object o)` vs `ArrayList.remove(int index)` — you call `list.remove(1)`. Which overload is called and why?
+> <details><summary>Answer</summary>
+>
+> `remove(int index)` — `1` is an `int` literal, not an `Integer`. Java resolves to the exact-match primitive overload first. To call `remove(Object)`, use `list.remove(Integer.valueOf(1))` or `list.remove((Integer)1)`. This is a classic Java gotcha that changes behavior silently.
+> </details>
+>
+> **Challenge 2 (Design):** You need to frequently add/remove from both ends of a list AND access by index. Which collection?
+> <details><summary>Answer</summary>
+>
+> None of the standard ones do all three efficiently. Tradeoffs: `ArrayList`: O(1) index access, O(N) front insert/delete. `LinkedList`/`ArrayDeque`: O(1) front/back, O(N) index access. Real solution: if index access can be avoided, use `ArrayDeque`. If all 3 are needed constantly, consider a skip list or re-examine your design.
+> </details>
+>
+
 ## Arraylist Resize - What Actually Happens
 
 // When ArrayList is full and you add another element:
@@ -172,7 +223,41 @@ After n adds, how many total copies?
 Total copies ≈ n + n/1.5 + n/1.5² + ... ≈ 3n
 Average per add = 3n / n = 3 = O(1) AMORTIZED!
 
+
+
+> 🔬 **Section Challenge — Arraylist Resize - What Actually Happens**
+>
+> **Challenge 1 (Reasoning):** `ArrayList.remove(Object o)` vs `ArrayList.remove(int index)` — you call `list.remove(1)`. Which overload is called and why?
+> <details><summary>Answer</summary>
+>
+> `remove(int index)` — `1` is an `int` literal, not an `Integer`. Java resolves to the exact-match primitive overload first. To call `remove(Object)`, use `list.remove(Integer.valueOf(1))` or `list.remove((Integer)1)`. This is a classic Java gotcha that changes behavior silently.
+> </details>
+>
+> **Challenge 2 (Design):** You need to frequently add/remove from both ends of a list AND access by index. Which collection?
+> <details><summary>Answer</summary>
+>
+> None of the standard ones do all three efficiently. Tradeoffs: `ArrayList`: O(1) index access, O(N) front insert/delete. `LinkedList`/`ArrayDeque`: O(1) front/back, O(N) index access. Real solution: if index access can be avoided, use `ArrayDeque`. If all 3 are needed constantly, consider a skip list or re-examine your design.
+> </details>
+>
+
 ## #️⃣ 2. Hashmap Deep Internals
+
+
+
+> 🔬 **Section Challenge — ️⃣ 2. Hashmap Deep Internals**
+>
+> **Challenge 1 (Reasoning):** You insert 1000 entries into a HashMap with default capacity 16. How many resize operations happen?
+> <details><summary>Answer</summary>
+>
+> Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 (64→128), 96 (128→256), 192 (256→512), 384 (512→1024). Total: 6 resizes. Each resize copies all entries to new bucket array. Pre-sizing: `new HashMap<>(1334)` (1000/0.75 ≈ 1334 → next power of 2 = 2048) avoids all resizes.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** Two `Person` objects with same name and age. You override `equals()` to return true but not `hashCode()`. What happens when used as `HashMap` keys?
+> <details><summary>Answer</summary>
+>
+> Both objects land in DIFFERENT buckets (different hashCodes → different bucket index). The HashMap doesn't check `equals()` across buckets — it goes straight to one bucket. So `map.get(person2)` returns NULL even though `person1.equals(person2)`. Overriding `equals` without `hashCode` violates the contract and breaks all hash-based collections. Always override both together.
+> </details>
+>
 
 ## Hashmap - Complete Internal View
 
@@ -225,6 +310,9 @@ Node Object (at 0x00BB0000 for "Alice"):
 ┴──────┴────────────────────────┴
 
 **Total**: 32 bytes per Node
+
+
+
 ## Hashmap.Put() - What Actually Happens
 
 map.put("Alice", 25);
@@ -268,6 +356,23 @@ Why threshold = 8?
 - Probability of 8 collisions under random hash is 0.00000006
 - Tree overhead (48 bytes/node) only worthwhile for long chains
 - Tree: O(log n) search vs Chain: O(n) search
+
+
+> 🔬 **Section Challenge — Hashmap.Put() - What Actually Happens**
+>
+> **Challenge 1 (Reasoning):** You insert 1000 entries into a HashMap with default capacity 16. How many resize operations happen?
+> <details><summary>Answer</summary>
+>
+> Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 (64→128), 96 (128→256), 192 (256→512), 384 (512→1024). Total: 6 resizes. Each resize copies all entries to new bucket array. Pre-sizing: `new HashMap<>(1334)` (1000/0.75 ≈ 1334 → next power of 2 = 2048) avoids all resizes.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** Two `Person` objects with same name and age. You override `equals()` to return true but not `hashCode()`. What happens when used as `HashMap` keys?
+> <details><summary>Answer</summary>
+>
+> Both objects land in DIFFERENT buckets (different hashCodes → different bucket index). The HashMap doesn't check `equals()` across buckets — it goes straight to one bucket. So `map.get(person2)` returns NULL even though `person1.equals(person2)`. Overriding `equals` without `hashCode` violates the contract and breaks all hash-based collections. Always override both together.
+> </details>
+>
+
 ## Hashmap.Get() - Cpu Instruction Level
 
 Integer age = map.get("Alice");
@@ -321,6 +426,9 @@ CPU CYCLES (no collision, L1 cache hit):
 
 **Total**: ~40 cycles ≈ 15 nanoseconds @ 3GHz
 With cache miss: Add ~200 cycles per miss!
+
+
+
 ## Hashmap Collision Handling - Deep View
 
 
@@ -378,6 +486,9 @@ TreeNode Memory (MORE than regular Node):
 ┴──────┴────────────────────────┴
 
 **Total**: 48 bytes vs 32 bytes for regular Node (50% more memory)
+
+
+
 
 ## 🔬 3. Linkedlist Deep Internals
 
@@ -508,7 +619,13 @@ TreeNode Memory (MORE than regular Node):
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+
+
+
 ## 📚 4. Stack Deep Internals
+
+
+
 
 ## Stack - Complete Internal View
 
@@ -561,7 +678,13 @@ aload_1                     // Load element
 aastore                     // Store in array
 CPU Cycles: ~15-20 (if JIT inlined and cache hit)
 
+
+
+
 ## 🌳 5. Binary Tree / Bst Deep Internals
+
+
+
 
 ## Binary Search Tree - Complete Internal View
 
@@ -629,7 +752,27 @@ Compare to Array: 3 accesses in same cache line = ~12 cycles
 - Insert/Delete: O(log n) vs O(n) for sorted array
 - No resize needed like HashMap
 
+
+
+> 🔬 **Section Challenge — Binary Search Tree - Complete Internal View**
+>
+> **Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+> <details><summary>Answer</summary>
+>
+> lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+> </details>
+>
+> **Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+> <details><summary>Answer</summary>
+>
+> Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
+> </details>
+>
+
 ## 📦 6. Heap / Priority Queue Deep Internals
+
+
+
 
 ## Heap (Priority Queue) - Complete Internal View
 
@@ -692,7 +835,15 @@ TREE (pointers):
 - Total: ~600 cycles
 HEAP IS 50x FASTER due to cache locality!
 
+
+
+
 ## 🕸️ 7. Graph Representation Deep Internals
+
+
+
+> 🔬 **Section Challenge — 🕸️ 7. Graph Representation Deep Internals**
+>>>
 
 ## Graph - Complete Internal View
 
@@ -770,6 +921,11 @@ queue.offer(neighbor);
 - Better cache locality for neighbor iteration
 
 ---
+
+
+
+> 🔬 **Section Challenge — Graph - Complete Internal View**
+>>>
 
 # 🔬 PART 10B: JAVA COLLECTIONS FRAMEWORK - INTERNAL ARCHITECTURE
 

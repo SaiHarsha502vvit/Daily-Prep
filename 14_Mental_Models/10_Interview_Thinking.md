@@ -180,6 +180,13 @@ flowchart LR
 
 ---
 
+
+
+
+
+
+> 🔬 **Section Challenge — Part 2: The "Think Out Loud" Protocol**
+
 ## Part 3: When You're STUCK — Recovery Strategies
 
 ### Strategy 1: Go Back to Examples
@@ -429,6 +436,13 @@ flowchart LR
 
 ---
 
+
+
+
+
+
+> 🔬 **Section Challenge — Part 6: Handling Follow-Up Questions**
+
 ## Part 7: Managing Anxiety — Practical Techniques
 
 ### Before the Interview
@@ -535,6 +549,13 @@ After each interview, write down:
 ```
 
 ---
+
+
+
+
+
+
+> 🔬 **Section Challenge — Part 7: Managing Anxiety — Practical Techniques**
 
 ## Part 8: Quick Reference — Interview Problem Checklist
 

@@ -277,6 +277,9 @@
 
 ---
 
+
+
+
 ## E. Connection & Pool Variants
 
 ### E1. Pool Size Too Large
@@ -322,6 +325,23 @@
 Pool size 10 handles 10x burst. Pool size 50 is wasteful (unused connections consume DB memory).
 
 ---
+
+
+
+> 🔬 **Section Challenge — E. Connection & Pool Variants**
+>
+> **Challenge 1 (Reasoning):** `String a = "hello"; String b = "hello"; a == b` — true or false? What about `new String("hello") == "hello"`?
+> <details><summary>Answer</summary>
+>
+> First: `true` — string literals are interned in the string pool; same literal = same reference. Second: `false` — `new String(...)` always creates a new object on the heap, bypassing the pool. Always use `.equals()` for string comparison. `String.intern()` can explicitly add a string to the pool.
+> </details>
+>
+> **Challenge 2 (Design):** Why is `String` immutable in Java and what problems would mutable strings cause?
+> <details><summary>Answer</summary>
+>
+> Security: strings are used as HashMap keys, class names, file paths. If mutable, a key could change after insertion, corrupting the HashMap. Thread safety: immutable objects are inherently thread-safe (no synchronization needed). String pool: only possible because strings don't change — two vars safely share the same interned object. Caching hashCode: `String` caches its hashCode (first call computes, subsequent calls return cached) — only safe because the string never changes.
+> </details>
+>
 
 ## F. Concurrency & Lock Variants
 
@@ -489,6 +509,8 @@ Pool size 10 handles 10x burst. Pool size 50 is wasteful (unused connections con
 
 ---
 
+
+
 ## I. Monitoring & Debug Variants
 
 ### I1. Mystery Slow Query That's Fast When Run Manually
@@ -524,6 +546,9 @@ Pool size 10 handles 10x burst. Pool size 50 is wasteful (unused connections con
 **Fix:** Throttle batch job with `pg_sleep()` between batches. Or dedicated replica not used for reads during batch.
 
 ---
+
+
+
 
 ## 🎯 How to Practice These Variants
 

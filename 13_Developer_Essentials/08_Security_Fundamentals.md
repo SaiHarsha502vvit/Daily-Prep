@@ -312,6 +312,17 @@ public class CorsConfig implements WebMvcConfigurer {
 
 ---
 
+
+
+> 🔬 **Section Challenge — Level 6 — CORS (Cross-Origin Resource Sharing)**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 # WHERE: Security Checklist for Every Project
 
 ```
@@ -442,6 +453,17 @@ public String login(@RequestParam String user, @RequestParam String pass) {
 //   (3) password in error message, (4) no rate limiting, (5) GET-style params
 ```
 
+
+
+> 🔬 **Section Challenge — Exercise 1: Find the Vulnerabilities**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## Exercise 2: Secure a Spring Boot App
 ```
 Build a Spring Boot REST API with:
@@ -461,3 +483,13 @@ Build a Spring Boot REST API with:
 ---
 
 > **Navigation**: [< Previous](07_API_Design_REST.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](09_System_Design.md)
+
+> 🔬 **Section Challenge — Exercise 2: Secure a Spring Boot App**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+

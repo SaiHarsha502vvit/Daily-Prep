@@ -23,6 +23,8 @@
 
 ---
 
+
+
 # 🎯 THE PATTERN SOLVING FRAMEWORK
 
 ## Universal Approach for ANY Pattern
@@ -83,6 +85,8 @@ flowchart TD
 
 ---
 
+
+
 # ═══════════════════════════════════════════════════════════
 
 # PART 1: BASIC STAR PATTERNS (15 Patterns)
@@ -118,6 +122,8 @@ public static void square(int n) {
 ```
 
 ---
+
+
 
 ## Pattern 2: Right Triangle (Increasing)
 
@@ -160,6 +166,9 @@ public static void rightTriangleAlt(int n) {
 
 ---
 
+
+
+
 ## Pattern 3: Inverted Right Triangle
 
 ```
@@ -190,6 +199,9 @@ public static void invertedRightTriangle(int n) {
 ```
 
 ---
+
+
+
 
 ## Pattern 4: Right-Aligned Triangle
 
@@ -227,6 +239,8 @@ public static void rightAlignedTriangle(int n) {
 
 ---
 
+
+
 ## Pattern 5: Inverted Right-Aligned Triangle
 
 ```
@@ -259,6 +273,9 @@ public static void invertedRightAligned(int n) {
 ```
 
 ---
+
+
+
 
 ## Pattern 6: Pyramid (Centered Triangle)
 
@@ -296,6 +313,8 @@ public static void pyramid(int n) {
 
 ---
 
+
+
 ## Pattern 7: Inverted Pyramid
 
 ```
@@ -328,6 +347,9 @@ public static void invertedPyramid(int n) {
 ```
 
 ---
+
+
+
 
 ## Pattern 8: Diamond
 
@@ -367,6 +389,8 @@ public static void diamond(int n) {
 
 ---
 
+
+
 ## Pattern 9: Hollow Square
 
 ```
@@ -398,6 +422,8 @@ public static void hollowSquare(int n) {
 ```
 
 ---
+
+
 
 ## Pattern 10: Hollow Pyramid
 
@@ -434,6 +460,8 @@ public static void hollowPyramid(int n) {
 ```
 
 ---
+
+
 
 ## Pattern 11: Hollow Diamond
 
@@ -475,6 +503,8 @@ public static void hollowDiamond(int n) {
 
 ---
 
+
+
 ## Pattern 12: Sandglass
 
 ```
@@ -512,6 +542,8 @@ public static void sandglass(int n) {
 
 ---
 
+
+
 ## Pattern 13: Arrow
 
 ```
@@ -547,6 +579,8 @@ public static void arrow(int n) {
 
 ---
 
+
+
 ## Pattern 14: Right Arrow
 
 ```
@@ -581,6 +615,8 @@ public static void rightArrow(int n) {
 
 ---
 
+
+
 ## Pattern 15: Plus Sign
 
 ```
@@ -610,6 +646,8 @@ public static void plusSign(int n) {
 
 ---
 
+
+
 ## Pattern X: Cross (X Shape)
 
 ```
@@ -637,6 +675,8 @@ public static void cross(int n) {
 ```
 
 ---
+
+
 
 # ═══════════════════════════════════════════════════════════
 
@@ -671,6 +711,8 @@ public static void numberTriangleRow(int n) {
 
 ---
 
+
+
 ## Pattern N2: Number Triangle (Column Number)
 
 ```
@@ -698,6 +740,8 @@ public static void numberTriangleCol(int n) {
 
 ---
 
+
+
 ## Pattern N3: Number Triangle Reverse
 
 ```
@@ -721,6 +765,8 @@ public static void numberTriangleReverse(int n) {
 ```
 
 ---
+
+
 
 ## Pattern N4: Floyd's Triangle
 
@@ -751,6 +797,8 @@ public static void floydsTriangle(int n) {
 ```
 
 ---
+
+
 
 ## Pattern N5: Pascal's Triangle
 
@@ -787,6 +835,8 @@ public static void pascalsTriangle(int n) {
 ```
 
 ---
+
+
 
 ## Pattern N6: Number Pyramid
 
@@ -828,6 +878,8 @@ public static void numberPyramid(int n) {
 
 ---
 
+
+
 ## Pattern N7: Palindrome Number Triangle
 
 ```
@@ -855,6 +907,9 @@ public static void palindromeTriangle(int n) {
 
 ---
 
+
+
+
 ## Pattern N8: Binary Triangle (0-1 Pattern)
 
 ```
@@ -881,6 +936,9 @@ public static void binaryTriangle(int n) {
 ```
 
 ---
+
+
+
 
 ## Pattern N9: Zigzag Numbers
 
@@ -920,6 +978,8 @@ public static void zigzagNumbers(int n) {
 
 ---
 
+
+
 ## Pattern N10: Number Diamond
 
 ```
@@ -956,6 +1016,8 @@ public static void numberDiamond(int n) {
 
 ---
 
+
+
 ## Pattern N11: Multiplication Table
 
 ```
@@ -979,6 +1041,8 @@ public static void multiplicationTable(int n) {
 ```
 
 ---
+
+
 
 ## Pattern N12: Prime Number Triangle
 
@@ -1018,6 +1082,8 @@ private static boolean isPrime(int n) {
 
 ---
 
+
+
 ## Pattern N13: Fibonacci Triangle
 
 ```
@@ -1045,6 +1111,8 @@ public static void fibonacciTriangle(int n) {
 ```
 
 ---
+
+
 
 ## Pattern N14: Square Number Pattern
 
@@ -1103,6 +1171,8 @@ public static void spiralSquare(int n) {
 
 ---
 
+
+
 ## Pattern N15: Number Box
 
 ```
@@ -1137,6 +1207,8 @@ public static void numberBox(int n) {
 
 ---
 
+
+
 # ═══════════════════════════════════════════════════════════
 
 # PART 3: CHARACTER PATTERNS (10 Patterns)
@@ -1167,6 +1239,8 @@ public static void alphabetTriangle(int n) {
 
 ---
 
+
+
 ## Pattern C2: Alphabet Triangle (Same Letter)
 
 ```
@@ -1192,6 +1266,8 @@ public static void sameLetterTriangle(int n) {
 
 ---
 
+
+
 ## Pattern C3: Reverse Alphabet Triangle
 
 ```
@@ -1215,6 +1291,8 @@ public static void reverseAlphabetTriangle(int n) {
 ```
 
 ---
+
+
 
 ## Pattern C4: Alphabet Pyramid
 
@@ -1243,6 +1321,8 @@ public static void alphabetPyramid(int n) {
 
 ---
 
+
+
 ## Pattern C5: Continuous Alphabet Triangle
 
 ```
@@ -1269,6 +1349,9 @@ public static void continuousAlphabet(int n) {
 ```
 
 ---
+
+
+
 
 ## Pattern C6: Alphabet with Stars
 
@@ -1303,6 +1386,8 @@ public static void alphabetWithStars(int rows) {
 ```
 
 ---
+
+
 
 ## Pattern C7: Alphabet Diamond
 
@@ -1340,6 +1425,8 @@ public static void alphabetDiamond(int n) {
 
 ---
 
+
+
 ## Pattern C8: Sandglass Alphabet
 
 ```
@@ -1376,6 +1463,8 @@ public static void alphabetSandglass(int n) {
 
 ---
 
+
+
 ## Pattern C9: Word Pattern
 
 ```
@@ -1406,6 +1495,8 @@ public static void wordPattern(String word) {
 
 ---
 
+
+
 ## Pattern C10: Hollow Alphabet Triangle
 
 ```
@@ -1434,6 +1525,8 @@ public static void hollowAlphabetTriangle(int n) {
 ```
 
 ---
+
+
 
 # ═══════════════════════════════════════════════════════════
 
@@ -1484,6 +1577,8 @@ public static void heartPattern(int n) {
 
 ---
 
+
+
 ## Pattern S2: Butterfly
 
 ```
@@ -1519,6 +1614,8 @@ public static void butterfly(int n) {
 
 ---
 
+
+
 ## Pattern S3: Stairs
 
 ```
@@ -1541,6 +1638,8 @@ public static void stairs(int n) {
 ```
 
 ---
+
+
 
 ## Pattern S4: Chess Board
 
@@ -1573,6 +1672,8 @@ public static void chessBoard(int n) {
 
 ---
 
+
+
 ## Pattern S5: Zero-One Box
 
 ```
@@ -1596,6 +1697,8 @@ public static void zeroOneBox(int n) {
 ```
 
 ---
+
+
 
 ## Pattern S6: Triangle with Border
 
@@ -1629,6 +1732,8 @@ public static void triangleWithBorder(int n) {
 
 ---
 
+
+
 ## Pattern S7: Rhombus
 
 ```
@@ -1654,6 +1759,8 @@ public static void rhombus(int n) {
 
 ---
 
+
+
 ## Pattern S8: Parallelogram
 
 ```
@@ -1676,6 +1783,8 @@ public static void parallelogram(int n) {
 ```
 
 ---
+
+
 
 ## Pattern S9: Number Frame
 
@@ -1711,6 +1820,8 @@ public static void numberFrame(int n) {
 
 ---
 
+
+
 ## Pattern S10: Hourglass with Numbers
 
 ```
@@ -1742,6 +1853,8 @@ public static void hourglassNumbers(int n) {
 
 ---
 
+
+
 # ═══════════════════════════════════════════════════════════
 
 # 🎨 Part 5: Interview Pattern Questions
@@ -1753,6 +1866,28 @@ public static void hourglassNumbers(int n) {
 ```
 Input: n=4, char='#'
 Output:
+
+
+> 🔬 **Section Challenge — Q1: Print Triangle with Custom Character**
+>
+> **Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
+> <details><summary>Answer</summary>
+>
+> ```java
+> public class PaymentException extends RuntimeException { // unchecked!
+>     private final String errorCode;
+>     private final String transactionId;
+>     public PaymentException(String code, String txId, String msg, Throwable cause) {
+>         super(msg, cause); this.errorCode=code; this.transactionId=txId;
+>     }
+> }
+> public class InsufficientFundsException extends PaymentException { ... }
+> public class PaymentGatewayException extends PaymentException { ... }
+> ```
+> Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
+> </details>
+>
+
 #
 # #
 # # #
@@ -1794,6 +1929,9 @@ public static void stringTriangle(String s) {
 
 ---
 
+
+
+
 ## Q3: Zigzag Pattern
 
 ```
@@ -1830,6 +1968,8 @@ public static String zigzagConversion(String s, int numRows) {
 ```
 
 ---
+
+
 
 ## Q4: Spiral Matrix
 
@@ -2017,5 +2157,49 @@ _Master patterns = Master loops = Master DSA_
 
 
 ---
+
+
+---
+
+## 🧠 Deep Conceptual Questions — OOP, SOLID & Design Patterns
+
+**C1. What is the difference between an interface and an abstract class — when to use each?**
+<details><summary>Deep Answer</summary>
+
+**Abstract class**: can have fields, constructors, concrete method implementations. Models IS-A with shared state and behavior. Use when: you have partial implementation to share (template method pattern). Single inheritance: if you extend an abstract class, you can't extend another. **Interface**: pure contract, no state (Java 8+: default methods allowed). Models CAN-DO / role capability. A class can implement unlimited interfaces. Use when: defining a capability across unrelated classes (`Comparable`, `Serializable`, `Runnable`). Rule: prefer interfaces for type definitions. Use abstract class when you need to share implementation code AND all subtypes share the same "IS-A" relationship. In practice: interfaces + composition > abstract class + inheritance.
+</details>
+
+**C2. Liskov Substitution Principle: what does it actually mean and how do you violate it?**
+<details><summary>Deep Answer</summary>
+
+LSP: if `S extends P`, anywhere you use `P`, you should be able to use `S` without breaking correctness. Violation example: `Square extends Rectangle`. Rectangle behavior: setWidth and setHeight are independent. Square invariant: width must equal height. `Square s = new Square(5); s.setWidth(10);` — now `s.getHeight() == 10` (Square enforced equality) but Rectangle contract says height should still be 5. Code using Rectangle is surprised. Better: Square and Rectangle as siblings under a Shape hierarchy. Another classic: override a method and throw exception for a case the parent method handled → violates LSP. Test: can you run the parent's test suite against the child and pass?
+</details>
+
+**C3. Strategy pattern vs. if-else chains: the OCP argument.**
+<details><summary>Deep Answer</summary>
+
+```java
+// BAD: add new payment type = modify this method = Open for modification (violates OCP)
+if(type == "credit") { } else if(type == "paypal") { } else if(type == "crypto") { }
+
+// GOOD: add new payment = new class, zero modification of existing code
+interface PaymentStrategy { void pay(int amount); }
+// Add Crypto: new CryptoPayment implements PaymentStrategy — no other file touched
+```
+Open/Closed Principle: open for extension, closed for modification. Each `else if` = a modification to an existing method = risk of breaking existing behavior, requires re-testing the entire method. Strategy = extension by new class = old code untouched = zero regression risk. When if-else is fine: 2-3 fixed cases that never change. When strategy shines: extensible behaviors that vary at runtime.
+</details>
+
+**C4. What is the Dependency Inversion Principle and how does it enable testability?**
+<details><summary>Deep Answer</summary>
+
+DIP: high-level modules should not depend on low-level modules — both should depend on abstractions. Without DIP: `OrderService` directly creates `MySQLOrderRepository`. To test OrderService: must have MySQL running. With DIP: `OrderService` depends on `OrderRepository` interface. In production: inject `MySQLOrderRepository`. In tests: inject `MockOrderRepository`. The high-level business logic (OrderService) has zero knowledge of the database layer. This makes: unit testing trivial (mock the interface), swapping implementations easy (SQLite, PostgreSQL, in-memory), layer boundaries clear. Dependency INJECTION (DI framework like Spring) is the mechanism that enables DIP at runtime.
+</details>
+
+**C5. Observer pattern vs. Event Bus: when does one become the other?**
+<details><summary>Deep Answer</summary>
+
+**Observer**: subject holds direct references to observer objects. Subject explicitly notifies each one. Tightly coupled (subject knows about observers). Fine for: small systems, known observers at compile time. Breaks when: observers span different modules, dynamic subscription needed, observers need to be remote. **Event Bus / Message Queue**: publishers and subscribers decoupled. Publisher sends event with a TYPE to the bus. Subscribers register for event types — publisher doesn't know who's listening. De-facto standard in large systems: Spring ApplicationEventPublisher, Kafka, RabbitMQ are all event buses. Rule: Observer for in-process tightly-coupled notification. Event bus for loose coupling, cross-module, or distributed communication.
+</details>
+
 
 > **Navigation**: [< Previous](08b_NumberTheory_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](10_Bit_Manipulation_Complete.md)

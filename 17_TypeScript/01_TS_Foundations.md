@@ -272,6 +272,11 @@ flowchart TD
 
 ---
 
+
+
+> 🔬 **Section Challenge — 2. Basic Types**
+>>
+
 ## 3. Interfaces & Type Aliases
 
 ```typescript
@@ -356,6 +361,11 @@ interface Array<T> {
 
 ---
 
+
+
+> 🔬 **Section Challenge — 3. Interfaces & Type Aliases**
+>>
+
 ## 4. Functions in TypeScript
 
 ```typescript
@@ -409,6 +419,11 @@ getLength([1, 2, 3]);   // ✅ array has .length
 
 ---
 
+
+
+> 🔬 **Section Challenge — 4. Functions in TypeScript**
+>>
+
 ## 5. Union & Intersection Types
 
 ```typescript
@@ -459,6 +474,11 @@ const p: Person = { name: "Harsha", age: 24 };
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 5. Union & Intersection Types**
+>>
 
 ## 6. Type Narrowing — Making TS Smarter
 
@@ -525,6 +545,11 @@ input.toUpperCase(); // TS narrows after assertion
 
 ---
 
+
+
+> 🔬 **Section Challenge — 6. Type Narrowing — Making TS Smarter**
+>>
+
 ## 7. Literal Types & const Assertions
 
 ```typescript
@@ -556,6 +581,11 @@ type Color = typeof colors[number]; // "red" | "green" | "blue"
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 7. Literal Types & const Assertions**
+>>
 
 ## 8. Type Assertions & Non-Null Assertion
 
@@ -589,6 +619,11 @@ const palette = {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 8. Type Assertions & Non-Null Assertion**
+>>
 
 ## 9. TypeScript vs JavaScript — When Each is Better
 
@@ -625,6 +660,11 @@ flowchart TD
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 9. TypeScript vs JavaScript — When Each is Better**
+>>
 
 ## Interview Quick-Fire
 
@@ -676,5 +716,85 @@ flowchart LR
 
 
 ---
+
+
+---
+
+## 🏋️ Practice & Interview Questions — TypeScript
+
+### Predict / Trace
+**Q1.** What is the difference between `type` and `interface` in TypeScript?
+<details><summary>Answer</summary>
+
+`interface`: can be extended/implemented, supports declaration merging (multiple declarations merge), better for OOP patterns. `type`: can represent unions, intersections, primitives, tuples — more versatile. Both work for object shapes. Prefer `interface` for public API shapes, `type` for complex compositions.
+</details>
+
+**Q2.** Does this compile?
+```typescript
+type A = { a: string } & { a: number };
+const x: A = { a: "hello" }; // ← ?
+```
+<details><summary>Answer</summary>
+
+**Compile error** — the intersection requires `a` to be both `string` AND `number` simultaneously — impossible (`never` type). The type `A` is effectively `{ a: never }`.
+</details>
+
+### Coding Problems
+**Q3.** ⭐ Implement `Readonly<T>` from scratch (mapped type).
+<details><summary>Solution</summary>
+
+```typescript
+type MyReadonly<T> = { readonly [K in keyof T]: T[K] };
+```
+</details>
+
+**Q4.** ⭐ Implement `Partial<T>` from scratch.
+<details><summary>Solution</summary>
+
+```typescript
+type MyPartial<T> = { [K in keyof T]?: T[K] };
+```
+</details>
+
+**Q5.** ⭐⭐ Implement `DeepReadonly<T>` — recursive.
+<details><summary>Solution</summary>
+
+```typescript
+type DeepReadonly<T> = {
+  readonly [K in keyof T]: T[K] extends object ? DeepReadonly<T[K]> : T[K];
+};
+```
+</details>
+
+**Q6.** ⭐⭐ Write a generic `Result<T, E>` type for error handling without exceptions.
+<details><summary>Solution</summary>
+
+```typescript
+type Result<T, E = Error> =
+  | { ok: true; value: T }
+  | { ok: false; error: E };
+
+function divide(a: number, b: number): Result<number, string> {
+  if(b === 0) return { ok: false, error: "Division by zero" };
+  return { ok: true, value: a / b };
+}
+
+const result = divide(10, 2);
+if(result.ok) console.log(result.value); // TypeScript knows it's number
+else console.log(result.error);           // TypeScript knows it's string
+```
+</details>
+
+### MCQ Rapid Fire
+| # | Question | Answer |
+|---|---|---|
+| 1 | `unknown` vs `any` | unknown: type-safe (must narrow before use); any: escape hatch (no checks) |
+| 2 | `never` type means | Value that never occurs (unreachable code, empty union) |
+| 3 | Discriminated union uses | Shared literal property to narrow type |
+| 4 | `keyof T` | Union of T's property names |
+| 5 | `T[K]` where K extends keyof T | Indexed access type — type of property K in T |
+| 6 | `infer` keyword used in | Conditional types to extract nested types |
+| 7 | `satisfies` keyword (TS 4.9) | Checks value satisfies type without widening the type |
+
 
 > **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_TS_Advanced_Types.md)

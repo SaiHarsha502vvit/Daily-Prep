@@ -159,6 +159,13 @@ HOW SERVICES ROUTE TRAFFIC:
 Service: myapp-service (ClusterIP: 10.96.45.123, Port: 80)
 Pods: myapp-abc (10.244.1.5:8080), myapp-def (10.244.2.8:8080)
 
+
+
+
+
+
+> 🔬 **Section Challenge — Pod Scheduling Flow**
+
 ## Service Networking
 
 Client Pod sends request:
@@ -205,6 +212,13 @@ Ingress:
 ```
 
 ---
+
+
+
+
+
+
+> 🔬 **Section Challenge — Service Networking**
 
 ## Phase 9: Monitoring & Observability
 
@@ -261,6 +275,13 @@ flowchart TD
 
 
 ```yaml
+
+
+
+
+
+> 🔬 **Section Challenge — Phase 9: Monitoring & Observability**
+
 # prometheus.yml - Prometheus Configuration
 global:
     scrape_interval: 15s
@@ -2254,6 +2275,13 @@ public void processOutbox() {
 
 ---
 
+
+
+
+
+
+> 🔬 **Section Challenge — 🔬 QUICK REFERENCE: Deep Internals Summary**
+
 ## 🎯 Summary: Your Complete Learning Path
 
 ```
@@ -2358,6 +2386,13 @@ flowchart TD
 
 ---
 
+
+
+
+
+
+> 🔬 **Section Challenge — 🎯 Summary: Your Complete Learning Path**
+
 ## 🏁 Final Checklist: Are You Ready?
 
 ```
@@ -2456,3 +2491,9 @@ _"The goal is not to become a better coder. It's to become a better problem solv
 ---
 
 > **Navigation**: [< Previous](05_Career_Projects_Part2.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_DSA_Guide_Foundations.md)
+
+
+
+
+> 🔬 **Section Challenge — 🏁 Final Checklist: Are You Ready?**
+

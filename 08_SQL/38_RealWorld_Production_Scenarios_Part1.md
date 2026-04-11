@@ -162,6 +162,9 @@ public class IdExhaustionHealthIndicator implements HealthIndicator {
 
 ---
 
+
+
+
 ## Scenario 2: VARCHAR(9) ID Space Exhaustion
 
 ### 🔴 The Incident
@@ -408,6 +411,9 @@ public class Order {
 
 ---
 
+
+
+
 ## Scenario 4: Snowflake ID Generation for Distributed Systems
 
 ### 🔴 The Incident
@@ -551,6 +557,9 @@ CREATE TABLE invoices_v2 (
 
 ---
 
+
+
+
 ## Scenario 6: Sequence Gaps Causing Business Panic
 
 ### 🔴 The Incident
@@ -645,6 +654,9 @@ public class InvoiceService {
 ```
 
 ---
+
+
+
 
 ## Scenario 7: ID Collision After Database Merge / Acquisition
 
@@ -817,6 +829,9 @@ public class EventRepository {
 
 ---
 
+
+
+
 ## Scenario 9: Disk Space 95% Full — Production Alert
 
 ### 🔴 The Incident
@@ -954,6 +969,17 @@ SELECT pg_reload_conf();
 
 ---
 
+
+
+> 🔬 **Section Challenge — Scenario 10: Transaction Log Eating All Disk Space**
+>
+> **Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+> <details><summary>Answer</summary>
+>
+> READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
+> </details>
+>
+
 ## Scenario 11: BLOB/TEXT Columns Inflating Table Size 100x
 
 ### 🔴 The Incident
@@ -1027,6 +1053,9 @@ public class ProductController {
 ```
 
 ---
+
+
+
 
 ## Scenario 12: Index Bloat — Indexes Bigger Than the Data
 
@@ -1120,6 +1149,9 @@ VACUUM FULL events;  -- Rewrites entire table, reclaims all dead space
 ```
 
 ---
+
+
+
 
 ## Scenario 14: Archive Strategy — Hot/Warm/Cold Data
 
@@ -1470,3 +1502,6 @@ SET work_mem = '128MB';      -- Per-operation sort/hash memory
 ---
 
 [⬅ Previous: 37_SQL_5WH_Deep_Reasoning](37_SQL_5WH_Deep_Reasoning.md) | [📚 Index](00_INDEX.md) | [Next: 39_RealWorld_Production_Scenarios_Part2 ➡](39_RealWorld_Production_Scenarios_Part2.md)
+
+
+

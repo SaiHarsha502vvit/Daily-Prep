@@ -388,6 +388,31 @@ flowchart TD
 
 ---
 
+
+
+> 🔬 **Section Challenge — 3. Promises — The Modern Foundation**
+>
+> **Challenge 1 (Reasoning):** `Promise.all([p1,p2,p3])` — p2 rejects. What happens to p1 and p3?
+> <details><summary>Answer</summary>
+>
+> `Promise.all` rejects immediately when ANY promise rejects (fail-fast). p1 and p3 are still running — their promises continue executing, but their results are ignored. If they reject too, those rejections are also silently ignored (potential unhandled rejection warnings). Use `Promise.allSettled` to wait for ALL to complete regardless of success/failure, getting all results including errors.
+> </details>
+>
+> **Challenge 2 (Design):** Implement `Promise.race` from scratch.
+> <details><summary>Answer</summary>
+>
+> ```javascript
+> function race(promises) {
+>     return new Promise((resolve, reject) => {
+>         promises.forEach(p => Promise.resolve(p).then(resolve, reject));
+>         // First to resolve OR reject wins — others are ignored
+>     });
+> }
+> ```
+> Once the first promise settles, the outer promise is settled. Other promises continue running internally but their results are discarded.
+> </details>
+>
+
 ## 4. Async/Await — The Clean Syntax
 
 ### 5W1H: WHY Async/Await?
@@ -507,6 +532,23 @@ if (!user) { /* handle */ }
 
 ---
 
+
+
+> 🔬 **Section Challenge — 4. Async/Await — The Clean Syntax**
+>
+> **Challenge 1 (Reasoning):** `await Promise.all([fetch(a), fetch(b)])` vs `await fetch(a); await fetch(b)`. What's the performance difference?
+> <details><summary>Answer</summary>
+>
+> `Promise.all`: both fetches START simultaneously (concurrent). Total time = max(timeA, timeB). Sequential awaits: fetch B doesn't start until fetch A completes. Total time = timeA + timeB. For independent requests, ALWAYS use `Promise.all`. Sequential await is only appropriate when B depends on A's result.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** An `async` function has `try { await doWork(); } catch(e) {}`. `doWork()` rejects. Is the rejection handled?
+> <details><summary>Answer</summary>
+>
+> Yes — `await` unwraps the rejected promise and throws the rejection value as a synchronous error, which is caught by the `catch` block. Without `try/catch` around `await`: unhandled rejection. Without `await` (just `doWork()`): the rejection is a separate promise — the `try/catch` CANNOT catch it (it's asynchronous). Always `await` async calls if you want to catch their rejections synchronously.
+> </details>
+>
+
 ## 5. Advanced Async Patterns
 
 ### Generators & Async Generators
@@ -586,6 +628,8 @@ useEffect(() => {
 ```
 
 ---
+
+
 
 ## 6. Microtasks vs Macrotasks — Deep Dive
 
@@ -757,6 +801,9 @@ await asyncPool(5, urls, url => fetch(url).then(r => r.json()));
 
 ---
 
+
+
+
 ## Interview Quick-Fire
 
 ```
@@ -826,3 +873,209 @@ flowchart TD
 ---
 
 > [← Previous: Objects & Prototypes](03_JS_Objects_Prototypes.md) | [Index](../00_MASTER_INDEX.md) | [Next → DOM & Browser APIs](05_JS_DOM_BrowserAPIs.md)
+
+---
+
+## 🏋️ Practice & Interview Questions — Concurrency (Extra)
+
+### Predict / Trace
+**Q1.** Is this code thread-safe?
+```java
+if (!map.containsKey(key)) { map.put(key, compute(key)); }
+```
+<details><summary>Answer</summary>
+
+**No.** Two threads can both pass `containsKey` check simultaneously → both compute and put → race condition, duplicate computation, possible data loss. **Fix**: `map.computeIfAbsent(key, k -> compute(k))` on ConcurrentHashMap — atomic!
+</details>
+
+**Q2.** What's wrong with checking `if(future.isDone())` before `future.get()`?
+<details><summary>Answer</summary>
+
+Nothing wrong functionally, but it's redundant. `future.get()` blocks until done anyway. Only use `isDone()` when you want **non-blocking check** (poll pattern). `isDone()` followed immediately by `get()` has a TOCTOU race — another thread could cancel it between your check and get (though `get()` would throw `CancellationException`).
+</details>
+
+### Coding Problems
+**Q3.** ⭐⭐ Implement a thread-safe bounded blocking queue from scratch with `wait/notify`.
+<details><summary>Solution</summary>
+
+```java
+class BoundedQueue<T> {
+    private final Queue<T> queue = new LinkedList<>();
+    private final int capacity;
+    BoundedQueue(int cap){ this.capacity=cap; }
+
+    synchronized void put(T item) throws InterruptedException {
+        while(queue.size()==capacity) wait(); // Full — wait
+        queue.offer(item);
+        notifyAll(); // Signal waiting consumers
+    }
+
+    synchronized T take() throws InterruptedException {
+        while(queue.isEmpty()) wait(); // Empty — wait
+        T item=queue.poll();
+        notifyAll(); // Signal waiting producers
+        return item;
+    }
+}
+```
+</details>
+
+**Q4.** ⭐⭐ Implement a simple `Future<T>` from scratch.
+<details><summary>Solution</summary>
+
+```java
+class SimpleFuture<T> {
+    private T value; private Throwable error;
+    private boolean done=false;
+
+    synchronized void complete(T val){ value=val; done=true; notifyAll(); }
+    synchronized void completeExceptionally(Throwable t){ error=t; done=true; notifyAll(); }
+
+    synchronized T get() throws Exception {
+        while(!done) wait();
+        if(error!=null) throw new ExecutionException(error);
+        return value;
+    }
+}
+```
+</details>
+
+**Q5.** ⭐⭐⭐ Design a rate limiter (Token Bucket algorithm).
+<details><summary>Solution</summary>
+
+```java
+class TokenBucket {
+    private final long capacity, refillRate;
+    private double tokens;
+    private long lastRefill = System.nanoTime();
+
+    TokenBucket(long capacity, long tokensPerSecond){
+        this.capacity=capacity; this.refillRate=tokensPerSecond; this.tokens=capacity;
+    }
+
+    synchronized boolean tryAcquire(){
+        refill();
+        if(tokens>=1){ tokens--; return true; }
+        return false;
+    }
+
+    private void refill(){
+        long now = System.nanoTime();
+        double added = (now-lastRefill)/1e9 * refillRate;
+        tokens = Math.min(capacity, tokens+added);
+        lastRefill = now;
+    }
+}
+```
+</details>
+
+### Interview Questions
+**Q6.** What is a memory barrier / fence and when does Java insert one?
+<details><summary>Answer</summary>
+
+A memory barrier is a CPU instruction that prevents reordering across it. Java inserts them:
+- **volatile write**: StoreStore + StoreLoad barrier → all prior writes visible before the volatile write
+- **volatile read**: LoadLoad + LoadStore barrier → all subsequent reads see up-to-date values
+- **synchronized exit**: StoreLoad barrier (like volatile write)
+- **synchronized entry**: LoadLoad barrier (like volatile read)
+</details>
+
+**Q7.** What is false sharing and how do you prevent it?
+<details><summary>Answer</summary>
+
+Two threads modify different variables that happen to be on the **same CPU cache line** (64 bytes). When one thread modifies its variable, it invalidates the entire cache line — the other thread's variable (though unchanged) must be re-fetched. **Fix**: `@Contended` annotation (Java 8+) adds padding to isolate variables to separate cache lines.
+
+```java
+@sun.misc.Contended
+class PaddedCounter { volatile long value; }
+```
+</details>
+
+### MCQ Rapid Fire
+| # | Question | Answer |
+|---|---|---|
+| 1 | ExecutorService.shutdown() — does it wait for tasks? | ❌ Initiates shutdown, doesn't wait. Use awaitTermination() |
+| 2 | ExecutorService.shutdownNow() — does it stop running tasks? | Tries to interrupt them, returns list of queued tasks |
+| 3 | Future.cancel(true) — does it stop the task? | Only if task checks isInterrupted() |
+| 4 | CompletableFuture.get() vs join() | get() throws checked exceptions; join() throws unchecked |
+| 5 | Which is faster: AtomicLong or LongAdder? | LongAdder under contention (stripes), AtomicLong for single reads |
+| 6 | Volatile does not guarantee: | Atomicity of compound operations (check-then-act) |
+| 7 | Thread.yield() does what? | Hints scheduler to give up CPU, no guarantee |
+| 8 | Daemon threads — example in JDK | GC threads, JIT compiler threads, finalizer thread |
+
+---
+
+## 🧠 Deep Conceptual Questions — JavaScript Engine & Language
+
+**C1. How does the JavaScript event loop actually work?**
+<details><summary>Deep Answer</summary>
+
+```
+Call Stack → runs synchronous code
+     ↓ (when empty)
+Microtask Queue → Promise callbacks, queueMicrotask, MutationObserver
+     ↓ (when empty)
+Macrotask Queue → setTimeout, setInterval, I/O, requestAnimationFrame
+```
+
+One "tick": (1) Run all synchronous code in call stack until empty, (2) Run ALL microtasks until queue empty (even if new microtasks added!), (3) Run ONE macrotask from the macrotask queue, (4) Repeat.
+
+Critical: microtasks drain COMPLETELY before any macrotask. A microtask that continually enqueues microtasks → infinite loop, browser freezes (no macrotasks can run). `Promise.resolve().then(...)` vs `setTimeout(fn, 0)`: Promise runs BEFORE the timeout even with a 0ms delay.
+</details>
+
+**C2. What is the prototype chain and how does `class` syntax relate to it?**
+<details><summary>Deep Answer</summary>
+
+Every JS object has an internal `[[Prototype]]` link. Property lookup: check own properties → check `[[Prototype]]` → check `[[Prototype]][[Prototype]]` → ... until null. `class` is syntactic sugar over prototype-based inheritance:
+```js
+class Animal { speak() {} }  // same as:
+function Animal() {}
+Animal.prototype.speak = function() {};
+```
+`class extends` sets up the prototype chain: `Dog.prototype.__proto__ = Animal.prototype`. `super` works via `[[HomeObject]]` — a hidden reference to the class where the method was defined. Key: `typeof Dog === 'function'` — classes ARE functions. `instanceof` checks the prototype chain, not the class definition.
+</details>
+
+**C3. Explain closures: why do they exist and what problems do they solve?**
+<details><summary>Deep Answer</summary>
+
+A closure = a function + references to its lexical environment (the variables in scope when the function was created). It solves: **data encapsulation without classes**. Private state in JS (pre-class): use closure.
+```js
+function makeCounter() {
+  let count = 0; // private — inaccessible outside
+  return { increment: () => ++count, get: () => count };
+}
+```
+`count` lives on even after `makeCounter` returns because the returned object's methods close over it. Closures keep the enclosing scope alive in memory as long as any reference to them exists — the classic memory leak: `button.addEventListener('click', heavyFunction)` — even after button is removed from DOM, heavyFunction and all its closed-over variables stay in memory.
+</details>
+
+**C4. What is the difference between `==` and `===` at the engine level?**
+<details><summary>Deep Answer</summary>
+
+`===` (strict equality): checks type first — if types differ, returns false immediately. No coercion. Two objects: only true if same reference. `==` (abstract equality): if types differ, coerces using the "Abstract Equality Comparison Algorithm" (ECMAScript spec §7.2.13). Examples: `null == undefined` → true (special case). `0 == ''` → true ('' → 0). `1 == true` → true (true → 1). `[] == false` → true ([] → '' → 0, false → 0). `[] == ![]` → true (both 0). These coercions are unintuitive and context-dependent. Always use `===` unless specifically relying on null/undefined equivalence.
+</details>
+
+**C5. `this` binding: what determines `this` in JavaScript?**
+<details><summary>Deep Answer</summary>
+
+`this` is determined at CALL TIME, not at definition time (except arrow functions):
+1. **new binding**: `new Foo()` — `this` = new object
+2. **Explicit binding**: `foo.call(obj)` / `foo.apply(obj)` / `foo.bind(obj)` — `this` = obj
+3. **Implicit binding**: `obj.foo()` — `this` = obj (the object before the dot)
+4. **Default binding**: `foo()` — `this` = global (window/global) or `undefined` (strict mode)
+5. **Arrow function**: no own `this` — lexically inherits from enclosing context at DEFINITION time
+
+Priority: new > explicit > implicit > default. Arrow functions use none of these rules — they close over `this` from their lexical scope. Common trap: `obj.method` passed as callback loses its `this` binding (becomes default/undefined-in-strict-mode). Fix: `obj.method.bind(obj)` or arrow function.
+</details>
+
+**C6. What is the Temporal Dead Zone (TDZ) and why does `let` have it?**
+<details><summary>Deep Answer</summary>
+
+All declarations (`var`, `let`, `const`) are hoisted. BUT: `var` is initialized to `undefined` at hoist time. `let`/`const` are hoisted but NOT initialized — they're in the TDZ (temporal dead zone) from block start until the declaration line is reached. Accessing a `let`/`const` variable in its TDZ → `ReferenceError`. WHY it exists: `var`'s behavior (usable before declaration returns undefined) was a source of confusing bugs. TDZ makes it impossible to use a variable before you declared it — forces cleaner code. The declaration IS "seen" by the engine (hence "temporal" — it's available AFTER the declaration, just not before).
+</details>
+
+**C7. What are WeakMap and WeakSet used for, and what makes them "weak"?**
+<details><summary>Deep Answer</summary>
+
+"Weak" = the keys are weakly referenced — they don't prevent garbage collection. If the only reference to an object is a WeakMap key, the GC can collect it, and the WeakMap entry disappears automatically. Normal Map holds strong references: `map.set(node, data)` — `node` can't be GC'd as long as the map exists (memory leak if node removed from DOM). WeakMap: GC can collect `node` when it's no longer referenced elsewhere. Entry disappears. Use cases: (1) private data per instance (WeakMap as private field store), (2) caching computed data per DOM node without memory leaks, (3) tracking active objects without preventing their collection. Cannot iterate WeakMap/WeakSet (indeterminate state due to GC).
+</details>
+

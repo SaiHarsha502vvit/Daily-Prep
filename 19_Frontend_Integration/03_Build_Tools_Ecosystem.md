@@ -840,6 +840,13 @@ export default defineConfig({
 
 ---
 
+
+
+
+
+
+> 🔬 **Section Challenge — 6. Vite Configuration Explained**
+
 ## Interview Quick-Fire
 
 ```

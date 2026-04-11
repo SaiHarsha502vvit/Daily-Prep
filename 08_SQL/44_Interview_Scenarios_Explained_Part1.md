@@ -22,6 +22,9 @@
 
 ---
 
+
+
+
 ## S1: Primary Key ID Exhaustion
 
 ### 🎤 Interview Question
@@ -562,6 +565,9 @@ CURSOR-based: GET /api/orders?after=eyJpZCI6MTIzNH0&limit=20
 
 ---
 
+
+
+
 ## S5: Missing Index / Wrong Index Order
 
 ### 🎤 Interview Question
@@ -728,6 +734,23 @@ WHERE state = 'idle in transaction'
 ```
 
 ```yaml
+
+
+> 🔬 **Section Challenge — S6: Connection Pool Exhaustion**
+>
+> **Challenge 1 (Reasoning):** `String a = "hello"; String b = "hello"; a == b` — true or false? What about `new String("hello") == "hello"`?
+> <details><summary>Answer</summary>
+>
+> First: `true` — string literals are interned in the string pool; same literal = same reference. Second: `false` — `new String(...)` always creates a new object on the heap, bypassing the pool. Always use `.equals()` for string comparison. `String.intern()` can explicitly add a string to the pool.
+> </details>
+>
+> **Challenge 2 (Design):** Why is `String` immutable in Java and what problems would mutable strings cause?
+> <details><summary>Answer</summary>
+>
+> Security: strings are used as HashMap keys, class names, file paths. If mutable, a key could change after insertion, corrupting the HashMap. Thread safety: immutable objects are inherently thread-safe (no synchronization needed). String pool: only possible because strings don't change — two vars safely share the same interned object. Caching hashCode: `String` caches its hashCode (first call computes, subsequent calls return cached) — only safe because the string never changes.
+> </details>
+>
+
 # Increase pool size for immediate relief:
 spring:
   datasource:
@@ -927,6 +950,9 @@ DSA connection:
 
 ---
 
+
+
+
 ## S9: Slow COUNT(*) on Billion Rows
 
 ### 🎤 Interview Question
@@ -1037,6 +1063,9 @@ String findStatusById(@Param("id") Long id);
 
 ---
 
+
+
+
 ## 🧠 Pattern Map: Problems → Professional Diagnosis
 
 | When You See... | Immediately Think... | Say in Interview... |
@@ -1051,3 +1080,5 @@ String findStatusById(@Param("id") Long id);
 ---
 
 [⬅ Previous: 43_Interview_Mindset](43_Interview_Mindset_How_Professionals_Explain.md) | [📚 Index](00_INDEX.md) | [Next: 45_Interview_Scenarios_Part2 ➡](45_Interview_Scenarios_Explained_Part2.md)
+
+

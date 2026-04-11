@@ -1,5 +1,37 @@
 > **Navigation**: [< Previous](15_LinkedList.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](17_HashMap_Hashing.md)
 
+---
+
+## 🗺️ Pattern Recognition Header — Heap / Priority Queue
+
+> **When do I need a Heap?** Ask: *"Do I need repeated access to the min or max of a dynamic set?"*
+>
+
+| Problem Signature | Heap Pattern | Implementation |
+|---|---|---|
+| `kth largest / smallest in stream` | **Min-Heap of size K** | Push all; if size > K, poll (evicts smallest) |
+| `top K frequent elements` | **Min-Heap of size K** sorted by freq | Pair (freq, val); poll evicts least frequent |
+| `K closest to origin / sorted list` | **Max-Heap of size K** | Push all; if size > K, poll (evicts farthest) |
+| `median of data stream` | **Two Heaps** (max + min) | maxHeap (lower half) + minHeap (upper half) |
+| `merge K sorted lists` | **Min-Heap of heads** | Push all list heads; poll and re-add next node |
+| `task scheduler / reorganize string` | **Max-Heap (greedy)** | Always pick most frequent; cool-down cycle |
+| `sliding window min/max` | **Monotonic Deque** O(n) | Better than heap for fixed window |
+
+>
+> **Heap vs Alternatives:**
+> ```
+> "Need TOP-K repeatedly?"     → Min-Heap of size K  → O(n log k)
+> "Need TOP-K once?"           → Sort  → O(n log n)   OR  Quickselect → O(n)
+> "Need sliding window max?"   → Monotonic Deque      → O(n)  ← FASTER!
+> "Need median continuously?"  → Two Heaps            → O(log n) per insert
+> ```
+>
+> 📖 **Mental Model:** [09_Complexity_Intuition.md](../14_Mental_Models/09_Complexity_Intuition.md)
+> 📖 **Theory:** [01f_Trees_Heaps.md](../02_Data_Structures/01f_Trees_Heaps.md)
+> 📖 **Full Pattern Guide:** [00_PATTERN_MASTER_GUIDE.md](../04_Patterns_Templates/00_PATTERN_MASTER_GUIDE.md)
+
+---
+
 # 16. Heap / Priority Queue — Complete Problem Guide
 
 
@@ -226,6 +258,26 @@ flowchart TD
 ```
 
 ---
+
+> 🔬 **Section Challenge — Heap Theory & Internals**
+>
+> **Challenge 1 (Reasoning):** A min-heap stores `[2, 5, 3, 8, 7, 6]` in array form. Trace the heapify process on index 1 (value 5) manually.
+> <details><summary>Answer</summary>
+>
+> Index 1 (value 5): left child = index 3 (value 8), right child = index 4 (value 7). Min of children = index 4 (value 7). 5 < 7, so no swap needed. Heap property satisfied at index 1. If value was 9 instead: 9 > 7 → swap(index1=9, index4=7) → recurse at index 4.
+> </details>
+>
+> **Challenge 2 (Reasoning):** `new PriorityQueue<>()` in Java is a min-heap. You need a max-heap. Write the exact declaration AND explain why `Collections.reverseOrder()` works.
+> <details><summary>Answer</summary>
+>
+> `PriorityQueue<Integer> maxHeap = new PriorityQueue<>(Collections.reverseOrder());` or `new PriorityQueue<>((a,b) -> b - a)`. Why reverseOrder works: the heap's internal comparisons use the comparator. Reversing the order makes what was "smaller" (min-heap sink) behave as "larger" — the root becomes the maximum element. The underlying array storage and sift operations are unchanged; only the comparison direction flips.
+> </details>
+>
+> **Challenge 3 (Design):** Why is building a heap from N elements O(N) but inserting N elements one by one O(N log N)? Where's the mathematical difference?
+> <details><summary>Answer</summary>
+>
+> **Bottom-up heapify**: work per node = height of that node. Nodes at height 0 (leaves, N/2 nodes): 0 work. Nodes at height 1 (N/4 nodes): 1 comparison. Height h: N/2^(h+1) nodes × h work. Total = Σ h×N/2^(h+1) = N (geometric series converges to 2). **N insertions**: each insertion sifts UP from a leaf to root = O(log N) worst case. N × log N total. The bottom-up builds from the middle of the array downward — most nodes are near the bottom where sift-down work is minimal.
+> </details>
 
 ## 🧩 Part 1: Easy Problems
 
@@ -460,6 +512,20 @@ class Solution {
 **Why This Works**: Greedy choice: always combining the two cheapest sticks is provably optimal (same argument as Huffman coding). Each stick's length is added to the total once per merge it participates in; merging small ones first minimizes this.
 
 ---
+
+> 🔬 **Section Challenge — After Easy Problems**
+>
+> **Challenge 1 (Reasoning):** Kth Largest: why use a SIZE-K min-heap instead of a max-heap or full sort?
+> <details><summary>Answer</summary>
+>
+> Goal: find the Kth largest. Maintain a min-heap of size K. When heap size exceeds K, poll the minimum (too small to be top-K). At the end, the heap root IS the Kth largest. Time: O(N log K) — better than O(N log N) sort when K << N. Max-heap approach: push all, pop K times = O(N + K log N). Min-heap of K is faster for large N, small K. Key insight: by keeping only the K largest seen so far, the minimum of those K is the answer.
+> </details>
+>
+> **Challenge 2 (Reasoning):** `lastStoneWeight` uses a max-heap. Why would a min-heap give wrong answers?
+> <details><summary>Answer</summary>
+>
+> The problem requires always smashing the TWO HEAVIEST stones. Max-heap gives O(1) access to the maximum. Min-heap gives the minimum — the opposite of what's needed. The greedy correctness relies on always taking the current global maximum pair; taking minimums would leave heavy stones at the end and give incorrect results.
+> </details>
 
 ## 🧩 Part 2: Medium Problems
 
@@ -1007,6 +1073,26 @@ class Solution {
 **Why This Works**: The min-heap of size L ensures ladders are always assigned to the L largest climbs seen so far. All other climbs use bricks. This is provably optimal: ladders have maximum value on the largest climbs.
 
 ---
+
+> 🔬 **Section Challenge — After Medium Problems**
+>
+> **Challenge 1 (Reasoning):** Median from Data Stream: why do we need TWO heaps? Why can't one heap solve it?
+> <details><summary>Answer</summary>
+>
+> One heap gives O(1) access to its root (max or min). But median requires BOTH the max of the lower half AND the min of the upper half. One heap can't give both simultaneously in O(1). Two heaps: `lo` = max-heap of lower half (root = largest of small numbers), `hi` = min-heap of upper half (root = smallest of large numbers). Median = `lo.peek()` or average of `lo.peek() + hi.peek()`. Maintaining balance invariant (sizes differ by at most 1) ensures this works.
+> </details>
+>
+> **Challenge 2 (Design):** Task Scheduler (LeetCode 621) — why is it solved with a max-heap and not sorting?
+> <details><summary>Answer</summary>
+>
+> You need to always schedule the most frequent remaining task (greedy). Max-heap gives O(log N) access to the highest-frequency task without re-sorting after each removal. After scheduling, frequency decreases by 1, re-insert if > 0. Sorting once at start doesn't work: frequencies change dynamically as tasks are scheduled. The heap maintains the most-frequent invariant dynamically. Key pattern: **greedy + dynamic ordering = heap**.
+> </details>
+>
+> **Challenge 3 (Reasoning):** Merge K sorted lists: why PriorityQueue of size K instead of merging two at a time?
+> <details><summary>Answer</summary>
+>
+> Merge two at a time: each merge costs O(total_elements). K iterations = O(K × N) total. PriorityQueue: maintain the current head of each list in a min-heap of size K. Extract min = O(log K), insert next element = O(log K). Total: O(N log K) where N = total elements. When K is large (say 1000 lists), O(N log K) vs O(NK) is a massive difference. Key insight: we never need to compare all K lists — just the current minimums.
+> </details>
 
 ## 🧩 Part 3: Hard Problems
 
@@ -1557,5 +1643,274 @@ flowchart TD
 ```
 
 ---
+
+---
+
+## 🏆 Competitive Programming — Codeforces Problems
+
+| Problem | Link | Technique | Difficulty |
+|---|---|---|---|
+| Polycarp and Bad Segments | [CF 1530C](https://codeforces.com/problemset/problem/1530/C) | Priority Queue + sweep | ⭐⭐ Medium |
+| Potions (Easy Version) | [CF 1526C](https://codeforces.com/problemset/problem/1526/C) | Greedy + min-heap | ⭐⭐ Medium |
+| Hearthstone | [CF 1830D](https://codeforces.com/problemset/problem/1830/D) | Two heaps (max + ordered) | ⭐⭐⭐ Hard |
+| Ants | [CF 4D](https://codeforces.com/problemset/problem/4/D) | PQ with custom comparator | ⭐⭐ Medium |
+
+---
+
+## 🌍 Real-World Applications of Heaps
+
+| Technique | Real-World System | How It's Used |
+|---|---|---|
+| **Min-Heap (top-K)** | Media stream recommendations | Keep top-K trending items; worst item evicted when new one arrives |
+| **Max-Heap (scheduling)** | OS process scheduler | Highest priority process always picked in O(log n) |
+| **Dijkstra's algorithm** | Google Maps / GPS navigation | Min-heap on shortest-known-distance; reach destination fastest |
+| **Two-Heap (median)** | Data stream processing | Kafka consumer tracking real-time median latency with two heaps |
+| **Heap-based merge sort** | Database query execution | Merge N sorted result sets (from N partitions) using N-way heap merge |
+
+```
+🔥 HOW DIJKSTRA WORKS IN GOOGLE MAPS:
+   PriorityQueue<int[]> pq = new PriorityQueue<>((a,b)->a[1]-b[1]);
+   pq.offer(new int[]{start, 0});  // {node, distance}
+   while (!pq.isEmpty()) {
+       int[] cur = pq.poll();  // Always pick closest unvisited
+       // ... expand neighbors
+   }
+   "This exact code runs (optimized) every time you request directions."
+```
+
+---
+
+
+---
+
+## 🏋️ Practice & Interview Questions — Trees & Heaps
+
+### Predict / Trace
+**Q1.** BST insert 5,3,7,1,4. Draw the tree. What is inorder traversal?
+<details><summary>Answer</summary>
+
+```
+      5
+     / \
+    3   7
+   / \
+  1   4
+```
+Inorder: 1, 3, 4, 5, 7 (always sorted for BST!)
+</details>
+
+**Q2.** PriorityQueue in Java — is it a min-heap or max-heap by default?
+<details><summary>Answer</summary>
+
+**Min-heap** by default (`poll()` returns the minimum). For max-heap: `new PriorityQueue<>(Comparator.reverseOrder())`.
+</details>
+
+### LeetCode / Coding
+**Q3.** ⭐ Maximum Depth of Binary Tree.
+<details><summary>Solution</summary>
+
+```java
+int maxDepth(TreeNode root){
+    if(root==null) return 0;
+    return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));
+}
+```
+</details>
+
+**Q4.** ⭐ Invert Binary Tree.
+<details><summary>Solution</summary>
+
+```java
+TreeNode invertTree(TreeNode root){
+    if(root==null) return null;
+    TreeNode tmp=root.left; root.left=root.right; root.right=tmp;
+    invertTree(root.left); invertTree(root.right);
+    return root;
+}
+```
+</details>
+
+**Q5.** ⭐ Validate Binary Search Tree.
+<details><summary>Solution</summary>
+
+```java
+boolean validate(TreeNode node, long min, long max){
+    if(node==null) return true;
+    if(node.val<=min||node.val>=max) return false;
+    return validate(node.left,min,node.val)&&validate(node.right,node.val,max);
+}
+// call: validate(root, Long.MIN_VALUE, Long.MAX_VALUE)
+```
+</details>
+
+**Q6.** ⭐ Level Order Traversal (BFS with Queue).
+<details><summary>Solution</summary>
+
+```java
+Queue<TreeNode> q=new LinkedList<>(); q.offer(root);
+while(!q.isEmpty()){
+    int size=q.size();
+    for(int i=0;i<size;i++){
+        TreeNode n=q.poll(); process(n);
+        if(n.left!=null) q.offer(n.left);
+        if(n.right!=null) q.offer(n.right);
+    }
+}
+```
+</details>
+
+**Q7.** ⭐ Lowest Common Ancestor of BST.
+<details><summary>Solution</summary>
+
+```java
+TreeNode lca(TreeNode root, TreeNode p, TreeNode q){
+    if(p.val<root.val&&q.val<root.val) return lca(root.left,p,q);
+    if(p.val>root.val&&q.val>root.val) return lca(root.right,p,q);
+    return root; // split point = LCA
+}
+```
+</details>
+
+**Q8.** ⭐⭐ Binary Tree Right Side View.
+<details><summary>Solution</summary>
+
+```java
+// BFS, take last element of each level
+// or DFS: track level, add to result only when level==result.size()
+void dfs(TreeNode node, int level){
+    if(node==null) return;
+    if(level==res.size()) res.add(node.val);
+    dfs(node.right,level+1); dfs(node.left,level+1);
+}
+```
+</details>
+
+**Q9.** ⭐⭐ Kth Smallest Element in BST.
+<details><summary>Solution</summary>
+
+```java
+// Inorder traversal is sorted — take kth element
+int k, result;
+void inorder(TreeNode node){
+    if(node==null) return;
+    inorder(node.left);
+    if(--k==0){ result=node.val; return; }
+    inorder(node.right);
+}
+```
+</details>
+
+**Q10.** ⭐⭐ Serialize and Deserialize Binary Tree.
+<details><summary>Key approach</summary>
+
+BFS level-order with null markers. Serialize: `1,2,3,null,null,4,5`. Deserialize: queue-based reconstruction level by level.
+</details>
+
+**Q11.** ⭐⭐⭐ Binary Tree Maximum Path Sum.
+<details><summary>Solution</summary>
+
+```java
+int maxSum = Integer.MIN_VALUE;
+int dfs(TreeNode node){
+    if(node==null) return 0;
+    int left=Math.max(0,dfs(node.left)), right=Math.max(0,dfs(node.right));
+    maxSum=Math.max(maxSum, node.val+left+right); // path through this node
+    return node.val+Math.max(left,right); // return single path
+}
+```
+</details>
+
+### Heap / Priority Queue Problems
+**Q12.** ⭐ Kth Largest Element in Array.
+<details><summary>Solution</summary>
+
+```java
+PriorityQueue<Integer> minHeap=new PriorityQueue<>();
+for(int n:nums){ minHeap.offer(n); if(minHeap.size()>k) minHeap.poll(); }
+return minHeap.peek(); // kth largest
+```
+</details>
+
+**Q13.** ⭐⭐ Median from Data Stream (two heaps).
+<details><summary>Solution</summary>
+
+```java
+PriorityQueue<Integer> lo=new PriorityQueue<>(Comparator.reverseOrder()); // max-heap
+PriorityQueue<Integer> hi=new PriorityQueue<>(); // min-heap
+void addNum(int n){
+    lo.offer(n);
+    hi.offer(lo.poll());
+    if(lo.size()<hi.size()) lo.offer(hi.poll());
+}
+double findMedian(){ return lo.size()>hi.size()?lo.peek():(lo.peek()+hi.peek())/2.0; }
+```
+</details>
+
+### MCQ Rapid Fire
+| # | Question | Answer |
+|---|---|---|
+| 1 | BST search avg/worst | O(log N) avg, O(N) worst (degenerate) |
+| 2 | Complete binary tree with N nodes height | O(log N) |
+| 3 | Heap insertHeapify direction | Bubble up |
+| 4 | Heap extractMin direction | Bubble down (sift down) |
+| 5 | Java PriorityQueue poll() time | O(log N) |
+| 6 | Tree DFS pre/in/post order uses | Stack (or recursion) |
+| 7 | Tree BFS uses | Queue |
+| 8 | Red-Black Tree guarantee | O(log N) worst case for search/insert/delete |
+
+
+
+---
+
+## 🧠 Deep Conceptual Questions — Trees & Heaps
+
+**C1. Why is the inorder traversal of a BST always sorted?**
+<details><summary>Deep Answer</summary>
+
+BST invariant: every node's left subtree contains ONLY values less than the node, right subtree ONLY values greater. Inorder traversal visits: left subtree (all smaller) → root → right subtree (all larger). Applied recursively at every node, this produces values in ascending order. This is the defining property that makes BST useful: O(log N) search because at each step, half the tree is eliminated. Broken BST (invariant violated) → inorder not sorted → BST operations return wrong results. That's why "Validate BST" is a fundamental problem.
+</details>
+
+**C2. Why does heap not support O(log N) arbitrary deletion (only min/max removal)?**
+<details><summary>Deep Answer</summary>
+
+Heap invariant: parent ≤ children (min-heap). When you remove the minimum (root): replace with last element, sift down — O(log N). But for an arbitrary element: you'd need to FIND it first (O(N) scan — heap has no lookup index), then restore the heap property. Without indexing, you can't efficiently locate an element. **d-ary heaps** exist, and indexed heaps (priority queues with decrease-key, like Fibonacci heap) support O(log N) arbitrary deletion — but Java's PriorityQueue doesn't. Dijkstra's with "lazy deletion" (add stale entries, skip when popped) works around this.
+</details>
+
+**C3. Why is tree height critical for BST operations?**
+<details><summary>Deep Answer</summary>
+
+BST search = walk from root to target, one comparison per level. Operations: O(height). **Balanced BST** (AVL, Red-Black): height = O(log N) → operations O(log N). **Degenerate BST** (insert sorted data: 1,2,3,4,5): each node has only right child → height = N → operations O(N) = linked list performance! This is why TreeMap uses Red-Black Tree (self-balancing): guarantees height ≤ 2*log(N) regardless of insertion order. Red-Black Tree balance condition is weaker than AVL (allows "approximately balanced") but cheaper to maintain: at most 3 rotations per insert (AVL: potentially O(log N)).
+</details>
+
+**C4. Why does BFS on a tree need a Queue but DFS needs a Stack (or recursion)?**
+<details><summary>Deep Answer</summary>
+
+BFS explores level by level: all children of current nodes must be processed before their children. Queue's FIFO ensures: nodes added to queue at level L are processed before level L+1 nodes (which are added during L's processing). DFS explores as deep as possible before backtracking. Stack's LIFO ensures: the most recently discovered (deepest) node is explored next. Recursive DFS implicitly uses the call stack — each recursive call IS a stack frame push. Iterative DFS when chosen over recursive: avoids stack overflow for very deep trees (N deep right-skewed tree → N recursion levels → StackOverflowError).
+</details>
+
+**C5. Lowest Common Ancestor — why does the recursive approach work in O(N)?**
+<details><summary>Deep Answer</summary>
+
+The recursive logic: `lca(node, p, q)` returns the LCA if it exists in the subtree of `node`, or p/q if one is found but not the other, or null if neither found. At each node: check left subtree and right subtree results. If BOTH return non-null: this node is the LCA (p is in one subtree, q in another — this is the split point). If only one: that subtree contains both (one is ancestor of the other). The algorithm visits each node once → O(N). For BST: we can do O(log N) by comparing values (if both < node: go left; both > node: go right; one each side: node is LCA).
+</details>
+
+**C6. Why is heap built in O(N) time but inserting N elements one-by-one takes O(N log N)?**
+<details><summary>Deep Answer</summary>
+
+**Bottom-up `heapify`**: Only nodes with children need sifting-down. Bottom half are leaves (no children) — zero work. Next level: height-1 sift-down each. Total work = Σ(height * nodes at that height) = O(N) (geometric series). **N individual inserts**: each can trigger O(log N) sift-up. Total = O(N log N). The bottom-up approach is 2x faster in practice. Java's `PriorityQueue(Collection)` constructor uses O(N) heapify. `Arrays.stream().forEach(pq::add)` is O(N log N). When converting an array to a heap, always prefer the constructor form.
+</details>
+
+**C7. Binary Tree Maximum Path Sum — why can a node contribute ONE branch to its parent but TWO internally?**
+<details><summary>Deep Answer</summary>
+
+A path cannot branch twice — if you go left and right from a node, the path "bends" at that node and can't continue upward (a path is a sequence of nodes with edges between them, no branching). So: **to a parent**: this node contributes max(left_gain, right_gain, 0) + node.val — choose the better single branch. **For the global answer**: the path could USE this node as the "bend" — include left_gain + node.val + right_gain. This might be the overall maximum even if it can't be passed upward. The DFS returns the single-branch value to parent but updates the global max with the bend value at each node.
+</details>
+
+**C8. Two-heap approach for median — why one max-heap and one min-heap?**
+<details><summary>Deep Answer</summary>
+
+Maintain two properties: (1) bottom half of numbers in a max-heap (quick access to max of lower half), (2) top half in a min-heap (quick access to min of upper half). Median = either the top of one heap (odd total) or average of both tops (even total). Invariant: max-heap size ≥ min-heap size, and max-heap.top ≤ min-heap.top. Adding a number: if > min-heap.top → it's in the top half → add to min-heap; else bottom half → add to max-heap. Then rebalance if sizes differ by 2. Both heaps stay O(log N) operations per insert. This pattern generalizes: ANY running statistic that needs the "boundary" between two halves uses this two-heap technique.
+</details>
+
 
 > **Navigation**: [< Previous](15_LinkedList.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](17_HashMap_Hashing.md)

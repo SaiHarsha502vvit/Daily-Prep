@@ -254,6 +254,17 @@ flowchart TD
 
 ---
 
+
+
+> 🔬 **Section Challenge — 2. Semaphore: The Parking Lot Pattern**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## 3. CountDownLatch: The Rocket Launch Countdown
 
 ### The Freeze Question
@@ -739,6 +750,17 @@ phaser.arriveAndAwaitAdvance();  // Waiter proceeds when all arrive
 
 ---
 
+
+
+> 🔬 **Section Challenge — 5. Phaser: The Flexible Multi-Phase Coordinator**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## 6. Exchanger: The Two-Person Handoff
 
 ### Deep Reasoning
@@ -826,6 +848,11 @@ new Thread(() -> {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 6. Exchanger: The Two-Person Handoff**
+>>
 
 ## 7. Livelock vs Deadlock vs Starvation
 
@@ -1183,6 +1210,17 @@ public void move(double deltaX, double deltaY) {
 
 ---
 
+
+
+> 🔬 **Section Challenge — 8. Lock Deep Reasoning: ReentrantLock, ReadWriteLock, StampedLock**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## 9. Real-World Production Patterns
 
 ### Pattern 1: Rate Limiter with Semaphore
@@ -1273,6 +1311,8 @@ public class GracefulShutdown {
 
 ---
 
+
+
 ## 10. Quick-Fire Table
 
 | Interview Question | One-Line Senior Answer |
@@ -1290,4 +1330,526 @@ public class GracefulShutdown {
 
 ---
 
+## 11. AQS — The Engine Under Everything
+
+> **The secret**: Every synchronizer you've learned — ReentrantLock, Semaphore, CountDownLatch, CyclicBarrier — is built on top of one class: `AbstractQueuedSynchronizer (AQS)`. Understanding AQS unlocks deep understanding of HOW they all work.
+
+```
+╔══════════════════════════════════════════════════════════════════╗
+║  THE TICKET QUEUE ANALOGY                                        ║
+║                                                                  ║
+║  AQS = A municipal service center with a ticket system           ║
+║                                                                  ║
+║  state = number of service windows currently available           ║
+║  CLH queue = the waiting line of customers (threads)             ║
+║                                                                  ║
+║  Thread wants a resource:                                        ║
+║  → Takes a ticket (CAS on state)                                 ║
+║  → If windows available (state > 0): goes straight in → serves  ║
+║  → If no windows (state = 0): joins queue → parks (sleeps)       ║
+║                                                                  ║
+║  Thread releases resource:                                       ║
+║  → Returns ticket (CAS: state += 1)                              ║
+║  → Checks queue: "anyone waiting?"                               ║
+║  → Unparks next customer in queue                                ║
+║                                                                  ║
+║  Subclasses just override TWO methods:                           ║
+║  → tryAcquire(n): "can I take n units of state?"                ║
+║  → tryRelease(n): "release n units, is it fully released?"       ║
+║  → AQS handles ALL the queuing, parking, unparking, fairness     ║
+╚══════════════════════════════════════════════════════════════════╝
+```
+
+```java
+// HOW ReentrantLock is implemented using AQS:
+// (Simplified — actual source more complex)
+
+class SimpleReentrantLock extends AbstractQueuedSynchronizer {
+    // state = 0: not locked
+    // state > 0: locked, value = recursion depth
+
+    @Override
+    protected boolean tryAcquire(int acquires) {
+        if (compareAndSetState(0, 1)) {  // CAS: state 0 → 1
+            setExclusiveOwnerThread(Thread.currentThread());
+            return true;  // Got the lock!
+        }
+        // Reentrant: same thread can re-acquire
+        if (getExclusiveOwnerThread() == Thread.currentThread()) {
+            setState(getState() + 1);  // Increment depth
+            return true;
+        }
+        return false;  // Someone else has it, park this thread in CLH queue
+    }
+
+    @Override
+    protected boolean tryRelease(int releases) {
+        int newState = getState() - 1;
+        if (getExclusiveOwnerThread() != Thread.currentThread())
+            throw new IllegalMonitorStateException();
+        if (newState == 0) {
+            setExclusiveOwnerThread(null);  // Fully released
+        }
+        setState(newState);
+        return newState == 0;  // Return true = fully released, unpark next waiter
+    }
+}
+
+// HOW CountDownLatch uses AQS:
+// state = countdown value (N)
+// await() → tryAcquireShared: "is state == 0? If yes, proceed. If no, park."
+// countDown() → tryReleaseShared: "state - 1. If now 0, unpark ALL waiters."
+
+// HOW Semaphore uses AQS:
+// state = available permits
+// acquire() → tryAcquireShared: "state > 0? Decrement. Else park."
+// release() → tryReleaseShared: "Increment state. Unpark next waiter."
+```
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  AQS CLH QUEUE (Craig-Landin-Hagersten)                                          │
+│                                                                                 │
+│  Double-linked list of Node objects:                                            │
+│  HEAD ↔ [THREAD-A: WAITING] ↔ [THREAD-B: WAITING] ↔ [THREAD-C: WAITING] ← TAIL │
+│                                                                                 │
+│  Each node has:                                                                 │
+│  • thread reference                                                             │
+│  • waitStatus (CANCELLED, SIGNAL, CONDITION, PROPAGATE)                        │
+│  • prev / next pointers                                                         │
+│                                                                                 │
+│  When thread parks (LockSupport.park()):                                        │
+│  → Added to tail of CLH queue                                                   │
+│  → Thread is parked (OS-level sleep, zero CPU usage)                           │
+│                                                                                 │
+│  When lock is released:                                                         │
+│  → Head's successor is unparked (LockSupport.unpark(thread))                  │
+│  → That thread retries tryAcquire()                                             │
+│  → Success: removes itself from queue, becomes head                            │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+
+
+> 🔬 **Section Challenge — 11. AQS — The Engine Under Everything**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
+## 12. ThreadLocal — Per-Thread Storage Deep Dive
+
+```
+╔══════════════════════════════════════════════════════════════════╗
+║  THE CONVEYOR BELT ANALOGY                                       ║
+║                                                                  ║
+║  Factory with 3 workers (threads) on the same conveyor belt      ║
+║                                                                  ║
+║  Shared counter (wrong approach):                                ║
+║  Worker A: counter++  (reads 5, writes 6)                        ║
+║  Worker B: counter++  (reads 5! writes 6 — race condition!)      ║
+║                                                                  ║
+║  ThreadLocal (correct approach):                                 ║
+║  Each worker has their OWN clipboard (ThreadLocal)               ║
+║  Worker A clipboard: 6                                           ║
+║  Worker B clipboard: 4                                           ║
+║  Worker C clipboard: 9                                           ║
+║  Nobody shares. No race condition. No locking needed!            ║
+║                                                                  ║
+║  ThreadLocal = Each thread gets its OWN ISOLATED copy            ║
+║  Perfect for: request context, user sessions, transaction data   ║
+╚══════════════════════════════════════════════════════════════════╝
+```
+
+```java
+// BASIC USAGE
+ThreadLocal<SimpleDateFormat> dateFormat = ThreadLocal.withInitial(
+    () -> new SimpleDateFormat("yyyy-MM-dd")  // Each thread gets fresh instance
+);
+
+// SAFE: SimpleDateFormat is NOT thread-safe, but each thread has its own!
+String formatted = dateFormat.get().format(new Date());
+
+// HOW IT WORKS INTERNALLY:
+// ThreadLocal doesn't store values itself.
+// Instead: Thread has a field threadLocals: Map<ThreadLocal, Value>
+// threadLocal.get() → Thread.currentThread().threadLocals.get(this)
+// threadLocal.set(v) → Thread.currentThread().threadLocals.put(this, v)
+// → Complete isolation: different threads, different maps!
+```
+
+```java
+// REAL-WORLD: Request Context in Spring/Web frameworks
+public class RequestContext {
+    private static final ThreadLocal<User> currentUser = new ThreadLocal<>();
+    private static final ThreadLocal<String> traceId = new ThreadLocal<>();
+    private static final ThreadLocal<Long> requestStartTime = new ThreadLocal<>();
+
+    public static void set(User user, String trace) {
+        currentUser.set(user);
+        traceId.set(trace);
+        requestStartTime.set(System.currentTimeMillis());
+    }
+
+    public static User getUser() { return currentUser.get(); }
+    public static String getTraceId() { return traceId.get(); }
+
+    // ⚠️ CRITICAL: ALWAYS clean up in finally!
+    public static void clear() {
+        currentUser.remove();
+        traceId.remove();
+        requestStartTime.remove();
+    }
+}
+
+// In HTTP filter/interceptor:
+public class RequestFilter implements Filter {
+    public void doFilter(HttpServletRequest req, HttpServletResponse resp,
+                         FilterChain chain) throws Exception {
+        User user = authenticate(req);
+        String traceId = req.getHeader("X-Trace-ID");
+        RequestContext.set(user, traceId);
+        try {
+            chain.doFilter(req, resp);  // User/trace available to ALL code in this request
+        } finally {
+            RequestContext.clear();     // ← MUST DO! Thread returns to pool after this
+        }
+    }
+}
+// Now any code in the request can call RequestContext.getUser() without passing user around!
+```
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  THREADLOCAL MEMORY LEAK — The Number 1 Trap                                     │
+│                                                                                 │
+│  Thread Pool threads are REUSED — they never die!                               │
+│                                                                                 │
+│  Request 1: thread sets ThreadLocal → serves request → returns to pool          │
+│  Request 2: SAME thread picked from pool                                        │
+│             ThreadLocal still has Request 1's data! ← BUG                      │
+│             User from Request 1 leaks into Request 2!                          │
+│                                                                                 │
+│  MEMORY LEAK PATH:                                                              │
+│  Thread (GC root) → threadLocals Map → ThreadLocal value (holds big object)    │
+│  → Thread never dies → value never GC'd → MEMORY LEAK                         │
+│                                                                                 │
+│  FIX: ALWAYS remove() in finally after every use!                               │
+│  threadLocal.remove()  ← clears for this thread, ready for next request        │
+│                                                                                 │
+│  InheritableThreadLocal: child threads inherit parent's values                  │
+│  → Used for: passing request context to spawned tasks                           │
+│  → Careful: modifying child's copy doesn't affect parent                       │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 13. LockSupport — The Primitive Under Synchronizers
+
+> `LockSupport.park()` and `LockSupport.unpark()` are the **lowest-level** thread blocking primitives in Java. Every higher-level synchronizer ultimately calls these.
+
+```java
+// LockSupport: the atom — everything else is built from this
+import java.util.concurrent.locks.LockSupport;
+
+// PARK: suspend the current thread indefinitely
+LockSupport.park();       // Thread BLOCKED (OS-level sleep)
+LockSupport.park(this);   // With blocker object (for debugging — shows in thread dumps)
+
+// PARK with timeout:
+LockSupport.parkNanos(1_000_000_000L);  // Park for 1 second max
+LockSupport.parkUntil(System.currentTimeMillis() + 5000); // Park until timestamp
+
+// UNPARK: give a thread permission to continue (can be called BEFORE park!)
+Thread t = targetThread;
+LockSupport.unpark(t);    // t can now proceed through its next park()
+
+// THE PERMIT MECHANISM — the key insight:
+// Each thread has a PERMIT (boolean: 0 or 1)
+// unpark(t) → sets t's permit to 1
+// park()    → if permit is 1, consume it and return immediately (no block!)
+//             if permit is 0, block until unpark() is called
+
+// KEY DIFFERENCE from wait/notify:
+// LockSupport.unpark() BEFORE LockSupport.park() → park() returns IMMEDIATELY
+// notify() BEFORE wait() → LOST SIGNAL! wait() blocks forever!
+
+// This is why LockSupport is safer for low-level coordination:
+// No missed signals possible due to the permit mechanism.
+
+Thread t = new Thread(() -> {
+    System.out.println("Parked");
+    LockSupport.park();   // Will return immediately (unpark already called!)
+    System.out.println("Unparked");
+});
+t.start();
+LockSupport.unpark(t);   // Called BEFORE t reaches park() — permit pre-granted!
+// Output: "Parked" then immediately "Unparked" — no hang!
+```
+
+---
+
+## 14. SynchronousQueue — The Direct Handoff
+
+```
+╔══════════════════════════════════════════════════════════════════╗
+║  THE BATON PASS WITHOUT WAITING ANALOGY                          ║
+║                                                                  ║
+║  SynchronousQueue = A queue with ZERO capacity                   ║
+║                                                                  ║
+║  Producer calls put(item):                                       ║
+║  → No storage in queue! Must WAIT for a consumer to take it      ║
+║                                                                  ║
+║  Consumer calls take():                                          ║
+║  → No item in queue! Must WAIT for a producer to put one         ║
+║                                                                  ║
+║  The HANDOFF happens when BOTH are ready simultaneously:         ║
+║  Producer and consumer rendezvous → item transfers directly      ║
+║  → Like a direct baton pass, no depot in between                 ║
+║                                                                  ║
+║  WHY USE IT?                                                      ║
+║  → Ensures producer and consumer move at same pace               ║
+║  → Used by Executors.newCachedThreadPool() internally!           ║
+║  → CachedThreadPool: producer = task submitter                   ║
+║                      consumer = worker thread                    ║
+║  → If no worker available → SynchronousQueue.put() blocks        ║
+║  → CachedThreadPool responds: create a NEW thread to consume!   ║
+╚══════════════════════════════════════════════════════════════════╝
+```
+
+```java
+// SynchronousQueue in action:
+SynchronousQueue<String> handoff = new SynchronousQueue<>();
+
+// Producer thread — BLOCKS until a consumer takes it
+new Thread(() -> {
+    try {
+        System.out.println("Producer: offering item...");
+        handoff.put("important task");    // Blocks until consumer ready
+        System.out.println("Producer: consumer took it, I can continue!");
+    } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+}).start();
+
+// Consumer thread — BLOCKS until producer puts something
+new Thread(() -> {
+    try {
+        Thread.sleep(2000);  // Simulate consumer being delayed
+        String item = handoff.take();   // Blocks until producer ready
+        System.out.println("Consumer received: " + item);
+    } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+}).start();
+
+// WHY newCachedThreadPool() can OOM:
+// → Uses SynchronousQueue (capacity 0)
+// → Every task submission tries to "put" into the queue
+// → If no idle worker, CachedThreadPool creates a NEW thread
+// → Under spike: 10,000 tasks → 10,000 threads → OutOfMemoryError!
+// → NEVER use CachedThreadPool for untrusted/unbounded workloads
+// → Use FixedThreadPool or ThreadPoolExecutor with bounded queue instead
+```
+
+---
+
+
+---
+
+## 🏋️ Practice & Interview Questions — Concurrency (Extra)
+
+### Predict / Trace
+**Q1.** Is this code thread-safe?
+```java
+if (!map.containsKey(key)) { map.put(key, compute(key)); }
+```
+<details><summary>Answer</summary>
+
+**No.** Two threads can both pass `containsKey` check simultaneously → both compute and put → race condition, duplicate computation, possible data loss. **Fix**: `map.computeIfAbsent(key, k -> compute(k))` on ConcurrentHashMap — atomic!
+</details>
+
+**Q2.** What's wrong with checking `if(future.isDone())` before `future.get()`?
+<details><summary>Answer</summary>
+
+Nothing wrong functionally, but it's redundant. `future.get()` blocks until done anyway. Only use `isDone()` when you want **non-blocking check** (poll pattern). `isDone()` followed immediately by `get()` has a TOCTOU race — another thread could cancel it between your check and get (though `get()` would throw `CancellationException`).
+</details>
+
+### Coding Problems
+**Q3.** ⭐⭐ Implement a thread-safe bounded blocking queue from scratch with `wait/notify`.
+<details><summary>Solution</summary>
+
+```java
+class BoundedQueue<T> {
+    private final Queue<T> queue = new LinkedList<>();
+    private final int capacity;
+    BoundedQueue(int cap){ this.capacity=cap; }
+
+    synchronized void put(T item) throws InterruptedException {
+        while(queue.size()==capacity) wait(); // Full — wait
+        queue.offer(item);
+        notifyAll(); // Signal waiting consumers
+    }
+
+    synchronized T take() throws InterruptedException {
+        while(queue.isEmpty()) wait(); // Empty — wait
+        T item=queue.poll();
+        notifyAll(); // Signal waiting producers
+        return item;
+    }
+}
+```
+</details>
+
+**Q4.** ⭐⭐ Implement a simple `Future<T>` from scratch.
+<details><summary>Solution</summary>
+
+```java
+class SimpleFuture<T> {
+    private T value; private Throwable error;
+    private boolean done=false;
+
+    synchronized void complete(T val){ value=val; done=true; notifyAll(); }
+    synchronized void completeExceptionally(Throwable t){ error=t; done=true; notifyAll(); }
+
+    synchronized T get() throws Exception {
+        while(!done) wait();
+        if(error!=null) throw new ExecutionException(error);
+        return value;
+    }
+}
+```
+</details>
+
+**Q5.** ⭐⭐⭐ Design a rate limiter (Token Bucket algorithm).
+<details><summary>Solution</summary>
+
+```java
+class TokenBucket {
+    private final long capacity, refillRate;
+    private double tokens;
+    private long lastRefill = System.nanoTime();
+
+    TokenBucket(long capacity, long tokensPerSecond){
+        this.capacity=capacity; this.refillRate=tokensPerSecond; this.tokens=capacity;
+    }
+
+    synchronized boolean tryAcquire(){
+        refill();
+        if(tokens>=1){ tokens--; return true; }
+        return false;
+    }
+
+    private void refill(){
+        long now = System.nanoTime();
+        double added = (now-lastRefill)/1e9 * refillRate;
+        tokens = Math.min(capacity, tokens+added);
+        lastRefill = now;
+    }
+}
+```
+</details>
+
+### Interview Questions
+**Q6.** What is a memory barrier / fence and when does Java insert one?
+<details><summary>Answer</summary>
+
+A memory barrier is a CPU instruction that prevents reordering across it. Java inserts them:
+- **volatile write**: StoreStore + StoreLoad barrier → all prior writes visible before the volatile write
+- **volatile read**: LoadLoad + LoadStore barrier → all subsequent reads see up-to-date values
+- **synchronized exit**: StoreLoad barrier (like volatile write)
+- **synchronized entry**: LoadLoad barrier (like volatile read)
+</details>
+
+**Q7.** What is false sharing and how do you prevent it?
+<details><summary>Answer</summary>
+
+Two threads modify different variables that happen to be on the **same CPU cache line** (64 bytes). When one thread modifies its variable, it invalidates the entire cache line — the other thread's variable (though unchanged) must be re-fetched. **Fix**: `@Contended` annotation (Java 8+) adds padding to isolate variables to separate cache lines.
+
+```java
+@sun.misc.Contended
+class PaddedCounter { volatile long value; }
+```
+</details>
+
+### MCQ Rapid Fire
+| # | Question | Answer |
+|---|---|---|
+| 1 | ExecutorService.shutdown() — does it wait for tasks? | ❌ Initiates shutdown, doesn't wait. Use awaitTermination() |
+| 2 | ExecutorService.shutdownNow() — does it stop running tasks? | Tries to interrupt them, returns list of queued tasks |
+| 3 | Future.cancel(true) — does it stop the task? | Only if task checks isInterrupted() |
+| 4 | CompletableFuture.get() vs join() | get() throws checked exceptions; join() throws unchecked |
+| 5 | Which is faster: AtomicLong or LongAdder? | LongAdder under contention (stripes), AtomicLong for single reads |
+| 6 | Volatile does not guarantee: | Atomicity of compound operations (check-then-act) |
+| 7 | Thread.yield() does what? | Hints scheduler to give up CPU, no guarantee |
+| 8 | Daemon threads — example in JDK | GC threads, JIT compiler threads, finalizer thread |
+
+
+
+---
+
+## 🧠 Deep Conceptual Questions — Concurrency & Thread Safety
+
+**C1. What does "happens-before" actually mean in plain terms?**
+<details><summary>Deep Answer</summary>
+
+"A happens-before B" means: all effects of A (writes to memory) are guaranteed to be visible to B. It's NOT about time ordering — A might literally execute after B in wall-clock time on a different CPU. It's about **visibility guarantees** the JMM provides through specific synchronization actions (volatile, synchronized, join, etc.). Without happens-before: the compiler and CPU are FREE to reorder operations aggressively for performance, and your threads may see stale or absent writes. The JMM doesn't promise any ordering except what's guaranteed via the HB relation.
+</details>
+
+**C2. Why does `volatile` NOT solve the `count++` problem?**
+<details><summary>Deep Answer</summary>
+
+`count++` is three operations: (1) read `count` from main memory, (2) increment in CPU register, (3) write back. `volatile` guarantees each read/write is visible (no caching). But it doesn't prevent two threads from both reading count=5 (each sees 5 via volatile), both incrementing to 6, both writing 6. Count goes 5→6 instead of 5→7. `volatile` adds visibility but no atomicity for compound operations. Solutions: `AtomicInteger.incrementAndGet()` (CAS loop — atomic at hardware level), or `synchronized` (mutual exclusion).
+</details>
+
+**C3. What is CAS (Compare-And-Swap) and why is it "lock-free"?**
+<details><summary>Deep Answer</summary>
+
+CAS: a single CPU instruction `compareAndSwap(addr, expected, newValue)`: if the value at `addr` == `expected`, atomically set it to `newValue` and return true. Otherwise return false. Lock-free: no thread is BLOCKED — if CAS fails, retry in a loop. At least ONE thread always makes progress (the one that succeeds). Contrast with locks: a failed lock acquisition blocks the thread (OS sleep: ~100μs overhead). AtomicInteger.incrementAndGet() = CAS loop: read value, compute +1, CAS. Retry if someone else changed it between read and write. Under low contention: almost always succeeds first try. Under high contention: LongAdder is better (decentralizes to per-thread cells).
+</details>
+
+**C4. Why is `synchronized` using a "monitor" — what is a monitor?**
+<details><summary>Deep Answer</summary>
+
+A monitor is a concurrency construct that combines: (1) a **mutex** (only one thread can enter at a time), (2) a **wait set** (threads can wait for a condition and be notified). In Java: every object has an intrinsic lock (monitor). `synchronized(obj)` acquires the monitor. `obj.wait()` releases the monitor and adds current thread to the wait set. `obj.notify()` picks one thread from the wait set and marks it to re-acquire the monitor. The monitor concept comes from Hoare (1974). Java's implementation: object header contains a mark word that stores the lock state (unlocked → biased locked → thin lock → fat lock with OS mutex).
+</details>
+
+**C5. What is the difference between "thread safety" and "atomicity"?**
+<details><summary>Deep Answer</summary>
+
+**Thread safety**: a class is thread-safe if it behaves correctly when accessed from multiple threads concurrently WITHOUT requiring external synchronization. **Atomicity**: an operation is atomic if it completes entirely or not at all, with no intermediate state visible to other threads. Thread safety can be achieved without per-operation atomicity — you can use locks to protect a sequence of non-atomic operations. `Vector` is thread-safe (every method synchronized) but NOT atomically composable: `if(!v.isEmpty()) v.remove(0)` is not atomic — another thread can remove between the check and the remove. Thread safety at the class level doesn't compose into thread safety at the operation sequence level.
+</details>
+
+**C6. Why is `ThreadLocal` NOT the solution for sharing context between parent and child threads?**
+<details><summary>Deep Answer</summary>
+
+`ThreadLocal` is per-thread. A new thread has NO access to its parent's ThreadLocal values. If main thread sets `requestContext.set(ctx)` then submits a task to a thread pool — the pool thread has an EMPTY ThreadLocal. Solutions: (1) `InheritableThreadLocal`: child thread inherits parent's values at creation time, but pool threads are created ONCE and reused → no re-inheritance on submission. (2) Pass context explicitly to the task constructor. (3) Use `MDCAdapter` (SLF4J's MDC): designed for this, pool-aware. (4) Project Loom's `ScopedValue` (Java 21 preview): designed to replace ThreadLocal for this exact use case.
+</details>
+
+**C7. Deadlock: what are the 4 Coffman conditions and why must ALL 4 hold simultaneously?**
+<details><summary>Deep Answer</summary>
+
+1. **Mutual Exclusion**: resource held exclusively (locks can't be shared)
+2. **Hold and Wait**: thread holds resource while waiting for another
+3. **No Preemption**: resources can't be forcibly taken from a thread
+4. **Circular Wait**: A→B→C→A chain of waiting
+
+These are NECESSARY conditions — ALL four must hold for deadlock to be possible (not sufficient on their own). Breaking ANY ONE prevents deadlock: eliminate mutual exclusion (lock-free algorithms), prevent hold-and-wait (acquire all locks at once), allow preemption (tryLock with timeout), prevent circular wait (global lock ordering). In practice: global lock ordering (breaking #4) is the most common and reliable prevention strategy.
+</details>
+
+**C8. What happens inside the JVM when `synchronized` is acquired?**
+<details><summary>Deep Answer</summary>
+
+JVM uses **lock escalation** based on contention: 
+1. **Biased lock** (no contention): object header records the thread ID. No CAS needed — just check header. Fastest path.
+2. **Thin/lightweight lock**: CAS on object header to change lock state. Stack-allocated lock record. No OS call.
+3. **Heavyweight/fat lock**: when multiple threads contend. OS mutex via `pthread_mutex_lock` — expensive (~μs for context switch). Thread parked by OS.
+
+LockSupport.park() (used by AQS and heavyweight locks) suspends the thread using OS primitives (futex on Linux). When `synchronized` is uncontested (> 95% of real-world cases): nearly free. Under contention: expensive. This is why `synchronized` in modern JVMs is much faster than pre-Java-6.
+</details>
+
+
 > **Navigation**: [< JVM Object Model](Ch19_JVM_Object_Model.md) | [Back to Index](../00_MASTER_INDEX.md) | [SQL Data Analyst >](../08_SQL/24_SQL_Data_Analyst_RealWorld.md)
+

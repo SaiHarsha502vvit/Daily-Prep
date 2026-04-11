@@ -632,6 +632,13 @@ public int[] singleNumber(int[] nums) {
 
 ---
 
+
+
+
+
+
+> 🔬 **Section Challenge — Single Number — Every Element Appears Twice Except One**
+
 ## 16.2 Power & Counting (Easy-Medium)
 
 ### Problem #290: [Power of Two](https://leetcode.com/problems/power-of-two/) (LC 231)
@@ -996,6 +1003,13 @@ public int hammingDistance(int x, int y) {
 ```
 
 ---
+
+
+
+
+
+
+> 🔬 **Section Challenge — 16.2 Power & Counting (Easy-Medium)**
 
 ## 16.3 Math Problems (Easy-Medium)
 

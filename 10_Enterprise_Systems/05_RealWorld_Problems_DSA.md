@@ -98,6 +98,9 @@ public class DuplicateOrderDetector {
 
 ---
 
+
+
+
 ## Problem 2: Shopping Cart Price Calculator (Array + Conditions)
 
 ```
@@ -248,6 +251,9 @@ public class CartCalculator {
 
 ---
 
+
+
+
 ## Problem 3: Product Search Autocomplete (Trie)
 
 ```
@@ -362,6 +368,11 @@ public class ProductAutocomplete {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — Problem 3: Product Search Autocomplete (Trie)**
+>>>
 
 # 🧩 Part 2: Banking & Finance Problems
 
@@ -481,6 +492,23 @@ public class FraudDetector {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — Problem 4: Transaction Fraud Detection (Sliding Window)**
+>
+> **Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
+> <details><summary>Answer</summary>
+>
+> Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
+> <details><summary>Answer</summary>
+>
+> Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
+> </details>
+>
 
 ## Problem 5: Loan EMI Calculator (Math + Loops)
 
@@ -919,6 +947,9 @@ public class DeliveryPartnerFinder {
 
 ---
 
+
+
+
 ## Problem 8: Restaurant Rating Calculation (Weighted Average)
 
 ```
@@ -1056,6 +1087,9 @@ public class RatingCalculator {
 
 ---
 
+
+
+
 # 🧩 Part 4: Social Media Problems
 
 ## Problem 9: Mutual Friends (Set Intersection)
@@ -1176,6 +1210,9 @@ public class MutualFriendsFinder {
 ```
 
 ---
+
+
+
 
 ## Problem 10: News Feed Generation (Merge K Sorted Lists)
 
@@ -1393,6 +1430,9 @@ public class SurgePricingCalculator {
 
 ---
 
+
+
+
 ## Problem 12: Ride Matching - Driver Assignment (Bipartite Matching)
 
 ```
@@ -1504,3 +1544,5 @@ _More problems in next part..._
 ---
 
 > **Navigation**: [< Previous](04_ERP_Finance_RealWorld.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_RealWorld_Problems_Part2.md)
+
+

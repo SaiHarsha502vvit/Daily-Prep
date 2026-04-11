@@ -188,6 +188,9 @@ PriorityQueue<int[]> safe = new PriorityQueue<>(
 
 ---
 
+
+
+
 ## 3. TreeMap & TreeSet: Your BST in Disguise
 
 ### The Freeze Question
@@ -332,6 +335,17 @@ int closest = (target - floor <= ceiling - target) ? floor : ceiling;
 
 ---
 
+
+
+> 🔬 **Section Challenge — 3. TreeMap & TreeSet: Your BST in Disguise**
+>
+> **Challenge 1 (Reasoning):** When should you use `TreeMap` over `HashMap`? What's the actual performance cost?
+> <details><summary>Answer</summary>
+>
+> `TreeMap` use cases: range queries (`subMap`, `headMap`, `tailMap`), ordered iteration, `floorKey`/`ceilingKey`. Cost: every operation is O(log N) vs O(1) avg for HashMap. For 1M entries: HashMap ~1μs, TreeMap ~20μs per operation. Use TreeMap ONLY when sorted order is required — not as a default.
+> </details>
+>
+
 ## 4. Comparator Mastery: Sorting Logic That Doesn't Break
 
 ### Deep Reasoning
@@ -464,6 +478,17 @@ System.out.println(safe.compare(Integer.MAX_VALUE, -1));  // Positive (correct!)
 
 ---
 
+
+
+> 🔬 **Section Challenge — 4. Comparator Mastery: Sorting Logic That Doesn't Break**
+>
+> **Challenge 1 (Reasoning):** QuickSort average O(N log N) but worst case O(N²). When exactly does the worst case happen and how do you prevent it?
+> <details><summary>Answer</summary>
+>
+> Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced partition). This happens when: (1) always picking first/last element as pivot on already-sorted or reverse-sorted data. (2) Pivot happens to be the minimum or maximum. Prevention: random pivot (randomized quicksort — expected O(N log N) even on adversarial input), or median-of-three (pick median of first/middle/last element as pivot). Java's dual-pivot quicksort uses careful pivot selection to avoid this.
+> </details>
+>
+
 ## 5. Arrays.sort vs Collections.sort: Internal Differences That Matter
 
 ### Deep Reasoning
@@ -556,6 +581,9 @@ Arrays.sort(arr);  // Now worst case is astronomically unlikely
 
 ---
 
+
+
+
 ## 6. HashMap for DSA: Beyond Key-Value
 
 ### The Map Methods You MUST Know
@@ -628,6 +656,23 @@ public int subarraySum(int[] nums, int k) {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 6. HashMap for DSA: Beyond Key-Value**
+>
+> **Challenge 1 (Reasoning):** You insert 1000 entries into a HashMap with default capacity 16. How many resize operations happen?
+> <details><summary>Answer</summary>
+>
+> Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 (64→128), 96 (128→256), 192 (256→512), 384 (512→1024). Total: 6 resizes. Each resize copies all entries to new bucket array. Pre-sizing: `new HashMap<>(1334)` (1000/0.75 ≈ 1334 → next power of 2 = 2048) avoids all resizes.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** Two `Person` objects with same name and age. You override `equals()` to return true but not `hashCode()`. What happens when used as `HashMap` keys?
+> <details><summary>Answer</summary>
+>
+> Both objects land in DIFFERENT buckets (different hashCodes → different bucket index). The HashMap doesn't check `equals()` across buckets — it goes straight to one bucket. So `map.get(person2)` returns NULL even though `person1.equals(person2)`. Overriding `equals` without `hashCode` violates the contract and breaks all hash-based collections. Always override both together.
+> </details>
+>
 
 ## 7. Stack, Queue, Deque: The Java Way
 
@@ -793,6 +838,17 @@ public int[] maxSlidingWindow(int[] nums, int k) {
 
 ---
 
+
+
+> 🔬 **Section Challenge — 7. Stack, Queue, Deque: The Java Way**
+>
+> **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+> <details><summary>Answer</summary>
+>
+> In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
+> </details>
+>
+
 ## 8. String Manipulation for DSA: StringBuilder Reasoning
 
 ### Deep Reasoning
@@ -909,6 +965,17 @@ sb.setCharAt(index, 'c');  // Modify in-place
 
 ---
 
+
+
+> 🔬 **Section Challenge — 8. String Manipulation for DSA: StringBuilder Reasoning**
+>
+> **Challenge 1 (Reasoning):** Why is `String str = ""; for(int i=0;i<1000;i++) str += i;` O(N²) and how does StringBuilder fix it?
+> <details><summary>Answer</summary>
+>
+> Each `+=` creates a NEW String object: copies all existing chars + appends new char. Iteration 1: copy 1 char. Iteration 2: copy 2 chars. ... Iteration N: copy N chars. Total: 1+2+...+N = N(N+1)/2 = O(N²) character copies. StringBuilder uses a resizable internal array. `append()` adds to the end: O(1) amortized. Final `toString()`: O(N) once. Total: O(N).
+> </details>
+>
+
 ## 9. Bit Manipulation with Java Specifics
 
 ### Java-Specific Bit Operations
@@ -1022,6 +1089,8 @@ Map<String, Integer> map = new HashMap<>(capacity, 0.75f);  // Avoid rehashing
 ```
 
 ---
+
+
 
 ## 11. Quick-Fire Table
 

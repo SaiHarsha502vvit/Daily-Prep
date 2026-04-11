@@ -270,6 +270,17 @@ synchronized(obj) {
 
 ---
 
+
+
+> 🔬 **Section Challenge — 2. The Mark Word: 64 Bits That Control Everything**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## 3. Klass Pointer: How JVM Knows the Type
 
 ### Deep Reasoning
@@ -366,6 +377,23 @@ if (obj instanceof String s) {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 3. Klass Pointer: How JVM Knows the Type**
+>
+> **Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
+> <details><summary>Answer</summary>
+>
+> No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
+> <details><summary>Answer</summary>
+>
+> NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
+> </details>
+>
 
 ## 4. Field Layout, Padding, and Alignment
 
@@ -521,6 +549,17 @@ flowchart TD
 
 ---
 
+
+
+> 🔬 **Section Challenge — 4. Field Layout, Padding, and Alignment**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## 5. Lock Escalation: Biased → Thin → Fat
 
 ### The Freeze Question
@@ -668,6 +707,17 @@ flowchart TD
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 5. Lock Escalation: Biased → Thin → Fat**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
 
 ## 6. Method Dispatch: How JVM Calls the Right Method
 
@@ -990,6 +1040,17 @@ System.out.println(((Child) obj).x);  // 20 (Child's x — need cast!)
 
 ---
 
+
+
+> 🔬 **Section Challenge — 7. Method Hiding vs Overriding: The Static Method Freeze Moment**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## 8. Best Java Design Strategies: Building Robust Structures
 
 ### Strategy 1: Immutable Objects — The Default Choice
@@ -1170,6 +1231,17 @@ sealed interface Shape permits Circle, Rectangle, Triangle {
 
 ---
 
+
+
+> 🔬 **Section Challenge — 8. Best Java Design Strategies: Building Robust Structures**
+>
+> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+> <details><summary>Answer</summary>
+>
+> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+> </details>
+>
+
 ## 9. Records, Sealed Classes, and Modern Java Object Design
 
 ### Records (Java 16+) — The 80% Solution
@@ -1262,6 +1334,8 @@ double eval(Expr expr) {
 ```
 
 ---
+
+
 
 ## 10. Quick-Fire Table
 

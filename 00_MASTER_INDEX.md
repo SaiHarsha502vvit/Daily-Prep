@@ -10,24 +10,28 @@
 
 | Action | Link |
 |--------|------|
-| **Start Today's Practice** | [12_Daily_Practice/00_DAILY_PRACTICE_INDEX.md](12_Daily_Practice/00_DAILY_PRACTICE_INDEX.md) |
+| **Start Today's Practice** | [Daily Practice Index](12_Daily_Practice/00_DAILY_PRACTICE_INDEX.md) |
 | Textbook Reading Order | [00_TEXTBOOK_PREFACE.md](00_TEXTBOOK_PREFACE.md) |
 | 76-Day Study Calendar | [01_Getting_Started/02_Study_Plan_Calendar.md](01_Getting_Started/02_Study_Plan_Calendar.md) |
 | DSA Guide (Foundations) | [09_Career_Reference/07_DSA_Guide_Foundations.md](09_Career_Reference/07_DSA_Guide_Foundations.md) |
-| Practice Problems (14 chapters) | [05_Problem_Solving/](#practice--problem-solving) |
-| SQL from Zero (48 chapters) | [08_SQL/](#sql-48-chapters) |
-| Spring Boot (60 chapters, 12 Parts) | [07_Modern_Java/](#modern-java--spring-boot) |
-| Developer Essentials (10 guides) | [13_Developer_Essentials/](#developer-essentials-new) |
-| **Mental Models — HOW TO THINK (18 guides)** | [14_Mental_Models/](#mental-models--how-to-think-new) |
-| **React Frontend (11 files)** | [15_React_Frontend/](#react-frontend-new) |
-| **JavaScript Complete (10 chapters)** | [16_JavaScript/](#javascript-complete-10-chapters) |
-| **TypeScript (3 chapters)** | [17_TypeScript/](#typescript-3-chapters) |
-| **CSS Complete (6 chapters)** | [18_CSS_Complete/](#css-complete-6-chapters) |
-| **Frontend Integration (7 chapters)** | [19_Frontend_Integration/](#frontend-integration-7-chapters) |
-| **🏆 Interview Mastery (22 capstone files)** | [20_Interview_Mastery/](#interview-mastery-capstone-22-files--new) |
-| **⚡ Deep Reasoning — Stop Freezing!** | [All 14 Deep Reasoning files](#deep-reasoning--senior-engineer-thinking-new) |
-| **Concurrency & Coroutines** | [13_Developer_Essentials/19_Concurrency_Models_Coroutines.md](13_Developer_Essentials/19_Concurrency_Models_Coroutines.md) |
-| Java Concurrency + Modern Java | [07_Modern_Java/](#modern-java--spring-boot) |
+| **Data Structures (11 chapters)** | [→ Jump to section](#data-structures-11-chapters) |
+| **Algorithms (29 chapters)** | [→ Jump to section](#algorithms-29-chapters) |
+| **Coding Patterns (20 files)** | [→ Jump to section](#coding-patterns-20-files--7-original--13-combined-dsalgo) |
+| **Practice Problems (23 files)** | [→ Jump to section](#practice--problem-solving-23-files) |
+| **OOP & Design (8 files)** | [→ Jump to section](#oop--design-8-files) |
+| **SQL from Zero (42 chapters)** | [→ Jump to section](#sql-42-chapters) |
+| **SQL Advanced + Analytics** | [→ Jump to section](#sql--database--advanced-5-files) |
+| **Spring Boot (60 chapters, 12 Parts)** | [→ Jump to section](#modern-java--spring-boot-60-chapters--12-parts-textbook-order) |
+| **Developer Essentials (20 guides)** | [→ Jump to section](#developer-essentials-18-files--concurrency-guide) |
+| **Mental Models — HOW TO THINK** | [→ Jump to section](#mental-models--how-to-think-18-files) |
+| **React Frontend (11 files)** | [→ Jump to section](#react-frontend-9-files--new) |
+| **JavaScript Complete (11 chapters)** | [→ Jump to section](#javascript-complete-11-chapters) |
+| **TypeScript (4 chapters)** | [→ Jump to section](#typescript-4-chapters) |
+| **CSS Complete (6 chapters)** | [→ Jump to section](#css-complete-6-chapters) |
+| **Frontend Integration (7 chapters)** | [→ Jump to section](#frontend-integration-7-chapters) |
+| **🏆 Interview Mastery (22 files)** | [→ Jump to section](#interview-mastery--capstone-22-files--new) |
+| **⚡ Deep Reasoning — Stop Freezing!** | [→ Jump to section](#deep-reasoning--senior-engineer-thinking-new) |
+| Concurrency & Coroutines | [13_Developer_Essentials/19_Concurrency_Models_Coroutines.md](13_Developer_Essentials/19_Concurrency_Models_Coroutines.md) |
 | Spring Boot Deps → Annotations Map | [07_Modern_Java/Ch30_Dependencies_Annotations_Map.md](07_Modern_Java/Ch30_Dependencies_Annotations_Map.md) |
 | Servers, Ports & Networking | [13_Developer_Essentials/17_Servers_Ports_Networking.md](13_Developer_Essentials/17_Servers_Ports_Networking.md) |
 | Behavioral Interview | [09_Career_Reference/15_Behavioral_Interview.md](09_Career_Reference/15_Behavioral_Interview.md) |

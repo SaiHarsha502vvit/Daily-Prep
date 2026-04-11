@@ -231,6 +231,9 @@ flowchart TD
 
 ---
 
+
+
+
 ## Stanford University
 
 ### Stanford CS161 - Design and Analysis of Algorithms
@@ -677,6 +680,9 @@ flowchart TD
 
 ---
 
+
+
+
 # 🌟 TIER 2: EXCELLENT COMPLEMENTARY RESOURCES
 
 ## Princeton University
@@ -703,6 +709,9 @@ WHY THIS COURSE:
 ```
 
 ---
+
+
+
 
 ## Carnegie Mellon University (CMU)
 
@@ -1057,6 +1066,9 @@ flowchart TD
     N11 --> N15
 ```
 
+
+
+
 ## Path 3: Competitive Programming (6 months)
 
 ```
@@ -1133,6 +1145,9 @@ flowchart TD
 ```
 
 ---
+
+
+
 
 # 🔗 QUICK REFERENCE LINKS
 
@@ -1448,6 +1463,9 @@ flowchart TD
     N1 --> N9
 ```
 
+
+
+
 ## Berkeley CS186 - Database Systems
 
 ```
@@ -1744,6 +1762,9 @@ flowchart TD
     N1 --> N8
 ```
 
+
+
+
 ## MIT 6.033 - Computer System Engineering
 
 ```
@@ -1813,6 +1834,9 @@ flowchart TD
 
 ---
 
+
+
+
 # 🌟 TIER 6: SPECIALIZED ADVANCED TOPICS
 
 ## Stanford CS229 - Machine Learning
@@ -1833,6 +1857,9 @@ WHY THIS COURSE:
 - Mathematical foundations
 - The OG ML course
 ```
+
+
+
 
 ## MIT 6.172 - Performance Engineering
 
@@ -1904,6 +1931,9 @@ flowchart TD
     N1 --> N7
     N1 --> N8
 ```
+
+
+
 
 ## UIUC CS 425 - Distributed Systems
 
@@ -2086,6 +2116,9 @@ flowchart TD
     N21 --> N26
 ```
 
+
+
+
 ## System Design Resources
 
 ```
@@ -2159,6 +2192,8 @@ flowchart TD
 ```
 
 ---
+
+
 
 # 🌟 TIER 8: RESEARCH PAPERS (FOR DEEP UNDERSTANDING)
 

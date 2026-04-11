@@ -259,6 +259,17 @@
 
 ---
 
+
+
+> 🔬 **Section Challenge — 4. Maven Dependency Resolution**
+>
+> **Challenge 1 (Reasoning):** Constructor injection vs field injection (`@Autowired` on field) — which is better and why?
+> <details><summary>Answer</summary>
+>
+> Constructor injection is better: (1) Dependencies explicit — you can't create object without them. (2) Immutable — field can be `final`. (3) Testable — inject mocks via constructor, no Spring context needed. (4) Detects circular deps at startup, not at first use. Field injection: shorter code but: hidden dependencies, can't be `final`, requires Spring for test setup, circular deps detected late. Spring itself recommends constructor injection since v4.
+> </details>
+>
+
 ## 5. Dependency Scopes
 
 ```
@@ -286,6 +297,17 @@
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 5. Dependency Scopes**
+>
+> **Challenge 1 (Reasoning):** Constructor injection vs field injection (`@Autowired` on field) — which is better and why?
+> <details><summary>Answer</summary>
+>
+> Constructor injection is better: (1) Dependencies explicit — you can't create object without them. (2) Immutable — field can be `final`. (3) Testable — inject mocks via constructor, no Spring context needed. (4) Detects circular deps at startup, not at first use. Field injection: shorter code but: hidden dependencies, can't be `final`, requires Spring for test setup, circular deps detected late. Spring itself recommends constructor injection since v4.
+> </details>
+>
 
 ## 6. BOM — Bill of Materials
 
@@ -490,6 +512,17 @@ dependencies {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 9. Gradle Dependency Management**
+>
+> **Challenge 1 (Reasoning):** Constructor injection vs field injection (`@Autowired` on field) — which is better and why?
+> <details><summary>Answer</summary>
+>
+> Constructor injection is better: (1) Dependencies explicit — you can't create object without them. (2) Immutable — field can be `final`. (3) Testable — inject mocks via constructor, no Spring context needed. (4) Detects circular deps at startup, not at first use. Field injection: shorter code but: hidden dependencies, can't be `final`, requires Spring for test setup, circular deps detected late. Spring itself recommends constructor injection since v4.
+> </details>
+>
 
 ## 10. Maven vs Gradle Comparison
 

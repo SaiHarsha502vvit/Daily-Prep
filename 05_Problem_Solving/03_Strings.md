@@ -436,6 +436,13 @@ private String getPattern(String s) {
 
 ---
 
+
+
+
+
+
+> 🔬 **Section Challenge — 🎨 2.1 Isomorphic & Pattern Matching**
+
 ## 🧩 2.2 Anagram Problems
 
 ### Problem: Valid Anagram
@@ -1027,3 +1034,9 @@ public boolean canPermutePalindromeSet(String s) {
 ---
 
 > **Navigation**: [< Previous](24_Common_Mistakes.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](25_Problem_Origins.md)
+
+
+
+
+> 🔬 **Section Challenge — 🧩 2.3 Palindrome Problems**
+

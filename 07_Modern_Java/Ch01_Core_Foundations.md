@@ -2,6 +2,41 @@
 
 > **Navigation**: [< Strings & Immutability](Ch02_Strings_Immutability.md) | [Back to Index](../00_MASTER_INDEX.md)
 
+## 🔑 JVM Class Loading Sequence — Why It Matters
+
+```
+JVM STARTUP SEQUENCE (from byte 0 to your main() method):
+════════════════════════════════════════════════════════
+
+Phase 1: Bootstrap ClassLoader
+  ← Loads JDK core classes (java.lang.Object, java.lang.String...)
+  ← These MUST be loaded before anything else — Object is the parent of all classes
+
+Phase 2: Extension/Platform ClassLoader
+  ← Loads JDK extension modules (javax.*, java.sql, etc.)
+
+Phase 3: Application ClassLoader
+  ← Loads YOUR classes from the classpath/modulepath
+
+For each loaded class, 3 sub-phases:
+  ┌─ LOAD ────── Read .class bytes from disk
+  ├─ LINK ─────┬ Verify: Check bytecode is valid (type safety)
+  │            ├ Prepare: Allocate memory for static fields (set to defaults)
+  │            └ Resolve: Convert symbolic method refs to direct pointers
+  └─ INITIALIZE ─ Run static initializers and static field assignments
+
+WHY THIS MATTERS:
+  1. Class is loaded ONCE → initialized ONCE → static fields init runs ONCE
+  2. This is why the Singleton via Initialization-On-Demand Holder is thread-safe:
+     class Singleton {
+         private static class Holder { static final S INSTANCE = new S(); }
+         public static S getInstance() { return Holder.INSTANCE; }
+     }
+     The JVM guarantees class initialization is atomic → no synchronization needed.
+  3. printStackTrace shows "Caused by: ExceptionInInitializerError" when a static
+     initializer throws → the class becomes unusable for the rest of JVM lifetime.
+```
+
 ---
 
 ## PART 1: INNER CLASSES & INITIALIZATION
@@ -17,6 +52,16 @@ Instead of forcing developers to break encapsulation (by exposing private fields
 Fundamentally, Inner Classes are **Compiler Syntactic Sugar**. At the runtime JVM level, an "Inner Class" does not exist. The Java `javac` compiler simply extracts the nested class, flattens it, and silently injects a hidden pointer field (named `this$0`) so the child can silently deference the parent's memory address. Realizing that non-static inner classes are just "hidden memory anchors" makes it mathematically obvious why they cause massive memory leaks if allowed to outlive their parent.
 
 ---
+
+
+
+> 🔬 **Section Challenge — PART 1: INNER CLASSES & INITIALIZATION**
+>
+> **Challenge (Reasoning):** A non-static inner class holds a hidden reference to the outer class (`Outer.this`). Why does this cause memory leaks in Android and why does `static` inner class fix it?
+> <details><summary>Answer</summary>
+>
+> When you pass a non-static inner class instance (e.g., an AsyncTask or Handler) to a Thread/callback system, the inner object HOLDS a reference to the outer Activity/Fragment. If the outer is destroyed (user navigates away) but the inner is still running, the GC cannot collect the outer — memory leak. A `static` inner class has NO implicit reference to the outer instance, so the outer can be garbage collected freely. If the static inner needs to access the outer, use a `WeakReference<OuterClass>` — weak references don't prevent GC.
+> </details>
 
 ## 1. Inner Classes — 4 Types
 
@@ -124,6 +169,23 @@ Runnable anon = new Runnable() {
 
 ---
 
+
+
+> 🔬 **Section Challenge — 1. Inner Classes — 4 Types**
+>
+> **Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
+> <details><summary>Answer</summary>
+>
+> No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
+> </details>
+>
+> **Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
+> <details><summary>Answer</summary>
+>
+> NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
+> </details>
+>
+
 ## 2. Initialization Order — The Exact Sequence
 
 ```
@@ -174,6 +236,16 @@ class Child extends Parent {
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 2. Initialization Order — The Exact Sequence**
+>
+> **Challenge (Reasoning):** Parent constructor calls an overridable method `init()`. Child overrides `init()`. When `new Child()` is called, `init()` runs while Child's fields are still 0/null. Why is this dangerous?
+> <details><summary>Answer</summary>
+>
+> Java initialization order: Parent static → Child static → Parent instance fields → Parent constructor → Child instance fields → Child constructor. The Parent constructor runs BEFORE Child's fields are initialized. If Parent's constructor calls `init()` (which is overridden), it runs the CHILD's version while the Child's fields are still at their default values (0/null). Pattern: never call overridable methods from constructors. Mark `init()` as `final` or use a factory method pattern instead.
+> </details>
 
 ## 3. Wrapper Classes & Caching Trap
 
@@ -245,9 +317,31 @@ void method(int... x)  { }  // NOT called for method(5)
 
 ---
 
+
+
+> 🔬 **Section Challenge — 3. Wrapper Classes & Caching Trap**
+>
+> **Challenge 1 (Design):** Cache-aside vs write-through vs write-behind — when does each cause stale data?
+> <details><summary>Answer</summary>
+>
+> Cache-aside (lazy load): on cache miss, load from DB and populate cache. Stale: if DB updated externally (direct DB write bypassing cache). Write-through: write to cache AND DB simultaneously. Stale: never (cache always reflects writes). Write-behind (write-back): write to cache, async write to DB. Stale: if cache crashes before DB write → data loss. Rule: cache-aside for read-heavy. Write-through for write+read. Write-behind for write-heavy (accept loss risk).
+> </details>
+>
+
 ## PART 2: COMPARABLE, COMPARATOR & OPTIONAL
 
 ---
+
+
+
+> 🔬 **Section Challenge — PART 2: COMPARABLE, COMPARATOR & OPTIONAL**
+>
+> **Challenge 1 (Reasoning):** `Optional.get()` without `isPresent()` check — what's the point of Optional then?
+> <details><summary>Answer</summary>
+>
+> `Optional.get()` is a code smell. The right API: `orElse(default)`, `orElseGet(supplier)`, `orElseThrow()`, `map(fn)`, `ifPresent(consumer)`. Optional's value: it makes the ABSENCE of a value explicit in the type signature — callers MUST handle the empty case. Using `get()` defeats this. Rule: never call `get()` unless you've already verified presence through the Optional API.
+> </details>
+>
 
 ## 4. Comparable vs Comparator — Complete Guide
 
@@ -388,6 +482,17 @@ Optional.ofNullable(null);  // ✅ Returns Optional.empty()
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 5. Optional — Deep Dive**
+>
+> **Challenge 1 (Reasoning):** `Optional.get()` without `isPresent()` check — what's the point of Optional then?
+> <details><summary>Answer</summary>
+>
+> `Optional.get()` is a code smell. The right API: `orElse(default)`, `orElseGet(supplier)`, `orElseThrow()`, `map(fn)`, `ifPresent(consumer)`. Optional's value: it makes the ABSENCE of a value explicit in the type signature — callers MUST handle the empty case. Using `get()` defeats this. Rule: never call `get()` unless you've already verified presence through the Optional API.
+> </details>
+>
 
 ## PART 3: ITERATOR, CLONE & VARARGS
 
@@ -581,6 +686,16 @@ public boolean equals(Object o) {
 
 ---
 
+
+
+> 🔬 **Section Challenge — PART 4: FUNCTIONAL INTERFACES & JPMS**
+>
+> **Challenge (Reasoning):** `@FunctionalInterface` is an annotation, not a compiler keyword. What does it actually do?
+> <details><summary>Answer</summary>
+>
+> It's a marker annotation that causes the COMPILER to verify the interface has exactly one abstract method. It does NOT make the interface a functional interface — any interface with exactly one abstract method is already functional (lambdas can implement it). `@FunctionalInterface` just: (1) documents intent, (2) prevents accidental addition of a second abstract method. Without it: if someone later adds a second abstract method, the annotation causes a compile error instead of silently breaking all lambda usages.
+> </details>
+
 ## 9. All Built-in Functional Interfaces
 
 ```
@@ -639,6 +754,16 @@ Converter<String, Integer> toInt = Integer::parseInt;
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 9. All Built-in Functional Interfaces**
+>
+> **Challenge (Reasoning):** `Function<T,R>` vs `UnaryOperator<T>` — they look identical. When would you choose one over the other?
+> <details><summary>Answer</summary>
+>
+> `UnaryOperator<T>` extends `Function<T,T>` (same input and output type). Choose `UnaryOperator<T>` when the transformation PRESERVES the type (e.g., `UnaryOperator<String> trim = String::trim`). This communicates intent: "I'm transforming a T into another T". Choose `Function<T,R>` when input and output types differ (e.g., `Function<String, Integer> length = String::length`). In practice: use the most specific interface — better readability and allows more specific composition methods.
+> </details>
 
 ## 10. Java Module System (JPMS) — Java 9+
 

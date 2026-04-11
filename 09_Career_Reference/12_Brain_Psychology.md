@@ -26,6 +26,9 @@ MEMORY IS A SKILL, NOT A TALENT!
 - Emotions enhance memory (that's why stories stick)
 - Connections to existing knowledge strengthen memory
 - Active recall strengthens memory more than re-reading
+
+
+
 ## What Problem Does This Solve
 
 PROBLEM 1: "I learned this last week and forgot it"
@@ -80,6 +83,9 @@ When learning feels hard, your brain is building new connections!
 Easy learning = weak memory
 Difficult learning = strong memory
 Don't avoid hard problems - they're building your brain!
+
+
+
 ## How Memory Actually Works (Science-Based)
 
 1. ENCODING: Getting information IN
@@ -207,6 +213,9 @@ flowchart LR
 
 ---
 
+
+
+
 # 📌 Part 2: the Retention Framework
 
 ## 1. Connect to What You Know (Anchoring)
@@ -234,6 +243,9 @@ ANCHOR TO: Library with labeled shelves
 - "To find book, go directly to that shelf (O(1))"
 - "Two books same letter = collision"
 ```
+
+
+
 
 ## 2. Ask "Why" Until You Can't
 
@@ -311,6 +323,9 @@ VISUALIZE:
 When you can SEE the algorithm working,
 you can RECREATE it from understanding.
 ```
+
+
+
 
 ## 4. Teach to Learn
 
@@ -411,6 +426,8 @@ flowchart TD
     N7 --> N8
 ```
 
+
+
 ## Building Pattern Intuition
 
 ```
@@ -428,6 +445,9 @@ IT'S LIKE LEARNING A LANGUAGE:
 - With practice, you THINK in the language
 - Eventually patterns feel obvious
 ```
+
+
+
 
 ## Problem Clusters
 
@@ -473,6 +493,9 @@ ACTIVE (HIGH RETENTION):
 RULE: For every 30 minutes of learning,
       spend 30 minutes of active practice!
 ```
+
+
+
 
 ## The Blank Page Method
 
@@ -655,6 +678,9 @@ flowchart TD
     N1 --> N3
 ```
 
+
+
+
 ## Connect Patterns to Problems
 
 ```
@@ -716,6 +742,8 @@ flowchart TD
 ```
 
 ---
+
+
 
 # 📌 Part 7: the 4 — Level Understanding
 
@@ -973,6 +1001,9 @@ Walking/nature → Different brain areas → Real rest
 
 ## 📝 Technique 3: BLURTING TECHNIQUE
 
+
+
+
 ## Blurting Technique
 
 
@@ -1008,6 +1039,9 @@ Now you know EXACTLY what to review!
 **Recommended**:
 Do this after completing each chapter/pattern
 Keep your blurt papers - they become revision sheets!
+
+
+
 
 ## 📅 Technique 4: 2-3-7 REVISION RULE
 
@@ -1250,6 +1284,9 @@ flowchart TD
 ```
 
 ---
+
+
+
 
 # 📌 Part 11: Your Retention Checklist
 

@@ -22,6 +22,9 @@
 
 ---
 
+
+
+
 ## S21: Schema Migration Gone Wrong
 
 ### 🎤 Interview Question
@@ -462,6 +465,9 @@ public class Order {
 
 ---
 
+
+
+
 ## S28: Bulk Import Killing Production
 
 ### 🎤 Interview Question
@@ -521,6 +527,9 @@ COPY orders (customer_id, amount, status) FROM '/tmp/orders.csv' CSV HEADER;
 
 ---
 
+
+
+
 ## S29: Microservice Database Anti-Patterns
 
 ### 🎤 Interview Question
@@ -577,6 +586,8 @@ Map<Long, User> users = userService.getUsersByIds(userIds);  // ONE call
 ```
 
 ---
+
+
 
 ## S30: Monitoring Blind Spots That Hide Production Issues
 
@@ -640,6 +651,9 @@ MeterRegistryCustomizer<MeterRegistry> metricsConfig() {
 ```
 
 ---
+
+
+
 
 ## 🎯 Architecture Decision Interview Cheat Sheet
 

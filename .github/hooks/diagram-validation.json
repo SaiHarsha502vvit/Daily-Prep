@@ -1,0 +1,13 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "type": "command",
+        "windows": "python .github/hooks/validate_mermaid_fences.py",
+        "linux": "python3 .github/hooks/validate_mermaid_fences.py",
+        "osx": "python3 .github/hooks/validate_mermaid_fences.py",
+        "timeout": 12
+      }
+    ]
+  }
+}

@@ -112,6 +112,9 @@ to catch N+1 regressions."
 
 ---
 
+
+
+
 ## 🏗️ Part 3: How to Structure Answers for Common Interview Questions
 
 ### Question Type 1: "Tell me about a production issue you resolved"
@@ -236,6 +239,9 @@ Layer 3 — THEORY:    "A full scan is O(n). An index lookup is O(log n) via B-T
 
 ---
 
+
+
+
 ## 🎭 Part 5: How to THINK About a Problem You've Never Seen
 
 ### The Professional's Mental Checklist
@@ -301,6 +307,9 @@ Would you like me to walk through the SQL and application code?"
 
 ---
 
+
+
+
 ## 📊 Part 6: Answering Scale Questions Like a Pro
 
 ### The Numbers You Should Know
@@ -356,6 +365,9 @@ Let me check the execution plan with EXPLAIN ANALYZE to confirm..."
 ```
 
 ---
+
+
+
 
 ## 🔁 Part 7: The "Trade-Off" Conversation
 
@@ -463,6 +475,11 @@ last 250 billion years."
 ```
 
 ---
+
+
+
+> 🔬 **Section Challenge — 🏆 Part 9: The 30-Second Elevator Summary**
+>>
 
 ## 📋 Part 10: Interview Self-Check Rubric
 
